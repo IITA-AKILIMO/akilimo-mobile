@@ -1,0 +1,12 @@
+package com.iita.akilimo.utils.enums;
+
+public enum EnumAdviceTasks {
+    PLANTING_AND_HARVEST,
+    AVAILABLE_FERTILIZERS,
+    INVESTMENT_AMOUNT,
+    TYPICAL_ROOT_YIELD,
+    MAIZE_HEIGHT,
+    MARKET_OUTLET,
+    TILLAGE_OPERATIONS,
+    HERBICIDE_USE
+}
