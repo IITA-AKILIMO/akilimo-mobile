@@ -27,8 +27,8 @@
                 android:layout_height="match_parent"
                 android:contentDescription="@string/app_name"
                 android:fitsSystemWindows="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/img_wizard_3"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/ic_akilimo_head"
                 app:layout_collapseMode="parallax" />
 
             <LinearLayout
