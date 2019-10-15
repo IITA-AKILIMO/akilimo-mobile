@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/lin_result"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,14 +8,16 @@
     android:layout_alignParentBottom="true"
     android:layout_gravity="bottom"
     android:gravity="bottom|center"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/spacing_large"
+    android:paddingRight="@dimen/spacing_large">
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnGetRec"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/btn_rounded_red"
-        android:fontFamily="@font/roboto_bold"
+        app:cornerRadius="@dimen/spacing_small"
+        android:fontFamily="@font/roboto"
         android:text="@string/lbl_get_recommendations"
         android:textAllCaps="false"
         android:textColor="@color/white" />
