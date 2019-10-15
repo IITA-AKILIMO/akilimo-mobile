@@ -17,12 +17,15 @@ import androidx.viewpager.widget.ViewPager
 import butterknife.BindString
 import butterknife.ButterKnife
 import com.blogspot.atifsoftwares.animatoolib.Animatoo
+import com.github.javiersantos.appupdater.AppUpdater
+import com.github.javiersantos.appupdater.enums.Display
 import com.google.android.gms.common.util.Strings
 import com.iita.akilimo.R
 import com.iita.akilimo.adapters.ViewPagerAdapter
 import com.iita.akilimo.entities.MandatoryInfo
 import com.iita.akilimo.inherit.BaseActivity
 import com.iita.akilimo.interfaces.IFragmentCallBack
+import com.iita.akilimo.utils.AppUpdateHelper
 import com.iita.akilimo.utils.Tools
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor
 import com.iita.akilimo.views.fragments.*
@@ -53,17 +56,21 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
     private var myViewPagerAdapter: ViewPagerAdapter? = null
 
     var exit: Boolean = false
-    var showProceedButton: Boolean = true
-    var currentLat: Double = 0.toDouble()
-    var currentLong: Double = 0.toDouble()
-    var currentAlt: Double = 0.toDouble()
-    var placeName: String? = null
-    var address: String? = null
-    var location: MandatoryInfo? = null
 
-    private var activity: Activity? = null
-    var btnStart: Button? = null
+    private var showProceedButton: Boolean = true
+    private var currentLat: Double = 0.toDouble()
+    private var currentLong: Double = 0.toDouble()
+    private var currentAlt: Double = 0.toDouble()
+    private var placeName: String? = null
+    private var address: String? = null
+    private lateinit var location: MandatoryInfo
 
+
+    internal var btnStart: Button? = null
+
+    private lateinit var activity: Activity
+    private lateinit var appUpdateHelper: AppUpdateHelper
+    private lateinit var appUpdater: AppUpdater
 
     override fun onAttachFragment(fragment: Fragment) {
         if (fragment is SummaryFragment) {
@@ -78,8 +85,8 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         activity = this
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this)
 
-        viewPager = findViewById<ViewPager>(R.id.homeViewPager)
-        btnStart = findViewById<Button>(R.id.btnGetStarted)
+        viewPager = findViewById(R.id.homeViewPager)
+        btnStart = findViewById(R.id.btnGetStarted)
 
         //Add the various fragments
         fragmentArray.add(WelcomeFragment.newInstance())
@@ -90,8 +97,39 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         fragmentArray.add(SummaryFragment.newInstance())
 
 
+        //check updates
+        appUpdateHelper = AppUpdateHelper(this)
+        appUpdater = appUpdateHelper.showUpdateMessage(Display.DIALOG).setButtonDoNotShowAgain("")
+        appUpdater.start()
         //add bottom progress dots
         bottomProgressDots(0)
+        initComponent()
+
+    }
+
+    override fun onFragmentClose(hideButton: Boolean) {
+        showProceedButton = hideButton
+        when {
+            !hideButton -> {
+                btnStart?.visibility = View.VISIBLE
+                btnStart?.text = getString(R.string.lbl_proceed)
+            }
+            else -> btnStart?.visibility = View.GONE
+        }
+    }
+
+    override fun initToolbar() {
+        throw UnsupportedOperationException()
+    }
+
+    override fun validate(backPressed: Boolean) {
+        throw UnsupportedOperationException()
+    }
+
+    override fun initComponent() {
+        Tools.setSystemBarColor(activity, R.color.deep_orange_500)
+        checkAppPermissions(rationale)
+        btnStart?.visibility = View.GONE
 
         myViewPagerAdapter = ViewPagerAdapter(supportFragmentManager, 0, fragmentArray)
 
@@ -124,6 +162,10 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                 bottomProgressDots(position)
                 Tools.setSystemBarColor(activity, R.color.deep_orange_500)
                 when (position) {
+                    0 -> {
+                        appUpdater.start()
+                        btnStart?.visibility = View.GONE
+                    }
                     fragmentArray.size - 1 -> {
                         if (showProceedButton) {
                             btnStart?.visibility = View.GONE
@@ -131,7 +173,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                         Tools.setSystemBarColor(activity, R.color.blue_400)
                     }
                     else -> {
-                        btnStart?.visibility = View.GONE
+
                     }
                 }
             }
@@ -139,36 +181,11 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         })
 
         btnStart?.setOnClickListener {
+            appUpdater.start()
             val intent = Intent(this, RecommendationsActivity::class.java)
             startActivity(intent)
             Animatoo.animateShrink(this)
         }
-        initComponent()
-    }
-
-    override fun onFragmentClose(hideButton: Boolean) {
-        showProceedButton = hideButton
-        when {
-            !hideButton -> {
-                btnStart?.visibility = View.VISIBLE
-                btnStart?.text = getString(R.string.lbl_proceed)
-            }
-            else -> btnStart?.visibility = View.GONE
-        }
-    }
-
-    override fun initToolbar() {
-        throw UnsupportedOperationException()
-    }
-
-    override fun validate(backPressed: Boolean) {
-        throw UnsupportedOperationException()
-    }
-
-    override fun initComponent() {
-        Tools.setSystemBarColor(activity, R.color.deep_orange_500)
-        checkAppPermissions(rationale)
-        btnStart?.visibility = View.GONE
     }
 
     private fun bottomProgressDots(currentIndex: Int) {
@@ -225,18 +242,15 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             }
 
             location = objectBoxEntityProcessor.mandatoryInfo
-            if (location == null) {
-                location = MandatoryInfo()
-            }
-            location?.latitude = currentLat
-            location?.longitude = currentLong
-            location?.altitude = currentAlt
+            location.latitude = currentLat
+            location.longitude = currentLong
+            location.altitude = currentAlt
 
-            location?.placeName = when {
+            location.placeName = when {
                 !Strings.isEmptyOrWhitespace(placeName) -> placeName
                 else -> defaultPlaceName
             }
-            location?.address = when {
+            location.address = when {
                 !Strings.isEmptyOrWhitespace(address) -> address
                 else -> "NA"
             }

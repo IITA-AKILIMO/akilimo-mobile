@@ -57,7 +57,7 @@ public class BuildComputeData {
 
     private int cassavaUnitWeight = DEFAULT_UNAVAILABLE_INT;
     private double unitPriceLocal;
-    private double maxInvestmentAmountLocal;
+    private double maxInvestmentAmountLocal = 0.0;
     private String unitOfSale;
     private String areaUnits;
     private double fieldArea = 0.0;
@@ -141,12 +141,19 @@ public class BuildComputeData {
 
         ComputeRequest computeRequest = buildMandatoryInfo();
         computeRequest = buildRequestedRec(computeRequest);
+
         computeRequest = buildPlantingDates(computeRequest);
+
         computeRequest = buildInvestmentAmount(computeRequest);
+
         computeRequest = buildPlantingPractices(computeRequest);
+
         computeRequest = buildOperationCosts(computeRequest);
+
         computeRequest = buildWeedManagement(computeRequest);
+
         computeRequest = buildMaizePerformance(computeRequest);
+
         computeRequest = buildMarketOutlet(computeRequest);
 
 
@@ -222,8 +229,9 @@ public class BuildComputeData {
 
     private ComputeRequest buildInvestmentAmount(@Nonnull ComputeRequest computeRequest) {
         InvestmentAmount inv = objectBoxEntityProcessor.getInvestmentAmount();
-        maxInvestmentAmountLocal = inv.getInvestmentAmountLocal();
-
+        if (inv != null) {
+            maxInvestmentAmountLocal = inv.getInvestmentAmountLocal();
+        }
         computeRequest.setMaxInvestment(maxInvestmentAmountLocal);
         return computeRequest;
     }

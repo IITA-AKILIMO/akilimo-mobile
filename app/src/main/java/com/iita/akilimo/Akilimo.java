@@ -10,7 +10,7 @@ import timber.log.Timber;
 
 public class Akilimo extends MultiDexApplication {
     public static final String LOG_TAG = Akilimo.class.getSimpleName();
-    public static final String DB_NAME = "akilimo";
+    public static final String DB_NAME = "akilimoDB";
     private BoxStore boxStore;
 
 
@@ -19,7 +19,7 @@ public class Akilimo extends MultiDexApplication {
         super.onCreate();
 //        Fabric.with(this, new Crashlytics());
 
-//        BoxStore.deleteAllFiles(this, DB_NAME);
+        BoxStore.deleteAllFiles(this, DB_NAME);
         boxStore = MyObjectBox.builder()
                 .androidContext(Akilimo.this)
                 .name(DB_NAME)

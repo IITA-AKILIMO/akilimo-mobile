@@ -181,7 +181,7 @@ public class DstRecommendationActivity extends BaseActivity {
 
         if (recList.size() <= 0) {
             computedResponse = new ComputedResponse();
-            recList.add(computedResponse.createObject("There are no recommendations available", "No recommendations"));
+            recList.add(computedResponse.createObject("There are no recommendations available", "No recommendations, please provide more information to help us get better predictions"));
         }
         return recList;
     }
