@@ -314,15 +314,55 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnFinishMarketOutlet"
-            style="@style/Widget.AppCompat.Button.Borderless"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/exactPriceCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/unitPriceCard"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:text="@string/lbl_finish"
-            app:cornerRadius="1dp" />
+            android:layout_below="@+id/unitPriceCard"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/spacing_small"
+            app:cardBackgroundColor="@color/green_50"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="2dp"
+            app:cardMaxElevation="6dp"
+            app:contentPadding="@dimen/spacing_small">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="@dimen/spacing_medium"
+                android:layout_marginEnd="@dimen/spacing_medium"
+                android:padding="@dimen/spacing_small">
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_medium"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="Unit price :"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/exactPriceText"
+                    android:layout_width="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_medium"
+                    android:layout_marginEnd="@dimen/spacing_medium"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_medium"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/empty_text"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <include
+            layout="@layout/bottom_buttons_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/exactPriceCard"
+            android:layout_marginTop="@dimen/spacing_large" />
 
     </RelativeLayout>
 

@@ -5,12 +5,10 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -19,10 +17,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
-import com.iita.akilimo.entities.PlantingHarvestDates;
+import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
-import com.iita.akilimo.models.AreaUnit;
-import com.iita.akilimo.models.FieldArea;
 import com.iita.akilimo.models.InvestmentAmount;
 import com.iita.akilimo.utils.CurrencyHelper;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
@@ -75,7 +71,6 @@ public class InvestmentAmountActivity extends BaseActivity {
     private boolean hasErrors;
     private String investmentAmountError = "Enter a valid investment amount";
     private String fieldArea;
-    private String unitOfSize = "acre";
 
     private double investmentAmountUSD;
     private double investmentAmountLocal;
@@ -143,7 +138,7 @@ public class InvestmentAmountActivity extends BaseActivity {
                     txtEditInvestmentAmountLayout.requestFocus();
                     return;
             }
-            investmentAmountUSD = currencyHelper.computeInvestmentAmount(amountToInvest, baseAcre, baseCurrency);
+            investmentAmountUSD = currencyHelper.computeInvestmentAmount(amountToInvest, fieldSize, baseCurrency);
             investmentAmountLocal = currencyHelper.convertToLocalCurrency(investmentAmountUSD, currency);
 
         });
@@ -183,22 +178,21 @@ public class InvestmentAmountActivity extends BaseActivity {
         updateLabels();
     }
 
+    @Override
+    protected void validate(boolean backPressed) {
+        throw new UnsupportedOperationException();
+    }
+
     private void updateLabels() {
 
-        if (objectBoxEntityProcessor != null) {
-            FieldArea fa = objectBoxEntityProcessor.getFieldArea();
-            AreaUnit au = objectBoxEntityProcessor.getAreaUnit();
-            if (fa != null) {
-                baseAcre = fa.getFieldArea();
-                selectedFieldArea = fa.getFieldAreaType();
-            }
-            if (au != null) {
-                unitOfSize = au.getAreaUnit();
-            }
-        }
-        //@TODO remove hardcoded value
-        selectedFieldArea = "1 acre";
-        currency = "NGN";
+        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        fieldSize = mandatoryInfo.getAreaSize();
+        fieldArea = String.valueOf(fieldSize);
+        areaUnit = mandatoryInfo.getAreaUnit();
+        selectedFieldArea = String.format("%s %s", fieldSize, areaUnit);
+
+        currency = mandatoryInfo.getCurrency();
+
         if (Strings.isEmptyOrWhitespace(selectedFieldArea)) {
             return;
         }
@@ -208,15 +202,14 @@ public class InvestmentAmountActivity extends BaseActivity {
         String band_150 = getString(R.string.inv_150_usd_per_acre);
         String band_200 = getString(R.string.inv_200_usd_per_acre);
 
-        fieldArea = String.valueOf(baseAcre);
         String exactText = getString(R.string.exact_investment_x_per_field_area);
 
         //convert the currencies
-        rd_25_per_acre.setText(currencyHelper.convertCurrency(band_25, currency, unitOfSize, fieldArea, selectedFieldArea));
-        rd_50_per_acre.setText(currencyHelper.convertCurrency(band_50, currency, unitOfSize, fieldArea, selectedFieldArea));
-        rd_100_per_acre.setText(currencyHelper.convertCurrency(band_100, currency, unitOfSize, fieldArea, selectedFieldArea));
-        rd_150_per_acre.setText(currencyHelper.convertCurrency(band_150, currency, unitOfSize, fieldArea, selectedFieldArea));
-        rd_200_per_acre.setText(currencyHelper.convertCurrency(band_200, currency, unitOfSize, fieldArea, selectedFieldArea));
+        rd_25_per_acre.setText(currencyHelper.convertCurrency(band_25, currency, areaUnit, fieldArea, selectedFieldArea));
+        rd_50_per_acre.setText(currencyHelper.convertCurrency(band_50, currency, areaUnit, fieldArea, selectedFieldArea));
+        rd_100_per_acre.setText(currencyHelper.convertCurrency(band_100, currency, areaUnit, fieldArea, selectedFieldArea));
+        rd_150_per_acre.setText(currencyHelper.convertCurrency(band_150, currency, areaUnit, fieldArea, selectedFieldArea));
+        rd_200_per_acre.setText(currencyHelper.convertCurrency(band_200, currency, areaUnit, fieldArea, selectedFieldArea));
 
         rd_exact_investment.setText(exactText);
         txtEditInvestmentAmount.setHint(exactText);
@@ -238,11 +231,9 @@ public class InvestmentAmountActivity extends BaseActivity {
             investmentAmountUSD = currencyHelper.convertToUSD(investmentAmountLocal, currency);
         }
 
-        minimumAmountUSD = currencyHelper.computeInvestmentAmount(minInvestmentUSD, baseAcre, baseCurrency);
+        minimumAmountUSD = currencyHelper.computeInvestmentAmount(minInvestmentUSD, fieldSize, baseCurrency);
         minimumAmountLocal = currencyHelper.convertToLocalCurrency(minimumAmountUSD, currency);
         hasErrors = investmentAmountLocal < minimumAmountLocal;
-
-        Log.i(LOG_TAG, String.format("Minimum amount Local %s , USD %s investment amount local %s , USD %s", minimumAmountLocal, minimumAmountUSD, investmentAmountLocal, investmentAmountUSD));
         return investmentAmountError = String.format("Investment amount should be more or equal to %s %s ", minimumAmountLocal, currency);
 
     }

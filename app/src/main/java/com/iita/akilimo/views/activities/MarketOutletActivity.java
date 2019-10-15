@@ -10,9 +10,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
@@ -25,6 +23,7 @@ import com.google.android.gms.common.util.Strings;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
+import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.MarketOutlet;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
@@ -34,6 +33,8 @@ import com.iita.akilimo.utils.CurrencyHelper;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumCountries;
 import com.iita.akilimo.utils.enums.EnumProduceType;
+import com.iita.akilimo.utils.enums.EnumUnitOfSale;
+import com.iita.akilimo.utils.enums.EnumUnitPrice;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import org.jetbrains.annotations.NotNull;
@@ -41,10 +42,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class MarketOutletActivity extends BaseActivity {
 
@@ -66,6 +69,9 @@ public class MarketOutletActivity extends BaseActivity {
 
     @BindView(R.id.unitPriceTitle)
     AppCompatTextView unitPriceTitle;
+
+    @BindView(R.id.exactPriceText)
+    AppCompatTextView exactPriceText;
 
     @BindView(R.id.rdGari)
     RadioButton rdGari;
@@ -103,26 +109,50 @@ public class MarketOutletActivity extends BaseActivity {
     @BindView(R.id.unitPriceCard)
     CardView unitPriceCard;
 
-    @BindView(R.id.btnFinishMarketOutlet)
-    MaterialButton btnFinishMarketOutlet;
+    @BindView(R.id.exactPriceCard)
+    CardView exactPriceCard;
+
+    @BindView(R.id.btnFinish)
+    MaterialButton btnFinish;
+    @BindView(R.id.btnCancel)
+    MaterialButton btnCancel;
+
+
+    @BindView(R.id.rd_20_30_price)
+    RadioButton rd_20_30_price;
+
+    @BindView(R.id.rd_30_50_price)
+    RadioButton rd_30_50_price;
+
+    @BindView(R.id.rd_50_100_price)
+    RadioButton rd_50_100_price;
+
+    @BindView(R.id.rd_100_150_price)
+    RadioButton rd_100_150_price;
+
+    @BindView(R.id.rd_150_200_price)
+    RadioButton rd_150_200_price;
 
     CurrencyHelper currencyHelper;
     private String selectedFactory;
-    String produceType;
-    String unitOfSale;
-    String unitOfSaleText;
+
+    EnumProduceType enumProduceType;
+    EnumUnitOfSale enumUnitOfSale;
+    EnumUnitPrice enumUnitPrice;
+
     double unitPriceUSD = 0.0;
     double unitPriceLocal = 0.0;
     private double minAmountUSD = 5.00;
     private double maxAmountUSD = 500.00;
 
     String priceText;
-    int unitWeight = 0;
+    String unitOfSale;
     private MarketOutlet marketOutlet;
 
     private boolean factoryRequired;
     private boolean otherMarketsRequired;
     private boolean dataIsValid;
+    private boolean exactPriceSelected;
     private boolean selectionMade;
 
     @Override
@@ -148,12 +178,89 @@ public class MarketOutletActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        countryCode = mandatoryInfo.getCountryCode();
+        currency = mandatoryInfo.getCurrency();
+
+        List<StarchFactory> starchFactoriesList = objectBoxEntityProcessor.getStarchFactories(countryCode);
+        addFactoriesRadioButtons(starchFactoriesList);
+
+        marketOutlet = objectBoxEntityProcessor.getMarketOutlet();
+        if (marketOutlet != null) {
+            boolean sfRequired = marketOutlet.isStarchFactoryRequired();
+            priceText = String.valueOf(marketOutlet.getExactPrice());
+            rdgMarketOutlet.check(sfRequired ? R.id.rdFactory : R.id.rdOtherMarket);
+            if (!sfRequired) {
+                enumProduceType = marketOutlet.getEnumProduceType();
+                enumUnitOfSale = marketOutlet.getEnumUnitOfSale();
+                enumUnitPrice = marketOutlet.getEnumUnitPrice();
+                unitOfSale = enumUnitOfSale.unitOfSale();
+                switch (enumProduceType) {
+                    case GARI:
+                        rdgProduceType.check(R.id.rdGari);
+                        break;
+                    case FLOUR:
+                        rdgProduceType.check(R.id.rdFlour);
+                        break;
+                    case ROOTS:
+                        rdgProduceType.check(R.id.rdRoots);
+                        break;
+                }
+
+                switch (enumUnitOfSale) {
+                    case UNIT_ONE_KG:
+                        rdgUnitOfSale.check(R.id.rd_per_kg);
+                        break;
+                    case UNIT_FIFTY_KG:
+                        rdgUnitOfSale.check(R.id.rd_50_kg_bag);
+                        break;
+                    case UNIT_HUNDRED_KG:
+                        rdgUnitOfSale.check(R.id.rd_100_kg_bag);
+                        break;
+                    case UNIT_THOUSAND_KG:
+                        rdgUnitOfSale.check(R.id.rd_per_tonne);
+                        break;
+                }
+
+                switch (enumUnitPrice) {
+                    case PRICE_20TO30:
+                        rdgUnitPrice.check(R.id.rd_20_30_price);
+                        break;
+                    case PRICE_30TO50:
+                        rdgUnitPrice.check(R.id.rd_30_50_price);
+                        break;
+                    case PRICE_50TO100:
+                        rdgUnitPrice.check(R.id.rd_50_100_price);
+                        break;
+                    case PRICE_100TO150:
+                        rdgUnitPrice.check(R.id.rd_100_150_price);
+                        break;
+                    case PRICE_150TO200:
+                        rdgUnitPrice.check(R.id.rd_150_200_price);
+                        break;
+                    case PRICE_EXACT:
+                        rdgUnitPrice.check(R.id.rd_exact_price);
+                        break;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        validate(true);
+    }
+
+    @Override
     protected void initToolbar() {
         toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(marketOutletTitle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(v -> closeActivity(false));
+        toolbar.setNavigationOnClickListener(v -> validate(false));
     }
 
     @Override
@@ -166,25 +273,22 @@ public class MarketOutletActivity extends BaseActivity {
             selectionMade = true;
             switch (radioIndex) {
                 case R.id.rdFactory:
-                    //show the starch factory option
                     hideAll(true);
                     factoryTitle.setVisibility(View.VISIBLE);
                     starchFactoryCard.setVisibility(View.VISIBLE);
                     factoryRequired = true;
-                    produceType = null;
-                    unitOfSale = null;
-                    unitOfSaleText = null;
-                    unitPriceUSD = 0.0;
+                    enumProduceType = null;
+                    enumUnitOfSale = null;
+                    enumUnitPrice = null;
                     unitPriceLocal = 0.0;
-                    unitWeight = 0;
+                    priceText = "0";
                     break;
                 case R.id.rdOtherMarket:
-                    //so the other market options
+                    selectedFactory = "NA";
+                    otherMarketsRequired = true;
                     hideAll(false);
                     produceTypeTitle.setVisibility(View.VISIBLE);
                     produceTypeCard.setVisibility(View.VISIBLE);
-                    selectedFactory = "NA";
-                    otherMarketsRequired = true;
                     break;
             }
         });
@@ -195,24 +299,26 @@ public class MarketOutletActivity extends BaseActivity {
             if (radioButtonId > -1) {
                 RadioButton radioButton = findViewById(radioButtonId);
                 String itemTagIndex = (String) radioButton.getTag();
-                StarchFactory selectedStarchFactory = objectBoxEntityProcessor.getSelectedStarchFactoryByTag(itemTagIndex);
-                if (selectedStarchFactory != null) {
-                    selectedFactory = selectedStarchFactory.getFactoryName();
+                if (itemTagIndex != null) {
+                    StarchFactory selectedStarchFactory = objectBoxEntityProcessor.getSelectedStarchFactoryByTag(itemTagIndex);
+                    if (selectedStarchFactory != null) {
+                        selectedFactory = selectedStarchFactory.getFactoryName();
+                    }
+                    dataIsValid = true;
                 }
-                dataIsValid = true;
             }
         });
 
         rdgProduceType.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
             switch (radioIndex) {
                 case R.id.rdRoots:
-                    produceType = EnumProduceType.ROOTS.produce();
+                    enumProduceType = EnumProduceType.ROOTS;
                     break;
                 case R.id.rdFlour:
-                    produceType = EnumProduceType.FLOUR.produce();
+                    enumProduceType = EnumProduceType.FLOUR;
                     break;
                 case R.id.rdGari:
-                    produceType = EnumProduceType.GARI.produce();
+                    enumProduceType = EnumProduceType.GARI;
                     break;
             }
 
@@ -224,120 +330,169 @@ public class MarketOutletActivity extends BaseActivity {
         rdgUnitOfSale.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
             switch (radioIndex) {
                 case R.id.rd_per_kg:
-                    unitOfSale = "kg";
-                    unitOfSaleText = "a 1 kg bag";
-                    unitWeight = 1;
+                    enumUnitOfSale = EnumUnitOfSale.UNIT_ONE_KG;
                     break;
                 case R.id.rd_50_kg_bag:
-                    unitOfSale = "50 kg bag";
-                    unitOfSaleText = "a 50 kg bag";
-                    unitWeight = 50;
+                    enumUnitOfSale = EnumUnitOfSale.UNIT_FIFTY_KG;
                     break;
                 case R.id.rd_100_kg_bag:
-                    unitOfSale = "100 kg bag";
-                    unitOfSaleText = "a 100 kg bag";
-                    unitWeight = 100;
+                    enumUnitOfSale = EnumUnitOfSale.UNIT_HUNDRED_KG;
                     break;
+                default:
                 case R.id.rd_per_tonne:
-                    unitOfSale = "tonne";
-                    unitOfSaleText = "1 tonne";
-                    unitWeight = 1000;
+                    enumUnitOfSale = EnumUnitOfSale.UNIT_THOUSAND_KG;
                     break;
             }
 
+
+            unitOfSale = enumUnitOfSale.unitOfSale();
+            updateLabels(currency, unitOfSale);
             unitPriceTitle.setVisibility(View.VISIBLE);
             unitPriceCard.setVisibility(View.VISIBLE);
         });
 
         rdgUnitPrice.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
+            exactPriceSelected = false;
             switch (radioIndex) {
                 case R.id.rd_20_30_price:
-                    unitPriceUSD = 25; //remains in USD
+                    enumUnitPrice = EnumUnitPrice.PRICE_20TO30;
                     break;
                 case R.id.rd_30_50_price:
-                    unitPriceUSD = 40; //remains in USD
+                    enumUnitPrice = EnumUnitPrice.PRICE_30TO50;
                     break;
                 case R.id.rd_50_100_price:
-                    unitPriceUSD = 75; //remains in USD
+                    enumUnitPrice = EnumUnitPrice.PRICE_50TO100;
                     break;
                 case R.id.rd_100_150_price:
-                    unitPriceUSD = 125; //remains in USD
+                    enumUnitPrice = EnumUnitPrice.PRICE_100TO150;
                     break;
                 case R.id.rd_150_200_price:
-                    unitPriceUSD = 175; //remains in USD
+                    enumUnitPrice = EnumUnitPrice.PRICE_150TO200;
                     break;
                 case R.id.rd_exact_price:
-                    dataIsValid = false;
-                    showExactPriceDialog();
+                    exactPriceSelected = true;
                     break;
             }
+
+            exactPriceCard.setVisibility(exactPriceSelected ? View.VISIBLE : View.GONE);
             rdExactPrice.setOnClickListener(view -> {
                 dataIsValid = false;
                 showExactPriceDialog();
             });
         });
 
-        btnFinishMarketOutlet.setOnClickListener(view -> {
-
-            if (validated() && dataIsValid) {
-                unitPriceLocal = currencyHelper.convertToLocalCurrency(unitPriceUSD, currency);
-                marketOutlet.setStarchFactory(selectedFactory);
-                marketOutlet.setProduceType(produceType);
-                marketOutlet.setUnitOfSale(unitOfSale);
-                marketOutlet.setUnitPriceUSD(unitPriceUSD);
-                marketOutlet.setUnitPriceLocalCurrency(unitPriceLocal);
-                marketOutlet.setUnitWeightValue(unitWeight);
-
-                long id = objectBoxEntityProcessor.saveMarketOutlet(marketOutlet);
-                if (id > 0) {
-                    closeActivity(false);
-                }
-            } else if (!selectionMade) {
-                showCustomWarningDialog("Nothing selected", "You have not made any selection", null);
-            }
-        });
+        btnFinish.setOnClickListener(view -> validate(false));
+        btnCancel.setOnClickListener(view -> closeActivity(false));
     }
 
-    private boolean validated() {
+    @Override
+    protected void validate(boolean backPressed) {
+
         if (factoryRequired) {
             if (Strings.isEmptyOrWhitespace(selectedFactory) || selectedFactory.equalsIgnoreCase("NA")) {
                 showCustomWarningDialog("Invalid factory", "Please select a starch factory", "OK");
-                return false;
+                return;
             }
         } else if (otherMarketsRequired) {
-            if (Strings.isEmptyOrWhitespace(produceType)) {
+            if (enumProduceType == null) {
                 showCustomWarningDialog("Invalid produce type", "Please specify a valid produce type", "OK");
-                return false;
+                return;
             }
-            if (Strings.isEmptyOrWhitespace(unitOfSale)) {
+            if (enumUnitOfSale == null) {
                 showCustomWarningDialog("Invalid unit of sale", "Please specify a valid unit of sale", "OK");
-                return false;
+                return;
             }
-
-            if ((unitWeight <= 0)) {
-                showCustomWarningDialog("Invalid unit weight", "Please specify a valid unit weight", "OK");
-                return false;
-            }
-
-            if ((unitPriceUSD <= 0)) {
+            if (enumUnitPrice == null) {
                 showCustomWarningDialog("Invalid unit price", "Please specify a valid unit price", "OK");
-                return false;
+                return;
+            }
+            if (exactPriceSelected && Strings.isEmptyOrWhitespace(priceText)) {
+                showCustomWarningDialog("Invalid unit price", "Please specify a valid unit price", "Retry");
+                return;
             }
 
+            if (exactPriceSelected) {
+                unitPriceLocal = Double.parseDouble(priceText);
+                enumUnitPrice = EnumUnitPrice.PRICE_EXACT;
+                priceText = String.valueOf(marketOutlet.getExactPrice());
+            } else {
+                priceText = "0";
+                unitPriceLocal = 0;
+                unitPriceLocal = enumUnitPrice.convertToLocal(currency);
+            }
             Double minAmount = currencyHelper.convertCurrency(minAmountUSD, currency);
             Double maxAmount = currencyHelper.convertCurrency(maxAmountUSD, currency);
 
-            if (!(unitPriceUSD >= minAmountUSD) || !(unitPriceUSD <= maxAmountUSD)) {
+            dataIsValid = true;
+            if (!(unitPriceLocal >= minAmount) || !(unitPriceLocal <= maxAmount)) {
                 String message = String.format("Unit price should be between %s %s and %s %s", minAmount, currency, maxAmount, currency);
                 showCustomWarningDialog("Invalid unit price", message, "OK");
                 dataIsValid = false;
-                return false;
-            } else {
-                dataIsValid = true;
             }
         }
 
-        return true;
+        if (!selectionMade) {
+            showCustomWarningDialog("Nothing selected", "You have not made any selection", null);
+            return;
+        }
+
+
+        if (dataIsValid) {
+            marketOutlet.setStarchFactory(selectedFactory);
+            marketOutlet.setStarchFactoryRequired(factoryRequired);
+            marketOutlet.setEnumProduceType(enumProduceType);
+            marketOutlet.setEnumUnitOfSale(enumUnitOfSale);
+            marketOutlet.setEnumUnitPrice(enumUnitPrice);
+            marketOutlet.setExactPrice(unitPriceLocal);
+
+            long id = objectBoxEntityProcessor.saveMarketOutlet(marketOutlet);
+            if (id > 0) {
+                closeActivity(backPressed);
+            }
+        }
+    }
+
+    private void updateLabels(String currency, String uos) {
+        try {
+            rd_20_30_price.setText(labelText(EnumUnitPrice.PRICE_20TO30.unitPriceLower(), EnumUnitPrice.PRICE_20TO30.unitPriceUpper(), currency, uos));
+            rd_30_50_price.setText(labelText(EnumUnitPrice.PRICE_30TO50.unitPriceLower(), EnumUnitPrice.PRICE_30TO50.unitPriceUpper(), currency, uos));
+            rd_50_100_price.setText(labelText(EnumUnitPrice.PRICE_50TO100.unitPriceLower(), EnumUnitPrice.PRICE_50TO100.unitPriceUpper(), currency, uos));
+            rd_100_150_price.setText(labelText(EnumUnitPrice.PRICE_100TO150.unitPriceLower(), EnumUnitPrice.PRICE_100TO150.unitPriceUpper(), currency, uos));
+            rd_150_200_price.setText(labelText(EnumUnitPrice.PRICE_150TO200.unitPriceLower(), EnumUnitPrice.PRICE_150TO200.unitPriceUpper(), currency, uos));
+        } catch (Exception ex) {
+            Timber.e(ex);
+        }
+    }
+
+    private String labelText(double unitPriceLower, double unitPriceUpper, String currency, String uos) {
+        //cross convert acording to weight
+        double priceLower = unitPriceLower;
+        double priceHigher = unitPriceUpper;
+
+        switch (enumUnitOfSale) {
+            case UNIT_ONE_KG:
+                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_ONE_KG.unitWeight()) / 1000;
+                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_ONE_KG.unitWeight()) / 1000;
+                break;
+            case UNIT_FIFTY_KG:
+                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_FIFTY_KG.unitWeight()) / 1000;
+                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_FIFTY_KG.unitWeight()) / 1000;
+                break;
+            case UNIT_HUNDRED_KG:
+                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_HUNDRED_KG.unitWeight()) / 1000;
+                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_HUNDRED_KG.unitWeight()) / 1000;
+                break;
+        }
+
+        minAmountUSD = priceLower; //minimum amount will be dynamic based on weight being sold, max amount will be constant
+        double localLower = currencyHelper.convertToLocalCurrency(priceLower, currency, 10);
+        double localHigher = currencyHelper.convertToLocalCurrency(priceHigher, currency, 10);
+
+        String message = context.getString(R.string.unit_price_abel, localLower, localHigher, currency, uos);
+        if (Strings.isEmptyOrWhitespace(priceText)) {
+            setExactPriceLabel();
+        }
+        return message;
     }
 
     private void hideAll(boolean clearMarket) {
@@ -365,6 +520,8 @@ public class MarketOutletActivity extends BaseActivity {
 
         unitOfSaleTitle.setVisibility(View.GONE);
         unitOfSaleCard.setVisibility(View.GONE);
+
+        exactPriceCard.setVisibility(View.GONE);
     }
 
     private void processStarchFactories() {
@@ -387,7 +544,7 @@ public class MarketOutletActivity extends BaseActivity {
                     objectBoxEntityProcessor.saveStarchFactories(starchFactoriesList);
                     addFactoriesRadioButtons(starchFactoriesList);
                 } catch (Exception ex) {
-                    Log.i(LOG_TAG, String.format("Error reading list :%s", ex.getMessage()));
+                    Timber.e("Error reading list :%s", ex.getMessage());
                 }
             }
 
@@ -456,20 +613,23 @@ public class MarketOutletActivity extends BaseActivity {
 
         dialog.findViewById(R.id.bt_cancel).setOnClickListener(v -> dialog.dismiss());
 
-        dialog.findViewById(R.id.bt_submit).setOnClickListener(v -> {
+        dialog.findViewById(R.id.bt_submit).setOnClickListener(view -> {
             priceText = etUnitPrice.getText().toString().trim();
             if (Strings.isEmptyOrWhitespace(priceText)) {
                 dataIsValid = false;
-                Toast.makeText(context, "Please enter valid amount", Toast.LENGTH_SHORT).show();
-                return;
+                Snackbar.make(view, "Please enter a valid amount", Snackbar.LENGTH_LONG).show();
             } else {
-                unitPriceUSD = currencyHelper.convertToUSD(Double.parseDouble(priceText), currency);
+                exactPriceSelected = true;
+                dialog.dismiss();
             }
-            dialog.dismiss();
         });
 
         dialog.show();
         dialog.getWindow().setAttributes(lp);
+    }
+
+    private void setExactPriceLabel() {
+        exactPriceText.setText(String.format(Locale.US, "%,.0f %s per %s", Double.parseDouble(priceText), currency, unitOfSale));
     }
 
 }

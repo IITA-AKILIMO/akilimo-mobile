@@ -27,6 +27,7 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -45,6 +46,8 @@ public class MapBoxActivity extends BaseLocationPicker {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindString(R.string.title_activity_farm_location)
+    String activityTitle;
 
     LatLng currentCoordinates;
 
@@ -68,9 +71,9 @@ public class MapBoxActivity extends BaseLocationPicker {
 
     @Override
     protected void initToolbar() {
-        toolbar.setNavigationIcon(R.drawable.ic_menu);
+        toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Select location");
+        getSupportActionBar().setTitle(activityTitle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         toolbar.setNavigationOnClickListener(v -> processActivityResult());
@@ -80,6 +83,11 @@ public class MapBoxActivity extends BaseLocationPicker {
     @Override
     protected void initComponent() {
         initCurrentLocation();
+    }
+
+    @Override
+    protected void validate(boolean backPressed) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

@@ -7,10 +7,10 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -31,14 +31,18 @@ import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
  */
 public class FertilizerPriceDialogFragment extends DialogFragment {
 
+    private static final String LOG_TAG = FertilizerPriceDialogFragment.class.getSimpleName();
+
     public static final String FERTILIZER_TYPE = "selected_type";
     public static final String ARG_ITEM_ID = "fertilizer_dialog_fragment";
-    private static final String LOG_TAG = FertilizerPriceDialogFragment.class.getSimpleName();
+
 
     private boolean isExactPriceRequired = false;
     private boolean isPriceValid = false;
@@ -49,6 +53,9 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
     private RadioGroup radioGroup;
     private TextInputLayout exactPriceWrapper;
     private EditText editExactFertilizerPrice;
+    private Button btnClose;
+    private Button btnUpdate;
+    private Button btnRemove;
 
 
     private CurrencyHelper currencyHelper;
@@ -87,6 +94,7 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
 
         }
         dialog = new Dialog(context);
+        ButterKnife.bind(dialog);
 
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
@@ -96,6 +104,10 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 //        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
 
+
+        btnClose = dialog.findViewById(R.id.close_button);
+        btnUpdate = dialog.findViewById(R.id.update_button);
+        btnRemove = dialog.findViewById(R.id.remove_button);
 
         radioGroup = dialog.findViewById(R.id.radioGroup);
         exactPriceWrapper = dialog.findViewById(R.id.exactPriceWrapper);
@@ -110,22 +122,24 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
         }
 
 
-        dialog.findViewById(R.id.close_button).setOnClickListener(view -> {
+        btnClose.setOnClickListener(view -> {
             priceSpecified = false;
             removeSelected = false;
             dismiss();
         });
-        dialog.findViewById(R.id.remove_button).setOnClickListener(view -> {
+
+        btnRemove.setOnClickListener(view -> {
             priceSpecified = false;
             removeSelected = true;
             fertilizer.setPrice("NA");
             fertilizer.setPricePerBag(0.0);
             fertilizer.setPriceRange(null);
             fertilizer.setSelected(false);
+            fertilizer.setExactPrice(false);
             dismiss();
         });
         //save the data
-        dialog.findViewById(R.id.update_button).setOnClickListener(v -> {
+        btnUpdate.setOnClickListener(v -> {
             if (isExactPriceRequired) {
                 bagPrice = editExactFertilizerPrice.getText().toString();
                 if (Strings.isEmptyOrWhitespace(bagPrice)) {
@@ -142,6 +156,7 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
             fertilizer.setPricePerBag(savedPricePerBag);
             fertilizer.setPriceRange(bagPriceRange);
             fertilizer.setSelected(true);
+            fertilizer.setExactPrice(isExactPriceRequired);
 
             if (isPriceValid) {
                 priceSpecified = true;
@@ -197,16 +212,19 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
         if (fertilizer != null) {
             selectedPrice = fertilizer.getPricePerBag();
         }
+        if (fertilizer.isSelected()) {
+            btnUpdate.setText("Update price");
+            btnRemove.setVisibility(View.VISIBLE);
+        }
 
         for (FertilizerPrices pricesResp : fertilizerPricesList) {
 
-            long listIndex = pricesResp.getId() - 1;
+            long listIndex = pricesResp.getId() - 1;//reduce by one so as to match the index in the list
 
             RadioButton radioButton = new RadioButton(getActivity());
             radioButton.setId(View.generateViewId());
-            //radioButton.setId((int) pricesResp.getId());
-            radioButton.setTag(listIndex); //reduce by one so as to match the index in the list
-            radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.spacing_large));
+            radioButton.setTag(listIndex);
+//            radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.spacing_large));
 
             double price = pricesResp.getPricePerBag();
             String radioLabel = pricesResp.getPriceRange();
@@ -219,11 +237,15 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
 
             radioGroup.addView(radioButton);
             //set relevant radio button as selected based on the price range
-            if (pricesResp.getPricePerBag() == selectedPrice) {
+            if (fertilizer.isExactPrice()) {
+                radioButton.setChecked(true);
+                isExactPriceRequired = true;
+                isPriceValid = true;
+                exactPriceWrapper.setVisibility(View.VISIBLE);
+                editExactFertilizerPrice.setText(fertilizer.getPrice());
+            } else if (pricesResp.getPricePerBag() == selectedPrice) {
                 radioButton.setChecked(true);
             }
-
-
         }
     }
 

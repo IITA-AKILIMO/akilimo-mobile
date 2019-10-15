@@ -1,6 +1,12 @@
 package com.iita.akilimo.utils.enums;
 
 public enum EnumProduceType {
+    UNKNOWN {
+        @Override
+        public String produce() {
+            return "NA";
+        }
+    },
     GARI {
         @Override
         public String produce() {

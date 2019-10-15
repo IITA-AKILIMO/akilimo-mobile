@@ -36,10 +36,14 @@ public class AdapterListAnimation extends RecyclerView.Adapter<RecyclerView.View
         this.mOnItemClickListener = mItemClickListener;
     }
 
-    public AdapterListAnimation(Context context, List<Recommendations> items, int animation_type) {
-        this.items = items;
+    public AdapterListAnimation(Context context) {
         ctx = context;
+    }
+
+    public void setItems(List<Recommendations> items, int animation_type) {
+        this.items = items;
         this.animation_type = animation_type;
+        notifyDataSetChanged();
     }
 
     public class OriginalViewHolder extends RecyclerView.ViewHolder {

@@ -14,7 +14,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.iita.akilimo.Akilimo;
 import com.iita.akilimo.R;
-import com.iita.akilimo.models.MyLocation;
+import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.utils.SessionManager;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
@@ -31,19 +31,11 @@ public abstract class BaseFragment extends Fragment {
     protected int prevTab = 0;
     protected double baseAcre = 2.471;
 
-    protected String baseCurrency = "USD";
     protected String currency;
     protected String countryCode;
     protected String countryName;
-    protected String collapsedBarTitle = "";
 
 
-    //    @BindView(R.id.toolbar)
-//    Toolbar toolbar;
-//    @BindView(R.id.collapse_toolbar)
-//    CollapsingToolbarLayout collapsingToolbarLayout;
-//    @BindView(R.id.appBar)
-//    AppBarLayout appBarLayout;
     @BindString(R.string.empty_text)
     String emptyText;
 
@@ -80,7 +72,7 @@ public abstract class BaseFragment extends Fragment {
 
     public void initCountryInfo() {
         if (objectBoxEntityProcessor != null) {
-            MyLocation loc = objectBoxEntityProcessor.getLocation();
+            MandatoryInfo loc = objectBoxEntityProcessor.getMandatoryInfo();
             if (loc != null) {
                 countryCode = loc.getCountryCode() != null ? loc.getCountryCode() : sessionManager.getDeviceCountry();
                 currency = loc.getCurrency() != null ? loc.getCurrency() : sessionManager.getDeviceLocaleCurrency();
@@ -100,7 +92,7 @@ public abstract class BaseFragment extends Fragment {
 
     protected abstract View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
 
-    protected StringBuilder loadLocationInfo(MyLocation location) {
+    protected StringBuilder loadLocationInfo(MandatoryInfo location) {
         StringBuilder stBuilder = new StringBuilder();
         if (location != null) {
             String placeName = String.format("%s", location.getPlaceName());
@@ -123,4 +115,6 @@ public abstract class BaseFragment extends Fragment {
 
         return stBuilder;
     }
+
+    public abstract void refreshData();
 }

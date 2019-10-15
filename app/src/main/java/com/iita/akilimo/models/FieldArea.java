@@ -10,6 +10,7 @@ import lombok.Getter;
 //@Getter
 //@Builder
 @Entity
+@Deprecated
 public class FieldArea {
 
     @Id

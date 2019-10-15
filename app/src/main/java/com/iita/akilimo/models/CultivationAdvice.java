@@ -12,12 +12,7 @@ import lombok.Getter;
 public class CultivationAdvice {
     @Id
     long id;
-
-    // private LocalDateTime dateInserted;
-    /*@Deprecated
-    private String cultivationAdviceName;
-    */
-
+    
     @Getter(AccessLevel.NONE)
     private boolean fertilizerAdvice;
 

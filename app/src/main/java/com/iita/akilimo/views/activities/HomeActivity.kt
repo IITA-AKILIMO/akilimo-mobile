@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -21,9 +20,9 @@ import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import com.google.android.gms.common.util.Strings
 import com.iita.akilimo.R
 import com.iita.akilimo.adapters.ViewPagerAdapter
+import com.iita.akilimo.entities.MandatoryInfo
 import com.iita.akilimo.inherit.BaseActivity
 import com.iita.akilimo.interfaces.IFragmentCallBack
-import com.iita.akilimo.models.MyLocation
 import com.iita.akilimo.utils.Tools
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor
 import com.iita.akilimo.views.fragments.*
@@ -60,11 +59,17 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
     var currentAlt: Double = 0.toDouble()
     var placeName: String? = null
     var address: String? = null
-    var location: MyLocation? = null
+    var location: MandatoryInfo? = null
 
     private var activity: Activity? = null
     var btnStart: Button? = null
 
+
+    override fun onAttachFragment(fragment: Fragment) {
+        if (fragment is SummaryFragment) {
+            fragment.setOnFragmentCloseListener(this)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,11 +84,10 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         //Add the various fragments
         fragmentArray.add(WelcomeFragment.newInstance())
         fragmentArray.add(CountryFragment.newInstance())
+        fragmentArray.add(LocationFragment.newInstance())
         fragmentArray.add(AreaUnitFragment.newInstance())
         fragmentArray.add(FieldSizeFragment.newInstance())
-        fragmentArray.add(LocationFragment.newInstance())
         fragmentArray.add(SummaryFragment.newInstance())
-
 
 
         //add bottom progress dots
@@ -104,7 +108,16 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                 positionOffset: Float,
                 positionOffsetPixels: Int
             ) {
-                Log.d("TAG", "Page has been scrolled")
+                val fragment: Fragment = fragmentArray.elementAt(position)
+                (fragment as? CountryFragment)?.refreshData()
+
+                (fragment as? AreaUnitFragment)?.refreshData()
+
+                (fragment as? FieldSizeFragment)?.refreshData()
+
+                (fragment as? LocationFragment)?.refreshData()
+
+                (fragment as? SummaryFragment)?.refreshData()
             }
 
             override fun onPageSelected(position: Int) {
@@ -114,9 +127,6 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                     fragmentArray.size - 1 -> {
                         if (showProceedButton) {
                             btnStart?.visibility = View.GONE
-                        } else {
-                            btnStart?.visibility = View.VISIBLE
-                            btnStart?.text = getString(R.string.lbl_proceed)
                         }
                         Tools.setSystemBarColor(activity, R.color.blue_400)
                     }
@@ -138,10 +148,21 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
     override fun onFragmentClose(hideButton: Boolean) {
         showProceedButton = hideButton
+        when {
+            !hideButton -> {
+                btnStart?.visibility = View.VISIBLE
+                btnStart?.text = getString(R.string.lbl_proceed)
+            }
+            else -> btnStart?.visibility = View.GONE
+        }
     }
 
     override fun initToolbar() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        throw UnsupportedOperationException()
+    }
+
+    override fun validate(backPressed: Boolean) {
+        throw UnsupportedOperationException()
     }
 
     override fun initComponent() {
@@ -203,9 +224,9 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                 }
             }
 
-            location = objectBoxEntityProcessor.location
+            location = objectBoxEntityProcessor.mandatoryInfo
             if (location == null) {
-                location = MyLocation()
+                location = MandatoryInfo()
             }
             location?.latitude = currentLat
             location?.longitude = currentLong
@@ -220,9 +241,9 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                 else -> "NA"
             }
 
-            objectBoxEntityProcessor.saveLocationData(location)
+            objectBoxEntityProcessor.saveMandatoryInfo(location)
         } catch (ex: Exception) {
-            Log.e("ERROR", ex.message)
+            Timber.e(ex)
         }
 
     }

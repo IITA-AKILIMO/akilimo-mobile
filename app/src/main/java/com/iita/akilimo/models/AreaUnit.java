@@ -6,9 +6,12 @@ import lombok.Data;
 
 @Data
 @Entity
+@Deprecated
 public class AreaUnit {
 
     @Id
     long id;
+
+    @Deprecated
     private String areaUnit;
 }

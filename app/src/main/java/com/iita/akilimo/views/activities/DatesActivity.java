@@ -18,6 +18,8 @@ import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import org.joda.time.LocalDate;
+
 import java.util.Calendar;
 
 import butterknife.BindString;
@@ -29,12 +31,15 @@ public class DatesActivity extends BaseActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindString(R.string.lbl_planting_harvest_dates)
-    String plantingHarvestDates;
+    String activityTitle;
 
     @BindView(R.id.btnPickPlantingDate)
     MaterialButton btnPickPlantingDate;
     @BindView(R.id.btnPickHarvestDate)
     MaterialButton btnPickHarvestDate;
+
+    @BindView(R.id.btnCancel)
+    MaterialButton btnCancel;
     @BindView(R.id.btnFinish)
     MaterialButton btnFinish;
 
@@ -58,6 +63,8 @@ public class DatesActivity extends BaseActivity {
     int plantingWindow = 0;
     int harvestWindow = 0;
 
+    PlantingHarvestDates plantingHarvestDates;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,12 +79,12 @@ public class DatesActivity extends BaseActivity {
 
     @Override
     protected void initToolbar() {
-        toolbar.setNavigationIcon(R.drawable.ic_menu);
+        toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(plantingHarvestDates);
+        getSupportActionBar().setTitle(activityTitle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        toolbar.setNavigationOnClickListener(v -> closeActivity(false));
+        toolbar.setNavigationOnClickListener(v -> validate(true));
     }
 
     @Override
@@ -92,43 +99,17 @@ public class DatesActivity extends BaseActivity {
             }
         });
         flexibleHarvest.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            rdgHarvestWindow.setVisibility(View.GONE);
             if (isChecked) {
                 rdgHarvestWindow.setVisibility(View.VISIBLE);
                 rdgHarvestWindow.clearCheck();
                 harvestWindow = 0;
-            } else {
-                rdgHarvestWindow.setVisibility(View.GONE);
             }
         });
         //now for title pickers
         btnPickPlantingDate.setOnClickListener(view -> dialogDatePickerLight(true, false));
         btnPickHarvestDate.setOnClickListener(view -> dialogDatePickerLight(false, true));
-        btnFinish.setOnClickListener(view -> {
-            //validate that all values have been selected
-            if (Strings.isEmptyOrWhitespace(selectedPlantingDate)) {
-                showCustomWarningDialog("Invalid planting title", "Please provide a valid planting title");
-                return;
-            }
-
-            if (Strings.isEmptyOrWhitespace(selectedHarvestDate)) {
-                showCustomWarningDialog("Invalid harvest title", "Please provide a valid harvest title");
-                return;
-            }
-            PlantingHarvestDates plantingHarvestDates = new PlantingHarvestDates();
-            plantingHarvestDates.setHarvestDate(selectedHarvestDate);
-            plantingHarvestDates.setHarvestWindow(harvestWindow);
-            plantingHarvestDates.setPlantingDate(selectedPlantingDate);
-            plantingHarvestDates.setPlantingWindow(plantingWindow);
-
-            long id = objectBoxEntityProcessor.savePlantingHarvestDates(plantingHarvestDates);
-            if (id <= 0) {
-                showCustomWarningDialog("Unable to save", "Unable to save planting and harvest dates, please try again");
-                return;
-            }
-            closeActivity(false);
-        });
         rdgPlantingWindow.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
-            plantingWindow = 0;
             switch (radioIndex) {
                 case R.id.rdPlantingOneMonth:
                     plantingWindow = 1;
@@ -136,10 +117,12 @@ public class DatesActivity extends BaseActivity {
                 case R.id.rdPlantingTwoMonths:
                     plantingWindow = 2;
                     break;
+                default:
+                    plantingWindow = 0;
+                    break;
             }
         });
         rdgHarvestWindow.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
-            harvestWindow = 0;
             switch (radioIndex) {
                 case R.id.rdHarvestOneMonth:
                     harvestWindow = 1;
@@ -147,8 +130,77 @@ public class DatesActivity extends BaseActivity {
                 case R.id.rdHarvestTwoMonths:
                     harvestWindow = 2;
                     break;
+                default:
+                    harvestWindow = 0;
+                    break;
             }
         });
+
+        btnFinish.setOnClickListener(view -> validate(false));
+        btnCancel.setOnClickListener(view -> closeActivity(false));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //fetch the presaved data
+        plantingHarvestDates = objectBoxEntityProcessor.getPlantingHarvestDates();
+
+        if (plantingHarvestDates != null) {
+            String pd = plantingHarvestDates.getPlantingDate();
+            String hd = plantingHarvestDates.getHarvestDate();
+            int pw = plantingHarvestDates.getPlantingWindow();
+            int hw = plantingHarvestDates.getHarvestWindow();
+
+            DateHelper.dateTimeFormat = "dd/MM/yyyy";
+            LocalDate pDate = DateHelper.formatToLocalDate(pd);
+            LocalDate hDate = DateHelper.formatToLocalDate(hd);
+
+            lblSelectedPlantingDate.setText(pDate.toString());
+            lblSelectedHarvestDate.setText(hDate.toString());
+
+            if (pw > 0) {
+                flexiblePlanting.setChecked(true);
+                rdgPlantingWindow.check(pw == 1 ? R.id.rdPlantingOneMonth : R.id.rdPlantingTwoMonths);
+            }
+            if (hw > 0) {
+                flexibleHarvest.setChecked(true);
+                rdgHarvestWindow.check(hw == 1 ? R.id.rdHarvestOneMonth : R.id.rdHarvestTwoMonths);
+            }
+
+            //assign these values to the global parameters
+            selectedHarvestDate = hd;
+            selectedPlantingDate = pd;
+        }
+    }
+
+    @Override
+    protected void validate(boolean backPressed) {
+        if (Strings.isEmptyOrWhitespace(selectedPlantingDate)) {
+            showCustomWarningDialog("Invalid planting title", "Please provide a valid planting title");
+            return;
+        }
+
+        if (Strings.isEmptyOrWhitespace(selectedHarvestDate)) {
+            showCustomWarningDialog("Invalid harvest title", "Please provide a valid harvest title");
+            return;
+        }
+
+        plantingHarvestDates = objectBoxEntityProcessor.getPlantingHarvestDates();
+        if (plantingHarvestDates == null) {
+            plantingHarvestDates = new PlantingHarvestDates();
+        }
+        plantingHarvestDates.setHarvestDate(selectedHarvestDate);
+        plantingHarvestDates.setHarvestWindow(harvestWindow);
+        plantingHarvestDates.setPlantingDate(selectedPlantingDate);
+        plantingHarvestDates.setPlantingWindow(plantingWindow);
+
+        long id = objectBoxEntityProcessor.savePlantingHarvestDates(plantingHarvestDates);
+        if (id <= 0) {
+            showCustomWarningDialog("Unable to save", "Unable to save planting and harvest dates, please try again");
+            return;
+        }
+        closeActivity(backPressed);
     }
 
     private void dialogDatePickerLight(boolean pickPlantingDate, boolean pickHarvestDate) {

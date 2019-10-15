@@ -36,8 +36,13 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.android.gms.maps.GoogleMap;
 import com.iita.akilimo.R;
+import com.iita.akilimo.rest.request.RecommendationRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -381,6 +386,23 @@ public class Tools {
         return message;
     }
 
+    /**
+     * @param recommendationRequest @Link RecommendationRequest
+     * @return JsonObject
+     */
+    public static JSONObject prepareRecommendationJson(RecommendationRequest recommendationRequest) {
+        JSONObject jsonObject = null;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+            mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+            String jsonString = mapper.writeValueAsString(recommendationRequest);
+            jsonObject = new JSONObject(jsonString);
+        } catch (Exception ignored) {
+
+        }
+        return jsonObject;
+    }
 
     private static String IterateJsonObjects(JSONObject jObject) {
         Iterator<?> keys = jObject.keys();
@@ -407,4 +429,6 @@ public class Tools {
 
         return message;
     }
+
+
 }

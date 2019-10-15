@@ -18,11 +18,11 @@ import com.github.vipulasri.timelineview.TimelineView;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.TimeLineAdapter;
+import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.TimeLineModel;
 import com.iita.akilimo.entities.TimelineAttributes;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.interfaces.IFragmentCallBack;
-import com.iita.akilimo.models.MyLocation;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.enums.StepStatus;
 
@@ -45,7 +45,7 @@ public class SummaryFragment extends BaseFragment {
 
     private List<TimeLineModel> mDataList = new ArrayList<>();
     private TimelineAttributes mAttributes;
-    private MyLocation location;
+    private MandatoryInfo location;
     private IFragmentCallBack fragmentCallBack;
     private TimeLineAdapter adapter;
 
@@ -67,11 +67,15 @@ public class SummaryFragment extends BaseFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
-        if (context instanceof IFragmentCallBack) {
-            fragmentCallBack = (IFragmentCallBack) context;
-        } else {
-            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
-        }
+//        if (context instanceof IFragmentCallBack) {
+//            fragmentCallBack = (IFragmentCallBack) context;
+//        } else {
+//            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
+//        }
+    }
+
+    public void setOnFragmentCloseListener(IFragmentCallBack callBack) {
+        this.fragmentCallBack = callBack;
     }
 
     public static SummaryFragment newInstance() {
@@ -112,12 +116,9 @@ public class SummaryFragment extends BaseFragment {
 //        setDataListItems(false);
     }
 
-    @Override
-    public void setMenuVisibility(boolean menuVisible) {
-        super.setMenuVisibility(menuVisible);
-        if (menuVisible) {
-          setDataListItems();
-        }
+    public void refreshData() {
+        setDataListItems();
+        initFragmentCallback();
     }
 
     private void setDataListItems() {
@@ -126,7 +127,7 @@ public class SummaryFragment extends BaseFragment {
             return;
         }
 
-        location = objectBoxEntityProcessor.getLocation();
+        location = objectBoxEntityProcessor.getMandatoryInfo();
         countryName = "";
         if (location != null) {
 
@@ -149,12 +150,6 @@ public class SummaryFragment extends BaseFragment {
             locationPicked = true;
         }
 
-        if (countrySelected && areaUnitSelected && fieldSizeSelected && locationPicked) {
-            if (fragmentCallBack != null) {
-                fragmentCallBack.onFragmentClose(false);
-            }
-        }
-
         mDataList = new ArrayList<>();
         mDataList.add(new TimeLineModel("Your country", countryName, countrySelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         mDataList.add(new TimeLineModel("Area unit", areaUnit, areaUnitSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
@@ -165,6 +160,14 @@ public class SummaryFragment extends BaseFragment {
         initAdapter();
     }
 
+    private void initFragmentCallback() {
+        if (countrySelected && areaUnitSelected && fieldSizeSelected && locationPicked) {
+            if (fragmentCallBack != null) {
+                fragmentCallBack.onFragmentClose(false);
+            }
+        }
+    }
+
     private void initRecyclerView() {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -173,6 +176,7 @@ public class SummaryFragment extends BaseFragment {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+                initFragmentCallback();
             }
         });
 

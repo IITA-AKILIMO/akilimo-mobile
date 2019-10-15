@@ -24,14 +24,16 @@ public class Fertilizer implements Parcelable {
     @JsonIgnore
     long id;
 
+    private int imageId;
+
     @JsonProperty("fertilizerId")
     private int fertilizerId;
 
     @JsonProperty("name")
     private String name;
-    
+
     @JsonProperty("type")
-    private String type;
+    public String type;
 
     @JsonProperty("weight")
     private int weight;
@@ -69,6 +71,9 @@ public class Fertilizer implements Parcelable {
     private boolean selected;
 
     @Getter(AccessLevel.NONE)
+    private boolean exactPrice;
+
+    @Getter(AccessLevel.NONE)
     @JsonProperty("custom")
     private boolean custom;
 
@@ -80,9 +85,14 @@ public class Fertilizer implements Parcelable {
         return this.selected;
     }
 
+    public boolean isExactPrice() {
+        return this.exactPrice;
+    }
+
     public boolean isCustom() {
         return this.custom;
     }
+
 
     public Fertilizer() {
         /* Required for mapping an the likes */

@@ -77,6 +77,9 @@ public class RecommendationsActivity extends BaseActivity {
     protected void initComponent() {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
+        //set data and list adapter
+        mAdapter = new AdapterListAnimation(this);
+        recyclerView.setAdapter(mAdapter);
         items = new ArrayList<>();
 
         Recommendations FR = new Recommendations();
@@ -103,16 +106,18 @@ public class RecommendationsActivity extends BaseActivity {
     }
 
     @Override
+    protected void validate(boolean backPressed) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
     }
 
     private void setAdapter() {
-        //set data and list adapter
-        mAdapter = new AdapterListAnimation(this, items, ItemAnimation.FADE_IN);
-        recyclerView.setAdapter(mAdapter);
-
+        mAdapter.setItems(items, ItemAnimation.FADE_IN);
         // on item list clicked
         mAdapter.setOnItemClickListener((view, obj, position) -> {
             //let us process the data
@@ -123,10 +128,13 @@ public class RecommendationsActivity extends BaseActivity {
                     intent = new Intent(this, FertilizerRecActivity.class);
                     break;
                 case BPP:
+                    intent = new Intent(this, PlantingPracticesActivity.class);
                     break;
                 case IC:
+                    intent = new Intent(this, InterCropRecActivity.class);
                     break;
                 case SPH:
+                    intent = new Intent(this, ScheduledPlantingActivity.class);
                     break;
                 case WM:
                     break;

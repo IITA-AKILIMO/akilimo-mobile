@@ -1,16 +1,12 @@
 package com.iita.akilimo;
 
-import android.util.Log;
-
 import androidx.multidex.MultiDexApplication;
-
-import com.crashlytics.android.Crashlytics;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
-import io.fabric.sdk.android.Fabric;
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidObjectBrowser;
+import timber.log.Timber;
 
 public class Akilimo extends MultiDexApplication {
     public static final String LOG_TAG = Akilimo.class.getSimpleName();
@@ -31,11 +27,11 @@ public class Akilimo extends MultiDexApplication {
 
         if (BuildConfig.DEBUG) {
             boolean started = new AndroidObjectBrowser(boxStore).start(this);
-            Log.i(LOG_TAG, "Object box started? " + started);
+            Timber.i("Object box started? %s", started);
         }
 
         JodaTimeAndroid.init(this);
-        Log.d(LOG_TAG, "Using ObjectBox" + BoxStore.getVersion() + " (" + BoxStore.getVersionNative() + ")");
+        Timber.d("Using ObjectBox" + BoxStore.getVersion() + " (" + BoxStore.getVersionNative() + ")");
     }
 
     public BoxStore getBoxStore() {

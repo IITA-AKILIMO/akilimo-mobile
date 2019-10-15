@@ -1,23 +1,21 @@
 package com.iita.akilimo.views.activities;
 
 import android.os.Bundle;
-import android.widget.ProgressBar;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iita.akilimo.R;
-import com.iita.akilimo.adapters.AvailableFertilizersAdapter;
+import com.iita.akilimo.adapters.FertilizerGridAdapter;
+import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.models.Fertilizer;
@@ -27,6 +25,7 @@ import com.iita.akilimo.utils.FertilizerList;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.views.fragments.dialog.FertilizerPriceDialogFragment;
+import com.iita.akilimo.widget.SpacingItemDecoration;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -34,6 +33,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -48,21 +48,15 @@ public class FertilizersActivity extends BaseActivity {
     @BindView(R.id.swipeRefreshFertilizers)
     SwipeRefreshLayout mSwipeRefreshLayout;
 
-    //    @BindString(R.string.title_activity_fertilizer_choice)
-    String headerTitleText = "Available fertilizers";
-    //    @BindString(R.string.lbl_choose_fertilizers)
-    String headerSubTitleText = "Select fertilizers that are available at your local agro-dealer";
+    @BindString(R.string.title_activity_fertilizer_choice)
+    String headerTitleText;
 
-
-    private boolean skipRecommendation;
     private List<Fertilizer> availableFertilizersList = new ArrayList<>();
     private List<Fertilizer> selectedFertilizers = new ArrayList<>();
     private List<Fertilizer> fertilizerTypesList = new ArrayList<>();
     private List<FertilizerPrices> fertilizerPricesList = new ArrayList<>();
 
-    private RecyclerView.LayoutManager linearLayoutManager;
-    private ProgressBar progressDialog;
-    private AvailableFertilizersAdapter adapter;
+    private FertilizerGridAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +71,16 @@ public class FertilizersActivity extends BaseActivity {
         initComponent();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        if (mandatoryInfo != null) {
+            countryCode = mandatoryInfo.getCountryCode();
+            availableFertilizersList = objectBoxEntityProcessor.getAvailableFertilizersByCountry(countryCode);
+            mAdapter.setItems(availableFertilizersList);
+        }
+    }
 
     @Override
     protected void initToolbar() {
@@ -85,7 +89,7 @@ public class FertilizersActivity extends BaseActivity {
         getSupportActionBar().setTitle(headerTitleText);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Tools.setSystemBarColor(this, R.color.deep_orange_900);
+//        Tools.setSystemBarColor(this, R.color.deep_orange_900);
         toolbar.setNavigationOnClickListener(v -> {
             // back button pressed
             closeActivity(false);
@@ -94,59 +98,63 @@ public class FertilizersActivity extends BaseActivity {
 
     @Override
     protected void initComponent() {
-        linearLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerView.addItemDecoration(new SpacingItemDecoration(2, Tools.dpToPx(this, 3), true));
         recyclerView.setHasFixedSize(true);
-        adapter = new AvailableFertilizersAdapter(context);
+
         fetchAvailableFertilizers();
         fetchFertilizerPriceList();
+        mAdapter = new FertilizerGridAdapter(context);
+        recyclerView.setAdapter(mAdapter);
 
-        adapter.setClickListener((view, position, isLongClick) -> {
-            Fertilizer unsavedType = availableFertilizersList.get(position);
-            Fertilizer selectedType = objectBoxEntityProcessor.getSavedFertilizer(unsavedType.getType(), countryCode);
+        mAdapter.setOnItemClickListener((view, clickedFertilizer, position) -> {
+            mAdapter.setActiveRowIndex(position);
+            Fertilizer selectedType = objectBoxEntityProcessor.getSavedFertilizer(clickedFertilizer.getType(), countryCode);
             if (selectedType == null) {
-                selectedType = unsavedType;
+                selectedType = clickedFertilizer;
             }
-            if (!isLongClick) {
-                List<Fertilizer> cleanedFertilizers = selectedFertilizers;
-                selectedType.setCountryCode(countryCode);
-                Bundle arguments = new Bundle();
-                arguments.putParcelable(FertilizerPriceDialogFragment.FERTILIZER_TYPE, selectedType);
-                FertilizerPriceDialogFragment customDialogFragment = new FertilizerPriceDialogFragment();
-                customDialogFragment.setArguments(arguments);
+            //let us open the price dialog now
+            List<Fertilizer> cleanedFertilizers = selectedFertilizers;
+            selectedType.setCountryCode(countryCode);
+            Bundle arguments = new Bundle();
+            arguments.putParcelable(FertilizerPriceDialogFragment.FERTILIZER_TYPE, selectedType);
 
-                customDialogFragment.setOnDismissListener((priceSpecified, fertilizer, removeSelected) -> {
-                    if (fertilizer != null && (priceSpecified || removeSelected)) {
-                        long id = objectBoxEntityProcessor.saveUpdateFertilizer(fertilizer);
-                        if (id > 0) {
-                            if (removeSelected) {
-                                selectedFertilizers = FertilizerList.removeFertilizerByType(cleanedFertilizers, fertilizer.getType());
-                            } else {
-                                selectedFertilizers.add(fertilizer);
-                            }
-                            //refresh the adapter and data set
-                            fertilizerTypesList = objectBoxEntityProcessor.getAvailableFertilizersByCountry(countryCode);
-                            adapter.setItems(fertilizerTypesList);
-                            recyclerView.setAdapter(adapter);
-                            adapter.notifyItemChanged(position);
-                            adapter.notifyDataSetChanged();
-                            recyclerView.smoothScrollToPosition(position);
+            FertilizerPriceDialogFragment priceDialogFragment = new FertilizerPriceDialogFragment();
+            priceDialogFragment.setArguments(arguments);
+
+            priceDialogFragment.setOnDismissListener((priceSpecified, fertilizer, removeSelected) -> {
+                if (fertilizer != null && (priceSpecified || removeSelected)) {
+                    long id = objectBoxEntityProcessor.saveUpdateFertilizer(fertilizer);
+                    if (id > 0) {
+                        if (removeSelected) {
+                            selectedFertilizers = FertilizerList.INSTANCE.removeFertilizerByType(cleanedFertilizers, fertilizer.getType());
+                        } else {
+                            selectedFertilizers.add(fertilizer);
                         }
+                        //refresh the adapter and data set
+                        fertilizerTypesList = objectBoxEntityProcessor.getAvailableFertilizersByCountry(countryCode);
+                        mAdapter.setItems(fertilizerTypesList);
                     }
-                });
-
-                FragmentTransaction fragmentTransaction;
-                if (getFragmentManager() != null) {
-                    fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    Fragment prev = getSupportFragmentManager().findFragmentByTag(FertilizerPriceDialogFragment.ARG_ITEM_ID);
-                    if (prev != null) {
-                        fragmentTransaction.remove(prev);
-                    }
-                    fragmentTransaction.addToBackStack(null);
-                    customDialogFragment.show(getSupportFragmentManager(), FertilizerPriceDialogFragment.ARG_ITEM_ID);
                 }
+            });
+
+
+            FragmentTransaction fragmentTransaction;
+            if (getFragmentManager() != null) {
+                fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                Fragment prev = getSupportFragmentManager().findFragmentByTag(FertilizerPriceDialogFragment.ARG_ITEM_ID);
+                if (prev != null) {
+                    fragmentTransaction.remove(prev);
+                }
+                fragmentTransaction.addToBackStack(null);
+                priceDialogFragment.show(getSupportFragmentManager(), FertilizerPriceDialogFragment.ARG_ITEM_ID);
             }
         });
+    }
+
+    @Override
+    protected void validate(boolean backPressed) {
+        throw new UnsupportedOperationException();
     }
 
     private void fetchAvailableFertilizers() {
@@ -166,13 +174,9 @@ public class FertilizersActivity extends BaseActivity {
                 try {
                     availableFertilizersList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<Fertilizer>>() {
                     });
-                    adapter.setItems(availableFertilizersList);
-                    recyclerView.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
-                    recyclerView.setAdapter(adapter);
                     objectBoxEntityProcessor.saveFertilizerList(availableFertilizersList);
 
-                } catch (Exception ex) {
-                    Crashlytics.log(ex.getMessage());
+                } catch (Exception ignored) {
                 }
             }
 

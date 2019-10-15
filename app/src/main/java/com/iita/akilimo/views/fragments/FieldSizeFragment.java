@@ -20,8 +20,9 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
+import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseFragment;
-import com.iita.akilimo.models.MyLocation;
+import com.iita.akilimo.utils.enums.EnumFieldArea;
 
 import butterknife.BindView;
 
@@ -32,8 +33,8 @@ import butterknife.BindView;
  */
 public class FieldSizeFragment extends BaseFragment {
 
-    @BindView(R.id.radioFieldAreaGroup)
-    RadioGroup radioGroup;
+    @BindView(R.id.rdgFieldArea)
+    RadioGroup rdgFieldArea;
 
     @BindView(R.id.rd_specify_acre)
     RadioButton rdSpecifyArea;
@@ -54,7 +55,7 @@ public class FieldSizeFragment extends BaseFragment {
     RadioButton rd_two_half_acre;
 
     protected Context context;
-    private double fieldArea;
+    private double areaSize;
     private String myFieldSize = "";
     private String selectedFieldArea;
     private String areaUnits;
@@ -66,8 +67,9 @@ public class FieldSizeFragment extends BaseFragment {
     private String two_half_acres;
     private String exact_acre;
 
-    private boolean exactArea;
-    private MyLocation location;
+    private MandatoryInfo location;
+    private EnumFieldArea fieldAreaEnum = EnumFieldArea.UNKNOWN;
+
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -84,11 +86,6 @@ public class FieldSizeFragment extends BaseFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_field_size, container, false);
     }
@@ -96,7 +93,7 @@ public class FieldSizeFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        radioGroup.setOnCheckedChangeListener((radioGroup, radioIndex) -> radioSelected(radioIndex));
+        rdgFieldArea.setOnCheckedChangeListener((radioGroup, radioIndex) -> radioSelected(radioIndex));
 
         rdSpecifyArea.setOnClickListener(view1 -> {
             if (rdSpecifyArea.isChecked()) {
@@ -106,42 +103,63 @@ public class FieldSizeFragment extends BaseFragment {
     }
 
     @Override
-    public void setMenuVisibility(boolean menuVisible) {
-        super.setMenuVisibility(menuVisible);
-        if (menuVisible) {
-            location = objectBoxEntityProcessor.getLocation();
-            if (location != null) {
-                setFieldLabels(location.getAreaUnit());
+    public void refreshData() {
+        location = objectBoxEntityProcessor.getMandatoryInfo();
+        if (location != null) {
+            fieldAreaEnum = location.getFieldAreaEnum();
+            setFieldLabels(location.getAreaUnit());
+            myFieldSize = String.valueOf(location.getAreaSize());
+            switch (fieldAreaEnum) {
+                case QUARTER_ACRE:
+                    rdgFieldArea.check(R.id.rd_quarter_acre);
+                    break;
+                case HALF_ACRE:
+                    rdgFieldArea.check(R.id.rd_half_acre);
+                    break;
+                case ONE_ACRE:
+                    rdgFieldArea.check(R.id.rd_one_acre);
+                    break;
+                case ONE_HALF_ACRE:
+                    rdgFieldArea.check(R.id.rd_one_half_acre);
+                    break;
+                case TWO_HALF_ACRE:
+                    rdgFieldArea.check(R.id.rd_two_half_acre);
+                    break;
+                case FIVE_ACRE:
+                    rdgFieldArea.check(R.id.rd_five_acre);
+                    break;
+                case EXACT_AREA:
+                    rdgFieldArea.check(R.id.rd_specify_acre);
+                    break;
             }
-
         }
     }
 
     private void radioSelected(int checked) {
-        fieldArea = 0;
+        areaSize = 0;
         switch (checked) {
             case R.id.rd_quarter_acre:
-                fieldArea = 0.25;
+                fieldAreaEnum = EnumFieldArea.QUARTER_ACRE;
                 selectedFieldArea = quarter_acre;
                 break;
             case R.id.rd_half_acre:
-                fieldArea = 0.5;
+                fieldAreaEnum = EnumFieldArea.HALF_ACRE;
                 selectedFieldArea = half_acre;
                 break;
             case R.id.rd_one_acre:
-                fieldArea = 1;
+                fieldAreaEnum = EnumFieldArea.ONE_ACRE;
                 selectedFieldArea = one_acre;
                 break;
             case R.id.rd_one_half_acre:
-                fieldArea = 1.5;
+                fieldAreaEnum = EnumFieldArea.ONE_HALF_ACRE;
                 selectedFieldArea = one_half_acres;
                 break;
             case R.id.rd_two_half_acre:
-                fieldArea = 2.5;
+                fieldAreaEnum = EnumFieldArea.TWO_HALF_ACRE;
                 selectedFieldArea = two_half_acres;
                 break;
             case R.id.rd_five_acre:
-                fieldArea = 5;
+                fieldAreaEnum = EnumFieldArea.FIVE_ACRE;
                 break;
             default:
                 return;
@@ -151,12 +169,13 @@ public class FieldSizeFragment extends BaseFragment {
     }
 
     private void saveFieldSize() {
-        location = objectBoxEntityProcessor.getLocation();
+        location = objectBoxEntityProcessor.getMandatoryInfo();
         if (location == null) {
-            location = new MyLocation();
+            location = new MandatoryInfo();
         }
-        location.setAreaSize(fieldArea);
-        objectBoxEntityProcessor.saveLocationData(location);
+        location.setFieldAreaEnum(fieldAreaEnum);
+        location.setAreaSize(fieldAreaEnum.areaValue());
+        objectBoxEntityProcessor.saveMandatoryInfo(location);
     }
 
     private void setFieldLabels(String areaUnits) {
@@ -218,7 +237,7 @@ public class FieldSizeFragment extends BaseFragment {
             if (Strings.isEmptyOrWhitespace(myFieldSize)) {
                 Toast.makeText(context, "Please enter field size", Toast.LENGTH_SHORT).show();
             } else {
-                fieldArea = Double.parseDouble(myFieldSize);
+                areaSize = Double.parseDouble(myFieldSize);
                 saveFieldSize();
                 dialog.dismiss();
             }

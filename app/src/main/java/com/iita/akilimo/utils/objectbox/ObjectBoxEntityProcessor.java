@@ -5,8 +5,12 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.iita.akilimo.Akilimo;
+import com.iita.akilimo.entities.MandatoryInfo;
+import com.iita.akilimo.entities.MandatoryInfo_;
 import com.iita.akilimo.entities.MarketOutlet;
 import com.iita.akilimo.entities.PlantingHarvestDates;
+import com.iita.akilimo.entities.RecAdvice;
+import com.iita.akilimo.entities.TillageOperations;
 import com.iita.akilimo.models.AreaUnit;
 import com.iita.akilimo.models.AreaUnit_;
 import com.iita.akilimo.models.CroppingSystem;
@@ -23,8 +27,6 @@ import com.iita.akilimo.models.FertilizerPrices_;
 import com.iita.akilimo.models.Fertilizer_;
 import com.iita.akilimo.models.FieldArea;
 import com.iita.akilimo.models.FieldArea_;
-import com.iita.akilimo.models.HarvestDate;
-import com.iita.akilimo.models.HarvestDate_;
 import com.iita.akilimo.models.Herbicides;
 import com.iita.akilimo.models.Herbicides_;
 import com.iita.akilimo.models.InvestmentAmount;
@@ -33,15 +35,10 @@ import com.iita.akilimo.models.MaizePerformance;
 import com.iita.akilimo.models.MaizePerformance_;
 import com.iita.akilimo.models.MaizeUnitOfSale;
 import com.iita.akilimo.models.MaizeUnitOfSale_;
-import com.iita.akilimo.models.MyLocation;
-import com.iita.akilimo.models.MyLocation_;
 import com.iita.akilimo.models.OperationCosts;
 import com.iita.akilimo.models.OperationCosts_;
-import com.iita.akilimo.models.PlantingDate;
-import com.iita.akilimo.models.PlantingDate_;
 import com.iita.akilimo.models.StarchFactory;
 import com.iita.akilimo.models.StarchFactory_;
-import com.iita.akilimo.models.TillageOperations;
 import com.iita.akilimo.models.UnitOfSale;
 import com.iita.akilimo.models.UnitOfSale_;
 import com.iita.akilimo.models.UnitPrice;
@@ -56,7 +53,7 @@ import io.objectbox.query.QueryBuilder;
 
 public class ObjectBoxEntityProcessor {
     private static final String LOG_TAG = ObjectBoxEntityProcessor.class.getSimpleName();
-    private static ObjectBoxEntityProcessor single_instance = null;
+    private static ObjectBoxEntityProcessor instance = null;
     private BoxStore boxStore;
 
     private ObjectBoxEntityProcessor(Context context) {
@@ -65,72 +62,42 @@ public class ObjectBoxEntityProcessor {
 
 
     public static ObjectBoxEntityProcessor getInstance(Context context) {
-
-        if (single_instance == null) {
-            single_instance = new ObjectBoxEntityProcessor(context);
+        if (instance == null) {
+            instance = new ObjectBoxEntityProcessor(context);
         }
-
-        return single_instance;
+        return instance;
     }
+
+    public long saveMandatoryInfo(MandatoryInfo mandatoryInfo) {
+        Box<MandatoryInfo> box = boxStore.boxFor(MandatoryInfo.class);
+        return box.put(mandatoryInfo);
+    }
+
+    public MandatoryInfo getMandatoryInfo() {
+        Box<MandatoryInfo> box = boxStore.boxFor(MandatoryInfo.class);
+
+        return box.query()
+                .order(MandatoryInfo_.id, QueryBuilder.DESCENDING)
+                .build()
+                .findFirst();
+    }
+
 
     public long savePlantingHarvestDates(PlantingHarvestDates plantingHarvestDates) {
         Box<PlantingHarvestDates> box = boxStore.boxFor(PlantingHarvestDates.class);
         return box.put(plantingHarvestDates);
     }
 
-    public long saveLocationData(MyLocation myLocation) {
-        Box<MyLocation> box = boxStore.boxFor(MyLocation.class);
-        return box.put(myLocation);
-    }
-
-    public MyLocation getLocation() {
-        Box<MyLocation> box = boxStore.boxFor(MyLocation.class);
-
-        return box.query()
-                .order(MyLocation_.id, QueryBuilder.DESCENDING)
-                .build()
-                .findFirst();
-    }
-
-    public long saveHarvestDate(HarvestDate harvestDate) {
-        Box<HarvestDate> box = boxStore.boxFor(HarvestDate.class);
-        return box.put(harvestDate);
-    }
-
-    public HarvestDate getHarvestDate() {
-        Box<HarvestDate> box = boxStore.boxFor(HarvestDate.class);
-
-
-        return box.query()
-                .order(HarvestDate_.id, QueryBuilder.DESCENDING)
-                .build()
-                .findFirst();
-    }
-
     /**
-     * Save the planting title data
+     * Fetch the planting and harvest dates
      *
-     * @param plantingDate
-     * @return
+     * @return return @PlantingHarvestDates object
      */
-    public long savePlantingDate(PlantingDate plantingDate) {
-        Box<PlantingDate> box = boxStore.boxFor(PlantingDate.class);
-
-        return box.put(plantingDate);
-    }
-
-    public PlantingDate getPlantingDate() {
-        Box<PlantingDate> box = boxStore.boxFor(PlantingDate.class);
-
+    public PlantingHarvestDates getPlantingHarvestDates() {
+        Box<PlantingHarvestDates> box = boxStore.boxFor(PlantingHarvestDates.class);
         return box.query()
-                .order(PlantingDate_.id, QueryBuilder.DESCENDING)
                 .build()
                 .findFirst();
-    }
-
-    public long saveFieldArea(FieldArea fieldArea) {
-        Box<FieldArea> box = boxStore.boxFor(FieldArea.class);
-        return box.put(fieldArea);
     }
 
     public FieldArea getFieldArea() {
@@ -170,11 +137,10 @@ public class ObjectBoxEntityProcessor {
                 .findFirst();
     }
 
-    public long saveInvestmentAmount(InvestmentAmount investment) {
+    public void saveInvestmentAmount(InvestmentAmount investment) {
         Box<InvestmentAmount> box = boxStore.boxFor(InvestmentAmount.class);
-        return box.put(investment);
+        box.put(investment);
     }
-
 
     public InvestmentAmount getInvestmentAmount() {
         Box<InvestmentAmount> box = boxStore.boxFor(InvestmentAmount.class);
@@ -319,13 +285,6 @@ public class ObjectBoxEntityProcessor {
         return box.put(tillageOperations);
     }
 
-    @Deprecated
-    public void saveTillageOperations(@NonNull List<TillageOperations> selectedOperations) {
-        Box<TillageOperations> box = boxStore.boxFor(TillageOperations.class);
-        clearTillageOperations();
-        box.put(selectedOperations);
-    }
-
     public TillageOperations getTillageOperation() {
         Box<TillageOperations> box = boxStore.boxFor(TillageOperations.class);
         return box.query()
@@ -333,6 +292,7 @@ public class ObjectBoxEntityProcessor {
                 .findFirst();
     }
 
+    @Deprecated
     public List<TillageOperations> getTillageOperations() {
         Box<TillageOperations> box = boxStore.boxFor(TillageOperations.class);
         return box.query()
@@ -504,6 +464,22 @@ public class ObjectBoxEntityProcessor {
 
     public MarketOutlet getMarketOutlet() {
         Box<MarketOutlet> box = boxStore.boxFor(MarketOutlet.class);
+
+        return box.query()
+                .build()
+                .findFirst();
+    }
+
+    public void saveRecAdvice(RecAdvice recAdvice) {
+        try {
+            Box<RecAdvice> box = boxStore.boxFor(RecAdvice.class);
+            box.put(recAdvice);
+        } catch (Exception ignored) {
+        }
+    }
+
+    public RecAdvice getRecAdvice() {
+        Box<RecAdvice> box = boxStore.boxFor(RecAdvice.class);
 
         return box.query()
                 .build()

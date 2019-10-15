@@ -3,20 +3,19 @@ package com.iita.akilimo.views.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.iita.akilimo.R;
+import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseFragment;
-import com.iita.akilimo.models.MyLocation;
-import com.iita.akilimo.utils.enums.EnumCountries;
+import com.iita.akilimo.utils.enums.EnumAreaUnits;
 
 import butterknife.BindView;
 
@@ -32,7 +31,8 @@ public class AreaUnitFragment extends BaseFragment {
     RadioGroup rdgAreaUnit;
 
     private String selectedAreaUnit;
-    private MyLocation location;
+    private MandatoryInfo location;
+    private EnumAreaUnits areaUnitsEnum;
 
     public AreaUnitFragment() {
         // Required empty public constructor
@@ -49,13 +49,27 @@ public class AreaUnitFragment extends BaseFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_area_unit, container, false);
     }
 
     @Override
-    protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_area_unit, container, false);
+    public void refreshData() {
+        location = objectBoxEntityProcessor.getMandatoryInfo();
+        if (location != null) {
+            areaUnitsEnum = location.getAreaUnitsEnum();
+            switch (areaUnitsEnum) {
+                case ACRE:
+                    rdgAreaUnit.check(R.id.rdAcre);
+                    break;
+                case HA:
+                    rdgAreaUnit.check(R.id.rdHa);
+                    break;
+                case SQM:
+                    rdgAreaUnit.check(R.id.rdSqm);
+                    break;
+            }
+        }
     }
 
     @Override
@@ -65,21 +79,22 @@ public class AreaUnitFragment extends BaseFragment {
         rdgAreaUnit.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
             switch (radioIndex) {
                 case R.id.rdAcre:
-                    selectedAreaUnit = "acre";
+                    areaUnitsEnum = EnumAreaUnits.ACRE;
                     break;
                 case R.id.rdHa:
-                    selectedAreaUnit = "ha";
+                    areaUnitsEnum = EnumAreaUnits.HA;
                     break;
                 case R.id.rdSqm:
-                    selectedAreaUnit = "m2";
+                    areaUnitsEnum = EnumAreaUnits.SQM;
                     break;
             }
-            location = objectBoxEntityProcessor.getLocation();
+            location = objectBoxEntityProcessor.getMandatoryInfo();
             if (location == null) {
-                location = new MyLocation();
+                location = new MandatoryInfo();
             }
-            location.setAreaUnit(selectedAreaUnit);
-            objectBoxEntityProcessor.saveLocationData(location);
+            location.setAreaUnitsEnum(areaUnitsEnum);
+            location.setAreaUnit(areaUnitsEnum.unitString());
+            objectBoxEntityProcessor.saveMandatoryInfo(location);
         });
     }
 }

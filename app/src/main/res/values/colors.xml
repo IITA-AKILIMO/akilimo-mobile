@@ -345,5 +345,6 @@
 
     <!--for random color generator -->
     <color name="grey_1000">#1a1a1a</color>
+    <color name="black_overlay">#66000000</color>
 
 </resources>

@@ -17,8 +17,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.button.MaterialButton;
 import com.iita.akilimo.R;
+import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseFragment;
-import com.iita.akilimo.models.MyLocation;
 import com.iita.akilimo.services.GPSTracker;
 import com.iita.akilimo.views.activities.HomeActivity;
 import com.iita.akilimo.views.activities.MapBoxActivity;
@@ -44,7 +44,7 @@ public class LocationFragment extends BaseFragment {
 
     private double currentLat;
     private double currentLon;
-    private MyLocation location;
+    private MandatoryInfo location;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -61,15 +61,15 @@ public class LocationFragment extends BaseFragment {
         return new LocationFragment();
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
 
     @Override
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_location, container, false);
+    }
+
+    @Override
+    public void refreshData() {
+        reloadLocationInfo();
     }
 
     @Override
@@ -102,32 +102,24 @@ public class LocationFragment extends BaseFragment {
     }
 
     @Override
-    public void setMenuVisibility(boolean menuVisible) {
-        super.setMenuVisibility(menuVisible);
-        if (menuVisible) {
-            reloadLocationInfo();
-        }
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         reloadLocationInfo();
     }
 
     private void saveLocation() {
-        location = objectBoxEntityProcessor.getLocation();
+        location = objectBoxEntityProcessor.getMandatoryInfo();
         if (location == null) {
-            location = new MyLocation();
+            location = new MandatoryInfo();
         }
         location.setLatitude(currentLat);
         location.setLongitude(currentLon);
-        objectBoxEntityProcessor.saveLocationData(location);
+        objectBoxEntityProcessor.saveMandatoryInfo(location);
         reloadLocationInfo();
     }
 
     private void reloadLocationInfo() {
-        location = objectBoxEntityProcessor.getLocation();
+        location = objectBoxEntityProcessor.getMandatoryInfo();
         locationInfo.setText(loadLocationInfo(location));
     }
 }

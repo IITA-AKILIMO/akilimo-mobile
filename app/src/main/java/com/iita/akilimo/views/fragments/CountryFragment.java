@@ -3,19 +3,18 @@ package com.iita.akilimo.views.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.iita.akilimo.R;
+import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseFragment;
-import com.iita.akilimo.models.MyLocation;
 import com.iita.akilimo.utils.enums.EnumCountries;
 
 import butterknife.BindView;
@@ -29,7 +28,8 @@ public class CountryFragment extends BaseFragment {
 
     @BindView(R.id.rdgCountry)
     RadioGroup rdgCountry;
-    private MyLocation location;
+    private MandatoryInfo location;
+    private EnumCountries countryEnum = EnumCountries.OTHERS;
 
     public CountryFragment() {
         // Required empty public constructor
@@ -47,14 +47,24 @@ public class CountryFragment extends BaseFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-
-    @Override
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_country, container, false);
+    }
+
+    @Override
+    public void refreshData() {
+        location = objectBoxEntityProcessor.getMandatoryInfo();
+        if (location != null) {
+            countryEnum = location.getCountryEnum();
+            switch (countryEnum) {
+                case NIGERIA:
+                    rdgCountry.check(R.id.rdNg);
+                    break;
+                case TANZANIA:
+                    rdgCountry.check(R.id.rdTz);
+                    break;
+            }
+        }
     }
 
     @Override
@@ -64,25 +74,22 @@ public class CountryFragment extends BaseFragment {
         rdgCountry.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
             switch (radioIndex) {
                 case R.id.rdNg:
-                    countryCode = EnumCountries.NIGERIA.countryCode();
-                    countryName = EnumCountries.NIGERIA.countryName();
-                    currency = EnumCountries.NIGERIA.currency();
+                    countryEnum = EnumCountries.NIGERIA;
                     break;
                 case R.id.rdTz:
-                    countryCode = EnumCountries.TANZANIA.countryCode();
-                    countryName = EnumCountries.TANZANIA.countryName();
-                    currency = EnumCountries.TANZANIA.currency();
+                    countryEnum = EnumCountries.TANZANIA;
                     break;
             }
-            location = objectBoxEntityProcessor.getLocation();
+            location = objectBoxEntityProcessor.getMandatoryInfo();
             if (location == null) {
-                location = new MyLocation();
+                location = new MandatoryInfo();
             }
 
-            location.setCountryCode(countryCode);
-            location.setCountryName(countryName);
-            location.setCurrency(currency);
-            objectBoxEntityProcessor.saveLocationData(location);
+            location.setCountryCode(countryEnum.countryCode());
+            location.setCountryName(countryEnum.countryName());
+            location.setCurrency(countryEnum.currency());
+            location.setCountryEnum(countryEnum);
+            objectBoxEntityProcessor.saveMandatoryInfo(location);
         });
     }
 

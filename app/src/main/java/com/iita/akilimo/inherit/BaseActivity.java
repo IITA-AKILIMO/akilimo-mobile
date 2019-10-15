@@ -1,13 +1,16 @@
 package com.iita.akilimo.inherit;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
@@ -17,6 +20,7 @@ import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.utils.SessionManager;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
+import com.iita.akilimo.views.activities.DstRecommendationActivity;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
@@ -26,19 +30,19 @@ import io.objectbox.BoxStore;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
-    private String LOG_TAG = BaseActivity.class.getSimpleName();
+    protected String LOG_TAG = BaseActivity.class.getSimpleName();
 
     protected Context context;
     protected BoxStore boxStore;
     protected SessionManager sessionManager;
     protected RequestQueue queue;
     protected ObjectBoxEntityProcessor objectBoxEntityProcessor;
-    protected String countryCode = "NG";
+    protected String countryCode = "";
     protected String baseCurrency = "USD";
-    protected String currency = "NGN";
-    protected String areaUnit;
+    protected String currency = "";
+    protected String areaUnit = "";
 
-    protected double baseAcre = 2.471;
+    protected double fieldSize = 2.471;
 
 //    protected AppUpdateHelper appUpdateHelper;
 //    protected AppUpdater appUpdater;
@@ -49,6 +53,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected abstract void initToolbar();
 
     protected abstract void initComponent();
+
+    protected abstract void validate(boolean backPressed);
 
     @Override
     public void onBackPressed() {
@@ -130,6 +136,17 @@ public abstract class BaseActivity extends AppCompatActivity {
                 super.onDenied(context, deniedPermissions);
             }
         });
+    }
+
+    protected void processRecommendations(@NonNull Activity activity) {
+
+//        if (postData == null) {
+//            Toast.makeText(activity, "Unable to prepare recommendations data, please try again", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+        Intent intent = new Intent(activity, DstRecommendationActivity.class);
+//        intent.putExtra(DstRecommendationActivity.REC_TAG, postData);
+        activity.startActivity(intent);
     }
 
 }

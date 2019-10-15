@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 @Entity
+@Deprecated
 public class Country {
 
     @Id

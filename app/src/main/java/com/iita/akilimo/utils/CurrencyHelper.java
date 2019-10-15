@@ -113,9 +113,15 @@ public class CurrencyHelper {
         return toCurrency == null ? String.format(Locale.US, "%,.0f", number) : String.format("%,.0f " + toCurrency, number);
     }
 
-    public double convertToLocalCurrency(double currencyToConvert, String toCurrency, int... nearestRounding) {
-        double converted = currencyToConvert;
-        int nearestSpecifiedValue = 1000;
+    /**
+     * @param amount          Amount to convert
+     * @param toCurrency      From which currency we are converting
+     * @param nearestRounding round to the nearest numbers
+     * @return Double
+     */
+    public double convertToLocalCurrency(double amount, String toCurrency, int... nearestRounding) {
+        double converted = amount;
+        int nearestSpecifiedValue = 0;
         if (nearestRounding.length > 0) {
             nearestSpecifiedValue = nearestRounding[0];
         }
@@ -123,10 +129,10 @@ public class CurrencyHelper {
         try {
             switch (toCurrency) {
                 case "NGN":
-                    converted = currencyToConvert * ngnToUsdRate;
+                    converted = amount * ngnToUsdRate;
                     break;
                 case "TZS":
-                    converted = currencyToConvert * tzsToUsdRate;
+                    converted = amount * tzsToUsdRate;
                     break;
             }
         } catch (Exception ex) {
@@ -134,7 +140,7 @@ public class CurrencyHelper {
 //            Crashlytics.logException(ex);
         }
 
-        return roundToNearestSpecifiedValue(converted, nearestSpecifiedValue);
+        return nearestSpecifiedValue > 0 ? roundToNearestSpecifiedValue(converted, nearestSpecifiedValue) : converted;
     }
 
     public double convertToUSD(double currencyToConvert, String fromCurrency, int... nearestRounding) {

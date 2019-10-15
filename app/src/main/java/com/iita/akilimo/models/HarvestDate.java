@@ -7,6 +7,7 @@ import lombok.Data;
 
 @Data
 @Entity
+@Deprecated
 public class HarvestDate {
 
 

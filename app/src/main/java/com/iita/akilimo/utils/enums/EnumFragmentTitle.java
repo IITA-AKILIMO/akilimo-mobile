@@ -4,7 +4,7 @@ public enum EnumFragmentTitle {
     title_location {
         @Override
         public String title() {
-            return "MyLocation";
+            return "MandatoryInfo";
         }
     },
     title_area_units {
@@ -22,7 +22,7 @@ public enum EnumFragmentTitle {
     title_advice {
         @Override
         public String title() {
-            return "Advice";
+            return "RecAdvice";
         }
     },
     title_field_area {
@@ -64,13 +64,13 @@ public enum EnumFragmentTitle {
     title_cost_of_operations {
         @Override
         public String title() {
-            return "Advice";
+            return "RecAdvice";
         }
     },
     title_yield_type {
         @Override
         public String title() {
-            return "Yield name";
+            return "Yield fertilizerName";
         }
     },
     title_curent_field_yield {
