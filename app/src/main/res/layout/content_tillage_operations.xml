@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".views.activities.TillageOperationsActivity"
+    tools:showIn="@layout/activity_tillage_operations">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/spacing_medium">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_bold"
+            android:text="Do you have access to a tractor?"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/tractorCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:checkable="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="visible"
+            app:cardBackgroundColor="@color/grey_3"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="2dp"
+            app:cardMaxElevation="6dp"
+            app:contentPadding="@dimen/spacing_small">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_small">
+
+                <RadioGroup
+                    android:id="@+id/rdgTractor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:id="@+id/rdYesTractor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lbl_yes" />
+
+
+                    <RadioButton
+                        android:id="@+id/rdNoTractor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lbl_no" />
+
+                </RadioGroup>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- implement section -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/implementTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tractorCard"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:fontFamily="@font/roboto_bold"
+            android:text="Which implements do you have access to?"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:visibility="gone" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/implementCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/implementTitle"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/grey_3"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="2dp"
+            app:cardMaxElevation="6dp"
+            app:contentPadding="@dimen/spacing_small">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_small">
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/chkPlough"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Plough" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/chkRidger"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ridger" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- operations based on selected implements -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tillageOperationsTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/implementCard"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:fontFamily="@font/roboto_bold"
+            android:text="How many basic tillage operations do you perform?"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:visibility="visible" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/tillageOperationsCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tillageOperationsTitle"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:visibility="visible"
+            app:cardBackgroundColor="@color/grey_3"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="2dp"
+            app:cardMaxElevation="6dp"
+            app:contentPadding="@dimen/spacing_small">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_small">
+
+                <RadioGroup
+                    android:id="@+id/rdgTillageOperations"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:id="@+id/rdNone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="None (zero-tillage)" />
+
+                    <RadioButton
+                        android:id="@+id/rdSinglePlough"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Single plough operation" />
+
+
+                </RadioGroup>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <!-- ridging section -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/ridgingTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tillageOperationsCard"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:fontFamily="@font/roboto_bold"
+            android:text="Do you ridge your field?"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:visibility="visible" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/ridgingCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ridgingTitle"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:visibility="visible"
+            app:cardBackgroundColor="@color/grey_3"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="2dp"
+            app:cardMaxElevation="6dp"
+            app:contentPadding="@dimen/spacing_small">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_small">
+
+                <RadioGroup
+                    android:id="@+id/rdgRidging"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:id="@+id/rdYesRidge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lbl_yes" />
+
+                    <RadioButton
+                        android:id="@+id/rdNoRidge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lbl_no" />
+
+
+                </RadioGroup>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <include
+            android:layout_marginTop="@dimen/spacing_large"
+            layout="@layout/bottom_buttons_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ridgingCard" />
+    </RelativeLayout>
+
+
+</androidx.core.widget.NestedScrollView>

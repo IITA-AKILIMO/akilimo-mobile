@@ -1,0 +1,192 @@
+<resources>
+    <string name="app_name">Akilimo</string>
+
+    <string name="welcome_title">Welcome to Akilimo</string>
+    <string name="welcome_instructions">This tool will help you to obtain recommendations to improve your cassava yield
+        \n\nIn order to do so we need some essential information from you.
+        \n\n Let us get started…</string>
+
+    <string name="hello_blank_fragment">Initialize fragments</string>
+
+    <string name="title_activity_fertilizer_choice">Available fertilizers</string>
+    <string name="title_activity_fertilizer_rec">Fertilizer recommendations</string>
+    <string name="title_activity_investment_amount">Investment amount</string>
+    <string name="title_activity_cassava_root_yield">Cassava root yield</string>
+    <string name="title_activity_market_outlet">Market outlet</string>
+    <string name="title_activity_maize_performance">Maize performance</string>
+    <string name="title_activity_farm_location">Farm location</string>
+    <string name="title_tillage_operations">Tillage operations</string>
+    <string name="title_herbicide_use">Herbicide use</string>
+
+    <string name="empty_text" />
+
+    <string name="lbl_start">Start</string>
+    <string name="lbl_proceed">Proceed</string>
+    <string name="lbl_finish">Finish</string>
+
+    <string name="lbl_country_location">In which country are you located?</string>
+    <string name="lbl_nigeria">Nigeria</string>
+    <string name="lbl_tanzania">Tanzania</string>
+
+    <string name="lbl_area_unit">Select your preferred area unit</string>
+    <string name="area_unit_acre">Acre (acre)</string>
+    <string name="area_unit_ha">Hectare (ha)</string>
+    <string name="area_unit_square_meter">Square meter (m\u00B2)</string>
+
+
+    <string name="lbl_cassava_field_size">What is the size of your cassava field?</string>
+    <!-- acres -->
+    <string name="quarter_acre">About 0.25 acres (0.1 ha)</string>
+    <string name="half_acre">About 0.5 acres (0.2 ha)</string>
+    <string name="one_acre">About 1 acre (0.4 ha)</string>
+    <string name="one_half_acre">About 1.5 acres (0.6 ha)</string>
+    <string name="two_half_acres">About 2.5 acres (1 ha)</string>
+    <string name="five_acres">About 5 acres</string>
+    <string name="exact_field_area">Specify the exact area of my field in acre</string>
+
+    <!-- ha -->
+    <string name="quarter_acre_to_ha">About 0.1 ha (0.25 acres)</string>
+    <string name="half_acre_to_ha">About 0.2 ha (0.5 acres)</string>
+    <string name="one_acre_to_ha">About 0.4 ha (1 acre)</string>
+    <string name="one_half_acre_to_ha">About 0.6 ha (1.5 acres)</string>
+    <string name="two_half_acre_to_ha">About 1 ha (2.5 acres)</string>
+    <string name="exact_acre_to_ha">Specify the exact area of my field in ha</string>
+
+    <!--  m2 -->
+    <string name="quarter_acre_to_m2">About 1,000 m\u00B2 (0.25 acres)</string>
+    <string name="half_acre_to_m2">About 2,000 m\u00B2 (0.5 acres)</string>
+    <string name="one_acre_to_m2">About 4,000 m\u00B2 (1 acre)</string>
+    <string name="one_half_acre_to_m2">About 6,000 m\u00B2 (1.5 acres)</string>
+    <string name="two_half_acre_to_m2">About 10,000 m\u00B2 (2.5 acres)</string>
+    <string name="exact_acre_to_m2">Specify the exact area of my field in m\u00B2</string>
+
+    <string name="lbl_salutation">Hi, nice to meet you!</string>
+    <string name="lbl_farm_location">Please help us identify your farm location</string>
+    <string name="lbl_current_location">Use current location</string>
+    <string name="lbl_select_location_manually">Select location manually</string>
+
+    <string name="lbl_recommendations">Recommendations</string>
+    <string name="lbl_fertilizer_recommendations">Fertilizer recommendations</string>
+    <string name="lbl_intercropping">Intercropping</string>
+    <string name="lbl_scheduled_planting_and_harvest">Scheduled planting and harvest</string>
+    <string name="lbl_best_planting_practices">Best planting practices</string>
+    <string name="lbl_weed_management">Weed management</string>
+
+
+    <string-array name="recommendations">
+        <item>@string/lbl_fertilizer_recommendations</item>
+        <item>@string/lbl_intercropping</item>
+        <item>@string/lbl_scheduled_planting_and_harvest</item>
+        <item>@string/lbl_weed_management</item>
+    </string-array>
+
+
+    <string name="lbl_planting_harvest">When do you want to plant and harvest your cassava?</string>
+    <string name="lbl_available_fertilizers">Which fertilizers are available for you?</string>
+    <string name="lbl_investment_amount">How much are you willing to invest on fertilizers?</string>
+    <string name="lbl_typical_yield">The typical cassava root yield you have been getting so far?</string>
+    <string name="lbl_maize_performance">The typical height of maize when grown without fertilizer</string>
+    <string name="lbl_market_outlet">What is your market outlet to sell your cassava?</string>
+    <string name="lbl_tillage_operations">Tillage operations and related cost</string>
+    <string name="lbl_herbicide_use">Herbicide use and related cost</string>
+
+    <string name="lbl_pick_planting_date">Pick planting date</string>
+    <string name="lbl_selected_planting_date">Selected planting date is :</string>
+    <string name="lbl_planting_flexible">My planting date is flexible</string>
+
+    <string name="lbl_pick_harvest_date">Pick harvest date</string>
+    <string name="lbl_selected_harvest_date">Selected harvest date is :</string>
+    <string name="lbl_harvest_flexible">My harvest date is flexible</string>
+
+    <string name="lbl_one_month_window">± 1 month</string>
+    <string name="lbl_two_month_window">± 2 months</string>
+    <string name="lbl_no">No</string>
+    <string name="lbl_yes">Yes</string>
+    <string name="lbl_planting_harvest_dates">Planting and harvest dates</string>
+    <string name="lbl_no_internet">No internet !</string>
+    <string name="lbl_retry">Retry</string>
+    <string name="lbl_close">x</string>
+
+    <string name="lbl_do_not_know">I don\'t know</string>
+    <string name="lbl_30_to_40">30–40</string>
+    <string name="lbl_40_to_50">40–50</string>
+    <string name="lbl_50_to_60">50–60</string>
+    <string name="lbl_20_to_30">20–30</string>
+    <string name="price_per_bag">Price (%1$s per 50 kg bag) for %2$s</string>
+
+    <string name="current_field_yield">Exact investment (x %1$s per %2$s acre)</string>
+    <string name="exact_investment_x_per_field_area">I want to specify the exact amount</string>
+    <string name="exact_fertilizer_price">I want to specify the exact price</string>
+
+    <string name="unit_of_sale">Unit of Sale</string>
+
+    <string name="inv_200_usd_per_acre">200 USD per</string>
+    <string name="inv_150_usd_per_acre">150 USD per</string>
+    <string name="inv_100_usd_per_acre">100 USD per</string>
+    <string name="inv_50_usd_per_acre">50 USD per</string>
+    <string name="inv_25_usd_per_acre">25 USD per</string>
+
+    <string name="yield_less_than_3_tonnes_per_acre">Less than 3 tonnes per acre</string>
+    <string name="yield_3_to_6_tonnes_per_acre">3 to 6 tonnes per acre</string>
+    <string name="yield_6_to_9_tonnes_per_acre">6 to 9 tonnes per acre</string>
+    <string name="yield_9_to_12_tonnes_per_acre">9 to 12 tonnes per acre</string>
+    <string name="yield_more_than_12_tonnes_per_acre">More than 12 tonnes per acre</string>
+
+    <string name="yield_less_than_3_tonnes_per_hectare">Less than 7.5 tonnes per hectare</string>
+    <string name="yield_3_to_6_tonnes_per_hectare">7.5 to 15 tonnes per hectare</string>
+    <string name="yield_6_to_9_tonnes_per_hectare">15 to 22.5 tonnes per hectare</string>
+    <string name="yield_9_to_12_tonnes_per_hectare">22.5 to 30 tonnes per hectare</string>
+    <string name="yield_more_than_12_tonnes_per_hectare">More than 30 tonnes per hectare</string>
+
+    <string name="yield_less_than_3_tonnes_per_meter">Less than 7.5 tonnes per  4,000 m\u00B2</string>
+    <string name="yield_3_to_6_tonnes_per_meter">7.5 to 15 tonnes per  4,000 m\u00B2</string>
+    <string name="yield_6_to_9_tonnes_per_meter">15 to 22.5 tonnes per  4,000 m\u00B2</string>
+    <string name="yield_9_to_12_tonnes_per_meter">22.5 to 30 tonnes per  4,000 m\u00B2</string>
+    <string name="yield_more_than_12_tonnes_per_meter">More than 30 tonnes per  4,000 m\u00B2</string>
+
+    <string name="action_settings">Settings</string>
+
+
+    <string name="per_tonne_sale_unit">Per tonne</string>
+    <string name="per_kg_sale_unit">Per kg</string>
+    <string name="per_50_kg_sale_unit">Per 50 kg bag</string>
+    <string name="per_100_kg_sale_unit">Per 100 kg bag</string>
+    <string name="per_pick_up_load_sale_unit">Per pick-up load (2 tonnes)</string>
+    <string name="exact_sale_unit">I want to specify the exact weight of my unit of sale</string>
+    <string name="exact_sale_unit_hint">Enter the size of your unit of sale i.e x kg</string>
+
+    <string name="lbl_price_per_bag">Price (%1$s per 50 kg bag) for %2$s</string>
+
+    <string name="up_20_30_usd_per_tonne">20–30 USD per tonne</string>
+    <string name="up_30_50_usd_per_tonne">30–50 USD per tonne</string>
+    <string name="up_50_100_usd_per_tonne">50–100 USD per tonne</string>
+    <string name="up_100_150_usd_per_tonne">100–150 USD per tonne</string>
+    <string name="up_150_200_usd_per_tonne">150–200 USD per tonne</string>
+    <string name="lbl_exact_price_x_per_unit_of_sale">I want to specify the exact price</string>
+    <string name="lbl_submit">Submit</string>
+    <string name="lbl_cancel">Cancel</string>
+    <string name="lbl_please_provide_unit_price">Please provide unit price</string>
+    <string name="lbl_unit_price">Unit price</string>
+
+    <string name="lbl_permission_rationale">Please allow the following permissions for the app to work optimally</string>
+    <string name="lbl_place_name">Your farm location</string>
+    <string name="lbl_select_location">Select a location</string>
+
+    <!--LocationPickerActivity activity-->
+    <string name="location_picker_select_location_button_cancel">Cancel</string>
+    <string name="location_picker_select_location_button_select">Select a location</string>
+    <string name="location_picker_dropped_marker_snippet_no_results">No results</string>
+    <string name="location_picker_place_name_result">Place name: %1$s</string>
+    <string name="move_map_instruction">Move map to place\nmarker at desired location</string>
+    <string name="lbl_not_provided">Not provided</string>
+    <string name="lbl_summary_title">Here is what we have so far</string>
+
+    <string name="unit_price_abel">%1$,.0f - %2$,.0f %3$s per %4$s</string>
+
+    <string name="title_activity_dst_recomendation">Rcommendation</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="lbl_get_recommendations">Get recommendations</string>
+    <string name="lbl_rec_header">To get a more tailored recommendation, please provide information on the items below</string>
+    <string name="lbl_compute_error">Unable to compute recommendations, please try again</string>
+</resources>
