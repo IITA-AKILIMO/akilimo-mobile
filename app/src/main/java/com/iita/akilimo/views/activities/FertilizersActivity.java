@@ -67,19 +67,12 @@ public class FertilizersActivity extends BaseActivity {
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
         queue = Volley.newRequestQueue(context);
 
-        initToolbar();
-        initComponent();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
-            availableFertilizersList = objectBoxEntityProcessor.getAvailableFertilizersByCountry(countryCode);
-            mAdapter.setItems(availableFertilizersList);
         }
+        initToolbar();
+        initComponent();
     }
 
     @Override
@@ -89,11 +82,7 @@ public class FertilizersActivity extends BaseActivity {
         getSupportActionBar().setTitle(headerTitleText);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-//        Tools.setSystemBarColor(this, R.color.deep_orange_900);
-        toolbar.setNavigationOnClickListener(v -> {
-            // back button pressed
-            closeActivity(false);
-        });
+        toolbar.setNavigationOnClickListener(v -> closeActivity(false));
     }
 
     @Override
@@ -101,12 +90,10 @@ public class FertilizersActivity extends BaseActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.addItemDecoration(new SpacingItemDecoration(2, Tools.dpToPx(this, 3), true));
         recyclerView.setHasFixedSize(true);
-
-        fetchAvailableFertilizers();
-        fetchFertilizerPriceList();
         mAdapter = new FertilizerGridAdapter(context);
         recyclerView.setAdapter(mAdapter);
 
+        initializeFertilizers();
         mAdapter.setOnItemClickListener((view, clickedFertilizer, position) -> {
             mAdapter.setActiveRowIndex(position);
             Fertilizer selectedType = objectBoxEntityProcessor.getSavedFertilizer(clickedFertilizer.getType(), countryCode);
@@ -154,10 +141,13 @@ public class FertilizersActivity extends BaseActivity {
 
     @Override
     protected void validate(boolean backPressed) {
-        throw new UnsupportedOperationException();
+        if (mAdapter != null) {
+            availableFertilizersList = objectBoxEntityProcessor.getAvailableFertilizersByCountry(countryCode);
+            mAdapter.setItems(availableFertilizersList);
+        }
     }
 
-    private void fetchAvailableFertilizers() {
+    private void initializeFertilizers() {
         final RestService restService = RestService.getInstance(queue, this);
         restService.setEndpoint("v2/fertilizers");
         restService.setCountryCode(countryCode);
@@ -175,7 +165,7 @@ public class FertilizersActivity extends BaseActivity {
                     availableFertilizersList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<Fertilizer>>() {
                     });
                     objectBoxEntityProcessor.saveFertilizerList(availableFertilizersList);
-
+                    initializeFertilizerPriceList();
                 } catch (Exception ignored) {
                 }
             }
@@ -192,7 +182,7 @@ public class FertilizersActivity extends BaseActivity {
         });
     }
 
-    private void fetchFertilizerPriceList() {
+    private void initializeFertilizerPriceList() {
         final RestService restService = RestService.getInstance(queue, this);
 
         restService.setEndpoint("v2/fertilizer-prices");
@@ -210,6 +200,7 @@ public class FertilizersActivity extends BaseActivity {
                     fertilizerPricesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<FertilizerPrices>>() {
                     });
                     objectBoxEntityProcessor.saveFertilizerPrices(fertilizerPricesList);
+                    validate(false);
                 } catch (Exception ignored) {
                 }
             }

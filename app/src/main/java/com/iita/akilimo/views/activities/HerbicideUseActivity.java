@@ -1,17 +1,18 @@
 package com.iita.akilimo.views.activities;
 
+import android.os.Bundle;
+import android.widget.RadioGroup;
+
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
-
-import android.os.Bundle;
-import android.widget.RadioGroup;
 
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.button.MaterialButton;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.TillageOperations;
 import com.iita.akilimo.inherit.BaseActivity;
+import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -51,6 +52,7 @@ public class HerbicideUseActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_herbicide_use);
         ButterKnife.bind(this);
+        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
         context = this;
 
         initToolbar();

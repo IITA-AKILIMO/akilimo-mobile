@@ -18,11 +18,16 @@
         android:text="@string/lbl_finish"
         android:textColor="@color/white" />
 
+    <View
+        android:layout_width="150dp"
+        android:layout_height="0dp" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnCancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_large"
+        android:layout_marginTop="@dimen/spacing_medium"
         android:layout_marginBottom="@dimen/spacing_medium"
         android:background="@drawable/btn_rounded_white"
         android:fontFamily="@font/roboto"
