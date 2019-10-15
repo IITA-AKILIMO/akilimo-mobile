@@ -173,6 +173,10 @@ public class MarketOutletActivity extends BaseActivity {
             selectedFactory = marketOutlet.getStarchFactory();
         }
 
+        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        countryCode = mandatoryInfo.getCountryCode();
+        currency = mandatoryInfo.getCurrency();
+
         initToolbar();
         initComponent();
     }
@@ -180,10 +184,6 @@ public class MarketOutletActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
-        countryCode = mandatoryInfo.getCountryCode();
-        currency = mandatoryInfo.getCurrency();
 
         List<StarchFactory> starchFactoriesList = objectBoxEntityProcessor.getStarchFactories(countryCode);
         addFactoriesRadioButtons(starchFactoriesList);
@@ -438,6 +438,9 @@ public class MarketOutletActivity extends BaseActivity {
 
 
         if (dataIsValid) {
+            if (marketOutlet == null) {
+                marketOutlet = new MarketOutlet();
+            }
             marketOutlet.setStarchFactory(selectedFactory);
             marketOutlet.setStarchFactoryRequired(factoryRequired);
             marketOutlet.setEnumProduceType(enumProduceType);
@@ -489,7 +492,7 @@ public class MarketOutletActivity extends BaseActivity {
         double localHigher = currencyHelper.convertToLocalCurrency(priceHigher, currency, 10);
 
         String message = context.getString(R.string.unit_price_abel, localLower, localHigher, currency, uos);
-        if (Strings.isEmptyOrWhitespace(priceText)) {
+        if (!Strings.isEmptyOrWhitespace(priceText)) {
             setExactPriceLabel();
         }
         return message;
