@@ -1,9 +1,11 @@
 package com.iita.akilimo.utils.objectbox;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.Akilimo;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.MandatoryInfo_;
@@ -180,7 +182,8 @@ public class ObjectBoxEntityProcessor {
             final Box<Fertilizer> box = boxStore.boxFor(Fertilizer.class);
             return box.put(selectedFertilizer);
         } catch (UniqueViolationException ex) {
-            //Crashlytics.log(ex.getStepTitle());
+            Crashlytics.log(Log.ERROR, LOG_TAG, "Unique fertilizer saving violation!");
+            Crashlytics.logException(ex);
         }
         return 0;
     }
@@ -418,8 +421,8 @@ public class ObjectBoxEntityProcessor {
             Box<StarchFactory> box = boxStore.boxFor(StarchFactory.class);
             box.put(starchFactoryList);
         } catch (Exception ex) {
-            //Crashlytics.log(Log.ERROR, LOG_TAG, ex.getStepTitle());
-            //Crashlytics.logException(ex);
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving starch factories");
+            Crashlytics.logException(ex);
         }
     }
 
@@ -436,8 +439,8 @@ public class ObjectBoxEntityProcessor {
             Box<FertilizerPrices> box = boxStore.boxFor(FertilizerPrices.class);
             box.put(fertilizerPricesList);
         } catch (Exception ex) {
-            //Crashlytics.log(Log.ERROR, LOG_TAG, ex.getStepTitle());
-            //Crashlytics.logException(ex);
+            Crashlytics.log(Log.ERROR, LOG_TAG, "Error occurred saving fertilizer prices");
+            Crashlytics.logException(ex);
         }
     }
 
@@ -456,8 +459,8 @@ public class ObjectBoxEntityProcessor {
             Box<MarketOutlet> box = boxStore.boxFor(MarketOutlet.class);
             return box.put(marketOutlet);
         } catch (Exception ex) {
-            //Crashlytics.log(Log.ERROR, LOG_TAG, ex.getStepTitle());
-            //Crashlytics.logException(ex);
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving market outlet");
+            Crashlytics.logException(ex);
         }
         return 0;
     }
@@ -474,7 +477,9 @@ public class ObjectBoxEntityProcessor {
         try {
             Box<RecAdvice> box = boxStore.boxFor(RecAdvice.class);
             box.put(recAdvice);
-        } catch (Exception ignored) {
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving recommendation advice");
+            Crashlytics.logException(ex);
         }
     }
 

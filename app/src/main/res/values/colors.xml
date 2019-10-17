@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--    <color name="colorPrimary">#1976D2</color>-->
-    <!--    <color name="colorPrimaryDark">#1565C0</color>-->
-    <!--    <color name="colorPrimaryLight">#1E88E5</color>-->
-    <!--    <color name="colorAccent">#FF4081</color>-->
-    <!--    <color name="colorAccentDark">#F50057</color>-->
-    <!--    <color name="colorAccentLight">#FF80AB</color>-->
-
     <array name="mdcolor_random">
         <item type="color">#e91e63</item>
         <item type="color">#9c27b0</item>
@@ -23,16 +16,25 @@
         <item type="color">#607d8b</item>
         <item type="color">#ff9800</item>
     </array>
-    <color name="colorPrimary">#1976D2</color>
-    <color name="colorPrimaryDark">#1565C0</color>
-    <color name="colorPrimaryLight">#1E88E5</color>
-    <color name="colorAccent">@color/deep_orange_500</color>
-    <color name="colorAccentDark">@color/deep_orange_900</color>
-    <color name="colorAccentLight">@color/pink_100</color>
+
+    <color name="colorPrimary">@color/primaryColor</color>
+    <color name="colorPrimaryDark">@color/primaryDarkColor</color>
+    <color name="colorPrimaryLight">@color/primaryLightColor</color>
+
+    <color name="colorAccent">@color/secondaryColor</color>
+    <color name="colorAccentDark">@color/secondaryDarkColor</color>
+    <color name="colorAccentLight">@color/secondaryLightColor</color>
 
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
 
+    <!-- akilimo colors -->
+    <color name="primaryColor">#689f38</color>
+    <color name="primaryLightColor">#99d066</color>
+    <color name="primaryDarkColor">#387002</color>
+    <color name="secondaryColor">#b71c1c</color>
+    <color name="secondaryLightColor">#f05545</color>
+    <color name="secondaryDarkColor">#7f0000</color>
 
     <color name="overlay_dark_10">#1A000000</color>
     <color name="overlay_dark_20">#33000000</color>
@@ -109,8 +111,8 @@
     <color name="light_blue_A100">#80D8FF</color>
     <color name="light_blue_A200">#40C4FF</color>
     <color name="light_blue_A400">#00B0FF</color>
-
     <color name="light_blue_A700">#0091EA</color>
+
     <color name="green_50">#E8F5E9</color>
     <color name="green_100">#C8E6C9</color>
     <color name="green_200">#A5D6A7</color>
@@ -124,8 +126,8 @@
     <color name="green_A100">#B9F6CA</color>
     <color name="green_A200">#69F0AE</color>
     <color name="green_A400">#00E676</color>
-
     <color name="green_A700">#00C853</color>
+
     <color name="yellow_50">#FFFDE7</color>
     <color name="yellow_100">#FFF9C4</color>
     <color name="yellow_200">#FFF59D</color>

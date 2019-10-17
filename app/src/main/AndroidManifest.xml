@@ -36,9 +36,6 @@
             android:name="io.fabric.ApiKey"
             android:value="ca1a8f3133ce2b7f055369923b3532240ee2202b" />
         <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="ca1a8f3133ce2b7f055369923b3532240ee2202b" />
-        <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
@@ -48,7 +45,6 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

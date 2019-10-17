@@ -183,10 +183,12 @@
 
     <string name="unit_price_abel">%1$,.0f - %2$,.0f %3$s per %4$s</string>
 
-    <string name="title_activity_dst_recomendation">Rcommendation</string>
+    <string name="title_activity_dst_recomendation">Recommendation</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="lbl_get_recommendations">Get recommendations</string>
     <string name="lbl_rec_header">To get a more tailored recommendation, please provide information on the items below</string>
     <string name="lbl_compute_error">Unable to compute recommendations, please try again</string>
+
+    <string name="lbl_rec_sample">We recommend to not apply any fertilizer. We do not expect that fertilizer application will result in a profitable yield increase in your situation.</string>
 </resources>

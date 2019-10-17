@@ -1,5 +1,7 @@
 package com.iita.akilimo.models;
 
+import android.graphics.drawable.Drawable;
+
 import com.iita.akilimo.utils.enums.EnumAdvice;
 
 import lombok.Data;
@@ -7,9 +9,10 @@ import lombok.Data;
 @Data
 public class Recommendations {
 
-    String recommendationName;
-    EnumAdvice recCode;
-    int image;
+    private String recommendationName;
+    private EnumAdvice recCode;
+    private int image;
+    private Drawable background;
 
     public Recommendations() {
 

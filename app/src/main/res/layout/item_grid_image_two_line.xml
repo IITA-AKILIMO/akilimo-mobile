@@ -46,7 +46,7 @@
                     android:fontFamily="@font/roboto_bold"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:text="Two Line"
+                    android:text="@string/app_name"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
                     android:textColor="@android:color/white" />
 

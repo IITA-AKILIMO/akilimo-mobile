@@ -26,7 +26,6 @@ import com.iita.akilimo.entities.MandatoryInfo
 import com.iita.akilimo.inherit.BaseActivity
 import com.iita.akilimo.interfaces.IFragmentCallBack
 import com.iita.akilimo.utils.AppUpdateHelper
-import com.iita.akilimo.utils.Tools
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor
 import com.iita.akilimo.views.fragments.*
 import timber.log.Timber
@@ -127,7 +126,6 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
     }
 
     override fun initComponent() {
-        Tools.setSystemBarColor(activity, R.color.deep_orange_500)
         checkAppPermissions(rationale)
         btnStart?.visibility = View.GONE
 
@@ -160,7 +158,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
             override fun onPageSelected(position: Int) {
                 bottomProgressDots(position)
-                Tools.setSystemBarColor(activity, R.color.deep_orange_500)
+//                Tools.setSystemBarColor(activity, R.color.deep_orange_500)
                 when (position) {
                     0 -> {
                         appUpdater.start()
@@ -170,7 +168,6 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                         if (showProceedButton) {
                             btnStart?.visibility = View.GONE
                         }
-                        Tools.setSystemBarColor(activity, R.color.blue_400)
                     }
                     else -> {
 
@@ -213,7 +210,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             dots[currentIndex]?.setColorFilter(
                 ContextCompat.getColor(
                     this,
-                    R.color.deep_orange_500
+                    R.color.colorAccent
                 ), PorterDuff.Mode.SRC_IN
             )
         }

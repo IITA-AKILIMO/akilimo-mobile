@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="250dp"
             android:padding="@dimen/spacing_xlarge"
-            app:srcCompat="@drawable/world" />
+            app:srcCompat="@drawable/ic_world" />
 
         <TextView
             android:id="@+id/title"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:text="@string/lbl_country_location"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/deep_orange_500"
+            android:textColor="@color/grey_80"
             android:textStyle="bold" />
 
         <RadioGroup

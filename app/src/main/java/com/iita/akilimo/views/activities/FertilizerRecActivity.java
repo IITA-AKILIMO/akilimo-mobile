@@ -16,7 +16,6 @@ import com.iita.akilimo.entities.RecAdvice;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
-import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
@@ -74,11 +73,8 @@ public class FertilizerRecActivity extends BaseActivity {
         getSupportActionBar().setTitle(recommendations);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        Tools.setSystemBarColor(this, R.color.blue_900);
 
-        toolbar.setNavigationOnClickListener(v -> {
-            closeActivity(false);
-        });
+        toolbar.setNavigationOnClickListener(v -> closeActivity(false));
     }
 
     @Override

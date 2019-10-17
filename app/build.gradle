@@ -8,8 +8,8 @@ dependencies {
     releaseImplementation "io.objectbox:objectbox-android:$objectboxVersion"
 }
 apply plugin: 'io.objectbox'
-//apply plugin: 'io.fabric'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'io.fabric'
 
 ext.versionMajor = 4
 ext.versionMinor = 1
@@ -82,6 +82,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-places:17.0.0'
     implementation 'com.google.firebase:firebase-config:19.0.2'
+    implementation 'com.google.firebase:firebase-analytics:17.2.0'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
     // mapbox implementation------------------------------------------------------------------------
     // implementation 'com.mapbox.mapboxsdk:mapbox-android-navigation:0.41.0'
