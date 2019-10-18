@@ -56,7 +56,7 @@ public class RecOptionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder;
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card_recommendation_no_arrow, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card_recommendation_arrow, parent, false);
         viewHolder = new OriginalViewHolder(view);
         return viewHolder;
     }

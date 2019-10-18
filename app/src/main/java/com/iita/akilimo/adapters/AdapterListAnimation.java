@@ -1,7 +1,6 @@
 package com.iita.akilimo.adapters;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,14 +79,8 @@ public class AdapterListAnimation extends RecyclerView.Adapter<RecyclerView.View
     public void onBindViewHolder(@NotNull RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder view = (OriginalViewHolder) holder;
-
             Recommendations rec = items.get(position);
-            Drawable drawable = rec.getBackground();
             view.name.setText(rec.getRecommendationName());
-            if (drawable != null) {
-//                view.contentLayout.setBackgroundColor(drawable);
-                view.contentLayout.setBackground(drawable);
-            }
 
             view.cardView.setOnClickListener(view1 -> {
                 if (mOnItemClickListener != null) {

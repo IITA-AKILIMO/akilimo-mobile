@@ -102,6 +102,7 @@ public class RecommendationsActivity extends BaseActivity {
         BPP.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft));
         items.add(BPP);
 
+
         setAdapter();
     }
 
