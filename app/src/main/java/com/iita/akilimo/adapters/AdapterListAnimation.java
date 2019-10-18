@@ -62,7 +62,7 @@ public class AdapterListAnimation extends RecyclerView.Adapter<RecyclerView.View
         public OriginalViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.name);
-            cardView = view.findViewById(R.id.mainCard);
+            cardView = view.findViewById(R.id.lyt_parent);
             contentLayout = view.findViewById(R.id.contentLayout);
         }
     }
