@@ -42,7 +42,7 @@
             android:layout_below="@id/title"
             android:scrollbars="vertical"
             android:scrollingCache="true"
-            tools:listitem="@layout/item_card_recommendation" />
+            tools:listitem="@layout/item_card_recommendation_no_arrow" />
 
         <include layout="@layout/bottom_rec_button" />
 

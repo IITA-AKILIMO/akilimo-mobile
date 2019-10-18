@@ -60,14 +60,12 @@ public class RecommendationsActivity extends BaseActivity {
 
     @Override
     protected void initToolbar() {
-        toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
+        toolbar.setNavigationIcon(R.drawable.ic_home);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(recommendations);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        toolbar.setNavigationOnClickListener(v -> {
-            closeActivity(false);
-        });
+        toolbar.setNavigationOnClickListener(v -> closeActivity(false));
     }
 
 
@@ -76,7 +74,7 @@ public class RecommendationsActivity extends BaseActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         //set data and list adapter
-        mAdapter = new AdapterListAnimation(this);
+        mAdapter = new AdapterListAnimation(this, R.layout.item_card_recommendation_no_arrow);
         recyclerView.setAdapter(mAdapter);
         items = new ArrayList<>();
 

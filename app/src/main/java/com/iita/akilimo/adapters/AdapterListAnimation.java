@@ -26,6 +26,7 @@ public class AdapterListAnimation extends RecyclerView.Adapter<RecyclerView.View
     private OnItemClickListener mOnItemClickListener;
     private int animation_type;
     private int lastPosition = -1;
+    private int layoutId;
     private boolean on_attach = true;
 
     public interface OnItemClickListener {
@@ -38,6 +39,12 @@ public class AdapterListAnimation extends RecyclerView.Adapter<RecyclerView.View
 
     public AdapterListAnimation(Context context) {
         this.context = context;
+        this.layoutId = R.layout.item_card_recommendation_arrow;
+    }
+
+    public AdapterListAnimation(Context context, int layoutId) {
+        this.context = context;
+        this.layoutId = layoutId;
     }
 
     public void setItems(List<Recommendations> items, int animation_type) {
@@ -63,7 +70,7 @@ public class AdapterListAnimation extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder;
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card_recommendation, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false);
         viewHolder = new OriginalViewHolder(view);
         return viewHolder;
     }
