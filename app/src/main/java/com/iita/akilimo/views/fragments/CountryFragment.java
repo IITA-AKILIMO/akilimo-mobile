@@ -37,6 +37,7 @@ public class CountryFragment extends BaseFragment {
     private ProfileInfo profileInfo;
     private MandatoryInfo mandatoryInfo;
     private EnumCountries countryEnum = EnumCountries.OTHERS;
+    private String name = "";
 
     public CountryFragment() {
         // Required empty public constructor
@@ -61,11 +62,10 @@ public class CountryFragment extends BaseFragment {
     @Override
     public void refreshData() {
         profileInfo = objectBoxEntityProcessor.getProfileInfo();
-        mandatoryInfo = profileInfo.mandatoryInfo.getTarget();
-        String name = profileInfo.getNames();
-        String message = context.getString(R.string.lbl_country_location, name);
-        title.setText(message);
-
+        mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        if (profileInfo != null) {
+            name = profileInfo.getFirstName();
+        }
         if (mandatoryInfo != null) {
             countryEnum = mandatoryInfo.getCountryEnum();
             switch (countryEnum) {
@@ -77,6 +77,10 @@ public class CountryFragment extends BaseFragment {
                     break;
             }
         }
+
+
+        String message = context.getString(R.string.lbl_country_location, name);
+        title.setText(message);
     }
 
     @Override
@@ -100,9 +104,7 @@ public class CountryFragment extends BaseFragment {
             mandatoryInfo.setCountryName(countryEnum.countryName());
             mandatoryInfo.setCurrency(countryEnum.currency());
             mandatoryInfo.setCountryEnum(countryEnum);
-
-            profileInfo.mandatoryInfo.setTarget(mandatoryInfo);
-            objectBoxEntityProcessor.saveProfileInfo(profileInfo);
+            objectBoxEntityProcessor.saveMandatoryInfo(mandatoryInfo);
         });
     }
 

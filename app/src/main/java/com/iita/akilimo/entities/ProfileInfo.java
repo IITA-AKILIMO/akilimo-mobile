@@ -6,7 +6,6 @@ import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.converter.PropertyConverter;
-import io.objectbox.relation.ToOne;
 import lombok.Data;
 
 @Data
@@ -23,7 +22,6 @@ public class ProfileInfo {
 
     @Convert(converter = GenderConverter.class, dbType = String.class)
     public EnumGender genderEnum;
-    public ToOne<MandatoryInfo> mandatoryInfo;
 
     public String getNames() {
         return String.format("%s %s", this.firstName, this.lastName);

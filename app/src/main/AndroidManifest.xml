@@ -60,7 +60,6 @@
         <activity android:name=".views.activities.InvestmentAmountActivity" />
 
         <activity android:name=".views.activities.DstRecommendationActivity" />
-        <activity android:name=".views.activities.DstOptionsActivity" />
         <activity android:name=".views.activities.HerbicideUseActivity" />
         <activity android:name=".views.activities.TillageOperationsActivity" />
         <activity android:name=".views.activities.PlantingPracticesActivity" />

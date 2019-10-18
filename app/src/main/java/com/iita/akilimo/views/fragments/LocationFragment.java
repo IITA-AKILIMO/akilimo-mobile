@@ -51,6 +51,7 @@ public class LocationFragment extends BaseFragment {
     private double currentLon;
     private ProfileInfo profileInfo;
     private MandatoryInfo mandatoryInfo;
+    private String farmName = "";
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -98,44 +99,39 @@ public class LocationFragment extends BaseFragment {
             }
         });
 
-        btnSelectLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MapBoxActivity.class);
-                getActivity().startActivityForResult(intent, HomeActivity.MAP_BOX_PLACE_PICKER_REQUEST_CODE);
-            }
+        btnSelectLocation.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), MapBoxActivity.class);
+            getActivity().startActivityForResult(intent, HomeActivity.MAP_BOX_PLACE_PICKER_REQUEST_CODE);
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        reloadLocationInfo();
     }
 
     private void saveLocation() {
         profileInfo = objectBoxEntityProcessor.getProfileInfo();
-        mandatoryInfo = profileInfo.mandatoryInfo.getTarget();
+        mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
         if (mandatoryInfo == null) {
             mandatoryInfo = new MandatoryInfo();
         }
         mandatoryInfo.setLatitude(currentLat);
         mandatoryInfo.setLongitude(currentLon);
 
-        profileInfo.mandatoryInfo.setTarget(mandatoryInfo);
-        objectBoxEntityProcessor.saveProfileInfo(profileInfo);
+        objectBoxEntityProcessor.saveMandatoryInfo(mandatoryInfo);
         reloadLocationInfo();
+
     }
 
     private void reloadLocationInfo() {
         profileInfo = objectBoxEntityProcessor.getProfileInfo();
-        mandatoryInfo = profileInfo.mandatoryInfo.getTarget();
-        String farmName = "";
-        if (mandatoryInfo != null) {
+        mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+
+        if (profileInfo != null) {
             farmName = profileInfo.getFarmName();
+        }
+        if (mandatoryInfo != null) {
             locationInfo.setText(loadLocationInfo(mandatoryInfo));
         }
+
         String message = context.getString(R.string.lbl_farm_location, farmName);
         title.setText(message);
+
     }
 }
