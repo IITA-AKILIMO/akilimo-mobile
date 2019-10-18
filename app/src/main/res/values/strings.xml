@@ -24,7 +24,7 @@
     <string name="lbl_proceed">Proceed</string>
     <string name="lbl_finish">Finish</string>
 
-    <string name="lbl_country_location">In which country are you located?</string>
+    <string name="lbl_country_location">Nice to meet you %1$s.\nIn which country are you located?</string>
     <string name="lbl_nigeria">Nigeria</string>
     <string name="lbl_tanzania">Tanzania</string>
 
@@ -34,7 +34,7 @@
     <string name="area_unit_square_meter">Square meter (m\u00B2)</string>
 
 
-    <string name="lbl_cassava_field_size">What is the size of your cassava field?</string>
+    <string name="lbl_cassava_field_size">What is the size of your cassava field in %1$s?</string>
     <!-- acres -->
     <string name="quarter_acre">About 0.25 acres (0.1 ha)</string>
     <string name="half_acre">About 0.5 acres (0.2 ha)</string>
@@ -61,7 +61,7 @@
     <string name="exact_acre_to_m2">Specify the exact area of my field in m\u00B2</string>
 
     <string name="lbl_salutation">Hi, nice to meet you!</string>
-    <string name="lbl_farm_location">Please help us identify your farm location</string>
+    <string name="lbl_farm_location">Where is your cassava farm %1$s located?</string>
     <string name="lbl_current_location">Use current location</string>
     <string name="lbl_select_location_manually">Select location manually</string>
 
@@ -191,4 +191,5 @@
     <string name="lbl_compute_error">Unable to compute recommendations, please try again</string>
 
     <string name="lbl_rec_sample">We recommend to not apply any fertilizer. We do not expect that fertilizer application will result in a profitable yield increase in your situation.</string>
+    <string name="lbl_save">Save</string>
 </resources>

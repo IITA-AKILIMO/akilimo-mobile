@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -18,6 +19,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.button.MaterialButton;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.MandatoryInfo;
+import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.services.GPSTracker;
 import com.iita.akilimo.views.activities.HomeActivity;
@@ -41,10 +43,14 @@ public class LocationFragment extends BaseFragment {
     @BindView(R.id.locationInfo)
     TextView locationInfo;
 
+    @BindView(R.id.title)
+    AppCompatTextView title;
+
 
     private double currentLat;
     private double currentLon;
-    private MandatoryInfo location;
+    private ProfileInfo profileInfo;
+    private MandatoryInfo mandatoryInfo;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -108,18 +114,28 @@ public class LocationFragment extends BaseFragment {
     }
 
     private void saveLocation() {
-        location = objectBoxEntityProcessor.getMandatoryInfo();
-        if (location == null) {
-            location = new MandatoryInfo();
+        profileInfo = objectBoxEntityProcessor.getProfileInfo();
+        mandatoryInfo = profileInfo.mandatoryInfo.getTarget();
+        if (mandatoryInfo == null) {
+            mandatoryInfo = new MandatoryInfo();
         }
-        location.setLatitude(currentLat);
-        location.setLongitude(currentLon);
-        objectBoxEntityProcessor.saveMandatoryInfo(location);
+        mandatoryInfo.setLatitude(currentLat);
+        mandatoryInfo.setLongitude(currentLon);
+
+        profileInfo.mandatoryInfo.setTarget(mandatoryInfo);
+        objectBoxEntityProcessor.saveProfileInfo(profileInfo);
         reloadLocationInfo();
     }
 
     private void reloadLocationInfo() {
-        location = objectBoxEntityProcessor.getMandatoryInfo();
-        locationInfo.setText(loadLocationInfo(location));
+        profileInfo = objectBoxEntityProcessor.getProfileInfo();
+        mandatoryInfo = profileInfo.mandatoryInfo.getTarget();
+        String farmName = "";
+        if (mandatoryInfo != null) {
+            farmName = profileInfo.getFarmName();
+            locationInfo.setText(loadLocationInfo(mandatoryInfo));
+        }
+        String message = context.getString(R.string.lbl_farm_location, farmName);
+        title.setText(message);
     }
 }

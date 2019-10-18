@@ -11,6 +11,7 @@ import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.MandatoryInfo_;
 import com.iita.akilimo.entities.MarketOutlet;
 import com.iita.akilimo.entities.PlantingHarvestDates;
+import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.entities.RecAdvice;
 import com.iita.akilimo.entities.TillageOperations;
 import com.iita.akilimo.models.AreaUnit;
@@ -68,6 +69,25 @@ public class ObjectBoxEntityProcessor {
             instance = new ObjectBoxEntityProcessor(context);
         }
         return instance;
+    }
+
+    public long saveProfileInfo(ProfileInfo profileInfo) {
+        try {
+            Box<ProfileInfo> box = boxStore.boxFor(ProfileInfo.class);
+            return box.put(profileInfo);
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving profile infor");
+            Crashlytics.logException(ex);
+        }
+        return 0;
+    }
+
+    public ProfileInfo getProfileInfo() {
+        Box<ProfileInfo> box = boxStore.boxFor(ProfileInfo.class);
+
+        return box.query()
+                .build()
+                .findFirst();
     }
 
     public long saveMandatoryInfo(MandatoryInfo mandatoryInfo) {

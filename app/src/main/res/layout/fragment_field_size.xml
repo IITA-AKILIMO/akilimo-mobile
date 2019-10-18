@@ -25,15 +25,15 @@
             android:padding="@dimen/spacing_xlarge"
             app:srcCompat="@drawable/ic_field_map" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/ubuntu_bold"
             android:text="@string/lbl_cassava_field_size"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/grey_80"
-            android:fontFamily="@font/roboto_bold"
-            android:textStyle="bold" />
+            android:textColor="@color/grey_80" />
 
         <RadioGroup
             android:id="@+id/rdgFieldArea"
@@ -46,6 +46,7 @@
                 android:id="@+id/rd_quarter_acre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu"
                 android:text="@string/quarter_acre" />
 
 
@@ -53,6 +54,7 @@
                 android:id="@+id/rd_half_acre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu"
                 android:text="@string/half_acre" />
 
 
@@ -60,18 +62,21 @@
                 android:id="@+id/rd_one_acre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu"
                 android:text="@string/one_acre" />
 
             <RadioButton
                 android:id="@+id/rd_one_half_acre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu"
                 android:text="@string/one_half_acre" />
 
             <RadioButton
                 android:id="@+id/rd_two_half_acre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu"
                 android:text="@string/two_half_acres" />
 
 
@@ -79,6 +84,7 @@
                 android:id="@+id/rd_five_acre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu"
                 android:text="@string/five_acres"
                 android:visibility="gone" />
 
@@ -86,9 +92,19 @@
                 android:id="@+id/rd_specify_acre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu"
                 android:text="@string/exact_field_area" />
 
         </RadioGroup>
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/specifiedArea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ubuntu"
+            android:text="@string/empty_text"
+            android:textAlignment="center"
+            android:textColor="@color/grey_80"
+            android:visibility="gone" />
     </LinearLayout>
 </RelativeLayout>

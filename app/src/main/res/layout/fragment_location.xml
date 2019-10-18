@@ -25,23 +25,14 @@
             android:padding="@dimen/spacing_xlarge"
             app:srcCompat="@drawable/ic_gps_map" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/lbl_salutation"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/grey_80"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_middle"
+            android:fontFamily="@font/roboto_bold"
             android:text="@string/lbl_farm_location"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/grey_80" />
 
         <TextView
@@ -51,6 +42,7 @@
             android:layout_marginTop="@dimen/spacing_middle"
             android:text="@string/empty_text"
             android:textAlignment="center"
+            android:fontFamily="@font/roboto"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@color/grey_80" />
 

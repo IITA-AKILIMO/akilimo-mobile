@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/lyt_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey_5"
+    android:padding="@dimen/spacing_medium"
+    tools:context=".views.fragments.BioDataFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@color/grey_5"
+        android:clipToPadding="false"
+        android:scrollbars="none"
+        android:scrollingCache="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingBottom="?attr/actionBarSize">
+
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/spacing_small"
+                app:srcCompat="@drawable/ic_profiles" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_bold"
+                android:text="We would like to get to know you"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/grey_80" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_large">
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/infoCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:visibility="visible"
+                    app:cardCornerRadius="2dp"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_medium">
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/lytFirstName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edtFirstName"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="First Name"
+                                android:inputType="text"
+                                android:maxLines="1"
+                                android:singleLine="true" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/lytLastName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edtLastName"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="Last Name"
+                                android:inputType="text"
+                                android:maxLines="1"
+                                android:singleLine="true" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <RadioGroup
+                            android:id="@+id/rdgGender"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_medium"
+                            android:orientation="horizontal"
+                            android:visibility="visible">
+
+                            <androidx.appcompat.widget.AppCompatRadioButton
+                                android:id="@+id/rdMale"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Male" />
+
+
+                            <androidx.appcompat.widget.AppCompatRadioButton
+                                android:id="@+id/rdFemale"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Female" />
+
+                        </RadioGroup>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/lytFarmName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_medium">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edtFarmName"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="Name of your cassava farm"
+                                android:inputType="text"
+                                android:maxLines="1"
+                                android:singleLine="true" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/contactCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/infoCard"
+                    android:layout_marginTop="@dimen/spacing_large"
+                    android:visibility="visible"
+                    app:cardCornerRadius="2dp"
+                    app:cardElevation="2dp"
+                    app:cardPreventCornerOverlap="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_medium">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/lytEmail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edtEmail"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="Email address"
+                                android:inputType="textEmailAddress"
+                                android:maxLines="1"
+                                android:singleLine="true" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/lytPhone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edtPhone"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="Phone number"
+                                android:inputType="phone"
+                                android:maxLines="1"
+                                android:singleLine="true" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </RelativeLayout>
+
+            <include layout="@layout/bottom_rec_button" />
+
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+</RelativeLayout>
+
+

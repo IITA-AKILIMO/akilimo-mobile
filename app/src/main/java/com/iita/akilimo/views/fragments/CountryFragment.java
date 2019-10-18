@@ -10,10 +10,12 @@ import android.widget.RadioGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.MandatoryInfo;
+import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.utils.enums.EnumCountries;
 
@@ -28,7 +30,12 @@ public class CountryFragment extends BaseFragment {
 
     @BindView(R.id.rdgCountry)
     RadioGroup rdgCountry;
-    private MandatoryInfo location;
+
+    @BindView(R.id.title)
+    AppCompatTextView title;
+
+    private ProfileInfo profileInfo;
+    private MandatoryInfo mandatoryInfo;
     private EnumCountries countryEnum = EnumCountries.OTHERS;
 
     public CountryFragment() {
@@ -53,9 +60,14 @@ public class CountryFragment extends BaseFragment {
 
     @Override
     public void refreshData() {
-        location = objectBoxEntityProcessor.getMandatoryInfo();
-        if (location != null) {
-            countryEnum = location.getCountryEnum();
+        profileInfo = objectBoxEntityProcessor.getProfileInfo();
+        mandatoryInfo = profileInfo.mandatoryInfo.getTarget();
+        String name = profileInfo.getNames();
+        String message = context.getString(R.string.lbl_country_location, name);
+        title.setText(message);
+
+        if (mandatoryInfo != null) {
+            countryEnum = mandatoryInfo.getCountryEnum();
             switch (countryEnum) {
                 case NIGERIA:
                     rdgCountry.check(R.id.rdNg);
@@ -80,16 +92,17 @@ public class CountryFragment extends BaseFragment {
                     countryEnum = EnumCountries.TANZANIA;
                     break;
             }
-            location = objectBoxEntityProcessor.getMandatoryInfo();
-            if (location == null) {
-                location = new MandatoryInfo();
+            if (mandatoryInfo == null) {
+                mandatoryInfo = new MandatoryInfo();
             }
 
-            location.setCountryCode(countryEnum.countryCode());
-            location.setCountryName(countryEnum.countryName());
-            location.setCurrency(countryEnum.currency());
-            location.setCountryEnum(countryEnum);
-            objectBoxEntityProcessor.saveMandatoryInfo(location);
+            mandatoryInfo.setCountryCode(countryEnum.countryCode());
+            mandatoryInfo.setCountryName(countryEnum.countryName());
+            mandatoryInfo.setCurrency(countryEnum.currency());
+            mandatoryInfo.setCountryEnum(countryEnum);
+
+            profileInfo.mandatoryInfo.setTarget(mandatoryInfo);
+            objectBoxEntityProcessor.saveProfileInfo(profileInfo);
         });
     }
 
