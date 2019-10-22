@@ -1,16 +1,17 @@
 package com.iita.akilimo.views.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iita.akilimo.R;
@@ -44,9 +45,6 @@ public class FertilizersActivity extends BaseActivity {
 
     @BindView(R.id.availableFertilizers)
     RecyclerView recyclerView;
-
-    @BindView(R.id.swipeRefreshFertilizers)
-    SwipeRefreshLayout mSwipeRefreshLayout;
 
     @BindString(R.string.title_activity_fertilizer_choice)
     String headerTitleText;
@@ -166,19 +164,17 @@ public class FertilizersActivity extends BaseActivity {
                     });
                     objectBoxEntityProcessor.saveFertilizerList(availableFertilizersList);
                     initializeFertilizerPriceList();
-                } catch (Exception ignored) {
+                } catch (Exception ex) {
+                    Crashlytics.log(Log.ERROR, LOG_TAG, "Error saving price list");
+                    Crashlytics.logException(ex);
                 }
             }
 
             @Override
-            public void onSuccessJsonObject(JSONObject jsonObject) {
-
-            }
+            public void onSuccessJsonObject(JSONObject jsonObject) {}
 
             @Override
-            public void onError(VolleyError volleyError) {
-
-            }
+            public void onError(VolleyError volleyError) {}
         });
     }
 
@@ -201,8 +197,11 @@ public class FertilizersActivity extends BaseActivity {
                     });
                     objectBoxEntityProcessor.saveFertilizerPrices(fertilizerPricesList);
                     validate(false);
-                } catch (Exception ignored) {
+                } catch (Exception ex) {
+                    Crashlytics.log(Log.ERROR, LOG_TAG, "Error saving fertilizer price list");
+                    Crashlytics.logException(ex);
                 }
+
             }
 
             @Override

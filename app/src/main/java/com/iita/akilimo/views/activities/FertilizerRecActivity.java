@@ -115,7 +115,7 @@ public class FertilizerRecActivity extends BaseActivity {
         items.add(new RecommendationOptions(investmentString, EnumAdviceTasks.INVESTMENT_AMOUNT, 0));
         items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.TYPICAL_ROOT_YIELD, 0));
 
-        mAdapter = new RecOptionsAdapter(this, items, ItemAnimation.BOTTOM_UP);
+        mAdapter = new RecOptionsAdapter(this, items, ItemAnimation.RIGHT_LEFT);
         recyclerView.setAdapter(mAdapter);
 
         // on item list clicked

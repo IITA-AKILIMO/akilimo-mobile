@@ -39,6 +39,7 @@ public class FieldSizeFragment extends BaseFragment {
 
     @BindView(R.id.title)
     AppCompatTextView title;
+
     @BindView(R.id.specifiedArea)
     AppCompatTextView specifiedArea;
     @BindView(R.id.rdgFieldArea)
@@ -65,8 +66,7 @@ public class FieldSizeFragment extends BaseFragment {
     protected Context context;
     private double areaSize;
     private String myFieldSize = "";
-    private String selectedFieldArea;
-    private EnumAreaUnits areaUnits;
+
 
     private String quarter_acre;
     private String half_acre;
@@ -74,10 +74,11 @@ public class FieldSizeFragment extends BaseFragment {
     private String one_half_acres;
     private String two_half_acres;
     private String exact_acre;
-    String titleMessage;
+    private String titleMessage;
 
     private ProfileInfo profileInfo;
     private MandatoryInfo mandatoryInfo;
+    private EnumAreaUnits areaUnits = EnumAreaUnits.ACRE;
     private EnumFieldArea fieldAreaEnum = EnumFieldArea.UNKNOWN;
 
 
@@ -115,7 +116,7 @@ public class FieldSizeFragment extends BaseFragment {
     @Override
     public void refreshData() {
         profileInfo = objectBoxEntityProcessor.getProfileInfo();
-        mandatoryInfo = profileInfo.mandatoryInfo.getTarget();
+        mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             fieldAreaEnum = mandatoryInfo.getFieldAreaEnum();
             areaUnits = mandatoryInfo.getAreaUnitsEnum();
@@ -157,26 +158,27 @@ public class FieldSizeFragment extends BaseFragment {
         switch (checked) {
             case R.id.rd_quarter_acre:
                 fieldAreaEnum = EnumFieldArea.QUARTER_ACRE;
-                selectedFieldArea = quarter_acre;
+                areaSize = EnumFieldArea.QUARTER_ACRE.areaValue();
                 break;
             case R.id.rd_half_acre:
                 fieldAreaEnum = EnumFieldArea.HALF_ACRE;
-                selectedFieldArea = half_acre;
+                areaSize = EnumFieldArea.HALF_ACRE.areaValue();
                 break;
             case R.id.rd_one_acre:
                 fieldAreaEnum = EnumFieldArea.ONE_ACRE;
-                selectedFieldArea = one_acre;
+                areaSize = EnumFieldArea.ONE_ACRE.areaValue();
                 break;
             case R.id.rd_one_half_acre:
                 fieldAreaEnum = EnumFieldArea.ONE_HALF_ACRE;
-                selectedFieldArea = one_half_acres;
+                areaSize = EnumFieldArea.ONE_HALF_ACRE.areaValue();
                 break;
             case R.id.rd_two_half_acre:
                 fieldAreaEnum = EnumFieldArea.TWO_HALF_ACRE;
-                selectedFieldArea = two_half_acres;
+                areaSize = EnumFieldArea.TWO_HALF_ACRE.areaValue();
                 break;
             case R.id.rd_five_acre:
                 fieldAreaEnum = EnumFieldArea.FIVE_ACRE;
+                areaSize = EnumFieldArea.FIVE_ACRE.areaValue();
                 break;
             case R.id.rd_specify_acre:
                 specifiedArea.setVisibility(View.VISIBLE);
@@ -190,18 +192,16 @@ public class FieldSizeFragment extends BaseFragment {
 
     private void saveFieldSize() {
         profileInfo = objectBoxEntityProcessor.getProfileInfo();
-        mandatoryInfo = profileInfo.mandatoryInfo.getTarget();
         if (mandatoryInfo == null) {
             mandatoryInfo = new MandatoryInfo();
         }
         mandatoryInfo.setFieldAreaEnum(fieldAreaEnum);
         mandatoryInfo.setAreaSize(fieldAreaEnum.areaValue());
         mandatoryInfo.setAreaSize(areaSize);
-
-        profileInfo.mandatoryInfo.setTarget(mandatoryInfo);
-        objectBoxEntityProcessor.saveProfileInfo(profileInfo);
+        objectBoxEntityProcessor.saveMandatoryInfo(mandatoryInfo);
     }
 
+//    @SuppressLint("StringFormatInvalid")
     private void setFieldLabels(EnumAreaUnits areaUnits) {
         switch (areaUnits) {
             case ACRE:

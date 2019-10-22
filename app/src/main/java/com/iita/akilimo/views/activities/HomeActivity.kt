@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -282,6 +283,34 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             objectBoxEntityProcessor.saveMandatoryInfo(location)
         } catch (ex: Exception) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "Error saving location information")
+            Crashlytics.logException(ex)
+        }
+
+    }
+
+    override fun onBackPressed() {
+        try {
+
+            //super.onBackPressed();
+            if (exit) {
+                finish() // finish activity
+                System.gc() //run the garbage collector to free up memory resources
+                System.exit(0) //exit the system
+            } else {
+                Toast.makeText(
+                    this,
+                    "Press back again to exit",
+                    Toast.LENGTH_SHORT
+                ).show()
+                exit = true
+                Handler().postDelayed({ exit = false }, (3 * 1000).toLong())
+            }
+        } catch (ex: Exception) {
+            Crashlytics.log(
+                Log.ERROR,
+                LOG_TAG,
+                "Error occurred while exiting Recommendations activity"
+            )
             Crashlytics.logException(ex)
         }
 

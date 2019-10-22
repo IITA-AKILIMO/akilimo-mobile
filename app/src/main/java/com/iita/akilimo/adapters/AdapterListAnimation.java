@@ -1,7 +1,6 @@
 package com.iita.akilimo.adapters;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +25,7 @@ public class AdapterListAnimation extends RecyclerView.Adapter<RecyclerView.View
     private OnItemClickListener mOnItemClickListener;
     private int animation_type;
     private int lastPosition = -1;
+    private int layoutId;
     private boolean on_attach = true;
 
     public interface OnItemClickListener {
@@ -38,6 +38,12 @@ public class AdapterListAnimation extends RecyclerView.Adapter<RecyclerView.View
 
     public AdapterListAnimation(Context context) {
         this.context = context;
+        this.layoutId = R.layout.item_card_recommendation_arrow;
+    }
+
+    public AdapterListAnimation(Context context, int layoutId) {
+        this.context = context;
+        this.layoutId = layoutId;
     }
 
     public void setItems(List<Recommendations> items, int animation_type) {
@@ -55,7 +61,7 @@ public class AdapterListAnimation extends RecyclerView.Adapter<RecyclerView.View
         public OriginalViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.name);
-            cardView = view.findViewById(R.id.mainCard);
+            cardView = view.findViewById(R.id.lyt_parent);
             contentLayout = view.findViewById(R.id.contentLayout);
         }
     }
@@ -63,7 +69,7 @@ public class AdapterListAnimation extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder;
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card_recommendation, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false);
         viewHolder = new OriginalViewHolder(view);
         return viewHolder;
     }
@@ -73,14 +79,8 @@ public class AdapterListAnimation extends RecyclerView.Adapter<RecyclerView.View
     public void onBindViewHolder(@NotNull RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder view = (OriginalViewHolder) holder;
-
             Recommendations rec = items.get(position);
-            Drawable drawable = rec.getBackground();
             view.name.setText(rec.getRecommendationName());
-            if (drawable != null) {
-//                view.contentLayout.setBackgroundColor(drawable);
-                view.contentLayout.setBackground(drawable);
-            }
 
             view.cardView.setOnClickListener(view1 -> {
                 if (mOnItemClickListener != null) {
