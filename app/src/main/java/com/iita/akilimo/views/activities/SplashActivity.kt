@@ -23,7 +23,7 @@ class SplashActivity : BaseActivity() {
         val background = object : Thread() {
             override fun run() {
                 try {
-                    val intent = Intent(this@SplashActivity, FertilizersActivity::class.java)
+                    val intent = Intent(this@SplashActivity, HomeActivity::class.java)
                     startActivity(intent)
                     closeActivity(false)
                 } catch (ex: Exception) {
