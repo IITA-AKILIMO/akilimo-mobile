@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
@@ -44,9 +43,6 @@ public class FertilizersActivity extends BaseActivity {
 
     @BindView(R.id.availableFertilizers)
     RecyclerView recyclerView;
-
-    @BindView(R.id.swipeRefreshFertilizers)
-    SwipeRefreshLayout mSwipeRefreshLayout;
 
     @BindString(R.string.title_activity_fertilizer_choice)
     String headerTitleText;
