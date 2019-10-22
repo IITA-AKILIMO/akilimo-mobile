@@ -57,7 +57,7 @@ def computeVersionName() {
 }
 
 static def computeBuildNumber() {
-    return Integer.valueOf(System.env.BUILD_NUMBER ?: 0)
+    return Integer.valueOf(System.env.BUILD_NUMBER ?: 1)
 }
 
 def computeVersionCode() {
@@ -81,7 +81,7 @@ dependencies {
     // google maps library ------------------------------------------------------------------------
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-places:17.0.0'
-    implementation 'com.google.firebase:firebase-config:19.0.2'
+    implementation 'com.google.firebase:firebase-config:19.0.3'
     implementation 'com.google.firebase:firebase-analytics:17.2.0'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
@@ -139,5 +139,7 @@ dependencies {
 }
 
 dependencies {
-    implementation 'androidx.legacy:legacy-support-v4:+'
+    implementation 'androidx.constraintlayout:constraintlayout:+'
+    implementation 'androidx.appcompat:appcompat:+'
+    implementation 'com.google.android.material:material:+'
 }
