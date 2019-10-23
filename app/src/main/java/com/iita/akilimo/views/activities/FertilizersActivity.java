@@ -190,8 +190,7 @@ public class FertilizersActivity extends BaseActivity {
 
         countryCode = "NG";
         final RestService restService = RestService.getInstance(queue, this);
-        restService.setEndpoint("v2/fertilizers");
-        restService.setCountryCode(countryCode);
+        restService.setParameters("v2/fertilizers", countryCode, 1000);
 
         restService.getJsonArrList(new IVolleyCallback() {
             @Override
@@ -237,9 +236,7 @@ public class FertilizersActivity extends BaseActivity {
     private void initializeFertilizerPriceList() {
         final RestService restService = RestService.getInstance(queue, this);
 
-        restService.setEndpoint("v2/fertilizer-prices");
-        restService.setCountryCode(countryCode);
-
+        restService.setParameters("v2/fertilizer-prices", countryCode);
         restService.getJsonArrList(new IVolleyCallback() {
             @Override
             public void onSuccessJsonString(String jsonStringResult) {

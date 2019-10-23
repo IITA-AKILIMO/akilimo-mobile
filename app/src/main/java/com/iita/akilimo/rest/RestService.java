@@ -2,7 +2,6 @@ package com.iita.akilimo.rest;
 
 
 import android.app.Activity;
-import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -34,6 +33,7 @@ public class RestService {
     private String countryCode;
     private RequestQueue queue;
     private SessionManager sessionManager;
+    private int initialTimeout = 1000;
 
     private RestService(RequestQueue requestQueue, Activity activity) {
         queue = requestQueue;
@@ -47,18 +47,24 @@ public class RestService {
         return restServiceObj;
     }
 
-    public void setEndpoint(String endPoint) {
+    public void setParameters(String endPoint) {
         String baseUrl = sessionManager.getApiEndPoint();
         url = String.format("%s%s", baseUrl, endPoint);
-
-        Log.i(LOG_TAG, "Rest end point is " + url);
     }
 
-    public void setCountryCode(String countryCode) {
+    public void setParameters(String endPoint, String countryCode) {
+        String baseUrl = sessionManager.getApiEndPoint();
+        this.url = String.format("%s%s", baseUrl, endPoint);
         this.countryCode = countryCode;
-
-        Log.i(LOG_TAG, "Country header is " + countryCode);
     }
+
+    public void setParameters(String endPoint, String countryCode, int initialTimeout) {
+        String baseUrl = sessionManager.getApiEndPoint();
+        this.url = String.format("%s%s", baseUrl, endPoint);
+        this.countryCode = countryCode;
+        this.initialTimeout = initialTimeout;
+    }
+
 
     public void postJsonObject(final JSONObject postData, final IVolleyCallback callback) {
 
@@ -96,7 +102,7 @@ public class RestService {
         // Adding request to request queue
 
         jsonObjReq.setRetryPolicy(new DefaultRetryPolicy(
-                69000, //69 seconds the R endpoint takes a bit of time to return results approx 39 seconds
+                initialTimeout, //69 seconds the R endpoint takes a bit of time to return results approx 39 seconds
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -134,7 +140,7 @@ public class RestService {
         };
 
         putRequest.setRetryPolicy(new DefaultRetryPolicy(
-                5000,
+                initialTimeout,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(putRequest);
@@ -192,7 +198,7 @@ public class RestService {
         };
 // add it to the RequestQueue
         jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(
-                30000,
+                initialTimeout,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(jsonArrayRequest);
@@ -217,15 +223,12 @@ public class RestService {
         ) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("apiToken", apiToken);
-                params.put("userId", userId);
-                return params;
+                return setHeaderParameters();
             }
         };
 
         dr.setRetryPolicy(new DefaultRetryPolicy(
-                5000,
+                initialTimeout,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(dr);
