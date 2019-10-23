@@ -101,10 +101,10 @@ public class FertilizersActivity extends BaseActivity {
 
     @Override
     protected void initToolbar() {
-//        toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
+        toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(headerTitleText);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         toolbar.setNavigationOnClickListener(v -> closeActivity(false));
     }
@@ -164,13 +164,10 @@ public class FertilizersActivity extends BaseActivity {
             }
         });
 
-        btnRetry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                initializeFertilizers();
-            }
-        });
         initializeFertilizers();
+
+        btnRetry.setOnClickListener(view -> initializeFertilizers());
+        btnSave.setOnClickListener(view -> closeActivity(false));
     }
 
     @Override
