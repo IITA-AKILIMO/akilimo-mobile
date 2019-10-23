@@ -10,27 +10,23 @@
 
     <include layout="@layout/app_bar_layout" />
 
-
-    <LinearLayout
-        android:id="@+id/swipeRefreshFertilizers"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/availableFertilizers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_margin="@dimen/spacing_medium"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/spacing_xxxlarge"
+        android:scrollbars="vertical"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_behavior="@string/bar_scrolling_view_behavior"
+        app:spanCount="2"
+        tools:itemCount="2"
+        tools:listitem="@layout/list_fertilizer_grid_row" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/availableFertilizers"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_medium"
-            android:clipToPadding="false"
-            android:paddingBottom="@dimen/spacing_small"
-            android:scrollbars="vertical"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:spanCount="2"
-            tools:listitem="@layout/list_fertilizer_grid_row" />
+    <include
+        android:id="@+id/navigation"
+        layout="@layout/bottom_buttons_layout" />
 
-    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

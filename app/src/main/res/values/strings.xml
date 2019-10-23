@@ -194,4 +194,8 @@
     <string name="lbl_rec_sample">We recommend to not apply any fertilizer. We do not expect that fertilizer application will result in a profitable yield increase in your situation.</string>
     <string name="lbl_save">Save</string>
     <string name="lbl_rec_intro">AKILIMO can advise you to grow cassava.\nWhat can we help you with?</string>
+
+    <!-- scroll behaviors -->
+    <string name="hide_bottom_on_scroll" translatable="false">com.google.android.material.behavior.HideBottomViewOnScrollBehavior</string>
+    <string name="bar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
 </resources>

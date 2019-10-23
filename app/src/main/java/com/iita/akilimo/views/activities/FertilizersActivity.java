@@ -2,6 +2,7 @@ package com.iita.akilimo.views.activities;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -49,12 +50,16 @@ public class FertilizersActivity extends BaseActivity {
     @BindString(R.string.title_activity_fertilizer_choice)
     String headerTitleText;
 
+    @BindView(R.id.navigation)
+    LinearLayout navigation;
+
     private List<Fertilizer> availableFertilizersList = new ArrayList<>();
     private List<Fertilizer> selectedFertilizers = new ArrayList<>();
     private List<Fertilizer> fertilizerTypesList = new ArrayList<>();
     private List<FertilizerPrices> fertilizerPricesList = new ArrayList<>();
 
     private FertilizerGridAdapter mAdapter;
+    boolean isNavigationHide = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +96,8 @@ public class FertilizersActivity extends BaseActivity {
         mAdapter = new FertilizerGridAdapter(context);
         recyclerView.setAdapter(mAdapter);
 
-        initializeFertilizers();
+
+//        initializeFertilizers();
         mAdapter.setOnItemClickListener((view, clickedFertilizer, position) -> {
             mAdapter.setActiveRowIndex(position);
             Fertilizer selectedType = objectBoxEntityProcessor.getSavedFertilizer(clickedFertilizer.getType(), countryCode);
@@ -135,6 +141,7 @@ public class FertilizersActivity extends BaseActivity {
                 priceDialogFragment.show(getSupportFragmentManager(), FertilizerPriceDialogFragment.ARG_ITEM_ID);
             }
         });
+        validate(true);
     }
 
     @Override
@@ -171,10 +178,12 @@ public class FertilizersActivity extends BaseActivity {
             }
 
             @Override
-            public void onSuccessJsonObject(JSONObject jsonObject) {}
+            public void onSuccessJsonObject(JSONObject jsonObject) {
+            }
 
             @Override
-            public void onError(VolleyError volleyError) {}
+            public void onError(VolleyError volleyError) {
+            }
         });
     }
 
