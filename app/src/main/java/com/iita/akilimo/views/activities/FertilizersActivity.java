@@ -97,7 +97,6 @@ public class FertilizersActivity extends BaseActivity {
         recyclerView.setAdapter(mAdapter);
 
 
-//        initializeFertilizers();
         mAdapter.setOnItemClickListener((view, clickedFertilizer, position) -> {
             mAdapter.setActiveRowIndex(position);
             Fertilizer selectedType = objectBoxEntityProcessor.getSavedFertilizer(clickedFertilizer.getType(), countryCode);
@@ -142,6 +141,7 @@ public class FertilizersActivity extends BaseActivity {
             }
         });
         validate(true);
+        initializeFertilizers();
     }
 
     @Override
