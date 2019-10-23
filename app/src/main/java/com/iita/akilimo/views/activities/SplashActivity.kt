@@ -11,13 +11,7 @@ class SplashActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        try {
-            launchActivity()
-        } catch (ex: Exception) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "Unable to run thread for splash screen")
-            Crashlytics.logException(ex)
-            launchActivity() //fallback launching
-        }
+        initComponent()
     }
 
     override fun initComponent() {
@@ -34,6 +28,7 @@ class SplashActivity : BaseActivity() {
         } catch (ex: Exception) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "Error running background thread for splash screen")
             Crashlytics.logException(ex)
+            launchActivity()
         }
     }
 

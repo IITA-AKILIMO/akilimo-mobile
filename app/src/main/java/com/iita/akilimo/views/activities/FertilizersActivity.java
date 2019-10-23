@@ -2,7 +2,11 @@ package com.iita.akilimo.views.activities;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -50,8 +54,20 @@ public class FertilizersActivity extends BaseActivity {
     @BindString(R.string.title_activity_fertilizer_choice)
     String headerTitleText;
 
-    @BindView(R.id.navigation)
-    LinearLayout navigation;
+    @BindView(R.id.lyt_progress)
+    LinearLayout lyt_progress;
+
+    @BindView(R.id.btnFinish)
+    Button btnSave;
+    @BindView(R.id.btnCancel)
+    Button btnCancel;
+    @BindView(R.id.btnRetry)
+    Button btnRetry;
+
+    @BindView(R.id.errorImage)
+    ImageView errorImage;
+    @BindView(R.id.errorLabel)
+    TextView errorLabel;
 
     private List<Fertilizer> availableFertilizersList = new ArrayList<>();
     private List<Fertilizer> selectedFertilizers = new ArrayList<>();
@@ -90,6 +106,8 @@ public class FertilizersActivity extends BaseActivity {
 
     @Override
     protected void initComponent() {
+        btnSave.setEnabled(false);
+        recyclerView.setVisibility(View.GONE);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.addItemDecoration(new SpacingItemDecoration(2, Tools.dpToPx(this, 3), true));
         recyclerView.setHasFixedSize(true);
@@ -122,8 +140,7 @@ public class FertilizersActivity extends BaseActivity {
                             selectedFertilizers.add(fertilizer);
                         }
                         //refresh the adapter and data set
-                        fertilizerTypesList = objectBoxEntityProcessor.getAvailableFertilizersByCountry(countryCode);
-                        mAdapter.setItems(fertilizerTypesList);
+                        validate(false);
                     }
                 }
             });
@@ -140,7 +157,13 @@ public class FertilizersActivity extends BaseActivity {
                 priceDialogFragment.show(getSupportFragmentManager(), FertilizerPriceDialogFragment.ARG_ITEM_ID);
             }
         });
-        validate(true);
+
+        btnRetry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                initializeFertilizers();
+            }
+        });
         initializeFertilizers();
     }
 
@@ -153,6 +176,15 @@ public class FertilizersActivity extends BaseActivity {
     }
 
     private void initializeFertilizers() {
+
+        lyt_progress.setVisibility(View.VISIBLE);
+        lyt_progress.setAlpha(1.0f);
+        recyclerView.setVisibility(View.GONE);
+        errorLabel.setVisibility(View.GONE);
+        errorImage.setVisibility(View.GONE);
+        btnRetry.setVisibility(View.GONE);
+
+        countryCode = "NG";
         final RestService restService = RestService.getInstance(queue, this);
         restService.setEndpoint("v2/fertilizers");
         restService.setCountryCode(countryCode);
@@ -172,6 +204,12 @@ public class FertilizersActivity extends BaseActivity {
                     objectBoxEntityProcessor.saveFertilizerList(availableFertilizersList);
                     initializeFertilizerPriceList();
                 } catch (Exception ex) {
+                    lyt_progress.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.GONE);
+                    errorLabel.setVisibility(View.VISIBLE);
+                    errorImage.setVisibility(View.VISIBLE);
+                    btnRetry.setVisibility(View.VISIBLE);
+
                     Crashlytics.log(Log.ERROR, LOG_TAG, "Error saving price list");
                     Crashlytics.logException(ex);
                 }
@@ -183,6 +221,11 @@ public class FertilizersActivity extends BaseActivity {
 
             @Override
             public void onError(VolleyError volleyError) {
+                lyt_progress.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.GONE);
+                errorLabel.setVisibility(View.VISIBLE);
+                errorImage.setVisibility(View.VISIBLE);
+                btnRetry.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -200,13 +243,20 @@ public class FertilizersActivity extends BaseActivity {
 
             @Override
             public void onSuccessJsonArr(JSONArray jsonArray) {
+                lyt_progress.setVisibility(View.GONE);
                 ObjectMapper objectMapper = new ObjectMapper();
                 try {
                     fertilizerPricesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<FertilizerPrices>>() {
                     });
                     objectBoxEntityProcessor.saveFertilizerPrices(fertilizerPricesList);
                     validate(false);
+                    recyclerView.setVisibility(View.VISIBLE);
                 } catch (Exception ex) {
+                    lyt_progress.setVisibility(View.GONE);
+                    errorImage.setVisibility(View.VISIBLE);
+                    errorLabel.setVisibility(View.VISIBLE);
+                    btnRetry.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
                     Crashlytics.log(Log.ERROR, LOG_TAG, "Error saving fertilizer price list");
                     Crashlytics.logException(ex);
                 }
@@ -219,6 +269,11 @@ public class FertilizersActivity extends BaseActivity {
 
             @Override
             public void onError(VolleyError volleyError) {
+                lyt_progress.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.GONE);
+                errorLabel.setVisibility(View.VISIBLE);
+                errorImage.setVisibility(View.VISIBLE);
+                btnRetry.setVisibility(View.VISIBLE);
             }
         });
     }
