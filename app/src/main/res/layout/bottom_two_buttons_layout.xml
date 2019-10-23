@@ -9,6 +9,7 @@
     android:gravity="bottom|center"
     android:background="?android:attr/windowBackground"
     android:orientation="horizontal"
+    android:id="@+id/lyt_button"
     app:layout_scrollFlags="scroll|enterAlways|snap">
 
     <com.google.android.material.button.MaterialButton

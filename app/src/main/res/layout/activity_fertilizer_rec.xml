@@ -38,13 +38,13 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/lin_result"
+            android:layout_above="@id/lyt_button"
             android:layout_below="@id/title"
             android:scrollbars="vertical"
             android:scrollingCache="true"
             tools:listitem="@layout/item_card_recommendation_no_arrow" />
 
-        <include layout="@layout/bottom_rec_button" />
+        <include layout="@layout/bottom_single_button_layout" />
 
     </RelativeLayout>
 

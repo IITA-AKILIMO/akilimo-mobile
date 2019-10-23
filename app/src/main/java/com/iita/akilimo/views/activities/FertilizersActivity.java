@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -19,6 +20,7 @@ import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.FertilizerGridAdapter;
 import com.iita.akilimo.entities.MandatoryInfo;
@@ -38,6 +40,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -56,11 +59,12 @@ public class FertilizersActivity extends BaseActivity {
 
     @BindView(R.id.lyt_progress)
     LinearLayout lyt_progress;
+    @BindView(R.id.coordinatorLayout)
+    CoordinatorLayout coordinatorLayout;
 
-    @BindView(R.id.btnFinish)
+    @BindView(R.id.btnGetRec)
     Button btnSave;
-    @BindView(R.id.btnCancel)
-    Button btnCancel;
+
     @BindView(R.id.btnRetry)
     Button btnRetry;
 
@@ -76,6 +80,7 @@ public class FertilizersActivity extends BaseActivity {
 
     private FertilizerGridAdapter mAdapter;
     boolean isNavigationHide = false;
+    int minSelection = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,16 +101,17 @@ public class FertilizersActivity extends BaseActivity {
 
     @Override
     protected void initToolbar() {
-        toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
+//        toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(headerTitleText);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         toolbar.setNavigationOnClickListener(v -> closeActivity(false));
     }
 
     @Override
     protected void initComponent() {
+        btnSave.setText(context.getString(R.string.lbl_finish));
         btnSave.setEnabled(false);
         recyclerView.setVisibility(View.GONE);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
@@ -172,6 +178,7 @@ public class FertilizersActivity extends BaseActivity {
         if (mAdapter != null) {
             availableFertilizersList = objectBoxEntityProcessor.getAvailableFertilizersByCountry(countryCode);
             mAdapter.setItems(availableFertilizersList);
+            btnSave.setEnabled(isMinSelected());
         }
     }
 
@@ -278,4 +285,13 @@ public class FertilizersActivity extends BaseActivity {
         });
     }
 
+    private boolean isMinSelected() {
+        int count = objectBoxEntityProcessor.getSelectedFertilizers(countryCode).size();
+        if (count < minSelection) {
+            Snackbar snackbar = Snackbar
+                    .make(coordinatorLayout, String.format(Locale.US, context.getString(R.string.lbl_min_selection), minSelection), Snackbar.LENGTH_LONG);
+            snackbar.show();
+        }
+        return count >= minSelection;
+    }
 }
