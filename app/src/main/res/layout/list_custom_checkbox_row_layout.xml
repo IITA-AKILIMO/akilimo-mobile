@@ -11,7 +11,7 @@
         android:id="@+id/thumbnail"
         android:layout_width="match_parent"
         android:layout_height="160sp"
-        android:background="@drawable/akilimo_logo"
+        android:background="@drawable/bg_polygon"
         android:contentDescription="@string/app_name"
         android:scaleType="fitCenter" />
 

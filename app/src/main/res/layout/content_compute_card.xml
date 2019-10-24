@@ -13,22 +13,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp">
-            
+
             <TextView
                 android:id="@+id/recLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginBottom="@dimen/spacing_medium"
-                android:textColor="@color/indigo_900"
-                android:text="@string/lbl_recommendations" />
+                android:text="@string/lbl_recommendations"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+                android:textColor="@color/indigo_900" />
 
             <TextView
                 android:id="@+id/recSubLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/recLabel"
-                android:text="@string/app_name" />
+                android:text="@string/lbl_rec_sample"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Title" />
 
         </RelativeLayout>
 

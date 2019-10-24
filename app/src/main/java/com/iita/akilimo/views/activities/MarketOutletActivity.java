@@ -530,8 +530,7 @@ public class MarketOutletActivity extends BaseActivity {
     private void processStarchFactories() {
         final RestService restService = RestService.getInstance(queue, this);
         final ObjectMapper objectMapper = new ObjectMapper();
-        restService.setCountryCode(countryCode);
-        restService.setEndpoint("v2/starch-factories");
+        restService.setParameters("v2/starch-factories", countryCode, 5000);
 
         restService.getJsonArrList(new IVolleyCallback() {
             @Override

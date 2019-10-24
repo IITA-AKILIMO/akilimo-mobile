@@ -2,24 +2,27 @@ package com.iita.akilimo;
 
 import androidx.multidex.MultiDexApplication;
 
+import com.crashlytics.android.Crashlytics;
+
 import net.danlew.android.joda.JodaTimeAndroid;
 
+import io.fabric.sdk.android.Fabric;
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidObjectBrowser;
 import timber.log.Timber;
 
 public class Akilimo extends MultiDexApplication {
     public static final String LOG_TAG = Akilimo.class.getSimpleName();
-    public static final String DB_NAME = "akilimoDB";
+    public static final String DB_NAME = "akilimoDST";
     private BoxStore boxStore;
 
 
     @Override
     public void onCreate() {
         super.onCreate();
-//        Fabric.with(this, new Crashlytics());
+        Fabric.with(this, new Crashlytics());
 
-        BoxStore.deleteAllFiles(this, DB_NAME);
+//        BoxStore.deleteAllFiles(this, DB_NAME);
         boxStore = MyObjectBox.builder()
                 .androidContext(Akilimo.this)
                 .name(DB_NAME)

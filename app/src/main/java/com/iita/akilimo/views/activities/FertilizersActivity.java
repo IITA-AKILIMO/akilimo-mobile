@@ -1,18 +1,26 @@
 package com.iita.akilimo.views.activities;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.FertilizerGridAdapter;
 import com.iita.akilimo.entities.MandatoryInfo;
@@ -32,6 +40,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -45,11 +54,24 @@ public class FertilizersActivity extends BaseActivity {
     @BindView(R.id.availableFertilizers)
     RecyclerView recyclerView;
 
-    @BindView(R.id.swipeRefreshFertilizers)
-    SwipeRefreshLayout mSwipeRefreshLayout;
-
     @BindString(R.string.title_activity_fertilizer_choice)
     String headerTitleText;
+
+    @BindView(R.id.lyt_progress)
+    LinearLayout lyt_progress;
+    @BindView(R.id.coordinatorLayout)
+    CoordinatorLayout coordinatorLayout;
+
+    @BindView(R.id.btnGetRec)
+    Button btnSave;
+
+    @BindView(R.id.btnRetry)
+    Button btnRetry;
+
+    @BindView(R.id.errorImage)
+    ImageView errorImage;
+    @BindView(R.id.errorLabel)
+    TextView errorLabel;
 
     private List<Fertilizer> availableFertilizersList = new ArrayList<>();
     private List<Fertilizer> selectedFertilizers = new ArrayList<>();
@@ -57,6 +79,8 @@ public class FertilizersActivity extends BaseActivity {
     private List<FertilizerPrices> fertilizerPricesList = new ArrayList<>();
 
     private FertilizerGridAdapter mAdapter;
+    boolean isNavigationHide = false;
+    int minSelection = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,18 +106,33 @@ public class FertilizersActivity extends BaseActivity {
         getSupportActionBar().setTitle(headerTitleText);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        toolbar.setNavigationOnClickListener(v -> closeActivity(false));
+        toolbar.setNavigationOnClickListener(v -> validateInput(false));
     }
 
     @Override
+    public void onBackPressed() {
+        validateInput(true);
+    }
+
+    private void validateInput(boolean backPressed) {
+        if (isMinSelected()) {
+            closeActivity(backPressed);
+        }
+    }
+
+
+    @Override
     protected void initComponent() {
+        btnSave.setText(context.getString(R.string.lbl_finish));
+        btnSave.setEnabled(false);
+        recyclerView.setVisibility(View.GONE);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.addItemDecoration(new SpacingItemDecoration(2, Tools.dpToPx(this, 3), true));
         recyclerView.setHasFixedSize(true);
         mAdapter = new FertilizerGridAdapter(context);
         recyclerView.setAdapter(mAdapter);
 
-        initializeFertilizers();
+
         mAdapter.setOnItemClickListener((view, clickedFertilizer, position) -> {
             mAdapter.setActiveRowIndex(position);
             Fertilizer selectedType = objectBoxEntityProcessor.getSavedFertilizer(clickedFertilizer.getType(), countryCode);
@@ -119,8 +158,7 @@ public class FertilizersActivity extends BaseActivity {
                             selectedFertilizers.add(fertilizer);
                         }
                         //refresh the adapter and data set
-                        fertilizerTypesList = objectBoxEntityProcessor.getAvailableFertilizersByCountry(countryCode);
-                        mAdapter.setItems(fertilizerTypesList);
+                        validate(false);
                     }
                 }
             });
@@ -137,6 +175,11 @@ public class FertilizersActivity extends BaseActivity {
                 priceDialogFragment.show(getSupportFragmentManager(), FertilizerPriceDialogFragment.ARG_ITEM_ID);
             }
         });
+
+        initializeFertilizers();
+
+        btnRetry.setOnClickListener(view -> initializeFertilizers());
+        btnSave.setOnClickListener(view -> closeActivity(false));
     }
 
     @Override
@@ -144,13 +187,21 @@ public class FertilizersActivity extends BaseActivity {
         if (mAdapter != null) {
             availableFertilizersList = objectBoxEntityProcessor.getAvailableFertilizersByCountry(countryCode);
             mAdapter.setItems(availableFertilizersList);
+            btnSave.setEnabled(isMinSelected());
         }
     }
 
     private void initializeFertilizers() {
+
+        lyt_progress.setVisibility(View.VISIBLE);
+        lyt_progress.setAlpha(1.0f);
+        recyclerView.setVisibility(View.GONE);
+        errorLabel.setVisibility(View.GONE);
+        errorImage.setVisibility(View.GONE);
+        btnRetry.setVisibility(View.GONE);
+
         final RestService restService = RestService.getInstance(queue, this);
-        restService.setEndpoint("v2/fertilizers");
-        restService.setCountryCode(countryCode);
+        restService.setParameters("v2/fertilizers", countryCode, 1000);
 
         restService.getJsonArrList(new IVolleyCallback() {
             @Override
@@ -166,18 +217,29 @@ public class FertilizersActivity extends BaseActivity {
                     });
                     objectBoxEntityProcessor.saveFertilizerList(availableFertilizersList);
                     initializeFertilizerPriceList();
-                } catch (Exception ignored) {
+                } catch (Exception ex) {
+                    lyt_progress.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.GONE);
+                    errorLabel.setVisibility(View.VISIBLE);
+                    errorImage.setVisibility(View.VISIBLE);
+                    btnRetry.setVisibility(View.VISIBLE);
+
+                    Crashlytics.log(Log.ERROR, LOG_TAG, "Error saving price list");
+                    Crashlytics.logException(ex);
                 }
             }
 
             @Override
             public void onSuccessJsonObject(JSONObject jsonObject) {
-
             }
 
             @Override
             public void onError(VolleyError volleyError) {
-
+                lyt_progress.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.GONE);
+                errorLabel.setVisibility(View.VISIBLE);
+                errorImage.setVisibility(View.VISIBLE);
+                btnRetry.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -185,9 +247,7 @@ public class FertilizersActivity extends BaseActivity {
     private void initializeFertilizerPriceList() {
         final RestService restService = RestService.getInstance(queue, this);
 
-        restService.setEndpoint("v2/fertilizer-prices");
-        restService.setCountryCode(countryCode);
-
+        restService.setParameters("v2/fertilizer-prices", countryCode);
         restService.getJsonArrList(new IVolleyCallback() {
             @Override
             public void onSuccessJsonString(String jsonStringResult) {
@@ -195,14 +255,24 @@ public class FertilizersActivity extends BaseActivity {
 
             @Override
             public void onSuccessJsonArr(JSONArray jsonArray) {
+                lyt_progress.setVisibility(View.GONE);
                 ObjectMapper objectMapper = new ObjectMapper();
                 try {
                     fertilizerPricesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<FertilizerPrices>>() {
                     });
                     objectBoxEntityProcessor.saveFertilizerPrices(fertilizerPricesList);
                     validate(false);
-                } catch (Exception ignored) {
+                    recyclerView.setVisibility(View.VISIBLE);
+                } catch (Exception ex) {
+                    lyt_progress.setVisibility(View.GONE);
+                    errorImage.setVisibility(View.VISIBLE);
+                    errorLabel.setVisibility(View.VISIBLE);
+                    btnRetry.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                    Crashlytics.log(Log.ERROR, LOG_TAG, "Error saving fertilizer price list");
+                    Crashlytics.logException(ex);
                 }
+
             }
 
             @Override
@@ -211,8 +281,22 @@ public class FertilizersActivity extends BaseActivity {
 
             @Override
             public void onError(VolleyError volleyError) {
+                lyt_progress.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.GONE);
+                errorLabel.setVisibility(View.VISIBLE);
+                errorImage.setVisibility(View.VISIBLE);
+                btnRetry.setVisibility(View.VISIBLE);
             }
         });
     }
 
+    private boolean isMinSelected() {
+        int count = objectBoxEntityProcessor.getSelectedFertilizers(countryCode).size();
+        if (count < minSelection) {
+            Snackbar snackbar = Snackbar
+                    .make(coordinatorLayout, String.format(Locale.US, context.getString(R.string.lbl_min_selection), minSelection), Snackbar.LENGTH_LONG);
+            snackbar.show();
+        }
+        return count >= minSelection;
+    }
 }

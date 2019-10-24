@@ -23,25 +23,16 @@
             android:layout_width="250dp"
             android:layout_height="250dp"
             android:padding="@dimen/spacing_xlarge"
-            app:srcCompat="@drawable/gps_map" />
+            app:srcCompat="@drawable/ic_gps_map" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/lbl_salutation"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/deep_orange_500"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_middle"
+            android:fontFamily="@font/roboto_bold"
             android:text="@string/lbl_farm_location"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/grey_80" />
 
         <TextView
@@ -51,6 +42,7 @@
             android:layout_marginTop="@dimen/spacing_middle"
             android:text="@string/empty_text"
             android:textAlignment="center"
+            android:fontFamily="@font/roboto"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@color/grey_80" />
 
@@ -61,11 +53,12 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:text="@string/lbl_current_location"
-            android:textColor="@color/deep_orange_500"
+            android:textAllCaps="false"
+            android:textColor="@color/grey_80"
             app:backgroundTint="@color/grey_5"
-            app:cornerRadius="1dp"
-            app:rippleColor="@color/colorAccent"
-            app:strokeColor="@color/deep_orange_500"
+            app:cornerRadius="5dp"
+            app:rippleColor="@color/secondaryDarkColor"
+            app:strokeColor="@color/colorAccent"
             app:strokeWidth="1dp" />
 
         <com.google.android.material.button.MaterialButton
@@ -75,7 +68,8 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:text="@string/lbl_select_location_manually"
-            app:cornerRadius="1dp" />
+            android:textAllCaps="false"
+            app:cornerRadius="5dp" />
 
     </LinearLayout>
 

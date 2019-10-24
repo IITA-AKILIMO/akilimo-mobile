@@ -23,16 +23,17 @@
             android:layout_width="wrap_content"
             android:layout_height="250dp"
             android:padding="@dimen/spacing_xlarge"
-            app:srcCompat="@drawable/world" />
+            app:srcCompat="@drawable/ic_world" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_bold"
             android:text="@string/lbl_country_location"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/deep_orange_500"
-            android:textStyle="bold" />
+            android:textColor="@color/grey_80" />
 
         <RadioGroup
             android:id="@+id/rdgCountry"
@@ -44,12 +45,14 @@
                 android:id="@+id/rdNg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto"
                 android:text="@string/lbl_nigeria" />
 
             <RadioButton
                 android:id="@+id/rdTz"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto"
                 android:text="@string/lbl_tanzania" />
 
         </RadioGroup>

@@ -99,8 +99,10 @@ public class InterCropRecActivity extends BaseActivity {
             processRecommendations(activity);
         });
         MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
-        countryCode = mandatoryInfo.getCountryCode();
-        currency = mandatoryInfo.getCurrency();
+        if (mandatoryInfo != null) {
+            countryCode = mandatoryInfo.getCountryCode();
+            currency = mandatoryInfo.getCurrency();
+        }
         setAdapter();
     }
 

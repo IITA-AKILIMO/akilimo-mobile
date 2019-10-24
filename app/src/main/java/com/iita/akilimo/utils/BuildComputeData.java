@@ -49,6 +49,7 @@ public class BuildComputeData {
 
     private boolean smsRequired = false;
     private boolean emailRequired = false;
+    private String countryCode = DEFAULT_UNAVAILABLE;
     private String emailAddress = DEFAULT_UNAVAILABLE;
     private String mobileNumber = DEFAULT_UNAVAILABLE;
     private String fullPhoneNumber = DEFAULT_UNAVAILABLE;
@@ -59,7 +60,7 @@ public class BuildComputeData {
     private double unitPriceLocal;
     private double maxInvestmentAmountLocal = 0.0;
     private String unitOfSale;
-    private String areaUnits;
+    private String areaUnits = DEFAULT_UNAVAILABLE;
     private double fieldArea = 0.0;
 
     private String interCroppingType = DEFAULT_UNAVAILABLE;
@@ -68,8 +69,8 @@ public class BuildComputeData {
     private boolean plantingPracticesRec = false;
     private boolean scheduledPlantingRec = false;
     private boolean scheduledHarvestRec = false;
-    private String harvestDate;
-    private String plantingDate;
+    private String harvestDate = DEFAULT_UNAVAILABLE;
+    private String plantingDate = DEFAULT_UNAVAILABLE;
 
     private int plantingDateWindow = 0;
     private int harvestDateWindow = 0;
@@ -140,24 +141,17 @@ public class BuildComputeData {
 
 
         ComputeRequest computeRequest = buildMandatoryInfo();
-        computeRequest = buildRequestedRec(computeRequest);
-
-        computeRequest = buildPlantingDates(computeRequest);
-
-        computeRequest = buildInvestmentAmount(computeRequest);
-
-        computeRequest = buildPlantingPractices(computeRequest);
-
-        computeRequest = buildOperationCosts(computeRequest);
-
-        computeRequest = buildWeedManagement(computeRequest);
-
-        computeRequest = buildMaizePerformance(computeRequest);
-
-        computeRequest = buildMarketOutlet(computeRequest);
+        buildRequestedRec(computeRequest);
+        buildPlantingDates(computeRequest);
+        buildInvestmentAmount(computeRequest);
+        buildPlantingPractices(computeRequest);
+        buildOperationCosts(computeRequest);
+        buildWeedManagement(computeRequest);
+        buildMaizePerformance(computeRequest);
+        buildMarketOutlet(computeRequest);
 
 
-        List<Fertilizer> fertilizerList = objectBoxEntityProcessor.getSelectedFertilizers(computeRequest.getCountry());
+        List<Fertilizer> fertilizerList = objectBoxEntityProcessor.getSelectedFertilizers(countryCode);
 
 
         return new RecommendationRequest(computeRequest, fertilizerList);
@@ -166,27 +160,28 @@ public class BuildComputeData {
     private ComputeRequest buildMandatoryInfo() {
         ComputeRequest computeRequest = new ComputeRequest();
         MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        if (mandatoryInfo != null) {
+            fieldArea = mandatoryInfo.getAreaSize();
+            areaUnits = mandatoryInfo.getAreaUnitsEnum().unitString();
+            countryCode = mandatoryInfo.getCountryCode();
 
-        fieldArea = mandatoryInfo.getAreaSize();
-        areaUnits = mandatoryInfo.getAreaUnitsEnum().unitString();
+            computeRequest.setSendSms(smsRequired);
+            computeRequest.setSendEmail(emailRequired);
+            computeRequest.setMobileCountryCode(mobileCountryCode);
+            computeRequest.setMobileNumber(mobileNumber);
+            computeRequest.setFullPhoneNumber(fullPhoneNumber);
+            computeRequest.setUserName(userName);
+            computeRequest.setUserEmail(emailAddress);
+            computeRequest.setRiskAttitude(riskAtt);
 
-        computeRequest.setSendSms(smsRequired);
-        computeRequest.setSendEmail(emailRequired);
-        computeRequest.setMobileCountryCode(mobileCountryCode);
-        computeRequest.setMobileNumber(mobileNumber);
-        computeRequest.setFullPhoneNumber(fullPhoneNumber);
-        computeRequest.setUserName(userName);
-        computeRequest.setUserEmail(emailAddress);
-        computeRequest.setRiskAttitude(riskAtt);
-
-        computeRequest.setCurrency(mandatoryInfo.getCurrency());
-        computeRequest.setCountry(mandatoryInfo.getCountryCode());
-        computeRequest.setMapLat(mandatoryInfo.getLatitude());
-        computeRequest.setMapLong(mandatoryInfo.getLongitude());
-        computeRequest.setFieldArea(fieldArea);
-        computeRequest.setAreaUnits(areaUnits);
-        computeRequest.setFieldDescription(fieldDesc);
-
+            computeRequest.setCurrency(mandatoryInfo.getCurrency());
+            computeRequest.setCountry(countryCode);
+            computeRequest.setMapLat(mandatoryInfo.getLatitude());
+            computeRequest.setMapLong(mandatoryInfo.getLongitude());
+            computeRequest.setFieldArea(fieldArea);
+            computeRequest.setAreaUnits(areaUnits);
+            computeRequest.setFieldDescription(fieldDesc);
+        }
         return computeRequest;
     }
 

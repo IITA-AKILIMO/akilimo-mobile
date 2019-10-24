@@ -1,6 +1,8 @@
 package com.iita.akilimo.views.activities;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -20,6 +22,8 @@ import com.iita.akilimo.widget.SpacingItemDecoration;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,12 +35,19 @@ public class RootYieldActivity extends BaseActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.recyclerView)
+    @BindView(R.id.rootYieldRecycler)
     RecyclerView recyclerView;
+    @BindView(R.id.coordinatorLayout)
+    View viewPos;
 
+    @BindView(R.id.btnGetRec)
+    Button btnClose;
+
+    private CurrentFieldYield savedYield;
     private CurrencyHelper currencyHelper;
     private AdapterGridTwoLine mAdapter;
 
+    private double selectedYieldAmount = 0.0;
     private Integer[] imageIDs = {
             R.drawable.yield_less_than_7point5,
             R.drawable.yield_7point5_to_15,
@@ -55,18 +66,21 @@ public class RootYieldActivity extends BaseActivity {
         currencyHelper = new CurrencyHelper();
 
         initToolbar();
-        initComponent();
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
         MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
             areaUnit = mandatoryInfo.getAreaUnit();
         }
+
+        savedYield = objectBoxEntityProcessor.getCurrentFieldYield();
+        if (savedYield == null) {
+            savedYield = new CurrentFieldYield();
+        }
+        selectedYieldAmount = savedYield.getYieldAmount();
+        initComponent();
     }
+
 
     @Override
     protected void initToolbar() {
@@ -74,23 +88,65 @@ public class RootYieldActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(cassavaRootYield);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        Tools.setSystemBarColor(this, R.color.blue_400);
 
-        toolbar.setNavigationOnClickListener(v -> closeActivity(false));
+        toolbar.setNavigationOnClickListener(v -> validate(false));
     }
 
     @Override
     protected void initComponent() {
+        btnClose.setText(context.getString(R.string.lbl_finish));
+        if (selectedYieldAmount > 0) {
+            btnClose.setEnabled(true);
+        } else {
+            btnClose.setEnabled(false);
+        }
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.addItemDecoration(new SpacingItemDecoration(2, Tools.dpToPx(this, 3), true));
         recyclerView.setHasFixedSize(true);
 
-        String rd_3_tonnes = getString(R.string.yield_less_than_3_tonnes_per_acre);
-        String rd_6_tonnes = getString(R.string.yield_3_to_6_tonnes_per_acre);
-        String rd_9_tonnes = getString(R.string.yield_6_to_9_tonnes_per_acre);
-        String rd_12_tonnes = getString(R.string.yield_9_to_12_tonnes_per_acre);
-        String rd_more = getString(R.string.yield_more_than_12_tonnes_per_acre);
+        List<CurrentFieldYield> items = setYieldData(areaUnit);
+        //set data and list adapter
+        mAdapter = new AdapterGridTwoLine(this);
+        recyclerView.setAdapter(mAdapter);
+        mAdapter.setItems(selectedYieldAmount, items);
 
+        // on item list clicked
+        mAdapter.setOnItemClickListener((view, fieldYield, position) -> {
+            mAdapter.setActiveRowIndex(position);
+            selectedYieldAmount = fieldYield.getYieldAmount();
+//            toolbar.setNavigationIcon(R.drawable.ic_done);
+
+            fieldYield.setId(savedYield.getId());
+            objectBoxEntityProcessor.saveCurrentFieldYield(fieldYield);
+            mAdapter.setItems(selectedYieldAmount, items);
+
+            Snackbar.make(viewPos, fieldYield.getFieldYieldLabel(), Snackbar.LENGTH_LONG)
+//                    .setAction(R.string.lbl_close, showListener)
+                    .show();
+        });
+
+        btnClose.setOnClickListener(view -> validate(false));
+    }
+
+    @Override
+    public void onBackPressed() {
+        validate(true);
+    }
+
+    @Override
+    protected void validate(boolean backPressed) {
+        if (selectedYieldAmount > 0) {
+            closeActivity(backPressed);
+        }
+        Snackbar.make(viewPos, "Please specify your current field yield", Snackbar.LENGTH_LONG).show();
+    }
+
+    private List<CurrentFieldYield> setYieldData(@Nonnull String areaUnit) {
+        String rd_3_tonnes;
+        String rd_6_tonnes;
+        String rd_9_tonnes;
+        String rd_12_tonnes;
+        String rd_more;
         switch (areaUnit) {
             default:
             case "acre":
@@ -124,29 +180,7 @@ public class RootYieldActivity extends BaseActivity {
         items.add(yieldObject(imageIDs[3], rd_12_tonnes, 150));
         items.add(yieldObject(imageIDs[4], rd_more, 200));
 
-
-        //set data and list adapter
-        mAdapter = new AdapterGridTwoLine(this, items);
-        recyclerView.setAdapter(mAdapter);
-
-        // on item list clicked
-        mAdapter.setOnItemClickListener((view, fieldYield, position) -> {
-            mAdapter.setActiveRowIndex(position);
-            CurrentFieldYield savedYield = objectBoxEntityProcessor.getCurrentFieldYield();
-            toolbar.setNavigationIcon(R.drawable.ic_done);
-            if (savedYield != null) {
-                fieldYield.setId(savedYield.getId());
-            }
-            objectBoxEntityProcessor.saveCurrentFieldYield(fieldYield);
-            mAdapter.notifyDataSetChanged();
-            Snackbar.make(view, fieldYield.getFieldYieldLabel() + " clicked", Snackbar.LENGTH_SHORT).show();
-        });
-
-    }
-
-    @Override
-    protected void validate(boolean backPressed) {
-        throw new UnsupportedOperationException();
+        return items;
     }
 
     private CurrentFieldYield yieldObject(Integer imageID, String yieldLabel, double fieldYieldAmount) {
@@ -158,4 +192,6 @@ public class RootYieldActivity extends BaseActivity {
 
         return cfy;
     }
+
+
 }

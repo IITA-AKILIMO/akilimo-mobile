@@ -37,7 +37,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected SessionManager sessionManager;
     protected RequestQueue queue;
     protected ObjectBoxEntityProcessor objectBoxEntityProcessor;
-    protected String countryCode = "";
+    protected String countryCode = "ALL";
     protected String baseCurrency = "USD";
     protected String currency = "";
     protected String areaUnit = "";

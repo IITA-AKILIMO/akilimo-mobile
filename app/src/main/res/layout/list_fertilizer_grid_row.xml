@@ -36,7 +36,8 @@
                 android:layout_alignStart="@+id/fertilizerImage"
                 android:layout_alignEnd="@+id/fertilizerImage"
                 android:layout_centerVertical="true"
-                android:fontFamily="@font/roboto_bold"
+                android:fontFamily="@font/ubuntu"
+                android:paddingBottom="@dimen/spacing_medium"
                 android:gravity="center"
                 android:text="NPK 20:10:10"
                 android:textAppearance="?android:attr/textAppearanceMedium"
@@ -64,10 +65,10 @@
                     android:id="@+id/bagPrice"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_bold"
+                    android:fontFamily="@font/ubuntu_bold"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:text="Two Line"
+                    android:text="Bag price"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
                     android:textColor="@color/white" />
 
