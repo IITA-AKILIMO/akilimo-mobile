@@ -45,7 +45,7 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun launchActivity() {
-        val intent = Intent(this@SplashActivity, FertilizersActivity::class.java)
+        val intent = Intent(this@SplashActivity, RootYieldActivity::class.java)
         startActivity(intent)
         closeActivity(false)
     }

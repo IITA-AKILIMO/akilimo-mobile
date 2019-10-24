@@ -31,7 +31,7 @@ public class RootYieldActivity extends BaseActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.recyclerView)
+    @BindView(R.id.rootYieldRecycler)
     RecyclerView recyclerView;
 
     private CurrencyHelper currencyHelper;
@@ -139,7 +139,7 @@ public class RootYieldActivity extends BaseActivity {
             }
             objectBoxEntityProcessor.saveCurrentFieldYield(fieldYield);
             mAdapter.notifyDataSetChanged();
-            Snackbar.make(view, fieldYield.getFieldYieldLabel() + " clicked", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(view, fieldYield.getFieldYieldLabel() + " selected", Snackbar.LENGTH_SHORT).show();
         });
 
     }
