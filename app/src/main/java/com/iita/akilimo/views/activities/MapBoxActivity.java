@@ -11,9 +11,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.iita.akilimo.R;
-import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.inherit.BaseLocationPicker;
 import com.iita.akilimo.services.GPSTracker;
 import com.iita.akilimo.utils.SessionManager;
@@ -22,7 +21,6 @@ import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
@@ -41,8 +39,8 @@ public class MapBoxActivity extends BaseLocationPicker {
     public static final String ALT = "ALT";
     public static final String PLACE_NAME = "PLACE_NAME";
 
-    @BindView(R.id.select_location_button)
-    MaterialButton selectLocationButton;
+    @BindView(R.id.btnGetLocation)
+    FloatingActionButton btnSelectLocation;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -104,7 +102,7 @@ public class MapBoxActivity extends BaseLocationPicker {
             Toast.makeText(context, getString(R.string.move_map_instruction), Toast.LENGTH_LONG).show();
             initDroppedMarker(style);
 
-            selectLocationButton.setOnClickListener(view -> {
+            btnSelectLocation.setOnClickListener(view -> {
                 processActivityResult();
             });
 
@@ -170,6 +168,7 @@ public class MapBoxActivity extends BaseLocationPicker {
             intent.putExtra(LON, currentCoordinates.getLongitude());
             intent.putExtra(ALT, currentCoordinates.getAltitude());
             intent.putExtra(PLACE_NAME, placeName);
+            Toast.makeText(context, "Location selected", Toast.LENGTH_LONG).show();
             setResult(Activity.RESULT_OK, intent);
             closeActivity(false);
         }

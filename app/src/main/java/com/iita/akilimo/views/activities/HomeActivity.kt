@@ -32,6 +32,7 @@ import com.iita.akilimo.utils.AppUpdateHelper
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor
 import com.iita.akilimo.views.fragments.*
 import timber.log.Timber
+import kotlin.system.exitProcess
 
 
 class HomeActivity : BaseActivity(), IFragmentCallBack {
@@ -58,8 +59,8 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
     private lateinit var myViewPagerAdapter: ViewPagerAdapter
     private lateinit var btnStart: Button
 
-    var exit: Boolean = false
-    var currentPosition: Int = 0
+    private var exit: Boolean = false
+    private var currentPosition: Int = 0
 
     private var showProceedButton: Boolean = true
     private var currentLat: Double = 0.toDouble()
@@ -67,6 +68,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
     private var currentAlt: Double = 0.toDouble()
     private var placeName: String? = null
     private var address: String? = null
+    private lateinit var currentFragment: Fragment
     private lateinit var location: MandatoryInfo
 
 
@@ -96,7 +98,6 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
         //Add the various fragments
         val bioDataFragment = BioDataFragment.newInstance()
-
 
 
         fragmentArray.add(WelcomeFragment.newInstance())
@@ -163,19 +164,19 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                 positionOffset: Float,
                 positionOffsetPixels: Int
             ) {
-                val fragment: Fragment = fragmentArray.elementAt(newPosition)
+                val activeFragment: Fragment = fragmentArray.elementAt(newPosition)
 
-                (fragment as? CountryFragment)?.refreshData()
+                (activeFragment as? CountryFragment)?.refreshData()
 
-                (fragment as? AreaUnitFragment)?.refreshData()
+                (activeFragment as? AreaUnitFragment)?.refreshData()
 
-                (fragment as? FieldSizeFragment)?.refreshData()
+                (activeFragment as? FieldSizeFragment)?.refreshData()
 
-                (fragment as? LocationFragment)?.refreshData()
+                (activeFragment as? LocationFragment)?.refreshData()
 
-                (fragment as? SummaryFragment)?.refreshData()
+                (activeFragment as? SummaryFragment)?.refreshData()
 
-                (fragment as? BioDataFragment)?.refreshData()
+                (activeFragment as? BioDataFragment)?.refreshData()
 
 //                if (fragment is BioDataFragment) {
 //                    profileDataValid = fragment.saveBioData()
@@ -184,6 +185,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 //                if (!profileDataValid && currentPosition < newPosition) {
 //                    viewPager.currentItem = currentPosition
 //                }
+                currentFragment = activeFragment
             }
 
             override fun onPageSelected(position: Int) {
@@ -254,6 +256,9 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                         currentLong = data.getDoubleExtra(MapBoxActivity.LON, 0.0)
                         currentAlt = data.getDoubleExtra(MapBoxActivity.ALT, 0.0)
                         placeName = data.getStringExtra(MapBoxActivity.PLACE_NAME)
+
+                        //refresh fragment data
+                        (currentFragment as? LocationFragment)?.refreshData()
                     } else {
                         Toast.makeText(
                             context,
@@ -289,12 +294,10 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
     override fun onBackPressed() {
         try {
-
-            //super.onBackPressed();
             if (exit) {
                 finish() // finish activity
                 System.gc() //run the garbage collector to free up memory resources
-                System.exit(0) //exit the system
+                exitProcess(0) //exit the system
             } else {
                 Toast.makeText(
                     this,
