@@ -1,7 +1,6 @@
 package com.iita.akilimo.adapters;
 
 import android.content.Context;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,15 +17,17 @@ import com.iita.akilimo.utils.Tools;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 public class AdapterGridTwoLine extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<CurrentFieldYield> items = new ArrayList<>();
+        private List<CurrentFieldYield> items = new ArrayList<>();
 
-    private OnLoadMoreListener onLoadMoreListener;
 
     private Context ctx;
     private OnItemClickListener mOnItemClickListener;
     private int rowIndex = -1;
+    private double selectedYieldAmount =0.0;
 
     public interface OnItemClickListener {
         void onItemClick(View view, CurrentFieldYield obj, int position);
@@ -36,9 +37,14 @@ public class AdapterGridTwoLine extends RecyclerView.Adapter<RecyclerView.ViewHo
         this.mOnItemClickListener = mItemClickListener;
     }
 
-    public AdapterGridTwoLine(Context context, List<CurrentFieldYield> items) {
-        this.items = items;
+    public AdapterGridTwoLine(Context context) {
         ctx = context;
+    }
+
+    public void setItems(double selectedYieldAmount, @Nonnull List<CurrentFieldYield> items) {
+        this.items = items;
+        this.selectedYieldAmount = selectedYieldAmount;
+        notifyDataSetChanged();
     }
 
     public class OriginalViewHolder extends RecyclerView.ViewHolder {
@@ -68,25 +74,22 @@ public class AdapterGridTwoLine extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         CurrentFieldYield obj = items.get(position);
+        String yieldLabel = obj.getFieldYieldLabel();
+        double currentYieldAmount = obj.getYieldAmount();
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder view = (OriginalViewHolder) holder;
-            view.name.setText(obj.getFieldYieldLabel());
+            view.name.setText(yieldLabel);
             Tools.displayImageOriginal(ctx, view.image, obj.getImageId());
-            view.lyt_parent.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(view, items.get(position), position);
-                    }
+
+            view.lyt_parent.setOnClickListener(view1 -> {
+                if (mOnItemClickListener != null) {
+                    mOnItemClickListener.onItemClick(view1, items.get(position), position);
                 }
             });
-            if (rowIndex == position) {
-//            holder.itemView.setBackgroundColor(ctx.getResources().getColor(R.color.colorAccent));
+            if ((rowIndex == position) || (currentYieldAmount == selectedYieldAmount)) {
                 view.selectionIndicator.setImageResource(R.drawable.ic_done);
                 view.selectionIndicator.setColorFilter(ctx.getResources().getColor(R.color.colorAccent));
-
             } else {
-//            holder.itemView.setBackgroundColor(ctx.getResources().getColor(R.color.grey_5));
                 view.selectionIndicator.setImageResource(R.drawable.ic_info);
                 view.selectionIndicator.setColorFilter(ctx.getResources().getColor(R.color.grey_5));
             }
@@ -101,13 +104,4 @@ public class AdapterGridTwoLine extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void setActiveRowIndex(int position) {
         rowIndex = position;
     }
-
-    public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
-        this.onLoadMoreListener = onLoadMoreListener;
-    }
-
-    public interface OnLoadMoreListener {
-        void onLoadMore(int current_page);
-    }
-
 }

@@ -1,6 +1,8 @@
 package com.iita.akilimo.views.activities;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -33,10 +35,17 @@ public class RootYieldActivity extends BaseActivity {
     Toolbar toolbar;
     @BindView(R.id.rootYieldRecycler)
     RecyclerView recyclerView;
+    @BindView(R.id.coordinatorLayout)
+    View viewPos;
 
+    @BindView(R.id.btnGetRec)
+    Button btnClose;
+
+    private CurrentFieldYield savedYield;
     private CurrencyHelper currencyHelper;
     private AdapterGridTwoLine mAdapter;
 
+    private double selectedYieldAmount = 0.0;
     private Integer[] imageIDs = {
             R.drawable.yield_less_than_7point5,
             R.drawable.yield_7point5_to_15,
@@ -55,6 +64,12 @@ public class RootYieldActivity extends BaseActivity {
         currencyHelper = new CurrencyHelper();
 
         initToolbar();
+
+        savedYield = objectBoxEntityProcessor.getCurrentFieldYield();
+        if (savedYield == null) {
+            savedYield = new CurrentFieldYield();
+        }
+        selectedYieldAmount = savedYield.getYieldAmount();
         initComponent();
     }
 
@@ -81,6 +96,12 @@ public class RootYieldActivity extends BaseActivity {
 
     @Override
     protected void initComponent() {
+        btnClose.setText(context.getString(R.string.lbl_finish));
+        if (selectedYieldAmount > 0) {
+            btnClose.setEnabled(true);
+        } else {
+            btnClose.setEnabled(false);
+        }
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.addItemDecoration(new SpacingItemDecoration(2, Tools.dpToPx(this, 3), true));
         recyclerView.setHasFixedSize(true);
@@ -124,22 +145,24 @@ public class RootYieldActivity extends BaseActivity {
         items.add(yieldObject(imageIDs[3], rd_12_tonnes, 150));
         items.add(yieldObject(imageIDs[4], rd_more, 200));
 
-
         //set data and list adapter
-        mAdapter = new AdapterGridTwoLine(this, items);
+        mAdapter = new AdapterGridTwoLine(this);
         recyclerView.setAdapter(mAdapter);
+        mAdapter.setItems(selectedYieldAmount, items);
 
         // on item list clicked
         mAdapter.setOnItemClickListener((view, fieldYield, position) -> {
             mAdapter.setActiveRowIndex(position);
-            CurrentFieldYield savedYield = objectBoxEntityProcessor.getCurrentFieldYield();
-            toolbar.setNavigationIcon(R.drawable.ic_done);
-            if (savedYield != null) {
-                fieldYield.setId(savedYield.getId());
-            }
+            selectedYieldAmount = fieldYield.getYieldAmount();
+//            toolbar.setNavigationIcon(R.drawable.ic_done);
+
+            fieldYield.setId(savedYield.getId());
             objectBoxEntityProcessor.saveCurrentFieldYield(fieldYield);
-            mAdapter.notifyDataSetChanged();
-            Snackbar.make(view, fieldYield.getFieldYieldLabel() + " selected", Snackbar.LENGTH_SHORT).show();
+            mAdapter.setItems(selectedYieldAmount, items);
+
+            Snackbar.make(viewPos, fieldYield.getFieldYieldLabel(), Snackbar.LENGTH_LONG)
+//                    .setAction(R.string.lbl_close, showListener)
+                    .show();
         });
 
     }

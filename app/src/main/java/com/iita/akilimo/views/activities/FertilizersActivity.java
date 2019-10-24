@@ -200,7 +200,6 @@ public class FertilizersActivity extends BaseActivity {
         errorImage.setVisibility(View.GONE);
         btnRetry.setVisibility(View.GONE);
 
-        countryCode = "NG";
         final RestService restService = RestService.getInstance(queue, this);
         restService.setParameters("v2/fertilizers", countryCode, 1000);
 
