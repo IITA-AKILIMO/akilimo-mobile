@@ -164,7 +164,6 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                 positionOffsetPixels: Int
             ) {
                 val fragment: Fragment = fragmentArray.elementAt(newPosition)
-                var profileDataValid: Boolean = true
 
                 (fragment as? CountryFragment)?.refreshData()
 

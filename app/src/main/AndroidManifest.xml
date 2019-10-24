@@ -58,7 +58,6 @@
         <activity android:name=".views.activities.MarketOutletActivity" />
         <activity android:name=".views.activities.RootYieldActivity" />
         <activity android:name=".views.activities.InvestmentAmountActivity" />
-
         <activity android:name=".views.activities.DstRecommendationActivity" />
         <activity android:name=".views.activities.HerbicideUseActivity" />
         <activity android:name=".views.activities.TillageOperationsActivity" />

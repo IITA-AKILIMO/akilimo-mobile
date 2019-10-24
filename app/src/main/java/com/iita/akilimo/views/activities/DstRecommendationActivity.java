@@ -2,11 +2,12 @@ package com.iita.akilimo.views.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -55,10 +57,10 @@ public class DstRecommendationActivity extends BaseActivity {
     FloatingActionButton fabRetry;
 
     @BindView(R.id.errorImage)
-    AppCompatImageView errorImage;
+    ImageView errorImage;
 
     @BindView(R.id.errorLabel)
-    AppCompatTextView errorLabel;
+    TextView errorLabel;
 
     @BindView(R.id.lyt_progress)
     LinearLayout lyt_progress;
@@ -123,7 +125,7 @@ public class DstRecommendationActivity extends BaseActivity {
 
         final RequestQueue queue = Volley.newRequestQueue(context.getApplicationContext());
         final RestService restService = RestService.getInstance(queue, activity);
-        restService.setEndpoint("v2/recommendations");
+        restService.setParameters("v2/recommendations");
 
         JSONObject data = Tools.prepareRecommendationJson(recData);
         restService.postJsonObject(data, new IVolleyCallback() {
@@ -148,11 +150,13 @@ public class DstRecommendationActivity extends BaseActivity {
                     recyclerView.setAdapter(recAdapter);
                     recyclerView.setVisibility(View.VISIBLE);
 
-                } catch (Exception ignored) {
+                } catch (Exception ex) {
                     lyt_progress.setVisibility(View.GONE);
                     errorImage.setVisibility(View.VISIBLE);
                     errorLabel.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
+                    Crashlytics.log(Log.ERROR, LOG_TAG, "Error processing DST recommendations");
+                    Crashlytics.logException(ex);
                 }
             }
 

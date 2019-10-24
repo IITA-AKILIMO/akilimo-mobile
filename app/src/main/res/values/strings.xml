@@ -85,7 +85,8 @@
     <string name="lbl_planting_harvest">When do you want to plant and harvest your cassava?</string>
     <string name="lbl_available_fertilizers">Which fertilizers are available for you?</string>
     <string name="lbl_investment_amount">How much are you willing to invest on fertilizers?</string>
-    <string name="lbl_typical_yield">The typical cassava root yield you have been getting so far?</string>
+    <string name="lbl_typical_yield">Typical cassava root yield you have been getting so far</string>
+    <string name="lbl_typical_yield_question">What is the typical cassava root yield you have been getting so far?</string>
     <string name="lbl_maize_performance">The typical height of maize when grown without fertilizer</string>
     <string name="lbl_market_outlet">What is your market outlet to sell your cassava?</string>
     <string name="lbl_tillage_operations">Tillage operations and related cost</string>
@@ -194,4 +195,9 @@
     <string name="lbl_rec_sample">We recommend to not apply any fertilizer. We do not expect that fertilizer application will result in a profitable yield increase in your situation.</string>
     <string name="lbl_save">Save</string>
     <string name="lbl_rec_intro">AKILIMO can advise you to grow cassava.\nWhat can we help you with?</string>
+
+    <!-- scroll behaviors -->
+    <string name="hide_bottom_on_scroll" translatable="false">com.google.android.material.behavior.HideBottomViewOnScrollBehavior</string>
+    <string name="bar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="lbl_min_selection">Please select at least %d fertilizers</string>
 </resources>

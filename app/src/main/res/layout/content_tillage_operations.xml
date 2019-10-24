@@ -228,7 +228,7 @@
 
         <include
             android:layout_marginTop="@dimen/spacing_large"
-            layout="@layout/bottom_buttons_layout"
+            layout="@layout/bottom_two_buttons_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/ridgingCard" />

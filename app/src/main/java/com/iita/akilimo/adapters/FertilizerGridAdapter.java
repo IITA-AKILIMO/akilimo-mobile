@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,7 +33,7 @@ public class FertilizerGridAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         void onItemClick(View view, Fertilizer obj, int position);
     }
 
-    public FertilizerGridAdapter(Context context) {
+    public FertilizerGridAdapter(@NonNull Context context) {
         ctx = context;
     }
 
@@ -41,7 +42,7 @@ public class FertilizerGridAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
 
-    public void setItems(List<Fertilizer> fertilizerList) {
+    public void setItems(@NonNull List<Fertilizer> fertilizerList) {
         this.items = fertilizerList;
         notifyDataSetChanged();
     }
@@ -58,7 +59,6 @@ public class FertilizerGridAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         Fertilizer obj = items.get(position);
-        double price = obj.getPricePerBag();
         String fertilizerName = obj.getName();
         String bagPrice = obj.getPriceRange();
         boolean isSelected = obj.isSelected();
@@ -73,20 +73,13 @@ public class FertilizerGridAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 }
             });
             if (isSelected) {
-//            holder.itemView.setBackgroundColor(ctx.getResources().getColor(R.color.colorAccent));
                 view.selectionIndicator.setImageResource(R.drawable.ic_done);
                 view.selectionIndicator.setColorFilter(ctx.getResources().getColor(R.color.colorAccent));
-//                view.image.setColorFilter(ContextCompat.getColor(ctx, R.color.purple_400), PorterDuff.Mode.SRC_IN);
                 Tools.displayImageOriginal(ctx, view.image, R.drawable.ic_sack_solid);
-//                view.bagPricePanel.setVisibility(View.VISIBLE);
-
             } else {
-//            holder.itemView.setBackgroundColor(ctx.getResources().getColor(R.color.grey_5));
                 view.selectionIndicator.setImageResource(R.drawable.ic_info);
                 view.selectionIndicator.setColorFilter(ctx.getResources().getColor(R.color.grey_5));
-//                view.image.setColorFilter(ContextCompat.getColor(ctx, R.color.black), PorterDuff.Mode.SRC_IN);
                 Tools.displayImageOriginal(ctx, view.image, R.drawable.ic_sack_outline);
-//                view.bagPricePanel.setVisibility(View.INVISIBLE);
             }
         }
     }
@@ -99,6 +92,7 @@ public class FertilizerGridAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void setActiveRowIndex(int position) {
         rowIndex = position;
     }
+
 
     public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
         this.onLoadMoreListener = onLoadMoreListener;
