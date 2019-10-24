@@ -85,7 +85,7 @@
         app:fabSize="mini"
         app:layout_anchor="@id/toolbar"
         app:layout_anchorGravity="end|right|bottom"
-        app:rippleColor="@color/purple_600"
+        app:rippleColor="@color/purple_100"
         app:srcCompat="@drawable/ic_refresh" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

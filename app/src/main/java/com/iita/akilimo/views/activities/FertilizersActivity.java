@@ -106,8 +106,20 @@ public class FertilizersActivity extends BaseActivity {
         getSupportActionBar().setTitle(headerTitleText);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        toolbar.setNavigationOnClickListener(v -> closeActivity(false));
+        toolbar.setNavigationOnClickListener(v -> validateInput(false));
     }
+
+    @Override
+    public void onBackPressed() {
+        validateInput(true);
+    }
+
+    private void validateInput(boolean backPressed) {
+        if (isMinSelected()) {
+            closeActivity(backPressed);
+        }
+    }
+
 
     @Override
     protected void initComponent() {
