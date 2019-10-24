@@ -11,11 +11,9 @@ public class CurrentFieldYield {
 
     @Id
     long id;
-    private String yieldDesc;
     private double yieldAmount;
+    private String fieldYieldLabel;
 
     @Transient
     private int imageId;
-    @Transient
-    private String fieldYieldLabel;
 }

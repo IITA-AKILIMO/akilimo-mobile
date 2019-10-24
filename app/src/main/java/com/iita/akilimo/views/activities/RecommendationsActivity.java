@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,7 +15,6 @@ import com.iita.akilimo.adapters.AdapterListAnimation;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.Recommendations;
 import com.iita.akilimo.utils.ItemAnimation;
-import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumAdvice;
 
 import java.util.ArrayList;
@@ -52,6 +52,7 @@ public class RecommendationsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recommendations_activity);
         ButterKnife.bind(this);
+        context = this;
 
         initToolbar();
         initComponent();
@@ -59,17 +60,12 @@ public class RecommendationsActivity extends BaseActivity {
 
     @Override
     protected void initToolbar() {
-        toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
+        toolbar.setNavigationIcon(R.drawable.ic_home);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(recommendations);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        Tools.setSystemBarColor(this, R.color.blue_900);
-
-        toolbar.setNavigationOnClickListener(v -> {
-            // back button pressed
-            finish();
-        });
+        toolbar.setNavigationOnClickListener(v -> closeActivity(false));
     }
 
 
@@ -78,29 +74,34 @@ public class RecommendationsActivity extends BaseActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         //set data and list adapter
-        mAdapter = new AdapterListAnimation(this);
+        mAdapter = new AdapterListAnimation(this, R.layout.item_card_recommendation_no_arrow);
         recyclerView.setAdapter(mAdapter);
         items = new ArrayList<>();
 
         Recommendations FR = new Recommendations();
         FR.setRecCode(EnumAdvice.FR);
         FR.setRecommendationName(frString);
+        FR.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft));
         items.add(FR);
 
         Recommendations IC = new Recommendations();
         IC.setRecCode(EnumAdvice.IC);
         IC.setRecommendationName(icString);
+        IC.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft));
         items.add(IC);
 
         Recommendations SPH = new Recommendations();
         SPH.setRecCode(EnumAdvice.SPH);
         SPH.setRecommendationName(sphString);
+        SPH.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft));
         items.add(SPH);
 
         Recommendations BPP = new Recommendations();
         BPP.setRecCode(EnumAdvice.BPP);
         BPP.setRecommendationName(bppString);
+        BPP.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft));
         items.add(BPP);
+
 
         setAdapter();
     }
@@ -117,7 +118,7 @@ public class RecommendationsActivity extends BaseActivity {
     }
 
     private void setAdapter() {
-        mAdapter.setItems(items, ItemAnimation.FADE_IN);
+        mAdapter.setItems(items, ItemAnimation.BOTTOM_UP);
         // on item list clicked
         mAdapter.setOnItemClickListener((view, obj, position) -> {
             //let us process the data

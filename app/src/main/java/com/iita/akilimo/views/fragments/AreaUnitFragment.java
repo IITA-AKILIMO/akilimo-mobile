@@ -31,7 +31,7 @@ public class AreaUnitFragment extends BaseFragment {
     RadioGroup rdgAreaUnit;
 
     private String selectedAreaUnit;
-    private MandatoryInfo location;
+    private MandatoryInfo mandatoryInfo;
     private EnumAreaUnits areaUnitsEnum;
 
     public AreaUnitFragment() {
@@ -55,9 +55,9 @@ public class AreaUnitFragment extends BaseFragment {
 
     @Override
     public void refreshData() {
-        location = objectBoxEntityProcessor.getMandatoryInfo();
-        if (location != null) {
-            areaUnitsEnum = location.getAreaUnitsEnum();
+        mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        if (mandatoryInfo != null) {
+            areaUnitsEnum = mandatoryInfo.getAreaUnitsEnum();
             switch (areaUnitsEnum) {
                 case ACRE:
                     rdgAreaUnit.check(R.id.rdAcre);
@@ -88,13 +88,13 @@ public class AreaUnitFragment extends BaseFragment {
                     areaUnitsEnum = EnumAreaUnits.SQM;
                     break;
             }
-            location = objectBoxEntityProcessor.getMandatoryInfo();
-            if (location == null) {
-                location = new MandatoryInfo();
+            mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+            if (mandatoryInfo == null) {
+                mandatoryInfo = new MandatoryInfo();
             }
-            location.setAreaUnitsEnum(areaUnitsEnum);
-            location.setAreaUnit(areaUnitsEnum.unitString());
-            objectBoxEntityProcessor.saveMandatoryInfo(location);
+            mandatoryInfo.setAreaUnitsEnum(areaUnitsEnum);
+            mandatoryInfo.setAreaUnit(areaUnitsEnum.unitString());
+            objectBoxEntityProcessor.saveMandatoryInfo(mandatoryInfo);
         });
     }
 }

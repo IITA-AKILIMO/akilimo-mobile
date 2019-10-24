@@ -10,6 +10,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:fontFamily="@font/ubuntu_bold"
         android:text="@string/lbl_close" />
 
     <LinearLayout
@@ -33,11 +34,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_large"
             android:layout_marginEnd="@dimen/spacing_xlarge"
-            android:fontFamily="@font/roboto_bold"
+            android:fontFamily="@font/ubuntu"
             android:lines="2"
             android:padding="@dimen/spacing_medium"
-            android:text="Price"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:text="Price" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -64,6 +64,7 @@
                     android:id="@+id/editExactFertilizerPrice"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu"
                     android:imeOptions="actionDone"
                     android:inputType="numberDecimal"
                     android:selectAllOnFocus="true" />
@@ -86,7 +87,9 @@
                 android:layout_marginTop="@dimen/spacing_medium"
                 android:layout_marginRight="@dimen/spacing_medium"
                 android:adjustViewBounds="true"
-                android:text="Save" />
+                android:fontFamily="@font/ubuntu"
+                android:text="Save"
+                android:textAllCaps="false" />
 
             <Space
                 android:layout_width="0dp"
@@ -100,8 +103,10 @@
                 android:layout_marginLeft="@dimen/spacing_medium"
                 android:layout_marginTop="@dimen/spacing_medium"
                 android:layout_marginRight="@dimen/spacing_medium"
-                android:visibility="gone"
-                android:text="Remove" />
+                android:fontFamily="@font/ubuntu"
+                android:text="Remove"
+                android:textAllCaps="false"
+                android:visibility="gone" />
 
 
         </LinearLayout>

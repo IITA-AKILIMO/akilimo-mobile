@@ -5,6 +5,8 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -17,6 +19,7 @@ import androidx.viewpager.widget.ViewPager
 import butterknife.BindString
 import butterknife.ButterKnife
 import com.blogspot.atifsoftwares.animatoolib.Animatoo
+import com.crashlytics.android.Crashlytics
 import com.github.javiersantos.appupdater.AppUpdater
 import com.github.javiersantos.appupdater.enums.Display
 import com.google.android.gms.common.util.Strings
@@ -26,14 +29,12 @@ import com.iita.akilimo.entities.MandatoryInfo
 import com.iita.akilimo.inherit.BaseActivity
 import com.iita.akilimo.interfaces.IFragmentCallBack
 import com.iita.akilimo.utils.AppUpdateHelper
-import com.iita.akilimo.utils.Tools
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor
 import com.iita.akilimo.views.fragments.*
 import timber.log.Timber
 
 
 class HomeActivity : BaseActivity(), IFragmentCallBack {
-
 
     companion object {
         const val MAP_BOX_PLACE_PICKER_REQUEST_CODE = 208
@@ -52,10 +53,13 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
     private val fragmentArray = mutableSetOf<Fragment>()
     private val maxStep = 0
-    private var viewPager: ViewPager? = null
-    private var myViewPagerAdapter: ViewPagerAdapter? = null
+
+    private lateinit var viewPager: ViewPager
+    private lateinit var myViewPagerAdapter: ViewPagerAdapter
+    private lateinit var btnStart: Button
 
     var exit: Boolean = false
+    var currentPosition: Int = 0
 
     private var showProceedButton: Boolean = true
     private var currentLat: Double = 0.toDouble()
@@ -66,14 +70,15 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
     private lateinit var location: MandatoryInfo
 
 
-    internal var btnStart: Button? = null
-
     private lateinit var activity: Activity
     private lateinit var appUpdateHelper: AppUpdateHelper
     private lateinit var appUpdater: AppUpdater
 
     override fun onAttachFragment(fragment: Fragment) {
         if (fragment is SummaryFragment) {
+            fragment.setOnFragmentCloseListener(this)
+        }
+        if (fragment is BioDataFragment) {
             fragment.setOnFragmentCloseListener(this)
         }
     }
@@ -83,13 +88,19 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         setContentView(R.layout.activity_home)
         ButterKnife.bind(this)
         activity = this
+        context = this
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this)
 
         viewPager = findViewById(R.id.homeViewPager)
         btnStart = findViewById(R.id.btnGetStarted)
 
         //Add the various fragments
+        val bioDataFragment = BioDataFragment.newInstance()
+
+
+
         fragmentArray.add(WelcomeFragment.newInstance())
+        fragmentArray.add(bioDataFragment)
         fragmentArray.add(CountryFragment.newInstance())
         fragmentArray.add(LocationFragment.newInstance())
         fragmentArray.add(AreaUnitFragment.newInstance())
@@ -102,19 +113,25 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         appUpdater = appUpdateHelper.showUpdateMessage(Display.DIALOG).setButtonDoNotShowAgain("")
         appUpdater.start()
         //add bottom progress dots
+        currentPosition = fragmentArray.indexOf(bioDataFragment)
         bottomProgressDots(0)
         initComponent()
 
+    }
+
+    override fun onDataSaved() {
+        //load the next fragment
+        viewPager.currentItem = currentPosition + 1
     }
 
     override fun onFragmentClose(hideButton: Boolean) {
         showProceedButton = hideButton
         when {
             !hideButton -> {
-                btnStart?.visibility = View.VISIBLE
-                btnStart?.text = getString(R.string.lbl_proceed)
+                btnStart.visibility = View.VISIBLE
+                btnStart.text = getString(R.string.lbl_proceed)
             }
-            else -> btnStart?.visibility = View.GONE
+            else -> btnStart.visibility = View.GONE
         }
     }
 
@@ -127,26 +144,27 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
     }
 
     override fun initComponent() {
-        Tools.setSystemBarColor(activity, R.color.deep_orange_500)
         checkAppPermissions(rationale)
-        btnStart?.visibility = View.GONE
+        btnStart.visibility = View.GONE
 
         myViewPagerAdapter = ViewPagerAdapter(supportFragmentManager, 0, fragmentArray)
 
-        viewPager?.adapter = myViewPagerAdapter
-        viewPager?.offscreenPageLimit = 1
+        viewPager.adapter = myViewPagerAdapter
+        viewPager.offscreenPageLimit = 1
 
-        viewPager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
 
             override fun onPageScrollStateChanged(state: Int) {
             }
 
             override fun onPageScrolled(
-                position: Int,
+                newPosition: Int,
                 positionOffset: Float,
                 positionOffsetPixels: Int
             ) {
-                val fragment: Fragment = fragmentArray.elementAt(position)
+                val fragment: Fragment = fragmentArray.elementAt(newPosition)
+
                 (fragment as? CountryFragment)?.refreshData()
 
                 (fragment as? AreaUnitFragment)?.refreshData()
@@ -156,31 +174,38 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                 (fragment as? LocationFragment)?.refreshData()
 
                 (fragment as? SummaryFragment)?.refreshData()
+
+                (fragment as? BioDataFragment)?.refreshData()
+
+//                if (fragment is BioDataFragment) {
+//                    profileDataValid = fragment.saveBioData()
+//                }
+//
+//                if (!profileDataValid && currentPosition < newPosition) {
+//                    viewPager.currentItem = currentPosition
+//                }
             }
 
             override fun onPageSelected(position: Int) {
                 bottomProgressDots(position)
-                Tools.setSystemBarColor(activity, R.color.deep_orange_500)
+//                Tools.setSystemBarColor(activity, R.color.deep_orange_500)
+                btnStart.visibility = View.GONE
                 when (position) {
                     0 -> {
                         appUpdater.start()
-                        btnStart?.visibility = View.GONE
+                        btnStart.visibility = View.GONE
                     }
                     fragmentArray.size - 1 -> {
                         if (showProceedButton) {
-                            btnStart?.visibility = View.GONE
+                            btnStart.visibility = View.GONE
                         }
-                        Tools.setSystemBarColor(activity, R.color.blue_400)
-                    }
-                    else -> {
-
                     }
                 }
             }
 
         })
 
-        btnStart?.setOnClickListener {
+        btnStart.setOnClickListener {
             appUpdater.start()
             val intent = Intent(this, RecommendationsActivity::class.java)
             startActivity(intent)
@@ -213,12 +238,11 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             dots[currentIndex]?.setColorFilter(
                 ContextCompat.getColor(
                     this,
-                    R.color.deep_orange_500
+                    R.color.colorAccent
                 ), PorterDuff.Mode.SRC_IN
             )
         }
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -257,7 +281,36 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
             objectBoxEntityProcessor.saveMandatoryInfo(location)
         } catch (ex: Exception) {
-            Timber.e(ex)
+            Crashlytics.log(Log.ERROR, LOG_TAG, "Error saving location information")
+            Crashlytics.logException(ex)
+        }
+
+    }
+
+    override fun onBackPressed() {
+        try {
+
+            //super.onBackPressed();
+            if (exit) {
+                finish() // finish activity
+                System.gc() //run the garbage collector to free up memory resources
+                System.exit(0) //exit the system
+            } else {
+                Toast.makeText(
+                    this,
+                    "Press back again to exit",
+                    Toast.LENGTH_SHORT
+                ).show()
+                exit = true
+                Handler().postDelayed({ exit = false }, (3 * 1000).toLong())
+            }
+        } catch (ex: Exception) {
+            Crashlytics.log(
+                Log.ERROR,
+                LOG_TAG,
+                "Error occurred while exiting Recommendations activity"
+            )
+            Crashlytics.logException(ex)
         }
 
     }

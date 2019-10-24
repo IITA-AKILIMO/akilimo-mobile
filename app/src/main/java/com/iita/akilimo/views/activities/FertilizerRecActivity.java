@@ -16,7 +16,6 @@ import com.iita.akilimo.entities.RecAdvice;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
-import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
@@ -74,11 +73,8 @@ public class FertilizerRecActivity extends BaseActivity {
         getSupportActionBar().setTitle(recommendations);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        Tools.setSystemBarColor(this, R.color.blue_900);
 
-        toolbar.setNavigationOnClickListener(v -> {
-            closeActivity(false);
-        });
+        toolbar.setNavigationOnClickListener(v -> closeActivity(false));
     }
 
     @Override
@@ -119,7 +115,7 @@ public class FertilizerRecActivity extends BaseActivity {
         items.add(new RecommendationOptions(investmentString, EnumAdviceTasks.INVESTMENT_AMOUNT, 0));
         items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.TYPICAL_ROOT_YIELD, 0));
 
-        mAdapter = new RecOptionsAdapter(this, items, ItemAnimation.BOTTOM_UP);
+        mAdapter = new RecOptionsAdapter(this, items, ItemAnimation.RIGHT_LEFT);
         recyclerView.setAdapter(mAdapter);
 
         // on item list clicked

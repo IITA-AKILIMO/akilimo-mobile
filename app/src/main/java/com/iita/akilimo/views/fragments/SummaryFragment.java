@@ -88,7 +88,7 @@ public class SummaryFragment extends BaseFragment {
         mAttributes = new TimelineAttributes(
                 48,
                 ContextCompat.getColor(context, R.color.green_500),
-                ContextCompat.getColor(context, R.color.red_500),
+                ContextCompat.getColor(context, R.color.red_A400),
                 true,
                 0,
                 0,

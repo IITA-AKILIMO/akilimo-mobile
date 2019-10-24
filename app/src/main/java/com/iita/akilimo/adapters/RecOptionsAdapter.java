@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.iita.akilimo.R;
@@ -49,15 +48,15 @@ public class RecOptionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         public OriginalViewHolder(View v) {
             super(v);
-            name = (TextView) v.findViewById(R.id.name);
-            cardView = (CardView) v.findViewById(R.id.mainCard);
+            name = v.findViewById(R.id.name);
+            cardView = v.findViewById(R.id.lyt_parent);
         }
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder;
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card_recommendation, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card_recommendation_arrow, parent, false);
         viewHolder = new OriginalViewHolder(view);
         return viewHolder;
     }

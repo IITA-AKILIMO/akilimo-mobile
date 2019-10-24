@@ -29,7 +29,6 @@ public class MandatoryInfo {
     public String countryName;
     public String currency;
 
-
     @Convert(converter = CountryConverter.class, dbType = String.class)
     public EnumCountries countryEnum;
     @Convert(converter = AreaUnitConverter.class, dbType = String.class)

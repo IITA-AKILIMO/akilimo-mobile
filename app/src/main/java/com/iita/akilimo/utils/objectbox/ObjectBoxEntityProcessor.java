@@ -1,14 +1,17 @@
 package com.iita.akilimo.utils.objectbox;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.Akilimo;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.MandatoryInfo_;
 import com.iita.akilimo.entities.MarketOutlet;
 import com.iita.akilimo.entities.PlantingHarvestDates;
+import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.entities.RecAdvice;
 import com.iita.akilimo.entities.TillageOperations;
 import com.iita.akilimo.models.AreaUnit;
@@ -66,6 +69,25 @@ public class ObjectBoxEntityProcessor {
             instance = new ObjectBoxEntityProcessor(context);
         }
         return instance;
+    }
+
+    public long saveProfileInfo(ProfileInfo profileInfo) {
+        try {
+            Box<ProfileInfo> box = boxStore.boxFor(ProfileInfo.class);
+            return box.put(profileInfo);
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving profile infor");
+            Crashlytics.logException(ex);
+        }
+        return 0;
+    }
+
+    public ProfileInfo getProfileInfo() {
+        Box<ProfileInfo> box = boxStore.boxFor(ProfileInfo.class);
+
+        return box.query()
+                .build()
+                .findFirst();
     }
 
     public long saveMandatoryInfo(MandatoryInfo mandatoryInfo) {
@@ -180,7 +202,8 @@ public class ObjectBoxEntityProcessor {
             final Box<Fertilizer> box = boxStore.boxFor(Fertilizer.class);
             return box.put(selectedFertilizer);
         } catch (UniqueViolationException ex) {
-            //Crashlytics.log(ex.getStepTitle());
+            Crashlytics.log(Log.ERROR, LOG_TAG, "Unique fertilizer saving violation!");
+            Crashlytics.logException(ex);
         }
         return 0;
     }
@@ -418,8 +441,8 @@ public class ObjectBoxEntityProcessor {
             Box<StarchFactory> box = boxStore.boxFor(StarchFactory.class);
             box.put(starchFactoryList);
         } catch (Exception ex) {
-            //Crashlytics.log(Log.ERROR, LOG_TAG, ex.getStepTitle());
-            //Crashlytics.logException(ex);
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving starch factories");
+            Crashlytics.logException(ex);
         }
     }
 
@@ -436,8 +459,8 @@ public class ObjectBoxEntityProcessor {
             Box<FertilizerPrices> box = boxStore.boxFor(FertilizerPrices.class);
             box.put(fertilizerPricesList);
         } catch (Exception ex) {
-            //Crashlytics.log(Log.ERROR, LOG_TAG, ex.getStepTitle());
-            //Crashlytics.logException(ex);
+            Crashlytics.log(Log.ERROR, LOG_TAG, "Error occurred saving fertilizer prices");
+            Crashlytics.logException(ex);
         }
     }
 
@@ -456,8 +479,8 @@ public class ObjectBoxEntityProcessor {
             Box<MarketOutlet> box = boxStore.boxFor(MarketOutlet.class);
             return box.put(marketOutlet);
         } catch (Exception ex) {
-            //Crashlytics.log(Log.ERROR, LOG_TAG, ex.getStepTitle());
-            //Crashlytics.logException(ex);
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving market outlet");
+            Crashlytics.logException(ex);
         }
         return 0;
     }
@@ -474,7 +497,9 @@ public class ObjectBoxEntityProcessor {
         try {
             Box<RecAdvice> box = boxStore.boxFor(RecAdvice.class);
             box.put(recAdvice);
-        } catch (Exception ignored) {
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving recommendation advice");
+            Crashlytics.logException(ex);
         }
     }
 

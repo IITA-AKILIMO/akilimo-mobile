@@ -15,8 +15,7 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/pink_500">
+            android:layout_height="wrap_content">
 
             <include layout="@layout/toolbar" />
 
@@ -30,16 +29,18 @@
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/spacing_medium"
                 android:scrollbars="none"
                 android:scrollingCache="true"
+                tools:itemCount="1"
                 tools:listitem="@layout/content_compute_card" />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/errorImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:srcCompat="@drawable/ic_error" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -49,11 +50,10 @@
                 android:layout_below="@id/errorImage"
                 android:layout_centerInParent="true"
                 android:layout_margin="@dimen/spacing_medium"
-                android:fontFamily="@font/roboto_bold"
+                android:fontFamily="@font/roboto"
                 android:text="@string/lbl_compute_error"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:textColor="@color/red_A400"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <LinearLayout
                 android:id="@+id/lyt_progress"
@@ -76,6 +76,7 @@
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabRetry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_large"
@@ -84,7 +85,7 @@
         app:fabSize="mini"
         app:layout_anchor="@id/toolbar"
         app:layout_anchorGravity="end|right|bottom"
-        app:rippleColor="@color/purple_600"
+        app:rippleColor="@color/purple_100"
         app:srcCompat="@drawable/ic_refresh" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
