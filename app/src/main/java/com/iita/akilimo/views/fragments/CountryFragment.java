@@ -95,6 +95,9 @@ public class CountryFragment extends BaseFragment {
                 case R.id.rdTz:
                     countryEnum = EnumCountries.TANZANIA;
                     break;
+                default:
+                    countryEnum = EnumCountries.OTHERS;
+                    break;
             }
             if (mandatoryInfo == null) {
                 mandatoryInfo = new MandatoryInfo();

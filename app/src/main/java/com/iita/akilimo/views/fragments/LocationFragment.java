@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,20 +36,21 @@ import butterknife.BindView;
 public class LocationFragment extends BaseFragment {
 
     @BindView(R.id.btnCurrentLocation)
-    MaterialButton btnCurrentLocation;
+    Button btnCurrentLocation;
 
     @BindView(R.id.btnSelectLocation)
-    MaterialButton btnSelectLocation;
+    Button btnSelectLocation;
 
     @BindView(R.id.locationInfo)
     TextView locationInfo;
 
     @BindView(R.id.title)
-    AppCompatTextView title;
+    TextView title;
 
 
     private double currentLat;
     private double currentLon;
+    private double currentAlt;
     private ProfileInfo profileInfo;
     private MandatoryInfo mandatoryInfo;
     private String farmName = "";
@@ -101,13 +103,14 @@ public class LocationFragment extends BaseFragment {
 
         btnSelectLocation.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), MapBoxActivity.class);
+            intent.putExtra(MapBoxActivity.LAT, currentLat);
+            intent.putExtra(MapBoxActivity.LON, currentLon);
+            intent.putExtra(MapBoxActivity.ALT, currentAlt);
             getActivity().startActivityForResult(intent, HomeActivity.MAP_BOX_PLACE_PICKER_REQUEST_CODE);
         });
     }
 
     private void saveLocation() {
-        profileInfo = objectBoxEntityProcessor.getProfileInfo();
-        mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
         if (mandatoryInfo == null) {
             mandatoryInfo = new MandatoryInfo();
         }
@@ -127,7 +130,11 @@ public class LocationFragment extends BaseFragment {
             farmName = profileInfo.getFarmName();
         }
         if (mandatoryInfo != null) {
-            locationInfo.setText(loadLocationInfo(mandatoryInfo));
+            StringBuilder locInfo = loadLocationInfo(mandatoryInfo);
+            locationInfo.setText(locInfo.toString());
+            currentLon = mandatoryInfo.getLongitude();
+            currentLat = mandatoryInfo.getLatitude();
+            currentAlt = mandatoryInfo.getAltitude();
         }
 
         String message = context.getString(R.string.lbl_farm_location, farmName);

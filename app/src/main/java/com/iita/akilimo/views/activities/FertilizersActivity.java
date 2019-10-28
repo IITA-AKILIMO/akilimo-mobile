@@ -149,8 +149,8 @@ public class FertilizersActivity extends BaseActivity {
             priceDialogFragment.setArguments(arguments);
 
             priceDialogFragment.setOnDismissListener((priceSpecified, fertilizer, removeSelected) -> {
-                if (fertilizer != null && (priceSpecified || removeSelected)) {
-                    long id = objectBoxEntityProcessor.saveUpdateFertilizer(fertilizer);
+                if ((priceSpecified || removeSelected)) {
+                    long id = objectBoxEntityProcessor.saveSelectedFertilizer(fertilizer);
                     if (id > 0) {
                         if (removeSelected) {
                             selectedFertilizers = FertilizerList.INSTANCE.removeFertilizerByType(cleanedFertilizers, fertilizer.getType());

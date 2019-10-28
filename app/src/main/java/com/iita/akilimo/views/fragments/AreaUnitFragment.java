@@ -59,6 +59,7 @@ public class AreaUnitFragment extends BaseFragment {
         if (mandatoryInfo != null) {
             areaUnitsEnum = mandatoryInfo.getAreaUnitsEnum();
             switch (areaUnitsEnum) {
+                default:
                 case ACRE:
                     rdgAreaUnit.check(R.id.rdAcre);
                     break;

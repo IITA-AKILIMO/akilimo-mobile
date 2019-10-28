@@ -24,14 +24,14 @@
     <string name="lbl_proceed">Proceed</string>
     <string name="lbl_finish">Finish</string>
 
-    <string name="lbl_country_location">Nice to meet you %1$s.\nIn which country are you located?</string>
+    <string name="lbl_country_location">Nice to meet you %1$s.\nIn which country is your farm located?</string>
     <string name="lbl_nigeria">Nigeria</string>
     <string name="lbl_tanzania">Tanzania</string>
 
-    <string name="lbl_area_unit">Select your preferred area unit</string>
-    <string name="area_unit_acre">Acre (acre)</string>
-    <string name="area_unit_ha">Hectare (ha)</string>
-    <string name="area_unit_square_meter">Square meter (m\u00B2)</string>
+    <string name="lbl_area_unit">How do you measure the area of your field?</string>
+    <string name="area_unit_acre">in Acre (acre)</string>
+    <string name="area_unit_ha">in Hectare (ha)</string>
+    <string name="area_unit_square_meter">in Square meter (m\u00B2)</string>
 
 
     <string name="lbl_cassava_field_size_no_ph">What is the size of your cassava field?</string>
@@ -194,7 +194,7 @@
 
     <string name="lbl_rec_sample">We recommend to not apply any fertilizer. We do not expect that fertilizer application will result in a profitable yield increase in your situation.</string>
     <string name="lbl_save">Save</string>
-    <string name="lbl_rec_intro">AKILIMO can advise you to grow cassava.\nWhat can we help you with?</string>
+    <string name="lbl_rec_intro">Akilimo can advise you on how to grow cassava.\nWhat advise can we help you with?</string>
 
     <!-- scroll behaviors -->
     <string name="hide_bottom_on_scroll" translatable="false">com.google.android.material.behavior.HideBottomViewOnScrollBehavior</string>
