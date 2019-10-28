@@ -57,7 +57,7 @@ def computeVersionName() {
 }
 
 static def computeBuildNumber() {
-    return Integer.valueOf(System.env.BUILD_NUMBER ?: 3)
+    return Integer.valueOf(System.env.BUILD_NUMBER ?: 4)
 }
 
 def computeVersionCode() {
@@ -117,8 +117,6 @@ dependencies {
     implementation 'com.github.javiersantos:AppUpdater:2.7'
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.10.17'
     //https://stackoverflow.com/questions/44826452/highlight-new-feature-in-android
-
-
     implementation 'com.jakewharton:butterknife:10.2.0' //Butterknife library
 
     compileOnly 'org.projectlombok:lombok:1.18.8'

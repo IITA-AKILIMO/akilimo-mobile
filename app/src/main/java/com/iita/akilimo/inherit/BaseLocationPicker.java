@@ -46,6 +46,7 @@ public abstract class BaseLocationPicker extends BaseActivity implements OnMapRe
     protected static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     protected static final String DROPPED_MARKER_LAYER_ID = "DROPPED_MARKER_LAYER_ID";
     protected static final String DROPPED_MARKER_SOURCE_ID = "DROPPED_MARKER_SOURCE_ID";
+    protected static final String IMAGE_NAME = "DROPPED-ICON-IMAGE";
     protected String accessToken;
     protected String placeName;
 
@@ -59,11 +60,12 @@ public abstract class BaseLocationPicker extends BaseActivity implements OnMapRe
 
     protected void initDroppedMarker(@NonNull Style loadedMapStyle) {
         // Add the marker image to map
-        loadedMapStyle.addImage("dropped-icon-image", BitmapFactory.decodeResource(getResources(), R.drawable.mapbox_marker_icon_default));
+//        loadedMapStyle.addImage(IMAGE_NAME, ContextCompat.getDrawable(this, R.drawable.ic_location_on));
+        loadedMapStyle.addImage(IMAGE_NAME, BitmapFactory.decodeResource(getResources(), R.drawable.mapbox_marker_icon_default));
         loadedMapStyle.addSource(new GeoJsonSource(DROPPED_MARKER_SOURCE_ID));
         loadedMapStyle.addLayer(new SymbolLayer(DROPPED_MARKER_LAYER_ID, DROPPED_MARKER_SOURCE_ID)
                 .withProperties(
-                        iconImage("dropped-icon-image"),
+                        iconImage(IMAGE_NAME),
                         visibility(NONE),
                         iconAllowOverlap(true),
                         iconIgnorePlacement(true)

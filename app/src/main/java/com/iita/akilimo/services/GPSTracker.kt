@@ -10,13 +10,15 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.Settings
+import android.util.Log
 
 import androidx.appcompat.app.AlertDialog
+import com.crashlytics.android.Crashlytics
 
 
-class GPSTracker : Service, LocationListener {
+class GPSTracker(context: Context) : Service(), LocationListener {
 
-    private var mContext: Context? = null
+    private var mContext: Context? = context
     private var isGPSEnabled = false
     private var isNetworkEnabled = false
     private var canGetLocation = false
@@ -30,12 +32,6 @@ class GPSTracker : Service, LocationListener {
     companion object {
         private const val MIN_DISTANCE_CHANGE_FOR_UPDATES: Long = 10 // 10 meters
         private const val MIN_TIME_BW_UPDATES = (1000 * 60).toLong() // 1 minute
-    }
-
-    constructor() {}
-
-    constructor(context: Context) {
-        this.mContext = context
     }
 
     @SuppressLint("MissingPermission")
@@ -91,8 +87,9 @@ class GPSTracker : Service, LocationListener {
             }
 
             // no network provider is enabled
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (ex: Exception) {
+            Crashlytics.log(Log.ERROR, "GPS_TRACKER", "Error saving location information")
+            Crashlytics.logException(ex)
         }
 
         return location

@@ -156,8 +156,18 @@ public class SummaryFragment extends BaseFragment {
         mDataList.add(new TimeLineModel("Field size", String.valueOf(fieldSize), fieldSizeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         mDataList.add(new TimeLineModel("Farm location", pickedLocation, locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
 
+//        mDataList.add(buildModel(StepStatus.COMPLETED));
+//        mDataList.add(buildModel(StepStatus.INCOMPLETE));
+
 
         initAdapter();
+    }
+
+    private TimeLineModel buildModel(StepStatus stepStatus) {
+        return new TimeLineModel(
+                "Field size",
+                String.valueOf(fieldSize),
+                stepStatus);
     }
 
     private void initFragmentCallback() {

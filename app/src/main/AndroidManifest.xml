@@ -49,22 +49,54 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".views.activities.FertilizersActivity" />
-        <activity android:name=".views.activities.DatesActivity" />
-        <activity android:name=".views.activities.RecommendationsActivity" />
-        <activity android:name=".views.activities.HomeActivity" />
-        <activity android:name=".views.activities.FertilizerRecActivity" />
-        <activity android:name=".views.activities.MapBoxActivity" />
-        <activity android:name=".views.activities.MarketOutletActivity" />
-        <activity android:name=".views.activities.RootYieldActivity" />
-        <activity android:name=".views.activities.InvestmentAmountActivity" />
-        <activity android:name=".views.activities.DstRecommendationActivity" />
-        <activity android:name=".views.activities.HerbicideUseActivity" />
-        <activity android:name=".views.activities.TillageOperationsActivity" />
-        <activity android:name=".views.activities.PlantingPracticesActivity" />
-        <activity android:name=".views.activities.ScheduledPlantingActivity" />
-        <activity android:name=".views.activities.MaizePerformanceActivity" />
-        <activity android:name=".views.activities.InterCropRecActivity" />
+        <activity
+            android:name=".views.activities.FertilizersActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.activities.DatesActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.activities.RecommendationsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.activities.HomeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.activities.FertilizerRecActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.activities.MapBoxActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.activities.MarketOutletActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.activities.RootYieldActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.activities.InvestmentAmountActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.activities.DstRecommendationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.activities.HerbicideUseActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.activities.TillageOperationsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.activities.PlantingPracticesActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.activities.ScheduledPlantingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.activities.MaizePerformanceActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.activities.InterCropRecActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

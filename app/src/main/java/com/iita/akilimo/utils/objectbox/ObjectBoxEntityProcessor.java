@@ -14,38 +14,18 @@ import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.entities.RecAdvice;
 import com.iita.akilimo.entities.TillageOperations;
-import com.iita.akilimo.models.AreaUnit;
-import com.iita.akilimo.models.AreaUnit_;
-import com.iita.akilimo.models.CroppingSystem;
-import com.iita.akilimo.models.CroppingSystem_;
-import com.iita.akilimo.models.CultivationAdvice;
-import com.iita.akilimo.models.CultivationAdvice_;
 import com.iita.akilimo.models.CurrentFieldYield;
 import com.iita.akilimo.models.CurrentFieldYield_;
-import com.iita.akilimo.models.CurrentPractice;
-import com.iita.akilimo.models.CurrentPractice_;
 import com.iita.akilimo.models.Fertilizer;
 import com.iita.akilimo.models.FertilizerPrices;
 import com.iita.akilimo.models.FertilizerPrices_;
 import com.iita.akilimo.models.Fertilizer_;
-import com.iita.akilimo.models.FieldArea;
-import com.iita.akilimo.models.FieldArea_;
-import com.iita.akilimo.models.Herbicides;
-import com.iita.akilimo.models.Herbicides_;
 import com.iita.akilimo.models.InvestmentAmount;
 import com.iita.akilimo.models.InvestmentAmount_;
 import com.iita.akilimo.models.MaizePerformance;
 import com.iita.akilimo.models.MaizePerformance_;
-import com.iita.akilimo.models.MaizeUnitOfSale;
-import com.iita.akilimo.models.MaizeUnitOfSale_;
-import com.iita.akilimo.models.OperationCosts;
-import com.iita.akilimo.models.OperationCosts_;
 import com.iita.akilimo.models.StarchFactory;
 import com.iita.akilimo.models.StarchFactory_;
-import com.iita.akilimo.models.UnitOfSale;
-import com.iita.akilimo.models.UnitOfSale_;
-import com.iita.akilimo.models.UnitPrice;
-import com.iita.akilimo.models.UnitPrice_;
 
 import java.util.List;
 
@@ -122,42 +102,6 @@ public class ObjectBoxEntityProcessor {
                 .findFirst();
     }
 
-    public FieldArea getFieldArea() {
-        Box<FieldArea> box = boxStore.boxFor(FieldArea.class);
-
-        return box.query()
-                .order(FieldArea_.id, QueryBuilder.DESCENDING)
-                .build()
-                .findFirst();
-    }
-
-    public long saveUnitPrice(UnitPrice unitPrice) {
-        Box<UnitPrice> box = boxStore.boxFor(UnitPrice.class);
-        return box.put(unitPrice);
-    }
-
-    public UnitPrice getUnitPrice() {
-        Box<UnitPrice> box = boxStore.boxFor(UnitPrice.class);
-
-        return box.query()
-                .order(UnitPrice_.id, QueryBuilder.DESCENDING)
-                .build()
-                .findFirst();
-    }
-
-    public long saveUnitOfSale(UnitOfSale unitPrice) {
-        Box<UnitOfSale> box = boxStore.boxFor(UnitOfSale.class);
-        return box.put(unitPrice);
-    }
-
-    public UnitOfSale getUnitOfSale() {
-        Box<UnitOfSale> box = boxStore.boxFor(UnitOfSale.class);
-
-        return box.query()
-                .order(UnitOfSale_.id, QueryBuilder.DESCENDING)
-                .build()
-                .findFirst();
-    }
 
     public void saveInvestmentAmount(InvestmentAmount investment) {
         Box<InvestmentAmount> box = boxStore.boxFor(InvestmentAmount.class);
@@ -193,7 +137,8 @@ public class ObjectBoxEntityProcessor {
             final Box<Fertilizer> box = boxStore.boxFor(Fertilizer.class);
             box.put(selectedFertilizers);
         } catch (UniqueViolationException ex) {
-            //Crashlytics.log(ex.getStepTitle());
+            Crashlytics.log(Log.ERROR, LOG_TAG, "Unique fertilizer saving violation!");
+            Crashlytics.logException(ex);
         }
     }
 
@@ -206,12 +151,6 @@ public class ObjectBoxEntityProcessor {
             Crashlytics.logException(ex);
         }
         return 0;
-    }
-
-    public long saveUpdateFertilizer(@NonNull final Fertilizer fertilizer) {
-        final Box<Fertilizer> box = boxStore.boxFor(Fertilizer.class);
-        //clearFertilizers();//empty the table before saving
-        return saveSelectedFertilizer(fertilizer);
     }
 
     public List<Fertilizer> getAvailableFertilizersByCountry(@NonNull String countryCode) {
@@ -247,61 +186,6 @@ public class ObjectBoxEntityProcessor {
                 .findFirst();
     }
 
-
-    public void clearFertilizers() {
-        final Box<Fertilizer> box = boxStore.boxFor(Fertilizer.class);
-        box.removeAll(); //clear the table
-    }
-
-    public long saveCroppingSystem(CroppingSystem croppingSystem) {
-        Box<CroppingSystem> box = boxStore.boxFor(CroppingSystem.class);
-        return box.put(croppingSystem);
-    }
-
-    @Deprecated
-    private void clearCroppingSystem() {
-        final Box<CroppingSystem> box = boxStore.boxFor(CroppingSystem.class);
-        box.removeAll(); //clear the table
-    }
-
-    public CroppingSystem getCroppingSystem() {
-        Box<CroppingSystem> box = boxStore.boxFor(CroppingSystem.class);
-        return box.query()
-                .order(CroppingSystem_.id, QueryBuilder.DESCENDING)
-                .build()
-                .findFirst();
-    }
-
-    public CroppingSystem getCroppingSystem(String[] croppingSystemList) {
-        Box<CroppingSystem> box = boxStore.boxFor(CroppingSystem.class);
-
-        return box.query()
-                .in(CroppingSystem_.croppingSystem, croppingSystemList)
-                .build()
-                .findFirst();
-    }
-
-
-    public long saveCultivationAdvice(@NonNull final CultivationAdvice cultivationAdvice) {
-        Box<CultivationAdvice> box = boxStore.boxFor(CultivationAdvice.class);
-        return box.put(cultivationAdvice);
-    }
-
-    @Deprecated
-    private void clearCultivationAdvice() {
-        final Box<CultivationAdvice> box = boxStore.boxFor(CultivationAdvice.class);
-        box.removeAll(); //clear the table
-    }
-
-    public CultivationAdvice getCultivationAdvice() {
-        Box<CultivationAdvice> box = boxStore.boxFor(CultivationAdvice.class);
-        return box.query()
-                .order(CultivationAdvice_.id, QueryBuilder.DESCENDING)
-                .build()
-                .findFirst();
-    }
-
-
     public long saveTillageOperation(@NonNull TillageOperations tillageOperations) {
         Box<TillageOperations> box = boxStore.boxFor(TillageOperations.class);
 //        clearTillageOperations();
@@ -323,54 +207,6 @@ public class ObjectBoxEntityProcessor {
                 .find();
     }
 
-    private void clearTillageOperations() {
-        final Box<TillageOperations> box = boxStore.boxFor(TillageOperations.class);
-        box.removeAll(); //clear the table
-    }
-
-    public long saveHerbicideData(@NonNull Herbicides herbicidesModel) {
-        Box<Herbicides> box = boxStore.boxFor(Herbicides.class);
-        return box.put(herbicidesModel);
-    }
-
-    public Herbicides getHerbicides() {
-        Box<Herbicides> box = boxStore.boxFor(Herbicides.class);
-
-        return box.query()
-                .order(Herbicides_.id, QueryBuilder.DESCENDING)
-                .build()
-                .findFirst();
-    }
-
-    public long saveCurrentPractice(@NonNull CurrentPractice currentPracticeModel) {
-        Box<CurrentPractice> box = boxStore.boxFor(CurrentPractice.class);
-        box.removeAll(); //clear first
-        return box.put(currentPracticeModel);
-    }
-
-    public CurrentPractice getCurrentPractice() {
-        Box<CurrentPractice> box = boxStore.boxFor(CurrentPractice.class);
-
-        return box.query()
-                .order(CurrentPractice_.id, QueryBuilder.DESCENDING)
-                .build()
-                .findFirst();
-    }
-
-    public long saveOperationCostsData(@NonNull OperationCosts operationCostsModel) {
-        Box<OperationCosts> box = boxStore.boxFor(OperationCosts.class);
-        box.removeAll(); //clear first
-        return box.put(operationCostsModel);
-    }
-
-    public OperationCosts getOperationCosts() {
-        Box<OperationCosts> box = boxStore.boxFor(OperationCosts.class);
-
-        return box.query()
-                .order(OperationCosts_.id, QueryBuilder.DESCENDING)
-                .build()
-                .findFirst();
-    }
 
     public long saveMaizePerformanceData(@NonNull MaizePerformance maizePerformanceModel) {
         Box<MaizePerformance> box = boxStore.boxFor(MaizePerformance.class);
@@ -387,51 +223,11 @@ public class ObjectBoxEntityProcessor {
                 .findFirst();
     }
 
-    public long saveMaizeUnitOfSale(@NonNull MaizeUnitOfSale maizeUnitOfSaleModel) {
-        Box<MaizeUnitOfSale> box = boxStore.boxFor(MaizeUnitOfSale.class);
-        return box.put(maizeUnitOfSaleModel);
-    }
-
-    public MaizeUnitOfSale getMaizeUnitOfSale() {
-        Box<MaizeUnitOfSale> box = boxStore.boxFor(MaizeUnitOfSale.class);
-
-        return box.query()
-                .order(MaizeUnitOfSale_.id, QueryBuilder.DESCENDING)
-                .build()
-                .findFirst();
-    }
-
-    public long saveAreaUnit(@NonNull AreaUnit areaUnitModel) {
-        Box<AreaUnit> box = boxStore.boxFor(AreaUnit.class);
-        return box.put(areaUnitModel);
-    }
-
-    public AreaUnit getAreaUnit() {
-        Box<AreaUnit> box = boxStore.boxFor(AreaUnit.class);
-        return box.query()
-                .order(AreaUnit_.id, QueryBuilder.DESCENDING)
-                .build()
-                .findFirst();
-    }
-
-    public long saveStarchFactory(@NonNull StarchFactory starchFactory) {
-        Box<StarchFactory> box = boxStore.boxFor(StarchFactory.class);
-        return box.put(starchFactory);
-    }
 
     public StarchFactory getSelectedStarchFactoryByTag(String factoryNameCountry) {
         Box<StarchFactory> box = boxStore.boxFor(StarchFactory.class);
         return box.query()
                 .equal(StarchFactory_.factoryNameCountry, factoryNameCountry)
-                .build()
-                .findFirst();
-    }
-
-    public StarchFactory getSelectedStarchFactory(@NonNull String countryCode) {
-        Box<StarchFactory> box = boxStore.boxFor(StarchFactory.class);
-        return box.query()
-                .equal(StarchFactory_.countryCode, countryCode)
-                .equal(StarchFactory_.factorySelected, true)
                 .build()
                 .findFirst();
     }
