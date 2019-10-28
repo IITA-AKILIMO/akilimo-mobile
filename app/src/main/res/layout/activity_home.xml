@@ -13,9 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-<!--    <include-->
-<!--        android:id="@+id/bottomLayout"-->
-<!--        layout="@layout/bottom_single_button_layout" />-->
+    <!--    <include-->
+    <!--        android:id="@+id/bottomLayout"-->
+    <!--        layout="@layout/bottom_single_button_layout" />-->
 
     <LinearLayout
         android:id="@+id/dotsLayout"
@@ -25,6 +25,17 @@
         android:layout_alignParentBottom="true"
         android:gravity="center"
         android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btnGetStarted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_rounded_white"
+            android:fontFamily="@font/ubuntu"
+            android:text="@string/lbl_start"
+            android:textColor="@color/grey_3"
+            android:textStyle="bold" />
+
         <LinearLayout
             android:id="@+id/homeLayoutDots"
             android:layout_width="match_parent"
