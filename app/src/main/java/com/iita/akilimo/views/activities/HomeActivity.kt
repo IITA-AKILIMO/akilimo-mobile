@@ -98,8 +98,6 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
         //Add the various fragments
         val bioDataFragment = BioDataFragment.newInstance()
-
-
         fragmentArray.add(WelcomeFragment.newInstance())
         fragmentArray.add(bioDataFragment)
         fragmentArray.add(CountryFragment.newInstance())
@@ -257,8 +255,6 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                         currentAlt = data.getDoubleExtra(MapBoxActivity.ALT, 0.0)
                         placeName = data.getStringExtra(MapBoxActivity.PLACE_NAME)
 
-                        //refresh fragment data
-                        (currentFragment as? LocationFragment)?.refreshData()
                     } else {
                         Toast.makeText(
                             context,
@@ -284,7 +280,11 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                 else -> "NA"
             }
 
-            objectBoxEntityProcessor.saveMandatoryInfo(location)
+            val id = objectBoxEntityProcessor.saveMandatoryInfo(location)
+            if (id > 0) {
+                //refresh fragment data
+                (currentFragment as? LocationFragment)?.refreshData()
+            }
         } catch (ex: Exception) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "Error saving location information")
             Crashlytics.logException(ex)

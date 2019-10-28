@@ -120,6 +120,8 @@ public class BioDataFragment extends BaseFragment {
                     rdgGender.check(R.id.rdFemale);
                     break;
             }
+        } else {
+            profileInfo = new ProfileInfo();
         }
     }
 

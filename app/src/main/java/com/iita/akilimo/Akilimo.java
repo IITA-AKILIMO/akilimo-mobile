@@ -1,5 +1,6 @@
 package com.iita.akilimo;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.multidex.MultiDexApplication;
 
 import com.crashlytics.android.Crashlytics;
@@ -13,7 +14,7 @@ import timber.log.Timber;
 
 public class Akilimo extends MultiDexApplication {
     public static final String LOG_TAG = Akilimo.class.getSimpleName();
-    public static final String DB_NAME = "akilimoDST";
+    public static final String DB_NAME = "AkilimoSTORE";
     private BoxStore boxStore;
 
 
@@ -21,6 +22,8 @@ public class Akilimo extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
+        //@HINT This is used to enable proper vector support for android 4.4 and below, it causes crashing when firing up the application
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
 //        BoxStore.deleteAllFiles(this, DB_NAME);
         boxStore = MyObjectBox.builder()

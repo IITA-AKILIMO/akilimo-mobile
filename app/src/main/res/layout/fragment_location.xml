@@ -56,21 +56,31 @@
             android:paddingStart="@dimen/spacing_xlarge"
             android:paddingEnd="@dimen/spacing_xlarge">
 
-            <com.google.android.material.button.MaterialButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnCurrentLocation"
-                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/ubuntu"
+                android:gravity="center"
                 android:text="@string/lbl_current_location"
                 android:textAllCaps="false"
-                android:textColor="@color/grey_80"
-                app:backgroundTint="@color/grey_5"
-                app:cornerRadius="5dp"
-                app:rippleColor="@color/secondaryDarkColor"
-                app:strokeColor="@color/colorAccent"
-                app:strokeWidth="1dp" />
+                android:theme="@style/Button.Primary" />
+
+
+            <!--            <androidx.appcompat.widget.AppCompatButton-->
+            <!--                style="@style/Widget.AppCompat.Button.Borderless"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="0dp"-->
+            <!--                android:layout_weight="1"-->
+            <!--                android:fontFamily="@font/ubuntu"-->
+            <!--                android:text="@string/lbl_current_location"-->
+            <!--                android:textAllCaps="false"-->
+            <!--                android:textColor="@color/grey_80"-->
+            <!--                app:backgroundTint="@color/grey_5"-->
+            <!--                app:cornerRadius="5dp"-->
+            <!--                app:strokeColor="@color/colorAccent"-->
+            <!--                app:strokeWidth="1dp" />-->
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSelectLocation"

@@ -48,6 +48,9 @@ public class MapBoxActivity extends BaseLocationPicker {
     String activityTitle;
 
     LatLng currentCoordinates;
+    double currentLat;
+    double currentLong;
+    double currentAlt;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,7 +83,19 @@ public class MapBoxActivity extends BaseLocationPicker {
 
     @Override
     protected void initComponent() {
-        initCurrentLocation();
+        //check if activity has extra values
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            currentLat = extras.getDouble(LAT);
+            currentLong = extras.getDouble(LON);
+            currentAlt = extras.getDouble(ALT);
+        }
+
+        if (currentLong != 0 && currentLat != 0) {
+            currentCoordinates = new LatLng(currentLat, currentLong, currentAlt);
+        } else {
+            initCurrentLocation();
+        }
     }
 
     @Override
@@ -153,12 +168,14 @@ public class MapBoxActivity extends BaseLocationPicker {
         if (gps.canGetLocation()) {
             int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this.context);
             if (status == ConnectionResult.SUCCESS) {
-                currentCoordinates = new LatLng(gps.getLatitude(), gps.getLongitude());
+                currentLat = gps.getLatitude();
+                currentLat = gps.getLatitude();
             }
             gps.stopUsingGPS();
         } else {
             gps.showSettingsAlert();
         }
+        currentCoordinates = new LatLng(currentLat, currentLong, currentAlt);
     }
 
     private void processActivityResult() {

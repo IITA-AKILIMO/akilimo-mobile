@@ -3,22 +3,24 @@ package com.iita.akilimo.views.activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import com.crashlytics.android.Crashlytics
-import com.iita.akilimo.inherit.BaseActivity
 import com.iita.akilimo.utils.FireBaseConfig
 
-class SplashActivity : BaseActivity() {
+class SplashActivity : AppCompatActivity() {
+
+
+    companion object {
+        val LOG_TAG = SplashActivity::class.java.simpleName
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initComponent()
     }
 
-    override fun initComponent() {
+    fun initComponent() {
         try {
-            val fireBaseConfig = FireBaseConfig(this)
-            fireBaseConfig.fetchNewRemoteConfig()
-
             val background = object : Thread() {
                 override fun run() {
                     launchActivity()
@@ -32,21 +34,17 @@ class SplashActivity : BaseActivity() {
         }
     }
 
-    override fun initToolbar() {
-        throw UnsupportedOperationException()
-    }
 
-    override fun validate(backPressed: Boolean) {
-        throw UnsupportedOperationException()
-    }
-
-    override fun closeActivity(backPressed: Boolean) {
+    fun closeActivity() {
         finish()
     }
 
     private fun launchActivity() {
+        val fireBaseConfig = FireBaseConfig(this)
+        fireBaseConfig.fetchNewRemoteConfig()
+
         val intent = Intent(this@SplashActivity, HomeActivity::class.java)
         startActivity(intent)
-        closeActivity(false)
+        closeActivity()
     }
 }
