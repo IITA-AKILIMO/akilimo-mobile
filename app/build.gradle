@@ -36,7 +36,10 @@ android {
         }
     }
     lintOptions {
-        abortOnError true
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
 //        disable 'UselessParent', 'HardcodedText', 'LabelFor', 'UnusedResources'
     }
     dexOptions {
@@ -49,6 +52,26 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+//    signingConfigs {
+//        release {
+//            File fileProp = file(System.getenv('HOME') + "/.appkey")
+//            if (fileProp.exists()) {
+//                Properties releaseConfig = new Properties()
+//                releaseConfig.load(new FileInputStream(fileProp))
+//                storeFile file(System.getenv('HOME') + "/" + releaseConfig["KEYSTORE_FILE"])
+//                storePassword releaseConfig['KEYSTORE_PWD']
+//                keyAlias releaseConfig['KEY_ALIAS']
+//                keyPassword releaseConfig['KEY_PASSWORD']
+//            }
+//        }
+//        debug {
+//            storeFile file('debug.keystore')
+//            storePassword 'android'
+//            keyAlias 'androiddebugkey'
+//            keyPassword 'androiddebug'
+//        }
+//    }
 }
 
 @SuppressWarnings("GrMethodMayBeStatic")
@@ -57,13 +80,14 @@ def computeVersionName() {
 }
 
 static def computeBuildNumber() {
-    return Integer.valueOf(System.env.BUILD_NUMBER ?: 4)
+    return Integer.valueOf(System.env.BUILD_NUMBER ?: 5)
 }
 
 def computeVersionCode() {
     long unixTimestamp = Instant.now().getEpochSecond()
     return unixTimestamp.intValue()
 }
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
