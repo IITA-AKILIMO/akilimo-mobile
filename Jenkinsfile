@@ -39,6 +39,13 @@ pipeline {
         sh(script: 'gradle :app:bundleRelease :app:assembleRelease', returnStdout: true)
       }
     }
+        stage('sign apk'){
+        signAndroidApks (
+        keyStoreId: "81c76f5a-8868-4c14-b067-ed36bf497a8e",
+        keyAlias: "",
+        apksToSign: "**/*-unsigned.apk"
+        )
+    }
     stage('Archive Artifacts') {
       steps {
         script {

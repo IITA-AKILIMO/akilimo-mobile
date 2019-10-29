@@ -73,11 +73,11 @@ public class FertilizerGridAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 }
             });
             if (isSelected) {
-                view.selectionIndicator.setImageResource(R.drawable.ic_done);
+                view.selectionIndicator.setImageResource(R.drawable.ic_check_box_checked);
                 view.selectionIndicator.setColorFilter(ctx.getResources().getColor(R.color.colorAccent));
                 Tools.displayImageOriginal(ctx, view.image, R.drawable.ic_sack_solid);
             } else {
-                view.selectionIndicator.setImageResource(R.drawable.ic_info);
+                view.selectionIndicator.setImageResource(R.drawable.ic_check_box_unchecked);
                 view.selectionIndicator.setColorFilter(ctx.getResources().getColor(R.color.grey_5));
                 Tools.displayImageOriginal(ctx, view.image, R.drawable.ic_sack_outline);
             }
