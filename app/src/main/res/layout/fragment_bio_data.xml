@@ -9,16 +9,16 @@
     android:padding="@dimen/spacing_medium"
     tools:context=".views.fragments.BioDataFragment">
 
-<!--    <androidx.appcompat.widget.AppCompatImageView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:scaleType="centerCrop"-->
-<!--        app:srcCompat="@drawable/ic_akilimo_logo" />-->
+    <!--    <androidx.appcompat.widget.AppCompatImageView-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:scaleType="centerCrop"-->
+    <!--        app:srcCompat="@drawable/ic_akilimo_logo" />-->
 
-<!--    <View-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:background="@color/cyan_800_overlay" />-->
+    <!--    <View-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:background="@color/cyan_800_overlay" />-->
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nested_scroll_view"
@@ -39,17 +39,17 @@
             android:paddingBottom="?attr/actionBarSize">
 
 
-<!--            <com.mikhaellopez.circularimageview.CircularImageView-->
-<!--                android:id="@+id/image"-->
-<!--                android:layout_width="100dp"-->
-<!--                android:layout_height="100dp"-->
-<!--                android:layout_marginBottom="@dimen/spacing_medium"-->
-<!--                app:civ_border="true"-->
-<!--                app:civ_border_color="@color/colorPrimary"-->
-<!--                app:civ_border_width="2dp"-->
-<!--                app:civ_shadow="true"-->
-<!--                app:civ_shadow_radius="0"-->
-<!--                app:srcCompat="@drawable/ic_profiles" />-->
+            <!--            <com.mikhaellopez.circularimageview.CircularImageView-->
+            <!--                android:id="@+id/image"-->
+            <!--                android:layout_width="100dp"-->
+            <!--                android:layout_height="100dp"-->
+            <!--                android:layout_marginBottom="@dimen/spacing_medium"-->
+            <!--                app:civ_border="true"-->
+            <!--                app:civ_border_color="@color/colorPrimary"-->
+            <!--                app:civ_border_width="2dp"-->
+            <!--                app:civ_shadow="true"-->
+            <!--                app:civ_shadow_radius="0"-->
+            <!--                app:srcCompat="@drawable/ic_profiles" />-->
 
             <TextView
                 android:id="@+id/title"
@@ -57,7 +57,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:fontFamily="@font/ubuntu"
-                android:text="Let us start by you telling me a bit about yourself" />
+                android:text="Let us start by you telling me a bit about yourself"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/colorAccent" />
 
 
             <RelativeLayout
@@ -88,19 +91,16 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="@dimen/spacing_mlarge" />
-
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/edtFirstName"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/ubuntu"
                                 android:hint="First Name"
                                 android:inputType="text"
                                 android:maxLines="1"
                                 android:singleLine="true"
-                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -109,25 +109,19 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="@dimen/spacing_mlarge" />
-
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/edtLastName"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/ubuntu"
                                 android:hint="Last Name"
                                 android:inputType="text"
                                 android:maxLines="1"
                                 android:singleLine="true"
-                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/spacing_mlarge" />
 
                         <RadioGroup
                             android:id="@+id/rdgGender"
@@ -141,19 +135,20 @@
                                 android:id="@+id/rdMale"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Male" />
+                                android:fontFamily="@font/ubuntu"
+                                android:text="Male"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                             <androidx.appcompat.widget.AppCompatRadioButton
                                 android:id="@+id/rdFemale"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Female" />
+                                android:fontFamily="@font/ubuntu"
+                                android:text="Female"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                         </RadioGroup>
 
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/spacing_mlarge" />
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/lytFarmName"
@@ -161,19 +156,17 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/spacing_medium">
 
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="@dimen/spacing_mlarge" />
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/edtFarmName"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/ubuntu"
                                 android:hint="Name of your cassava farm"
                                 android:inputType="text"
                                 android:maxLines="1"
                                 android:singleLine="true"
-                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -184,10 +177,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="@dimen/spacing_mlarge" />
-
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/edtEmail"
                                 android:layout_width="match_parent"
@@ -197,7 +186,7 @@
                                 android:inputType="textEmailAddress"
                                 android:maxLines="1"
                                 android:singleLine="true"
-                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 

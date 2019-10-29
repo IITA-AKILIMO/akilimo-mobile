@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:tint="@color/grey_5"
-                app:srcCompat="@drawable/ic_info" />
+                app:srcCompat="@drawable/ic_radio_button_unchecked" />
 
         </LinearLayout>
 

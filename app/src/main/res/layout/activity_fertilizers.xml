@@ -98,7 +98,7 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <include layout="@layout/bottom_single_button_layout" />
+    <include layout="@layout/bottom_two_buttons_layout" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
