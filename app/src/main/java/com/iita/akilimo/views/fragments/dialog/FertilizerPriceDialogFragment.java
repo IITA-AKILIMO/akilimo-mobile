@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -20,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
@@ -178,26 +180,30 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
     private void radioSelected(RadioGroup radioGroup) {
         int radioButtonId = radioGroup.getCheckedRadioButtonId();
         RadioButton radioButton = dialog.findViewById(radioButtonId);
-
         long itemTagIndex = (long) radioButton.getTag();
 
-        FertilizerPrices pricesResp = fertilizerPricesList.get((int) itemTagIndex);
-        isExactPriceRequired = false;
-        isPriceValid = true;
-        savedPricePerBag = pricesResp.getPricePerBag();
-        bagPrice = String.valueOf(savedPricePerBag);
-        bagPriceRange = pricesResp.getPriceRange();
+        try {
+            FertilizerPrices pricesResp = fertilizerPricesList.get((int) itemTagIndex);
+            isExactPriceRequired = false;
+            isPriceValid = true;
+            savedPricePerBag = pricesResp.getPricePerBag();
+            bagPrice = String.valueOf(savedPricePerBag);
+            bagPriceRange = pricesResp.getPriceRange();
 
 
-        exactPriceWrapper.setVisibility(View.GONE);
-        exactPriceWrapper.getEditText().setText(null);
-        if (savedPricePerBag >= 0 && savedPricePerBag <= 0) {
-            bagPrice = "NA";
-            bagPriceRange = "NA";
-        } else if (savedPricePerBag < 0) {
-            isExactPriceRequired = true;
-            isPriceValid = false;
-            exactPriceWrapper.setVisibility(View.VISIBLE);
+            exactPriceWrapper.setVisibility(View.GONE);
+            exactPriceWrapper.getEditText().setText(null);
+            if (savedPricePerBag >= 0 && savedPricePerBag <= 0) {
+                bagPrice = "NA";
+                bagPriceRange = "NA";
+            } else if (savedPricePerBag < 0) {
+                isExactPriceRequired = true;
+                isPriceValid = false;
+                exactPriceWrapper.setVisibility(View.VISIBLE);
+            }
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, "Radio selection issues");
+            Crashlytics.logException(ex);
         }
     }
 
