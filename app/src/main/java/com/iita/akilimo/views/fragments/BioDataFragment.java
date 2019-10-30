@@ -129,7 +129,7 @@ public class BioDataFragment extends BaseFragment {
             }
         }catch(Exception ex){
             profileInfo = new ProfileInfo();
-            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving recommendation advice");
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred getting biodata infoe");
             Crashlytics.logException(ex);
         }
     }
