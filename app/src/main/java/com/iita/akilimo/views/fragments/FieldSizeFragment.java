@@ -4,6 +4,7 @@ package com.iita.akilimo.views.fragments;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.MandatoryInfo;
@@ -115,40 +117,46 @@ public class FieldSizeFragment extends BaseFragment {
 
     @Override
     public void refreshData() {
-        profileInfo = objectBoxEntityProcessor.getProfileInfo();
-        mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
-        if (mandatoryInfo != null) {
-            fieldAreaEnum = mandatoryInfo.getFieldAreaEnum();
-            areaUnits = mandatoryInfo.getAreaUnitsEnum();
+        try {
+            profileInfo = objectBoxEntityProcessor.getProfileInfo();
+            mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+            if (mandatoryInfo != null) {
+                fieldAreaEnum = mandatoryInfo.getFieldAreaEnum();
+                areaUnits = mandatoryInfo.getAreaUnitsEnum();
 
-            setFieldLabels(areaUnits);
-            myFieldSize = String.valueOf(mandatoryInfo.getAreaSize());
-            specifiedArea.setText(null);
-            switch (fieldAreaEnum) {
-                case QUARTER_ACRE:
-                    rdgFieldArea.check(R.id.rd_quarter_acre);
-                    break;
-                case HALF_ACRE:
-                    rdgFieldArea.check(R.id.rd_half_acre);
-                    break;
-                case ONE_ACRE:
-                    rdgFieldArea.check(R.id.rd_one_acre);
-                    break;
-                case ONE_HALF_ACRE:
-                    rdgFieldArea.check(R.id.rd_one_half_acre);
-                    break;
-                case TWO_HALF_ACRE:
-                    rdgFieldArea.check(R.id.rd_two_half_acre);
-                    break;
-                case FIVE_ACRE:
-                    rdgFieldArea.check(R.id.rd_five_acre);
-                    break;
-                case EXACT_AREA:
-                    rdgFieldArea.check(R.id.rd_specify_acre);
-                    specifiedArea.setText(String.format("%s %s", myFieldSize, areaUnits));
-                    specifiedArea.setVisibility(View.VISIBLE);
-                    break;
+                setFieldLabels(areaUnits);
+                myFieldSize = String.valueOf(mandatoryInfo.getAreaSize());
+                specifiedArea.setText(null);
+                switch (fieldAreaEnum) {
+                    case QUARTER_ACRE:
+                        rdgFieldArea.check(R.id.rd_quarter_acre);
+                        break;
+                    case HALF_ACRE:
+                        rdgFieldArea.check(R.id.rd_half_acre);
+                        break;
+                    case ONE_ACRE:
+                        rdgFieldArea.check(R.id.rd_one_acre);
+                        break;
+                    case ONE_HALF_ACRE:
+                        rdgFieldArea.check(R.id.rd_one_half_acre);
+                        break;
+                    case TWO_HALF_ACRE:
+                        rdgFieldArea.check(R.id.rd_two_half_acre);
+                        break;
+                    case FIVE_ACRE:
+                        rdgFieldArea.check(R.id.rd_five_acre);
+                        break;
+                    case EXACT_AREA:
+                        rdgFieldArea.check(R.id.rd_specify_acre);
+                        specifiedArea.setText(String.format("%s %s", myFieldSize, areaUnits));
+                        specifiedArea.setVisibility(View.VISIBLE);
+                        break;
+                }
             }
+        } catch (Exception ex) {
+            mandatoryInfo = new MandatoryInfo();
+            Crashlytics.log(Log.ERROR, TAG, "An error occurred fetching info");
+            Crashlytics.logException(ex);
         }
     }
 
@@ -201,7 +209,7 @@ public class FieldSizeFragment extends BaseFragment {
         objectBoxEntityProcessor.saveMandatoryInfo(mandatoryInfo);
     }
 
-//    @SuppressLint("StringFormatInvalid")
+    //    @SuppressLint("StringFormatInvalid")
     private void setFieldLabels(EnumAreaUnits areaUnits) {
         switch (areaUnits) {
             case ACRE:

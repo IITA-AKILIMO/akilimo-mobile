@@ -4,6 +4,7 @@ package com.iita.akilimo.views.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.button.MaterialButton;
@@ -123,22 +125,28 @@ public class LocationFragment extends BaseFragment {
     }
 
     private void reloadLocationInfo() {
-        profileInfo = objectBoxEntityProcessor.getProfileInfo();
-        mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        try {
+            profileInfo = objectBoxEntityProcessor.getProfileInfo();
+            mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
 
-        if (profileInfo != null) {
-            farmName = profileInfo.getFarmName();
-        }
-        if (mandatoryInfo != null) {
-            StringBuilder locInfo = loadLocationInfo(mandatoryInfo);
-            locationInfo.setText(locInfo.toString());
-            currentLon = mandatoryInfo.getLongitude();
-            currentLat = mandatoryInfo.getLatitude();
-            currentAlt = mandatoryInfo.getAltitude();
-        }
+            if (profileInfo != null) {
+                farmName = profileInfo.getFarmName();
+            }
+            if (mandatoryInfo != null) {
+                StringBuilder locInfo = loadLocationInfo(mandatoryInfo);
+                locationInfo.setText(locInfo.toString());
+                currentLon = mandatoryInfo.getLongitude();
+                currentLat = mandatoryInfo.getLatitude();
+                currentAlt = mandatoryInfo.getAltitude();
+            }
 
-        String message = context.getString(R.string.lbl_farm_location, farmName);
-        title.setText(message);
+            String message = context.getString(R.string.lbl_farm_location, farmName);
+            title.setText(message);
+        } catch (Exception ex) {
+            mandatoryInfo = new MandatoryInfo();
+            Crashlytics.log(Log.ERROR, TAG, "An error occurred fetching info");
+            Crashlytics.logException(ex);
+        }
 
     }
 }

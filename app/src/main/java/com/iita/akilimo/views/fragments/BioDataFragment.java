@@ -3,6 +3,7 @@ package com.iita.akilimo.views.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
@@ -30,6 +32,7 @@ import butterknife.BindView;
  */
 public class BioDataFragment extends BaseFragment {
 
+    private String LOG_TAG = BioDataFragment.class.getSimpleName();
     private IFragmentCallBack fragmentCallBack;
     private ProfileInfo profileInfo;
     private ValidationHelper validationHelper;
@@ -100,28 +103,34 @@ public class BioDataFragment extends BaseFragment {
 
     @Override
     public void refreshData() {
-        profileInfo = objectBoxEntityProcessor.getProfileInfo();
-        if (profileInfo != null) {
-            firstName = profileInfo.getFirstName();
-            lastName = profileInfo.getLastName();
-            farmName = profileInfo.getFarmName();
-            email = profileInfo.getEmail();
-            gender = profileInfo.getGenderEnum();
+        try {
+            profileInfo = objectBoxEntityProcessor.getProfileInfo();
+            if (profileInfo != null) {
+                firstName = profileInfo.getFirstName();
+                lastName = profileInfo.getLastName();
+                farmName = profileInfo.getFarmName();
+                email = profileInfo.getEmail();
+                gender = profileInfo.getGenderEnum();
 
-            lytFirstName.getEditText().setText(firstName);
-            lytLastName.getEditText().setText(lastName);
-            lytFarmName.getEditText().setText(farmName);
-            lytEmail.getEditText().setText(email);
-            switch (gender) {
-                case MALE:
-                    rdgGender.check(R.id.rdMale);
-                    break;
-                case FEMALE:
-                    rdgGender.check(R.id.rdFemale);
-                    break;
+                lytFirstName.getEditText().setText(firstName);
+                lytLastName.getEditText().setText(lastName);
+                lytFarmName.getEditText().setText(farmName);
+                lytEmail.getEditText().setText(email);
+                switch (gender) {
+                    case MALE:
+                        rdgGender.check(R.id.rdMale);
+                        break;
+                    case FEMALE:
+                        rdgGender.check(R.id.rdFemale);
+                        break;
+                }
+            } else {
+                profileInfo = new ProfileInfo();
             }
-        } else {
+        }catch(Exception ex){
             profileInfo = new ProfileInfo();
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred getting biodata infoe");
+            Crashlytics.logException(ex);
         }
     }
 
