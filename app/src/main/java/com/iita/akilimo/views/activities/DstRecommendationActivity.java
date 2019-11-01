@@ -125,7 +125,7 @@ public class DstRecommendationActivity extends BaseActivity {
 
         final RequestQueue queue = Volley.newRequestQueue(context.getApplicationContext());
         final RestService restService = RestService.getInstance(queue, activity);
-        restService.setParameters("v2/recommendations");
+        restService.setParameters("v2/recommendations", 45000);
 
         JSONObject data = Tools.prepareRecommendationJson(recData);
         restService.postJsonObject(data, new IVolleyCallback() {

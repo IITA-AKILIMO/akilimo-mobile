@@ -7,8 +7,6 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
@@ -16,7 +14,6 @@ import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.interfaces.IVolleyDeleteCallback;
 import com.iita.akilimo.utils.SessionManager;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -52,6 +49,12 @@ public class RestService {
         url = String.format("%s%s", baseUrl, endPoint);
     }
 
+    public void setParameters(String endPoint, int initialTimeout) {
+        String baseUrl = sessionManager.getApiEndPoint();
+        this.url = String.format("%s%s", baseUrl, endPoint);
+        this.initialTimeout = initialTimeout;
+    }
+
     public void setParameters(String endPoint, String countryCode) {
         String baseUrl = sessionManager.getApiEndPoint();
         this.url = String.format("%s%s", baseUrl, endPoint);
@@ -70,18 +73,8 @@ public class RestService {
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
                 url, postData,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        callback.onSuccessJsonObject(response);
-                    }
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                callback.onError(error);
-            }
-        }) {
+                callback::onSuccessJsonObject,
+                callback::onError) {
 
             /**
              * Passing some request headers
@@ -111,21 +104,11 @@ public class RestService {
 
 
     public void putJsonObject(final HashMap<String, String> putData, final IVolleyCallback callback) {
+        // response
+        // error
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // response
-                        callback.onSuccessJsonString(response);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // error
-                        callback.onError(error);
-                    }
-                }
+                callback::onSuccessJsonString,
+                callback::onError
         ) {
 
             @Override
@@ -148,20 +131,10 @@ public class RestService {
 
     public void getJsonObjList(final IVolleyCallback callback) {
         // prepare the Request
+        // Log.d("Error.Response", error.toString());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        callback.onSuccessJsonObject(response);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Log.d("Error.Response", error.toString());
-                        callback.onError(error);
-                    }
-                }
+                callback::onSuccessJsonObject,
+                callback::onError
         ) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -176,20 +149,10 @@ public class RestService {
 
     public void getJsonArrList(final IVolleyCallback callback) {
         // prepare the Request
+        //Log.d("Error.Response", error.toString());
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        callback.onSuccessJsonArr(response);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        //Log.d("Error.Response", error.toString());
-                        callback.onError(error);
-                    }
-                }
+                callback::onSuccessJsonArr,
+                callback::onError
         ) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -205,21 +168,11 @@ public class RestService {
     }
 
     public void deleteObject(final IVolleyDeleteCallback callback) {
+        // response
+        // error.
         StringRequest dr = new StringRequest(Request.Method.DELETE, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // response
-                        callback.onDeleted(response);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // error.
-                        callback.onError(error);
-                    }
-                }
+                callback::onDeleted,
+                callback::onError
         ) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
