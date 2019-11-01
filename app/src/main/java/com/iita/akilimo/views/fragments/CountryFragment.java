@@ -3,6 +3,7 @@ package com.iita.akilimo.views.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
+import com.crashlytics.android.Crashlytics;
+import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
@@ -61,23 +64,28 @@ public class CountryFragment extends BaseFragment {
 
     @Override
     public void refreshData() {
-        profileInfo = objectBoxEntityProcessor.getProfileInfo();
-        mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
-        if (profileInfo != null) {
-            name = profileInfo.getFirstName();
-        }
-        if (mandatoryInfo != null) {
-            countryEnum = mandatoryInfo.getCountryEnum();
-            switch (countryEnum) {
-                case NIGERIA:
-                    rdgCountry.check(R.id.rdNg);
-                    break;
-                case TANZANIA:
-                    rdgCountry.check(R.id.rdTz);
-                    break;
+        try {
+            profileInfo = objectBoxEntityProcessor.getProfileInfo();
+            mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+            if (profileInfo != null) {
+                name = profileInfo.getFirstName();
             }
+            if (mandatoryInfo != null) {
+                countryEnum = mandatoryInfo.getCountryEnum();
+                switch (countryEnum) {
+                    case NIGERIA:
+                        rdgCountry.check(R.id.rdNg);
+                        break;
+                    case TANZANIA:
+                        rdgCountry.check(R.id.rdTz);
+                        break;
+                }
+            }
+        } catch (Exception ex) {
+            mandatoryInfo = new MandatoryInfo();
+            Crashlytics.log(Log.ERROR, TAG, "An error occurred fetching info");
+            Crashlytics.logException(ex);
         }
-
 
         String message = context.getString(R.string.lbl_country_location, name);
         title.setText(message);
@@ -103,6 +111,7 @@ public class CountryFragment extends BaseFragment {
                 mandatoryInfo = new MandatoryInfo();
             }
 
+            Snackbar.make(view, countryEnum.countryName() + " Selected", Snackbar.LENGTH_SHORT).show();
             mandatoryInfo.setCountryCode(countryEnum.countryCode());
             mandatoryInfo.setCountryName(countryEnum.countryName());
             mandatoryInfo.setCurrency(countryEnum.currency());

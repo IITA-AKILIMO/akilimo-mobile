@@ -25,7 +25,7 @@ import io.objectbox.BoxStore;
 @SuppressWarnings("WeakerAccess")
 public abstract class BaseFragment extends Fragment {
 
-    private String TAG = BaseFragment.class.getSimpleName();
+    protected String TAG = BaseFragment.class.getSimpleName();
 
     protected int nextTab = 0;
     protected int prevTab = 0;

@@ -3,6 +3,7 @@ package com.iita.akilimo.views.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.MandatoryInfo;
+import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.utils.enums.EnumAreaUnits;
 
@@ -55,21 +58,27 @@ public class AreaUnitFragment extends BaseFragment {
 
     @Override
     public void refreshData() {
-        mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
-        if (mandatoryInfo != null) {
-            areaUnitsEnum = mandatoryInfo.getAreaUnitsEnum();
-            switch (areaUnitsEnum) {
-                default:
-                case ACRE:
-                    rdgAreaUnit.check(R.id.rdAcre);
-                    break;
-                case HA:
-                    rdgAreaUnit.check(R.id.rdHa);
-                    break;
-                case SQM:
-                    rdgAreaUnit.check(R.id.rdSqm);
-                    break;
+        try {
+            mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+            if (mandatoryInfo != null) {
+                areaUnitsEnum = mandatoryInfo.getAreaUnitsEnum();
+                switch (areaUnitsEnum) {
+                    default:
+                    case ACRE:
+                        rdgAreaUnit.check(R.id.rdAcre);
+                        break;
+                    case HA:
+                        rdgAreaUnit.check(R.id.rdHa);
+                        break;
+                    case SQM:
+                        rdgAreaUnit.check(R.id.rdSqm);
+                        break;
+                }
             }
+        } catch (Exception ex) {
+            mandatoryInfo = new MandatoryInfo();
+            Crashlytics.log(Log.ERROR, TAG, "An error occurred saving are info");
+            Crashlytics.logException(ex);
         }
     }
 

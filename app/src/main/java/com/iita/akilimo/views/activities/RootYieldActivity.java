@@ -40,8 +40,10 @@ public class RootYieldActivity extends BaseActivity {
     @BindView(R.id.coordinatorLayout)
     View viewPos;
 
-    @BindView(R.id.btnGetRec)
-    Button btnClose;
+    @BindView(R.id.btnFinish)
+    Button btnFinish;
+    @BindView(R.id.btnCancel)
+    Button btnCancel;
 
     private CurrentFieldYield savedYield;
     private CurrencyHelper currencyHelper;
@@ -94,11 +96,11 @@ public class RootYieldActivity extends BaseActivity {
 
     @Override
     protected void initComponent() {
-        btnClose.setText(context.getString(R.string.lbl_finish));
+        btnFinish.setText(context.getString(R.string.lbl_finish));
         if (selectedYieldAmount > 0) {
-            btnClose.setEnabled(true);
+            btnFinish.setEnabled(true);
         } else {
-            btnClose.setEnabled(false);
+            btnFinish.setEnabled(false);
         }
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.addItemDecoration(new SpacingItemDecoration(2, Tools.dpToPx(this, 3), true));
@@ -119,13 +121,18 @@ public class RootYieldActivity extends BaseActivity {
             fieldYield.setId(savedYield.getId());
             objectBoxEntityProcessor.saveCurrentFieldYield(fieldYield);
             mAdapter.setItems(selectedYieldAmount, items);
-
+            if (selectedYieldAmount > 0) {
+                btnFinish.setEnabled(true);
+            } else {
+                btnFinish.setEnabled(false);
+            }
             Snackbar.make(viewPos, fieldYield.getFieldYieldLabel(), Snackbar.LENGTH_LONG)
 //                    .setAction(R.string.lbl_close, showListener)
                     .show();
         });
 
-        btnClose.setOnClickListener(view -> validate(false));
+        btnFinish.setOnClickListener(view -> validate(false));
+        btnCancel.setOnClickListener(view -> closeActivity(false));
     }
 
     @Override

@@ -37,10 +37,9 @@
                 android:layout_alignEnd="@+id/fertilizerImage"
                 android:layout_centerVertical="true"
                 android:fontFamily="@font/ubuntu"
-                android:paddingBottom="@dimen/spacing_medium"
                 android:gravity="center"
+                android:paddingBottom="@dimen/spacing_medium"
                 android:text="NPK 20:10:10"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/colorAccent" />
 
         </RelativeLayout>
@@ -75,7 +74,7 @@
             </LinearLayout>
 
             <View
-                android:layout_width="@dimen/spacing_large"
+                android:layout_width="@dimen/spacing_small"
                 android:layout_height="0dp" />
 
             <androidx.appcompat.widget.AppCompatImageButton
@@ -84,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:tint="@color/grey_5"
-                app:srcCompat="@drawable/ic_info" />
+                app:srcCompat="@drawable/ic_check_box_unchecked" />
 
         </LinearLayout>
 

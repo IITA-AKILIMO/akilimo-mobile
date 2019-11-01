@@ -66,7 +66,7 @@
                     android:visibility="visible"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:spanCount="2"
-                    tools:itemCount="5"
+                    tools:itemCount="2"
                     tools:listitem="@layout/item_grid_image_two_line" />
 
             </LinearLayout>
@@ -74,6 +74,6 @@
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>
 
-    <include layout="@layout/bottom_single_button_layout" />
+    <include layout="@layout/bottom_two_buttons_layout" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -18,7 +18,7 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_bold"
+            android:fontFamily="@font/ubuntu"
             android:text="Do you have access to a tractor?"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
@@ -28,9 +28,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/title"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:checkable="true"
-            android:clickable="true"
-            android:focusable="true"
             android:visibility="visible"
             app:cardBackgroundColor="@color/grey_3"
             app:cardCornerRadius="5dp"
@@ -54,6 +51,7 @@
                         android:id="@+id/rdYesTractor"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu"
                         android:text="@string/lbl_yes" />
 
 
@@ -61,6 +59,7 @@
                         android:id="@+id/rdNoTractor"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu"
                         android:text="@string/lbl_no" />
 
                 </RadioGroup>
@@ -75,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tractorCard"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:fontFamily="@font/roboto_bold"
+            android:fontFamily="@font/ubuntu"
             android:text="Which implements do you have access to?"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:visibility="gone" />
@@ -104,12 +103,14 @@
                     android:id="@+id/chkPlough"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu"
                     android:text="Plough" />
 
                 <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/chkRidger"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu"
                     android:text="Ridger" />
 
             </LinearLayout>
@@ -122,7 +123,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/implementCard"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:fontFamily="@font/roboto_bold"
+            android:fontFamily="@font/ubuntu"
             android:text="How many basic tillage operations do you perform?"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:visibility="visible" />
@@ -156,12 +157,14 @@
                         android:id="@+id/rdNone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu"
                         android:text="None (zero-tillage)" />
 
                     <RadioButton
                         android:id="@+id/rdSinglePlough"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu"
                         android:text="Single plough operation" />
 
 
@@ -178,7 +181,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tillageOperationsCard"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:fontFamily="@font/roboto_bold"
+            android:fontFamily="@font/ubuntu"
             android:text="Do you ridge your field?"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:visibility="visible" />
@@ -212,26 +215,57 @@
                         android:id="@+id/rdYesRidge"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu"
                         android:text="@string/lbl_yes" />
 
                     <RadioButton
                         android:id="@+id/rdNoRidge"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu"
                         android:text="@string/lbl_no" />
 
 
                 </RadioGroup>
-
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <include
-            android:layout_marginTop="@dimen/spacing_large"
-            layout="@layout/bottom_two_buttons_layout"
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/operationCostCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/ridgingCard" />
+            android:layout_below="@+id/ridgingCard"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:visibility="visible"
+            app:cardBackgroundColor="@color/grey_3"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="2dp"
+            app:cardMaxElevation="6dp"
+            app:contentPadding="@dimen/spacing_small">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_small">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnFragmentDialog"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_rect_primary"
+                    android:fontFamily="@font/ubuntu"
+                    android:paddingLeft="@dimen/spacing_mlarge"
+                    android:paddingRight="@dimen/spacing_mlarge"
+                    android:text="Add operation costs"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
     </RelativeLayout>
 
 

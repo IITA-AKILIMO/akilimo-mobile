@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,7 +31,6 @@ import com.iita.akilimo.rest.request.RecommendationRequest;
 import com.iita.akilimo.utils.BuildComputeData;
 import com.iita.akilimo.utils.Tools;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -130,17 +130,17 @@ public class DstRecommendationActivity extends BaseActivity {
         JSONObject data = Tools.prepareRecommendationJson(recData);
         restService.postJsonObject(data, new IVolleyCallback() {
             @Override
-            public void onSuccessJsonString(String jsonStringResult) {
+            public void onSuccessJsonString(@NonNull String jsonStringResult) {
 
             }
 
             @Override
-            public void onSuccessJsonArr(JSONArray jsonArray) {
+            public void onSuccessJsonArr(@NonNull JSONArray jsonArray) {
 
             }
 
             @Override
-            public void onSuccessJsonObject(JSONObject jsonObject) {
+            public void onSuccessJsonObject(@NonNull JSONObject jsonObject) {
                 lyt_progress.setVisibility(View.GONE);
                 try {
                     ObjectMapper objectMapper = new ObjectMapper();
@@ -161,7 +161,7 @@ public class DstRecommendationActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(VolleyError volleyError) {
+            public void onError(@NonNull VolleyError volleyError) {
                 lyt_progress.setVisibility(View.GONE);
                 errorImage.setVisibility(View.VISIBLE);
                 errorLabel.setVisibility(View.VISIBLE);
@@ -170,7 +170,7 @@ public class DstRecommendationActivity extends BaseActivity {
         });
     }
 
-    private List<ComputedResponse> initializeData(@NotNull RecommendationResponse recommendationResponse) {
+    private List<ComputedResponse> initializeData(@NonNull RecommendationResponse recommendationResponse) {
         List<ComputedResponse> recList = new ArrayList<>();
 
         String FR = recommendationResponse.getFertilizerRecText();

@@ -62,8 +62,11 @@ public class FertilizersActivity extends BaseActivity {
     @BindView(R.id.coordinatorLayout)
     CoordinatorLayout coordinatorLayout;
 
-    @BindView(R.id.btnGetRec)
+    @BindView(R.id.btnFinish)
     Button btnSave;
+
+    @BindView(R.id.btnCancel)
+    Button btnCancel;
 
     @BindView(R.id.btnRetry)
     Button btnRetry;
@@ -180,6 +183,7 @@ public class FertilizersActivity extends BaseActivity {
 
         btnRetry.setOnClickListener(view -> initializeFertilizers());
         btnSave.setOnClickListener(view -> closeActivity(false));
+        btnCancel.setOnClickListener(view -> closeActivity(false));
     }
 
     @Override
