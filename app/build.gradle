@@ -83,7 +83,7 @@ def computeVersionName() {
 }
 
 static def computeBuildNumber() {
-    return Integer.valueOf(System.env.BUILD_NUMBER ?: 6)
+    return Integer.valueOf(System.env.BUILD_NUMBER ?:7)
 }
 
 def computeVersionCode() {
