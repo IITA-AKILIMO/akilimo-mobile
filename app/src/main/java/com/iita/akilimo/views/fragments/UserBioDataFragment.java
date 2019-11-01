@@ -26,6 +26,6 @@ public class UserBioDataFragment extends BaseFragment {
 
     @Override
     public void refreshData() {
-
+        throw new UnsupportedOperationException();
     }
 }

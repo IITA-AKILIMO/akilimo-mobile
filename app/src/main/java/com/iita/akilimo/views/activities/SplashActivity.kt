@@ -43,7 +43,7 @@ class SplashActivity : AppCompatActivity() {
         val fireBaseConfig = FireBaseConfig(this)
         fireBaseConfig.fetchNewRemoteConfig()
 
-        val intent = Intent(this@SplashActivity, HomeActivity::class.java)
+        val intent = Intent(this@SplashActivity, TillageOperationsActivity::class.java)
         startActivity(intent)
         closeActivity()
     }

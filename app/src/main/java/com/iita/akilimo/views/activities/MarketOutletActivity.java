@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.MarketOutlet;
@@ -30,6 +31,7 @@ import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.models.StarchFactory;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.CurrencyHelper;
+import com.iita.akilimo.utils.FireBaseEvents;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumCountries;
 import com.iita.akilimo.utils.enums.EnumProduceType;
@@ -154,6 +156,7 @@ public class MarketOutletActivity extends BaseActivity {
     private boolean dataIsValid;
     private boolean exactPriceSelected;
     private boolean selectionMade;
+    private FireBaseEvents fireBaseEvents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,6 +168,7 @@ public class MarketOutletActivity extends BaseActivity {
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
         queue = Volley.newRequestQueue(context);
         currencyHelper = new CurrencyHelper();
+        fireBaseEvents = FireBaseEvents.newInstance(context);
 
         marketOutlet = objectBoxEntityProcessor.getMarketOutlet();
         if (marketOutlet == null) {
@@ -425,9 +429,13 @@ public class MarketOutletActivity extends BaseActivity {
 
             dataIsValid = true;
             if (!(unitPriceLocal >= minAmount) || !(unitPriceLocal <= maxAmount)) {
+                //log firebase vent here
                 String message = String.format("Unit price should be between %s %s and %s %s", minAmount, currency, maxAmount, currency);
-                showCustomWarningDialog("Invalid unit price", message, "OK");
-                dataIsValid = false;
+                Bundle bundle = new Bundle();
+                bundle.putString("message", message);
+//                showCustomWarningDialog("Invalid unit price", message, "OK");
+//                dataIsValid = false;
+                fireBaseEvents.logEvent("UNIT_PRICE_COMPARISON", bundle);
             }
         }
 
@@ -622,6 +630,7 @@ public class MarketOutletActivity extends BaseActivity {
                 Snackbar.make(view, "Please enter a valid amount", Snackbar.LENGTH_LONG).show();
             } else {
                 exactPriceSelected = true;
+                setExactPriceLabel();
                 dialog.dismiss();
             }
         });

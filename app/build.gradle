@@ -35,8 +35,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    dataBinding {
+        enabled = true
+    }
     lintOptions {
-        abortOnError true
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
 //        disable 'UselessParent', 'HardcodedText', 'LabelFor', 'UnusedResources'
     }
     dexOptions {
@@ -49,6 +55,26 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+//    signingConfigs {
+//        release {
+//            File fileProp = file(System.getenv('HOME') + "/.appkey")
+//            if (fileProp.exists()) {
+//                Properties releaseConfig = new Properties()
+//                releaseConfig.load(new FileInputStream(fileProp))
+//                storeFile file(System.getenv('HOME') + "/" + releaseConfig["KEYSTORE_FILE"])
+//                storePassword releaseConfig['KEYSTORE_PWD']
+//                keyAlias releaseConfig['KEY_ALIAS']
+//                keyPassword releaseConfig['KEY_PASSWORD']
+//            }
+//        }
+//        debug {
+//            storeFile file('debug.keystore')
+//            storePassword 'android'
+//            keyAlias 'androiddebugkey'
+//            keyPassword 'androiddebug'
+//        }
+//    }
 }
 
 @SuppressWarnings("GrMethodMayBeStatic")
@@ -57,7 +83,7 @@ def computeVersionName() {
 }
 
 static def computeBuildNumber() {
-    return Integer.valueOf(System.env.BUILD_NUMBER ?: 4)
+    return Integer.valueOf(System.env.BUILD_NUMBER ?: 6)
 }
 
 def computeVersionCode() {
@@ -65,15 +91,15 @@ def computeVersionCode() {
     return unixTimestamp.intValue()
 }
 
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0-beta05'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0-rc01'
     implementation "androidx.cardview:cardview:1.0.0"
 
     implementation 'androidx.multidex:multidex:2.0.1'
@@ -83,7 +109,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-places:17.0.0'
     implementation 'com.google.firebase:firebase-config:19.0.3'
-    implementation 'com.google.firebase:firebase-analytics:17.2.0'
+    implementation 'com.google.firebase:firebase-analytics:17.2.1'
     implementation 'com.google.android:flexbox:0.3.2'                   // google flexible box
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
@@ -104,7 +130,7 @@ dependencies {
 //    implementation 'com.github.pchmn:MaterialChipsInput:1.0.5'          // material chip
 //    implementation 'com.hootsuite.android:nachos:1.1.1'                 // material chips
     implementation 'com.crystal:crystalrangeseekbar:1.1.3'              // range seek bar
-    implementation 'net.danlew:android.joda:2.10.2'
+    implementation 'net.danlew:android.joda:2.10.3'
     implementation 'com.github.mohammadatif:Animatoo:master'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.0' //feature discovery library
@@ -118,18 +144,20 @@ dependencies {
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.10.17'
     //https://stackoverflow.com/questions/44826452/highlight-new-feature-in-android
     implementation 'com.jakewharton:butterknife:10.2.0' //Butterknife library
+    implementation 'org.modelmapper:modelmapper:2.3.5'
 
     compileOnly 'org.projectlombok:lombok:1.18.8'
 
     //If you are using Kotlin, replace annotationProcessor with kapt.
+    annotationProcessor 'com.jakewharton:butterknife:10.2.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
-    annotationProcessor('com.fasterxml.jackson.core:jackson-annotations:2.10.0.pr1')
-    annotationProcessor('org.projectlombok:lombok:1.18.8')
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
+    annotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.10.0.pr1'
+    annotationProcessor 'org.projectlombok:lombok:1.18.8'
 
-    testAnnotationProcessor('com.fasterxml.jackson.core:jackson-annotations:2.10.0.pr1')
-    testAnnotationProcessor('org.projectlombok:lombok:1.18.8')
-    testImplementation 'joda-time:joda-time:2.10.2'
+    testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.10.0.pr1'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.8'
+    testImplementation 'joda-time:joda-time:2.10.3'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

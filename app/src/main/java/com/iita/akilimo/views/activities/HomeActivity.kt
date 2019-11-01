@@ -36,7 +36,6 @@ import kotlin.system.exitProcess
 
 
 class HomeActivity : BaseActivity(), IFragmentCallBack {
-
     companion object {
         const val MAP_BOX_PLACE_PICKER_REQUEST_CODE = 208
     }
@@ -132,6 +131,10 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             }
             else -> btnStart.visibility = View.GONE
         }
+    }
+
+    override fun sendResult(requestCode: Int, obj: Any) {
+        throw UnsupportedOperationException()
     }
 
     override fun initToolbar() {

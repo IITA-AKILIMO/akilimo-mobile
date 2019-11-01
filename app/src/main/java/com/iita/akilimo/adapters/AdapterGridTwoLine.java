@@ -21,13 +21,13 @@ import javax.annotation.Nonnull;
 
 public class AdapterGridTwoLine extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        private List<CurrentFieldYield> items = new ArrayList<>();
+    private List<CurrentFieldYield> items = new ArrayList<>();
 
 
     private Context ctx;
     private OnItemClickListener mOnItemClickListener;
     private int rowIndex = -1;
-    private double selectedYieldAmount =0.0;
+    private double selectedYieldAmount = 0.0;
 
     public interface OnItemClickListener {
         void onItemClick(View view, CurrentFieldYield obj, int position);
@@ -87,10 +87,10 @@ public class AdapterGridTwoLine extends RecyclerView.Adapter<RecyclerView.ViewHo
                 }
             });
             if ((rowIndex == position) || (currentYieldAmount == selectedYieldAmount)) {
-                view.selectionIndicator.setImageResource(R.drawable.ic_done);
+                view.selectionIndicator.setImageResource(R.drawable.ic_radio_button_checked);
                 view.selectionIndicator.setColorFilter(ctx.getResources().getColor(R.color.colorAccent));
             } else {
-                view.selectionIndicator.setImageResource(R.drawable.ic_info);
+                view.selectionIndicator.setImageResource(R.drawable.ic_radio_button_unchecked);
                 view.selectionIndicator.setColorFilter(ctx.getResources().getColor(R.color.grey_5));
             }
         }

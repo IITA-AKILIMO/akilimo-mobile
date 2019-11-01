@@ -2,8 +2,8 @@
     <string name="app_name">Akilimo</string>
 
     <string name="welcome_title">Welcome to Akilimo</string>
-    <string name="welcome_instructions">This tool will help you to obtain recommendations to improve your cassava yield
-        \n\nIn order to do so we need some essential information from you.
+    <string name="welcome_instructions">I will assist you with recommendations to improve your cassava yield
+        \n\nIf you provide me with some essential information I will provide you with personalized advice to grow cassava.
         \n\n Let us get started…</string>
 
     <string name="hello_blank_fragment">Initialize fragments</string>
@@ -200,4 +200,5 @@
     <string name="hide_bottom_on_scroll" translatable="false">com.google.android.material.behavior.HideBottomViewOnScrollBehavior</string>
     <string name="bar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
     <string name="lbl_min_selection">Please select at least %d fertilizers</string>
+    <string name="lbl_update">Update</string>
 </resources>

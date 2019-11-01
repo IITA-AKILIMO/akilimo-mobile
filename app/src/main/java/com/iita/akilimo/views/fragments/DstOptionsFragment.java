@@ -75,7 +75,7 @@ public class DstOptionsFragment extends BaseFragment {
 
     @Override
     public void refreshData() {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
