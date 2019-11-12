@@ -29,6 +29,7 @@ import butterknife.BindView;
 /**
  * A simple {@link Fragment} subclass.
  */
+@Deprecated
 public class ComputeRecommendationsFragment extends ComputeFragment {
 
 
