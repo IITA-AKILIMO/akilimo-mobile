@@ -540,7 +540,7 @@
     },
     {
       "id": "24:5975063410066267928",
-      "lastPropertyId": "8:7896123142458815998",
+      "lastPropertyId": "15:7985669775431526649",
       "name": "TillageOperations",
       "properties": [
         {
@@ -574,6 +574,34 @@
         {
           "id": "8:7896123142458815998",
           "name": "tractorRidger"
+        },
+        {
+          "id": "9:3380830917269452863",
+          "name": "firstManualPlough"
+        },
+        {
+          "id": "10:6161176525792697375",
+          "name": "secondManualPlough"
+        },
+        {
+          "id": "11:1524324574681916020",
+          "name": "manualRidging"
+        },
+        {
+          "id": "12:3348124749959252543",
+          "name": "firstMechPlough"
+        },
+        {
+          "id": "13:3462553348445460068",
+          "name": "secondMechPlough"
+        },
+        {
+          "id": "14:8367389413790408017",
+          "name": "tractorHarrowCost"
+        },
+        {
+          "id": "15:7985669775431526649",
+          "name": "tractorRidging"
         }
       ],
       "relations": []

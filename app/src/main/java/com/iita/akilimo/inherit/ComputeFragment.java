@@ -28,6 +28,7 @@ import javax.annotation.Nonnull;
 import timber.log.Timber;
 
 @SuppressWarnings("FieldCanBeLocal")
+@Deprecated
 public abstract class ComputeFragment extends BaseFragment {
     private static final String LOG_TAG = ComputeFragment.class.getSimpleName();
 
@@ -147,6 +148,7 @@ public abstract class ComputeFragment extends BaseFragment {
         return new RecommendationRequest(computeRequest, fertilizerList);
     }
 
+    @Deprecated
     protected JSONObject buildComputePayload() {
         JSONObject jsonObject = null;
         try {
