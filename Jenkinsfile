@@ -20,6 +20,16 @@ pipeline {
       }
     }
 
+    stage('feature-branch') {
+      when {
+        beforeAgent true
+        branch 'feature/*'
+      }
+      steps {
+        echo 'run this stage - only if the branch name started with feature/'
+      }
+    }
+	
     stage('Lint') {
       steps {
           sh './gradlew lint'
