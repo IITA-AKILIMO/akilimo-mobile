@@ -31,6 +31,10 @@ pipeline {
     }
 	
     stage('Lint') {
+	  when {
+        beforeAgent true
+        branch 'develop'
+      }
       steps {
           sh './gradlew lint'
           androidLint canComputeNew: false, pattern: '**/lint-results*.xml'
