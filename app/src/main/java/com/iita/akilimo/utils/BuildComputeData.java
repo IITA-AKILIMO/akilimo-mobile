@@ -151,7 +151,7 @@ public class BuildComputeData {
         buildMarketOutlet(computeRequest);
 
 
-        List<Fertilizer> fertilizerList = objectBoxEntityProcessor.getSelectedFertilizers(countryCode);
+        List<Fertilizer> fertilizerList = objectBoxEntityProcessor.getAvailableFertilizersByCountry(countryCode);
 
 
         return new RecommendationRequest(computeRequest, fertilizerList);

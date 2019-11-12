@@ -1,25 +1,25 @@
-  environment {
-    KEYSTORE_PWD = 'andalite6'
-    KEY_ALIAS = 'akilimo'
-    KEY_PASSWORD = 'andalite6'
-  }
-  
 pipeline {
   agent any
   stages {
-      stage('Make exectable') {
+    stage('Show build number') {
+      steps {
+        sh 'echo $BUILD_NUMBER'
+        sh 'env'
+      }
+    }
+
+    stage('Make executable') {
       steps {
         sh 'chmod +x ./gradlew'
-        sh 'java -version'
       }
     }
-    stage('Gradle tasks') {
+	
+    stage('Test') {
       steps {
-        sh 'gradle tasks --all'
-        sh 'gradle -version'
-        sh 'ls'
+        sh './gradlew test'
       }
     }
+
     stage('feature-branch') {
       when {
         beforeAgent true
@@ -29,32 +29,113 @@ pipeline {
         echo 'run this stage - only if the branch name started with feature/'
       }
     }
-    stage('Clean') {
+	
+    stage('Lint') {
+	  when {
+        beforeAgent true
+        branch 'develop'
+      }
       steps {
-        sh 'gradle clean'
+          sh './gradlew lint'
+          androidLint canComputeNew: false, pattern: '**/lint-results*.xml'
       }
     }
-    stage('Build release') {
-      steps {
-        sh(script: 'gradle :app:bundleRelease :app:assembleRelease', returnStdout: true)
-      }
-    }
-        stage('sign apk'){
-        signAndroidApks (
-        keyStoreId: "81c76f5a-8868-4c14-b067-ed36bf497a8e",
-        keyAlias: "",
-        apksToSign: "**/*-unsigned.apk"
-        )
-    }
-    stage('Archive Artifacts') {
-      steps {
-        script {
-          archiveArtifacts allowEmptyArchive: true,
-          artifacts: '**/*.apk, **/*.aab, app/build/**/mapping/**/*.txt, app/build/**/logs/**/*.txt'
-          cleanWs()
+
+    stage('Build artifacts') {
+      parallel {
+        stage('APK') {
+          when {
+            beforeAgent true
+            branch 'master'
+          }
+          steps {
+            sh './gradlew assembleRelease'
+          }
+        }
+
+        stage('AAB') {
+          when {
+            beforeAgent true
+            branch 'bundle'
+          }
+          steps {
+            sh './gradlew bundleRelease'
+          }
         }
 
       }
     }
+
+
+    stage('Sign build binaries') {
+      parallel {
+			stage('apk') {
+			  when {
+				beforeAgent true
+				branch 'master'
+			  }
+			  steps {
+				signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.apk', skipZipalign: true)
+			  }
+			}
+			
+			stage('aab') {
+				when {
+					beforeAgent true
+					branch 'bundle'
+				}
+				steps {
+					signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.aab', skipZipalign: true)
+				}
+			}
+		}
+	}
+	
+    stage('Archive Artifacts') {
+      when {
+        beforeAgent true
+        branch 'master'
+      }
+      steps {
+        script {
+          archiveArtifacts allowEmptyArchive: true,
+          artifacts: '**/*.apk, **/*.aab, app/build/**/mapping/**/*.txt, app/build/**/logs/**/*.txt'
+        }
+      }
+    }
+
+    stage('Upload artifacts') {
+      parallel {
+        stage('aab') {
+          when {
+            beforeAgent true
+            branch 'bundle'
+          }
+          steps {
+            androidAabUpload(aabFilesPattern: '**/build/outputs/**/*-release.aab', applicationId: 'com.iita.akilimo', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
+                            text: 'Bug fixes']], trackName: 'beta')
+          }
+        }
+
+        stage('apk') {
+          when {
+            beforeAgent true
+            branch 'master'
+          }
+          steps {
+            androidApkUpload(apkFilesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
+                                  text: 'Bug fixes']], trackName: 'production')
+          }
+        }
+
+      }
+    }
+
+    stage('clean WS') {
+      steps {
+        cleanWs()
+      }
+    }
+
   }
 }

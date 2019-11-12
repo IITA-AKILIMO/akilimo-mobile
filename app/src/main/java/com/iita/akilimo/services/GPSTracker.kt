@@ -16,9 +16,10 @@ import androidx.appcompat.app.AlertDialog
 import com.crashlytics.android.Crashlytics
 
 
-class GPSTracker(context: Context) : Service(), LocationListener {
 
-    private var mContext: Context? = context
+class GPSTracker : Service, LocationListener {
+
+    private var mContext: Context? = null
     private var isGPSEnabled = false
     private var isNetworkEnabled = false
     private var canGetLocation = false
@@ -28,6 +29,13 @@ class GPSTracker(context: Context) : Service(), LocationListener {
     private var longitude: Double = 0.toDouble()
 
     private var locationManager: LocationManager? = null
+
+    @Suppress("unused")
+    constructor()
+
+    constructor(context: Context) {
+        this.mContext = context
+    }
 
     companion object {
         private const val MIN_DISTANCE_CHANGE_FOR_UPDATES: Long = 10 // 10 meters
