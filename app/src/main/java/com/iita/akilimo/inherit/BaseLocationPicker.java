@@ -2,10 +2,12 @@ package com.iita.akilimo.inherit;
 
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.api.geocoding.v5.GeocodingCriteria;
@@ -115,12 +117,13 @@ public abstract class BaseLocationPicker extends BaseActivity implements OnMapRe
 
                 @Override
                 public void onFailure(Call<GeocodingResponse> call, Throwable throwable) {
-                    Timber.e("Geocoding Failure: %s", throwable.getMessage());
+                    Crashlytics.log("Mapbox geocoding failure");
+                    Crashlytics.logException(throwable);
                 }
             });
         } catch (ServicesException servicesException) {
-            Timber.e("Error geocoding: %s", servicesException.toString());
-            servicesException.printStackTrace();
+            Crashlytics.log("Mapbox issue happening");
+            Crashlytics.logException(servicesException);
         }
     }
 
@@ -133,6 +136,9 @@ public abstract class BaseLocationPicker extends BaseActivity implements OnMapRe
             // Set the component's camera mode
             locationComponent.setCameraMode(CameraMode.TRACKING);
             locationComponent.setRenderMode(RenderMode.NORMAL);
+        } else {
+            Toast.makeText(context, "Im unable to enable the location component", Toast.LENGTH_LONG).show();
+            Crashlytics.log("Mapbox geocoding failure");
         }
     }
 

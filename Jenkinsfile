@@ -13,28 +13,14 @@ pipeline {
         sh 'chmod +x ./gradlew'
       }
     }
-	
+
     stage('Test') {
       steps {
         sh './gradlew test'
       }
     }
 
-    stage('feature-branch') {
-      when {
-        beforeAgent true
-        branch 'feature/*'
-      }
-      steps {
-        echo 'run this stage - only if the branch name started with feature/'
-      }
-    }
-	
     stage('Lint') {
-	  when {
-        beforeAgent true
-        branch 'develop'
-      }
       steps {
           sh './gradlew lint'
           androidLint canComputeNew: false, pattern: '**/lint-results*.xml'
@@ -78,7 +64,7 @@ pipeline {
 				signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.apk', skipZipalign: true)
 			  }
 			}
-			
+
 			stage('aab') {
 				when {
 					beforeAgent true
@@ -90,7 +76,7 @@ pipeline {
 			}
 		}
 	}
-	
+
     stage('Archive Artifacts') {
       when {
         beforeAgent true
@@ -128,6 +114,26 @@ pipeline {
           }
         }
 
+      }
+    }
+
+    stage('Tag release commit'){
+      when {
+        beforeAgent true
+        branch 'master'
+      }
+      steps{
+        sh 'git tag -a v4.2.$BUILD_NUMBER $GIT_COMMIT -m "release-$BUILD_NUMBER"'
+      }
+    }
+
+    stage('Push tags'){
+      when {
+        beforeAgent true
+        branch 'master'
+      }
+      steps{
+        sh 'git push --tags'
       }
     }
 

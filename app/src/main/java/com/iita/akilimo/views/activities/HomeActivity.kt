@@ -147,6 +147,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
     override fun initComponent() {
         checkAppPermissions(rationale)
+        fetchFireBaseConfig(this)
         btnStart.visibility = View.GONE
 
         myViewPagerAdapter = ViewPagerAdapter(supportFragmentManager, 0, fragmentArray)

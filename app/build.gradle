@@ -124,7 +124,7 @@ dependencies {
 
     // third party dependencies -------------------------------------------------------------------
     implementation 'com.balysv:material-ripple:1.0.2'                   // ripple effect
-    implementation 'com.github.bumptech.glide:glide:4.9.0'              // image loader
+    implementation 'com.github.bumptech.glide:glide:4.10.0'              // image loader
     implementation 'com.wdullaer:materialdatetimepicker:3.2.0'          // title & time picker
     implementation 'com.mikhaellopez:circularimageview:3.2.0'           // circle image view
 //    implementation 'com.github.pchmn:MaterialChipsInput:1.0.5'          // material chip
@@ -150,7 +150,7 @@ dependencies {
 
     //If you are using Kotlin, replace annotationProcessor with kapt.
     annotationProcessor 'com.jakewharton:butterknife:10.2.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
     annotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.10.0.pr1'
     annotationProcessor 'org.projectlombok:lombok:1.18.8'

@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -244,6 +245,10 @@ public class FertilizersActivity extends BaseActivity {
                 errorLabel.setVisibility(View.VISIBLE);
                 errorImage.setVisibility(View.VISIBLE);
                 btnRetry.setVisibility(View.VISIBLE);
+
+                Toast.makeText(context, "Unable to load fertilizer list", Toast.LENGTH_LONG).show();
+                Crashlytics.log(Log.ERROR, LOG_TAG, volleyError.networkResponse.toString());
+                Crashlytics.logException(volleyError);
             }
         });
     }

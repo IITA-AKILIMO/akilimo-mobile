@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.crashlytics.android.Crashlytics
-import com.iita.akilimo.utils.FireBaseConfig
 
 class SplashActivity : AppCompatActivity() {
 
@@ -40,9 +39,6 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun launchActivity() {
-        val fireBaseConfig = FireBaseConfig(this)
-        fireBaseConfig.fetchNewRemoteConfig()
-
         val intent = Intent(this@SplashActivity, HomeActivity::class.java)
         startActivity(intent)
         closeActivity()
