@@ -51,6 +51,8 @@ public class FireBaseConfig {
                             sessionManager.setApiEndPoint(api_resource);
                             sessionManager.setMapBoxApiKey(mapBoxKey);
                             sessionManager.setLocationIqToken(locationIqToken);
+
+                            Log.i("FIREBASE",mapBoxKey);
                         } else {
                             Toast.makeText(activity, "Firebase fetch failed", Toast.LENGTH_SHORT).show();
                         }

@@ -69,8 +69,9 @@ public class SessionManager {
     }
 
     public String getApiEndPoint() {
-        return pref.getString("apiResource", "https://google.com/");
+        return pref.getString("apiResource", "https://google.com/"  );
     }
+
 
     //set api tokens
     public void setApiToken(String apiToken) {

@@ -57,6 +57,7 @@ public class MapBoxActivity extends BaseLocationPicker {
         super.onCreate(savedInstanceState);
         context = MapBoxActivity.this;
         sessionManager = new SessionManager(this);
+        fetchFireBaseConfig(this);
         accessToken = sessionManager.getMapBoxApiKey();
         Mapbox.getInstance(this, accessToken);
         setContentView(R.layout.activity_map_box);
