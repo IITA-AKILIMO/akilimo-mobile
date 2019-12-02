@@ -18,6 +18,7 @@ import com.github.vipulasri.timelineview.TimelineView;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.TimeLineAdapter;
+import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.TimeLineModel;
 import com.iita.akilimo.entities.TimelineAttributes;
@@ -45,7 +46,8 @@ public class SummaryFragment extends BaseFragment {
 
     private List<TimeLineModel> mDataList = new ArrayList<>();
     private TimelineAttributes mAttributes;
-    private MandatoryInfo location;
+    private LocationInfo location;
+    private MandatoryInfo mandatoryInfo;
     private IFragmentCallBack fragmentCallBack;
     private TimeLineAdapter adapter;
 
@@ -127,25 +129,27 @@ public class SummaryFragment extends BaseFragment {
             return;
         }
 
-        location = objectBoxEntityProcessor.getMandatoryInfo();
+        location = objectBoxEntityProcessor.getLocationInfo();
+        mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
         countryName = "";
-        if (location != null) {
+        if (mandatoryInfo != null) {
 
-            if (!Strings.isEmptyOrWhitespace(location.getCountryName())) {
+            if (!Strings.isEmptyOrWhitespace(mandatoryInfo.getCountryName())) {
                 countrySelected = true;
-                countryName = location.getCountryName();
+                countryName = mandatoryInfo.getCountryName();
             }
 
-            if (!Strings.isEmptyOrWhitespace(location.getAreaUnit())) {
+            if (!Strings.isEmptyOrWhitespace(mandatoryInfo.getAreaUnit())) {
                 areaUnitSelected = true;
-                areaUnit = location.getAreaUnit();
+                areaUnit = mandatoryInfo.getAreaUnit();
             }
 
-            fieldSize = location.getAreaSize();
+            fieldSize = mandatoryInfo.getAreaSize();
             if (fieldSize > 0.0) {
                 fieldSizeSelected = true;
             }
-
+        }
+        if (location != null) {
             pickedLocation = loadLocationInfo(location).toString();
             locationPicked = true;
         }
@@ -163,15 +167,12 @@ public class SummaryFragment extends BaseFragment {
         initAdapter();
     }
 
-    private TimeLineModel buildModel(StepStatus stepStatus) {
-        return new TimeLineModel(
-                "Field size",
-                String.valueOf(fieldSize),
-                stepStatus);
-    }
-
     private void initFragmentCallback() {
         if (countrySelected && areaUnitSelected && fieldSizeSelected && locationPicked) {
+            if (fragmentCallBack == null) {
+                fragmentCallBack = (IFragmentCallBack) context;
+                setOnFragmentCloseListener(fragmentCallBack);
+            }
             if (fragmentCallBack != null) {
                 fragmentCallBack.onFragmentClose(false);
             }

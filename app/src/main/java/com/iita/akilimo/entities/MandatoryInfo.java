@@ -1,6 +1,7 @@
 package com.iita.akilimo.entities;
 
 
+import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.enums.EnumAreaUnits;
 import com.iita.akilimo.utils.enums.EnumCountries;
 import com.iita.akilimo.utils.enums.EnumFieldArea;
@@ -19,9 +20,6 @@ public class MandatoryInfo {
 
     @Id
     long id;
-    public double latitude;
-    public double longitude;
-    public double altitude;
 
     public String placeName;
     public String address;
@@ -38,6 +36,7 @@ public class MandatoryInfo {
     public EnumFieldArea fieldAreaEnum;
 
     public String areaUnit;
+    public double acreAreaSize;
     public double areaSize;
 
     @Getter(AccessLevel.NONE)
@@ -46,7 +45,6 @@ public class MandatoryInfo {
     public boolean isExactArea() {
         return this.exactArea;
     }
-
 
     /* converter for custom data type*/
     public static class CountryConverter implements PropertyConverter<EnumCountries, String> {
@@ -111,4 +109,25 @@ public class MandatoryInfo {
             return entityProperty == null ? null : entityProperty.areaValue();
         }
     }
+
+    public void convertToSelectedAreaUnit() {
+        MathHelper mathHelper = new MathHelper();
+        double convertedArea = 0.0;
+        double nearestValue = 1000.0;
+        switch (this.getAreaUnitsEnum()) {
+            case UNKNOWN:
+                break;
+            case ACRE:
+                convertedArea = this.acreAreaSize;
+                break;
+            case HA:
+                convertedArea = this.acreAreaSize / 2.471;
+                break;
+            case SQM:
+                convertedArea = this.acreAreaSize * 4046.856;
+                break;
+        }
+        this.setAreaSize(mathHelper.roundToNearestSpecifiedValue(convertedArea, nearestValue));
+    }
+
 }

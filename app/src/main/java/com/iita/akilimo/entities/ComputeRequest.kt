@@ -144,23 +144,6 @@ class ComputeRequest {
     @JsonProperty("maxInv")
     var maxInvestment: Double? = null
 
-    @JsonProperty("SMS")
-    var sendSms: Boolean = false
-    @JsonProperty("email")
-    var sendEmail: Boolean = false
-
-    @JsonProperty("userPhoneCC")
-    var mobileCountryCode: String? = null
-    @JsonProperty("userPhoneNr")
-    var mobileNumber: String? = null
-    @JsonProperty("fullPhoneNumber")
-    var fullPhoneNumber: String? = null
-    @JsonProperty("userName")
-    var userName: String? = null
-    @JsonProperty("userEmail")
-    var userEmail: String? = null
-    @JsonProperty("userField")
-    var fieldDescription: String? = null
 
     @JsonProperty("riskAtt")
     var riskAttitude: Int = 0

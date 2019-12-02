@@ -14,6 +14,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.View;
@@ -36,6 +37,7 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.crashlytics.android.Crashlytics;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,6 +59,9 @@ import java.util.Locale;
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 public class Tools {
+
+    private static final String LOG_TAG = Tools.class.getSimpleName();
+    private static ObjectMapper mapper = new ObjectMapper();
 
     public static void setSystemBarColor(Activity act) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -392,15 +397,19 @@ public class Tools {
      */
     public static JSONObject prepareRecommendationJson(RecommendationRequest recommendationRequest) {
         JSONObject jsonObject = null;
+        String jsonString = "{}";
         try {
-            ObjectMapper mapper = new ObjectMapper();
             mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
             mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-            String jsonString = mapper.writeValueAsString(recommendationRequest);
-            jsonObject = new JSONObject(jsonString);
-        } catch (Exception ignored) {
+            mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 
+            jsonString = mapper.writeValueAsString(recommendationRequest);
+            jsonObject = new JSONObject(jsonString);
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+            Crashlytics.logException(ex);
         }
+
         return jsonObject;
     }
 

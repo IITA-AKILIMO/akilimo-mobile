@@ -25,7 +25,7 @@ import com.github.javiersantos.appupdater.enums.Display
 import com.google.android.gms.common.util.Strings
 import com.iita.akilimo.R
 import com.iita.akilimo.adapters.ViewPagerAdapter
-import com.iita.akilimo.entities.MandatoryInfo
+import com.iita.akilimo.entities.LocationInfo
 import com.iita.akilimo.inherit.BaseActivity
 import com.iita.akilimo.interfaces.IFragmentCallBack
 import com.iita.akilimo.utils.AppUpdateHelper
@@ -68,7 +68,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
     private var placeName: String? = null
     private var address: String? = null
     private lateinit var currentFragment: Fragment
-    private lateinit var location: MandatoryInfo
+    private lateinit var location: LocationInfo
 
 
     private lateinit var activity: Activity
@@ -270,7 +270,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                 }
             }
 
-            location = objectBoxEntityProcessor.mandatoryInfo
+            location = objectBoxEntityProcessor.locationInfo
             location.latitude = currentLat
             location.longitude = currentLong
             location.altitude = currentAlt
@@ -284,7 +284,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                 else -> "NA"
             }
 
-            val id = objectBoxEntityProcessor.saveMandatoryInfo(location)
+            val id = objectBoxEntityProcessor.saveLocationInfo(location)
             if (id > 0) {
                 //refresh fragment data
                 (currentFragment as? LocationFragment)?.refreshData()

@@ -13,15 +13,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.material.button.MaterialButton;
 import com.iita.akilimo.R;
-import com.iita.akilimo.entities.MandatoryInfo;
+import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.services.GPSTracker;
@@ -54,7 +52,7 @@ public class LocationFragment extends BaseFragment {
     private double currentLon;
     private double currentAlt;
     private ProfileInfo profileInfo;
-    private MandatoryInfo mandatoryInfo;
+    private LocationInfo locationInformation;
     private String farmName = "";
 
     @Override
@@ -113,13 +111,13 @@ public class LocationFragment extends BaseFragment {
     }
 
     private void saveLocation() {
-        if (mandatoryInfo == null) {
-            mandatoryInfo = new MandatoryInfo();
+        if (locationInformation == null) {
+            locationInformation = new LocationInfo();
         }
-        mandatoryInfo.setLatitude(currentLat);
-        mandatoryInfo.setLongitude(currentLon);
+        locationInformation.setLatitude(currentLat);
+        locationInformation.setLongitude(currentLon);
 
-        objectBoxEntityProcessor.saveMandatoryInfo(mandatoryInfo);
+        objectBoxEntityProcessor.saveLocationInfo(locationInformation);
         reloadLocationInfo();
 
     }
@@ -127,23 +125,23 @@ public class LocationFragment extends BaseFragment {
     private void reloadLocationInfo() {
         try {
             profileInfo = objectBoxEntityProcessor.getProfileInfo();
-            mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+            locationInformation = objectBoxEntityProcessor.getLocationInfo();
 
             if (profileInfo != null) {
                 farmName = profileInfo.getFarmName();
             }
-            if (mandatoryInfo != null) {
-                StringBuilder locInfo = loadLocationInfo(mandatoryInfo);
+            if (locationInformation != null) {
+                StringBuilder locInfo = loadLocationInfo(locationInformation);
                 locationInfo.setText(locInfo.toString());
-                currentLon = mandatoryInfo.getLongitude();
-                currentLat = mandatoryInfo.getLatitude();
-                currentAlt = mandatoryInfo.getAltitude();
+                currentLon = locationInformation.getLongitude();
+                currentLat = locationInformation.getLatitude();
+                currentAlt = locationInformation.getAltitude();
             }
 
             String message = context.getString(R.string.lbl_farm_location, farmName);
             title.setText(message);
         } catch (Exception ex) {
-            mandatoryInfo = new MandatoryInfo();
+            locationInformation = new LocationInfo();
             Crashlytics.log(Log.ERROR, TAG, "An error occurred fetching info");
             Crashlytics.logException(ex);
         }

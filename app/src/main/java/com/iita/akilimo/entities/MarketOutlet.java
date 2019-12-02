@@ -43,14 +43,14 @@ public class MarketOutlet {
         @Override
         public EnumProduceType convertToEntityProperty(String databaseValue) {
             if (databaseValue == null) {
-                return EnumProduceType.UNKNOWN;
+                return EnumProduceType.ROOTS;
             }
             for (EnumProduceType produceType : EnumProduceType.values()) {
                 if (produceType.produce().equalsIgnoreCase(databaseValue)) {
                     return produceType;
                 }
             }
-            return EnumProduceType.UNKNOWN;
+            return EnumProduceType.ROOTS;
         }
 
         @Override

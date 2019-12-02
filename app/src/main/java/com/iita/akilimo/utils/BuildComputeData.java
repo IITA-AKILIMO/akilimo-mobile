@@ -1,19 +1,24 @@
 package com.iita.akilimo.utils;
 
 import android.app.Activity;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.entities.ComputeRequest;
+import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.MarketOutlet;
 import com.iita.akilimo.entities.PlantingHarvestDates;
+import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.entities.RecAdvice;
 import com.iita.akilimo.entities.TillageOperations;
 import com.iita.akilimo.models.Fertilizer;
 import com.iita.akilimo.models.InvestmentAmount;
 import com.iita.akilimo.models.MaizePerformance;
 import com.iita.akilimo.rest.request.RecommendationRequest;
+import com.iita.akilimo.rest.request.UserInfo;
 import com.iita.akilimo.utils.enums.EnumProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 import com.iita.akilimo.utils.enums.EnumUnitPrice;
@@ -119,6 +124,7 @@ public class BuildComputeData {
     String sweetPotatoUnitPrice = DEFAULT_UNAVAILABLE;
 
     String userName = DEFAULT_USERNAME;
+    String secondName = DEFAULT_USERNAME;
     String fieldDesc = DEFAULT_FIELD_DESC;
     int riskAtt = DEFAULT_UNAVAILABLE_INT;
 
@@ -126,9 +132,7 @@ public class BuildComputeData {
     String cassavaUpmTwo = DEFAULT_UNAVAILABLE;
     String cassavaUppOne = DEFAULT_UNAVAILABLE;
     String cassavaUppTwo = DEFAULT_UNAVAILABLE;
-
     String cassavaProduceType = DEFAULT_CASSAVA_PD;
-
     String starchFactoryName = DEFAULT_UNAVAILABLE;
 
     private ObjectBoxEntityProcessor objectBoxEntityProcessor;
@@ -138,9 +142,9 @@ public class BuildComputeData {
     }
 
     public RecommendationRequest buildRecommendationReq() {
-
-
         ComputeRequest computeRequest = buildMandatoryInfo();
+        UserInfo userInfo = buildProfileInfo();
+
         buildRequestedRec(computeRequest);
         buildPlantingDates(computeRequest);
         buildInvestmentAmount(computeRequest);
@@ -150,37 +154,62 @@ public class BuildComputeData {
         buildMaizePerformance(computeRequest);
         buildMarketOutlet(computeRequest);
 
-
         List<Fertilizer> fertilizerList = objectBoxEntityProcessor.getAvailableFertilizersByCountry(countryCode);
 
 
-        return new RecommendationRequest(computeRequest, fertilizerList);
+        return new RecommendationRequest(userInfo, computeRequest, fertilizerList);
+    }
+
+    private UserInfo buildProfileInfo() {
+        UserInfo userInfo = new UserInfo();
+        try {
+            ProfileInfo profileInfo = objectBoxEntityProcessor.getProfileInfo();
+
+            if (profileInfo != null) {
+                userName = profileInfo.getFirstName() != null ? profileInfo.getFirstName() : DEFAULT_USERNAME;
+                secondName = profileInfo.getFirstName() != null ? profileInfo.getFirstName() : DEFAULT_USERNAME;
+                emailAddress = profileInfo.getEmail() != null ? profileInfo.getEmail() : DEFAULT_UNAVAILABLE;
+                fieldDesc = profileInfo.getFarmName() != null ? profileInfo.getFarmName() : DEFAULT_FIELD_DESC;
+                mobileNumber = profileInfo.getMobile() != null ? profileInfo.getMobile() : DEFAULT_UNAVAILABLE;
+
+
+                userInfo.setDeviceID("akilimo-device");
+                userInfo.setMobileCountryCode(mobileCountryCode);
+                userInfo.setMobileNumber(mobileNumber);
+                userInfo.setFullPhoneNumber(fullPhoneNumber);
+                userInfo.setFirstName(userName);
+                userInfo.setSecondName(secondName);
+                userInfo.setEmailAddress(emailAddress);
+                userInfo.setFieldDescription(fieldDesc);
+                userInfo.setSendSms(smsRequired);
+                userInfo.setSendEmail(emailRequired);
+            }
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+            Crashlytics.logException(ex);
+        }
+        return userInfo;
     }
 
     private ComputeRequest buildMandatoryInfo() {
         ComputeRequest computeRequest = new ComputeRequest();
         MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        LocationInfo locationInfo = objectBoxEntityProcessor.getLocationInfo();
+        if (locationInfo != null) {
+            computeRequest.setMapLat(locationInfo.getLatitude());
+            computeRequest.setMapLong(locationInfo.getLongitude());
+        }
         if (mandatoryInfo != null) {
             fieldArea = mandatoryInfo.getAreaSize();
             areaUnits = mandatoryInfo.getAreaUnitsEnum().unitString();
             countryCode = mandatoryInfo.getCountryCode();
 
-            computeRequest.setSendSms(smsRequired);
-            computeRequest.setSendEmail(emailRequired);
-            computeRequest.setMobileCountryCode(mobileCountryCode);
-            computeRequest.setMobileNumber(mobileNumber);
-            computeRequest.setFullPhoneNumber(fullPhoneNumber);
-            computeRequest.setUserName(userName);
-            computeRequest.setUserEmail(emailAddress);
             computeRequest.setRiskAttitude(riskAtt);
 
             computeRequest.setCurrency(mandatoryInfo.getCurrency());
             computeRequest.setCountry(countryCode);
-            computeRequest.setMapLat(mandatoryInfo.getLatitude());
-            computeRequest.setMapLong(mandatoryInfo.getLongitude());
             computeRequest.setFieldArea(fieldArea);
             computeRequest.setAreaUnits(areaUnits);
-            computeRequest.setFieldDescription(fieldDesc);
         }
         return computeRequest;
     }

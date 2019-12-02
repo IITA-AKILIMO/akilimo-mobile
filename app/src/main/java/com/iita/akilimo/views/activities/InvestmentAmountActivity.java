@@ -20,7 +20,7 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.InvestmentAmount;
-import com.iita.akilimo.utils.CurrencyHelper;
+import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import butterknife.BindString;
@@ -66,10 +66,11 @@ public class InvestmentAmountActivity extends BaseActivity {
     MaterialButton btnFinish;
 
 
-    CurrencyHelper currencyHelper;
+    MathHelper mathHelper;
     private boolean isExactAmount;
     private boolean hasErrors;
     private String investmentAmountError = "Enter a valid investment amount";
+    private String fieldAreaAcre;
     private String fieldArea;
 
     private double investmentAmountUSD;
@@ -87,7 +88,7 @@ public class InvestmentAmountActivity extends BaseActivity {
         ButterKnife.bind(this);
         context = this;
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
-        currencyHelper = new CurrencyHelper();
+        mathHelper = new MathHelper();
 
         initToolbar();
         initComponent();
@@ -138,8 +139,8 @@ public class InvestmentAmountActivity extends BaseActivity {
                     txtEditInvestmentAmountLayout.requestFocus();
                     return;
             }
-            investmentAmountUSD = currencyHelper.computeInvestmentAmount(amountToInvest, fieldSize, baseCurrency);
-            investmentAmountLocal = currencyHelper.convertToLocalCurrency(investmentAmountUSD, currency);
+            investmentAmountUSD = mathHelper.computeInvestmentAmount(amountToInvest, fieldSizeAcre, baseCurrency);
+            investmentAmountLocal = mathHelper.convertToLocalCurrency(investmentAmountUSD, currency);
 
         });
         txtEditInvestmentAmount.addTextChangedListener(new TextWatcher() {
@@ -187,7 +188,10 @@ public class InvestmentAmountActivity extends BaseActivity {
 
         MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
         fieldSize = mandatoryInfo.getAreaSize();
+        fieldSizeAcre = mandatoryInfo.getAcreAreaSize();
         fieldArea = String.valueOf(fieldSize);
+        fieldAreaAcre = String.valueOf(fieldSizeAcre);
+
         areaUnit = mandatoryInfo.getAreaUnit();
         selectedFieldArea = String.format("%s %s", fieldSize, areaUnit);
 
@@ -205,11 +209,11 @@ public class InvestmentAmountActivity extends BaseActivity {
         String exactText = getString(R.string.exact_investment_x_per_field_area);
 
         //convert the currencies
-        rd_25_per_acre.setText(currencyHelper.convertCurrency(band_25, currency, areaUnit, fieldArea, selectedFieldArea));
-        rd_50_per_acre.setText(currencyHelper.convertCurrency(band_50, currency, areaUnit, fieldArea, selectedFieldArea));
-        rd_100_per_acre.setText(currencyHelper.convertCurrency(band_100, currency, areaUnit, fieldArea, selectedFieldArea));
-        rd_150_per_acre.setText(currencyHelper.convertCurrency(band_150, currency, areaUnit, fieldArea, selectedFieldArea));
-        rd_200_per_acre.setText(currencyHelper.convertCurrency(band_200, currency, areaUnit, fieldArea, selectedFieldArea));
+        rd_25_per_acre.setText(mathHelper.convertCurrency(band_25, currency, areaUnit, fieldAreaAcre, selectedFieldArea));
+        rd_50_per_acre.setText(mathHelper.convertCurrency(band_50, currency, areaUnit, fieldAreaAcre, selectedFieldArea));
+        rd_100_per_acre.setText(mathHelper.convertCurrency(band_100, currency, areaUnit, fieldAreaAcre, selectedFieldArea));
+        rd_150_per_acre.setText(mathHelper.convertCurrency(band_150, currency, areaUnit, fieldAreaAcre, selectedFieldArea));
+        rd_200_per_acre.setText(mathHelper.convertCurrency(band_200, currency, areaUnit, fieldAreaAcre, selectedFieldArea));
 
         rd_exact_investment.setText(exactText);
         txtEditInvestmentAmount.setHint(exactText);
@@ -228,11 +232,11 @@ public class InvestmentAmountActivity extends BaseActivity {
         String amount = txtEditInvestmentAmountLayout.getEditText().getText().toString();
         if (!Strings.isEmptyOrWhitespace(amount)) {
             investmentAmountLocal = Double.parseDouble(amount);
-            investmentAmountUSD = currencyHelper.convertToUSD(investmentAmountLocal, currency);
+            investmentAmountUSD = mathHelper.convertToUSD(investmentAmountLocal, currency);
         }
 
-        minimumAmountUSD = currencyHelper.computeInvestmentAmount(minInvestmentUSD, fieldSize, baseCurrency);
-        minimumAmountLocal = currencyHelper.convertToLocalCurrency(minimumAmountUSD, currency);
+        minimumAmountUSD = mathHelper.computeInvestmentAmount(minInvestmentUSD, fieldSizeAcre, baseCurrency);
+        minimumAmountLocal = mathHelper.convertToLocalCurrency(minimumAmountUSD, currency);
         hasErrors = investmentAmountLocal < minimumAmountLocal;
         return investmentAmountError = String.format("Investment amount should be more or equal to %s %s ", minimumAmountLocal, currency);
 

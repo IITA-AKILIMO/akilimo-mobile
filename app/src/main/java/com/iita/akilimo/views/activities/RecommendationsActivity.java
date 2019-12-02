@@ -88,7 +88,7 @@ public class RecommendationsActivity extends BaseActivity {
         IC.setRecCode(EnumAdvice.IC);
         IC.setRecommendationName(icString);
         IC.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft));
-        items.add(IC);
+//        items.add(IC);
 
         Recommendations SPH = new Recommendations();
         SPH.setRecCode(EnumAdvice.SPH);

@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 
 import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.Akilimo;
+import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.MandatoryInfo_;
 import com.iita.akilimo.entities.MarketOutlet;
@@ -65,6 +66,18 @@ public class ObjectBoxEntityProcessor {
     public ProfileInfo getProfileInfo() {
         Box<ProfileInfo> box = boxStore.boxFor(ProfileInfo.class);
 
+        return box.query()
+                .build()
+                .findFirst();
+    }
+
+    public long saveLocationInfo(LocationInfo locationInfo) {
+        Box<LocationInfo> box = boxStore.boxFor(LocationInfo.class);
+        return box.put(locationInfo);
+    }
+
+    public LocationInfo getLocationInfo() {
+        Box<LocationInfo> box = boxStore.boxFor(LocationInfo.class);
         return box.query()
                 .build()
                 .findFirst();

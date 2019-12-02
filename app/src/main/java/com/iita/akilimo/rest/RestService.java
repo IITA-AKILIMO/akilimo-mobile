@@ -30,7 +30,7 @@ public class RestService {
     private String countryCode;
     private RequestQueue queue;
     private SessionManager sessionManager;
-    private int initialTimeout = 1000;
+    private int initialTimeout = 30000;
 
     private RestService(RequestQueue requestQueue, Activity activity) {
         queue = requestQueue;

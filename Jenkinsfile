@@ -22,8 +22,8 @@ pipeline {
 
     stage('Lint') {
       steps {
-          sh './gradlew lint'
-          androidLint canComputeNew: false, pattern: '**/lint-results*.xml'
+        sh './gradlew lint'
+        androidLint(pattern: '**/lint-results*.xml')
       }
     }
 
@@ -52,30 +52,30 @@ pipeline {
       }
     }
 
-
     stage('Sign build binaries') {
       parallel {
-			stage('apk') {
-			  when {
-				beforeAgent true
-				branch 'master'
-			  }
-			  steps {
-				signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.apk', skipZipalign: true)
-			  }
-			}
+        stage('apk') {
+          when {
+            beforeAgent true
+            branch 'master'
+          }
+          steps {
+            signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.apk', skipZipalign: true)
+          }
+        }
 
-			stage('aab') {
-				when {
-					beforeAgent true
-					branch 'bundle'
-				}
-				steps {
-					signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.aab', skipZipalign: true)
-				}
-			}
-		}
-	}
+        stage('aab') {
+          when {
+            beforeAgent true
+            branch 'bundle'
+          }
+          steps {
+            signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.aab', skipZipalign: true)
+          }
+        }
+
+      }
+    }
 
     stage('Archive Artifacts') {
       when {
@@ -87,6 +87,7 @@ pipeline {
           archiveArtifacts allowEmptyArchive: true,
           artifacts: '**/*.apk, **/*.aab, app/build/**/mapping/**/*.txt, app/build/**/logs/**/*.txt'
         }
+
       }
     }
 
@@ -99,7 +100,7 @@ pipeline {
           }
           steps {
             androidAabUpload(aabFilesPattern: '**/build/outputs/**/*-release.aab', applicationId: 'com.iita.akilimo', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-                            text: 'Bug fixes']], trackName: 'beta')
+                                        text: 'Bug fixes']], trackName: 'beta')
           }
         }
 
@@ -110,29 +111,29 @@ pipeline {
           }
           steps {
             androidApkUpload(apkFilesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-                                  text: 'Bug fixes']], trackName: 'production')
+                                              text: 'Bug fixes']], trackName: 'production')
           }
         }
 
       }
     }
 
-    stage('Tag release commit'){
+    stage('Tag release commit') {
       when {
         beforeAgent true
         branch 'master'
       }
-      steps{
-        sh 'git tag -a v4.2.$BUILD_NUMBER $GIT_COMMIT -m "release-$BUILD_NUMBER"'
+      steps {
+        sh 'git tag -a v4.2.$BUILD_NUMBER $GIT_COMMIT -m "Jenkins release-$BUILD_NUMBER"'
       }
     }
 
-    stage('Push tags'){
+    stage('Push tags') {
       when {
         beforeAgent true
         branch 'master'
       }
-      steps{
+      steps {
         sh 'git push --tags'
       }
     }

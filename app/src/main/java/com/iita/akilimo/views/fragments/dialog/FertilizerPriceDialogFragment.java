@@ -28,7 +28,7 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.interfaces.IDismissListener;
 import com.iita.akilimo.models.Fertilizer;
 import com.iita.akilimo.models.FertilizerPrices;
-import com.iita.akilimo.utils.CurrencyHelper;
+import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import java.util.List;
@@ -60,7 +60,7 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
     private Button btnRemove;
 
 
-    private CurrencyHelper currencyHelper;
+    private MathHelper mathHelper;
     private Context context;
     private ObjectBoxEntityProcessor objectBox;
     private Fertilizer fertilizer;
@@ -84,7 +84,7 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
         super.onAttach(context);
         this.context = context;
         objectBox = ObjectBoxEntityProcessor.getInstance(context);
-        currencyHelper = new CurrencyHelper();
+        mathHelper = new MathHelper();
     }
 
 
@@ -151,7 +151,7 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
                     return;
                 }
                 savedPricePerBag = Double.parseDouble(bagPrice);
-                bagPriceRange = currencyHelper.formatNumber(savedPricePerBag, currencyCode);
+                bagPriceRange = mathHelper.formatNumber(savedPricePerBag, currencyCode);
                 isPriceValid = true;
                 editExactFertilizerPrice.setError(null);
             }

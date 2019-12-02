@@ -1,7 +1,7 @@
 package com.iita.akilimo.utils.enums;
 
 
-import com.iita.akilimo.utils.CurrencyHelper;
+import com.iita.akilimo.utils.MathHelper;
 
 public enum EnumUnitPrice {
     UNKNOWN {
@@ -147,7 +147,7 @@ public enum EnumUnitPrice {
     public abstract double unitPriceUpper();
 
     private static double convertCurrency(double amount, String toCurrency) {
-        CurrencyHelper currencyHelper = new CurrencyHelper();
-        return currencyHelper.convertToLocalCurrency(amount, toCurrency);
+        MathHelper mathHelper = new MathHelper();
+        return mathHelper.convertToLocalCurrency(amount, toCurrency);
     }
 }

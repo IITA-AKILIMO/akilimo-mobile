@@ -26,7 +26,7 @@ import com.iita.akilimo.databinding.FragmentOperationCostDialogBinding;
 import com.iita.akilimo.entities.OperationCost;
 import com.iita.akilimo.entities.TillageOperations;
 import com.iita.akilimo.interfaces.IFragmentCallBack;
-import com.iita.akilimo.utils.CurrencyHelper;
+import com.iita.akilimo.utils.MathHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -105,9 +105,12 @@ public class OperationCostDialogFragment extends DialogFragment {
             //hide fields based on selection
             String tillageOperation = event.getTillageOperation();
             if (event.getTractorAvailable()) {
-                binding.inputLayoutRidgingTractor.setVisibility(View.VISIBLE);
-                binding.inputLayoutFirstPloughTractor.setVisibility(View.VISIBLE);
-                binding.inputLayoutSecondPloughTractor.setVisibility(View.VISIBLE);
+                if (event.getTractorPlough()) {
+                    binding.inputLayoutRidgingTractor.setVisibility(View.VISIBLE);
+                    binding.inputLayoutFirstPloughTractor.setVisibility(View.VISIBLE);
+                }
+
+//                binding.inputLayoutSecondPloughTractor.setVisibility(View.VISIBLE);
             }
 
             if (!tillageOperation.equalsIgnoreCase("NA")) {
@@ -125,17 +128,17 @@ public class OperationCostDialogFragment extends DialogFragment {
     }
 
     private OperationCost convertToDefaultCurrency(String currencyCode) {
-        CurrencyHelper currencyHelper = new CurrencyHelper();
+        MathHelper mathHelper = new MathHelper();
 
         OperationCost def = OperationCost.newInstance();
 
-        firstManualPlough = currencyHelper.convertToLocalCurrency(def.getFirstManualPlough(), currencyCode);
-        secondManualPlough = currencyHelper.convertToLocalCurrency(def.getSecondManualPlough(), currencyCode);
-        firstMechPlough = currencyHelper.convertToLocalCurrency(def.getFirstMechPlough(), currencyCode);
-        manualRidging = currencyHelper.convertToLocalCurrency(def.getManualRidging(), currencyCode);
-        secondMechPlough = currencyHelper.convertToLocalCurrency(def.getSecondMechPlough(), currencyCode);
-        tractorHarrow = currencyHelper.convertToLocalCurrency(def.getTractorHarrowCost(), currencyCode);
-        tractorRidging = currencyHelper.convertToLocalCurrency(def.getTractorRidging(), currencyCode);
+        firstManualPlough = mathHelper.convertToLocalCurrency(def.getFirstManualPlough(), currencyCode);
+        secondManualPlough = mathHelper.convertToLocalCurrency(def.getSecondManualPlough(), currencyCode);
+        firstMechPlough = mathHelper.convertToLocalCurrency(def.getFirstMechPlough(), currencyCode);
+        manualRidging = mathHelper.convertToLocalCurrency(def.getManualRidging(), currencyCode);
+        secondMechPlough = mathHelper.convertToLocalCurrency(def.getSecondMechPlough(), currencyCode);
+        tractorHarrow = mathHelper.convertToLocalCurrency(def.getTractorHarrowCost(), currencyCode);
+        tractorRidging = mathHelper.convertToLocalCurrency(def.getTractorRidging(), currencyCode);
 
         def.setFirstManualPlough(firstManualPlough);
         def.setSecondManualPlough(secondManualPlough);

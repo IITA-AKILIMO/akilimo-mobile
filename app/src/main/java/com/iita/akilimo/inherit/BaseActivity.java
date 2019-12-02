@@ -22,7 +22,6 @@ import com.iita.akilimo.utils.FireBaseConfig;
 import com.iita.akilimo.utils.SessionManager;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.views.activities.DstRecommendationActivity;
-import com.iita.akilimo.views.activities.HomeActivity;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
@@ -46,7 +45,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected String currency = "";
     protected String areaUnit = "";
 
-    protected double fieldSize = 2.471;
+    protected double fieldSize = 0;
+    protected double fieldSizeAcre = 2.471;
 
 //    protected AppUpdateHelper appUpdateHelper;
 //    protected AppUpdater appUpdater;
