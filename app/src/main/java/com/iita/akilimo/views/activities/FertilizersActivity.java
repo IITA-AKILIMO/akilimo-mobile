@@ -36,6 +36,7 @@ import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.views.fragments.dialog.FertilizerPriceDialogFragment;
 import com.iita.akilimo.widget.SpacingItemDecoration;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -206,7 +207,7 @@ public class FertilizersActivity extends BaseActivity {
         btnRetry.setVisibility(View.GONE);
 
         final RestService restService = RestService.getInstance(queue, this);
-        restService.setParameters("v2/fertilizers", countryCode, 1000);
+        restService.setParameters("v2/fertilizers", countryCode);
 
         restService.getJsonArrList(new IVolleyCallback() {
             @Override
@@ -239,7 +240,7 @@ public class FertilizersActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(VolleyError volleyError) {
+            public void onError(@NotNull VolleyError volleyError) {
                 lyt_progress.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.GONE);
                 errorLabel.setVisibility(View.VISIBLE);
@@ -247,7 +248,7 @@ public class FertilizersActivity extends BaseActivity {
                 btnRetry.setVisibility(View.VISIBLE);
 
                 Toast.makeText(context, "Unable to load fertilizer list", Toast.LENGTH_LONG).show();
-                Crashlytics.log(Log.ERROR, LOG_TAG, volleyError.networkResponse.toString());
+                Crashlytics.log(Log.ERROR, LOG_TAG, "Fertilizer list not able to load");
                 Crashlytics.logException(volleyError);
             }
         });

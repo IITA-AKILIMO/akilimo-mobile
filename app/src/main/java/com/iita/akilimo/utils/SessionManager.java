@@ -34,46 +34,15 @@ public class SessionManager {
         editor = pref.edit();
     }
 
-    @Deprecated
-    public void saveUnitOfSale(String unitOfSale, String unitOfSaleText) {
-        editor.putString("unitOfSale", unitOfSale);
-        editor.putString("unitOfSaleText", unitOfSaleText);
-        editor.commit();
-    }
-
-    @Deprecated
-    public void saveAreaUnit(String area_unit) {
-        editor.putString("areaUnit", area_unit);
-        editor.commit();
-    }
-
-    @Deprecated
-    public String getUnitOfSale() {
-        return pref.getString("unitOfSale", null);
-    }
-
-    @Deprecated
-    public String getUnitOfSaleText() {
-        return pref.getString("unitOfSaleText", null);
-    }
-
-    @Deprecated
-    public String getAreaUnit() {
-        return pref.getString("areaUnit", "acre");
-    }
-
-
     public void setApiEndPoint(String apiResource) {
         editor.putString("apiResource", apiResource);
         editor.commit();
     }
 
     public String getApiEndPoint() {
-        return pref.getString("apiResource", "https://google.com/"  );
+        return pref.getString("apiResource", "https://google.com/");
     }
 
-
-    //set api tokens
     public void setApiToken(String apiToken) {
         editor.putString("apiToken", apiToken);
         editor.commit();
@@ -101,6 +70,7 @@ public class SessionManager {
         return pref.getString("locationIqToken", "");
     }
 
+    @SuppressWarnings("StringBufferReplaceableByString")
     public String getAppVersion() {
         StringBuilder strVersion = new StringBuilder();
         strVersion.append("Version: ");

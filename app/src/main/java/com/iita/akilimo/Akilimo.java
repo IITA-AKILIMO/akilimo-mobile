@@ -14,7 +14,7 @@ import timber.log.Timber;
 
 public class Akilimo extends MultiDexApplication {
     public static final String LOG_TAG = Akilimo.class.getSimpleName();
-    public static final String DB_NAME = "AkilimoSTORE";
+    public static final String DB_NAME = "AkilimoDB";
     private BoxStore boxStore;
 
 

@@ -18,7 +18,7 @@ import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.TillageOperations;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IFragmentCallBack;
-import com.iita.akilimo.utils.CurrencyHelper;
+import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.views.fragments.dialog.OperationCostDialogFragment;
 
@@ -81,12 +81,13 @@ public class TillageOperationsActivity extends BaseActivity {
     @BindView(R.id.btnFragmentDialog)
     Button btnFragmentDialog;
 
-    CurrencyHelper currencyHelper;
+    MathHelper mathHelper;
     TillageOperations tillageOperationsModel;
 
     private boolean hasTractor;
     private boolean hasPlough;
     private boolean hasRidger;
+    private boolean hasHarrow;
     private boolean dataValid;
 
     private String tillageOperation;
@@ -99,7 +100,7 @@ public class TillageOperationsActivity extends BaseActivity {
         ButterKnife.bind(this);
         context = this;
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
-        currencyHelper = new CurrencyHelper();
+        mathHelper = new MathHelper();
 
         MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
@@ -184,7 +185,7 @@ public class TillageOperationsActivity extends BaseActivity {
 
         dataValid = true;
         tillageOperationsModel.setTractorAvailable(hasTractor);
-        tillageOperationsModel.setTractorHarrow(hasRidger);
+        tillageOperationsModel.setTractorHarrow(hasHarrow);
         tillageOperationsModel.setTractorPlough(hasPlough);
         tillageOperationsModel.setTillageOperation(tillageOperation);
         //proceed to save

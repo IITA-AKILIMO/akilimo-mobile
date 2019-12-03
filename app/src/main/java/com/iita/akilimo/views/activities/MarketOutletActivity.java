@@ -22,7 +22,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.MarketOutlet;
@@ -30,8 +29,8 @@ import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.models.StarchFactory;
 import com.iita.akilimo.rest.RestService;
-import com.iita.akilimo.utils.CurrencyHelper;
 import com.iita.akilimo.utils.FireBaseEvents;
+import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumCountries;
 import com.iita.akilimo.utils.enums.EnumProduceType;
@@ -135,7 +134,7 @@ public class MarketOutletActivity extends BaseActivity {
     @BindView(R.id.rd_150_200_price)
     RadioButton rd_150_200_price;
 
-    CurrencyHelper currencyHelper;
+    MathHelper mathHelper;
     private String selectedFactory;
 
     EnumProduceType enumProduceType;
@@ -167,7 +166,7 @@ public class MarketOutletActivity extends BaseActivity {
 
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
         queue = Volley.newRequestQueue(context);
-        currencyHelper = new CurrencyHelper();
+        mathHelper = new MathHelper();
         fireBaseEvents = FireBaseEvents.newInstance(context);
 
         marketOutlet = objectBoxEntityProcessor.getMarketOutlet();
@@ -424,8 +423,8 @@ public class MarketOutletActivity extends BaseActivity {
                 unitPriceLocal = 0;
                 unitPriceLocal = enumUnitPrice.convertToLocal(currency);
             }
-            Double minAmount = currencyHelper.convertCurrency(minAmountUSD, currency);
-            Double maxAmount = currencyHelper.convertCurrency(maxAmountUSD, currency);
+            Double minAmount = mathHelper.convertCurrency(minAmountUSD, currency);
+            Double maxAmount = mathHelper.convertCurrency(maxAmountUSD, currency);
 
             dataIsValid = true;
             if (!(unitPriceLocal >= minAmount) || !(unitPriceLocal <= maxAmount)) {
@@ -496,8 +495,8 @@ public class MarketOutletActivity extends BaseActivity {
         }
 
         minAmountUSD = priceLower; //minimum amount will be dynamic based on weight being sold, max amount will be constant
-        double localLower = currencyHelper.convertToLocalCurrency(priceLower, currency, 10);
-        double localHigher = currencyHelper.convertToLocalCurrency(priceHigher, currency, 10);
+        double localLower = mathHelper.convertToLocalCurrency(priceLower, currency, 10);
+        double localHigher = mathHelper.convertToLocalCurrency(priceHigher, currency, 10);
 
         String message = context.getString(R.string.unit_price_abel, localLower, localHigher, currency, uos);
         if (!Strings.isEmptyOrWhitespace(priceText)) {

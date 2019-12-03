@@ -2,15 +2,17 @@ package com.iita.akilimo.utils;
 
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.util.Locale;
 
 @SuppressWarnings("WeakerAccess")
-public class CurrencyHelper {
-    private static String TAG = CurrencyHelper.class.getSimpleName();
+public class MathHelper {
+    private static String TAG = MathHelper.class.getSimpleName();
     private double ngnToUsdRate = 360;
     private double tzsToUsdRate = 2250;
 
-    public CurrencyHelper() {
+    public MathHelper() {
         Log.i(TAG, "Started currency helper class");
     }
 
@@ -79,8 +81,8 @@ public class CurrencyHelper {
                 data = String.format("%s %s per %s %s", roundToNearestSpecifiedValue(computedAmount, 1000), toCurrency, fieldSize, unitType);
             }
         } catch (Exception ex) {
-//            Crashlytics.log(Log.ERROR, TAG, ex.getStepTitle());
-//            Crashlytics.logException(ex);
+            Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
+            Crashlytics.logException(ex);
         }
         return data;
 
@@ -102,8 +104,8 @@ public class CurrencyHelper {
                 data = String.format("%s %s per %s", formattedNumber, toCurrency, selectedField);
             }
         } catch (Exception ex) {
-//            Crashlytics.log(Log.ERROR, TAG, ex.getStepTitle());
-//            Crashlytics.logException(ex);
+            Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
+            Crashlytics.logException(ex);
         }
         return data;
 
@@ -136,8 +138,8 @@ public class CurrencyHelper {
                     break;
             }
         } catch (Exception ex) {
-//            Crashlytics.log(Log.ERROR, TAG, ex.getStepTitle());
-//            Crashlytics.logException(ex);
+            Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
+            Crashlytics.logException(ex);
         }
 
         return nearestSpecifiedValue > 0 ? roundToNearestSpecifiedValue(converted, nearestSpecifiedValue) : converted;
@@ -161,8 +163,8 @@ public class CurrencyHelper {
                     return currencyToConvert;
             }
         } catch (Exception ex) {
-//            Crashlytics.log(Log.ERROR, TAG, ex.getStepTitle());
-//            Crashlytics.logException(ex);
+            Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
+            Crashlytics.logException(ex);
         }
 
         double convertedTemp = roundToNearestSpecifiedValue(converted, nearestSpecifiedValue);
@@ -172,7 +174,16 @@ public class CurrencyHelper {
 
     public double roundToNearestSpecifiedValue(double numberToRound, double roundToNearest) {
         double rounded = Math.round(numberToRound / roundToNearest) * roundToNearest;
-        return (rounded < 1 || roundToNearest < 1) ? numberToRound : rounded;
+        if (rounded < 1 || roundToNearest < 1) {
+            return roundToNDecimalPlaces(numberToRound, 10.0);
+        } else {
+            return rounded;
+        }
+    }
+
+    public double roundToNDecimalPlaces(double numberToRound, double decimalPlaces) {
+        double rounded = Math.round(numberToRound * decimalPlaces) / decimalPlaces;
+        return rounded;
     }
 
     public double computeInvestmentAmount(double localCurrencyAmount, double fieldSize, String fromCurrency) {
@@ -193,8 +204,8 @@ public class CurrencyHelper {
         try {
             fieldYieldAmount = convertToLocalCurrency(fieldYield, currency);
         } catch (Exception ex) {
-//            Crashlytics.log(Log.ERROR, TAG, ex.getStepTitle());
-//            Crashlytics.logException(ex);
+            Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
+            Crashlytics.logException(ex);
         }
         return fieldYieldAmount;
     }

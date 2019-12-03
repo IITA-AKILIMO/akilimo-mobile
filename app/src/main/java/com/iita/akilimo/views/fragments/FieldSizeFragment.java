@@ -66,10 +66,10 @@ public class FieldSizeFragment extends BaseFragment {
     RadioButton rd_two_half_acre;
 
     protected Context context;
-    private double areaSize;
     private String myFieldSize = "";
 
 
+    private double areaSize;
     private String quarter_acre;
     private String half_acre;
     private String one_acre;
@@ -127,6 +127,7 @@ public class FieldSizeFragment extends BaseFragment {
                 setFieldLabels(areaUnits);
                 myFieldSize = String.valueOf(mandatoryInfo.getAreaSize());
                 specifiedArea.setText(null);
+                rdgFieldArea.clearCheck();
                 switch (fieldAreaEnum) {
                     case QUARTER_ACRE:
                         rdgFieldArea.check(R.id.rd_quarter_acre);
@@ -161,37 +162,30 @@ public class FieldSizeFragment extends BaseFragment {
     }
 
     private void radioSelected(int checked) {
-        areaSize = 0;
         specifiedArea.setVisibility(View.GONE);
+        areaSize = 0;
         switch (checked) {
             case R.id.rd_quarter_acre:
                 fieldAreaEnum = EnumFieldArea.QUARTER_ACRE;
-                areaSize = EnumFieldArea.QUARTER_ACRE.areaValue();
                 break;
             case R.id.rd_half_acre:
                 fieldAreaEnum = EnumFieldArea.HALF_ACRE;
-                areaSize = EnumFieldArea.HALF_ACRE.areaValue();
                 break;
             case R.id.rd_one_acre:
                 fieldAreaEnum = EnumFieldArea.ONE_ACRE;
-                areaSize = EnumFieldArea.ONE_ACRE.areaValue();
                 break;
             case R.id.rd_one_half_acre:
                 fieldAreaEnum = EnumFieldArea.ONE_HALF_ACRE;
-                areaSize = EnumFieldArea.ONE_HALF_ACRE.areaValue();
                 break;
             case R.id.rd_two_half_acre:
                 fieldAreaEnum = EnumFieldArea.TWO_HALF_ACRE;
-                areaSize = EnumFieldArea.TWO_HALF_ACRE.areaValue();
                 break;
             case R.id.rd_five_acre:
                 fieldAreaEnum = EnumFieldArea.FIVE_ACRE;
-                areaSize = EnumFieldArea.FIVE_ACRE.areaValue();
                 break;
+            default:
             case R.id.rd_specify_acre:
                 specifiedArea.setVisibility(View.VISIBLE);
-                return;
-            default:
                 return;
         }
 
@@ -204,12 +198,16 @@ public class FieldSizeFragment extends BaseFragment {
             mandatoryInfo = new MandatoryInfo();
         }
         mandatoryInfo.setFieldAreaEnum(fieldAreaEnum);
-        mandatoryInfo.setAreaSize(fieldAreaEnum.areaValue());
-        mandatoryInfo.setAreaSize(areaSize);
+        mandatoryInfo.setAcreAreaSize(fieldAreaEnum.areaValue());
+        if (areaSize != 0) {
+            mandatoryInfo.setAreaSize(areaSize);
+        } else {
+            mandatoryInfo.convertToSelectedAreaUnit();
+        }
+
         objectBoxEntityProcessor.saveMandatoryInfo(mandatoryInfo);
     }
 
-    //    @SuppressLint("StringFormatInvalid")
     private void setFieldLabels(EnumAreaUnits areaUnits) {
         switch (areaUnits) {
             case ACRE:

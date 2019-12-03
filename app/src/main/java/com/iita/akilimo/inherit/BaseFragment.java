@@ -14,6 +14,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.iita.akilimo.Akilimo;
 import com.iita.akilimo.R;
+import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.utils.SessionManager;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
@@ -92,14 +93,16 @@ public abstract class BaseFragment extends Fragment {
 
     protected abstract View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
 
-    protected StringBuilder loadLocationInfo(MandatoryInfo location) {
+    public abstract void refreshData();
+
+    protected StringBuilder loadLocationInfo(LocationInfo locationInfo) {
         StringBuilder stBuilder = new StringBuilder();
-        if (location != null) {
-            String placeName = String.format("%s", location.getPlaceName());
-            String latitude = String.valueOf(location.getLatitude());
-            String longitude = String.valueOf(location.getLongitude());
-            String address = String.format("%s", location.getAddress());
-            if (location.getLatitude() != 0 && location.getLongitude() != 0) {
+        if (locationInfo != null) {
+            String placeName = String.format("%s", locationInfo.getPlaceName());
+            String latitude = String.valueOf(locationInfo.getLatitude());
+            String longitude = String.valueOf(locationInfo.getLongitude());
+            String address = String.format("%s", locationInfo.getAddress());
+            if (locationInfo.getLatitude() != 0 && locationInfo.getLongitude() != 0) {
 //            stBuilder.append("Name: ");
 //            stBuilder.append(placeName);
                 stBuilder.append("\n");
@@ -116,6 +119,4 @@ public abstract class BaseFragment extends Fragment {
 
         return stBuilder;
     }
-
-    public abstract void refreshData();
 }

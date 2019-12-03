@@ -14,7 +14,7 @@ import com.iita.akilimo.adapters.AdapterGridTwoLine;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.CurrentFieldYield;
-import com.iita.akilimo.utils.CurrencyHelper;
+import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.widget.SpacingItemDecoration;
@@ -46,7 +46,7 @@ public class RootYieldActivity extends BaseActivity {
     Button btnCancel;
 
     private CurrentFieldYield savedYield;
-    private CurrencyHelper currencyHelper;
+    private MathHelper mathHelper;
     private AdapterGridTwoLine mAdapter;
 
     private double selectedYieldAmount = 0.0;
@@ -65,7 +65,7 @@ public class RootYieldActivity extends BaseActivity {
         ButterKnife.bind(this);
         context = this;
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
-        currencyHelper = new CurrencyHelper();
+        mathHelper = new MathHelper();
 
         initToolbar();
 
@@ -191,7 +191,7 @@ public class RootYieldActivity extends BaseActivity {
     }
 
     private CurrentFieldYield yieldObject(Integer imageID, String yieldLabel, double fieldYieldAmount) {
-        double currentFieldYieldAmount = currencyHelper.computeFieldYield(fieldYieldAmount, currency);
+        double currentFieldYieldAmount = mathHelper.computeFieldYield(fieldYieldAmount, currency);
         CurrentFieldYield cfy = new CurrentFieldYield();
         cfy.setYieldAmount(currentFieldYieldAmount);
         cfy.setImageId(imageID);

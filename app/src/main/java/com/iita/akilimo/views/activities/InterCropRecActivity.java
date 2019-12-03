@@ -44,6 +44,10 @@ public class InterCropRecActivity extends BaseActivity {
 
     @BindString(R.string.lbl_planting_harvest)
     String plantingString;
+
+    @BindString(R.string.lbl_available_fertilizers)
+    String fertilizerString;
+
     @BindString(R.string.lbl_market_outlet)
     String marketOutletString;
     @BindString(R.string.lbl_typical_yield)
@@ -115,14 +119,14 @@ public class InterCropRecActivity extends BaseActivity {
         //set data and list adapter
         items = new ArrayList<>();
 
-
+        items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS, 0));
         items.add(new RecommendationOptions(plantingString, EnumAdviceTasks.PLANTING_AND_HARVEST, 0));
         items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET, 0));
         if (countryCode.equalsIgnoreCase(EnumCountries.NIGERIA.countryCode())) {
             //maize performance only applicable to nigeria
             items.add(new RecommendationOptions(maizeHeightString, EnumAdviceTasks.MAIZE_PERFORMANCE, 0));
         }
-        items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.TYPICAL_ROOT_YIELD, 0));
+//        items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.TYPICAL_ROOT_YIELD, 0));
 
         mAdapter = new RecOptionsAdapter(this, items, ItemAnimation.FADE_IN);
         recyclerView.setAdapter(mAdapter);
@@ -141,6 +145,9 @@ public class InterCropRecActivity extends BaseActivity {
                     break;
                 case TYPICAL_ROOT_YIELD:
                     intent = new Intent(context, RootYieldActivity.class);
+                    break;
+                case AVAILABLE_FERTILIZERS:
+                    intent = new Intent(context, FertilizersActivity.class);
                     break;
                 case MAIZE_PERFORMANCE:
                     intent = new Intent(context, MaizePerformanceActivity.class);

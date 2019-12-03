@@ -90,7 +90,7 @@
     <string name="lbl_maize_performance">The typical height of maize when grown without fertilizer</string>
     <string name="lbl_market_outlet">What is your market outlet to sell your cassava?</string>
     <string name="lbl_tillage_operations">Tillage operations and related cost</string>
-    <string name="lbl_herbicide_use">Herbicide use and related cost</string>
+    <string name="lbl_herbicide_use">Herbicide use</string>
 
     <string name="lbl_pick_planting_date">Pick planting date</string>
     <string name="lbl_selected_planting_date">Selected planting date is :</string>

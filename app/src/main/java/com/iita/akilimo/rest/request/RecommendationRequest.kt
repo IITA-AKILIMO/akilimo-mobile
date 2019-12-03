@@ -5,8 +5,12 @@ import com.iita.akilimo.entities.ComputeRequest
 import com.iita.akilimo.models.Fertilizer
 
 class RecommendationRequest(
+    @JsonProperty("userInfo")
+    var userInfo: UserInfo,
+
     @JsonProperty("computeRequest")
     var computeRequest: ComputeRequest,
+
     @JsonProperty("fertilizerList")
     var fertilizerList: List<Fertilizer>
 )
