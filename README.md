@@ -1,3 +1,4 @@
-# Akilimo mobile app upgrade
+# Akilimo mobile
 > UI changes
 > Better data processing
+> Friendlier navigation
