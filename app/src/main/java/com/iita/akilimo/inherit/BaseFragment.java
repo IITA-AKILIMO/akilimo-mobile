@@ -72,11 +72,12 @@ public abstract class BaseFragment extends Fragment {
 
 
     public void initCountryInfo() {
+
         if (objectBoxEntityProcessor != null) {
             MandatoryInfo loc = objectBoxEntityProcessor.getMandatoryInfo();
             if (loc != null) {
-                countryCode = loc.getCountryCode() != null ? loc.getCountryCode() : sessionManager.getDeviceCountry();
-                currency = loc.getCurrency() != null ? loc.getCurrency() : sessionManager.getDeviceLocaleCurrency();
+//                countryCode = loc.getCountryCode() != null ? loc.getCountryCode() : sessionManager.getDeviceCountry();
+//                currency = loc.getCurrency() != null ? loc.getCurrency() : sessionManager.getDeviceLocaleCurrency();
             }
         }
     }
