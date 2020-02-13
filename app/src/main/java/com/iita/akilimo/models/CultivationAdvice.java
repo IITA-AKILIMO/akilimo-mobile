@@ -6,9 +6,9 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 
-@SuppressWarnings("WeakerAccess")
+@Deprecated
 @Data
-@Entity
+//@Entity
 public class CultivationAdvice {
     @Id
     long id;

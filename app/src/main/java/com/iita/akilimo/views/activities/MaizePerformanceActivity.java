@@ -1,17 +1,15 @@
 package com.iita.akilimo.views.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.RadioGroup;
 
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.button.MaterialButton;
 import com.iita.akilimo.R;
 import com.iita.akilimo.inherit.BaseActivity;
-import com.iita.akilimo.models.MaizePerformance;
+import com.iita.akilimo.entities.MaizePerformance;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import butterknife.BindString;

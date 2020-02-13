@@ -6,8 +6,9 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 
+@Deprecated
 @Data
-@Entity
+//@Entity
 public class CroppingSystem {
 
     @Id

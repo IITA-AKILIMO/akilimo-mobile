@@ -111,7 +111,6 @@ public class CountryFragment extends BaseFragment {
                 mandatoryInfo = new MandatoryInfo();
             }
 
-            Snackbar.make(view, countryEnum.countryName() + " Selected", Snackbar.LENGTH_SHORT).show();
             mandatoryInfo.setCountryCode(countryEnum.countryCode());
             mandatoryInfo.setCountryName(countryEnum.countryName());
             mandatoryInfo.setCurrency(countryEnum.currency());

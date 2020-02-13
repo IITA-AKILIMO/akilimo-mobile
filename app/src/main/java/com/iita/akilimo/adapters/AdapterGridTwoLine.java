@@ -11,7 +11,7 @@ import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.iita.akilimo.R;
-import com.iita.akilimo.models.CurrentFieldYield;
+import com.iita.akilimo.entities.CurrentFieldYield;
 import com.iita.akilimo.utils.Tools;
 
 import java.util.ArrayList;

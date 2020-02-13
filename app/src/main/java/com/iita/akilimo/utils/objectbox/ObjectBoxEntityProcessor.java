@@ -7,7 +7,12 @@ import androidx.annotation.NonNull;
 
 import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.Akilimo;
+import com.iita.akilimo.entities.CurrentFieldYield_;
+import com.iita.akilimo.entities.CurrentPractice;
+import com.iita.akilimo.entities.InvestmentAmount_;
 import com.iita.akilimo.entities.LocationInfo;
+import com.iita.akilimo.entities.MaizePerformance;
+import com.iita.akilimo.entities.MaizePerformance_;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.MandatoryInfo_;
 import com.iita.akilimo.entities.MarketOutlet;
@@ -15,16 +20,12 @@ import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.entities.RecAdvice;
 import com.iita.akilimo.entities.TillageOperations;
-import com.iita.akilimo.models.CurrentFieldYield;
-import com.iita.akilimo.models.CurrentFieldYield_;
+import com.iita.akilimo.entities.CurrentFieldYield;
 import com.iita.akilimo.models.Fertilizer;
 import com.iita.akilimo.models.FertilizerPrices;
 import com.iita.akilimo.models.FertilizerPrices_;
 import com.iita.akilimo.models.Fertilizer_;
-import com.iita.akilimo.models.InvestmentAmount;
-import com.iita.akilimo.models.InvestmentAmount_;
-import com.iita.akilimo.models.MaizePerformance;
-import com.iita.akilimo.models.MaizePerformance_;
+import com.iita.akilimo.entities.InvestmentAmount;
 import com.iita.akilimo.models.StarchFactory;
 import com.iita.akilimo.models.StarchFactory_;
 
@@ -314,6 +315,24 @@ public class ObjectBoxEntityProcessor {
 
     public RecAdvice getRecAdvice() {
         Box<RecAdvice> box = boxStore.boxFor(RecAdvice.class);
+
+        return box.query()
+                .build()
+                .findFirst();
+    }
+
+    public void saveCurrentPractice(CurrentPractice currentPractice) {
+        try {
+            Box<CurrentPractice> box = boxStore.boxFor(CurrentPractice.class);
+            box.put(currentPractice);
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving CurrentPractice");
+            Crashlytics.logException(ex);
+        }
+    }
+
+    public CurrentPractice getCurrentPractice() {
+        Box<CurrentPractice> box = boxStore.boxFor(CurrentPractice.class);
 
         return box.query()
                 .build()

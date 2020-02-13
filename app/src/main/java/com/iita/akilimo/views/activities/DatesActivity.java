@@ -214,12 +214,12 @@ public class DatesActivity extends BaseActivity {
                     long date_ship_millis = calendar.getTimeInMillis();
                     if (pickPlantingDate) {
                         selectedPlantingDate = DateHelper.getSimpleDateFormatter().format(calendar.getTime());
-                        lblSelectedPlantingDate.setText(Tools.getFormattedDateSimple(date_ship_millis));
+                        lblSelectedPlantingDate.setText(Tools.formatLongToDateString(date_ship_millis));
                         selectedHarvestDate = null;
                         lblSelectedHarvestDate.setText(null);
                     } else if (pickHarvestDate) {
                         selectedHarvestDate = DateHelper.getSimpleDateFormatter().format(calendar.getTime());
-                        lblSelectedHarvestDate.setText(Tools.getFormattedDateSimple(date_ship_millis));
+                        lblSelectedHarvestDate.setText(Tools.formatLongToDateString(date_ship_millis));
                     }
                 },
                 cur_calender.get(Calendar.YEAR),

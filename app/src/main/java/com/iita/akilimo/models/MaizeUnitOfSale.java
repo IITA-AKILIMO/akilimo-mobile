@@ -5,8 +5,10 @@ import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import lombok.Data;
 
+
+@Deprecated
 @Data
-@Entity
+//@Entity
 public class MaizeUnitOfSale {
 
     @Id
