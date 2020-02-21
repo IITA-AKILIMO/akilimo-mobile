@@ -1,6 +1,5 @@
 package com.iita.akilimo.views.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -30,7 +29,6 @@ import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.models.Fertilizer;
 import com.iita.akilimo.models.FertilizerPrices;
-import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.FertilizerList;
 import com.iita.akilimo.utils.Tools;
@@ -51,8 +49,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FertilizersActivity extends BaseActivity {
-
-    public static String useCaseTag = "useCase";
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -99,9 +95,6 @@ public class FertilizersActivity extends BaseActivity {
         context = this;
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
         queue = Volley.newRequestQueue(context);
-
-        Intent intent = getIntent();
-        useCase = intent.getStringExtra(useCaseTag);
 
         MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
@@ -213,9 +206,8 @@ public class FertilizersActivity extends BaseActivity {
         errorImage.setVisibility(View.GONE);
         btnRetry.setVisibility(View.GONE);
 
-        final RestParameters restParameters = new RestParameters("v2/fertilizers", countryCode);
         final RestService restService = RestService.getInstance(queue, this);
-        restService.setParameters(restParameters);
+        restService.setParameters("v2/fertilizers", countryCode);
 
         restService.getJsonArrList(new IVolleyCallback() {
             @Override

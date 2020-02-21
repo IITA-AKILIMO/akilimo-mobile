@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.iita.akilimo">
+
     <!-- let us add permissions here -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -23,7 +24,7 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:icon, android:theme, android:label, android:allowBackup"
         tools:targetApi="m">
-        <activity android:name=".views.activities.SweetPotatoMarketActivity"></activity>
+
 
         <service android:name=".services.GPSTracker" />
 
@@ -44,27 +45,12 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".views.activities.TractorAccessActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.ManualTillageCostActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.CassavaMarketActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.MaizeMarketActivity"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".views.activities.FertilizersActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.IntercropFertilizersActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".views.activities.DatesActivity"
@@ -94,7 +80,7 @@
             android:name=".views.activities.DstRecommendationActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".views.activities.WeedControlCostsActivity"
+            android:name=".views.activities.HerbicideUseActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".views.activities.TillageOperationsActivity"

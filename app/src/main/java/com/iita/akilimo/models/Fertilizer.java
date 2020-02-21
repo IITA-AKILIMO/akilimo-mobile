@@ -48,8 +48,6 @@ public class Fertilizer implements Parcelable {
     @JsonProperty("currency")
     private String currency;
 
-    @JsonProperty("useCase")
-    private String useCase;
 
     private String countryCode;
     private String priceRange;
@@ -69,11 +67,6 @@ public class Fertilizer implements Parcelable {
     @JsonProperty("available")
     private boolean available;
 
-    @JsonProperty("cimAvailable")
-    private boolean cimAvailable;
-    @JsonProperty("cisAvailable")
-    private boolean cisAvailable;
-
     @Getter(AccessLevel.NONE)
     private boolean selected;
 
@@ -86,14 +79,6 @@ public class Fertilizer implements Parcelable {
 
     public boolean isAvailable() {
         return this.available;
-    }
-
-    public boolean isCimAvailable() {
-        return this.cimAvailable;
-    }
-
-    public boolean isCisAvailable() {
-        return this.cisAvailable;
     }
 
     public boolean isSelected() {

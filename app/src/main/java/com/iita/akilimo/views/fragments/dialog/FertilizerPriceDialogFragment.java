@@ -223,7 +223,7 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
         }
         for (FertilizerPrices pricesResp : fertilizerPricesList) {
 
-            long listIndex = pricesResp.getPriceId() - 1;//reduce by one so as to match the index in the list
+            long listIndex = pricesResp.getId() - 1;//reduce by one so as to match the index in the list
 
             RadioButton radioButton = new RadioButton(getActivity());
             radioButton.setId(View.generateViewId());

@@ -18,7 +18,7 @@ android {
     def appVersionCode = computeVersionCode()
 
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    buildToolsVersion "29.0.1"
     defaultConfig {
         applicationId "com.iita.akilimo"
         minSdkVersion 19
@@ -83,7 +83,7 @@ def computeVersionName() {
 }
 
 static def computeBuildNumber() {
-    return Integer.valueOf(System.env.BUILD_NUMBER ?: 1)
+    return Integer.valueOf(System.env.BUILD_NUMBER ?: 0)
 }
 
 def computeVersionCode() {
@@ -144,19 +144,19 @@ dependencies {
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.10.17'
     //https://stackoverflow.com/questions/44826452/highlight-new-feature-in-android
     implementation 'com.jakewharton:butterknife:10.2.0' //Butterknife library
-    implementation 'org.modelmapper:modelmapper:2.3.5'
+//    implementation 'org.modelmapper:modelmapper:2.3.5'
 
-    compileOnly 'org.projectlombok:lombok:1.18.10'
+    compileOnly 'org.projectlombok:lombok:1.18.8'
 
     //If you are using Kotlin, replace annotationProcessor with kapt.
     annotationProcessor 'com.jakewharton:butterknife:10.2.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
     annotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.10.0.pr1'
-    annotationProcessor 'org.projectlombok:lombok:1.18.10'
+    annotationProcessor 'org.projectlombok:lombok:1.18.8'
 
     testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.10.0.pr1'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.10'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.8'
     testImplementation 'joda-time:joda-time:2.10.3'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
@@ -167,6 +167,17 @@ dependencies {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:+'
-    implementation 'androidx.constraintlayout:constraintlayout:+'
+    implementation 'androidx.legacy:legacy-support-v4:+'
+}
+
+dependencies {
+    implementation 'androidx.legacy:legacy-support-v4:+'
+}
+
+dependencies {
+    implementation 'androidx.legacy:legacy-support-v4:+'
+}
+
+dependencies {
+    implementation 'androidx.legacy:legacy-support-v4:+'
 }

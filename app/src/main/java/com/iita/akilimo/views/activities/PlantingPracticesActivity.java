@@ -45,17 +45,10 @@ public class PlantingPracticesActivity extends BaseActivity {
     String marketOutletString;
     @BindString(R.string.lbl_typical_yield)
     String rootYieldString;
-
     @BindString(R.string.lbl_tillage_operations)
     String tillageOperationsString;
-
-    @BindString(R.string.lbl_cost_of_manual_tillage)
-    String manualTillageCostsString;
-    @BindString(R.string.lbl_tractor_access)
-    String tractorAccessString;
-
-    @BindString(R.string.lbl_cost_of_weed_control)
-    String weedControlCostString;
+    @BindString(R.string.lbl_herbicide_use)
+    String herbicideUseString;
 
 
     private Activity activity;
@@ -97,8 +90,7 @@ public class PlantingPracticesActivity extends BaseActivity {
                 recAdvice = new RecAdvice();
             }
             recAdvice.setFR(false);
-            recAdvice.setCIM(false);
-            recAdvice.setCIS(false);
+            recAdvice.setIC(false);
             recAdvice.setSPH(false);
             recAdvice.setSPP(false);
             recAdvice.setBPP(true);
@@ -119,12 +111,12 @@ public class PlantingPracticesActivity extends BaseActivity {
         //set data and list adapter
         items = new ArrayList<>();
 
-//        items.add(new RecommendationOptions(plantingString, EnumAdviceTasks.PLANTING_AND_HARVEST, 0));
-        items.add(new RecommendationOptions(manualTillageCostsString, EnumAdviceTasks.MANUAL_TILLAGE_COST, 0));
-        items.add(new RecommendationOptions(tractorAccessString, EnumAdviceTasks.TRACTOR_ACCESS, 0));
-        items.add(new RecommendationOptions(weedControlCostString, EnumAdviceTasks.COST_OF_WEED_CONTROL, 0));
-        items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
-        items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, 0));
+
+        items.add(new RecommendationOptions(plantingString, EnumAdviceTasks.PLANTING_AND_HARVEST, 0));
+        items.add(new RecommendationOptions(tillageOperationsString, EnumAdviceTasks.TILLAGE_OPERATIONS, 0));
+        items.add(new RecommendationOptions(herbicideUseString, EnumAdviceTasks.HERBICIDE_USE, 0));
+        items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET, 0));
+        items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.TYPICAL_ROOT_YIELD, 0));
         mAdapter = new RecOptionsAdapter(this, items, ItemAnimation.FADE_IN);
         recyclerView.setAdapter(mAdapter);
 
@@ -137,20 +129,17 @@ public class PlantingPracticesActivity extends BaseActivity {
                 case PLANTING_AND_HARVEST:
                     intent = new Intent(context, DatesActivity.class);
                     break;
-                case MARKET_OUTLET_CASSAVA:
-                    intent = new Intent(context, CassavaMarketActivity.class);
+                case MARKET_OUTLET:
+                    intent = new Intent(context, MarketOutletActivity.class);
                     break;
-                case CURRENT_CASSAVA_YIELD:
+                case TYPICAL_ROOT_YIELD:
                     intent = new Intent(context, RootYieldActivity.class);
                     break;
-                case MANUAL_TILLAGE_COST:
-                    intent = new Intent(context, ManualTillageCostActivity.class);
+                case TILLAGE_OPERATIONS:
+                    intent = new Intent(context, TillageOperationsActivity.class);
                     break;
-                case TRACTOR_ACCESS:
-                    intent = new Intent(context, TractorAccessActivity.class);
-                    break;
-                case COST_OF_WEED_CONTROL:
-                    intent = new Intent(context, WeedControlCostsActivity.class);
+                case HERBICIDE_USE:
+                    intent = new Intent(context, HerbicideUseActivity.class);
                     break;
             }
             if (intent != null) {

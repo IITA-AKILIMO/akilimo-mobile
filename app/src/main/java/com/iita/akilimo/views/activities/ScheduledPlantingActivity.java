@@ -87,8 +87,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
                 recAdvice = new RecAdvice();
             }
             recAdvice.setFR(false);
-            recAdvice.setCIM(false);
-            recAdvice.setCIS(false);
+            recAdvice.setIC(false);
             recAdvice.setSPH(true);
             recAdvice.setSPP(true);
             recAdvice.setBPP(false);
@@ -109,8 +108,8 @@ public class ScheduledPlantingActivity extends BaseActivity {
         items = new ArrayList<>();
 
         items.add(new RecommendationOptions(plantingString, EnumAdviceTasks.PLANTING_AND_HARVEST, 0));
-        items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
-        items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, 0));
+        items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET, 0));
+        items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.TYPICAL_ROOT_YIELD, 0));
 
         mAdapter = new RecOptionsAdapter(this, items, ItemAnimation.RIGHT_LEFT);
         recyclerView.setAdapter(mAdapter);
@@ -124,10 +123,10 @@ public class ScheduledPlantingActivity extends BaseActivity {
                 case PLANTING_AND_HARVEST:
                     intent = new Intent(context, DatesActivity.class);
                     break;
-                case MARKET_OUTLET_CASSAVA:
-                    intent = new Intent(context, CassavaMarketActivity.class);
+                case MARKET_OUTLET:
+                    intent = new Intent(context, MarketOutletActivity.class);
                     break;
-                case CURRENT_CASSAVA_YIELD:
+                case TYPICAL_ROOT_YIELD:
                     intent = new Intent(context, RootYieldActivity.class);
                     break;
             }

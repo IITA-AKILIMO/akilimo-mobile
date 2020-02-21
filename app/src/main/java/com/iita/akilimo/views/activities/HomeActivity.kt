@@ -97,15 +97,15 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
         //Add the various fragments
         val bioDataFragment = BioDataFragment.newInstance()
-        fragmentArray.add(WelcomeFragment.newInstance())
+//        fragmentArray.add(WelcomeFragment.newInstance())
 //        fragmentArray.add(PrivacyStatementFragment.newInstance()) //@TODO check for updated content from christine
 
-        fragmentArray.add(bioDataFragment)
-        fragmentArray.add(CountryFragment.newInstance())
-        fragmentArray.add(LocationFragment.newInstance())
-        fragmentArray.add(AreaUnitFragment.newInstance())
-        fragmentArray.add(FieldSizeFragment.newInstance())
         fragmentArray.add(CurrentPracticeFragment.newInstance())
+//        fragmentArray.add(bioDataFragment)
+//        fragmentArray.add(CountryFragment.newInstance())
+//        fragmentArray.add(LocationFragment.newInstance())
+//        fragmentArray.add(AreaUnitFragment.newInstance())
+//        fragmentArray.add(FieldSizeFragment.newInstance())
         fragmentArray.add(SummaryFragment.newInstance())
 
 
