@@ -16,7 +16,9 @@ public class RecAdvice {
     public boolean FR;
 
     @Getter(AccessLevel.NONE)
-    public boolean IC;
+    public boolean CIM;
+    @Getter(AccessLevel.NONE)
+    public boolean CIS;
 
     @Getter(AccessLevel.NONE)
     public boolean BPP;
@@ -31,8 +33,12 @@ public class RecAdvice {
         return this.FR;
     }
 
-    public boolean isIC() {
-        return this.IC;
+    public boolean isCIM() {
+        return this.CIM;
+    }
+
+    public boolean isCIS() {
+        return this.CIS;
     }
 
     public boolean isBPP() {

@@ -14,6 +14,9 @@ public class CurrentPractice {
     @Id
     long id;
 
+    private int weedRadioIndex;
+    private String weedControlTechnique;
+
     private String ploughOperations;
     private String ridgeOperations;
     private String harrowOperations;
@@ -24,6 +27,21 @@ public class CurrentPractice {
     private String harrowingMethod;
 
     @Getter(AccessLevel.NONE)
+    private boolean tractorAvailable;
+
+    @Getter(AccessLevel.NONE)
+    private boolean tractorPlough;
+
+    @Getter(AccessLevel.NONE)
+    private boolean tractorHarrow;
+
+    @Getter(AccessLevel.NONE)
+    private boolean tractorRidger;
+
+    @Getter(AccessLevel.NONE)
+    private boolean usesHerbicide;
+
+    @Getter(AccessLevel.NONE)
     private boolean performPloughing;
 
     @Getter(AccessLevel.NONE)
@@ -31,6 +49,26 @@ public class CurrentPractice {
 
     @Getter(AccessLevel.NONE)
     private boolean performRidging;
+
+    public boolean getTractorAvailable() {
+        return this.tractorAvailable;
+    }
+
+    public boolean getTractorPlough() {
+        return this.tractorPlough;
+    }
+
+    public boolean getTractorHarrow() {
+        return this.tractorHarrow;
+    }
+
+    public boolean getTractorRidger() {
+        return this.tractorRidger;
+    }
+
+    public boolean getUsesHerbicide() {
+        return this.usesHerbicide;
+    }
 
     public boolean getPerformPloughing() {
         return this.performPloughing;

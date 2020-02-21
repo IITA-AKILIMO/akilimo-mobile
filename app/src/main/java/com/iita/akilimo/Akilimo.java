@@ -10,11 +10,12 @@ import net.danlew.android.joda.JodaTimeAndroid;
 import io.fabric.sdk.android.Fabric;
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidObjectBrowser;
+import leakcanary.LeakCanary;
 import timber.log.Timber;
 
 public class Akilimo extends MultiDexApplication {
     public static final String LOG_TAG = Akilimo.class.getSimpleName();
-    public static final String DB_NAME = "AkilimoDB";
+    public static final String DB_NAME = "AkilimoDBNew";
     private BoxStore boxStore;
 
 
@@ -33,11 +34,11 @@ public class Akilimo extends MultiDexApplication {
 
         if (BuildConfig.DEBUG) {
             boolean started = new AndroidObjectBrowser(boxStore).start(this);
+            Timber.d("Using ObjectBox" + BoxStore.getVersion() + " (" + BoxStore.getVersionNative() + ")");
             Timber.i("Object box started? %s", started);
         }
 
         JodaTimeAndroid.init(this);
-        Timber.d("Using ObjectBox" + BoxStore.getVersion() + " (" + BoxStore.getVersionNative() + ")");
     }
 
     public BoxStore getBoxStore() {

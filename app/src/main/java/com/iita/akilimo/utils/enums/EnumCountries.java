@@ -16,6 +16,10 @@ public enum EnumCountries {
         public String currency() {
             return "NGN";
         }
+        @Override
+        public String currencyName() {
+            return "Naira";
+        }
     },
     TANZANIA {
         @Override
@@ -31,6 +35,10 @@ public enum EnumCountries {
         @Override
         public String currency() {
             return "TZS";
+        }
+        @Override
+        public String currencyName() {
+            return "Tanzania shillings";
         }
     },
     KENYA {
@@ -48,6 +56,10 @@ public enum EnumCountries {
         public String currency() {
             return "KES";
         }
+        @Override
+        public String currencyName() {
+            return "Kenya shillings";
+        }
     },
     OTHERS {
         @Override
@@ -64,6 +76,11 @@ public enum EnumCountries {
         public String currency() {
             return "USD";
         }
+
+        @Override
+        public String currencyName() {
+            return "US Dollars";
+        }
     };
 
 
@@ -72,4 +89,6 @@ public enum EnumCountries {
     public abstract String countryName();
 
     public abstract String currency();
+
+    public abstract String currencyName();
 }

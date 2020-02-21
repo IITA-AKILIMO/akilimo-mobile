@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Akilimo</string>
+    <string name="app_name" translatable="false">Akilimo</string>
 
     <string name="welcome_title">Welcome to Akilimo</string>
     <string name="welcome_instructions">I will assist you with recommendations to improve your cassava yield
@@ -12,13 +12,18 @@
     <string name="title_activity_fertilizer_rec">Fertilizer recommendations</string>
     <string name="title_activity_investment_amount">Investment amount</string>
     <string name="title_activity_cassava_root_yield">Cassava root yield</string>
-    <string name="title_activity_market_outlet">Market outlet</string>
+    <string name="title_activity_cassava_market_outlet">Cassava price</string>
+    <string name="title_activity_maize_market_outlet">Maize produce prices</string>
+    <string name="title_activity_sweet_potato_market">Sweet potato prices</string>
     <string name="title_activity_maize_performance">Maize performance</string>
     <string name="title_activity_farm_location">Farm location</string>
     <string name="title_tillage_operations">Tillage operations</string>
-    <string name="title_herbicide_use">Herbicide use</string>
+    <string name="title_manual_tillage_cost">Manual tillage costs</string>
+    <string name="title_weed_control">Weed operations</string>
+    <string name="title_maize_intercropping">Intercropping with maize</string>
+    <string name="title_sweet_potato_intercropping">Intercropping with sweet potato</string>
 
-    <string name="empty_text" />
+    <string name="empty_text" translatable="false" />
 
     <string name="lbl_start">Start</string>
     <string name="lbl_proceed">Proceed</string>
@@ -69,6 +74,9 @@
     <string name="lbl_recommendations">Recommendations</string>
     <string name="lbl_fertilizer_recommendations">Fertilizer recommendations</string>
     <string name="lbl_intercropping">Intercropping</string>
+
+    <string name="lbl_intercropping_maize">Cassava maize intercrop</string>
+    <string name="lbl_intercropping_sweet_potato">Cassava sweet potato intercrop</string>
     <string name="lbl_scheduled_planting_and_harvest">Scheduled planting and harvest</string>
     <string name="lbl_best_planting_practices">Best planting practices</string>
     <string name="lbl_weed_management">Weed management</string>
@@ -76,32 +84,45 @@
 
     <string-array name="recommendations">
         <item>@string/lbl_fertilizer_recommendations</item>
-        <item>@string/lbl_intercropping</item>
+        <item>@string/lbl_intercropping_maize</item>
+        <item>@string/lbl_intercropping_sweet_potato</item>
         <item>@string/lbl_scheduled_planting_and_harvest</item>
         <item>@string/lbl_weed_management</item>
     </string-array>
 
 
-    <string name="lbl_planting_harvest">When do you want to plant and harvest your cassava?</string>
     <string name="lbl_available_fertilizers">Which fertilizers are available for you?</string>
+    <string name="lbl_fertilizer_costs">Fertilizer costs</string>
+
+    <string name="lbl_planting_harvest">Do you want to consider alternative planting and harvest dates?</string>
     <string name="lbl_investment_amount">How much are you willing to invest on fertilizers?</string>
-    <string name="lbl_typical_yield">Typical cassava root yield you have been getting so far</string>
+    <string name="lbl_typical_yield">Typical cassava root yield</string>
     <string name="lbl_typical_yield_question">What is the typical cassava root yield you have been getting so far?</string>
     <string name="lbl_maize_performance">The typical height of maize when grown without fertilizer</string>
-    <string name="lbl_market_outlet">What is your market outlet to sell your cassava?</string>
+    <string name="lbl_sweet_potato_prices">Sweet potato prices</string>
+    <string name="lbl_height_of_maize_at_tasseling">Height of maize at tasseling</string>
+
+    <string name="lbl_maize_performance_poor">These are very poor soil conditions and not very common</string>
+    <string name="lbl_maize_performance_rich">These are very rich soil conditions and not very common</string>
+
+    <string name="lbl_market_outlet">Cassava root prices at harvest</string>
+    <string name="lbl_market_outlet_maize">Price of maize produce</string>
     <string name="lbl_tillage_operations">Tillage operations and related cost</string>
-    <string name="lbl_herbicide_use">Herbicide use</string>
+    <string name="lbl_cost_of_manual_tillage">Cost of manual tillage</string>
+    <string name="lbl_tractor_access">Tractor access</string>
+    <string name="lbl_cost_of_weed_control">Cost of weed control</string>
 
     <string name="lbl_pick_planting_date">Pick planting date</string>
-    <string name="lbl_selected_planting_date">Selected planting date is :</string>
+    <string name="lbl_selected_planting_date">Your selected planting date was :</string>
     <string name="lbl_planting_flexible">My planting date is flexible</string>
 
     <string name="lbl_pick_harvest_date">Pick harvest date</string>
-    <string name="lbl_selected_harvest_date">Selected harvest date is :</string>
+    <string name="lbl_selected_harvest_date">Your selected harvest date was :</string>
     <string name="lbl_harvest_flexible">My harvest date is flexible</string>
 
     <string name="lbl_one_month_window">± 1 month</string>
     <string name="lbl_two_month_window">± 2 months</string>
+
     <string name="lbl_no">No</string>
     <string name="lbl_yes">Yes</string>
     <string name="lbl_planting_harvest_dates">Planting and harvest dates</string>
@@ -168,7 +189,6 @@
     <string name="lbl_submit">Submit</string>
     <string name="lbl_cancel">Cancel</string>
     <string name="lbl_please_provide_unit_price">Please provide unit price</string>
-    <string name="lbl_unit_price">Unit price</string>
 
     <string name="lbl_permission_rationale">Please allow the following permissions for the app to work optimally</string>
     <string name="lbl_place_name">Your farm location</string>
@@ -183,9 +203,9 @@
     <string name="lbl_not_provided">Not provided</string>
     <string name="lbl_summary_title">Here is what we have so far</string>
 
-    <string name="unit_price_abel">%1$,.0f - %2$,.0f %3$s per %4$s</string>
+    <string name="unit_price_label">%1$,.0f - %2$,.0f %3$s per %4$s</string>
 
-    <string name="title_activity_dst_recomendation">Recommendation</string>
+    <string name="title_activity_dst_recommendation">Recommendation</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="lbl_get_recommendations">Get recommendations</string>
@@ -201,4 +221,21 @@
     <string name="bar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
     <string name="lbl_min_selection">Please select at least %d fertilizers</string>
     <string name="lbl_update">Update</string>
+    <string name="lbl_roots">Roots</string>
+    <string name="lbl_unit_price">Unit price</string>
+    <string name="lbl_currency_ngn">NGN</string>
+    <string name="lbl_currency_tzs">TZS</string>
+    <string name="lbl_unit_price_per">Unit price in %s per %s</string>
+    <string name="lbl_grain_unit_price_per">Unit price of dry grain in %s per %s</string>
+    <string name="lbl_sweet_potato_tuber_unit_price_per">Unit price of sweet potato tuber in %s per %s</string>
+
+    <string name="lbl_manual_tillage_cost">How much does it cost you to manually plough %.00f %s?</string>
+    <string name="lbl_manual_ridge_cost">How much does it cost you to manually ridge %.00f %s?</string>
+    <string name="lbl_tractor_plough_cost">How much does it cost you to plough %.00f %s using a tractor?</string>
+    <string name="lbl_tractor_ridge_cost">How much does it cost you to ridge %.00f %s using a tractor?</string>
+    <string name="lbl_specify_my_cost">I want to specify my costs</string>
+    <string name="lbl_exact_cost">Exact cost</string>
+    <string name="lbl_cost_of_first_weeding_operation">Cost of first weeding operation in %s</string>
+    <string name="lbl_cost_of_second_weeding_operation">Cost of second weeding operation in %s</string>
+
 </resources>

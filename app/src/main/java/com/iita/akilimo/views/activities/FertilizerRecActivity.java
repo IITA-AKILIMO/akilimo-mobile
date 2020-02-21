@@ -89,7 +89,8 @@ public class FertilizerRecActivity extends BaseActivity {
                 recAdvice = new RecAdvice();
             }
             recAdvice.setFR(true);
-            recAdvice.setIC(false);
+            recAdvice.setCIM(false);
+            recAdvice.setCIS(false);
             recAdvice.setSPH(false);
             recAdvice.setSPP(false);
             recAdvice.setBPP(false);
@@ -110,10 +111,10 @@ public class FertilizerRecActivity extends BaseActivity {
         items = new ArrayList<>();
 
 
-        items.add(new RecommendationOptions(plantingString, EnumAdviceTasks.PLANTING_AND_HARVEST, 0));
-        items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS, 0));
+//        items.add(new RecommendationOptions(plantingString, EnumAdviceTasks.PLANTING_AND_HARVEST, 0));
+        items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CP, 0));
         items.add(new RecommendationOptions(investmentString, EnumAdviceTasks.INVESTMENT_AMOUNT, 0));
-        items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.TYPICAL_ROOT_YIELD, 0));
+        items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, 0));
 
         mAdapter = new RecOptionsAdapter(this, items, ItemAnimation.RIGHT_LEFT);
         recyclerView.setAdapter(mAdapter);
@@ -127,13 +128,13 @@ public class FertilizerRecActivity extends BaseActivity {
                 case PLANTING_AND_HARVEST:
                     intent = new Intent(context, DatesActivity.class);
                     break;
-                case AVAILABLE_FERTILIZERS:
+                case AVAILABLE_FERTILIZERS_CP:
                     intent = new Intent(context, FertilizersActivity.class);
                     break;
                 case INVESTMENT_AMOUNT:
                     intent = new Intent(context, InvestmentAmountActivity.class);
                     break;
-                case TYPICAL_ROOT_YIELD:
+                case CURRENT_CASSAVA_YIELD:
                     intent = new Intent(context, RootYieldActivity.class);
                     break;
             }

@@ -109,47 +109,6 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <androidx.appcompat.widget.SwitchCompat
-                                android:id="@+id/flexiblePlanting"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textOff="@string/lbl_no"
-                                android:textOn="@string/lbl_yes" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="@string/lbl_planting_flexible" />
-                        </LinearLayout>
-
-                        <RadioGroup
-                            android:id="@+id/rdgPlantingWindow"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/spacing_large"
-                            android:visibility="gone">
-
-
-                            <RadioButton
-                                android:id="@+id/rdPlantingOneMonth"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="@string/lbl_one_month_window" />
-
-
-                            <RadioButton
-                                android:id="@+id/rdPlantingTwoMonths"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="@string/lbl_two_month_window" />
-
-                        </RadioGroup>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/spacing_medium"
                             android:orientation="horizontal">
 
@@ -194,47 +153,6 @@
                             android:layout_height="wrap_content"
                             android:text="@string/lbl_pick_harvest_date"
                             app:cornerRadius="1dp" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <androidx.appcompat.widget.SwitchCompat
-                                android:id="@+id/flexibleHarvest"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textOff="@string/lbl_no"
-                                android:textOn="@string/lbl_yes" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="@string/lbl_harvest_flexible" />
-                        </LinearLayout>
-
-                        <RadioGroup
-                            android:id="@+id/rdgHarvestWindow"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/spacing_large"
-                            android:visibility="gone">
-
-
-                            <RadioButton
-                                android:id="@+id/rdHarvestOneMonth"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="@string/lbl_one_month_window" />
-
-
-                            <RadioButton
-                                android:id="@+id/rdHarvestTwoMonths"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="@string/lbl_two_month_window" />
-
-                        </RadioGroup>
 
                         <LinearLayout
                             android:layout_width="match_parent"

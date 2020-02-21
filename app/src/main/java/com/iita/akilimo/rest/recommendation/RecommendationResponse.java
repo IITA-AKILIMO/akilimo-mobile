@@ -16,7 +16,7 @@ public class RecommendationResponse implements Parcelable {
     @JsonProperty("FR")
     private String fertilizerRecText;
 
-    @JsonProperty("IC")
+    @JsonProperty("IC_MAIZE")
     private String interCroppingRecText;
 
     @JsonProperty("PP")

@@ -11,6 +11,7 @@ public class MaizePerformance {
     @Id
     long id;
 
+    private int performanceRadioIndex;
     private String maizePerformance;
     private String performanceValue;
 }

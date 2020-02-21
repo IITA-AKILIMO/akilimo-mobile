@@ -29,7 +29,7 @@ public class ComputeRequest {
     @JsonProperty("intercrop")
     private String interCroppingType;
 
-    @JsonProperty("IC")
+    @JsonProperty("IC_MAIZE")
     private boolean interCroppingRec;
     @JsonProperty("FR")
     private boolean fertilizerRec;

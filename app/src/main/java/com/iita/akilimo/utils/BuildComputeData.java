@@ -6,10 +6,10 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.crashlytics.android.Crashlytics;
+import com.iita.akilimo.entities.CassavaMarketOutlet;
 import com.iita.akilimo.entities.ComputeRequest;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.MandatoryInfo;
-import com.iita.akilimo.entities.MarketOutlet;
 import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.entities.RecAdvice;
@@ -19,7 +19,7 @@ import com.iita.akilimo.entities.InvestmentAmount;
 import com.iita.akilimo.entities.MaizePerformance;
 import com.iita.akilimo.rest.request.RecommendationRequest;
 import com.iita.akilimo.rest.request.UserInfo;
-import com.iita.akilimo.utils.enums.EnumProduceType;
+import com.iita.akilimo.utils.enums.EnumCassavaProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 import com.iita.akilimo.utils.enums.EnumUnitPrice;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
@@ -218,7 +218,8 @@ public class BuildComputeData {
         //check for values we have to give recommendations for
         RecAdvice recAdvice = objectBoxEntityProcessor.getRecAdvice();
 
-        computeRequest.setInterCroppingRec(recAdvice.isIC());
+        computeRequest.setInterCroppingMaizeRec(recAdvice.isCIM());
+        computeRequest.setInterCroppingPotatoRec(recAdvice.isCIS());
         computeRequest.setFertilizerRec(recAdvice.isFR());
         computeRequest.setPlantingPracticesRec(recAdvice.isBPP());
         computeRequest.setScheduledPlantingRec(recAdvice.isSPP());
@@ -317,22 +318,22 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildMarketOutlet(@Nonnull ComputeRequest computeRequest) {
-        MarketOutlet marketOutlet = objectBoxEntityProcessor.getMarketOutlet();
+        CassavaMarketOutlet cassavaMarketOutlet = objectBoxEntityProcessor.getCassavaMarketOutlet();
 
         String currency = computeRequest.getCurrency();
-        if (marketOutlet != null) {
-            sellToStarchFactory = marketOutlet.isStarchFactoryRequired();
+        if (cassavaMarketOutlet != null) {
+            sellToStarchFactory = cassavaMarketOutlet.isStarchFactoryRequired();
             if (sellToStarchFactory) {
-                starchFactoryName = marketOutlet.getStarchFactory();
+                starchFactoryName = cassavaMarketOutlet.getStarchFactory();
             }
 
-            EnumUnitPrice up = marketOutlet.getEnumUnitPrice();
-            unitPriceLocal = up.convertToLocal(currency) <= 0 ? marketOutlet.getExactPrice() : up.convertToLocal(currency);
+            EnumUnitPrice up = cassavaMarketOutlet.getEnumUnitPrice();
+            unitPriceLocal = up.convertToLocalCurrency(currency) <= 0 ? cassavaMarketOutlet.getExactPrice() : up.convertToLocalCurrency(currency);
 
-            EnumProduceType produce = marketOutlet.getEnumProduceType();
+            EnumCassavaProduceType produce = cassavaMarketOutlet.getEnumCassavaProduceType();
             cassavaProduceType = produce.produce();
 
-            EnumUnitOfSale uos = marketOutlet.getEnumUnitOfSale();
+            EnumUnitOfSale uos = cassavaMarketOutlet.getEnumUnitOfSale();
             cassavaUnitWeight = uos.unitWeight();
             cassavaUnitPrice = unitPriceLocal;
         }

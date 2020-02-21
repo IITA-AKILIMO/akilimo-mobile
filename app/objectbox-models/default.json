@@ -37,7 +37,7 @@
     },
     {
       "id": "2:145499813925595982",
-      "lastPropertyId": "19:8701761912509195322",
+      "lastPropertyId": "22:4610954174943978740",
       "name": "Fertilizer",
       "properties": [
         {
@@ -116,6 +116,18 @@
         {
           "id": "19:8701761912509195322",
           "name": "exactPrice"
+        },
+        {
+          "id": "20:1245370425241580244",
+          "name": "useCase"
+        },
+        {
+          "id": "21:1699086970495514381",
+          "name": "cimAvailable"
+        },
+        {
+          "id": "22:4610954174943978740",
+          "name": "cisAvailable"
         }
       ],
       "relations": []
@@ -187,7 +199,7 @@
     },
     {
       "id": "9:3132174263946599297",
-      "lastPropertyId": "11:6663823617567721661",
+      "lastPropertyId": "18:7959099354757086409",
       "name": "CurrentPractice",
       "properties": [
         {
@@ -233,6 +245,34 @@
         {
           "id": "11:6663823617567721661",
           "name": "performRidging"
+        },
+        {
+          "id": "12:2223418768214199557",
+          "name": "tractorAvailable"
+        },
+        {
+          "id": "13:5023890459374905729",
+          "name": "tractorPlough"
+        },
+        {
+          "id": "14:2428561667108223808",
+          "name": "tractorHarrow"
+        },
+        {
+          "id": "15:2892706956822154176",
+          "name": "tractorRidger"
+        },
+        {
+          "id": "16:6238997487325242799",
+          "name": "usesHerbicide"
+        },
+        {
+          "id": "17:2505628342280972019",
+          "name": "weedControlTechnique"
+        },
+        {
+          "id": "18:7959099354757086409",
+          "name": "weedRadioIndex"
         }
       ],
       "relations": []
@@ -267,7 +307,7 @@
     },
     {
       "id": "14:2232785008934639201",
-      "lastPropertyId": "3:3294634884478720835",
+      "lastPropertyId": "4:7122387287157718917",
       "name": "MaizePerformance",
       "properties": [
         {
@@ -281,6 +321,10 @@
         {
           "id": "3:3294634884478720835",
           "name": "performanceValue"
+        },
+        {
+          "id": "4:7122387287157718917",
+          "name": "performanceRadioIndex"
         }
       ],
       "relations": []
@@ -318,42 +362,6 @@
         {
           "id": "7:5801781043504042067",
           "name": "factorySelected"
-        }
-      ],
-      "relations": []
-    },
-    {
-      "id": "23:4231550065495559401",
-      "lastPropertyId": "14:7778394972259276206",
-      "name": "MarketOutlet",
-      "properties": [
-        {
-          "id": "1:7822117633747467232",
-          "name": "id"
-        },
-        {
-          "id": "3:5863310288167375082",
-          "name": "starchFactory"
-        },
-        {
-          "id": "9:2724375825020444131",
-          "name": "starchFactoryRequired"
-        },
-        {
-          "id": "11:504675157939525358",
-          "name": "enumUnitOfSale"
-        },
-        {
-          "id": "12:7851530001351858218",
-          "name": "enumUnitPrice"
-        },
-        {
-          "id": "13:2858367319424528663",
-          "name": "enumProduceType"
-        },
-        {
-          "id": "14:7778394972259276206",
-          "name": "exactPrice"
         }
       ],
       "relations": []
@@ -488,7 +496,7 @@
     },
     {
       "id": "27:7098850352461295014",
-      "lastPropertyId": "7:2636069490988598643",
+      "lastPropertyId": "9:3594042030320892820",
       "name": "RecAdvice",
       "properties": [
         {
@@ -498,10 +506,6 @@
         {
           "id": "2:3958192347034146854",
           "name": "FR"
-        },
-        {
-          "id": "3:399964419898723087",
-          "name": "IC"
         },
         {
           "id": "5:2338901858248982008",
@@ -514,6 +518,14 @@
         {
           "id": "7:2636069490988598643",
           "name": "BPP"
+        },
+        {
+          "id": "8:6837387778787530032",
+          "name": "CIM"
+        },
+        {
+          "id": "9:3594042030320892820",
+          "name": "CIS"
         }
       ],
       "relations": []
@@ -585,10 +597,295 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "31:4781899339671928819",
+      "lastPropertyId": "16:1238265519927943249",
+      "name": "OperationCosts",
+      "properties": [
+        {
+          "id": "1:7676836358332087508",
+          "name": "id"
+        },
+        {
+          "id": "2:1525427524859380542",
+          "name": "manualPloughCost"
+        },
+        {
+          "id": "3:4008284693119820596",
+          "name": "manualRidgeCost"
+        },
+        {
+          "id": "4:616301956286703099",
+          "name": "manualHarrowCost"
+        },
+        {
+          "id": "5:8409025733353732350",
+          "name": "tractorPloughCost"
+        },
+        {
+          "id": "6:4652492758804177700",
+          "name": "tractorRidgeCost"
+        },
+        {
+          "id": "7:844560654329866020",
+          "name": "tractorHarrowCost"
+        },
+        {
+          "id": "8:68042223751146893",
+          "name": "firstWeedingOperationCost"
+        },
+        {
+          "id": "9:7405102343877754068",
+          "name": "secondWeedingOperationCost"
+        },
+        {
+          "id": "10:7974289298931458092",
+          "name": "exactManualPloughPrice"
+        },
+        {
+          "id": "11:5645646944223213504",
+          "name": "exactManualRidgePrice"
+        },
+        {
+          "id": "12:3123136468720907053",
+          "name": "exactManualHarrowPrice"
+        },
+        {
+          "id": "13:254174061632580938",
+          "name": "exactTractorPloughPrice"
+        },
+        {
+          "id": "14:5337176843302857888",
+          "name": "exactTractorRidgePrice"
+        },
+        {
+          "id": "15:2134982874192522460",
+          "name": "exactFirstWeedingPrice"
+        },
+        {
+          "id": "16:1238265519927943249",
+          "name": "exactSecondWeedingPrice"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "32:7319850202739838003",
+      "lastPropertyId": "7:7354435872270501549",
+      "name": "CassavaMarketOutlet",
+      "properties": [
+        {
+          "id": "1:761548603188264688",
+          "name": "id"
+        },
+        {
+          "id": "2:4257699582519272683",
+          "name": "starchFactory"
+        },
+        {
+          "id": "3:7724812449884602977",
+          "name": "exactPrice"
+        },
+        {
+          "id": "4:4649094456558612956",
+          "name": "starchFactoryRequired"
+        },
+        {
+          "id": "5:900596185354787037",
+          "name": "enumCassavaProduceType"
+        },
+        {
+          "id": "6:916276968480450886",
+          "name": "enumUnitOfSale"
+        },
+        {
+          "id": "7:7354435872270501549",
+          "name": "enumUnitPrice"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "33:5409424077027608847",
+      "lastPropertyId": "9:2902228431836835584",
+      "name": "MaizeMarketOutlet",
+      "properties": [
+        {
+          "id": "1:8078525225268805376",
+          "name": "id"
+        },
+        {
+          "id": "2:6659750979193505988",
+          "name": "exactPrice"
+        },
+        {
+          "id": "3:8748362044606950151",
+          "name": "enumMaizeProduceType"
+        },
+        {
+          "id": "4:3720345029387904889",
+          "name": "enumUnitOfSale"
+        },
+        {
+          "id": "5:7955868936948476648",
+          "name": "enumUnitPrice"
+        },
+        {
+          "id": "6:216679813414081366",
+          "name": "produceRadioIndex"
+        },
+        {
+          "id": "7:346951593234587863",
+          "name": "grainUnitRadioIndex"
+        },
+        {
+          "id": "9:2902228431836835584",
+          "name": "grainUnitPriceRadioIndex"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "34:9085176429782641543",
+      "lastPropertyId": "22:3193353515243536779",
+      "name": "InterCropFertilizer",
+      "properties": [
+        {
+          "id": "1:8695845031146164011",
+          "name": "id"
+        },
+        {
+          "id": "2:2837778121275629425",
+          "name": "imageId"
+        },
+        {
+          "id": "3:4989904445774338299",
+          "name": "fertilizerId"
+        },
+        {
+          "id": "4:8378251755133820002",
+          "name": "name"
+        },
+        {
+          "id": "5:4855027570595324757",
+          "name": "type"
+        },
+        {
+          "id": "6:5385161436175293639",
+          "name": "weight"
+        },
+        {
+          "id": "7:8813871627563122541",
+          "name": "price"
+        },
+        {
+          "id": "8:1042885176623883669",
+          "indexId": "6:7967322306093668013",
+          "name": "fertilizerCountry"
+        },
+        {
+          "id": "9:8132491154670460935",
+          "name": "currency"
+        },
+        {
+          "id": "10:8274461384237075014",
+          "name": "useCase"
+        },
+        {
+          "id": "11:7218478113704229800",
+          "name": "countryCode"
+        },
+        {
+          "id": "12:1283725166924535164",
+          "name": "priceRange"
+        },
+        {
+          "id": "13:5947965944167917909",
+          "name": "pricePerBag"
+        },
+        {
+          "id": "14:3093057239012205515",
+          "name": "kContent"
+        },
+        {
+          "id": "15:7304505000953563604",
+          "name": "nContent"
+        },
+        {
+          "id": "16:8862778171673058117",
+          "name": "pContent"
+        },
+        {
+          "id": "17:188099382962740555",
+          "name": "available"
+        },
+        {
+          "id": "18:1343746951425656005",
+          "name": "cimAvailable"
+        },
+        {
+          "id": "19:866065904096970207",
+          "name": "cisAvailable"
+        },
+        {
+          "id": "20:5530815717020502546",
+          "name": "selected"
+        },
+        {
+          "id": "21:6352972398547494449",
+          "name": "exactPrice"
+        },
+        {
+          "id": "22:3193353515243536779",
+          "name": "custom"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "35:64485522120680039",
+      "lastPropertyId": "9:1314675879796902317",
+      "name": "PotatoMarketOutlet",
+      "properties": [
+        {
+          "id": "1:4936703628550836534",
+          "name": "id"
+        },
+        {
+          "id": "2:5772078450433357255",
+          "name": "produceTypeRadioIndex"
+        },
+        {
+          "id": "3:4879669664101373079",
+          "name": "potatoUnitOfSaleRadioIndex"
+        },
+        {
+          "id": "4:3475191881266545953",
+          "name": "potatoUnitPriceRadioIndex"
+        },
+        {
+          "id": "5:6512547248539994297",
+          "name": "exactPrice"
+        },
+        {
+          "id": "6:321285783663550036",
+          "name": "enumPotatoProduceType"
+        },
+        {
+          "id": "7:1408572904382929715",
+          "name": "enumUnitOfSale"
+        },
+        {
+          "id": "9:1314675879796902317",
+          "name": "enumPotatoUnitPrice"
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "30:4517897890625268957",
-  "lastIndexId": "5:2962141636721523844",
+  "lastEntityId": "35:64485522120680039",
+  "lastIndexId": "6:7967322306093668013",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 4,
@@ -609,7 +906,8 @@
     6874240385807013737,
     377552380291505354,
     3057063779350448274,
-    4016550270572838799
+    4016550270572838799,
+    4231550065495559401
   ],
   "retiredIndexUids": [
     283893441508114120,
@@ -709,7 +1007,18 @@
     2446395785495598256,
     7310695437364723484,
     7292114501702744203,
-    6519927643369150303
+    6519927643369150303,
+    2858367319424528663,
+    7822117633747467232,
+    5863310288167375082,
+    2724375825020444131,
+    504675157939525358,
+    7851530001351858218,
+    7778394972259276206,
+    5549888130644446309,
+    143495277405783524,
+    399964419898723087,
+    967195628499081024
   ],
   "retiredRelationUids": [],
   "version": 1
