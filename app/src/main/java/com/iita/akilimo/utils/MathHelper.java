@@ -1,22 +1,28 @@
 package com.iita.akilimo.utils;
 
+import android.app.Activity;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.common.util.Strings;
 
 import java.util.Locale;
 
-@SuppressWarnings("WeakerAccess")
 public class MathHelper {
     private static String TAG = MathHelper.class.getSimpleName();
-    private double ngnToUsdRate = 360;
-    private double tzsToUsdRate = 2250;
+    private double ngnRate = 360;
+    private double tzsRate = 2250;
 
     public MathHelper() {
-        Log.i(TAG, "Started currency helper class");
     }
 
-    public String convertCurrency(String stringToSplit, String toCurrency) {
+    private MathHelper(Activity activity) {
+        SessionManager sessionManager = new SessionManager(activity);
+        ngnRate = sessionManager.getNgnRate();
+        tzsRate = sessionManager.getTzsRate();
+    }
+
+    private String convertCurrency(String stringToSplit, String toCurrency) {
         String joined;
         String splitRegex = "TO";
         String[] bands;
@@ -131,10 +137,10 @@ public class MathHelper {
         try {
             switch (toCurrency) {
                 case "NGN":
-                    converted = amount * ngnToUsdRate;
+                    converted = amount * ngnRate;
                     break;
                 case "TZS":
-                    converted = amount * tzsToUsdRate;
+                    converted = amount * tzsRate;
                     break;
             }
         } catch (Exception ex) {
@@ -154,10 +160,10 @@ public class MathHelper {
         try {
             switch (fromCurrency) {
                 case "NGN":
-                    converted = currencyToConvert / ngnToUsdRate;
+                    converted = currencyToConvert / ngnRate;
                     break;
                 case "TZS":
-                    converted = currencyToConvert / tzsToUsdRate;
+                    converted = currencyToConvert / tzsRate;
                     break;
                 case "USD":
                     return currencyToConvert;
@@ -208,5 +214,17 @@ public class MathHelper {
             Crashlytics.logException(ex);
         }
         return fieldYieldAmount;
+    }
+
+    public double convertToDouble(String numberText) {
+        if (!Strings.isEmptyOrWhitespace(numberText)) {
+            try {
+                return Double.parseDouble(numberText.trim());
+            } catch (Exception ex) {
+                Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
+                Crashlytics.logException(ex);
+            }
+        }
+        return 0.0;
     }
 }

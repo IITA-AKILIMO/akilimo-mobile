@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import lombok.Data;
 
 @Data
+@Deprecated
 public class OperationCost implements Parcelable {
     private double firstManualPlough;
     private double secondManualPlough;

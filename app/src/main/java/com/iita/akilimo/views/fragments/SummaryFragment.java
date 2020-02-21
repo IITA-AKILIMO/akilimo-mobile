@@ -120,7 +120,6 @@ public class SummaryFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initRecyclerView();
-//        setDataListItems(false);
     }
 
     public void refreshData() {
@@ -175,29 +174,28 @@ public class SummaryFragment extends BaseFragment {
             performPloughing = currentPractice.getPerformPloughing();
             performRidging = currentPractice.getPerformRidging();
 
-            ploughStr.append(performPloughing ? "Yes" : "No");
             if (performPloughing) {
-                ploughStr.append("\n")
-                        .append("Ploughing method: ")
-                        .append(currentPractice.getPloughingMethod());
+                ploughStr.append(currentPractice.getPloughingMethod());
+            } else {
+                ploughStr.append("No ploughing");
             }
 
-            ridgeStr.append(performRidging ? "Yes" : "No");
+
             if (performRidging) {
-                ridgeStr.append("\n")
-                        .append("Ridging method: ")
-                        .append(currentPractice.getRidgingMethod());
+                ridgeStr.append(currentPractice.getRidgingMethod());
+            } else {
+                ridgeStr.append("No ridging");
             }
         }
         mDataList = new ArrayList<>();
-        mDataList.add(new TimeLineModel("Your country", countryName, countrySelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel("Area unit", areaUnit, areaUnitSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel("Field size", String.valueOf(fieldSize), fieldSizeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel("Farm location", pickedLocation, locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel("Planting date", plantingDate, plantingDateProvided ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel("Harvest date", harvestDate, harvestDateProvided ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel("Performs ploughing", ploughStr.toString(), currentPracticeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel("Performs ridging", ridgeStr.toString(), currentPracticeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel("Country:", countryName, countrySelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel("Field:", String.valueOf(fieldSize), fieldSizeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel("Area:", areaUnit, areaUnitSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel("Location:", pickedLocation, locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel("Planting date:", plantingDate, plantingDateProvided ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel("Harvest date:", harvestDate, harvestDateProvided ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel("Ploughing:", ploughStr.toString(), currentPracticeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel("Ridging:", ridgeStr.toString(), currentPracticeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
 
         initAdapter();
     }

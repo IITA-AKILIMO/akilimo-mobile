@@ -109,13 +109,17 @@ public class CurrentPracticeFragment extends BaseFragment {
         chkPloughing.setOnCheckedChangeListener((buttonView, checked) -> {
             operation = checked ? "Plough" : "NA";
             performPloughing = checked;
-            onCheckboxClicked(checked);
+            if (buttonView.isPressed()) {
+                onCheckboxClicked(checked);
+            }
             isDataRefreshing = false;
         });
         chkRidging.setOnCheckedChangeListener((buttonView, checked) -> {
             performRidging = checked;
             operation = checked ? "Ridge" : "NA";
-            onCheckboxClicked(checked);
+            if (buttonView.isPressed()) {
+                onCheckboxClicked(checked);
+            }
             isDataRefreshing = false;
         });
 

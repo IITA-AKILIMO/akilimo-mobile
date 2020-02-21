@@ -97,15 +97,15 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
         //Add the various fragments
         val bioDataFragment = BioDataFragment.newInstance()
-//        fragmentArray.add(WelcomeFragment.newInstance())
+        fragmentArray.add(WelcomeFragment.newInstance())
 //        fragmentArray.add(PrivacyStatementFragment.newInstance()) //@TODO check for updated content from christine
 
+        fragmentArray.add(bioDataFragment)
+        fragmentArray.add(CountryFragment.newInstance())
+        fragmentArray.add(LocationFragment.newInstance())
+        fragmentArray.add(AreaUnitFragment.newInstance())
+        fragmentArray.add(FieldSizeFragment.newInstance())
         fragmentArray.add(CurrentPracticeFragment.newInstance())
-//        fragmentArray.add(bioDataFragment)
-//        fragmentArray.add(CountryFragment.newInstance())
-//        fragmentArray.add(LocationFragment.newInstance())
-//        fragmentArray.add(AreaUnitFragment.newInstance())
-//        fragmentArray.add(FieldSizeFragment.newInstance())
         fragmentArray.add(SummaryFragment.newInstance())
 
 
@@ -185,13 +185,6 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
                 (activeFragment as? BioDataFragment)?.refreshData()
 
-//                if (fragment is BioDataFragment) {
-//                    profileDataValid = fragment.saveBioData()
-//                }
-//
-//                if (!profileDataValid && currentPosition < newPosition) {
-//                    viewPager.currentItem = currentPosition
-//                }
                 currentFragment = activeFragment
             }
 
@@ -218,7 +211,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             appUpdater.start()
             val intent = Intent(this, RecommendationsActivity::class.java)
             startActivity(intent)
-            Animatoo.animateShrink(this)
+            Animatoo.animateSlideLeft(this)
         }
     }
 
@@ -228,18 +221,18 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         val widthHeight = 15
 
         dotsLayout.removeAllViews()
-        for (i in dots.indices) {
-            dots[i] = ImageView(this)
+        for (dotIndex in dots.indices) {
+            dots[dotIndex] = ImageView(this)
 
             val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams(widthHeight, widthHeight))
 
             params.setMargins(10, 10, 10, 10)
-            dots[i]?.layoutParams = params
-            dots[i]?.setImageResource(R.drawable.shape_circle)
-            dots[i]?.setColorFilter(
+            dots[dotIndex]?.layoutParams = params
+            dots[dotIndex]?.setImageResource(R.drawable.shape_circle)
+            dots[dotIndex]?.setColorFilter(
                 ContextCompat.getColor(this, R.color.grey_20), PorterDuff.Mode.SRC_IN
             )
-            dotsLayout.addView(dots[i])
+            dotsLayout.addView(dots[dotIndex])
         }
 
         if (dots.isNotEmpty()) {

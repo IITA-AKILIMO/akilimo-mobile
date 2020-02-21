@@ -1,6 +1,19 @@
 package com.iita.akilimo.utils.enums
 
 enum class EnumUnitOfSale {
+    NA {
+        override fun unitWeight(): Int {
+            return 0
+        }
+
+        override fun unitOfSale(): String {
+            return "NA"
+        }
+
+        override fun unitOfSaleText(): String {
+            return "NA"
+        }
+    },
     UNIT_ONE_KG {
         override fun unitWeight(): Int {
             return 1

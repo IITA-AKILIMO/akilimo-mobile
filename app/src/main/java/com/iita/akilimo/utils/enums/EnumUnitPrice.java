@@ -3,148 +3,148 @@ package com.iita.akilimo.utils.enums;
 
 import com.iita.akilimo.utils.MathHelper;
 
-public enum EnumUnitPrice {
+public enum EnumUnitPrice{
     UNKNOWN {
         double unitPriceLower = -1;
         double unitPriceUpper = -1;
 
         @Override
-        public double convertToLocal(String toCurrency) {
+        public double convertToLocalCurrency(String toCurrency) {
             return -1;
         }
 
         @Override
-        public double unitPriceLower() {
+        public double unitPricePerTonneLower() {
             return unitPriceLower;
         }
 
         @Override
-        public double unitPriceUpper() {
+        public double unitPricePerTonneUpper() {
             return unitPriceUpper;
         }
     },
-    PRICE_20TO30 {
+    PRICE_RANGE_ONE {
         double unitPriceLower = 20;
         double unitPriceUpper = 30;
 
         @Override
-        public double convertToLocal(String toCurrency) {
+        public double convertToLocalCurrency(String toCurrency) {
             double usd = (unitPriceLower + unitPriceUpper) / 2;
             return EnumUnitPrice.convertCurrency(usd, toCurrency);
         }
 
         @Override
-        public double unitPriceLower() {
+        public double unitPricePerTonneLower() {
             return unitPriceLower;
         }
 
         @Override
-        public double unitPriceUpper() {
+        public double unitPricePerTonneUpper() {
             return unitPriceUpper;
         }
     },
-    PRICE_30TO50 {
+    PRICE_RANGE_TWO {
         double unitPriceLower = 31;
         double unitPriceUpper = 50;
 
         @Override
-        public double convertToLocal(String toCurrency) {
+        public double convertToLocalCurrency(String toCurrency) {
             double usd = (unitPriceLower + unitPriceUpper) / 2;
             return EnumUnitPrice.convertCurrency(usd, toCurrency);
         }
 
         @Override
-        public double unitPriceLower() {
+        public double unitPricePerTonneLower() {
             return unitPriceLower;
         }
 
         @Override
-        public double unitPriceUpper() {
+        public double unitPricePerTonneUpper() {
             return unitPriceUpper;
         }
     },
-    PRICE_50TO100 {
+    PRICE_RANGE_THREE {
         double unitPriceLower = 51;
         double unitPriceUpper = 100;
 
         @Override
-        public double convertToLocal(String toCurrency) {
+        public double convertToLocalCurrency(String toCurrency) {
             double usd = (unitPriceLower + unitPriceUpper) / 2;
             return EnumUnitPrice.convertCurrency(usd, toCurrency);
         }
 
         @Override
-        public double unitPriceLower() {
+        public double unitPricePerTonneLower() {
             return unitPriceLower;
         }
 
         @Override
-        public double unitPriceUpper() {
+        public double unitPricePerTonneUpper() {
             return unitPriceUpper;
         }
     },
-    PRICE_100TO150 {
+    PRICE_RANGE_FOUR {
         double unitPriceLower = 101;
         double unitPriceUpper = 150;
 
         @Override
-        public double convertToLocal(String toCurrency) {
+        public double convertToLocalCurrency(String toCurrency) {
             double usd = (unitPriceLower + unitPriceUpper) / 2;
             return EnumUnitPrice.convertCurrency(usd, toCurrency);
         }
 
         @Override
-        public double unitPriceLower() {
+        public double unitPricePerTonneLower() {
             return unitPriceLower;
         }
 
         @Override
-        public double unitPriceUpper() {
+        public double unitPricePerTonneUpper() {
             return unitPriceUpper;
         }
     },
-    PRICE_150TO200 {
+    PRICE_RANGE_FIVE {
         double unitPriceLower = 151;
         double unitPriceUpper = 200;
 
         @Override
-        public double convertToLocal(String toCurrency) {
+        public double convertToLocalCurrency(String toCurrency) {
             double usd = (unitPriceLower + unitPriceUpper) / 2;
             return EnumUnitPrice.convertCurrency(usd, toCurrency);
         }
 
         @Override
-        public double unitPriceLower() {
+        public double unitPricePerTonneLower() {
             return unitPriceLower;
         }
 
         @Override
-        public double unitPriceUpper() {
+        public double unitPricePerTonneUpper() {
             return unitPriceUpper;
         }
     },
     PRICE_EXACT {
         @Override
-        public double convertToLocal(String toCurrency) {
+        public double convertToLocalCurrency(String toCurrency) {
             return 0.0;
         }
 
         @Override
-        public double unitPriceLower() {
+        public double unitPricePerTonneLower() {
             return 0;
         }
 
         @Override
-        public double unitPriceUpper() {
+        public double unitPricePerTonneUpper() {
             return 0;
         }
     };
 
-    public abstract double convertToLocal(String toCurrency);
+    public abstract double convertToLocalCurrency(String toCurrency);
 
-    public abstract double unitPriceLower();
+    public abstract double unitPricePerTonneLower();
 
-    public abstract double unitPriceUpper();
+    public abstract double unitPricePerTonneUpper();
 
     private static double convertCurrency(double amount, String toCurrency) {
         MathHelper mathHelper = new MathHelper();

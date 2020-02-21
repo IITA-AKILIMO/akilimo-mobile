@@ -11,6 +11,7 @@ import com.iita.akilimo.BuildConfig;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Locale;
 
@@ -70,6 +71,27 @@ public class SessionManager {
         return pref.getString("locationIqToken", "");
     }
 
+    public void setNgnRate(String ngnRate) {
+        editor.putString("ngnRate", ngnRate);
+        editor.commit();
+    }
+
+
+    public double getNgnRate() {
+        String rate = pref.getString("ngnRate", "0");
+        return Double.parseDouble(rate);
+    }
+
+    public void setTzsRate(String tzsRate) {
+        editor.putString("tzsRate", tzsRate);
+        editor.commit();
+    }
+
+    public double getTzsRate() {
+        String rate = pref.getString("tzsRate", "0");
+        return Double.parseDouble(rate);
+    }
+
     @SuppressWarnings("StringBufferReplaceableByString")
     public String getAppVersion() {
         StringBuilder strVersion = new StringBuilder();
@@ -105,5 +127,4 @@ public class SessionManager {
         Locale current = context.getResources().getConfiguration().locale;
         return Currency.getInstance(current).getCurrencyCode();
     }
-
 }

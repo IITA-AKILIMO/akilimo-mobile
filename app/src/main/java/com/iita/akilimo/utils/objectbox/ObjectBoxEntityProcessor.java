@@ -7,16 +7,19 @@ import androidx.annotation.NonNull;
 
 import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.Akilimo;
+import com.iita.akilimo.entities.CassavaMarketOutlet;
 import com.iita.akilimo.entities.CurrentFieldYield_;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.InvestmentAmount_;
 import com.iita.akilimo.entities.LocationInfo;
+import com.iita.akilimo.entities.MaizeMarketOutlet;
 import com.iita.akilimo.entities.MaizePerformance;
 import com.iita.akilimo.entities.MaizePerformance_;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.MandatoryInfo_;
-import com.iita.akilimo.entities.MarketOutlet;
+import com.iita.akilimo.entities.OperationCosts;
 import com.iita.akilimo.entities.PlantingHarvestDates;
+import com.iita.akilimo.entities.PotatoMarketOutlet;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.entities.RecAdvice;
 import com.iita.akilimo.entities.TillageOperations;
@@ -26,6 +29,8 @@ import com.iita.akilimo.models.FertilizerPrices;
 import com.iita.akilimo.models.FertilizerPrices_;
 import com.iita.akilimo.models.Fertilizer_;
 import com.iita.akilimo.entities.InvestmentAmount;
+import com.iita.akilimo.models.InterCropFertilizer;
+import com.iita.akilimo.models.InterCropFertilizer_;
 import com.iita.akilimo.models.StarchFactory;
 import com.iita.akilimo.models.StarchFactory_;
 
@@ -167,6 +172,7 @@ public class ObjectBoxEntityProcessor {
         return 0;
     }
 
+
     public List<Fertilizer> getAvailableFertilizersByCountry(@NonNull String countryCode) {
         Box<Fertilizer> box = boxStore.boxFor(Fertilizer.class);
         QueryBuilder<Fertilizer> fertilizerTypeQueryBuilder = box.query();
@@ -199,6 +205,66 @@ public class ObjectBoxEntityProcessor {
                 .build()
                 .findFirst();
     }
+
+    /* Begin saving for intercrop fertilizer */
+    public void saveIntercropFertilizerList(final List<InterCropFertilizer> selectedFertilizers) {
+        try {
+            final Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
+            box.put(selectedFertilizers);
+        } catch (UniqueViolationException ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, "Unique fertilizer saving violation!");
+            Crashlytics.logException(ex);
+        }
+    }
+
+    public long saveSelectedIntercropFertilizer(@NonNull final InterCropFertilizer selectedFertilizer) {
+        try {
+            final Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
+            return box.put(selectedFertilizer);
+        } catch (UniqueViolationException ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, "Unique fertilizer saving violation!");
+            Crashlytics.logException(ex);
+        }
+        return 0;
+    }
+
+
+    public List<InterCropFertilizer> getAvailableIntercropFertilizersByCountryUseCase(@NonNull String countryCode, String useCase) {
+        Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
+        QueryBuilder<InterCropFertilizer> fertilizerTypeQueryBuilder = box.query();
+
+        return fertilizerTypeQueryBuilder
+                .equal(InterCropFertilizer_.useCase, useCase)
+                .equal(InterCropFertilizer_.countryCode, countryCode)
+                .build()
+                .find();
+    }
+
+    public List<InterCropFertilizer> getSelectedIntercropFertilizers(@NonNull String deviceIdentifier, String useCase) {
+        Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
+
+        QueryBuilder<InterCropFertilizer> fertilizerTypeQueryBuilder = box.query();
+        fertilizerTypeQueryBuilder.equal(InterCropFertilizer_.selected, true);
+        fertilizerTypeQueryBuilder.equal(InterCropFertilizer_.useCase, useCase);
+
+        return fertilizerTypeQueryBuilder
+                .equal(InterCropFertilizer_.countryCode, deviceIdentifier)
+                .order(InterCropFertilizer_.type) //default is ASCENDING
+                .build()
+                .find();
+    }
+
+    public Fertilizer getSavedInterCropFertilizer(@NonNull String typeName, @NonNull String countryCode, String useCase) {
+        Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
+
+        return box.query()
+                .equal(InterCropFertilizer_.useCase, useCase)
+                .equal(InterCropFertilizer_.countryCode, countryCode)
+                .equal(InterCropFertilizer_.type, typeName)
+                .build()
+                .findFirst();
+    }
+    /* end saving of intercrop fertilizer */
 
     public long saveTillageOperation(@NonNull TillageOperations tillageOperations) {
         Box<TillageOperations> box = boxStore.boxFor(TillageOperations.class);
@@ -284,10 +350,10 @@ public class ObjectBoxEntityProcessor {
                 .find();
     }
 
-    public long saveMarketOutlet(@NonNull MarketOutlet marketOutlet) {
+    public long saveMarketOutlet(@NonNull CassavaMarketOutlet cassavaMarketOutlet) {
         try {
-            Box<MarketOutlet> box = boxStore.boxFor(MarketOutlet.class);
-            return box.put(marketOutlet);
+            Box<CassavaMarketOutlet> box = boxStore.boxFor(CassavaMarketOutlet.class);
+            return box.put(cassavaMarketOutlet);
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving market outlet");
             Crashlytics.logException(ex);
@@ -295,8 +361,8 @@ public class ObjectBoxEntityProcessor {
         return 0;
     }
 
-    public MarketOutlet getMarketOutlet() {
-        Box<MarketOutlet> box = boxStore.boxFor(MarketOutlet.class);
+    public CassavaMarketOutlet getCassavaMarketOutlet() {
+        Box<CassavaMarketOutlet> box = boxStore.boxFor(CassavaMarketOutlet.class);
 
         return box.query()
                 .build()
@@ -333,6 +399,66 @@ public class ObjectBoxEntityProcessor {
 
     public CurrentPractice getCurrentPractice() {
         Box<CurrentPractice> box = boxStore.boxFor(CurrentPractice.class);
+
+        return box.query()
+                .build()
+                .findFirst();
+    }
+
+    public void saveOperationCosts(OperationCosts operationCosts) {
+        try {
+            Box<OperationCosts> box = boxStore.boxFor(OperationCosts.class);
+            box.put(operationCosts);
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving OperationCosts");
+            Crashlytics.logException(ex);
+        }
+    }
+
+    public OperationCosts getOperationCosts() {
+        Box<OperationCosts> box = boxStore.boxFor(OperationCosts.class);
+
+        return box.query()
+                .build()
+                .findFirst();
+    }
+
+    public long saveMaizeMarketOutlet(MaizeMarketOutlet maizeMarketOutlet) {
+        long id = 0;
+        try {
+            Box<MaizeMarketOutlet> box = boxStore.boxFor(MaizeMarketOutlet.class);
+            id = box.put(maizeMarketOutlet);
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving MaizeMarketOutlet");
+            Crashlytics.logException(ex);
+        }
+
+        return id;
+    }
+
+    public MaizeMarketOutlet getMaizeMarketOutlet() {
+        Box<MaizeMarketOutlet> box = boxStore.boxFor(MaizeMarketOutlet.class);
+
+        return box.query()
+                .build()
+                .findFirst();
+    }
+
+    public long savePotatoMarketOutlet(PotatoMarketOutlet potatoMarketOutlet) {
+        long id = 0;
+        try {
+            Box<PotatoMarketOutlet> box = boxStore.boxFor(PotatoMarketOutlet.class);
+            id = box.put(potatoMarketOutlet);
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving PotatoMarketOutlet");
+            Crashlytics.logException(ex);
+        }
+
+        return id;
+    }
+
+    public PotatoMarketOutlet getPotatoMarketOutlet() {
+        Box<PotatoMarketOutlet> box = boxStore.boxFor(PotatoMarketOutlet.class);
 
         return box.query()
                 .build()

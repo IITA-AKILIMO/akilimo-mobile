@@ -94,7 +94,7 @@ public class DstOptionsFragment extends BaseFragment {
         items.add(FR);
 
         Recommendations IC = new Recommendations();
-        IC.setRecCode(EnumAdvice.IC);
+        IC.setRecCode(EnumAdvice.IC_MAIZE);
         IC.setRecommendationName(icString);
         items.add(IC);
 
@@ -127,7 +127,7 @@ public class DstOptionsFragment extends BaseFragment {
                 case BPP:
                     intent = new Intent(context, PlantingPracticesActivity.class);
                     break;
-                case IC:
+                case IC_MAIZE:
                     intent = new Intent(context, InterCropRecActivity.class);
                     break;
                 case SPH:

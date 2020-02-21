@@ -40,11 +40,16 @@ public class FireBaseConfig {
                         String mapBoxKey = mFireBaseRemoteConfig.getString("mapBoxApiKey");
                         String locationIqToken = mFireBaseRemoteConfig.getString("locationIqToken");
 
+                        String ngnRate = mFireBaseRemoteConfig.getString("ngnRate");
+                        String tzsRate = mFireBaseRemoteConfig.getString("tzsRate");
+
                         api_resource = String.format("%s%s%s", apiScheme, apiUrl, apiEndpoint);
                         sessionManager.setApiEndPoint(api_resource);
                         sessionManager.setMapBoxApiKey(mapBoxKey);
                         sessionManager.setLocationIqToken(locationIqToken);
                         sessionManager.setApiToken(apiToken);
+                        sessionManager.setNgnRate(ngnRate);
+                        sessionManager.setTzsRate(tzsRate);
                     } else {
                         Toast.makeText(activity, "Firebase fetch failed", Toast.LENGTH_SHORT).show();
                     }

@@ -28,6 +28,7 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+@Deprecated
 public class TillageOperationsActivity extends BaseActivity {
 
     @BindView(R.id.toolbar)

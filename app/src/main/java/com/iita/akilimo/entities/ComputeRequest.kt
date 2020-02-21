@@ -23,14 +23,19 @@ class ComputeRequest {
 
     @JsonProperty("areaUnits")
     var areaUnits: String? = null
+
     @JsonProperty("intercropType")
     var interCroppingType: String? = null
 
     @JsonProperty("intercrop")
     var interCrop: Boolean = false
 
-    @JsonProperty("IC")
-    var interCroppingRec: Boolean = false
+    @JsonProperty("IC_MAIZE")
+    var interCroppingMaizeRec: Boolean = false
+
+    @JsonProperty("IC_SP")
+    var interCroppingPotatoRec: Boolean = false
+
     @JsonProperty("FR")
     var fertilizerRec: Boolean = false
     @JsonProperty("PP")

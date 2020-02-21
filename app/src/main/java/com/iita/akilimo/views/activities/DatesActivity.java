@@ -1,11 +1,8 @@
 package com.iita.akilimo.views.activities;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.common.util.Strings;
@@ -43,20 +40,12 @@ public class DatesActivity extends BaseActivity {
     @BindView(R.id.btnFinish)
     MaterialButton btnFinish;
 
-    @BindView(R.id.flexiblePlanting)
-    SwitchCompat flexiblePlanting;
-    @BindView(R.id.flexibleHarvest)
-    SwitchCompat flexibleHarvest;
 
     @BindView(R.id.lblSelectedPlantingDate)
     TextView lblSelectedPlantingDate;
     @BindView(R.id.lblSelectedHarvestDate)
     TextView lblSelectedHarvestDate;
 
-    @BindView(R.id.rdgPlantingWindow)
-    RadioGroup rdgPlantingWindow;
-    @BindView(R.id.rdgHarvestWindow)
-    RadioGroup rdgHarvestWindow;
 
     String selectedPlantingDate;
     String selectedHarvestDate;
@@ -89,53 +78,9 @@ public class DatesActivity extends BaseActivity {
 
     @Override
     protected void initComponent() {
-        flexiblePlanting.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            if (isChecked) {
-                rdgPlantingWindow.setVisibility(View.VISIBLE);
-                rdgPlantingWindow.clearCheck();
-                plantingWindow = 0;
-            } else {
-                rdgPlantingWindow.setVisibility(View.GONE);
-            }
-        });
-        flexibleHarvest.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            rdgHarvestWindow.setVisibility(View.GONE);
-            if (isChecked) {
-                rdgHarvestWindow.setVisibility(View.VISIBLE);
-                rdgHarvestWindow.clearCheck();
-                harvestWindow = 0;
-            }
-        });
         //now for title pickers
         btnPickPlantingDate.setOnClickListener(view -> dialogDatePickerLight(true, false));
         btnPickHarvestDate.setOnClickListener(view -> dialogDatePickerLight(false, true));
-        rdgPlantingWindow.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
-            switch (radioIndex) {
-                case R.id.rdPlantingOneMonth:
-                    plantingWindow = 1;
-                    break;
-                case R.id.rdPlantingTwoMonths:
-                    plantingWindow = 2;
-                    break;
-                default:
-                    plantingWindow = 0;
-                    break;
-            }
-        });
-        rdgHarvestWindow.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
-            switch (radioIndex) {
-                case R.id.rdHarvestOneMonth:
-                    harvestWindow = 1;
-                    break;
-                case R.id.rdHarvestTwoMonths:
-                    harvestWindow = 2;
-                    break;
-                default:
-                    harvestWindow = 0;
-                    break;
-            }
-        });
-
         btnFinish.setOnClickListener(view -> validate(false));
         btnCancel.setOnClickListener(view -> closeActivity(false));
     }
@@ -158,15 +103,6 @@ public class DatesActivity extends BaseActivity {
 
             lblSelectedPlantingDate.setText(pDate.toString());
             lblSelectedHarvestDate.setText(hDate.toString());
-
-            if (pw > 0) {
-                flexiblePlanting.setChecked(true);
-                rdgPlantingWindow.check(pw == 1 ? R.id.rdPlantingOneMonth : R.id.rdPlantingTwoMonths);
-            }
-            if (hw > 0) {
-                flexibleHarvest.setChecked(true);
-                rdgHarvestWindow.check(hw == 1 ? R.id.rdHarvestOneMonth : R.id.rdHarvestTwoMonths);
-            }
 
             //assign these values to the global parameters
             selectedHarvestDate = hd;

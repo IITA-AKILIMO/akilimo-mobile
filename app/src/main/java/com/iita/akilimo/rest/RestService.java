@@ -28,6 +28,7 @@ public class RestService {
     private static String userId = "akilimo";
     private String url;
     private String countryCode;
+    private String useCase;
     private RequestQueue queue;
     private SessionManager sessionManager;
     private int initialTimeout = 30000;
@@ -44,23 +45,21 @@ public class RestService {
         return restServiceObj;
     }
 
-    public void setParameters(String endPoint) {
-        String baseUrl = sessionManager.getApiEndPoint();
-        url = String.format("%s%s", baseUrl, endPoint);
-    }
-
+    @Deprecated
     public void setParameters(String endPoint, int initialTimeout) {
         String baseUrl = sessionManager.getApiEndPoint();
         this.url = String.format("%s%s", baseUrl, endPoint);
         this.initialTimeout = initialTimeout;
     }
 
+    @Deprecated
     public void setParameters(String endPoint, String countryCode) {
         String baseUrl = sessionManager.getApiEndPoint();
         this.url = String.format("%s%s", baseUrl, endPoint);
         this.countryCode = countryCode;
     }
 
+    @Deprecated
     public void setParameters(String endPoint, String countryCode, int initialTimeout) {
         String baseUrl = sessionManager.getApiEndPoint();
         this.url = String.format("%s%s", baseUrl, endPoint);
@@ -68,6 +67,13 @@ public class RestService {
         this.initialTimeout = initialTimeout;
     }
 
+    public void setParameters(RestParameters restParameters) {
+        String baseUrl = sessionManager.getApiEndPoint();
+        this.url = String.format("%s%s", baseUrl, restParameters.getUrl());
+        this.countryCode = restParameters.getCountryCode();
+        this.initialTimeout = restParameters.getInitialTimeout();
+        this.useCase = restParameters.getUseCase();
+    }
 
     public void postJsonObject(final JSONObject postData, final IVolleyCallback callback) {
 
@@ -168,8 +174,6 @@ public class RestService {
     }
 
     public void deleteObject(final IVolleyDeleteCallback callback) {
-        // response
-        // error.
         StringRequest dr = new StringRequest(Request.Method.DELETE, url,
                 callback::onDeleted,
                 callback::onError
@@ -190,11 +194,11 @@ public class RestService {
 
     private Map<String, String> setHeaderParameters() {
         Map<String, String> params = new HashMap<String, String>();
-//        params.put("Content-Type", "application/x-www-form-urlencoded");
         params.put("Content-Type", "application/json; charset=utf-8");
         params.put("api-token", apiToken);
         params.put("user-id", userId);
         params.put("country-code", countryCode);
+        params.put("use-case", useCase);
         return params;
     }
 }

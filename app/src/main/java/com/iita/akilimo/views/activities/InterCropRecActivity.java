@@ -45,15 +45,22 @@ public class InterCropRecActivity extends BaseActivity {
     @BindString(R.string.lbl_planting_harvest)
     String plantingString;
 
-    @BindString(R.string.lbl_available_fertilizers)
+    @BindString(R.string.lbl_fertilizer_costs)
     String fertilizerString;
 
     @BindString(R.string.lbl_market_outlet)
     String marketOutletString;
+    @BindString(R.string.lbl_market_outlet_maize)
+    String marketOutletMaizeString;
+
     @BindString(R.string.lbl_typical_yield)
     String rootYieldString;
+
     @BindString(R.string.lbl_maize_performance)
     String maizeHeightString;
+
+    @BindString(R.string.lbl_sweet_potato_prices)
+    String sweetPotatoPricesString;
 
     private Activity activity;
     private RecOptionsAdapter mAdapter;
@@ -68,6 +75,21 @@ public class InterCropRecActivity extends BaseActivity {
         activity = this;
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
 
+        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        if (mandatoryInfo != null) {
+            countryCode = mandatoryInfo.getCountryCode();
+            currency = mandatoryInfo.getCurrency();
+
+            switch (mandatoryInfo.getCountryEnum()) {
+
+                case NIGERIA:
+                    recommendations = getString(R.string.title_maize_intercropping);
+                    break;
+                case TANZANIA:
+                    recommendations = getString(R.string.title_sweet_potato_intercropping);
+                    break;
+            }
+        }
         initToolbar();
         initComponent();
     }
@@ -94,7 +116,8 @@ public class InterCropRecActivity extends BaseActivity {
                 recAdvice = new RecAdvice();
             }
             recAdvice.setFR(false);
-            recAdvice.setIC(true);
+            recAdvice.setCIM(true);
+            recAdvice.setCIS(true);
             recAdvice.setSPH(false);
             recAdvice.setSPP(false);
             recAdvice.setBPP(false);
@@ -102,11 +125,6 @@ public class InterCropRecActivity extends BaseActivity {
             objectBoxEntityProcessor.saveRecAdvice(recAdvice);
             processRecommendations(activity);
         });
-        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
-        if (mandatoryInfo != null) {
-            countryCode = mandatoryInfo.getCountryCode();
-            currency = mandatoryInfo.getCurrency();
-        }
         setAdapter();
     }
 
@@ -118,36 +136,45 @@ public class InterCropRecActivity extends BaseActivity {
     private void setAdapter() {
         //set data and list adapter
         items = new ArrayList<>();
-
-        items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS, 0));
-        items.add(new RecommendationOptions(plantingString, EnumAdviceTasks.PLANTING_AND_HARVEST, 0));
-        items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET, 0));
         if (countryCode.equalsIgnoreCase(EnumCountries.NIGERIA.countryCode())) {
-            //maize performance only applicable to nigeria
+            items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM, 0));
             items.add(new RecommendationOptions(maizeHeightString, EnumAdviceTasks.MAIZE_PERFORMANCE, 0));
+            items.add(new RecommendationOptions(marketOutletMaizeString, EnumAdviceTasks.MARKET_OUTLET_MAIZE, 0));
+        } else if (countryCode.equalsIgnoreCase(EnumCountries.TANZANIA.countryCode())) {
+            items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CP, 0));
+            items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
+            items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, 0));
+            items.add(new RecommendationOptions(sweetPotatoPricesString, EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO, 0));
         }
-//        items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.TYPICAL_ROOT_YIELD, 0));
-
         mAdapter = new RecOptionsAdapter(this, items, ItemAnimation.FADE_IN);
         recyclerView.setAdapter(mAdapter);
 
-        // on item list clicked
         mAdapter.setOnItemClickListener((view, obj, position) -> {
-            //let us process the data
             Intent intent = null;
             EnumAdviceTasks advice = obj.getRecCode();
             switch (advice) {
                 case PLANTING_AND_HARVEST:
                     intent = new Intent(context, DatesActivity.class);
                     break;
-                case MARKET_OUTLET:
-                    intent = new Intent(context, MarketOutletActivity.class);
+                case MARKET_OUTLET_CASSAVA:
+                    intent = new Intent(context, CassavaMarketActivity.class);
                     break;
-                case TYPICAL_ROOT_YIELD:
+                case MARKET_OUTLET_SWEET_POTATO:
+                    intent = new Intent(context, SweetPotatoMarketActivity.class);
+                    break;
+                case MARKET_OUTLET_MAIZE:
+                    intent = new Intent(context, MaizeMarketActivity.class);
+                    break;
+                case CURRENT_CASSAVA_YIELD:
                     intent = new Intent(context, RootYieldActivity.class);
                     break;
-                case AVAILABLE_FERTILIZERS:
-                    intent = new Intent(context, FertilizersActivity.class);
+                case AVAILABLE_FERTILIZERS_CP:
+                    intent = new Intent(context, IntercropFertilizersActivity.class);
+                    intent.putExtra(IntercropFertilizersActivity.useCaseTag, "CIS");
+                    break;
+                case AVAILABLE_FERTILIZERS_CIM:
+                    intent = new Intent(context, IntercropFertilizersActivity.class);
+                    intent.putExtra(IntercropFertilizersActivity.useCaseTag, "CIM");
                     break;
                 case MAIZE_PERFORMANCE:
                     intent = new Intent(context, MaizePerformanceActivity.class);

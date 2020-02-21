@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import lombok.Data
 
 @Data
-class UserInfo(
-
-) {
+class UserInfo {
     var deviceID: String = "NA"
     @JsonProperty("userPhoneCC")
     var mobileCountryCode: String = "NA"
