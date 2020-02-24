@@ -128,7 +128,7 @@ public class CassavaMarketActivity extends BaseActivity {
 
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
         queue = Volley.newRequestQueue(context);
-        mathHelper = new MathHelper();
+        mathHelper = new MathHelper(this);
         fireBaseEvents = FireBaseEvents.newInstance(context);
 
         cassavaMarketOutlet = objectBoxEntityProcessor.getCassavaMarketOutlet();
@@ -322,7 +322,7 @@ public class CassavaMarketActivity extends BaseActivity {
             } else {
                 priceText = "0";
                 unitPriceLocal = 0;
-                unitPriceLocal = enumUnitPrice.convertToLocalCurrency(currency);
+                unitPriceLocal = enumUnitPrice.convertToLocalCurrency(currency,mathHelper);
             }
             Double minAmount = mathHelper.convertCurrency(minAmountUSD, currency);
             Double maxAmount = mathHelper.convertCurrency(maxAmountUSD, currency);

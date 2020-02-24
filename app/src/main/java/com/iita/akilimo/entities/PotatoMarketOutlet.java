@@ -60,7 +60,7 @@ public class PotatoMarketOutlet {
                 return EnumPotatoUnitPrice.UNKNOWN;
             }
             for (EnumPotatoUnitPrice enumUnitPrice : EnumPotatoUnitPrice.values()) {
-                if (enumUnitPrice.convertToLocalCurrency(EnumCountries.OTHERS.currency()) == databaseValue) {
+                if (enumUnitPrice.convertToLocalCurrency(EnumCountries.OTHERS.currency(),null) == databaseValue) {
                     return enumUnitPrice;
                 }
             }
@@ -69,7 +69,7 @@ public class PotatoMarketOutlet {
 
         @Override
         public Double convertToDatabaseValue(EnumPotatoUnitPrice enumUnitPrice) {
-            return enumUnitPrice == null ? null : enumUnitPrice.convertToLocalCurrency(EnumCountries.OTHERS.currency());
+            return enumUnitPrice == null ? null : enumUnitPrice.convertToLocalCurrency(EnumCountries.OTHERS.currency(),null);
         }
     }
 

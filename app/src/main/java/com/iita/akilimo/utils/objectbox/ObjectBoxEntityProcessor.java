@@ -229,6 +229,16 @@ public class ObjectBoxEntityProcessor {
     }
 
 
+    public List<InterCropFertilizer> getAllIntercropFertilizersByCountry(@NonNull String countryCode) {
+        Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
+        QueryBuilder<InterCropFertilizer> fertilizerTypeQueryBuilder = box.query();
+
+        return fertilizerTypeQueryBuilder
+                .equal(InterCropFertilizer_.countryCode, countryCode)
+                .build()
+                .find();
+    }
+
     public List<InterCropFertilizer> getAvailableIntercropFertilizersByCountryUseCase(@NonNull String countryCode, String useCase) {
         Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
         QueryBuilder<InterCropFertilizer> fertilizerTypeQueryBuilder = box.query();

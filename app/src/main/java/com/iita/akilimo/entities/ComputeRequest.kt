@@ -9,6 +9,9 @@ class ComputeRequest {
     @JsonProperty("country")
     var country: String? = null
 
+    @JsonProperty("useCase")
+    var useCase: String? = null
+
     @JsonProperty("currency")
     var currency: String? = null
 

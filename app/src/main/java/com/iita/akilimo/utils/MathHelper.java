@@ -16,7 +16,7 @@ public class MathHelper {
     public MathHelper() {
     }
 
-    private MathHelper(Activity activity) {
+    public MathHelper(Activity activity) {
         SessionManager sessionManager = new SessionManager(activity);
         ngnRate = sessionManager.getNgnRate();
         tzsRate = sessionManager.getTzsRate();
@@ -129,7 +129,7 @@ public class MathHelper {
      */
     public double convertToLocalCurrency(double amount, String toCurrency, int... nearestRounding) {
         double converted = amount;
-        int nearestSpecifiedValue = 0;
+        int nearestSpecifiedValue = 100;
         if (nearestRounding.length > 0) {
             nearestSpecifiedValue = nearestRounding[0];
         }

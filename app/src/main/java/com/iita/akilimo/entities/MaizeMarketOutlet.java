@@ -60,7 +60,7 @@ public class MaizeMarketOutlet {
                 return EnumUnitPrice.UNKNOWN;
             }
             for (EnumUnitPrice produceType : EnumUnitPrice.values()) {
-                if (produceType.convertToLocalCurrency(EnumCountries.OTHERS.currency()) == databaseValue) {
+                if (produceType.convertToLocalCurrency(EnumCountries.OTHERS.currency(),null) == databaseValue) {
                     return produceType;
                 }
             }
@@ -69,7 +69,7 @@ public class MaizeMarketOutlet {
 
         @Override
         public Double convertToDatabaseValue(EnumUnitPrice entityProperty) {
-            return entityProperty == null ? null : entityProperty.convertToLocalCurrency(EnumCountries.OTHERS.currency());
+            return entityProperty == null ? null : entityProperty.convertToLocalCurrency(EnumCountries.OTHERS.currency(),null);
         }
     }
 

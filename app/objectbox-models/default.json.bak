@@ -600,7 +600,7 @@
     },
     {
       "id": "31:4781899339671928819",
-      "lastPropertyId": "16:1238265519927943249",
+      "lastPropertyId": "17:8050396996012482665",
       "name": "OperationCosts",
       "properties": [
         {
@@ -666,6 +666,10 @@
         {
           "id": "16:1238265519927943249",
           "name": "exactSecondWeedingPrice"
+        },
+        {
+          "id": "17:8050396996012482665",
+          "name": "costLmoAreaBasis"
         }
       ],
       "relations": []
@@ -845,7 +849,7 @@
     },
     {
       "id": "35:64485522120680039",
-      "lastPropertyId": "8:967195628499081024",
+      "lastPropertyId": "9:1314675879796902317",
       "name": "PotatoMarketOutlet",
       "properties": [
         {
@@ -877,8 +881,8 @@
           "name": "enumUnitOfSale"
         },
         {
-          "id": "8:967195628499081024",
-          "name": "enumUnitPrice"
+          "id": "9:1314675879796902317",
+          "name": "enumPotatoUnitPrice"
         }
       ],
       "relations": []
@@ -1017,7 +1021,8 @@
     7778394972259276206,
     5549888130644446309,
     143495277405783524,
-    399964419898723087
+    399964419898723087,
+    967195628499081024
   ],
   "retiredRelationUids": [],
   "version": 1

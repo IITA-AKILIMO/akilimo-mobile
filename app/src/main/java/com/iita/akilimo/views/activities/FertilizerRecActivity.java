@@ -112,7 +112,7 @@ public class FertilizerRecActivity extends BaseActivity {
 
 
 //        items.add(new RecommendationOptions(plantingString, EnumAdviceTasks.PLANTING_AND_HARVEST, 0));
-        items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CP, 0));
+        items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS, 0));
         items.add(new RecommendationOptions(investmentString, EnumAdviceTasks.INVESTMENT_AMOUNT, 0));
         items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, 0));
 
@@ -128,7 +128,7 @@ public class FertilizerRecActivity extends BaseActivity {
                 case PLANTING_AND_HARVEST:
                     intent = new Intent(context, DatesActivity.class);
                     break;
-                case AVAILABLE_FERTILIZERS_CP:
+                case AVAILABLE_FERTILIZERS_CIS:
                     intent = new Intent(context, FertilizersActivity.class);
                     break;
                 case INVESTMENT_AMOUNT:

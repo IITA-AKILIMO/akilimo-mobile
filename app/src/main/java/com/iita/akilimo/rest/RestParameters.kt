@@ -2,7 +2,7 @@ package com.iita.akilimo.rest
 
 class RestParameters(
     val url: String,
-    val countryCode: String
+    val countryCode: String? = null
 ) {
     var apiToken: String = "akilimo"
     var userId: String = "akilimo"

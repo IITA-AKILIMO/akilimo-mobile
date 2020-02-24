@@ -2,7 +2,7 @@ package com.iita.akilimo.utils.enums;
 
 public enum EnumAdviceTasks {
     PLANTING_AND_HARVEST,
-    AVAILABLE_FERTILIZERS_CP,
+    AVAILABLE_FERTILIZERS_CIS,
     AVAILABLE_FERTILIZERS_CIM,
     INVESTMENT_AMOUNT,
     CURRENT_CASSAVA_YIELD,

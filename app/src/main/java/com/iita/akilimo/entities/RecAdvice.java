@@ -17,6 +17,7 @@ public class RecAdvice {
 
     @Getter(AccessLevel.NONE)
     public boolean CIM;
+
     @Getter(AccessLevel.NONE)
     public boolean CIS;
 
@@ -28,6 +29,8 @@ public class RecAdvice {
 
     @Getter(AccessLevel.NONE)
     public boolean SPP;
+
+    public String useCase;
 
     public boolean isFR() {
         return this.FR;

@@ -3,13 +3,13 @@ package com.iita.akilimo.utils.enums;
 
 import com.iita.akilimo.utils.MathHelper;
 
-public enum EnumUnitPrice{
+public enum EnumUnitPrice {
     UNKNOWN {
         double unitPriceLower = -1;
         double unitPriceUpper = -1;
 
         @Override
-        public double convertToLocalCurrency(String toCurrency) {
+        public double convertToLocalCurrency(String toCurrency, MathHelper mathHelper) {
             return -1;
         }
 
@@ -28,9 +28,9 @@ public enum EnumUnitPrice{
         double unitPriceUpper = 30;
 
         @Override
-        public double convertToLocalCurrency(String toCurrency) {
+        public double convertToLocalCurrency(String toCurrency, MathHelper mathHelper) {
             double usd = (unitPriceLower + unitPriceUpper) / 2;
-            return EnumUnitPrice.convertCurrency(usd, toCurrency);
+            return EnumUnitPrice.convertCurrency(usd, toCurrency, mathHelper);
         }
 
         @Override
@@ -48,9 +48,9 @@ public enum EnumUnitPrice{
         double unitPriceUpper = 50;
 
         @Override
-        public double convertToLocalCurrency(String toCurrency) {
+        public double convertToLocalCurrency(String toCurrency, MathHelper mathHelper) {
             double usd = (unitPriceLower + unitPriceUpper) / 2;
-            return EnumUnitPrice.convertCurrency(usd, toCurrency);
+            return EnumUnitPrice.convertCurrency(usd, toCurrency, mathHelper);
         }
 
         @Override
@@ -68,9 +68,9 @@ public enum EnumUnitPrice{
         double unitPriceUpper = 100;
 
         @Override
-        public double convertToLocalCurrency(String toCurrency) {
+        public double convertToLocalCurrency(String toCurrency, MathHelper mathHelper) {
             double usd = (unitPriceLower + unitPriceUpper) / 2;
-            return EnumUnitPrice.convertCurrency(usd, toCurrency);
+            return EnumUnitPrice.convertCurrency(usd, toCurrency, mathHelper);
         }
 
         @Override
@@ -88,9 +88,9 @@ public enum EnumUnitPrice{
         double unitPriceUpper = 150;
 
         @Override
-        public double convertToLocalCurrency(String toCurrency) {
+        public double convertToLocalCurrency(String toCurrency, MathHelper mathHelper) {
             double usd = (unitPriceLower + unitPriceUpper) / 2;
-            return EnumUnitPrice.convertCurrency(usd, toCurrency);
+            return EnumUnitPrice.convertCurrency(usd, toCurrency, mathHelper);
         }
 
         @Override
@@ -108,9 +108,9 @@ public enum EnumUnitPrice{
         double unitPriceUpper = 200;
 
         @Override
-        public double convertToLocalCurrency(String toCurrency) {
+        public double convertToLocalCurrency(String toCurrency, MathHelper mathHelper) {
             double usd = (unitPriceLower + unitPriceUpper) / 2;
-            return EnumUnitPrice.convertCurrency(usd, toCurrency);
+            return EnumUnitPrice.convertCurrency(usd, toCurrency, mathHelper);
         }
 
         @Override
@@ -125,7 +125,7 @@ public enum EnumUnitPrice{
     },
     PRICE_EXACT {
         @Override
-        public double convertToLocalCurrency(String toCurrency) {
+        public double convertToLocalCurrency(String toCurrency, MathHelper mathHelper) {
             return 0.0;
         }
 
@@ -140,14 +140,16 @@ public enum EnumUnitPrice{
         }
     };
 
-    public abstract double convertToLocalCurrency(String toCurrency);
+    public abstract double convertToLocalCurrency(String toCurrency, MathHelper mathHelper);
 
     public abstract double unitPricePerTonneLower();
 
     public abstract double unitPricePerTonneUpper();
 
-    private static double convertCurrency(double amount, String toCurrency) {
-        MathHelper mathHelper = new MathHelper();
+    private static double convertCurrency(double amount, String toCurrency, MathHelper mathHelper) {
+        if (mathHelper == null) {
+            mathHelper = new MathHelper();
+        }
         return mathHelper.convertToLocalCurrency(amount, toCurrency);
     }
 }

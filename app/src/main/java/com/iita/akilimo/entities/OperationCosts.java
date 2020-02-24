@@ -13,6 +13,8 @@ public class OperationCosts {
     @Id
     long id;
 
+    private String costLmoAreaBasis;
+
     private double manualPloughCost;
     private double manualRidgeCost;
     private double manualHarrowCost;
@@ -48,9 +50,11 @@ public class OperationCosts {
     public boolean isExactManualPloughPrice() {
         return this.exactManualPloughPrice;
     }
+
     public boolean isExactManualRidgePrice() {
         return this.exactManualRidgePrice;
     }
+
     public boolean isExactManualHarrowPrice() {
         return this.exactManualHarrowPrice;
     }
@@ -58,6 +62,7 @@ public class OperationCosts {
     public boolean isExactTractorPloughPrice() {
         return this.exactTractorPloughPrice;
     }
+
     public boolean isExactTractorRidgePrice() {
         return this.exactTractorRidgePrice;
     }
@@ -65,6 +70,7 @@ public class OperationCosts {
     public boolean isExactFirstWeedingPrice() {
         return this.exactFirstWeedingPrice;
     }
+
     public boolean isExactSecondWeedingPrice() {
         return this.exactSecondWeedingPrice;
     }

@@ -25,6 +25,7 @@ import com.iita.akilimo.adapters.RecommendationAdapter;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.mappers.ComputedResponse;
+import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.rest.recommendation.RecommendationResponse;
 import com.iita.akilimo.rest.request.RecommendationRequest;
@@ -126,7 +127,12 @@ public class DstRecommendationActivity extends BaseActivity {
 
         final RequestQueue queue = Volley.newRequestQueue(context.getApplicationContext());
         final RestService restService = RestService.getInstance(queue, activity);
-        restService.setParameters("v2/recommendations", 45000);
+        final RestParameters restParameters = new RestParameters(
+                "v2/recommendations",
+                null
+        );
+        restParameters.setInitialTimeout(45000);
+        restService.setParameters(restParameters);
 
 
         //print recommendation data here

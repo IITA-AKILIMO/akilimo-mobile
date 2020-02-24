@@ -87,7 +87,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
         context = this;
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
-        mathHelper = new MathHelper();
+        mathHelper = new MathHelper(this);
 
         MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
         countryCode = mandatoryInfo.getCountryCode();
@@ -177,7 +177,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             }
             unitPriceLocal = mathHelper.convertToDouble(tuberPrice);
         } else {
-            unitPriceLocal = enumUnitPrice.convertToLocalCurrency(currency);
+            unitPriceLocal = enumUnitPrice.convertToLocalCurrency(currency, mathHelper);
         }
 
         if (potatoMarketOutlet == null) {

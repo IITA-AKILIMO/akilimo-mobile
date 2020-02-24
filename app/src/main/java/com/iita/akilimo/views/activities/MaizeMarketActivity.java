@@ -97,7 +97,7 @@ public class MaizeMarketActivity extends BaseActivity {
 
         context = this;
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
-        mathHelper = new MathHelper();
+        mathHelper = new MathHelper(this);
 
         maizeMarketOutlet = objectBoxEntityProcessor.getMaizeMarketOutlet();
 
@@ -215,7 +215,7 @@ public class MaizeMarketActivity extends BaseActivity {
                 }
                 unitPriceLocal = mathHelper.convertToDouble(grainPrice);
             } else {
-                unitPriceLocal = enumUnitPrice.convertToLocalCurrency(currency);
+                unitPriceLocal = enumUnitPrice.convertToLocalCurrency(currency, mathHelper);
             }
             grainUnitRadioIndex = rdgUnitOfSaleGrain.getCheckedRadioButtonId();
             dataIsValid = true;
@@ -294,7 +294,7 @@ public class MaizeMarketActivity extends BaseActivity {
         final Dialog dialog = new Dialog(context);
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
-        dialog.setContentView(R.layout.dialog_unit_price);
+        dialog.setContentView(R.layout.dialog_cassava_unit_price);
         dialog.setCancelable(false);
 
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();

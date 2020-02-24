@@ -9,7 +9,7 @@ public enum EnumPotatoUnitPrice {
         double unitPriceUpper = -1;
 
         @Override
-        public double convertToLocalCurrency(String toCurrency) {
+        public double convertToLocalCurrency(String toCurrency, MathHelper mathHelper) {
             return -1;
         }
 
@@ -28,9 +28,9 @@ public enum EnumPotatoUnitPrice {
         double unitPriceUpper = 49.79;
 
         @Override
-        public double convertToLocalCurrency(String toCurrency) {
+        public double convertToLocalCurrency(String toCurrency, MathHelper mathHelper) {
             double usd = (unitPriceLower + unitPriceUpper) / 2;
-            return EnumPotatoUnitPrice.convertCurrency(usd, toCurrency);
+            return EnumPotatoUnitPrice.convertCurrency(usd, toCurrency, mathHelper);
         }
 
         @Override
@@ -48,9 +48,9 @@ public enum EnumPotatoUnitPrice {
         double unitPriceUpper = 51.95;
 
         @Override
-        public double convertToLocalCurrency(String toCurrency) {
+        public double convertToLocalCurrency(String toCurrency, MathHelper mathHelper) {
             double usd = (unitPriceLower + unitPriceUpper) / 2;
-            return EnumPotatoUnitPrice.convertCurrency(usd, toCurrency);
+            return EnumPotatoUnitPrice.convertCurrency(usd, toCurrency, mathHelper);
         }
 
         @Override
@@ -68,9 +68,9 @@ public enum EnumPotatoUnitPrice {
         double unitPriceUpper = 56.28;
 
         @Override
-        public double convertToLocalCurrency(String toCurrency) {
+        public double convertToLocalCurrency(String toCurrency, MathHelper mathHelper) {
             double usd = (unitPriceLower + unitPriceUpper) / 2;
-            return EnumPotatoUnitPrice.convertCurrency(usd, toCurrency);
+            return EnumPotatoUnitPrice.convertCurrency(usd, toCurrency, mathHelper);
         }
 
         @Override
@@ -85,7 +85,7 @@ public enum EnumPotatoUnitPrice {
     },
     PRICE_EXACT {
         @Override
-        public double convertToLocalCurrency(String toCurrency) {
+        public double convertToLocalCurrency(String toCurrency, MathHelper mathHelper) {
             return 0.0;
         }
 
@@ -100,14 +100,13 @@ public enum EnumPotatoUnitPrice {
         }
     };
 
-    public abstract double convertToLocalCurrency(String toCurrency);
+    public abstract double convertToLocalCurrency(String toCurrency, MathHelper mathHelper);
 
     public abstract double unitPricePerTonneLower();
 
     public abstract double unitPricePerTonneUpper();
 
-    private static double convertCurrency(double amount, String toCurrency) {
-        MathHelper mathHelper = new MathHelper();
+    private static double convertCurrency(double amount, String toCurrency, MathHelper mathHelper) {
         return mathHelper.convertToLocalCurrency(amount, toCurrency);
     }
 }

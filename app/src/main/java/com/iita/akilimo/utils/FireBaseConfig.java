@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.iita.akilimo.BuildConfig;
 import com.iita.akilimo.R;
 
 public class FireBaseConfig {
@@ -15,15 +16,18 @@ public class FireBaseConfig {
     private FirebaseRemoteConfigSettings configSettings;
     private Activity activity;
     private SessionManager sessionManager;
-    private long cacheExpiration = 0;
-    private String api_resource = "";
+    private int fetchIntervalInSeconds = 43200;
+
 
     public FireBaseConfig(final Activity activity) {
         this.activity = activity;
+        if (BuildConfig.DEBUG) {
+            fetchIntervalInSeconds = 10;
+        }
         sessionManager = new SessionManager(activity);
         mFireBaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(3600)
+                .setMinimumFetchIntervalInSeconds(fetchIntervalInSeconds)
                 .build();
         mFireBaseRemoteConfig.setConfigSettingsAsync(configSettings);
         mFireBaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
@@ -33,31 +37,27 @@ public class FireBaseConfig {
         mFireBaseRemoteConfig.fetchAndActivate()
                 .addOnCompleteListener(activity, task -> {
                     if (task.isSuccessful()) {
+                        boolean updated = task.getResult();
+
+                        Toast.makeText(activity, "Data fetch succeeded and " + fetchIntervalInSeconds + " updated " + updated, Toast.LENGTH_SHORT).show();
+
                         String apiToken = mFireBaseRemoteConfig.getString("api_token");
-                        String apiScheme = mFireBaseRemoteConfig.getString("api_scheme");
-                        String apiUrl = mFireBaseRemoteConfig.getString("api_url_b");
-                        String apiEndpoint = mFireBaseRemoteConfig.getString("api_endpoint");
+                        String akilimo_api = mFireBaseRemoteConfig.getString("akilimo_api");
+
                         String mapBoxKey = mFireBaseRemoteConfig.getString("mapBoxApiKey");
                         String locationIqToken = mFireBaseRemoteConfig.getString("locationIqToken");
 
                         String ngnRate = mFireBaseRemoteConfig.getString("ngnRate");
                         String tzsRate = mFireBaseRemoteConfig.getString("tzsRate");
 
-                        api_resource = String.format("%s%s%s", apiScheme, apiUrl, apiEndpoint);
-                        sessionManager.setApiEndPoint(api_resource);
+                        sessionManager.setApiEndPoint(akilimo_api);
                         sessionManager.setMapBoxApiKey(mapBoxKey);
                         sessionManager.setLocationIqToken(locationIqToken);
                         sessionManager.setApiToken(apiToken);
                         sessionManager.setNgnRate(ngnRate);
                         sessionManager.setTzsRate(tzsRate);
-                    } else {
-                        Toast.makeText(activity, "Firebase fetch failed", Toast.LENGTH_SHORT).show();
                     }
                 });
-    }
-
-    private long getCacheExpiration() {
-        return cacheExpiration;
     }
 
 }

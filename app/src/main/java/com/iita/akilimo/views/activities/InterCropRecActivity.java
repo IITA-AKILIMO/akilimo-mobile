@@ -65,6 +65,7 @@ public class InterCropRecActivity extends BaseActivity {
     private Activity activity;
     private RecOptionsAdapter mAdapter;
     private List<RecommendationOptions> items = new ArrayList<>();
+    private String useCase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,12 +82,13 @@ public class InterCropRecActivity extends BaseActivity {
             currency = mandatoryInfo.getCurrency();
 
             switch (mandatoryInfo.getCountryEnum()) {
-
                 case NIGERIA:
                     recommendations = getString(R.string.title_maize_intercropping);
+                    useCase = "CIM";
                     break;
                 case TANZANIA:
                     recommendations = getString(R.string.title_sweet_potato_intercropping);
+                    useCase = "CIS";
                     break;
             }
         }
@@ -121,6 +123,7 @@ public class InterCropRecActivity extends BaseActivity {
             recAdvice.setSPH(false);
             recAdvice.setSPP(false);
             recAdvice.setBPP(false);
+            recAdvice.setUseCase(useCase);
 
             objectBoxEntityProcessor.saveRecAdvice(recAdvice);
             processRecommendations(activity);
@@ -141,7 +144,7 @@ public class InterCropRecActivity extends BaseActivity {
             items.add(new RecommendationOptions(maizeHeightString, EnumAdviceTasks.MAIZE_PERFORMANCE, 0));
             items.add(new RecommendationOptions(marketOutletMaizeString, EnumAdviceTasks.MARKET_OUTLET_MAIZE, 0));
         } else if (countryCode.equalsIgnoreCase(EnumCountries.TANZANIA.countryCode())) {
-            items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CP, 0));
+            items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS, 0));
             items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
             items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, 0));
             items.add(new RecommendationOptions(sweetPotatoPricesString, EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO, 0));
@@ -168,13 +171,10 @@ public class InterCropRecActivity extends BaseActivity {
                 case CURRENT_CASSAVA_YIELD:
                     intent = new Intent(context, RootYieldActivity.class);
                     break;
-                case AVAILABLE_FERTILIZERS_CP:
-                    intent = new Intent(context, IntercropFertilizersActivity.class);
-                    intent.putExtra(IntercropFertilizersActivity.useCaseTag, "CIS");
-                    break;
+                case AVAILABLE_FERTILIZERS_CIS:
                 case AVAILABLE_FERTILIZERS_CIM:
                     intent = new Intent(context, IntercropFertilizersActivity.class);
-                    intent.putExtra(IntercropFertilizersActivity.useCaseTag, "CIM");
+                    intent.putExtra(IntercropFertilizersActivity.useCaseTag, useCase);
                     break;
                 case MAIZE_PERFORMANCE:
                     intent = new Intent(context, MaizePerformanceActivity.class);

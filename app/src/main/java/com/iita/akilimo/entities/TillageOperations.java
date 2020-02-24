@@ -11,6 +11,7 @@ import lombok.Getter;
 
 @Data
 @Entity
+@Deprecated
 public class TillageOperations implements Parcelable {
     @Id
     long id;
