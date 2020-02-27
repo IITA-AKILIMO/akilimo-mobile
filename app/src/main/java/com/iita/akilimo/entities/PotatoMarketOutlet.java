@@ -1,6 +1,6 @@
 package com.iita.akilimo.entities;
 
-import com.iita.akilimo.utils.enums.EnumCountries;
+import com.iita.akilimo.utils.enums.EnumCountry;
 import com.iita.akilimo.utils.enums.EnumPotatoProduceType;
 import com.iita.akilimo.utils.enums.EnumPotatoUnitPrice;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
@@ -60,7 +60,7 @@ public class PotatoMarketOutlet {
                 return EnumPotatoUnitPrice.UNKNOWN;
             }
             for (EnumPotatoUnitPrice enumUnitPrice : EnumPotatoUnitPrice.values()) {
-                if (enumUnitPrice.convertToLocalCurrency(EnumCountries.OTHERS.currency(),null) == databaseValue) {
+                if (enumUnitPrice.convertToLocalCurrency(EnumCountry.OTHERS.currency(),null) == databaseValue) {
                     return enumUnitPrice;
                 }
             }
@@ -69,7 +69,7 @@ public class PotatoMarketOutlet {
 
         @Override
         public Double convertToDatabaseValue(EnumPotatoUnitPrice enumUnitPrice) {
-            return enumUnitPrice == null ? null : enumUnitPrice.convertToLocalCurrency(EnumCountries.OTHERS.currency(),null);
+            return enumUnitPrice == null ? null : enumUnitPrice.convertToLocalCurrency(EnumCountry.OTHERS.currency(),null);
         }
     }
 

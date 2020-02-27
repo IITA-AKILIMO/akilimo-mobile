@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/ubuntu"
             android:text="@string/lbl_manual_tillage_cost"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/manualTillageCardCost"
@@ -42,19 +42,23 @@
                 android:orientation="vertical"
                 android:padding="@dimen/spacing_small">
 
-                <RadioGroup
-                    android:id="@+id/rdgManualTillageCost"
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnPloughCost"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_rect_teal_outline"
+                    android:fontFamily="@font/ubuntu"
+                    android:text="Specify ploughing cost"
+                    android:textAllCaps="false" />
 
-                    <RadioButton
-                        android:id="@+id/rdSpecifyTillageCost"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/ubuntu"
-                        android:text="@string/lbl_specify_my_cost" />
-
-                </RadioGroup>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/manualPloughCostText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu"
+                    android:text="@string/empty_text"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    android:textColor="@color/colorPrimaryDark" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -69,7 +73,7 @@
             android:layout_marginTop="@dimen/spacing_medium"
             android:fontFamily="@font/ubuntu"
             android:text="@string/lbl_manual_ridge_cost"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:visibility="visible" />
 
         <androidx.cardview.widget.CardView
@@ -92,20 +96,23 @@
                 android:orientation="vertical"
                 android:padding="@dimen/spacing_small">
 
-                <RadioGroup
-                    android:id="@+id/rdgManualRidgeCost"
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnRidgeCost"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_rect_teal_outline"
+                    android:fontFamily="@font/ubuntu"
+                    android:text="Specify ridging costs"
+                    android:textAllCaps="false" />
 
-                    <RadioButton
-                        android:id="@+id/rdSpecifyRidgeCost"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/ubuntu"
-                        android:text="@string/lbl_specify_my_cost" />
-
-
-                </RadioGroup>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/manualRidgingCostText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu"
+                    android:text="@string/empty_text"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    android:textColor="@color/colorPrimaryDark" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>

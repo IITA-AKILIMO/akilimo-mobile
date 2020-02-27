@@ -11,7 +11,7 @@ apply plugin: 'io.objectbox'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
 
-ext.versionMajor = 6
+ext.versionMajor = 7
 ext.versionMinor = 0
 android {
     def buildNumber = computeBuildNumber()

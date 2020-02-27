@@ -33,14 +33,14 @@ public class ProfileInfo {
         @Override
         public EnumGender convertToEntityProperty(String databaseValue) {
             if (databaseValue == null) {
-                return EnumGender.OTHERS;
+                return EnumGender.OTHER;
             }
             for (EnumGender role : EnumGender.values()) {
                 if (role.name().equalsIgnoreCase(databaseValue)) {
                     return role;
                 }
             }
-            return EnumGender.OTHERS;
+            return EnumGender.OTHER;
         }
 
         @Override

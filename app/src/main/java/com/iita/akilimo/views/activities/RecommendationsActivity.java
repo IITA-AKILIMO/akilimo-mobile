@@ -17,7 +17,7 @@ import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.Recommendations;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.enums.EnumAdvice;
-import com.iita.akilimo.utils.enums.EnumCountries;
+import com.iita.akilimo.utils.enums.EnumCountry;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import java.util.ArrayList;
@@ -95,13 +95,13 @@ public class RecommendationsActivity extends BaseActivity {
         FR.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft));
         items.add(FR);
 
-        if (countryCode.equals(EnumCountries.NIGERIA.countryCode())) {
+        if (countryCode.equals(EnumCountry.NIGERIA.countryCode())) {
             Recommendations IC_MAIZE = new Recommendations();
             IC_MAIZE.setRecCode(EnumAdvice.IC_MAIZE);
             IC_MAIZE.setRecommendationName(icMaizeString);
             IC_MAIZE.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft));
             items.add(IC_MAIZE);
-        } else if (countryCode.equals(EnumCountries.TANZANIA.countryCode())) {
+        } else if (countryCode.equals(EnumCountry.TANZANIA.countryCode())) {
 
             Recommendations IC_SWEET_POTATO = new Recommendations();
             IC_SWEET_POTATO.setRecCode(EnumAdvice.IC_SWEET_POTATO);

@@ -123,6 +123,7 @@
     <string name="lbl_one_month_window">± 1 month</string>
     <string name="lbl_two_month_window">± 2 months</string>
 
+    <string name="lbl_to">to</string>
     <string name="lbl_no">No</string>
     <string name="lbl_yes">Yes</string>
     <string name="lbl_planting_harvest_dates">Planting and harvest dates</string>
@@ -136,6 +137,8 @@
     <string name="lbl_50_to_60">50–60</string>
     <string name="lbl_20_to_30">20–30</string>
     <string name="price_per_bag">Price (%1$s per 50 kg bag) for %2$s</string>
+
+    <string name="lbl_operation_cost">Operation cost for your field</string>
 
     <string name="current_field_yield">Exact investment (x %1$s per %2$s acre)</string>
     <string name="exact_investment_x_per_field_area">I want to specify the exact amount</string>
@@ -237,5 +240,11 @@
     <string name="lbl_exact_cost">Exact cost</string>
     <string name="lbl_cost_of_first_weeding_operation">Cost of first weeding operation in %s</string>
     <string name="lbl_cost_of_second_weeding_operation">Cost of second weeding operation in %s</string>
+
+    <string name="lbl_valid_bag_price">Please provide a valid bag price</string>
+    <string name="lbl_ploughing_cost_text">Cost of ploughing %.00f %s %.00f %s</string>
+    <string name="lbl_ridging_cost_text">Cost of ridging %.00f %s %.00f %s</string>
+    <string name="lbl_harrowing_cost_text">Cost of harrowing %.00f %s %.00f %s</string>
+    <string name="lbl_weeding_cost_text">Cost of weeding %.00f %s %.00f %s</string>
 
 </resources>

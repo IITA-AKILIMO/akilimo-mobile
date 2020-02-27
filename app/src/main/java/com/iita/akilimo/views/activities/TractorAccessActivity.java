@@ -2,6 +2,8 @@ package com.iita.akilimo.views.activities;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -10,25 +12,32 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.OperationCosts;
-import com.iita.akilimo.inherit.BaseActivity;
+import com.iita.akilimo.inherit.CostBaseActivity;
+import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.utils.MathHelper;
+import com.iita.akilimo.utils.enums.EnumCountry;
+import com.iita.akilimo.utils.enums.EnumOperation;
+import com.iita.akilimo.utils.enums.EnumOperationType;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
+import com.iita.akilimo.views.fragments.dialog.OperationCostsDialogFragment;
+
+import java.util.ArrayList;
 
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TractorAccessActivity extends BaseActivity {
+public class TractorAccessActivity extends CostBaseActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -62,16 +71,17 @@ public class TractorAccessActivity extends BaseActivity {
     private boolean hasRidger;
     private boolean hasHarrow;
     private boolean isDialogOpen;
+
     private boolean exactPloughCost;
     private boolean exactRidgeCost;
 
-    private double ploughCost;
-    private double ridgeCost;
     private String ploughCostText;
     private String ridgingCostText;
 
 
     private boolean dataValid;
+    private double tractorPloughCost;
+    private double tractorRidgeCost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +90,7 @@ public class TractorAccessActivity extends BaseActivity {
         ButterKnife.bind(this);
         context = this;
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
+        queue = Volley.newRequestQueue(this);
         mathHelper = new MathHelper();
 
         MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
@@ -87,10 +98,17 @@ public class TractorAccessActivity extends BaseActivity {
             currency = mandatoryInfo.getCurrency();
             areaUnit = mandatoryInfo.getAreaUnit();
             fieldSize = mandatoryInfo.getAreaSize();
+            enumCountry = mandatoryInfo.getCountryEnum();
         }
 
         initToolbar();
         initComponent();
+        operationCosts = objectBoxEntityProcessor.getOperationCosts();
+        if (operationCosts != null) {
+            tractorPloughCost = operationCosts.getTractorPloughCost();
+            tractorRidgeCost = operationCosts.getTractorRidgeCost();
+
+        }
     }
 
     @Override
@@ -125,13 +143,15 @@ public class TractorAccessActivity extends BaseActivity {
         chkPlough.setOnCheckedChangeListener((buttonView, isChecked) -> {
             hasPlough = isChecked;
             if (buttonView.isPressed() && isChecked) {
-                showOperationCostDialog(hasPlough, false);
+                String title = (getString(R.string.lbl_tractor_plough_cost, fieldSize, areaUnit));
+                loadOperationCost(EnumOperation.TILLAGE, EnumOperationType.MECHANICAL, title);
             }
         });
         chkRidger.setOnCheckedChangeListener((buttonView, isChecked) -> {
             hasRidger = isChecked;
             if (buttonView.isPressed() && isChecked) {
-                showOperationCostDialog(false, hasRidger);
+                String title = (getString(R.string.lbl_tractor_ridge_cost, fieldSize, areaUnit));
+                loadOperationCost(EnumOperation.RIDGING, EnumOperationType.MECHANICAL, title);
             }
         });
         btnFinish.setOnClickListener(view -> validate(false));
@@ -161,8 +181,9 @@ public class TractorAccessActivity extends BaseActivity {
         currentPractice.setTractorHarrow(hasHarrow);
         currentPractice.setTractorRidger(hasRidger);
 
-        operationCosts.setTractorPloughCost(ploughCost);
-        operationCosts.setTractorRidgeCost(ridgeCost);
+        operationCosts.setTractorPloughCost(tractorPloughCost);
+        operationCosts.setTractorRidgeCost(tractorRidgeCost);
+
         operationCosts.setExactTractorPloughPrice(exactPloughCost);
         operationCosts.setExactTractorRidgePrice(exactRidgeCost);
 
@@ -171,107 +192,45 @@ public class TractorAccessActivity extends BaseActivity {
         dataValid = true;
     }
 
-    private void showOperationCostDialog(final boolean isPloughCost, final boolean isRidgeCost) {
-        if (isDialogOpen) {
-            //do not open multiple dialogs
-            return;
-        }
+    @Override
+    protected void showDialogFullscreen(ArrayList<OperationCost> operationCostList, EnumOperation operation, EnumCountry enumCountry, String dialogTitle) {
+        Bundle arguments = new Bundle();
 
-        exactRidgeCost = false;
-        exactPloughCost = false;
-        final Dialog dialog = new Dialog(context);
+        arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList);
+        arguments.putParcelable(OperationCostsDialogFragment.OPERATION_NAME, operation);
+        arguments.putParcelable(OperationCostsDialogFragment.SELECTED_COUNTRY, enumCountry);
+        arguments.putString(OperationCostsDialogFragment.DIALOG_TITLE, dialogTitle);
 
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
-        dialog.setContentView(R.layout.dialog_plough_ridge_costs);
-        dialog.setCancelable(false);
+        OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment();
+        dialogFragment.setArguments(arguments);
 
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-
-        final TextView ploughCostTitle = dialog.findViewById(R.id.ploughCostTitle);
-        final TextView ridgeCostTitle = dialog.findViewById(R.id.ridgeCostTitle);
-
-        final EditText etExactPloughCost = dialog.findViewById(R.id.etExactPloughCost);
-        final EditText etExactRidgeCost = dialog.findViewById(R.id.etExactRidgeCost);
-
-        final RadioGroup rdgPloughCost = dialog.findViewById(R.id.rdgPloughCost);
-        final RadioGroup rdgRidgeCost = dialog.findViewById(R.id.rdgRidgeCost);
-
-        ploughCostTitle.setText(getString(R.string.lbl_tractor_plough_cost, fieldSize, areaUnit));
-        ridgeCostTitle.setText(getString(R.string.lbl_tractor_ridge_cost, fieldSize, areaUnit));
-        etExactRidgeCost.setText(ridgingCostText);
-        etExactPloughCost.setText(ploughCostText);
-
-        if (isPloughCost) {
-            rdgPloughCost.setVisibility(View.VISIBLE);
-            ploughCostTitle.setVisibility(View.VISIBLE);
-            rdgRidgeCost.setVisibility(View.GONE);
-            ridgeCostTitle.setVisibility(View.GONE);
-        }
-
-        if (isRidgeCost) {
-            rdgPloughCost.setVisibility(View.GONE);
-            ploughCostTitle.setVisibility(View.GONE);
-            rdgRidgeCost.setVisibility(View.VISIBLE);
-            ridgeCostTitle.setVisibility(View.VISIBLE);
-        }
-
-        rdgPloughCost.setOnCheckedChangeListener((group, radioIndex) -> {
-            switch (radioIndex) {
-                case R.id.rd_exact_plough_cost:
-                    exactPloughCost = true;
-                    dialog.findViewById(R.id.lytExactPlough).setVisibility(View.VISIBLE);
-                    break;
-            }
-        });
-
-        rdgRidgeCost.setOnCheckedChangeListener((group, radioIndex) -> {
-            switch (radioIndex) {
-                case R.id.rd_exact_ridge_cost:
-                    exactRidgeCost = true;
-                    dialog.findViewById(R.id.lytExactRidge).setVisibility(View.VISIBLE);
-                    break;
-            }
-        });
-
-        dialog.findViewById(R.id.bt_cancel).setOnClickListener(v -> {
-            isDialogOpen = false;
-            if (isPloughCost) {
-                chkPlough.setChecked(false);
-            } else if (isRidgeCost) {
-                chkRidger.setChecked(false);
-            }
-            dialog.dismiss();
-        });
-
-        dialog.findViewById(R.id.bt_submit).setOnClickListener(view -> {
-            if (isPloughCost) {
-                ploughCostText = etExactPloughCost.getText().toString().trim();
-                ploughCost = mathHelper.convertToDouble(ploughCostText);
-                if (ploughCost <= 0) {
-                    Snackbar.make(view, "Please enter a valid amount", Snackbar.LENGTH_LONG).show();
-                } else {
-                    dialog.dismiss();
-                    isDialogOpen = false;
-                }
-            }
-
-            if (isRidgeCost) {
-                ridgingCostText = etExactRidgeCost.getText().toString().trim();
-                ridgeCost = mathHelper.convertToDouble(ridgingCostText);
-                if (ridgeCost <= 0) {
-                    Snackbar.make(view, "Please enter a valid amount", Snackbar.LENGTH_LONG).show();
-                } else {
-                    dialog.dismiss();
-                    isDialogOpen = false;
+        dialogFragment.setOnDismissListener((operationCost, enumOperation, selectedCost, cancelled, isExactCost) -> {
+            if (!cancelled && enumOperation != null) {
+                switch (enumOperation) {
+                    case TILLAGE:
+                        tractorPloughCost = selectedCost;
+                        exactPloughCost = isExactCost;
+                        break;
+                    case RIDGING:
+                        tractorRidgeCost = selectedCost;
+                        exactRidgeCost = isExactCost;
+                        break;
                 }
             }
         });
 
-        dialog.show();
-        dialog.getWindow().setAttributes(lp);
-        isDialogOpen = true;
+
+        FragmentTransaction fragmentTransaction;
+        if (getFragmentManager() != null) {
+            fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            fragmentTransaction.setCustomAnimations(R.anim.animate_slide_in_left, R.anim.animate_slide_out_right);
+            Fragment prev = getSupportFragmentManager().findFragmentByTag(OperationCostsDialogFragment.ARG_ITEM_ID);
+            if (prev != null) {
+                fragmentTransaction.remove(prev);
+            }
+            fragmentTransaction.addToBackStack(null);
+            dialogFragment.show(getSupportFragmentManager(), OperationCostsDialogFragment.ARG_ITEM_ID);
+        }
     }
 }

@@ -18,7 +18,6 @@ import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.entities.PotatoMarketOutlet;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.entities.RecAdvice;
-import com.iita.akilimo.entities.TillageOperations;
 import com.iita.akilimo.models.Fertilizer;
 import com.iita.akilimo.entities.InvestmentAmount;
 import com.iita.akilimo.entities.MaizePerformance;
@@ -30,7 +29,6 @@ import com.iita.akilimo.utils.enums.EnumPotatoUnitPrice;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 import com.iita.akilimo.utils.enums.EnumUnitPrice;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
-import com.iita.akilimo.views.activities.SweetPotatoMarketActivity;
 
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;

@@ -3,7 +3,7 @@ package com.iita.akilimo.entities;
 
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.enums.EnumAreaUnits;
-import com.iita.akilimo.utils.enums.EnumCountries;
+import com.iita.akilimo.utils.enums.EnumCountry;
 import com.iita.akilimo.utils.enums.EnumFieldArea;
 
 import io.objectbox.annotation.Convert;
@@ -28,7 +28,7 @@ public class MandatoryInfo {
     public String currency;
 
     @Convert(converter = CountryConverter.class, dbType = String.class)
-    public EnumCountries countryEnum;
+    public EnumCountry countryEnum;
     @Convert(converter = AreaUnitConverter.class, dbType = String.class)
     public EnumAreaUnits areaUnitsEnum;
 
@@ -47,23 +47,23 @@ public class MandatoryInfo {
     }
 
     /* converter for custom data type*/
-    public static class CountryConverter implements PropertyConverter<EnumCountries, String> {
+    public static class CountryConverter implements PropertyConverter<EnumCountry, String> {
 
         @Override
-        public EnumCountries convertToEntityProperty(String databaseValue) {
+        public EnumCountry convertToEntityProperty(String databaseValue) {
             if (databaseValue == null) {
-                return EnumCountries.OTHERS;
+                return EnumCountry.OTHERS;
             }
-            for (EnumCountries role : EnumCountries.values()) {
+            for (EnumCountry role : EnumCountry.values()) {
                 if (role.countryCode().equalsIgnoreCase(databaseValue)) {
                     return role;
                 }
             }
-            return EnumCountries.OTHERS;
+            return EnumCountry.OTHERS;
         }
 
         @Override
-        public String convertToDatabaseValue(EnumCountries entityProperty) {
+        public String convertToDatabaseValue(EnumCountry entityProperty) {
             return entityProperty == null ? null : entityProperty.countryCode();
         }
     }

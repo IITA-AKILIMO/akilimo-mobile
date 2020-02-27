@@ -29,6 +29,7 @@ import com.iita.akilimo.entities.CassavaMarketOutlet;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.models.StarchFactory;
+import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.FireBaseEvents;
 import com.iita.akilimo.utils.MathHelper;
@@ -322,7 +323,7 @@ public class CassavaMarketActivity extends BaseActivity {
             } else {
                 priceText = "0";
                 unitPriceLocal = 0;
-                unitPriceLocal = enumUnitPrice.convertToLocalCurrency(currency,mathHelper);
+                unitPriceLocal = enumUnitPrice.convertToLocalCurrency(currency, mathHelper);
             }
             Double minAmount = mathHelper.convertCurrency(minAmountUSD, currency);
             Double maxAmount = mathHelper.convertCurrency(maxAmountUSD, currency);
@@ -382,7 +383,12 @@ public class CassavaMarketActivity extends BaseActivity {
     private void processStarchFactories() {
         final RestService restService = RestService.getInstance(queue, this);
         final ObjectMapper objectMapper = new ObjectMapper();
-        restService.setParameters("v2/starch-factories", countryCode, 5000);
+        final RestParameters restParameters = new RestParameters(
+                "v2/starch-factories", countryCode
+        );
+        restParameters.setInitialTimeout(5000);
+
+        restService.setParameters(restParameters);
 
         restService.getJsonArrList(new IVolleyCallback() {
             @Override

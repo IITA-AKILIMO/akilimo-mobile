@@ -22,7 +22,6 @@ import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.entities.PotatoMarketOutlet;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.entities.RecAdvice;
-import com.iita.akilimo.entities.TillageOperations;
 import com.iita.akilimo.entities.CurrentFieldYield;
 import com.iita.akilimo.models.Fertilizer;
 import com.iita.akilimo.models.FertilizerPrices;
@@ -275,28 +274,6 @@ public class ObjectBoxEntityProcessor {
                 .findFirst();
     }
     /* end saving of intercrop fertilizer */
-
-    public long saveTillageOperation(@NonNull TillageOperations tillageOperations) {
-        Box<TillageOperations> box = boxStore.boxFor(TillageOperations.class);
-//        clearTillageOperations();
-        return box.put(tillageOperations);
-    }
-
-    public TillageOperations getTillageOperation() {
-        Box<TillageOperations> box = boxStore.boxFor(TillageOperations.class);
-        return box.query()
-                .build()
-                .findFirst();
-    }
-
-    @Deprecated
-    public List<TillageOperations> getTillageOperations() {
-        Box<TillageOperations> box = boxStore.boxFor(TillageOperations.class);
-        return box.query()
-                .build()
-                .find();
-    }
-
 
     public long saveMaizePerformanceData(@NonNull MaizePerformance maizePerformanceModel) {
         Box<MaizePerformance> box = boxStore.boxFor(MaizePerformance.class);

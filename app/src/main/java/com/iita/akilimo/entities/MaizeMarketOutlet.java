@@ -1,6 +1,6 @@
 package com.iita.akilimo.entities;
 
-import com.iita.akilimo.utils.enums.EnumCountries;
+import com.iita.akilimo.utils.enums.EnumCountry;
 import com.iita.akilimo.utils.enums.EnumMaizeProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 import com.iita.akilimo.utils.enums.EnumUnitPrice;
@@ -60,7 +60,7 @@ public class MaizeMarketOutlet {
                 return EnumUnitPrice.UNKNOWN;
             }
             for (EnumUnitPrice produceType : EnumUnitPrice.values()) {
-                if (produceType.convertToLocalCurrency(EnumCountries.OTHERS.currency(),null) == databaseValue) {
+                if (produceType.convertToLocalCurrency(EnumCountry.OTHERS.currency(),null) == databaseValue) {
                     return produceType;
                 }
             }
@@ -69,7 +69,7 @@ public class MaizeMarketOutlet {
 
         @Override
         public Double convertToDatabaseValue(EnumUnitPrice entityProperty) {
-            return entityProperty == null ? null : entityProperty.convertToLocalCurrency(EnumCountries.OTHERS.currency(),null);
+            return entityProperty == null ? null : entityProperty.convertToLocalCurrency(EnumCountry.OTHERS.currency(),null);
         }
     }
 

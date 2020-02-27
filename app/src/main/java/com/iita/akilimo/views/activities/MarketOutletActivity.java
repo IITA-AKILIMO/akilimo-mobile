@@ -28,6 +28,7 @@ import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.models.StarchFactory;
+import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.FireBaseEvents;
 import com.iita.akilimo.utils.MathHelper;
@@ -532,7 +533,10 @@ public class MarketOutletActivity extends BaseActivity {
     private void processStarchFactories() {
         final RestService restService = RestService.getInstance(queue, this);
         final ObjectMapper objectMapper = new ObjectMapper();
-        restService.setParameters("v2/starch-factories", countryCode, 5000);
+        final RestParameters restParameters = new RestParameters(
+                "v2/starch-factories", countryCode
+        );
+        restService.setParameters(restParameters);
 
         restService.getJsonArrList(new IVolleyCallback() {
             @Override

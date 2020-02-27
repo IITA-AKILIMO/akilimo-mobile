@@ -19,7 +19,7 @@ import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
-import com.iita.akilimo.utils.enums.EnumCountries;
+import com.iita.akilimo.utils.enums.EnumCountry;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import java.util.ArrayList;
@@ -139,11 +139,11 @@ public class InterCropRecActivity extends BaseActivity {
     private void setAdapter() {
         //set data and list adapter
         items = new ArrayList<>();
-        if (countryCode.equalsIgnoreCase(EnumCountries.NIGERIA.countryCode())) {
+        if (countryCode.equalsIgnoreCase(EnumCountry.NIGERIA.countryCode())) {
             items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM, 0));
             items.add(new RecommendationOptions(maizeHeightString, EnumAdviceTasks.MAIZE_PERFORMANCE, 0));
             items.add(new RecommendationOptions(marketOutletMaizeString, EnumAdviceTasks.MARKET_OUTLET_MAIZE, 0));
-        } else if (countryCode.equalsIgnoreCase(EnumCountries.TANZANIA.countryCode())) {
+        } else if (countryCode.equalsIgnoreCase(EnumCountry.TANZANIA.countryCode())) {
             items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS, 0));
             items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
             items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, 0));

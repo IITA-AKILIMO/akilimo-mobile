@@ -264,8 +264,11 @@ public class FertilizersActivity extends BaseActivity {
 
     private void initializeFertilizerPriceList() {
         final RestService restService = RestService.getInstance(queue, this);
-
-        restService.setParameters("v2/fertilizer-prices", countryCode);
+        final RestParameters restParameters = new RestParameters(
+                "v2/fertilizer-prices", countryCode
+        );
+        restParameters.setInitialTimeout(5000);
+        restService.setParameters(restParameters);
         restService.getJsonArrList(new IVolleyCallback() {
             @Override
             public void onSuccessJsonString(String jsonStringResult) {

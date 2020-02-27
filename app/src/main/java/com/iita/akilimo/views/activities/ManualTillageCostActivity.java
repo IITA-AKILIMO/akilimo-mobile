@@ -1,27 +1,34 @@
 package com.iita.akilimo.views.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.google.android.gms.common.util.Strings;
+import com.android.volley.toolbox.Volley;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.OperationCosts;
-import com.iita.akilimo.entities.TillageOperations;
-import com.iita.akilimo.inherit.BaseActivity;
+import com.iita.akilimo.inherit.CostBaseActivity;
+import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.utils.MathHelper;
+import com.iita.akilimo.utils.enums.EnumCountry;
+import com.iita.akilimo.utils.enums.EnumOperation;
+import com.iita.akilimo.utils.enums.EnumOperationType;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
+import com.iita.akilimo.views.fragments.dialog.OperationCostsDialogFragment;
+
+import java.util.ArrayList;
 
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ManualTillageCostActivity extends BaseActivity {
+public class ManualTillageCostActivity extends CostBaseActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -31,13 +38,21 @@ public class ManualTillageCostActivity extends BaseActivity {
 
     @BindView(R.id.manualPloughCostTitle)
     TextView manualPloughCostTitle;
+
     @BindView(R.id.manualRidgeCostTitle)
     TextView manualRidgeCostTitle;
 
-    @BindView(R.id.rdgManualTillageCost)
-    RadioGroup rdgManualTillageCost;
-    @BindView(R.id.rdgManualRidgeCost)
-    RadioGroup rdgManualRidgeCost;
+    @BindView(R.id.manualPloughCostText)
+    TextView manualPloughCostText;
+
+    @BindView(R.id.manualRidgingCostText)
+    TextView manualRidgingCostText;
+
+
+    @BindView(R.id.btnPloughCost)
+    AppCompatButton btnPloughCost;
+    @BindView(R.id.btnRidgeCost)
+    AppCompatButton btnRidgeCost;
 
     @BindView(R.id.btnFinish)
     Button btnFinish;
@@ -51,6 +66,7 @@ public class ManualTillageCostActivity extends BaseActivity {
     private double manualRidgeCost = 0;
     private boolean dataValid;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +74,7 @@ public class ManualTillageCostActivity extends BaseActivity {
         ButterKnife.bind(this);
         context = this;
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
+        queue = Volley.newRequestQueue(this);
         mathHelper = new MathHelper();
 
         MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
@@ -65,14 +82,20 @@ public class ManualTillageCostActivity extends BaseActivity {
             currency = mandatoryInfo.getCurrency();
             areaUnit = mandatoryInfo.getAreaUnit();
             fieldSize = mandatoryInfo.getAreaSize();
-        }
-
-        operationCosts = objectBoxEntityProcessor.getOperationCosts();
-        if (operationCosts == null) {
-            operationCosts = new OperationCosts();
+            enumCountry = mandatoryInfo.getCountryEnum();
         }
         initToolbar();
         initComponent();
+
+        operationCosts = objectBoxEntityProcessor.getOperationCosts();
+        if (operationCosts != null) {
+            manualPloughCost = operationCosts.getManualPloughCost();
+            manualRidgeCost = operationCosts.getManualRidgeCost();
+
+            manualPloughCostText.setText(getString(R.string.lbl_ploughing_cost_text, fieldSize, areaUnit, manualPloughCost, enumCountry.currency()));
+            manualRidgingCostText.setText(getString(R.string.lbl_ridging_cost_text, fieldSize, areaUnit, manualRidgeCost, enumCountry.currency()));
+
+        }
     }
 
     @Override
@@ -86,32 +109,16 @@ public class ManualTillageCostActivity extends BaseActivity {
 
     @Override
     protected void initComponent() {
-        rdgManualTillageCost.setOnCheckedChangeListener((group, radioIndex) -> {
-            switch (radioIndex) {
-                case R.id.rdSpecifyTillageCost:
-                    manualPloughCost = 0;
-                    break;
-                default:
-                    break;
-            }
-        });
+        String ploughTitle = context.getString(R.string.lbl_manual_tillage_cost, fieldSize, areaUnit);
+        String ridgeTitle = context.getString(R.string.lbl_manual_ridge_cost, fieldSize, areaUnit);
 
-        rdgManualRidgeCost.setOnCheckedChangeListener((group, radioIndex) -> {
-            switch (radioIndex) {
-                case R.id.rdSpecifyRidgeCost:
-                    manualRidgeCost = 0;
-                    break;
-                default:
-                    break;
-            }
-        });
+        btnPloughCost.setOnClickListener(view -> loadOperationCost(EnumOperation.TILLAGE, EnumOperationType.MANUAL, ploughTitle));
 
+        btnRidgeCost.setOnClickListener(view -> loadOperationCost(EnumOperation.RIDGING, EnumOperationType.MANUAL, ridgeTitle));
 
         btnFinish.setOnClickListener(view -> validate(false));
         btnCancel.setOnClickListener(view -> closeActivity(false));
 
-        String ploughTitle = context.getString(R.string.lbl_manual_tillage_cost, fieldSize, areaUnit);
-        String ridgeTitle = context.getString(R.string.lbl_manual_ridge_cost, fieldSize, areaUnit);
         manualPloughCostTitle.setText(ploughTitle);
         manualRidgeCostTitle.setText(ridgeTitle);
     }
@@ -146,5 +153,46 @@ public class ManualTillageCostActivity extends BaseActivity {
         operationCosts.setManualRidgeCost(manualRidgeCost);
         //proceed to save
         objectBoxEntityProcessor.saveOperationCosts(operationCosts);
+    }
+
+    @Override
+    protected void showDialogFullscreen(ArrayList<OperationCost> operationCostList, EnumOperation operation, EnumCountry enumCountry, String dialogTitle) {
+        Bundle arguments = new Bundle();
+
+        arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList);
+        arguments.putParcelable(OperationCostsDialogFragment.OPERATION_NAME, operation);
+        arguments.putParcelable(OperationCostsDialogFragment.SELECTED_COUNTRY, enumCountry);
+
+        OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment();
+        dialogFragment.setArguments(arguments);
+
+        dialogFragment.setOnDismissListener((operationCost, enumOperation, selectedCost, cancelled,isExactCost) -> {
+            if (!cancelled && enumOperation != null) {
+                switch (enumOperation) {
+                    case TILLAGE:
+                        manualPloughCost = selectedCost;
+                        manualPloughCostText.setText(getString(R.string.lbl_ploughing_cost_text, fieldSize, areaUnit, selectedCost, enumCountry.currency()));
+                        break;
+                    case RIDGING:
+                        manualRidgeCost = selectedCost;
+                        manualRidgingCostText.setText(getString(R.string.lbl_ridging_cost_text, fieldSize, areaUnit, selectedCost, enumCountry.currency()));
+                        break;
+                }
+            }
+        });
+
+
+        FragmentTransaction fragmentTransaction;
+        if (getFragmentManager() != null) {
+            fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            fragmentTransaction.setCustomAnimations(R.anim.animate_slide_in_left, R.anim.animate_slide_out_right);
+            Fragment prev = getSupportFragmentManager().findFragmentByTag(OperationCostsDialogFragment.ARG_ITEM_ID);
+            if (prev != null) {
+                fragmentTransaction.remove(prev);
+            }
+            fragmentTransaction.addToBackStack(null);
+            dialogFragment.show(getSupportFragmentManager(), OperationCostsDialogFragment.ARG_ITEM_ID);
+        }
     }
 }
