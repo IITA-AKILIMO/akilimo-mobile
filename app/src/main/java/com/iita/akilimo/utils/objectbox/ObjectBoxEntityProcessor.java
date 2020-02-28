@@ -32,6 +32,7 @@ import com.iita.akilimo.models.InterCropFertilizer;
 import com.iita.akilimo.models.InterCropFertilizer_;
 import com.iita.akilimo.models.StarchFactory;
 import com.iita.akilimo.models.StarchFactory_;
+import com.iita.akilimo.utils.enums.EnumUseCase;
 
 import java.util.List;
 
@@ -238,23 +239,23 @@ public class ObjectBoxEntityProcessor {
                 .find();
     }
 
-    public List<InterCropFertilizer> getAvailableIntercropFertilizersByCountryUseCase(@NonNull String countryCode, String useCase) {
+    public List<InterCropFertilizer> getAvailableIntercropFertilizersByCountryUseCase(@NonNull String countryCode, EnumUseCase useCase) {
         Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
         QueryBuilder<InterCropFertilizer> fertilizerTypeQueryBuilder = box.query();
 
         return fertilizerTypeQueryBuilder
-                .equal(InterCropFertilizer_.useCase, useCase)
+                .equal(InterCropFertilizer_.useCase, useCase.name())
                 .equal(InterCropFertilizer_.countryCode, countryCode)
                 .build()
                 .find();
     }
 
-    public List<InterCropFertilizer> getSelectedIntercropFertilizers(@NonNull String deviceIdentifier, String useCase) {
+    public List<InterCropFertilizer> getSelectedIntercropFertilizers(@NonNull String deviceIdentifier, EnumUseCase useCase) {
         Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
 
         QueryBuilder<InterCropFertilizer> fertilizerTypeQueryBuilder = box.query();
         fertilizerTypeQueryBuilder.equal(InterCropFertilizer_.selected, true);
-        fertilizerTypeQueryBuilder.equal(InterCropFertilizer_.useCase, useCase);
+        fertilizerTypeQueryBuilder.equal(InterCropFertilizer_.useCase, useCase.name());
 
         return fertilizerTypeQueryBuilder
                 .equal(InterCropFertilizer_.countryCode, deviceIdentifier)
@@ -263,11 +264,11 @@ public class ObjectBoxEntityProcessor {
                 .find();
     }
 
-    public Fertilizer getSavedInterCropFertilizer(@NonNull String typeName, @NonNull String countryCode, String useCase) {
+    public Fertilizer getSavedInterCropFertilizer(@NonNull String typeName, @NonNull String countryCode, EnumUseCase useCase) {
         Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
 
         return box.query()
-                .equal(InterCropFertilizer_.useCase, useCase)
+                .equal(InterCropFertilizer_.useCase, useCase.name())
                 .equal(InterCropFertilizer_.countryCode, countryCode)
                 .equal(InterCropFertilizer_.type, typeName)
                 .build()

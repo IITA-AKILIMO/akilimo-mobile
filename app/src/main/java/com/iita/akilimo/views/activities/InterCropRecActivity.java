@@ -3,6 +3,7 @@ package com.iita.akilimo.views.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,7 +20,9 @@ import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
+import com.iita.akilimo.utils.enums.EnumAreaUnits;
 import com.iita.akilimo.utils.enums.EnumCountry;
+import com.iita.akilimo.utils.enums.EnumUseCase;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import java.util.ArrayList;
@@ -65,7 +68,7 @@ public class InterCropRecActivity extends BaseActivity {
     private Activity activity;
     private RecOptionsAdapter mAdapter;
     private List<RecommendationOptions> items = new ArrayList<>();
-    private String useCase;
+    private EnumUseCase useCase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,11 +87,11 @@ public class InterCropRecActivity extends BaseActivity {
             switch (mandatoryInfo.getCountryEnum()) {
                 case NIGERIA:
                     recommendations = getString(R.string.title_maize_intercropping);
-                    useCase = "CIM";
+                    useCase = EnumUseCase.CIM;
                     break;
                 case TANZANIA:
                     recommendations = getString(R.string.title_sweet_potato_intercropping);
-                    useCase = "CIS";
+                    useCase = EnumUseCase.CIS;
                     break;
             }
         }
@@ -123,7 +126,7 @@ public class InterCropRecActivity extends BaseActivity {
             recAdvice.setSPH(false);
             recAdvice.setSPP(false);
             recAdvice.setBPP(false);
-            recAdvice.setUseCase(useCase);
+            recAdvice.setUseCase(useCase.name());
 
             objectBoxEntityProcessor.saveRecAdvice(recAdvice);
             processRecommendations(activity);
@@ -142,6 +145,7 @@ public class InterCropRecActivity extends BaseActivity {
         if (countryCode.equalsIgnoreCase(EnumCountry.NIGERIA.countryCode())) {
             items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM, 0));
             items.add(new RecommendationOptions(maizeHeightString, EnumAdviceTasks.MAIZE_PERFORMANCE, 0));
+            items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
             items.add(new RecommendationOptions(marketOutletMaizeString, EnumAdviceTasks.MARKET_OUTLET_MAIZE, 0));
         } else if (countryCode.equalsIgnoreCase(EnumCountry.TANZANIA.countryCode())) {
             items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS, 0));
@@ -153,6 +157,7 @@ public class InterCropRecActivity extends BaseActivity {
         recyclerView.setAdapter(mAdapter);
 
         mAdapter.setOnItemClickListener((view, obj, position) -> {
+            Bundle args = new Bundle();
             Intent intent = null;
             EnumAdviceTasks advice = obj.getRecCode();
             switch (advice) {
@@ -161,6 +166,7 @@ public class InterCropRecActivity extends BaseActivity {
                     break;
                 case MARKET_OUTLET_CASSAVA:
                     intent = new Intent(context, CassavaMarketActivity.class);
+                    intent.putExtra(CassavaMarketActivity.useCaseTag, (Parcelable) useCase);
                     break;
                 case MARKET_OUTLET_SWEET_POTATO:
                     intent = new Intent(context, SweetPotatoMarketActivity.class);
@@ -174,7 +180,7 @@ public class InterCropRecActivity extends BaseActivity {
                 case AVAILABLE_FERTILIZERS_CIS:
                 case AVAILABLE_FERTILIZERS_CIM:
                     intent = new Intent(context, IntercropFertilizersActivity.class);
-                    intent.putExtra(IntercropFertilizersActivity.useCaseTag, useCase);
+                    intent.putExtra(IntercropFertilizersActivity.useCaseTag, (Parcelable) useCase);
                     break;
                 case MAIZE_PERFORMANCE:
                     intent = new Intent(context, MaizePerformanceActivity.class);
@@ -182,7 +188,7 @@ public class InterCropRecActivity extends BaseActivity {
             }
             if (intent != null) {
                 startActivity(intent);
-                Animatoo.animateSlideRight(this);
+                Animatoo.animateSlideLeft(this);
             } else {
                 Snackbar.make(view, "Item " + obj.getRecommendationName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
             }

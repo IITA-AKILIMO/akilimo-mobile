@@ -105,7 +105,9 @@ public class IntercropFertilizersActivity extends BaseActivity {
         modelMapper = new ModelMapper();
 
         Intent intent = getIntent();
-        useCase = intent.getStringExtra(useCaseTag);
+        if (intent != null) {
+            useCase = intent.getParcelableExtra(useCaseTag);
+        }
 
         MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {

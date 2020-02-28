@@ -20,6 +20,7 @@ import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.utils.FireBaseConfig;
 import com.iita.akilimo.utils.SessionManager;
+import com.iita.akilimo.utils.enums.EnumUseCase;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.views.activities.DstRecommendationActivity;
 import com.nabinbhandari.android.permissions.PermissionHandler;
@@ -44,7 +45,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected String countryCode = "ALL";
     protected String baseCurrency = "USD";
     protected String currency = "";
-    protected String useCase;
+    protected EnumUseCase useCase;
     protected String areaUnit = "";
     protected double fieldSize = 0;
     protected double fieldSizeAcre = 2.471;

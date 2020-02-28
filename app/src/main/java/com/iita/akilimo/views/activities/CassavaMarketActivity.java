@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -37,6 +38,7 @@ import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumCassavaProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 import com.iita.akilimo.utils.enums.EnumUnitPrice;
+import com.iita.akilimo.utils.enums.EnumUseCase;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import org.jetbrains.annotations.NotNull;
@@ -54,10 +56,15 @@ public class CassavaMarketActivity extends BaseActivity {
 
     private String LOG_TAG = CassavaMarketActivity.class.getSimpleName();
 
+    public static String useCaseTag = "useCase";
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindString(R.string.title_activity_cassava_market_outlet)
-    String marketOutletTitle;
+    String marketOutletLabel;
+
+    @BindView(R.id.marketOutLetTitle)
+    AppCompatTextView marketOutLetTitle;
 
     @BindView(R.id.factoryTitle)
     AppCompatTextView factoryTitle;
@@ -91,7 +98,7 @@ public class CassavaMarketActivity extends BaseActivity {
 
 
     MathHelper mathHelper;
-    private String selectedFactory;
+    private String selectedFactory = "NA";
 
     EnumCassavaProduceType enumCassavaProduceType;
     EnumUnitOfSale enumUnitOfSale;
@@ -137,14 +144,19 @@ public class CassavaMarketActivity extends BaseActivity {
         countryCode = mandatoryInfo.getCountryCode();
         currency = mandatoryInfo.getCurrency();
 
+        Intent intent = getIntent();
+        if (intent != null) {
+            useCase = intent.getParcelableExtra(useCaseTag);
+        }
+
         initToolbar();
         initComponent();
+        processStarchFactories();
+        processData();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
 
+    protected void processData() {
         List<StarchFactory> starchFactoriesList = objectBoxEntityProcessor.getStarchFactories(countryCode);
         addFactoriesRadioButtons(starchFactoriesList);
         cassavaMarketOutlet = objectBoxEntityProcessor.getCassavaMarketOutlet();
@@ -158,7 +170,6 @@ public class CassavaMarketActivity extends BaseActivity {
                 enumUnitOfSale = cassavaMarketOutlet.getEnumUnitOfSale();
                 enumUnitPrice = cassavaMarketOutlet.getEnumUnitPrice();
                 unitOfSale = enumUnitOfSale.unitOfSale();
-
                 switch (enumUnitOfSale) {
                     case UNIT_ONE_KG:
                         rdgUnitOfSale.check(R.id.rd_per_kg);
@@ -186,14 +197,13 @@ public class CassavaMarketActivity extends BaseActivity {
     protected void initToolbar() {
         toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(marketOutletTitle);
+        getSupportActionBar().setTitle(marketOutletLabel);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(v -> validate(false));
     }
 
     @Override
     protected void initComponent() {
-        processStarchFactories();
 
         rdgMarketOutlet.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
             factoryRequired = false;
@@ -238,7 +248,6 @@ public class CassavaMarketActivity extends BaseActivity {
         });
 
         rdgUnitOfSale.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
-            RadioButton radioButton = (RadioButton) radioGroup.findViewById(radioIndex);
             switch (radioIndex) {
                 case R.id.rd_per_kg:
                     enumUnitOfSale = EnumUnitOfSale.UNIT_ONE_KG;
@@ -249,20 +258,29 @@ public class CassavaMarketActivity extends BaseActivity {
                 case R.id.rd_100_kg_bag:
                     enumUnitOfSale = EnumUnitOfSale.UNIT_HUNDRED_KG;
                     break;
-                default:
                 case R.id.rd_per_tonne:
                     enumUnitOfSale = EnumUnitOfSale.UNIT_THOUSAND_KG;
                     break;
             }
-
-
-            unitOfSale = enumUnitOfSale.unitOfSale();
+            if (enumUnitOfSale != null) {
+                unitOfSale = enumUnitOfSale.unitOfSale();
+            }
             dataIsValid = false;
         });
 
 
         btnFinish.setOnClickListener(view -> validate(false));
         btnCancel.setOnClickListener(view -> closeActivity(false));
+        if (useCase == EnumUseCase.CIM) {
+            enumCassavaProduceType = EnumCassavaProduceType.ROOTS;
+            factoryRequired = false;
+            otherMarketsRequired = false;
+            selectionMade = true;
+            marketOutLetTitle.setVisibility(View.GONE);
+            marketOutletCard.setVisibility(View.GONE);
+            unitOfSaleTitle.setVisibility(View.VISIBLE);
+            unitOfSaleCard.setVisibility(View.VISIBLE);
+        }
     }
 
     public void onRadioButtonClicked(View radioButton) {
@@ -556,6 +574,7 @@ public class CassavaMarketActivity extends BaseActivity {
                     return;
                 }
             }
+            dataIsValid = true;
             dialog.dismiss();
             dialogOpen = false;
 

@@ -12,7 +12,7 @@ import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidObjectBrowser;
 
 public class Akilimo extends MultiDexApplication {
-    private final String DB_NAME = "AkilimoDBMAR";
+    private final String DB_NAME = "AkilimoDB_FEB";
     private BoxStore boxStore;
 
 
