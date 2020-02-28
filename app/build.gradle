@@ -165,8 +165,3 @@ dependencies {
     //debugImplementation because LeakCanary should only run in debug builds.
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
 }
-
-dependencies {
-    implementation 'androidx.appcompat:appcompat:+'
-    implementation 'androidx.constraintlayout:constraintlayout:+'
-}

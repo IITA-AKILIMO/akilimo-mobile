@@ -263,8 +263,9 @@ public class BuildComputeData {
     private ComputeRequest buildCurrentFieldYield(@Nonnull ComputeRequest computeRequest) {
         //check for values we have to give recommendations for
         CurrentFieldYield fieldYield = objectBoxEntityProcessor.getCurrentFieldYield();
-        currentFieldYield = (int) fieldYield.getYieldAmount();
-
+        if (fieldYield != null) {
+            currentFieldYield = (int) fieldYield.getYieldAmount();
+        }
         computeRequest.setCurrentFieldYield(currentFieldYield);
         return computeRequest;
     }

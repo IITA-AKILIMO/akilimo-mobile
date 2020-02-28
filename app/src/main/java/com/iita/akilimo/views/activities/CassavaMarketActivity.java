@@ -61,8 +61,7 @@ public class CassavaMarketActivity extends BaseActivity {
 
     @BindView(R.id.factoryTitle)
     AppCompatTextView factoryTitle;
-    @BindView(R.id.produceTypeTitle)
-    AppCompatTextView produceTypeTitle;
+
     @BindView(R.id.unitOfSaleTitle)
     AppCompatTextView unitOfSaleTitle;
 
@@ -71,9 +70,6 @@ public class CassavaMarketActivity extends BaseActivity {
 
     @BindView(R.id.rdgStarchFactories)
     RadioGroup rdgStarchFactories;
-
-    @BindView(R.id.rdgProduceType)
-    RadioGroup rdgProduceType;
 
     @BindView(R.id.rdgUnitOfSale)
     RadioGroup rdgUnitOfSale;
@@ -84,8 +80,6 @@ public class CassavaMarketActivity extends BaseActivity {
     @BindView(R.id.starchFactoryCard)
     CardView starchFactoryCard;
 
-    @BindView(R.id.produceTypeCard)
-    CardView produceTypeCard;
 
     @BindView(R.id.unitOfSaleCard)
     CardView unitOfSaleCard;
@@ -164,9 +158,6 @@ public class CassavaMarketActivity extends BaseActivity {
                 enumUnitOfSale = cassavaMarketOutlet.getEnumUnitOfSale();
                 enumUnitPrice = cassavaMarketOutlet.getEnumUnitPrice();
                 unitOfSale = enumUnitOfSale.unitOfSale();
-                if (enumCassavaProduceType == EnumCassavaProduceType.ROOTS) {
-                    rdgProduceType.check(R.id.rdRoots);
-                }
 
                 switch (enumUnitOfSale) {
                     case UNIT_ONE_KG:
@@ -220,11 +211,12 @@ public class CassavaMarketActivity extends BaseActivity {
                     unitPriceLocal = 0.0;
                     break;
                 case R.id.rdOtherMarket:
+                    enumCassavaProduceType = EnumCassavaProduceType.ROOTS;
                     selectedFactory = "NA";
                     otherMarketsRequired = true;
                     hideAll(false);
-                    produceTypeTitle.setVisibility(View.VISIBLE);
-                    produceTypeCard.setVisibility(View.VISIBLE);
+                    unitOfSaleTitle.setVisibility(View.VISIBLE);
+                    unitOfSaleCard.setVisibility(View.VISIBLE);
                     break;
             }
         });
@@ -243,16 +235,6 @@ public class CassavaMarketActivity extends BaseActivity {
                     dataIsValid = true;
                 }
             }
-        });
-
-        rdgProduceType.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
-            if (radioIndex == R.id.rdRoots) {
-                enumCassavaProduceType = EnumCassavaProduceType.ROOTS;
-            }
-
-            //display the next card
-            unitOfSaleTitle.setVisibility(View.VISIBLE);
-            unitOfSaleCard.setVisibility(View.VISIBLE);
         });
 
         rdgUnitOfSale.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
@@ -276,7 +258,6 @@ public class CassavaMarketActivity extends BaseActivity {
 
             unitOfSale = enumUnitOfSale.unitOfSale();
             dataIsValid = false;
-//
         });
 
 
@@ -319,7 +300,6 @@ public class CassavaMarketActivity extends BaseActivity {
             if (exactPriceSelected) {
                 unitPriceLocal = Double.parseDouble(priceText);
                 enumUnitPrice = EnumUnitPrice.PRICE_EXACT;
-                priceText = String.valueOf(cassavaMarketOutlet.getExactPrice());
             } else {
                 priceText = "0";
                 unitPriceLocal = 0;
@@ -365,16 +345,11 @@ public class CassavaMarketActivity extends BaseActivity {
         if (clearMarket) {
             rdgStarchFactories.clearCheck();
         } else {
-            rdgProduceType.clearCheck();
             rdgUnitOfSale.clearCheck();
         }
 
         factoryTitle.setVisibility(View.GONE);
         starchFactoryCard.setVisibility(View.GONE);
-
-        produceTypeTitle.setVisibility(View.GONE);
-        produceTypeCard.setVisibility(View.GONE);
-
 
         unitOfSaleTitle.setVisibility(View.GONE);
         unitOfSaleCard.setVisibility(View.GONE);

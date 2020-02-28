@@ -8,7 +8,7 @@ enum class EnumPotatoUnitPrice {
         var unitPriceUpper = -1.0
         override fun convertToLocalCurrency(
             toCurrency: String?,
-            mathHelper: MathHelper
+            mathHelper: MathHelper?
         ): Double {
             return (-1).toDouble()
         }
@@ -26,7 +26,7 @@ enum class EnumPotatoUnitPrice {
         var unitPriceUpper = 49.79
         override fun convertToLocalCurrency(
             toCurrency: String?,
-            mathHelper: MathHelper
+            mathHelper: MathHelper?
         ): Double {
             val usd = (unitPriceLower + unitPriceUpper) / 2
             return convertCurrency(usd, toCurrency, mathHelper)
@@ -45,7 +45,7 @@ enum class EnumPotatoUnitPrice {
         var unitPriceUpper = 51.95
         override fun convertToLocalCurrency(
             toCurrency: String?,
-            mathHelper: MathHelper
+            mathHelper: MathHelper?
         ): Double {
             val usd = (unitPriceLower + unitPriceUpper) / 2
             return convertCurrency(usd, toCurrency, mathHelper)
@@ -64,7 +64,7 @@ enum class EnumPotatoUnitPrice {
         var unitPriceUpper = 56.28
         override fun convertToLocalCurrency(
             toCurrency: String?,
-            mathHelper: MathHelper
+            mathHelper: MathHelper?
         ): Double {
             val usd = (unitPriceLower + unitPriceUpper) / 2
             return convertCurrency(usd, toCurrency, mathHelper)
@@ -81,7 +81,7 @@ enum class EnumPotatoUnitPrice {
     PRICE_EXACT {
         override fun convertToLocalCurrency(
             toCurrency: String?,
-            mathHelper: MathHelper
+            mathHelper: MathHelper?
         ): Double {
             return 0.0
         }
@@ -97,7 +97,7 @@ enum class EnumPotatoUnitPrice {
 
     abstract fun convertToLocalCurrency(
         toCurrency: String?,
-        mathHelper: MathHelper
+        mathHelper: MathHelper?
     ): Double
 
     abstract fun unitPricePerTonneLower(): Double
@@ -107,9 +107,19 @@ enum class EnumPotatoUnitPrice {
         private fun convertCurrency(
             amount: Double,
             toCurrency: String?,
-            mathHelper: MathHelper
+            mathHelper: MathHelper?
         ): Double {
-            return mathHelper.convertToLocalCurrency(amount, toCurrency)
+            val resp = when (mathHelper) {
+                null -> {
+                    val mh = MathHelper()
+                    mh.convertToLocalCurrency(amount, toCurrency)
+                }
+                else -> {
+                    mathHelper.convertToLocalCurrency(amount, toCurrency)
+                }
+            }
+
+            return resp
         }
     }
 }

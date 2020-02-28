@@ -96,6 +96,8 @@ public class SweetPotatoMarketActivity extends BaseActivity {
         initToolbar();
         initComponent();
 
+        enumPotatoProduceType = EnumPotatoProduceType.TUBERS;
+
         potatoMarketOutlet = objectBoxEntityProcessor.getPotatoMarketOutlet();
         if (potatoMarketOutlet != null) {
             produceTypeRadioIndex = potatoMarketOutlet.getProduceTypeRadioIndex();
@@ -125,12 +127,6 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
     @Override
     protected void initComponent() {
-        rdgPotatoProduceType.setOnCheckedChangeListener((group, radioIndex) -> {
-            if (radioIndex == R.id.rdTuber) {
-                enumPotatoProduceType = EnumPotatoProduceType.TUBERS;
-            }
-        });
-
         rdgUnitOfSalePotato.setOnCheckedChangeListener((group, radioIndex) -> {
             switch (radioIndex) {
                 case R.id.rd_per_kg:
@@ -148,8 +144,8 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             }
 
             if (enumUnitOfSale != null) {
-                unitOfSalePotatoTitle.setVisibility(View.VISIBLE);
-                unitOfSalePotatoCard.setVisibility(View.VISIBLE);
+//                unitOfSalePotatoTitle.setVisibility(View.VISIBLE);
+//                unitOfSalePotatoCard.setVisibility(View.VISIBLE);
                 unitOfSale = enumUnitOfSale.unitOfSale();
             }
         });
