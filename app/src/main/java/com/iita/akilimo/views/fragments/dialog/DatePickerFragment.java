@@ -5,9 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.DatePicker;
-
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,13 +13,8 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.utils.DateHelper;
-import com.iita.akilimo.utils.Tools;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
 public class DatePickerFragment extends AppCompatDialogFragment implements DatePickerDialog.OnDateSetListener {
     private static final String TAG = "DatePickerFragment";

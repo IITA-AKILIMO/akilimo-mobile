@@ -15,7 +15,6 @@ import com.android.volley.toolbox.Volley;
 import com.iita.akilimo.Akilimo;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.LocationInfo;
-import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.utils.SessionManager;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 

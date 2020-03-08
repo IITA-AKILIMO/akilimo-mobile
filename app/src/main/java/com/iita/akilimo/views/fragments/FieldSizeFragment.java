@@ -25,7 +25,6 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.MandatoryInfo;
-import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.utils.enums.EnumAreaUnits;
 import com.iita.akilimo.utils.enums.EnumFieldArea;

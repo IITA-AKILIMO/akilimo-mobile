@@ -11,7 +11,6 @@ import com.iita.akilimo.BuildConfig;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Locale;
 

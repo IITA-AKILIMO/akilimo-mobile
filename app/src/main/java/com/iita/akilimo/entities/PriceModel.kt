@@ -1,10 +1,8 @@
 package com.iita.akilimo.entities
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.iita.akilimo.utils.enums.EnumOperation
 import kotlinx.android.parcel.Parcelize
-import lombok.Data
 
 @Parcelize
 class PriceModel(

@@ -22,7 +22,6 @@ import com.google.android.gms.common.util.Strings;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecommendationAdapter;
-import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IRecommendationCallBack;
