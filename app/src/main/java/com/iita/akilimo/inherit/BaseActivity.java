@@ -20,6 +20,7 @@ import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.utils.FireBaseConfig;
 import com.iita.akilimo.utils.SessionManager;
+import com.iita.akilimo.utils.enums.EnumUseCase;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.views.activities.DstRecommendationActivity;
 import com.nabinbhandari.android.permissions.PermissionHandler;
@@ -40,11 +41,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected SessionManager sessionManager;
     protected RequestQueue queue;
     protected ObjectBoxEntityProcessor objectBoxEntityProcessor;
+
     protected String countryCode = "ALL";
     protected String baseCurrency = "USD";
     protected String currency = "";
+    protected EnumUseCase useCase;
     protected String areaUnit = "";
-
     protected double fieldSize = 0;
     protected double fieldSizeAcre = 2.471;
 
@@ -70,7 +72,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (!backPressed) {
             finish();
         }
-        Animatoo.animateShrink(this);
+        Animatoo.animateSlideRight(this);
     }
 
     /**
@@ -107,8 +109,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (!Strings.isEmptyOrWhitespace(buttonTitle)) {
             btnClose.setText(buttonTitle);
         }
-        btnClose.setOnClickListener(v -> {
-            Toast.makeText(getApplicationContext(), ((AppCompatButton) v).getText().toString() + " Clicked", Toast.LENGTH_SHORT).show();
+        btnClose.setOnClickListener(view -> {
+            Toast.makeText(getApplicationContext(), ((AppCompatButton) view).getText().toString() + " Clicked", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
 
@@ -143,17 +145,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void processRecommendations(@NonNull Activity activity) {
-
-//        if (postData == null) {
-//            Toast.makeText(activity, "Unable to prepare recommendations data, please try again", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
         Intent intent = new Intent(activity, DstRecommendationActivity.class);
-//        intent.putExtra(DstRecommendationActivity.REC_TAG, postData);
         activity.startActivity(intent);
     }
 
-    protected void fetchFireBaseConfig(@NotNull Activity homeActivity){
+    protected void fetchFireBaseConfig(@NotNull Activity homeActivity) {
         FireBaseConfig fireBaseConfig = new FireBaseConfig(homeActivity);
         fireBaseConfig.fetchNewRemoteConfig();
     }

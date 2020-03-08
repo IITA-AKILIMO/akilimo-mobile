@@ -39,7 +39,7 @@ public class Fertilizer implements Parcelable {
     private int weight;
 
     @JsonProperty("price")
-    private String price;
+    private Double price;
 
     @Unique
     @JsonProperty("fertilizerCountry")
@@ -48,6 +48,8 @@ public class Fertilizer implements Parcelable {
     @JsonProperty("currency")
     private String currency;
 
+    @JsonProperty("useCase")
+    private String useCase;
 
     private String countryCode;
     private String priceRange;
@@ -67,6 +69,11 @@ public class Fertilizer implements Parcelable {
     @JsonProperty("available")
     private boolean available;
 
+    @JsonProperty("cimAvailable")
+    private boolean cimAvailable;
+    @JsonProperty("cisAvailable")
+    private boolean cisAvailable;
+
     @Getter(AccessLevel.NONE)
     private boolean selected;
 
@@ -79,6 +86,14 @@ public class Fertilizer implements Parcelable {
 
     public boolean isAvailable() {
         return this.available;
+    }
+
+    public boolean isCimAvailable() {
+        return this.cimAvailable;
+    }
+
+    public boolean isCisAvailable() {
+        return this.cisAvailable;
     }
 
     public boolean isSelected() {
@@ -104,7 +119,7 @@ public class Fertilizer implements Parcelable {
         name = in.readString();
         type = in.readString();
         weight = in.readInt();
-        price = in.readString();
+        price = in.readDouble();
         currency = in.readString();
         countryCode = in.readString();
         priceRange = in.readString();
@@ -124,7 +139,7 @@ public class Fertilizer implements Parcelable {
         dest.writeString(name);
         dest.writeString(type);
         dest.writeInt(weight);
-        dest.writeString(price);
+        dest.writeDouble(price);
         dest.writeString(currency);
         dest.writeString(countryCode);
         dest.writeString(priceRange);

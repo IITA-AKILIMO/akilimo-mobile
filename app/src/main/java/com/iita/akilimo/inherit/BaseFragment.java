@@ -65,20 +65,7 @@ public abstract class BaseFragment extends Fragment {
         boxStore = ((Akilimo) getActivity().getApplicationContext()).getBoxStore();
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(getActivity());
         queue = Volley.newRequestQueue(context.getApplicationContext());
-
-        initCountryInfo();
         appVersion = sessionManager.getAppVersion();
-    }
-
-
-    public void initCountryInfo() {
-        if (objectBoxEntityProcessor != null) {
-            MandatoryInfo loc = objectBoxEntityProcessor.getMandatoryInfo();
-            if (loc != null) {
-                countryCode = loc.getCountryCode() != null ? loc.getCountryCode() : sessionManager.getDeviceCountry();
-                currency = loc.getCurrency() != null ? loc.getCurrency() : sessionManager.getDeviceLocaleCurrency();
-            }
-        }
     }
 
     @Nullable
@@ -98,22 +85,12 @@ public abstract class BaseFragment extends Fragment {
     protected StringBuilder loadLocationInfo(LocationInfo locationInfo) {
         StringBuilder stBuilder = new StringBuilder();
         if (locationInfo != null) {
-            String placeName = String.format("%s", locationInfo.getPlaceName());
             String latitude = String.valueOf(locationInfo.getLatitude());
             String longitude = String.valueOf(locationInfo.getLongitude());
-            String address = String.format("%s", locationInfo.getAddress());
             if (locationInfo.getLatitude() != 0 && locationInfo.getLongitude() != 0) {
-//            stBuilder.append("Name: ");
-//            stBuilder.append(placeName);
-                stBuilder.append("\n");
-                stBuilder.append("Latitude: ");
                 stBuilder.append(latitude);
-                stBuilder.append("\n");
-                stBuilder.append("Longitude: ");
+                stBuilder.append(",");
                 stBuilder.append(longitude);
-//                stBuilder.append("\n");
-//                stBuilder.append("Address: ");
-//                stBuilder.append(address);
             }
         }
 

@@ -6,20 +6,27 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.common.util.Strings;
+import com.iita.akilimo.entities.CassavaMarketOutlet;
 import com.iita.akilimo.entities.ComputeRequest;
+import com.iita.akilimo.entities.CurrentFieldYield;
+import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.LocationInfo;
+import com.iita.akilimo.entities.MaizeMarketOutlet;
 import com.iita.akilimo.entities.MandatoryInfo;
-import com.iita.akilimo.entities.MarketOutlet;
+import com.iita.akilimo.entities.OperationCosts;
 import com.iita.akilimo.entities.PlantingHarvestDates;
+import com.iita.akilimo.entities.PotatoMarketOutlet;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.entities.RecAdvice;
-import com.iita.akilimo.entities.TillageOperations;
 import com.iita.akilimo.models.Fertilizer;
-import com.iita.akilimo.models.InvestmentAmount;
-import com.iita.akilimo.models.MaizePerformance;
+import com.iita.akilimo.entities.InvestmentAmount;
+import com.iita.akilimo.entities.MaizePerformance;
+import com.iita.akilimo.models.InterCropFertilizer;
 import com.iita.akilimo.rest.request.RecommendationRequest;
 import com.iita.akilimo.rest.request.UserInfo;
-import com.iita.akilimo.utils.enums.EnumProduceType;
+import com.iita.akilimo.utils.enums.EnumCassavaProduceType;
+import com.iita.akilimo.utils.enums.EnumPotatoUnitPrice;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 import com.iita.akilimo.utils.enums.EnumUnitPrice;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
@@ -27,7 +34,10 @@ import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -62,7 +72,10 @@ public class BuildComputeData {
 
 
     private int cassavaUnitWeight = DEFAULT_UNAVAILABLE_INT;
-    private double unitPriceLocal;
+    private double cassavaUnitPriceLocal;
+    private double maizeUnitPriceLocal;
+    private double potatoUnitPriceLocal;
+
     private double maxInvestmentAmountLocal = 0.0;
     private String unitOfSale;
     private String areaUnits = DEFAULT_UNAVAILABLE;
@@ -74,6 +87,7 @@ public class BuildComputeData {
     private boolean plantingPracticesRec = false;
     private boolean scheduledPlantingRec = false;
     private boolean scheduledHarvestRec = false;
+
     private String harvestDate = DEFAULT_UNAVAILABLE;
     private String plantingDate = DEFAULT_UNAVAILABLE;
 
@@ -92,69 +106,88 @@ public class BuildComputeData {
 
 
     private String costLmoAreaBasis = DEFAULT_LMNO_BASIS;
-    private String costTractorPlough = DEFAULT_UNAVAILABLE;
-    private String costTractorHarrow = DEFAULT_UNAVAILABLE;
+    private double costTractorPlough;
+    private double costTractorHarrow;
 
-    private String costTractorRidging = DEFAULT_UNAVAILABLE;
-    private String costManualPloughing = DEFAULT_UNAVAILABLE;
-    private String costManualHarrowing = DEFAULT_UNAVAILABLE;
-    private String costManualRidging = DEFAULT_UNAVAILABLE;
+    private double costTractorRidging;
+    private double costManualPloughing;
+    private double costManualHarrowing;
+    private double costManualRidging;
 
-    String costWeedingOne = DEFAULT_UNAVAILABLE;
-    String costWeedingTwo = DEFAULT_UNAVAILABLE;
+    private double costWeedingOne;
+    private double costWeedingTwo;
 
-    boolean performsPloughing;
-    boolean performsHarrowing;
-    boolean performsRidging;
-    boolean sellToStarchFactory;
+    private boolean performsPloughing;
+    private boolean performsHarrowing;
+    private boolean performsRidging;
+    private boolean sellToStarchFactory;
 
-    String methodHarrowing = DEFAULT_PLOUGHING_METHOD;
-    String methodPloughing = DEFAULT_PLOUGHING_METHOD;
-    String methodRidging = DEFAULT_PLOUGHING_METHOD;
+    private String methodHarrowing = DEFAULT_PLOUGHING_METHOD;
+    private String methodPloughing = DEFAULT_PLOUGHING_METHOD;
+    private String methodRidging = DEFAULT_PLOUGHING_METHOD;
 
-    double cassavaUnitPrice = 0.0;
+    private double cassavaUnitPrice = 0.0;
 
-    String maizeProdType = DEFAULT_MAIZE_PD;
-    String maizeUnitWeight = DEFAULT_UNAVAILABLE;
-    String maizeUnitPrice = DEFAULT_UNAVAILABLE;
-    String currentMaizePerformance = DEFAULT_MAIZE_PERFORMANCE_VALUE;
+    private String maizeProdType = DEFAULT_MAIZE_PD;
+    private int maizeUnitWeight;
+    private double maizeUnitPrice;
+    private String currentMaizePerformance = DEFAULT_MAIZE_PERFORMANCE_VALUE;
 
-    String sweetPotatoProdType = DEFAULT_SWEET_POTATO_PD;
-    String sweetPotatoUnitWeight = DEFAULT_UNAVAILABLE;
-    String sweetPotatoUnitPrice = DEFAULT_UNAVAILABLE;
+    private String sweetPotatoProdType = DEFAULT_SWEET_POTATO_PD;
+    private int sweetPotatoUnitWeight;
+    private double sweetPotatoUnitPrice;
 
-    String userName = DEFAULT_USERNAME;
-    String secondName = DEFAULT_USERNAME;
-    String fieldDesc = DEFAULT_FIELD_DESC;
-    int riskAtt = DEFAULT_UNAVAILABLE_INT;
+    private String deviceId = DEFAULT_USERNAME;
+    private String userName = DEFAULT_USERNAME;
+    private String secondName = DEFAULT_USERNAME;
+    private String fieldDesc = DEFAULT_FIELD_DESC;
+    private int riskAtt = DEFAULT_UNAVAILABLE_INT;
 
-    String cassavaUpmOne = DEFAULT_UNAVAILABLE;
-    String cassavaUpmTwo = DEFAULT_UNAVAILABLE;
-    String cassavaUppOne = DEFAULT_UNAVAILABLE;
-    String cassavaUppTwo = DEFAULT_UNAVAILABLE;
-    String cassavaProduceType = DEFAULT_CASSAVA_PD;
-    String starchFactoryName = DEFAULT_UNAVAILABLE;
+    private double cassavaUpmOne;
+    private double cassavaUpmTwo;
+    private double cassavaUppOne;
+    private double cassavaUppTwo;
+    private String cassavaProduceType = DEFAULT_CASSAVA_PD;
+    private String starchFactoryName = DEFAULT_UNAVAILABLE;
 
     private ObjectBoxEntityProcessor objectBoxEntityProcessor;
+    private MathHelper mathHelper;
+    private ModelMapper modelMapper;
 
-    public BuildComputeData(@NonNull Activity context) {
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
+    public BuildComputeData(@NonNull Activity activity) {
+        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(activity);
+        mathHelper = new MathHelper(activity);
+        modelMapper = new ModelMapper();
     }
 
     public RecommendationRequest buildRecommendationReq() {
         ComputeRequest computeRequest = buildMandatoryInfo();
+
         UserInfo userInfo = buildProfileInfo();
 
         buildRequestedRec(computeRequest);
         buildPlantingDates(computeRequest);
         buildInvestmentAmount(computeRequest);
-        buildPlantingPractices(computeRequest);
+        buildCurrentFieldYield(computeRequest);
+        buildCurrentPractice(computeRequest);
+
         buildOperationCosts(computeRequest);
         buildWeedManagement(computeRequest);
         buildMaizePerformance(computeRequest);
-        buildMarketOutlet(computeRequest);
+        buildCassavaMarketOutlet(computeRequest);
+        buildMaizeMarketOutlet(computeRequest);
+        buildSweetPotatoMarketOutlet(computeRequest);
 
-        List<Fertilizer> fertilizerList = objectBoxEntityProcessor.getAvailableFertilizersByCountry(countryCode);
+        List<Fertilizer> fertilizerList;
+        Type listType = new TypeToken<List<Fertilizer>>() {
+        }.getType();
+
+        if (computeRequest.getInterCroppingPotatoRec() || computeRequest.getInterCroppingMaizeRec()) {
+            List<InterCropFertilizer> interCropFertilizers = objectBoxEntityProcessor.getAllIntercropFertilizersByCountry(countryCode);
+            fertilizerList = modelMapper.map(interCropFertilizers, listType);
+        } else {
+            fertilizerList = objectBoxEntityProcessor.getAvailableFertilizersByCountry(countryCode);
+        }
 
 
         return new RecommendationRequest(userInfo, computeRequest, fertilizerList);
@@ -166,19 +199,21 @@ public class BuildComputeData {
             ProfileInfo profileInfo = objectBoxEntityProcessor.getProfileInfo();
 
             if (profileInfo != null) {
-                userName = profileInfo.getFirstName() != null ? profileInfo.getFirstName() : DEFAULT_USERNAME;
-                secondName = profileInfo.getFirstName() != null ? profileInfo.getFirstName() : DEFAULT_USERNAME;
-                emailAddress = profileInfo.getEmail() != null ? profileInfo.getEmail() : DEFAULT_UNAVAILABLE;
-                fieldDesc = profileInfo.getFarmName() != null ? profileInfo.getFarmName() : DEFAULT_FIELD_DESC;
-                mobileNumber = profileInfo.getMobile() != null ? profileInfo.getMobile() : DEFAULT_UNAVAILABLE;
+                userName = Strings.isEmptyOrWhitespace(profileInfo.getUserName()) ? DEFAULT_USERNAME : profileInfo.getUserName();
+                fieldDesc = Strings.isEmptyOrWhitespace(profileInfo.getFieldDescription()) ? DEFAULT_UNAVAILABLE : profileInfo.getFieldDescription();
+                mobileNumber = Strings.isEmptyOrWhitespace(profileInfo.getFullMobileNumber()) ? DEFAULT_UNAVAILABLE : profileInfo.getFullMobileNumber();
+                mobileCountryCode = Strings.isEmptyOrWhitespace(profileInfo.getMobileCode()) ? DEFAULT_UNAVAILABLE : profileInfo.getMobileCode();
+                emailAddress = Strings.isEmptyOrWhitespace(profileInfo.getEmail()) ? DEFAULT_UNAVAILABLE : profileInfo.getEmail();
+                deviceId = Strings.isEmptyOrWhitespace(profileInfo.getDeviceID()) ? DEFAULT_UNAVAILABLE : profileInfo.getDeviceID();
 
-
-                userInfo.setDeviceID("akilimo-device");
+                emailRequired = profileInfo.isSendEmail();
+                smsRequired = profileInfo.isSendSms();
+                
+                userInfo.setDeviceID(deviceId);
+                userInfo.setUserName(userName);
                 userInfo.setMobileCountryCode(mobileCountryCode);
                 userInfo.setMobileNumber(mobileNumber);
                 userInfo.setFullPhoneNumber(fullPhoneNumber);
-                userInfo.setFirstName(userName);
-                userInfo.setSecondName(secondName);
                 userInfo.setEmailAddress(emailAddress);
                 userInfo.setFieldDescription(fieldDesc);
                 userInfo.setSendSms(smsRequired);
@@ -217,13 +252,26 @@ public class BuildComputeData {
     private ComputeRequest buildRequestedRec(@Nonnull ComputeRequest computeRequest) {
         //check for values we have to give recommendations for
         RecAdvice recAdvice = objectBoxEntityProcessor.getRecAdvice();
+        if (recAdvice != null) {
+            computeRequest.setInterCroppingMaizeRec(recAdvice.isCIM());
+            computeRequest.setInterCroppingPotatoRec(recAdvice.isCIS());
+            computeRequest.setUseCase(recAdvice.getUseCase());
 
-        computeRequest.setInterCroppingRec(recAdvice.isIC());
-        computeRequest.setFertilizerRec(recAdvice.isFR());
-        computeRequest.setPlantingPracticesRec(recAdvice.isBPP());
-        computeRequest.setScheduledPlantingRec(recAdvice.isSPP());
-        computeRequest.setScheduledHarvestRec(recAdvice.isSPH());
+            computeRequest.setFertilizerRec(recAdvice.isFR());
+            computeRequest.setPlantingPracticesRec(recAdvice.isBPP());
+            computeRequest.setScheduledPlantingRec(recAdvice.isSPP());
+            computeRequest.setScheduledHarvestRec(recAdvice.isSPH());
+        }
+        return computeRequest;
+    }
 
+    private ComputeRequest buildCurrentFieldYield(@Nonnull ComputeRequest computeRequest) {
+        //check for values we have to give recommendations for
+        CurrentFieldYield fieldYield = objectBoxEntityProcessor.getCurrentFieldYield();
+        if (fieldYield != null) {
+            currentFieldYield = (int) fieldYield.getYieldAmount();
+        }
+        computeRequest.setCurrentFieldYield(currentFieldYield);
         return computeRequest;
     }
 
@@ -260,23 +308,23 @@ public class BuildComputeData {
         return computeRequest;
     }
 
-    private ComputeRequest buildPlantingPractices(@Nonnull ComputeRequest computeRequest) {
+    private ComputeRequest buildCurrentPractice(@Nonnull ComputeRequest computeRequest) {
 
-        TillageOperations tillageOperations = objectBoxEntityProcessor.getTillageOperation();
-        if (tillageOperations != null) {
-            boolean hasTractor = tillageOperations.getTractorAvailable();
-            hasTractorHarrow = tillageOperations.getTractorHarrow();
-            hasTractorRidger = tillageOperations.getTractorRidger();
-            hasTractorPlough = tillageOperations.getTractorPlough();
-            performsPloughing = hasTractorPlough;
-            performsHarrowing = hasTractorHarrow;
-            performsRidging = hasTractorRidger;
+        CurrentPractice currentPractice = objectBoxEntityProcessor.getCurrentPractice();
+        if (currentPractice != null) {
+            hasTractorHarrow = currentPractice.getTractorHarrow();
+            hasTractorRidger = currentPractice.getTractorRidger();
+            hasTractorPlough = currentPractice.getTractorPlough();
+            performsPloughing = currentPractice.getPerformPloughing();
+            performsHarrowing = currentPractice.getPerformHarrowing();
+            performsRidging = currentPractice.getPerformRidging();
         }
 
 
         computeRequest.setPloughingDone(performsPloughing);
         computeRequest.setHarrowingDone(performsHarrowing);
         computeRequest.setRidgingDone(performsRidging);
+
         computeRequest.setMethodHarrowing(methodHarrowing);
         computeRequest.setMethodPloughing(methodPloughing);
         computeRequest.setMethodRidging(methodRidging);
@@ -286,13 +334,28 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildOperationCosts(@Nonnull ComputeRequest computeRequest) {
+        OperationCosts operationCosts = objectBoxEntityProcessor.getOperationCosts();
+        if (operationCosts != null) {
+            costTractorPlough = operationCosts.getTractorPloughCost();
+            costTractorHarrow = operationCosts.getTractorHarrowCost();
+            costTractorRidging = operationCosts.getTractorRidgeCost();
+
+            costManualPloughing = operationCosts.getManualPloughCost();
+            costManualHarrowing = operationCosts.getManualHarrowCost();
+            costManualRidging = operationCosts.getManualRidgeCost();
+
+            costWeedingOne = operationCosts.getFirstWeedingOperationCost();
+            costWeedingTwo = operationCosts.getSecondWeedingOperationCost();
+        }
         computeRequest.setCostLmoAreaBasis(costLmoAreaBasis);
         computeRequest.setCostTractorPloughing(costTractorPlough);
         computeRequest.setCostTractorHarrowing(costTractorHarrow);
         computeRequest.setCostTractorRidging(costTractorRidging);
+
         computeRequest.setCostManualPloughing(costManualPloughing);
         computeRequest.setCostManualHarrowing(costManualHarrowing);
         computeRequest.setCostManualRidging(costManualRidging);
+
         computeRequest.setCostWeedingOne(costWeedingOne);
         computeRequest.setCostWeedingTwo(costWeedingTwo);
 
@@ -316,25 +379,25 @@ public class BuildComputeData {
         return computeRequest;
     }
 
-    private ComputeRequest buildMarketOutlet(@Nonnull ComputeRequest computeRequest) {
-        MarketOutlet marketOutlet = objectBoxEntityProcessor.getMarketOutlet();
+    private ComputeRequest buildCassavaMarketOutlet(@Nonnull ComputeRequest computeRequest) {
+        CassavaMarketOutlet cassavaMarketOutlet = objectBoxEntityProcessor.getCassavaMarketOutlet();
 
         String currency = computeRequest.getCurrency();
-        if (marketOutlet != null) {
-            sellToStarchFactory = marketOutlet.isStarchFactoryRequired();
+        if (cassavaMarketOutlet != null) {
+            sellToStarchFactory = cassavaMarketOutlet.isStarchFactoryRequired();
             if (sellToStarchFactory) {
-                starchFactoryName = marketOutlet.getStarchFactory();
+                starchFactoryName = cassavaMarketOutlet.getStarchFactory();
             }
 
-            EnumUnitPrice up = marketOutlet.getEnumUnitPrice();
-            unitPriceLocal = up.convertToLocal(currency) <= 0 ? marketOutlet.getExactPrice() : up.convertToLocal(currency);
+            EnumUnitPrice up = cassavaMarketOutlet.getEnumUnitPrice();
+            cassavaUnitPriceLocal = up.convertToLocalCurrency(currency, mathHelper) <= 0 ? cassavaMarketOutlet.getExactPrice() : up.convertToLocalCurrency(currency, mathHelper);
 
-            EnumProduceType produce = marketOutlet.getEnumProduceType();
+            EnumCassavaProduceType produce = cassavaMarketOutlet.getEnumCassavaProduceType();
             cassavaProduceType = produce.produce();
 
-            EnumUnitOfSale uos = marketOutlet.getEnumUnitOfSale();
+            EnumUnitOfSale uos = cassavaMarketOutlet.getEnumUnitOfSale();
             cassavaUnitWeight = uos.unitWeight();
-            cassavaUnitPrice = unitPriceLocal;
+            cassavaUnitPrice = cassavaUnitPriceLocal;
         }
         computeRequest.setStarchFactoryName(starchFactoryName);
         computeRequest.setSellToStarchFactory(sellToStarchFactory);
@@ -349,14 +412,42 @@ public class BuildComputeData {
         computeRequest.setCassUPP2(cassavaUppTwo);
 
 
+        return computeRequest;
+    }
+
+    private ComputeRequest buildMaizeMarketOutlet(ComputeRequest computeRequest) {
+        MaizeMarketOutlet maizeMarketOutlet = objectBoxEntityProcessor.getMaizeMarketOutlet();
+        String currency = computeRequest.getCurrency();
+        if (maizeMarketOutlet != null) {
+            maizeProdType = maizeMarketOutlet.getEnumMaizeProduceType().produce();
+            maizeUnitWeight = maizeMarketOutlet.getEnumUnitOfSale().unitWeight();
+
+            EnumUnitPrice up = maizeMarketOutlet.getEnumUnitPrice();
+            maizeUnitPriceLocal = up.convertToLocalCurrency(currency, mathHelper) <= 0 ? maizeMarketOutlet.getExactPrice() : up.convertToLocalCurrency(currency, mathHelper);
+            maizeUnitPrice = maizeUnitPriceLocal;
+        }
         computeRequest.setMaizeProduceType(maizeProdType);
         computeRequest.setMaizeUnitWeight(maizeUnitWeight);
         computeRequest.setMaizeUnitPrice(maizeUnitPrice);
 
+        return computeRequest;
+    }
+
+    private ComputeRequest buildSweetPotatoMarketOutlet(ComputeRequest computeRequest) {
+        PotatoMarketOutlet potatoMarketOutlet = objectBoxEntityProcessor.getPotatoMarketOutlet();
+        String currency = computeRequest.getCurrency();
+        if (potatoMarketOutlet != null) {
+            sweetPotatoProdType = potatoMarketOutlet.getEnumPotatoProduceType().produce();
+            sweetPotatoUnitWeight = potatoMarketOutlet.getEnumUnitOfSale().unitWeight();
+
+            EnumPotatoUnitPrice up = potatoMarketOutlet.getEnumPotatoUnitPrice();
+            potatoUnitPriceLocal = up.convertToLocalCurrency(currency, mathHelper) <= 0 ? potatoMarketOutlet.getExactPrice() : up.convertToLocalCurrency(currency, mathHelper);
+            sweetPotatoUnitPrice = potatoUnitPriceLocal;
+        }
+
         computeRequest.setSweetPotatoProduceType(sweetPotatoProdType);
         computeRequest.setSweetPotatoUnitWeight(sweetPotatoUnitWeight);
         computeRequest.setSweetPotatoUnitPrice(sweetPotatoUnitPrice);
-
         return computeRequest;
     }
 }

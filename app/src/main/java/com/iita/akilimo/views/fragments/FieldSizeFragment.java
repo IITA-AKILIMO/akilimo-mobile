@@ -78,7 +78,6 @@ public class FieldSizeFragment extends BaseFragment {
     private String exact_acre;
     private String titleMessage;
 
-    private ProfileInfo profileInfo;
     private MandatoryInfo mandatoryInfo;
     private EnumAreaUnits areaUnits = EnumAreaUnits.ACRE;
     private EnumFieldArea fieldAreaEnum = EnumFieldArea.UNKNOWN;
@@ -118,7 +117,6 @@ public class FieldSizeFragment extends BaseFragment {
     @Override
     public void refreshData() {
         try {
-            profileInfo = objectBoxEntityProcessor.getProfileInfo();
             mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
             if (mandatoryInfo != null) {
                 fieldAreaEnum = mandatoryInfo.getFieldAreaEnum();
@@ -193,7 +191,7 @@ public class FieldSizeFragment extends BaseFragment {
     }
 
     private void saveFieldSize() {
-        profileInfo = objectBoxEntityProcessor.getProfileInfo();
+        mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
         if (mandatoryInfo == null) {
             mandatoryInfo = new MandatoryInfo();
         }

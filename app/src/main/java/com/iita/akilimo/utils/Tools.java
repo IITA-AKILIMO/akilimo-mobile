@@ -164,18 +164,22 @@ public class Tools {
         }
     }
 
-    public static String getFormattedDateSimple(Long dateTime) {
-        SimpleDateFormat newFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.US);
-        return newFormat.format(new Date(dateTime));
+    public static String formatCalendarToDateString(Date dateTime) {
+        SimpleDateFormat newFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
+        return newFormat.format(dateTime);
+    }
+
+    public static String formatLongToDateString(Long dateTime) {
+        return formatCalendarToDateString(new Date(dateTime));
     }
 
     public static String getFormattedDateEvent(Long dateTime) {
-        SimpleDateFormat newFormat = new SimpleDateFormat("EEE, MMM dd yyyy", Locale.US);
+        SimpleDateFormat newFormat = new SimpleDateFormat("EEE, MMM dd yyyy", Locale.ENGLISH);
         return newFormat.format(new Date(dateTime));
     }
 
     public static String getFormattedTimeEvent(Long time) {
-        SimpleDateFormat newFormat = new SimpleDateFormat("h:mm a", Locale.US);
+        SimpleDateFormat newFormat = new SimpleDateFormat("h:mm a", Locale.ENGLISH);
         return newFormat.format(new Date(time));
     }
 

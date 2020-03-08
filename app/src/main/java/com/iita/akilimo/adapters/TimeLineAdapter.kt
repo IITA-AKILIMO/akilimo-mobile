@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.vipulasri.timelineview.TimelineView
 import com.google.android.gms.common.util.Strings
@@ -18,11 +18,6 @@ import com.iita.akilimo.utils.enums.Orientation
 import com.iita.akilimo.utils.enums.StepStatus
 import kotlinx.android.synthetic.main.item_timeline.view.*
 
-
-/**
- * Created by Vipul Asri on 05-12-2015.
- */
-
 class TimeLineAdapter(
     private val mFeedList: List<TimeLineModel>,
     private var mAttributes: TimelineAttributes,
@@ -31,7 +26,7 @@ class TimeLineAdapter(
 ) : RecyclerView.Adapter<TimeLineAdapter.TimeLineViewHolder>() {
 
     private var lastPosition = -1
-    private var on_attach = true
+    private var onAttach = true
     private lateinit var mLayoutInflater: LayoutInflater
 
     override fun getItemViewType(position: Int): Int {
@@ -56,27 +51,19 @@ class TimeLineAdapter(
 
         val timeLineModel = mFeedList[position]
 
-        when {
-            timeLineModel.status == StepStatus.INCOMPLETE -> {
+        when (timeLineModel.status) {
+            StepStatus.INCOMPLETE -> {
                 holder.timeline.marker = VectorDrawableUtils.getDrawable(
                     holder.itemView.context,
                     R.drawable.ic_highlight_off,
                     mAttributes.markerIncompleteColor
                 )
             }
-            timeLineModel.status == StepStatus.COMPLETED -> {
+            StepStatus.COMPLETED -> {
                 holder.timeline.marker = VectorDrawableUtils.getDrawable(
                     holder.itemView.context,
                     R.drawable.ic_done,
                     mAttributes.markerCompleteColor
-                )
-            }
-            else -> {
-                holder.timeline.setMarker(
-                    ContextCompat.getDrawable(
-                        holder.itemView.context,
-                        R.drawable.ic_hourglass_empty
-                    ), mAttributes.markerIncompleteColor
                 )
             }
         }
@@ -99,7 +86,7 @@ class TimeLineAdapter(
 
     private fun setAnimation(view: View, position: Int) {
         if (position > lastPosition) {
-            ItemAnimation.animate(view, if (on_attach) position else -1, animation_type)
+            ItemAnimation.animate(view, if (onAttach) position else -1, animation_type)
             lastPosition = position
         }
     }
@@ -107,9 +94,9 @@ class TimeLineAdapter(
     inner class TimeLineViewHolder(itemView: View, viewType: Int) :
         RecyclerView.ViewHolder(itemView) {
 
-        val title = itemView.timelineTitle
-        val message = itemView.timelineContent
-        val timeline = itemView.timeline
+        val title: AppCompatTextView = itemView.timelineTitle
+        val message: AppCompatTextView = itemView.timelineContent
+        val timeline: TimelineView = itemView.timeline
 
         init {
             timeline.initLine(viewType)

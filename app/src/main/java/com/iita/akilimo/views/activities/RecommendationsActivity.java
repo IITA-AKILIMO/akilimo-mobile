@@ -12,10 +12,13 @@ import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.AdapterListAnimation;
+import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.Recommendations;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.enums.EnumAdvice;
+import com.iita.akilimo.utils.enums.EnumCountry;
+import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,14 +39,17 @@ public class RecommendationsActivity extends BaseActivity {
 
     @BindString(R.string.lbl_fertilizer_recommendations)
     String frString;
-    @BindString(R.string.lbl_intercropping)
-    String icString;
+    @BindString(R.string.lbl_intercropping_maize)
+    String icMaizeString;
+    @BindString(R.string.lbl_intercropping_sweet_potato)
+    String icSweetPotatoString;
     @BindString(R.string.lbl_scheduled_planting_and_harvest)
     String sphString;
     @BindString(R.string.lbl_best_planting_practices)
     String bppString;
 
 
+    private MandatoryInfo mandatoryInfo;
     private AdapterListAnimation mAdapter;
     private List<Recommendations> items = new ArrayList<>();
 
@@ -53,6 +59,11 @@ public class RecommendationsActivity extends BaseActivity {
         setContentView(R.layout.activity_recommendations_activity);
         ButterKnife.bind(this);
         context = this;
+
+        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
+        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        countryCode = mandatoryInfo.getCountryCode();
+        currency = mandatoryInfo.getCurrency();
 
         initToolbar();
         initComponent();
@@ -84,11 +95,20 @@ public class RecommendationsActivity extends BaseActivity {
         FR.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft));
         items.add(FR);
 
-        Recommendations IC = new Recommendations();
-        IC.setRecCode(EnumAdvice.IC);
-        IC.setRecommendationName(icString);
-        IC.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft));
-//        items.add(IC);
+        if (countryCode.equals(EnumCountry.NIGERIA.countryCode())) {
+            Recommendations IC_MAIZE = new Recommendations();
+            IC_MAIZE.setRecCode(EnumAdvice.IC_MAIZE);
+            IC_MAIZE.setRecommendationName(icMaizeString);
+            IC_MAIZE.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft));
+            items.add(IC_MAIZE);
+        } else if (countryCode.equals(EnumCountry.TANZANIA.countryCode())) {
+
+            Recommendations IC_SWEET_POTATO = new Recommendations();
+            IC_SWEET_POTATO.setRecCode(EnumAdvice.IC_SWEET_POTATO);
+            IC_SWEET_POTATO.setRecommendationName(icSweetPotatoString);
+            IC_SWEET_POTATO.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft));
+            items.add(IC_SWEET_POTATO);
+        }
 
         Recommendations SPH = new Recommendations();
         SPH.setRecCode(EnumAdvice.SPH);
@@ -131,7 +151,8 @@ public class RecommendationsActivity extends BaseActivity {
                 case BPP:
                     intent = new Intent(this, PlantingPracticesActivity.class);
                     break;
-                case IC:
+                case IC_MAIZE:
+                case IC_SWEET_POTATO:
                     intent = new Intent(this, InterCropRecActivity.class);
                     break;
                 case SPH:
@@ -142,7 +163,7 @@ public class RecommendationsActivity extends BaseActivity {
             }
             if (intent != null) {
                 startActivity(intent);
-                Animatoo.animateSlideRight(this);
+                Animatoo.animateSlideLeft(this);
             } else {
                 Snackbar.make(view, "Item " + obj.getRecommendationName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
             }

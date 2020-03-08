@@ -17,14 +17,13 @@ import com.android.volley.toolbox.ImageLoader;
 
 public class CustomVolleyRequest {
 
-    private static CustomVolleyRequest customVolleyRequest;
-    private static Context context;
+    private CustomVolleyRequest customVolleyRequest;
+    private Context context;
     private RequestQueue requestQueue;
     private ImageLoader imageLoader;
 
 
     private CustomVolleyRequest(Context context) {
-        CustomVolleyRequest.context = context;
         this.requestQueue = getRequestQueue();
 
         imageLoader = new ImageLoader(requestQueue,
@@ -44,7 +43,7 @@ public class CustomVolleyRequest {
                 });
     }
 
-    public static synchronized CustomVolleyRequest getInstance(Context context) {
+    public synchronized CustomVolleyRequest getInstance(Context context) {
         if (customVolleyRequest == null) {
             customVolleyRequest = new CustomVolleyRequest(context);
         }

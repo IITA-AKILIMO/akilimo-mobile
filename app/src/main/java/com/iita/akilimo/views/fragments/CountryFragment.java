@@ -15,12 +15,11 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
-import com.iita.akilimo.utils.enums.EnumCountries;
+import com.iita.akilimo.utils.enums.EnumCountry;
 
 import butterknife.BindView;
 
@@ -39,7 +38,7 @@ public class CountryFragment extends BaseFragment {
 
     private ProfileInfo profileInfo;
     private MandatoryInfo mandatoryInfo;
-    private EnumCountries countryEnum = EnumCountries.OTHERS;
+    private EnumCountry countryEnum = EnumCountry.OTHERS;
     private String name = "";
 
     public CountryFragment() {
@@ -98,20 +97,19 @@ public class CountryFragment extends BaseFragment {
         rdgCountry.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
             switch (radioIndex) {
                 case R.id.rdNg:
-                    countryEnum = EnumCountries.NIGERIA;
+                    countryEnum = EnumCountry.NIGERIA;
                     break;
                 case R.id.rdTz:
-                    countryEnum = EnumCountries.TANZANIA;
+                    countryEnum = EnumCountry.TANZANIA;
                     break;
                 default:
-                    countryEnum = EnumCountries.OTHERS;
+                    countryEnum = EnumCountry.OTHERS;
                     break;
             }
             if (mandatoryInfo == null) {
                 mandatoryInfo = new MandatoryInfo();
             }
 
-            Snackbar.make(view, countryEnum.countryName() + " Selected", Snackbar.LENGTH_SHORT).show();
             mandatoryInfo.setCountryCode(countryEnum.countryCode());
             mandatoryInfo.setCountryName(countryEnum.countryName());
             mandatoryInfo.setCurrency(countryEnum.currency());

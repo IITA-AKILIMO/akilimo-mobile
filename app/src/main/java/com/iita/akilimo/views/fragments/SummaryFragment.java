@@ -18,8 +18,10 @@ import com.github.vipulasri.timelineview.TimelineView;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.TimeLineAdapter;
+import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.MandatoryInfo;
+import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.entities.TimeLineModel;
 import com.iita.akilimo.entities.TimelineAttributes;
 import com.iita.akilimo.inherit.BaseFragment;
@@ -48,6 +50,9 @@ public class SummaryFragment extends BaseFragment {
     private TimelineAttributes mAttributes;
     private LocationInfo location;
     private MandatoryInfo mandatoryInfo;
+    private CurrentPractice currentPractice;
+    private PlantingHarvestDates plantingHarvestDates;
+
     private IFragmentCallBack fragmentCallBack;
     private TimeLineAdapter adapter;
 
@@ -56,6 +61,11 @@ public class SummaryFragment extends BaseFragment {
     private boolean areaUnitSelected = false;
     private boolean fieldSizeSelected = false;
     private boolean locationPicked = false;
+    private boolean plantingDateProvided = false;
+    private boolean harvestDateProvided = false;
+    private boolean currentPracticeSelected = false;
+    private boolean performPloughing = false;
+    private boolean performRidging = false;
 
     private String areaUnit;
     private double fieldSize = 0.0;
@@ -69,11 +79,6 @@ public class SummaryFragment extends BaseFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
-//        if (context instanceof IFragmentCallBack) {
-//            fragmentCallBack = (IFragmentCallBack) context;
-//        } else {
-//            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
-//        }
     }
 
     public void setOnFragmentCloseListener(IFragmentCallBack callBack) {
@@ -115,7 +120,6 @@ public class SummaryFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initRecyclerView();
-//        setDataListItems(false);
     }
 
     public void refreshData() {
@@ -124,6 +128,10 @@ public class SummaryFragment extends BaseFragment {
     }
 
     private void setDataListItems() {
+        String plantingDate = "";
+        String harvestDate = "";
+        StringBuilder ploughStr = new StringBuilder();
+        StringBuilder ridgeStr = new StringBuilder();
 
         if (objectBoxEntityProcessor == null) {
             return;
@@ -131,44 +139,69 @@ public class SummaryFragment extends BaseFragment {
 
         location = objectBoxEntityProcessor.getLocationInfo();
         mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        currentPractice = objectBoxEntityProcessor.getCurrentPractice();
+        plantingHarvestDates = objectBoxEntityProcessor.getPlantingHarvestDates();
         countryName = "";
         if (mandatoryInfo != null) {
-
             if (!Strings.isEmptyOrWhitespace(mandatoryInfo.getCountryName())) {
                 countrySelected = true;
                 countryName = mandatoryInfo.getCountryName();
             }
-
             if (!Strings.isEmptyOrWhitespace(mandatoryInfo.getAreaUnit())) {
                 areaUnitSelected = true;
                 areaUnit = mandatoryInfo.getAreaUnit();
             }
-
             fieldSize = mandatoryInfo.getAreaSize();
             if (fieldSize > 0.0) {
                 fieldSizeSelected = true;
             }
         }
+
         if (location != null) {
             pickedLocation = loadLocationInfo(location).toString();
             locationPicked = true;
         }
 
+        if (plantingHarvestDates != null) {
+            plantingDate = plantingHarvestDates.getPlantingDate();
+            harvestDate = plantingHarvestDates.getHarvestDate();
+            plantingDateProvided = !Strings.isEmptyOrWhitespace(plantingDate);
+            harvestDateProvided = !Strings.isEmptyOrWhitespace(plantingDate);
+        }
+
+        if (currentPractice != null) {
+            currentPracticeSelected = true;
+            performPloughing = currentPractice.getPerformPloughing();
+            performRidging = currentPractice.getPerformRidging();
+
+            if (performPloughing) {
+                ploughStr.append(currentPractice.getPloughingMethod());
+            } else {
+                ploughStr.append("No ploughing");
+            }
+
+
+            if (performRidging) {
+                ridgeStr.append(currentPractice.getRidgingMethod());
+            } else {
+                ridgeStr.append("No ridging");
+            }
+        }
         mDataList = new ArrayList<>();
-        mDataList.add(new TimeLineModel("Your country", countryName, countrySelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel("Area unit", areaUnit, areaUnitSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel("Field size", String.valueOf(fieldSize), fieldSizeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel("Farm location", pickedLocation, locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-
-//        mDataList.add(buildModel(StepStatus.COMPLETED));
-//        mDataList.add(buildModel(StepStatus.INCOMPLETE));
-
+        mDataList.add(new TimeLineModel("Country:", countryName, countrySelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel("Field:", String.valueOf(fieldSize), fieldSizeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel("Area:", areaUnit, areaUnitSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel("Location:", pickedLocation, locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel("Planting date:", plantingDate, plantingDateProvided ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel("Harvest date:", harvestDate, harvestDateProvided ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel("Ploughing:", ploughStr.toString(), currentPracticeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel("Ridging:", ridgeStr.toString(), currentPracticeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
 
         initAdapter();
     }
 
     private void initFragmentCallback() {
-        if (countrySelected && areaUnitSelected && fieldSizeSelected && locationPicked) {
+        if (countrySelected && areaUnitSelected && fieldSizeSelected && locationPicked && plantingDateProvided && harvestDateProvided && currentPracticeSelected) {
             if (fragmentCallBack == null) {
                 fragmentCallBack = (IFragmentCallBack) context;
                 setOnFragmentCloseListener(fragmentCallBack);

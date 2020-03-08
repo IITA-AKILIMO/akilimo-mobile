@@ -1,5 +1,6 @@
 package com.iita.akilimo.views.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -29,6 +30,7 @@ import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.models.Fertilizer;
 import com.iita.akilimo.models.FertilizerPrices;
+import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.FertilizerList;
 import com.iita.akilimo.utils.Tools;
@@ -49,6 +51,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FertilizersActivity extends BaseActivity {
+
+    public static String useCaseTag = "useCase";
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -95,6 +99,11 @@ public class FertilizersActivity extends BaseActivity {
         context = this;
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
         queue = Volley.newRequestQueue(context);
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            useCase = intent.getParcelableExtra(useCaseTag);
+        }
 
         MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
@@ -206,8 +215,9 @@ public class FertilizersActivity extends BaseActivity {
         errorImage.setVisibility(View.GONE);
         btnRetry.setVisibility(View.GONE);
 
+        final RestParameters restParameters = new RestParameters("v2/fertilizers", countryCode);
         final RestService restService = RestService.getInstance(queue, this);
-        restService.setParameters("v2/fertilizers", countryCode);
+        restService.setParameters(restParameters);
 
         restService.getJsonArrList(new IVolleyCallback() {
             @Override
@@ -256,8 +266,11 @@ public class FertilizersActivity extends BaseActivity {
 
     private void initializeFertilizerPriceList() {
         final RestService restService = RestService.getInstance(queue, this);
-
-        restService.setParameters("v2/fertilizer-prices", countryCode);
+        final RestParameters restParameters = new RestParameters(
+                "v2/fertilizer-prices", countryCode
+        );
+        restParameters.setInitialTimeout(5000);
+        restService.setParameters(restParameters);
         restService.getJsonArrList(new IVolleyCallback() {
             @Override
             public void onSuccessJsonString(String jsonStringResult) {

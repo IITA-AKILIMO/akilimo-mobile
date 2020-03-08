@@ -1,193 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <data>
-
-        <variable
-            name="operationCost"
-            type="com.iita.akilimo.entities.TillageOperations" />
-    </data>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/close_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:fontFamily="@font/ubuntu_bold"
+        android:text="@string/lbl_close" />
 
     <LinearLayout
+        android:id="@+id/top_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:fitsSystemWindows="true"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/spacing_medium"
+        android:layout_marginRight="@dimen/spacing_medium"
+        android:background="@drawable/custom_dialog_bg"
+        android:gravity="center_horizontal"
         android:orientation="vertical"
-        tools:context=".views.fragments.dialog.OperationCostDialogFragment">
+        android:padding="@dimen/padding"
+        android:paddingBottom="@dimen/spacing_medium">
 
 
-        <!-- com.iita.akilimo.entities -->
-        <com.google.android.material.appbar.AppBarLayout
+        <TextView
+            android:id="@+id/lblFragmentTitle"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_large"
+            android:layout_marginEnd="@dimen/spacing_xlarge"
+            android:fontFamily="@font/ubuntu"
+            android:padding="@dimen/spacing_medium"
+            android:text="Operation costs" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <ImageButton
-                    android:id="@+id/bt_close"
-                    android:layout_width="?attr/actionBarSize"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:tint="@android:color/white"
-                    app:srcCompat="@drawable/ic_close" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/ubuntu"
-                    android:gravity="center_vertical"
-                    android:text="Operation costs"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
-                    android:textColor="@color/white" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/bt_save"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:fontFamily="@font/ubuntu_bold"
-                    android:gravity="center"
-                    android:paddingLeft="@dimen/spacing_xsmall"
-                    android:paddingRight="@dimen/spacing_xsmall"
-                    android:text="@string/lbl_save"
-                    android:textColor="@color/white" />
-
-            </LinearLayout>
-
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/nested_scroll_view"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="none"
-            android:scrollingCache="true"
-            app:layout_behavior="@string/bar_scrolling_view_behavior">
+            android:layout_marginTop="@dimen/spacing_small"
+            android:orientation="vertical">
 
-            <LinearLayout
+
+            <RadioGroup
+                android:id="@+id/radioGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/appbar_padding_top"
-                tools:showIn="@layout/fragment_operation_cost_dialog">
+                android:orientation="vertical" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/input_layout_first_manual"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/exactPriceWrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Exact price"
+                android:imeOptions="actionDone"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/editExactCost"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="First ploughing operation, manual by hand hoe"
-                    android:visibility="gone">
+                    android:fontFamily="@font/ubuntu"
+                    android:imeOptions="actionDone"
+                    android:inputType="numberDecimal"
+                    android:selectAllOnFocus="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
 
-                    <EditText
-                        android:id="@+id/txtManualFirstOp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:text="@{String.valueOf(operationCost.firstManualPlough)}" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/input_layout_first_plough_tractor"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="First ploughing operation, by tractor+plough"
-                    android:visibility="gone">
-
-                    <EditText
-                        android:id="@+id/txtTractorPloughFirstOp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:text="@{String.valueOf(operationCost.firstMechPlough)}" />
-
-                </com.google.android.material.textfield.TextInputLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding">
 
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/input_layout_second_manual"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Second ploughing operation, manual by hand hoe"
-                    android:visibility="gone">
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/save_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_medium"
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:layout_marginRight="@dimen/spacing_medium"
+                android:adjustViewBounds="true"
+                android:fontFamily="@font/ubuntu"
+                android:text="Save"
+                android:textAllCaps="false" />
 
-                    <EditText
-                        android:id="@+id/txtManualSecondOp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:text="@{String.valueOf(operationCost.secondManualPlough)}" />
-                </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/input_layout_second_plough_tractor"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Second ploughing operation, by tractor+plough"
-                    android:visibility="gone">
-
-                    <EditText
-                        android:id="@+id/txtTractorPloughSecondOp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:text="@{String.valueOf(operationCost.secondMechPlough)}" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/input_layout_harrow"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Harrowing, by tractor+harrow"
-                    android:visibility="gone">
-
-                    <EditText
-                        android:id="@+id/txtHarrowOp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:text="@{String.valueOf(operationCost.tractorHarrowCost)}" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/input_layout_ridging_manual"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Ridging, manual by hand hoe"
-                    android:visibility="gone">
-
-                    <EditText
-                        android:id="@+id/txtRidgingManualOp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:text="@{String.valueOf(operationCost.manualRidging)}" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/input_layout_ridging_tractor"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Ridging, by tractor+ridger"
-                    android:visibility="gone">
-
-                    <EditText
-                        android:id="@+id/txtRidgingTractorOp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:text="@{String.valueOf(operationCost.tractorRidging)}" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
-
-        </androidx.core.widget.NestedScrollView>
     </LinearLayout>
-</layout>
+
+</RelativeLayout>

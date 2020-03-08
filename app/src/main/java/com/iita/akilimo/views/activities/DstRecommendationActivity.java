@@ -22,15 +22,22 @@ import com.google.android.gms.common.util.Strings;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecommendationAdapter;
+import com.iita.akilimo.entities.MandatoryInfo;
+import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseActivity;
+import com.iita.akilimo.interfaces.IRecommendationCallBack;
 import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.mappers.ComputedResponse;
+import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.rest.recommendation.RecommendationResponse;
 import com.iita.akilimo.rest.request.RecommendationRequest;
 import com.iita.akilimo.utils.BuildComputeData;
 import com.iita.akilimo.utils.Tools;
+import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
+import com.iita.akilimo.views.fragments.dialog.RecommendationChannelDialog;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -45,7 +52,7 @@ import butterknife.ButterKnife;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class DstRecommendationActivity extends BaseActivity {
+public class DstRecommendationActivity extends BaseActivity implements IRecommendationCallBack {
     public static final String REC_TAG = "REC";
 
     @BindView(R.id.toolbar)
@@ -72,7 +79,8 @@ public class DstRecommendationActivity extends BaseActivity {
     RecommendationRequest recData;
     RecommendationAdapter recAdapter;
     List<ComputedResponse> recList;
-
+    ProfileInfo profileInfo;
+    RecommendationChannelDialog recommendationChannelDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +88,7 @@ public class DstRecommendationActivity extends BaseActivity {
         setContentView(R.layout.activity_dst_recomendation);
         context = this;
         activity = this;
+        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
         ButterKnife.bind(this);
         initToolbar();
         initComponent();
@@ -102,13 +111,28 @@ public class DstRecommendationActivity extends BaseActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
-        fabRetry.setOnClickListener(view -> loadingAndDisplayContent());
+        profileInfo = objectBoxEntityProcessor.getProfileInfo();
+
+        lyt_progress.setVisibility(View.VISIBLE);
+        lyt_progress.setAlpha(1.0f);
+        recyclerView.setVisibility(View.GONE);
+        errorLabel.setVisibility(View.GONE);
+        errorImage.setVisibility(View.GONE);
+
+
+        fabRetry.setOnClickListener(view -> {
+            if (profileInfo != null) {
+                displayDialog(profileInfo);
+            }
+        });
 
         recAdapter = new RecommendationAdapter();
+        displayDialog(profileInfo);
+    }
 
+    private void buildRecommendationData() {
         BuildComputeData buildComputeData = new BuildComputeData(activity);
         recData = buildComputeData.buildRecommendationReq();
-
         loadingAndDisplayContent();
     }
 
@@ -116,6 +140,23 @@ public class DstRecommendationActivity extends BaseActivity {
     protected void validate(boolean backPressed) {
         throw new UnsupportedOperationException();
     }
+
+    private void displayDialog(ProfileInfo profileInfo) {
+        recommendationChannelDialog = new RecommendationChannelDialog(this, profileInfo);
+        recommendationChannelDialog.show(getSupportFragmentManager(), RecommendationChannelDialog.TAG);
+    }
+
+    @Override
+    public void onDataReceived(@NotNull ProfileInfo profileInfo) {
+        objectBoxEntityProcessor.saveProfileInfo(profileInfo);
+        buildRecommendationData();
+    }
+
+    @Override
+    public void onDismiss() {
+        buildRecommendationData();
+    }
+
 
     private void loadingAndDisplayContent() {
         lyt_progress.setVisibility(View.VISIBLE);
@@ -126,7 +167,12 @@ public class DstRecommendationActivity extends BaseActivity {
 
         final RequestQueue queue = Volley.newRequestQueue(context.getApplicationContext());
         final RestService restService = RestService.getInstance(queue, activity);
-        restService.setParameters("v2/recommendations", 45000);
+        final RestParameters restParameters = new RestParameters(
+                "v2/recommendations",
+                null
+        );
+        restParameters.setInitialTimeout(45000);
+        restService.setParameters(restParameters);
 
 
         //print recommendation data here
@@ -210,4 +256,5 @@ public class DstRecommendationActivity extends BaseActivity {
         }
         return recList;
     }
+
 }

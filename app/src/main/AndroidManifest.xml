@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.iita.akilimo">
-
     <!-- let us add permissions here -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -45,12 +44,31 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity
+            android:name=".views.activities.SweetPotatoMarketActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.activities.TractorAccessActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.activities.ManualTillageCostActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.activities.CassavaMarketActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.activities.MaizeMarketActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".views.activities.FertilizersActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.activities.IntercropFertilizersActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".views.activities.DatesActivity"
@@ -67,9 +85,7 @@
         <activity
             android:name=".views.activities.MapBoxActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.MarketOutletActivity"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".views.activities.RootYieldActivity"
             android:screenOrientation="portrait" />
@@ -80,11 +96,9 @@
             android:name=".views.activities.DstRecommendationActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".views.activities.HerbicideUseActivity"
+            android:name=".views.activities.WeedControlCostsActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.TillageOperationsActivity"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".views.activities.PlantingPracticesActivity"
             android:screenOrientation="portrait" />

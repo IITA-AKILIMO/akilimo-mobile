@@ -13,7 +13,7 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.AdapterGridTwoLine;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
-import com.iita.akilimo.models.CurrentFieldYield;
+import com.iita.akilimo.entities.CurrentFieldYield;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;

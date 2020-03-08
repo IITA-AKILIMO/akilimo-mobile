@@ -80,12 +80,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_large"
-        android:tint="@color/colorAccent"
+        android:tint="@color/colorAccentDark"
         app:backgroundTint="@color/white"
-        app:fabSize="mini"
+        app:fabSize="auto"
         app:layout_anchor="@id/toolbar"
         app:layout_anchorGravity="end|right|bottom"
         app:rippleColor="@color/purple_100"
-        app:srcCompat="@drawable/ic_refresh" />
+        app:srcCompat="@drawable/ic_contact" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

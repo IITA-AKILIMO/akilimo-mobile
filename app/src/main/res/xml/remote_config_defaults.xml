@@ -10,10 +10,18 @@
     </entry>
     <entry>
         <key>api_url</key>
-        <value>spring.tsobu.co.ke/</value>
+        <value>spring.akilimo.org/</value>
     </entry>
     <entry>
         <key>api_endpoint</key>
         <value>api/</value>
+    </entry>
+    <entry>
+        <key>ngnRate</key>
+        <value>360</value>
+    </entry>
+    <entry>
+        <key>tzsRate</key>
+        <value>2250</value>
     </entry>
 </defaultsMap><!-- END xml_defaults -->

@@ -3,6 +3,7 @@ package com.iita.akilimo.views.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,7 +20,9 @@ import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
-import com.iita.akilimo.utils.enums.EnumCountries;
+import com.iita.akilimo.utils.enums.EnumAreaUnits;
+import com.iita.akilimo.utils.enums.EnumCountry;
+import com.iita.akilimo.utils.enums.EnumUseCase;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import java.util.ArrayList;
@@ -45,19 +48,29 @@ public class InterCropRecActivity extends BaseActivity {
     @BindString(R.string.lbl_planting_harvest)
     String plantingString;
 
-    @BindString(R.string.lbl_available_fertilizers)
+    @BindString(R.string.lbl_fertilizer_costs)
     String fertilizerString;
 
     @BindString(R.string.lbl_market_outlet)
     String marketOutletString;
+    @BindString(R.string.lbl_market_outlet_maize)
+    String marketOutletMaizeString;
+
     @BindString(R.string.lbl_typical_yield)
     String rootYieldString;
+
     @BindString(R.string.lbl_maize_performance)
     String maizeHeightString;
+
+    @BindString(R.string.lbl_sweet_potato_prices)
+    String sweetPotatoPricesString;
 
     private Activity activity;
     private RecOptionsAdapter mAdapter;
     private List<RecommendationOptions> items = new ArrayList<>();
+    private EnumUseCase useCase;
+    private boolean icMaize;
+    private boolean icPotato;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +81,22 @@ public class InterCropRecActivity extends BaseActivity {
         activity = this;
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
 
+        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        if (mandatoryInfo != null) {
+            countryCode = mandatoryInfo.getCountryCode();
+            currency = mandatoryInfo.getCurrency();
+
+            switch (mandatoryInfo.getCountryEnum()) {
+                case NIGERIA:
+                    recommendations = getString(R.string.title_maize_intercropping);
+                    useCase = EnumUseCase.CIM;
+                    break;
+                case TANZANIA:
+                    recommendations = getString(R.string.title_sweet_potato_intercropping);
+                    useCase = EnumUseCase.CIS;
+                    break;
+            }
+        }
         initToolbar();
         initComponent();
     }
@@ -94,19 +123,16 @@ public class InterCropRecActivity extends BaseActivity {
                 recAdvice = new RecAdvice();
             }
             recAdvice.setFR(false);
-            recAdvice.setIC(true);
+            recAdvice.setCIM(icMaize);
+            recAdvice.setCIS(icPotato);
             recAdvice.setSPH(false);
             recAdvice.setSPP(false);
             recAdvice.setBPP(false);
+            recAdvice.setUseCase(useCase.name());
 
             objectBoxEntityProcessor.saveRecAdvice(recAdvice);
             processRecommendations(activity);
         });
-        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
-        if (mandatoryInfo != null) {
-            countryCode = mandatoryInfo.getCountryCode();
-            currency = mandatoryInfo.getCurrency();
-        }
         setAdapter();
     }
 
@@ -118,36 +144,47 @@ public class InterCropRecActivity extends BaseActivity {
     private void setAdapter() {
         //set data and list adapter
         items = new ArrayList<>();
-
-        items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS, 0));
-        items.add(new RecommendationOptions(plantingString, EnumAdviceTasks.PLANTING_AND_HARVEST, 0));
-        items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET, 0));
-        if (countryCode.equalsIgnoreCase(EnumCountries.NIGERIA.countryCode())) {
-            //maize performance only applicable to nigeria
+        if (countryCode.equalsIgnoreCase(EnumCountry.NIGERIA.countryCode())) {
+            icMaize = true;
+            items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM, 0));
             items.add(new RecommendationOptions(maizeHeightString, EnumAdviceTasks.MAIZE_PERFORMANCE, 0));
+            items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
+            items.add(new RecommendationOptions(marketOutletMaizeString, EnumAdviceTasks.MARKET_OUTLET_MAIZE, 0));
+        } else if (countryCode.equalsIgnoreCase(EnumCountry.TANZANIA.countryCode())) {
+            icPotato = true;
+            items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS, 0));
+            items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
+            items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, 0));
+            items.add(new RecommendationOptions(sweetPotatoPricesString, EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO, 0));
         }
-//        items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.TYPICAL_ROOT_YIELD, 0));
-
         mAdapter = new RecOptionsAdapter(this, items, ItemAnimation.FADE_IN);
         recyclerView.setAdapter(mAdapter);
 
-        // on item list clicked
         mAdapter.setOnItemClickListener((view, obj, position) -> {
-            //let us process the data
+            Bundle args = new Bundle();
             Intent intent = null;
             EnumAdviceTasks advice = obj.getRecCode();
             switch (advice) {
                 case PLANTING_AND_HARVEST:
                     intent = new Intent(context, DatesActivity.class);
                     break;
-                case MARKET_OUTLET:
-                    intent = new Intent(context, MarketOutletActivity.class);
+                case MARKET_OUTLET_CASSAVA:
+                    intent = new Intent(context, CassavaMarketActivity.class);
+                    intent.putExtra(CassavaMarketActivity.useCaseTag, (Parcelable) useCase);
                     break;
-                case TYPICAL_ROOT_YIELD:
+                case MARKET_OUTLET_SWEET_POTATO:
+                    intent = new Intent(context, SweetPotatoMarketActivity.class);
+                    break;
+                case MARKET_OUTLET_MAIZE:
+                    intent = new Intent(context, MaizeMarketActivity.class);
+                    break;
+                case CURRENT_CASSAVA_YIELD:
                     intent = new Intent(context, RootYieldActivity.class);
                     break;
-                case AVAILABLE_FERTILIZERS:
-                    intent = new Intent(context, FertilizersActivity.class);
+                case AVAILABLE_FERTILIZERS_CIS:
+                case AVAILABLE_FERTILIZERS_CIM:
+                    intent = new Intent(context, IntercropFertilizersActivity.class);
+                    intent.putExtra(IntercropFertilizersActivity.useCaseTag, (Parcelable) useCase);
                     break;
                 case MAIZE_PERFORMANCE:
                     intent = new Intent(context, MaizePerformanceActivity.class);
@@ -155,7 +192,7 @@ public class InterCropRecActivity extends BaseActivity {
             }
             if (intent != null) {
                 startActivity(intent);
-                Animatoo.animateSlideRight(this);
+                Animatoo.animateSlideLeft(this);
             } else {
                 Snackbar.make(view, "Item " + obj.getRecommendationName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
             }

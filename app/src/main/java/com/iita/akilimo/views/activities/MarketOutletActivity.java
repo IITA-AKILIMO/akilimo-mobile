@@ -23,17 +23,17 @@ import com.google.android.gms.common.util.Strings;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
+import com.iita.akilimo.entities.CassavaMarketOutlet;
 import com.iita.akilimo.entities.MandatoryInfo;
-import com.iita.akilimo.entities.MarketOutlet;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.models.StarchFactory;
+import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.FireBaseEvents;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.Tools;
-import com.iita.akilimo.utils.enums.EnumCountries;
-import com.iita.akilimo.utils.enums.EnumProduceType;
+import com.iita.akilimo.utils.enums.EnumCassavaProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 import com.iita.akilimo.utils.enums.EnumUnitPrice;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
@@ -50,13 +50,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
+@Deprecated
 public class MarketOutletActivity extends BaseActivity {
 
     private String LOG_TAG = MarketOutletActivity.class.getSimpleName();
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindString(R.string.title_activity_market_outlet)
+    @BindString(R.string.title_activity_cassava_market_outlet)
     String marketOutletTitle;
 
     @BindView(R.id.factoryTitle)
@@ -137,7 +138,7 @@ public class MarketOutletActivity extends BaseActivity {
     MathHelper mathHelper;
     private String selectedFactory;
 
-    EnumProduceType enumProduceType;
+    EnumCassavaProduceType enumCassavaProduceType;
     EnumUnitOfSale enumUnitOfSale;
     EnumUnitPrice enumUnitPrice;
 
@@ -148,7 +149,7 @@ public class MarketOutletActivity extends BaseActivity {
 
     String priceText;
     String unitOfSale;
-    private MarketOutlet marketOutlet;
+    private CassavaMarketOutlet cassavaMarketOutlet;
 
     private boolean factoryRequired;
     private boolean otherMarketsRequired;
@@ -166,14 +167,14 @@ public class MarketOutletActivity extends BaseActivity {
 
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
         queue = Volley.newRequestQueue(context);
-        mathHelper = new MathHelper();
+        mathHelper = new MathHelper(this);
         fireBaseEvents = FireBaseEvents.newInstance(context);
 
-        marketOutlet = objectBoxEntityProcessor.getMarketOutlet();
-        if (marketOutlet == null) {
-            marketOutlet = new MarketOutlet();
+        cassavaMarketOutlet = objectBoxEntityProcessor.getCassavaMarketOutlet();
+        if (cassavaMarketOutlet == null) {
+            cassavaMarketOutlet = new CassavaMarketOutlet();
         } else {
-            selectedFactory = marketOutlet.getStarchFactory();
+            selectedFactory = cassavaMarketOutlet.getStarchFactory();
         }
 
         MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
@@ -191,17 +192,17 @@ public class MarketOutletActivity extends BaseActivity {
         List<StarchFactory> starchFactoriesList = objectBoxEntityProcessor.getStarchFactories(countryCode);
         addFactoriesRadioButtons(starchFactoriesList);
 
-        marketOutlet = objectBoxEntityProcessor.getMarketOutlet();
-        if (marketOutlet != null) {
-            boolean sfRequired = marketOutlet.isStarchFactoryRequired();
-            priceText = String.valueOf(marketOutlet.getExactPrice());
+        cassavaMarketOutlet = objectBoxEntityProcessor.getCassavaMarketOutlet();
+        if (cassavaMarketOutlet != null) {
+            boolean sfRequired = cassavaMarketOutlet.isStarchFactoryRequired();
+            priceText = String.valueOf(cassavaMarketOutlet.getExactPrice());
             rdgMarketOutlet.check(sfRequired ? R.id.rdFactory : R.id.rdOtherMarket);
             if (!sfRequired) {
-                enumProduceType = marketOutlet.getEnumProduceType();
-                enumUnitOfSale = marketOutlet.getEnumUnitOfSale();
-                enumUnitPrice = marketOutlet.getEnumUnitPrice();
+                enumCassavaProduceType = cassavaMarketOutlet.getEnumCassavaProduceType();
+                enumUnitOfSale = cassavaMarketOutlet.getEnumUnitOfSale();
+                enumUnitPrice = cassavaMarketOutlet.getEnumUnitPrice();
                 unitOfSale = enumUnitOfSale.unitOfSale();
-                switch (enumProduceType) {
+                switch (enumCassavaProduceType) {
                     case GARI:
                         rdgProduceType.check(R.id.rdGari);
                         break;
@@ -229,19 +230,19 @@ public class MarketOutletActivity extends BaseActivity {
                 }
 
                 switch (enumUnitPrice) {
-                    case PRICE_20TO30:
+                    case PRICE_RANGE_ONE:
                         rdgUnitPrice.check(R.id.rd_20_30_price);
                         break;
-                    case PRICE_30TO50:
+                    case PRICE_RANGE_TWO:
                         rdgUnitPrice.check(R.id.rd_30_50_price);
                         break;
-                    case PRICE_50TO100:
+                    case PRICE_RANGE_THREE:
                         rdgUnitPrice.check(R.id.rd_50_100_price);
                         break;
-                    case PRICE_100TO150:
+                    case PRICE_RANGE_FOUR:
                         rdgUnitPrice.check(R.id.rd_100_150_price);
                         break;
-                    case PRICE_150TO200:
+                    case PRICE_RANGE_FIVE:
                         rdgUnitPrice.check(R.id.rd_150_200_price);
                         break;
                     case PRICE_EXACT:
@@ -280,7 +281,7 @@ public class MarketOutletActivity extends BaseActivity {
                     factoryTitle.setVisibility(View.VISIBLE);
                     starchFactoryCard.setVisibility(View.VISIBLE);
                     factoryRequired = true;
-                    enumProduceType = null;
+                    enumCassavaProduceType = null;
                     enumUnitOfSale = null;
                     enumUnitPrice = null;
                     unitPriceLocal = 0.0;
@@ -315,13 +316,13 @@ public class MarketOutletActivity extends BaseActivity {
         rdgProduceType.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
             switch (radioIndex) {
                 case R.id.rdRoots:
-                    enumProduceType = EnumProduceType.ROOTS;
+                    enumCassavaProduceType = EnumCassavaProduceType.ROOTS;
                     break;
                 case R.id.rdFlour:
-                    enumProduceType = EnumProduceType.FLOUR;
+                    enumCassavaProduceType = EnumCassavaProduceType.FLOUR;
                     break;
                 case R.id.rdGari:
-                    enumProduceType = EnumProduceType.GARI;
+                    enumCassavaProduceType = EnumCassavaProduceType.GARI;
                     break;
             }
 
@@ -358,19 +359,19 @@ public class MarketOutletActivity extends BaseActivity {
             exactPriceSelected = false;
             switch (radioIndex) {
                 case R.id.rd_20_30_price:
-                    enumUnitPrice = EnumUnitPrice.PRICE_20TO30;
+                    enumUnitPrice = EnumUnitPrice.PRICE_RANGE_ONE;
                     break;
                 case R.id.rd_30_50_price:
-                    enumUnitPrice = EnumUnitPrice.PRICE_30TO50;
+                    enumUnitPrice = EnumUnitPrice.PRICE_RANGE_TWO;
                     break;
                 case R.id.rd_50_100_price:
-                    enumUnitPrice = EnumUnitPrice.PRICE_50TO100;
+                    enumUnitPrice = EnumUnitPrice.PRICE_RANGE_THREE;
                     break;
                 case R.id.rd_100_150_price:
-                    enumUnitPrice = EnumUnitPrice.PRICE_100TO150;
+                    enumUnitPrice = EnumUnitPrice.PRICE_RANGE_FOUR;
                     break;
                 case R.id.rd_150_200_price:
-                    enumUnitPrice = EnumUnitPrice.PRICE_150TO200;
+                    enumUnitPrice = EnumUnitPrice.PRICE_RANGE_FIVE;
                     break;
                 case R.id.rd_exact_price:
                     exactPriceSelected = true;
@@ -397,7 +398,7 @@ public class MarketOutletActivity extends BaseActivity {
                 return;
             }
         } else if (otherMarketsRequired) {
-            if (enumProduceType == null) {
+            if (enumCassavaProduceType == null) {
                 showCustomWarningDialog("Invalid produce type", "Please specify a valid produce type", "OK");
                 return;
             }
@@ -417,11 +418,11 @@ public class MarketOutletActivity extends BaseActivity {
             if (exactPriceSelected) {
                 unitPriceLocal = Double.parseDouble(priceText);
                 enumUnitPrice = EnumUnitPrice.PRICE_EXACT;
-                priceText = String.valueOf(marketOutlet.getExactPrice());
+                priceText = String.valueOf(cassavaMarketOutlet.getExactPrice());
             } else {
                 priceText = "0";
                 unitPriceLocal = 0;
-                unitPriceLocal = enumUnitPrice.convertToLocal(currency);
+                unitPriceLocal = enumUnitPrice.convertToLocalCurrency(currency, mathHelper);
             }
             Double minAmount = mathHelper.convertCurrency(minAmountUSD, currency);
             Double maxAmount = mathHelper.convertCurrency(maxAmountUSD, currency);
@@ -445,17 +446,17 @@ public class MarketOutletActivity extends BaseActivity {
 
 
         if (dataIsValid) {
-            if (marketOutlet == null) {
-                marketOutlet = new MarketOutlet();
+            if (cassavaMarketOutlet == null) {
+                cassavaMarketOutlet = new CassavaMarketOutlet();
             }
-            marketOutlet.setStarchFactory(selectedFactory);
-            marketOutlet.setStarchFactoryRequired(factoryRequired);
-            marketOutlet.setEnumProduceType(enumProduceType);
-            marketOutlet.setEnumUnitOfSale(enumUnitOfSale);
-            marketOutlet.setEnumUnitPrice(enumUnitPrice);
-            marketOutlet.setExactPrice(unitPriceLocal);
+            cassavaMarketOutlet.setStarchFactory(selectedFactory);
+            cassavaMarketOutlet.setStarchFactoryRequired(factoryRequired);
+            cassavaMarketOutlet.setEnumCassavaProduceType(enumCassavaProduceType);
+            cassavaMarketOutlet.setEnumUnitOfSale(enumUnitOfSale);
+            cassavaMarketOutlet.setEnumUnitPrice(enumUnitPrice);
+            cassavaMarketOutlet.setExactPrice(unitPriceLocal);
 
-            long id = objectBoxEntityProcessor.saveMarketOutlet(marketOutlet);
+            long id = objectBoxEntityProcessor.saveMarketOutlet(cassavaMarketOutlet);
             if (id > 0) {
                 closeActivity(backPressed);
             }
@@ -464,11 +465,11 @@ public class MarketOutletActivity extends BaseActivity {
 
     private void updateLabels(String currency, String uos) {
         try {
-            rd_20_30_price.setText(labelText(EnumUnitPrice.PRICE_20TO30.unitPriceLower(), EnumUnitPrice.PRICE_20TO30.unitPriceUpper(), currency, uos));
-            rd_30_50_price.setText(labelText(EnumUnitPrice.PRICE_30TO50.unitPriceLower(), EnumUnitPrice.PRICE_30TO50.unitPriceUpper(), currency, uos));
-            rd_50_100_price.setText(labelText(EnumUnitPrice.PRICE_50TO100.unitPriceLower(), EnumUnitPrice.PRICE_50TO100.unitPriceUpper(), currency, uos));
-            rd_100_150_price.setText(labelText(EnumUnitPrice.PRICE_100TO150.unitPriceLower(), EnumUnitPrice.PRICE_100TO150.unitPriceUpper(), currency, uos));
-            rd_150_200_price.setText(labelText(EnumUnitPrice.PRICE_150TO200.unitPriceLower(), EnumUnitPrice.PRICE_150TO200.unitPriceUpper(), currency, uos));
+            rd_20_30_price.setText(labelText(EnumUnitPrice.PRICE_RANGE_ONE.unitPricePerTonneLower(), EnumUnitPrice.PRICE_RANGE_ONE.unitPricePerTonneUpper(), currency, uos));
+            rd_30_50_price.setText(labelText(EnumUnitPrice.PRICE_RANGE_TWO.unitPricePerTonneLower(), EnumUnitPrice.PRICE_RANGE_TWO.unitPricePerTonneUpper(), currency, uos));
+            rd_50_100_price.setText(labelText(EnumUnitPrice.PRICE_RANGE_THREE.unitPricePerTonneLower(), EnumUnitPrice.PRICE_RANGE_THREE.unitPricePerTonneUpper(), currency, uos));
+            rd_100_150_price.setText(labelText(EnumUnitPrice.PRICE_RANGE_FOUR.unitPricePerTonneLower(), EnumUnitPrice.PRICE_RANGE_FOUR.unitPricePerTonneUpper(), currency, uos));
+            rd_150_200_price.setText(labelText(EnumUnitPrice.PRICE_RANGE_FIVE.unitPricePerTonneLower(), EnumUnitPrice.PRICE_RANGE_FIVE.unitPricePerTonneUpper(), currency, uos));
         } catch (Exception ex) {
             Timber.e(ex);
         }
@@ -498,7 +499,7 @@ public class MarketOutletActivity extends BaseActivity {
         double localLower = mathHelper.convertToLocalCurrency(priceLower, currency, 10);
         double localHigher = mathHelper.convertToLocalCurrency(priceHigher, currency, 10);
 
-        String message = context.getString(R.string.unit_price_abel, localLower, localHigher, currency, uos);
+        String message = context.getString(R.string.unit_price_label, localLower, localHigher, currency, uos);
         if (!Strings.isEmptyOrWhitespace(priceText)) {
             setExactPriceLabel();
         }
@@ -512,11 +513,6 @@ public class MarketOutletActivity extends BaseActivity {
             rdgProduceType.clearCheck();
             rdgUnitPrice.clearCheck();
             rdgUnitOfSale.clearCheck();
-        }
-        if (countryCode.equalsIgnoreCase(EnumCountries.NIGERIA.countryCode())) {
-            rdGari.setVisibility(View.VISIBLE);
-        } else {
-            rdGari.setVisibility(View.GONE);
         }
 
         factoryTitle.setVisibility(View.GONE);
@@ -537,7 +533,10 @@ public class MarketOutletActivity extends BaseActivity {
     private void processStarchFactories() {
         final RestService restService = RestService.getInstance(queue, this);
         final ObjectMapper objectMapper = new ObjectMapper();
-        restService.setParameters("v2/starch-factories", countryCode, 5000);
+        final RestParameters restParameters = new RestParameters(
+                "v2/starch-factories", countryCode
+        );
+        restService.setParameters(restParameters);
 
         restService.getJsonArrList(new IVolleyCallback() {
             @Override

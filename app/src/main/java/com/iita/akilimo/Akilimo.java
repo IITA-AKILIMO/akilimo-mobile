@@ -10,11 +10,9 @@ import net.danlew.android.joda.JodaTimeAndroid;
 import io.fabric.sdk.android.Fabric;
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidObjectBrowser;
-import timber.log.Timber;
 
 public class Akilimo extends MultiDexApplication {
-    public static final String LOG_TAG = Akilimo.class.getSimpleName();
-    public static final String DB_NAME = "AkilimoDB";
+    private final String DB_NAME = "AkilimoDB_MAR";
     private BoxStore boxStore;
 
 
@@ -22,8 +20,9 @@ public class Akilimo extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
-        //@HINT This is used to enable proper vector support for android 4.4 and below, it causes crashing when firing up the application
+        //@FIX This is used to enable proper vector support for android 4.4 and below, it causes crashing when firing up the application
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        JodaTimeAndroid.init(this);
 
 //        BoxStore.deleteAllFiles(this, DB_NAME);
         boxStore = MyObjectBox.builder()
@@ -32,12 +31,9 @@ public class Akilimo extends MultiDexApplication {
                 .build();
 
         if (BuildConfig.DEBUG) {
-            boolean started = new AndroidObjectBrowser(boxStore).start(this);
-            Timber.i("Object box started? %s", started);
+            new AndroidObjectBrowser(boxStore).start(this);
         }
 
-        JodaTimeAndroid.init(this);
-        Timber.d("Using ObjectBox" + BoxStore.getVersion() + " (" + BoxStore.getVersionNative() + ")");
     }
 
     public BoxStore getBoxStore() {
