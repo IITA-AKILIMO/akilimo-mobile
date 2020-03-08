@@ -111,7 +111,7 @@ public class OperationCostsDialogFragment extends DialogFragment {
 
         dialog.setCancelable(true);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogSlideAnimation;
 
 
         Button btnClose = dialog.findViewById(R.id.close_button);

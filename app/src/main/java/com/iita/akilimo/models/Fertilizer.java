@@ -39,7 +39,7 @@ public class Fertilizer implements Parcelable {
     private int weight;
 
     @JsonProperty("price")
-    private String price;
+    private Double price;
 
     @Unique
     @JsonProperty("fertilizerCountry")
@@ -119,7 +119,7 @@ public class Fertilizer implements Parcelable {
         name = in.readString();
         type = in.readString();
         weight = in.readInt();
-        price = in.readString();
+        price = in.readDouble();
         currency = in.readString();
         countryCode = in.readString();
         priceRange = in.readString();
@@ -139,7 +139,7 @@ public class Fertilizer implements Parcelable {
         dest.writeString(name);
         dest.writeString(type);
         dest.writeInt(weight);
-        dest.writeString(price);
+        dest.writeDouble(price);
         dest.writeString(currency);
         dest.writeString(countryCode);
         dest.writeString(priceRange);

@@ -44,6 +44,10 @@ public class FireBaseConfig {
                         String apiToken = mFireBaseRemoteConfig.getString("api_token");
                         String akilimo_api = mFireBaseRemoteConfig.getString("akilimo_api");
 
+                        if (BuildConfig.DEBUG) {
+                            akilimo_api = mFireBaseRemoteConfig.getString("akilimo_api_demo");
+                        }
+
                         String mapBoxKey = mFireBaseRemoteConfig.getString("mapBoxApiKey");
                         String locationIqToken = mFireBaseRemoteConfig.getString("locationIqToken");
 

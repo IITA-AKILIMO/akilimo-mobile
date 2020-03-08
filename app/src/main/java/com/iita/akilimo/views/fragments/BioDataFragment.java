@@ -16,7 +16,9 @@ import androidx.fragment.app.Fragment;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.hbb20.CountryCodePicker;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
@@ -40,14 +42,28 @@ public class BioDataFragment extends BaseFragment {
 
     @BindView(R.id.rdgGender)
     RadioGroup rdgGender;
+
     @BindView(R.id.lytFirstName)
     TextInputLayout lytFirstName;
+
     @BindView(R.id.lytLastName)
     TextInputLayout lytLastName;
+
     @BindView(R.id.lytFarmName)
     TextInputLayout lytFarmName;
+
     @BindView(R.id.lytEmail)
     TextInputLayout lytEmail;
+
+    @BindView(R.id.lytPhone)
+    TextInputLayout lytPhone;
+    @BindView(R.id.edtPhone)
+    TextInputEditText edtPhone;
+
+    @BindView(R.id.ccp)
+    CountryCodePicker ccp;
+
+
     @BindView(R.id.btnGetRec)
     MaterialButton btnGetRec;
 
@@ -59,6 +75,8 @@ public class BioDataFragment extends BaseFragment {
     private String lastName;
     private String email;
     private String farmName;
+    private String mobileCode;
+    private String fullMobileNumber;
     private EnumGender gender;
 
     public BioDataFragment() {
@@ -99,6 +117,18 @@ public class BioDataFragment extends BaseFragment {
             }
         });
 
+        ccp.setPhoneNumberValidityChangeListener(isValidNumber -> {
+            dataIsValid = true;
+            if (!isValidNumber) {
+                lytPhone.setError(this.getString(R.string.lbl_valid_number_req));
+            } else {
+                lytPhone.setError(null);
+            }
+        });
+
+        ccp.setOnCountryChangeListener(() -> mobileCode = ccp.getSelectedCountryCodeWithPlus());
+        ccp.registerCarrierNumberEditText(edtPhone);
+
     }
 
     @Override
@@ -110,12 +140,16 @@ public class BioDataFragment extends BaseFragment {
                 lastName = profileInfo.getLastName();
                 farmName = profileInfo.getFarmName();
                 email = profileInfo.getEmail();
+                mobileCode = profileInfo.getMobileCode();
+                fullMobileNumber = profileInfo.getFullMobileNumber();
                 gender = profileInfo.getGenderEnum();
 
                 lytFirstName.getEditText().setText(firstName);
                 lytLastName.getEditText().setText(lastName);
                 lytFarmName.getEditText().setText(farmName);
                 lytEmail.getEditText().setText(email);
+                ccp.setFullNumber(fullMobileNumber);
+
                 switch (gender) {
                     case MALE:
                         rdgGender.check(R.id.rdMale);
@@ -124,17 +158,15 @@ public class BioDataFragment extends BaseFragment {
                         rdgGender.check(R.id.rdFemale);
                         break;
                 }
-            } else {
-                profileInfo = new ProfileInfo();
             }
-        }catch(Exception ex){
-            profileInfo = new ProfileInfo();
-            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred getting biodata infoe");
+
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred getting biodata info");
             Crashlytics.logException(ex);
         }
     }
 
-    public void saveBioData() {
+    private void saveBioData() {
         lytFirstName.setError(null);
         lytLastName.setError(null);
         lytFarmName.setError(null);
@@ -145,10 +177,11 @@ public class BioDataFragment extends BaseFragment {
         lastName = lytLastName.getEditText().getText().toString();
         farmName = lytFarmName.getEditText().getText().toString();
         email = lytEmail.getEditText().getText().toString();
+        fullMobileNumber = ccp.getFullNumber();
 
         if (Strings.isEmptyOrWhitespace(firstName)) {
             dataIsValid = false;
-            lytLastName.setError("Please provide your first name");
+            lytLastName.setError(this.getString(R.string.lbl_first_name_req));
         }
 
         if (Strings.isEmptyOrWhitespace(lastName)) {
@@ -163,7 +196,7 @@ public class BioDataFragment extends BaseFragment {
 
         if (!validationHelper.isValidEmail(email) && !Strings.isEmptyOrWhitespace(email)) {
             dataIsValid = false;
-            lytEmail.setError("Please provide a valid email");
+            lytEmail.setError(this.getString(R.string.lbl_valid_email_req));
         }
 
         if (dataIsValid) {
@@ -175,6 +208,8 @@ public class BioDataFragment extends BaseFragment {
             profileInfo.setGenderEnum(gender);
             profileInfo.setEmail(email);
             profileInfo.setFarmName(farmName);
+            profileInfo.setMobileCode(mobileCode);
+            profileInfo.setFullMobileNumber(fullMobileNumber);
 
             long id = objectBoxEntityProcessor.saveProfileInfo(profileInfo);
             if (id > 0) {

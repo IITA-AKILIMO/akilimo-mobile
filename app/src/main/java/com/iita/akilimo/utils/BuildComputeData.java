@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.entities.CassavaMarketOutlet;
 import com.iita.akilimo.entities.ComputeRequest;
 import com.iita.akilimo.entities.CurrentFieldYield;
@@ -105,16 +106,16 @@ public class BuildComputeData {
 
 
     private String costLmoAreaBasis = DEFAULT_LMNO_BASIS;
-    private String costTractorPlough = DEFAULT_UNAVAILABLE;
-    private String costTractorHarrow = DEFAULT_UNAVAILABLE;
+    private double costTractorPlough;
+    private double costTractorHarrow;
 
-    private String costTractorRidging = DEFAULT_UNAVAILABLE;
-    private String costManualPloughing = DEFAULT_UNAVAILABLE;
-    private String costManualHarrowing = DEFAULT_UNAVAILABLE;
-    private String costManualRidging = DEFAULT_UNAVAILABLE;
+    private double costTractorRidging;
+    private double costManualPloughing;
+    private double costManualHarrowing;
+    private double costManualRidging;
 
-    private String costWeedingOne = DEFAULT_UNAVAILABLE;
-    private String costWeedingTwo = DEFAULT_UNAVAILABLE;
+    private double costWeedingOne;
+    private double costWeedingTwo;
 
     private boolean performsPloughing;
     private boolean performsHarrowing;
@@ -128,23 +129,24 @@ public class BuildComputeData {
     private double cassavaUnitPrice = 0.0;
 
     private String maizeProdType = DEFAULT_MAIZE_PD;
-    private String maizeUnitWeight = DEFAULT_UNAVAILABLE;
-    private String maizeUnitPrice = DEFAULT_UNAVAILABLE;
+    private int maizeUnitWeight;
+    private double maizeUnitPrice;
     private String currentMaizePerformance = DEFAULT_MAIZE_PERFORMANCE_VALUE;
 
     private String sweetPotatoProdType = DEFAULT_SWEET_POTATO_PD;
-    private String sweetPotatoUnitWeight = DEFAULT_UNAVAILABLE;
-    private String sweetPotatoUnitPrice = DEFAULT_UNAVAILABLE;
+    private int sweetPotatoUnitWeight;
+    private double sweetPotatoUnitPrice;
 
+    private String deviceId = DEFAULT_USERNAME;
     private String userName = DEFAULT_USERNAME;
     private String secondName = DEFAULT_USERNAME;
     private String fieldDesc = DEFAULT_FIELD_DESC;
     private int riskAtt = DEFAULT_UNAVAILABLE_INT;
 
-    private String cassavaUpmOne = DEFAULT_UNAVAILABLE;
-    private String cassavaUpmTwo = DEFAULT_UNAVAILABLE;
-    private String cassavaUppOne = DEFAULT_UNAVAILABLE;
-    private String cassavaUppTwo = DEFAULT_UNAVAILABLE;
+    private double cassavaUpmOne;
+    private double cassavaUpmTwo;
+    private double cassavaUppOne;
+    private double cassavaUppTwo;
     private String cassavaProduceType = DEFAULT_CASSAVA_PD;
     private String starchFactoryName = DEFAULT_UNAVAILABLE;
 
@@ -160,6 +162,7 @@ public class BuildComputeData {
 
     public RecommendationRequest buildRecommendationReq() {
         ComputeRequest computeRequest = buildMandatoryInfo();
+
         UserInfo userInfo = buildProfileInfo();
 
         buildRequestedRec(computeRequest);
@@ -196,19 +199,21 @@ public class BuildComputeData {
             ProfileInfo profileInfo = objectBoxEntityProcessor.getProfileInfo();
 
             if (profileInfo != null) {
-                userName = profileInfo.getFirstName() != null ? profileInfo.getFirstName() : DEFAULT_USERNAME;
-                secondName = profileInfo.getFirstName() != null ? profileInfo.getFirstName() : DEFAULT_USERNAME;
-                emailAddress = profileInfo.getEmail() != null ? profileInfo.getEmail() : DEFAULT_UNAVAILABLE;
-                fieldDesc = profileInfo.getFarmName() != null ? profileInfo.getFarmName() : DEFAULT_FIELD_DESC;
-                mobileNumber = profileInfo.getMobile() != null ? profileInfo.getMobile() : DEFAULT_UNAVAILABLE;
+                userName = Strings.isEmptyOrWhitespace(profileInfo.getUserName()) ? DEFAULT_USERNAME : profileInfo.getUserName();
+                fieldDesc = Strings.isEmptyOrWhitespace(profileInfo.getFieldDescription()) ? DEFAULT_UNAVAILABLE : profileInfo.getFieldDescription();
+                mobileNumber = Strings.isEmptyOrWhitespace(profileInfo.getFullMobileNumber()) ? DEFAULT_UNAVAILABLE : profileInfo.getFullMobileNumber();
+                mobileCountryCode = Strings.isEmptyOrWhitespace(profileInfo.getMobileCode()) ? DEFAULT_UNAVAILABLE : profileInfo.getMobileCode();
+                emailAddress = Strings.isEmptyOrWhitespace(profileInfo.getEmail()) ? DEFAULT_UNAVAILABLE : profileInfo.getEmail();
+                deviceId = Strings.isEmptyOrWhitespace(profileInfo.getDeviceID()) ? DEFAULT_UNAVAILABLE : profileInfo.getDeviceID();
 
-
-                userInfo.setDeviceID("akilimo-device");
+                emailRequired = profileInfo.isSendEmail();
+                smsRequired = profileInfo.isSendSms();
+                
+                userInfo.setDeviceID(deviceId);
+                userInfo.setUserName(userName);
                 userInfo.setMobileCountryCode(mobileCountryCode);
                 userInfo.setMobileNumber(mobileNumber);
                 userInfo.setFullPhoneNumber(fullPhoneNumber);
-                userInfo.setFirstName(userName);
-                userInfo.setSecondName(secondName);
                 userInfo.setEmailAddress(emailAddress);
                 userInfo.setFieldDescription(fieldDesc);
                 userInfo.setSendSms(smsRequired);
@@ -247,16 +252,16 @@ public class BuildComputeData {
     private ComputeRequest buildRequestedRec(@Nonnull ComputeRequest computeRequest) {
         //check for values we have to give recommendations for
         RecAdvice recAdvice = objectBoxEntityProcessor.getRecAdvice();
+        if (recAdvice != null) {
+            computeRequest.setInterCroppingMaizeRec(recAdvice.isCIM());
+            computeRequest.setInterCroppingPotatoRec(recAdvice.isCIS());
+            computeRequest.setUseCase(recAdvice.getUseCase());
 
-        computeRequest.setInterCroppingMaizeRec(recAdvice.isCIM());
-        computeRequest.setInterCroppingPotatoRec(recAdvice.isCIS());
-        computeRequest.setUseCase(recAdvice.getUseCase());
-
-        computeRequest.setFertilizerRec(recAdvice.isFR());
-        computeRequest.setPlantingPracticesRec(recAdvice.isBPP());
-        computeRequest.setScheduledPlantingRec(recAdvice.isSPP());
-        computeRequest.setScheduledHarvestRec(recAdvice.isSPH());
-
+            computeRequest.setFertilizerRec(recAdvice.isFR());
+            computeRequest.setPlantingPracticesRec(recAdvice.isBPP());
+            computeRequest.setScheduledPlantingRec(recAdvice.isSPP());
+            computeRequest.setScheduledHarvestRec(recAdvice.isSPH());
+        }
         return computeRequest;
     }
 
@@ -331,16 +336,16 @@ public class BuildComputeData {
     private ComputeRequest buildOperationCosts(@Nonnull ComputeRequest computeRequest) {
         OperationCosts operationCosts = objectBoxEntityProcessor.getOperationCosts();
         if (operationCosts != null) {
-            costTractorPlough = operationCosts.getTractorPloughCost() <= 0 ? String.valueOf(operationCosts.getTractorPloughCost()) : DEFAULT_UNAVAILABLE;
-            costTractorHarrow = operationCosts.getTractorHarrowCost() <= 0 ? String.valueOf(operationCosts.getTractorHarrowCost()) : DEFAULT_UNAVAILABLE;
-            costTractorRidging = operationCosts.getTractorRidgeCost() <= 0 ? String.valueOf(operationCosts.getTractorRidgeCost()) : DEFAULT_UNAVAILABLE;
+            costTractorPlough = operationCosts.getTractorPloughCost();
+            costTractorHarrow = operationCosts.getTractorHarrowCost();
+            costTractorRidging = operationCosts.getTractorRidgeCost();
 
-            costManualPloughing = operationCosts.getManualPloughCost() <= 0 ? String.valueOf(operationCosts.getManualPloughCost()) : DEFAULT_UNAVAILABLE;
-            costManualHarrowing = operationCosts.getManualHarrowCost() <= 0 ? String.valueOf(operationCosts.getManualHarrowCost()) : DEFAULT_UNAVAILABLE;
-            costManualRidging = operationCosts.getManualRidgeCost() <= 0 ? String.valueOf(operationCosts.getManualRidgeCost()) : DEFAULT_UNAVAILABLE;
+            costManualPloughing = operationCosts.getManualPloughCost();
+            costManualHarrowing = operationCosts.getManualHarrowCost();
+            costManualRidging = operationCosts.getManualRidgeCost();
 
-            costWeedingOne = operationCosts.getFirstWeedingOperationCost() <= 0 ? String.valueOf(operationCosts.getFirstWeedingOperationCost()) : DEFAULT_UNAVAILABLE;
-            costWeedingTwo = operationCosts.getSecondWeedingOperationCost() <= 0 ? String.valueOf(operationCosts.getSecondWeedingOperationCost()) : DEFAULT_UNAVAILABLE;
+            costWeedingOne = operationCosts.getFirstWeedingOperationCost();
+            costWeedingTwo = operationCosts.getSecondWeedingOperationCost();
         }
         computeRequest.setCostLmoAreaBasis(costLmoAreaBasis);
         computeRequest.setCostTractorPloughing(costTractorPlough);
@@ -415,11 +420,11 @@ public class BuildComputeData {
         String currency = computeRequest.getCurrency();
         if (maizeMarketOutlet != null) {
             maizeProdType = maizeMarketOutlet.getEnumMaizeProduceType().produce();
-            maizeUnitWeight = String.valueOf(maizeMarketOutlet.getEnumUnitOfSale().unitWeight());
+            maizeUnitWeight = maizeMarketOutlet.getEnumUnitOfSale().unitWeight();
 
             EnumUnitPrice up = maizeMarketOutlet.getEnumUnitPrice();
             maizeUnitPriceLocal = up.convertToLocalCurrency(currency, mathHelper) <= 0 ? maizeMarketOutlet.getExactPrice() : up.convertToLocalCurrency(currency, mathHelper);
-            maizeUnitPrice = String.valueOf(maizeUnitPriceLocal);
+            maizeUnitPrice = maizeUnitPriceLocal;
         }
         computeRequest.setMaizeProduceType(maizeProdType);
         computeRequest.setMaizeUnitWeight(maizeUnitWeight);
@@ -433,11 +438,11 @@ public class BuildComputeData {
         String currency = computeRequest.getCurrency();
         if (potatoMarketOutlet != null) {
             sweetPotatoProdType = potatoMarketOutlet.getEnumPotatoProduceType().produce();
-            sweetPotatoUnitWeight = String.valueOf(potatoMarketOutlet.getEnumUnitOfSale().unitWeight());
+            sweetPotatoUnitWeight = potatoMarketOutlet.getEnumUnitOfSale().unitWeight();
 
             EnumPotatoUnitPrice up = potatoMarketOutlet.getEnumPotatoUnitPrice();
             potatoUnitPriceLocal = up.convertToLocalCurrency(currency, mathHelper) <= 0 ? potatoMarketOutlet.getExactPrice() : up.convertToLocalCurrency(currency, mathHelper);
-            sweetPotatoUnitPrice = String.valueOf(potatoUnitPriceLocal);
+            sweetPotatoUnitPrice = potatoUnitPriceLocal;
         }
 
         computeRequest.setSweetPotatoProduceType(sweetPotatoProdType);

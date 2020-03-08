@@ -22,7 +22,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.common.util.Strings;
 import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
 import com.iita.akilimo.interfaces.IDismissListener;
@@ -69,9 +68,9 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
     private double savedPricePerBag = 0.0;
     private String countryCode;
     private String currencyCode;
-    private String bagPrice;
+    private Double bagPrice;
     private String bagPriceRange = "NA";
-    private String exactPrice = "0";
+    private Double exactPrice = 0.0;
 
     private IDismissListener onDismissListener;
 
@@ -105,7 +104,7 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
 
         dialog.setCancelable(true);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogSlideAnimation;
 
 
         btnClose = dialog.findViewById(R.id.close_button);
@@ -134,7 +133,7 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
         btnRemove.setOnClickListener(view -> {
             priceSpecified = false;
             removeSelected = true;
-            fertilizer.setPrice("NA");
+            fertilizer.setPrice(0.0);
             fertilizer.setPricePerBag(0.0);
             fertilizer.setPriceRange(null);
             fertilizer.setSelected(false);
@@ -144,13 +143,13 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
         //save the data
         btnUpdate.setOnClickListener(v -> {
             if (isExactPriceRequired) {
-                bagPrice = editExactFertilizerPrice.getText().toString();
-                if (Strings.isEmptyOrWhitespace(bagPrice)) {
+                bagPrice = Double.valueOf(editExactFertilizerPrice.getText().toString());
+                if (bagPrice <= 0) {
                     editExactFertilizerPrice.setError("Please provide a valid bag price");
                     isPriceValid = false;
                     return;
                 }
-                savedPricePerBag = Double.parseDouble(bagPrice);
+                savedPricePerBag = bagPrice;
                 bagPriceRange = mathHelper.formatNumber(savedPricePerBag, currencyCode);
                 isPriceValid = true;
                 editExactFertilizerPrice.setError(null);
@@ -187,14 +186,14 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
             isExactPriceRequired = false;
             isPriceValid = true;
             savedPricePerBag = pricesResp.getPricePerBag();
-            bagPrice = String.valueOf(savedPricePerBag);
+            bagPrice = savedPricePerBag;
             bagPriceRange = pricesResp.getPriceRange();
 
 
             exactPriceWrapper.setVisibility(View.GONE);
             exactPriceWrapper.getEditText().setText(null);
             if (savedPricePerBag >= 0 && savedPricePerBag <= 0) {
-                bagPrice = "NA";
+                bagPrice = 0.0;
                 bagPriceRange = "NA";
             } else if (savedPricePerBag < 0) {
                 isExactPriceRequired = true;
@@ -245,7 +244,7 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
                 radioButton.setChecked(true);
                 isPriceValid = true;
                 exactPriceWrapper.setVisibility(View.VISIBLE);
-                editExactFertilizerPrice.setText(exactPrice);
+                editExactFertilizerPrice.setText(String.valueOf(exactPrice));
             } else if (pricesResp.getPricePerBag() == selectedPrice) {
                 radioButton.setChecked(true);
             }

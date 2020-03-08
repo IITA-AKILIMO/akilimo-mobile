@@ -69,24 +69,24 @@ public class ComputeRequest {
     private boolean tractorRidger;
 
     @JsonProperty("cost_LMO_areaBasis")
-    private String costLmoAreaBasis;
+    private double costLmoAreaBasis;
     @JsonProperty("cost_tractor_ploughing")
-    private String costTractorPloughing;
+    private double costTractorPloughing;
     @JsonProperty("cost_tractor_harrowing")
-    private String costTractorHarrowing;
+    private double costTractorHarrowing;
     @JsonProperty("cost_tractor_ridging")
-    private String costTractorRidging;
+    private double costTractorRidging;
 
     @JsonProperty("cost_manual_ploughing")
-    private String costManualPloughing;
+    private double costManualPloughing;
     @JsonProperty("cost_manual_harrowing")
-    private String costManualHarrowing;
+    private double costManualHarrowing;
     @JsonProperty("cost_manual_ridging")
-    private String costManualRidging;
+    private double costManualRidging;
     @JsonProperty("cost_weeding1")
-    private String costWeedingOne;
+    private double costWeedingOne;
     @JsonProperty("cost_weeding2")
-    private String costWeedingTwo;
+    private double costWeedingTwo;
 
     @JsonProperty("ploughing")
     private boolean ploughingDone;
@@ -120,20 +120,20 @@ public class ComputeRequest {
     private double cassavaUnitPrice;
 
     @JsonProperty("cassUP_m1")
-    private String cassUPM1;
+    private double cassUPM1;
     @JsonProperty("cassUP_m2")
-    private String cassUPM2;
+    private double cassUPM2;
     @JsonProperty("cassUP_p1")
-    private String cassUPP1;
+    private double cassUPP1;
     @JsonProperty("cassUP_p2")
-    private String cassUPP2;
+    private double cassUPP2;
 
     @JsonProperty("maizePD")
     private String maizeProduceType;
     @JsonProperty("maizeUW")
-    private String maizeUnitWeight;
+    private int maizeUnitWeight;
     @JsonProperty("maizeUP")
-    private String maizeUnitPrice;
+    private double maizeUnitPrice;
 
     @JsonProperty("maxInv")
     private Double maxInvestment;
@@ -154,6 +154,8 @@ public class ComputeRequest {
     @JsonProperty("userEmail")
     private String userEmail;
     @JsonProperty("userField")
+    private String fieldName;
+    @JsonProperty("fieldDesc")
     private String fieldDescription;
 
     @JsonProperty("riskAtt")
@@ -162,70 +164,70 @@ public class ComputeRequest {
     @JsonProperty("ureaavailable")
     private boolean ureaAvailable;
     @JsonProperty("ureaCostperBag")
-    private String ureaCostPerBag;
+    private double ureaCostPerBag;
     @JsonProperty("ureaBagWt")
     private int ureaBagWeight;
 
     @JsonProperty("MOPavailable")
     private boolean mopAvailable;
     @JsonProperty("MOPCostperBag")
-    private String mopCostPerBag;
+    private double mopCostPerBag;
     @JsonProperty("MOPBagWt")
     private int mopBagWeight;
 
     @JsonProperty("DAPavailable")
     private boolean dapAvailable;
     @JsonProperty("DAPCostperBag")
-    private String dapCostPerBag;
+    private double dapCostPerBag;
     @JsonProperty("DAPBagWt")
     private int dapBagWeight;
 
     @JsonProperty("TSPavailable")
     private boolean tspAvailable;
     @JsonProperty("TSPCostperBag")
-    private String tspCostPerBag;
+    private double tspCostPerBag;
     @JsonProperty("TSPBagWt")
     private int tspBagWeight;
 
     @JsonProperty("Nafakaavailable")
     private boolean nafakaAvailable;
     @JsonProperty("NafakaCostperBag")
-    private String nafakaCostPerBag;
+    private double nafakaCostPerBag;
     @JsonProperty("NafakaBagWt")
     private int nafakaBagWeight;
 
     @JsonProperty("CANavailable")
     private boolean canAvailable;
     @JsonProperty("CANCostperBag")
-    private String canCostPerBag;
+    private double canCostPerBag;
     @JsonProperty("CANBagWt")
     private int canBagWeight;
 
     @JsonProperty("SSPavailable")
     private boolean sspAvailable;
     @JsonProperty("SSPCostperBag")
-    private String sspCostPerBag;
+    private double sspCostPerBag;
     @JsonProperty("SSPBagWt")
     private int sspBagWeight;
 
     @JsonProperty("NPK201010available")
     private boolean nPK201010Available;
     @JsonProperty("NPK201010CostperBag")
-    private String nPK201010CostPerBag;
+    private double nPK201010CostPerBag;
     @JsonProperty("NPK201010BagWt")
     private int nPK201010BagWeight;
 
     @JsonProperty("NPK151515available")
     private boolean nPK151515Available;
     @JsonProperty("NPK151515CostperBag")
-    private String nPK151515CostPerBag;
+    private double nPK151515CostPerBag;
     @JsonProperty("NPK151515BagWt")
     private int nPK151515BagWeight;
 
     @JsonProperty("NPK171717available")
     private boolean npK171717Available;
     @JsonProperty("NPK171717CostperBag")
-    private String npK171717CostPerBag;
+    private double npK171717CostPerBag;
     @JsonProperty("NPK171717BagWt")
     private int npK171717BagWeight;
 }
