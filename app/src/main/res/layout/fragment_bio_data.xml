@@ -35,14 +35,14 @@
                 android:fontFamily="@font/ubuntu"
                 android:text="Let us start by you telling me a bit about yourself"
                 android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                 android:textColor="@color/colorAccent" />
 
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/spacing_large">
+                android:padding="@dimen/spacing_medium">
 
 
                 <androidx.cardview.widget.CardView
@@ -83,7 +83,8 @@
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/lytLastName"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_medium">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/edtLastName"
@@ -97,7 +98,6 @@
                                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                         </com.google.android.material.textfield.TextInputLayout>
-
 
                         <RadioGroup
                             android:id="@+id/rdgGender"
@@ -151,7 +151,8 @@
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/lytEmail"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_medium">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/edtEmail"
@@ -166,11 +167,23 @@
 
                         </com.google.android.material.textfield.TextInputLayout>
 
+                        <com.hbb20.CountryCodePicker
+                            android:id="@+id/ccp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_medium"
+                            app:ccp_autoDetectCountry="true"
+                            app:ccp_hintExampleNumber="true"
+                            app:ccp_rememberLastSelection="true"
+                            app:ccp_showFullName="true"
+                            app:ccp_showNameCode="false"
+                            app:ccp_showPhoneCode="true"
+                            app:ccp_textGravity="LEFT" />
+
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/lytPhone"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone">
+                            android:layout_height="wrap_content">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/edtPhone"
@@ -183,6 +196,8 @@
                                 android:singleLine="true" />
 
                         </com.google.android.material.textfield.TextInputLayout>
+
+
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 

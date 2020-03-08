@@ -246,5 +246,9 @@
     <string name="lbl_ridging_cost_text">Cost of ridging %.00f %s %.00f %s</string>
     <string name="lbl_harrowing_cost_text">Cost of harrowing %.00f %s %.00f %s</string>
     <string name="lbl_weeding_cost_text">Cost of weeding %.00f %s %.00f %s</string>
+    <string name="lbl_valid_email_req">Please provide a valid email</string>
+    <string name="lbl_first_name_req">Please provide your first name</string>
+    <string name="lbl_valid_number_req">Please provide a valid phone number</string>
+
 
 </resources>

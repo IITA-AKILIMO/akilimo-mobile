@@ -70,7 +70,7 @@ public class OperationTypeDialogFragment extends DialogFragment {
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogSlideAnimation;
 
         btnClose = dialog.findViewById(R.id.close_button);
         btnUpdate = dialog.findViewById(R.id.update_button);

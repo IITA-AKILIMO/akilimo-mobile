@@ -92,6 +92,16 @@ public class SessionManager {
         return Double.parseDouble(rate);
     }
 
+    public void setFirstRun(boolean firstRun) {
+        editor.putBoolean("firstRun", firstRun);
+        editor.commit();
+    }
+
+    public boolean getFirstRun() {
+        return pref.getBoolean("firstRun", true);
+    }
+
+
     @SuppressWarnings("StringBufferReplaceableByString")
     public String getAppVersion() {
         StringBuilder strVersion = new StringBuilder();

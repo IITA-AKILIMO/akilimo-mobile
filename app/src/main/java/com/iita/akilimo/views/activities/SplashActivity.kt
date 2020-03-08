@@ -34,8 +34,8 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun launchActivity() {
-        val intent = Intent(this@SplashActivity, HomeActivity::class.java)
-//        val intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
+//        val intent = Intent(this@SplashActivity, HomeActivity::class.java)
+        val intent = Intent(this@SplashActivity, DstRecommendationActivity::class.java)
         startActivity(intent)
         closeActivity()
     }

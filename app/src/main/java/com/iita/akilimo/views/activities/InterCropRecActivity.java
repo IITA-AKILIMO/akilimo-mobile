@@ -69,6 +69,8 @@ public class InterCropRecActivity extends BaseActivity {
     private RecOptionsAdapter mAdapter;
     private List<RecommendationOptions> items = new ArrayList<>();
     private EnumUseCase useCase;
+    private boolean icMaize;
+    private boolean icPotato;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,8 +123,8 @@ public class InterCropRecActivity extends BaseActivity {
                 recAdvice = new RecAdvice();
             }
             recAdvice.setFR(false);
-            recAdvice.setCIM(true);
-            recAdvice.setCIS(true);
+            recAdvice.setCIM(icMaize);
+            recAdvice.setCIS(icPotato);
             recAdvice.setSPH(false);
             recAdvice.setSPP(false);
             recAdvice.setBPP(false);
@@ -143,11 +145,13 @@ public class InterCropRecActivity extends BaseActivity {
         //set data and list adapter
         items = new ArrayList<>();
         if (countryCode.equalsIgnoreCase(EnumCountry.NIGERIA.countryCode())) {
+            icMaize = true;
             items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM, 0));
             items.add(new RecommendationOptions(maizeHeightString, EnumAdviceTasks.MAIZE_PERFORMANCE, 0));
             items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
             items.add(new RecommendationOptions(marketOutletMaizeString, EnumAdviceTasks.MARKET_OUTLET_MAIZE, 0));
         } else if (countryCode.equalsIgnoreCase(EnumCountry.TANZANIA.countryCode())) {
+            icPotato = true;
             items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS, 0));
             items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
             items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, 0));
