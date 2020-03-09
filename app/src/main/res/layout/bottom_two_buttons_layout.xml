@@ -12,7 +12,7 @@
     android:orientation="horizontal"
     app:layout_scrollFlags="scroll|enterAlways|snap">
 
-    <com.google.android.material.button.MaterialButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnFinish"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
