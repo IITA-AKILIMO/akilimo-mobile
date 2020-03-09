@@ -1,5 +1,6 @@
 package com.iita.akilimo.views.activities;
 
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
@@ -34,10 +35,10 @@ public class MaizePerformanceActivity extends BaseActivity {
     RadioGroup rdgMaizePerformance;
 
     @BindView(R.id.btnFinish)
-    MaterialButton btnFinish;
+    AppCompatButton btnFinish;
 
     @BindView(R.id.btnCancel)
-    MaterialButton btnCancel;
+    AppCompatButton btnCancel;
 
     @BindView(R.id.exceptionTitle)
     TextView exceptionTitle;
