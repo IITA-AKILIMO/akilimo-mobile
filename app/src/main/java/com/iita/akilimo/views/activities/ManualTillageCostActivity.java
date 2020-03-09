@@ -1,7 +1,6 @@
 package com.iita.akilimo.views.activities;
 
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatButton;
@@ -55,9 +54,9 @@ public class ManualTillageCostActivity extends CostBaseActivity {
     AppCompatButton btnRidgeCost;
 
     @BindView(R.id.btnFinish)
-    Button btnFinish;
+    AppCompatButton btnFinish;
     @BindView(R.id.btnCancel)
-    Button btnCancel;
+    AppCompatButton btnCancel;
 
     MathHelper mathHelper;
     OperationCosts operationCosts;

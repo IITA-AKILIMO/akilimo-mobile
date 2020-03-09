@@ -13,6 +13,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
@@ -22,7 +23,6 @@ import com.android.volley.toolbox.Volley;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.CassavaMarketOutlet;
@@ -92,9 +92,9 @@ public class CassavaMarketActivity extends BaseActivity {
     CardView unitOfSaleCard;
 
     @BindView(R.id.btnFinish)
-    MaterialButton btnFinish;
+    AppCompatButton btnFinish;
     @BindView(R.id.btnCancel)
-    MaterialButton btnCancel;
+    AppCompatButton btnCancel;
 
 
     MathHelper mathHelper;

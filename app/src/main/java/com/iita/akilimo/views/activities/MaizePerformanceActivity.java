@@ -5,10 +5,10 @@ import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.common.util.Strings;
-import com.google.android.material.button.MaterialButton;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.MaizePerformance;
 import com.iita.akilimo.inherit.BaseActivity;
@@ -34,10 +34,10 @@ public class MaizePerformanceActivity extends BaseActivity {
     RadioGroup rdgMaizePerformance;
 
     @BindView(R.id.btnFinish)
-    MaterialButton btnFinish;
+    AppCompatButton btnFinish;
 
     @BindView(R.id.btnCancel)
-    MaterialButton btnCancel;
+    AppCompatButton btnCancel;
 
     @BindView(R.id.exceptionTitle)
     TextView exceptionTitle;
