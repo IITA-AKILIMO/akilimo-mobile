@@ -3,6 +3,7 @@ package com.iita.akilimo.views.activities;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.common.util.Strings;
@@ -36,9 +37,9 @@ public class DatesActivity extends BaseActivity {
     MaterialButton btnPickHarvestDate;
 
     @BindView(R.id.btnCancel)
-    MaterialButton btnCancel;
+    AppCompatButton btnCancel;
     @BindView(R.id.btnFinish)
-    MaterialButton btnFinish;
+    AppCompatButton btnFinish;
 
 
     @BindView(R.id.lblSelectedPlantingDate)

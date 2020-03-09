@@ -4,12 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
-import com.google.android.material.button.MaterialButton;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
 import com.iita.akilimo.entities.RecAdvice;
@@ -33,8 +33,8 @@ public class FertilizerRecActivity extends BaseActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @BindView(R.id.btnGetRec)
-    MaterialButton btnGetRec;
+    @BindView(R.id.btnGetRecommendation)
+    AppCompatButton btnGetRec;
 
     @BindString(R.string.lbl_fertilizer_recommendations)
     String recommendations;

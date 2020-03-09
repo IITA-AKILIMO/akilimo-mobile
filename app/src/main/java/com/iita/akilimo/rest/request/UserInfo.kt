@@ -1,6 +1,5 @@
 package com.iita.akilimo.rest.request
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import lombok.Data
 
 @Data

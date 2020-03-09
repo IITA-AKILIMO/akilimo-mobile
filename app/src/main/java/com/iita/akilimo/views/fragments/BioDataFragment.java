@@ -11,11 +11,11 @@ import android.widget.RadioGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hbb20.CountryCodePicker;
@@ -64,8 +64,8 @@ public class BioDataFragment extends BaseFragment {
     CountryCodePicker ccp;
 
 
-    @BindView(R.id.btnGetRec)
-    MaterialButton btnGetRec;
+    @BindView(R.id.btnGetRecommendation)
+    AppCompatButton btnGetRec;
 
     @BindString(R.string.lbl_save)
     String saveTitle;

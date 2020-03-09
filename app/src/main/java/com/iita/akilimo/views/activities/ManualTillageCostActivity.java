@@ -1,13 +1,12 @@
 package com.iita.akilimo.views.activities;
 
+import android.os.Bundle;
+import android.widget.TextView;
+
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-
-import android.os.Bundle;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.android.volley.toolbox.Volley;
 import com.iita.akilimo.R;
@@ -55,9 +54,9 @@ public class ManualTillageCostActivity extends CostBaseActivity {
     AppCompatButton btnRidgeCost;
 
     @BindView(R.id.btnFinish)
-    Button btnFinish;
+    AppCompatButton btnFinish;
     @BindView(R.id.btnCancel)
-    Button btnCancel;
+    AppCompatButton btnCancel;
 
     MathHelper mathHelper;
     OperationCosts operationCosts;

@@ -1,9 +1,5 @@
 package com.iita.akilimo.views.activities;
 
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,16 +13,20 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
-import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.CassavaMarketOutlet;
+import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.models.StarchFactory;
@@ -92,9 +92,9 @@ public class CassavaMarketActivity extends BaseActivity {
     CardView unitOfSaleCard;
 
     @BindView(R.id.btnFinish)
-    MaterialButton btnFinish;
+    AppCompatButton btnFinish;
     @BindView(R.id.btnCancel)
-    MaterialButton btnCancel;
+    AppCompatButton btnCancel;
 
 
     MathHelper mathHelper;

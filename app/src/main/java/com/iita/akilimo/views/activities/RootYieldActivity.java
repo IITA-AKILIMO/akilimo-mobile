@@ -2,8 +2,8 @@ package com.iita.akilimo.views.activities;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.AdapterGridTwoLine;
+import com.iita.akilimo.entities.CurrentFieldYield;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
-import com.iita.akilimo.entities.CurrentFieldYield;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
@@ -41,9 +41,9 @@ public class RootYieldActivity extends BaseActivity {
     View viewPos;
 
     @BindView(R.id.btnFinish)
-    Button btnFinish;
+    AppCompatButton btnFinish;
     @BindView(R.id.btnCancel)
-    Button btnCancel;
+    AppCompatButton btnCancel;
 
     private CurrentFieldYield savedYield;
     private MathHelper mathHelper;

@@ -1,23 +1,18 @@
 package com.iita.akilimo.views.activities;
 
+import android.os.Bundle;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.app.Dialog;
-import android.os.Bundle;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.RadioGroup;
-import android.widget.TextView;
-
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.MandatoryInfo;
@@ -62,9 +57,9 @@ public class TractorAccessActivity extends CostBaseActivity {
     CurrentPractice currentPractice;
 
     @BindView(R.id.btnFinish)
-    Button btnFinish;
+    AppCompatButton btnFinish;
     @BindView(R.id.btnCancel)
-    Button btnCancel;
+    AppCompatButton btnCancel;
 
     private boolean hasTractor;
     private boolean hasPlough;

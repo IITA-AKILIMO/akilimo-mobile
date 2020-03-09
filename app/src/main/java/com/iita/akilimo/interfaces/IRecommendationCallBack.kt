@@ -1,6 +1,5 @@
 package com.iita.akilimo.interfaces
 
-import com.iita.akilimo.entities.MandatoryInfo
 import com.iita.akilimo.entities.ProfileInfo
 
 interface IRecommendationCallBack {
