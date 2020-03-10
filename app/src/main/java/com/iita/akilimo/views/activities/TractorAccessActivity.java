@@ -77,6 +77,7 @@ public class TractorAccessActivity extends CostBaseActivity {
     private boolean dataValid;
     private double tractorPloughCost;
     private double tractorRidgeCost;
+    private boolean dialogOpen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,14 +138,14 @@ public class TractorAccessActivity extends CostBaseActivity {
 
         chkPlough.setOnCheckedChangeListener((buttonView, isChecked) -> {
             hasPlough = isChecked;
-            if (buttonView.isPressed() && isChecked) {
+            if (buttonView.isPressed() && isChecked && !dialogOpen) {
                 String title = (getString(R.string.lbl_tractor_plough_cost, fieldSize, areaUnit));
                 loadOperationCost(EnumOperation.TILLAGE, EnumOperationType.MECHANICAL, title);
             }
         });
         chkRidger.setOnCheckedChangeListener((buttonView, isChecked) -> {
             hasRidger = isChecked;
-            if (buttonView.isPressed() && isChecked) {
+            if (buttonView.isPressed() && isChecked && !dialogOpen) {
                 String title = (getString(R.string.lbl_tractor_ridge_cost, fieldSize, areaUnit));
                 loadOperationCost(EnumOperation.RIDGING, EnumOperationType.MECHANICAL, title);
             }
@@ -191,6 +192,10 @@ public class TractorAccessActivity extends CostBaseActivity {
     protected void showDialogFullscreen(ArrayList<OperationCost> operationCostList, EnumOperation operation, EnumCountry enumCountry, String dialogTitle) {
         Bundle arguments = new Bundle();
 
+        if (dialogOpen) {
+            return;
+        }
+        dialogOpen = true;
         arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList);
         arguments.putParcelable(OperationCostsDialogFragment.OPERATION_NAME, operation);
         arguments.putParcelable(OperationCostsDialogFragment.SELECTED_COUNTRY, enumCountry);
@@ -212,6 +217,7 @@ public class TractorAccessActivity extends CostBaseActivity {
                         break;
                 }
             }
+            dialogOpen = true;
         });
 
 
