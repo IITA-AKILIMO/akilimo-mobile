@@ -67,21 +67,55 @@
 
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_large"
                 android:layout_marginTop="@dimen/spacing_large"
                 android:layout_marginRight="@dimen/spacing_large"
-                android:gravity="center"
+                android:fontFamily="@font/ubuntu"
                 android:text="@string/lbl_planting_harvest"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:textColor="@color/grey_90" />
 
 
-            <RelativeLayout
+            <RadioGroup
+                android:id="@+id/rdgAlternativeDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/spacing_large">
+                android:layout_marginLeft="@dimen/spacing_large"
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:layout_marginRight="@dimen/spacing_large"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/rdYes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu"
+                    android:text="@string/lbl_yes"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                <View
+                    android:layout_width="130dp"
+                    android:layout_height="0dp" />
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/rdNo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu"
+                    android:text="@string/lbl_no"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+            </RadioGroup>
+
+            <RelativeLayout
+                android:id="@+id/lytPlantingHarvest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_medium"
+                android:visibility="gone">
+
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/plantingCard"
@@ -98,14 +132,6 @@
                         android:orientation="vertical"
                         android:padding="@dimen/spacing_small">
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnPickPlantingDate"
-                            style="@style/Widget.AppCompat.Button.Borderless"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/lbl_pick_planting_date"
-                            app:cornerRadius="1dp" />
-
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -115,16 +141,72 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/lbl_selected_planting_date" />
+                                android:fontFamily="@font/ubuntu"
+                                android:text="@string/lbl_selected_planting_date"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
                             <TextView
                                 android:id="@+id/lblSelectedPlantingDate"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/spacing_small"
+                                android:fontFamily="@font/ubuntu"
                                 android:text="@string/app_name"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                                 android:textColor="@color/colorAccent" />
                         </LinearLayout>
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btnPickPlantingDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/ubuntu"
+                            android:text="@string/lbl_change_planting_date"
+                            android:textAllCaps="false"
+                            android:theme="@style/Button.Accent" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.SwitchCompat
+                                android:id="@+id/flexiblePlanting"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textOff="@string/lbl_no"
+                                android:textOn="@string/lbl_yes" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/ubuntu"
+                                android:text="@string/lbl_planting_flexible"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+                        </LinearLayout>
+
+                        <RadioGroup
+                            android:id="@+id/rdgPlantingWindow"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/spacing_large"
+                            android:visibility="gone">
+
+
+                            <RadioButton
+                                android:id="@+id/rdPlantingOneMonth"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/lbl_one_month_window" />
+
+
+                            <RadioButton
+                                android:id="@+id/rdPlantingTwoMonths"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/lbl_two_month_window" />
+
+                        </RadioGroup>
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -146,14 +228,6 @@
                         android:orientation="vertical"
                         android:padding="@dimen/spacing_small">
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnPickHarvestDate"
-                            style="@style/Widget.AppCompat.Button.Borderless"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/lbl_pick_harvest_date"
-                            app:cornerRadius="1dp" />
-
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -163,16 +237,73 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/lbl_selected_harvest_date" />
+                                android:fontFamily="@font/ubuntu"
+                                android:text="@string/lbl_selected_harvest_date"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
                             <TextView
                                 android:id="@+id/lblSelectedHarvestDate"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/spacing_small"
+                                android:fontFamily="@font/ubuntu"
                                 android:text="@string/app_name"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                                 android:textColor="@color/colorAccent" />
                         </LinearLayout>
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btnPickHarvestDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/ubuntu"
+                            android:text="@string/lbl_change_harvest_date"
+                            android:textAllCaps="false"
+                            android:theme="@style/Button.Primary" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.SwitchCompat
+                                android:id="@+id/flexibleHarvest"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textOff="@string/lbl_no"
+                                android:textOn="@string/lbl_yes"
+                                app:showText="false" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/ubuntu"
+                                android:text="@string/lbl_harvest_flexible"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+                        </LinearLayout>
+
+                        <RadioGroup
+                            android:id="@+id/rdgHarvestWindow"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/spacing_large"
+                            android:visibility="gone">
+
+
+                            <RadioButton
+                                android:id="@+id/rdHarvestOneMonth"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/lbl_one_month_window" />
+
+
+                            <RadioButton
+                                android:id="@+id/rdHarvestTwoMonths"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/lbl_two_month_window" />
+
+                        </RadioGroup>
 
                     </LinearLayout>
 

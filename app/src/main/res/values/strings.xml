@@ -113,15 +113,17 @@
     <string name="lbl_cost_of_weed_control">Cost of weed control</string>
 
     <string name="lbl_pick_planting_date">Pick planting date</string>
+    <string name="lbl_change_planting_date">Change planting date</string>
     <string name="lbl_selected_planting_date">Your selected planting date was :</string>
     <string name="lbl_planting_flexible">My planting date is flexible</string>
 
     <string name="lbl_pick_harvest_date">Pick harvest date</string>
+    <string name="lbl_change_harvest_date">Change harvest date</string>
     <string name="lbl_selected_harvest_date">Your selected harvest date was :</string>
     <string name="lbl_harvest_flexible">My harvest date is flexible</string>
 
-    <string name="lbl_one_month_window">± 1 month</string>
-    <string name="lbl_two_month_window">± 2 months</string>
+    <string name="lbl_one_month_window">Flexible by 1 month</string>
+    <string name="lbl_two_month_window">Flexible by 2 months</string>
 
     <string name="lbl_to">to</string>
     <string name="lbl_no">No</string>
