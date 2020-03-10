@@ -18,7 +18,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_marginLeft="@dimen/spacing_large"
             android:layout_marginTop="@dimen/spacing_large"
             android:layout_marginRight="@dimen/spacing_large"
@@ -26,7 +25,7 @@
             android:text="@string/lbl_summary_title"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             android:textColor="@color/grey_80"
-            app:fontFamily="@font/roboto" />
+            app:fontFamily="@font/ubuntu" />
     </LinearLayout>
 
     <RelativeLayout
@@ -41,8 +40,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:paddingLeft="@dimen/spacing_small"
+            android:paddingRight="@dimen/spacing_small"
             android:paddingBottom="@dimen/spacing_medium"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:listitem="@layout/item_timeline" />

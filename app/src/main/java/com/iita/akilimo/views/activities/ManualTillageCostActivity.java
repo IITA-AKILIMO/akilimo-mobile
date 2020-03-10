@@ -170,7 +170,6 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         if (dialogOpen) {
             return;
         }
-        dialogOpen = true;
         arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList);
         arguments.putParcelable(OperationCostsDialogFragment.OPERATION_NAME, operation);
         arguments.putParcelable(OperationCostsDialogFragment.SELECTED_COUNTRY, enumCountry);
@@ -205,6 +204,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
                 fragmentTransaction.remove(prev);
             }
             fragmentTransaction.addToBackStack(null);
+            dialogOpen = true;
             dialogFragment.show(getSupportFragmentManager(), OperationCostsDialogFragment.ARG_ITEM_ID);
         }
     }
