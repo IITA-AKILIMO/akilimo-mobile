@@ -114,20 +114,22 @@ public class MandatoryInfo {
         MathHelper mathHelper = new MathHelper();
         double convertedArea = 0.0;
         double nearestValue = 1000.0;
-        switch (this.getAreaUnitsEnum()) {
-            case UNKNOWN:
-                break;
-            case ACRE:
-                convertedArea = this.acreAreaSize;
-                break;
-            case HA:
-                convertedArea = this.acreAreaSize / 2.471;
-                break;
-            case SQM:
-                convertedArea = this.acreAreaSize * 4046.856;
-                break;
+        if (this.getAreaUnitsEnum() != null) {
+            switch (this.getAreaUnitsEnum()) {
+                case UNKNOWN:
+                    break;
+                case ACRE:
+                    convertedArea = this.acreAreaSize;
+                    break;
+                case HA:
+                    convertedArea = this.acreAreaSize / 2.471;
+                    break;
+                case SQM:
+                    convertedArea = this.acreAreaSize * 4046.856;
+                    break;
+            }
+            this.setAreaSize(mathHelper.roundToNearestSpecifiedValue(convertedArea, nearestValue));
         }
-        this.setAreaSize(mathHelper.roundToNearestSpecifiedValue(convertedArea, nearestValue));
     }
 
 }
