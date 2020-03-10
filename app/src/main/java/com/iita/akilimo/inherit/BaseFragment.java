@@ -86,11 +86,9 @@ public abstract class BaseFragment extends Fragment {
         if (locationInfo != null) {
             String latitude = String.valueOf(locationInfo.getLatitude());
             String longitude = String.valueOf(locationInfo.getLongitude());
-            if (locationInfo.getLatitude() != 0 && locationInfo.getLongitude() != 0) {
-                stBuilder.append(latitude);
-                stBuilder.append(",");
-                stBuilder.append(longitude);
-            }
+            stBuilder.append(latitude);
+            stBuilder.append(",");
+            stBuilder.append(longitude);
         }
 
         return stBuilder;

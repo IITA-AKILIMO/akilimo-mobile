@@ -9,25 +9,25 @@
         android:pathData="M855.06,730.717a19.99,48.53 135,1 0,28.27 -28.27a19.99,48.53 135,1 0,-28.27 28.27z"
         android:strokeAlpha="0.1" />
     <path
-        android:fillColor="#3f3d56"
+        android:fillColor="@color/colorPrimary"
         android:pathData="M861.9,705.7a10.73,14.05 0,1 0,21.46 0a10.73,14.05 0,1 0,-21.46 0z" />
     <path
-        android:fillColor="#3f3d56"
+        android:fillColor="@color/colorPrimary"
         android:pathData="M861.9,688.53a10.73,14.05 0,1 0,21.46 0a10.73,14.05 0,1 0,-21.46 0z" />
     <path
-        android:fillColor="#3f3d56"
+        android:fillColor="@color/colorPrimary"
         android:pathData="M861.9,671.36a10.73,14.05 0,1 0,21.46 0a10.73,14.05 0,1 0,-21.46 0z" />
     <path
-        android:fillColor="#3f3d56"
+        android:fillColor="@color/colorPrimary"
         android:pathData="M861.9,654.19a10.73,14.05 0,1 0,21.46 0a10.73,14.05 0,1 0,-21.46 0z" />
     <path
-        android:fillColor="#3f3d56"
+        android:fillColor="@color/colorPrimary"
         android:pathData="M861.9,637.02a10.73,14.05 0,1 0,21.46 0a10.73,14.05 0,1 0,-21.46 0z" />
     <path
-        android:fillColor="#3f3d56"
+        android:fillColor="@color/colorPrimary"
         android:pathData="M861.9,619.85a10.73,14.05 0,1 0,21.46 0a10.73,14.05 0,1 0,-21.46 0z" />
     <path
-        android:fillColor="#3f3d56"
+        android:fillColor="@color/colorPrimary"
         android:pathData="M861.9,602.68a10.73,14.05 0,1 0,21.46 0a10.73,14.05 0,1 0,-21.46 0z" />
     <path
         android:fillColor="@color/colorPrimary"
@@ -159,25 +159,25 @@
         android:pathData="M481.06,746.65a13.78,33.45 66.7,1 0,61.444 -26.462a13.78,33.45 66.7,1 0,-61.444 26.462z"
         android:strokeAlpha="0.1" />
     <path
-        android:fillColor="#3f3d56"
+        android:fillColor="@color/colorPrimary"
         android:pathData="M503.99,727.97a7.4,9.68 0,1 0,14.8 0a7.4,9.68 0,1 0,-14.8 0z" />
     <path
-        android:fillColor="#3f3d56"
+        android:fillColor="@color/colorPrimary"
         android:pathData="M503.99,716.13a7.4,9.68 0,1 0,14.8 0a7.4,9.68 0,1 0,-14.8 0z" />
     <path
-        android:fillColor="#3f3d56"
+        android:fillColor="@color/colorPrimary"
         android:pathData="M503.99,704.3a7.4,9.68 0,1 0,14.8 0a7.4,9.68 0,1 0,-14.8 0z" />
     <path
-        android:fillColor="#3f3d56"
+        android:fillColor="@color/colorPrimary"
         android:pathData="M503.99,692.47a7.4,9.68 0,1 0,14.8 0a7.4,9.68 0,1 0,-14.8 0z" />
     <path
-        android:fillColor="#3f3d56"
+        android:fillColor="@color/colorPrimary"
         android:pathData="M503.99,680.63a7.4,9.68 0,1 0,14.8 0a7.4,9.68 0,1 0,-14.8 0z" />
     <path
-        android:fillColor="#3f3d56"
+        android:fillColor="@color/colorPrimary"
         android:pathData="M503.99,668.8a7.4,9.68 0,1 0,14.8 0a7.4,9.68 0,1 0,-14.8 0z" />
     <path
-        android:fillColor="#3f3d56"
+        android:fillColor="@color/colorPrimary"
         android:pathData="M503.99,656.97a7.4,9.68 0,1 0,14.8 0a7.4,9.68 0,1 0,-14.8 0z" />
     <path
         android:fillColor="@color/colorPrimary"
@@ -193,25 +193,25 @@
         android:pathData="M34.059,708.715a19.99,48.53 135,1 0,28.27 -28.27a19.99,48.53 135,1 0,-28.27 28.27z"
         android:strokeAlpha="0.1" />
     <path
-        android:fillColor="#3f3d56"
+        android:fillColor="@color/colorPrimary"
         android:pathData="M40.9,683.7a10.73,14.05 0,1 0,21.46 0a10.73,14.05 0,1 0,-21.46 0z" />
     <path
-        android:fillColor="#3f3d56"
+        android:fillColor="@color/colorPrimary"
         android:pathData="M40.9,666.53a10.73,14.05 0,1 0,21.46 0a10.73,14.05 0,1 0,-21.46 0z" />
     <path
-        android:fillColor="#3f3d56"
+        android:fillColor="@color/colorPrimary"
         android:pathData="M40.9,649.36a10.73,14.05 0,1 0,21.46 0a10.73,14.05 0,1 0,-21.46 0z" />
     <path
-        android:fillColor="#3f3d56"
+        android:fillColor="@color/colorPrimary"
         android:pathData="M40.9,632.19a10.73,14.05 0,1 0,21.46 0a10.73,14.05 0,1 0,-21.46 0z" />
     <path
-        android:fillColor="#3f3d56"
+        android:fillColor="@color/colorPrimary"
         android:pathData="M40.9,615.02a10.73,14.05 0,1 0,21.46 0a10.73,14.05 0,1 0,-21.46 0z" />
     <path
-        android:fillColor="#3f3d56"
+        android:fillColor="@color/colorPrimary"
         android:pathData="M40.9,597.85a10.73,14.05 0,1 0,21.46 0a10.73,14.05 0,1 0,-21.46 0z" />
     <path
-        android:fillColor="#3f3d56"
+        android:fillColor="@color/colorPrimary"
         android:pathData="M40.9,580.68a10.73,14.05 0,1 0,21.46 0a10.73,14.05 0,1 0,-21.46 0z" />
     <path
         android:fillColor="@color/colorPrimary"

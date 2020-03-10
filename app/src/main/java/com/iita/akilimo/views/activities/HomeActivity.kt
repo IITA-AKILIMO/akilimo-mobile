@@ -43,11 +43,13 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
     @BindString(R.string.welcome_title)
     private val welcomeTitle: String = ""
+
     @BindString(R.string.welcome_instructions)
     private val instructions: String = ""
 
     @BindString(R.string.lbl_permission_rationale)
     internal var rationale: String? = null
+
     @BindString(R.string.lbl_place_name)
     internal var defaultPlaceName: String? = null
 
@@ -269,6 +271,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             }
 
             location = objectBoxEntityProcessor.locationInfo
+
             location.latitude = currentLat
             location.longitude = currentLong
             location.altitude = currentAlt

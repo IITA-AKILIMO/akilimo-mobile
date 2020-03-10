@@ -84,9 +84,14 @@ public class ObjectBoxEntityProcessor {
 
     public LocationInfo getLocationInfo() {
         Box<LocationInfo> box = boxStore.boxFor(LocationInfo.class);
-        return box.query()
+        LocationInfo loc = box.query()
                 .build()
                 .findFirst();
+
+        if (loc == null) {
+            loc = new LocationInfo();
+        }
+        return loc;
     }
 
     public long saveMandatoryInfo(MandatoryInfo mandatoryInfo) {

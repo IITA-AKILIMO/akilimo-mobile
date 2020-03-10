@@ -40,7 +40,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected BoxStore boxStore;
     protected SessionManager sessionManager;
     protected RequestQueue queue;
-    protected ObjectBoxEntityProcessor objectBoxEntityProcessor;
+    protected ObjectBoxEntityProcessor objectBoxEntityProcessor = null;
 
     protected String countryCode = "ALL";
     protected String baseCurrency = "USD";
