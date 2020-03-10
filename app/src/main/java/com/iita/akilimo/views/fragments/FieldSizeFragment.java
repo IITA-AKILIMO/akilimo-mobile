@@ -206,6 +206,7 @@ public class FieldSizeFragment extends BaseFragment {
 
     private void setFieldLabels(EnumAreaUnits areaUnits) {
         switch (areaUnits) {
+            default:
             case ACRE:
                 quarter_acre = getString(R.string.quarter_acre);
                 half_acre = getString(R.string.half_acre);
