@@ -36,7 +36,8 @@
             android:textColor="@color/grey_80" />
 
         <ScrollView
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
+            android:padding="@dimen/spacing_medium"
             android:layout_height="wrap_content">
 
             <RadioGroup
