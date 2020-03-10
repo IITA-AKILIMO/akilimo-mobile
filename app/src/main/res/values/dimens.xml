@@ -9,6 +9,8 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="viewpager_margin_overlap">-60dp</dimen>
     <dimen name="viewpager_margin_overlap_payment">-30dp</dimen>
+    <dimen name="padding">8dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 
     <!--general spacing-->
     <dimen name="spacing_xsmall">2dp</dimen>
@@ -26,7 +28,9 @@
     <dimen name="spacing_xxxlarge">55dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
     <dimen name="app_bar_height">180dp</dimen>
-    <dimen name="padding">8dp</dimen>
-    <dimen name="text_margin">16dp</dimen>
+
+
+    <dimen name="img_width">250dp</dimen>
+    <dimen name="img_height">250dp</dimen>
 
 </resources>

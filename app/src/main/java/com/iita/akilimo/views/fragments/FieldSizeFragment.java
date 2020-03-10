@@ -64,9 +64,8 @@ public class FieldSizeFragment extends BaseFragment {
     @BindView(R.id.rd_two_half_acre)
     RadioButton rd_two_half_acre;
 
-    protected Context context;
-    private String myFieldSize = "";
 
+    private String myFieldSize = "";
 
     private double areaSize;
     private String quarter_acre;
