@@ -147,12 +147,12 @@ public class InterCropRecActivity extends BaseActivity {
             icMaize = true;
             items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM, 0));
             items.add(new RecommendationOptions(maizeHeightString, EnumAdviceTasks.MAIZE_PERFORMANCE, 0));
-            items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
+//            items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
             items.add(new RecommendationOptions(marketOutletMaizeString, EnumAdviceTasks.MARKET_OUTLET_MAIZE, 0));
         } else if (countryCode.equalsIgnoreCase(EnumCountry.TANZANIA.countryCode())) {
             icPotato = true;
             items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS, 0));
-//            items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
+            items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
             items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, 0));
             items.add(new RecommendationOptions(sweetPotatoPricesString, EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO, 0));
         }
@@ -160,7 +160,6 @@ public class InterCropRecActivity extends BaseActivity {
         recyclerView.setAdapter(mAdapter);
 
         mAdapter.setOnItemClickListener((view, obj, position) -> {
-            Bundle args = new Bundle();
             Intent intent = null;
             EnumAdviceTasks advice = obj.getRecCode();
             switch (advice) {
