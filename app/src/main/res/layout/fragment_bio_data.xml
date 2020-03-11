@@ -35,7 +35,7 @@
                 android:fontFamily="@font/ubuntu"
                 android:text="Let us start by you telling me a bit about yourself"
                 android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textColor="@color/colorAccent" />
 
 
@@ -65,7 +65,9 @@
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/lytFirstName"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:background="@color/transparent"
+                            app:boxBackgroundColor="@color/transparent">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/edtFirstName"
@@ -84,7 +86,9 @@
                             android:id="@+id/lytLastName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_medium">
+                            android:layout_marginTop="@dimen/spacing_medium"
+                            android:background="@color/transparent"
+                            app:boxBackgroundColor="@color/transparent">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/edtLastName"
@@ -112,7 +116,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/ubuntu"
-                                android:text="Male"
+                                android:text="@string/lbl_male"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                             <androidx.appcompat.widget.AppCompatRadioButton
@@ -120,7 +124,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/ubuntu"
-                                android:text="Female"
+                                android:text="@string/lbl_female"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                         </RadioGroup>
@@ -130,7 +134,9 @@
                             android:id="@+id/lytFarmName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_medium">
+                            android:layout_marginTop="@dimen/spacing_medium"
+                            android:background="@color/transparent"
+                            app:boxBackgroundColor="@color/transparent">
 
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -152,7 +158,9 @@
                             android:id="@+id/lytEmail"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_medium">
+                            android:layout_marginTop="@dimen/spacing_medium"
+                            android:background="@color/transparent"
+                            app:boxBackgroundColor="@color/transparent">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/edtEmail"
@@ -183,7 +191,9 @@
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/lytPhone"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:background="@color/transparent"
+                            app:boxBackgroundColor="@color/transparent">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/edtPhone"

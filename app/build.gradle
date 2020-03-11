@@ -12,7 +12,7 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
 
 ext.versionMajor = 8
-ext.versionMinor = 0
+ext.versionMinor = 1
 android {
     def buildNumber = computeBuildNumber()
     def appVersionCode = computeVersionCode()
@@ -56,25 +56,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-//    signingConfigs {
-//        release {
-//            File fileProp = file(System.getenv('HOME') + "/.appkey")
-//            if (fileProp.exists()) {
-//                Properties releaseConfig = new Properties()
-//                releaseConfig.load(new FileInputStream(fileProp))
-//                storeFile file(System.getenv('HOME') + "/" + releaseConfig["KEYSTORE_FILE"])
-//                storePassword releaseConfig['KEYSTORE_PWD']
-//                keyAlias releaseConfig['KEY_ALIAS']
-//                keyPassword releaseConfig['KEY_PASSWORD']
-//            }
-//        }
-//        debug {
-//            storeFile file('debug.keystore')
-//            storePassword 'android'
-//            keyAlias 'androiddebugkey'
-//            keyPassword 'androiddebug'
-//        }
-//    }
 }
 
 @SuppressWarnings("GrMethodMayBeStatic")
@@ -108,8 +89,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-places:17.0.0'
-    implementation 'com.google.firebase:firebase-config:19.1.1'
-    implementation 'com.google.firebase:firebase-analytics:17.2.2'
+    implementation 'com.google.firebase:firebase-config:19.1.2'
+    implementation 'com.google.firebase:firebase-analytics:17.2.3'
     implementation 'com.google.android:flexbox:0.3.2'                   // google flexible box
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 

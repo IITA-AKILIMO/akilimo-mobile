@@ -37,16 +37,19 @@ public class FireBaseConfig {
         mFireBaseRemoteConfig.fetchAndActivate()
                 .addOnCompleteListener(activity, task -> {
                     if (task.isSuccessful()) {
+
                         boolean updated = task.getResult();
 
-                        Toast.makeText(activity, "Data fetch succeeded and " + fetchIntervalInSeconds + " updated " + updated, Toast.LENGTH_SHORT).show();
 
                         String apiToken = mFireBaseRemoteConfig.getString("api_token");
                         String akilimo_api = mFireBaseRemoteConfig.getString("akilimo_api");
 
                         if (BuildConfig.DEBUG) {
                             akilimo_api = mFireBaseRemoteConfig.getString("akilimo_api_demo");
+                            Toast.makeText(activity, "Data fetch succeeded and " + fetchIntervalInSeconds + " updated " + updated, Toast.LENGTH_SHORT).show();
                         }
+
+                        Toast.makeText(activity, "Api endpoint is " + akilimo_api, Toast.LENGTH_SHORT).show();
 
                         String mapBoxKey = mFireBaseRemoteConfig.getString("mapBoxApiKey");
                         String locationIqToken = mFireBaseRemoteConfig.getString("locationIqToken");

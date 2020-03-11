@@ -181,11 +181,11 @@ public class RootYieldActivity extends BaseActivity {
         }
 
         List<CurrentFieldYield> items = new ArrayList<>();
-        items.add(yieldObject(imageIDs[0], rd_3_tonnes, 25));
-        items.add(yieldObject(imageIDs[1], rd_6_tonnes, 50));
-        items.add(yieldObject(imageIDs[2], rd_9_tonnes, 100));
-        items.add(yieldObject(imageIDs[3], rd_12_tonnes, 150));
-        items.add(yieldObject(imageIDs[4], rd_more, 200));
+        items.add(yieldObject(imageIDs[0], rd_3_tonnes, 3.75));
+        items.add(yieldObject(imageIDs[1], rd_6_tonnes, 11.25));
+        items.add(yieldObject(imageIDs[2], rd_9_tonnes, 18.75));
+        items.add(yieldObject(imageIDs[3], rd_12_tonnes, 26.25));
+        items.add(yieldObject(imageIDs[4], rd_more, 33.75));
 
         return items;
     }

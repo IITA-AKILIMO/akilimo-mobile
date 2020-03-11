@@ -64,23 +64,23 @@ public class FieldSizeFragment extends BaseFragment {
     @BindView(R.id.rd_two_half_acre)
     RadioButton rd_two_half_acre;
 
-    protected Context context;
+
     private String myFieldSize = "";
 
-
     private double areaSize;
-    private String quarter_acre;
-    private String half_acre;
-    private String one_acre;
-    private String one_half_acres;
-    private String two_half_acres;
-    private String exact_acre;
+    private boolean isExactArea;
+    private String quarterAcre;
+    private String halfAcre;
+    private String oneAcre;
+    private String oneHalfAcres;
+    private String twoHalfAcres;
+    private String exactAcre;
     private String titleMessage;
 
     private MandatoryInfo mandatoryInfo;
     private EnumAreaUnits areaUnits = EnumAreaUnits.ACRE;
-    private EnumFieldArea fieldAreaEnum = EnumFieldArea.UNKNOWN;
-
+    private EnumFieldArea fieldAreaEnum;
+    private int fieldSizeRadioIndex;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -104,13 +104,21 @@ public class FieldSizeFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        rdgFieldArea.setOnCheckedChangeListener((radioGroup, radioIndex) -> radioSelected(radioIndex));
-
-        rdSpecifyArea.setOnClickListener(view1 -> {
-            if (rdSpecifyArea.isChecked()) {
-                showCustomDialog();
+        rdgFieldArea.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
+            RadioButton radioButton = view.findViewById(radioIndex);
+            if (radioButton != null) {
+                if (radioButton.isPressed()) {
+                    radioSelected(radioIndex);
+                }
             }
+
         });
+
+//        rdSpecifyArea.setOnClickListener(view1 -> {
+//            if (rdSpecifyArea.isChecked()) {
+//                showCustomDialog();
+//            }
+//        });
     }
 
     @Override
@@ -120,39 +128,21 @@ public class FieldSizeFragment extends BaseFragment {
             if (mandatoryInfo != null) {
                 fieldAreaEnum = mandatoryInfo.getFieldAreaEnum();
                 areaUnits = mandatoryInfo.getAreaUnitsEnum();
-
+                fieldSizeRadioIndex = mandatoryInfo.getFieldSizeRadioIndex();
+                isExactArea = mandatoryInfo.isExactArea();
                 setFieldLabels(areaUnits);
                 myFieldSize = String.valueOf(mandatoryInfo.getAreaSize());
-                specifiedArea.setText(null);
-                rdgFieldArea.clearCheck();
-                switch (fieldAreaEnum) {
-                    case QUARTER_ACRE:
-                        rdgFieldArea.check(R.id.rd_quarter_acre);
-                        break;
-                    case HALF_ACRE:
-                        rdgFieldArea.check(R.id.rd_half_acre);
-                        break;
-                    case ONE_ACRE:
-                        rdgFieldArea.check(R.id.rd_one_acre);
-                        break;
-                    case ONE_HALF_ACRE:
-                        rdgFieldArea.check(R.id.rd_one_half_acre);
-                        break;
-                    case TWO_HALF_ACRE:
-                        rdgFieldArea.check(R.id.rd_two_half_acre);
-                        break;
-                    case FIVE_ACRE:
-                        rdgFieldArea.check(R.id.rd_five_acre);
-                        break;
-                    case EXACT_AREA:
-                        rdgFieldArea.check(R.id.rd_specify_acre);
-                        specifiedArea.setText(String.format("%s %s", myFieldSize, areaUnits));
-                        specifiedArea.setVisibility(View.VISIBLE);
-                        break;
+
+                rdgFieldArea.check(fieldSizeRadioIndex);
+                if (isExactArea) {
+                    specifiedArea.setText(String.format("%s %s", myFieldSize, areaUnits));
+                    specifiedArea.setVisibility(View.VISIBLE);
+                } else {
+                    specifiedArea.setVisibility(View.GONE);
                 }
+
             }
         } catch (Exception ex) {
-            mandatoryInfo = new MandatoryInfo();
             Crashlytics.log(Log.ERROR, TAG, "An error occurred fetching info");
             Crashlytics.logException(ex);
         }
@@ -161,6 +151,7 @@ public class FieldSizeFragment extends BaseFragment {
     private void radioSelected(int checked) {
         specifiedArea.setVisibility(View.GONE);
         areaSize = 0;
+        isExactArea = false;
         switch (checked) {
             case R.id.rd_quarter_acre:
                 fieldAreaEnum = EnumFieldArea.QUARTER_ACRE;
@@ -180,23 +171,26 @@ public class FieldSizeFragment extends BaseFragment {
             case R.id.rd_five_acre:
                 fieldAreaEnum = EnumFieldArea.FIVE_ACRE;
                 break;
-            default:
             case R.id.rd_specify_acre:
+                isExactArea = true;
+                fieldAreaEnum = EnumFieldArea.EXACT_AREA;
                 specifiedArea.setVisibility(View.VISIBLE);
+                showCustomDialog();
                 return;
         }
-
         saveFieldSize();
     }
 
     private void saveFieldSize() {
         mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
-        if (mandatoryInfo == null) {
-            mandatoryInfo = new MandatoryInfo();
-        }
+
+        fieldSizeRadioIndex = rdgFieldArea.getCheckedRadioButtonId();
         mandatoryInfo.setFieldAreaEnum(fieldAreaEnum);
+        mandatoryInfo.setExactArea(isExactArea);
+        mandatoryInfo.setFieldSizeRadioIndex(fieldSizeRadioIndex);
         mandatoryInfo.setAcreAreaSize(fieldAreaEnum.areaValue());
-        if (areaSize != 0) {
+
+        if (isExactArea) {
             mandatoryInfo.setAreaSize(areaSize);
         } else {
             mandatoryInfo.convertToSelectedAreaUnit();
@@ -207,38 +201,39 @@ public class FieldSizeFragment extends BaseFragment {
 
     private void setFieldLabels(EnumAreaUnits areaUnits) {
         switch (areaUnits) {
+            default:
             case ACRE:
-                quarter_acre = getString(R.string.quarter_acre);
-                half_acre = getString(R.string.half_acre);
-                one_acre = getString(R.string.one_acre);
-                one_half_acres = getString(R.string.one_half_acre);
-                two_half_acres = getString(R.string.two_half_acres);
-                exact_acre = getString(R.string.exact_field_area);
+                quarterAcre = getString(R.string.quarter_acre);
+                halfAcre = getString(R.string.half_acre);
+                oneAcre = getString(R.string.one_acre);
+                oneHalfAcres = getString(R.string.one_half_acre);
+                twoHalfAcres = getString(R.string.two_half_acres);
+                exactAcre = getString(R.string.exact_field_area);
                 break;
             case HA:
-                quarter_acre = getString(R.string.quarter_acre_to_ha);
-                half_acre = getString(R.string.half_acre_to_ha);
-                one_acre = getString(R.string.one_acre_to_ha);
-                two_half_acres = getString(R.string.two_half_acre_to_ha);
-                one_half_acres = getString(R.string.one_half_acre_to_ha);
-                exact_acre = getString(R.string.exact_acre_to_ha);
+                quarterAcre = getString(R.string.quarter_acre_to_ha);
+                halfAcre = getString(R.string.half_acre_to_ha);
+                oneAcre = getString(R.string.one_acre_to_ha);
+                twoHalfAcres = getString(R.string.two_half_acre_to_ha);
+                oneHalfAcres = getString(R.string.one_half_acre_to_ha);
+                exactAcre = getString(R.string.exact_acre_to_ha);
                 break;
             case SQM:
-                quarter_acre = getString(R.string.quarter_acre_to_m2);
-                half_acre = getString(R.string.half_acre_to_m2);
-                one_acre = getString(R.string.one_acre_to_m2);
-                one_half_acres = getString(R.string.one_half_acre_to_m2);
-                two_half_acres = getString(R.string.two_half_acre_to_m2);
-                exact_acre = getString(R.string.exact_acre_to_m2);
+                quarterAcre = getString(R.string.quarter_acre_to_m2);
+                halfAcre = getString(R.string.half_acre_to_m2);
+                oneAcre = getString(R.string.one_acre_to_m2);
+                oneHalfAcres = getString(R.string.one_half_acre_to_m2);
+                twoHalfAcres = getString(R.string.two_half_acre_to_m2);
+                exactAcre = getString(R.string.exact_acre_to_m2);
                 break;
         }
 
-        rd_quarter_acre.setText(quarter_acre);
-        rd_half_acre.setText(half_acre);
-        rd_one_acre.setText(one_acre);
-        rd_one_half_acre.setText(one_half_acres);
-        rd_two_half_acre.setText(two_half_acres);
-        rdSpecifyArea.setText(exact_acre);
+        rd_quarter_acre.setText(quarterAcre);
+        rd_half_acre.setText(halfAcre);
+        rd_one_acre.setText(oneAcre);
+        rd_one_half_acre.setText(oneHalfAcres);
+        rd_two_half_acre.setText(twoHalfAcres);
+        rdSpecifyArea.setText(exactAcre);
         titleMessage = context.getString(R.string.lbl_cassava_field_size, areaUnits.unitString());
         title.setText(titleMessage);
     }

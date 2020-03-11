@@ -8,11 +8,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import com.crashlytics.android.Crashlytics;
@@ -36,10 +36,10 @@ import butterknife.BindView;
 public class LocationFragment extends BaseFragment {
 
     @BindView(R.id.btnCurrentLocation)
-    Button btnCurrentLocation;
+    AppCompatButton btnCurrentLocation;
 
     @BindView(R.id.btnSelectLocation)
-    Button btnSelectLocation;
+    AppCompatButton btnSelectLocation;
 
     @BindView(R.id.locationInfo)
     TextView locationInfo;

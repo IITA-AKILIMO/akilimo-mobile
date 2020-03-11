@@ -18,7 +18,7 @@
         android:fontFamily="@font/ubuntu"
         android:text="@string/lbl_get_recommendations"
         android:textAllCaps="false"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:theme="@style/Button.Green"
         app:cornerRadius="@dimen/spacing_small" />
 

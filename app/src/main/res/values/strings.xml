@@ -113,15 +113,17 @@
     <string name="lbl_cost_of_weed_control">Cost of weed control</string>
 
     <string name="lbl_pick_planting_date">Pick planting date</string>
+    <string name="lbl_change_planting_date">Change planting date</string>
     <string name="lbl_selected_planting_date">Your selected planting date was :</string>
     <string name="lbl_planting_flexible">My planting date is flexible</string>
 
     <string name="lbl_pick_harvest_date">Pick harvest date</string>
+    <string name="lbl_change_harvest_date">Change harvest date</string>
     <string name="lbl_selected_harvest_date">Your selected harvest date was :</string>
     <string name="lbl_harvest_flexible">My harvest date is flexible</string>
 
-    <string name="lbl_one_month_window">± 1 month</string>
-    <string name="lbl_two_month_window">± 2 months</string>
+    <string name="lbl_one_month_window">Flexible by 1 month</string>
+    <string name="lbl_two_month_window">Flexible by 2 months</string>
 
     <string name="lbl_to">to</string>
     <string name="lbl_no">No</string>
@@ -216,7 +218,6 @@
     <string name="lbl_compute_error">Unable to compute recommendations, please try again</string>
 
     <string name="lbl_rec_sample">We recommend to not apply any fertilizer. We do not expect that fertilizer application will result in a profitable yield increase in your situation.</string>
-    <string name="lbl_save">Save</string>
     <string name="lbl_rec_intro">Akilimo can advise you on how to grow cassava.\nWhat advise can we help you with?</string>
 
     <!-- scroll behaviors -->
@@ -249,6 +250,10 @@
     <string name="lbl_valid_email_req">Please provide a valid email</string>
     <string name="lbl_first_name_req">Please provide your first name</string>
     <string name="lbl_valid_number_req">Please provide a valid phone number</string>
+    <string name="lbl_male">Male</string>
+    <string name="lbl_female">Female</string>
+    <string name="lbl_save">Save</string>
+    <string name="lbl_remove">Remove</string>
 
 
 </resources>

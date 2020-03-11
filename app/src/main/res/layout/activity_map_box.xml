@@ -9,7 +9,7 @@
 
     <include layout="@layout/toolbar" />
 
-    <include layout="@layout/content_mapbox" />
+    <include layout="@layout/content_map_box" />
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -17,8 +17,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
-        app:layout_anchor="@id/mapboxLyt"
-        app:rippleColor="@color/purple_A100"
+        android:tint="@color/colorAccentDark"
+        app:backgroundTint="@color/white"
+        app:fabSize="auto"
+        app:layout_anchor="@id/mapBoxLyt"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@drawable/ic_gps_fixed" />
+        app:rippleColor="@color/purple_A100"
+        app:srcCompat="@drawable/ic_save" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

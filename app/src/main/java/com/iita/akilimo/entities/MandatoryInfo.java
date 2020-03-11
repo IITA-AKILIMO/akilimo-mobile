@@ -21,11 +21,12 @@ public class MandatoryInfo {
     @Id
     long id;
 
-    public String placeName;
-    public String address;
-    public String countryCode;
-    public String countryName;
-    public String currency;
+    private String placeName;
+    private String address;
+    private String countryCode;
+    private String countryName;
+    private String currency;
+    private int fieldSizeRadioIndex;
 
     @Convert(converter = CountryConverter.class, dbType = String.class)
     public EnumCountry countryEnum;
@@ -114,20 +115,20 @@ public class MandatoryInfo {
         MathHelper mathHelper = new MathHelper();
         double convertedArea = 0.0;
         double nearestValue = 1000.0;
-        switch (this.getAreaUnitsEnum()) {
-            case UNKNOWN:
-                break;
-            case ACRE:
-                convertedArea = this.acreAreaSize;
-                break;
-            case HA:
-                convertedArea = this.acreAreaSize / 2.471;
-                break;
-            case SQM:
-                convertedArea = this.acreAreaSize * 4046.856;
-                break;
+        if (this.getAreaUnitsEnum() != null) {
+            switch (this.getAreaUnitsEnum()) {
+                case ACRE:
+                    convertedArea = this.acreAreaSize;
+                    break;
+                case HA:
+                    convertedArea = this.acreAreaSize / 2.471;
+                    break;
+                case SQM:
+                    convertedArea = this.acreAreaSize * 4046.856;
+                    break;
+            }
+            this.setAreaSize(mathHelper.roundToNearestSpecifiedValue(convertedArea, nearestValue));
         }
-        this.setAreaSize(mathHelper.roundToNearestSpecifiedValue(convertedArea, nearestValue));
     }
 
 }

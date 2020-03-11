@@ -84,9 +84,14 @@ public class ObjectBoxEntityProcessor {
 
     public LocationInfo getLocationInfo() {
         Box<LocationInfo> box = boxStore.boxFor(LocationInfo.class);
-        return box.query()
+        LocationInfo loc = box.query()
                 .build()
                 .findFirst();
+
+        if (loc == null) {
+            loc = new LocationInfo();
+        }
+        return loc;
     }
 
     public long saveMandatoryInfo(MandatoryInfo mandatoryInfo) {
@@ -97,10 +102,15 @@ public class ObjectBoxEntityProcessor {
     public MandatoryInfo getMandatoryInfo() {
         Box<MandatoryInfo> box = boxStore.boxFor(MandatoryInfo.class);
 
-        return box.query()
+        MandatoryInfo info = box.query()
                 .order(MandatoryInfo_.id, QueryBuilder.DESCENDING)
                 .build()
                 .findFirst();
+
+        if (info == null) {
+            info = new MandatoryInfo();
+        }
+        return info;
     }
 
 
@@ -285,10 +295,14 @@ public class ObjectBoxEntityProcessor {
     public MaizePerformance getMaizePerformance() {
         Box<MaizePerformance> box = boxStore.boxFor(MaizePerformance.class);
 
-        return box.query()
+        MaizePerformance maizePerformance = box.query()
                 .order(MaizePerformance_.id, QueryBuilder.DESCENDING)
                 .build()
                 .findFirst();
+        if(maizePerformance==null){
+            maizePerformance = new MaizePerformance();
+        }
+        return maizePerformance;
     }
 
 
@@ -388,9 +402,15 @@ public class ObjectBoxEntityProcessor {
     public CurrentPractice getCurrentPractice() {
         Box<CurrentPractice> box = boxStore.boxFor(CurrentPractice.class);
 
-        return box.query()
+        CurrentPractice cp = box.query()
                 .build()
                 .findFirst();
+
+        if (cp == null) {
+            cp = new CurrentPractice();
+        }
+
+        return cp;
     }
 
     public void saveOperationCosts(OperationCosts operationCosts) {
@@ -406,9 +426,14 @@ public class ObjectBoxEntityProcessor {
     public OperationCosts getOperationCosts() {
         Box<OperationCosts> box = boxStore.boxFor(OperationCosts.class);
 
-        return box.query()
+        OperationCosts operationCosts = box.query()
                 .build()
                 .findFirst();
+
+        if (operationCosts == null) {
+            operationCosts = new OperationCosts();
+        }
+        return operationCosts;
     }
 
     public long saveMaizeMarketOutlet(MaizeMarketOutlet maizeMarketOutlet) {

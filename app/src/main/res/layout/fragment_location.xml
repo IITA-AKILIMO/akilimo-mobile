@@ -33,8 +33,8 @@
             android:fontFamily="@font/ubuntu"
             android:text="@string/lbl_farm_location"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/grey_80" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@color/colorAccent" />
 
         <TextView
             android:id="@+id/locationInfo"
@@ -68,29 +68,15 @@
                 android:theme="@style/Button.Primary" />
 
 
-            <!--            <androidx.appcompat.widget.AppCompatButton-->
-            <!--                style="@style/Widget.AppCompat.Button.Borderless"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="0dp"-->
-            <!--                android:layout_weight="1"-->
-            <!--                android:fontFamily="@font/ubuntu"-->
-            <!--                android:text="@string/lbl_current_location"-->
-            <!--                android:textAllCaps="false"-->
-            <!--                android:textColor="@color/grey_80"-->
-            <!--                app:backgroundTint="@color/grey_5"-->
-            <!--                app:cornerRadius="5dp"-->
-            <!--                app:strokeColor="@color/colorAccent"-->
-            <!--                app:strokeWidth="1dp" />-->
-
-            <com.google.android.material.button.MaterialButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnSelectLocation"
-                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/ubuntu"
                 android:text="@string/lbl_select_location_manually"
                 android:textAllCaps="false"
+                android:theme="@style/Button.Accent"
                 app:cornerRadius="5dp" />
         </LinearLayout>
     </LinearLayout>

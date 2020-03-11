@@ -53,7 +53,7 @@ public class BuildComputeData {
     private static final String DEFAULT_UNAVAILABLE = "NA";
     private static final String DEFAULT_FALLOW_TYPE = "none";
     private static final String DEFAULT_MAIZE_PERFORMANCE_VALUE = "3";
-    private static final String DEFAULT_PLOUGHING_METHOD = "manual";
+    private static final String DEFAULT_PLOUGHING_METHOD = "NA";
 
     private static final int DEFAULT_FIELD_YIELD = 11;
     private static final int DEFAULT_UNAVAILABLE_INT = 0;
@@ -208,7 +208,7 @@ public class BuildComputeData {
 
                 emailRequired = profileInfo.isSendEmail();
                 smsRequired = profileInfo.isSendSms();
-                
+
                 userInfo.setDeviceID(deviceId);
                 userInfo.setUserName(userName);
                 userInfo.setMobileCountryCode(mobileCountryCode);
@@ -272,6 +272,7 @@ public class BuildComputeData {
             currentFieldYield = (int) fieldYield.getYieldAmount();
         }
         computeRequest.setCurrentFieldYield(currentFieldYield);
+
         return computeRequest;
     }
 
@@ -311,14 +312,18 @@ public class BuildComputeData {
     private ComputeRequest buildCurrentPractice(@Nonnull ComputeRequest computeRequest) {
 
         CurrentPractice currentPractice = objectBoxEntityProcessor.getCurrentPractice();
-        if (currentPractice != null) {
-            hasTractorHarrow = currentPractice.getTractorHarrow();
-            hasTractorRidger = currentPractice.getTractorRidger();
-            hasTractorPlough = currentPractice.getTractorPlough();
-            performsPloughing = currentPractice.getPerformPloughing();
-            performsHarrowing = currentPractice.getPerformHarrowing();
-            performsRidging = currentPractice.getPerformRidging();
-        }
+
+        hasTractorHarrow = currentPractice.getTractorHarrow();
+        hasTractorRidger = currentPractice.getTractorRidger();
+        hasTractorPlough = currentPractice.getTractorPlough();
+
+        performsPloughing = currentPractice.getPerformPloughing();
+        performsHarrowing = currentPractice.getPerformHarrowing();
+        performsRidging = currentPractice.getPerformRidging();
+
+        methodHarrowing = Strings.isEmptyOrWhitespace(currentPractice.getHarrowingMethod()) ? DEFAULT_PLOUGHING_METHOD : currentPractice.getHarrowingMethod();
+        methodPloughing = Strings.isEmptyOrWhitespace(currentPractice.getPloughingMethod()) ? DEFAULT_PLOUGHING_METHOD : currentPractice.getPloughingMethod();
+        methodRidging = Strings.isEmptyOrWhitespace(currentPractice.getRidgingMethod()) ? DEFAULT_PLOUGHING_METHOD : currentPractice.getRidgingMethod();
 
 
         computeRequest.setPloughingDone(performsPloughing);
@@ -335,19 +340,21 @@ public class BuildComputeData {
 
     private ComputeRequest buildOperationCosts(@Nonnull ComputeRequest computeRequest) {
         OperationCosts operationCosts = objectBoxEntityProcessor.getOperationCosts();
-        if (operationCosts != null) {
-            costTractorPlough = operationCosts.getTractorPloughCost();
-            costTractorHarrow = operationCosts.getTractorHarrowCost();
-            costTractorRidging = operationCosts.getTractorRidgeCost();
 
-            costManualPloughing = operationCosts.getManualPloughCost();
-            costManualHarrowing = operationCosts.getManualHarrowCost();
-            costManualRidging = operationCosts.getManualRidgeCost();
+        costTractorPlough = operationCosts.getTractorPloughCost();
+        costTractorHarrow = operationCosts.getTractorHarrowCost();
+        costTractorRidging = operationCosts.getTractorRidgeCost();
 
-            costWeedingOne = operationCosts.getFirstWeedingOperationCost();
-            costWeedingTwo = operationCosts.getSecondWeedingOperationCost();
-        }
+        costManualPloughing = operationCosts.getManualPloughCost();
+        costManualHarrowing = operationCosts.getManualHarrowCost();
+        costManualRidging = operationCosts.getManualRidgeCost();
+
+        costWeedingOne = operationCosts.getFirstWeedingOperationCost();
+        costWeedingTwo = operationCosts.getSecondWeedingOperationCost();
+
+
         computeRequest.setCostLmoAreaBasis(costLmoAreaBasis);
+
         computeRequest.setCostTractorPloughing(costTractorPlough);
         computeRequest.setCostTractorHarrowing(costTractorHarrow);
         computeRequest.setCostTractorRidging(costTractorRidging);
@@ -372,10 +379,9 @@ public class BuildComputeData {
 
     private ComputeRequest buildMaizePerformance(@Nonnull ComputeRequest computeRequest) {
         MaizePerformance maizePerformance = objectBoxEntityProcessor.getMaizePerformance();
-        if (maizePerformance != null) {
-            currentMaizePerformance = maizePerformance.getPerformanceValue();
-        }
+        currentMaizePerformance = maizePerformance.getPerformanceValue();
         computeRequest.setCurrentMaizePerformance(currentMaizePerformance);
+
         return computeRequest;
     }
 

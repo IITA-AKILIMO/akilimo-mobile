@@ -66,6 +66,13 @@ class TimeLineAdapter(
                     mAttributes.markerCompleteColor
                 )
             }
+            StepStatus.CANCELLED -> {
+                holder.timeline.marker = VectorDrawableUtils.getDrawable(
+                    holder.itemView.context,
+                    R.drawable.ic_clear_all_white_24dp,
+                    mAttributes.markerCompleteColor
+                )
+            }
         }
 
         holder.title.text = timeLineModel.stepTitle

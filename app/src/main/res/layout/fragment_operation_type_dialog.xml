@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.button.MaterialButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/close_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -11,7 +11,8 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:fontFamily="@font/ubuntu_bold"
-        android:text="@string/lbl_close" />
+        android:text="@string/lbl_close"
+        android:theme="@style/Button.Accent" />
 
     <LinearLayout
         android:id="@+id/top_layout"
@@ -81,15 +82,16 @@
                 android:layout_marginRight="@dimen/spacing_medium"
                 android:adjustViewBounds="true"
                 android:fontFamily="@font/ubuntu"
-                android:text="Save"
-                android:textAllCaps="false" />
+                android:text="@string/lbl_save"
+                android:textAllCaps="false"
+                android:theme="@style/Button.Primary" />
 
             <Space
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
-            <com.google.android.material.button.MaterialButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/remove_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -97,8 +99,9 @@
                 android:layout_marginTop="@dimen/spacing_medium"
                 android:layout_marginRight="@dimen/spacing_medium"
                 android:fontFamily="@font/ubuntu"
-                android:text="Remove"
+                android:text="@string/lbl_remove"
                 android:textAllCaps="false"
+                android:theme="@style/Button.Accent"
                 android:visibility="gone" />
 
 
