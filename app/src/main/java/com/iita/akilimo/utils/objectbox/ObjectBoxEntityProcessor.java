@@ -102,10 +102,15 @@ public class ObjectBoxEntityProcessor {
     public MandatoryInfo getMandatoryInfo() {
         Box<MandatoryInfo> box = boxStore.boxFor(MandatoryInfo.class);
 
-        return box.query()
+        MandatoryInfo info = box.query()
                 .order(MandatoryInfo_.id, QueryBuilder.DESCENDING)
                 .build()
                 .findFirst();
+
+        if (info == null) {
+            info = new MandatoryInfo();
+        }
+        return info;
     }
 
 

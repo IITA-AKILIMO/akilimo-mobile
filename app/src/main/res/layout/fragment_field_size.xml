@@ -20,8 +20,8 @@
 
         <ImageView
             android:id="@+id/image"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_width="@dimen/img_width"
+            android:layout_height="@dimen/img_height"
             android:padding="@dimen/spacing_xlarge"
             app:srcCompat="@drawable/ic_field_map" />
 
@@ -35,67 +35,73 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/grey_80" />
 
-        <RadioGroup
-            android:id="@+id/rdgFieldArea"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/fab_margin">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:padding="@dimen/spacing_medium"
+            android:layout_height="wrap_content">
 
-
-            <RadioButton
-                android:id="@+id/rd_quarter_acre"
-                android:layout_width="match_parent"
+            <RadioGroup
+                android:id="@+id/rdgFieldArea"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
-                android:text="@string/quarter_acre" />
+                android:layout_marginTop="@dimen/spacing_small">
 
 
-            <RadioButton
-                android:id="@+id/rd_half_acre"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
-                android:text="@string/half_acre" />
+                <RadioButton
+                    android:id="@+id/rd_quarter_acre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu"
+                    android:text="@string/quarter_acre" />
 
 
-            <RadioButton
-                android:id="@+id/rd_one_acre"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
-                android:text="@string/one_acre" />
-
-            <RadioButton
-                android:id="@+id/rd_one_half_acre"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
-                android:text="@string/one_half_acre" />
-
-            <RadioButton
-                android:id="@+id/rd_two_half_acre"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
-                android:text="@string/two_half_acres" />
+                <RadioButton
+                    android:id="@+id/rd_half_acre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu"
+                    android:text="@string/half_acre" />
 
 
-            <RadioButton
-                android:id="@+id/rd_five_acre"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
-                android:text="@string/five_acres"
-                android:visibility="gone" />
+                <RadioButton
+                    android:id="@+id/rd_one_acre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu"
+                    android:text="@string/one_acre" />
 
-            <RadioButton
-                android:id="@+id/rd_specify_acre"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
-                android:text="@string/exact_field_area" />
+                <RadioButton
+                    android:id="@+id/rd_one_half_acre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu"
+                    android:text="@string/one_half_acre" />
 
-        </RadioGroup>
+                <RadioButton
+                    android:id="@+id/rd_two_half_acre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu"
+                    android:text="@string/two_half_acres" />
+
+
+                <RadioButton
+                    android:id="@+id/rd_five_acre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu"
+                    android:text="@string/five_acres"
+                    android:visibility="gone" />
+
+                <RadioButton
+                    android:id="@+id/rd_specify_acre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu"
+                    android:text="@string/exact_field_area" />
+
+            </RadioGroup>
+        </ScrollView>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/specifiedArea"

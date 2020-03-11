@@ -64,6 +64,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
     private double manualPloughCost = 0;
     private double manualRidgeCost = 0;
     private boolean dataValid;
+    private boolean dialogOpen;
 
 
     @Override
@@ -111,9 +112,17 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         String ploughTitle = context.getString(R.string.lbl_manual_tillage_cost, fieldSize, areaUnit);
         String ridgeTitle = context.getString(R.string.lbl_manual_ridge_cost, fieldSize, areaUnit);
 
-        btnPloughCost.setOnClickListener(view -> loadOperationCost(EnumOperation.TILLAGE, EnumOperationType.MANUAL, ploughTitle));
+        btnPloughCost.setOnClickListener(view -> {
+            if (!dialogOpen) {
+                loadOperationCost(EnumOperation.TILLAGE, EnumOperationType.MANUAL, ploughTitle);
+            }
+        });
 
-        btnRidgeCost.setOnClickListener(view -> loadOperationCost(EnumOperation.RIDGING, EnumOperationType.MANUAL, ridgeTitle));
+        btnRidgeCost.setOnClickListener(view -> {
+            if (!dialogOpen) {
+                loadOperationCost(EnumOperation.RIDGING, EnumOperationType.MANUAL, ridgeTitle);
+            }
+        });
 
         btnFinish.setOnClickListener(view -> validate(false));
         btnCancel.setOnClickListener(view -> closeActivity(false));
@@ -158,6 +167,9 @@ public class ManualTillageCostActivity extends CostBaseActivity {
     protected void showDialogFullscreen(ArrayList<OperationCost> operationCostList, EnumOperation operation, EnumCountry enumCountry, String dialogTitle) {
         Bundle arguments = new Bundle();
 
+        if (dialogOpen) {
+            return;
+        }
         arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList);
         arguments.putParcelable(OperationCostsDialogFragment.OPERATION_NAME, operation);
         arguments.putParcelable(OperationCostsDialogFragment.SELECTED_COUNTRY, enumCountry);
@@ -165,7 +177,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment();
         dialogFragment.setArguments(arguments);
 
-        dialogFragment.setOnDismissListener((operationCost, enumOperation, selectedCost, cancelled,isExactCost) -> {
+        dialogFragment.setOnDismissListener((operationCost, enumOperation, selectedCost, cancelled, isExactCost) -> {
             if (!cancelled && enumOperation != null) {
                 switch (enumOperation) {
                     case TILLAGE:
@@ -178,6 +190,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
                         break;
                 }
             }
+            dialogOpen = false;
         });
 
 
@@ -191,6 +204,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
                 fragmentTransaction.remove(prev);
             }
             fragmentTransaction.addToBackStack(null);
+            dialogOpen = true;
             dialogFragment.show(getSupportFragmentManager(), OperationCostsDialogFragment.ARG_ITEM_ID);
         }
     }

@@ -130,6 +130,7 @@ public class SummaryFragment extends BaseFragment {
     private void setDataListItems() {
         String plantingDate = "";
         String harvestDate = "";
+        StringBuilder fieldInfo = new StringBuilder();
         StringBuilder ploughStr = new StringBuilder();
         StringBuilder ridgeStr = new StringBuilder();
 
@@ -142,20 +143,20 @@ public class SummaryFragment extends BaseFragment {
         currentPractice = objectBoxEntityProcessor.getCurrentPractice();
         plantingHarvestDates = objectBoxEntityProcessor.getPlantingHarvestDates();
         countryName = "";
-        if (mandatoryInfo != null) {
-            if (!Strings.isEmptyOrWhitespace(mandatoryInfo.getCountryName())) {
-                countrySelected = true;
-                countryName = mandatoryInfo.getCountryName();
-            }
-            if (!Strings.isEmptyOrWhitespace(mandatoryInfo.getAreaUnit())) {
-                areaUnitSelected = true;
-                areaUnit = mandatoryInfo.getAreaUnit();
-            }
-            fieldSize = mandatoryInfo.getAreaSize();
-            if (fieldSize > 0.0) {
-                fieldSizeSelected = true;
-            }
+
+        if (!Strings.isEmptyOrWhitespace(mandatoryInfo.getCountryName())) {
+            countrySelected = true;
+            countryName = mandatoryInfo.getCountryName();
         }
+        if (!Strings.isEmptyOrWhitespace(mandatoryInfo.getAreaUnit())) {
+            areaUnitSelected = true;
+            areaUnit = mandatoryInfo.getAreaUnit();
+        }
+        fieldSize = mandatoryInfo.getAreaSize();
+        if (fieldSize > 0.0) {
+            fieldSizeSelected = true;
+        }
+
 
         if (location != null) {
             pickedLocation = loadLocationInfo(location).toString();
@@ -187,10 +188,14 @@ public class SummaryFragment extends BaseFragment {
                 ridgeStr.append("No ridging");
             }
         }
+
+        fieldInfo.append(fieldSize)
+                .append(" ")
+                .append(areaUnit);
+
         mDataList = new ArrayList<>();
         mDataList.add(new TimeLineModel("Country:", countryName, countrySelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel("Field:", String.valueOf(fieldSize), fieldSizeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel("Area:", areaUnit, areaUnitSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel("Field:", fieldInfo.toString(), fieldSizeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         mDataList.add(new TimeLineModel("Location:", pickedLocation, locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         mDataList.add(new TimeLineModel("Planting date:", plantingDate, plantingDateProvided ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         mDataList.add(new TimeLineModel("Harvest date:", harvestDate, harvestDateProvided ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
