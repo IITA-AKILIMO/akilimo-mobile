@@ -21,11 +21,12 @@ public class MandatoryInfo {
     @Id
     long id;
 
-    public String placeName;
-    public String address;
-    public String countryCode;
-    public String countryName;
-    public String currency;
+    private String placeName;
+    private String address;
+    private String countryCode;
+    private String countryName;
+    private String currency;
+    private int fieldSizeRadioIndex;
 
     @Convert(converter = CountryConverter.class, dbType = String.class)
     public EnumCountry countryEnum;
@@ -116,8 +117,6 @@ public class MandatoryInfo {
         double nearestValue = 1000.0;
         if (this.getAreaUnitsEnum() != null) {
             switch (this.getAreaUnitsEnum()) {
-                case UNKNOWN:
-                    break;
                 case ACRE:
                     convertedArea = this.acreAreaSize;
                     break;

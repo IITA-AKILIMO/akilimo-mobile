@@ -372,7 +372,7 @@
     },
     {
       "id": "26:1174951136163288968",
-      "lastPropertyId": "19:3791776818600068484",
+      "lastPropertyId": "20:8284809458317677927",
       "name": "MandatoryInfo",
       "properties": [
         {
@@ -426,6 +426,10 @@
         {
           "id": "17:7887029003872444798",
           "name": "acreAreaSize"
+        },
+        {
+          "id": "20:8284809458317677927",
+          "name": "fieldSizeRadioIndex"
         }
       ],
       "relations": []

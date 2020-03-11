@@ -295,10 +295,14 @@ public class ObjectBoxEntityProcessor {
     public MaizePerformance getMaizePerformance() {
         Box<MaizePerformance> box = boxStore.boxFor(MaizePerformance.class);
 
-        return box.query()
+        MaizePerformance maizePerformance = box.query()
                 .order(MaizePerformance_.id, QueryBuilder.DESCENDING)
                 .build()
                 .findFirst();
+        if(maizePerformance==null){
+            maizePerformance = new MaizePerformance();
+        }
+        return maizePerformance;
     }
 
 
@@ -398,9 +402,15 @@ public class ObjectBoxEntityProcessor {
     public CurrentPractice getCurrentPractice() {
         Box<CurrentPractice> box = boxStore.boxFor(CurrentPractice.class);
 
-        return box.query()
+        CurrentPractice cp = box.query()
                 .build()
                 .findFirst();
+
+        if (cp == null) {
+            cp = new CurrentPractice();
+        }
+
+        return cp;
     }
 
     public void saveOperationCosts(OperationCosts operationCosts) {
@@ -416,9 +426,14 @@ public class ObjectBoxEntityProcessor {
     public OperationCosts getOperationCosts() {
         Box<OperationCosts> box = boxStore.boxFor(OperationCosts.class);
 
-        return box.query()
+        OperationCosts operationCosts = box.query()
                 .build()
                 .findFirst();
+
+        if (operationCosts == null) {
+            operationCosts = new OperationCosts();
+        }
+        return operationCosts;
     }
 
     public long saveMaizeMarketOutlet(MaizeMarketOutlet maizeMarketOutlet) {

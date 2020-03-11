@@ -49,7 +49,7 @@
                         android:layout_height="15dp"
                         android:layout_centerInParent="true"
                         android:contentDescription="@string/app_name"
-                        android:tint="@color/grey_40"
+                        android:tint="@color/colorPrimary"
                         app:srcCompat="@drawable/ic_left_arrow" />
 
                 </RelativeLayout>

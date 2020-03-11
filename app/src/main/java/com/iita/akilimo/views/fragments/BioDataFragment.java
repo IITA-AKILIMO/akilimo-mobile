@@ -161,7 +161,7 @@ public class BioDataFragment extends BaseFragment {
             }
 
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred getting biodata info");
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred getting BioDataInfo info");
             Crashlytics.logException(ex);
         }
     }

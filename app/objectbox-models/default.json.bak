@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:6877809215275480820",
-      "lastPropertyId": "6:8357432700551995728",
+      "lastPropertyId": "7:937297918956547118",
       "name": "PlantingHarvestDates",
       "properties": [
         {
@@ -31,6 +31,10 @@
         {
           "id": "6:8357432700551995728",
           "name": "deviceId"
+        },
+        {
+          "id": "7:937297918956547118",
+          "name": "alternativeDate"
         }
       ],
       "relations": []

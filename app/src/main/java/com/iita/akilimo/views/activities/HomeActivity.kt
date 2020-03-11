@@ -80,8 +80,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
     override fun onAttachFragment(fragment: Fragment) {
         if (fragment is SummaryFragment) {
             fragment.setOnFragmentCloseListener(this)
-        }
-        if (fragment is BioDataFragment) {
+        } else if (fragment is BioDataFragment) {
             fragment.setOnFragmentCloseListener(this)
         }
     }

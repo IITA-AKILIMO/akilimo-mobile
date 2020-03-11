@@ -218,7 +218,6 @@
     <string name="lbl_compute_error">Unable to compute recommendations, please try again</string>
 
     <string name="lbl_rec_sample">We recommend to not apply any fertilizer. We do not expect that fertilizer application will result in a profitable yield increase in your situation.</string>
-    <string name="lbl_save">Save</string>
     <string name="lbl_rec_intro">Akilimo can advise you on how to grow cassava.\nWhat advise can we help you with?</string>
 
     <!-- scroll behaviors -->
@@ -251,6 +250,10 @@
     <string name="lbl_valid_email_req">Please provide a valid email</string>
     <string name="lbl_first_name_req">Please provide your first name</string>
     <string name="lbl_valid_number_req">Please provide a valid phone number</string>
+    <string name="lbl_male">Male</string>
+    <string name="lbl_female">Female</string>
+    <string name="lbl_save">Save</string>
+    <string name="lbl_remove">Remove</string>
 
 
 </resources>
