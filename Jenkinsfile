@@ -124,7 +124,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        sh 'git tag -a v4.2.$BUILD_NUMBER $GIT_COMMIT -m "Jenkins release-$BUILD_NUMBER"'
+        sh 'git tag -a v4.2.$BUILD_NUMBER $GIT_COMMIT -m "Jenkins-release-$BUILD_NUMBER"'
       }
     }
 
