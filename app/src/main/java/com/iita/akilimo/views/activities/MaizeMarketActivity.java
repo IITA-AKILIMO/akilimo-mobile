@@ -44,6 +44,8 @@ public class MaizeMarketActivity extends BaseActivity {
     AppCompatTextView unitOfSaleGrainTitle;
     @BindView(R.id.maizeCobPriceTitle)
     AppCompatTextView maizeCobPriceTitle;
+    @BindView(R.id.lblCurrency)
+    AppCompatTextView lblCurrency;
 
     @BindView(R.id.unitOfSaleGrainCard)
     CardView unitOfSaleGrainCard;
@@ -121,7 +123,7 @@ public class MaizeMarketActivity extends BaseActivity {
     @Override
     protected void initComponent() {
 
-
+        lblCurrency.setText(currency);
         rdgMaizeProduceType.setOnCheckedChangeListener((group, radioIndex) -> {
             grainPriceRequired = false;
             cobPriceRequired = false;
