@@ -1,7 +1,32 @@
 pipeline {
   agent any
+  environment{
+    VERSION = 8.1
+  }
+  tools {
+    gradle 'system-gradle'
+  }
+  options { skipDefaultCheckout() }
   stages {
-    stage('Show build number') {
+
+    stage('Clone repository') {
+      steps {
+        git url: "git@github.com:masgeek/akilimo-mobile.git",credentialsId: 'jenkins_ssh_key'
+      }
+    }
+
+    stage('Checkout active branch') {
+      steps {
+        sh 'git checkout $BRANCH_NAME'
+        sh 'git fetch'
+        sh 'git pull'
+        script {
+            env.GIT_COMMIT = "${sh(script:'git rev-parse --verify HEAD', returnStdout: true)}"
+        }
+      }
+    }
+
+    stage('Rev up your engines') {
       steps {
         sh 'echo $BUILD_NUMBER'
         sh 'env'
@@ -118,13 +143,23 @@ pipeline {
       }
     }
 
+    stage('Fingerprint files') {
+      when {
+        beforeAgent true
+        branch 'master'
+      }
+      steps {
+        fingerprint '**/build/outputs/**/*-release.*'
+      }
+    }
+
     stage('Tag release commit') {
       when {
         beforeAgent true
         branch 'master'
       }
       steps {
-        sh 'git tag -a v4.2.$BUILD_NUMBER $GIT_COMMIT -m "Jenkins-release-$BUILD_NUMBER"'
+        sh 'git tag -a v$VERSION.$BUILD_NUMBER $GIT_COMMIT -m "Jenkins-release-$BUILD_NUMBER"'
       }
     }
 
