@@ -129,8 +129,7 @@ public class MapBoxActivity extends BaseLocationPicker {
                     GeoJsonSource source = style.getSourceAs(DROPPED_MARKER_SOURCE_ID);
                     if (source != null) {
                         source.setGeoJson(Point.fromLngLat(currentCoordinates.getLongitude(), currentCoordinates.getLatitude()));
-
-                        String coordinates = String.format("LAT: %s\nLON %s", currentCoordinates.getLatitude(), currentCoordinates.getLongitude());
+                        String coordinates = String.format("Lat: %s\nLon %s", currentCoordinates.getLatitude(), currentCoordinates.getLongitude());
                         Toast.makeText(context, coordinates, Toast.LENGTH_LONG).show();
                     }
                     style.getLayer(DROPPED_MARKER_LAYER_ID).setProperties(visibility(VISIBLE));

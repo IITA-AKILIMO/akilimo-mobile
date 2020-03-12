@@ -1,7 +1,7 @@
 pipeline {
   agent any
   environment{
-    VERSION = 8.1
+    VERSION = 8.2
   }
   tools {
     gradle 'system-gradle'
