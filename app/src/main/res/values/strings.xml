@@ -2,9 +2,7 @@
     <string name="app_name" translatable="false">Akilimo</string>
 
     <string name="welcome_title">Welcome to Akilimo</string>
-    <string name="welcome_instructions">I will assist you with recommendations to improve your cassava yield
-        \n\nIf you provide me with some essential information I will provide you with personalized advice to grow cassava.
-        \n\n Let us get started…</string>
+    <string name="welcome_instructions">I will assist you with personalized advice to grow and improve the yield of your cassava once you provide me some essential information.</string>
 
     <string name="hello_blank_fragment">Initialize fragments</string>
 
