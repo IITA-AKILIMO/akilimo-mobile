@@ -19,7 +19,6 @@ pipeline {
       steps {
         sh 'git checkout $BRANCH_NAME'
         sh 'git fetch'
-        sh 'git pull'
         script {
             env.GIT_COMMIT = "${sh(script:'git rev-parse --verify HEAD', returnStdout: true)}"
         }
