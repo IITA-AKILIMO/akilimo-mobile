@@ -81,7 +81,7 @@ pipeline {
           when {
             beforeAgent true
             anyOf {
-                    branch 'master'; branch 'develop'
+                    branch 'bundle/master'; branch 'bundle/develop'
                }
           }
           steps {

@@ -379,7 +379,9 @@ public class BuildComputeData {
 
     private ComputeRequest buildMaizePerformance(@Nonnull ComputeRequest computeRequest) {
         MaizePerformance maizePerformance = objectBoxEntityProcessor.getMaizePerformance();
-        currentMaizePerformance = maizePerformance.getPerformanceValue();
+
+        currentMaizePerformance = Strings.isEmptyOrWhitespace(maizePerformance.getPerformanceValue()) ? DEFAULT_MAIZE_PERFORMANCE_VALUE : maizePerformance.getPerformanceValue();
+
         computeRequest.setCurrentMaizePerformance(currentMaizePerformance);
 
         return computeRequest;
