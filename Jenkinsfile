@@ -109,15 +109,15 @@ pipeline {
 
     stage('Upload production artifacts') {
       parallel {
-        stage('aab') {
+        stage('beta aab') {
           when {
             beforeAgent true
             anyOf {
-                    branch 'bundle/master'; branch 'bundle/develop'
+                    branch branch 'bundle/develop'
                }
           }
           steps {
-            androidAabUpload(aabFilesPattern: '**/build/outputs/**/*-release.aab', applicationId: 'com.iita.akilimo', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
+            androidApkUpload(aabFilesPattern: '**/build/outputs/**/*-release.aab', applicationId: 'com.iita.akilimo', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
                                         text: 'Bug fixes']], trackName: 'beta')
           }
         }
