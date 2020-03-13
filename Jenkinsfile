@@ -24,8 +24,9 @@ pipeline {
           steps {
             sh './gradlew bundleRelease'
             sh 'ls -lt app/build/outputs/bundle/release/'
-                sh 'jarsigner -keystore /var/lib/jenkins/fertilizer.jks -storepass andalite6 **/build/outputs/**/*/*-release.aab akilimo'
-
+            withCredentials([usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
+                sh 'jarsigner -keystore /var/lib/jenkins/fertilizer.jks -storepass $pass **/build/outputs/**/*/*-release.aab $alias'
+            }
           }
         }
 
