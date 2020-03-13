@@ -7,8 +7,7 @@ pipeline {
     gradle 'system-gradle'
   }
   stages {
-
-
+    
     stage('Push tags test') {
         when {
         beforeAgent true
