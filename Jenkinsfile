@@ -1,8 +1,8 @@
 pipeline {
   agent any
   environment{
-    VERSION = 8.2
-    BETA_VERSION = 8.2.67
+    VERSION = "8.2";
+    BETA_VERSION = "8.2.67"
   }
 
   stages {
