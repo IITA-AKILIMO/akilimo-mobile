@@ -22,7 +22,7 @@ pipeline {
 
         stage('Jar Signer') {
           steps {
-            //sh './gradlew bundleRelease'
+            sh './gradlew bundleRelease'
             sh 'ls -lt app/build/outputs/bundle/release/'
             withCredentials([certificate(aliasVariable: 'akilimo', credentialsId: 'alias', keystoreVariable: 'key', passwordVariable: 'pass')]) {
                 sh 'jarsigner -keystore $key -storepass $pass **/build/outputs/**/*/*-release.aab $alias'
