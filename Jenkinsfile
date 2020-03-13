@@ -1,11 +1,10 @@
 pipeline {
   agent any
   environment{
-    VERSION = 8.2
+    VERSION = "8.2";
+    BETA_VERSION = "8.2.67"
   }
-  tools {
-    gradle 'system-gradle'
-  }
+
   stages {
 
     stage('Rev up your engines') {
@@ -168,7 +167,7 @@ pipeline {
       when {
         beforeAgent true
         anyOf {
-                branch 'master';branch 'bundle/master';
+                branch 'master';branch 'develop';branch 'master';branch 'bundle/master';
            }
       }
       steps {
@@ -184,7 +183,7 @@ pipeline {
            }
       }
       steps {
-        sh 'git tag -a v$VERSION.$BUILD_NUMBER."beta" $GIT_COMMIT -m "Jenkins-neta-$BUILD_NUMBER"'
+        sh 'git tag -a v$BETA_VERSION.$BUILD_NUMBER."beta" $GIT_COMMIT -m "Jenkins-beta-$BUILD_NUMBER"'
       }
     }
 

@@ -66,8 +66,8 @@ public class CurrentPracticeFragment extends BaseFragment {
 
     private String ploughingMethod, ridgingMethod, operation;
 
-    boolean performPloughing, performRidging, performHarrowing;
-    boolean isDataRefreshing = false;
+    private boolean performPloughing, performRidging, performHarrowing;
+    private boolean isDataRefreshing = false;
 
     public CurrentPracticeFragment() {
         // Required empty public constructor
