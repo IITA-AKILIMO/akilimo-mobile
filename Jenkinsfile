@@ -35,11 +35,11 @@ pipeline {
 
     stage('Build artifacts') {
       parallel {
-        stage('APK') {
+        stage('aab build') {
           when {
             beforeAgent true
             anyOf {
-                    branch 'master'; branch 'develop'
+                    branch 'master';
                }
           }
           steps {
@@ -47,11 +47,11 @@ pipeline {
           }
         }
 
-        stage('AAB') {
+        stage('apk build') {
           when {
             beforeAgent true
                 anyOf {
-                        branch 'bundle/master'; branch 'bundle/develop'
+                        branch 'master-disable';
                    }
           }
           steps {
@@ -64,6 +64,12 @@ pipeline {
 
     stage('Jar Signer') {
       steps {
+        when {
+          beforeAgent true
+          anyOf {
+                  branch 'master';
+             }
+        }
         withCredentials([usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
             sh 'jarsigner -keystore /var/lib/jenkins/fertilizer.jks -storepass $pass **/build/outputs/**/*/*-release.aab $alias'
         }
@@ -72,11 +78,11 @@ pipeline {
 
     stage('Sign production binaries') {
       parallel {
-        stage('apk') {
+        stage('apk signing') {
           when {
             beforeAgent true
             anyOf {
-                    branch 'master'; branch 'develop'
+                    branch 'master-disable';
                }
           }
           steps {
@@ -84,11 +90,11 @@ pipeline {
           }
         }
 
-        stage('aab') {
+        stage('aab signing') {
           when {
             beforeAgent true
             anyOf {
-                    branch 'bundle/master'; branch 'bundle/develops'
+                    branch 'master';
                }
           }
           steps {
@@ -103,7 +109,7 @@ pipeline {
       when {
         beforeAgent true
         anyOf {
-                branch 'master'; branch 'develop'
+                branch 'master';
            }
       }
       steps {
@@ -117,36 +123,24 @@ pipeline {
 
     stage('Upload production artifacts') {
       parallel {
-        stage('beta aab') {
+        stage('aab upload') {
           when {
             beforeAgent true
             anyOf {
-                    branch 'bundle/develop'
+                    branch 'master'
                }
           }
           steps {
-        androidApkUpload filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB', text: 'Bug fixes']], trackName: 'beta'
+            androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
+             text: 'Bug fixes']], trackName: 'beta')
           }
         }
 
-        stage('beta apk') {
+        stage('apk upload') {
           when {
             beforeAgent true
             anyOf {
-                    branch 'develop'
-               }
-          }
-          steps {
-            androidApkUpload(filesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-                                              text: 'Bug fixes']], trackName: 'beta')
-          }
-        }
-
-        stage('production apk') {
-          when {
-            beforeAgent true
-            anyOf {
-                    branch 'master';
+                    branch 'master-disabled';
                }
           }
           steps {
@@ -162,7 +156,7 @@ pipeline {
       when {
         beforeAgent true
         anyOf {
-                branch 'bundle/master'; branch 'bundle/develop'
+                branch 'master'
            }
       }
       steps {
@@ -170,11 +164,11 @@ pipeline {
       }
     }
 
-    stage('Tag production release commit') {
+    stage('Tag releases') {
       when {
         beforeAgent true
         anyOf {
-                branch 'master';branch 'develop';branch 'master';branch 'bundle/master';
+                branch 'master';
            }
       }
       steps {
@@ -182,25 +176,12 @@ pipeline {
       }
     }
 
-    stage('Tag beta release commit') {
-      when {
-        beforeAgent true
-        anyOf {
-                branch 'develop';branch 'bundle/develop';
-           }
-      }
-      steps {
-        sh 'git tag -a v$BETA_VERSION.$BUILD_NUMBER."beta" $GIT_COMMIT -m "Jenkins-beta-$BUILD_NUMBER"'
-      }
-    }
-
-
 
     stage('Push tags') {
       when {
         beforeAgent true
         anyOf {
-                branch 'master'; branch 'develop';branch 'bundle/master'; branch 'bundle/develop'
+                branch 'master';
            }
       }
       steps {
