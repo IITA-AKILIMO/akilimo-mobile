@@ -24,7 +24,7 @@ pipeline {
           steps {
             sh './gradlew bundleRelease'
             sh 'ls -lt app/build/outputs/bundle/release/'
-            withCredentials([certificate(aliasVariable: 'akilimo', credentialsId: 'alias', keystoreVariable: 'key', passwordVariable: 'pass')]) {
+            withCredentials([certificate(aliasVariable: 'alias', credentialsId: 'akilimo', keystoreVariable: 'key', passwordVariable: 'pass')]) {
                 sh 'jarsigner -keystore $key -storepass $pass **/build/outputs/**/*/*-release.aab $alias'
             }
           }
