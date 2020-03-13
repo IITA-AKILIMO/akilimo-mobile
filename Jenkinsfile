@@ -6,23 +6,12 @@ pipeline {
   tools {
     gradle 'system-gradle'
   }
-  options { skipDefaultCheckout() }
   stages {
 
-    stage('Clone repository') {
-      steps {
-        git url: "git@github.com:masgeek/akilimo-mobile.git",credentialsId: 'jenkins_ssh_key'
-      }
-    }
 
-    stage('Checkout active branch') {
+    stage('Push tags test') {
       steps {
-        sh 'git checkout $BRANCH_NAME'
-        sh 'git fetch'
-        sh 'git pull'
-        script {
-            env.GIT_COMMIT = "${sh(script:'git rev-parse --verify HEAD', returnStdout: true)}"
-        }
+        sh 'git push --tags'
       }
     }
 
