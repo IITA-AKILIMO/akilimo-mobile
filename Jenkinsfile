@@ -113,7 +113,7 @@ pipeline {
           when {
             beforeAgent true
             anyOf {
-                    branch branch 'bundle/develop'
+                    branch 'bundle/develop'
                }
           }
           steps {
