@@ -10,6 +10,12 @@ pipeline {
 
 
     stage('Push tags test') {
+        when {
+        beforeAgent true
+        anyOf {
+                branch 'master'; branch 'develop'
+           }
+        }
       steps {
         sh 'git push --tags'
       }
@@ -24,7 +30,7 @@ pipeline {
 
     stage('Make executable') {
       steps {
-        sh 'chmod +x ./gradlew'
+        sh 'chmod +x ./gradlews'
       }
     }
 
@@ -66,7 +72,7 @@ pipeline {
       }
     }
 
-    stage('Sign build binaries') {
+    stage('Sign production binaries') {
       parallel {
         stage('apk') {
           when {
@@ -105,7 +111,7 @@ pipeline {
       }
     }
 
-    stage('Upload artifacts') {
+    stage('Upload production artifacts') {
       parallel {
         stage('aab') {
           when {
