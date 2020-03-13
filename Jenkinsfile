@@ -14,9 +14,15 @@ pipeline {
       }
     }
 
+    stage('Jar Signer') {
+      steps {
+        sh 'jarsigner'
+      }
+    }
+
     stage('Make executable') {
       steps {
-        sh 'chmod +x ./gradlew'
+        sh 'chmod +x ./gradlews'
       }
     }
 
