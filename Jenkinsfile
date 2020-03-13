@@ -20,19 +20,9 @@ pipeline {
       }
     }
 
-        stage('Jar Signer') {
-          steps {
-            sh './gradlew bundleRelease'
-            sh 'ls -lt app/build/outputs/bundle/release/'
-            withCredentials([usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
-                sh 'jarsigner -keystore /var/lib/jenkins/fertilizer.jks -storepass $pass **/build/outputs/**/*/*-release.aab $alias'
-            }
-          }
-        }
-
     stage('Test') {
       steps {
-        sh './gradlews test'
+        sh './gradlew test'
       }
     }
 
@@ -69,6 +59,14 @@ pipeline {
           }
         }
 
+      }
+    }
+
+    stage('Jar Signer') {
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
+            sh 'jarsigner -keystore /var/lib/jenkins/fertilizer.jks -storepass $pass **/build/outputs/**/*/*-release.aab $alias'
+        }
       }
     }
 
