@@ -85,7 +85,7 @@ pipeline {
         stage('aab signing') {
           when {
             beforeAgent true
-            branch 'master''
+            branch 'master'
           }
           steps {
             signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.aab', skipZipalign: true)
