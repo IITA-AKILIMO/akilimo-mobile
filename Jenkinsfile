@@ -14,23 +14,23 @@ pipeline {
       }
     }
 
-    stage('Jar Signer') {
+    stage('Make executable') {
       steps {
-        sh './gradlew bundleRelease'
-        sh 'ls -lt /app/release/'
-        sh 'jarsigner'
+        sh 'chmod +x ./gradlew'
       }
     }
 
-    stage('Make executable') {
-      steps {
-        sh 'chmod +x ./gradlews'
-      }
-    }
+        stage('Jar Signer') {
+          steps {
+            sh './gradlew bundleRelease'
+            sh 'ls -lt /app/release/'
+            sh 'jarsigner'
+          }
+        }
 
     stage('Test') {
       steps {
-        sh './gradlew test'
+        sh './gradlews test'
       }
     }
 
