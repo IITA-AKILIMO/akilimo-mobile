@@ -39,7 +39,9 @@ pipeline {
         stage('APK') {
           when {
             beforeAgent true
-            branch 'master'
+            anyOf {
+                    branch 'master'; branch 'develop'
+               }
           }
           steps {
             sh './gradlew assembleRelease'
@@ -49,7 +51,9 @@ pipeline {
         stage('AAB') {
           when {
             beforeAgent true
-            branch 'bundle'
+                anyOf {
+                        branch 'bundle/master'; branch 'bundle/develop'
+                   }
           }
           steps {
             sh './gradlew bundleRelease'
