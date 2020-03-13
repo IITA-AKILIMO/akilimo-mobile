@@ -117,8 +117,7 @@ pipeline {
                }
           }
           steps {
-            androidApkUpload(aabFilesPattern: '**/build/outputs/**/*-release.aab', applicationId: 'com.iita.akilimo', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-                                        text: 'Bug fixes']], trackName: 'beta')
+        androidApkUpload filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB', text: 'Bug fixes']], trackName: 'beta'
           }
         }
 
@@ -130,7 +129,7 @@ pipeline {
                }
           }
           steps {
-            androidApkUpload(apkFilesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
+            androidApkUpload(filesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
                                               text: 'Bug fixes']], trackName: 'beta')
           }
         }
