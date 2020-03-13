@@ -7,7 +7,7 @@ pipeline {
 
   stages {
 
-    stage('Rev up your engines') {
+    stage('Starting up the pipeline') {
       steps {
         sh 'echo $BUILD_NUMBER'
         sh 'env'
@@ -20,13 +20,13 @@ pipeline {
       }
     }
 
-    stage('Test') {
+    stage('Run tests') {
       steps {
         sh './gradlew test'
       }
     }
 
-    stage('Lint') {
+    stage('Run Linter') {
       steps {
         sh './gradlew lint'
         androidLint(pattern: '**/lint-results*.xml')
@@ -35,24 +35,20 @@ pipeline {
 
     stage('Build artifacts') {
       parallel {
-        stage('aab build') {
+        stage('generate android apk') {
           when {
             beforeAgent true
-            anyOf {
-                    branch 'master';
-               }
+            branch 'master'
           }
           steps {
             sh './gradlew assembleRelease'
           }
         }
 
-        stage('apk build') {
+        stage('generate android bundle') {
           when {
             beforeAgent true
-                anyOf {
-                        branch 'master-disable';
-                   }
+            branch 'master'
           }
           steps {
             sh './gradlew bundleRelease'
@@ -63,13 +59,11 @@ pipeline {
     }
 
     stage('Jar Signer') {
+      when {
+        beforeAgent true
+        branch 'master'
+      }
       steps {
-        when {
-          beforeAgent true
-          anyOf {
-                  branch 'master';
-             }
-        }
         withCredentials([usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
             sh 'jarsigner -keystore /var/lib/jenkins/fertilizer.jks -storepass $pass **/build/outputs/**/*/*-release.aab $alias'
         }
@@ -81,9 +75,7 @@ pipeline {
         stage('apk signing') {
           when {
             beforeAgent true
-            anyOf {
-                    branch 'master-disable';
-               }
+            branch 'master'
           }
           steps {
             signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.apk', skipZipalign: true)
@@ -93,9 +85,7 @@ pipeline {
         stage('aab signing') {
           when {
             beforeAgent true
-            anyOf {
-                    branch 'master';
-               }
+            branch 'master''
           }
           steps {
             signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.aab', skipZipalign: true)
@@ -108,9 +98,7 @@ pipeline {
     stage('Archive Artifacts') {
       when {
         beforeAgent true
-        anyOf {
-                branch 'master';
-           }
+        branch 'master'
       }
       steps {
         script {
@@ -126,38 +114,20 @@ pipeline {
         stage('aab upload') {
           when {
             beforeAgent true
-            anyOf {
-                    branch 'master'
-               }
+            branch 'master'
           }
           steps {
-            androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-             text: 'Bug fixes']], trackName: 'beta')
+                androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
+                 text: 'Bug fixes']], trackName: 'production')
           }
         }
-
-        stage('apk upload') {
-          when {
-            beforeAgent true
-            anyOf {
-                    branch 'master-disabled';
-               }
-          }
-          steps {
-            androidApkUpload(apkFilesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-                                              text: 'Bug fixes']], trackName: 'production')
-          }
-        }
-
       }
     }
 
     stage('Fingerprint files') {
       when {
         beforeAgent true
-        anyOf {
-                branch 'master'
-           }
+        branch 'master'
       }
       steps {
         fingerprint '**/build/outputs/**/*-release.*'
@@ -167,9 +137,7 @@ pipeline {
     stage('Tag releases') {
       when {
         beforeAgent true
-        anyOf {
-                branch 'master';
-           }
+        branch 'master';
       }
       steps {
         sh 'git tag -a v$VERSION.$BUILD_NUMBER $GIT_COMMIT -m "Jenkins-release-$BUILD_NUMBER"'
@@ -180,9 +148,7 @@ pipeline {
     stage('Push tags') {
       when {
         beforeAgent true
-        anyOf {
-                branch 'master';
-           }
+        branch 'master'
       }
       steps {
         sh 'git push --tags'
