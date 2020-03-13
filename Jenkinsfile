@@ -23,7 +23,7 @@ pipeline {
         stage('Jar Signer') {
           steps {
             sh './gradlew bundleRelease'
-            sh 'ls -lt /app/release/'
+            sh 'ls -lt /app/build/outputs/bundle/release/'
             sh 'jarsigner'
           }
         }
