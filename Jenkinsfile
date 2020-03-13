@@ -7,18 +7,6 @@ pipeline {
     gradle 'system-gradle'
   }
   stages {
-    
-    stage('Push tags test') {
-        when {
-        beforeAgent true
-        anyOf {
-                branch 'master'; branch 'develop'
-           }
-        }
-      steps {
-        sh 'git push --tags'
-      }
-    }
 
     stage('Rev up your engines') {
       steps {
@@ -29,7 +17,7 @@ pipeline {
 
     stage('Make executable') {
       steps {
-        sh 'chmod +x ./gradlews'
+        sh 'chmod +x ./gradlew'
       }
     }
 
@@ -76,7 +64,9 @@ pipeline {
         stage('apk') {
           when {
             beforeAgent true
-            branch 'master'
+            anyOf {
+                    branch 'master'; branch 'develop'
+               }
           }
           steps {
             signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.apk', skipZipalign: true)
@@ -86,7 +76,9 @@ pipeline {
         stage('aab') {
           when {
             beforeAgent true
-            branch 'bundle'
+            anyOf {
+                    branch 'master'; branch 'develop'
+               }
           }
           steps {
             signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.aab', skipZipalign: true)
@@ -99,7 +91,9 @@ pipeline {
     stage('Archive Artifacts') {
       when {
         beforeAgent true
-        branch 'master'
+        anyOf {
+                branch 'master'; branch 'develop'
+           }
       }
       steps {
         script {
@@ -115,7 +109,9 @@ pipeline {
         stage('aab') {
           when {
             beforeAgent true
-            branch 'bundle'
+            anyOf {
+                    branch 'bundle/master'; branch 'bundle/develop'
+               }
           }
           steps {
             androidAabUpload(aabFilesPattern: '**/build/outputs/**/*-release.aab', applicationId: 'com.iita.akilimo', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
@@ -123,10 +119,25 @@ pipeline {
           }
         }
 
-        stage('apk') {
+        stage('beta apk') {
           when {
             beforeAgent true
-            branch 'master'
+            anyOf {
+                    branch 'develop'
+               }
+          }
+          steps {
+            androidApkUpload(apkFilesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
+                                              text: 'Bug fixes']], trackName: 'beta')
+          }
+        }
+
+        stage('production apk') {
+          when {
+            beforeAgent true
+            anyOf {
+                    branch 'master';
+               }
           }
           steps {
             androidApkUpload(apkFilesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
@@ -140,27 +151,47 @@ pipeline {
     stage('Fingerprint files') {
       when {
         beforeAgent true
-        branch 'master'
+        anyOf {
+                branch 'bundle/master'; branch 'bundle/develop'
+           }
       }
       steps {
         fingerprint '**/build/outputs/**/*-release.*'
       }
     }
 
-    stage('Tag release commit') {
+    stage('Tag production release commit') {
       when {
         beforeAgent true
-        branch 'master'
+        anyOf {
+                branch 'master';branch 'bundle/master';
+           }
       }
       steps {
         sh 'git tag -a v$VERSION.$BUILD_NUMBER $GIT_COMMIT -m "Jenkins-release-$BUILD_NUMBER"'
       }
     }
 
+    stage('Tag beta release commit') {
+      when {
+        beforeAgent true
+        anyOf {
+                branch 'develop';branch 'bundle/develop';
+           }
+      }
+      steps {
+        sh 'git tag -a v$VERSION.$BUILD_NUMBER."beta" $GIT_COMMIT -m "Jenkins-neta-$BUILD_NUMBER"'
+      }
+    }
+
+
+
     stage('Push tags') {
       when {
         beforeAgent true
-        branch 'master'
+        anyOf {
+                branch 'master'; branch 'develop';branch 'bundle/master'; branch 'bundle/develop'
+           }
       }
       steps {
         sh 'git push --tags'
