@@ -6,23 +6,18 @@ pipeline {
   tools {
     gradle 'system-gradle'
   }
-  options { skipDefaultCheckout() }
   stages {
 
-    stage('Clone repository') {
-      steps {
-        git url: "git@github.com:masgeek/akilimo-mobile.git",credentialsId: 'jenkins_ssh_key'
-      }
-    }
 
-    stage('Checkout active branch') {
-      steps {
-        sh 'git checkout $BRANCH_NAME'
-        sh 'git fetch'
-        sh 'git pull'
-        script {
-            env.GIT_COMMIT = "${sh(script:'git rev-parse --verify HEAD', returnStdout: true)}"
+    stage('Push tags test') {
+        when {
+        beforeAgent true
+        anyOf {
+                branch 'master'; branch 'develop'
+           }
         }
+      steps {
+        sh 'git push --tags'
       }
     }
 
@@ -35,7 +30,7 @@ pipeline {
 
     stage('Make executable') {
       steps {
-        sh 'chmod +x ./gradlew'
+        sh 'chmod +x ./gradlews'
       }
     }
 
@@ -77,7 +72,7 @@ pipeline {
       }
     }
 
-    stage('Sign build binaries') {
+    stage('Sign production binaries') {
       parallel {
         stage('apk') {
           when {
@@ -116,7 +111,7 @@ pipeline {
       }
     }
 
-    stage('Upload artifacts') {
+    stage('Upload production artifacts') {
       parallel {
         stage('aab') {
           when {
