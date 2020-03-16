@@ -1,16 +1,10 @@
 pipeline {
   agent any
-  environment{
-    VERSION = "8.2";
-    BETA_VERSION = "8.2.67"
-  }
-
   stages {
-
     stage('Starting up the pipeline') {
       steps {
-        sh 'echo $BUILD_NUMBER'
         sh 'env'
+        sh 'echo $BUILD_NUMBER'
       }
     }
 
@@ -64,9 +58,10 @@ pipeline {
         branch 'master'
       }
       steps {
-        withCredentials([usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
-            sh 'jarsigner -keystore /var/lib/jenkins/fertilizer.jks -storepass $pass **/build/outputs/**/*/*-release.aab $alias'
+        withCredentials(bindings: [usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
+          sh 'jarsigner -keystore /var/lib/jenkins/fertilizer.jks -storepass $pass **/build/outputs/**/*/*-release.aab $alias'
         }
+
       }
     }
 
@@ -117,10 +112,11 @@ pipeline {
             branch 'master'
           }
           steps {
-                androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-                 text: 'Bug fixes']], trackName: 'production')
+            androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
+                             text: 'Bug fixes']], trackName: 'production')
           }
         }
+
       }
     }
 
@@ -137,13 +133,12 @@ pipeline {
     stage('Tag releases') {
       when {
         beforeAgent true
-        branch 'master';
+        branch 'master'
       }
       steps {
         sh 'git tag -a v$VERSION.$BUILD_NUMBER $GIT_COMMIT -m "Jenkins-release-$BUILD_NUMBER"'
       }
     }
-
 
     stage('Push tags') {
       when {
@@ -161,5 +156,9 @@ pipeline {
       }
     }
 
+  }
+  environment {
+    VERSION = '8.2'
+    BETA_VERSION = '8.2.67'
   }
 }
