@@ -291,7 +291,7 @@
                             android:orientation="horizontal"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/spacing_large"
-                            android:visibility="visible">
+                            android:visibility="gone">
 
 
                             <RadioButton
