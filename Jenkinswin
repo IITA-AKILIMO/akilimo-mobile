@@ -8,12 +8,6 @@ pipeline {
       }
     }
 
-    stage('Make executable') {
-      steps {
-        sh 'chmod +x ./gradlew'
-      }
-    }
-
     stage('Run checks') {
       steps {
         sh 'gradle check'
