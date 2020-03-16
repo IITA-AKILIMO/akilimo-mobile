@@ -16,13 +16,13 @@ pipeline {
 
     stage('Run checks') {
       steps {
-        sh './gradlew check'
+        sh 'gradle check'
       }
     }
 
     stage('Run Linter') {
       steps {
-        sh './gradlew lint'
+        sh 'gradle lint'
         androidLint(pattern: '**/lint-results*.xml')
       }
     }
@@ -35,7 +35,7 @@ pipeline {
             branch 'master'
           }
           steps {
-            sh './gradlew assembleRelease'
+            sh 'gradle assembleRelease'
           }
         }
 
@@ -45,7 +45,7 @@ pipeline {
             branch 'master'
           }
           steps {
-            sh './gradlew bundleRelease'
+            sh 'gradle bundleRelease'
           }
         }
 
