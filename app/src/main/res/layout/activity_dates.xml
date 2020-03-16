@@ -187,22 +187,25 @@
 
                         <RadioGroup
                             android:id="@+id/rdgPlantingWindow"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/spacing_large"
+                            android:layout_marginStart="@dimen/spacing_small"
+                            android:orientation="horizontal"
                             android:visibility="gone">
 
 
                             <RadioButton
                                 android:id="@+id/rdPlantingOneMonth"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/lbl_one_month_window" />
-
+                            <View
+                                android:layout_width="100dp"
+                                android:layout_height="0dp" />
 
                             <RadioButton
                                 android:id="@+id/rdPlantingTwoMonths"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/lbl_two_month_window" />
 
@@ -284,22 +287,26 @@
 
                         <RadioGroup
                             android:id="@+id/rdgHarvestWindow"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
+                            android:orientation="horizontal"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/spacing_large"
-                            android:visibility="gone">
+                            android:visibility="visible">
 
 
                             <RadioButton
                                 android:id="@+id/rdHarvestOneMonth"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/lbl_one_month_window" />
 
+                            <View
+                                android:layout_width="100dp"
+                                android:layout_height="0dp" />
 
                             <RadioButton
                                 android:id="@+id/rdHarvestTwoMonths"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/lbl_two_month_window" />
 
