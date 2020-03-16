@@ -107,9 +107,14 @@ public class WeedControlCostsActivity extends BaseActivity {
         }
         if (operationCosts != null) {
             firstOperationCost = operationCosts.getFirstWeedingOperationCost();
+            if (firstOperationCost > 0) {
+                editFirstWeedingOpCost.setText(String.valueOf(firstOperationCost));
+            }
+
             secondOperationCost = operationCosts.getSecondWeedingOperationCost();
-            editFirstWeedingOpCost.setText(String.valueOf(firstOperationCost));
-            editSecondWeedingOpCost.setText(String.valueOf(secondOperationCost));
+            if (secondOperationCost > 0) {
+                editSecondWeedingOpCost.setText(String.valueOf(secondOperationCost));
+            }
         }
         firstWeedingOpCostTitle.setText(getString(R.string.lbl_cost_of_first_weeding_operation, currency));
         secondWeedingOpCostTitle.setText(getString(R.string.lbl_cost_of_second_weeding_operation, currency));
