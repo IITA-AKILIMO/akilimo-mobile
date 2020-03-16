@@ -21,7 +21,7 @@ pipeline {
       }
     }
 
-    stage('Build artifacts') {
+    stage('Build and generate artifacts') {
       parallel {
         stage('generate android apk') {
           when {
