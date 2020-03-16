@@ -11,12 +11,6 @@ pipeline {
     stage('Run checks') {
       steps {
         sh 'gradle check'
-      }
-    }
-
-    stage('Run Linting reports') {
-      steps {
-        sh 'gradle lint'
         androidLint(pattern: '**/lint-results*.xml')
       }
     }
