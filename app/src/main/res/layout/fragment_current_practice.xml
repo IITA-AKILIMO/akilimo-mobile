@@ -24,6 +24,16 @@
             android:padding="@dimen/spacing_xlarge"
             app:srcCompat="@drawable/ic_farm" />
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ubuntu"
+            android:text="@string/title_tillage_operations"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@color/colorAccent" />
+
         <androidx.cardview.widget.CardView
             android:id="@+id/plantingCard"
             android:layout_width="match_parent"
@@ -138,7 +148,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_small"
-                    android:text="Which of these do you perform"
+                    android:text="which of these tillage operations do you perform?"
                     android:textColor="@color/colorAccent" />
 
                 <CheckBox
@@ -146,14 +156,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_medium"
-                    android:text="Do you perform ploughing" />
+                    android:text="Ploughing" />
 
                 <CheckBox
                     android:id="@+id/chkRidging"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_medium"
-                    android:text="Do you perform ridging" />
+                    android:text="Ridging" />
             </LinearLayout>
 
 

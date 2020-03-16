@@ -142,8 +142,14 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
         });
         //save the data
         btnUpdate.setOnClickListener(v -> {
+
             if (isExactPriceRequired) {
-                bagPrice = Double.valueOf(editExactFertilizerPrice.getText().toString());
+                try {
+                    bagPrice = Double.valueOf(editExactFertilizerPrice.getText().toString());
+                } catch (Exception ex) {
+                    Crashlytics.log(Log.ERROR, LOG_TAG, "The number appears not be valid");
+                    Crashlytics.logException(ex);
+                }
                 if (bagPrice <= 0) {
                     editExactFertilizerPrice.setError("Please provide a valid bag price");
                     isPriceValid = false;

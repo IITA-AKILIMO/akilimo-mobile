@@ -25,6 +25,7 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.inherit.BaseFragment;
+import com.iita.akilimo.utils.enums.EnumOperationType;
 import com.iita.akilimo.views.fragments.dialog.DatePickerFragment;
 import com.iita.akilimo.views.fragments.dialog.OperationTypeDialogFragment;
 
@@ -66,8 +67,10 @@ public class CurrentPracticeFragment extends BaseFragment {
 
     private String ploughingMethod, ridgingMethod, operation;
 
-    boolean performPloughing, performRidging, performHarrowing;
-    boolean isDataRefreshing = false;
+    private boolean performPloughing, performRidging, performHarrowing;
+    private boolean usesTractor = false;
+    private boolean usesRidger = false;
+    private boolean isDataRefreshing = false;
 
     public CurrentPracticeFragment() {
         // Required empty public constructor
@@ -202,20 +205,28 @@ public class CurrentPracticeFragment extends BaseFragment {
             switch (operation) {
                 case "Plough":
                     performPloughing = !cancelled;
+                    usesTractor = false;
                     if (cancelled) {
                         chkPloughing.setChecked(false);
                         ploughingMethod = null;
                     } else {
                         ploughingMethod = enumOperationType.operationName();
+                        if (enumOperationType == EnumOperationType.MECHANICAL) {
+                            usesTractor = true;
+                        }
                     }
                     break;
                 case "Ridge":
                     performRidging = !cancelled;
+                    usesRidger = false;
                     if (cancelled) {
                         chkRidging.setChecked(false);
                         ridgingMethod = null;
                     } else {
                         ridgingMethod = enumOperationType.operationName();
+                        if (enumOperationType == EnumOperationType.MECHANICAL) {
+                            usesRidger = true;
+                        }
                     }
                     break;
             }
@@ -248,7 +259,8 @@ public class CurrentPracticeFragment extends BaseFragment {
         currentPractice.setPerformRidging(performRidging);
         currentPractice.setPerformPloughing(performPloughing);
         currentPractice.setPerformHarrowing(performHarrowing);
-
+        currentPractice.setTractorAvailable(usesTractor);
+        currentPractice.setTractorRidger(usesRidger);
 
         plantingHarvestDates.setPlantingDate(selectedPlantingDate);
         plantingHarvestDates.setHarvestDate(selectedHarvestDate);

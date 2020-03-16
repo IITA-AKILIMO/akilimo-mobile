@@ -8,20 +8,14 @@ pipeline {
       }
     }
 
-    stage('Make executable') {
+    stage('Run checks') {
       steps {
-        sh 'chmod +x ./gradlew'
-      }
-    }
-
-    stage('Run checks and linter') {
-      steps {
-        sh './gradlew check'
+        sh 'gradle check'
         androidLint(pattern: '**/lint-results*.xml')
       }
     }
 
-    stage('Build artifacts') {
+    stage('Build and generate artifacts') {
       parallel {
         stage('generate android apk') {
           when {
@@ -29,7 +23,7 @@ pipeline {
             branch 'master'
           }
           steps {
-            sh './gradlew assembleRelease'
+            sh 'gradle assembleRelease'
           }
         }
 
@@ -39,7 +33,7 @@ pipeline {
             branch 'master'
           }
           steps {
-            sh './gradlew bundleRelease'
+            sh 'gradle bundleRelease'
           }
         }
 

@@ -58,8 +58,8 @@ public class BuildComputeData {
     private static final int DEFAULT_FIELD_YIELD = 11;
     private static final int DEFAULT_UNAVAILABLE_INT = 0;
     private static final String DEFAULT_LMNO_BASIS = "areaUnit";
-    private static final String DEFAULT_USERNAME = "Akilimo";
-    private static final String DEFAULT_FIELD_DESC = "Field description";
+    private static final String DEFAULT_USERNAME = "Akilimo Farmer";
+    private static final String DEFAULT_FIELD_DESC = "Akilimo field";
 
 
     private boolean smsRequired = false;
@@ -138,9 +138,9 @@ public class BuildComputeData {
     private double sweetPotatoUnitPrice;
 
     private String deviceId = DEFAULT_USERNAME;
-    private String userName = DEFAULT_USERNAME;
+    private String fullNames = DEFAULT_USERNAME;
     private String secondName = DEFAULT_USERNAME;
-    private String fieldDesc = DEFAULT_FIELD_DESC;
+    private String farmName = DEFAULT_FIELD_DESC;
     private int riskAtt = DEFAULT_UNAVAILABLE_INT;
 
     private double cassavaUpmOne;
@@ -199,8 +199,8 @@ public class BuildComputeData {
             ProfileInfo profileInfo = objectBoxEntityProcessor.getProfileInfo();
 
             if (profileInfo != null) {
-                userName = Strings.isEmptyOrWhitespace(profileInfo.getUserName()) ? DEFAULT_USERNAME : profileInfo.getUserName();
-                fieldDesc = Strings.isEmptyOrWhitespace(profileInfo.getFieldDescription()) ? DEFAULT_UNAVAILABLE : profileInfo.getFieldDescription();
+                fullNames = Strings.isEmptyOrWhitespace(profileInfo.getNames()) ? DEFAULT_USERNAME : profileInfo.getUserName();
+                farmName = Strings.isEmptyOrWhitespace(profileInfo.getFarmName()) ? DEFAULT_UNAVAILABLE : profileInfo.getFieldDescription();
                 mobileNumber = Strings.isEmptyOrWhitespace(profileInfo.getFullMobileNumber()) ? DEFAULT_UNAVAILABLE : profileInfo.getFullMobileNumber();
                 mobileCountryCode = Strings.isEmptyOrWhitespace(profileInfo.getMobileCode()) ? DEFAULT_UNAVAILABLE : profileInfo.getMobileCode();
                 emailAddress = Strings.isEmptyOrWhitespace(profileInfo.getEmail()) ? DEFAULT_UNAVAILABLE : profileInfo.getEmail();
@@ -210,12 +210,12 @@ public class BuildComputeData {
                 smsRequired = profileInfo.isSendSms();
 
                 userInfo.setDeviceID(deviceId);
-                userInfo.setUserName(userName);
+                userInfo.setUserName(fullNames);
                 userInfo.setMobileCountryCode(mobileCountryCode);
                 userInfo.setMobileNumber(mobileNumber);
                 userInfo.setFullPhoneNumber(fullPhoneNumber);
                 userInfo.setEmailAddress(emailAddress);
-                userInfo.setFieldDescription(fieldDesc);
+                userInfo.setFieldDescription(farmName);
                 userInfo.setSendSms(smsRequired);
                 userInfo.setSendEmail(emailRequired);
             }
@@ -379,7 +379,9 @@ public class BuildComputeData {
 
     private ComputeRequest buildMaizePerformance(@Nonnull ComputeRequest computeRequest) {
         MaizePerformance maizePerformance = objectBoxEntityProcessor.getMaizePerformance();
-        currentMaizePerformance = maizePerformance.getPerformanceValue();
+
+        currentMaizePerformance = Strings.isEmptyOrWhitespace(maizePerformance.getPerformanceValue()) ? DEFAULT_MAIZE_PERFORMANCE_VALUE : maizePerformance.getPerformanceValue();
+
         computeRequest.setCurrentMaizePerformance(currentMaizePerformance);
 
         return computeRequest;
