@@ -20,7 +20,7 @@ pipeline {
         stage('generate android apk') {
           when {
             beforeAgent true
-            branch 'master'
+            branch 'masters'
           }
           steps {
             sh 'gradle assembleRelease'
