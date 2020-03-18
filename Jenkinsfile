@@ -64,7 +64,7 @@ pipeline {
           }
           steps {
             withCredentials(bindings: [usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
-              sh 'jarsigner -keystore $KEYSTORE_FILE -storepass $pass **/build/outputs/**/*/*-release.aab $alias'
+              sh 'jarsigner -keystore $KEYSTORE_FILE -storepass $pass app/build/outputs/**/*/*-release.aab $alias'
             }
 
           }
