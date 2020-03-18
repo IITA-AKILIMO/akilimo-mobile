@@ -1,34 +1,10 @@
 pipeline {
   agent any
-  environment{
-    VERSION = 8.2
-  }
-  tools {
-    gradle 'system-gradle'
-  }
-  options { skipDefaultCheckout() }
   stages {
-
-    stage('Clone repository') {
+    stage('Starting up the pipeline') {
       steps {
-        git url: "git@github.com:masgeek/akilimo-mobile.git",credentialsId: 'jenkins_ssh_key'
-      }
-    }
-
-    stage('Checkout active branch') {
-      steps {
-        sh 'git checkout $BRANCH_NAME'
-        sh 'git fetch'
-        script {
-            env.GIT_COMMIT = "${sh(script:'git rev-parse --verify HEAD', returnStdout: true)}"
-        }
-      }
-    }
-
-    stage('Rev up your engines') {
-      steps {
-        sh 'echo $BUILD_NUMBER'
         sh 'env'
+        sh 'echo $BUILD_NUMBER'
       }
     }
 
@@ -38,22 +14,16 @@ pipeline {
       }
     }
 
-    stage('Test') {
+    stage('Run checks and linter') {
       steps {
-        sh './gradlew test'
-      }
-    }
-
-    stage('Lint') {
-      steps {
-        sh './gradlew lint'
+        sh './gradlew check'
         androidLint(pattern: '**/lint-results*.xml')
       }
     }
 
     stage('Build artifacts') {
       parallel {
-        stage('APK') {
+        stage('generate android apk') {
           when {
             beforeAgent true
             branch 'master'
@@ -63,10 +33,10 @@ pipeline {
           }
         }
 
-        stage('AAB') {
+        stage('generate android bundle') {
           when {
             beforeAgent true
-            branch 'bundle'
+            branch 'master'
           }
           steps {
             sh './gradlew bundleRelease'
@@ -76,9 +46,22 @@ pipeline {
       }
     }
 
-    stage('Sign build binaries') {
+    stage('Jar Signer') {
+      when {
+        beforeAgent true
+        branch 'master'
+      }
+      steps {
+        withCredentials(bindings: [usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
+          sh 'jarsigner -keystore /var/lib/jenkins/fertilizer.jks -storepass $pass **/build/outputs/**/*/*-release.aab $alias'
+        }
+
+      }
+    }
+
+    stage('Sign production binaries') {
       parallel {
-        stage('apk') {
+        stage('apk signing') {
           when {
             beforeAgent true
             branch 'master'
@@ -88,16 +71,13 @@ pipeline {
           }
         }
 
-        stage('AAB Jar Signer') {
+        stage('aab signing') {
           when {
             beforeAgent true
-            branch 'bundle/master'
+            branch 'master'
           }
           steps {
-            withCredentials(bindings: [usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
-              sh 'jarsigner -keystore /var/lib/jenkins/fertilizer.jks -storepass $pass **/build/outputs/**/*/*-release.aab $alias'
-            }
-
+            signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.aab', skipZipalign: true)
           }
         }
 
@@ -118,27 +98,16 @@ pipeline {
       }
     }
 
-    stage('Upload artifacts') {
+    stage('Upload production artifacts') {
       parallel {
-        stage('aab') {
-          when {
-            beforeAgent true
-            branch 'bundle'
-          }
-          steps {
-            androidAabUpload(aabFilesPattern: '**/build/outputs/**/*-release.aab', applicationId: 'com.iita.akilimo', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-                                        text: 'Bug fixes']], trackName: 'beta')
-          }
-        }
-
-        stage('apk') {
+        stage('aab upload') {
           when {
             beforeAgent true
             branch 'master'
           }
           steps {
-            androidApkUpload(apkFilesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-                                              text: 'Bug fixes']], trackName: 'production')
+            androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
+                             text: 'Bug fixes']], trackName: 'production')
           }
         }
 
@@ -155,7 +124,7 @@ pipeline {
       }
     }
 
-    stage('Tag release commit') {
+    stage('Tag releases') {
       when {
         beforeAgent true
         branch 'master'
@@ -181,5 +150,9 @@ pipeline {
       }
     }
 
+  }
+  environment {
+    VERSION = '8.2'
+    BETA_VERSION = '8.2.67'
   }
 }

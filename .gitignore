@@ -9,3 +9,4 @@
 .cxx
 /app/release
 android-console.json
+*.jks

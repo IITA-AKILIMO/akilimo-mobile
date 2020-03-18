@@ -33,12 +33,12 @@ public class OperationTypeDialogFragment extends DialogFragment {
     private Button btnUpdate;
     private Button btnRemove;
     private RadioGroup radioGroup;
-    TextView lblSelectionError;
+    private TextView lblSelectionError;
 
     private Dialog dialog;
     private Context context;
     private IDismissOperationsDialogListener onDismissListener;
-    private EnumOperationType enumOperationType;
+    private EnumOperationType enumOperationType = EnumOperationType.NONE;
     private String operation;
     private boolean cancelled;
 
@@ -120,7 +120,7 @@ public class OperationTypeDialogFragment extends DialogFragment {
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
-        if (onDismissListener != null) {
+        if (onDismissListener != null && enumOperationType != null) {
             onDismissListener.onDismiss(operation, enumOperationType, cancelled);
         }
     }

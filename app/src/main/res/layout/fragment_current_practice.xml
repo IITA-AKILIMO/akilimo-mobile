@@ -24,6 +24,16 @@
             android:padding="@dimen/spacing_xlarge"
             app:srcCompat="@drawable/ic_farm" />
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ubuntu"
+            android:text="@string/title_tillage_operations"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@color/colorAccent" />
+
         <androidx.cardview.widget.CardView
             android:id="@+id/plantingCard"
             android:layout_width="match_parent"
@@ -63,7 +73,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_small"
-                        android:text="@string/app_name"
+                        android:text="@string/empty_text"
                         android:textColor="@color/colorAccent" />
                 </LinearLayout>
 
@@ -110,7 +120,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_small"
-                        android:text="@string/app_name"
+                        android:text="@string/empty_text"
                         android:textColor="@color/colorAccent" />
                 </LinearLayout>
 
@@ -127,33 +137,37 @@
             app:cardCornerRadius="3dp"
             app:cardElevation="2dp">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_small"
+                android:layout_marginBottom="@dimen/spacing_medium"
+                android:text="which of these tillage operations do you perform?"
+                android:textColor="@color/colorAccent" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:padding="@dimen/spacing_small">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_small"
-                    android:text="Which of these do you perform"
-                    android:textColor="@color/colorAccent" />
 
                 <CheckBox
                     android:id="@+id/chkPloughing"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_medium"
-                    android:text="Do you perform ploughing" />
+                    android:text="Ploughing" />
+
+                <View
+                    android:layout_width="100dp"
+                    android:layout_height="0dp" />
 
                 <CheckBox
                     android:id="@+id/chkRidging"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_medium"
-                    android:text="Do you perform ridging" />
+                    android:text="Ridging" />
             </LinearLayout>
 
 
