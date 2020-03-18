@@ -3,7 +3,7 @@ pipeline {
   environment{
         VERSION_MAJOR ="9"
         VERSION_MINOR ="3"
-        KEYSTORE_FILE="D:\gdrive\keystores\fertilizer.jks"
+        KEYSTORE_FILE='D:\\gdrive\\keystores\\fertilizer.jks'
   }
   stages {
     stage('Starting up the pipeline') {
