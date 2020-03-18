@@ -3,6 +3,7 @@ pipeline {
   environment{
         VERSION_MAJOR ="9"
         VERSION_MINOR ="1"
+        BETA_VERSION = '8.2.67'
   }
   stages {
     stage('Starting up the pipeline') {
@@ -157,9 +158,5 @@ pipeline {
       }
     }
 
-  }
-  environment {
-    VERSION = '8.2'
-    BETA_VERSION = '8.2.67'
   }
 }
