@@ -1,16 +1,10 @@
 pipeline {
   agent any
-  environment{
-    VERSION = "8.2";
-    BETA_VERSION = "8.2.67"
-  }
-
   stages {
-
-    stage('Rev up your engines') {
+    stage('Starting up the pipeline') {
       steps {
-        sh 'echo $BUILD_NUMBER'
         sh 'env'
+        sh 'echo $BUILD_NUMBER'
       }
     }
 
@@ -20,39 +14,29 @@ pipeline {
       }
     }
 
-    stage('Test') {
+    stage('Run checks and linter') {
       steps {
-        sh './gradlew test'
-      }
-    }
-
-    stage('Lint') {
-      steps {
-        sh './gradlew lint'
+        sh './gradlew check'
         androidLint(pattern: '**/lint-results*.xml')
       }
     }
 
     stage('Build artifacts') {
       parallel {
-        stage('APK') {
+        stage('generate android apk') {
           when {
             beforeAgent true
-            anyOf {
-                    branch 'master'; branch 'develop'
-               }
+            branch 'master'
           }
           steps {
             sh './gradlew assembleRelease'
           }
         }
 
-        stage('AAB') {
+        stage('generate android bundle') {
           when {
             beforeAgent true
-                anyOf {
-                        branch 'bundle/master'; branch 'bundle/develop'
-                   }
+            branch 'master'
           }
           steps {
             sh './gradlew bundleRelease'
@@ -62,26 +46,35 @@ pipeline {
       }
     }
 
+    stage('Jar Signer') {
+      when {
+        beforeAgent true
+        branch 'master'
+      }
+      steps {
+        withCredentials(bindings: [usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
+          sh 'jarsigner -keystore /var/lib/jenkins/fertilizer.jks -storepass $pass **/build/outputs/**/*/*-release.aab $alias'
+        }
+
+      }
+    }
+
     stage('Sign production binaries') {
       parallel {
-        stage('apk') {
+        stage('apk signing') {
           when {
             beforeAgent true
-            anyOf {
-                    branch 'master'; branch 'develop'
-               }
+            branch 'master'
           }
           steps {
             signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.apk', skipZipalign: true)
           }
         }
 
-        stage('aab') {
+        stage('aab signing') {
           when {
             beforeAgent true
-            anyOf {
-                    branch 'bundle/master'; branch 'bundle/develop'
-               }
+            branch 'master'
           }
           steps {
             signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.aab', skipZipalign: true)
@@ -94,9 +87,7 @@ pipeline {
     stage('Archive Artifacts') {
       when {
         beforeAgent true
-        anyOf {
-                branch 'master'; branch 'develop'
-           }
+        branch 'master'
       }
       steps {
         script {
@@ -109,42 +100,14 @@ pipeline {
 
     stage('Upload production artifacts') {
       parallel {
-        stage('aab') {
+        stage('aab upload') {
           when {
             beforeAgent true
-            anyOf {
-                    branch 'bundle/master'; branch 'bundle/develop'
-               }
+            branch 'master'
           }
           steps {
-            androidAabUpload(aabFilesPattern: '**/build/outputs/**/*-release.aab', applicationId: 'com.iita.akilimo', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-                                        text: 'Bug fixes']], trackName: 'beta')
-          }
-        }
-
-        stage('beta apk') {
-          when {
-            beforeAgent true
-            anyOf {
-                    branch 'develop'
-               }
-          }
-          steps {
-            androidApkUpload(apkFilesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-                                              text: 'Bug fixes']], trackName: 'beta')
-          }
-        }
-
-        stage('production apk') {
-          when {
-            beforeAgent true
-            anyOf {
-                    branch 'master';
-               }
-          }
-          steps {
-            androidApkUpload(apkFilesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-                                              text: 'Bug fixes']], trackName: 'production')
+            androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
+                             text: 'Bug fixes']], trackName: 'production')
           }
         }
 
@@ -154,47 +117,27 @@ pipeline {
     stage('Fingerprint files') {
       when {
         beforeAgent true
-        anyOf {
-                branch 'bundle/master'; branch 'bundle/develop'
-           }
+        branch 'master'
       }
       steps {
         fingerprint '**/build/outputs/**/*-release.*'
       }
     }
 
-    stage('Tag production release commit') {
+    stage('Tag releases') {
       when {
         beforeAgent true
-        anyOf {
-                branch 'master';branch 'develop';branch 'master';branch 'bundle/master';
-           }
+        branch 'master'
       }
       steps {
         sh 'git tag -a v$VERSION.$BUILD_NUMBER $GIT_COMMIT -m "Jenkins-release-$BUILD_NUMBER"'
       }
     }
 
-    stage('Tag beta release commit') {
-      when {
-        beforeAgent true
-        anyOf {
-                branch 'develop';branch 'bundle/develop';
-           }
-      }
-      steps {
-        sh 'git tag -a v$BETA_VERSION.$BUILD_NUMBER."beta" $GIT_COMMIT -m "Jenkins-beta-$BUILD_NUMBER"'
-      }
-    }
-
-
-
     stage('Push tags') {
       when {
         beforeAgent true
-        anyOf {
-                branch 'master'; branch 'develop';branch 'bundle/master'; branch 'bundle/develop'
-           }
+        branch 'master'
       }
       steps {
         sh 'git push --tags'
@@ -207,5 +150,9 @@ pipeline {
       }
     }
 
+  }
+  environment {
+    VERSION = '8.2'
+    BETA_VERSION = '8.2.67'
   }
 }
