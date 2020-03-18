@@ -152,25 +152,10 @@ pipeline {
       }
     }
 
-  }
-
-  post {
-      always {
-          echo 'One way or another, I have finished'
-          cleanWs()
-          deleteDir() /* clean up our workspace */
+    stage('clean WS') {
+      steps {
+        cleanWs()
       }
-      success {
-          echo 'I succeeded!'
-      }
-      unstable {
-          echo 'I am unstable :/'
-      }
-      failure {
-          echo 'I failed :('
-      }
-      changed {
-          echo 'Things were different before...'
-      }
+    }
   }
 }
