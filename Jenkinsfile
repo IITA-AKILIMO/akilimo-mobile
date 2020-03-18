@@ -3,8 +3,7 @@ pipeline {
   environment{
         VERSION_MAJOR ="9"
         VERSION_MINOR ="3"
-        BETA_VERSION = '8.2.67'
-        KEYSTORE_FILE='D:\gdrive\keystores\fertilizer.jks'
+        KEYSTORE_FILE="D:\gdrive\keystores\fertilizer.jks"
   }
   stages {
     stage('Starting up the pipeline') {
@@ -129,7 +128,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        sh 'git tag -a v$VERSION_MAJOR.$VERSION_MINOR.$BUILD_NUMBER $GIT_COMMIT -m "Jenkins-release-$BUILD_NUMBER"'
+        sh 'git tag -a v$VERSION_MAJOR.$VERSION_MINOR.$BUILD_NUMBER $GIT_COMMIT -m "Jenkins-release-v$VERSION_MAJOR.$VERSION_MINOR.$BUILD_NUMBER"'
       }
     }
 
