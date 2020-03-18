@@ -1,5 +1,10 @@
 pipeline {
   agent any
+  environment{
+        VERSION_MAJOR ="9"
+        VERSION_MINOR ="1"
+        BETA_VERSION = '8.2.67'
+  }
   stages {
     stage('Starting up the pipeline') {
       steps {
@@ -8,28 +13,22 @@ pipeline {
       }
     }
 
-    stage('Make executable') {
+    stage('Run checks') {
       steps {
-        sh 'chmod +x ./gradlew'
-      }
-    }
-
-    stage('Run checks and linter') {
-      steps {
-        sh './gradlew check'
+        sh 'gradle check'
         androidLint(pattern: '**/lint-results*.xml')
       }
     }
 
-    stage('Build artifacts') {
+    stage('Build and generate artifacts') {
       parallel {
         stage('generate android apk') {
           when {
             beforeAgent true
-            branch 'master'
+            branch 'masters'
           }
           steps {
-            sh './gradlew assembleRelease'
+            sh 'gradle assembleRelease'
           }
         }
 
@@ -39,21 +38,8 @@ pipeline {
             branch 'master'
           }
           steps {
-            sh './gradlew bundleRelease'
+            sh 'gradle bundleRelease'
           }
-        }
-
-      }
-    }
-
-    stage('Jar Signer') {
-      when {
-        beforeAgent true
-        branch 'master'
-      }
-      steps {
-        withCredentials(bindings: [usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
-          sh 'jarsigner -keystore /var/lib/jenkins/fertilizer.jks -storepass $pass **/build/outputs/**/*/*-release.aab $alias'
         }
 
       }
@@ -71,13 +57,16 @@ pipeline {
           }
         }
 
-        stage('aab signing') {
+        stage('AAB Jar Signer') {
           when {
             beforeAgent true
-            branch 'master'
+            branch 'bundle/master'
           }
           steps {
-            signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.aab', skipZipalign: true)
+            withCredentials(bindings: [usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
+              sh 'jarsigner -keystore /var/lib/jenkins/fertilizer.jks -storepass $pass **/build/outputs/**/*/*-release.aab $alias'
+            }
+
           }
         }
 
@@ -103,14 +92,23 @@ pipeline {
         stage('aab upload') {
           when {
             beforeAgent true
-            branch 'master'
+            branch 'bundle/master'
           }
           steps {
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
                              text: 'Bug fixes']], trackName: 'production')
           }
         }
-
+        stage('apk upload') {
+          when {
+            beforeAgent true
+            branch 'master'
+          }
+          steps {
+            androidApkUpload(filesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
+                             text: 'Bug fixes']], trackName: 'production')
+          }
+        }
       }
     }
 
@@ -149,10 +147,5 @@ pipeline {
         cleanWs()
       }
     }
-
-  }
-  environment {
-    VERSION = '8.2'
-    BETA_VERSION = '8.2.67'
   }
 }
