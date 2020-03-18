@@ -16,7 +16,7 @@ pipeline {
 
     stage('Run checks and linter') {
       steps {
-        sh './gradlew check'
+        sh 'gralde check'
         androidLint(pattern: '**/lint-results*.xml')
       }
     }
@@ -29,7 +29,7 @@ pipeline {
             branch 'master'
           }
           steps {
-            sh './gradlew assembleRelease'
+            sh 'gradle assembleRelease'
           }
         }
 
@@ -39,21 +39,8 @@ pipeline {
             branch 'master'
           }
           steps {
-            sh './gradlew bundleRelease'
+            sh 'gradle bundleRelease'
           }
-        }
-
-      }
-    }
-
-    stage('Jar Signer') {
-      when {
-        beforeAgent true
-        branch 'master'
-      }
-      steps {
-        withCredentials(bindings: [usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
-          sh 'jarsigner -keystore /var/lib/jenkins/fertilizer.jks -storepass $pass **/build/outputs/**/*/*-release.aab $alias'
         }
 
       }
@@ -71,13 +58,16 @@ pipeline {
           }
         }
 
-        stage('aab signing') {
+        stage('aab Jar Signer') {
           when {
             beforeAgent true
             branch 'master'
           }
           steps {
-            signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.aab', skipZipalign: true)
+            withCredentials(bindings: [usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
+              sh 'jarsigner -keystore $KEYSTORE_PATH -storepass $pass **/build/outputs/**/*/*-release.aab $alias'
+            }
+
           }
         }
 
@@ -152,7 +142,9 @@ pipeline {
 
   }
   environment {
-    VERSION = '8.2'
+    KEYSTORE_PATH='D:\gdrive\keystores\fertilizer.jks'
+    VERSION_MAJOR ="9"
+    VERSION_MINOR ="3"
     BETA_VERSION = '8.2.67'
   }
 }
