@@ -88,13 +88,16 @@ pipeline {
           }
         }
 
-        stage('aab') {
+        stage('AAB Jar Signer') {
           when {
             beforeAgent true
-            branch 'bundle'
+            branch 'bundle/master'
           }
           steps {
-            signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.aab', skipZipalign: true)
+            withCredentials(bindings: [usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
+              sh 'jarsigner -keystore /var/lib/jenkins/fertilizer.jks -storepass $pass **/build/outputs/**/*/*-release.aab $alias'
+            }
+
           }
         }
 
