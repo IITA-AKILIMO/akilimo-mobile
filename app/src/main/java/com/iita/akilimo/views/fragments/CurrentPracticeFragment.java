@@ -95,10 +95,6 @@ public class CurrentPracticeFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         final FragmentManager fm = getActivity().getSupportFragmentManager();
 
-
-//        chkPloughing.setOnClickListener(this::onCheckboxClicked);
-//        chkRidging.setOnClickListener(this::onCheckboxClicked);
-
         chkPloughing.setOnCheckedChangeListener((buttonView, checked) -> {
             operation = checked ? "Plough" : "NA";
             performPloughing = checked;

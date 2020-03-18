@@ -11,8 +11,8 @@ apply plugin: 'io.objectbox'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
 
-ext.versionMajor = 8
-ext.versionMinor = 1
+ext.versionMajor = 9
+ext.versionMinor = 2
 android {
     def buildNumber = computeBuildNumber()
     def appVersionCode = computeVersionCode()
@@ -31,7 +31,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled false //for some strange reson minifying causes the code to flip
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -60,11 +60,11 @@ android {
 
 @SuppressWarnings("GrMethodMayBeStatic")
 def computeVersionName() {
-    return String.format('%d.%d', versionMajor, versionMinor)
+    return String.format('%d.%d', Integer.valueOf(System.env.VERSION_MAJOR ?: versionMajor), Integer.valueOf(System.env.VERSION_MINOR ?: versionMinor))
 }
 
 static def computeBuildNumber() {
-    return Integer.valueOf(System.env.BUILD_NUMBER ?: 1)
+    return Integer.valueOf(System.env.BUILD_NUMBER ?: 2)
 }
 
 def computeVersionCode() {
