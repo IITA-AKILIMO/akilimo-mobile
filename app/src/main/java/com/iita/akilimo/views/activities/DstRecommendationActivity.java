@@ -141,8 +141,10 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
     }
 
     private void displayDialog(ProfileInfo profileInfo) {
-        recommendationChannelDialog = new RecommendationChannelDialog(this, profileInfo);
-        recommendationChannelDialog.show(getSupportFragmentManager(), RecommendationChannelDialog.TAG);
+        if(profileInfo!=null) {
+            recommendationChannelDialog = new RecommendationChannelDialog(this, profileInfo);
+            recommendationChannelDialog.show(getSupportFragmentManager(), RecommendationChannelDialog.TAG);
+        }
     }
 
     @Override

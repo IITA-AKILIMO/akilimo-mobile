@@ -1,5 +1,10 @@
 pipeline {
   agent any
+  environment{
+        VERSION_MAJOR ="9"
+        VERSION_MINOR ="1"
+        BETA_VERSION = '8.2.67'
+  }
   stages {
     stage('Starting up the pipeline') {
       steps {
@@ -43,7 +48,7 @@ pipeline {
     stage('Jar Signer') {
       when {
         beforeAgent true
-        branch 'master'
+        branch 'bundle/master'
       }
       steps {
         withCredentials(bindings: [usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
@@ -97,14 +102,23 @@ pipeline {
         stage('aab upload') {
           when {
             beforeAgent true
-            branch 'master'
+            branch 'bundle/master'
           }
           steps {
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
                              text: 'Bug fixes']], trackName: 'production')
           }
         }
-
+        stage('apk upload') {
+          when {
+            beforeAgent true
+            branch 'master'
+          }
+          steps {
+            androidApkUpload(filesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
+                             text: 'Bug fixes']], trackName: 'production')
+          }
+        }
       }
     }
 
@@ -143,10 +157,5 @@ pipeline {
         cleanWs()
       }
     }
-
-  }
-  environment {
-    VERSION = '8.2'
-    BETA_VERSION = '8.2.67'
   }
 }

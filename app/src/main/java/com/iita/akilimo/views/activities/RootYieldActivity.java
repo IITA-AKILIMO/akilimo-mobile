@@ -76,10 +76,12 @@ public class RootYieldActivity extends BaseActivity {
         }
 
         savedYield = objectBoxEntityProcessor.getCurrentFieldYield();
-        if (savedYield == null) {
+        if (savedYield != null) {
+            selectedYieldAmount = savedYield.getYieldAmount();
+        }else{
             savedYield = new CurrentFieldYield();
         }
-        selectedYieldAmount = savedYield.getYieldAmount();
+
         initComponent();
     }
 
