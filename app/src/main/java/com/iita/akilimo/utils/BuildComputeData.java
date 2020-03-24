@@ -53,7 +53,7 @@ public class BuildComputeData {
     private static final String DEFAULT_UNAVAILABLE = "NA";
     private static final String DEFAULT_FALLOW_TYPE = "none";
     private static final String DEFAULT_MAIZE_PERFORMANCE_VALUE = "3";
-    private static final String DEFAULT_PLOUGHING_METHOD = "NA";
+    private static final String DEFAULT_PRACTICE_METHOD = "NA";
 
     private static final int DEFAULT_FIELD_YIELD = 11;
     private static final int DEFAULT_UNAVAILABLE_INT = 0;
@@ -100,10 +100,6 @@ public class BuildComputeData {
     private int fallowHeight = 100;
     private boolean problemWeeds = false;
 
-    private boolean hasTractorPlough;
-    private boolean hasTractorHarrow;
-    private boolean hasTractorRidger;
-
 
     private String costLmoAreaBasis = DEFAULT_LMNO_BASIS;
     private double costTractorPlough;
@@ -122,9 +118,9 @@ public class BuildComputeData {
     private boolean performsRidging;
     private boolean sellToStarchFactory;
 
-    private String methodHarrowing = DEFAULT_PLOUGHING_METHOD;
-    private String methodPloughing = DEFAULT_PLOUGHING_METHOD;
-    private String methodRidging = DEFAULT_PLOUGHING_METHOD;
+    private String methodHarrowing = DEFAULT_PRACTICE_METHOD;
+    private String methodPloughing = DEFAULT_PRACTICE_METHOD;
+    private String methodRidging = DEFAULT_PRACTICE_METHOD;
 
     private double cassavaUnitPrice = 0.0;
 
@@ -313,22 +309,27 @@ public class BuildComputeData {
 
         CurrentPractice currentPractice = objectBoxEntityProcessor.getCurrentPractice();
 
-        hasTractorHarrow = currentPractice.getTractorHarrow();
-        hasTractorRidger = currentPractice.getTractorRidger();
-        hasTractorPlough = currentPractice.getTractorPlough();
-
         performsPloughing = currentPractice.getPerformPloughing();
         performsHarrowing = currentPractice.getPerformHarrowing();
         performsRidging = currentPractice.getPerformRidging();
 
-        methodHarrowing = Strings.isEmptyOrWhitespace(currentPractice.getHarrowingMethod()) ? DEFAULT_PLOUGHING_METHOD : currentPractice.getHarrowingMethod();
-        methodPloughing = Strings.isEmptyOrWhitespace(currentPractice.getPloughingMethod()) ? DEFAULT_PLOUGHING_METHOD : currentPractice.getPloughingMethod();
-        methodRidging = Strings.isEmptyOrWhitespace(currentPractice.getRidgingMethod()) ? DEFAULT_PLOUGHING_METHOD : currentPractice.getRidgingMethod();
+        methodHarrowing = Strings.isEmptyOrWhitespace(currentPractice.getHarrowingMethod()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getHarrowingMethod();
+        methodPloughing = Strings.isEmptyOrWhitespace(currentPractice.getPloughingMethod()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getPloughingMethod();
+        methodRidging = Strings.isEmptyOrWhitespace(currentPractice.getRidgingMethod()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getRidgingMethod();
 
 
         computeRequest.setPloughingDone(performsPloughing);
         computeRequest.setHarrowingDone(performsHarrowing);
         computeRequest.setRidgingDone(performsRidging);
+        if (methodPloughing.equalsIgnoreCase("tractor")) {
+            computeRequest.setTractorPlough(true);
+        }
+        if (methodHarrowing.equalsIgnoreCase("tractor")) {
+            computeRequest.setTractorHarrow(true);
+        }
+        if (methodRidging.equalsIgnoreCase("tractor")) {
+            computeRequest.setTractorRidger(true);
+        }
 
         computeRequest.setMethodHarrowing(methodHarrowing);
         computeRequest.setMethodPloughing(methodPloughing);

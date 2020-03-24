@@ -111,6 +111,9 @@ class ComputeRequest {
     @JsonProperty("method_ridging")
     var methodRidging: String? = null
 
+    @JsonProperty("method_weeding")
+    var methodWeeding: String? = null
+
     @JsonProperty("FCY")
     var currentFieldYield: Int = 0
 

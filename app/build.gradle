@@ -12,7 +12,7 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
 
 ext.versionMajor = 9
-ext.versionMinor = 0
+ext.versionMinor = 2
 android {
     def buildNumber = computeBuildNumber()
     def appVersionCode = computeVersionCode()
@@ -31,8 +31,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled true
-//            shrinkResources true
+            minifyEnabled false //for some strange reson minifying causes the code to flip
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -146,5 +145,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     //debugImplementation because LeakCanary should only run in debug builds.
-//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
 }

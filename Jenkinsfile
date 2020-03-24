@@ -1,5 +1,10 @@
 pipeline {
   agent any
+  environment{
+        VERSION_MAJOR ="9"
+        VERSION_MINOR ="3"
+        KEYSTORE_FILE='D:\\gdrive\\keystores\\fertilizer.jks'
+  }
   stages {
     stage('Starting up the pipeline') {
       steps {
@@ -8,28 +13,22 @@ pipeline {
       }
     }
 
-    stage('Make executable') {
+    stage('Run checks') {
       steps {
-        sh 'chmod +x ./gradlew'
-      }
-    }
-
-    stage('Run checks and linter') {
-      steps {
-        sh './gradlew check'
+        sh 'gradle check'
         androidLint(pattern: '**/lint-results*.xml')
       }
     }
 
-    stage('Build artifacts') {
+    stage('Build and generate artifacts') {
       parallel {
         stage('generate android apk') {
           when {
             beforeAgent true
-            branch 'master'
+            branch 'masters'
           }
           steps {
-            sh './gradlew assembleRelease'
+            sh 'gradle assembleRelease'
           }
         }
 
@@ -39,21 +38,8 @@ pipeline {
             branch 'master'
           }
           steps {
-            sh './gradlew bundleRelease'
+            sh 'gradle bundleRelease'
           }
-        }
-
-      }
-    }
-
-    stage('Jar Signer') {
-      when {
-        beforeAgent true
-        branch 'master'
-      }
-      steps {
-        withCredentials(bindings: [usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
-          sh 'jarsigner -keystore /var/lib/jenkins/fertilizer.jks -storepass $pass **/build/outputs/**/*/*-release.aab $alias'
         }
 
       }
@@ -64,20 +50,23 @@ pipeline {
         stage('apk signing') {
           when {
             beforeAgent true
-            branch 'master'
+            branch 'legacy/master'
           }
           steps {
             signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.apk', skipZipalign: true)
           }
         }
 
-        stage('aab signing') {
+        stage('AAB Jar Signer') {
           when {
             beforeAgent true
             branch 'master'
           }
           steps {
-            signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.aab', skipZipalign: true)
+            withCredentials(bindings: [usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
+              sh 'jarsigner -keystore $KEYSTORE_FILE -storepass $pass app/build/outputs/**/*/*-release.aab $alias'
+            }
+
           }
         }
 
@@ -110,7 +99,16 @@ pipeline {
                              text: 'Bug fixes']], trackName: 'production')
           }
         }
-
+        stage('apk upload') {
+          when {
+            beforeAgent true
+            branch 'legacy/master'
+          }
+          steps {
+            androidApkUpload(filesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
+                             text: 'Bug fixes']], trackName: 'production')
+          }
+        }
       }
     }
 
@@ -130,7 +128,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        sh 'git tag -a v$VERSION.$BUILD_NUMBER $GIT_COMMIT -m "Jenkins-release-$BUILD_NUMBER"'
+        sh 'git tag -a v$VERSION_MAJOR.$VERSION_MINOR.$BUILD_NUMBER $GIT_COMMIT -m "Jenkins-release-v$VERSION_MAJOR.$VERSION_MINOR.$BUILD_NUMBER"'
       }
     }
 
@@ -149,10 +147,5 @@ pipeline {
         cleanWs()
       }
     }
-
-  }
-  environment {
-    VERSION = '8.2'
-    BETA_VERSION = '8.2.67'
   }
 }

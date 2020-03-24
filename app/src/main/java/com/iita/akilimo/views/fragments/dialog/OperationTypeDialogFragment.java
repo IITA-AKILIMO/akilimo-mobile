@@ -38,7 +38,7 @@ public class OperationTypeDialogFragment extends DialogFragment {
     private Dialog dialog;
     private Context context;
     private IDismissOperationsDialogListener onDismissListener;
-    private EnumOperationType enumOperationType = EnumOperationType.NONE;
+    private EnumOperationType enumOperationType;
     private String operation;
     private boolean cancelled;
 
@@ -95,6 +95,7 @@ public class OperationTypeDialogFragment extends DialogFragment {
 
         btnClose.setOnClickListener(view -> {
             cancelled = true;
+            enumOperationType = EnumOperationType.NONE;
             dismiss();
         });
 
