@@ -25,6 +25,7 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.inherit.BaseFragment;
+import com.iita.akilimo.utils.enums.EnumOperationType;
 import com.iita.akilimo.views.fragments.dialog.DatePickerFragment;
 import com.iita.akilimo.views.fragments.dialog.OperationTypeDialogFragment;
 
@@ -64,9 +65,11 @@ public class CurrentPracticeFragment extends BaseFragment {
     private CurrentPractice currentPractice;
     private PlantingHarvestDates plantingHarvestDates;
 
-    private String ploughingMethod, ridgingMethod, operation;
+    private String ploughingMethod, ridgingMethod, harrowingMethod, operation;
 
-    private boolean performPloughing, performRidging, performHarrowing;
+    private boolean performPloughing;
+    private boolean performRidging;
+    private boolean performHarrowing;
     private boolean isDataRefreshing = false;
 
     public CurrentPracticeFragment() {
@@ -198,21 +201,13 @@ public class CurrentPracticeFragment extends BaseFragment {
             switch (operation) {
                 case "Plough":
                     performPloughing = !cancelled;
-                    if (cancelled) {
-                        chkPloughing.setChecked(false);
-                        ploughingMethod = null;
-                    } else {
-                        ploughingMethod = enumOperationType.operationName();
-                    }
+                    chkPloughing.setChecked(!cancelled);
+                    ploughingMethod = enumOperationType.operationName();
                     break;
                 case "Ridge":
                     performRidging = !cancelled;
-                    if (cancelled) {
-                        chkRidging.setChecked(false);
-                        ridgingMethod = null;
-                    } else {
-                        ridgingMethod = enumOperationType.operationName();
-                    }
+                    chkRidging.setChecked(!cancelled);
+                    ridgingMethod = enumOperationType.operationName();
                     break;
             }
             saveEntities();
@@ -239,12 +234,20 @@ public class CurrentPracticeFragment extends BaseFragment {
     }
 
     private void saveEntities() {
+        if (!performPloughing) {
+            ploughingMethod = EnumOperationType.NONE.operationName();
+        }
+        if (!performRidging) {
+            ridgingMethod = EnumOperationType.NONE.operationName();
+        }
+        if (!performHarrowing) {
+            harrowingMethod = EnumOperationType.NONE.operationName();
+        }
         currentPractice.setRidgingMethod(ridgingMethod);
         currentPractice.setPloughingMethod(ploughingMethod);
         currentPractice.setPerformRidging(performRidging);
         currentPractice.setPerformPloughing(performPloughing);
         currentPractice.setPerformHarrowing(performHarrowing);
-
 
         plantingHarvestDates.setPlantingDate(selectedPlantingDate);
         plantingHarvestDates.setHarvestDate(selectedHarvestDate);
