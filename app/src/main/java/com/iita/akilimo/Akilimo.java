@@ -12,7 +12,7 @@ import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidObjectBrowser;
 
 public class Akilimo extends MultiDexApplication {
-    private final String DB_NAME = "akilimo_8_1_5";
+    private final String DB_NAME = "AkilimoCorona";
     private BoxStore boxStore;
 
 
@@ -24,7 +24,7 @@ public class Akilimo extends MultiDexApplication {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         JodaTimeAndroid.init(this);
 
-//        BoxStore.deleteAllFiles(this, DB_NAME);
+        BoxStore.deleteAllFiles(this, DB_NAME);
         boxStore = MyObjectBox.builder()
                 .androidContext(Akilimo.this)
                 .name(DB_NAME)
