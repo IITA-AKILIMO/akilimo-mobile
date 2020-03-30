@@ -50,7 +50,7 @@
                 android:layout_below="@id/errorImage"
                 android:layout_centerInParent="true"
                 android:layout_margin="@dimen/spacing_medium"
-                android:fontFamily="@font/roboto"
+                android:fontFamily="@font/ubuntu_bold"
                 android:text="@string/lbl_compute_error"
                 android:textColor="@color/red_A400"
                 android:visibility="visible" />
@@ -86,6 +86,6 @@
         app:layout_anchor="@id/toolbar"
         app:layout_anchorGravity="end|right|bottom"
         app:rippleColor="@color/purple_100"
-        app:srcCompat="@drawable/ic_contact" />
+        app:srcCompat="@drawable/ic_refresh" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

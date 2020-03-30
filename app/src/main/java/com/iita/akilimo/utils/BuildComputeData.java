@@ -149,11 +149,13 @@ public class BuildComputeData {
     private ObjectBoxEntityProcessor objectBoxEntityProcessor;
     private MathHelper mathHelper;
     private ModelMapper modelMapper;
+    private SessionManager sessionManager;
 
     public BuildComputeData(@NonNull Activity activity) {
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(activity);
         mathHelper = new MathHelper(activity);
         modelMapper = new ModelMapper();
+        sessionManager = new SessionManager(activity);
     }
 
     public RecommendationRequest buildRecommendationReq() {
@@ -200,7 +202,7 @@ public class BuildComputeData {
                 mobileNumber = Strings.isEmptyOrWhitespace(profileInfo.getFullMobileNumber()) ? DEFAULT_UNAVAILABLE : profileInfo.getFullMobileNumber();
                 mobileCountryCode = Strings.isEmptyOrWhitespace(profileInfo.getMobileCode()) ? DEFAULT_UNAVAILABLE : profileInfo.getMobileCode();
                 emailAddress = Strings.isEmptyOrWhitespace(profileInfo.getEmail()) ? DEFAULT_UNAVAILABLE : profileInfo.getEmail();
-                deviceId = Strings.isEmptyOrWhitespace(profileInfo.getDeviceID()) ? DEFAULT_UNAVAILABLE : profileInfo.getDeviceID();
+                deviceId = sessionManager.getDeviceId();
 
                 emailRequired = profileInfo.isSendEmail();
                 smsRequired = profileInfo.isSendSms();
@@ -289,8 +291,9 @@ public class BuildComputeData {
 
             computeRequest.setPlantingDate(PD.toString("yyyy-MM-dd"));
             computeRequest.setPlantingDateWindow(plantingDateWindow);
+
             computeRequest.setHarvestDate(HD.toString("yyyy-MM-dd"));
-            sph.setHarvestWindow(harvestDateWindow);
+            computeRequest.setHarvestDateWindow(harvestDateWindow);
         }
 
         return computeRequest;
