@@ -289,8 +289,9 @@ public class BuildComputeData {
 
             computeRequest.setPlantingDate(PD.toString("yyyy-MM-dd"));
             computeRequest.setPlantingDateWindow(plantingDateWindow);
+
             computeRequest.setHarvestDate(HD.toString("yyyy-MM-dd"));
-            sph.setHarvestWindow(harvestDateWindow);
+            computeRequest.setHarvestDateWindow(harvestDateWindow);
         }
 
         return computeRequest;
