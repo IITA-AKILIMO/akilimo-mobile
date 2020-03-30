@@ -141,7 +141,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
     }
 
     private void displayDialog(ProfileInfo profileInfo) {
-        if(profileInfo!=null) {
+        if (profileInfo != null) {
             recommendationChannelDialog = new RecommendationChannelDialog(this, profileInfo);
             recommendationChannelDialog.show(getSupportFragmentManager(), RecommendationChannelDialog.TAG);
         }
@@ -155,7 +155,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
 
     @Override
     public void onDismiss() {
-        buildRecommendationData();
+        closeActivity(false);
     }
 
 
@@ -170,7 +170,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         final RestService restService = RestService.getInstance(queue, activity);
         final RestParameters restParameters = new RestParameters(
                 "v2/recommendations",
-                null
+                countryCode
         );
         restParameters.setInitialTimeout(45000);
         restService.setParameters(restParameters);

@@ -13,6 +13,7 @@ import org.joda.time.DateTimeZone;
 
 import java.util.Currency;
 import java.util.Locale;
+import java.util.UUID;
 
 
 /**
@@ -100,6 +101,17 @@ public class SessionManager {
         return pref.getBoolean("firstRun", true);
     }
 
+    public String getDeviceId() {
+        String uniqueID = pref.getString("uuid", null);
+        
+        if (uniqueID == null) {
+            uniqueID = UUID.randomUUID().toString();
+            editor.putString("uuid", uniqueID);
+            editor.commit();
+        }
+
+        return uniqueID;
+    }
 
     @SuppressWarnings("StringBufferReplaceableByString")
     public String getAppVersion() {
