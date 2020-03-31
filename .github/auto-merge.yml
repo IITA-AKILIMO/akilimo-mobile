@@ -63,6 +63,7 @@ blockingLabels:
 # all of these labels are attached to a pull request.
 requiredLabels:
   - merge
+reportStatus: true
 
 # Automatic merges will be blocked if there is a match between the regular expression and title
 blockingTitleRegex: '\bwip\b'
