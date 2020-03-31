@@ -231,20 +231,20 @@
     <string name="lbl_grain_unit_price_per">Unit price of dry grain in %s per %s</string>
     <string name="lbl_sweet_potato_tuber_unit_price_per">Unit price of sweet potato tuber in %s per %s</string>
 
-    <string name="lbl_manual_tillage_cost">How much does it cost you to manually plough %.00f %s?</string>
-    <string name="lbl_manual_ridge_cost">How much does it cost you to manually ridge %.00f %s?</string>
-    <string name="lbl_tractor_plough_cost">How much does it cost you to plough %.00f %s using a tractor?</string>
-    <string name="lbl_tractor_ridge_cost">How much does it cost you to ridge %.00f %s using a tractor?</string>
+    <string name="lbl_manual_tillage_cost">How much does it cost you to manually plough %.2f %s?</string>
+    <string name="lbl_manual_ridge_cost">How much does it cost you to manually ridge %.2f %s?</string>
+    <string name="lbl_tractor_plough_cost">How much does it cost you to plough %.2f %s using a tractor?</string>
+    <string name="lbl_tractor_ridge_cost">How much does it cost you to ridge %.2f %s using a tractor?</string>
     <string name="lbl_specify_my_cost">I want to specify my costs</string>
     <string name="lbl_exact_cost">Exact cost</string>
     <string name="lbl_cost_of_first_weeding_operation">Cost of first weeding operation in %s</string>
     <string name="lbl_cost_of_second_weeding_operation">Cost of second weeding operation in %s</string>
 
     <string name="lbl_valid_bag_price">Please provide a valid bag price</string>
-    <string name="lbl_ploughing_cost_text">Cost of ploughing %.00f %s %.00f %s</string>
-    <string name="lbl_ridging_cost_text">Cost of ridging %.00f %s %.00f %s</string>
-    <string name="lbl_harrowing_cost_text">Cost of harrowing %.00f %s %.00f %s</string>
-    <string name="lbl_weeding_cost_text">Cost of weeding %.00f %s %.00f %s</string>
+    <string name="lbl_ploughing_cost_text">Cost of ploughing %.2f %s %.2f %s</string>
+    <string name="lbl_ridging_cost_text">Cost of ridging %.2f %s %.2f %s</string>
+    <string name="lbl_harrowing_cost_text">Cost of harrowing %.2f %s %.2f %s</string>
+    <string name="lbl_weeding_cost_text">Cost of weeding %.2f %s %.2f %s</string>
     <string name="lbl_valid_email_req">Please provide a valid email</string>
     <string name="lbl_first_name_req">Please provide your first name</string>
     <string name="lbl_valid_number_req">Please provide a valid phone number</string>
