@@ -1,0 +1,9 @@
+reportStatus: true
+requiredLabels:
+  - automerge
+updateBranch: true
+deleteBranchAfterMerge: true
+mergeCommitMessage: |
+  {title} (#{number})
+  {body}
+  {commits}
