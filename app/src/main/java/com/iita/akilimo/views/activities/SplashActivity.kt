@@ -34,7 +34,7 @@ class SplashActivity : AppCompatActivity() {
 
     private fun launchActivity() {
         val intent = Intent(this@SplashActivity, HomeActivity::class.java)
-//        val intent = Intent(this@SplashActivity, MaizeMarketActivity::class.java)
+//        val intent = Intent(this@SplashActivity, RootYieldActivity::class.java)
         startActivity(intent)
         closeActivity()
     }

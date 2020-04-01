@@ -78,7 +78,7 @@ public class RootYieldActivity extends BaseActivity {
         savedYield = objectBoxEntityProcessor.getCurrentFieldYield();
         if (savedYield != null) {
             selectedYieldAmount = savedYield.getYieldAmount();
-        }else{
+        } else {
             savedYield = new CurrentFieldYield();
         }
 
@@ -99,11 +99,6 @@ public class RootYieldActivity extends BaseActivity {
     @Override
     protected void initComponent() {
         btnFinish.setText(context.getString(R.string.lbl_finish));
-        if (selectedYieldAmount > 0) {
-            btnFinish.setEnabled(true);
-        } else {
-            btnFinish.setEnabled(false);
-        }
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.addItemDecoration(new SpacingItemDecoration(2, Tools.dpToPx(this, 3), true));
         recyclerView.setHasFixedSize(true);
@@ -123,12 +118,7 @@ public class RootYieldActivity extends BaseActivity {
             fieldYield.setId(savedYield.getId());
             objectBoxEntityProcessor.saveCurrentFieldYield(fieldYield);
             mAdapter.setItems(selectedYieldAmount, items);
-            if (selectedYieldAmount > 0) {
-                btnFinish.setEnabled(true);
-            } else {
-                btnFinish.setEnabled(false);
-            }
-            Snackbar.make(viewPos, fieldYield.getFieldYieldLabel(), Snackbar.LENGTH_LONG)
+            Snackbar.make(viewPos, fieldYield.getFieldYieldLabel(), Snackbar.LENGTH_SHORT)
 //                    .setAction(R.string.lbl_close, showListener)
                     .show();
         });
@@ -147,7 +137,7 @@ public class RootYieldActivity extends BaseActivity {
         if (selectedYieldAmount > 0) {
             closeActivity(backPressed);
         }
-        Snackbar.make(viewPos, "Please specify your current field yield", Snackbar.LENGTH_LONG).show();
+        showCustomWarningDialog("Invalid yield", "Please specify your current field yield", "OK");
     }
 
     private List<CurrentFieldYield> setYieldData(@Nonnull String areaUnit) {
