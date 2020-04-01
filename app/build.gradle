@@ -11,8 +11,8 @@ apply plugin: 'io.objectbox'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
 
-ext.versionMajor = 9
-ext.versionMinor = 3
+ext.versionMajor = 10
+ext.versionMinor = 0
 android {
     def buildNumber = computeBuildNumber()
     def appVersionCode = computeVersionCode()
@@ -64,7 +64,7 @@ def computeVersionName() {
 }
 
 static def computeBuildNumber() {
-    return Integer.valueOf(System.env.BUILD_NUMBER ?: 2)
+    return Integer.valueOf(System.env.BUILD_NUMBER ?: 20)
 }
 
 def computeVersionCode() {
