@@ -47,6 +47,8 @@ public class FertilizerRecActivity extends BaseActivity {
     String investmentString;
     @BindString(R.string.lbl_typical_yield)
     String rootYieldString;
+    @BindString(R.string.lbl_market_outlet)
+    String marketOutletString;
 
     private Activity activity;
     private RecOptionsAdapter mAdapter;
@@ -110,8 +112,7 @@ public class FertilizerRecActivity extends BaseActivity {
         //set data and list adapter
         items = new ArrayList<>();
 
-
-//        items.add(new RecommendationOptions(plantingString, EnumAdviceTasks.PLANTING_AND_HARVEST, 0));
+        items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
         items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS, 0));
         items.add(new RecommendationOptions(investmentString, EnumAdviceTasks.INVESTMENT_AMOUNT, 0));
         items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, 0));
