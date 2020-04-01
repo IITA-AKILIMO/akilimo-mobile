@@ -1,8 +1,8 @@
 pipeline {
   agent any
   environment{
-        VERSION_MAJOR ="9"
-        VERSION_MINOR ="3"
+        VERSION_MAJOR ="10"
+        VERSION_MINOR ="0"
         KEYSTORE_FILE='D:\\gdrive\\keystores\\fertilizer.jks'
   }
   stages {
