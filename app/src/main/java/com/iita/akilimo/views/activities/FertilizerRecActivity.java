@@ -138,6 +138,9 @@ public class FertilizerRecActivity extends BaseActivity {
                 case CURRENT_CASSAVA_YIELD:
                     intent = new Intent(context, RootYieldActivity.class);
                     break;
+                case MARKET_OUTLET_CASSAVA:
+                    intent = new Intent(context, CassavaMarketActivity.class);
+                    break;
             }
             if (intent != null) {
                 startActivity(intent);
