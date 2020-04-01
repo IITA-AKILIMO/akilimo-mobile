@@ -24,7 +24,9 @@ public class Akilimo extends MultiDexApplication {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         JodaTimeAndroid.init(this);
 
-        BoxStore.deleteAllFiles(this, DB_NAME);
+        if (!BuildConfig.DEBUG) {
+            BoxStore.deleteAllFiles(this, DB_NAME);
+        }
         boxStore = MyObjectBox.builder()
                 .androidContext(Akilimo.this)
                 .name(DB_NAME)
