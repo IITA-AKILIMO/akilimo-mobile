@@ -35,6 +35,12 @@
             android:layout_height="wrap_content">
 
             <RadioButton
+                android:id="@+id/rd_exact_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/lbl_exact_price_x_per_unit_of_sale" />
+
+            <RadioButton
                 android:id="@+id/rd_20_30_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -63,12 +69,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/up_150_200_usd_per_tonne" />
-
-            <RadioButton
-                android:id="@+id/rd_exact_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/lbl_exact_price_x_per_unit_of_sale" />
 
         </RadioGroup>
 
