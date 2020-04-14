@@ -37,6 +37,15 @@
             android:textColor="@color/colorAccent" />
 
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ubuntu"
+            android:text="@string/lbl_location_sub_text"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:textColor="@color/purple_700" />
+
+        <TextView
             android:id="@+id/locationInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -72,7 +81,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/ubuntu"
-                android:text="If you are on the farm, please choose “ Use Current location."
+                android:text="If you are on the farm, please choose 'Use Current location'."
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                 android:textColor="@color/purple_700" />

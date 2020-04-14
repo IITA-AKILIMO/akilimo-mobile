@@ -451,8 +451,13 @@ public class CassavaMarketActivity extends BaseActivity {
 
     }
 
-    private String labelText(double unitPriceLower, double unitPriceUpper, String currency, String uos) {
+    private String labelText(double unitPriceLower, double unitPriceUpper, String currency, String uos, boolean... doConversions) {
         //cross convert according to weight
+
+        boolean convertCurrency = true;
+        if (doConversions.length > 0) {
+            convertCurrency = doConversions[0];
+        }
         double priceLower = unitPriceLower;
         double priceHigher = unitPriceUpper;
 
@@ -472,8 +477,13 @@ public class CassavaMarketActivity extends BaseActivity {
         }
 
         minAmountUSD = priceLower; //minimum amount will be dynamic based on weight being sold, max amount will be constant
-        double localLower = mathHelper.convertToLocalCurrency(priceLower, currency, 10);
-        double localHigher = mathHelper.convertToLocalCurrency(priceHigher, currency, 10);
+        double localLower = mathHelper.convertToLocalCurrency(priceLower, currency, 100);
+        double localHigher = mathHelper.convertToLocalCurrency(priceHigher, currency, 100);
+
+        if (!convertCurrency) {
+            localLower = priceLower;
+            localHigher = priceHigher;
+        }
 
         String message = context.getString(R.string.unit_price_label, localLower, localHigher, currency, uos);
         if (!Strings.isEmptyOrWhitespace(priceText)) {
@@ -522,11 +532,11 @@ public class CassavaMarketActivity extends BaseActivity {
         unitPriceTitle.setText(String.format(getString(R.string.lbl_unit_price_per), currency, unitOfSale));
         try {
             if (currency.equalsIgnoreCase(EnumCountry.NIGERIA.currency())) {
-                rd_20_30_price.setText(labelText(12.94, 20.71, currency, uos));
-                rd_30_50_price.setText(labelText(23.30, 31.06, currency, uos));
-                rd_50_100_price.setText(labelText(33.65, 44.01, currency, uos));
-                rd_100_150_price.setText(labelText(46.60, 64.72, currency, uos));
-                rd_150_200_price.setText(labelText(67.30, 90.60, currency, uos));
+                rd_20_30_price.setText(labelText(5000, 8000, currency, uos, false));
+                rd_30_50_price.setText(labelText(9000, 12000, currency, uos, false));
+                rd_50_100_price.setText(labelText(13000, 17000, currency, uos, true));
+                rd_100_150_price.setText(labelText(18000, 25000, currency, uos, true));
+                rd_150_200_price.setText(labelText(26000, 35000, currency, uos, true));
             } else {
                 rd_20_30_price.setText(labelText(EnumUnitPrice.PRICE_RANGE_ONE.unitPricePerTonneLower(), EnumUnitPrice.PRICE_RANGE_ONE.unitPricePerTonneUpper(), currency, uos));
                 rd_30_50_price.setText(labelText(EnumUnitPrice.PRICE_RANGE_TWO.unitPricePerTonneLower(), EnumUnitPrice.PRICE_RANGE_TWO.unitPricePerTonneUpper(), currency, uos));

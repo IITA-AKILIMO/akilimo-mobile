@@ -105,6 +105,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         fragmentArray.add(CountryFragment.newInstance())
         fragmentArray.add(LocationFragment.newInstance())
         fragmentArray.add(AreaUnitFragment.newInstance())
+        fragmentArray.add(FieldInfoFragment.newInstance())
         fragmentArray.add(FieldSizeFragment.newInstance())
         fragmentArray.add(CurrentPracticeFragment.newInstance())
         fragmentArray.add(SummaryFragment.newInstance())
