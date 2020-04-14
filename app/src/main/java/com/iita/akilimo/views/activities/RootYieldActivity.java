@@ -134,11 +134,11 @@ public class RootYieldActivity extends BaseActivity {
 
     @Override
     protected void validate(boolean backPressed) {
-        if (selectedYieldAmount > 0) {
-            closeActivity(backPressed);
-        } else {
+        if (!(selectedYieldAmount > 0)) {
             showCustomWarningDialog("Invalid yield", "Please specify your current field yield", "OK");
+            return;
         }
+        closeActivity(backPressed);
     }
 
     private List<CurrentFieldYield> setYieldData(@Nonnull String areaUnit) {
