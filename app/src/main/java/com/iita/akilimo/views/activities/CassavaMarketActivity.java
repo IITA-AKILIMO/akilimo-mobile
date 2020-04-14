@@ -20,6 +20,7 @@ import androidx.cardview.widget.CardView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
@@ -394,11 +395,11 @@ public class CassavaMarketActivity extends BaseActivity {
                 try {
                     List<StarchFactory> starchFactoriesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<StarchFactory>>() {
                     });
-
                     objectBoxEntityProcessor.saveStarchFactories(starchFactoriesList);
                     addFactoriesRadioButtons(starchFactoriesList);
                 } catch (Exception ex) {
-                    Timber.e("Error reading list :%s", ex.getMessage());
+                    Crashlytics.logException(ex);
+                    Crashlytics.log(ex.getMessage());
                 }
             }
 
@@ -418,8 +419,6 @@ public class CassavaMarketActivity extends BaseActivity {
     }
 
     private void addFactoriesRadioButtons(@NotNull List<StarchFactory> starchFactoryList) {
-
-
         rdgStarchFactories.removeAllViews();
 
         RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -432,8 +431,6 @@ public class CassavaMarketActivity extends BaseActivity {
                 RadioButton radioButton = new RadioButton(this);
                 radioButton.setId(View.generateViewId());
                 radioButton.setTag(factoryNameCountry);
-//            radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.label_text_size));
-
 
                 params.setMargins(0, 0, 0, dimension);
                 radioButton.setLayoutParams(params);
@@ -449,51 +446,6 @@ public class CassavaMarketActivity extends BaseActivity {
             }
         }
 
-    }
-
-    private String labelText(double unitPriceLower, double unitPriceUpper, String currency, String uos, boolean... doConversions) {
-        //cross convert according to weight
-
-        boolean convertCurrency = true;
-        if (doConversions.length > 0) {
-            convertCurrency = doConversions[0];
-        }
-        double priceLower = unitPriceLower;
-        double priceHigher = unitPriceUpper;
-
-        switch (enumUnitOfSale) {
-            case UNIT_ONE_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_ONE_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_ONE_KG.unitWeight()) / 1000;
-                break;
-            case UNIT_FIFTY_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_FIFTY_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_FIFTY_KG.unitWeight()) / 1000;
-                break;
-            case UNIT_HUNDRED_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_HUNDRED_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_HUNDRED_KG.unitWeight()) / 1000;
-                break;
-        }
-
-        minAmountUSD = priceLower; //minimum amount will be dynamic based on weight being sold, max amount will be constant
-        double localLower = mathHelper.convertToLocalCurrency(priceLower, currency, 100);
-        double localHigher = mathHelper.convertToLocalCurrency(priceHigher, currency, 100);
-
-        if (!convertCurrency) {
-            localLower = priceLower;
-            localHigher = priceHigher;
-        }
-
-        String message = context.getString(R.string.unit_price_label, localLower, localHigher, currency, uos);
-        if (!Strings.isEmptyOrWhitespace(priceText)) {
-            setExactPriceLabel();
-        }
-        return message;
-    }
-
-    private void setExactPriceLabel() {
-        //exactPriceText.setText(String.format(Locale.US, "%,.0f %s per %s", Double.parseDouble(priceText), currency, unitOfSale));
     }
 
     private void showUnitPriceDialog(String currency, String uos) {
@@ -602,5 +554,42 @@ public class CassavaMarketActivity extends BaseActivity {
         dialog.show();
         dialog.getWindow().setAttributes(lp);
         dialogOpen = true;
+    }
+
+    private String labelText(double unitPriceLower, double unitPriceUpper, String currency, String uos, boolean... doConversions) {
+        //cross convert according to weight
+
+        boolean convertCurrency = true;
+        if (doConversions.length > 0) {
+            convertCurrency = doConversions[0];
+        }
+        double priceLower = unitPriceLower;
+        double priceHigher = unitPriceUpper;
+
+        switch (enumUnitOfSale) {
+            case UNIT_ONE_KG:
+                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_ONE_KG.unitWeight()) / 1000;
+                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_ONE_KG.unitWeight()) / 1000;
+                break;
+            case UNIT_FIFTY_KG:
+                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_FIFTY_KG.unitWeight()) / 1000;
+                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_FIFTY_KG.unitWeight()) / 1000;
+                break;
+            case UNIT_HUNDRED_KG:
+                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_HUNDRED_KG.unitWeight()) / 1000;
+                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_HUNDRED_KG.unitWeight()) / 1000;
+                break;
+        }
+
+        minAmountUSD = priceLower; //minimum amount will be dynamic based on weight being sold, max amount will be constant
+        double localLower = mathHelper.convertToLocalCurrency(priceLower, currency, 100);
+        double localHigher = mathHelper.convertToLocalCurrency(priceHigher, currency, 100);
+
+        if (!convertCurrency) {
+            localLower = priceLower;
+            localHigher = priceHigher;
+        }
+
+        return context.getString(R.string.unit_price_label, localLower, localHigher, currency, uos);
     }
 }
