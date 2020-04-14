@@ -31,7 +31,7 @@
     <string name="lbl_nigeria">Nigeria</string>
     <string name="lbl_tanzania">Tanzania</string>
 
-    <string name="lbl_area_unit">How do you measure the area of your field?</string>
+    <string name="lbl_area_unit">How do you measure the size of your field?</string>
     <string name="area_unit_acre">in Acre (acre)</string>
     <string name="area_unit_ha">in Hectare (ha)</string>
     <string name="area_unit_square_meter">in Square meter (m\u00B2)</string>
