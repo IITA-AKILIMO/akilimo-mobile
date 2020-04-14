@@ -123,6 +123,14 @@ public class CassavaMarketActivity extends BaseActivity {
     private boolean dialogOpen;
     private FireBaseEvents fireBaseEvents;
 
+    //set pirice ranges for nigeria
+    private double rangeOneLower = 5000, rangeOneUpper = 8000;
+    private double rangeTwoLower = 9000, rangeTwoUpper = 12000;
+    private double rangeThreeLower = 13000, rangeThreeUpper = 17000;
+    private double rangeFourLower = 18000, rangeFourUpper = 25000;
+    private double rangeFiveLower = 26000, rangeFiveUpper = 35000;
+    private double averagePrice = 0.0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -323,7 +331,11 @@ public class CassavaMarketActivity extends BaseActivity {
             } else {
                 priceText = "0";
                 unitPriceLocal = 0;
-                unitPriceLocal = enumUnitPrice.convertToLocalCurrency(currency, mathHelper);
+                if (currency.equalsIgnoreCase(EnumCountry.NIGERIA.currency())) {
+                    unitPriceLocal = averagePrice;
+                } else {
+                    unitPriceLocal = enumUnitPrice.convertToLocalCurrency(currency, mathHelper);
+                }
             }
             Double minAmount = mathHelper.convertCurrency(minAmountUSD, currency);
             Double maxAmount = mathHelper.convertCurrency(maxAmountUSD, currency);
@@ -484,11 +496,11 @@ public class CassavaMarketActivity extends BaseActivity {
         unitPriceTitle.setText(String.format(getString(R.string.lbl_unit_price_per), currency, unitOfSale));
         try {
             if (currency.equalsIgnoreCase(EnumCountry.NIGERIA.currency())) {
-                rd_20_30_price.setText(labelText(5000, 8000, currency, uos, false));
-                rd_30_50_price.setText(labelText(9000, 12000, currency, uos, false));
-                rd_50_100_price.setText(labelText(13000, 17000, currency, uos, true));
-                rd_100_150_price.setText(labelText(18000, 25000, currency, uos, true));
-                rd_150_200_price.setText(labelText(26000, 35000, currency, uos, true));
+                rd_20_30_price.setText(labelText(rangeOneLower, rangeOneUpper, currency, uos, false));
+                rd_30_50_price.setText(labelText(rangeTwoLower, rangeTwoUpper, currency, uos, false));
+                rd_50_100_price.setText(labelText(rangeThreeLower, rangeThreeUpper, currency, uos, true));
+                rd_100_150_price.setText(labelText(rangeFourLower, rangeFourUpper, currency, uos, true));
+                rd_150_200_price.setText(labelText(rangeFiveLower, rangeFiveUpper, currency, uos, true));
             } else {
                 rd_20_30_price.setText(labelText(EnumUnitPrice.PRICE_RANGE_ONE.unitPricePerTonneLower(), EnumUnitPrice.PRICE_RANGE_ONE.unitPricePerTonneUpper(), currency, uos));
                 rd_30_50_price.setText(labelText(EnumUnitPrice.PRICE_RANGE_TWO.unitPricePerTonneLower(), EnumUnitPrice.PRICE_RANGE_TWO.unitPricePerTonneUpper(), currency, uos));
@@ -504,21 +516,27 @@ public class CassavaMarketActivity extends BaseActivity {
             etUnitPrice.setVisibility(View.GONE);
             dataIsValid = false;
             exactPriceSelected = false;
+            averagePrice = 0.0;
             switch (radioIndex) {
                 case R.id.rd_20_30_price:
                     enumUnitPrice = EnumUnitPrice.PRICE_RANGE_ONE;
+                    averagePrice = (rangeOneLower + rangeOneUpper) / 2;
                     break;
                 case R.id.rd_30_50_price:
                     enumUnitPrice = EnumUnitPrice.PRICE_RANGE_TWO;
+                    averagePrice = (rangeTwoLower + rangeTwoUpper) / 2;
                     break;
                 case R.id.rd_50_100_price:
                     enumUnitPrice = EnumUnitPrice.PRICE_RANGE_THREE;
+                    averagePrice = (rangeThreeLower + rangeThreeUpper) / 2;
                     break;
                 case R.id.rd_100_150_price:
                     enumUnitPrice = EnumUnitPrice.PRICE_RANGE_FOUR;
+                    averagePrice = (rangeFourLower + rangeFourUpper) / 2;
                     break;
                 case R.id.rd_150_200_price:
                     enumUnitPrice = EnumUnitPrice.PRICE_RANGE_FIVE;
+                    averagePrice = (rangeFiveLower + rangeFiveUpper) / 2;
                     break;
                 case R.id.rd_exact_price:
                     exactPriceSelected = true;
@@ -530,6 +548,7 @@ public class CassavaMarketActivity extends BaseActivity {
         dialog.findViewById(R.id.bt_cancel).setOnClickListener(v -> {
             dialog.dismiss();
             dialogOpen = false;
+            averagePrice = 0.0;
         });
 
         dialog.findViewById(R.id.bt_submit).setOnClickListener(view -> {
