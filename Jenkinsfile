@@ -96,7 +96,11 @@ pipeline {
           }
           steps {
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-                             text: 'Bug fixes']], trackName: 'production')
+                             text: 'Welcome to the Season of Enchantment! This update includes:
+                                    - New content
+                                    - New features
+                                    - Bug fixes
+                                    - Performance improvements']], trackName: 'production')
           }
         }
         stage('apk upload') {
