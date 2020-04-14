@@ -402,14 +402,14 @@ public class BuildComputeData {
             }
 
             EnumUnitPrice up = cassavaMarketOutlet.getEnumUnitPrice();
-            cassavaUnitPriceLocal = up.convertToLocalCurrency(currency, mathHelper) <= 0 ? cassavaMarketOutlet.getExactPrice() : up.convertToLocalCurrency(currency, mathHelper);
+            //cassavaUnitPriceLocal = up.convertToLocalCurrency(currency, mathHelper) <= 0 ? cassavaMarketOutlet.getExactPrice() : up.convertToLocalCurrency(currency, mathHelper);
 
             EnumCassavaProduceType produce = cassavaMarketOutlet.getEnumCassavaProduceType();
             cassavaProduceType = produce.produce();
 
             EnumUnitOfSale uos = cassavaMarketOutlet.getEnumUnitOfSale();
             cassavaUnitWeight = uos.unitWeight();
-            cassavaUnitPrice = cassavaUnitPriceLocal;
+            cassavaUnitPrice = cassavaMarketOutlet.getExactPrice();
         }
         computeRequest.setStarchFactoryName(starchFactoryName);
         computeRequest.setSellToStarchFactory(sellToStarchFactory);

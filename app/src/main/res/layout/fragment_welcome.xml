@@ -33,7 +33,7 @@
             android:fontFamily="@font/ubuntu_bold"
             android:text="@string/welcome_title"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/grey_80" />
+            android:textColor="@color/red_500" />
 
         <TextView
             android:id="@+id/description"
@@ -44,7 +44,16 @@
             android:text="@string/welcome_instructions"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/grey_80" />
+            android:textColor="@color/grey_60" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_middle"
+            android:fontFamily="@font/ubuntu"
+            android:text="@string/important_instructions"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@color/grey_80" />
     </LinearLayout>
 </RelativeLayout>
