@@ -112,31 +112,19 @@ public class CassavaMarketActivity extends BaseActivity {
     EnumUnitOfSale enumUnitOfSale;
     EnumUnitPrice enumUnitPrice;
 
-    double unitPriceUSD = 0.0;
     double unitPriceLocal = 0.0;
-    private double minAmountUSD = 5.00;
-    private double maxAmountUSD = 500.00;
 
     String priceText;
     String unitOfSale;
-    String radioPriceTag = "none";
     private CassavaMarketOutlet cassavaMarketOutlet;
     private List<CassavaPrice> cassavaPriceList = null;
 
     private boolean factoryRequired;
     private boolean otherMarketsRequired;
     private boolean dataIsValid;
-    private boolean exactPriceSelected;
     private boolean selectionMade;
-    private boolean dialogOpen;
-    private FireBaseEvents fireBaseEvents;
 
-    //set pirice ranges for nigeria
-    private double rangeOneLower = 5000, rangeOneUpper = 8000;
-    private double rangeTwoLower = 9000, rangeTwoUpper = 12000;
-    private double rangeThreeLower = 13000, rangeThreeUpper = 17000;
-    private double rangeFourLower = 18000, rangeFourUpper = 25000;
-    private double rangeFiveLower = 26000, rangeFiveUpper = 35000;
+
     private double averagePrice = 0.0;
     private double exactPrice = 0.0;
 
@@ -150,7 +138,6 @@ public class CassavaMarketActivity extends BaseActivity {
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
-        fireBaseEvents = FireBaseEvents.newInstance(context);
 
         cassavaMarketOutlet = objectBoxEntityProcessor.getCassavaMarketOutlet();
         if (cassavaMarketOutlet == null) {
@@ -298,16 +285,7 @@ public class CassavaMarketActivity extends BaseActivity {
                 return;
             }
 
-            Double minAmount = mathHelper.convertCurrency(minAmountUSD, currency);
-            Double maxAmount = mathHelper.convertCurrency(maxAmountUSD, currency);
-//
             dataIsValid = true;
-//            if (!(unitPriceLocal >= minAmount) || !(unitPriceLocal <= maxAmount)) {
-//                String message = String.format("Unit price should be between %s %s and %s %s", minAmount, currency, maxAmount, currency);
-//                Bundle bundle = new Bundle();
-//                bundle.putString("message", message);
-//                fireBaseEvents.logEvent("UNIT_PRICE_COMPARISON", bundle);
-//            }
         }
 
         if (!selectionMade) {
@@ -435,44 +413,7 @@ public class CassavaMarketActivity extends BaseActivity {
             }
         });
     }
-
-    protected String labelText(double unitPriceLower, double unitPriceUpper, String currency, String uos, boolean... doConversions) {
-        //cross convert according to weight
-
-        boolean convertCurrency = true;
-        if (doConversions.length > 0) {
-            convertCurrency = doConversions[0];
-        }
-        double priceLower = unitPriceLower;
-        double priceHigher = unitPriceUpper;
-
-        switch (enumUnitOfSale) {
-            case UNIT_ONE_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_ONE_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_ONE_KG.unitWeight()) / 1000;
-                break;
-            case UNIT_FIFTY_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_FIFTY_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_FIFTY_KG.unitWeight()) / 1000;
-                break;
-            case UNIT_HUNDRED_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_HUNDRED_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_HUNDRED_KG.unitWeight()) / 1000;
-                break;
-        }
-
-        minAmountUSD = priceLower; //minimum amount will be dynamic based on weight being sold, max amount will be constant
-        double localLower = mathHelper.convertToLocalCurrency(priceLower, currency, 100);
-        double localHigher = mathHelper.convertToLocalCurrency(priceHigher, currency, 100);
-
-        if (!convertCurrency) {
-            localLower = priceLower;
-            localHigher = priceHigher;
-        }
-
-        return context.getString(R.string.unit_price_label, localLower, localHigher, currency, uos);
-    }
-
+    
     protected void processData() {
         List<StarchFactory> starchFactoriesList = objectBoxEntityProcessor.getStarchFactories(countryCode);
         addFactoriesRadioButtons(starchFactoriesList);
@@ -566,125 +507,5 @@ public class CassavaMarketActivity extends BaseActivity {
             priceDialogFragment.show(getSupportFragmentManager(), CassavaPriceDialogFragment.ARG_ITEM_ID);
         }
     }
-
-    @Deprecated
-    private void showUnitPriceDialogOld(String currency, String uos) {
-        if (dialogOpen) {
-            //do not open multiple dialogs
-            return;
-        }
-
-        final Dialog dialog = new Dialog(context);
-
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
-        dialog.setContentView(R.layout.dialog_cassava_unit_price);
-        dialog.setCancelable(false);
-
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-
-        final TextView unitPriceTitle = dialog.findViewById(R.id.unitPriceTitle);
-        final EditText etUnitPrice = dialog.findViewById(R.id.etUnitPrice);
-        final RadioGroup rdgUnitPrice = dialog.findViewById(R.id.rdgUnitPrice);
-
-        //dynamically add the radio buttons
-        rdgUnitPrice.removeAllViews();
-        RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        final int dimension = (int) this.getResources().getDimension(R.dimen.spacing_medium);
-        for (CassavaPrice cassavaPrice : cassavaPriceList) {
-
-            double averagePrice = cassavaPrice.getAveragePrice();
-
-            String radioLabel = labelText(cassavaPrice.getMinLocalPrice(), cassavaPrice.getMaxLocalPrice(), currency, uos, false);
-            if (averagePrice <= 0) {
-                radioLabel = context.getString(R.string.lbl_exact_price_x_per_unit_of_sale);
-            }
-            String cassPriceId = "TAG" + cassavaPrice.getAveragePrice();
-            RadioButton radioButton = new RadioButton(this);
-            radioButton.setId(View.generateViewId());
-            radioButton.setTag(cassPriceId);
-
-            params.setMargins(0, 0, 0, dimension);
-            radioButton.setLayoutParams(params);
-
-            radioButton.setText(radioLabel);
-
-            rdgUnitPrice.addView(radioButton);
-
-            if (cassPriceId.equals(radioPriceTag)) {
-                radioButton.setChecked(true);
-            }
-        }
-        //end dynamic addition of radio buttons
-
-        if (radioPriceTag.equalsIgnoreCase("-1")) {
-            etUnitPrice.setVisibility(View.VISIBLE);
-            etUnitPrice.setText(priceText);
-        }
-
-        unitPriceTitle.setText(String.format(getString(R.string.lbl_unit_price_per), currency, unitOfSale));
-
-        rdgUnitPrice.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
-            int radioButtonId = radioGroup.getCheckedRadioButtonId();
-            dataIsValid = false;
-            etUnitPrice.setVisibility(View.GONE);
-            dataIsValid = false;
-            exactPriceSelected = false;
-            averagePrice = 0.0;
-            if (radioButtonId > -1) {
-                RadioButton radioButton = findViewById(radioButtonId);
-                if (radioButton == null) {
-                    //just return
-                    return;
-                }
-                radioPriceTag = (String) radioButton.getTag();
-                if (radioPriceTag != null) {
-                    if (radioPriceTag.equalsIgnoreCase("-1")) {
-                        exactPriceSelected = true;
-                        enumUnitPrice = EnumUnitPrice.PRICE_EXACT;
-                        etUnitPrice.setVisibility(View.VISIBLE);
-                    } else {
-                        CassavaPrice selectedPrice = objectBoxEntityProcessor.getSelectedCassavaPriceByTag(radioPriceTag);
-                        if (selectedPrice != null) {
-                            averagePrice = selectedPrice.getAveragePrice();
-                            dataIsValid = true;
-                        }
-                    }
-                }
-            }
-        });
-
-        dialog.findViewById(R.id.bt_cancel).setOnClickListener(v -> {
-            dialog.dismiss();
-            dialogOpen = false;
-            averagePrice = 0.0;
-        });
-
-        dialog.findViewById(R.id.bt_submit).setOnClickListener(view -> {
-            if (enumUnitPrice == null) {
-                Snackbar.make(view, "Please enter a valid amount", Snackbar.LENGTH_LONG).show();
-                return;
-            }
-            if (exactPriceSelected) {
-                priceText = etUnitPrice.getText().toString().trim();
-                if (Strings.isEmptyOrWhitespace(priceText)) {
-                    dataIsValid = false;
-                    Snackbar.make(view, "Please enter a valid amount", Snackbar.LENGTH_LONG).show();
-                    return;
-                }
-            }
-            dataIsValid = true;
-            dialog.dismiss();
-            dialogOpen = false;
-
-        });
-
-        dialog.show();
-        dialog.getWindow().setAttributes(lp);
-        dialogOpen = true;
-    }
-
 
 }
