@@ -498,9 +498,9 @@ public class CassavaMarketActivity extends BaseActivity {
             if (currency.equalsIgnoreCase(EnumCountry.NIGERIA.currency())) {
                 rd_20_30_price.setText(labelText(rangeOneLower, rangeOneUpper, currency, uos, false));
                 rd_30_50_price.setText(labelText(rangeTwoLower, rangeTwoUpper, currency, uos, false));
-                rd_50_100_price.setText(labelText(rangeThreeLower, rangeThreeUpper, currency, uos, true));
-                rd_100_150_price.setText(labelText(rangeFourLower, rangeFourUpper, currency, uos, true));
-                rd_150_200_price.setText(labelText(rangeFiveLower, rangeFiveUpper, currency, uos, true));
+                rd_50_100_price.setText(labelText(rangeThreeLower, rangeThreeUpper, currency, uos, false));
+                rd_100_150_price.setText(labelText(rangeFourLower, rangeFourUpper, currency, uos, false));
+                rd_150_200_price.setText(labelText(rangeFiveLower, rangeFiveUpper, currency, uos, false));
             } else {
                 rd_20_30_price.setText(labelText(EnumUnitPrice.PRICE_RANGE_ONE.unitPricePerTonneLower(), EnumUnitPrice.PRICE_RANGE_ONE.unitPricePerTonneUpper(), currency, uos));
                 rd_30_50_price.setText(labelText(EnumUnitPrice.PRICE_RANGE_TWO.unitPricePerTonneLower(), EnumUnitPrice.PRICE_RANGE_TWO.unitPricePerTonneUpper(), currency, uos));
