@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/red_300"
+        android:background="@color/red_600"
         android:gravity="center"
         android:minHeight="120dp"
         android:orientation="vertical"
@@ -19,7 +19,7 @@
             android:id="@+id/icon"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:tint="@android:color/white"
+            android:tint="@color/grey_5"
             app:srcCompat="@drawable/ic_info" />
 
         <TextView
@@ -27,11 +27,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_middle"
-            android:fontFamily="@font/ubuntu"
+            android:fontFamily="@font/ubuntu_bold"
             android:text="@string/lbl_no_internet"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@android:color/white"
-            android:textStyle="bold" />
+            android:textColor="@color/grey_5" />
 
     </LinearLayout>
 
@@ -70,7 +69,7 @@
             android:paddingLeft="@dimen/spacing_mlarge"
             android:paddingRight="@dimen/spacing_mlarge"
             android:text="@string/lbl_retry"
-            android:theme="@style/Button.Primary" />
+            android:theme="@style/Button.Accent" />
 
     </LinearLayout>
 

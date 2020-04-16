@@ -110,7 +110,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             btnClose.setText(buttonTitle);
         }
         btnClose.setOnClickListener(view -> {
-            Toast.makeText(getApplicationContext(), ((AppCompatButton) view).getText().toString() + " Clicked", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(), ((AppCompatButton) view).getText().toString() + " Clicked", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
 
