@@ -263,6 +263,7 @@ If you are at your farm while running the app, you are strongly advised to choos
     <string name="lbl_ok">OK</string>
     <string name="title_realistic_price">Provide realistic prices</string>
     <string name="lbl_realistic_price">Please provide realistic information to the best of your knowledge</string>
+    <string name="lbl_investment_validation_msg">"Investment amount should be more or equal to %.2f %s"</string>
 
 
 </resources>

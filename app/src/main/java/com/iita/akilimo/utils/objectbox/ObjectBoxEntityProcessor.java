@@ -312,6 +312,7 @@ public class ObjectBoxEntityProcessor {
     public void saveFertilizerPrices(@NonNull List<FertilizerPrices> fertilizerPricesList) {
         try {
             Box<FertilizerPrices> box = boxStore.boxFor(FertilizerPrices.class);
+            box.removeAll();
             box.put(fertilizerPricesList);
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "Error occurred saving fertilizer prices");
