@@ -11,7 +11,7 @@ apply plugin: 'io.objectbox'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
 
-ext.versionMajor = 10
+ext.versionMajor = 11
 ext.versionMinor = 0
 android {
     def buildNumber = computeBuildNumber()
@@ -146,6 +146,10 @@ dependencies {
 
     //debugImplementation because LeakCanary should only run in debug builds.
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
+}
+
+dependencies {
+    implementation 'androidx.legacy:legacy-support-v4:+'
 }
 
 dependencies {
