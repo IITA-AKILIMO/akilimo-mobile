@@ -106,7 +106,7 @@ public class InvestmentAmountActivity extends BaseActivity {
             if (!hasErrors) {
                 closeActivity(false);
             } else {
-                Snackbar.make(v, investmentAmountError, Snackbar.LENGTH_LONG).show();
+                showCustomWarningDialog("Invalid investment amount", investmentAmountError);
             }
         });
     }
@@ -160,7 +160,7 @@ public class InvestmentAmountActivity extends BaseActivity {
         btnFinish.setOnClickListener(view -> {
             validateInvestmentAmount();
             if (hasErrors) {
-                Snackbar.make(view, investmentAmountError, Snackbar.LENGTH_LONG).show();
+                showCustomWarningDialog("Invalid investment amount", investmentAmountError);
                 return;
             }
 
@@ -177,6 +177,7 @@ public class InvestmentAmountActivity extends BaseActivity {
             closeActivity(false);
         });
         updateLabels();
+        showCustomNotificationDialog();
     }
 
     @Override
@@ -238,7 +239,7 @@ public class InvestmentAmountActivity extends BaseActivity {
         minimumAmountUSD = mathHelper.computeInvestmentAmount(minInvestmentUSD, fieldSizeAcre, baseCurrency);
         minimumAmountLocal = mathHelper.convertToLocalCurrency(minimumAmountUSD, currency);
         hasErrors = investmentAmountLocal < minimumAmountLocal;
-        return investmentAmountError = String.format("Investment amount should be more or equal to %s %s ", minimumAmountLocal, currency);
+        return investmentAmountError = getString(R.string.lbl_investment_validation_msg, minimumAmountLocal, currency);
 
     }
 }
