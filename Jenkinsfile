@@ -166,6 +166,12 @@ pipeline {
       }
     }
 
+    stage('Push coverage report') {
+      steps {
+        sh 'bash <(curl -s https://codecov.io/bash)'
+      }
+    }
+
     stage('clean WS') {
       steps {
         cleanWs()
