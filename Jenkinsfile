@@ -3,11 +3,12 @@ pipeline {
   environment{
         VERSION_MAJOR ="11"
         VERSION_MINOR ="0"
-		CHANGELOG="This update includes
-                                    - New content
-                                    - New features
-                                    - Bug fixes
-                                    - Performance improvements"
+		CHANGELOG='''This update includes:
+- New content
+- New features
+- Bug fixes
+- Performance improvements'''
+
         KEYSTORE_FILE='D:\\gdrive\\keystores\\fertilizer.jks'
   }
   stages {
