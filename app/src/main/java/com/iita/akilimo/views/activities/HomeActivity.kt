@@ -29,6 +29,7 @@ import com.iita.akilimo.entities.LocationInfo
 import com.iita.akilimo.inherit.BaseActivity
 import com.iita.akilimo.interfaces.IFragmentCallBack
 import com.iita.akilimo.utils.AppUpdateHelper
+import com.iita.akilimo.utils.Tools
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor
 import com.iita.akilimo.views.fragments.*
 import timber.log.Timber
@@ -99,6 +100,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         //Add the various fragments
         val bioDataFragment = BioDataFragment.newInstance()
         fragmentArray.add(WelcomeFragment.newInstance())
+        fragmentArray.add(InfoFragment.newInstance())
 //        fragmentArray.add(PrivacyStatementFragment.newInstance()) //@TODO check for updated content from christine
 
         fragmentArray.add(bioDataFragment)
@@ -113,7 +115,9 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
         //check updates
         appUpdateHelper = AppUpdateHelper(this)
-        appUpdater = appUpdateHelper.showUpdateMessage(Display.DIALOG).setButtonDoNotShowAgain("")
+        appUpdater = appUpdateHelper
+            .showUpdateMessage(Display.NOTIFICATION)
+            .setButtonDoNotShowAgain("")
         appUpdater.start()
         //add bottom progress dots
         currentPosition = fragmentArray.indexOf(bioDataFragment)
@@ -123,7 +127,6 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
     }
 
     override fun onDataSaved() {
-        //load the next fragment
         viewPager.currentItem = currentPosition + 1
     }
 
@@ -159,6 +162,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
         viewPager.adapter = myViewPagerAdapter
         viewPager.offscreenPageLimit = 1
+        Tools.setSystemBarColor(activity, R.color.deep_orange_500)
 
 
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -192,12 +196,16 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
             override fun onPageSelected(position: Int) {
                 bottomProgressDots(position)
-//                Tools.setSystemBarColor(activity, R.color.deep_orange_500)
+
+                Tools.setSystemBarColor(activity, R.color.colorPrimary)
+                //stop the updater
+                appUpdater.stop();
                 btnStart.visibility = View.GONE
                 when (position) {
                     0 -> {
                         appUpdater.start()
                         btnStart.visibility = View.GONE
+                        Tools.setSystemBarColor(activity, R.color.deep_orange_500)
                     }
                     fragmentArray.size - 1 -> {
                         if (showProceedButton) {

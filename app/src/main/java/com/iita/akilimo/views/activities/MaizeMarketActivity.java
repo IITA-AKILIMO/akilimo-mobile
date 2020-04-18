@@ -192,6 +192,8 @@ public class MaizeMarketActivity extends BaseActivity {
                 editCobPrice.setText(grainPrice);
             }
         }
+
+        showCustomNotificationDialog();
     }
 
     @Override

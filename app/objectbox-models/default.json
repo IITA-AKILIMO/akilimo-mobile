@@ -644,7 +644,7 @@
     },
     {
       "id": "32:7319850202739838003",
-      "lastPropertyId": "7:7354435872270501549",
+      "lastPropertyId": "8:5210585780993299837",
       "name": "CassavaMarketOutlet",
       "properties": [
         {
@@ -674,6 +674,10 @@
         {
           "id": "7:7354435872270501549",
           "name": "enumUnitPrice"
+        },
+        {
+          "id": "8:5210585780993299837",
+          "name": "averagePrice"
         }
       ],
       "relations": []
@@ -854,9 +858,65 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "36:4561522915780923941",
+      "lastPropertyId": "12:4747786609390210669",
+      "name": "CassavaPrice",
+      "properties": [
+        {
+          "id": "1:9131067574906210884",
+          "name": "id"
+        },
+        {
+          "id": "2:3070940701318630815",
+          "name": "priceId"
+        },
+        {
+          "id": "3:7669432492810714328",
+          "name": "country"
+        },
+        {
+          "id": "4:5835549591582166332",
+          "name": "minLocalPrice"
+        },
+        {
+          "id": "5:9002531321577911969",
+          "name": "maxLocalPrice"
+        },
+        {
+          "id": "6:36601372085505549",
+          "name": "minUsd"
+        },
+        {
+          "id": "7:5357925113733481132",
+          "name": "maxUsd"
+        },
+        {
+          "id": "8:4208309103055989186",
+          "name": "active"
+        },
+        {
+          "id": "9:6449207694967174957",
+          "name": "createdAt"
+        },
+        {
+          "id": "10:8692142339126168425",
+          "name": "updatedAt"
+        },
+        {
+          "id": "11:5846478749672916831",
+          "name": "averagePrice"
+        },
+        {
+          "id": "12:4747786609390210669",
+          "name": "priceIndex"
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "35:64485522120680039",
+  "lastEntityId": "36:4561522915780923941",
   "lastIndexId": "6:7967322306093668013",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",

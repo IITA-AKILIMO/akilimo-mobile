@@ -18,6 +18,7 @@
         android:orientation="vertical"
         android:paddingBottom="?attr/actionBarSize">
 
+
         <ImageView
             android:id="@+id/image"
             android:layout_width="250dp"
@@ -30,20 +31,24 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
             android:fontFamily="@font/ubuntu"
             android:text="@string/lbl_farm_location"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@color/colorAccent" />
 
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
             android:fontFamily="@font/ubuntu"
             android:text="@string/lbl_location_sub_text"
-            android:textAlignment="center"
+            android:textAlignment="textStart"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-            android:textColor="@color/purple_700" />
+            android:textColor="@color/grey_80" />
+
 
         <TextView
             android:id="@+id/locationInfo"
@@ -76,16 +81,6 @@
                 android:textAllCaps="false"
                 android:theme="@style/Button.Primary" />
 
-            <TextView
-                android:id="@+id/locationHint"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
-                android:text="If you are on the farm, please choose 'Use Current location'."
-                android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                android:textColor="@color/purple_700" />
-
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnSelectLocation"
                 android:layout_width="match_parent"
@@ -93,7 +88,7 @@
                 android:layout_marginTop="@dimen/spacing_medium"
                 android:layout_weight="1"
                 android:fontFamily="@font/ubuntu"
-                android:text="@string/lbl_select_location_manually"
+                android:text="@string/lbl_manual_location"
                 android:textAllCaps="false"
                 android:theme="@style/Button.Accent"
                 app:cornerRadius="5dp" />

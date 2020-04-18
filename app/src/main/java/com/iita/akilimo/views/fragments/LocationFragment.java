@@ -62,7 +62,6 @@ public class LocationFragment extends BaseFragment {
     }
 
     public LocationFragment() {
-        // Required empty public constructor
     }
 
 

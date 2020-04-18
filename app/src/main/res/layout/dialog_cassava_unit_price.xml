@@ -33,43 +33,7 @@
             android:id="@+id/rdgUnitPrice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <RadioButton
-                android:id="@+id/rd_exact_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/lbl_exact_price_x_per_unit_of_sale" />
-
-            <RadioButton
-                android:id="@+id/rd_20_30_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/up_20_30_usd_per_tonne" />
-
-            <RadioButton
-                android:id="@+id/rd_30_50_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/up_30_50_usd_per_tonne" />
-
-            <RadioButton
-                android:id="@+id/rd_50_100_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/up_50_100_usd_per_tonne" />
-
-            <RadioButton
-                android:id="@+id/rd_100_150_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/up_100_150_usd_per_tonne" />
-
-            <RadioButton
-                android:id="@+id/rd_150_200_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/up_150_200_usd_per_tonne" />
-
+            <!-- dynamic radio buttons here -->
         </RadioGroup>
 
     </androidx.cardview.widget.CardView>

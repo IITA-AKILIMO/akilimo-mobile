@@ -195,6 +195,8 @@ public class FertilizersActivity extends BaseActivity {
         btnRetry.setOnClickListener(view -> initializeFertilizers());
         btnSave.setOnClickListener(view -> closeActivity(false));
         btnCancel.setOnClickListener(view -> closeActivity(false));
+
+        showCustomNotificationDialog();
     }
 
     @Override
