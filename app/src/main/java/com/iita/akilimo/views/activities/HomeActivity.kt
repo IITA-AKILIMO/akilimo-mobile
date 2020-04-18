@@ -116,7 +116,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         //check updates
         appUpdateHelper = AppUpdateHelper(this)
         appUpdater = appUpdateHelper
-            .showUpdateMessage(Display.NOTIFICATION)
+            .showUpdateMessage(Display.DIALOG)
             .setButtonDoNotShowAgain("")
         appUpdater.start()
         //add bottom progress dots
