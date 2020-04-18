@@ -168,7 +168,7 @@ pipeline {
 
     stage('Push coverage report') {
       steps {
-        sh 'bash <(curl -s https://codecov.io/bash)'
+        bash <(curl -s https://codecov.io/bash)
       }
     }
 
