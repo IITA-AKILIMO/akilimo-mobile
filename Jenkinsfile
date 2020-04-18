@@ -20,8 +20,14 @@ pipeline {
     }
 
     stage('Run checks') {
+        when {
+            beforeAgent true
+            anyOf {
+                branch 'master'
+            }
+        }
       steps {
-        sh 'gradle check'
+        sh 'gradle check --no-daemon'
         androidLint(pattern: '**/lint-results*.xml')
       }
     }
@@ -34,7 +40,7 @@ pipeline {
             branch 'masters'
           }
           steps {
-            sh 'gradle assembleRelease'
+            sh 'gradle assembleRelease --no-daemon'
           }
         }
 
@@ -44,7 +50,7 @@ pipeline {
             branch 'master'
           }
           steps {
-            sh 'gradle bundleRelease'
+            sh 'gradle bundleRelease --no-daemon'
           }
         }
 
