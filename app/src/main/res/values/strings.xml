@@ -3,6 +3,7 @@
 
     <string name="welcome_title">Welcome to Akilimo</string>
     <string name="welcome_instructions">I will assist you with personalized advice to grow and improve the yield of your cassava once you provide me some essential information.</string>
+    <string name="important_instructions_title">Important instructions</string>
     <string name="important_instructions">All AKILIMO recommendations are adjusted to your <b>location</b>, the <b>size of your field</b> and your <b>prices</b>.\nCorrect information is therefore very crucial to get profitable advise. <b>Underestimation of field size</b> will lead to <b>loss of opportunity</b> to make profit and <b>overestimated</b> farm size will lead to <b>unnecessary cost</b>.</string>
 
     <string name="hello_blank_fragment">Initialize fragments</string>
@@ -253,8 +254,10 @@
     <string name="lbl_female">Female</string>
     <string name="lbl_save">Save</string>
     <string name="lbl_remove">Remove</string>
-    <string name="lbl_field_info">"If you know the size of your field in ha, acre or meter square, please proceed to the next page.\nIf not, we advise you to use apps e.g., “field measurement app” that will help you to measure your area by walking around your field.</string>
+    <string name="lbl_field_info">If you know the <b>size</b> of your field in <b>ha, acre</b> or <b>square meter</b>, please proceed to the next page. If not, we advise you download from GooglePlay e.g.  “GPS Fields Area Measure”, “Field Area Measure” that will help you to measure your area by walking around your field.</string>
+
     <string name="lbl_location_sub_text">If you request for advise while being at your farm, you are strongly advised to choose the option of “Use current location”.\nIf you are not at your farm, please zoom in the map to find known place in your farm neighborhood.</string>
+    <string name="title_your_field_size">Your field size</string>
 
 
 </resources>
