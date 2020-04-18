@@ -3,7 +3,6 @@ package com.iita.akilimo.views.activities;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -17,6 +16,8 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
@@ -29,10 +30,14 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.entities.CassavaMarketOutlet;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
+import com.iita.akilimo.interfaces.ICassavaPriceDismissListener;
 import com.iita.akilimo.interfaces.IVolleyCallback;
+import com.iita.akilimo.models.CassavaPrice;
+import com.iita.akilimo.models.InterCropFertilizer;
 import com.iita.akilimo.models.StarchFactory;
 import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
+import com.iita.akilimo.utils.FertilizerList;
 import com.iita.akilimo.utils.FireBaseEvents;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.Tools;
@@ -42,6 +47,8 @@ import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 import com.iita.akilimo.utils.enums.EnumUnitPrice;
 import com.iita.akilimo.utils.enums.EnumUseCase;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
+import com.iita.akilimo.views.fragments.dialog.CassavaPriceDialogFragment;
+import com.iita.akilimo.views.fragments.dialog.FertilizerPriceDialogFragment;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -52,7 +59,6 @@ import java.util.List;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 public class CassavaMarketActivity extends BaseActivity {
 
@@ -106,30 +112,21 @@ public class CassavaMarketActivity extends BaseActivity {
     EnumUnitOfSale enumUnitOfSale;
     EnumUnitPrice enumUnitPrice;
 
-    double unitPriceUSD = 0.0;
     double unitPriceLocal = 0.0;
-    private double minAmountUSD = 5.00;
-    private double maxAmountUSD = 500.00;
 
     String priceText;
     String unitOfSale;
     private CassavaMarketOutlet cassavaMarketOutlet;
+    private List<CassavaPrice> cassavaPriceList = null;
 
     private boolean factoryRequired;
     private boolean otherMarketsRequired;
     private boolean dataIsValid;
-    private boolean exactPriceSelected;
     private boolean selectionMade;
-    private boolean dialogOpen;
-    private FireBaseEvents fireBaseEvents;
 
-    //set pirice ranges for nigeria
-    private double rangeOneLower = 5000, rangeOneUpper = 8000;
-    private double rangeTwoLower = 9000, rangeTwoUpper = 12000;
-    private double rangeThreeLower = 13000, rangeThreeUpper = 17000;
-    private double rangeFourLower = 18000, rangeFourUpper = 25000;
-    private double rangeFiveLower = 26000, rangeFiveUpper = 35000;
+
     private double averagePrice = 0.0;
+    private double exactPrice = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,7 +138,6 @@ public class CassavaMarketActivity extends BaseActivity {
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
-        fireBaseEvents = FireBaseEvents.newInstance(context);
 
         cassavaMarketOutlet = objectBoxEntityProcessor.getCassavaMarketOutlet();
         if (cassavaMarketOutlet == null) {
@@ -162,40 +158,8 @@ public class CassavaMarketActivity extends BaseActivity {
         initToolbar();
         initComponent();
         processStarchFactories();
+        processCassavaPrices();
         processData();
-    }
-
-
-    protected void processData() {
-        List<StarchFactory> starchFactoriesList = objectBoxEntityProcessor.getStarchFactories(countryCode);
-        addFactoriesRadioButtons(starchFactoriesList);
-        cassavaMarketOutlet = objectBoxEntityProcessor.getCassavaMarketOutlet();
-
-        if (cassavaMarketOutlet != null) {
-            boolean sfRequired = cassavaMarketOutlet.isStarchFactoryRequired();
-            priceText = String.valueOf(cassavaMarketOutlet.getExactPrice());
-            rdgMarketOutlet.check(sfRequired ? R.id.rdFactory : R.id.rdOtherMarket);
-            if (!sfRequired) {
-                enumCassavaProduceType = cassavaMarketOutlet.getEnumCassavaProduceType();
-                enumUnitOfSale = cassavaMarketOutlet.getEnumUnitOfSale();
-                enumUnitPrice = cassavaMarketOutlet.getEnumUnitPrice();
-                unitOfSale = enumUnitOfSale.unitOfSale();
-                switch (enumUnitOfSale) {
-                    case UNIT_ONE_KG:
-                        rdgUnitOfSale.check(R.id.rd_per_kg);
-                        break;
-                    case UNIT_FIFTY_KG:
-                        rdgUnitOfSale.check(R.id.rd_50_kg_bag);
-                        break;
-                    case UNIT_HUNDRED_KG:
-                        rdgUnitOfSale.check(R.id.rd_100_kg_bag);
-                        break;
-                    case UNIT_THOUSAND_KG:
-                        rdgUnitOfSale.check(R.id.rd_per_tonne);
-                        break;
-                }
-            }
-        }
     }
 
     @Override
@@ -291,6 +255,8 @@ public class CassavaMarketActivity extends BaseActivity {
             unitOfSaleTitle.setVisibility(View.VISIBLE);
             unitOfSaleCard.setVisibility(View.VISIBLE);
         }
+
+        showCustomNotificationDialog();
     }
 
     public void onRadioButtonClicked(View radioButton) {
@@ -316,41 +282,16 @@ public class CassavaMarketActivity extends BaseActivity {
                 showCustomWarningDialog("Invalid unit of sale", "Please specify a valid unit of sale", "OK");
                 return;
             }
-            if (enumUnitPrice == null) {
+            if (exactPrice <= 0) {
                 showCustomWarningDialog("Invalid unit price", "Please specify a valid unit price", "OK");
                 return;
             }
-            if (exactPriceSelected && Strings.isEmptyOrWhitespace(priceText)) {
-                showCustomWarningDialog("Invalid unit price", "Please specify a valid unit price", "Retry");
-                return;
-            }
-
-            if (exactPriceSelected) {
-                unitPriceLocal = Double.parseDouble(priceText);
-                enumUnitPrice = EnumUnitPrice.PRICE_EXACT;
-            } else {
-                priceText = "0";
-                unitPriceLocal = 0;
-                if (currency.equalsIgnoreCase(EnumCountry.NIGERIA.currency())) {
-                    unitPriceLocal = averagePrice;
-                } else {
-                    unitPriceLocal = enumUnitPrice.convertToLocalCurrency(currency, mathHelper);
-                }
-            }
-            Double minAmount = mathHelper.convertCurrency(minAmountUSD, currency);
-            Double maxAmount = mathHelper.convertCurrency(maxAmountUSD, currency);
 
             dataIsValid = true;
-            if (!(unitPriceLocal >= minAmount) || !(unitPriceLocal <= maxAmount)) {
-                String message = String.format("Unit price should be between %s %s and %s %s", minAmount, currency, maxAmount, currency);
-                Bundle bundle = new Bundle();
-                bundle.putString("message", message);
-                fireBaseEvents.logEvent("UNIT_PRICE_COMPARISON", bundle);
-            }
         }
 
         if (!selectionMade) {
-            showCustomWarningDialog("Nothing selected", "You have not made any selection", null);
+            showCustomWarningDialog("Nothing selected", "You have not made any selection");
             return;
         }
 
@@ -364,7 +305,8 @@ public class CassavaMarketActivity extends BaseActivity {
             cassavaMarketOutlet.setEnumCassavaProduceType(enumCassavaProduceType);
             cassavaMarketOutlet.setEnumUnitOfSale(enumUnitOfSale);
             cassavaMarketOutlet.setEnumUnitPrice(enumUnitPrice);
-            cassavaMarketOutlet.setExactPrice(unitPriceLocal);
+            cassavaMarketOutlet.setExactPrice(exactPrice);
+            cassavaMarketOutlet.setAveragePrice(averagePrice);
 
             long id = objectBoxEntityProcessor.saveMarketOutlet(cassavaMarketOutlet);
             if (id > 0) {
@@ -386,6 +328,7 @@ public class CassavaMarketActivity extends BaseActivity {
         unitOfSaleTitle.setVisibility(View.GONE);
         unitOfSaleCard.setVisibility(View.GONE);
     }
+
 
     private void processStarchFactories() {
         final RestService restService = RestService.getInstance(queue, this);
@@ -430,6 +373,81 @@ public class CassavaMarketActivity extends BaseActivity {
         });
     }
 
+    private void processCassavaPrices() {
+        final RestService restService = RestService.getInstance(queue, this);
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final RestParameters restParameters = new RestParameters(
+                String.format("v3/cassava-prices/country/%s", countryCode),
+                countryCode
+        );
+        restParameters.setInitialTimeout(5000);
+
+        restService.setParameters(restParameters);
+
+        restService.getJsonArrList(new IVolleyCallback() {
+            @Override
+            public void onSuccessJsonString(@NotNull String jsonStringResult) {
+            }
+
+            @Override
+            public void onSuccessJsonArr(@NotNull JSONArray jsonArray) {
+                try {
+                    cassavaPriceList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<CassavaPrice>>() {
+                    });
+                    objectBoxEntityProcessor.saveCassavaPrice(cassavaPriceList);
+                } catch (Exception ex) {
+                    Crashlytics.logException(ex);
+                    Crashlytics.log(ex.getMessage());
+                }
+            }
+
+            @Override
+            public void onSuccessJsonObject(@NotNull JSONObject jsonObject) {
+
+            }
+
+            @Override
+            public void onError(@NotNull VolleyError volleyError) {
+                String error = Tools.parseNetworkError(volleyError).getMessage();
+                if (error != null) {
+                    Snackbar.make(marketOutletCard, error, Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    protected void processData() {
+        List<StarchFactory> starchFactoriesList = objectBoxEntityProcessor.getStarchFactories(countryCode);
+        addFactoriesRadioButtons(starchFactoriesList);
+        cassavaMarketOutlet = objectBoxEntityProcessor.getCassavaMarketOutlet();
+
+        if (cassavaMarketOutlet != null) {
+            boolean sfRequired = cassavaMarketOutlet.isStarchFactoryRequired();
+            priceText = String.valueOf(cassavaMarketOutlet.getExactPrice());
+            rdgMarketOutlet.check(sfRequired ? R.id.rdFactory : R.id.rdOtherMarket);
+            if (!sfRequired) {
+                enumCassavaProduceType = cassavaMarketOutlet.getEnumCassavaProduceType();
+                enumUnitOfSale = cassavaMarketOutlet.getEnumUnitOfSale();
+                enumUnitPrice = cassavaMarketOutlet.getEnumUnitPrice();
+                unitOfSale = enumUnitOfSale.unitOfSale();
+                switch (enumUnitOfSale) {
+                    case UNIT_ONE_KG:
+                        rdgUnitOfSale.check(R.id.rd_per_kg);
+                        break;
+                    case UNIT_FIFTY_KG:
+                        rdgUnitOfSale.check(R.id.rd_50_kg_bag);
+                        break;
+                    case UNIT_HUNDRED_KG:
+                        rdgUnitOfSale.check(R.id.rd_100_kg_bag);
+                        break;
+                    case UNIT_THOUSAND_KG:
+                        rdgUnitOfSale.check(R.id.rd_per_tonne);
+                        break;
+                }
+            }
+        }
+    }
+
     private void addFactoriesRadioButtons(@NotNull List<StarchFactory> starchFactoryList) {
         rdgStarchFactories.removeAllViews();
 
@@ -452,7 +470,6 @@ public class CassavaMarketActivity extends BaseActivity {
                 rdgStarchFactories.addView(radioButton);
 
                 if (factory.getFactoryName().equals(selectedFactory)) {
-                    Log.i(LOG_TAG, "The factory matches " + radioButton.getId());
                     radioButton.setChecked(true);
                 }
             }
@@ -460,155 +477,37 @@ public class CassavaMarketActivity extends BaseActivity {
 
     }
 
+
     private void showUnitPriceDialog(String currency, String uos) {
-        if (dialogOpen) {
-            //do not open multiple dialogs
-            return;
-        }
+        Bundle arguments = new Bundle();
+        arguments.putString(CassavaPriceDialogFragment.CURRENCY_CODE, currency);
+        arguments.putString(CassavaPriceDialogFragment.COUNTRY_CODE, countryCode);
+        arguments.putString(CassavaPriceDialogFragment.UNIT_OF_SALE, uos);
+        arguments.putDouble(CassavaPriceDialogFragment.SELECTED_PRICE, exactPrice);
+        arguments.putDouble(CassavaPriceDialogFragment.AVERAGE_PRICE, averagePrice);
+        arguments.putParcelable(CassavaPriceDialogFragment.ENUM_UNIT_OF_SALE, enumUnitOfSale);
 
-        final Dialog dialog = new Dialog(context);
+        CassavaPriceDialogFragment priceDialogFragment = new CassavaPriceDialogFragment();
+        priceDialogFragment.setArguments(arguments);
 
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
-        dialog.setContentView(R.layout.dialog_cassava_unit_price);
-        dialog.setCancelable(false);
-
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-
-        final TextView unitPriceTitle = dialog.findViewById(R.id.unitPriceTitle);
-        final EditText etUnitPrice = dialog.findViewById(R.id.etUnitPrice);
-        final RadioGroup rdgUnitPrice = dialog.findViewById(R.id.rdgUnitPrice);
-        //update the radiobutton labels
-        final RadioButton rd_20_30_price = dialog.findViewById(R.id.rd_20_30_price);
-        final RadioButton rd_30_50_price = dialog.findViewById(R.id.rd_30_50_price);
-        final RadioButton rd_50_100_price = dialog.findViewById(R.id.rd_50_100_price);
-        final RadioButton rd_100_150_price = dialog.findViewById(R.id.rd_100_150_price);
-        final RadioButton rd_150_200_price = dialog.findViewById(R.id.rd_150_200_price);
-        //update labels according to earlier selected values
-
-        if (exactPriceSelected) {
-            etUnitPrice.setVisibility(View.VISIBLE);
-            etUnitPrice.setText(priceText);
-        }
-
-        unitPriceTitle.setText(String.format(getString(R.string.lbl_unit_price_per), currency, unitOfSale));
-        try {
-            if (currency.equalsIgnoreCase(EnumCountry.NIGERIA.currency())) {
-                rd_20_30_price.setText(labelText(rangeOneLower, rangeOneUpper, currency, uos, false));
-                rd_30_50_price.setText(labelText(rangeTwoLower, rangeTwoUpper, currency, uos, false));
-                rd_50_100_price.setText(labelText(rangeThreeLower, rangeThreeUpper, currency, uos, true));
-                rd_100_150_price.setText(labelText(rangeFourLower, rangeFourUpper, currency, uos, true));
-                rd_150_200_price.setText(labelText(rangeFiveLower, rangeFiveUpper, currency, uos, true));
-            } else {
-                rd_20_30_price.setText(labelText(EnumUnitPrice.PRICE_RANGE_ONE.unitPricePerTonneLower(), EnumUnitPrice.PRICE_RANGE_ONE.unitPricePerTonneUpper(), currency, uos));
-                rd_30_50_price.setText(labelText(EnumUnitPrice.PRICE_RANGE_TWO.unitPricePerTonneLower(), EnumUnitPrice.PRICE_RANGE_TWO.unitPricePerTonneUpper(), currency, uos));
-                rd_50_100_price.setText(labelText(EnumUnitPrice.PRICE_RANGE_THREE.unitPricePerTonneLower(), EnumUnitPrice.PRICE_RANGE_THREE.unitPricePerTonneUpper(), currency, uos));
-                rd_100_150_price.setText(labelText(EnumUnitPrice.PRICE_RANGE_FOUR.unitPricePerTonneLower(), EnumUnitPrice.PRICE_RANGE_FOUR.unitPricePerTonneUpper(), currency, uos));
-                rd_150_200_price.setText(labelText(EnumUnitPrice.PRICE_RANGE_FIVE.unitPricePerTonneLower(), EnumUnitPrice.PRICE_RANGE_FIVE.unitPricePerTonneUpper(), currency, uos));
-            }
-        } catch (Exception ex) {
-            Timber.e(ex);
-        }
-
-        rdgUnitPrice.setOnCheckedChangeListener((group, radioIndex) -> {
-            etUnitPrice.setVisibility(View.GONE);
-            dataIsValid = false;
-            exactPriceSelected = false;
-            averagePrice = 0.0;
-            switch (radioIndex) {
-                case R.id.rd_20_30_price:
-                    enumUnitPrice = EnumUnitPrice.PRICE_RANGE_ONE;
-                    averagePrice = (rangeOneLower + rangeOneUpper) / 2;
-                    break;
-                case R.id.rd_30_50_price:
-                    enumUnitPrice = EnumUnitPrice.PRICE_RANGE_TWO;
-                    averagePrice = (rangeTwoLower + rangeTwoUpper) / 2;
-                    break;
-                case R.id.rd_50_100_price:
-                    enumUnitPrice = EnumUnitPrice.PRICE_RANGE_THREE;
-                    averagePrice = (rangeThreeLower + rangeThreeUpper) / 2;
-                    break;
-                case R.id.rd_100_150_price:
-                    enumUnitPrice = EnumUnitPrice.PRICE_RANGE_FOUR;
-                    averagePrice = (rangeFourLower + rangeFourUpper) / 2;
-                    break;
-                case R.id.rd_150_200_price:
-                    enumUnitPrice = EnumUnitPrice.PRICE_RANGE_FIVE;
-                    averagePrice = (rangeFiveLower + rangeFiveUpper) / 2;
-                    break;
-                case R.id.rd_exact_price:
-                    exactPriceSelected = true;
-                    enumUnitPrice = EnumUnitPrice.PRICE_EXACT;
-                    etUnitPrice.setVisibility(View.VISIBLE);
-                    break;
+        priceDialogFragment.setOnDismissListener(new ICassavaPriceDismissListener() {
+            @Override
+            public void onDismiss(double selectedPrice, double selectedAveragePrice) {
+                exactPrice = selectedPrice;
+                averagePrice = selectedAveragePrice;
             }
         });
-        dialog.findViewById(R.id.bt_cancel).setOnClickListener(v -> {
-            dialog.dismiss();
-            dialogOpen = false;
-            averagePrice = 0.0;
-        });
 
-        dialog.findViewById(R.id.bt_submit).setOnClickListener(view -> {
-            if (enumUnitPrice == null) {
-                Snackbar.make(view, "Please enter a valid amount", Snackbar.LENGTH_LONG).show();
-                return;
+        FragmentTransaction fragmentTransaction;
+        if (getFragmentManager() != null) {
+            fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            Fragment prev = getSupportFragmentManager().findFragmentByTag(CassavaPriceDialogFragment.ARG_ITEM_ID);
+            if (prev != null) {
+                fragmentTransaction.remove(prev);
             }
-            if (exactPriceSelected) {
-                priceText = etUnitPrice.getText().toString().trim();
-                if (Strings.isEmptyOrWhitespace(priceText)) {
-                    dataIsValid = false;
-                    Snackbar.make(view, "Please enter a valid amount", Snackbar.LENGTH_LONG).show();
-                    return;
-                }
-            }
-            dataIsValid = true;
-            dialog.dismiss();
-            dialogOpen = false;
-
-        });
-
-        dialog.show();
-        dialog.getWindow().setAttributes(lp);
-        dialogOpen = true;
+            fragmentTransaction.addToBackStack(null);
+            priceDialogFragment.show(getSupportFragmentManager(), CassavaPriceDialogFragment.ARG_ITEM_ID);
+        }
     }
 
-    private String labelText(double unitPriceLower, double unitPriceUpper, String currency, String uos, boolean... doConversions) {
-        //cross convert according to weight
-
-        boolean convertCurrency = true;
-        if (doConversions.length > 0) {
-            convertCurrency = doConversions[0];
-        }
-        double priceLower = unitPriceLower;
-        double priceHigher = unitPriceUpper;
-
-        switch (enumUnitOfSale) {
-            case UNIT_ONE_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_ONE_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_ONE_KG.unitWeight()) / 1000;
-                break;
-            case UNIT_FIFTY_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_FIFTY_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_FIFTY_KG.unitWeight()) / 1000;
-                break;
-            case UNIT_HUNDRED_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_HUNDRED_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_HUNDRED_KG.unitWeight()) / 1000;
-                break;
-        }
-
-        minAmountUSD = priceLower; //minimum amount will be dynamic based on weight being sold, max amount will be constant
-        double localLower = mathHelper.convertToLocalCurrency(priceLower, currency, 100);
-        double localHigher = mathHelper.convertToLocalCurrency(priceHigher, currency, 100);
-
-        if (!convertCurrency) {
-            localLower = priceLower;
-            localHigher = priceHigher;
-        }
-
-        return context.getString(R.string.unit_price_label, localLower, localHigher, currency, uos);
-    }
 }

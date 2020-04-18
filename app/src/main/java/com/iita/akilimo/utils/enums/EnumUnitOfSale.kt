@@ -1,6 +1,10 @@
 package com.iita.akilimo.utils.enums
 
-enum class EnumUnitOfSale {
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+enum class EnumUnitOfSale : Parcelable {
     NA {
         override fun unitWeight(): Int {
             return 0

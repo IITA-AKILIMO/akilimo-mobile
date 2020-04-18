@@ -21,6 +21,7 @@ public class CassavaMarketOutlet {
 
     private String starchFactory;
     private double exactPrice;
+    private double averagePrice;
 
     @Getter(AccessLevel.NONE)
     public boolean starchFactoryRequired;

@@ -151,6 +151,8 @@ public class SweetPotatoMarketActivity extends BaseActivity {
         });
         btnFinish.setOnClickListener(view -> validate(false));
         btnCancel.setOnClickListener(view -> closeActivity(false));
+
+        showCustomNotificationDialog();
     }
 
     @Override

@@ -75,6 +75,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         Animatoo.animateSlideRight(this);
     }
 
+
+    protected void showCustomNotificationDialog() {
+        showCustomNotificationDialog(getString(R.string.title_realistic_price), getString(R.string.lbl_realistic_price));
+    }
+
+    protected void showCustomNotificationDialog(String titleText, String contentText) {
+        showCustomNotificationDialog(titleText, contentText, null);
+    }
+
     /**
      * @param titleText   title of the warning
      * @param contentText stepTitle of the warning
@@ -83,11 +92,36 @@ public abstract class BaseActivity extends AppCompatActivity {
         showCustomWarningDialog(titleText, contentText, null);
     }
 
-    /**
-     * @param titleText   title of the warning
-     * @param contentText stepTitle of the warning
-     * @param buttonTitle warning button title
-     */
+
+    protected void showCustomNotificationDialog(String titleText, String contentText, String buttonTitle) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+        dialog.setContentView(R.layout.dialog_notification);
+        dialog.setCancelable(true);
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+
+        final TextView title = dialog.findViewById(R.id.title);
+        final TextView content = dialog.findViewById(R.id.content);
+        final AppCompatButton btnClose = dialog.findViewById(R.id.bt_close);
+        title.setText(titleText);
+        content.setText(contentText);
+
+        if (!Strings.isEmptyOrWhitespace(buttonTitle)) {
+            btnClose.setText(buttonTitle);
+        }
+        btnClose.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
+
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
+    }
+
     protected void showCustomWarningDialog(String titleText, String contentText, String buttonTitle) {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
@@ -110,7 +144,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             btnClose.setText(buttonTitle);
         }
         btnClose.setOnClickListener(view -> {
-            Toast.makeText(getApplicationContext(), ((AppCompatButton) view).getText().toString() + " Clicked", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
 

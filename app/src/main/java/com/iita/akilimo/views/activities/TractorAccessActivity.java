@@ -196,6 +196,7 @@ public class TractorAccessActivity extends CostBaseActivity {
             return;
         }
 
+        showCustomNotificationDialog();
         arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList);
         arguments.putParcelable(OperationCostsDialogFragment.OPERATION_NAME, operation);
         arguments.putParcelable(OperationCostsDialogFragment.SELECTED_COUNTRY, enumCountry);

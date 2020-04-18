@@ -11,7 +11,7 @@ apply plugin: 'io.objectbox'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
 
-ext.versionMajor = 10
+ext.versionMajor = 12
 ext.versionMinor = 0
 android {
     def buildNumber = computeBuildNumber()
@@ -80,7 +80,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.2.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0-rc01'
+    implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha02'
     implementation "androidx.cardview:cardview:1.0.0"
 
     implementation 'androidx.multidex:multidex:2.0.1'
@@ -146,6 +146,10 @@ dependencies {
 
     //debugImplementation because LeakCanary should only run in debug builds.
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
+}
+
+dependencies {
+    implementation 'androidx.legacy:legacy-support-v4:+'
 }
 
 dependencies {
