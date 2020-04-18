@@ -644,7 +644,7 @@
     },
     {
       "id": "32:7319850202739838003",
-      "lastPropertyId": "7:7354435872270501549",
+      "lastPropertyId": "8:5210585780993299837",
       "name": "CassavaMarketOutlet",
       "properties": [
         {
@@ -674,6 +674,10 @@
         {
           "id": "7:7354435872270501549",
           "name": "enumUnitPrice"
+        },
+        {
+          "id": "8:5210585780993299837",
+          "name": "averagePrice"
         }
       ],
       "relations": []
@@ -857,7 +861,7 @@
     },
     {
       "id": "36:4561522915780923941",
-      "lastPropertyId": "11:5846478749672916831",
+      "lastPropertyId": "12:4747786609390210669",
       "name": "CassavaPrice",
       "properties": [
         {
@@ -903,6 +907,10 @@
         {
           "id": "11:5846478749672916831",
           "name": "averagePrice"
+        },
+        {
+          "id": "12:4747786609390210669",
+          "name": "priceIndex"
         }
       ],
       "relations": []

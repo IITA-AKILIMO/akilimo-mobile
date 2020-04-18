@@ -251,7 +251,7 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
                 isPriceValid = true;
                 exactPriceWrapper.setVisibility(View.VISIBLE);
                 editExactFertilizerPrice.setText(String.valueOf(exactPrice));
-            } else if (pricesResp.getPricePerBag() == selectedPrice) {
+            } else if (pricesResp.getPricePerBag() == selectedPrice && selectedPrice != 0) {
                 radioButton.setChecked(true);
             }
         }
