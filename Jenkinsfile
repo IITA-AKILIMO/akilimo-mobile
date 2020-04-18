@@ -3,6 +3,11 @@ pipeline {
   environment{
         VERSION_MAJOR ="11"
         VERSION_MINOR ="0"
+		CHANGELOG="Welcome to the Season of Enchantment! This update includes:
+                                    - New content
+                                    - New features
+                                    - Bug fixes
+                                    - Performance improvements"
         KEYSTORE_FILE='D:\\gdrive\\keystores\\fertilizer.jks'
   }
   stages {
@@ -96,11 +101,7 @@ pipeline {
           }
           steps {
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-                             text: 'Welcome to the Season of Enchantment! This update includes:
-                                    - New content
-                                    - New features
-                                    - Bug fixes
-                                    - Performance improvements']], trackName: 'production')
+                             text: $CHANGELOG]], trackName: 'production')
           }
         }
         stage('apk upload') {
