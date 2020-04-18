@@ -3,7 +3,7 @@ pipeline {
   environment{
         VERSION_MAJOR ="11"
         VERSION_MINOR ="0"
-		CHANGELOG="Welcome to the Season of Enchantment! This update includes:
+		CHANGELOG="This update includes:
                                     - New content
                                     - New features
                                     - Bug fixes
@@ -101,7 +101,7 @@ pipeline {
           }
           steps {
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-                             text: $CHANGELOG]], trackName: 'production')
+                             text: '$CHANGELOG']], trackName: 'production')
           }
         }
         stage('apk upload') {
