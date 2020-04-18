@@ -19,18 +19,30 @@ pipeline {
       }
     }
 
-    stage('Run checks') {
+    stage('Run test for non release branch') {
         when {
             beforeAgent true
-            anyOf {
+            not {
                 branch 'master'
             }
         }
       steps {
-        sh 'gradle check --no-daemon'
-        androidLint(pattern: '**/lint-results*.xml')
+        sh 'gradle test --no-daemon'
       }
     }
+
+    stage('Run linting for develop branch only') {
+         when {
+             beforeAgent true
+             anyOf {
+                 branch 'develop'
+             }
+         }
+       steps {
+         sh 'gradle lint -x test --no-daemon'
+         androidLint(pattern: '**/lint-results*.xml')
+       }
+     }
 
     stage('Build and generate artifacts') {
       parallel {
@@ -40,7 +52,7 @@ pipeline {
             branch 'masters'
           }
           steps {
-            sh 'gradle assembleRelease --no-daemon'
+            sh 'gradle assembleRelease -x test --no-daemon'
           }
         }
 
@@ -50,7 +62,7 @@ pipeline {
             branch 'master'
           }
           steps {
-            sh 'gradle bundleRelease --no-daemon'
+            sh 'gradle bundleRelease -x test --no-daemon'
           }
         }
 
