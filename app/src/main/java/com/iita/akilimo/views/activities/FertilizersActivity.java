@@ -318,9 +318,7 @@ public class FertilizersActivity extends BaseActivity {
     private boolean isMinSelected() {
         int count = objectBoxEntityProcessor.getSelectedFertilizers(countryCode).size();
         if (count < minSelection) {
-            Snackbar snackbar = Snackbar
-                    .make(coordinatorLayout, String.format(Locale.US, context.getString(R.string.lbl_min_selection), minSelection), Snackbar.LENGTH_LONG);
-            snackbar.show();
+            showCustomWarningDialog("Invalid selection", String.format(Locale.US, context.getString(R.string.lbl_min_selection), minSelection));
         }
         return count >= minSelection;
     }
