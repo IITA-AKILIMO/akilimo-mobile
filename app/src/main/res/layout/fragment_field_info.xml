@@ -19,22 +19,20 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/ubuntu"
+            android:fontFamily="@font/ubuntu_bold"
             android:text="@string/title_your_field_size"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/grey_80"
-            android:textStyle="bold" />
+            android:textColor="@color/red_500" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_middle"
             android:fontFamily="@font/ubuntu"
-            android:paddingTop="@dimen/spacing_medium"
             android:text="@string/lbl_field_info"
-            android:textAlignment="textStart"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textColor="@color/red_A700" />
-
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@color/grey_80" />
     </LinearLayout>
 
 </RelativeLayout>

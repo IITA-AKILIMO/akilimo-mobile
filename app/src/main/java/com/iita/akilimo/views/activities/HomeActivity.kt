@@ -162,6 +162,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
         viewPager.adapter = myViewPagerAdapter
         viewPager.offscreenPageLimit = 1
+        Tools.setSystemBarColor(activity, R.color.deep_orange_500)
 
 
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -195,8 +196,8 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
             override fun onPageSelected(position: Int) {
                 bottomProgressDots(position)
-                Tools.setSystemBarColor(activity, R.color.deep_orange_500)
 
+                Tools.setSystemBarColor(activity, R.color.colorPrimary)
                 //stop the updater
                 appUpdater.stop();
                 btnStart.visibility = View.GONE
@@ -204,6 +205,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                     0 -> {
                         appUpdater.start()
                         btnStart.visibility = View.GONE
+                        Tools.setSystemBarColor(activity, R.color.deep_orange_500)
                     }
                     fragmentArray.size - 1 -> {
                         if (showProceedButton) {
