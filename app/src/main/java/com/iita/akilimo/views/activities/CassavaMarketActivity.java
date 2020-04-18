@@ -413,7 +413,7 @@ public class CassavaMarketActivity extends BaseActivity {
             }
         });
     }
-    
+
     protected void processData() {
         List<StarchFactory> starchFactoriesList = objectBoxEntityProcessor.getStarchFactories(countryCode);
         addFactoriesRadioButtons(starchFactoriesList);

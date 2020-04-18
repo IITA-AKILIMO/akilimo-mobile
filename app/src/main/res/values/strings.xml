@@ -1,11 +1,10 @@
 <resources>
-    <string name="app_name" translatable="false">Akilimo</string>
+    <string name="app_name" translatable="false">AKILIMO</string>
 
-    <string name="welcome_title">Welcome to Akilimo</string>
+    <string name="welcome_title">Welcome to AKILIMO</string>
     <string name="welcome_instructions">I will assist you with personalized advice to grow and improve the yield of your cassava once you provide me some essential information.</string>
     <string name="important_instructions_title">Important instructions</string>
-    <string name="important_instructions">All AKILIMO recommendations are adjusted to your <b>location</b>, the <b>size of your field</b> and your <b>prices</b>.\nCorrect information is therefore very crucial to get profitable advise. <b>Underestimation of field size</b> will lead to <b>loss of opportunity</b> to make profit and <b>overestimated</b> farm size will lead to <b>unnecessary cost</b>.</string>
-
+    <string name="important_instructions">All AKILIMO recommendations are based on the <b>correctness</b> of your location, the size of your field and your prices. For example, overly optimistic farm size results in an unnecessary cost due to overestimation of required investment and leads to loss and if field size are much less than reality it will lead to loss of opportunity to make profit from your farm.</string>
     <string name="hello_blank_fragment">Initialize fragments</string>
 
     <string name="title_activity_fertilizer_choice">Available fertilizers</string>
