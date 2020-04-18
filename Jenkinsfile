@@ -3,7 +3,7 @@ pipeline {
   environment{
         VERSION_MAJOR ="11"
         VERSION_MINOR ="0"
-		CHANGELOG="This update includes:
+		CHANGELOG="This update includes
                                     - New content
                                     - New features
                                     - Bug fixes
