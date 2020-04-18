@@ -255,6 +255,8 @@ public class CassavaMarketActivity extends BaseActivity {
             unitOfSaleTitle.setVisibility(View.VISIBLE);
             unitOfSaleCard.setVisibility(View.VISIBLE);
         }
+
+        showCustomNotificationDialog();
     }
 
     public void onRadioButtonClicked(View radioButton) {
@@ -289,7 +291,7 @@ public class CassavaMarketActivity extends BaseActivity {
         }
 
         if (!selectionMade) {
-            showCustomWarningDialog("Nothing selected", "You have not made any selection", null);
+            showCustomWarningDialog("Nothing selected", "You have not made any selection");
             return;
         }
 

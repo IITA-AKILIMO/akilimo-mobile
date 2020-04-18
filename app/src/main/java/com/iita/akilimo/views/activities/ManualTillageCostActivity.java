@@ -129,6 +129,8 @@ public class ManualTillageCostActivity extends CostBaseActivity {
 
         manualPloughCostTitle.setText(ploughTitle);
         manualRidgeCostTitle.setText(ridgeTitle);
+
+        showCustomNotificationDialog();
     }
 
     @Override

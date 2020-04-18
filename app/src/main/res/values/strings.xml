@@ -260,6 +260,9 @@ If you are at your farm while running the app, you are strongly advised to choos
         If you are not at your farm, please use <b>Pick location manually</b> option and zoom in the map to find known places in your farm neighborhood.
 </string>
     <string name="title_your_field_size">Your field size</string>
+    <string name="lbl_ok">OK</string>
+    <string name="title_realistic_price">Provide realistic prices</string>
+    <string name="lbl_realistic_price">Please provide realistic information to the best of your knowledge</string>
 
 
 </resources>
