@@ -196,7 +196,8 @@ public class FertilizersActivity extends BaseActivity {
         btnSave.setOnClickListener(view -> closeActivity(false));
         btnCancel.setOnClickListener(view -> closeActivity(false));
 
-        showCustomNotificationDialog();
+        //@TODO Consider activating this again?
+//        showCustomNotificationDialog();
     }
 
     @Override

@@ -182,6 +182,7 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
         return dialog;
     }
 
+
     private void radioSelected(RadioGroup radioGroup) {
         int radioButtonId = radioGroup.getCheckedRadioButtonId();
         RadioButton radioButton = dialog.findViewById(radioButtonId);
@@ -192,13 +193,12 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
             isExactPriceRequired = false;
             isPriceValid = true;
             savedPricePerBag = pricesResp.getPricePerBag();
-            bagPrice = savedPricePerBag;
             bagPriceRange = pricesResp.getPriceRange();
 
-
+            bagPrice = savedPricePerBag;
             exactPriceWrapper.setVisibility(View.GONE);
             exactPriceWrapper.getEditText().setText(null);
-            if (savedPricePerBag >= 0 && savedPricePerBag <= 0) {
+            if (savedPricePerBag == 0) {
                 bagPrice = 0.0;
                 bagPriceRange = "NA";
             } else if (savedPricePerBag < 0) {
@@ -223,7 +223,9 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
                 btnRemove.setVisibility(View.VISIBLE);
             }
             if (isExactPriceRequired) {
+                isPriceValid = true;
                 exactPrice = fertilizer.getPrice();
+                editExactFertilizerPrice.setText(String.valueOf(exactPrice));
             }
         }
         for (FertilizerPrices pricesResp : fertilizerPricesList) {
@@ -237,7 +239,7 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
 
             double price = pricesResp.getPricePerBag();
             String radioLabel = pricesResp.getPriceRange();
-            if (price >= 0 && price <= 0) {
+            if (price == 0) {
                 radioLabel = context.getString(R.string.lbl_do_not_know);
             } else if (price < 0) {
                 radioLabel = context.getString(R.string.exact_fertilizer_price);
@@ -246,14 +248,10 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
 
             radioGroup.addView(radioButton);
             //set relevant radio button as selected based on the price range
-            if (isExactPriceRequired) {
-                radioButton.setChecked(true);
-                isPriceValid = true;
-                exactPriceWrapper.setVisibility(View.VISIBLE);
-                editExactFertilizerPrice.setText(String.valueOf(exactPrice));
-            } else if (pricesResp.getPricePerBag() == selectedPrice && selectedPrice != 0) {
+            if (price == selectedPrice) {
                 radioButton.setChecked(true);
             }
+            isExactPriceRequired = false; //reset this one
         }
     }
 

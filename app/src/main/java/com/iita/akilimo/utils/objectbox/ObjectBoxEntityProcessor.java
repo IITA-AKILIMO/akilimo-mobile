@@ -141,6 +141,7 @@ public class ObjectBoxEntityProcessor {
     public void saveFertilizerList(final List<Fertilizer> selectedFertilizers) {
         try {
             final Box<Fertilizer> box = boxStore.boxFor(Fertilizer.class);
+//            box.removeAll();
             box.put(selectedFertilizers);
         } catch (UniqueViolationException ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "Unique fertilizer saving violation!");
