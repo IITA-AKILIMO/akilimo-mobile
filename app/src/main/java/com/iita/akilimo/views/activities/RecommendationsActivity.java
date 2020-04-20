@@ -2,6 +2,7 @@ package com.iita.akilimo.views.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -133,8 +134,13 @@ public class RecommendationsActivity extends BaseActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        onBackPressed();
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(context, "Please use the press the home button to got back to the summary page", Toast.LENGTH_SHORT)
+                .show();
     }
 
     private void setAdapter() {
