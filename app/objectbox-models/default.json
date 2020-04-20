@@ -138,7 +138,7 @@
     },
     {
       "id": "3:7929427037169361794",
-      "lastPropertyId": "9:7180387901769405845",
+      "lastPropertyId": "11:2958529830613157479",
       "name": "FertilizerPrices",
       "properties": [
         {
@@ -177,6 +177,14 @@
           "id": "9:7180387901769405845",
           "indexId": "2:7499680936672910119",
           "name": "fertilizerCountry"
+        },
+        {
+          "id": "10:9160889190382784880",
+          "name": "description"
+        },
+        {
+          "id": "11:2958529830613157479",
+          "name": "recordId"
         }
       ],
       "relations": []

@@ -19,6 +19,8 @@ public class FertilizerPrices {
     @JsonProperty("id")
     long id;
 
+    @JsonProperty("recordId")
+    int recordId;
     @JsonProperty("priceId")
     int priceId;
 
@@ -44,6 +46,9 @@ public class FertilizerPrices {
     @Unique
     @JsonProperty("fertilizerCountry")
     private String fertilizerCountry;
+
+    @JsonProperty("description")
+    private String description;
 
     public boolean isActive() {
         return this.active;

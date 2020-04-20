@@ -248,7 +248,12 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
 
             radioGroup.addView(radioButton);
             //set relevant radio button as selected based on the price range
-            if (price == selectedPrice) {
+            if (isExactPriceRequired) {
+                radioButton.setChecked(true);
+                isPriceValid = true;
+                exactPriceWrapper.setVisibility(View.VISIBLE);
+                editExactFertilizerPrice.setText(String.valueOf(exactPrice));
+            } else if (price == selectedPrice) {
                 radioButton.setChecked(true);
             }
             isExactPriceRequired = false; //reset this one
