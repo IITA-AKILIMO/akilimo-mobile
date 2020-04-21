@@ -67,11 +67,10 @@ public class FertilizerGridAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             OriginalViewHolder view = (OriginalViewHolder) holder;
             view.fertilizerName.setText(fertilizerName);
             view.bagPrice.setText(isSelected ? bagPrice : fertilizerName);
-            view.lyt_parent.setOnClickListener(view1 -> {
-                if (mOnItemClickListener != null) {
-                    mOnItemClickListener.onItemClick(view1, obj, position);
-                }
-            });
+
+            view.lyt_parent.setOnClickListener(v -> clickListener(v, obj, position));
+            view.selectionIndicator.setOnClickListener(v -> clickListener(v, obj, position));
+
             if (isSelected) {
                 view.selectionIndicator.setImageResource(R.drawable.ic_check_box_checked);
                 view.selectionIndicator.setColorFilter(ctx.getResources().getColor(R.color.colorAccent));
@@ -81,6 +80,12 @@ public class FertilizerGridAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 view.selectionIndicator.setColorFilter(ctx.getResources().getColor(R.color.grey_5));
                 Tools.displayImageOriginal(ctx, view.image, R.drawable.ic_sack_outline);
             }
+        }
+    }
+
+    private void clickListener(View view, Fertilizer fertilizer, int position) {
+        if (mOnItemClickListener != null) {
+            mOnItemClickListener.onItemClick(view, fertilizer, position);
         }
     }
 

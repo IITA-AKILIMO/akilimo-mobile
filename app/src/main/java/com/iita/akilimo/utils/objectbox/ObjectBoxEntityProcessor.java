@@ -141,7 +141,7 @@ public class ObjectBoxEntityProcessor {
     public void saveFertilizerList(final List<Fertilizer> selectedFertilizers) {
         try {
             final Box<Fertilizer> box = boxStore.boxFor(Fertilizer.class);
-//            box.removeAll();
+            box.removeAll();
             box.put(selectedFertilizers);
         } catch (UniqueViolationException ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "Unique fertilizer saving violation!");
@@ -167,7 +167,6 @@ public class ObjectBoxEntityProcessor {
 
         return fertilizerTypeQueryBuilder
                 .equal(Fertilizer_.countryCode, countryCode)
-                .order(Fertilizer_.type) //default is ASCENDING
                 .build()
                 .find();
     }
@@ -179,7 +178,6 @@ public class ObjectBoxEntityProcessor {
 
         return fertilizerTypeQueryBuilder
                 .equal(Fertilizer_.countryCode, deviceIdentifier)
-                .order(Fertilizer_.type) //default is ASCENDING
                 .build()
                 .find();
     }
@@ -247,7 +245,6 @@ public class ObjectBoxEntityProcessor {
 
         return fertilizerTypeQueryBuilder
                 .equal(InterCropFertilizer_.countryCode, deviceIdentifier)
-                .order(InterCropFertilizer_.type) //default is ASCENDING
                 .build()
                 .find();
     }
@@ -270,6 +267,9 @@ public class ObjectBoxEntityProcessor {
         return box.put(maizePerformanceModel);
     }
 
+
+    //@TODO Consider moving data source to the API
+    @Deprecated
     public MaizePerformance getMaizePerformance() {
         Box<MaizePerformance> box = boxStore.boxFor(MaizePerformance.class);
 

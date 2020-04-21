@@ -103,7 +103,7 @@ public class SessionManager {
 
     public String getDeviceId() {
         String uniqueID = pref.getString("uuid", null);
-        
+
         if (uniqueID == null) {
             uniqueID = UUID.randomUUID().toString();
             editor.putString("uuid", uniqueID);
@@ -147,5 +147,16 @@ public class SessionManager {
     public String getDeviceLocaleCurrency() {
         Locale current = context.getResources().getConfiguration().locale;
         return Currency.getInstance(current).getCurrencyCode();
+    }
+
+    public int getNotificationCount() {
+        //notification wil be shown a maximum of 3 times
+        return pref.getInt("notificationCount", 3);
+    }
+
+    public void updateNotificationCount(int notificationCount) {
+        notificationCount--;
+        editor.putInt("notificationCount", notificationCount);
+        editor.commit();
     }
 }
