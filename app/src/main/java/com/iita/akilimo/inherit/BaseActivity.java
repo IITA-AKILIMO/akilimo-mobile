@@ -96,6 +96,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void showCustomNotificationDialog(String titleText, String contentText, String buttonTitle) {
 
         //update the notification count with shared preferences data
+        if (sessionManager == null) {
+            sessionManager = new SessionManager(this);
+        }
         int notificationCount = sessionManager.getNotificationCount();
         if (notificationCount <= 0) {
             return;
