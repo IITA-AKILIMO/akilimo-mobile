@@ -12,7 +12,7 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
 
 ext.versionMajor = 12
-ext.versionMinor = 0
+ext.versionMinor = 1
 android {
     def buildNumber = computeBuildNumber()
     def appVersionCode = computeVersionCode()
