@@ -206,36 +206,36 @@
 
     <string name="hide_bottom_on_scroll" translatable="false">com.google.android.material.behavior.HideBottomViewOnScrollBehavior</string>
     <string name="bar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
-    <string name="lbl_min_selection">Tafadhali chagua mbolea angalau %d</string>
+    <string name="lbl_min_selection">Tafadhali chagua angalau mbolea %d</string>
     <string name="lbl_update">Sasisha</string>
     <string name="lbl_roots">Mizizi</string>
-    <string name="lbl_unit_price">Bei ya kitengo</string>
-    <string name="lbl_unit_price_per">Bei ya kitengo katika %s kwa %s</string>
-    <string name="lbl_grain_unit_price_per">Bei ya sehemu ya nafaka kavu katika %s kwa %s</string>
-    <string name="lbl_sweet_potato_tuber_unit_price_per">Bei ya kitengo cha viazi vitamu katika %s kwa %s</string>
+    <string name="lbl_unit_price">Kizio cha bei</string>
+    <string name="lbl_unit_price_per">Kizio cha bei  katika %s kwa %s</string>
+    <string name="lbl_grain_unit_price_per">Kizio cha bei ya sehemu ya nafaka kavu katika %s kwa %s</string>
+    <string name="lbl_sweet_potato_tuber_unit_price_per">Kizio cha bei ya viazi vitamu katika %s kwa %s</string>
 
-    <string name="lbl_manual_tillage_cost">Je! Ni gharama gani kukulima kwa mikono% .2f %s?</string>
-    <string name="lbl_manual_ridge_cost">Je! Inagharimu kupata manilla ridge% .2f %s?</string>
-    <string name="lbl_tractor_plough_cost">Je! Ni gharama gani kulima% .2f %s kwa kutumia trekta?</string>
-    <string name="lbl_tractor_ridge_cost">Je! Ni gharama gani kujikwamua% .2f %s kwa kutumia trekta?</string>
+    <string name="lbl_manual_tillage_cost">Je! Ni gharama kiasi gani kulima kwa jembe la mkono % .2f %s?</string>
+    <string name="lbl_manual_ridge_cost">Je! Inagharimu kiasi gani kuweka matuta kwa jembe la mkono %.2f %s?</string>
+    <string name="lbl_tractor_plough_cost">Je! Inagharimu kiasi gani kulima %.2f %s kwa trekta?</string>
+    <string name="lbl_tractor_ridge_cost">Je! Inagharimu kiasi gani kuweka matuta kwa trekta?</string>
     <string name="lbl_specify_my_cost">Nataka kutaja gharama zangu</string>
     <string name="lbl_exact_cost">Gharama halisi</string>
-    <string name="lbl_cost_of_first_weeding_operation">Gharama ya operesheni ya kupalilia kwanza katika %s</string>
-    <string name="lbl_cost_of_second_weeding_operation">Gharama ya operesheni ya magugu ya pili katika %s</string>
+    <string name="lbl_cost_of_first_weeding_operation">Gharama ya palizi la kwanza katika %s</string>
+    <string name="lbl_cost_of_second_weeding_operation">Gharama ya palizi la pili katika %s</string>
 
-    <string name="lbl_valid_bag_price">Tafadhali toa bei halali ya begi</string>
-    <string name="lbl_ploughing_cost_text">Gharama ya kulima% .2f %s% .2f %s</string>
-    <string name="lbl_ridging_cost_text">Gharama ya kuondoa% .2f %s% .2f %s</string>
-    <string name="lbl_harrowing_cost_text">Gharama ya kusumbua% .2f %s% .2f %s</string>
-    <string name="lbl_weeding_cost_text">Gharama ya kupalilia% .2f %s% .2f %s</string>
-    <string name="lbl_valid_email_req">Tafadhali toa barua pepe halali</string>
+    <string name="lbl_valid_bag_price">Tafadhali toa bei halali</string>
+    <string name="lbl_ploughing_cost_text">Gharama ya kukatua %.2f %s %.2f %s</string>
+    <string name="lbl_ridging_cost_text">Gharama ya kuweka matuta %.2f %s %.2f %s</string>
+    <string name="lbl_harrowing_cost_text">Gharama ya kupiga harro %.2f %s %.2f %s</string>
+    <string name="lbl_weeding_cost_text">Gharama ya kuplilia %.2f %s %.2f %s</string>
+    <string name="lbl_valid_email_req">Tafadhali toa barua pepe yako</string>
     <string name="lbl_first_name_req">Tafadhali toa jina lako la kwanza</string>
     <string name="lbl_valid_number_req">Tafadhali toa nambari halali ya simu</string>
     <string name="lbl_male">Mwanaume</string>
     <string name="lbl_female">Kike</string>
-    <string name="lbl_save">Okoa</string>
+    <string name="lbl_save">Hifadhi</string>
     <string name="lbl_remove">Ondoa</string>
-    <string name="lbl_field_info">Ikiwa unajua<b> saizi</b> ya shamba lako ndani<b> ha, ekari</b> au<b> mita ya mraba</b> , tafadhali endelea kwenye ukurasa unaofuata. Ikiwa sivyo, tunakushauri upakue kutoka GooglePlay n.k. "Kipimo cha eneo la uwanja wa GPS", "kipimo cha eneo la shamba" ambacho kitakusaidia kupima eneo lako kwa kuzunguka shamba lako.</string>
+    <string name="lbl_field_info">Ikiwa unajua ukubwa wa shamba lako kwa hekta, ekari au mita ya mraba, tafadhali endelea ukurasa unaofuata. Ikiwa sivyo, tunakushauri upakue kutoka GooglePlay n.k. \"GPS Fields Area Measure”, “Field Area Measure”, ambacho kitakusaidia kupima eneo la mzunguko wa  shamba lako.</string>
 
     <string name="lbl_location_sub_text">AKILIMO hukupa chaguzi kuashiria eneo lako la shamba. \\n Ikiwa uko kwenye shamba lako unapokuwa ukitumia programu, unashauriwa sana kuchagua chaguo Tumia eneo la sasa .\\n Ikiwa haupo shamba yako, tafadhali tumia Chagua eneo kwa mikono chaguo na zoom katika ramani kupata maeneo inayojulikana katika kitongoji chako cha shamba.</string>
     <string name="title_your_field_size">Ukubwa wa shamba</string>
