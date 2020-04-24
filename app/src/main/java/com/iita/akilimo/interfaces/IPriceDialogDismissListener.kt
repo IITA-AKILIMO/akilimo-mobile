@@ -2,6 +2,6 @@ package com.iita.akilimo.interfaces
 
 import com.iita.akilimo.models.Fertilizer
 
-interface ICassavaPriceDismissListener {
+interface IPriceDialogDismissListener {
     fun onDismiss(selectedPrice: Double, averagePrice: Double)
 }

@@ -26,6 +26,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
 import com.iita.akilimo.interfaces.IPriceDialogDismissListener;
 import com.iita.akilimo.models.CassavaPrice;
+import com.iita.akilimo.models.MaizePrice;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
@@ -37,11 +38,11 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
  */
-public class CassavaPriceDialogFragment extends DialogFragment {
+public class MaizePriceDialogFragment extends DialogFragment {
 
-    private static final String LOG_TAG = CassavaPriceDialogFragment.class.getSimpleName();
+    private static final String LOG_TAG = MaizePriceDialogFragment.class.getSimpleName();
 
-    public static final String ARG_ITEM_ID = "cassava_price_dialog_fragment";
+    public static final String ARG_ITEM_ID = "mazie_price_dialog_fragment";
     public static final String AVERAGE_PRICE = "average_price";
     public static final String SELECTED_PRICE = "selected_price";
     public static final String UNIT_OF_SALE = "unit_of_sale";
@@ -64,14 +65,14 @@ public class CassavaPriceDialogFragment extends DialogFragment {
     private Button btnRemove;
 
 
-    EnumUnitOfSale enumUnitOfSale = EnumUnitOfSale.UNIT_THOUSAND_KG;
+    private EnumUnitOfSale enumUnitOfSale = EnumUnitOfSale.UNIT_THOUSAND_KG;
 
     private MathHelper mathHelper;
     private Context context;
     private ObjectBoxEntityProcessor objectBox;
     private double averagePrice;
-    private double cassavaPrice;
-    private List<CassavaPrice> cassavaPriceList;
+    private double maizePrice;
+    private List<MaizePrice> maizePriceList;
 
     private String countryCode;
     private String currencyCode;
@@ -84,7 +85,7 @@ public class CassavaPriceDialogFragment extends DialogFragment {
 
     private IPriceDialogDismissListener onDismissListener;
 
-    public CassavaPriceDialogFragment() {
+    public MaizePriceDialogFragment() {
         // Required empty public constructor
     }
 
@@ -104,7 +105,7 @@ public class CassavaPriceDialogFragment extends DialogFragment {
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             averagePrice = bundle.getDouble(AVERAGE_PRICE);
-            cassavaPrice = bundle.getDouble(SELECTED_PRICE);
+            maizePrice = bundle.getDouble(SELECTED_PRICE);
             currencyCode = bundle.getString(CURRENCY_CODE);
             unitOfSale = bundle.getString(UNIT_OF_SALE);
             enumUnitOfSale = bundle.getParcelable(ENUM_UNIT_OF_SALE);
@@ -145,12 +146,12 @@ public class CassavaPriceDialogFragment extends DialogFragment {
 
             if (isExactPriceRequired) {
                 try {
-                    cassavaPrice = Double.parseDouble(editExactFertilizerPrice.getText().toString());
+                    maizePrice = Double.parseDouble(editExactFertilizerPrice.getText().toString());
                 } catch (Exception ex) {
                     Crashlytics.log(Log.ERROR, LOG_TAG, "The price appears not be valid");
                     Crashlytics.logException(ex);
                 }
-                if (cassavaPrice <= 0) {
+                if (maizePrice <= 0) {
                     editExactFertilizerPrice.setError(getString(R.string.lbl_provide_valid_unit_price));
                     isPriceValid = false;
                     return;
@@ -166,8 +167,8 @@ public class CassavaPriceDialogFragment extends DialogFragment {
 
         radioGroup.setOnCheckedChangeListener((radioGroup, i) -> radioSelected(radioGroup));
         if (objectBox != null) {
-            cassavaPriceList = objectBox.getCassavaPrices(countryCode);
-            addPriceRadioButtons(cassavaPriceList, averagePrice);
+            maizePriceList = objectBox.getMaizePrices(countryCode);
+            addPriceRadioButtons(maizePriceList, averagePrice);
         }
         return dialog;
     }
@@ -178,7 +179,7 @@ public class CassavaPriceDialogFragment extends DialogFragment {
         long itemTagIndex = (long) radioButton.getTag();
 
         try {
-            CassavaPrice pricesResp = cassavaPriceList.get((int) itemTagIndex);
+            MaizePrice pricesResp = maizePriceList.get((int) itemTagIndex);
             isExactPriceRequired = false;
             isPriceValid = true;
             averagePrice = pricesResp.getAveragePrice();
@@ -190,7 +191,7 @@ public class CassavaPriceDialogFragment extends DialogFragment {
                 isPriceValid = false;
                 exactPriceWrapper.setVisibility(View.VISIBLE);
             } else {
-                cassavaPrice = pricesResp.getAveragePrice();
+                maizePrice = pricesResp.getAveragePrice();
             }
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "Radio selection issues");
@@ -198,7 +199,7 @@ public class CassavaPriceDialogFragment extends DialogFragment {
         }
     }
 
-    private void addPriceRadioButtons(List<CassavaPrice> cassavaPriceList, double avgPrice) {
+    private void addPriceRadioButtons(List<MaizePrice> maizePriceList, double avgPrice) {
         radioGroup.removeAllViews();
         double selectedPrice = 0.0;
 
@@ -207,7 +208,7 @@ public class CassavaPriceDialogFragment extends DialogFragment {
             btnRemove.setVisibility(View.VISIBLE);
         }
 
-        for (CassavaPrice pricesResp : cassavaPriceList) {
+        for (MaizePrice pricesResp : maizePriceList) {
             double price = pricesResp.getAveragePrice();
             long listIndex = pricesResp.getPriceIndex() - 1;//reduce by one so as to match the index in the list
 
@@ -216,7 +217,7 @@ public class CassavaPriceDialogFragment extends DialogFragment {
             radioButton.setTag(listIndex);
 
 
-            String radioLabel = labelText(pricesResp.getMinLocalPrice(), pricesResp.getMaxLocalPrice(), currencyCode, unitOfSale, false);
+            String radioLabel = labelText(pricesResp.getMinLocalPrice(), pricesResp.getMaxLocalPrice(), currencyCode, unitOfSale);
             if (price < 0) {
                 radioLabel = context.getString(R.string.lbl_exact_price_x_per_unit_of_sale);
             } else if (price == 0) {
@@ -231,7 +232,7 @@ public class CassavaPriceDialogFragment extends DialogFragment {
                 isPriceValid = true;
                 isExactPriceRequired = true;
                 exactPriceWrapper.setVisibility(View.VISIBLE);
-                editExactFertilizerPrice.setText(String.valueOf(cassavaPrice));
+                editExactFertilizerPrice.setText(String.valueOf(maizePrice));
             }
 
             if (pricesResp.getAveragePrice() == selectedPrice) {
@@ -244,7 +245,7 @@ public class CassavaPriceDialogFragment extends DialogFragment {
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
         if (onDismissListener != null) {
-            onDismissListener.onDismiss(cassavaPrice, averagePrice);
+            onDismissListener.onDismiss(maizePrice, averagePrice);
         }
     }
 
@@ -253,12 +254,6 @@ public class CassavaPriceDialogFragment extends DialogFragment {
     }
 
     private String labelText(double unitPriceLower, double unitPriceUpper, String currency, String uos, boolean... doConversions) {
-        //cross convert according to weight
-
-        boolean convertCurrency = true;
-        if (doConversions.length > 0) {
-            convertCurrency = doConversions[0];
-        }
         double priceLower = unitPriceLower;
         double priceHigher = unitPriceUpper;
 
@@ -278,15 +273,8 @@ public class CassavaPriceDialogFragment extends DialogFragment {
         }
 
         minAmountUSD = priceLower; //minimum amount will be dynamic based on weight being sold, max amount will be constant
-        double localLower = mathHelper.convertToLocalCurrency(priceLower, currency, 100);
-        double localHigher = mathHelper.convertToLocalCurrency(priceHigher, currency, 100);
 
-        if (!convertCurrency) {
-            localLower = priceLower;
-            localHigher = priceHigher;
-        }
-
-        return context.getString(R.string.unit_price_label, localLower, localHigher, currency, uos);
+        return context.getString(R.string.unit_price_label, priceLower, priceHigher, currency, uos);
     }
 
 }

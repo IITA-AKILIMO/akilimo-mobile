@@ -262,6 +262,7 @@
     <string name="title_realistic_price">Provide realistic prices</string>
     <string name="lbl_realistic_price">Please provide realistic information to the best of your knowledge</string>
     <string name="lbl_investment_validation_msg">"Investment amount should be more or equal to %.2f %s"</string>
+    <string name="lbl_provide_valid_unit_price">Please provide a valid unit price</string>
 
 
 </resources>
