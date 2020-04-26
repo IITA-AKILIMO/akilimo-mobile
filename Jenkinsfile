@@ -94,7 +94,6 @@ pipeline {
         }
 
         stage('AAB Jar Signer') {
-        milestone()
           when {
             beforeAgent true
             branch 'master'
@@ -112,7 +111,6 @@ pipeline {
     }
 
     stage('Archive Artifacts') {
-    milestone()
       when {
         beforeAgent true
         branch 'master'
@@ -130,7 +128,6 @@ pipeline {
     stage('Upload production artifacts') {
       parallel {
         stage('aab upload') {
-        milestone()
           when {
             beforeAgent true
             branch 'master'
@@ -142,7 +139,6 @@ pipeline {
           }
         }
         stage('apk upload') {
-        milestone()
           when {
             beforeAgent true
             branch 'legacy/master'
@@ -155,6 +151,7 @@ pipeline {
         }
       }
     }
+
 
     stage('Fingerprint files') {
       when {
