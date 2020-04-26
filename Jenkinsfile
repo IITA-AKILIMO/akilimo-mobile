@@ -28,7 +28,6 @@ pipeline {
             }
         }
       steps {
-        milestone(ordinal:  Integer.parseInt(env.BUILD_ID), label: 'Run gradle tests')
         sh 'gradle test --no-daemon'
       }
     }
@@ -42,7 +41,6 @@ pipeline {
              }
          }
        steps {
-         milestone(ordinal:  Integer.parseInt(env.BUILD_ID), label: 'Run gradle lint')
          sh 'gradle lint -x test --no-daemon'
          androidLint(pattern: '**/lint-results*.xml')
        }
@@ -114,7 +112,6 @@ pipeline {
       }
       steps {
         script {
-          milestone(ordinal:  Integer.parseInt(env.BUILD_ID), label: 'Archive generated artifacts')
           archiveArtifacts allowEmptyArchive: true,
           artifacts: '**/*.apk, **/*.aab, app/build/**/mapping/**/*.txt, app/build/**/logs/**/*.txt'
         }
