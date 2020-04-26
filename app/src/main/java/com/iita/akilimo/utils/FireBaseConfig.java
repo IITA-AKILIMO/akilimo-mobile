@@ -45,7 +45,7 @@ public class FireBaseConfig {
                         String akilimo_api = mFireBaseRemoteConfig.getString("akilimo_api");
 
                         if (BuildConfig.DEBUG) {
-//                            akilimo_api = mFireBaseRemoteConfig.getString("akilimo_api_demo");
+                            akilimo_api = mFireBaseRemoteConfig.getString("akilimo_api_demo");
                             Toast.makeText(activity, "Data fetch succeeded and " + fetchIntervalInSeconds + " updated " + updated, Toast.LENGTH_SHORT).show();
                         }
 

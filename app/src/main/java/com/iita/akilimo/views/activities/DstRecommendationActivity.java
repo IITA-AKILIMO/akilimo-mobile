@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -157,7 +158,6 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
     public void onDismiss() {
         closeActivity(false);
     }
-
 
     private void loadingAndDisplayContent() {
         lyt_progress.setVisibility(View.VISIBLE);

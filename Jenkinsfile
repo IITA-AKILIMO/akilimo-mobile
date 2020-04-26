@@ -1,21 +1,22 @@
 pipeline {
   agent any
   environment{
-        VERSION_MAJOR ="11"
-        VERSION_MINOR ="0"
+        VERSION_MAJOR ='13'
+        VERSION_MINOR ='0'
 		CHANGELOG='''This update includes:
 - New content
 - New features
 - Bug fixes
 - Performance improvements'''
-
         KEYSTORE_FILE='D:\\gdrive\\keystores\\fertilizer.jks'
   }
   stages {
     stage('Starting up the pipeline') {
       steps {
-        sh 'env'
-        sh 'echo $BUILD_NUMBER'
+        sh 'printenv | sort'
+        sh 'git tag -d $(git tag)'
+        sh 'git fetch --tags'
+        sh 'git describe --tags $(git rev-list --tags --max-count=1)'
       }
     }
 
@@ -30,6 +31,7 @@ pipeline {
         sh 'gradle test --no-daemon'
       }
     }
+
 
     stage('Run linting for develop branch only') {
          when {
@@ -51,6 +53,9 @@ pipeline {
             beforeAgent true
             branch 'masters'
           }
+          environment {
+                RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
+           }
           steps {
             sh 'gradle assembleRelease -x test --no-daemon'
           }
@@ -61,6 +66,9 @@ pipeline {
             beforeAgent true
             branch 'master'
           }
+          environment {
+                RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
+           }
           steps {
             sh 'gradle bundleRelease -x test --no-daemon'
           }
@@ -120,7 +128,11 @@ pipeline {
           }
           steps {
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-                             text: $CHANGELOG]], trackName: 'production')
+                             text: '''This update includes:
+                                   - New content
+                                   - New features
+                                   - Bug fixes
+                                   - Performance improvements''']], trackName: 'production')
           }
         }
         stage('apk upload') {
@@ -130,11 +142,16 @@ pipeline {
           }
           steps {
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-                             text: $CHANGELOG]], trackName: 'production')
+                             text: '''This update includes:
+                                   - New content
+                                   - New features
+                                   - Bug fixes
+                                   - Performance improvements''']], trackName: 'production')
           }
         }
       }
     }
+
 
     stage('Fingerprint files') {
       when {
@@ -143,26 +160,6 @@ pipeline {
       }
       steps {
         fingerprint '**/build/outputs/**/*-release.*'
-      }
-    }
-
-    stage('Tag releases') {
-      when {
-        beforeAgent true
-        branch 'master'
-      }
-      steps {
-        sh 'git tag -a v$VERSION_MAJOR.$VERSION_MINOR.$BUILD_NUMBER $GIT_COMMIT -m "Jenkins-release-v$VERSION_MAJOR.$VERSION_MINOR.$BUILD_NUMBER"'
-      }
-    }
-
-    stage('Push tags') {
-      when {
-        beforeAgent true
-        branch 'master'
-      }
-      steps {
-        sh 'git push --tags'
       }
     }
 

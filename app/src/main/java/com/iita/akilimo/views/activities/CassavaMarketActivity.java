@@ -1,16 +1,11 @@
 package com.iita.akilimo.views.activities;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -30,25 +25,20 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.entities.CassavaMarketOutlet;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
-import com.iita.akilimo.interfaces.ICassavaPriceDismissListener;
+import com.iita.akilimo.interfaces.IPriceDialogDismissListener;
 import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.models.CassavaPrice;
-import com.iita.akilimo.models.InterCropFertilizer;
 import com.iita.akilimo.models.StarchFactory;
 import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
-import com.iita.akilimo.utils.FertilizerList;
-import com.iita.akilimo.utils.FireBaseEvents;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumCassavaProduceType;
-import com.iita.akilimo.utils.enums.EnumCountry;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 import com.iita.akilimo.utils.enums.EnumUnitPrice;
 import com.iita.akilimo.utils.enums.EnumUseCase;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.views.fragments.dialog.CassavaPriceDialogFragment;
-import com.iita.akilimo.views.fragments.dialog.FertilizerPriceDialogFragment;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -478,6 +468,7 @@ public class CassavaMarketActivity extends BaseActivity {
     }
 
 
+
     private void showUnitPriceDialog(String currency, String uos) {
         Bundle arguments = new Bundle();
         arguments.putString(CassavaPriceDialogFragment.CURRENCY_CODE, currency);
@@ -490,7 +481,7 @@ public class CassavaMarketActivity extends BaseActivity {
         CassavaPriceDialogFragment priceDialogFragment = new CassavaPriceDialogFragment();
         priceDialogFragment.setArguments(arguments);
 
-        priceDialogFragment.setOnDismissListener(new ICassavaPriceDismissListener() {
+        priceDialogFragment.setOnDismissListener(new IPriceDialogDismissListener() {
             @Override
             public void onDismiss(double selectedPrice, double selectedAveragePrice) {
                 exactPrice = selectedPrice;
@@ -509,5 +500,4 @@ public class CassavaMarketActivity extends BaseActivity {
             priceDialogFragment.show(getSupportFragmentManager(), CassavaPriceDialogFragment.ARG_ITEM_ID);
         }
     }
-
 }

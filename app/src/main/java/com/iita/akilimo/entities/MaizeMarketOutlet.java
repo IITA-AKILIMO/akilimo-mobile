@@ -20,7 +20,9 @@ public class MaizeMarketOutlet {
     private int produceRadioIndex;
     private int grainUnitRadioIndex;
     private int grainUnitPriceRadioIndex;
+
     private double exactPrice;
+    private double averagePrice;
 
     @Convert(converter = ProduceTypeConverter.class, dbType = String.class)
     private EnumMaizeProduceType enumMaizeProduceType;
@@ -60,7 +62,7 @@ public class MaizeMarketOutlet {
                 return EnumUnitPrice.UNKNOWN;
             }
             for (EnumUnitPrice produceType : EnumUnitPrice.values()) {
-                if (produceType.convertToLocalCurrency(EnumCountry.OTHERS.currency(),null) == databaseValue) {
+                if (produceType.convertToLocalCurrency(EnumCountry.OTHERS.currency(), null) == databaseValue) {
                     return produceType;
                 }
             }
@@ -69,7 +71,7 @@ public class MaizeMarketOutlet {
 
         @Override
         public Double convertToDatabaseValue(EnumUnitPrice entityProperty) {
-            return entityProperty == null ? null : entityProperty.convertToLocalCurrency(EnumCountry.OTHERS.currency(),null);
+            return entityProperty == null ? null : entityProperty.convertToLocalCurrency(EnumCountry.OTHERS.currency(), null);
         }
     }
 

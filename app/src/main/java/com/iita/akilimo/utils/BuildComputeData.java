@@ -181,7 +181,7 @@ public class BuildComputeData {
         }.getType();
 
         if (computeRequest.getInterCroppingPotatoRec() || computeRequest.getInterCroppingMaizeRec()) {
-            List<InterCropFertilizer> interCropFertilizers = objectBoxEntityProcessor.getAllIntercropFertilizersByCountry(countryCode);
+            List<InterCropFertilizer> interCropFertilizers = objectBoxEntityProcessor.getAllInterCropFertilizersByCountry(countryCode);
             fertilizerList = modelMapper.map(interCropFertilizers, listType);
         } else {
             fertilizerList = objectBoxEntityProcessor.getAvailableFertilizersByCountry(countryCode);
