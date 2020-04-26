@@ -33,6 +33,7 @@ pipeline {
       }
     }
 
+
     stage('Run linting for develop branch only') {
          when {
              beforeAgent true
