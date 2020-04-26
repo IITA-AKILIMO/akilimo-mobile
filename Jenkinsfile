@@ -12,7 +12,6 @@ pipeline {
   }
   stages {
     stage('Starting up the pipeline') {
-        milestone()
       steps {
         sh 'printenv | sort'
         sh 'git tag -d $(git tag)'
