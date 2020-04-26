@@ -65,6 +65,7 @@ public class FertilizersActivity extends BaseActivity {
 
     @BindView(R.id.lyt_progress)
     LinearLayout lyt_progress;
+
     @BindView(R.id.coordinatorLayout)
     CoordinatorLayout coordinatorLayout;
 
@@ -324,7 +325,7 @@ public class FertilizersActivity extends BaseActivity {
         if (count < minSelection) {
             //showCustomWarningDialog("Invalid selection", String.format(Locale.US, context.getString(R.string.lbl_min_selection), minSelection));
 
-            Snackbar snackbar = Snackbar.make(coordinatorLayout, String.format(Locale.US, context.getString(R.string.lbl_min_selection), minSelection), Snackbar.LENGTH_SHORT);
+            Snackbar snackbar = Snackbar.make(lyt_progress, String.format(Locale.US, context.getString(R.string.lbl_min_selection), minSelection), Snackbar.LENGTH_SHORT);
             snackbar.show();
         }
         return count >= minSelection;
