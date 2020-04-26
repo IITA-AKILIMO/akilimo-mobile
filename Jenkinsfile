@@ -13,6 +13,8 @@ pipeline {
       steps {
         sh 'printenv | sort'
         sh 'echo $BUILD_NUMBER'
+        sh 'git tag -d $(git tag)'
+        sh 'git fetch --tags'
       }
     }
 
@@ -22,7 +24,6 @@ pipeline {
          }
       steps {
         sh 'echo $RELEASE_VERSION'
-        sh 'git tag -d $(git tag)'
         sh 'git describe --tags $(git rev-list --tags --max-count=1)'
       }
     }
