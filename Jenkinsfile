@@ -1,24 +1,31 @@
 pipeline {
   agent any
   environment{
-        VERSION_MAJOR ="11"
-        VERSION_MINOR ="0"
 		CHANGELOG='''This update includes:
 - New content
 - New features
 - Bug fixes
 - Performance improvements'''
-
         KEYSTORE_FILE='D:\\gdrive\\keystores\\fertilizer.jks'
   }
   stages {
     stage('Starting up the pipeline') {
       steps {
-        sh 'env'
+        sh 'printenv | sort'
         sh 'echo $BUILD_NUMBER'
       }
     }
 
+    stage('Process git tags') {
+        environment {
+              RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
+         }
+      steps {
+        sh 'echo $RELEASE_VERSION'
+        sh 'git tag -d $(git tag)'
+        sh 'git describe --tags $(git rev-list --tags --max-count=1)'
+      }
+    }
     stage('Run test for non release branch') {
         when {
             beforeAgent true
