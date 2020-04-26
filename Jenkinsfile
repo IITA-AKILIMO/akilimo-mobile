@@ -20,7 +20,7 @@ pipeline {
       }
     }
 
-    stage('Run test for non release branch') {
+    stage('Run tests') {
         when {
             beforeAgent true
             not {
@@ -28,12 +28,12 @@ pipeline {
             }
         }
       steps {
-        milestone(label: "Run gradle tests")
+        milestone()
         sh 'gradle test --no-daemon'
       }
     }
 
-    stage('Run linting for develop branch only') {
+    stage('Run linting') {
          when {
              beforeAgent true
              anyOf {
@@ -41,7 +41,7 @@ pipeline {
              }
          }
        steps {
-         milestone(label: "Run gradle lint")
+         milestone()
          sh 'gradle lint -x test --no-daemon'
          androidLint(pattern: '**/lint-results*.xml')
        }
@@ -49,7 +49,7 @@ pipeline {
 
     stage('Build and generate artifacts') {
       parallel {
-        stage('generate android apk') {
+        stage('Generate APK') {
           when {
             beforeAgent true
             branch 'masters'
@@ -58,12 +58,12 @@ pipeline {
                 RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
            }
           steps {
-            milestone(label: "Run gradle APK assembler")
+            milestone()
             sh 'gradle assembleRelease -x test --no-daemon'
           }
         }
 
-        stage('generate android bundle') {
+        stage('Generate AAB') {
           when {
             beforeAgent true
             branch 'master'
@@ -72,7 +72,7 @@ pipeline {
                 RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
            }
           steps {
-            milestone(label: "Run gradle AAB assembler")
+            milestone()
             sh 'gradle bundleRelease -x test --no-daemon'
           }
         }
@@ -88,7 +88,7 @@ pipeline {
             branch 'legacy/master'
           }
           steps {
-            milestone(label: "Sign APK")
+            milestone()
             signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.apk', skipZipalign: true)
           }
         }
@@ -99,7 +99,7 @@ pipeline {
             branch 'master'
           }
           steps {
-            milestone(label: "Sign AAB")
+            milestone()
             withCredentials(bindings: [usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
               sh 'jarsigner -keystore $KEYSTORE_FILE -storepass $pass app/build/outputs/**/*/*-release.aab $alias'
             }
@@ -117,7 +117,7 @@ pipeline {
       }
       steps {
         script {
-          milestone(label: "Archive generated artifacts")
+          milestone()
           archiveArtifacts allowEmptyArchive: true,
           artifacts: '**/*.apk, **/*.aab, app/build/**/mapping/**/*.txt, app/build/**/logs/**/*.txt'
         }
@@ -133,7 +133,7 @@ pipeline {
             branch 'master'
           }
           steps {
-            milestone(label: "Upload APK")
+            milestone()
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
                              text: $CHANGELOG]], trackName: 'production')
           }
@@ -144,7 +144,7 @@ pipeline {
             branch 'legacy/master'
           }
           steps {
-            milestone(label: "Upload AAB")
+            milestone()
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
                              text: 'Bug fixes']], trackName: 'production')
           }
