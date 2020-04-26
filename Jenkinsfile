@@ -28,7 +28,7 @@ pipeline {
             }
         }
       steps {
-        milestone(ordinal:  Integer.parseInt(env.BUILD_ID) label: 'Run gradle tests')
+        milestone(ordinal:  Integer.parseInt(env.BUILD_ID), label: 'Run gradle tests')
         sh 'gradle test --no-daemon'
       }
     }
@@ -41,7 +41,7 @@ pipeline {
              }
          }
        steps {
-         milestone(ordinal:  Integer.parseInt(env.BUILD_ID) label: 'Run gradle lint')
+         milestone(ordinal:  Integer.parseInt(env.BUILD_ID), label: 'Run gradle lint')
          sh 'gradle lint -x test --no-daemon'
          androidLint(pattern: '**/lint-results*.xml')
        }
@@ -58,7 +58,7 @@ pipeline {
                 RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
            }
           steps {
-            milestone(ordinal:  Integer.parseInt(env.BUILD_ID) label: 'Run gradle APK assembler')
+            milestone(ordinal:  Integer.parseInt(env.BUILD_ID), label: 'Run gradle APK assembler')
             sh 'gradle assembleRelease -x test --no-daemon'
           }
         }
@@ -72,7 +72,7 @@ pipeline {
                 RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
            }
           steps {
-            milestone(ordinal:  Integer.parseInt(env.BUILD_ID) label: 'Run gradle AAB assembler')
+            milestone(ordinal:  Integer.parseInt(env.BUILD_ID), label: 'Run gradle AAB assembler')
             sh 'gradle bundleRelease -x test --no-daemon'
           }
         }
@@ -88,7 +88,7 @@ pipeline {
             branch 'legacy/master'
           }
           steps {
-            milestone(ordinal:  Integer.parseInt(env.BUILD_ID) label: 'Sign APK')
+            milestone(ordinal:  Integer.parseInt(env.BUILD_ID), label: 'Sign APK')
             signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.apk', skipZipalign: true)
           }
         }
@@ -99,7 +99,7 @@ pipeline {
             branch 'master'
           }
           steps {
-            milestone(ordinal:  Integer.parseInt(env.BUILD_ID) label: 'Sign AAB')
+            milestone(ordinal:  Integer.parseInt(env.BUILD_ID), label: 'Sign AAB')
             withCredentials(bindings: [usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
               sh 'jarsigner -keystore $KEYSTORE_FILE -storepass $pass app/build/outputs/**/*/*-release.aab $alias'
             }
@@ -117,7 +117,7 @@ pipeline {
       }
       steps {
         script {
-          milestone(ordinal:  Integer.parseInt(env.BUILD_ID) label: 'Archive generated artifacts')
+          milestone(ordinal:  Integer.parseInt(env.BUILD_ID), label: 'Archive generated artifacts')
           archiveArtifacts allowEmptyArchive: true,
           artifacts: '**/*.apk, **/*.aab, app/build/**/mapping/**/*.txt, app/build/**/logs/**/*.txt'
         }
@@ -133,7 +133,7 @@ pipeline {
             branch 'master'
           }
           steps {
-            milestone(ordinal:  Integer.parseInt(env.BUILD_ID) label: 'Upload APK')
+            milestone(ordinal:  Integer.parseInt(env.BUILD_ID), label: 'Upload APK')
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
                              text: $CHANGELOG]], trackName: 'production')
           }
@@ -144,7 +144,7 @@ pipeline {
             branch 'legacy/master'
           }
           steps {
-            milestone(ordinal:  Integer.parseInt(env.BUILD_ID) label: 'Upload AAB')
+            milestone(ordinal:  Integer.parseInt(env.BUILD_ID), label: 'Upload AAB')
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
                              text: 'Bug fixes']], trackName: 'production')
           }
