@@ -14,21 +14,12 @@ pipeline {
     stage('Starting up the pipeline') {
       steps {
         sh 'printenv | sort'
-        sh 'echo $BUILD_NUMBER'
         sh 'git tag -d $(git tag)'
         sh 'git fetch --tags'
+        sh 'git describe --tags $(git rev-list --tags --max-count=1)'
       }
     }
 
-    stage('Process git tags') {
-        environment {
-              RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
-         }
-      steps {
-        sh 'echo $RELEASE_VERSION'
-        sh 'gradle clean --no-daemon'
-      }
-    }
     stage('Run test for non release branch') {
         when {
             beforeAgent true
@@ -61,6 +52,9 @@ pipeline {
             beforeAgent true
             branch 'masters'
           }
+          environment {
+                RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
+           }
           steps {
             sh 'gradle assembleRelease -x test --no-daemon'
           }
@@ -71,6 +65,9 @@ pipeline {
             beforeAgent true
             branch 'master'
           }
+          environment {
+                RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
+           }
           steps {
             sh 'gradle bundleRelease -x test --no-daemon'
           }
@@ -130,7 +127,7 @@ pipeline {
           }
           steps {
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-                             text: '$CHANGELOG']], trackName: 'production')
+                             text: $CHANGELOG]], trackName: 'production')
           }
         }
         stage('apk upload') {
@@ -155,6 +152,7 @@ pipeline {
         fingerprint '**/build/outputs/**/*-release.*'
       }
     }
+
 
     stage('Tag releases') {
       when {
