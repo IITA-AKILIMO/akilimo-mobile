@@ -12,6 +12,7 @@ pipeline {
   }
   stages {
     stage('Starting up the pipeline') {
+        milestone()
       steps {
         sh 'printenv | sort'
         sh 'git tag -d $(git tag)'
@@ -21,6 +22,7 @@ pipeline {
     }
 
     stage('Run test for non release branch') {
+    milestone()
         when {
             beforeAgent true
             not {
@@ -33,6 +35,7 @@ pipeline {
     }
 
     stage('Run linting for develop branch only') {
+    milestone()
          when {
              beforeAgent true
              anyOf {
@@ -48,6 +51,7 @@ pipeline {
     stage('Build and generate artifacts') {
       parallel {
         stage('generate android apk') {
+        milestone()
           when {
             beforeAgent true
             branch 'masters'
@@ -61,6 +65,7 @@ pipeline {
         }
 
         stage('generate android bundle') {
+        milestone()
           when {
             beforeAgent true
             branch 'master'
@@ -79,6 +84,7 @@ pipeline {
     stage('Sign production binaries') {
       parallel {
         stage('apk signing') {
+        milestone()
           when {
             beforeAgent true
             branch 'legacy/master'
@@ -89,6 +95,7 @@ pipeline {
         }
 
         stage('AAB Jar Signer') {
+        milestone()
           when {
             beforeAgent true
             branch 'master'
@@ -105,6 +112,7 @@ pipeline {
     }
 
     stage('Archive Artifacts') {
+    milestone()
       when {
         beforeAgent true
         branch 'master'
@@ -121,6 +129,7 @@ pipeline {
     stage('Upload production artifacts') {
       parallel {
         stage('aab upload') {
+        milestone()
           when {
             beforeAgent true
             branch 'master'
@@ -131,6 +140,7 @@ pipeline {
           }
         }
         stage('apk upload') {
+        milestone()
           when {
             beforeAgent true
             branch 'legacy/master'
@@ -144,33 +154,13 @@ pipeline {
     }
 
     stage('Fingerprint files') {
+    milestone()
       when {
         beforeAgent true
         branch 'master'
       }
       steps {
         fingerprint '**/build/outputs/**/*-release.*'
-      }
-    }
-
-
-    stage('Tag releases') {
-      when {
-        beforeAgent true
-        branch 'master'
-      }
-      steps {
-        sh 'git tag -a v$VERSION_MAJOR.$VERSION_MINOR.$BUILD_NUMBER $GIT_COMMIT -m "Jenkins-release-v$VERSION_MAJOR.$VERSION_MINOR.$BUILD_NUMBER"'
-      }
-    }
-
-    stage('Push tags') {
-      when {
-        beforeAgent true
-        branch 'master'
-      }
-      steps {
-        sh 'git push --tags'
       }
     }
 
