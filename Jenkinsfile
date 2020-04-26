@@ -128,7 +128,11 @@ pipeline {
           }
           steps {
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-                             text: $CHANGELOG]], trackName: 'production')
+                             text: '''This update includes:
+                                   - New content
+                                   - New features
+                                   - Bug fixes
+                                   - Performance improvements''']], trackName: 'production')
           }
         }
         stage('apk upload') {
@@ -138,7 +142,11 @@ pipeline {
           }
           steps {
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-                             text: 'Bug fixes']], trackName: 'production')
+                             text: '''This update includes:
+                                   - New content
+                                   - New features
+                                   - Bug fixes
+                                   - Performance improvements''']], trackName: 'production')
           }
         }
       }
