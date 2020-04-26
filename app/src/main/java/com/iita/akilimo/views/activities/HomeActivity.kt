@@ -106,8 +106,8 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         fragmentArray.add(bioDataFragment)
         fragmentArray.add(CountryFragment.newInstance())
         fragmentArray.add(LocationFragment.newInstance())
-        fragmentArray.add(AreaUnitFragment.newInstance())
         fragmentArray.add(FieldInfoFragment.newInstance())
+        fragmentArray.add(AreaUnitFragment.newInstance())
         fragmentArray.add(FieldSizeFragment.newInstance())
         fragmentArray.add(CurrentPracticeFragment.newInstance())
         fragmentArray.add(SummaryFragment.newInstance())
@@ -162,7 +162,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
         viewPager.adapter = myViewPagerAdapter
         viewPager.offscreenPageLimit = 1
-        Tools.setSystemBarColor(activity, R.color.deep_orange_500)
+        Tools.setSystemBarColor(activity, R.color.deep_purple_600)
 
 
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -205,7 +205,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                     0 -> {
                         appUpdater.start()
                         btnStart.visibility = View.GONE
-                        Tools.setSystemBarColor(activity, R.color.deep_orange_500)
+                        Tools.setSystemBarColor(activity, R.color.deep_purple_600)
                     }
                     fragmentArray.size - 1 -> {
                         if (showProceedButton) {

@@ -137,14 +137,14 @@ public class FertilizersActivity extends BaseActivity {
 
     @Override
     protected void initComponent() {
-        btnSave.setText(context.getString(R.string.lbl_finish));
-        btnSave.setEnabled(false);
         recyclerView.setVisibility(View.GONE);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.addItemDecoration(new SpacingItemDecoration(2, Tools.dpToPx(this, 3), true));
         recyclerView.setHasFixedSize(true);
         mAdapter = new FertilizerGridAdapter(context);
         recyclerView.setAdapter(mAdapter);
+
+        btnSave.setText(context.getString(R.string.lbl_finish));
 
 
         mAdapter.setOnItemClickListener((view, clickedFertilizer, position) -> {
@@ -193,10 +193,15 @@ public class FertilizersActivity extends BaseActivity {
         initializeFertilizers();
 
         btnRetry.setOnClickListener(view -> initializeFertilizers());
-        btnSave.setOnClickListener(view -> closeActivity(false));
+        btnSave.setOnClickListener(view -> {
+            if (isMinSelected()) {
+                closeActivity(false);
+            }
+        });
         btnCancel.setOnClickListener(view -> closeActivity(false));
 
-        showCustomNotificationDialog();
+        //@TODO Consider activating this again?
+//        showCustomNotificationDialog();
     }
 
     @Override
@@ -204,7 +209,6 @@ public class FertilizersActivity extends BaseActivity {
         if (mAdapter != null) {
             availableFertilizersList = objectBoxEntityProcessor.getAvailableFertilizersByCountry(countryCode);
             mAdapter.setItems(availableFertilizersList);
-            btnSave.setEnabled(isMinSelected());
         }
     }
 

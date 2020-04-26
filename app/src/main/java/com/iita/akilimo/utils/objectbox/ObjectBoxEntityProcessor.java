@@ -141,6 +141,7 @@ public class ObjectBoxEntityProcessor {
     public void saveFertilizerList(final List<Fertilizer> selectedFertilizers) {
         try {
             final Box<Fertilizer> box = boxStore.boxFor(Fertilizer.class);
+            box.removeAll();
             box.put(selectedFertilizers);
         } catch (UniqueViolationException ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "Unique fertilizer saving violation!");
@@ -166,7 +167,6 @@ public class ObjectBoxEntityProcessor {
 
         return fertilizerTypeQueryBuilder
                 .equal(Fertilizer_.countryCode, countryCode)
-                .order(Fertilizer_.type) //default is ASCENDING
                 .build()
                 .find();
     }
@@ -178,7 +178,6 @@ public class ObjectBoxEntityProcessor {
 
         return fertilizerTypeQueryBuilder
                 .equal(Fertilizer_.countryCode, deviceIdentifier)
-                .order(Fertilizer_.type) //default is ASCENDING
                 .build()
                 .find();
     }
@@ -194,7 +193,7 @@ public class ObjectBoxEntityProcessor {
     }
 
     /* Begin saving for intercrop fertilizer */
-    public void saveIntercropFertilizerList(final List<InterCropFertilizer> selectedFertilizers) {
+    public void saveInterCropFertilizerList(final List<InterCropFertilizer> selectedFertilizers) {
         try {
             final Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
             box.put(selectedFertilizers);
@@ -204,7 +203,7 @@ public class ObjectBoxEntityProcessor {
         }
     }
 
-    public long saveSelectedIntercropFertilizer(@NonNull final InterCropFertilizer selectedFertilizer) {
+    public long saveSelectedInterCropFertilizer(@NonNull final InterCropFertilizer selectedFertilizer) {
         try {
             final Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
             return box.put(selectedFertilizer);
@@ -216,7 +215,7 @@ public class ObjectBoxEntityProcessor {
     }
 
 
-    public List<InterCropFertilizer> getAllIntercropFertilizersByCountry(@NonNull String countryCode) {
+    public List<InterCropFertilizer> getAllInterCropFertilizersByCountry(@NonNull String countryCode) {
         Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
         QueryBuilder<InterCropFertilizer> fertilizerTypeQueryBuilder = box.query();
 
@@ -226,7 +225,7 @@ public class ObjectBoxEntityProcessor {
                 .find();
     }
 
-    public List<InterCropFertilizer> getAvailableIntercropFertilizersByCountryUseCase(@NonNull String countryCode, EnumUseCase useCase) {
+    public List<InterCropFertilizer> getAvailableInterCropFertilizersByCountryUseCase(@NonNull String countryCode, @NonNull EnumUseCase useCase) {
         Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
         QueryBuilder<InterCropFertilizer> fertilizerTypeQueryBuilder = box.query();
 
@@ -237,7 +236,7 @@ public class ObjectBoxEntityProcessor {
                 .find();
     }
 
-    public List<InterCropFertilizer> getSelectedIntercropFertilizers(@NonNull String deviceIdentifier, EnumUseCase useCase) {
+    public List<InterCropFertilizer> getSelectedInterCropFertilizers(@NonNull String deviceIdentifier, @NonNull EnumUseCase useCase) {
         Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
 
         QueryBuilder<InterCropFertilizer> fertilizerTypeQueryBuilder = box.query();
@@ -246,12 +245,11 @@ public class ObjectBoxEntityProcessor {
 
         return fertilizerTypeQueryBuilder
                 .equal(InterCropFertilizer_.countryCode, deviceIdentifier)
-                .order(InterCropFertilizer_.type) //default is ASCENDING
                 .build()
                 .find();
     }
 
-    public Fertilizer getSavedInterCropFertilizer(@NonNull String typeName, @NonNull String countryCode, EnumUseCase useCase) {
+    public Fertilizer getSavedInterCropFertilizer(@NonNull String typeName, @NonNull String countryCode, @NonNull EnumUseCase useCase) {
         Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
 
         return box.query()
@@ -269,6 +267,9 @@ public class ObjectBoxEntityProcessor {
         return box.put(maizePerformanceModel);
     }
 
+
+    //@TODO Consider moving data source to the API
+    @Deprecated
     public MaizePerformance getMaizePerformance() {
         Box<MaizePerformance> box = boxStore.boxFor(MaizePerformance.class);
 
@@ -462,7 +463,7 @@ public class ObjectBoxEntityProcessor {
             box.removeAll();//clear the db first
             box.put(cassavaPriceList);
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving starch factories");
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving cassava prices");
             Crashlytics.logException(ex);
         }
     }
@@ -480,6 +481,34 @@ public class ObjectBoxEntityProcessor {
         Box<CassavaPrice> box = boxStore.boxFor(CassavaPrice.class);
         return box.query()
                 .equal(CassavaPrice_.priceId, priceTag)
+                .build()
+                .findFirst();
+    }
+
+    public void saveMaizePrice(List<MaizePrice> maizePriceList) {
+        try {
+            Box<MaizePrice> box = boxStore.boxFor(MaizePrice.class);
+            box.removeAll();//clear the db first
+            box.put(maizePriceList);
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving maize prices");
+            Crashlytics.logException(ex);
+        }
+    }
+
+    public List<MaizePrice> getMaizePrices(@NonNull String countryCode) {
+        Box<MaizePrice> box = boxStore.boxFor(MaizePrice.class);
+        return box.query()
+                .equal(MaizePrice_.country, countryCode)
+                .build()
+                .find();
+
+    }
+
+    public MaizePrice getSelectedMaizePriceByTag(String priceTag) {
+        Box<MaizePrice> box = boxStore.boxFor(MaizePrice.class);
+        return box.query()
+                .equal(MaizePrice_.priceId, priceTag)
                 .build()
                 .findFirst();
     }

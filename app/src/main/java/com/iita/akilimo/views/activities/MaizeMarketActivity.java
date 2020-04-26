@@ -1,37 +1,50 @@
 package com.iita.akilimo.views.activities;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.MaizeMarketOutlet;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
+import com.iita.akilimo.interfaces.IVolleyCallback;
+import com.iita.akilimo.models.MaizePrice;
+import com.iita.akilimo.rest.RestParameters;
+import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.MathHelper;
+import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumMaizeProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 import com.iita.akilimo.utils.enums.EnumUnitPrice;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
+import com.iita.akilimo.views.fragments.dialog.MaizePriceDialogFragment;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.List;
 
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 public class MaizeMarketActivity extends BaseActivity {
 
@@ -71,6 +84,7 @@ public class MaizeMarketActivity extends BaseActivity {
     private EnumMaizeProduceType enumMaizeProduceType;
     private EnumUnitOfSale enumUnitOfSale;
     private EnumUnitPrice enumUnitPrice;
+    private List<MaizePrice> maizePriceList = null;
     private boolean selectionMade = false;
 
     private int produceRadioIndex;
@@ -85,8 +99,10 @@ public class MaizeMarketActivity extends BaseActivity {
     private boolean grainPriceRequired;
     private boolean cobPriceRequired;
 
-    double unitPriceUSD = 0.0;
-    double unitPriceLocal = 0.0;
+    private double unitPriceUSD = 0.0;
+    private double exactPrice = 0.0;
+    private double averagePrice = 0.0;
+
     private double minAmountUSD = 5.00;
     private double maxAmountUSD = 500.00;
 
@@ -99,6 +115,7 @@ public class MaizeMarketActivity extends BaseActivity {
 
         context = this;
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
+        queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
 
         maizeMarketOutlet = objectBoxEntityProcessor.getMaizeMarketOutlet();
@@ -109,6 +126,50 @@ public class MaizeMarketActivity extends BaseActivity {
 
         initToolbar();
         initComponent();
+        processMaizePrices();
+    }
+
+    private void processMaizePrices() {
+        final RestService restService = RestService.getInstance(queue, this);
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final RestParameters restParameters = new RestParameters(
+                String.format("v3/maize-prices/country/%s", countryCode),
+                countryCode
+        );
+        restParameters.setInitialTimeout(5000);
+
+        restService.setParameters(restParameters);
+
+        restService.getJsonArrList(new IVolleyCallback() {
+            @Override
+            public void onSuccessJsonString(@NotNull String jsonStringResult) {
+            }
+
+            @Override
+            public void onSuccessJsonArr(@NotNull JSONArray jsonArray) {
+                try {
+                    maizePriceList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<MaizePrice>>() {
+                    });
+                    objectBoxEntityProcessor.saveMaizePrice(maizePriceList);
+                } catch (Exception ex) {
+                    Crashlytics.logException(ex);
+                    Crashlytics.log(ex.getMessage());
+                }
+            }
+
+            @Override
+            public void onSuccessJsonObject(@NotNull JSONObject jsonObject) {
+
+            }
+
+            @Override
+            public void onError(@NotNull VolleyError volleyError) {
+                String error = Tools.parseNetworkError(volleyError).getMessage();
+                if (error != null) {
+                    Snackbar.make(maizeCobPriceCard, error, Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     @Override
@@ -213,13 +274,10 @@ public class MaizeMarketActivity extends BaseActivity {
                 return;
             }
             if (exactPriceSelected) {
-                if (Strings.isEmptyOrWhitespace(grainPrice)) {
+                if (exactPrice <= 0) {
                     showCustomWarningDialog("Invalid grain price", "Please provide valid grain price", "OK");
                     return;
                 }
-                unitPriceLocal = mathHelper.convertToDouble(grainPrice);
-            } else {
-                unitPriceLocal = enumUnitPrice.convertToLocalCurrency(currency, mathHelper);
             }
             grainUnitRadioIndex = rdgUnitOfSaleGrain.getCheckedRadioButtonId();
             dataIsValid = true;
@@ -231,7 +289,7 @@ public class MaizeMarketActivity extends BaseActivity {
                 showCustomWarningDialog("Invalid cob price", "Please provide valid cob price", "OK");
                 return;
             }
-            unitPriceLocal = mathHelper.convertToDouble(cobPrice);
+            exactPrice = mathHelper.convertToDouble(cobPrice);
             dataIsValid = true;
         }
 
@@ -245,7 +303,7 @@ public class MaizeMarketActivity extends BaseActivity {
             maizeMarketOutlet.setEnumUnitPrice(enumUnitPrice);
             maizeMarketOutlet.setEnumUnitOfSale(enumUnitOfSale);
 
-            maizeMarketOutlet.setExactPrice(unitPriceLocal);
+            maizeMarketOutlet.setExactPrice(exactPrice);
             maizeMarketOutlet.setGrainUnitPriceRadioIndex(grainUnitPriceRadioIndex);
             maizeMarketOutlet.setGrainUnitRadioIndex(grainUnitRadioIndex);
             maizeMarketOutlet.setProduceRadioIndex(produceRadioIndex);
@@ -290,109 +348,33 @@ public class MaizeMarketActivity extends BaseActivity {
         return context.getString(R.string.unit_price_label, localLower, localHigher, currency, uos);
     }
 
+
     private void showUnitGrainPriceDialog(String currency, String uos) {
-        if (dialogOpen) {
-            return;
-        }
+        Bundle arguments = new Bundle();
+        arguments.putString(MaizePriceDialogFragment.CURRENCY_CODE, currency);
+        arguments.putString(MaizePriceDialogFragment.COUNTRY_CODE, countryCode);
+        arguments.putString(MaizePriceDialogFragment.UNIT_OF_SALE, uos);
+        arguments.putDouble(MaizePriceDialogFragment.SELECTED_PRICE, exactPrice);
+        arguments.putDouble(MaizePriceDialogFragment.AVERAGE_PRICE, averagePrice);
+        arguments.putParcelable(MaizePriceDialogFragment.ENUM_UNIT_OF_SALE, enumUnitOfSale);
 
-        final Dialog dialog = new Dialog(context);
+        MaizePriceDialogFragment priceDialogFragment = new MaizePriceDialogFragment();
+        priceDialogFragment.setArguments(arguments);
 
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
-        dialog.setContentView(R.layout.dialog_cassava_unit_price);
-        dialog.setCancelable(false);
-
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-
-        final TextView unitPriceTitle = dialog.findViewById(R.id.unitPriceTitle);
-        final EditText etUnitPrice = dialog.findViewById(R.id.etUnitPrice);
-        final RadioGroup rdgUnitPrice = dialog.findViewById(R.id.rdgUnitPrice);
-        //update the radiobutton labels
-        final RadioButton rd_20_30_price = dialog.findViewById(R.id.rd_20_30_price);
-        final RadioButton rd_30_50_price = dialog.findViewById(R.id.rd_30_50_price);
-        final RadioButton rd_50_100_price = dialog.findViewById(R.id.rd_50_100_price);
-        final RadioButton rd_100_150_price = dialog.findViewById(R.id.rd_100_150_price);
-        final RadioButton rd_150_200_price = dialog.findViewById(R.id.rd_150_200_price);
-        //update labels according to earlier selected values
-
-
-        if (exactPriceSelected || enumUnitPrice == EnumUnitPrice.PRICE_EXACT) {
-            etUnitPrice.setVisibility(View.VISIBLE);
-            etUnitPrice.setText(grainPrice);
-        }
-
-        unitPriceTitle.setText(String.format(getString(R.string.lbl_grain_unit_price_per), currency, unitOfSale));
-        try {
-            rd_20_30_price.setText(labelText(EnumUnitPrice.PRICE_RANGE_ONE.unitPricePerTonneLower(), EnumUnitPrice.PRICE_RANGE_ONE.unitPricePerTonneUpper(), currency, uos));
-            rd_30_50_price.setText(labelText(EnumUnitPrice.PRICE_RANGE_TWO.unitPricePerTonneLower(), EnumUnitPrice.PRICE_RANGE_TWO.unitPricePerTonneUpper(), currency, uos));
-            rd_50_100_price.setText(labelText(EnumUnitPrice.PRICE_RANGE_THREE.unitPricePerTonneLower(), EnumUnitPrice.PRICE_RANGE_THREE.unitPricePerTonneUpper(), currency, uos));
-            rd_100_150_price.setText(labelText(EnumUnitPrice.PRICE_RANGE_FOUR.unitPricePerTonneLower(), EnumUnitPrice.PRICE_RANGE_FOUR.unitPricePerTonneUpper(), currency, uos));
-            rd_150_200_price.setText(labelText(EnumUnitPrice.PRICE_RANGE_FIVE.unitPricePerTonneLower(), EnumUnitPrice.PRICE_RANGE_FIVE.unitPricePerTonneUpper(), currency, uos));
-        } catch (Exception ex) {
-            Timber.e(ex);
-        }
-
-        rdgUnitPrice.setOnCheckedChangeListener((group, radioIndex) -> {
-            etUnitPrice.setVisibility(View.GONE);
-            dataIsValid = false;
-            exactPriceSelected = false;
-            switch (radioIndex) {
-                case R.id.rd_20_30_price:
-                    enumUnitPrice = EnumUnitPrice.PRICE_RANGE_ONE;
-                    break;
-                case R.id.rd_30_50_price:
-                    enumUnitPrice = EnumUnitPrice.PRICE_RANGE_TWO;
-                    break;
-                case R.id.rd_50_100_price:
-                    enumUnitPrice = EnumUnitPrice.PRICE_RANGE_THREE;
-                    break;
-                case R.id.rd_100_150_price:
-                    enumUnitPrice = EnumUnitPrice.PRICE_RANGE_FOUR;
-                    break;
-                case R.id.rd_150_200_price:
-                    enumUnitPrice = EnumUnitPrice.PRICE_RANGE_FIVE;
-                    break;
-                case R.id.rd_exact_price:
-                    exactPriceSelected = true;
-                    enumUnitPrice = EnumUnitPrice.PRICE_EXACT;
-                    etUnitPrice.setVisibility(View.VISIBLE);
-                    break;
-            }
-        });
-        dialog.findViewById(R.id.bt_cancel).setOnClickListener(v -> {
-            dialog.dismiss();
-            dialogOpen = false;
-            if (grainUnitPriceRadioIndex <= 0) {
-                rdgUnitOfSaleGrain.clearCheck();
-            }
+        priceDialogFragment.setOnDismissListener((selectedPrice, selectedAveragePrice) -> {
+            exactPrice = selectedPrice;
+            averagePrice = selectedAveragePrice;
         });
 
-        dialog.findViewById(R.id.bt_submit).setOnClickListener(view -> {
-            if (enumUnitPrice == null) {
-                Snackbar.make(view, "Please enter a valid amount", Snackbar.LENGTH_LONG).show();
-                return;
+        FragmentTransaction fragmentTransaction;
+        if (getFragmentManager() != null) {
+            fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            Fragment prev = getSupportFragmentManager().findFragmentByTag(MaizePriceDialogFragment.ARG_ITEM_ID);
+            if (prev != null) {
+                fragmentTransaction.remove(prev);
             }
-            if (exactPriceSelected) {
-                grainPrice = etUnitPrice.getText().toString().trim();
-                if (Strings.isEmptyOrWhitespace(grainPrice)) {
-                    dataIsValid = false;
-                    Snackbar.make(view, "Please enter a valid amount", Snackbar.LENGTH_LONG).show();
-                    return;
-                }
-            } else {
-                grainPrice = "0";
-            }
-            grainUnitPriceRadioIndex = rdgUnitPrice.getCheckedRadioButtonId();
-            dialog.dismiss();
-            dialogOpen = false;
-        });
-
-
-        rdgUnitPrice.check(grainUnitPriceRadioIndex);
-        dialog.show();
-        dialog.getWindow().setAttributes(lp);
-        dialogOpen = true;
+            fragmentTransaction.addToBackStack(null);
+            priceDialogFragment.show(getSupportFragmentManager(), MaizePriceDialogFragment.ARG_ITEM_ID);
+        }
     }
 }
