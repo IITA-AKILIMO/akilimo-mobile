@@ -1,7 +1,7 @@
 pipeline {
   agent any
   environment{
-        VERSION_MAJOR ="11"
+        VERSION_MAJOR ="13"
         VERSION_MINOR ="0"
 		CHANGELOG='''This update includes:
 - New content
