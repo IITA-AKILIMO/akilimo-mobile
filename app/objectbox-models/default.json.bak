@@ -692,7 +692,7 @@
     },
     {
       "id": "33:5409424077027608847",
-      "lastPropertyId": "9:2902228431836835584",
+      "lastPropertyId": "10:3753761762578632092",
       "name": "MaizeMarketOutlet",
       "properties": [
         {
@@ -726,6 +726,10 @@
         {
           "id": "9:2902228431836835584",
           "name": "grainUnitPriceRadioIndex"
+        },
+        {
+          "id": "10:3753761762578632092",
+          "name": "averagePrice"
         }
       ],
       "relations": []

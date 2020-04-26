@@ -22,10 +22,11 @@ pipeline {
 
     stage('Process git tags') {
         environment {
-              VERSION_MINOR = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
+              RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
          }
       steps {
-        sh 'echo $VERSION_MINOR'
+        sh 'echo $RELEASE_VERSION'
+        sh 'gradle clean --no-daemon'
       }
     }
     stage('Run test for non release branch') {
@@ -36,7 +37,6 @@ pipeline {
             }
         }
       steps {
-           sh 'echo $VERSION_MINOR'
         sh 'gradle test --no-daemon'
       }
     }
