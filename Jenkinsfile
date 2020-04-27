@@ -149,16 +149,12 @@ pipeline {
     stage('Upload Build artifacts') {
       when {
         beforeAgent true
-        not {
-          branch 'master'
-        }
-
+        branch 'master'
       }
       environment {
         RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
       }
       steps {
-        sh 'gradle bundleRelease -x test --no-daemon'
         sh 'cp app/build/outputs/**/*.* uploads/'
         sh 'cp app/build/outputs/**/*/*.* uploads/'
         sh 'ghr -replace $RELEASE_VERSION uploads/'
