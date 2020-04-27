@@ -161,7 +161,7 @@ pipeline {
         sh 'gradle bundleRelease -x test --no-daemon'
         sh 'cp app/build/outputs/**/*.* uploads/'
         sh 'cp app/build/outputs/**/*/*.* uploads/'
-        sh 'ghr -replace $GIT_TAG uploads/'
+        sh 'ghr -replace $RELEASE_VERSION uploads/'
       }
     }
 
