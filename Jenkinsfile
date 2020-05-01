@@ -13,7 +13,7 @@ pipeline {
 
    stage('Notify telegram') {
       steps {
-        slackSend channel: '#release', message: 'Build Started for: $JOB_NAME $BUILD_NUMBER on branch $CHANGE_BRANCH'
+        slackSend channel: '#builds', message: 'Build Started for: $JOB_NAME $BUILD_NUMBER on branch ${CHANGE_BRANCH}'
       }
     }
 
