@@ -191,8 +191,8 @@ pipeline {
 
  post {
        always {
-            echo state
-             slackSend channel: '#builds', message: "Build $BUILD_NUMBER comlpeted ${state}"
+       echo currentBuild.result
+            slackSend channel: '#builds', message: "Build $BUILD_NUMBER comlpeted ${state}"
        }
        success {
            echo 'This will run only if successful'
