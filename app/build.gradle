@@ -60,9 +60,9 @@ android {
 }
 
 static def computeVersionName() {
-    def versionMajor = 12
-    def versionMinor = 1
-    def buildNumber = 1
+    def versionMajor = 13
+    def versionMinor = 3
+    def buildNumber = 0
 
     return String.format('%d.%d.%d', Integer.valueOf(System.env.VERSION_MAJOR ?: versionMajor),
             Integer.valueOf(System.env.VERSION_MINOR ?: versionMinor),
@@ -137,7 +137,10 @@ dependencies {
     implementation 'com.jakewharton:butterknife:10.2.1' //Butterknife library
     implementation 'org.modelmapper:modelmapper:2.3.7'
     implementation 'com.hbb20:ccp:2.3.7'
+
     implementation 'dev.b3nedikt.applocale:applocale:1.2.4' //App language switcher
+    implementation 'io.github.inflationx:viewpump:2.0.3'
+    implementation 'dev.b3nedikt.reword:reword:1.0.0'
 
     compileOnly 'org.projectlombok:lombok:1.18.12'
 
