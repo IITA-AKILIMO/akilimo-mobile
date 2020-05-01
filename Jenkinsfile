@@ -197,9 +197,6 @@ pipeline {
 
  post {
         always {
-        environment{
-            OUTCOME = currentBuild.result
-        }
             echo "${currentBuild.result} ${OUTCOME}"
         }
        regression {
