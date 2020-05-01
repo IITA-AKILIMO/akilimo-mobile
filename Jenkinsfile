@@ -11,6 +11,13 @@ pipeline {
       }
     }
 
+   stage('Notify telegram') {
+      steps {
+        telegramSend()
+        slackSend channel: '#release', message: 'Build Started: ${env.JOB_NAME} ${env.BUILD_NUMBER}'
+      }
+    }
+
     stage('Run test for non release branch') {
       when {
         beforeAgent true
