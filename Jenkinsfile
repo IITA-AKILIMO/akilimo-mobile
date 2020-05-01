@@ -197,7 +197,7 @@ pipeline {
 
  post {
         always {
-            echo "${currentBuild.result} ${OUTCOME}"
+            echo "Build result is " << currentBuild.result
         }
        regression {
             slackSend channel: '#builds', message: "Build $BUILD_NUMBER previous issue showed up again"
