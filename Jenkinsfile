@@ -1,15 +1,5 @@
 pipeline {
   agent any
-  environment{
-        VERSION_MAJOR ='13'
-        VERSION_MINOR ='0'
-		CHANGELOG='''This update includes:
-- New content
-- New features
-- Bug fixes
-- Performance improvements'''
-        KEYSTORE_FILE='D:\\gdrive\\keystores\\fertilizer.jks'
-  }
   stages {
     stage('Starting up the pipeline') {
       steps {
@@ -17,34 +7,36 @@ pipeline {
         sh 'git tag -d $(git tag)'
         sh 'git fetch --tags'
         sh 'git describe --tags $(git rev-list --tags --max-count=1)'
+        sh 'ghr --version'
       }
     }
 
     stage('Run test for non release branch') {
-        when {
-            beforeAgent true
-            not {
-                branch 'master'
-            }
+      when {
+        beforeAgent true
+        not {
+          branch 'master'
         }
+
+      }
       steps {
         sh 'gradle test --no-daemon'
       }
     }
 
-
     stage('Run linting for develop branch only') {
-         when {
-             beforeAgent true
-             anyOf {
-                 branch 'develop'
-             }
-         }
-       steps {
-         sh 'gradle lint -x test --no-daemon'
-         androidLint(pattern: '**/lint-results*.xml')
-       }
-     }
+      when {
+        beforeAgent true
+        anyOf {
+          branch 'develop'
+        }
+
+      }
+      steps {
+        sh 'gradle lint -x test --no-daemon'
+        androidLint(pattern: '**/lint-results*.xml')
+      }
+    }
 
     stage('Build and generate artifacts') {
       parallel {
@@ -54,8 +46,8 @@ pipeline {
             branch 'masters'
           }
           environment {
-                RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
-           }
+            RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
+          }
           steps {
             sh 'gradle assembleRelease -x test --no-daemon'
           }
@@ -67,8 +59,8 @@ pipeline {
             branch 'master'
           }
           environment {
-                RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
-           }
+            RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
+          }
           steps {
             sh 'gradle bundleRelease -x test --no-daemon'
           }
@@ -128,13 +120,14 @@ pipeline {
           }
           steps {
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-                             text: '''This update includes:
+                                         text: '''This update includes:
                                    - New content
                                    - New features
                                    - Bug fixes
                                    - Performance improvements''']], trackName: 'production')
           }
         }
+
         stage('apk upload') {
           when {
             beforeAgent true
@@ -142,16 +135,31 @@ pipeline {
           }
           steps {
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-                             text: '''This update includes:
+                                         text: '''This update includes:
                                    - New content
                                    - New features
                                    - Bug fixes
                                    - Performance improvements''']], trackName: 'production')
           }
         }
+
       }
     }
 
+    stage('Upload Build artifacts') {
+      when {
+        beforeAgent true
+        branch 'master'
+      }
+      environment {
+        RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
+      }
+      steps {
+        sh 'cp app/build/outputs/**/*.* uploads/'
+        sh 'cp app/build/outputs/**/*/*.* uploads/'
+        sh 'ghr -replace $RELEASE_VERSION uploads/'
+      }
+    }
 
     stage('Fingerprint files') {
       when {
@@ -168,5 +176,16 @@ pipeline {
         cleanWs()
       }
     }
+
+  }
+  environment {
+    VERSION_MAJOR = '13'
+    VERSION_MINOR = '0'
+    CHANGELOG = '''This update includes:
+- New content
+- New features
+- Bug fixes
+- Performance improvements'''
+    KEYSTORE_FILE = 'D:\\gdrive\\keystores\\fertilizer.jks'
   }
 }

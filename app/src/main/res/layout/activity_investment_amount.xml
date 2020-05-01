@@ -89,6 +89,14 @@
                     android:layout_height="wrap_content">
 
                     <RadioButton
+                        android:id="@+id/rd_exact_investment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:layout_marginBottom="@dimen/spacing_medium"
+                        android:text="@string/exact_investment_x_per_field_area" />
+
+                    <RadioButton
                         android:id="@+id/rd_25_per_acre"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -128,13 +136,7 @@
                         android:layout_marginBottom="@dimen/spacing_medium"
                         android:text="@string/inv_200_usd_per_acre" />
 
-                    <RadioButton
-                        android:id="@+id/rd_exact_investment"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_medium"
-                        android:layout_marginBottom="@dimen/spacing_medium"
-                        android:text="@string/exact_investment_x_per_field_area" />
+
 
                 </RadioGroup>
 
