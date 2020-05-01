@@ -201,10 +201,10 @@ pipeline {
           slackSend channel: '#builds', message: "Build $BUILD_NUMBER is failing, please check"
         }
        unstable {
-          slackSend channel: '#builds', message: "Build $BUILD_NUMBER is unstable
+          slackSend channel: '#builds', message: "Build $BUILD_NUMBER is unstable"
        }
        changed {
-        slackSend channel: '#builds', message: "Build $BUILD_NUMBER changed status to
+        slackSend channel: '#builds', message: "Build $BUILD_NUMBER changed status to"
        }
    }
 
