@@ -190,12 +190,18 @@ pipeline {
   }
 
  post {
-       always {
-       echo currentBuild.result
-            slackSend channel: '#builds', message: "Build $BUILD_NUMBER comlpeted ${state}"
+       regression {
+            slackSend channel: '#builds', message: "Build $BUILD_NUMBER previous issue showed up again"
        }
-       success {
-           echo 'This will run only if successful'
+       aborted {
+             slackSend channel: '#builds', message: "Build $BUILD_NUMBER was aborted"
+       }
+
+       unsuccessful {
+           slackSend channel: '#builds', message: "Build $BUILD_NUMBER was not successfull"
+       }
+       fixed {
+       slackSend channel: '#builds', message: "Build $BUILD_NUMBER has been fixed"
        }
        failure {
           slackSend channel: '#builds', message: "Build $BUILD_NUMBER is failing, please check"
@@ -204,7 +210,7 @@ pipeline {
           slackSend channel: '#builds', message: "Build $BUILD_NUMBER is unstable"
        }
        changed {
-        slackSend channel: '#builds', message: "Build $BUILD_NUMBER changed status to"
+        slackSend channel: '#builds', message: "Build $BUILD_NUMBER status changed"
        }
    }
 
