@@ -1,4 +1,7 @@
 pipeline {
+  environment {
+    KEYSTORE_FILE = 'D:\\gdrive\\keystores\\fertilizer.jks'
+  }
   agent any
   stages {
 
@@ -184,9 +187,6 @@ pipeline {
       }
     }
 
-  }
-  environment {
-    KEYSTORE_FILE = 'D:\\gdrive\\keystores\\fertilizer.jks'
   }
 
  post {
