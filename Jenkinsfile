@@ -181,6 +181,12 @@ pipeline {
       }
     }
 
+     stage('Upload build artifacts') {
+        steps {
+            slackUploadFile filePath: '**/build/outputs/**/*-release.aab', initialComment: 'Release binaries'
+        }
+      }
+
     stage('clean WS') {
       steps {
         cleanWs()
@@ -190,6 +196,9 @@ pipeline {
   }
 
  post {
+        always {
+            echo currentBuild.result
+        }
        regression {
             slackSend channel: '#builds', message: "Build $BUILD_NUMBER previous issue showed up again"
        }
@@ -198,14 +207,17 @@ pipeline {
        }
 
        unsuccessful {
-           slackSend channel: '#builds', message: "Build $BUILD_NUMBER was not successfull"
+           slackSend channel: '#builds', message: "Build $BUILD_NUMBER was not successful"
        }
+
        fixed {
        slackSend channel: '#builds', message: "Build $BUILD_NUMBER has been fixed"
        }
+
        failure {
           slackSend channel: '#builds', message: "Build $BUILD_NUMBER is failing, please check"
         }
+
        unstable {
           slackSend channel: '#builds', message: "Build $BUILD_NUMBER is unstable"
        }
