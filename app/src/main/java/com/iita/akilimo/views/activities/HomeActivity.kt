@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
+
 import butterknife.BindString
 import butterknife.ButterKnife
 import com.blogspot.atifsoftwares.animatoolib.Animatoo

@@ -85,7 +85,7 @@ def computeVersionCode() {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72"
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.2.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -99,8 +99,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-places:17.0.0'
-    implementation 'com.google.firebase:firebase-config:19.1.3'
-    implementation 'com.google.firebase:firebase-analytics:17.3.0'
+    implementation 'com.google.firebase:firebase-config:19.1.4'
+    implementation 'com.google.firebase:firebase-analytics:17.4.0'
     implementation 'com.google.android:flexbox:0.3.2'                   // google flexible box
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
@@ -115,8 +115,8 @@ dependencies {
 
     // third party dependencies -------------------------------------------------------------------
     implementation 'com.balysv:material-ripple:1.0.2'                   // ripple effect
-    implementation 'com.github.bumptech.glide:glide:4.10.0'              // image loader
-    implementation 'com.wdullaer:materialdatetimepicker:3.2.0'          // title & time picker
+    implementation 'com.github.bumptech.glide:glide:4.11.0'              // image loader
+    implementation 'com.wdullaer:materialdatetimepicker:4.2.3'          // title & time picker
     implementation 'com.mikhaellopez:circularimageview:3.2.0'           // circle image view
 //    implementation 'com.github.pchmn:MaterialChipsInput:1.0.5'          // material chip
 //    implementation 'com.hootsuite.android:nachos:1.1.1'                 // material chips
@@ -126,46 +126,35 @@ dependencies {
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.0' //feature discovery library
     implementation 'eu.the4thfloor.volley:com.android.volley:2015.05.28' //Volley library
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.10.0.pr1'
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.10.0.pr1'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.0.pr1'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.11.0'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.11.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.0'
     implementation 'com.nabinbhandari.android:permissions:3.7'
     implementation 'com.github.vipulasri:timelineview:1.1.1'
     implementation 'com.github.javiersantos:AppUpdater:2.7'
-    implementation 'com.googlecode.libphonenumber:libphonenumber:8.10.17'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.2'
     //https://stackoverflow.com/questions/44826452/highlight-new-feature-in-android
-    implementation 'com.jakewharton:butterknife:10.2.0' //Butterknife library
-    implementation 'org.modelmapper:modelmapper:2.3.5'
+    implementation 'com.jakewharton:butterknife:10.2.1' //Butterknife library
+    implementation 'org.modelmapper:modelmapper:2.3.7'
     implementation 'com.hbb20:ccp:2.3.7'
+    implementation 'dev.b3nedikt.applocale:applocale:1.2.4' //App language switcher
 
-    compileOnly 'org.projectlombok:lombok:1.18.10'
+    compileOnly 'org.projectlombok:lombok:1.18.12'
 
     //If you are using Kotlin, replace annotationProcessor with kapt.
-    annotationProcessor 'com.jakewharton:butterknife:10.2.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
-    annotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.10.0.pr1'
-    annotationProcessor 'org.projectlombok:lombok:1.18.10'
+    annotationProcessor 'com.jakewharton:butterknife:10.2.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+    annotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.11.0'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
-    testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.10.0.pr1'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.10'
+    testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.103'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
     testImplementation 'joda-time:joda-time:2.10.3'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     //debugImplementation because LeakCanary should only run in debug builds.
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
-}
-
-dependencies {
-    implementation 'androidx.legacy:legacy-support-v4:+'
-}
-
-dependencies {
-    implementation 'androidx.legacy:legacy-support-v4:+'
-}
-
-dependencies {
-    implementation 'androidx.legacy:legacy-support-v4:+'
 }

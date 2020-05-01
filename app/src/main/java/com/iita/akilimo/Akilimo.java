@@ -1,6 +1,7 @@
 package com.iita.akilimo;
 
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.multidex.BuildConfig;
 import androidx.multidex.MultiDexApplication;
 
 import com.crashlytics.android.Crashlytics;
