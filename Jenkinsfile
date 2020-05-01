@@ -7,7 +7,7 @@ pipeline {
 
      stage('Send build notification') {
         steps {
-          slackSend channel: '#builds', message: "Build Started for: $JOB_NAME $BUILD_NUMBER"
+          slackSend channel: '#builds', message: "Build: ${BUILD_NUMBER} started for branch: ${BRANCH_NAME}"
         }
       }
 
@@ -197,8 +197,10 @@ pipeline {
 
  post {
         always {
-
-            echo "{currentBuild.result}"
+        environment{
+            OUTCOME = currentBuild.result
+        }
+            echo "${currentBuild.result} ${OUTCOME}"
         }
        regression {
             slackSend channel: '#builds', message: "Build $BUILD_NUMBER previous issue showed up again"
