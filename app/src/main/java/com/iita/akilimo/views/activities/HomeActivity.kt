@@ -103,7 +103,8 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         fragmentArray.add(WelcomeFragment.newInstance())
         fragmentArray.add(InfoFragment.newInstance())
         /**
-         * @TODO check for updated content from christine
+         * @TODO Add privacy statement links to the app
+         * @body Check for updated content from christine.
          * @body The privacy statement should also be translated to the relevant languages
          */
 //        fragmentArray.add(PrivacyStatementFragment.newInstance())
