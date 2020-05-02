@@ -100,7 +100,6 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
         //Add the various fragments
         val bioDataFragment = BioDataFragment.newInstance()
-        fragmentArray.add(LanguagePickerFragment.newInstance())
         fragmentArray.add(WelcomeFragment.newInstance())
         fragmentArray.add(InfoFragment.newInstance())
         /**

@@ -142,6 +142,7 @@ dependencies {
     implementation 'dev.b3nedikt.applocale:applocale:1.2.4' //App language switcher
     implementation 'io.github.inflationx:viewpump:2.0.3'
     implementation 'dev.b3nedikt.reword:reword:1.0.0'
+    implementation 'com.akexorcist:localization:1.2.5'
 
     compileOnly 'org.projectlombok:lombok:1.18.12'
 
