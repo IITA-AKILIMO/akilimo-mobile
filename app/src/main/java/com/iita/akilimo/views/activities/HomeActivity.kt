@@ -334,12 +334,5 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             )
             Crashlytics.logException(ex)
         }
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        val k  = "678678"
     }
 }

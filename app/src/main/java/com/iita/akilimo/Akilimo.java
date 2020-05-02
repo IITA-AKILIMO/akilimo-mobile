@@ -5,10 +5,13 @@ import androidx.multidex.BuildConfig;
 import androidx.multidex.MultiDexApplication;
 
 import com.crashlytics.android.Crashlytics;
+import com.iita.akilimo.views.activities.LanguagePickerActivity;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Locale;
 
 import dev.b3nedikt.app_locale.AppLocale;
 import dev.b3nedikt.app_locale.AppLocaleRepository;
@@ -30,8 +33,14 @@ public class Akilimo extends MultiDexApplication {
         Fabric.with(this, new Crashlytics());
 
         AppLocale.setSupportedLocales(Locales.APP_LOCALES);
-        AppLocaleRepository appLocaleRepository = new SharedPrefsAppLocaleRepository(this);
-        AppLocale.setAppLocaleRepository(appLocaleRepository);
+        SharedPrefsAppLocaleRepository prefs = new SharedPrefsAppLocaleRepository(this);
+
+
+        AppLocale.setAppLocaleRepository(prefs); //persist changes
+        Locale desiredLocale = prefs.getDesiredLocale();
+        if (desiredLocale != null) {
+            AppLocale.setDesiredLocale(desiredLocale);
+        }
 
         ViewPump.init(ViewPump.builder()
                 .addInterceptor(RewordInterceptor.INSTANCE)

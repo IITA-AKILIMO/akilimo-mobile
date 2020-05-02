@@ -22,7 +22,7 @@
     <string name="title_weed_control">Weed operations</string>
     <string name="title_maize_intercropping">Intercropping with maize</string>
     <string name="title_sweet_potato_intercropping">Intercropping with sweet potato</string>
-
+    <string name="title_activity_language_picker">Select your language</string>
 
     <string name="lbl_start">Start</string>
     <string name="lbl_proceed">Proceed</string>
@@ -265,13 +265,5 @@
     <string name="lbl_realistic_price">Please provide realistic information to the best of your knowledge</string>
     <string name="lbl_investment_validation_msg">Investment amount should be more or equal to %.2f %s</string>
     <string name="lbl_provide_valid_unit_price">Please provide a valid unit price</string>
-    <string name="title_activity_language_picker">LanguagePickerActivity</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>
