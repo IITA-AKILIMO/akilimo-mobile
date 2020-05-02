@@ -151,7 +151,7 @@ dependencies {
     annotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.11.0'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
-    testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.103'
+    testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.11.0'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
     testImplementation 'joda-time:joda-time:2.10.3'
     testImplementation 'junit:junit:4.13'
