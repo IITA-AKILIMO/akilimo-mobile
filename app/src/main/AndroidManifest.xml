@@ -24,7 +24,10 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:icon, android:theme, android:label, android:allowBackup"
         tools:targetApi="m">
-
+        <activity
+            android:name=".views.activities.LanguagePickerActivity"
+            android:label="@string/title_activity_language_picker"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <service android:name=".services.GPSTracker" />
 
@@ -49,7 +52,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".views.activities.SweetPotatoMarketActivity"
             android:screenOrientation="portrait" />
@@ -86,7 +88,6 @@
         <activity
             android:name=".views.activities.MapBoxActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".views.activities.RootYieldActivity"
             android:screenOrientation="portrait" />
@@ -99,7 +100,6 @@
         <activity
             android:name=".views.activities.WeedControlCostsActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".views.activities.PlantingPracticesActivity"
             android:screenOrientation="portrait" />
