@@ -31,6 +31,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+import dev.b3nedikt.app_locale.AppLocale;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import io.objectbox.BoxStore;
 
 public abstract class BaseActivity extends AppCompatActivity {
@@ -69,15 +71,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         closeActivity(true);
     }
 
-//    @Override
-//    protected void attachBaseContext(Context newBase) {
-//        super.attachBaseContext(AppLocale.wrap(newBase));
-//    }
-//
-//    @Override
-//    public Resources getResources() {
-//        return AppLocale.wrap(getBaseContext()).getResources();
-//    }
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(AppLocale.wrap(newBase)));
+    }
+
+    @Override
+    public Resources getResources() {
+        return AppLocale.wrap(getBaseContext()).getResources();
+    }
 
 
     protected void closeActivity(boolean backPressed) {

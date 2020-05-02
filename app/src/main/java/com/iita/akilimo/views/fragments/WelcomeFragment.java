@@ -6,14 +6,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.iita.akilimo.R;
+import com.iita.akilimo.inherit.BaseFragment;
+
+import dev.b3nedikt.app_locale.AppLocale;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class WelcomeFragment extends Fragment {
+public class WelcomeFragment extends BaseFragment {
 
     public WelcomeFragment() {
         // Required empty public constructor
@@ -24,11 +29,19 @@ public class WelcomeFragment extends Fragment {
         return new WelcomeFragment();
     }
 
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_welcome, container, false);
     }
 
+    @Override
+    public void refreshData() {
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
 }

@@ -8,7 +8,14 @@ import com.crashlytics.android.Crashlytics;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
+import org.jetbrains.annotations.Nullable;
+
+import dev.b3nedikt.app_locale.AppLocale;
+import dev.b3nedikt.app_locale.AppLocaleRepository;
+import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
+import dev.b3nedikt.reword.RewordInterceptor;
 import io.fabric.sdk.android.Fabric;
+import io.github.inflationx.viewpump.ViewPump;
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidObjectBrowser;
 
@@ -21,6 +28,15 @@ public class Akilimo extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
+
+        AppLocale.setSupportedLocales(Locales.APP_LOCALES);
+        AppLocaleRepository appLocaleRepository = new SharedPrefsAppLocaleRepository(this);
+        AppLocale.setAppLocaleRepository(appLocaleRepository);
+
+        ViewPump.init(ViewPump.builder()
+                .addInterceptor(RewordInterceptor.INSTANCE)
+                .build()
+        );
         //@FIX This is used to enable proper vector support for android 4.4 and below, it causes crashing when firing up the application
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         JodaTimeAndroid.init(this);

@@ -20,6 +20,7 @@ import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import butterknife.BindString;
 import butterknife.ButterKnife;
+import dev.b3nedikt.reword.Reword;
 import io.objectbox.BoxStore;
 
 @SuppressWarnings("WeakerAccess")
@@ -72,6 +73,7 @@ public abstract class BaseFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = loadFragmentLayout(inflater, container, savedInstanceState);
 
+        Reword.reword(view);
         ButterKnife.bind(this, view);
 
         return view;
