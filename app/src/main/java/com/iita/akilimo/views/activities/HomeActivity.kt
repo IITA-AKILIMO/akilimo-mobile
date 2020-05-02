@@ -337,4 +337,9 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        val k  = "678678"
+    }
 }
