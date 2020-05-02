@@ -103,7 +103,11 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         fragmentArray.add(LanguagePickerFragment.newInstance())
         fragmentArray.add(WelcomeFragment.newInstance())
         fragmentArray.add(InfoFragment.newInstance())
-//        fragmentArray.add(PrivacyStatementFragment.newInstance()) //@TODO check for updated content from christine
+        /**
+         * @TODO check for updated content from christine
+         * @body The privacy statement should also be translated to the relevant languages
+         */
+//        fragmentArray.add(PrivacyStatementFragment.newInstance())
 
         fragmentArray.add(bioDataFragment)
         fragmentArray.add(CountryFragment.newInstance())
