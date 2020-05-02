@@ -53,12 +53,12 @@
     <string name="exact_acre_to_ha">Taja eneo halisi la shamba langu katika hekta</string>
 
 
-    <string name="quarter_acre_to_m2">Karibu 1,000 m \u00B2 (ekari 0.25)</string>
-    <string name="half_acre_to_m2">Karibu 2000 m \u00B2 (ekari 0.5)</string>
-    <string name="one_acre_to_m2">Karibu 4,000 m \u00B2 (ekari 1)</string>
-    <string name="one_half_acre_to_m2">Karibu 6,000 m \u00B2 (ekari 1.5)</string>
-    <string name="two_half_acre_to_m2">Karibu 10,000 m \u00B2 (ekari 2.5)</string>
-    <string name="exact_acre_to_m2">Taja eneo halisi la shamba langu katika m \\u00B2</string>
+    <string name="quarter_acre_to_m2">Karibu 1,000 m\u00B2 (ekari 0.25)</string>
+    <string name="half_acre_to_m2">Karibu 2000 m\u00B2 (ekari 0.5)</string>
+    <string name="one_acre_to_m2">Karibu 4,000 m\u00B2 (ekari 1)</string>
+    <string name="one_half_acre_to_m2">Karibu 6,000 m\u00B2 (ekari 1.5)</string>
+    <string name="two_half_acre_to_m2">Karibu 10,000 m\u00B2 (ekari 2.5)</string>
+    <string name="exact_acre_to_m2">Taja eneo halisi la shamba langu katika m\u00B2</string>
 
     <string name="lbl_salutation">Halo, ni vizuri kukutana nawe!</string>
     <string name="lbl_farm_location">Shamba lako la mihogo %1$s liko wapi?</string>
@@ -230,9 +230,9 @@
     <string name="lbl_female">Kike</string>
     <string name="lbl_save">Hifadhi</string>
     <string name="lbl_remove">Ondoa</string>
-    <string name="lbl_field_info">Ikiwa unajua ukubwa wa shamba lako kwa hekta, ekari au mita ya mraba, tafadhali endelea ukurasa unaofuata. Ikiwa sivyo, tunakushauri upakue kutoka GooglePlay n.k. \"GPS Fields Area Measure”, “Field Area Measure”, ambacho kitakusaidia kupima eneo la mzunguko wa  shamba lako.</string>
+    <string name="lbl_field_info">Ikiwa unajua ukubwa wa shamba lako kwa hekta, ekari au mita ya mraba, tafadhali endelea ukurasa unaofuata. Ikiwa sivyo, tunakushauri upakue kutoka GooglePlay n.k.\n"GPS Fields Area Measure”, “Field Area Measure”, ambacho kitakusaidia kupima eneo la mzunguko wa  shamba lako.</string>
 
-    <string name="lbl_location_sub_text">AKILIMO hukupa chaguzi kuashiria eneo lako la shamba. \\n Ikiwa uko kwenye shamba lako unapokuwa ukitumia programu, unashauriwa sana kuchagua chaguo Tumia eneo la sasa .\\n Ikiwa haupo shamba yako, tafadhali tumia Chagua eneo kwa mikono chaguo na zoom katika ramani kupata maeneo inayojulikana katika kitongoji chako cha shamba.</string>
+    <string name="lbl_location_sub_text">AKILIMO hukupa chaguzi kuashiria eneo lako la shamba.\nIkiwa uko kwenye shamba lako unapokuwa ukitumia programu, unashauriwa sana kuchagua chaguo Tumia eneo la sasa.\n Ikiwa haupo shamba yako, tafadhali tumia Chagua eneo kwa mikono chaguo na zoom katika ramani kupata maeneo inayojulikana katika kitongoji chako cha shamba.</string>
     <string name="title_your_field_size">Ukubwa wa shamba</string>
     <string name="lbl_ok">Sawa</string>
     <string name="title_realistic_price">Toa bei za kweli</string>
