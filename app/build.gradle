@@ -170,3 +170,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment:+'
     implementation 'androidx.navigation:navigation-ui:+'
 }
+
+dependencies {
+    implementation 'androidx.legacy:legacy-support-v4:+'
+}
