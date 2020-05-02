@@ -1,3 +1,6 @@
+PR_TITLE_REGEX: <PR Title Regex>
+COMMIT_MESSAGE_REGEX: <Commit Message Regex>
+
 todo:
   keyword: ["@todo", "TODO"]
   bodyKeyword: ["@body", "BODY"] # string|string[]
