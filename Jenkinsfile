@@ -28,7 +28,7 @@ pipeline {
 
       }
       steps {
-        sh 'gradle test'
+        sh 'gradle testRelease -x lint'
       }
     }
 
