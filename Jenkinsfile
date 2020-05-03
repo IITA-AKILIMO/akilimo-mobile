@@ -1,6 +1,16 @@
 pipeline {
+  environment {
+    KEYSTORE_FILE = 'D:\\gdrive\\keystores\\fertilizer.jks'
+  }
   agent any
   stages {
+
+     stage('Send build notification') {
+        steps {
+          slackSend channel: '#builds', message: "Build: ${BUILD_NUMBER} started for branch: ${BRANCH_NAME}"
+        }
+      }
+
     stage('Starting up the pipeline') {
       steps {
         sh 'printenv | sort'
@@ -171,6 +181,12 @@ pipeline {
       }
     }
 
+     stage('Upload build artifacts') {
+        steps {
+            slackUploadFile filePath: '**/build/outputs/**/*-release.aab', initialComment: 'Release binaries'
+        }
+      }
+
     stage('clean WS') {
       steps {
         cleanWs()
@@ -178,14 +194,34 @@ pipeline {
     }
 
   }
-  environment {
-    VERSION_MAJOR = '13'
-    VERSION_MINOR = '0'
-    CHANGELOG = '''This update includes:
-- New content
-- New features
-- Bug fixes
-- Performance improvements'''
-    KEYSTORE_FILE = 'D:\\gdrive\\keystores\\fertilizer.jks'
-  }
+
+ post {
+
+       regression {
+            slackSend channel: '#builds', message: "Build $BUILD_NUMBER previous issue showed up again ${currentBuild.result}"
+       }
+       aborted {
+             slackSend channel: '#builds', message: "Build $BUILD_NUMBER was aborted ${currentBuild.result}"
+       }
+
+       unsuccessful {
+           slackSend channel: '#builds', message: "Build $BUILD_NUMBER was not successful ${currentBuild.result}"
+       }
+
+       fixed {
+            slackSend channel: '#builds', message: "Build $BUILD_NUMBER has been fixed ${currentBuild.result}"
+       }
+
+       failure {
+          slackSend channel: '#builds', message: "Build $BUILD_NUMBER is failing, please check ${currentBuild.result}"
+        }
+
+       unstable {
+          slackSend channel: '#builds', message: "Build $BUILD_NUMBER is unstable ${currentBuild.result}"
+       }
+       changed {
+        slackSend channel: '#builds', message: "Build $BUILD_NUMBER status changed ${currentBuild.result}"
+       }
+   }
+
 }

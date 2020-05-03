@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
+
 import butterknife.BindString
 import butterknife.ButterKnife
 import com.blogspot.atifsoftwares.animatoolib.Animatoo
@@ -101,7 +102,12 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         val bioDataFragment = BioDataFragment.newInstance()
         fragmentArray.add(WelcomeFragment.newInstance())
         fragmentArray.add(InfoFragment.newInstance())
-//        fragmentArray.add(PrivacyStatementFragment.newInstance()) //@TODO check for updated content from christine
+        /**
+         * @TODO Add privacy statement links to the app
+         * @body Check for updated content from christine.
+         * @body The privacy statement should also be translated to the relevant languages
+         */
+//        fragmentArray.add(PrivacyStatementFragment.newInstance())
 
         fragmentArray.add(bioDataFragment)
         fragmentArray.add(CountryFragment.newInstance())
@@ -328,7 +334,5 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             )
             Crashlytics.logException(ex)
         }
-
     }
-
 }

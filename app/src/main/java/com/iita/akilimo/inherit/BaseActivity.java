@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -30,6 +31,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+import dev.b3nedikt.app_locale.AppLocale;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import io.objectbox.BoxStore;
 
 public abstract class BaseActivity extends AppCompatActivity {
@@ -67,6 +70,17 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onBackPressed();
         closeActivity(true);
     }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(AppLocale.wrap(newBase)));
+    }
+
+    @Override
+    public Resources getResources() {
+        return AppLocale.wrap(getBaseContext()).getResources();
+    }
+
 
     protected void closeActivity(boolean backPressed) {
         if (!backPressed) {

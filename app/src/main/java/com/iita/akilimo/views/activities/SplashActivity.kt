@@ -5,8 +5,11 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.crashlytics.android.Crashlytics
+import com.iita.akilimo.inherit.BaseActivity
+import com.iita.akilimo.utils.SessionManager
+import dev.b3nedikt.app_locale.AppLocale
 
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : BaseActivity() {
 
     companion object {
         val LOG_TAG = SplashActivity::class.java.simpleName
@@ -17,7 +20,7 @@ class SplashActivity : AppCompatActivity() {
         initComponent()
     }
 
-    fun initComponent() {
+    override fun initComponent() {
         try {
             val background = object : Thread() {
                 override fun run() {
@@ -32,9 +35,17 @@ class SplashActivity : AppCompatActivity() {
         }
     }
 
+    override fun validate(backPressed: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun initToolbar() {
+        TODO("Not yet implemented")
+    }
+
     private fun launchActivity() {
-        val intent = Intent(this@SplashActivity, HomeActivity::class.java)
-//        val intent = Intent(this@SplashActivity, InterCropRecActivity::class.java)
+//        val intent = Intent(this@SplashActivity, HomeActivity::class.java)
+        val intent = Intent(this@SplashActivity, LanguagePickerActivity::class.java)
         startActivity(intent)
         closeActivity()
     }

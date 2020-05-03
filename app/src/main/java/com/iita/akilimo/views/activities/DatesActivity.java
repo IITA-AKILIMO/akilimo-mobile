@@ -270,6 +270,7 @@ public class DatesActivity extends BaseActivity {
             datePicker.setMinDate(DateHelper.getFutureOrPastMonth(selectedPlantingDate, 8));
             datePicker.setMaxDate(DateHelper.getFutureOrPastMonth(selectedPlantingDate, 16));
         }
-        datePicker.show(getFragmentManager(), "DatePickerDialog");
+
+        datePicker.show(getSupportFragmentManager(), "DatePickerDialog");
     }
 }

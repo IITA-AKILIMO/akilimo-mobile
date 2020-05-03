@@ -89,7 +89,6 @@ public class FertilizersActivity extends BaseActivity {
     private List<FertilizerPrices> fertilizerPricesList = new ArrayList<>();
 
     private FertilizerGridAdapter mAdapter;
-    boolean isNavigationHide = false;
     int minSelection = 2;
 
     @Override
