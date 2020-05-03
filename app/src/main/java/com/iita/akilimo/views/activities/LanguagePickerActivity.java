@@ -3,10 +3,7 @@ package com.iita.akilimo.views.activities;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.View;
@@ -35,10 +32,13 @@ public class LanguagePickerActivity extends BaseActivity {
     @BindView(R.id.spinner)
     Spinner spinner;
 
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
+    @BindView(R.id.btnUpdateLanguage)
+    AppCompatButton btnUpdateLanguage;
+
+    private Locale selectedLocale = Locale.ENGLISH;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,51 +70,43 @@ public class LanguagePickerActivity extends BaseActivity {
         for (Locale locale : Locales.APP_LOCALES) {
             localeStrings.add(locale.getDisplayLanguage() + " " + locale.getCountry());
         }
-
         final SpinnerAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, localeStrings);
-
         spinner.setAdapter(adapter);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Locale selectedLocale = AppLocale.getSupportedLocales().get(1);
-                AppLocale.setDesiredLocale(selectedLocale);
-//                AppLocale.setCurrentLocale(selectedLocale);
-
-                SharedPrefsAppLocaleRepository prefs = new SharedPrefsAppLocaleRepository(LanguagePickerActivity.this);
-
-                prefs.setDesiredLocale(selectedLocale);
-                AppLocale.setAppLocaleRepository(prefs); //persist changes
-
-                Intent intent = new Intent(LanguagePickerActivity.this, HomeActivity.class);
-                startActivity(intent);
-                overridePendingTransition(0, 0);
-                finish();
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-            }
-        });
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                AppLocale.setDesiredLocale(AppLocale.getSupportedLocales().get(position));
-                // The layout containing the views you want to localize
-                final View rootView = getWindow().getDecorView().findViewById(android.R.id.content);
-                Reword.reword(rootView);
-
-                updateToolBarTitle();
+                selectedLocale = AppLocale.getSupportedLocales().get(position);
+                updateSelectedLocale(selectedLocale);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+        btnUpdateLanguage.setOnClickListener(v -> {
+            Intent intent = new Intent(LanguagePickerActivity.this, HomeActivity.class);
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+            finish();
+        });
+    }
+
+    private void updateSelectedLocale(Locale selectedLocale) {
+        AppLocale.setDesiredLocale(selectedLocale);
+        SharedPrefsAppLocaleRepository prefs = new SharedPrefsAppLocaleRepository(LanguagePickerActivity.this);
+        prefs.setDesiredLocale(selectedLocale);
+        AppLocale.setAppLocaleRepository(prefs); //persist changes
+
+        AppLocale.setDesiredLocale(selectedLocale);
+        // The layout containing the views you want to localize
+        final View rootView = getWindow().getDecorView().findViewById(android.R.id.content);
+        Reword.reword(rootView);
+        updateToolBarTitle();
     }
 
     @Override
     protected void validate(boolean backPressed) {
-
     }
 
     private void updateToolBarTitle() {
