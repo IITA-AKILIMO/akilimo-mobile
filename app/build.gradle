@@ -44,7 +44,7 @@ android {
         fatal("MissingTranslation", "HardcodedText")
         abortOnError false
 //        disable 'UselessParent', 'HardcodedText', 'LabelFor', 'UnusedResources'
-        disable 'InvalidPackage', 'UnusedResources', 'TrustAllX509TrustManager', 'LabelFor'
+        disable 'UselessParent','InvalidPackage', 'UnusedResources', 'TrustAllX509TrustManager', 'LabelFor'
     }
     dexOptions {
         javaMaxHeapSize "4g"
