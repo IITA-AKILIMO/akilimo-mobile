@@ -142,7 +142,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_small"
                 android:layout_marginBottom="@dimen/spacing_medium"
-                android:text="which of these tillage operations do you perform?"
+                android:text="@string/lbl_which_of_these_tillage_operations_do_you_perform"
                 android:textColor="@color/colorAccent" />
 
             <LinearLayout
@@ -156,7 +156,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_medium"
-                    android:text="Ploughing" />
+                    android:text="@string/lbl_ploughing" />
 
                 <View
                     android:layout_width="100dp"
@@ -167,7 +167,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_medium"
-                    android:text="Ridging" />
+                    android:text="@string/lbl_ridging" />
             </LinearLayout>
 
 

@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/ubuntu"
-            android:text="Do you have access to a tractor?"
+            android:text="@string/lbl_access_to_tractor"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
         <com.google.android.material.card.MaterialCardView
@@ -76,7 +76,7 @@
             android:layout_below="@+id/tractorCard"
             android:layout_marginTop="@dimen/spacing_medium"
             android:fontFamily="@font/ubuntu"
-            android:text="Which implements do you have access to?"
+            android:text="@string/lbl_which_implements_do_you_have_access_to"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:visibility="gone" />
 
@@ -105,14 +105,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/ubuntu"
-                    android:text="Plough" />
+                    android:text="@string/lbl_plough" />
 
                 <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/chkRidger"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/ubuntu"
-                    android:text="Ridger" />
+                    android:text="@string/lbl_ridger" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>

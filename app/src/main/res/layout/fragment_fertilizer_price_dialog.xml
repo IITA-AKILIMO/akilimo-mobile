@@ -38,7 +38,7 @@
             android:fontFamily="@font/ubuntu"
             android:lines="2"
             android:padding="@dimen/spacing_medium"
-            android:text="Fertilizer price" />
+            android:text="@string/lbl_fertilizer_price" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -57,7 +57,7 @@
                 android:id="@+id/exactPriceWrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Exact price"
+                android:hint="@string/lbl_exact_price"
                 android:imeOptions="actionDone"
                 android:visibility="gone">
 

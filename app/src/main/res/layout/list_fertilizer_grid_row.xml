@@ -39,7 +39,7 @@
                 android:fontFamily="@font/ubuntu"
                 android:gravity="center"
                 android:paddingBottom="@dimen/spacing_medium"
-                android:text="NPK 20:10:10"
+                android:text="@string/lbl_dummy_fertilizer"
                 android:textColor="@color/colorAccent" />
 
         </RelativeLayout>
@@ -67,7 +67,7 @@
                     android:fontFamily="@font/ubuntu_bold"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:text="Bag price"
+                    android:text="@string/lbl_bag_price"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
                     android:textColor="@color/white" />
 

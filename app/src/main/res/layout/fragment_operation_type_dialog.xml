@@ -38,7 +38,7 @@
             android:fontFamily="@font/ubuntu"
             android:lines="2"
             android:padding="@dimen/spacing_medium"
-            android:text="Fertilizer price" />
+            android:text="@string/lbl_fertilizer_price" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,13 +55,13 @@
                     android:id="@+id/rdMechanical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tractor" />
+                    android:text="@string/lbl_tractor" />
 
                 <RadioButton
                     android:id="@+id/rdManual"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Manual" />
+                    android:text="@string/lbl_manual" />
             </RadioGroup>
         </LinearLayout>
 
@@ -115,7 +115,7 @@
             android:layout_marginEnd="@dimen/spacing_xlarge"
             android:fontFamily="@font/ubuntu"
             android:padding="@dimen/spacing_medium"
-            android:text="Please select a proper operation type"
+            android:text="@string/lbl_operation_type_validation_message"
             android:textAlignment="center"
             android:textColor="@color/red_400"
             android:visibility="gone" />

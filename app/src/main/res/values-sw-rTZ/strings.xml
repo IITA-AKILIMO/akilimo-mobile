@@ -212,7 +212,7 @@
     <string name="lbl_manual_tillage_cost">Je! Ni gharama kiasi gani kulima kwa jembe la mkono % .2f %s?</string>
     <string name="lbl_manual_ridge_cost">Je! Inagharimu kiasi gani kuweka matuta kwa jembe la mkono %.2f %s?</string>
     <string name="lbl_tractor_plough_cost">Je! Inagharimu kiasi gani kulima %.2f %s kwa trekta?</string>
-    <string name="lbl_tractor_ridge_cost">Je! Inagharimu kiasi gani kuweka matuta kwa trekta?</string>
+    <string name="lbl_tractor_ridge_cost">Je! Inagharimu kiasi gani kuweka matuta %.2f %s kwa trekta?</string>
     <string name="lbl_specify_my_cost">Nataka kutaja gharama zangu</string>
     <string name="lbl_exact_cost">Gharama halisi</string>
     <string name="lbl_cost_of_first_weeding_operation">Gharama ya palizi la kwanza katika %s</string>

@@ -57,7 +57,7 @@
                 android:id="@+id/exactPriceWrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Exact price"
+                android:hint="@string/lbl_exact_price"
                 android:imeOptions="actionDone"
                 android:visibility="gone">
 

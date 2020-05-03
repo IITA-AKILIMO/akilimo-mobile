@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/ubuntu"
-                android:text="Do you want to receive recommendations via email and SMS?"
+                android:text="@string/lbl_do_you_want_to_receive_recommendations_via_email_and_sms"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.Medium.Bold"
                 android:textColor="@color/colorAccent" />
@@ -58,7 +58,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/ubuntu"
-                    android:hint="Email address (used to send recommendations)"
+                    android:hint="@string/lbl_email_address"
                     android:inputType="textEmailAddress"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
@@ -89,7 +89,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/ubuntu"
-                    android:hint="Phone number"
+                    android:hint="@string/lbl_phone_number"
                     android:inputType="phone" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -100,14 +100,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/ubuntu"
-                android:text="Receive email" />
+                android:text="@string/lbl_receive_email" />
 
             <CheckBox
                 android:id="@+id/chkSms"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/ubuntu"
-                android:text="Receive SMS" />
+                android:text="@string/lbl_receive_sms" />
 
 
             <include

@@ -50,7 +50,7 @@
                 android:layout_centerInParent="true"
                 android:layout_margin="@dimen/spacing_large"
                 android:fontFamily="@font/ubuntu"
-                android:text="Unable to load list of fertilizers, please try again"
+                android:text="@string/lbl_fertilizer_load_error"
                 android:textColor="@color/red_500"
                 android:visibility="visible" />
 
@@ -82,7 +82,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_large"
                     android:fontFamily="@font/ubuntu"
-                    android:text="Loading available fertilizers"
+                    android:text="@string/lbl_loading_fertilizers"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/grey_80" />
 

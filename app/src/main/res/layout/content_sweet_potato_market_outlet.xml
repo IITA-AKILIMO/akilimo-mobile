@@ -23,7 +23,7 @@
             android:layout_marginTop="@dimen/spacing_medium"
             android:fontFamily="@font/roboto_bold"
             android:visibility="gone"
-            android:text="How do you sell your sweet potato?"
+            android:text="@string/lbl_how_do_you_sell_your_sweet_potato"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
         <androidx.cardview.widget.CardView
@@ -56,7 +56,7 @@
                         android:id="@+id/rdTuber"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Tubers" />
+                        android:text="@string/lbl_tubers" />
 
                 </RadioGroup>
 
@@ -71,7 +71,7 @@
             android:layout_below="@+id/produceTypeCard"
             android:layout_marginTop="@dimen/spacing_medium"
             android:fontFamily="@font/roboto_bold"
-            android:text="Unit of sale of sweet potato"
+            android:text="@string/lbl_potato_sale_unit"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:visibility="visible" />
 
