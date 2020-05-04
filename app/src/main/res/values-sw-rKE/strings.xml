@@ -83,16 +83,6 @@
     <string name="lbl_best_planting_practices">Tabia bora za upandaji</string>
     <string name="lbl_weed_management">Usimamizi wa magugu</string>
 
-
-    <string-array name="recommendations">
-        <item>@ kamba /lbl_fertilizer_recommendations</item>
-        <item>@ kamba /lbl_intercropping_maize</item>
-        <item>@ kamba /lbl_intercropping_sweet_potato</item>
-        <item>@ kamba /lbl_scheduled_planting_and_harvest</item>
-        <item>@ kamba /lbl_weed_misanifu</item>
-    </string-array>
-
-
     <string name="lbl_available_fertilizers">Je! Ni mbolea gani inayopatikana kwako?</string>
     <string name="lbl_fertilizer_costs">Gharama za mbolea</string>
 
@@ -294,7 +284,7 @@
     <string name="lbl_add_ridging_costs">Ongeza gharama za kurudi</string>
     <string name="lbl_select_produce_type">Chagua aina ya mazao</string>
     <string name="lbl_roots">Mizizi</string>
-    <string name="lbl_flour">Flour</string>
+    <string name="lbl_flour">Unga</string>
     <string name="lbl_gari" translatable="false">Gari</string>
     <string name="lbl_first_manual_plough_op">Operesheni ya kwanza ya kulima, mwongozo kwa mkono</string>
     <string name="lbl_first_tractor_plough_op">Operesheni ya kwanza ya kulima, kwa kulima trekta</string>
