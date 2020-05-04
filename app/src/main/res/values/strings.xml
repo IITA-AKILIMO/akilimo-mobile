@@ -327,7 +327,7 @@
     <string name="lbl_receive_sms">Receive SMS</string>
     <string name="lbl_first_name">First Name</string>
     <string name="lbl_last_name">Last Name</string>
-    <string name="lbl_fram_name_title">If you have more than one farm, please give this farm a name</string>
+    <string name="lbl_farm_name_title">If you have more than one farm, please give this farm a name</string>
     <string name="lbl_email_address">Email address (used to send recommendations)</string>
     <string name="lbl_phone_number">Phone number</string>
     <string name="lbl_self_intro">Let us start by you telling me a bit about yourself</string>
@@ -343,7 +343,7 @@
     <string name="lbl_ploughing">Ploughing</string>
     <string name="lbl_ridging">Ridging</string>
     <string name="lbl_which_of_these_tillage_operations_do_you_perform">Which of these tillage operations do you perform?</string>
-    <string name="lbl_dummy_fertilizer">NPK 20:10:10</string>
+    <string name="lbl_dummy_fertilizer" translatable="false">NPK 20:10:10</string>
     <string name="lbl_options">Options</string>
     <string name="lbl_search">Search</string>
     <string name="lbl_settings">Settings</string>

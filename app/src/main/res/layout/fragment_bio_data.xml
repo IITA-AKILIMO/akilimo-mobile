@@ -144,7 +144,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/ubuntu"
-                                android:hint="@string/lbl_fram_name_title"
+                                android:hint="@string/lbl_farm_name_title"
                                 android:inputType="text"
                                 android:maxLines="1"
                                 android:singleLine="true"
