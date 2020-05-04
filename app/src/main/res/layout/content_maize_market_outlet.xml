@@ -22,7 +22,7 @@
             android:layout_below="@+id/starchFactoryCard"
             android:layout_marginTop="@dimen/spacing_medium"
             android:fontFamily="@font/roboto_bold"
-            android:text="How do you sell your maize produce?"
+            android:text="@string/lbl_maize_outlets"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
         <androidx.cardview.widget.CardView
@@ -54,13 +54,13 @@
                         android:id="@+id/rdFreshCobs"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Fresh cobs" />
+                        android:text="@string/lbl_fresh_cobs" />
 
                     <RadioButton
                         android:id="@+id/rdDryGrain"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Dry grain" />
+                        android:text="@string/lbl_dry_grain" />
 
                 </RadioGroup>
 
@@ -75,7 +75,7 @@
             android:layout_below="@+id/produceTypeCard"
             android:layout_marginTop="@dimen/spacing_medium"
             android:fontFamily="@font/roboto_bold"
-            android:text="Unit of sale of maize grain"
+            android:text="@string/lbl_maize_sale_unit"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:visibility="gone" />
 
@@ -138,7 +138,7 @@
             android:layout_below="@+id/unitOfSaleGrainCard"
             android:layout_marginTop="@dimen/spacing_medium"
             android:fontFamily="@font/roboto_bold"
-            android:text="At what price do you expect to sell 1 fresh cob?"
+            android:text="@string/lbl_fresh_cob_price"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:visibility="gone" />
 
@@ -167,7 +167,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="Price per cob"
+                    android:hint="@string/lbl_price_per_cob"
                     android:inputType="numberDecimal" />
 
                 <androidx.appcompat.widget.AppCompatTextView

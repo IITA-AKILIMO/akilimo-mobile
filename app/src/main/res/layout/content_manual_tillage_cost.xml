@@ -47,7 +47,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/ubuntu"
-                    android:text="Add ploughing cost"
+                    android:text="@string/lbl_add_ploughing_cost"
                     android:textAllCaps="false"
                     android:theme="@style/Button.Green" />
 
@@ -101,7 +101,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/ubuntu"
-                    android:text="Add ridging costs"
+                    android:text="@string/lbl_add_ridging_costs"
                     android:textAllCaps="false"
                     android:theme="@style/Button.Accent" />
 

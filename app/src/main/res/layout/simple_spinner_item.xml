@@ -6,7 +6,7 @@
     android:ellipsize="marquee"
     android:gravity="center_vertical"
     android:singleLine="true"
-    android:text="asdasdasd"
+    android:text="@string/app_name"
     android:fontFamily="@font/ubuntu"
     android:textAlignment="inherit"
     android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />

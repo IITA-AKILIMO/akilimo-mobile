@@ -80,9 +80,9 @@ public class OperationTypeDialogFragment extends DialogFragment {
 
         TextView lblFragmentTitle = dialog.findViewById(R.id.lblFragmentTitle);
         if (operation.equals("Plough")) {
-            lblFragmentTitle.setText("How do you perform your ploughing operations?");
+            lblFragmentTitle.setText(R.string.lbl_plough_op_type);
         } else if (operation.equals("Ridge")) {
-            lblFragmentTitle.setText("How do you perform your ridging operations?");
+            lblFragmentTitle.setText(R.string.lbl_ridge_op_type);
         }
 
         btnUpdate.setOnClickListener(view -> {

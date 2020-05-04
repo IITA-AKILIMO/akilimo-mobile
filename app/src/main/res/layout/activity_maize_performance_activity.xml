@@ -89,35 +89,35 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/ubuntu"
-                    android:text="About knee-height (~50 cm)" />
+                    android:text="@string/lbl_knee_height" />
 
                 <RadioButton
                     android:id="@+id/rdMaizeChestHigh"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/ubuntu"
-                    android:text="About chest-height (~150 cm)" />
+                    android:text="@string/lbl_chest_height" />
 
                 <RadioButton
                     android:id="@+id/rdMaizeYellowLeaves"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/ubuntu"
-                    android:text="Larger than a person (200 cm) but with yellowish leaves" />
+                    android:text="@string/lbl_yellowish_leaves" />
 
                 <RadioButton
                     android:id="@+id/rdMaizeGreenLeaves"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/ubuntu"
-                    android:text="Larger than a person (200 cm) but with somewhat green leaves" />
+                    android:text="@string/lbl_green_leaves" />
 
                 <RadioButton
                     android:id="@+id/rdMaizeDarkGreenLeaves"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/ubuntu"
-                    android:text="Larger than a person (200 cm) but with dark green leaves" />
+                    android:text="@string/lbl_dark_green_leaves" />
             </RadioGroup>
 
             <TextView

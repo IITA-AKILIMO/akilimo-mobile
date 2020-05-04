@@ -14,9 +14,7 @@ pipeline {
     stage('Starting up the pipeline') {
       steps {
         sh 'printenv | sort'
-        sh 'git tag -d $(git tag)'
         sh 'git fetch --tags'
-        sh 'git describe --tags $(git rev-list --tags --max-count=1)'
         sh 'ghr --version'
       }
     }
@@ -30,7 +28,7 @@ pipeline {
 
       }
       steps {
-        sh 'gradle test --no-daemon'
+        sh 'gradle testRelease -x lint'
       }
     }
 
@@ -43,7 +41,7 @@ pipeline {
 
       }
       steps {
-        sh 'gradle lint -x test --no-daemon'
+        sh 'gradle :app:lintDebug -x test'
         androidLint(pattern: '**/lint-results*.xml')
       }
     }
