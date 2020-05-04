@@ -22,7 +22,6 @@
     <string name="title_sweet_potato_intercropping">Mseto na viazi vitamu</string>
 
 
-
     <string name="lbl_start">Anza</string>
     <string name="lbl_proceed">Endelea</string>
     <string name="lbl_finish">Maliza</string>
@@ -74,7 +73,6 @@
     <string name="lbl_scheduled_planting_and_harvest">Utofauti wa kupanda na kuvuna</string>
     <string name="lbl_best_planting_practices">Tabia bora za upandaji</string>
     <string name="lbl_weed_management">Udhibiti wa magugu</string>
-
 
 
     <string name="lbl_available_fertilizers">Je! Ni mbolea gani inayopatikana kwako?</string>
@@ -202,6 +200,7 @@
 
 
     <string name="lbl_min_selection">Tafadhali chagua angalau mbolea %d</string>
+
     <string name="lbl_update">Sasisha</string>
     <string name="lbl_roots">Mizizi</string>
     <string name="lbl_unit_price">Kizio cha bei</string>

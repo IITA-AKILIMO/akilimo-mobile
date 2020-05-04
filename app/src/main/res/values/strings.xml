@@ -225,6 +225,7 @@
     <string name="bar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
 
     <string name="lbl_min_selection">Please select at least %d fertilizers</string>
+
     <string name="lbl_update">Update</string>
     <string name="lbl_unit_price">Unit price</string>
     <string name="lbl_currency_ngn" translatable="false">NGN</string>
