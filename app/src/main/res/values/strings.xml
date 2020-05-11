@@ -359,4 +359,7 @@
     <string name="lbl_location">Location</string>
     <string name="lbl_planting_date">Planting date</string>
     <string name="lbl_harvesting_date">Harvesting date</string>
+    <string name="lbl_no_ploughing">No ploughing</string>
+    <string name="lbl_no_ridging">No ridging</string>
+    <string name="lbl_timeline_title" translatable="false">%s:</string>
 </resources>

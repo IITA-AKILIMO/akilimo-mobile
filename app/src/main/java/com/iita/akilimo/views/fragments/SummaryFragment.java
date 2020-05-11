@@ -178,14 +178,14 @@ public class SummaryFragment extends BaseFragment {
             if (performPloughing) {
                 ploughStr.append(currentPractice.getPloughingMethod());
             } else {
-                ploughStr.append("No ploughing");
+                ploughStr.append(context.getString(R.string.lbl_no_ploughing));
             }
 
 
             if (performRidging) {
                 ridgeStr.append(currentPractice.getRidgingMethod());
             } else {
-                ridgeStr.append("No ridging");
+                ridgeStr.append(context.getString(R.string.lbl_no_ridging));
             }
         }
 
