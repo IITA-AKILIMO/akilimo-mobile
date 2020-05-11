@@ -100,9 +100,8 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
         //Add the various fragments
         val bioDataFragment = BioDataFragment.newInstance()
-        val userProfileFragment = UserProfileFragment.newInstance()
-//        fragmentArray.add(WelcomeFragment.newInstance())
-//        fragmentArray.add(InfoFragment.newInstance())
+        fragmentArray.add(WelcomeFragment.newInstance())
+        fragmentArray.add(InfoFragment.newInstance())
         /**
          * @TODO Add privacy statement links to the app
          * @body Check for updated content from christine.
@@ -110,8 +109,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
          */
 //        fragmentArray.add(PrivacyStatementFragment.newInstance())
 
-//        fragmentArray.add(userProfileFragment)
-//        fragmentArray.add(bioDataFragment)
+        fragmentArray.add(bioDataFragment)
         fragmentArray.add(CountryFragment.newInstance())
         fragmentArray.add(LocationFragment.newInstance())
         fragmentArray.add(FieldInfoFragment.newInstance())
@@ -278,7 +276,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                     } else {
                         Toast.makeText(
                             context,
-                            "Unable to fetch your current location, please try again",
+                            getString(R.string.lbl_location_error),
                             Toast.LENGTH_LONG
                         ).show()
                     }
@@ -322,7 +320,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             } else {
                 Toast.makeText(
                     this,
-                    "Press back again to exit",
+                    getString(R.string.lbl_exit_tip),
                     Toast.LENGTH_SHORT
                 ).show()
                 exit = true

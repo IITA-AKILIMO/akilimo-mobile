@@ -362,4 +362,6 @@
     <string name="lbl_no_ploughing">No ploughing</string>
     <string name="lbl_no_ridging">No ridging</string>
     <string name="lbl_timeline_title" translatable="false">%s:</string>
+    <string name="lbl_exit_tip">Press back again to exit</string>
+    <string name="lbl_location_error">Unable to fetch your current location, please try again</string>
 </resources>
