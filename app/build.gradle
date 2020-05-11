@@ -32,9 +32,10 @@ android {
             minifyEnabled false //for some strange reason minifying causes the code to flip
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-//        debug {
+        debug {
+            versionNameSuffix ".debug"
 //            pseudoLocalesEnabled true
-//        }
+        }
     }
 //    dataBinding {
 //        enabled = true

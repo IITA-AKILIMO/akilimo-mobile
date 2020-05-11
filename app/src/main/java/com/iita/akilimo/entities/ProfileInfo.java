@@ -25,6 +25,8 @@ public class ProfileInfo {
     public String fullMobileNumber;
     public String farmName;
     public String fieldDescription;
+    public String gender;
+
     public int selectedGenderIndex;
 
     @Getter(AccessLevel.NONE)
@@ -33,8 +35,6 @@ public class ProfileInfo {
     @Getter(AccessLevel.NONE)
     public boolean sendSms;
 
-    @Convert(converter = GenderConverter.class, dbType = String.class)
-    public EnumGender genderEnum;
 
     public boolean isSendEmail() {
         return this.sendEmail;
@@ -47,27 +47,5 @@ public class ProfileInfo {
 
     public String getNames() {
         return String.format("%s %s", this.firstName, this.lastName);
-    }
-
-    /* converter for custom data type*/
-    public static class GenderConverter implements PropertyConverter<EnumGender, String> {
-
-        @Override
-        public EnumGender convertToEntityProperty(String databaseValue) {
-            if (databaseValue == null) {
-                return EnumGender.OTHER;
-            }
-            for (EnumGender role : EnumGender.values()) {
-                if (role.name().equalsIgnoreCase(databaseValue)) {
-                    return role;
-                }
-            }
-            return EnumGender.OTHER;
-        }
-
-        @Override
-        public String convertToDatabaseValue(EnumGender entityProperty) {
-            return entityProperty == null ? null : entityProperty.name();
-        }
     }
 }

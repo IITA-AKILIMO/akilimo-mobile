@@ -84,7 +84,7 @@ public class UserProfileFragment extends BaseFragment {
     private String farmName;
     private String mobileCode;
     private String fullMobileNumber;
-    private EnumGender gender;
+    private String gender;
 
     public UserProfileFragment() {
         // Required empty public constructor
@@ -147,7 +147,7 @@ public class UserProfileFragment extends BaseFragment {
                 email = profileInfo.getEmail();
                 mobileCode = profileInfo.getMobileCode();
                 fullMobileNumber = profileInfo.getFullMobileNumber();
-                gender = profileInfo.getGenderEnum();
+                gender = profileInfo.getGender();
 
                 edtFirstName.setText(firstName);
                 edtLastName.setText(lastName);
@@ -201,7 +201,7 @@ public class UserProfileFragment extends BaseFragment {
             }
             profileInfo.setFirstName(firstName);
             profileInfo.setLastName(lastName);
-            profileInfo.setGenderEnum(gender);
+            profileInfo.setGender(gender);
             profileInfo.setEmail(email);
             profileInfo.setFarmName(farmName);
             profileInfo.setMobileCode(mobileCode);

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -34,6 +35,7 @@ import java.util.List;
 
 import butterknife.BindString;
 import butterknife.BindView;
+import dev.b3nedikt.app_locale.AppLocale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -83,8 +85,8 @@ public class BioDataFragment extends BaseFragment {
     private String farmName;
     private String mobileCode;
     private String fullMobileNumber;
+    private String gender;
     private int selectedGenderIndex = -1;
-    private EnumGender gender;
 
     public BioDataFragment() {
         // Required empty public constructor
@@ -112,15 +114,26 @@ public class BioDataFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         btnGetRec.setText(saveTitle);
 
-        final List<String> localeStrings = new ArrayList<>();
-        localeStrings.add(this.getString(R.string.lbl_male));
-        localeStrings.add(this.getString(R.string.lbl_female));
+        final List<String> genderStrings = new ArrayList<>();
+        genderStrings.add(this.getString(R.string.lbl_male));
+        genderStrings.add(this.getString(R.string.lbl_female));
 
-        final SpinnerAdapter adapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, localeStrings);
+        final SpinnerAdapter adapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, genderStrings);
         genderSpinner.setAdapter(adapter);
 
         btnGetRec.setOnClickListener(view1 -> saveBioData());
 
+        genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                gender = genderStrings.get(position);
+                selectedGenderIndex = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         ccp.setPhoneNumberValidityChangeListener(isValidNumber -> {
             dataIsValid = true;
@@ -147,7 +160,7 @@ public class BioDataFragment extends BaseFragment {
                 email = profileInfo.getEmail();
                 mobileCode = profileInfo.getMobileCode();
                 fullMobileNumber = profileInfo.getFullMobileNumber();
-                gender = profileInfo.getGenderEnum();
+                gender = profileInfo.getGender();
                 selectedGenderIndex = profileInfo.getSelectedGenderIndex();
 
                 lytFirstName.getEditText().setText(firstName);
@@ -206,7 +219,7 @@ public class BioDataFragment extends BaseFragment {
             }
             profileInfo.setFirstName(firstName);
             profileInfo.setLastName(lastName);
-            profileInfo.setGenderEnum(gender);
+            profileInfo.setGender(gender);
             profileInfo.setEmail(email);
             profileInfo.setFarmName(farmName);
             profileInfo.setMobileCode(mobileCode);
