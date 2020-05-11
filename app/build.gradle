@@ -144,6 +144,7 @@ dependencies {
     implementation 'io.github.inflationx:viewpump:2.0.3'
     implementation 'dev.b3nedikt.reword:reword:1.0.0'
     implementation 'com.akexorcist:localization:1.2.5'
+    implementation 'com.github.blongho:worldCountryData:1.5'
 
     compileOnly 'org.projectlombok:lombok:1.18.12'
 

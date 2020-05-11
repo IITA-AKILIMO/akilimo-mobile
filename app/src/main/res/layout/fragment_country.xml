@@ -22,7 +22,9 @@
             android:id="@+id/image"
             android:layout_width="wrap_content"
             android:layout_height="250dp"
+            android:contentDescription="@string/app_name"
             android:padding="@dimen/spacing_xlarge"
+            android:tint="@color/colorPrimary"
             app:srcCompat="@drawable/ic_world" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -34,27 +36,13 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@color/colorAccent" />
 
-        <RadioGroup
-            android:id="@+id/rdgCountry"
+        <Spinner
+            android:id="@+id/spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/fab_margin">
-
-            <RadioButton
-                android:id="@+id/rdNg"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto"
-                android:text="@string/lbl_nigeria" />
-
-            <RadioButton
-                android:id="@+id/rdTz"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto"
-                android:text="@string/lbl_tanzania" />
-
-        </RadioGroup>
+            android:layout_marginTop="@dimen/spacing_large"
+            android:spinnerMode="dialog"
+            tools:listitem="@android:layout/simple_dropdown_item_1line" />
 
     </LinearLayout>
 </RelativeLayout>

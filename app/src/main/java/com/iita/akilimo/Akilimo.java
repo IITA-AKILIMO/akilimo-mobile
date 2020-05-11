@@ -4,6 +4,7 @@ package com.iita.akilimo;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.multidex.MultiDexApplication;
 
+import com.blongho.country_data.World;
 import com.crashlytics.android.Crashlytics;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -46,5 +47,6 @@ public class Akilimo extends MultiDexApplication {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         JodaTimeAndroid.init(this);
         ObjectBox.init(this);
+        World.init(this);
     }
 }

@@ -12,8 +12,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
+import com.blongho.country_data.World;
 import com.iita.akilimo.Locales;
 import com.iita.akilimo.R;
+import com.iita.akilimo.adapters.MySpinnerAdapter;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.SessionManager;
 
@@ -40,6 +42,8 @@ public class LanguagePickerActivity extends BaseActivity {
 
     private Locale selectedLocale = Locale.ENGLISH;
 
+    private int selectedLanguageIndex = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,28 +58,33 @@ public class LanguagePickerActivity extends BaseActivity {
 
     @Override
     protected void initToolbar() {
-//        toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.title_activity_language_picker);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
-
-        // toolbar.setNavigationOnClickListener(v -> closeActivity(false));
     }
 
     @Override
     protected void initComponent() {
 
         final List<String> localeStrings = new ArrayList<>();
+        final List<Integer> countryImages = new ArrayList<>();
         for (Locale locale : Locales.APP_LOCALES) {
-            localeStrings.add(locale.getDisplayLanguage() + " " + locale.getCountry());
+            String languageCountry = locale.getCountry();
+            localeStrings.add(locale.getDisplayLanguage() + " " + languageCountry);
+            final int flag = World.getFlagOf(languageCountry);
+            countryImages.add(flag);
         }
         final SpinnerAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, localeStrings);
-        spinner.setAdapter(adapter);
+        final MySpinnerAdapter spinnerAdapter = new MySpinnerAdapter(this, localeStrings, countryImages);
+
+        spinner.setAdapter(spinnerAdapter);
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedLocale = AppLocale.getSupportedLocales().get(position);
+                selectedLanguageIndex = position;
+                selectedLocale = AppLocale.getSupportedLocales().get(selectedLanguageIndex);
                 updateSelectedLocale(selectedLocale);
             }
 
@@ -103,6 +112,7 @@ public class LanguagePickerActivity extends BaseActivity {
         final View rootView = getWindow().getDecorView().findViewById(android.R.id.content);
         Reword.reword(rootView);
         updateToolBarTitle();
+        spinner.setSelection(selectedLanguageIndex);
     }
 
     @Override

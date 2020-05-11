@@ -27,6 +27,7 @@ public class MandatoryInfo {
     private String countryName;
     private String currency;
     private int fieldSizeRadioIndex;
+    private int selectedCountryIndex;
 
     @Convert(converter = CountryConverter.class, dbType = String.class)
     public EnumCountry countryEnum;
