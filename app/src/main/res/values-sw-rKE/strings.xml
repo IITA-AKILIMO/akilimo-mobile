@@ -3,7 +3,7 @@
     <!--          https://asrt.gluege.boerde.de             -->
     <string name="app_name" translatable="false">AKILIMO</string>
     <string name="hello_blank_fragment" translatable="false">Initialize fragments</string>
-    <string name="empty_text" translatable="false"/>
+    <string name="empty_text" translatable="false" />
 
     <string name="welcome_title">Welcome to AKILIMO</string>
     <string name="welcome_instructions">Nitakusaidia na ushauri wa kibinafsi kukuza na kuboresha mavuno ya mihogo yako mara tu utanipatia habari muhimu.</string>
@@ -320,7 +320,8 @@
     <string name="lbl_first_name">Jina la kwanza</string>
     <string name="lbl_last_name">Jina la familia</string>
     <string name="lbl_farm_name_title">Ikiwa una shamba zaidi ya moja, tafadhali pea shamba hili jina</string>
-    <string name="lbl_email_address">Anwani ya barua pepe (iliyotumiwa kutuma maoni)</string>
+    <string name="lbl_email_address_hint">Anwani ya barua pepe (iliyotumiwa kutuma maoni)</string>
+    <string name="lbl_email_address">Anwani ya barua pepe</string>
     <string name="lbl_phone_number">Nambari ya simu</string>
     <string name="lbl_self_intro">Wacha tuanze kwa kuniambia kidogo juu yako mwenyewe</string>
     <string name="lbl_exact_price">Bei halisi</string>

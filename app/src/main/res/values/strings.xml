@@ -29,6 +29,7 @@
     <string name="lbl_finish">Finish</string>
 
     <string name="lbl_country_location">Nice to meet you %1$s.\nIn which country is your farm located?</string>
+    <string name="lbl_country">Country</string>
 
     <string name="lbl_nigeria" translatable="false">Nigeria</string>
     <string name="lbl_tanzania" translatable="false">Tanzania</string>
@@ -251,6 +252,8 @@
     <string name="lbl_valid_email_req">Please provide a valid email</string>
     <string name="lbl_first_name_req">Please provide your first name</string>
     <string name="lbl_valid_number_req">Please provide a valid phone number</string>
+    <string name="lbl_gender_prompt">Select gender</string>
+    <string name="lbl_gender">Gender</string>
     <string name="lbl_male">Male</string>
     <string name="lbl_female">Female</string>
     <string name="lbl_save">Save</string>
@@ -328,7 +331,8 @@
     <string name="lbl_first_name">First Name</string>
     <string name="lbl_last_name">Last Name</string>
     <string name="lbl_farm_name_title">If you have more than one farm, please give this farm a name</string>
-    <string name="lbl_email_address">Email address (used to send recommendations)</string>
+    <string name="lbl_email_address_hint">Email address (used to send recommendations)</string>
+    <string name="lbl_email_address">Email address</string>
     <string name="lbl_phone_number">Phone number</string>
     <string name="lbl_self_intro">Let us start by you telling me a bit about yourself</string>
     <string name="lbl_exact_price">Exact price</string>
