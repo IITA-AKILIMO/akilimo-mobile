@@ -16,7 +16,7 @@ android {
     def appVersionCode = computeVersionCode()
 
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    buildToolsVersion "29.0.3"
     defaultConfig {
         applicationId "com.iita.akilimo"
         minSdkVersion 19
@@ -29,12 +29,12 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false //for some strange reson minifying causes the code to flip
+            minifyEnabled false //for some strange reason minifying causes the code to flip
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-        debug {
-            pseudoLocalesEnabled true
-        }
+//        debug {
+//            pseudoLocalesEnabled true
+//        }
     }
 //    dataBinding {
 //        enabled = true
@@ -44,7 +44,7 @@ android {
 //        fatal("MissingTranslation", "HardcodedText")
         abortOnError false
 //        disable 'UselessParent', 'HardcodedText', 'LabelFor', 'UnusedResources'
-        disable 'UselessParent','InvalidPackage', 'UnusedResources', 'TrustAllX509TrustManager', 'LabelFor'
+//        disable 'UselessParent','InvalidPackage', 'UnusedResources', 'TrustAllX509TrustManager', 'LabelFor'
     }
     dexOptions {
         javaMaxHeapSize "4g"
@@ -60,7 +60,7 @@ android {
 }
 
 static def computeVersionName() {
-    def versionMajor = 13
+    def versionMajor = 14
     def versionMinor = 3
     def buildNumber = 0
 

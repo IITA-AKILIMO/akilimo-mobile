@@ -25,6 +25,7 @@ public class ProfileInfo {
     public String fullMobileNumber;
     public String farmName;
     public String fieldDescription;
+    public int selectedGenderIndex;
 
     @Getter(AccessLevel.NONE)
     public boolean sendEmail;

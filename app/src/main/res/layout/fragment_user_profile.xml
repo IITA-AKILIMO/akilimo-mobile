@@ -5,13 +5,12 @@
     android:id="@+id/nested_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.fragments.BioDataFragment">
+    tools:context=".views.fragments.UserProfileFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/spacing_xxxlarge"
         android:orientation="vertical"
         android:padding="@dimen/spacing_medium">
 
@@ -25,24 +24,24 @@
             android:textColor="@color/grey_40"
             app:fontFamily="sans-serif-medium" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_large"
-            android:text="@string/lbl_first_name"
-            android:textColor="@color/grey_40"
-            app:fontFamily="@font/ubuntu" />
 
-        <EditText
-            android:id="@+id/edtFirstName"
-            style="@style/EditText.Flat.Grey"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/lytFirstName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_large"
-            android:background="@drawable/edit_text_round_bg_outline"
-            android:hint="@string/lbl_first_name"
-            android:minHeight="@dimen/spacing_xmlarge" />
+            android:background="@color/transparent"
+            app:boxBackgroundColor="@color/transparent">
 
+            <EditText
+                android:id="@+id/edtFirstName"
+                style="@style/EditText.Flat.Grey"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:background="@drawable/edit_text_round_bg_outline"
+                android:hint="@string/lbl_first_name"
+                android:minHeight="@dimen/spacing_xmlarge" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:layout_width="wrap_content"

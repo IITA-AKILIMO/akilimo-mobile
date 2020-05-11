@@ -251,6 +251,7 @@
     <string name="lbl_weeding_cost_text">Cost of weeding %.2f %s %.2f %s</string>
     <string name="lbl_valid_email_req">Please provide a valid email</string>
     <string name="lbl_first_name_req">Please provide your first name</string>
+    <string name="lbl_last_name_req">Please provide your last name</string>
     <string name="lbl_valid_number_req">Please provide a valid phone number</string>
     <string name="lbl_gender_prompt">Select gender</string>
     <string name="lbl_gender">Gender</string>
@@ -330,6 +331,7 @@
     <string name="lbl_receive_sms">Receive SMS</string>
     <string name="lbl_first_name">First Name</string>
     <string name="lbl_last_name">Last Name</string>
+    <string name="lbl_farm_name">Farm a name</string>
     <string name="lbl_farm_name_title">If you have more than one farm, please give this farm a name</string>
     <string name="lbl_email_address_hint">Email address (used to send recommendations)</string>
     <string name="lbl_email_address">Email address</string>
