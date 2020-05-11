@@ -101,8 +101,8 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         //Add the various fragments
         val bioDataFragment = BioDataFragment.newInstance()
         val userProfileFragment = UserProfileFragment.newInstance()
-//        fragmentArray.add(WelcomeFragment.newInstance())
-//        fragmentArray.add(InfoFragment.newInstance())
+        fragmentArray.add(WelcomeFragment.newInstance())
+        fragmentArray.add(InfoFragment.newInstance())
         /**
          * @TODO Add privacy statement links to the app
          * @body Check for updated content from christine.
