@@ -124,7 +124,7 @@ public class MaizePerformanceActivity extends BaseActivity {
     protected void validate(boolean backPressed) {
 
         if (Strings.isEmptyOrWhitespace(selectedMaizePerformance) || Strings.isEmptyOrWhitespace(maizePerformanceValue)) {
-            showCustomWarningDialog("Invalid selection", "Please provide a valid maize performance selection");
+            showCustomWarningDialog(getString(R.string.lbl_invalid_selection), getString(R.string.lbl_maize_perfomance_prompt));
             return;
         }
 

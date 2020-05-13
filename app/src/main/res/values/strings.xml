@@ -396,4 +396,6 @@
     <string name="lbl_grain_price_prompt">Please provide valid grain price</string>
     <string name="lbl_invalid_cob_price">Invalid cob price</string>
     <string name="lbl_cob_price_prompt">Please provide valid cob price</string>
+    <string name="lbl_invalid_selection">Invalid selection</string>
+    <string name="lbl_maize_perfomance_prompt">Please provide a valid maize performance selection</string>
 </resources>
