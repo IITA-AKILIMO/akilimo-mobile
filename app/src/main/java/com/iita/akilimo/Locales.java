@@ -9,6 +9,8 @@ public class Locales {
     private static final Locale LOCAL_KE_SWA = new Locale("sw", "KE");
     private static final Locale LOCAL_NG_ENGLISH = new Locale("en", "NG");
 
-    public static final List<Locale> APP_LOCALES = Arrays.asList(Locale.ENGLISH, Locales.LOCAL_TZ_SWA, Locales.LOCAL_KE_SWA);
+    public static final List<Locale> APP_LOCALES = Arrays.asList(
+            Locale.ENGLISH,
+            Locales.LOCAL_TZ_SWA);
     public static final List<Locale> LOCALE_COUNTRIES = Arrays.asList(Locales.LOCAL_TZ_SWA, LOCAL_NG_ENGLISH);
 }
