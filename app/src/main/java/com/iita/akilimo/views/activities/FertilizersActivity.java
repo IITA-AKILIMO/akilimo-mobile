@@ -263,7 +263,7 @@ public class FertilizersActivity extends BaseActivity {
                 errorImage.setVisibility(View.VISIBLE);
                 btnRetry.setVisibility(View.VISIBLE);
 
-                Toast.makeText(context, "Unable to load fertilizer list", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, getString(R.string.lbl_fertilizer_load_error), Toast.LENGTH_LONG).show();
                 Crashlytics.log(Log.ERROR, LOG_TAG, "Fertilizer list not able to load");
                 Crashlytics.logException(volleyError);
             }
@@ -322,8 +322,6 @@ public class FertilizersActivity extends BaseActivity {
     private boolean isMinSelected() {
         int count = objectBoxEntityProcessor.getSelectedFertilizers(countryCode).size();
         if (count < minSelection) {
-            //showCustomWarningDialog("Invalid selection", String.format(Locale.US, context.getString(R.string.lbl_min_selection), minSelection));
-
             Snackbar snackbar = Snackbar.make(lyt_progress, String.format(Locale.US, context.getString(R.string.lbl_min_selection), minSelection), Snackbar.LENGTH_SHORT);
             snackbar.show();
         }
