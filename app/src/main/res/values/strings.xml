@@ -364,4 +364,16 @@
     <string name="lbl_timeline_title" translatable="false">%s:</string>
     <string name="lbl_exit_tip">Press back again to exit</string>
     <string name="lbl_location_error">Unable to fetch your current location, please try again</string>
+
+    <string name="lbl_back_instructions">Please use the press the home button to got back to the summary page</string>
+    <string name="lbl_invalid_factory">Invalid factory</string>
+    <string name="lbl_factory_prompt">Please select a starch factory</string>
+    <string name="lbl_invalid_produce">Invalid produce type</string>
+    <string name="lbl_produce_prompt">Please specify a valid produce type</string>
+    <string name="lbl_invalid_sale_unit">Invalid unit of sale</string>
+    <string name="lbl_sale_unit_prompt">Please specify a valid unit of sale</string>
+    <string name="lbl_invalid_unit_price">Invalid unit price</string>
+    <string name="lbl_unit_price_prompt">Please specify a valid unit price</string>
+    <string name="lbl_nothing">Nothing selected</string>
+    <string name="lbl_nothing_prompt">You have not made any selection</string>
 </resources>

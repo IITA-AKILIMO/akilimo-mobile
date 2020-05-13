@@ -380,7 +380,7 @@
     },
     {
       "id": "26:1174951136163288968",
-      "lastPropertyId": "20:8284809458317677927",
+      "lastPropertyId": "21:563398408001025907",
       "name": "MandatoryInfo",
       "properties": [
         {
@@ -438,6 +438,10 @@
         {
           "id": "20:8284809458317677927",
           "name": "fieldSizeRadioIndex"
+        },
+        {
+          "id": "21:563398408001025907",
+          "name": "selectedCountryIndex"
         }
       ],
       "relations": []

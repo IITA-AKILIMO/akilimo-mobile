@@ -23,34 +23,38 @@ public class MathHelper {
     }
 
     private String convertCurrency(String stringToSplit, String toCurrency) {
-        String joined;
+        String joined = "";
         String splitRegex = "TO";
         String[] bands;
 
-        if (stringToSplit.contains(toCurrency)) {
-            return stringToSplit;
+        try {
+            if (stringToSplit.contains(toCurrency)) {
+                return stringToSplit;
+            }
+
+            double rate1, rate2;
+            double band1, band2 = 0;
+
+            String str = Tools.replaceNonNumbers(stringToSplit, splitRegex);
+
+            bands = str.contains("TO") ? str.split(splitRegex) : new String[]{str, "0"};
+
+            band1 = Double.parseDouble(bands[0]);
+            if (bands.length == 2) {
+                band2 = Double.parseDouble(bands[1]);
+            }
+            if (band1 > 0 && band2 > 0) {
+                rate1 = convertToLocalCurrency(band1, toCurrency);
+                rate2 = convertToLocalCurrency(band2, toCurrency);
+                joined = formatNumber(rate1, null) + " - " + formatNumber(rate2, toCurrency);
+            } else {
+                rate1 = convertToLocalCurrency(band1, toCurrency);
+                joined = formatNumber(rate1, toCurrency);
+            }
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
+            Crashlytics.logException(ex);
         }
-
-        double rate1, rate2;
-        double band1, band2 = 0;
-
-        String str = Tools.replaceNonNumbers(stringToSplit, splitRegex);
-
-        bands = str.contains("TO") ? str.split(splitRegex) : new String[]{str, "0"};
-
-        band1 = Double.parseDouble(bands[0]);
-        if (bands.length == 2) {
-            band2 = Double.parseDouble(bands[1]);
-        }
-        if (band1 > 0 && band2 > 0) {
-            rate1 = convertToLocalCurrency(band1, toCurrency);
-            rate2 = convertToLocalCurrency(band2, toCurrency);
-            joined = formatNumber(rate1, null) + " - " + formatNumber(rate2, toCurrency);
-        } else {
-            rate1 = convertToLocalCurrency(band1, toCurrency);
-            joined = formatNumber(rate1, toCurrency);
-        }
-
         return joined;
     }
 

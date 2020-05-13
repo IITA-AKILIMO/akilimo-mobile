@@ -139,7 +139,7 @@ public class RecommendationsActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        Toast.makeText(context, "Please use the press the home button to got back to the summary page", Toast.LENGTH_SHORT)
+        Toast.makeText(context, R.string.lbl_back_instructions, Toast.LENGTH_SHORT)
                 .show();
     }
 
