@@ -190,7 +190,7 @@
     <string name="lbl_not_provided">Haijatolewa</string>
     <string name="lbl_summary_title">Hii ndio tunayo hadi sasa</string>
 
-    <string name="unit_price_label">% 1 $ ,. 0f -% 2 $ ,. 0f %3$s kwa %4$s</string>
+    <string name="unit_price_label">% 1$,.0f -%2$,.0f %3$s kwa %4$s</string>
 
     <string name="title_activity_dst_recommendation">Mapendekezo</string>
     <string name="lbl_get_recommendations">Pata mapendekezo</string>
