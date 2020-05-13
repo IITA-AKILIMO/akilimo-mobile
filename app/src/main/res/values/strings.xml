@@ -376,4 +376,10 @@
     <string name="lbl_unit_price_prompt">Please specify a valid unit price</string>
     <string name="lbl_nothing">Nothing selected</string>
     <string name="lbl_nothing_prompt">You have not made any selection</string>
+    <string name="lbl_invalid_planting_date">Invalid planting date</string>
+    <string name="lbl_planting_date_prompt">Please provide a valid planting date</string>
+    <string name="lbl_invalid_harvest_date">Invalid harvest date</string>
+    <string name="lbl_harvest_date_prompt">Please provide a valid harvest date</string>
+    <string name="lbl_unable_to_save">Unable to save</string>
+    <string name="lbl_date_save_error">Unable to save planting and harvest dates, please try again</string>
 </resources>
