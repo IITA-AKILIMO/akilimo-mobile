@@ -390,4 +390,10 @@
     <string name="lbl_no_recommendations_prompt">No recommendations, please provide more information to help us get better predictions</string>
     <string name="lbl_invalid_investment_amount">Invalid investment amount</string>
     <string name="lbl_investment_amount_prompt">Enter a valid investment amount</string>
+    <string name="lbl_maize_produce_prompt">Please indicate maize produce type</string>
+    <string name="lbl_maize_sale_unit_prompt">Please indicate maize unit of sale</string>
+    <string name="lbl_invalid_grain_price">Invalid grain price</string>
+    <string name="lbl_grain_price_prompt">Please provide valid grain price</string>
+    <string name="lbl_invalid_cob_price">Invalid cob price</string>
+    <string name="lbl_cob_price_prompt">Please provide valid cob price</string>
 </resources>

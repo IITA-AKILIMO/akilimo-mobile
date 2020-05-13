@@ -262,7 +262,7 @@ public class MaizeMarketActivity extends BaseActivity {
 
         dataIsValid = false;
         if (enumMaizeProduceType == null) {
-            showCustomWarningDialog("Invalid produce type", "Please indicate maize produce type", "OK");
+            showCustomWarningDialog(getString(R.string.lbl_invalid_produce), getString(R.string.lbl_maize_produce_prompt));
             return;
         }
 
@@ -270,12 +270,12 @@ public class MaizeMarketActivity extends BaseActivity {
 
         if (grainPriceRequired) {
             if (enumUnitOfSale == null) {
-                showCustomWarningDialog("Invalid unit of sale", "Please indicate maize unit of sale", "OK");
+                showCustomWarningDialog(getString(R.string.lbl_invalid_sale_unit), getString(R.string.lbl_maize_sale_unit_prompt));
                 return;
             }
             if (exactPriceSelected) {
                 if (exactPrice <= 0) {
-                    showCustomWarningDialog("Invalid grain price", "Please provide valid grain price", "OK");
+                    showCustomWarningDialog(getString(R.string.lbl_invalid_grain_price), getString(R.string.lbl_grain_price_prompt));
                     return;
                 }
             }
@@ -286,7 +286,7 @@ public class MaizeMarketActivity extends BaseActivity {
         if (cobPriceRequired) {
             cobPrice = editCobPrice.getText().toString();
             if (Strings.isEmptyOrWhitespace(cobPrice)) {
-                showCustomWarningDialog("Invalid cob price", "Please provide valid cob price", "OK");
+                showCustomWarningDialog(getString(R.string.lbl_invalid_cob_price), getString(R.string.lbl_cob_price_prompt));
                 return;
             }
             exactPrice = mathHelper.convertToDouble(cobPrice);
