@@ -231,7 +231,7 @@
     <string name="lbl_remove">Ondoa</string>
     <string name="lbl_field_info">Ikiwa unajua ukubwa wa shamba lako kwa hekta, ekari au mita ya mraba, tafadhali endelea ukurasa unaofuata. Ikiwa sivyo, tunakushauri upakue kutoka GooglePlay n.k.\n"GPS Fields Area Measure”, “Field Area Measure”, ambacho kitakusaidia kupima eneo la mzunguko wa  shamba lako.</string>
 
-    <string name="lbl_location_sub_text">AKILIMO hukupa chaguzi kuashiria eneo lako la shamba.\nIkiwa uko kwenye shamba lako unapokuwa ukitumia programu, unashauriwa sana kuchagua chaguo Tumia eneo la sasa.\n Ikiwa haupo shamba yako, tafadhali tumia Chagua eneo kwa mikono chaguo na zoom katika ramani kupata maeneo inayojulikana katika kitongoji chako cha shamba.</string>
+    <string name="lbl_location_sub_text">Ikiwa uko kwenye shamba lako unapokuwa ukitumia programu, unashauriwa sana kuchagua chaguo Tumia eneo la sasa.\n Ikiwa haupo shamba yako, tafadhali tumia Chagua eneo kwa mikono chaguo na zoom katika ramani kupata maeneo inayojulikana katika kitongoji chako cha shamba.</string>
     <string name="title_your_field_size">Ukubwa wa shamba</string>
     <string name="lbl_ok">Sawa</string>
     <string name="title_realistic_price">Toa bei za kweli</string>
@@ -249,9 +249,9 @@
     <string name="lbl_planting_date">Tarehe ya kupanda</string>
     <string name="lbl_harvesting_date">Tarehe ya kuvuna</string>
     <string name="lbl_location">Mahali</string>
-    <string name="lbl_gender">Jinsia</string>
     <string name="lbl_farm_name">Jina la shamba</string>
     <string name="lbl_gender_prompt">Chagua jinsia</string>
+    <string name="lbl_gender">Changua jinsia</string>
     <string name="lbl_last_name_req">Tafadhali toa jina lako la mwisho</string>
     <string name="lbl_settings">Mipangilio</string>
     <string name="lbl_search">Tafuta</string>

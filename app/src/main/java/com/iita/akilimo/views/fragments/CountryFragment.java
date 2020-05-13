@@ -116,15 +116,15 @@ public class CountryFragment extends BaseFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedCountryIndex = position;
-                String selectedCountry = countries.get(position);
+                String selectedCountry = countries.get(position).toLowerCase();
                 switch (selectedCountry) {
-                    case "KE":
+                    case "kenya":
                         countryEnum = EnumCountry.KENYA;
                         break;
-                    case "TZ":
+                    case "tanzania":
                         countryEnum = EnumCountry.TANZANIA;
                         break;
-                    case "NG":
+                    case "nigeria":
                         countryEnum = EnumCountry.NIGERIA;
                         break;
                     default:
@@ -141,6 +141,7 @@ public class CountryFragment extends BaseFragment {
     }
 
     private void updateSelectedCountry(EnumCountry countryEnum, int selectedCountryIndex) {
+        mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
         if (mandatoryInfo == null) {
             mandatoryInfo = new MandatoryInfo();
         }
