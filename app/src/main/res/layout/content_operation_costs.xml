@@ -46,7 +46,7 @@
         android:id="@+id/input_layout_second_manual"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/lbl_second_manual_plugh_op">
+        android:hint="@string/lbl_second_manual_plough_op">
 
         <EditText
             android:id="@+id/txtManualSecondOp"

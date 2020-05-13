@@ -270,7 +270,7 @@
     <string name="lbl_flour">Unga</string>
     <string name="lbl_first_manual_plough_op">Operesheni ya kwanza ya kulima, mwongozo kwa mkono</string>
     <string name="lbl_first_tractor_plough_op">Operesheni ya kwanza ya kulima, kwa kulima trekta</string>
-    <string name="lbl_second_manual_plugh_op">Operesheni ya pili ya kulima, mwongozo kwa mkono</string>
+    <string name="lbl_second_manual_plough_op">Operesheni ya pili ya kulima, mwongozo kwa mkono</string>
     <string name="lbl_second_tractor_plough_op">Operesheni ya pili ya kulima, kwa kulima trekta</string>
     <string name="lbl_tractor_harrow_op">Kutambaa, na trela ya trekta</string>
     <string name="lbl_manual_ridging_op">Mzunguko, mwongozo kwa mkono</string>

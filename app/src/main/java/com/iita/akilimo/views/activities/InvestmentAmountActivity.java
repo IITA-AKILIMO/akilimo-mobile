@@ -66,10 +66,13 @@ public class InvestmentAmountActivity extends BaseActivity {
     MaterialButton btnFinish;
 
 
+    @BindString(R.string.lbl_investment_amount_prompt)
+    String investmentAmountError;
+
     MathHelper mathHelper;
     private boolean isExactAmount;
     private boolean hasErrors;
-    private String investmentAmountError = "Enter a valid investment amount";
+
     private String fieldAreaAcre;
     private String fieldArea;
 
@@ -106,7 +109,7 @@ public class InvestmentAmountActivity extends BaseActivity {
             if (!hasErrors) {
                 closeActivity(false);
             } else {
-                showCustomWarningDialog("Invalid investment amount", investmentAmountError);
+                showCustomWarningDialog(getString(R.string.lbl_invalid_investment_amount), investmentAmountError);
             }
         });
     }
@@ -160,7 +163,7 @@ public class InvestmentAmountActivity extends BaseActivity {
         btnFinish.setOnClickListener(view -> {
             validateInvestmentAmount();
             if (hasErrors) {
-                showCustomWarningDialog("Invalid investment amount", investmentAmountError);
+                showCustomWarningDialog(getString(R.string.lbl_invalid_investment_amount), investmentAmountError);
                 return;
             }
 
