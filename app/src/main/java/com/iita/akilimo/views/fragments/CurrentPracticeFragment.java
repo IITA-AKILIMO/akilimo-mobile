@@ -195,7 +195,7 @@ public class CurrentPracticeFragment extends BaseFragment {
         }
         fragmentTransaction.addToBackStack(null);
         operationTypeDialogFragment.show(getParentFragmentManager(), OperationTypeDialogFragment.ARG_ITEM_ID);
-    
+
 
         operationTypeDialogFragment.setOnDismissListener((operation, enumOperationType, cancelled) -> {
             switch (operation) {
