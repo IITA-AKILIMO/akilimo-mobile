@@ -382,4 +382,10 @@
     <string name="lbl_harvest_date_prompt">Please provide a valid harvest date</string>
     <string name="lbl_unable_to_save">Unable to save</string>
     <string name="lbl_date_save_error">Unable to save planting and harvest dates, please try again</string>
+    <string name="lbl_fertilizer_rec">Fertilizer Recommendation</string>
+    <string name="lbl_intercrop_rec">Inter-cropping Recommendation</string>
+    <string name="lbl_planting_practices_rec">Planting Practices</string>
+    <string name="lbl_scheduled_planting_rec">Scheduled Planting</string>
+    <string name="lbl_no_recommendations">There are no recommendations available</string>
+    <string name="lbl_no_recommendations_prompt">No recommendations, please provide more information to help us get better predictions</string>
 </resources>
