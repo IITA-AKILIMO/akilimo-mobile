@@ -104,7 +104,7 @@ class RecommendationChannelDialog(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        toolbar.title = "Recommendations delivery"
+        toolbar.title = getString(R.string.title_recommendations_delivery)
 
         toolbar.setNavigationOnClickListener { dismiss() }
 

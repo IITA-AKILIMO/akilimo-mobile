@@ -23,6 +23,8 @@
     <string name="title_maize_intercropping">Intercropping with maize</string>
     <string name="title_sweet_potato_intercropping">Intercropping with sweet potato</string>
     <string name="title_activity_language_picker">Select your language</string>
+    <string name="title_recommendations_delivery">Recommendations delivery</string>
+    
 
     <string name="lbl_start">Start</string>
     <string name="lbl_proceed">Proceed</string>
@@ -411,4 +413,5 @@
     <string name="lbl_invalid_cost">Invalid cost amount</string>
     <string name="lbl_first_weeding_costs_prompt">Please specify cost for first weeding operation</string>
     <string name="lbl_second_weeding_cost_prompt">Please specify cost for second weeding operation</string>
+
 </resources>
