@@ -398,4 +398,6 @@
     <string name="lbl_cob_price_prompt">Please provide valid cob price</string>
     <string name="lbl_invalid_selection">Invalid selection</string>
     <string name="lbl_maize_perfomance_prompt">Please provide a valid maize performance selection</string>
+    <string name="lbl_manual_plough_cost_prompt">Please specify the cost of manual ploughing on your farm</string>
+    <string name="lbl_manual_ridge_cost_prompt">Please specify the cost of manual ridging on your farm</string>
 </resources>
