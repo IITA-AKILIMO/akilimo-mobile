@@ -145,7 +145,7 @@ public class WeedControlCostsActivity extends BaseActivity {
     @Override
     protected void validate(boolean backPressed) {
         if (Strings.isEmptyOrWhitespace(weedControlTechnique)) {
-            showCustomWarningDialog("Invalid selection", "Please specify how you control weeds on your farm");
+            showCustomWarningDialog(getString(R.string.lbl_invalid_selection), getString(R.string.lbl_weed_control_prompt));
             return;
         }
 
@@ -155,11 +155,11 @@ public class WeedControlCostsActivity extends BaseActivity {
         secondOperationCost = mathHelper.convertToDouble(editSecondWeedingOpCost.getText().toString());
 
         if (firstOperationCost <= 0) {
-            showCustomWarningDialog("Invalid cost amount", "Please specify cost for first weeding operation");
+            showCustomWarningDialog(getString(R.string.lbl_invalid_cost), getString(R.string.lbl_first_weeding_costs_prompt));
             return;
         }
         if (secondOperationCost <= 0) {
-            showCustomWarningDialog("Invalid cost amount", "Please specify cost for second weeding operation");
+            showCustomWarningDialog(getString(R.string.lbl_invalid_cost), getString(R.string.lbl_second_weeding_cost_prompt));
             return;
         }
 

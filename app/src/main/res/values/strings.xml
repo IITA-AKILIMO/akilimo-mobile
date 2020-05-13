@@ -400,4 +400,15 @@
     <string name="lbl_maize_perfomance_prompt">Please provide a valid maize performance selection</string>
     <string name="lbl_manual_plough_cost_prompt">Please specify the cost of manual ploughing on your farm</string>
     <string name="lbl_manual_ridge_cost_prompt">Please specify the cost of manual ridging on your farm</string>
+    <string name="lbl_invalid_yield">Invalid yield</string>
+    <string name="lbl_current_field_yield_prompt">Please specify your current field yield</string>
+    <string name="lbl_potato_produce_prompt">Please indicate sweet potato produce type</string>
+    <string name="lbl_potato_sale_unit_prompt">Please indicate sweet potato unit of sale</string>
+    <string name="lbl_invalid_tuber_price">Invalid tuber price</string>
+    <string name="lbl_tuber_price_prompt">Please provide valid tuber price</string>
+    <string name="lbl_valid_amount_prompt">Please enter a valid amount</string>
+    <string name="lbl_weed_control_prompt">Please specify how you control weeds on your farm</string>
+    <string name="lbl_invalid_cost">Invalid cost amount</string>
+    <string name="lbl_first_weeding_costs_prompt">Please specify cost for first weeding operation</string>
+    <string name="lbl_second_weeding_cost_prompt">Please specify cost for second weeding operation</string>
 </resources>
