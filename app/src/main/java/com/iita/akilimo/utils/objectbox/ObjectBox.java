@@ -10,12 +10,12 @@ import io.objectbox.android.AndroidObjectBrowser;
 
 public class ObjectBox {
     private static BoxStore boxStore;
-    private static final String DB_NAME = "AKILIMO_MAY_2020_13";
+    private static final String DB_NAME = "AKILIMO_MAY_2020_15";
 
     public static void init(Context context) {
 
         if (!BuildConfig.DEBUG) {
-            // BoxStore.deleteAllFiles(context, DB_NAME);
+            BoxStore.deleteAllFiles(context, DB_NAME);
         }
         boxStore = MyObjectBox.builder()
                 .name(DB_NAME)
