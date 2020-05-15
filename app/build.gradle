@@ -164,5 +164,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     //debugImplementation because LeakCanary should only run in debug builds.
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
+//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
 }
