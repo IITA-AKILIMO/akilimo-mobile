@@ -54,8 +54,8 @@
     <string name="exact_acre_to_m2">Taja eneo halisi la shamba langu katika m\u00B2</string>
     <string name="lbl_salutation">Halo, ni vizuri kukutana nawe!</string>
     <string name="lbl_farm_location">Shamba lako la muhogo %1$s liko wapi?</string>
-    <string name="lbl_current_location">Tumia mahali pa sasa</string>
-    <string name="lbl_manual_location">Chagua eneo lilipo</string>
+    <string name="lbl_current_location">Tumia eneo la sasa</string>
+    <string name="lbl_manual_location">Chagua eneo nilipo</string>
     <string name="lbl_recommendations">Mapendekezo</string>
     <string name="lbl_fertilizer_recommendations">Mapendekezo ya mbolea</string>
     <string name="lbl_intercropping">Mseto</string>
@@ -185,7 +185,7 @@
     <string name="lbl_last_name_req">Tafadhali toa jina lako la mwisho</string>
     <string name="lbl_valid_number_req">Tafadhali toa nambari sahihi ya simu</string>
     <string name="lbl_gender_prompt">Chagua jinsia</string>
-    <string name="lbl_gender">Changua jinsi</string>
+    <string name="lbl_gender">Chagua jinsia</string>
     <string name="lbl_male">Mwanaume</string>
     <string name="lbl_female">Mwanake</string>
     <string name="lbl_save">Hifadhi</string>
