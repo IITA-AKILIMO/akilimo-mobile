@@ -135,7 +135,7 @@ public class RootYieldActivity extends BaseActivity {
     @Override
     protected void validate(boolean backPressed) {
         if (!(selectedYieldAmount > 0)) {
-            showCustomWarningDialog("Invalid yield", "Please specify your current field yield", "OK");
+            showCustomWarningDialog(getString(R.string.lbl_invalid_yield), getString(R.string.lbl_current_field_yield_prompt), getString(R.string.lbl_ok));
             return;
         }
         closeActivity(backPressed);

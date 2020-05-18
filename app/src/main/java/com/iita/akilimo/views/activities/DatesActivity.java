@@ -11,7 +11,6 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.common.util.Strings;
-import com.google.android.material.button.MaterialButton;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.inherit.BaseActivity;
@@ -207,12 +206,12 @@ public class DatesActivity extends BaseActivity {
     @Override
     protected void validate(boolean backPressed) {
         if (Strings.isEmptyOrWhitespace(selectedPlantingDate)) {
-            showCustomWarningDialog("Invalid planting date", "Please provide a valid planting date");
+            showCustomWarningDialog(getString(R.string.lbl_invalid_planting_date), getString(R.string.lbl_planting_date_prompt));
             return;
         }
 
         if (Strings.isEmptyOrWhitespace(selectedHarvestDate)) {
-            showCustomWarningDialog("Invalid harvest date", "Please provide a valid harvest date");
+            showCustomWarningDialog(getString(R.string.lbl_invalid_harvest_date), getString(R.string.lbl_harvest_date_prompt));
             return;
         }
 
@@ -228,7 +227,7 @@ public class DatesActivity extends BaseActivity {
 
         long id = objectBoxEntityProcessor.savePlantingHarvestDates(plantingHarvestDates);
         if (id <= 0) {
-            showCustomWarningDialog("Unable to save", "Unable to save planting and harvest dates, please try again");
+            showCustomWarningDialog(getString(R.string.lbl_unable_to_save), getString(R.string.lbl_date_save_error));
             return;
         }
         closeActivity(backPressed);

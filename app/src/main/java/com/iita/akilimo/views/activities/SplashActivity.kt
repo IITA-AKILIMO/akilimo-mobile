@@ -44,8 +44,8 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun launchActivity() {
-//        val intent = Intent(this@SplashActivity, HomeActivity::class.java)
         val intent = Intent(this@SplashActivity, LanguagePickerActivity::class.java)
+//        val intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
         startActivity(intent)
         closeActivity()
     }

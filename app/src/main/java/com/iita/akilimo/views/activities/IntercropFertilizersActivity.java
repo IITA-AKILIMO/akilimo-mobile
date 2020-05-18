@@ -264,7 +264,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
                 errorImage.setVisibility(View.VISIBLE);
                 btnRetry.setVisibility(View.VISIBLE);
 
-                Toast.makeText(context, "Unable to load fertilizer list", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, getString(R.string.lbl_fertilizer_load_error), Toast.LENGTH_LONG).show();
                 Crashlytics.log(Log.ERROR, LOG_TAG, "Fertilizer list not able to load");
                 Crashlytics.logException(volleyError);
             }

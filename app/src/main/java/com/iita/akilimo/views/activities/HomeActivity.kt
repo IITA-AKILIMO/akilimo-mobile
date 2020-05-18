@@ -276,7 +276,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                     } else {
                         Toast.makeText(
                             context,
-                            "Unable to fetch your current location, please try again",
+                            getString(R.string.lbl_location_error),
                             Toast.LENGTH_LONG
                         ).show()
                     }
@@ -320,7 +320,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             } else {
                 Toast.makeText(
                     this,
-                    "Press back again to exit",
+                    getString(R.string.lbl_exit_tip),
                     Toast.LENGTH_SHORT
                 ).show()
                 exit = true

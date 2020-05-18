@@ -187,15 +187,15 @@ public class CurrentPracticeFragment extends BaseFragment {
         operationTypeDialogFragment.setArguments(arguments);
         FragmentTransaction fragmentTransaction;
 
-        if (getFragmentManager() != null) {
-            fragmentTransaction = getFragmentManager().beginTransaction();
-            Fragment prev = getFragmentManager().findFragmentByTag(OperationTypeDialogFragment.ARG_ITEM_ID);
-            if (prev != null) {
-                fragmentTransaction.remove(prev);
-            }
-            fragmentTransaction.addToBackStack(null);
-            operationTypeDialogFragment.show(getFragmentManager(), OperationTypeDialogFragment.ARG_ITEM_ID);
+
+        fragmentTransaction = getParentFragmentManager().beginTransaction();
+        Fragment prev = getParentFragmentManager().findFragmentByTag(OperationTypeDialogFragment.ARG_ITEM_ID);
+        if (prev != null) {
+            fragmentTransaction.remove(prev);
         }
+        fragmentTransaction.addToBackStack(null);
+        operationTypeDialogFragment.show(getParentFragmentManager(), OperationTypeDialogFragment.ARG_ITEM_ID);
+
 
         operationTypeDialogFragment.setOnDismissListener((operation, enumOperationType, cancelled) -> {
             switch (operation) {

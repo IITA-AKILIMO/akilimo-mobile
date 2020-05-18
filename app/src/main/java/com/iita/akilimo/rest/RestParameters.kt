@@ -13,4 +13,5 @@ class RestParameters(
     var operationType: String? = null
     var operationName: String? = null
     var initialTimeout: Int = 40000
+    var context: String = "dev"
 }

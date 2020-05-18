@@ -233,27 +233,27 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
 
         if (!Strings.isEmptyOrWhitespace(FR)) {
             computedResponse = new ComputedResponse();
-            recList.add(computedResponse.createObject("Fertilizer Recommendation", FR));
+            recList.add(computedResponse.createObject(getString(R.string.lbl_fertilizer_rec), FR));
         }
 
         if (!Strings.isEmptyOrWhitespace(IC)) {
             computedResponse = new ComputedResponse();
-            recList.add(computedResponse.createObject("Inter-cropping Recommendation", IC));
+            recList.add(computedResponse.createObject(getString(R.string.lbl_intercrop_rec), IC));
         }
 
         if (!Strings.isEmptyOrWhitespace(PP)) {
             computedResponse = new ComputedResponse();
-            recList.add(computedResponse.createObject("Planting Practices", PP));
+            recList.add(computedResponse.createObject(getString(R.string.lbl_planting_practices_rec), PP));
         }
 
         if (!Strings.isEmptyOrWhitespace(SP)) {
             computedResponse = new ComputedResponse();
-            recList.add(computedResponse.createObject("Scheduled Planting", SP));
+            recList.add(computedResponse.createObject(getString(R.string.lbl_scheduled_planting_rec), SP));
         }
 
         if (recList.size() <= 0) {
             computedResponse = new ComputedResponse();
-            recList.add(computedResponse.createObject("There are no recommendations available", "No recommendations, please provide more information to help us get better predictions"));
+            recList.add(computedResponse.createObject(getString(R.string.lbl_no_recommendations), getString(R.string.lbl_no_recommendations_prompt)));
         }
         return recList;
     }

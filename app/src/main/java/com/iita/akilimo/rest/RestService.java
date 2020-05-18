@@ -156,6 +156,7 @@ public class RestService {
         params.put("country-code", restParameters.getCountryCode());
         params.put("op-type", restParameters.getOperationType());
         params.put("op-name", restParameters.getOperationName());
+        params.put("context", restParameters.getContext());
         return params;
     }
 }

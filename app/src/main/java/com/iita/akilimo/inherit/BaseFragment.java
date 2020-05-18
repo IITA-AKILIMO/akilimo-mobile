@@ -16,6 +16,7 @@ import com.iita.akilimo.Akilimo;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.utils.SessionManager;
+import com.iita.akilimo.utils.objectbox.ObjectBox;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import butterknife.BindString;
@@ -62,7 +63,7 @@ public abstract class BaseFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
         sessionManager = new SessionManager(getContext());
-        boxStore = ((Akilimo) getActivity().getApplicationContext()).getBoxStore();
+        boxStore = ObjectBox.get();
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(getActivity());
         queue = Volley.newRequestQueue(context.getApplicationContext());
         appVersion = sessionManager.getAppVersion();

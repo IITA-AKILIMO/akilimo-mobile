@@ -7,7 +7,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,8 +30,12 @@ import com.iita.akilimo.interfaces.IFragmentCallBack;
 import com.iita.akilimo.utils.ValidationHelper;
 import com.iita.akilimo.utils.enums.EnumGender;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindString;
 import butterknife.BindView;
+import dev.b3nedikt.app_locale.AppLocale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,8 +48,8 @@ public class BioDataFragment extends BaseFragment {
     private ValidationHelper validationHelper;
 
 
-    @BindView(R.id.rdgGender)
-    RadioGroup rdgGender;
+    @BindView(R.id.genderSpinner)
+    Spinner genderSpinner;
 
     @BindView(R.id.lytFirstName)
     TextInputLayout lytFirstName;
@@ -77,7 +85,8 @@ public class BioDataFragment extends BaseFragment {
     private String farmName;
     private String mobileCode;
     private String fullMobileNumber;
-    private EnumGender gender;
+    private String gender;
+    private int selectedGenderIndex = -1;
 
     public BioDataFragment() {
         // Required empty public constructor
@@ -105,15 +114,24 @@ public class BioDataFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         btnGetRec.setText(saveTitle);
 
+        final List<String> genderStrings = new ArrayList<>();
+        genderStrings.add(this.getString(R.string.lbl_male));
+        genderStrings.add(this.getString(R.string.lbl_female));
+
+        final SpinnerAdapter adapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, genderStrings);
+        genderSpinner.setAdapter(adapter);
+
         btnGetRec.setOnClickListener(view1 -> saveBioData());
-        rdgGender.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
-            switch (radioIndex) {
-                case R.id.rdFemale:
-                    gender = EnumGender.FEMALE;
-                    break;
-                case R.id.rdMale:
-                    gender = EnumGender.MALE;
-                    break;
+
+        genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                gender = genderStrings.get(position);
+                selectedGenderIndex = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
@@ -142,7 +160,8 @@ public class BioDataFragment extends BaseFragment {
                 email = profileInfo.getEmail();
                 mobileCode = profileInfo.getMobileCode();
                 fullMobileNumber = profileInfo.getFullMobileNumber();
-                gender = profileInfo.getGenderEnum();
+                gender = profileInfo.getGender();
+                selectedGenderIndex = profileInfo.getSelectedGenderIndex();
 
                 lytFirstName.getEditText().setText(firstName);
                 lytLastName.getEditText().setText(lastName);
@@ -150,14 +169,7 @@ public class BioDataFragment extends BaseFragment {
                 lytEmail.getEditText().setText(email);
                 ccp.setFullNumber(fullMobileNumber);
 
-                switch (gender) {
-                    case MALE:
-                        rdgGender.check(R.id.rdMale);
-                        break;
-                    case FEMALE:
-                        rdgGender.check(R.id.rdFemale);
-                        break;
-                }
+                genderSpinner.setSelection(selectedGenderIndex);
             }
 
         } catch (Exception ex) {
@@ -181,17 +193,19 @@ public class BioDataFragment extends BaseFragment {
 
         if (Strings.isEmptyOrWhitespace(firstName)) {
             dataIsValid = false;
-            lytLastName.setError(this.getString(R.string.lbl_first_name_req));
+            lytFirstName.setError(this.getString(R.string.lbl_first_name_req));
         }
 
         if (Strings.isEmptyOrWhitespace(lastName)) {
             dataIsValid = false;
-            lytLastName.setError("Please provide your last name");
+            lytLastName.setError(this.getString(R.string.lbl_last_name_req));
         }
 
         if (Strings.isEmptyOrWhitespace(farmName)) {
-            dataIsValid = false;
-            lytFarmName.setError("Please provide your farm name");
+            //dataIsValid = false;
+            //lytFarmName.setError(this.getString(R.string.lbl_last_name_req));
+            farmName = String.format("%s%s", firstName, lastName);
+            lytFarmName.getEditText().setText(farmName);
         }
 
         if (!validationHelper.isValidEmail(email) && !Strings.isEmptyOrWhitespace(email)) {
@@ -205,11 +219,12 @@ public class BioDataFragment extends BaseFragment {
             }
             profileInfo.setFirstName(firstName);
             profileInfo.setLastName(lastName);
-            profileInfo.setGenderEnum(gender);
+            profileInfo.setGender(gender);
             profileInfo.setEmail(email);
             profileInfo.setFarmName(farmName);
             profileInfo.setMobileCode(mobileCode);
             profileInfo.setFullMobileNumber(fullMobileNumber);
+            profileInfo.setSelectedGenderIndex(selectedGenderIndex);
 
             long id = objectBoxEntityProcessor.saveProfileInfo(profileInfo);
             if (id > 0) {

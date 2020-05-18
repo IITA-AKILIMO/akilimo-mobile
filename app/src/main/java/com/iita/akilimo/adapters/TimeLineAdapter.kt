@@ -75,7 +75,7 @@ class TimeLineAdapter(
             }
         }
 
-        holder.title.text = timeLineModel.stepTitle
+        holder.title.text = context.getString(R.string.lbl_timeline_title, timeLineModel.stepTitle)
 
         if (Strings.isEmptyOrWhitespace(timeLineModel.message)) {
             holder.message.text = context.getString(R.string.lbl_not_provided)

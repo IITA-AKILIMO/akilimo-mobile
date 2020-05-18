@@ -185,7 +185,7 @@ public class Tools {
 
     public static String getEmailFromName(String name) {
         if (name != null && !name.equals("")) {
-            String email = name.replaceAll(" ", ".").toLowerCase().concat("@mail.com");
+            String email = name.replaceAll(" ", ".").toLowerCase(Locale.ENGLISH).concat("@mail.com");
             return email;
         }
         return name;
@@ -298,7 +298,7 @@ public class Tools {
     }
 
     public static String toCamelCase(String input) {
-        input = input.toLowerCase();
+        input = input.toLowerCase(Locale.ENGLISH);
         StringBuilder titleCase = new StringBuilder();
         boolean nextTitleCase = true;
 

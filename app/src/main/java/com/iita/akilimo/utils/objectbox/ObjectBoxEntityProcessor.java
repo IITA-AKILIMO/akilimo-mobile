@@ -24,7 +24,7 @@ public class ObjectBoxEntityProcessor {
     private BoxStore boxStore;
 
     private ObjectBoxEntityProcessor(Context context) {
-        boxStore = ((Akilimo) context.getApplicationContext()).getBoxStore();
+        boxStore = ObjectBox.get();
     }
 
 

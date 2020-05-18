@@ -149,12 +149,12 @@ public class ManualTillageCostActivity extends CostBaseActivity {
 
         dataValid = false;
         if (manualPloughCost <= 0) {
-            showCustomWarningDialog("Invalid selection", "Please specify the cost of manual ploughing on your farm");
+            showCustomWarningDialog(getString(R.string.lbl_invalid_selection), getString(R.string.lbl_manual_plough_cost_prompt));
             return;
         }
 
         if (manualRidgeCost <= 0) {
-            showCustomWarningDialog("Invalid selection", "Please specify the cost of manual ridging on your farm");
+            showCustomWarningDialog(getString(R.string.lbl_invalid_selection), getString(R.string.lbl_manual_ridge_cost_prompt));
             return;
         }
 

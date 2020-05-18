@@ -261,7 +261,7 @@ public class FieldSizeFragment extends BaseFragment {
         dialog.findViewById(R.id.bt_submit).setOnClickListener(v -> {
             myFieldSize = et_post.getText().toString().trim();
             if (Strings.isEmptyOrWhitespace(myFieldSize)) {
-                Toast.makeText(context, "Please enter a valid field size", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.lbl_field_size_prompt, Toast.LENGTH_SHORT).show();
             } else {
                 areaSize = Double.parseDouble(myFieldSize);
                 dialog.dismiss();

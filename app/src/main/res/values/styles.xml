@@ -87,6 +87,7 @@
         <item name="android:textColor">@color/colorAccent</item>
     </style>
 
+
     <!--style for ripple library-->
     <style name="RippleStyleWhite">
         <item name="mrl_rippleOverlay">true</item>

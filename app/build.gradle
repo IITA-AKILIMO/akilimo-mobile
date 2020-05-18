@@ -16,7 +16,9 @@ android {
     def appVersionCode = computeVersionCode()
 
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    buildToolsVersion "29.0.3"
+    ndkVersion "21.1.6352462"
+
     defaultConfig {
         applicationId "com.iita.akilimo"
         minSdkVersion 19
@@ -29,11 +31,12 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false //for some strange reson minifying causes the code to flip
+            minifyEnabled false //for some strange reason minifying causes the code to flip
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
-            pseudoLocalesEnabled true
+            versionNameSuffix ".debug"
+//            pseudoLocalesEnabled true
         }
     }
 //    dataBinding {
@@ -41,10 +44,9 @@ android {
 //    }
     lintOptions {
         checkReleaseBuilds false
-        fatal("MissingTranslation", "HardcodedText")
+//        fatal("MissingTranslation", "HardcodedText")
         abortOnError false
-//        disable 'UselessParent', 'HardcodedText', 'LabelFor', 'UnusedResources'
-        disable 'UselessParent','InvalidPackage', 'UnusedResources', 'TrustAllX509TrustManager', 'LabelFor'
+//        disable 'UselessParent','InvalidPackage', 'UnusedResources', 'TrustAllX509TrustManager', 'LabelFor'
     }
     dexOptions {
         javaMaxHeapSize "4g"
@@ -60,7 +62,7 @@ android {
 }
 
 static def computeVersionName() {
-    def versionMajor = 13
+    def versionMajor = 14
     def versionMinor = 3
     def buildNumber = 0
 
@@ -101,7 +103,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-places:17.0.0'
     implementation 'com.google.firebase:firebase-config:19.1.4'
-    implementation 'com.google.firebase:firebase-analytics:17.4.0'
+    implementation 'com.google.firebase:firebase-analytics:17.4.1'
     implementation 'com.google.android:flexbox:0.3.2'                   // google flexible box
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
@@ -143,6 +145,7 @@ dependencies {
     implementation 'io.github.inflationx:viewpump:2.0.3'
     implementation 'dev.b3nedikt.reword:reword:1.0.0'
     implementation 'com.akexorcist:localization:1.2.5'
+    implementation 'com.github.blongho:worldCountryData:1.5'
 
     compileOnly 'org.projectlombok:lombok:1.18.12'
 
@@ -161,5 +164,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     //debugImplementation because LeakCanary should only run in debug builds.
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
+//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
 }

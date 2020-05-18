@@ -260,20 +260,20 @@ public class CassavaMarketActivity extends BaseActivity {
 
         if (factoryRequired) {
             if (Strings.isEmptyOrWhitespace(selectedFactory) || selectedFactory.equalsIgnoreCase("NA")) {
-                showCustomWarningDialog("Invalid factory", "Please select a starch factory", "OK");
+                showCustomWarningDialog(getString(R.string.lbl_invalid_factory), getString(R.string.lbl_factory_prompt), getString(R.string.lbl_ok));
                 return;
             }
         } else if (otherMarketsRequired) {
             if (enumCassavaProduceType == null) {
-                showCustomWarningDialog("Invalid produce type", "Please specify a valid produce type", "OK");
+                showCustomWarningDialog(getString(R.string.lbl_invalid_produce), getString(R.string.lbl_produce_prompt));
                 return;
             }
             if (enumUnitOfSale == null) {
-                showCustomWarningDialog("Invalid unit of sale", "Please specify a valid unit of sale", "OK");
+                showCustomWarningDialog(getString(R.string.lbl_invalid_sale_unit), getString(R.string.lbl_sale_unit_prompt));
                 return;
             }
             if (exactPrice <= 0) {
-                showCustomWarningDialog("Invalid unit price", "Please specify a valid unit price", "OK");
+                showCustomWarningDialog(getString(R.string.lbl_invalid_unit_price), getString(R.string.lbl_unit_price_prompt));
                 return;
             }
 
@@ -281,7 +281,7 @@ public class CassavaMarketActivity extends BaseActivity {
         }
 
         if (!selectionMade) {
-            showCustomWarningDialog("Nothing selected", "You have not made any selection");
+            showCustomWarningDialog(getString(R.string.lbl_nothing), getString(R.string.lbl_nothing_prompt));
             return;
         }
 
@@ -468,7 +468,6 @@ public class CassavaMarketActivity extends BaseActivity {
     }
 
 
-
     private void showUnitPriceDialog(String currency, String uos) {
         Bundle arguments = new Bundle();
         arguments.putString(CassavaPriceDialogFragment.CURRENCY_CODE, currency);
@@ -481,12 +480,9 @@ public class CassavaMarketActivity extends BaseActivity {
         CassavaPriceDialogFragment priceDialogFragment = new CassavaPriceDialogFragment();
         priceDialogFragment.setArguments(arguments);
 
-        priceDialogFragment.setOnDismissListener(new IPriceDialogDismissListener() {
-            @Override
-            public void onDismiss(double selectedPrice, double selectedAveragePrice) {
-                exactPrice = selectedPrice;
-                averagePrice = selectedAveragePrice;
-            }
+        priceDialogFragment.setOnDismissListener((selectedPrice, selectedAveragePrice) -> {
+            exactPrice = selectedPrice;
+            averagePrice = selectedAveragePrice;
         });
 
         FragmentTransaction fragmentTransaction;

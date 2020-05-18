@@ -160,17 +160,17 @@ public class SweetPotatoMarketActivity extends BaseActivity {
         produceTypeRadioIndex = rdgPotatoProduceType.getCheckedRadioButtonId();
         potatoUnitOfSaleRadioIndex = rdgUnitOfSalePotato.getCheckedRadioButtonId();
         if (enumPotatoProduceType == null) {
-            showCustomWarningDialog("Invalid produce type", "Please indicate sweet potato produce type", "OK");
+            showCustomWarningDialog(getString(R.string.lbl_invalid_produce), getString(R.string.lbl_potato_produce_prompt));
             return;
         }
         if (enumUnitOfSale == null) {
-            showCustomWarningDialog("Invalid unit of sale", "Please indicate sweet potato unit of sale", "OK");
+            showCustomWarningDialog(getString(R.string.lbl_invalid_sale_unit), getString(R.string.lbl_potato_sale_unit_prompt));
             return;
         }
 
         if (exactPrice) {
             if (Strings.isEmptyOrWhitespace(tuberPrice)) {
-                showCustomWarningDialog("Invalid tuber price", "Please provide valid tuber price", "OK");
+                showCustomWarningDialog(getString(R.string.lbl_invalid_tuber_price), getString(R.string.lbl_tuber_price_prompt));
                 return;
             }
             unitPriceLocal = mathHelper.convertToDouble(tuberPrice);
@@ -310,13 +310,13 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
         dialog.findViewById(R.id.bt_submit).setOnClickListener(view -> {
             if (enumUnitPrice == null) {
-                Snackbar.make(view, "Please enter a valid amount", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(view, R.string.lbl_valid_amount_prompt, Snackbar.LENGTH_LONG).show();
                 return;
             }
             if (exactPrice) {
                 tuberPrice = etUnitPrice.getText().toString().trim();
                 if (Strings.isEmptyOrWhitespace(tuberPrice)) {
-                    Snackbar.make(view, "Please enter a valid amount", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(view, R.string.lbl_valid_amount_prompt, Snackbar.LENGTH_LONG).show();
                     return;
                 }
             } else {
