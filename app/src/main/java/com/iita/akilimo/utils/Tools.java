@@ -265,7 +265,7 @@ public class Tools {
         }
     }
 
-    public static void changeNavigateionIconColor(Toolbar toolbar, @ColorInt int color) {
+    public static void changeNavigationIconColor(Toolbar toolbar, @ColorInt int color) {
         Drawable drawable = toolbar.getNavigationIcon();
         drawable.mutate();
         drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
@@ -315,20 +315,6 @@ public class Tools {
 
         return titleCase.toString();
     }
-
-    public static String insertPeriodically(String text, String insert, int period) {
-        StringBuilder builder = new StringBuilder(text.length() + insert.length() * (text.length() / period) + 1);
-        int index = 0;
-        String prefix = "";
-        while (index < text.length()) {
-            builder.append(prefix);
-            prefix = insert;
-            builder.append(text.substring(index, Math.min(index + period, text.length())));
-            index += period;
-        }
-        return builder.toString();
-    }
-
 
     public static void rateAction(Activity activity) {
         Uri uri = Uri.parse("market://details?id=" + activity.getPackageName());
@@ -401,7 +387,7 @@ public class Tools {
      */
     public static JSONObject prepareRecommendationJson(RecommendationRequest recommendationRequest) {
         JSONObject jsonObject = null;
-        String jsonString = "{}";
+        String jsonString;
         try {
             mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
             mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);

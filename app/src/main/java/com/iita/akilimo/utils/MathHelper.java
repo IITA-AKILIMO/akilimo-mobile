@@ -27,21 +27,29 @@ public class MathHelper {
         String splitRegex = "TO";
         String[] bands;
 
+        stringToSplit = Tools.replaceCharacters(stringToSplit, "Dola", joined);
         try {
             if (stringToSplit.contains(toCurrency)) {
                 return stringToSplit;
             }
 
             double rate1, rate2;
-            double band1, band2 = 0;
+            double band1 = 0;
+            double band2 = 0;
 
             String str = Tools.replaceNonNumbers(stringToSplit, splitRegex);
 
             bands = str.contains("TO") ? str.split(splitRegex) : new String[]{str, "0"};
 
-            band1 = Double.parseDouble(bands[0]);
+            String textBand1 = bands[0];
+            if (!Strings.isEmptyOrWhitespace(textBand1)) {
+                band1 = Double.parseDouble(bands[0]);
+            }
             if (bands.length == 2) {
-                band2 = Double.parseDouble(bands[1]);
+                String textBand2 = bands[1];
+                if (!Strings.isEmptyOrWhitespace(textBand2)) {
+                    band2 = Double.parseDouble(bands[1]);
+                }
             }
             if (band1 > 0 && band2 > 0) {
                 rate1 = convertToLocalCurrency(band1, toCurrency);
@@ -58,51 +66,11 @@ public class MathHelper {
         return joined;
     }
 
-    public double convertCurrency(double amount, String toCurrency) {
-        return convertToLocalCurrency(amount, toCurrency);
-    }
-
-    public String convertCurrency(String stringToSplit, String toCurrency, String unitType) {
-        String data = convertCurrency(stringToSplit, toCurrency);
-        if (unitType != null) {
-            if (data.contains(unitType)) {
-                return data;
-            } else if (data.contains("per")) {
-                return data;
-            }
-            return data + " per " + unitType;
-        }
-        return data;
-    }
-
-    public String convertCurrency(String stringToSplit, String toCurrency, String unitType, String fieldSize) {
+    public String convertCurrency(String stringToSplit, String toCurrency, String unitType, String fieldSize, String selectedField, String separator) {
         String data = convertCurrency(stringToSplit, toCurrency);
         try {
             if (unitType != null) {
-                if (data.contains(unitType) || data.contains("per")) {
-                    return data;
-                }
-
-                String cleaned = Tools.replaceNonNumbers(data, "");
-                double amount = Double.parseDouble(cleaned);
-                double myFieldSize = Double.parseDouble(fieldSize);
-                double computedAmount = amount * myFieldSize;
-
-                data = String.format("%s %s per %s %s", roundToNearestSpecifiedValue(computedAmount, 1000), toCurrency, fieldSize, unitType);
-            }
-        } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
-            Crashlytics.logException(ex);
-        }
-        return data;
-
-    }
-
-    public String convertCurrency(String stringToSplit, String toCurrency, String unitType, String fieldSize, String selectedField) {
-        String data = convertCurrency(stringToSplit, toCurrency);
-        try {
-            if (unitType != null) {
-                if (data.contains(unitType) || data.contains("per")) {
+                if (data.contains(unitType) || data.contains(separator)) {
                     return data;
                 }
 
@@ -111,7 +79,7 @@ public class MathHelper {
                 double myFieldSize = Double.parseDouble(fieldSize);
                 double investmentAmount = amount * myFieldSize;
                 String formattedNumber = formatNumber(roundToNearestSpecifiedValue(investmentAmount, 1000), null);
-                data = String.format("%s %s per %s", formattedNumber, toCurrency, selectedField);
+                data = String.format("%s %s %s %s", formattedNumber, toCurrency, separator, selectedField);
             }
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
@@ -192,8 +160,7 @@ public class MathHelper {
     }
 
     public double roundToNDecimalPlaces(double numberToRound, double decimalPlaces) {
-        double rounded = Math.round(numberToRound * decimalPlaces) / decimalPlaces;
-        return rounded;
+        return Math.round(numberToRound * decimalPlaces) / decimalPlaces;
     }
 
     public double computeInvestmentAmount(double localCurrencyAmount, double fieldSize, String fromCurrency) {

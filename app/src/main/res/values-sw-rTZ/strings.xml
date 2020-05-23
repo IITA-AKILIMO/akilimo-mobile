@@ -313,7 +313,7 @@
     <string name="lbl_invalid_cob_price">Bei ya hindi bichi si sahihi</string>
     <string name="lbl_cob_price_prompt">Tafadhali ingiza bei sahihi ya hindi bichi</string>
     <string name="lbl_invalid_selection">Invalid selection</string>
-    <string name="lbl_maize_perfomance_prompt">Please provide a valid maize performance selection</string>
+    <string name="lbl_maize_performance_prompt">Please provide a valid maize performance selection</string>
     <string name="lbl_manual_plough_cost_prompt">Please specify the cost of manual ploughing on your farm</string>
     <string name="lbl_manual_ridge_cost_prompt">Please specify the cost of manual ridging on your farm</string>
     <string name="lbl_invalid_yield">Mavuno si sahihi</string>
@@ -328,4 +328,6 @@
     <string name="lbl_first_weeding_costs_prompt">Tafadhali taja ghalama za palizi la kwanza</string>
     <string name="lbl_second_weeding_cost_prompt">Tafandali taja ghalama za palizi la pili</string>
     <string name="lbl_field_size_prompt">Tafadhali ingiza eneo la ukubwa wa shamba lililo sahihi</string>
+    <string name="lbl_per_separator">kwa</string>
+    <string name="lbl_usd_currency">Dola</string>
 </resources>
