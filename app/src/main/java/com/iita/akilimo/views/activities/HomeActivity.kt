@@ -107,7 +107,8 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
          * @body Check for updated content from christine.
          * @body The privacy statement should also be translated to the relevant languages
          */
-//        fragmentArray.add(PrivacyStatementFragment.newInstance())
+
+        //fragmentArray.add(PrivacyStatementFragment.newInstance())
 
         fragmentArray.add(bioDataFragment)
         fragmentArray.add(CountryFragment.newInstance())

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="welcome_title">Mimi ni  AKILIMO</string>
-    <string name="welcome_instructions">Nitakupatia ushauri binafsi wa kuongeza mavunao ya muhogo katika shamba lako iwapo utanipatia taarifa muhimu  za kuniwezesha kufanya hivyo .</string>
+    <string name="welcome_instructions">Nitakupatia ushauri binafsi wa kuongeza mavuno ya muhogo katika shamba lako iwapo utanipatia taarifa muhimu za kuniwezesha kufanya hivyo .</string>
     <string name="important_instructions_title">MAAGIZO MUHIMU</string>
-    <string name="important_instructions">Mapendekezo atakayo kupatia AKILIMO, yanategemea usahihi wa taariza utakazo zitoa yaani eneo lilipo shamba lako, ukubwa wa shamba, bei ya mazao, mbolea, n.k. Kwa mfano, ukubwa wa shamba ukitajwa kuwa mkubwa kuliko ulivyo, utaongeza gharama zisizo za lazima, yaani  kuongezeka uwekezaji na kusababisha hasara; na ikiwa ukubwa wa shamba unaotajwa utakuwa ni chini ya ukweli,  itapunguza fursa ya kupata faida kutoka kwenye shamba lako.</string>
+    <string name="important_instructions">Mapendekezo atakayo kupatia AKILIMO, yanategemea usahihi wa taarifa utakazo zitoa yaani eneo lilipo shamba lako, ukubwa wa shamba, bei ya mazao, mbolea, n.k. Kwa mfano, ukubwa wa shamba ukitajwa kuwa mkubwa kuliko ulivyo, utaongeza gharama zisizo za lazima, yaani  kuongezeka uwekezaji na kusababisha hasara; na ikiwa ukubwa wa shamba unaotajwa utakuwa ni chini ya ukweli,  itapunguza fursa ya kupata faida kutoka kwenye shamba lako.</string>
     <string name="title_activity_fertilizer_choice">Mbolea inayopatikana</string>
     <string name="title_activity_fertilizer_rec">Mapendekezo ya matumizi ya mbolea</string>
     <string name="title_activity_investment_amount">Kiasi cha uwekezaji</string>
@@ -55,7 +55,7 @@
     <string name="lbl_salutation">Halo, ni vizuri kukutana nawe!</string>
     <string name="lbl_farm_location">Shamba lako la muhogo %1$s liko wapi?</string>
     <string name="lbl_current_location">Tumia eneo la sasa</string>
-    <string name="lbl_manual_location">Chagua eneo nilipo</string>
+    <string name="lbl_manual_location">Tumia eneo nilipo</string>
     <string name="lbl_recommendations">Mapendekezo</string>
     <string name="lbl_fertilizer_recommendations">Mapendekezo ya mbolea</string>
     <string name="lbl_intercropping">Mseto</string>
@@ -77,7 +77,7 @@
     <string name="lbl_maize_performance_rich">Hizi ni dalili za udongo wenye rutuba lakini sio za kawaida</string>
     <string name="lbl_market_outlet">Bei ya muhogo wakati wa kuvuna</string>
     <string name="lbl_market_outlet_maize">Bei ya mahindi</string>
-    <string name="lbl_tillage_operations">Shughulikia za ukatuaji na bei zake</string>
+    <string name="lbl_tillage_operations">Shughuli za ukatuaji na bei zake</string>
     <string name="lbl_cost_of_manual_tillage">Gharama za kulima kwa mkono</string>
     <string name="lbl_tractor_access">Uwezo kupata trekta</string>
     <string name="lbl_cost_of_weed_control">Gharama za kudhibiti magugu</string>
@@ -159,7 +159,7 @@
     <string name="lbl_rec_header">Ili kupata pendekezo sahihi, tafadhali toa taarifa juu ya vitu vilivyopo hapa chini</string>
     <string name="lbl_compute_error">Haiwezekani kuchakata mapendekezo, tafadhali jaribu tena</string>
     <string name="lbl_rec_sample">Tunapendekeza usitumie mbolea yoyote. Hatutarajii kuwa maombi ya mbolea yatasababisha kuongezeka kwa mavuno zaidi kwa hali yako sasa.</string>
-    <string name="lbl_rec_intro">Akilimo anaweza kukushauri jinsi ya kupanda muhogo. \nNi ushauri gani unauhitaji?</string>
+    <string name="lbl_rec_intro">Akilimo anaweza kukushauri jinsi ya kupanda muhogo.\nNi ushauri gani unauhitaji?</string>
     <!--  scroll behaviors  -->
     <string name="lbl_min_selection">Tafadhali chagua angalau %d mbolea</string>
     <string name="lbl_update">Boresha</string>
