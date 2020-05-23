@@ -321,34 +321,6 @@ public class MaizeMarketActivity extends BaseActivity {
         }
     }
 
-    private String labelText(double unitPriceLower, double unitPriceUpper, String currency, String uos) {
-        //cross convert according to weight
-        double priceLower = unitPriceLower;
-        double priceHigher = unitPriceUpper;
-
-        switch (enumUnitOfSale) {
-            case UNIT_ONE_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_ONE_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_ONE_KG.unitWeight()) / 1000;
-                break;
-            case UNIT_FIFTY_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_FIFTY_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_FIFTY_KG.unitWeight()) / 1000;
-                break;
-            case UNIT_HUNDRED_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_HUNDRED_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_HUNDRED_KG.unitWeight()) / 1000;
-                break;
-        }
-
-        minAmountUSD = priceLower; //minimum amount will be dynamic based on weight being sold, max amount will be constant
-        double localLower = mathHelper.convertToLocalCurrency(priceLower, currency, 10);
-        double localHigher = mathHelper.convertToLocalCurrency(priceHigher, currency, 10);
-
-        return context.getString(R.string.unit_price_label, localLower, localHigher, currency, uos);
-    }
-
-
     private void showUnitGrainPriceDialog(String currency, String uos) {
         Bundle arguments = new Bundle();
         arguments.putString(MaizePriceDialogFragment.CURRENCY_CODE, currency);
