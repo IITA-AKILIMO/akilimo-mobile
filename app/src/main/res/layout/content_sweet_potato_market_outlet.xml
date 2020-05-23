@@ -63,7 +63,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- unit of sale grain -->
+        <!-- unit of sale potato -->
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/unitOfSalePotatoTitle"
             android:layout_width="match_parent"

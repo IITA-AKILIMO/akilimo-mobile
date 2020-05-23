@@ -513,4 +513,33 @@ public class ObjectBoxEntityProcessor {
                 .findFirst();
     }
 
+
+    /* Sweet potato prices */
+    public void savePotatoPrice(List<PotatoPrice> potatoPriceList) {
+        try {
+            Box<PotatoPrice> box = boxStore.boxFor(PotatoPrice.class);
+            box.removeAll();//clear the db first
+            box.put(potatoPriceList);
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving maize prices");
+            Crashlytics.logException(ex);
+        }
+    }
+
+    public List<PotatoPrice> getPotatoPrices(@NonNull String countryCode) {
+        Box<PotatoPrice> box = boxStore.boxFor(PotatoPrice.class);
+        return box.query()
+                .equal(PotatoPrice_.country, countryCode)
+                .build()
+                .find();
+
+    }
+
+    public PotatoPrice getSelectedPotatoPriceByTag(String priceTag) {
+        Box<PotatoPrice> box = boxStore.boxFor(PotatoPrice.class);
+        return box.query()
+                .equal(PotatoPrice_.priceId, priceTag)
+                .build()
+                .findFirst();
+    }
 }
