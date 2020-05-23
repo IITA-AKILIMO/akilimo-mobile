@@ -257,7 +257,7 @@ public class DatesActivity extends BaseActivity {
                 cur_calender.get(Calendar.DAY_OF_MONTH)
         );
         //set dark light
-        datePicker.setThemeDark(false);
+        datePicker.setThemeDark(true);
         datePicker.setAccentColor(getResources().getColor(R.color.colorAccent));
         datePicker.setOkColor(getResources().getColor(R.color.grey_50));
         datePicker.setCancelColor(getResources().getColor(R.color.grey_50));
