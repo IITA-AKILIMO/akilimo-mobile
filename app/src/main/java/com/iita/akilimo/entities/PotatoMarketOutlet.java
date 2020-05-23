@@ -2,7 +2,6 @@ package com.iita.akilimo.entities;
 
 import com.iita.akilimo.utils.enums.EnumCountry;
 import com.iita.akilimo.utils.enums.EnumPotatoProduceType;
-import com.iita.akilimo.utils.enums.EnumPotatoUnitPrice;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 
 import io.objectbox.annotation.Convert;
@@ -28,9 +27,6 @@ public class PotatoMarketOutlet {
     @Convert(converter = UnitOfSaleConverter.class, dbType = Integer.class)
     private EnumUnitOfSale enumUnitOfSale;
 
-    @Convert(converter = UnitPriceConverter.class, dbType = Double.class)
-    private EnumPotatoUnitPrice enumPotatoUnitPrice;
-
     public static class ProduceTypeConverter implements PropertyConverter<EnumPotatoProduceType, String> {
 
         @Override
@@ -49,27 +45,6 @@ public class PotatoMarketOutlet {
         @Override
         public String convertToDatabaseValue(EnumPotatoProduceType enumPotatoProduceType) {
             return enumPotatoProduceType == null ? null : enumPotatoProduceType.produce();
-        }
-    }
-
-    public static class UnitPriceConverter implements PropertyConverter<EnumPotatoUnitPrice, Double> {
-
-        @Override
-        public EnumPotatoUnitPrice convertToEntityProperty(Double databaseValue) {
-            if (databaseValue == null) {
-                return EnumPotatoUnitPrice.UNKNOWN;
-            }
-            for (EnumPotatoUnitPrice enumUnitPrice : EnumPotatoUnitPrice.values()) {
-                if (enumUnitPrice.convertToLocalCurrency(EnumCountry.OTHERS.currency(),null) == databaseValue) {
-                    return enumUnitPrice;
-                }
-            }
-            return EnumPotatoUnitPrice.UNKNOWN;
-        }
-
-        @Override
-        public Double convertToDatabaseValue(EnumPotatoUnitPrice enumUnitPrice) {
-            return enumUnitPrice == null ? null : enumUnitPrice.convertToLocalCurrency(EnumCountry.OTHERS.currency(),null);
         }
     }
 

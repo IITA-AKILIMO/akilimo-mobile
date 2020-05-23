@@ -26,7 +26,6 @@ import com.iita.akilimo.models.InterCropFertilizer;
 import com.iita.akilimo.rest.request.RecommendationRequest;
 import com.iita.akilimo.rest.request.UserInfo;
 import com.iita.akilimo.utils.enums.EnumCassavaProduceType;
-import com.iita.akilimo.utils.enums.EnumPotatoUnitPrice;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 import com.iita.akilimo.utils.enums.EnumUnitPrice;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
@@ -451,9 +450,7 @@ public class BuildComputeData {
         if (potatoMarketOutlet != null) {
             sweetPotatoProdType = potatoMarketOutlet.getEnumPotatoProduceType().produce();
             sweetPotatoUnitWeight = potatoMarketOutlet.getEnumUnitOfSale().unitWeight();
-
-            EnumPotatoUnitPrice up = potatoMarketOutlet.getEnumPotatoUnitPrice();
-            potatoUnitPriceLocal = up.convertToLocalCurrency(currency, mathHelper) <= 0 ? potatoMarketOutlet.getExactPrice() : up.convertToLocalCurrency(currency, mathHelper);
+            potatoUnitPriceLocal = potatoMarketOutlet.getExactPrice();
             sweetPotatoUnitPrice = potatoUnitPriceLocal;
         }
 

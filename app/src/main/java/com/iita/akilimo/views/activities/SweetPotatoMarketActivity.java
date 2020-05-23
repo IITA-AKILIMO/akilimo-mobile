@@ -1,14 +1,8 @@
 package com.iita.akilimo.views.activities;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -22,7 +16,6 @@ import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.android.gms.common.util.Strings;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.MandatoryInfo;
@@ -35,10 +28,8 @@ import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumPotatoProduceType;
-import com.iita.akilimo.utils.enums.EnumPotatoUnitPrice;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
-import com.iita.akilimo.views.fragments.dialog.MaizePriceDialogFragment;
 import com.iita.akilimo.views.fragments.dialog.SweetPotatoPriceDialogFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +41,6 @@ import java.util.List;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 public class SweetPotatoMarketActivity extends BaseActivity {
 
@@ -80,13 +70,10 @@ public class SweetPotatoMarketActivity extends BaseActivity {
     private PotatoMarketOutlet potatoMarketOutlet;
     private EnumPotatoProduceType enumPotatoProduceType;
     private EnumUnitOfSale enumUnitOfSale;
-    private EnumPotatoUnitPrice enumUnitPrice;
     private List<PotatoPrice> potatoPriceList = null;
     private boolean selectionMade = false;
 
     private String unitOfSale;
-    private String tuberPrice;
-    private boolean exactPriceRequired;
 
     private int produceTypeRadioIndex;
     private int potatoUnitOfSaleRadioIndex;
@@ -189,13 +176,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
             rdgPotatoProduceType.check(produceTypeRadioIndex);
             rdgUnitOfSalePotato.check(potatoUnitOfSaleRadioIndex);
-
-            tuberPrice = String.valueOf(potatoMarketOutlet.getExactPrice());
-
-            enumUnitPrice = potatoMarketOutlet.getEnumPotatoUnitPrice();
-            if (enumUnitPrice == EnumPotatoUnitPrice.PRICE_EXACT) {
-                exactPriceRequired = true;
-            }
+            exactPrice = potatoMarketOutlet.getExactPrice();
         }
         rdgUnitOfSalePotato.setOnCheckedChangeListener((group, radioIndex) -> {
             switch (radioIndex) {
@@ -247,7 +228,6 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
         potatoMarketOutlet.setEnumPotatoProduceType(enumPotatoProduceType);
         potatoMarketOutlet.setEnumUnitOfSale(enumUnitOfSale);
-        potatoMarketOutlet.setEnumPotatoUnitPrice(enumUnitPrice);
         potatoMarketOutlet.setExactPrice(exactPrice);
 
         potatoMarketOutlet.setProduceTypeRadioIndex(produceTypeRadioIndex);

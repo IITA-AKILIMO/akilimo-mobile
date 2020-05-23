@@ -269,6 +269,11 @@ public class SweetPotatoPriceDialogFragment extends DialogFragment {
                 priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_HUNDRED_KG.unitWeight()) / 1000;
                 priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_HUNDRED_KG.unitWeight()) / 1000;
                 break;
+            default:
+            case UNIT_THOUSAND_KG:
+                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_THOUSAND_KG.unitWeight()) / 1000;
+                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_THOUSAND_KG.unitWeight()) / 1000;
+                break;
         }
 
         minAmountUSD = priceLower; //minimum amount will be dynamic based on weight being sold, max amount will be constant
