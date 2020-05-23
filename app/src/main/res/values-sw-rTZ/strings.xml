@@ -13,7 +13,7 @@
     <string name="title_activity_sweet_potato_market">Bei ya viazi tamu</string>
     <string name="title_activity_maize_performance">Uzaaji wa mahindi</string>
     <string name="title_activity_farm_location">Eneo shamba ilipo</string>
-    <string name="title_tillage_operations">Shughulikia za kukatua</string>
+    <string name="title_tillage_operations">Shughuli za kukatua</string>
     <string name="title_manual_tillage_cost">Gharama za kukabiliana na mwongozo</string>
     <string name="title_weed_control">Sugu magugu</string>
     <string name="title_maize_intercropping">Mseto wa mahindi</string>
@@ -252,8 +252,8 @@
     <string name="lbl_first_name">Jina lako la kwanza</string>
     <string name="lbl_last_name">Jina la familia</string>
     <string name="lbl_farm_name">Jina la shamba</string>
-    <string name="lbl_farm_name_title">Kama una shamba zaidi ya moja, fafadhali andika jina la shamba hili</string>
-    <string name="lbl_email_address_hint">Anauani ya barua pepe ( Inatumika kutuma mapendekezo)</string>
+    <string name="lbl_farm_name_title">Kama una shamba zaidi ya moja, tafadhali andika jina la shamba hili</string>
+    <string name="lbl_email_address_hint">Anauani ya barua pepe (Inatumika kutuma mapendekezo)</string>
     <string name="lbl_email_address">Anwani ya barua pepe</string>
     <string name="lbl_phone_number">Nambari ya simu</string>
     <string name="lbl_self_intro">Wacha tuanze kwa kuniambia kidogo juu yako mwenyewe</string>

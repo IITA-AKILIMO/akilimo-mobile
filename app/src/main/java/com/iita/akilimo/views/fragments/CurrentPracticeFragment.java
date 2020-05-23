@@ -15,6 +15,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -51,9 +52,9 @@ public class CurrentPracticeFragment extends BaseFragment {
     TextView lblSelectedHarvestDate;
 
     @BindView(R.id.btnPickPlantingDate)
-    MaterialButton btnPickPlantingDate;
+    AppCompatButton btnPickPlantingDate;
     @BindView(R.id.btnPickHarvestDate)
-    MaterialButton btnPickHarvestDate;
+    AppCompatButton btnPickHarvestDate;
 
 
     private String selectedPlantingDate;
