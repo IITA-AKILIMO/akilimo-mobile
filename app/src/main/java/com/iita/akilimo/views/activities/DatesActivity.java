@@ -15,17 +15,12 @@ import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.inherit.BaseActivity;
-import com.iita.akilimo.interfaces.IDatePickerDismissListener;
 import com.iita.akilimo.utils.DateHelper;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.views.fragments.dialog.DateDialogPickerFragment;
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
-import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalDate;
-
-import java.util.Calendar;
 
 import butterknife.BindString;
 import butterknife.BindView;
