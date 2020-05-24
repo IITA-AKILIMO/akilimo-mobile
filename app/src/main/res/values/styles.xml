@@ -124,26 +124,6 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="Yellow.Small.AppCompatRatingBar" parent="Base.Widget.AppCompat.RatingBar.Small">
-        <item name="colorControlNormal">@color/grey_60</item>
-        <item name="colorControlActivated">@color/yellow_600</item>
-    </style>
-
-    <style name="Yellow.Small.AppCompatRatingBar.White" parent="Base.Widget.AppCompat.RatingBar.Small">
-        <item name="colorControlNormal">@color/grey_20</item>
-        <item name="colorControlActivated">@color/yellow_600</item>
-    </style>
-
-    <style name="Yellow.Very.Small.AppCompatRatingBar" parent="@style/Yellow.Small.AppCompatRatingBar">
-        <item name="android:minHeight">8dp</item>
-        <item name="android:maxHeight">8dp</item>
-    </style>
-
-    <style name="Yellow.AppCompatRatingBar" parent="Base.Widget.AppCompat.RatingBar.Indicator">
-        <item name="colorControlNormal">@color/grey_60</item>
-        <item name="colorControlActivated">@color/yellow_600</item>
-    </style>
-
     <style name="CustomTabLayout" parent="Widget.Design.TabLayout">
         <item name="tabIndicatorColor">@android:color/white</item>
         <item name="tabIndicatorHeight">3dp</item>
