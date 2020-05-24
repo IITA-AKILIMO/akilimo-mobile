@@ -420,4 +420,7 @@
     <string name="lbl_per_separator">per</string>
     <string name="lbl_usd_currency">USD</string>
 
+    <string name="dateFormat" translatable="false">EE, dd MMM</string>
+    <string name="timeFormat" translatable="false">EE, dd MMM HH:mm</string>
+    <string name="period" translatable="false">%1$s – %2$s</string>
 </resources>

@@ -21,13 +21,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.android.material.button.MaterialButton;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.utils.enums.EnumOperationType;
-import com.iita.akilimo.views.fragments.dialog.DatePickerFragment;
+import com.iita.akilimo.views.fragments.dialog.DateDialogPickerFragment;
 import com.iita.akilimo.views.fragments.dialog.OperationTypeDialogFragment;
 
 import butterknife.BindView;
@@ -36,10 +35,6 @@ import butterknife.BindView;
  * A simple {@link androidx.fragment.app.Fragment} subclass.
  */
 public class CurrentPracticeFragment extends BaseFragment {
-
-    public static final int PLANTING_REQUEST_CODE = 11; // Used to identify the result
-    public static final int HARVEST_REQUEST_CODE = 12; // Used to identify the result
-
 
     @BindView(R.id.chkPloughing)
     CheckBox chkPloughing;
@@ -118,18 +113,18 @@ public class CurrentPracticeFragment extends BaseFragment {
 
         btnPickPlantingDate.setOnClickListener(v -> {
             // create the datePickerFragment
-            AppCompatDialogFragment newFragment = new DatePickerFragment(true);
+            AppCompatDialogFragment newFragment = new DateDialogPickerFragment(true);
             // set the targetFragment to receive the results, specifying the request code
-            newFragment.setTargetFragment(CurrentPracticeFragment.this, PLANTING_REQUEST_CODE);
+            newFragment.setTargetFragment(CurrentPracticeFragment.this, DateDialogPickerFragment.PLANTING_REQUEST_CODE);
             // show the datePicker
             newFragment.show(fm, "PlantingDatePicker");
         });
 
         btnPickHarvestDate.setOnClickListener(v -> {
             // create the datePickerFragment
-            AppCompatDialogFragment newFragment = new DatePickerFragment(true, selectedPlantingDate);
+            AppCompatDialogFragment newFragment = new DateDialogPickerFragment(true, selectedPlantingDate);
             // set the targetFragment to receive the results, specifying the request code
-            newFragment.setTargetFragment(CurrentPracticeFragment.this, HARVEST_REQUEST_CODE);
+            newFragment.setTargetFragment(CurrentPracticeFragment.this, DateDialogPickerFragment.HARVEST_REQUEST_CODE);
             // show the datePicker
             newFragment.show(fm, "HarvestDatePicker");
         });
@@ -221,10 +216,10 @@ public class CurrentPracticeFragment extends BaseFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // check for the results
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == PLANTING_REQUEST_CODE) {
+            if (requestCode == DateDialogPickerFragment.PLANTING_REQUEST_CODE) {
                 selectedPlantingDate = data.getStringExtra("selectedDate");
                 selectedHarvestDate = null; //make this null so as to require reselection of harvest date
-            } else if (requestCode == HARVEST_REQUEST_CODE) {
+            } else if (requestCode == DateDialogPickerFragment.HARVEST_REQUEST_CODE) {
                 selectedHarvestDate = data.getStringExtra("selectedDate");
             }
         }

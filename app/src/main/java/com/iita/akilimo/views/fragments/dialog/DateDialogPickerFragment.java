@@ -3,6 +3,7 @@ package com.iita.akilimo.views.fragments.dialog;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.DatePicker;
@@ -10,21 +11,30 @@ import android.widget.DatePicker;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.common.util.Strings;
+import com.iita.akilimo.interfaces.IDatePickerDismissListener;
+import com.iita.akilimo.interfaces.IPriceDialogDismissListener;
 import com.iita.akilimo.utils.DateHelper;
 
 import java.util.Calendar;
 
-public class DatePickerFragment extends AppCompatDialogFragment implements DatePickerDialog.OnDateSetListener {
-    private static final String TAG = "DatePickerFragment";
+public class DateDialogPickerFragment extends AppCompatDialogFragment implements DatePickerDialog.OnDateSetListener {
+    public static final int PLANTING_REQUEST_CODE = 11; // Used to identify the result
+    public static final int HARVEST_REQUEST_CODE = 12; // Used to identify the result
+    public static final String TAG = "DatePickerFragment";
+
     private final Calendar myCalendar = Calendar.getInstance();
     private boolean pickPlantingDate;
     private boolean pickHarvestDate;
     private String selectedPlantingDate;
+    private String selectedDate;
+
+    private IDatePickerDismissListener onDismissListener;
 
 
-    public DatePickerFragment(boolean pickPlantingDate) {
+    public DateDialogPickerFragment(boolean pickPlantingDate) {
         this.pickPlantingDate = pickPlantingDate;
     }
 
@@ -32,7 +42,7 @@ public class DatePickerFragment extends AppCompatDialogFragment implements DateP
      * @param pickHarvestDate      Indicate if harvest date is being picked
      * @param selectedPlantingDate pass the planting date parameter
      */
-    public DatePickerFragment(boolean pickHarvestDate, @NonNull String selectedPlantingDate) {
+    public DateDialogPickerFragment(boolean pickHarvestDate, @NonNull String selectedPlantingDate) {
         this.pickHarvestDate = pickHarvestDate;
         this.selectedPlantingDate = selectedPlantingDate;
     }
@@ -47,7 +57,7 @@ public class DatePickerFragment extends AppCompatDialogFragment implements DateP
         int day = c.get(Calendar.DAY_OF_MONTH);
 
         // Return a new instance of DatePickerDialog
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), DatePickerFragment.this, year, month, day);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), DateDialogPickerFragment.this, year, month, day);
 
         DatePicker datePicker = datePickerDialog.getDatePicker();
 
@@ -70,13 +80,28 @@ public class DatePickerFragment extends AppCompatDialogFragment implements DateP
         myCalendar.set(Calendar.YEAR, year);
         myCalendar.set(Calendar.MONTH, month);
         myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        String selectedDate = DateHelper.getSimpleDateFormatter().format(myCalendar.getTime());
+        selectedDate = DateHelper.getSimpleDateFormatter().format(myCalendar.getTime());
 
         // send date back to the target fragment
-        getTargetFragment().onActivityResult(
-                getTargetRequestCode(),
-                Activity.RESULT_OK,
-                new Intent().putExtra("selectedDate", selectedDate)
-        );
+        Fragment target = getTargetFragment();
+        if (target != null) {
+            target.onActivityResult(
+                    getTargetRequestCode(),
+                    Activity.RESULT_OK,
+                    new Intent().putExtra("selectedDate", selectedDate)
+            );
+        }
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (onDismissListener != null) {
+            onDismissListener.onDismiss(myCalendar, selectedDate, pickPlantingDate, pickHarvestDate);
+        }
+    }
+
+    public void setOnDismissListener(IDatePickerDismissListener dismissListener) {
+        this.onDismissListener = dismissListener;
     }
 }
