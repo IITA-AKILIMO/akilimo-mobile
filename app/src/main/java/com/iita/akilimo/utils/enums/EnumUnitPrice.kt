@@ -51,12 +51,8 @@ enum class EnumUnitPrice {
         private fun convertCurrency(
             amount: Double,
             toCurrency: String?,
-            mathHelper: MathHelper?
+            mathHelper: MathHelper
         ): Double {
-            var mathHelper = mathHelper
-            if (mathHelper == null) {
-                mathHelper = MathHelper()
-            }
             return mathHelper.convertToLocalCurrency(amount, toCurrency)
         }
     }
