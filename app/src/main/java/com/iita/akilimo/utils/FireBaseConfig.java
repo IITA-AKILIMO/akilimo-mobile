@@ -3,6 +3,7 @@ package com.iita.akilimo.utils;
 import android.app.Activity;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.iita.akilimo.BuildConfig;
@@ -53,6 +54,7 @@ public class FireBaseConfig {
 
                         String mapBoxKey = mFireBaseRemoteConfig.getString("mapBoxApiKey");
                         String locationIqToken = mFireBaseRemoteConfig.getString("locationIqToken");
+                        String firebaseTopicString = mFireBaseRemoteConfig.getString("firebase_topics");
 
                         String ngnRate = mFireBaseRemoteConfig.getString("ngnRate");
                         String tzsRate = mFireBaseRemoteConfig.getString("tzsRate");
@@ -63,6 +65,7 @@ public class FireBaseConfig {
                         sessionManager.setApiToken(apiToken);
                         sessionManager.setNgnRate(ngnRate);
                         sessionManager.setTzsRate(tzsRate);
+                        sessionManager.setFireBaseTopics(firebaseTopicString);
                     }
                 });
     }

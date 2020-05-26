@@ -6,15 +6,16 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iita.akilimo.BuildConfig;
+import com.iita.akilimo.models.FirebaseTopic;
 
-import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import java.util.Currency;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.List;
 
 
 /**
@@ -147,5 +148,20 @@ public class SessionManager {
 
     public String getDeviceToken() {
         return pref.getString("deviceToken", "");
+    }
+
+    public void setFireBaseTopics(String firebaseTopicString) {
+        editor.putString("firebaseTopics", firebaseTopicString);
+        editor.commit();
+    }
+
+    public List<FirebaseTopic> getFirebaseTopics() throws JsonProcessingException {
+
+        String topics = pref.getString("firebaseTopics", "[]");
+        ObjectMapper mapper = new ObjectMapper();
+        List<FirebaseTopic> firebaseTopics = mapper.readValue(topics, new TypeReference<List<FirebaseTopic>>() {
+        });
+
+        return firebaseTopics;
     }
 }
