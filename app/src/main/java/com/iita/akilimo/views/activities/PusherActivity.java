@@ -8,6 +8,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -16,7 +17,10 @@ import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.iita.akilimo.R;
 import com.iita.akilimo.inherit.BaseActivity;
+import com.iita.akilimo.models.FirebaseTopic;
 import com.iita.akilimo.utils.SessionManager;
+
+import java.util.List;
 
 @SuppressLint("LogNotTimber")
 public class PusherActivity extends BaseActivity {
@@ -54,13 +58,6 @@ public class PusherActivity extends BaseActivity {
                     }
                 });
 
-        FirebaseMessaging.getInstance().subscribeToTopic("akilimo-updates")
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(getApplicationContext(), "Success, subscribed to akilimo updates", Toast.LENGTH_LONG).show();
-                    }
-                });
     }
 
     @Override

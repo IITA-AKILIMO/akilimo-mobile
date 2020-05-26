@@ -1,13 +1,20 @@
 package com.iita.akilimo.utils;
 
 import android.app.Activity;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.iita.akilimo.BuildConfig;
 import com.iita.akilimo.R;
+import com.iita.akilimo.models.FirebaseTopic;
+
+import java.util.List;
 
 public class FireBaseConfig {
 
@@ -66,8 +73,22 @@ public class FireBaseConfig {
                         sessionManager.setNgnRate(ngnRate);
                         sessionManager.setTzsRate(tzsRate);
                         sessionManager.setFireBaseTopics(firebaseTopicString);
+
+                        subscribeTopic();
                     }
                 });
     }
 
+    private void subscribeTopic() {
+        List<FirebaseTopic> topics;
+        try {
+            topics = sessionManager.getFirebaseTopics();
+            for (FirebaseTopic topic : topics) {
+                FirebaseMessaging.getInstance().subscribeToTopic(topic.getTopicName());
+            }
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+            Crashlytics.logException(ex);
+        }
+    }
 }
