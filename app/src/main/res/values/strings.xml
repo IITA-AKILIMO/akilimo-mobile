@@ -423,4 +423,5 @@
     <string name="dateFormat" translatable="false">EE, dd MMM</string>
     <string name="timeFormat" translatable="false">EE, dd MMM HH:mm</string>
     <string name="period" translatable="false">%1$s – %2$s</string>
+    <string name="default_notification_channel_id" translatable="false">recommendations</string>
 </resources>

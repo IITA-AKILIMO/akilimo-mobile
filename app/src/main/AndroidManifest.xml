@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
@@ -24,17 +25,25 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:icon, android:theme, android:label, android:allowBackup"
         tools:targetApi="m">
-        <activity
-            android:name=".views.activities.LanguagePickerActivity"
-            android:label="@string/title_activity_language_picker"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+
 
         <service android:name=".services.GPSTracker" />
+
+        <service
+            android:name=".services.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
 
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="ca1a8f3133ce2b7f055369923b3532240ee2202b" />
@@ -42,76 +51,41 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity
-            android:name=".views.activities.SplashActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme">
+        <activity android:name=".views.activities.PusherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".views.activities.SweetPotatoMarketActivity"
-            android:screenOrientation="portrait" />
+            android:name=".views.activities.SplashActivity"
+            android:theme="@style/SplashTheme"></activity>
         <activity
-            android:name=".views.activities.TractorAccessActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.ManualTillageCostActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.CassavaMarketActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.MaizeMarketActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.FertilizersActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.IntercropFertilizersActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.DatesActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.RecommendationsActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.HomeActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.FertilizerRecActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.MapBoxActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.RootYieldActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.InvestmentAmountActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.DstRecommendationActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.WeedControlCostsActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.PlantingPracticesActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.ScheduledPlantingActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.MaizePerformanceActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".views.activities.InterCropRecActivity"
-            android:screenOrientation="portrait" />
+            android:name=".views.activities.LanguagePickerActivity"
+            android:label="@string/title_activity_language_picker"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".views.activities.SweetPotatoMarketActivity" />
+        <activity android:name=".views.activities.TractorAccessActivity" />
+        <activity android:name=".views.activities.ManualTillageCostActivity" />
+        <activity android:name=".views.activities.CassavaMarketActivity" />
+        <activity android:name=".views.activities.MaizeMarketActivity" />
+        <activity android:name=".views.activities.FertilizersActivity" />
+        <activity android:name=".views.activities.IntercropFertilizersActivity" />
+        <activity android:name=".views.activities.DatesActivity" />
+        <activity android:name=".views.activities.RecommendationsActivity" />
+        <activity android:name=".views.activities.HomeActivity" />
+        <activity android:name=".views.activities.FertilizerRecActivity" />
+        <activity android:name=".views.activities.MapBoxActivity" />
+        <activity android:name=".views.activities.RootYieldActivity" />
+        <activity android:name=".views.activities.InvestmentAmountActivity" />
+        <activity android:name=".views.activities.DstRecommendationActivity" />
+        <activity android:name=".views.activities.WeedControlCostsActivity" />
+        <activity android:name=".views.activities.PlantingPracticesActivity" />
+        <activity android:name=".views.activities.ScheduledPlantingActivity" />
+        <activity android:name=".views.activities.MaizePerformanceActivity" />
+        <activity android:name=".views.activities.InterCropRecActivity" />
     </application>
 
 </manifest>

@@ -160,4 +160,13 @@ public class SessionManager {
         editor.putInt("notificationCount", notificationCount);
         editor.commit();
     }
+
+    public void saveDeviceToken(String token) {
+        editor.putString("deviceToken", token);
+        editor.commit();
+    }
+
+    public String getDeviceToken() {
+        return pref.getString("deviceToken", "");
+    }
 }
