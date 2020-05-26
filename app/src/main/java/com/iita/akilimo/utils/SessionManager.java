@@ -102,17 +102,6 @@ public class SessionManager {
         return pref.getBoolean("firstRun", true);
     }
 
-    public String getDeviceId() {
-        String uniqueID = pref.getString("uuid", null);
-
-        if (uniqueID == null) {
-            uniqueID = UUID.randomUUID().toString();
-            editor.putString("uuid", uniqueID);
-            editor.commit();
-        }
-
-        return uniqueID;
-    }
 
     @SuppressWarnings("StringBufferReplaceableByString")
     public String getAppVersion() {
@@ -138,16 +127,6 @@ public class SessionManager {
         }
 
         return appBuildDate;
-    }
-
-    public String getDeviceCountry() {
-        Locale current = context.getResources().getConfiguration().locale;
-        return current.getCountry();
-    }
-
-    public String getDeviceLocaleCurrency() {
-        Locale current = context.getResources().getConfiguration().locale;
-        return Currency.getInstance(current).getCurrencyCode();
     }
 
     public int getNotificationCount() {
