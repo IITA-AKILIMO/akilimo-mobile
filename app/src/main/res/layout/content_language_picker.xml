@@ -32,7 +32,7 @@
         android:fontFamily="@font/ubuntu"
         android:text="@string/lbl_save"
         android:textAllCaps="false"
-        android:theme="@style/Button.Accent"
+        android:theme="@style/Button.Green"
         app:cornerRadius="@dimen/spacing_small" />
 
 </LinearLayout>

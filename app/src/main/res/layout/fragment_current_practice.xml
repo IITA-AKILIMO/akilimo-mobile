@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey_5"
-    android:padding="@dimen/spacing_small"
+    android:padding="@dimen/spacing_medium"
     tools:context=".views.fragments.CurrentPracticeFragment">
 
     <LinearLayout
@@ -19,8 +19,9 @@
 
         <ImageView
             android:id="@+id/image"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:contentDescription="@string/app_name"
             android:padding="@dimen/spacing_xlarge"
             app:srcCompat="@drawable/ic_farm" />
 
@@ -28,10 +29,11 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_large"
             android:fontFamily="@font/ubuntu"
             android:text="@string/title_tillage_operations"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
             android:textColor="@color/colorAccent" />
 
         <androidx.cardview.widget.CardView
@@ -49,12 +51,12 @@
                 android:orientation="vertical"
                 android:padding="@dimen/spacing_small">
 
-                <com.google.android.material.button.MaterialButton
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnPickPlantingDate"
-                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/lbl_pick_planting_date"
+                    android:theme="@style/Button.Green"
                     app:cornerRadius="1dp" />
 
                 <LinearLayout
@@ -64,6 +66,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/plantingDateHint"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/lbl_selected_planting_date" />
@@ -95,12 +98,13 @@
                 android:orientation="vertical"
                 android:padding="@dimen/spacing_small">
 
-                <com.google.android.material.button.MaterialButton
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnPickHarvestDate"
-                    style="@style/Widget.AppCompat.Button.Borderless"
+                    style="@style/Widget.AppCompat.Button.Colored"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/lbl_pick_harvest_date"
+                    android:theme="@style/Button.Accent"
                     app:cornerRadius="1dp" />
 
 
@@ -111,6 +115,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/harvestDateHint"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/lbl_selected_harvest_date" />
@@ -140,14 +145,13 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_small"
-                android:layout_marginBottom="@dimen/spacing_medium"
                 android:text="@string/lbl_which_of_these_tillage_operations_do_you_perform"
                 android:textColor="@color/colorAccent" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_medium"
                 android:orientation="horizontal"
                 android:padding="@dimen/spacing_small">
 

@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
@@ -17,11 +18,9 @@ import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.DateHelper;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.iita.akilimo.views.fragments.dialog.DateDialogPickerFragment;
 
 import org.joda.time.LocalDate;
-
-import java.util.Calendar;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -234,42 +233,26 @@ public class DatesActivity extends BaseActivity {
     }
 
     private void dialogDatePickerLight(boolean pickPlantingDate, boolean pickHarvestDate) {
-        Calendar cur_calender = Calendar.getInstance();
-        DatePickerDialog datePicker = DatePickerDialog.newInstance(
-                (view, year, monthOfYear, dayOfMonth) -> {
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.set(Calendar.YEAR, year);
-                    calendar.set(Calendar.MONTH, monthOfYear);
-                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                    long date_ship_millis = calendar.getTimeInMillis();
-                    if (pickPlantingDate) {
-                        selectedPlantingDate = DateHelper.getSimpleDateFormatter().format(calendar.getTime());
-                        lblSelectedPlantingDate.setText(Tools.formatLongToDateString(date_ship_millis));
-                        selectedHarvestDate = null;
-                        lblSelectedHarvestDate.setText(null);
-                    } else if (pickHarvestDate) {
-                        selectedHarvestDate = DateHelper.getSimpleDateFormatter().format(calendar.getTime());
-                        lblSelectedHarvestDate.setText(Tools.formatLongToDateString(date_ship_millis));
-                    }
-                },
-                cur_calender.get(Calendar.YEAR),
-                cur_calender.get(Calendar.MONTH),
-                cur_calender.get(Calendar.DAY_OF_MONTH)
-        );
-        //set dark light
-        datePicker.setThemeDark(false);
-        datePicker.setAccentColor(getResources().getColor(R.color.colorAccent));
-        datePicker.setOkColor(getResources().getColor(R.color.grey_50));
-        datePicker.setCancelColor(getResources().getColor(R.color.grey_50));
-        datePicker.setMinDate(cur_calender);
-        if (pickPlantingDate) {
-            datePicker.setMinDate(DateHelper.getMinDate(-16));
-            datePicker.setMaxDate(DateHelper.getMaxDate(12));
-        } else if ((pickHarvestDate) && !Strings.isEmptyOrWhitespace(selectedPlantingDate)) {
-            datePicker.setMinDate(DateHelper.getFutureOrPastMonth(selectedPlantingDate, 8));
-            datePicker.setMaxDate(DateHelper.getFutureOrPastMonth(selectedPlantingDate, 16));
-        }
+        final FragmentManager fm = getSupportFragmentManager();
 
-        datePicker.show(getSupportFragmentManager(), "DatePickerDialog");
+        DateDialogPickerFragment pickerFragment = new DateDialogPickerFragment(true);
+        if (pickHarvestDate) {
+            pickerFragment = new DateDialogPickerFragment(true, selectedPlantingDate);
+        }
+        pickerFragment.show(fm, DateDialogPickerFragment.TAG);
+
+        pickerFragment.setOnDismissListener((myCalendar, selectedDate, plantingDateSelected, harvestDateSelected) -> {
+            long date_ship_millis = myCalendar.getTimeInMillis();
+            if (pickPlantingDate) {
+                selectedPlantingDate = DateHelper.getSimpleDateFormatter().format(myCalendar.getTime());
+                lblSelectedPlantingDate.setText(Tools.formatLongToDateString(date_ship_millis));
+                selectedHarvestDate = null;
+                lblSelectedHarvestDate.setText(null);
+            } else if (pickHarvestDate) {
+                selectedHarvestDate = DateHelper.getSimpleDateFormatter().format(myCalendar.getTime());
+                lblSelectedHarvestDate.setText(Tools.formatLongToDateString(date_ship_millis));
+            }
+        });
+
     }
 }

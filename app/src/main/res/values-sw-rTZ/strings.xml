@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="welcome_title">Mimi ni  AKILIMO</string>
-    <string name="welcome_instructions">Nitakupatia ushauri binafsi wa kuongeza mavunao ya muhogo katika shamba lako iwapo utanipatia taarifa muhimu  za kuniwezesha kufanya hivyo .</string>
+    <string name="welcome_instructions">Nitakupatia ushauri binafsi wa kuongeza mavuno ya muhogo katika shamba lako iwapo utanipatia taarifa muhimu za kuniwezesha kufanya hivyo .</string>
     <string name="important_instructions_title">MAAGIZO MUHIMU</string>
-    <string name="important_instructions">Mapendekezo atakayo kupatia AKILIMO, yanategemea usahihi wa taariza utakazo zitoa yaani eneo lilipo shamba lako, ukubwa wa shamba, bei ya mazao, mbolea, n.k. Kwa mfano, ukubwa wa shamba ukitajwa kuwa mkubwa kuliko ulivyo, utaongeza gharama zisizo za lazima, yaani  kuongezeka uwekezaji na kusababisha hasara; na ikiwa ukubwa wa shamba unaotajwa utakuwa ni chini ya ukweli,  itapunguza fursa ya kupata faida kutoka kwenye shamba lako.</string>
+    <string name="important_instructions">Mapendekezo atakayo kupatia AKILIMO, yanategemea usahihi wa taarifa utakazo zitoa yaani eneo lilipo shamba lako, ukubwa wa shamba, bei ya mazao, mbolea, n.k. Kwa mfano, ukubwa wa shamba ukitajwa kuwa mkubwa kuliko ulivyo, utaongeza gharama zisizo za lazima, yaani  kuongezeka uwekezaji na kusababisha hasara; na ikiwa ukubwa wa shamba unaotajwa utakuwa ni chini ya ukweli,  itapunguza fursa ya kupata faida kutoka kwenye shamba lako.</string>
     <string name="title_activity_fertilizer_choice">Mbolea inayopatikana</string>
     <string name="title_activity_fertilizer_rec">Mapendekezo ya matumizi ya mbolea</string>
     <string name="title_activity_investment_amount">Kiasi cha uwekezaji</string>
@@ -13,8 +13,9 @@
     <string name="title_activity_sweet_potato_market">Bei ya viazi tamu</string>
     <string name="title_activity_maize_performance">Uzaaji wa mahindi</string>
     <string name="title_activity_farm_location">Eneo shamba ilipo</string>
-    <string name="title_tillage_operations">Shughulikia za kukatua</string>
-    <string name="title_manual_tillage_cost">Gharama za kukabiliana na mwongozo</string>
+    <string name="title_tillage_operations">Shughuli za kukatua</string>
+    <!--    <string name="title_manual_tillage_cost">Gharama za kukabiliana na mwongozo</string>-->
+    <string name="title_manual_tillage_cost">Gharama za kulima</string>
     <string name="title_weed_control">Sugu magugu</string>
     <string name="title_maize_intercropping">Mseto wa mahindi</string>
     <string name="title_sweet_potato_intercropping">Mseto na viazi vitamu</string>
@@ -77,7 +78,7 @@
     <string name="lbl_maize_performance_rich">Hizi ni dalili za udongo wenye rutuba lakini sio za kawaida</string>
     <string name="lbl_market_outlet">Bei ya muhogo wakati wa kuvuna</string>
     <string name="lbl_market_outlet_maize">Bei ya mahindi</string>
-    <string name="lbl_tillage_operations">Shughulikia za ukatuaji na bei zake</string>
+    <string name="lbl_tillage_operations">Shughuli za ukatuaji na bei zake</string>
     <string name="lbl_cost_of_manual_tillage">Gharama za kulima kwa mkono</string>
     <string name="lbl_tractor_access">Uwezo kupata trekta</string>
     <string name="lbl_cost_of_weed_control">Gharama za kudhibiti magugu</string>
@@ -88,7 +89,7 @@
     <string name="lbl_pick_harvest_date">Chagua tarehe ya kuvuna</string>
     <string name="lbl_change_harvest_date">Badilisha tarehe ya kuvuna</string>
     <string name="lbl_selected_harvest_date">Tarehe ya kuvuna uliyochagua ilikuwa:</string>
-    <string name="lbl_harvest_flexible">Tarehe yangu ya kuvuna inabadilika kwa:</string>
+    <string name="lbl_harvest_flexible">Tarehe yangu ya kuvuna inaweza kubadilika kwa:</string>
     <string name="lbl_one_month_window">Mwezi 1</string>
     <string name="lbl_two_month_window">Miezi 2</string>
     <string name="lbl_to">kwa</string>
@@ -98,7 +99,7 @@
     <string name="lbl_no_internet">Hakuna mtandao!</string>
     <string name="lbl_retry">Jaribu tena</string>
     <string name="lbl_do_not_know">Sijui</string>
-    <string name="price_per_bag">Bei ( %1$s kwa kila mfuko wa kilo 50) kwa %2$s</string>
+    <string name="price_per_bag">Bei (%1$s kwa kila mfuko wa kilo 50) kwa %2$s</string>
     <string name="lbl_operation_cost">Gharama ya uendeshaji wa shamba lako</string>
     <string name="current_field_yield">Uwekezaji halisi (x %1$s kwa ekari %2$s)</string>
     <string name="exact_investment_x_per_field_area">Ninataka kutaja kiwango halisi</string>
@@ -132,7 +133,7 @@
     <string name="per_pick_up_load_sale_unit">Kwa upakiaji  wa mzigo (tani 2)</string>
     <string name="exact_sale_unit">Ninataka kutaja uzito halisi wa kizio changu cha kuuza</string>
     <string name="exact_sale_unit_hint">Ingiza ukubwa wa kizio chako cha kuuza i.e x kg</string>
-    <string name="lbl_price_per_bag">Bei ( %1$s kwa kila mfuko wa kilo 50) kwa %2$s</string>
+    <string name="lbl_price_per_bag">Bei (%1$s kwa kila mfuko wa kilo 50) kwa %2$s</string>
     <string name="up_20_30_usd_per_tonne">Dola 20-30 kwa tani</string>
     <string name="up_30_50_usd_per_tonne">Dola 30-50 kwa tani moja</string>
     <string name="up_50_100_usd_per_tonne">Dola 50-100 kwa tani moja</string>
@@ -159,9 +160,9 @@
     <string name="lbl_rec_header">Ili kupata pendekezo sahihi, tafadhali toa taarifa juu ya vitu vilivyopo hapa chini</string>
     <string name="lbl_compute_error">Haiwezekani kuchakata mapendekezo, tafadhali jaribu tena</string>
     <string name="lbl_rec_sample">Tunapendekeza usitumie mbolea yoyote. Hatutarajii kuwa maombi ya mbolea yatasababisha kuongezeka kwa mavuno zaidi kwa hali yako sasa.</string>
-    <string name="lbl_rec_intro">Akilimo anaweza kukushauri jinsi ya kupanda muhogo. \nNi ushauri gani unauhitaji?</string>
+    <string name="lbl_rec_intro">Akilimo anaweza kukushauri jinsi ya kupanda muhogo.\nNi ushauri gani unauhitaji?</string>
     <!--  scroll behaviors  -->
-    <string name="lbl_min_selection">Tafadhali chagua angalau %d mbolea</string>
+    <string name="lbl_min_selection">Tafadhali chagua angalau mbolea %d</string>
     <string name="lbl_update">Boresha</string>
     <string name="lbl_unit_price">Kizio cha bei</string>
     <string name="lbl_unit_price_per">Kizio cha bei  katika %s kwa %s</string>
@@ -218,8 +219,9 @@
     <string name="lbl_fresh_cob_price">Unararajia kuuza muhindi 1 mbichi kwa bei gani?</string>
     <string name="lbl_price_per_cob">Bei kwa kila cob</string>
     <string name="lbl_maize_outlets">How do you sell your maize produce?</string>
-    <string name="lbl_add_ploughing_cost">Add ploughing cost</string>
-    <string name="lbl_add_ridging_costs">Add ridging costs</string>
+    <string name="lbl_add_ploughing_cost">Ongeza gharama ya kulima</string>
+    <string name="lbl_add_ridging_costs">Ongeza gharama ya kuweka matuta</string>
+
     <string name="lbl_select_produce_type">Chagua aina ya mazao</string>
     <string name="lbl_roots">Mizizi</string>
     <string name="lbl_flour">Unga</string>
@@ -252,8 +254,8 @@
     <string name="lbl_first_name">Jina lako la kwanza</string>
     <string name="lbl_last_name">Jina la familia</string>
     <string name="lbl_farm_name">Jina la shamba</string>
-    <string name="lbl_farm_name_title">Kama una shamba zaidi ya moja, fafadhali andika jina la shamba hili</string>
-    <string name="lbl_email_address_hint">Anauani ya barua pepe ( Inatumika kutuma mapendekezo)</string>
+    <string name="lbl_farm_name_title">Kama una shamba zaidi ya moja, tafadhali andika jina la shamba hili</string>
+    <string name="lbl_email_address_hint">Anauani ya barua pepe (Inatumika kutuma mapendekezo)</string>
     <string name="lbl_email_address">Anwani ya barua pepe</string>
     <string name="lbl_phone_number">Nambari ya simu</string>
     <string name="lbl_self_intro">Wacha tuanze kwa kuniambia kidogo juu yako mwenyewe</string>
@@ -264,7 +266,7 @@
     <string name="lbl_manual">Mwongozo</string>
     <string name="lbl_operation_type_validation_message">Tafadhali chagua aina sahihi ya operesheni</string>
     <string name="lbl_bag_price">Bei ya begi</string>
-    <string name="lbl_how_do_you_sell_your_sweet_potato">Please select a proper operation type</string>
+    <string name="lbl_how_do_you_sell_your_sweet_potato">Utauzaje viazi vitamu vyako</string>
     <string name="lbl_do_you_want_to_receive_recommendations_via_email_and_sms">Unataka kupata mapendekezo kwa njia ya barua pepe au SMS?</string>
     <string name="lbl_which_of_these_tillage_operations_do_you_perform">Ni shughuli zipi za ukatuaji wa shamba kati ya hizi unazifanya?</string>
     <string name="lbl_options">Chaguzi</string>
@@ -312,8 +314,8 @@
     <string name="lbl_grain_price_prompt">Tafadhali ingiza bei sahihi ya mahindi yasiyosagwa</string>
     <string name="lbl_invalid_cob_price">Bei ya hindi bichi si sahihi</string>
     <string name="lbl_cob_price_prompt">Tafadhali ingiza bei sahihi ya hindi bichi</string>
-    <string name="lbl_invalid_selection">Invalid selection</string>
-    <string name="lbl_maize_perfomance_prompt">Please provide a valid maize performance selection</string>
+    <string name="lbl_invalid_selection">Chaguo lako sio sahihi</string>
+    <string name="lbl_maize_performance_prompt">Please provide a valid maize performance selection</string>
     <string name="lbl_manual_plough_cost_prompt">Please specify the cost of manual ploughing on your farm</string>
     <string name="lbl_manual_ridge_cost_prompt">Please specify the cost of manual ridging on your farm</string>
     <string name="lbl_invalid_yield">Mavuno si sahihi</string>
@@ -324,8 +326,11 @@
     <string name="lbl_tuber_price_prompt">Tafadhali toa bei sahihi ya viazi vitamu</string>
     <string name="lbl_valid_amount_prompt">Tafadhali ingiza kiasi sahihi</string>
     <string name="lbl_weed_control_prompt">Tafadhali taja unavyodhibiti magugu kwenye shamba lako</string>
-    <string name="lbl_invalid_cost">Kiasi cha ghalama si sahihi</string>
-    <string name="lbl_first_weeding_costs_prompt">Tafadhali taja ghalama za palizi la kwanza</string>
-    <string name="lbl_second_weeding_cost_prompt">Tafandali taja ghalama za palizi la pili</string>
+    <string name="lbl_invalid_cost">Kiasi cha gharama si sahihi</string>
+    <string name="lbl_first_weeding_costs_prompt">Tafadhali taja gharama za palizi la kwanza</string>
+    <string name="lbl_second_weeding_cost_prompt">Tafandali taja gharama za palizi la pili</string>
     <string name="lbl_field_size_prompt">Tafadhali ingiza eneo la ukubwa wa shamba lililo sahihi</string>
+    <string name="lbl_per_separator">kwa</string>
+    <string name="lbl_usd_currency">Dola</string>
+
 </resources>

@@ -1,36 +1,46 @@
 package com.iita.akilimo.views.activities;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.common.util.Strings;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.PotatoMarketOutlet;
 import com.iita.akilimo.inherit.BaseActivity;
+import com.iita.akilimo.interfaces.IVolleyCallback;
+import com.iita.akilimo.models.PotatoPrice;
+import com.iita.akilimo.rest.RestParameters;
+import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.MathHelper;
+import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumPotatoProduceType;
-import com.iita.akilimo.utils.enums.EnumPotatoUnitPrice;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
+import com.iita.akilimo.views.fragments.dialog.SweetPotatoPriceDialogFragment;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.List;
 
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 public class SweetPotatoMarketActivity extends BaseActivity {
 
@@ -60,11 +70,10 @@ public class SweetPotatoMarketActivity extends BaseActivity {
     private PotatoMarketOutlet potatoMarketOutlet;
     private EnumPotatoProduceType enumPotatoProduceType;
     private EnumUnitOfSale enumUnitOfSale;
-    private EnumPotatoUnitPrice enumUnitPrice;
+    private List<PotatoPrice> potatoPriceList = null;
+    private boolean selectionMade = false;
 
     private String unitOfSale;
-    private String tuberPrice;
-    private boolean exactPrice;
 
     private int produceTypeRadioIndex;
     private int potatoUnitOfSaleRadioIndex;
@@ -73,8 +82,12 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
     double unitPriceUSD = 0.0;
     double unitPriceLocal = 0.0;
+    private double exactPrice = 0.0;
+    private double averagePrice = 0.0;
+
     private double minAmountUSD = 5.00;
     private double maxAmountUSD = 500.00;
+
     private boolean dialogOpen;
 
 
@@ -87,6 +100,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
         context = this;
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
+        queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
 
         MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
@@ -95,25 +109,50 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
         initToolbar();
         initComponent();
+        processPotatoPrices();
+    }
 
-        enumPotatoProduceType = EnumPotatoProduceType.TUBERS;
+    private void processPotatoPrices() {
+        final RestService restService = RestService.getInstance(queue, this);
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final RestParameters restParameters = new RestParameters(
+                String.format("v3/potato-prices/country/%s", countryCode),
+                countryCode
+        );
+        restParameters.setInitialTimeout(5000);
 
-        potatoMarketOutlet = objectBoxEntityProcessor.getPotatoMarketOutlet();
-        if (potatoMarketOutlet != null) {
-            produceTypeRadioIndex = potatoMarketOutlet.getProduceTypeRadioIndex();
-            potatoUnitOfSaleRadioIndex = potatoMarketOutlet.getPotatoUnitOfSaleRadioIndex();
-            potatoUnitPriceRadioIndex = potatoMarketOutlet.getPotatoUnitPriceRadioIndex();
+        restService.setParameters(restParameters);
 
-            rdgPotatoProduceType.check(produceTypeRadioIndex);
-            rdgUnitOfSalePotato.check(potatoUnitOfSaleRadioIndex);
-
-            tuberPrice = String.valueOf(potatoMarketOutlet.getExactPrice());
-
-            enumUnitPrice = potatoMarketOutlet.getEnumPotatoUnitPrice();
-            if (enumUnitPrice == EnumPotatoUnitPrice.PRICE_EXACT) {
-                exactPrice = true;
+        restService.getJsonArrList(new IVolleyCallback() {
+            @Override
+            public void onSuccessJsonString(@NotNull String jsonStringResult) {
             }
-        }
+
+            @Override
+            public void onSuccessJsonArr(@NotNull JSONArray jsonArray) {
+                try {
+                    potatoPriceList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<PotatoPrice>>() {
+                    });
+                    objectBoxEntityProcessor.savePotatoPrice(potatoPriceList);
+                } catch (Exception ex) {
+                    Crashlytics.logException(ex);
+                    Crashlytics.log(ex.getMessage());
+                }
+            }
+
+            @Override
+            public void onSuccessJsonObject(@NotNull JSONObject jsonObject) {
+
+            }
+
+            @Override
+            public void onError(@NotNull VolleyError volleyError) {
+                String error = Tools.parseNetworkError(volleyError).getMessage();
+                if (error != null) {
+                    Snackbar.make(unitOfSalePotatoCard, error, Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     @Override
@@ -127,6 +166,18 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
     @Override
     protected void initComponent() {
+        enumPotatoProduceType = EnumPotatoProduceType.TUBERS;
+
+        potatoMarketOutlet = objectBoxEntityProcessor.getPotatoMarketOutlet();
+        if (potatoMarketOutlet != null) {
+            produceTypeRadioIndex = potatoMarketOutlet.getProduceTypeRadioIndex();
+            potatoUnitOfSaleRadioIndex = potatoMarketOutlet.getPotatoUnitOfSaleRadioIndex();
+            potatoUnitPriceRadioIndex = potatoMarketOutlet.getPotatoUnitPriceRadioIndex();
+
+            rdgPotatoProduceType.check(produceTypeRadioIndex);
+            rdgUnitOfSalePotato.check(potatoUnitOfSaleRadioIndex);
+            exactPrice = potatoMarketOutlet.getExactPrice();
+        }
         rdgUnitOfSalePotato.setOnCheckedChangeListener((group, radioIndex) -> {
             switch (radioIndex) {
                 case R.id.rd_per_kg:
@@ -144,8 +195,6 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             }
 
             if (enumUnitOfSale != null) {
-//                unitOfSalePotatoTitle.setVisibility(View.VISIBLE);
-//                unitOfSalePotatoCard.setVisibility(View.VISIBLE);
                 unitOfSale = enumUnitOfSale.unitOfSale();
             }
         });
@@ -168,14 +217,9 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             return;
         }
 
-        if (exactPrice) {
-            if (Strings.isEmptyOrWhitespace(tuberPrice)) {
-                showCustomWarningDialog(getString(R.string.lbl_invalid_tuber_price), getString(R.string.lbl_tuber_price_prompt));
-                return;
-            }
-            unitPriceLocal = mathHelper.convertToDouble(tuberPrice);
-        } else {
-            unitPriceLocal = enumUnitPrice.convertToLocalCurrency(currency, mathHelper);
+        if (exactPrice <= 0) {
+            showCustomWarningDialog(getString(R.string.lbl_invalid_tuber_price), getString(R.string.lbl_tuber_price_prompt));
+            return;
         }
 
         if (potatoMarketOutlet == null) {
@@ -184,8 +228,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
         potatoMarketOutlet.setEnumPotatoProduceType(enumPotatoProduceType);
         potatoMarketOutlet.setEnumUnitOfSale(enumUnitOfSale);
-        potatoMarketOutlet.setEnumPotatoUnitPrice(enumUnitPrice);
-        potatoMarketOutlet.setExactPrice(unitPriceLocal);
+        potatoMarketOutlet.setExactPrice(exactPrice);
 
         potatoMarketOutlet.setProduceTypeRadioIndex(produceTypeRadioIndex);
         potatoMarketOutlet.setPotatoUnitPriceRadioIndex(potatoUnitPriceRadioIndex);
@@ -203,134 +246,32 @@ public class SweetPotatoMarketActivity extends BaseActivity {
         }
     }
 
-    private String labelText(double unitPriceLower, double unitPriceUpper, String currency, String uos) {
-        //cross convert according to weight
-        double priceLower = 0;
-        double priceHigher = 0;
-        int nearestRounding = 10;
-
-        switch (enumUnitOfSale) {
-            case UNIT_ONE_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_ONE_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_ONE_KG.unitWeight()) / 1000;
-                break;
-            case UNIT_FIFTY_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_FIFTY_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_FIFTY_KG.unitWeight()) / 1000;
-//                nearestRounding = 50;
-                break;
-            case UNIT_HUNDRED_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_HUNDRED_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_HUNDRED_KG.unitWeight()) / 1000;
-//                nearestRounding = 100;
-                break;
-            case UNIT_THOUSAND_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_THOUSAND_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_THOUSAND_KG.unitWeight()) / 1000;
-                nearestRounding = 100;
-                break;
-        }
-
-        minAmountUSD = priceLower; //minimum amount will be dynamic based on weight being sold, max amount will be constant
-        double localLower = mathHelper.convertToLocalCurrency(priceLower, currency, nearestRounding);
-        double localHigher = mathHelper.convertToLocalCurrency(priceHigher, currency, nearestRounding);
-
-        return context.getString(R.string.unit_price_label, localLower, localHigher, currency, uos);
-    }
-
     private void showPotatoUnitPriceDialog(String currency, String uos) {
-        int oldIndex = 0;
-        if (dialogOpen) {
-            return;
-        }
-        final Dialog dialog = new Dialog(context);
+        Bundle arguments = new Bundle();
+        arguments.putString(SweetPotatoPriceDialogFragment.CURRENCY_CODE, currency);
+        arguments.putString(SweetPotatoPriceDialogFragment.COUNTRY_CODE, countryCode);
+        arguments.putString(SweetPotatoPriceDialogFragment.UNIT_OF_SALE, uos);
+        arguments.putDouble(SweetPotatoPriceDialogFragment.SELECTED_PRICE, exactPrice);
+        arguments.putDouble(SweetPotatoPriceDialogFragment.AVERAGE_PRICE, averagePrice);
+        arguments.putParcelable(SweetPotatoPriceDialogFragment.ENUM_UNIT_OF_SALE, enumUnitOfSale);
 
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
-        dialog.setContentView(R.layout.dialog_cassava_unit_price);
-        dialog.setCancelable(false);
+        SweetPotatoPriceDialogFragment priceDialogFragment = new SweetPotatoPriceDialogFragment();
+        priceDialogFragment.setArguments(arguments);
 
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-
-        final TextView unitPriceTitle = dialog.findViewById(R.id.unitPriceTitle);
-        final EditText etUnitPrice = dialog.findViewById(R.id.etUnitPrice);
-        final RadioGroup rdgUnitPrice = dialog.findViewById(R.id.rdgUnitPrice);
-
-        final RadioButton rd_20_30_price = dialog.findViewById(R.id.rd_20_30_price);
-        final RadioButton rd_30_50_price = dialog.findViewById(R.id.rd_30_50_price);
-        final RadioButton rd_50_100_price = dialog.findViewById(R.id.rd_50_100_price);
-
-        dialog.findViewById(R.id.rd_100_150_price).setVisibility(View.GONE);
-        dialog.findViewById(R.id.rd_150_200_price).setVisibility(View.GONE);
-        //update labels according to earlier selected values
-
-        if (exactPrice || enumUnitPrice == EnumPotatoUnitPrice.PRICE_EXACT) {
-            etUnitPrice.setVisibility(View.VISIBLE);
-            etUnitPrice.setText(tuberPrice);
-        }
-
-        unitPriceTitle.setText(String.format(getString(R.string.lbl_sweet_potato_tuber_unit_price_per), currency, uos));
-        try {
-            rd_20_30_price.setText(labelText(EnumPotatoUnitPrice.PRICE_RANGE_ONE.unitPricePerTonneLower(), EnumPotatoUnitPrice.PRICE_RANGE_ONE.unitPricePerTonneUpper(), currency, uos));
-            rd_30_50_price.setText(labelText(EnumPotatoUnitPrice.PRICE_RANGE_TWO.unitPricePerTonneLower(), EnumPotatoUnitPrice.PRICE_RANGE_TWO.unitPricePerTonneUpper(), currency, uos));
-            rd_50_100_price.setText(labelText(EnumPotatoUnitPrice.PRICE_RANGE_THREE.unitPricePerTonneLower(), EnumPotatoUnitPrice.PRICE_RANGE_THREE.unitPricePerTonneUpper(), currency, uos));
-        } catch (Exception ex) {
-            Timber.e(ex);
-        }
-
-        rdgUnitPrice.setOnCheckedChangeListener((group, radioIndex) -> {
-            etUnitPrice.setVisibility(View.GONE);
-            exactPrice = false;
-            switch (radioIndex) {
-                case R.id.rd_20_30_price:
-                    enumUnitPrice = EnumPotatoUnitPrice.PRICE_RANGE_ONE;
-                    break;
-                case R.id.rd_30_50_price:
-                    enumUnitPrice = EnumPotatoUnitPrice.PRICE_RANGE_TWO;
-                    break;
-                case R.id.rd_50_100_price:
-                    enumUnitPrice = EnumPotatoUnitPrice.PRICE_RANGE_THREE;
-                    break;
-                case R.id.rd_exact_price:
-                    exactPrice = true;
-                    enumUnitPrice = EnumPotatoUnitPrice.PRICE_EXACT;
-                    etUnitPrice.setVisibility(View.VISIBLE);
-                    break;
-            }
+        priceDialogFragment.setOnDismissListener((selectedPrice, selectedAveragePrice) -> {
+            exactPrice = selectedPrice;
+            averagePrice = selectedAveragePrice;
         });
 
-        dialog.findViewById(R.id.bt_cancel).setOnClickListener(v -> {
-            dialog.dismiss();
-            dialogOpen = false;
-            rdgUnitOfSalePotato.clearCheck();
-            rdgUnitOfSalePotato.check(potatoUnitOfSaleRadioIndex);
-        });
-
-        dialog.findViewById(R.id.bt_submit).setOnClickListener(view -> {
-            if (enumUnitPrice == null) {
-                Snackbar.make(view, R.string.lbl_valid_amount_prompt, Snackbar.LENGTH_LONG).show();
-                return;
+        FragmentTransaction fragmentTransaction;
+        if (getFragmentManager() != null) {
+            fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            Fragment prev = getSupportFragmentManager().findFragmentByTag(SweetPotatoPriceDialogFragment.ARG_ITEM_ID);
+            if (prev != null) {
+                fragmentTransaction.remove(prev);
             }
-            if (exactPrice) {
-                tuberPrice = etUnitPrice.getText().toString().trim();
-                if (Strings.isEmptyOrWhitespace(tuberPrice)) {
-                    Snackbar.make(view, R.string.lbl_valid_amount_prompt, Snackbar.LENGTH_LONG).show();
-                    return;
-                }
-            } else {
-                tuberPrice = "0";
-            }
-            potatoUnitOfSaleRadioIndex = rdgUnitOfSalePotato.getCheckedRadioButtonId();
-            potatoUnitPriceRadioIndex = rdgUnitPrice.getCheckedRadioButtonId();
-            dialog.dismiss();
-            dialogOpen = false;
-        });
-
-        rdgUnitPrice.check(potatoUnitPriceRadioIndex);
-        dialog.show();
-        dialog.getWindow().setAttributes(lp);
-        dialogOpen = true;
+            fragmentTransaction.addToBackStack(null);
+            priceDialogFragment.show(getSupportFragmentManager(), SweetPotatoPriceDialogFragment.ARG_ITEM_ID);
+        }
     }
 }

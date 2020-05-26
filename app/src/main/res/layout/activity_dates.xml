@@ -128,33 +128,27 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
                         android:orientation="vertical"
                         android:padding="@dimen/spacing_small">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_medium"
-                            android:orientation="horizontal">
+                            android:fontFamily="@font/ubuntu"
+                            android:text="@string/lbl_selected_planting_date"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/ubuntu"
-                                android:text="@string/lbl_selected_planting_date"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+                        <TextView
+                            android:id="@+id/lblSelectedPlantingDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/spacing_small"
+                            android:fontFamily="@font/ubuntu"
+                            android:text="@string/app_name"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                            android:textColor="@color/colorAccent" />
 
-                            <TextView
-                                android:id="@+id/lblSelectedPlantingDate"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/spacing_small"
-                                android:fontFamily="@font/ubuntu"
-                                android:text="@string/app_name"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                                android:textColor="@color/colorAccent" />
-                        </LinearLayout>
 
                         <androidx.appcompat.widget.AppCompatButton
                             android:id="@+id/btnPickPlantingDate"
@@ -199,6 +193,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/lbl_one_month_window" />
+
                             <View
                                 android:layout_width="100dp"
                                 android:layout_height="0dp" />
@@ -227,33 +222,26 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
                         android:orientation="vertical"
                         android:padding="@dimen/spacing_small">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_medium"
-                            android:orientation="horizontal">
+                            android:fontFamily="@font/ubuntu"
+                            android:text="@string/lbl_selected_harvest_date"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/ubuntu"
-                                android:text="@string/lbl_selected_harvest_date"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+                        <TextView
+                            android:id="@+id/lblSelectedHarvestDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/spacing_small"
+                            android:fontFamily="@font/ubuntu"
+                            android:text="@string/app_name"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                            android:textColor="@color/colorAccent" />
 
-                            <TextView
-                                android:id="@+id/lblSelectedHarvestDate"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/spacing_small"
-                                android:fontFamily="@font/ubuntu"
-                                android:text="@string/app_name"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                                android:textColor="@color/colorAccent" />
-                        </LinearLayout>
 
                         <androidx.appcompat.widget.AppCompatButton
                             android:id="@+id/btnPickHarvestDate"
@@ -288,9 +276,9 @@
                         <RadioGroup
                             android:id="@+id/rdgHarvestWindow"
                             android:layout_width="wrap_content"
-                            android:orientation="horizontal"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/spacing_large"
+                            android:orientation="horizontal"
                             android:visibility="gone">
 
 
