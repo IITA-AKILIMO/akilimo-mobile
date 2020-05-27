@@ -229,9 +229,11 @@ public abstract class BaseActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         //get the tokens
-                        String token = task.getResult().getToken();
-                        appPref.saveDeviceToken(token);
-                        Log.d(LOG_TAG, "FCM token is: " + token);
+                        if (task.getResult() != null) {
+                            String token = task.getResult().getToken();
+                            appPref.saveDeviceToken(token);
+                            Log.d(LOG_TAG, "FCM token is: " + token);
+                        }
                     }
                 });
     }
