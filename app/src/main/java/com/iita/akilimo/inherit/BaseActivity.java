@@ -1,11 +1,13 @@
 package com.iita.akilimo.inherit;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -18,6 +20,10 @@ import androidx.appcompat.widget.AppCompatButton;
 import com.android.volley.RequestQueue;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.android.gms.common.util.Strings;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.iita.akilimo.R;
 import com.iita.akilimo.utils.FireBaseConfig;
 import com.iita.akilimo.utils.SessionManager;
@@ -31,10 +37,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+import javax.annotation.Nonnull;
+
 import dev.b3nedikt.app_locale.AppLocale;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import io.objectbox.BoxStore;
 
+@SuppressLint("LogNotTimber")
 public abstract class BaseActivity extends AppCompatActivity {
 
     protected String LOG_TAG = BaseActivity.class.getSimpleName();
@@ -52,9 +61,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected String areaUnit = "";
     protected double fieldSize = 0;
     protected double fieldSizeAcre = 2.471;
-
-//    protected AppUpdateHelper appUpdateHelper;
-//    protected AppUpdater appUpdater;
 
     public BaseActivity() {
     }
@@ -211,5 +217,22 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void fetchFireBaseConfig(@NotNull Activity homeActivity) {
         FireBaseConfig fireBaseConfig = new FireBaseConfig(homeActivity);
         fireBaseConfig.fetchNewRemoteConfig();
+    }
+
+    /**
+     * register firebase instance
+     *
+     * @param appPref Pass application shared preferences
+     */
+    protected void initializePushNotification(@NonNull SessionManager appPref) {
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        //get the tokens
+                        String token = task.getResult().getToken();
+                        appPref.saveDeviceToken(token);
+                        Log.d(LOG_TAG, "FCM token is: " + token);
+                    }
+                });
     }
 }

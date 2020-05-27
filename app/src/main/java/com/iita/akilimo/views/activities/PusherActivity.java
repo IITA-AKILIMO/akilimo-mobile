@@ -42,21 +42,9 @@ public class PusherActivity extends BaseActivity {
 
     @Override
     protected void initComponent() {
-        //register firebase instance
+
         fetchFireBaseConfig(this);
-        sessionManager = new SessionManager(this);
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (task.isSuccessful()) {
-                            //get the tokens
-                            String token = task.getResult().getToken();
-                            sessionManager.saveDeviceToken(token);
-                            Log.d(TAG, "FCM token i: " + token);
-                        }
-                    }
-                });
+        initializePushNotification(new SessionManager(this));
 
     }
 
