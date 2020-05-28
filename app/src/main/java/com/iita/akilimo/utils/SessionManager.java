@@ -102,6 +102,7 @@ public class SessionManager {
         return pref.getBoolean("firstRun", true);
     }
 
+    @Deprecated
     public String getDeviceId() {
         String uniqueID = pref.getString("uuid", null);
 
@@ -126,7 +127,7 @@ public class SessionManager {
         return strVersion.toString();
     }
 
-    private String getAppBuildDate() {
+    public String getAppBuildDate() {
         String appBuildDate = "";
         try {
             long unixTimestamp = BuildConfig.VERSION_CODE * 1000L;
