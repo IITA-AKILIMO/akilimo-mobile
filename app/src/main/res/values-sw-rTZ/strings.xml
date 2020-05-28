@@ -140,7 +140,7 @@
     <string name="up_100_150_usd_per_tonne">Dola 100-150 kwa tani moja</string>
     <string name="up_150_200_usd_per_tonne">Dola 150-200 kwa tani moja</string>
     <string name="lbl_exact_price_x_per_unit_of_sale">Nataka kutaja bei halisi</string>
-    <string name="lbl_submit">Peana</string>
+    <string name="lbl_submit">Wasilisha</string>
     <string name="lbl_cancel">Ghairi</string>
     <string name="lbl_please_provide_unit_price">Tafadhali toa bei ya kitengo</string>
     <string name="lbl_permission_rationale">Tafadhali ruhusu programu zifuatazo kufanya kazi vizuri</string>
