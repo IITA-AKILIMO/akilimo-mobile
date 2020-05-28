@@ -173,6 +173,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
                 countryCode
         );
         restParameters.setInitialTimeout(45000);
+        restParameters.setLocale(getCurrentLocale());
         restService.setParameters(restParameters);
 
 

@@ -9,7 +9,6 @@ import android.content.res.Resources;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,8 +29,10 @@ import com.nabinbhandari.android.permissions.Permissions;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import dev.b3nedikt.app_locale.AppLocale;
+import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import io.objectbox.BoxStore;
 
@@ -211,5 +212,15 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void fetchFireBaseConfig(@NotNull Activity homeActivity) {
         FireBaseConfig fireBaseConfig = new FireBaseConfig(homeActivity);
         fireBaseConfig.fetchNewRemoteConfig();
+    }
+
+    protected Locale getCurrentLocale() {
+        SharedPrefsAppLocaleRepository prefs = new SharedPrefsAppLocaleRepository(this);
+        Locale desiredLocale = prefs.getDesiredLocale();
+        if (desiredLocale != null) {
+            AppLocale.setDesiredLocale(desiredLocale);
+        }
+
+        return desiredLocale;
     }
 }

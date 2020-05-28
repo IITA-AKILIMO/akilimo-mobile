@@ -1,5 +1,7 @@
 package com.iita.akilimo.rest
 
+import java.util.*
+
 class RestParameters(
     val url: String,
     val countryCode: String? = null
@@ -14,4 +16,5 @@ class RestParameters(
     var operationName: String? = null
     var initialTimeout: Int = 40000
     var context: String = "dev"
+    var locale: Locale = Locale.ENGLISH
 }

@@ -23,6 +23,7 @@ import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindString;
 import butterknife.BindView;

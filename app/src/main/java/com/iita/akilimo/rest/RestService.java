@@ -154,7 +154,8 @@ public class RestService {
         params.put("api-token", restParameters.getApiToken());
         params.put("user-id", restParameters.getUserId());
         params.put("country-code", restParameters.getCountryCode());
-        params.put("language", restParameters.getCountryCode());
+        params.put("locale-lang", restParameters.getLocale().getLanguage());
+        params.put("locale-country", restParameters.getLocale().getCountry());
         params.put("op-type", restParameters.getOperationType());
         params.put("op-name", restParameters.getOperationName());
         params.put("context", restParameters.getContext());
