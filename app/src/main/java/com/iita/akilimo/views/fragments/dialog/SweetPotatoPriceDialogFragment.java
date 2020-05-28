@@ -109,7 +109,6 @@ public class SweetPotatoPriceDialogFragment extends DialogFragment {
             unitOfSale = bundle.getString(UNIT_OF_SALE);
             enumUnitOfSale = bundle.getParcelable(ENUM_UNIT_OF_SALE);
             countryCode = bundle.getString(COUNTRY_CODE);
-
         }
         dialog = new Dialog(context);
 
@@ -257,6 +256,7 @@ public class SweetPotatoPriceDialogFragment extends DialogFragment {
         double priceHigher = unitPriceUpper;
 
         switch (enumUnitOfSale) {
+            default:
             case UNIT_ONE_KG:
                 priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_ONE_KG.unitWeight()) / 1000;
                 priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_ONE_KG.unitWeight()) / 1000;
@@ -269,7 +269,6 @@ public class SweetPotatoPriceDialogFragment extends DialogFragment {
                 priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_HUNDRED_KG.unitWeight()) / 1000;
                 priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_HUNDRED_KG.unitWeight()) / 1000;
                 break;
-            default:
             case UNIT_THOUSAND_KG:
                 priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_THOUSAND_KG.unitWeight()) / 1000;
                 priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_THOUSAND_KG.unitWeight()) / 1000;
