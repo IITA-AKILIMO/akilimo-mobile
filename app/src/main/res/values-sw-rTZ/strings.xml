@@ -15,7 +15,7 @@
     <string name="title_activity_farm_location">Eneo shamba ilipo</string>
     <string name="title_tillage_operations">Shughuli za kukatua</string>
     <!--    <string name="title_manual_tillage_cost">Gharama za kukabiliana na mwongozo</string>-->
-    <string name="title_manual_tillage_cost">Gharama za kulima</string>
+    <string name="title_manual_tillage_cost">Gharama za kulima kwa mkono</string>
     <string name="title_weed_control">Sugu magugu</string>
     <string name="title_maize_intercropping">Mseto wa mahindi</string>
     <string name="title_sweet_potato_intercropping">Mseto na viazi vitamu</string>
@@ -140,7 +140,7 @@
     <string name="up_100_150_usd_per_tonne">Dola 100-150 kwa tani moja</string>
     <string name="up_150_200_usd_per_tonne">Dola 150-200 kwa tani moja</string>
     <string name="lbl_exact_price_x_per_unit_of_sale">Nataka kutaja bei halisi</string>
-    <string name="lbl_submit">Peana</string>
+    <string name="lbl_submit">Wasilisha</string>
     <string name="lbl_cancel">Ghairi</string>
     <string name="lbl_please_provide_unit_price">Tafadhali toa bei ya kitengo</string>
     <string name="lbl_permission_rationale">Tafadhali ruhusu programu zifuatazo kufanya kazi vizuri</string>
@@ -188,7 +188,7 @@
     <string name="lbl_gender_prompt">Chagua jinsia</string>
     <string name="lbl_gender">Chagua jinsia</string>
     <string name="lbl_male">Mwanaume</string>
-    <string name="lbl_female">Mwanake</string>
+    <string name="lbl_female">Mwanamke</string>
     <string name="lbl_save">Hifadhi</string>
     <string name="lbl_remove">Ondoa</string>
     <string name="lbl_field_info">Ikiwa unajua ukubwa wa shamba lako kwa hekta, ekari au mita za mraba, tafadhali endelea ukurasa unaofuata. Ikiwa hujui, tunakushauri upakue kutoka GooglePlay n.k.\n\"GPS Fields Area Measure”, “Field Area Measure”, kitakusaidia kupima eneo la mzunguko wa  shamba lako.</string>
@@ -225,9 +225,9 @@
     <string name="lbl_select_produce_type">Chagua aina ya mazao</string>
     <string name="lbl_roots">Mizizi</string>
     <string name="lbl_flour">Unga</string>
-    <string name="lbl_first_manual_plough_op">Operesheni ya kwanza ya kulima, mwongozo kwa mkono</string>
+    <string name="lbl_first_manual_plough_op">Operesheni ya kwanza ya kulima, kwa jembe la mkono</string>
     <string name="lbl_first_tractor_plough_op">Operesheni ya kwanza ya kulima, kwa kulima trekta</string>
-    <string name="lbl_second_manual_plough_op">Operesheni ya pili ya kulima, mwongozo kwa mkono</string>
+    <string name="lbl_second_manual_plough_op">Operesheni ya pili ya kulima, kwa jembe la mkono</string>
     <string name="lbl_second_tractor_plough_op">Operesheni ya pili ya kulima, kwa kulima trekta</string>
     <string name="lbl_tractor_harrow_op">Kupiga halo kutumia trekta</string>
     <string name="lbl_manual_ridging_op">Kuweka matuta kwa kutumi jembe la mkono</string>
@@ -263,7 +263,7 @@
     <string name="lbl_fertilizer_price">Bei ya mbolea</string>
     <string name="lbl_operation_costs">Gharama za uendeshaji</string>
     <string name="lbl_tractor">Trekta</string>
-    <string name="lbl_manual">Mwongozo</string>
+    <string name="lbl_manual">Jembe la mkono</string>
     <string name="lbl_operation_type_validation_message">Tafadhali chagua aina sahihi ya operesheni</string>
     <string name="lbl_bag_price">Bei ya begi</string>
     <string name="lbl_how_do_you_sell_your_sweet_potato">Utauzaje viazi vitamu vyako</string>

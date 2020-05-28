@@ -242,17 +242,24 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
     public void onPotatoUnitRadioButtonClicked(View radioButton) {
         if (radioButton != null && radioButton.isPressed()) {
-            showPotatoUnitPriceDialog(currency, unitOfSale);
+            //we need to validate the data first since we are passing null values there
+            showPotatoUnitPriceDialog();
         }
     }
 
-    private void showPotatoUnitPriceDialog(String currency, String uos) {
+    private void showPotatoUnitPriceDialog() {
         Bundle arguments = new Bundle();
+
+        //check if values are null
+        if (enumUnitOfSale == null) {
+            enumUnitOfSale = potatoMarketOutlet.getEnumUnitOfSale();
+            unitOfSale = enumUnitOfSale.unitOfSale();
+        }
         arguments.putString(SweetPotatoPriceDialogFragment.CURRENCY_CODE, currency);
         arguments.putString(SweetPotatoPriceDialogFragment.COUNTRY_CODE, countryCode);
-        arguments.putString(SweetPotatoPriceDialogFragment.UNIT_OF_SALE, uos);
         arguments.putDouble(SweetPotatoPriceDialogFragment.SELECTED_PRICE, exactPrice);
         arguments.putDouble(SweetPotatoPriceDialogFragment.AVERAGE_PRICE, averagePrice);
+        arguments.putString(SweetPotatoPriceDialogFragment.UNIT_OF_SALE, unitOfSale);
         arguments.putParcelable(SweetPotatoPriceDialogFragment.ENUM_UNIT_OF_SALE, enumUnitOfSale);
 
         SweetPotatoPriceDialogFragment priceDialogFragment = new SweetPotatoPriceDialogFragment();
