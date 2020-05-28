@@ -102,6 +102,7 @@ public class SessionManager {
         return pref.getBoolean("firstRun", true);
     }
 
+    @Deprecated
     public String getDeviceId() {
         String uniqueID = pref.getString("uuid", null);
 

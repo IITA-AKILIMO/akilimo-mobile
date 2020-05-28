@@ -16,5 +16,6 @@ class RestParameters(
     var operationName: String? = null
     var initialTimeout: Int = 40000
     var context: String = "dev"
+    var appVersion: String = "0.0.0"
     var locale: Locale = Locale.ENGLISH
 }

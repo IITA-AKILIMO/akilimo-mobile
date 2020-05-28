@@ -151,7 +151,6 @@ public class RestService {
     private Map<String, String> setHeaderParameters() {
         Map<String, String> params = new HashMap<String, String>();
         params.put("Content-Type", "application/json; charset=utf-8");
-        params.put("api-token", restParameters.getApiToken());
         params.put("user-id", restParameters.getUserId());
         params.put("country-code", restParameters.getCountryCode());
         params.put("locale-lang", restParameters.getLocale().getLanguage());
@@ -159,6 +158,11 @@ public class RestService {
         params.put("op-type", restParameters.getOperationType());
         params.put("op-name", restParameters.getOperationName());
         params.put("context", restParameters.getContext());
+
+        if (sessionManager != null) {
+            params.put("api-token", sessionManager.getDeviceId());
+            params.put("app-version", sessionManager.getAppVersion());
+        }
         return params;
     }
 }
