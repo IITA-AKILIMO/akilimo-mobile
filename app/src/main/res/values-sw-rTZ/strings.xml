@@ -15,7 +15,7 @@
     <string name="title_activity_farm_location">Eneo shamba ilipo</string>
     <string name="title_tillage_operations">Shughuli za kukatua</string>
     <!--    <string name="title_manual_tillage_cost">Gharama za kukabiliana na mwongozo</string>-->
-    <string name="title_manual_tillage_cost">Gharama za kulima</string>
+    <string name="title_manual_tillage_cost">Gharama za kulima kwa mkono</string>
     <string name="title_weed_control">Sugu magugu</string>
     <string name="title_maize_intercropping">Mseto wa mahindi</string>
     <string name="title_sweet_potato_intercropping">Mseto na viazi vitamu</string>
@@ -225,9 +225,9 @@
     <string name="lbl_select_produce_type">Chagua aina ya mazao</string>
     <string name="lbl_roots">Mizizi</string>
     <string name="lbl_flour">Unga</string>
-    <string name="lbl_first_manual_plough_op">Operesheni ya kwanza ya kulima, mwongozo kwa mkono</string>
+    <string name="lbl_first_manual_plough_op">Operesheni ya kwanza ya kulima, kwa jembe la mkono</string>
     <string name="lbl_first_tractor_plough_op">Operesheni ya kwanza ya kulima, kwa kulima trekta</string>
-    <string name="lbl_second_manual_plough_op">Operesheni ya pili ya kulima, mwongozo kwa mkono</string>
+    <string name="lbl_second_manual_plough_op">Operesheni ya pili ya kulima, kwa jembe la mkono</string>
     <string name="lbl_second_tractor_plough_op">Operesheni ya pili ya kulima, kwa kulima trekta</string>
     <string name="lbl_tractor_harrow_op">Kupiga halo kutumia trekta</string>
     <string name="lbl_manual_ridging_op">Kuweka matuta kwa kutumi jembe la mkono</string>
@@ -263,7 +263,7 @@
     <string name="lbl_fertilizer_price">Bei ya mbolea</string>
     <string name="lbl_operation_costs">Gharama za uendeshaji</string>
     <string name="lbl_tractor">Trekta</string>
-    <string name="lbl_manual">Mwongozo</string>
+    <string name="lbl_manual">Jembe la mkono</string>
     <string name="lbl_operation_type_validation_message">Tafadhali chagua aina sahihi ya operesheni</string>
     <string name="lbl_bag_price">Bei ya begi</string>
     <string name="lbl_how_do_you_sell_your_sweet_potato">Utauzaje viazi vitamu vyako</string>
