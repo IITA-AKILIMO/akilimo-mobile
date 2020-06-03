@@ -1,17 +1,23 @@
 package com.iita.akilimo.inherit;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.Akilimo;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.LocationInfo;
@@ -111,5 +117,38 @@ public abstract class BaseFragment extends Fragment {
         }
 
         return desiredLocale;
+    }
+
+    protected void showCustomWarningDialog(String titleText, String contentText) {
+        showCustomWarningDialog(titleText, contentText, null);
+    }
+
+    protected void showCustomWarningDialog(String titleText, String contentText, String buttonTitle) {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+        dialog.setContentView(R.layout.dialog_warning);
+        dialog.setCancelable(true);
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+
+        final TextView title = dialog.findViewById(R.id.title);
+        final TextView content = dialog.findViewById(R.id.content);
+        final AppCompatButton btnClose = dialog.findViewById(R.id.bt_close);
+        title.setText(titleText);
+        content.setText(contentText);
+
+        if (!Strings.isEmptyOrWhitespace(buttonTitle)) {
+            btnClose.setText(buttonTitle);
+        }
+        btnClose.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
+
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
     }
 }

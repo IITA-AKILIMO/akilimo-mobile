@@ -61,7 +61,10 @@ public class CurrentPracticeFragment extends BaseFragment {
     private CurrentPractice currentPractice;
     private PlantingHarvestDates plantingHarvestDates;
 
-    private String ploughingMethod, ridgingMethod, harrowingMethod, operation;
+    private String ploughingMethod;
+    private String ridgingMethod;
+    private String harrowingMethod;
+    private String operation;
 
     private boolean performPloughing;
     private boolean performRidging;
@@ -204,6 +207,11 @@ public class CurrentPracticeFragment extends BaseFragment {
                     performRidging = !cancelled;
                     chkRidging.setChecked(!cancelled);
                     ridgingMethod = enumOperationType.operationName();
+                    break;
+                default:
+                    ridgingMethod = EnumOperationType.NONE.operationName();
+                    performPloughing = false;
+                    performRidging = false;
                     break;
             }
             saveEntities();
