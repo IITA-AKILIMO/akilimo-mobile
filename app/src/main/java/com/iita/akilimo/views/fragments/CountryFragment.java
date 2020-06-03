@@ -27,6 +27,7 @@ import com.iita.akilimo.utils.enums.EnumCountry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 
@@ -103,11 +104,17 @@ public class CountryFragment extends BaseFragment {
         final List<String> countries = new ArrayList<>();
         final List<Integer> countryImages = new ArrayList<>();
 
-        countries.add(EnumCountry.NIGERIA.countryName());
-        countryImages.add(World.getFlagOf(EnumCountry.NIGERIA.countryCode()));
-
-        countries.add(EnumCountry.TANZANIA.countryName());
-        countryImages.add(World.getFlagOf(EnumCountry.TANZANIA.countryCode()));
+        //let us get thje current locale and limit countries to that locale
+        Locale currentLocale = getCurrentLocale();
+        if (currentLocale.getCountry().equalsIgnoreCase(EnumCountry.TANZANIA.countryCode())) {
+            countries.add(EnumCountry.TANZANIA.countryName());
+            countryImages.add(World.getFlagOf(EnumCountry.TANZANIA.countryCode()));
+        } else {
+            countries.add(EnumCountry.NIGERIA.countryName());
+            countryImages.add(World.getFlagOf(EnumCountry.NIGERIA.countryCode()));
+            countries.add(EnumCountry.TANZANIA.countryName());
+            countryImages.add(World.getFlagOf(EnumCountry.TANZANIA.countryCode()));
+        }
 
         final MySpinnerAdapter spinnerAdapter = new MySpinnerAdapter(context, countries, countryImages);
         countrySpinner.setAdapter(spinnerAdapter);

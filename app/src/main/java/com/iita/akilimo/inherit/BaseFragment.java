@@ -19,8 +19,12 @@ import com.iita.akilimo.utils.SessionManager;
 import com.iita.akilimo.utils.objectbox.ObjectBox;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
+import java.util.Locale;
+
 import butterknife.BindString;
 import butterknife.ButterKnife;
+import dev.b3nedikt.app_locale.AppLocale;
+import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
 import dev.b3nedikt.reword.Reword;
 import io.objectbox.BoxStore;
 
@@ -97,5 +101,15 @@ public abstract class BaseFragment extends Fragment {
         }
 
         return stBuilder;
+    }
+
+    protected Locale getCurrentLocale() {
+        SharedPrefsAppLocaleRepository prefs = new SharedPrefsAppLocaleRepository(context);
+        Locale desiredLocale = prefs.getDesiredLocale();
+        if (desiredLocale != null) {
+            AppLocale.setDesiredLocale(desiredLocale);
+        }
+
+        return desiredLocale;
     }
 }
