@@ -18,6 +18,7 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.MySpinnerAdapter;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.SessionManager;
+import com.iita.akilimo.utils.enums.EnumCountry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +72,11 @@ public class LanguagePickerActivity extends BaseActivity {
         final List<Integer> countryImages = new ArrayList<>();
         for (Locale locale : Locales.APP_LOCALES) {
             String languageCountry = locale.getCountry();
-            localeStrings.add(locale.getDisplayLanguage() + " " + languageCountry);
+            if (languageCountry.equalsIgnoreCase(EnumCountry.TANZANIA.countryCode())) {
+                localeStrings.add(getString(R.string.lbl_kiswahili));
+            } else {
+                localeStrings.add(locale.getDisplayLanguage());
+            }
             final int flag = World.getFlagOf(languageCountry);
             countryImages.add(flag);
         }
