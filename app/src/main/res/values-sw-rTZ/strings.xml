@@ -32,27 +32,29 @@
     <string name="lbl_cassava_field_size_no_ph">Je! Shamba lako la muhogo lina lina ukubwa gani?</string>
     <string name="lbl_cassava_field_size">Je! Shamba lako la muhogo lina ukubwa gani katika %1$s</string>
     <!--  acres  -->
-    <string name="quarter_acre">Karibu ekari 0.25 (hekta 0.1)</string>
-    <string name="half_acre">Karibu ekari 0.5 (hekta 0.2)</string>
-    <string name="one_acre">Karibu ekari 1 (hekta 0.4)</string>
-    <string name="one_half_acre">Karibu ekari 1.5 (hekta 0.6)</string>
-    <string name="two_half_acres">Karibu ekari 2.5 (hekta 1)</string>
-    <string name="five_acres">Karibu ekari 5</string>
-    <string name="exact_field_area">Taja eneo halisi la shamba langu katika ekari</string>
+    <string name="quarter_acre">Kama ekari 0.25 (hekta 0.1)</string>
+    <string name="half_acre">Kama ekari 0.5 (hekta 0.2)</string>
+    <string name="one_acre">Kama ekari 1 (hekta 0.4)</string>
+    <string name="one_half_acre">Kama ekari 1.5 (hekta 0.6)</string>
+    <string name="two_half_acres">Kama ekari 2.5 (hekta 1)</string>
+    <string name="five_acres">Kama ekari 5</string>
+    <string name="exact_field_area">Taja eneo halisi la shamba lako katika ekari</string>
     <!--  ha  -->
-    <string name="quarter_acre_to_ha">Karibu hekta 0.1 (ekari 0.25)</string>
-    <string name="half_acre_to_ha">Karibu hekta 0.2 (ekari 0.5)</string>
-    <string name="one_acre_to_ha">Karibu hekta 0.4 (ekari 1)</string>
-    <string name="one_half_acre_to_ha">Karibu hekta 0.6 (ekari 1.5)</string>
-    <string name="two_half_acre_to_ha">Karibu hekta 1 (ekari 2.5)</string>
-    <string name="exact_acre_to_ha">Taja eneo halisi la shamba langu katika hekta</string>
+    <string name="quarter_acre_to_ha">Kama hekta 0.1 (ekari 0.25)</string>
+    <string name="half_acre_to_ha">Kama hekta 0.2 (ekari 0.5)</string>
+    <string name="one_acre_to_ha">Kama hekta 0.4 (ekari 1)</string>
+    <string name="one_half_acre_to_ha">Kama hekta 0.6 (ekari 1.5)</string>
+    <string name="two_half_acre_to_ha">Kama hekta 1 (ekari 2.5)</string>
+    <string name="exact_acre_to_ha">Taja eneo halisi la shamba lako katika hekta</string>
     <!--   m2  -->
-    <string name="quarter_acre_to_m2">Karibu 1,000 m\u00B2 (ekari 0.25)</string>
-    <string name="half_acre_to_m2">Karibu 2000 m\u00B2 (ekari 0.5)</string>
-    <string name="one_acre_to_m2">Karibu 4,000 m\u00B2 (ekari 1)</string>
-    <string name="one_half_acre_to_m2">Karibu 6,000 m\u00B2 (ekari 1.5)</string>
-    <string name="two_half_acre_to_m2">Karibu 10,000 m\u00B2 (ekari 2.5)</string>
-    <string name="exact_acre_to_m2">Taja eneo halisi la shamba langu katika m\u00B2</string>
+    <string name="quarter_acre_to_m2">Kama 1,000 m\u00B2 (ekari 0.25)</string>
+    <string name="half_acre_to_m2">Kama 2000 m\u00B2 (ekari 0.5)</string>
+    <string name="one_acre_to_m2">Kama 4,000 m\u00B2 (ekari 1)</string>
+    <string name="one_half_acre_to_m2">Kama 6,000 m\u00B2 (ekari 1.5)</string>
+    <string name="two_half_acre_to_m2">Kama 10,000 m\u00B2 (ekari 2.5)</string>
+    <string name="exact_acre_to_m2">Taja eneo halisi la shamba lako katika m\u00B2</string>
+
+
     <string name="lbl_salutation">Halo, ni vizuri kukutana nawe!</string>
     <string name="lbl_farm_location">Shamba lako la muhogo %1$s lipo eneo gani?</string>
     <string name="lbl_current_location">Tumia eneo la sasa</string>
