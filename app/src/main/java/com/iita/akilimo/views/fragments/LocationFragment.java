@@ -107,7 +107,7 @@ public class LocationFragment extends BaseFragment {
                 currentLon = gps.getLongitude();
                 gps.stopUsingGPS();
                 saveLocation();
-            } else if (status) {
+            } else {
                 showCustomWarningDialog("Google play services not available on your phone", "Google Play unavailable");
             }
         } else {
