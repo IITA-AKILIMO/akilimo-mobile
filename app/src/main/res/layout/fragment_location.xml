@@ -49,6 +49,17 @@
             android:textColor="@color/grey_80" />
 
 
+        <TextView
+            android:id="@+id/locationInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:fontFamily="@font/ubuntu"
+            android:text="@string/dummy_coordinates"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@color/grey_80" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -73,7 +84,7 @@
                 android:id="@+id/btnSelectLocation"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginTop="@dimen/spacing_medium"
+                android:layout_marginTop="@dimen/spacing_small"
                 android:layout_weight="1"
                 android:fontFamily="@font/ubuntu"
                 android:text="@string/lbl_manual_location"
@@ -82,16 +93,6 @@
                 app:cornerRadius="5dp" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/locationInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:fontFamily="@font/ubuntu"
-            android:text="@string/empty_text"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/grey_80" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
