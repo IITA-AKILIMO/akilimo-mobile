@@ -186,7 +186,7 @@
     <string name="lbl_last_name_req">Tafadhali toa jina lako la mwisho</string>
     <string name="lbl_valid_number_req">Tafadhali toa nambari sahihi ya simu</string>
     <string name="lbl_gender_prompt">Chagua jinsia</string>
-    <string name="lbl_gender">Chagua jinsia</string>
+    <string name="lbl_gender">Chagua jinsi</string>
     <string name="lbl_male">Mwanaume</string>
     <string name="lbl_female">Mwanamke</string>
     <string name="lbl_save">Hifadhi</string>
@@ -252,13 +252,13 @@
     <string name="lbl_receive_email">Pokea barua pepe</string>
     <string name="lbl_receive_sms">Pokea SMS</string>
     <string name="lbl_first_name">Jina lako la kwanza</string>
-    <string name="lbl_last_name">Jina la familia</string>
+    <string name="lbl_last_name">Jina la ukoo</string>
     <string name="lbl_farm_name">Jina la shamba</string>
     <string name="lbl_farm_name_title">Kama una shamba zaidi ya moja, tafadhali andika jina la shamba hili</string>
     <string name="lbl_email_address_hint">Anauani ya barua pepe (Inatumika kutuma mapendekezo)</string>
-    <string name="lbl_email_address">Anwani ya barua pepe</string>
+    <string name="lbl_email_address">Barua pepe</string>
     <string name="lbl_phone_number">Nambari ya simu</string>
-    <string name="lbl_self_intro">Wacha tuanze kwa kuniambia kidogo juu yako mwenyewe</string>
+    <string name="lbl_self_intro">Tuanze kwa kunipatia utambilisho wako</string>
     <string name="lbl_exact_price">Bei halisi</string>
     <string name="lbl_fertilizer_price">Bei ya mbolea</string>
     <string name="lbl_operation_costs">Gharama za uendeshaji</string>
