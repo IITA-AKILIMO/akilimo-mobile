@@ -80,7 +80,6 @@ public class LanguagePickerActivity extends BaseActivity {
             final int flag = World.getFlagOf(languageCountry);
             countryImages.add(flag);
         }
-        final SpinnerAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, localeStrings);
         final MySpinnerAdapter spinnerAdapter = new MySpinnerAdapter(this, localeStrings, countryImages);
 
         spinner.setAdapter(spinnerAdapter);
