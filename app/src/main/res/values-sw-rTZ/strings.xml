@@ -8,12 +8,12 @@
     <string name="title_activity_fertilizer_rec">Mapendekezo ya matumizi ya mbolea</string>
     <string name="title_activity_investment_amount">Kiasi cha uwekezaji</string>
     <string name="title_activity_cassava_root_yield">Mavuno ya muhogo</string>
-    <string name="title_activity_cassava_market_outlet">Bei ya mihogo</string>
+    <string name="title_activity_cassava_market_outlet">Bei ya muhogo</string>
     <string name="title_activity_maize_market_outlet">Bei ya mahindi</string>
     <string name="title_activity_sweet_potato_market">Bei ya viazi tamu</string>
     <string name="title_activity_maize_performance">Uzaaji wa mahindi</string>
     <string name="title_activity_farm_location">Eneo shamba ilipo</string>
-    <string name="title_tillage_operations">Shughuli za kukatua</string>
+    <string name="title_tillage_operations">Utayarishaji wa shamba</string>
     <!--    <string name="title_manual_tillage_cost">Gharama za kukabiliana na mwongozo</string>-->
     <string name="title_manual_tillage_cost">Gharama za kulima kwa mkono</string>
     <string name="title_weed_control">Sugu magugu</string>
@@ -159,10 +159,10 @@
     <string name="unit_price_label">%1$,.0f - %2$,.0f %3$s kwa %4$s</string>
     <string name="title_activity_dst_recommendation">Mapendekezo</string>
     <string name="lbl_get_recommendations">Pata mapendekezo</string>
-    <string name="lbl_rec_header">Ili kupata pendekezo sahihi, tafadhali toa taarifa juu ya vitu vilivyopo hapa chini</string>
+    <string name="lbl_rec_header">Ili kupata mapendekezo halisi, toa taarifa sahihi juu ya vitu vilivyopo hapa chini</string>
     <string name="lbl_compute_error">Haiwezekani kuchakata mapendekezo, tafadhali jaribu tena</string>
     <string name="lbl_rec_sample">Tunapendekeza usitumie mbolea yoyote. Hatutarajii kuwa maombi ya mbolea yatasababisha kuongezeka kwa mavuno zaidi kwa hali yako sasa.</string>
-    <string name="lbl_rec_intro">Akilimo anaweza kukushauri jinsi ya kupanda muhogo.\nNi ushauri gani unauhitaji?</string>
+    <string name="lbl_rec_intro">Akilimo atakushauri jinsi ya kupanda muhogo.\nNi ushauri gani unauhitaji?</string>
     <!--  scroll behaviors  -->
     <string name="lbl_min_selection">Tafadhali chagua angalau mbolea %d</string>
     <string name="lbl_update">Boresha</string>
@@ -213,7 +213,7 @@
     <string name="lbl_dark_green_leaves">Kupita kimo cha mtu (200 sm) lakini majani ni kijani iliyokolea</string>
     <string name="lbl_cassava_sales_outlet">Ni wapi unataka kuuza muhogo wako</string>
     <string name="lbl_starch_factory">Kiwanda cha wanga</string>
-    <string name="lbl_other_markets">Uuzaji mwingine</string>
+    <string name="lbl_other_markets">Masoko mengine</string>
     <string name="lbl_select_starch_factory">Chagua kiwanda cha wanga</string>
     <string name="lbl_fresh_cobs">Mahindi mabichi</string>
     <string name="lbl_dry_grain">Nafaka kavu</string>
@@ -274,7 +274,7 @@
     <string name="lbl_options">Chaguzi</string>
     <string name="lbl_search">Tafuta</string>
     <string name="lbl_settings">Mipangilio</string>
-    <string name="lbl_ploughing">Kulima</string>
+    <string name="lbl_ploughing">Kukatua</string>
     <string name="lbl_ridging">Kuweka matuta</string>
     <string name="lbl_country">Nchi</string>
     <string name="lbl_field">Shamba</string>
