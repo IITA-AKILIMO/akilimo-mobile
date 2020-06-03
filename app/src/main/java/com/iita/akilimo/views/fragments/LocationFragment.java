@@ -85,19 +85,7 @@ public class LocationFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         btnCurrentLocation.setOnClickListener(view1 -> {
-            GPSTracker gps = new GPSTracker(context);
-            gps.getLocation();
-            if (gps.canGetLocation()) {
-                int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context);
-                if (status == ConnectionResult.SUCCESS) {
-                    currentLat = gps.getLatitude();
-                    currentLon = gps.getLongitude();
-                    gps.stopUsingGPS();
-                    saveLocation();
-                }
-            } else {
-                gps.showSettingsAlert();
-            }
+            getCurrentLocation();
         });
 
         btnSelectLocation.setOnClickListener(v -> {
@@ -107,6 +95,24 @@ public class LocationFragment extends BaseFragment {
             intent.putExtra(MapBoxActivity.ALT, currentAlt);
             getActivity().startActivityForResult(intent, HomeActivity.MAP_BOX_PLACE_PICKER_REQUEST_CODE);
         });
+
+        getCurrentLocation();
+    }
+
+    private void getCurrentLocation() {
+        GPSTracker gps = new GPSTracker(context);
+        gps.getLocation();
+        if (gps.canGetLocation()) {
+            int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context);
+            if (status == ConnectionResult.SUCCESS) {
+                currentLat = gps.getLatitude();
+                currentLon = gps.getLongitude();
+                gps.stopUsingGPS();
+                saveLocation();
+            }
+        } else {
+            gps.showSettingsAlert();
+        }
     }
 
     private void saveLocation() {

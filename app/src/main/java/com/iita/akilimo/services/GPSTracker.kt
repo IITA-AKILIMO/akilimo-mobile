@@ -14,7 +14,7 @@ import android.util.Log
 
 import androidx.appcompat.app.AlertDialog
 import com.crashlytics.android.Crashlytics
-
+import com.iita.akilimo.R
 
 
 class GPSTracker : Service, LocationListener {
@@ -45,7 +45,8 @@ class GPSTracker : Service, LocationListener {
     @SuppressLint("MissingPermission")
     fun getLocation(): Location? {
         try {
-            locationManager = mContext?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            locationManager =
+                mContext?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
             // getting GPS status
             isGPSEnabled = locationManager!!
@@ -128,9 +129,9 @@ class GPSTracker : Service, LocationListener {
 
     fun showSettingsAlert() {
         val alertDialog = AlertDialog.Builder(mContext!!)
-        alertDialog.setTitle("GPS settings")
-        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?")
-        alertDialog.setPositiveButton("Settings") { dialog, which ->
+        alertDialog.setTitle(getString(R.string.lbl_gps_settings))
+        alertDialog.setMessage(getString(R.string.lbl_gps_not_enabled))
+        alertDialog.setPositiveButton(getString(R.string.action_settings)) { dialog, which ->
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             mContext?.startActivity(intent)
             dialog.cancel()

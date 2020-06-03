@@ -334,5 +334,7 @@
     <string name="lbl_field_size_prompt">Tafadhali ingiza eneo la ukubwa wa shamba lililo sahihi</string>
     <string name="lbl_per_separator">kwa</string>
     <string name="lbl_usd_currency">Dola</string>
+    <string name="lbl_gps_settings">Mipangilio ya GPS</string>
+    <string name="lbl_gps_not_enabled">GPS haijawashwa. Je! Unataka kwenda kwenye menu ya mipangilio?</string>
 
 </resources>

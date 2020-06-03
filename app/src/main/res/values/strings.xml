@@ -425,4 +425,7 @@
     <string name="timeFormat" translatable="false">EE, dd MMM HH:mm</string>
     <string name="period" translatable="false">%1$s – %2$s</string>
     <string name="lbl_kiswahili" translatable="false">Kiswahili</string>
+
+    <string name="lbl_gps_settings">GPS settings</string>
+    <string name="lbl_gps_not_enabled">GPS is not enabled. Do you want to go to settings menu?</string>
 </resources>
