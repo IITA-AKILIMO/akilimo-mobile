@@ -95,8 +95,6 @@ public class LocationFragment extends BaseFragment {
             intent.putExtra(MapBoxActivity.ALT, currentAlt);
             getActivity().startActivityForResult(intent, HomeActivity.MAP_BOX_PLACE_PICKER_REQUEST_CODE);
         });
-
-        getCurrentLocation();
     }
 
     private void getCurrentLocation() {
