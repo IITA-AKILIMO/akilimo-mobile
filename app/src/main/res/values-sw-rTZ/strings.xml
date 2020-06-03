@@ -26,9 +26,9 @@
     <string name="lbl_finish">Maliza</string>
     <string name="lbl_country_location">Habari %1$s.\nShamba lako liko katika nchi gani?</string>
     <string name="lbl_area_unit">Je! Unapima ukubwa wa shamba lako kwa kipimo gani?</string>
-    <string name="area_unit_acre">katika ekari</string>
-    <string name="area_unit_ha">katika Hektari</string>
-    <string name="area_unit_square_meter">katika mita za mraba (m \u00B2)</string>
+    <string name="area_unit_acre">Kwa Ekari</string>
+    <string name="area_unit_ha">Kwa Hektari</string>
+    <string name="area_unit_square_meter">Kwa mita za mraba (m \u00B2)</string>
     <string name="lbl_cassava_field_size_no_ph">Je! Shamba lako la muhogo lina lina ukubwa gani?</string>
     <string name="lbl_cassava_field_size">Je! Shamba lako la muhogo lina ukubwa gani katika %1$s</string>
     <!--  acres  -->
