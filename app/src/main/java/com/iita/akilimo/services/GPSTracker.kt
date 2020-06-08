@@ -19,6 +19,7 @@ import com.iita.akilimo.R
 
 class GPSTracker : Service, LocationListener {
 
+    private var LOG_TAG = GPSTracker::class.java.simpleName
     private var mContext: Context? = null
     private var isGPSEnabled = false
     private var isNetworkEnabled = false
@@ -128,17 +129,22 @@ class GPSTracker : Service, LocationListener {
 
 
     fun showSettingsAlert() {
-        val alertDialog = AlertDialog.Builder(mContext!!)
-        alertDialog.setTitle(getString(R.string.lbl_gps_settings))
-        alertDialog.setMessage(getString(R.string.lbl_gps_not_enabled))
-        alertDialog.setPositiveButton(getString(R.string.action_settings)) { dialog, which ->
-            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-            mContext?.startActivity(intent)
-            dialog.cancel()
-        }
+        try {
+            val alertDialog = AlertDialog.Builder(mContext!!)
+            alertDialog.setTitle(getString(R.string.lbl_gps_settings))
+            alertDialog.setMessage(getString(R.string.lbl_gps_not_enabled))
+            alertDialog.setPositiveButton(getString(R.string.action_settings)) { dialog, which ->
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                mContext?.startActivity(intent)
+                dialog.cancel()
+            }
 
-        alertDialog.setCancelable(false)
-        alertDialog.show()
+            alertDialog.setCancelable(false)
+            alertDialog.show()
+        } catch (ex: Exception) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred while displaying alert dialog")
+            Crashlytics.logException(ex)
+        }
     }
 
     override fun onLocationChanged(location: Location) {}

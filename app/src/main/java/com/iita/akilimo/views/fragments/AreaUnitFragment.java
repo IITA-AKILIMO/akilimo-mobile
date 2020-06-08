@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment;
 import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.MandatoryInfo;
-import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.utils.enums.EnumAreaUnits;
 
@@ -77,7 +76,7 @@ public class AreaUnitFragment extends BaseFragment {
             }
         } catch (Exception ex) {
             mandatoryInfo = new MandatoryInfo();
-            Crashlytics.log(Log.ERROR, TAG, "An error occurred saving are info");
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving are info");
             Crashlytics.logException(ex);
         }
     }

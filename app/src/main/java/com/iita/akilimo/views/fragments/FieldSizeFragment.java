@@ -143,7 +143,7 @@ public class FieldSizeFragment extends BaseFragment {
 
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, TAG, "An error occurred fetching info");
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred fetching info");
             Crashlytics.logException(ex);
         }
     }

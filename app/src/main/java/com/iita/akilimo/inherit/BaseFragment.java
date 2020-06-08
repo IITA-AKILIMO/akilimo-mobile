@@ -3,6 +3,7 @@ package com.iita.akilimo.inherit;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +18,8 @@ import androidx.fragment.app.Fragment;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
-import com.iita.akilimo.Akilimo;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.utils.SessionManager;
@@ -37,7 +38,7 @@ import io.objectbox.BoxStore;
 @SuppressWarnings("WeakerAccess")
 public abstract class BaseFragment extends Fragment {
 
-    protected String TAG = BaseFragment.class.getSimpleName();
+    protected String LOG_TAG = BaseFragment.class.getSimpleName();
 
     protected int nextTab = 0;
     protected int prevTab = 0;
@@ -124,31 +125,36 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected void showCustomWarningDialog(String titleText, String contentText, String buttonTitle) {
-        final Dialog dialog = new Dialog(context);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
-        dialog.setContentView(R.layout.dialog_warning);
-        dialog.setCancelable(true);
+        try {
+            final Dialog dialog = new Dialog(context);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+            dialog.setContentView(R.layout.dialog_warning);
+            dialog.setCancelable(true);
 
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            lp.copyFrom(dialog.getWindow().getAttributes());
+            lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
 
-        final TextView title = dialog.findViewById(R.id.title);
-        final TextView content = dialog.findViewById(R.id.content);
-        final AppCompatButton btnClose = dialog.findViewById(R.id.bt_close);
-        title.setText(titleText);
-        content.setText(contentText);
+            final TextView title = dialog.findViewById(R.id.title);
+            final TextView content = dialog.findViewById(R.id.content);
+            final AppCompatButton btnClose = dialog.findViewById(R.id.bt_close);
+            title.setText(titleText);
+            content.setText(contentText);
 
-        if (!Strings.isEmptyOrWhitespace(buttonTitle)) {
-            btnClose.setText(buttonTitle);
+            if (!Strings.isEmptyOrWhitespace(buttonTitle)) {
+                btnClose.setText(buttonTitle);
+            }
+            btnClose.setOnClickListener(view -> {
+                dialog.dismiss();
+            });
+
+            dialog.show();
+            dialog.getWindow().setAttributes(lp);
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred while displaying alert dialog");
+            Crashlytics.logException(ex);
         }
-        btnClose.setOnClickListener(view -> {
-            dialog.dismiss();
-        });
-
-        dialog.show();
-        dialog.getWindow().setAttributes(lp);
     }
 }

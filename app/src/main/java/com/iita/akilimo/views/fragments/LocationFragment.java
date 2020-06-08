@@ -147,7 +147,7 @@ public class LocationFragment extends BaseFragment {
             title.setText(message);
         } catch (Exception ex) {
             locationInformation = new LocationInfo();
-            Crashlytics.log(Log.ERROR, TAG, "An error occurred fetching info");
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred fetching info");
             Crashlytics.logException(ex);
         }
 
