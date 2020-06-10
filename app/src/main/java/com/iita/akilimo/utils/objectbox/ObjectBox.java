@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.getkeepsafe.relinker.ReLinker;
 import com.iita.akilimo.BuildConfig;
 import com.iita.akilimo.MyObjectBox;
 
@@ -22,12 +21,12 @@ public class ObjectBox {
         }
         boxStore = MyObjectBox.builder()
                 .androidContext(context.getApplicationContext())
-                .androidReLinker(ReLinker.log(new ReLinker.Logger() {
+                /*.androidReLinker(ReLinker.log(new ReLinker.Logger() {
                     @Override
                     public void log(String message) {
                         Crashlytics.log(Log.INFO, DB_NAME, message);
                     }
-                }))
+                }))*/
                 .name(DB_NAME)
                 .build();
 

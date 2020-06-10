@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.github.vipulasri.timelineview.TimelineView;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
-import com.iita.akilimo.adapters.TimeLineAdapter;
+import com.iita.akilimo.adapters.MyTimeLineAdapter;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.MandatoryInfo;
@@ -54,7 +54,7 @@ public class SummaryFragment extends BaseFragment {
     private PlantingHarvestDates plantingHarvestDates;
 
     private IFragmentCallBack fragmentCallBack;
-    private TimeLineAdapter adapter;
+    private MyTimeLineAdapter adapter;
 
 
     private boolean countrySelected = false;
@@ -242,7 +242,7 @@ public class SummaryFragment extends BaseFragment {
     }
 
     private void initAdapter() {
-        adapter = new TimeLineAdapter(mDataList, mAttributes, context, ItemAnimation.FADE_IN);
+        adapter = new MyTimeLineAdapter(mDataList, mAttributes, context, ItemAnimation.FADE_IN);
         recyclerView.setAdapter(adapter);
     }
 

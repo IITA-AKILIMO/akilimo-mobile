@@ -20,4 +20,4 @@
 # hide the original source file fertilizerName.
 #-renamesourcefileattribute SourceFile
 
--keep class com.getkeepsafe.relinker.** { *; }
+#-keep class com.getkeepsafe.relinker.** { *; }
