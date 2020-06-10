@@ -25,7 +25,7 @@ public class ObjectBox {
                 .androidReLinker(ReLinker.log(new ReLinker.Logger() {
                     @Override
                     public void log(String message) {
-                        Crashlytics.log(Log.ERROR, DB_NAME, message);
+                        Crashlytics.log(Log.INFO, DB_NAME, message);
                     }
                 }))
                 .name(DB_NAME)
