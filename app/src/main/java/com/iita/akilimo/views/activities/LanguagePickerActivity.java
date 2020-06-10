@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,6 +14,7 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
 import com.blongho.country_data.World;
+import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.Locales;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.MySpinnerAdapter;
@@ -59,10 +61,15 @@ public class LanguagePickerActivity extends BaseActivity {
 
     @Override
     protected void initToolbar() {
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(R.string.title_activity_language_picker);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        try {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setTitle(R.string.title_activity_language_picker);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+            Crashlytics.logException(ex);
+        }
     }
 
     @Override
