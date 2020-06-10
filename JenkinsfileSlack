@@ -1,0 +1,225 @@
+pipeline {
+  environment {
+    KEYSTORE_FILE = 'D:\\gdrive\\keystores\\fertilizer.jks'
+  }
+  agent any
+  stages {
+
+     stage('Send build notification') {
+        steps {
+          slackSend channel: '#builds', message: "Build: ${BUILD_NUMBER} started for branch: ${BRANCH_NAME}"
+        }
+      }
+
+    stage('Starting up the pipeline') {
+      steps {
+        sh 'printenv | sort'
+        sh 'git fetch --tags'
+        sh 'ghr --version'
+      }
+    }
+
+    stage('Run test for non release branch') {
+      when {
+        beforeAgent true
+        not {
+          branch 'master'
+        }
+
+      }
+      steps {
+        sh 'gradle testRelease -x lint'
+      }
+    }
+
+    stage('Run linting for develop branch only') {
+      when {
+        beforeAgent true
+        anyOf {
+          branch 'develop'
+        }
+
+      }
+      steps {
+        sh 'gradle :app:lintDebug -x test'
+        androidLint(pattern: '**/lint-results*.xml')
+      }
+    }
+
+    stage('Build and generate artifacts') {
+      parallel {
+        stage('generate android apk') {
+          when {
+            beforeAgent true
+            branch 'masters'
+          }
+          environment {
+            RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
+          }
+          steps {
+            sh 'gradle assembleRelease -x test --no-daemon'
+          }
+        }
+
+        stage('generate android bundle') {
+          when {
+            beforeAgent true
+            branch 'master'
+          }
+          environment {
+            RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
+          }
+          steps {
+            sh 'gradle bundleRelease -x test --no-daemon'
+          }
+        }
+
+      }
+    }
+
+    stage('Sign production binaries') {
+      parallel {
+        stage('apk signing') {
+          when {
+            beforeAgent true
+            branch 'legacy/master'
+          }
+          steps {
+            signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.apk', skipZipalign: true)
+          }
+        }
+
+        stage('AAB Jar Signer') {
+          when {
+            beforeAgent true
+            branch 'master'
+          }
+          steps {
+            withCredentials(bindings: [usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
+              sh 'jarsigner -keystore $KEYSTORE_FILE -storepass $pass app/build/outputs/**/*/*-release.aab $alias'
+            }
+
+          }
+        }
+
+      }
+    }
+
+    stage('Archive Artifacts') {
+      when {
+        beforeAgent true
+        branch 'master'
+      }
+      steps {
+        script {
+          archiveArtifacts allowEmptyArchive: true,
+          artifacts: '**/*.apk, **/*.aab, app/build/**/mapping/**/*.txt, app/build/**/logs/**/*.txt'
+        }
+
+      }
+    }
+
+    stage('Upload production artifacts') {
+      parallel {
+        stage('aab upload') {
+          when {
+            beforeAgent true
+            branch 'master'
+          }
+          steps {
+            androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
+                                         text: '''This update includes:
+                                   - New content
+                                   - New features
+                                   - Bug fixes
+                                   - Performance improvements''']], trackName: 'production')
+          }
+        }
+
+        stage('apk upload') {
+          when {
+            beforeAgent true
+            branch 'legacy/master'
+          }
+          steps {
+            androidApkUpload(filesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
+                                         text: '''This update includes:
+                                   - New content
+                                   - New features
+                                   - Bug fixes
+                                   - Performance improvements''']], trackName: 'production')
+          }
+        }
+
+      }
+    }
+
+    stage('Upload Build artifacts') {
+      when {
+        beforeAgent true
+        branch 'master'
+      }
+      environment {
+        RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
+      }
+      steps {
+        sh 'cp app/build/outputs/**/*.* uploads/'
+        sh 'cp app/build/outputs/**/*/*.* uploads/'
+        sh 'ghr -replace $RELEASE_VERSION uploads/'
+      }
+    }
+
+    stage('Fingerprint files') {
+      when {
+        beforeAgent true
+        branch 'master'
+      }
+      steps {
+        fingerprint '**/build/outputs/**/*-release.*'
+      }
+    }
+
+     stage('Upload build artifacts') {
+        steps {
+            slackUploadFile filePath: '**/build/outputs/**/*-release.aab', initialComment: 'Release binaries'
+        }
+      }
+
+    stage('clean WS') {
+      steps {
+        cleanWs()
+      }
+    }
+
+  }
+
+ post {
+
+       regression {
+            slackSend channel: '#builds', message: "Build $BUILD_NUMBER previous issue showed up again ${currentBuild.result}"
+       }
+       aborted {
+             slackSend channel: '#builds', message: "Build $BUILD_NUMBER was aborted ${currentBuild.result}"
+       }
+
+       unsuccessful {
+           slackSend channel: '#builds', message: "Build $BUILD_NUMBER was not successful ${currentBuild.result}"
+       }
+
+       fixed {
+            slackSend channel: '#builds', message: "Build $BUILD_NUMBER has been fixed ${currentBuild.result}"
+       }
+
+       failure {
+          slackSend channel: '#builds', message: "Build $BUILD_NUMBER is failing, please check ${currentBuild.result}"
+        }
+
+       unstable {
+          slackSend channel: '#builds', message: "Build $BUILD_NUMBER is unstable ${currentBuild.result}"
+       }
+       changed {
+        slackSend channel: '#builds', message: "Build $BUILD_NUMBER status changed ${currentBuild.result}"
+       }
+   }
+
+}
