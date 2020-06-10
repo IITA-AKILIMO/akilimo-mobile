@@ -9,15 +9,15 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 
 import com.blongho.country_data.World;
 import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.Locales;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.MySpinnerAdapter;
+import com.iita.akilimo.databinding.ActivityLanguagePickerBinding;
+import com.iita.akilimo.databinding.ContentLanguagePickerBinding;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.SessionManager;
 import com.iita.akilimo.utils.enums.EnumCountry;
@@ -26,22 +26,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import dev.b3nedikt.app_locale.AppLocale;
 import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
 import dev.b3nedikt.reword.Reword;
 
 public class LanguagePickerActivity extends BaseActivity {
 
-    @BindView(R.id.spinner)
-    Spinner spinner;
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    private Spinner spinner;
+    private Toolbar toolbar;
+    private AppCompatButton btnUpdateLanguage;
 
-    @BindView(R.id.btnUpdateLanguage)
-    AppCompatButton btnUpdateLanguage;
+    private ContentLanguagePickerBinding binding;
 
     private Locale selectedLocale = Locale.ENGLISH;
 
@@ -50,13 +46,16 @@ public class LanguagePickerActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_language_picker);
-        ButterKnife.bind(this);
+        //setContentView(R.layout.activity_language_picker);
+        binding = ContentLanguagePickerBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(binding.getRoot());
+
 
         sessionManager = new SessionManager(this);
 
-        initToolbar();
-        initComponent();
+        //initToolbar();
+        //initComponent();
     }
 
     @Override

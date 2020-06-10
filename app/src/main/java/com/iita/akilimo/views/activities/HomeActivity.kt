@@ -44,10 +44,10 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
 
     @BindString(R.string.welcome_title)
-    private val welcomeTitle: String = ""
+    internal val welcomeTitle: String = ""
 
     @BindString(R.string.welcome_instructions)
-    private val instructions: String = ""
+    internal val instructions: String = ""
 
     @BindString(R.string.lbl_permission_rationale)
     internal var rationale: String? = null
