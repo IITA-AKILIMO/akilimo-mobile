@@ -43,17 +43,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
     }
 
 
-    @BindString(R.string.welcome_title)
-    internal val welcomeTitle: String = ""
-
-    @BindString(R.string.welcome_instructions)
-    internal val instructions: String = ""
-
-    @BindString(R.string.lbl_permission_rationale)
-    internal var rationale: String? = null
-
-    @BindString(R.string.lbl_place_name)
-    internal var defaultPlaceName: String? = null
+    private var defaultPlaceName: String = "";
 
     private val fragmentArray = mutableSetOf<Fragment>()
     private val maxStep = 0
@@ -95,6 +85,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         context = this
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this)
 
+        defaultPlaceName = getString(R.string.lbl_place_name)
         viewPager = findViewById(R.id.homeViewPager)
         btnStart = findViewById(R.id.btnGetStarted)
 
@@ -161,6 +152,9 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
     }
 
     override fun initComponent() {
+
+        val rationale: String = getString(R.string.lbl_permission_rationale)
+
         checkAppPermissions(rationale)
         fetchFireBaseConfig(this)
         btnStart.visibility = View.GONE
