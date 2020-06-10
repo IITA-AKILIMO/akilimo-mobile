@@ -32,6 +32,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false //for some strange reason minifying causes the code to flip
+            multiDexKeepProguard file('multidex-config.pro')
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
@@ -64,7 +65,7 @@ android {
 static def computeVersionName() {
     def versionMajor = 14
     def versionMinor = 4
-    def buildNumber = 11
+    def buildNumber = 12
 
     return String.format('%d.%d.%d', Integer.valueOf(System.env.VERSION_MAJOR ?: versionMajor),
             Integer.valueOf(System.env.VERSION_MINOR ?: versionMinor),
@@ -97,6 +98,7 @@ dependencies {
     implementation 'androidx.preference:preference:1.1.1'
 
     implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'com.getkeepsafe.relinker:relinker:1.3.1'
 
     // google library ------------------------------------------------------------------------
     implementation 'com.google.android.material:material:1.1.0'
