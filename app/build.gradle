@@ -64,7 +64,7 @@ android {
 
 static def computeVersionName() {
     def versionMajor = 14
-    def versionMinor = 4
+    def versionMinor = 5
     def buildNumber = 12
 
     return String.format('%d.%d.%d', Integer.valueOf(System.env.VERSION_MAJOR ?: versionMajor),
