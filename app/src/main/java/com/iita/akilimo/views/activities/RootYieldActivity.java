@@ -99,7 +99,7 @@ public class RootYieldActivity extends BaseActivity {
 
     @Override
     protected void initComponent() {
-        btnFinish.setText(context.getString(R.string.lbl_finish));
+        btnFinish.setText(getString(R.string.lbl_finish));
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.addItemDecoration(new SpacingItemDecoration(2, Tools.dpToPx(this, 3), true));
         recyclerView.setHasFixedSize(true);
