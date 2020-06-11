@@ -61,7 +61,7 @@ public class FertilizerGridAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         Fertilizer obj = items.get(position);
         String fertilizerName = obj.getName();
         String bagPrice = obj.getPriceRange();
-        boolean isSelected = obj.isSelected();
+        boolean isSelected = obj.getSelected();
 
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder view = (OriginalViewHolder) holder;
@@ -110,7 +110,7 @@ public class FertilizerGridAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public List<Fertilizer> getSelected() {
         List<Fertilizer> selected = new ArrayList<>();
         for (int i = 0; i < items.size(); i++) {
-            if (items.get(i).isSelected()) {
+            if (items.get(i).getSelected()) {
                 selected.add(items.get(i));
             }
         }

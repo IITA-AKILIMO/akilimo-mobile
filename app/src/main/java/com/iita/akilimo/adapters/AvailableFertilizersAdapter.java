@@ -61,7 +61,7 @@ public class AvailableFertilizersAdapter extends RecyclerView.Adapter<AvailableF
         double price = fertilizer.getPricePerBag();
         String fertilizerName = fertilizer.getName();
         String bagPrice = fertilizer.getPriceRange();
-        boolean isSelected = fertilizer.isSelected();
+        boolean isSelected = fertilizer.getSelected();
 
         viewHolder.label.setText(fertilizerName);
         viewHolder.bagPrice.setText(bagPrice != null ? bagPrice : "NA");

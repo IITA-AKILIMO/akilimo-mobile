@@ -9,9 +9,7 @@ import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.converter.PropertyConverter;
-import lombok.Data;
 
-@Data
 @Entity
 public class MaizeMarketOutlet {
     @Id
@@ -94,5 +92,77 @@ public class MaizeMarketOutlet {
         public Integer convertToDatabaseValue(EnumUnitOfSale entityProperty) {
             return entityProperty == null ? null : entityProperty.unitWeight();
         }
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public int getProduceRadioIndex() {
+        return produceRadioIndex;
+    }
+
+    public void setProduceRadioIndex(int produceRadioIndex) {
+        this.produceRadioIndex = produceRadioIndex;
+    }
+
+    public int getGrainUnitRadioIndex() {
+        return grainUnitRadioIndex;
+    }
+
+    public void setGrainUnitRadioIndex(int grainUnitRadioIndex) {
+        this.grainUnitRadioIndex = grainUnitRadioIndex;
+    }
+
+    public int getGrainUnitPriceRadioIndex() {
+        return grainUnitPriceRadioIndex;
+    }
+
+    public void setGrainUnitPriceRadioIndex(int grainUnitPriceRadioIndex) {
+        this.grainUnitPriceRadioIndex = grainUnitPriceRadioIndex;
+    }
+
+    public double getExactPrice() {
+        return exactPrice;
+    }
+
+    public void setExactPrice(double exactPrice) {
+        this.exactPrice = exactPrice;
+    }
+
+    public double getAveragePrice() {
+        return averagePrice;
+    }
+
+    public void setAveragePrice(double averagePrice) {
+        this.averagePrice = averagePrice;
+    }
+
+    public EnumMaizeProduceType getEnumMaizeProduceType() {
+        return enumMaizeProduceType;
+    }
+
+    public void setEnumMaizeProduceType(EnumMaizeProduceType enumMaizeProduceType) {
+        this.enumMaizeProduceType = enumMaizeProduceType;
+    }
+
+    public EnumUnitOfSale getEnumUnitOfSale() {
+        return enumUnitOfSale;
+    }
+
+    public void setEnumUnitOfSale(EnumUnitOfSale enumUnitOfSale) {
+        this.enumUnitOfSale = enumUnitOfSale;
+    }
+
+    public EnumUnitPrice getEnumUnitPrice() {
+        return enumUnitPrice;
+    }
+
+    public void setEnumUnitPrice(EnumUnitPrice enumUnitPrice) {
+        this.enumUnitPrice = enumUnitPrice;
     }
 }

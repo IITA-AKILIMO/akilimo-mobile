@@ -217,8 +217,8 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
         double selectedPrice = 0.0;
         if (fertilizer != null) {
             selectedPrice = fertilizer.getPricePerBag();
-            isExactPriceRequired = fertilizer.isExactPrice();
-            if (fertilizer.isSelected()) {
+            isExactPriceRequired = fertilizer.getExactPrice();
+            if (fertilizer.getSelected()) {
                 btnUpdate.setText(R.string.lbl_update);
                 btnRemove.setVisibility(View.VISIBLE);
             }

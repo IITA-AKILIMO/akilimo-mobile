@@ -8,9 +8,7 @@ import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.converter.PropertyConverter;
-import lombok.Data;
 
-@Data
 @Entity
 public class PotatoMarketOutlet {
     @Id
@@ -67,5 +65,61 @@ public class PotatoMarketOutlet {
         public Integer convertToDatabaseValue(EnumUnitOfSale enumUnitOfSale) {
             return enumUnitOfSale == null ? null : enumUnitOfSale.unitWeight();
         }
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public int getProduceTypeRadioIndex() {
+        return produceTypeRadioIndex;
+    }
+
+    public void setProduceTypeRadioIndex(int produceTypeRadioIndex) {
+        this.produceTypeRadioIndex = produceTypeRadioIndex;
+    }
+
+    public int getPotatoUnitOfSaleRadioIndex() {
+        return potatoUnitOfSaleRadioIndex;
+    }
+
+    public void setPotatoUnitOfSaleRadioIndex(int potatoUnitOfSaleRadioIndex) {
+        this.potatoUnitOfSaleRadioIndex = potatoUnitOfSaleRadioIndex;
+    }
+
+    public int getPotatoUnitPriceRadioIndex() {
+        return potatoUnitPriceRadioIndex;
+    }
+
+    public void setPotatoUnitPriceRadioIndex(int potatoUnitPriceRadioIndex) {
+        this.potatoUnitPriceRadioIndex = potatoUnitPriceRadioIndex;
+    }
+
+    public double getExactPrice() {
+        return exactPrice;
+    }
+
+    public void setExactPrice(double exactPrice) {
+        this.exactPrice = exactPrice;
+    }
+
+    public EnumPotatoProduceType getEnumPotatoProduceType() {
+        return enumPotatoProduceType;
+    }
+
+    public void setEnumPotatoProduceType(EnumPotatoProduceType enumPotatoProduceType) {
+        this.enumPotatoProduceType = enumPotatoProduceType;
+    }
+
+    public EnumUnitOfSale getEnumUnitOfSale() {
+        return enumUnitOfSale;
+    }
+
+    public void setEnumUnitOfSale(EnumUnitOfSale enumUnitOfSale) {
+        this.enumUnitOfSale = enumUnitOfSale;
     }
 }

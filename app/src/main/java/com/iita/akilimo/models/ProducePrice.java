@@ -10,11 +10,9 @@ import java.util.Date;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
-import lombok.Data;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Data
 @Entity
 public class ProducePrice {
 
@@ -54,4 +52,100 @@ public class ProducePrice {
 
     @JsonProperty("updatedAt")
     Date updatedAt;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getPriceIndex() {
+        return priceIndex;
+    }
+
+    public void setPriceIndex(long priceIndex) {
+        this.priceIndex = priceIndex;
+    }
+
+    public long getPriceId() {
+        return priceId;
+    }
+
+    public void setPriceId(long priceId) {
+        this.priceId = priceId;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public double getMinLocalPrice() {
+        return minLocalPrice;
+    }
+
+    public void setMinLocalPrice(double minLocalPrice) {
+        this.minLocalPrice = minLocalPrice;
+    }
+
+    public double getMaxLocalPrice() {
+        return maxLocalPrice;
+    }
+
+    public void setMaxLocalPrice(double maxLocalPrice) {
+        this.maxLocalPrice = maxLocalPrice;
+    }
+
+    public double getMinUsd() {
+        return minUsd;
+    }
+
+    public void setMinUsd(double minUsd) {
+        this.minUsd = minUsd;
+    }
+
+    public double getMaxUsd() {
+        return maxUsd;
+    }
+
+    public void setMaxUsd(double maxUsd) {
+        this.maxUsd = maxUsd;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public double getAveragePrice() {
+        return averagePrice;
+    }
+
+    public void setAveragePrice(double averagePrice) {
+        this.averagePrice = averagePrice;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }
