@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.IntercropFertilizerGridAdapter;
+import com.iita.akilimo.databinding.ActivityFertilizersBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
@@ -57,33 +58,18 @@ public class IntercropFertilizersActivity extends BaseActivity {
     public static String useCaseTag = "useCase";
     public static String interCropTag = "interCrop";
 
-    @BindView(R.id.toolbar)
+
     Toolbar toolbar;
-
-    @BindView(R.id.availableFertilizers)
     RecyclerView recyclerView;
-
-    @BindString(R.string.title_activity_fertilizer_choice)
-    String headerTitleText;
-
-    @BindView(R.id.lyt_progress)
     LinearLayout lyt_progress;
-    @BindView(R.id.coordinatorLayout)
     CoordinatorLayout coordinatorLayout;
-
-    @BindView(R.id.btnFinish)
     AppCompatButton btnSave;
-
-    @BindView(R.id.btnCancel)
     AppCompatButton btnCancel;
-
-    @BindView(R.id.btnRetry)
     AppCompatButton btnRetry;
-
-    @BindView(R.id.errorImage)
     ImageView errorImage;
-    @BindView(R.id.errorLabel)
     TextView errorLabel;
+
+    ActivityFertilizersBinding binding;
 
     private List<InterCropFertilizer> availableFertilizersList = new ArrayList<>();
     private List<InterCropFertilizer> selectedFertilizers = new ArrayList<>();
@@ -97,9 +83,20 @@ public class IntercropFertilizersActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fertilizers);
-        ButterKnife.bind(this);
+        binding = ActivityFertilizersBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         context = this;
+
+        toolbar = binding.toolbarLayout.toolbar;
+        recyclerView = binding.availableFertilizers;
+        lyt_progress = binding.lytProgress;
+        coordinatorLayout = binding.coordinatorLayout;
+        btnSave = binding.twoButtons.btnFinish;
+        btnCancel = binding.twoButtons.btnCancel;
+        btnRetry = binding.btnRetry;
+        errorImage = binding.errorImage;
+        errorLabel = binding.errorLabel;
+
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
         queue = Volley.newRequestQueue(context);
         modelMapper = new ModelMapper();
@@ -121,7 +118,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
     protected void initToolbar() {
         toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(headerTitleText);
+        getSupportActionBar().setTitle(getString(R.string.title_activity_fertilizer_choice));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         toolbar.setNavigationOnClickListener(v -> validateInput(false));
@@ -228,12 +225,12 @@ public class IntercropFertilizersActivity extends BaseActivity {
 
         restService.getJsonArrList(new IVolleyCallback() {
             @Override
-            public void onSuccessJsonString(String jsonStringResult) {
+            public void onSuccessJsonString(@NotNull String jsonStringResult) {
 
             }
 
             @Override
-            public void onSuccessJsonArr(JSONArray jsonArray) {
+            public void onSuccessJsonArr(@NotNull JSONArray jsonArray) {
                 ObjectMapper objectMapper = new ObjectMapper();
                 try {
                     availableFertilizersList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<InterCropFertilizer>>() {
@@ -253,7 +250,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
             }
 
             @Override
-            public void onSuccessJsonObject(JSONObject jsonObject) {
+            public void onSuccessJsonObject(@NotNull JSONObject jsonObject) {
             }
 
             @Override

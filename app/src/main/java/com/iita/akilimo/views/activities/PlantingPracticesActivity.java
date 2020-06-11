@@ -13,6 +13,7 @@ import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
+import com.iita.akilimo.databinding.ActivityPlantingPracticesBinding;
 import com.iita.akilimo.entities.RecAdvice;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
@@ -29,33 +30,22 @@ import butterknife.ButterKnife;
 
 public class PlantingPracticesActivity extends BaseActivity {
 
-    @BindView(R.id.recyclerView)
-    RecyclerView recyclerView;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
 
-    @BindView(R.id.btnGetRecommendation)
+    Toolbar toolbar;
+    RecyclerView recyclerView;
     AppCompatButton btnGetRec;
 
-    @BindString(R.string.lbl_best_planting_practices)
+
     String recommendations;
-    @BindString(R.string.lbl_planting_harvest)
     String plantingString;
-    @BindString(R.string.lbl_market_outlet)
     String marketOutletString;
-    @BindString(R.string.lbl_typical_yield)
     String rootYieldString;
-
-    @BindString(R.string.lbl_tillage_operations)
     String tillageOperationsString;
-
-    @BindString(R.string.lbl_cost_of_manual_tillage)
     String manualTillageCostsString;
-    @BindString(R.string.lbl_tractor_access)
     String tractorAccessString;
-
-    @BindString(R.string.lbl_cost_of_weed_control)
     String weedControlCostString;
+
+    ActivityPlantingPracticesBinding binding;
 
 
     private Activity activity;
@@ -65,11 +55,15 @@ public class PlantingPracticesActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_planting_practices);
-        ButterKnife.bind(this);
+        binding = ActivityPlantingPracticesBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         context = this;
         activity = this;
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
+
+        toolbar = binding.toolbarLayout.toolbar;
+        recyclerView = binding.recyclerView;
+        btnGetRec = binding.singleButton.btnGetRecommendation;
 
         initToolbar();
         initComponent();
@@ -88,6 +82,15 @@ public class PlantingPracticesActivity extends BaseActivity {
 
     @Override
     protected void initComponent() {
+        recommendations = getString(R.string.lbl_best_planting_practices);
+        plantingString = getString(R.string.lbl_planting_harvest);
+        marketOutletString = getString(R.string.lbl_market_outlet);
+        rootYieldString = getString(R.string.lbl_typical_yield);
+        tillageOperationsString = getString(R.string.lbl_tillage_operations);
+        manualTillageCostsString = getString(R.string.lbl_cost_of_manual_tillage);
+        tractorAccessString = getString(R.string.lbl_tractor_access);
+
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         btnGetRec.setOnClickListener(view -> {

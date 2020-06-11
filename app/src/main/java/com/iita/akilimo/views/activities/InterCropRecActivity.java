@@ -14,6 +14,7 @@ import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
+import com.iita.akilimo.databinding.ActivityInterCropRecBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.RecAdvice;
 import com.iita.akilimo.inherit.BaseActivity;
@@ -33,35 +34,18 @@ import butterknife.ButterKnife;
 
 public class InterCropRecActivity extends BaseActivity {
 
-    @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
-    @BindView(R.id.toolbar)
     Toolbar toolbar;
-
-    @BindView(R.id.btnGetRecommendation)
     AppCompatButton btnGetRec;
+    ActivityInterCropRecBinding binding;
 
-    @BindString(R.string.lbl_intercropping)
     String recommendations;
-
-    @BindString(R.string.lbl_planting_harvest)
     String plantingString;
-
-    @BindString(R.string.lbl_fertilizer_costs)
     String fertilizerString;
-
-    @BindString(R.string.lbl_market_outlet)
     String marketOutletString;
-    @BindString(R.string.lbl_market_outlet_maize)
     String marketOutletMaizeString;
-
-    @BindString(R.string.lbl_typical_yield)
     String rootYieldString;
-
-    @BindString(R.string.lbl_maize_performance)
     String maizeHeightString;
-
-    @BindString(R.string.lbl_sweet_potato_prices)
     String sweetPotatoPricesString;
 
     private Activity activity;
@@ -74,10 +58,16 @@ public class InterCropRecActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_inter_crop_rec);
-        ButterKnife.bind(this);
+        binding = ActivityInterCropRecBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         context = this;
         activity = this;
+        recyclerView = binding.recyclerView;
+        toolbar = binding.toolbarLayout.toolbar;
+        btnGetRec = binding.singleButton.btnGetRecommendation;
+
+
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
 
         MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
@@ -113,6 +103,16 @@ public class InterCropRecActivity extends BaseActivity {
 
     @Override
     protected void initComponent() {
+
+        recommendations = getString(R.string.lbl_intercropping);
+        plantingString = getString(R.string.lbl_planting_harvest);
+        fertilizerString = getString(R.string.lbl_fertilizer_costs);
+        marketOutletString = getString(R.string.lbl_market_outlet);
+        marketOutletMaizeString = getString(R.string.lbl_market_outlet_maize);
+        rootYieldString = getString(R.string.lbl_typical_yield);
+        maizeHeightString = getString(R.string.lbl_maize_performance);
+        sweetPotatoPricesString = getString(R.string.lbl_sweet_potato_prices);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         btnGetRec.setOnClickListener(view -> {

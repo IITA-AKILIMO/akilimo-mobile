@@ -26,6 +26,7 @@ import com.github.javiersantos.appupdater.enums.Display
 import com.google.android.gms.common.util.Strings
 import com.iita.akilimo.R
 import com.iita.akilimo.adapters.ViewPagerAdapter
+import com.iita.akilimo.databinding.ActivityHomeBinding
 import com.iita.akilimo.entities.LocationInfo
 import com.iita.akilimo.inherit.BaseActivity
 import com.iita.akilimo.interfaces.IFragmentCallBack
@@ -43,11 +44,12 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
     }
 
 
-    private var defaultPlaceName: String = "";
+    private var defaultPlaceName: String = ""
 
     private val fragmentArray = mutableSetOf<Fragment>()
     private val maxStep = 0
 
+    private lateinit var binding: ActivityHomeBinding
     private lateinit var viewPager: ViewPager
     private lateinit var myViewPagerAdapter: ViewPagerAdapter
     private lateinit var btnStart: Button
@@ -79,15 +81,16 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
-        ButterKnife.bind(this)
+        binding = ActivityHomeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         activity = this
         context = this
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this)
 
         defaultPlaceName = getString(R.string.lbl_place_name)
-        viewPager = findViewById(R.id.homeViewPager)
-        btnStart = findViewById(R.id.btnGetStarted)
+        viewPager = binding.homeViewPager
+        btnStart = binding.btnGetStarted
 
         //Add the various fragments
         val bioDataFragment = BioDataFragment.newInstance()

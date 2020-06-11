@@ -43,6 +43,8 @@
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_maize_market_outlet" />
+    <include
+        android:id="@+id/market_content"
+        layout="@layout/content_maize_market_outlet" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

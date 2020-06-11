@@ -38,7 +38,6 @@ public class LanguagePickerActivity extends BaseActivity {
     private AppCompatButton btnUpdateLanguage;
 
     ActivityLanguagePickerBinding binding;
-//    private ContentLanguagePickerBinding binding;
 
     private Locale selectedLocale = Locale.ENGLISH;
 
@@ -51,12 +50,12 @@ public class LanguagePickerActivity extends BaseActivity {
         binding = ActivityLanguagePickerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        sessionManager = new SessionManager(this);
 
         toolbar = binding.toolbarLayout.toolbar;
         languageSpinner = binding.contentLanguage.languageSpinner;
         btnUpdateLanguage = binding.contentLanguage.btnUpdateLanguage;
 
-        sessionManager = new SessionManager(this);
 
         initToolbar();
         initComponent();

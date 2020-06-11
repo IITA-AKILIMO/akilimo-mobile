@@ -13,6 +13,7 @@ import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
+import com.iita.akilimo.databinding.ActivityScheduledPlantingBinding;
 import com.iita.akilimo.entities.RecAdvice;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
@@ -29,24 +30,16 @@ import butterknife.ButterKnife;
 
 public class ScheduledPlantingActivity extends BaseActivity {
 
-    @BindView(R.id.recyclerView)
-    RecyclerView recyclerView;
-    @BindView(R.id.toolbar)
+
     Toolbar toolbar;
-
-
-    @BindView(R.id.btnGetRecommendation)
+    RecyclerView recyclerView;
     AppCompatButton btnGetRec;
 
-    @BindString(R.string.lbl_scheduled_planting_and_harvest)
-    String recommendations;
-    @BindString(R.string.lbl_planting_harvest)
-    String plantingString;
-    @BindString(R.string.lbl_market_outlet)
-    String marketOutletString;
-    @BindString(R.string.lbl_typical_yield)
-    String rootYieldString;
+    ActivityScheduledPlantingBinding binding;
 
+    String plantingString;
+    String marketOutletString;
+    String rootYieldString;
 
     private Activity activity;
     private RecOptionsAdapter mAdapter;
@@ -55,11 +48,15 @@ public class ScheduledPlantingActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scheduled_planting);
-        ButterKnife.bind(this);
+        binding = ActivityScheduledPlantingBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         context = this;
         activity = this;
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
+
+        toolbar = binding.toolbarLayout.toolbar;
+        recyclerView = binding.recyclerView;
+        btnGetRec = binding.singleButton.btnGetRecommendation;
 
         initToolbar();
         initComponent();
@@ -69,7 +66,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
     protected void initToolbar() {
         toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(recommendations);
+        getSupportActionBar().setTitle(getString(R.string.lbl_scheduled_planting_and_harvest));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -78,6 +75,11 @@ public class ScheduledPlantingActivity extends BaseActivity {
 
     @Override
     protected void initComponent() {
+        plantingString = getString(R.string.lbl_planting_harvest);
+        marketOutletString = getString(R.string.lbl_market_outlet);
+        rootYieldString = getString(R.string.lbl_typical_yield);
+
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         btnGetRec.setOnClickListener(view -> {

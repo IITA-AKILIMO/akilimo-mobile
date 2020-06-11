@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.AdapterGridTwoLine;
+import com.iita.akilimo.databinding.ActivityRootYieldBinding;
 import com.iita.akilimo.entities.CurrentFieldYield;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
@@ -30,20 +31,16 @@ import butterknife.ButterKnife;
 
 public class RootYieldActivity extends BaseActivity {
 
-    @BindString(R.string.title_activity_cassava_root_yield)
     String cassavaRootYield;
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.rootYieldRecycler)
-    RecyclerView recyclerView;
-    @BindView(R.id.coordinatorLayout)
-    View viewPos;
 
-    @BindView(R.id.btnFinish)
+    Toolbar toolbar;
+    RecyclerView recyclerView;
+    View viewPos;
     AppCompatButton btnFinish;
-    @BindView(R.id.btnCancel)
     AppCompatButton btnCancel;
+
+    ActivityRootYieldBinding binding;
 
     private CurrentFieldYield savedYield;
     private MathHelper mathHelper;
@@ -61,14 +58,11 @@ public class RootYieldActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_root_yield);
-        ButterKnife.bind(this);
-        context = this;
+        binding = ActivityRootYieldBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
         mathHelper = new MathHelper();
-
-        initToolbar();
-
         MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
@@ -82,6 +76,13 @@ public class RootYieldActivity extends BaseActivity {
             savedYield = new CurrentFieldYield();
         }
 
+        toolbar = binding.toolbarLayout.toolbar;
+        recyclerView = binding.rootYieldRecycler;
+        viewPos = binding.coordinatorLayout;
+        btnFinish = binding.twoButtons.btnFinish;
+        btnCancel = binding.twoButtons.btnCancel;
+
+        initToolbar();
         initComponent();
     }
 
@@ -90,7 +91,7 @@ public class RootYieldActivity extends BaseActivity {
     protected void initToolbar() {
         toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(cassavaRootYield);
+        getSupportActionBar().setTitle(getString(R.string.title_activity_cassava_root_yield));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         toolbar.setNavigationOnClickListener(v -> validate(false));
