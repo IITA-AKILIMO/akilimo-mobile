@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 
 import com.blongho.country_data.World;
 import com.crashlytics.android.Crashlytics;
@@ -17,7 +18,6 @@ import com.iita.akilimo.Locales;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.MySpinnerAdapter;
 import com.iita.akilimo.databinding.ActivityLanguagePickerBinding;
-import com.iita.akilimo.databinding.ContentLanguagePickerBinding;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.SessionManager;
 import com.iita.akilimo.utils.enums.EnumCountry;
@@ -33,11 +33,12 @@ import dev.b3nedikt.reword.Reword;
 public class LanguagePickerActivity extends BaseActivity {
 
 
-    private Spinner spinner;
+    private Spinner languageSpinner;
     private Toolbar toolbar;
     private AppCompatButton btnUpdateLanguage;
 
-    private ContentLanguagePickerBinding binding;
+    ActivityLanguagePickerBinding binding;
+//    private ContentLanguagePickerBinding binding;
 
     private Locale selectedLocale = Locale.ENGLISH;
 
@@ -47,15 +48,18 @@ public class LanguagePickerActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_language_picker);
-        binding = ContentLanguagePickerBinding.inflate(getLayoutInflater());
-        View view = binding.getRoot();
+        binding = ActivityLanguagePickerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
 
+        toolbar = binding.toolbarLayout.toolbar;
+        languageSpinner = binding.contentLanguage.languageSpinner;
+        btnUpdateLanguage = binding.contentLanguage.btnUpdateLanguage;
+
         sessionManager = new SessionManager(this);
 
-        //initToolbar();
-        //initComponent();
+        initToolbar();
+        initComponent();
     }
 
     @Override
@@ -88,9 +92,9 @@ public class LanguagePickerActivity extends BaseActivity {
         }
         final MySpinnerAdapter spinnerAdapter = new MySpinnerAdapter(this, localeStrings, countryImages);
 
-        spinner.setAdapter(spinnerAdapter);
+        languageSpinner.setAdapter(spinnerAdapter);
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        languageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedLanguageIndex = position;
@@ -122,7 +126,7 @@ public class LanguagePickerActivity extends BaseActivity {
         final View rootView = getWindow().getDecorView().findViewById(android.R.id.content);
         Reword.reword(rootView);
         updateToolBarTitle();
-        spinner.setSelection(selectedLanguageIndex);
+        languageSpinner.setSelection(selectedLanguageIndex);
     }
 
     @Override
