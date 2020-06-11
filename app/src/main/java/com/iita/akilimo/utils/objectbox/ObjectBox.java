@@ -12,7 +12,7 @@ import io.objectbox.android.AndroidObjectBrowser;
 
 public class ObjectBox {
     private static BoxStore boxStore;
-    private static final String DB_NAME = "AKILIMO_JUN_2020_10";
+    private static final String DB_NAME = "AKILIMO_JUN_2020_11";
 
     public static void init(Context context) {
 
