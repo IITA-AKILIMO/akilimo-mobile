@@ -147,7 +147,7 @@ dependencies {
     implementation 'dev.b3nedikt.reword:reword:1.0.0'
     implementation 'com.akexorcist:localization:1.2.5'
     implementation 'com.github.blongho:worldCountryData:1.5'
-    
+
     //If you are using Kotlin, replace annotationProcessor with kapt.
     kapt 'com.jakewharton:butterknife:10.2.1'
     kapt 'com.github.bumptech.glide:compiler:4.11.0'

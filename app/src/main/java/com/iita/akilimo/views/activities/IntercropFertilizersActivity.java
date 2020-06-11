@@ -152,7 +152,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
 
         mAdapter.setOnItemClickListener((view, clickedFertilizer, position) -> {
             mAdapter.setActiveRowIndex(position);
-            Fertilizer selectedType = objectBoxEntityProcessor.getSavedInterCropFertilizer(clickedFertilizer.getType(), countryCode, useCase);
+            Fertilizer selectedType = objectBoxEntityProcessor.getSavedInterCropFertilizer(clickedFertilizer.getFertilizerType(), countryCode, useCase);
             if (selectedType == null) {
                 selectedType = clickedFertilizer;
             }
@@ -171,7 +171,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
                     long id = objectBoxEntityProcessor.saveSelectedInterCropFertilizer(interCropFertilizer);
                     if (id > 0) {
                         if (removeSelected) {
-                            selectedFertilizers = FertilizerList.INSTANCE.removeIntercropFertilizerByType(cleanedFertilizers, fertilizer.getType());
+                            selectedFertilizers = FertilizerList.INSTANCE.removeIntercropFertilizerByType(cleanedFertilizers, fertilizer.getFertilizerType());
                         } else {
                             selectedFertilizers.add(interCropFertilizer);
                         }

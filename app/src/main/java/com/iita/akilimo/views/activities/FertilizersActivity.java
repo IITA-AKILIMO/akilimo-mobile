@@ -149,7 +149,7 @@ public class FertilizersActivity extends BaseActivity {
 
         mAdapter.setOnItemClickListener((view, clickedFertilizer, position) -> {
             mAdapter.setActiveRowIndex(position);
-            Fertilizer selectedType = objectBoxEntityProcessor.getSavedFertilizer(clickedFertilizer.getType(), countryCode);
+            Fertilizer selectedType = objectBoxEntityProcessor.getSavedFertilizer(clickedFertilizer.getFertilizerType(), countryCode);
             if (selectedType == null) {
                 selectedType = clickedFertilizer;
             }
@@ -167,7 +167,7 @@ public class FertilizersActivity extends BaseActivity {
                     long id = objectBoxEntityProcessor.saveSelectedFertilizer(fertilizer);
                     if (id > 0) {
                         if (removeSelected) {
-                            selectedFertilizers = FertilizerList.INSTANCE.removeFertilizerByType(cleanedFertilizers, fertilizer.getType());
+                            selectedFertilizers = FertilizerList.INSTANCE.removeFertilizerByType(cleanedFertilizers, fertilizer.getFertilizerType());
                         } else {
                             selectedFertilizers.add(fertilizer);
                         }
