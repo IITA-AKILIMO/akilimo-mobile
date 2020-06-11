@@ -42,7 +42,7 @@ public class SessionManager {
     }
 
     public String getApiEndPoint() {
-        return "https://be87be467aa6.ngrok.io/";
+        return "https://be87be467aa6.ngrok.io/api/";
 //        return pref.getString("apiResource", "https://google.com/" );
     }
 

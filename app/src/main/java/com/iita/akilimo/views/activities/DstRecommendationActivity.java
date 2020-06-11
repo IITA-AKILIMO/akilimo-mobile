@@ -87,7 +87,6 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         lyt_progress = binding.lytProgress;
 
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
-        ButterKnife.bind(this);
         initToolbar();
         initComponent();
     }

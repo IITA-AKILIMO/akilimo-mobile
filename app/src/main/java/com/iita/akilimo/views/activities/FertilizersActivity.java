@@ -241,7 +241,7 @@ public class FertilizersActivity extends BaseActivity {
                     errorImage.setVisibility(View.VISIBLE);
                     btnRetry.setVisibility(View.VISIBLE);
 
-                    Crashlytics.log(Log.ERROR, LOG_TAG, "Error saving price list");
+                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                     Crashlytics.logException(ex);
                 }
             }
