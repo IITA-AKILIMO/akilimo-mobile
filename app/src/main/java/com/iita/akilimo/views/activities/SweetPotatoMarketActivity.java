@@ -18,6 +18,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
+import com.iita.akilimo.databinding.ActivitySweetPotatoMarketBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.PotatoMarketOutlet;
 import com.iita.akilimo.inherit.BaseActivity;
@@ -44,27 +45,17 @@ import butterknife.ButterKnife;
 
 public class SweetPotatoMarketActivity extends BaseActivity {
 
-    @BindView(R.id.toolbar)
+
     Toolbar toolbar;
-
-    @BindString(R.string.lbl_sweet_potato_prices)
-    String marketOutletTitle;
-
-    @BindView(R.id.unitOfSalePotatoTitle)
     AppCompatTextView unitOfSalePotatoTitle;
-
-    @BindView(R.id.unitOfSalePotatoCard)
     CardView unitOfSalePotatoCard;
-
-    @BindView(R.id.rdgPotatoProduceType)
     RadioGroup rdgPotatoProduceType;
-    @BindView(R.id.rdgUnitOfSalePotato)
     RadioGroup rdgUnitOfSalePotato;
 
-    @BindView(R.id.btnFinish)
     AppCompatButton btnFinish;
-    @BindView(R.id.btnCancel)
     AppCompatButton btnCancel;
+
+    ActivitySweetPotatoMarketBinding binding;
 
     private MathHelper mathHelper;
     private PotatoMarketOutlet potatoMarketOutlet;
@@ -94,9 +85,8 @@ public class SweetPotatoMarketActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sweet_potato_market);
-
-        ButterKnife.bind(this);
+        binding = ActivitySweetPotatoMarketBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         context = this;
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
@@ -106,6 +96,14 @@ public class SweetPotatoMarketActivity extends BaseActivity {
         MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
         countryCode = mandatoryInfo.getCountryCode();
         currency = mandatoryInfo.getCurrency();
+
+        toolbar = binding.toolbar;
+        unitOfSalePotatoTitle = binding.potatoMarket.unitOfSalePotatoTitle;
+        unitOfSalePotatoCard = binding.potatoMarket.unitOfSalePotatoCard;
+        rdgPotatoProduceType = binding.potatoMarket.rdgPotatoProduceType;
+        rdgUnitOfSalePotato = binding.potatoMarket.rdgUnitOfSalePotato;
+        btnFinish = binding.potatoMarket.twoButtons.btnFinish;
+        btnCancel = binding.potatoMarket.twoButtons.btnCancel;
 
         initToolbar();
         initComponent();
@@ -159,7 +157,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
     protected void initToolbar() {
         toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(marketOutletTitle);
+        getSupportActionBar().setTitle(getString(R.string.lbl_sweet_potato_prices));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(v -> validate(false));
     }

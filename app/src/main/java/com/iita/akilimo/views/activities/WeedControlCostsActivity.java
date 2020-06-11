@@ -11,6 +11,7 @@ import androidx.cardview.widget.CardView;
 
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
+import com.iita.akilimo.databinding.ActivityWeedControlCostBinding;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.OperationCosts;
@@ -24,37 +25,19 @@ import butterknife.ButterKnife;
 
 public class WeedControlCostsActivity extends BaseActivity {
 
-    @BindView(R.id.toolbar)
+
     Toolbar toolbar;
-
-    @BindString(R.string.title_weed_control)
-    String activityTitle;
-
-
-    @BindView(R.id.firstWeedingOpCostTitle)
     AppCompatTextView firstWeedingOpCostTitle;
-    @BindView(R.id.secondWeedingOpCostTitle)
     AppCompatTextView secondWeedingOpCostTitle;
-
-    @BindView(R.id.herbicideUseTitle)
     AppCompatTextView herbicideUseTitle;
-
-    @BindView(R.id.herbicideUseCard)
     CardView herbicideUseCard;
-
-    @BindView(R.id.btnFinish)
     AppCompatButton btnFinish;
-
-    @BindView(R.id.btnCancel)
     AppCompatButton btnCancel;
-
-    @BindView(R.id.rdgWeedControl)
     RadioGroup rdgWeedControl;
-
-    @BindView(R.id.editFirstWeedingOpCost)
     EditText editFirstWeedingOpCost;
-    @BindView(R.id.editSecondWeedingOpCost)
     EditText editSecondWeedingOpCost;
+
+    ActivityWeedControlCostBinding binding;
 
     private MathHelper mathHelper;
     private CurrentPractice currentPractice;
@@ -68,8 +51,9 @@ public class WeedControlCostsActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_weed_control_cost);
-        ButterKnife.bind(this);
+        binding = ActivityWeedControlCostBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
         context = this;
         mathHelper = new MathHelper();
@@ -80,6 +64,18 @@ public class WeedControlCostsActivity extends BaseActivity {
         if (mandatoryInfo != null) {
             currency = mandatoryInfo.countryEnum.currency();
         }
+
+        toolbar = binding.toolbar;
+        firstWeedingOpCostTitle = binding.weedControlCosts.firstWeedingOpCostTitle;
+        secondWeedingOpCostTitle = binding.weedControlCosts.secondWeedingOpCostTitle;
+        herbicideUseTitle = binding.weedControlCosts.herbicideUseTitle;
+        herbicideUseCard = binding.weedControlCosts.herbicideUseCard;
+        btnFinish = binding.twoButtons.btnFinish;
+        btnCancel = binding.twoButtons.btnCancel;
+
+        RadioGroup rdgWeedControl;
+        EditText editFirstWeedingOpCost;
+        EditText editSecondWeedingOpCost;
         initToolbar();
         initComponent();
     }
@@ -93,7 +89,7 @@ public class WeedControlCostsActivity extends BaseActivity {
     protected void initToolbar() {
         toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(activityTitle);
+        getSupportActionBar().setTitle(getString(R.string.title_weed_control));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(v -> closeActivity(false));
     }
