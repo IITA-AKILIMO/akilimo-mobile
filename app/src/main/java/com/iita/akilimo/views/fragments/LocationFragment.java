@@ -19,6 +19,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.iita.akilimo.R;
+import com.iita.akilimo.databinding.FragmentLocationBinding;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
@@ -35,17 +36,12 @@ import butterknife.BindView;
  */
 public class LocationFragment extends BaseFragment {
 
-    @BindView(R.id.btnCurrentLocation)
+
     AppCompatButton btnCurrentLocation;
-
-    @BindView(R.id.btnSelectLocation)
     AppCompatButton btnSelectLocation;
-
-    @BindView(R.id.locationInfo)
     TextView locationInfo;
-
-    @BindView(R.id.title)
     TextView title;
+    FragmentLocationBinding binding;
 
 
     private double currentLat;
@@ -72,7 +68,8 @@ public class LocationFragment extends BaseFragment {
 
     @Override
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_location, container, false);
+        binding = FragmentLocationBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
@@ -83,6 +80,11 @@ public class LocationFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        title = binding.title;
+        btnCurrentLocation = binding.btnCurrentLocation;
+        btnSelectLocation = binding.btnSelectLocation;
+        locationInfo = binding.locationInfo;
 
         btnCurrentLocation.setOnClickListener(view1 -> {
             getCurrentLocation();

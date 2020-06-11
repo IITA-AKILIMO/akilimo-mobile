@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.iita.akilimo.R;
+import com.iita.akilimo.databinding.FragmentPrivacyStatementBinding;
 import com.iita.akilimo.inherit.BaseFragment;
 
 import butterknife.BindView;
@@ -23,8 +24,8 @@ import butterknife.BindView;
  */
 public class PrivacyStatementFragment extends BaseFragment {
 
-    @BindView(R.id.statementText)
     TextView statementText;
+    FragmentPrivacyStatementBinding binding;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -43,13 +44,14 @@ public class PrivacyStatementFragment extends BaseFragment {
 
     @Override
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_privacy_statement, container, false);
+        binding = FragmentPrivacyStatementBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        statementText = binding.statementText;
         loadDoc();
     }
 
@@ -60,12 +62,12 @@ public class PrivacyStatementFragment extends BaseFragment {
 
     private void loadDoc() {
 
-        String s = "";
+        StringBuilder statementString = new StringBuilder();
 
         for (int x = 0; x <= 100; x++) {
-            s += "Line: " + String.valueOf(x) + "\n";
+            statementString.append("Line: ").append(String.valueOf(x)).append("\n");
         }
         statementText.setMovementMethod(new ScrollingMovementMethod());
-        statementText.setText(s);
+        statementText.setText(statementString.toString());
     }
 }

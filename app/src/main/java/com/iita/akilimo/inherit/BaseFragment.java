@@ -84,10 +84,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = loadFragmentLayout(inflater, container, savedInstanceState);
-
         Reword.reword(view);
-        ButterKnife.bind(this, view);
-
         return view;
     }
 

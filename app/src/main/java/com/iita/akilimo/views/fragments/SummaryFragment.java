@@ -18,6 +18,7 @@ import com.github.vipulasri.timelineview.TimelineView;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.MyTimeLineAdapter;
+import com.iita.akilimo.databinding.FragmentSummaryBinding;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.MandatoryInfo;
@@ -43,8 +44,8 @@ import butterknife.BindView;
  */
 public class SummaryFragment extends BaseFragment {
 
-    @BindView(R.id.timelineRecycler)
     RecyclerView recyclerView;
+    FragmentSummaryBinding binding;
 
     private List<TimeLineModel> mDataList = new ArrayList<>();
     private TimelineAttributes mAttributes;
@@ -113,12 +114,15 @@ public class SummaryFragment extends BaseFragment {
 
     @Override
     protected View loadFragmentLayout(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_summary, container, false);
+        binding = FragmentSummaryBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        recyclerView = binding.timelineRecycler;
+
         initRecyclerView();
     }
 

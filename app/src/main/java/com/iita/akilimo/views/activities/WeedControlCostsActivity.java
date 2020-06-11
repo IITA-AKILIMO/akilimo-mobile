@@ -75,7 +75,7 @@ public class WeedControlCostsActivity extends BaseActivity {
         rdgWeedControl = binding.weedControlCosts.rdgWeedControl;
         editFirstWeedingOpCost = binding.weedControlCosts.editFirstWeedingOpCost;
         editSecondWeedingOpCost = binding.weedControlCosts.editSecondWeedingOpCost;
-        
+
 
         initToolbar();
         initComponent();
