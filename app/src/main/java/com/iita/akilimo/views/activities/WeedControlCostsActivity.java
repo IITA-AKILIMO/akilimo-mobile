@@ -72,10 +72,11 @@ public class WeedControlCostsActivity extends BaseActivity {
         herbicideUseCard = binding.weedControlCosts.herbicideUseCard;
         btnFinish = binding.twoButtons.btnFinish;
         btnCancel = binding.twoButtons.btnCancel;
+        rdgWeedControl = binding.weedControlCosts.rdgWeedControl;
+        editFirstWeedingOpCost = binding.weedControlCosts.editFirstWeedingOpCost;
+        editSecondWeedingOpCost = binding.weedControlCosts.editSecondWeedingOpCost;
+        
 
-        RadioGroup rdgWeedControl;
-        EditText editFirstWeedingOpCost;
-        EditText editSecondWeedingOpCost;
         initToolbar();
         initComponent();
     }
