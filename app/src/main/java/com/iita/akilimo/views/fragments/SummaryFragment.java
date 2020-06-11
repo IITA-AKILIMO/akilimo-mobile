@@ -166,9 +166,7 @@ public class SummaryFragment extends BaseFragment {
             pickedLocation = loadLocationInfo(location).toString();
             double lat = location.getLatitude();
             double lon = location.getLongitude();
-            if (lat == 0 && lon == 0) {
-                locationPicked = false;
-            }
+            locationPicked = lat != 0 || lon != 0;
         }
 
         if (plantingHarvestDates != null) {
