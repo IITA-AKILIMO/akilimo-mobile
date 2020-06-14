@@ -19,12 +19,11 @@
             android:id="@+id/produceTypeTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/starchFactoryCard"
             android:layout_marginTop="@dimen/spacing_medium"
             android:fontFamily="@font/roboto_bold"
-            android:visibility="gone"
             android:text="@string/lbl_how_do_you_sell_your_sweet_potato"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:visibility="gone" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/produceTypeCard"
@@ -32,9 +31,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/produceTypeTitle"
             android:layout_marginTop="@dimen/spacing_medium"
+            android:visibility="gone"
             app:cardBackgroundColor="@color/grey_5"
             app:cardCornerRadius="5dp"
-            android:visibility="gone"
             app:cardElevation="2dp"
             app:cardMaxElevation="6dp"
             app:contentPadding="@dimen/spacing_small">
@@ -134,6 +133,7 @@
         </androidx.cardview.widget.CardView>
 
         <include
+            android:id="@+id/two_buttons"
             layout="@layout/bottom_two_buttons_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

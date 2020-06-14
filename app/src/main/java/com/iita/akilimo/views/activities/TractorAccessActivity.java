@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.toolbox.Volley;
 import com.iita.akilimo.R;
+import com.iita.akilimo.databinding.ActivityTractorAccessBinding;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.OperationCosts;
@@ -34,32 +35,22 @@ import butterknife.ButterKnife;
 
 public class TractorAccessActivity extends CostBaseActivity {
 
-    @BindView(R.id.toolbar)
+
     Toolbar toolbar;
-
-    @BindString(R.string.title_tillage_operations)
-    String activityTitle;
-    @BindView(R.id.implementTitle)
     TextView implementTitle;
-
-    @BindView(R.id.rdgTractor)
     RadioGroup rdgTractor;
-    @BindView(R.id.implementCard)
     CardView implementCard;
-
-    @BindView(R.id.chkPlough)
     CheckBox chkPlough;
-    @BindView(R.id.chkRidger)
     CheckBox chkRidger;
 
+    AppCompatButton btnFinish;
+    AppCompatButton btnCancel;
+
+    ActivityTractorAccessBinding binding;
     MathHelper mathHelper;
     OperationCosts operationCosts;
     CurrentPractice currentPractice;
 
-    @BindView(R.id.btnFinish)
-    AppCompatButton btnFinish;
-    @BindView(R.id.btnCancel)
-    AppCompatButton btnCancel;
 
     private boolean hasTractor;
     private boolean hasPlough;
@@ -82,8 +73,9 @@ public class TractorAccessActivity extends CostBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tractor_access);
-        ButterKnife.bind(this);
+        binding = ActivityTractorAccessBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         context = this;
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
         queue = Volley.newRequestQueue(this);
@@ -96,6 +88,13 @@ public class TractorAccessActivity extends CostBaseActivity {
             fieldSize = mandatoryInfo.getAreaSize();
             enumCountry = mandatoryInfo.getCountryEnum();
         }
+
+        toolbar = binding.toolbar;
+        implementTitle = binding.tractorAccess.implementTitle;
+        rdgTractor = binding.tractorAccess.rdgTractor;
+        implementCard = binding.tractorAccess.implementCard;
+        chkPlough = binding.tractorAccess.chkPlough;
+        chkRidger = binding.tractorAccess.chkRidger;
 
         initToolbar();
         initComponent();
@@ -111,7 +110,7 @@ public class TractorAccessActivity extends CostBaseActivity {
     protected void initToolbar() {
         toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(activityTitle);
+        getSupportActionBar().setTitle(getString(R.string.title_tillage_operations));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(v -> validate(false));
     }

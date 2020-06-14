@@ -13,12 +13,12 @@ object FertilizerList {
     ): List<Fertilizer> {
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> fertilizerTypeList.removeIf { obj ->
-                obj.type.equals(fertilizerTypeToRemove, ignoreCase = true)
+                obj.fertilizerType.equals(fertilizerTypeToRemove, ignoreCase = true)
             }
             else -> {
                 val iterator = fertilizerTypeList.iterator()
                 while (iterator.hasNext()) {
-                    if (iterator.next().type.equals(fertilizerTypeToRemove, ignoreCase = true)) {
+                    if (iterator.next().fertilizerType.equals(fertilizerTypeToRemove, ignoreCase = true)) {
                         iterator.remove()
                     }
                 }
@@ -35,12 +35,12 @@ object FertilizerList {
     ): List<InterCropFertilizer> {
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> fertilizerTypeList.removeIf { obj ->
-                obj.type.equals(fertilizerTypeToRemove, ignoreCase = true)
+                obj.fertilizerType.equals(fertilizerTypeToRemove, ignoreCase = true)
             }
             else -> {
                 val iterator = fertilizerTypeList.iterator()
                 while (iterator.hasNext()) {
-                    if (iterator.next().type.equals(fertilizerTypeToRemove, ignoreCase = true)) {
+                    if (iterator.next().fertilizerType.equals(fertilizerTypeToRemove, ignoreCase = true)) {
                         iterator.remove()
                     }
                 }

@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
+import com.iita.akilimo.databinding.FragmentFieldSizeBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.utils.enums.EnumAreaUnits;
@@ -38,31 +39,18 @@ import butterknife.BindView;
  */
 public class FieldSizeFragment extends BaseFragment {
 
-    @BindView(R.id.title)
+
     AppCompatTextView title;
-
-    @BindView(R.id.specifiedArea)
     AppCompatTextView specifiedArea;
-    @BindView(R.id.rdgFieldArea)
     RadioGroup rdgFieldArea;
-
-    @BindView(R.id.rd_specify_acre)
     RadioButton rdSpecifyArea;
-
-    @BindView(R.id.rd_quarter_acre)
     RadioButton rd_quarter_acre;
-
-    @BindView(R.id.rd_half_acre)
     RadioButton rd_half_acre;
-
-    @BindView(R.id.rd_one_acre)
     RadioButton rd_one_acre;
-
-    @BindView(R.id.rd_one_half_acre)
     RadioButton rd_one_half_acre;
-
-    @BindView(R.id.rd_two_half_acre)
     RadioButton rd_two_half_acre;
+
+    FragmentFieldSizeBinding binding;
 
 
     private String myFieldSize = "";
@@ -98,12 +86,24 @@ public class FieldSizeFragment extends BaseFragment {
 
     @Override
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_field_size, container, false);
+        binding = FragmentFieldSizeBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        title = binding.title;
+        specifiedArea = binding.specifiedArea;
+        rdgFieldArea = binding.rdgFieldArea;
+        rdSpecifyArea = binding.rdSpecifyAcre;
+        rd_quarter_acre = binding.rdQuarterAcre;
+        rd_half_acre = binding.rdHalfAcre;
+        rd_one_acre = binding.rdOneAcre;
+        rd_one_half_acre = binding.rdOneHalfAcre;
+        rd_two_half_acre = binding.rdTwoHalfAcre;
+
         rdgFieldArea.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
             RadioButton radioButton = view.findViewById(radioIndex);
             if (radioButton != null) {
@@ -113,12 +113,6 @@ public class FieldSizeFragment extends BaseFragment {
             }
 
         });
-
-//        rdSpecifyArea.setOnClickListener(view1 -> {
-//            if (rdSpecifyArea.isChecked()) {
-//                showCustomDialog();
-//            }
-//        });
     }
 
     @Override
@@ -143,7 +137,7 @@ public class FieldSizeFragment extends BaseFragment {
 
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, TAG, "An error occurred fetching info");
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred fetching info");
             Crashlytics.logException(ex);
         }
     }

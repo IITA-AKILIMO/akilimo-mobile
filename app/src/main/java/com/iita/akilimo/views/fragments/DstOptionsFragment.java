@@ -18,6 +18,7 @@ import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.AdapterListAnimation;
+import com.iita.akilimo.databinding.FragmentDstOptionsBinding;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.models.Recommendations;
 import com.iita.akilimo.utils.ItemAnimation;
@@ -38,16 +39,14 @@ import butterknife.BindView;
  */
 public class DstOptionsFragment extends BaseFragment {
 
-    @BindView(R.id.recyclerView)
-    RecyclerView recyclerView;
 
-    @BindString(R.string.lbl_fertilizer_recommendations)
+    RecyclerView recyclerView;
+    FragmentDstOptionsBinding binding;
+
+
     String frString;
-    @BindString(R.string.lbl_intercropping)
     String icString;
-    @BindString(R.string.lbl_scheduled_planting_and_harvest)
     String sphString;
-    @BindString(R.string.lbl_best_planting_practices)
     String bppString;
 
     private AdapterListAnimation mAdapter;
@@ -69,7 +68,8 @@ public class DstOptionsFragment extends BaseFragment {
 
     @Override
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_dst_options, container, false);
+        binding = FragmentDstOptionsBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
@@ -80,6 +80,14 @@ public class DstOptionsFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        frString = context.getString(R.string.lbl_fertilizer_recommendations);
+        icString = context.getString(R.string.lbl_intercropping);
+        sphString = context.getString(R.string.lbl_scheduled_planting_and_harvest);
+        bppString = context.getString(R.string.lbl_best_planting_practices);
+
+
+        recyclerView = binding.recyclerView;
 
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setHasFixedSize(true);
@@ -119,6 +127,9 @@ public class DstOptionsFragment extends BaseFragment {
             //let us process the data
             Intent intent = null;
             EnumAdvice advice = obj.getRecCode();
+            if (advice == null) {
+                return;
+            }
             switch (advice) {
                 case FR:
                     intent = new Intent(context, FertilizerRecActivity.class);

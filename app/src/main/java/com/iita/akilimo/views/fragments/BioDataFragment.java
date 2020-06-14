@@ -24,6 +24,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hbb20.CountryCodePicker;
 import com.iita.akilimo.R;
+import com.iita.akilimo.databinding.FragmentBioDataBinding;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.interfaces.IFragmentCallBack;
@@ -48,35 +49,17 @@ public class BioDataFragment extends BaseFragment {
     private ValidationHelper validationHelper;
 
 
-    @BindView(R.id.genderSpinner)
     Spinner genderSpinner;
-
-    @BindView(R.id.lytFirstName)
     TextInputLayout lytFirstName;
-
-    @BindView(R.id.lytLastName)
     TextInputLayout lytLastName;
-
-    @BindView(R.id.lytFarmName)
     TextInputLayout lytFarmName;
-
-    @BindView(R.id.lytEmail)
     TextInputLayout lytEmail;
-
-    @BindView(R.id.lytPhone)
     TextInputLayout lytPhone;
-    @BindView(R.id.edtPhone)
     TextInputEditText edtPhone;
-
-    @BindView(R.id.ccp)
     CountryCodePicker ccp;
-
-
-    @BindView(R.id.btnGetRecommendation)
     AppCompatButton btnGetRec;
 
-    @BindString(R.string.lbl_save)
-    String saveTitle;
+    FragmentBioDataBinding binding;
 
     private boolean dataIsValid;
     private String firstName;
@@ -106,13 +89,26 @@ public class BioDataFragment extends BaseFragment {
 
     @Override
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_bio_data, container, false);
+        binding = FragmentBioDataBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        btnGetRec.setText(saveTitle);
+
+        genderSpinner = binding.genderSpinner;
+        lytFirstName = binding.lytFirstName;
+        lytLastName = binding.lytLastName;
+        lytFarmName = binding.lytFarmName;
+        lytEmail = binding.lytEmail;
+        lytPhone = binding.lytPhone;
+        edtPhone = binding.edtPhone;
+        ccp = binding.ccp;
+        btnGetRec = binding.singleButton.btnGetRecommendation;
+
+
+        btnGetRec.setText(getString(R.string.lbl_save));
 
         final List<String> genderStrings = new ArrayList<>();
         genderStrings.add(this.getString(R.string.lbl_male));

@@ -7,11 +7,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Data;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Data
 public class OperationCost implements Parcelable {
 
     @JsonProperty("id")
@@ -105,4 +102,108 @@ public class OperationCost implements Parcelable {
             return new OperationCost[size];
         }
     };
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getListIndex() {
+        return listIndex;
+    }
+
+    public void setListIndex(long listIndex) {
+        this.listIndex = listIndex;
+    }
+
+    public String getOperationName() {
+        return operationName;
+    }
+
+    public void setOperationName(String operationName) {
+        this.operationName = operationName;
+    }
+
+    public String getOperationType() {
+        return operationType;
+    }
+
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
+    }
+
+    public double getMinUsd() {
+        return minUsd;
+    }
+
+    public void setMinUsd(double minUsd) {
+        this.minUsd = minUsd;
+    }
+
+    public double getMaxUsd() {
+        return maxUsd;
+    }
+
+    public void setMaxUsd(double maxUsd) {
+        this.maxUsd = maxUsd;
+    }
+
+    public double getMinTzs() {
+        return minTzs;
+    }
+
+    public void setMinTzs(double minTzs) {
+        this.minTzs = minTzs;
+    }
+
+    public double getMaxTzs() {
+        return maxTzs;
+    }
+
+    public void setMaxTzs(double maxTzs) {
+        this.maxTzs = maxTzs;
+    }
+
+    public double getMinNgn() {
+        return minNgn;
+    }
+
+    public void setMinNgn(double minNgn) {
+        this.minNgn = minNgn;
+    }
+
+    public double getMaxNgn() {
+        return maxNgn;
+    }
+
+    public void setMaxNgn(double maxNgn) {
+        this.maxNgn = maxNgn;
+    }
+
+    public double getAverageNgnPrice() {
+        return averageNgnPrice;
+    }
+
+    public void setAverageNgnPrice(double averageNgnPrice) {
+        this.averageNgnPrice = averageNgnPrice;
+    }
+
+    public double getAverageTzsPrice() {
+        return averageTzsPrice;
+    }
+
+    public void setAverageTzsPrice(double averageTzsPrice) {
+        this.averageTzsPrice = averageTzsPrice;
+    }
+
+    public double getAverageUsdPrice() {
+        return averageUsdPrice;
+    }
+
+    public void setAverageUsdPrice(double averageUsdPrice) {
+        this.averageUsdPrice = averageUsdPrice;
+    }
 }

@@ -70,7 +70,9 @@
             <!--                app:layout_collapseMode="pin"-->
             <!--                android:theme="@style/ToolbarTheme"-->
             <!--                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />-->
-            <include layout="@layout/toolbar" />
+            <include
+                android:id="@+id/toolbar_layout"
+                layout="@layout/toolbar" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 

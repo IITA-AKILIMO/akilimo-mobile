@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
+import com.iita.akilimo.databinding.ActivityFertilizerRecBinding;
 import com.iita.akilimo.entities.RecAdvice;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
@@ -28,26 +29,16 @@ import butterknife.ButterKnife;
 
 public class FertilizerRecActivity extends BaseActivity {
 
-    @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
-    @BindView(R.id.toolbar)
     Toolbar toolbar;
-
-    @BindView(R.id.btnGetRecommendation)
     AppCompatButton btnGetRec;
 
-    @BindString(R.string.lbl_fertilizer_recommendations)
-    String recommendations;
+    ActivityFertilizerRecBinding binding;
 
-    @BindString(R.string.lbl_planting_harvest)
     String plantingString;
-    @BindString(R.string.lbl_available_fertilizers)
     String fertilizerString;
-    @BindString(R.string.lbl_investment_amount)
     String investmentString;
-    @BindString(R.string.lbl_typical_yield)
     String rootYieldString;
-    @BindString(R.string.lbl_market_outlet)
     String marketOutletString;
 
     private Activity activity;
@@ -57,11 +48,15 @@ public class FertilizerRecActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fertilizer_rec);
-        ButterKnife.bind(this);
-
+        binding = ActivityFertilizerRecBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         context = this;
         activity = this;
+        recyclerView = binding.recyclerView;
+        toolbar = binding.toolbarLayout.toolbar;
+        btnGetRec = binding.singleButton.btnGetRecommendation;
+
+
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
         initToolbar();
         initComponent();
@@ -72,7 +67,7 @@ public class FertilizerRecActivity extends BaseActivity {
     protected void initToolbar() {
         toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(recommendations);
+        getSupportActionBar().setTitle(getString(R.string.lbl_fertilizer_recommendations));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -81,6 +76,12 @@ public class FertilizerRecActivity extends BaseActivity {
 
     @Override
     protected void initComponent() {
+        plantingString = getString(R.string.lbl_planting_harvest);
+        fertilizerString = getString(R.string.lbl_available_fertilizers);
+        investmentString = getString(R.string.lbl_investment_amount);
+        rootYieldString = getString(R.string.lbl_typical_yield);
+        marketOutletString = getString(R.string.lbl_market_outlet);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 

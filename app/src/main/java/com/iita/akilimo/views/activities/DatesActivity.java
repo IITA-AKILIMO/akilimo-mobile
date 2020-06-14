@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
+import com.iita.akilimo.databinding.ActivityDatesBinding;
 import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.DateHelper;
@@ -27,42 +28,37 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DatesActivity extends BaseActivity {
-
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindString(R.string.lbl_planting_harvest_dates)
     String activityTitle;
 
-    @BindView(R.id.lytPlantingHarvest)
+
+    Toolbar toolbar;
+
     RelativeLayout lytPlantingHarvest;
 
-    @BindView(R.id.btnPickPlantingDate)
     AppCompatButton btnPickPlantingDate;
-    @BindView(R.id.btnPickHarvestDate)
+
     AppCompatButton btnPickHarvestDate;
 
-    @BindView(R.id.btnCancel)
+
     AppCompatButton btnCancel;
-    @BindView(R.id.btnFinish)
+
     AppCompatButton btnFinish;
 
-
-    @BindView(R.id.lblSelectedPlantingDate)
     TextView lblSelectedPlantingDate;
-    @BindView(R.id.lblSelectedHarvestDate)
+
     TextView lblSelectedHarvestDate;
 
-    @BindView(R.id.rdgAlternativeDate)
+
     RadioGroup rdgAlternativeDate;
-    @BindView(R.id.rdgPlantingWindow)
+
     RadioGroup rdgPlantingWindow;
-    @BindView(R.id.rdgHarvestWindow)
+
     RadioGroup rdgHarvestWindow;
 
-    @BindView(R.id.flexiblePlanting)
     SwitchCompat flexiblePlanting;
-    @BindView(R.id.flexibleHarvest)
     SwitchCompat flexibleHarvest;
+
+    ActivityDatesBinding binding;
 
     String selectedPlantingDate;
     String selectedHarvestDate;
@@ -75,8 +71,24 @@ public class DatesActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dates);
-        ButterKnife.bind(this);
+        binding = ActivityDatesBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        //set widgets
+        toolbar = binding.toolbar;
+        lytPlantingHarvest = binding.lytPlantingHarvest;
+        btnPickPlantingDate = binding.btnPickPlantingDate;
+        btnPickHarvestDate = binding.btnPickHarvestDate;
+        btnCancel = binding.twoButtons.btnCancel;
+        btnFinish = binding.twoButtons.btnFinish;
+        lblSelectedPlantingDate = binding.lblSelectedPlantingDate;
+        lblSelectedHarvestDate = binding.lblSelectedHarvestDate;
+        rdgAlternativeDate = binding.rdgAlternativeDate;
+        rdgPlantingWindow = binding.rdgPlantingWindow;
+        rdgHarvestWindow = binding.rdgHarvestWindow;
+        flexiblePlanting = binding.flexiblePlanting;
+        flexibleHarvest = binding.flexibleHarvest;
+
         context = this;
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
 
@@ -88,7 +100,7 @@ public class DatesActivity extends BaseActivity {
     protected void initToolbar() {
         toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(activityTitle);
+        getSupportActionBar().setTitle(getString(R.string.lbl_planting_harvest_dates));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         toolbar.setNavigationOnClickListener(v -> validate(true));

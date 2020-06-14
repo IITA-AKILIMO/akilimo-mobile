@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.toolbox.Volley;
 import com.iita.akilimo.R;
+import com.iita.akilimo.databinding.ActivityManualTillageCostBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.OperationCosts;
 import com.iita.akilimo.inherit.CostBaseActivity;
@@ -29,35 +30,18 @@ import butterknife.ButterKnife;
 
 public class ManualTillageCostActivity extends CostBaseActivity {
 
-    @BindView(R.id.toolbar)
     Toolbar toolbar;
-
-    @BindString(R.string.title_manual_tillage_cost)
-    String activityTitle;
-
-    @BindView(R.id.manualPloughCostTitle)
     TextView manualPloughCostTitle;
-
-    @BindView(R.id.manualRidgeCostTitle)
     TextView manualRidgeCostTitle;
-
-    @BindView(R.id.manualPloughCostText)
     TextView manualPloughCostText;
-
-    @BindView(R.id.manualRidgingCostText)
     TextView manualRidgingCostText;
 
-
-    @BindView(R.id.btnPloughCost)
     AppCompatButton btnPloughCost;
-    @BindView(R.id.btnRidgeCost)
     AppCompatButton btnRidgeCost;
-
-    @BindView(R.id.btnFinish)
     AppCompatButton btnFinish;
-    @BindView(R.id.btnCancel)
     AppCompatButton btnCancel;
 
+    ActivityManualTillageCostBinding binding;
     MathHelper mathHelper;
     OperationCosts operationCosts;
 
@@ -76,6 +60,16 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
         queue = Volley.newRequestQueue(this);
         mathHelper = new MathHelper();
+
+        toolbar = binding.toolbar;
+        manualPloughCostTitle = binding.manualTillage.manualPloughCostTitle;
+        manualRidgeCostTitle = binding.manualTillage.manualRidgeCostTitle;
+        manualPloughCostText = binding.manualTillage.manualPloughCostText;
+        manualRidgingCostText = binding.manualTillage.manualRidgingCostText;
+        btnPloughCost = binding.manualTillage.btnPloughCost;
+        btnRidgeCost = binding.manualTillage.btnRidgeCost;
+        btnFinish = binding.twoButtons.btnFinish;
+        btnCancel = binding.twoButtons.btnCancel;
 
         MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
@@ -102,7 +96,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
     protected void initToolbar() {
         toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(activityTitle);
+        getSupportActionBar().setTitle(getString(R.string.title_manual_tillage_cost));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(v -> validate(false));
     }

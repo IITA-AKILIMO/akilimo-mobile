@@ -2,32 +2,28 @@ package com.iita.akilimo.entities;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Getter;
 
-@Data
 @Entity
 public class RecAdvice {
     @Id
     long id;
 
-    @Getter(AccessLevel.NONE)
+
     public boolean FR;
 
-    @Getter(AccessLevel.NONE)
+
     public boolean CIM;
 
-    @Getter(AccessLevel.NONE)
+
     public boolean CIS;
 
-    @Getter(AccessLevel.NONE)
+
     public boolean BPP;
 
-    @Getter(AccessLevel.NONE)
+
     public boolean SPH;
 
-    @Getter(AccessLevel.NONE)
+
     public boolean SPP;
 
     public String useCase;
@@ -54,5 +50,45 @@ public class RecAdvice {
 
     public boolean isSPP() {
         return this.SPP;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setFR(boolean FR) {
+        this.FR = FR;
+    }
+
+    public void setCIM(boolean CIM) {
+        this.CIM = CIM;
+    }
+
+    public void setCIS(boolean CIS) {
+        this.CIS = CIS;
+    }
+
+    public void setBPP(boolean BPP) {
+        this.BPP = BPP;
+    }
+
+    public void setSPH(boolean SPH) {
+        this.SPH = SPH;
+    }
+
+    public void setSPP(boolean SPP) {
+        this.SPP = SPP;
+    }
+
+    public String getUseCase() {
+        return useCase;
+    }
+
+    public void setUseCase(String useCase) {
+        this.useCase = useCase;
     }
 }

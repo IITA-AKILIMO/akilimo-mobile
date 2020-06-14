@@ -13,6 +13,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.iita.akilimo.R;
+import com.iita.akilimo.databinding.ActivityMapBoxBinding;
 import com.iita.akilimo.inherit.BaseLocationPicker;
 import com.iita.akilimo.services.GPSTracker;
 import com.iita.akilimo.utils.SessionManager;
@@ -39,13 +40,10 @@ public class MapBoxActivity extends BaseLocationPicker {
     public static final String ALT = "ALT";
     public static final String PLACE_NAME = "PLACE_NAME";
 
-    @BindView(R.id.btnGetLocation)
     FloatingActionButton btnSelectLocation;
-
-    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindString(R.string.title_activity_farm_location)
-    String activityTitle;
+    ActivityMapBoxBinding binding;
+
 
     LatLng currentCoordinates;
     double currentLat;
@@ -59,10 +57,15 @@ public class MapBoxActivity extends BaseLocationPicker {
         sessionManager = new SessionManager(this);
         accessToken = sessionManager.getMapBoxApiKey();
         Mapbox.getInstance(this, accessToken);
-        setContentView(R.layout.activity_map_box);
-        ButterKnife.bind(this);
 
-        mapView = findViewById(R.id.mapView);
+        binding = ActivityMapBoxBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+
+        toolbar = binding.toolbarLayout.toolbar;
+        btnSelectLocation = binding.btnGetLocation;
+        mapView = binding.mapBox.mapView;
+
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
@@ -74,7 +77,7 @@ public class MapBoxActivity extends BaseLocationPicker {
     protected void initToolbar() {
         toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(activityTitle);
+        getSupportActionBar().setTitle(getString(R.string.title_activity_farm_location));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         toolbar.setNavigationOnClickListener(v -> processActivityResult());

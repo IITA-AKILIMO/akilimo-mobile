@@ -23,6 +23,7 @@ import com.google.android.gms.common.util.Strings;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecommendationAdapter;
+import com.iita.akilimo.databinding.ActivityDstRecomendationBinding;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IRecommendationCallBack;
@@ -55,26 +56,14 @@ import butterknife.ButterKnife;
 public class DstRecommendationActivity extends BaseActivity implements IRecommendationCallBack {
     public static final String REC_TAG = "REC";
 
-    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
-
-    @BindView(R.id.fabRetry)
     FloatingActionButton fabRetry;
-
-    @BindView(R.id.errorImage)
     ImageView errorImage;
-
-    @BindView(R.id.errorLabel)
     TextView errorLabel;
-
-    @BindView(R.id.lyt_progress)
     LinearLayout lyt_progress;
 
-    @BindString(R.string.lbl_recommendations)
-    String activityTitle;
-
+    ActivityDstRecomendationBinding binding;
     Activity activity;
     RecommendationRequest recData;
     RecommendationAdapter recAdapter;
@@ -85,11 +74,19 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dst_recomendation);
+        binding = ActivityDstRecomendationBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         context = this;
         activity = this;
+
+        toolbar = binding.toolbarLayout.toolbar;
+        recyclerView = binding.recyclerView;
+        fabRetry = binding.fabRetry;
+        errorImage = binding.errorImage;
+        errorLabel = binding.errorLabel;
+        lyt_progress = binding.lytProgress;
+
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
-        ButterKnife.bind(this);
         initToolbar();
         initComponent();
     }
@@ -98,7 +95,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
     protected void initToolbar() {
         toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(activityTitle);
+        getSupportActionBar().setTitle(getString(R.string.lbl_recommendations));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(v -> {
             closeActivity(false);

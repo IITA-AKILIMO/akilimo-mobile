@@ -16,6 +16,7 @@ import com.google.android.gms.common.util.Strings;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
+import com.iita.akilimo.databinding.ActivityInvestmentAmountBinding;
 import com.iita.akilimo.entities.InvestmentAmount;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
@@ -30,42 +31,21 @@ public class InvestmentAmountActivity extends BaseActivity {
 
     private String LOG_TAG = InvestmentAmountActivity.class.getSimpleName();
 
-    @BindView(R.id.toolbar)
+
     Toolbar toolbar;
-    @BindString(R.string.title_activity_investment_amount)
-    String investmentAmount;
-
-    @BindView(R.id.radioInvestmentGroup)
     RadioGroup radioGroup;
-
-    @BindView(R.id.rd_25_per_acre)
     RadioButton rd_25_per_acre;
-
-    @BindView(R.id.rd_50_per_acre)
     RadioButton rd_50_per_acre;
-
-    @BindView(R.id.rd_100_per_acre)
     RadioButton rd_100_per_acre;
-
-    @BindView(R.id.rd_150_per_acre)
     RadioButton rd_150_per_acre;
-
-    @BindView(R.id.rd_200_per_acre)
     RadioButton rd_200_per_acre;
-
-    @BindView(R.id.rd_exact_investment)
     RadioButton rd_exact_investment;
-    @BindView(R.id.editInvestmentAmount)
     EditText txtEditInvestmentAmount;
-
-    @BindView(R.id.editInvestmentAmountLayout)
     TextInputLayout txtEditInvestmentAmountLayout;
-
-    @BindView(R.id.btnFinish)
     MaterialButton btnFinish;
+    ActivityInvestmentAmountBinding binding;
 
 
-    @BindString(R.string.lbl_investment_amount_prompt)
     String investmentAmountError;
 
     MathHelper mathHelper;
@@ -86,11 +66,25 @@ public class InvestmentAmountActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_investment_amount);
-        ButterKnife.bind(this);
+        binding = ActivityInvestmentAmountBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        
         context = this;
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
         mathHelper = new MathHelper();
+
+        toolbar = binding.toolbar;
+        radioGroup = binding.radioInvestmentGroup;
+        rd_25_per_acre = binding.rd25PerAcre;
+        rd_50_per_acre = binding.rd50PerAcre;
+        rd_100_per_acre = binding.rd100PerAcre;
+        rd_150_per_acre = binding.rd150PerAcre;
+        rd_200_per_acre = binding.rd200PerAcre;
+        rd_exact_investment = binding.rdExactInvestment;
+        txtEditInvestmentAmount = binding.editInvestmentAmount;
+        txtEditInvestmentAmountLayout = binding.editInvestmentAmountLayout;
+        btnFinish = binding.btnFinish;
+
 
         initToolbar();
         initComponent();
@@ -100,7 +94,7 @@ public class InvestmentAmountActivity extends BaseActivity {
     protected void initToolbar() {
         toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(investmentAmount);
+        getSupportActionBar().setTitle(getString(R.string.title_activity_investment_amount));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         toolbar.setNavigationOnClickListener(v -> {
@@ -115,6 +109,7 @@ public class InvestmentAmountActivity extends BaseActivity {
 
     @Override
     protected void initComponent() {
+        investmentAmountError = getString(R.string.lbl_investment_amount_prompt);
         radioGroup.setOnCheckedChangeListener((radioGroup1, radioChecked) -> {
             double amountToInvest = 0;
             isExactAmount = false;

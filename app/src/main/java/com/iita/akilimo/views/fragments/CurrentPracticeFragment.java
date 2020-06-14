@@ -22,6 +22,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
+import com.iita.akilimo.databinding.FragmentCurrentPracticeBinding;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.inherit.BaseFragment;
@@ -36,20 +37,15 @@ import butterknife.BindView;
  */
 public class CurrentPracticeFragment extends BaseFragment {
 
-    @BindView(R.id.chkPloughing)
+
     CheckBox chkPloughing;
-    @BindView(R.id.chkRidging)
     CheckBox chkRidging;
-
-    @BindView(R.id.lblSelectedPlantingDate)
     TextView lblSelectedPlantingDate;
-    @BindView(R.id.lblSelectedHarvestDate)
     TextView lblSelectedHarvestDate;
-
-    @BindView(R.id.btnPickPlantingDate)
     AppCompatButton btnPickPlantingDate;
-    @BindView(R.id.btnPickHarvestDate)
     AppCompatButton btnPickHarvestDate;
+
+    FragmentCurrentPracticeBinding binding;
 
 
     private String selectedPlantingDate;
@@ -61,7 +57,10 @@ public class CurrentPracticeFragment extends BaseFragment {
     private CurrentPractice currentPractice;
     private PlantingHarvestDates plantingHarvestDates;
 
-    private String ploughingMethod, ridgingMethod, harrowingMethod, operation;
+    private String ploughingMethod;
+    private String ridgingMethod;
+    private String harrowingMethod;
+    private String operation;
 
     private boolean performPloughing;
     private boolean performRidging;
@@ -86,12 +85,21 @@ public class CurrentPracticeFragment extends BaseFragment {
 
     @Override
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_current_practice, container, false);
+        binding = FragmentCurrentPracticeBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        chkPloughing = binding.chkPloughing;
+        chkRidging = binding.chkRidging;
+        lblSelectedPlantingDate = binding.lblSelectedPlantingDate;
+        lblSelectedHarvestDate = binding.lblSelectedHarvestDate;
+        btnPickPlantingDate = binding.btnPickPlantingDate;
+        btnPickHarvestDate = binding.btnPickHarvestDate;
+
         final FragmentManager fm = getActivity().getSupportFragmentManager();
 
         chkPloughing.setOnCheckedChangeListener((buttonView, checked) -> {
@@ -166,7 +174,7 @@ public class CurrentPracticeFragment extends BaseFragment {
             }
 
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, TAG, "An error occurred fetching info");
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred fetching info");
             Crashlytics.logException(ex);
         }
     }
@@ -204,6 +212,11 @@ public class CurrentPracticeFragment extends BaseFragment {
                     performRidging = !cancelled;
                     chkRidging.setChecked(!cancelled);
                     ridgingMethod = enumOperationType.operationName();
+                    break;
+                default:
+                    ridgingMethod = EnumOperationType.NONE.operationName();
+                    performPloughing = false;
+                    performRidging = false;
                     break;
             }
             saveEntities();

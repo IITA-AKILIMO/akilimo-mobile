@@ -132,7 +132,7 @@ public class BuildComputeData {
     private int sweetPotatoUnitWeight;
     private double sweetPotatoUnitPrice;
 
-    private String deviceId = DEFAULT_USERNAME;
+    private String deviceToken = DEFAULT_USERNAME;
     private String fullNames = DEFAULT_USERNAME;
     private String secondName = DEFAULT_USERNAME;
     private String farmName = DEFAULT_FIELD_DESC;
@@ -196,17 +196,21 @@ public class BuildComputeData {
             ProfileInfo profileInfo = objectBoxEntityProcessor.getProfileInfo();
 
             if (profileInfo != null) {
+                String firstName = Strings.isEmptyOrWhitespace(profileInfo.getFirstName()) ? DEFAULT_USERNAME : profileInfo.getFirstName();
+                String lastName = Strings.isEmptyOrWhitespace(profileInfo.getLastName()) ? DEFAULT_USERNAME : profileInfo.getLastName();
                 fullNames = Strings.isEmptyOrWhitespace(profileInfo.getNames()) ? DEFAULT_USERNAME : profileInfo.getNames();
                 farmName = Strings.isEmptyOrWhitespace(profileInfo.getFarmName()) ? DEFAULT_UNAVAILABLE : profileInfo.getFarmName();
                 mobileNumber = Strings.isEmptyOrWhitespace(profileInfo.getFullMobileNumber()) ? DEFAULT_UNAVAILABLE : profileInfo.getFullMobileNumber();
                 mobileCountryCode = Strings.isEmptyOrWhitespace(profileInfo.getMobileCode()) ? DEFAULT_UNAVAILABLE : profileInfo.getMobileCode();
                 emailAddress = Strings.isEmptyOrWhitespace(profileInfo.getEmail()) ? DEFAULT_UNAVAILABLE : profileInfo.getEmail();
-                deviceId = sessionManager.getDeviceId();
+                deviceToken = sessionManager.getDeviceToken();
 
                 emailRequired = profileInfo.isSendEmail();
                 smsRequired = profileInfo.isSendSms();
 
-                userInfo.setDeviceID(deviceId);
+                userInfo.setDeviceToken(deviceToken);
+                userInfo.setFirstName(firstName);
+                userInfo.setLastName(lastName);
                 userInfo.setUserName(fullNames);
                 userInfo.setMobileCountryCode(mobileCountryCode);
                 userInfo.setMobileNumber(mobileNumber);

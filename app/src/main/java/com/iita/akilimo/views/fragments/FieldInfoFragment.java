@@ -11,12 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.iita.akilimo.R;
+import com.iita.akilimo.databinding.FragmentFieldInfoBinding;
 import com.iita.akilimo.inherit.BaseFragment;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class FieldInfoFragment extends BaseFragment {
+
+    FragmentFieldInfoBinding binding;
 
     public FieldInfoFragment() {
         // Required empty public constructor
@@ -34,7 +37,8 @@ public class FieldInfoFragment extends BaseFragment {
 
     @Override
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_field_info, container, false);
+        binding = FragmentFieldInfoBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
