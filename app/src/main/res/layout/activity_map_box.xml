@@ -7,9 +7,13 @@
     tools:context=".views.activities.MapBoxActivity">
 
 
-    <include layout="@layout/toolbar" />
+    <include
+        android:id="@+id/toolbar_layout"
+        layout="@layout/toolbar" />
 
-    <include layout="@layout/content_map_box" />
+    <include
+        android:id="@+id/map_box"
+        layout="@layout/content_map_box" />
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -20,7 +24,7 @@
         android:tint="@color/colorAccentDark"
         app:backgroundTint="@color/white"
         app:fabSize="auto"
-        app:layout_anchor="@id/mapBoxLyt"
+        app:layout_anchor="@id/map_box"
         app:layout_anchorGravity="bottom|end"
         app:rippleColor="@color/purple_A100"
         app:srcCompat="@drawable/ic_save" />

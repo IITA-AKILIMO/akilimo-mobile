@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +18,7 @@ import androidx.appcompat.widget.AppCompatButton;
 
 import com.android.volley.RequestQueue;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -36,10 +36,12 @@ import com.nabinbhandari.android.permissions.Permissions;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
 import dev.b3nedikt.app_locale.AppLocale;
+import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import io.objectbox.BoxStore;
 
@@ -155,32 +157,37 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void showCustomWarningDialog(String titleText, String contentText, String buttonTitle) {
-        final Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
-        dialog.setContentView(R.layout.dialog_warning);
-        dialog.setCancelable(true);
+        try {
+            final Dialog dialog = new Dialog(this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+            dialog.setContentView(R.layout.dialog_warning);
+            dialog.setCancelable(true);
 
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            lp.copyFrom(dialog.getWindow().getAttributes());
+            lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
 
-        final TextView title = dialog.findViewById(R.id.title);
-        final TextView content = dialog.findViewById(R.id.content);
-        final AppCompatButton btnClose = dialog.findViewById(R.id.bt_close);
-        title.setText(titleText);
-        content.setText(contentText);
+            final TextView title = dialog.findViewById(R.id.title);
+            final TextView content = dialog.findViewById(R.id.content);
+            final AppCompatButton btnClose = dialog.findViewById(R.id.bt_close);
+            title.setText(titleText);
+            content.setText(contentText);
 
-        if (!Strings.isEmptyOrWhitespace(buttonTitle)) {
-            btnClose.setText(buttonTitle);
+            if (!Strings.isEmptyOrWhitespace(buttonTitle)) {
+                btnClose.setText(buttonTitle);
+            }
+            btnClose.setOnClickListener(view -> {
+                dialog.dismiss();
+            });
+
+            dialog.show();
+            dialog.getWindow().setAttributes(lp);
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred while displaying alert dialog");
+            Crashlytics.logException(ex);
         }
-        btnClose.setOnClickListener(view -> {
-            dialog.dismiss();
-        });
-
-        dialog.show();
-        dialog.getWindow().setAttributes(lp);
     }
 
     protected void checkAppPermissions(String rationale) {
@@ -236,5 +243,15 @@ public abstract class BaseActivity extends AppCompatActivity {
                         }
                     }
                 });
+}
+  
+    protected Locale getCurrentLocale() {
+        SharedPrefsAppLocaleRepository prefs = new SharedPrefsAppLocaleRepository(this);
+        Locale desiredLocale = prefs.getDesiredLocale();
+        if (desiredLocale != null) {
+            AppLocale.setDesiredLocale(desiredLocale);
+        }
+
+        return desiredLocale;
     }
 }

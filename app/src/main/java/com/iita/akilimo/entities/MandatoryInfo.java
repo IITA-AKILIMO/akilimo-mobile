@@ -10,11 +10,8 @@ import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.converter.PropertyConverter;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Getter;
 
-@Data
+
 @Entity
 public class MandatoryInfo {
 
@@ -41,7 +38,6 @@ public class MandatoryInfo {
     public double acreAreaSize;
     public double areaSize;
 
-    @Getter(AccessLevel.NONE)
     public boolean exactArea;
 
     public boolean isExactArea() {
@@ -132,4 +128,120 @@ public class MandatoryInfo {
         }
     }
 
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getPlaceName() {
+        return placeName;
+    }
+
+    public void setPlaceName(String placeName) {
+        this.placeName = placeName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
+    }
+
+    public String getCountryName() {
+        return countryName;
+    }
+
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public int getFieldSizeRadioIndex() {
+        return fieldSizeRadioIndex;
+    }
+
+    public void setFieldSizeRadioIndex(int fieldSizeRadioIndex) {
+        this.fieldSizeRadioIndex = fieldSizeRadioIndex;
+    }
+
+    public int getSelectedCountryIndex() {
+        return selectedCountryIndex;
+    }
+
+    public void setSelectedCountryIndex(int selectedCountryIndex) {
+        this.selectedCountryIndex = selectedCountryIndex;
+    }
+
+    public EnumCountry getCountryEnum() {
+        return countryEnum;
+    }
+
+    public void setCountryEnum(EnumCountry countryEnum) {
+        this.countryEnum = countryEnum;
+    }
+
+    public EnumAreaUnits getAreaUnitsEnum() {
+        return areaUnitsEnum;
+    }
+
+    public void setAreaUnitsEnum(EnumAreaUnits areaUnitsEnum) {
+        this.areaUnitsEnum = areaUnitsEnum;
+    }
+
+    public EnumFieldArea getFieldAreaEnum() {
+        return fieldAreaEnum;
+    }
+
+    public void setFieldAreaEnum(EnumFieldArea fieldAreaEnum) {
+        this.fieldAreaEnum = fieldAreaEnum;
+    }
+
+    public String getAreaUnit() {
+        return areaUnit;
+    }
+
+    public void setAreaUnit(String areaUnit) {
+        this.areaUnit = areaUnit;
+    }
+
+    public double getAcreAreaSize() {
+        return acreAreaSize;
+    }
+
+    public void setAcreAreaSize(double acreAreaSize) {
+        this.acreAreaSize = acreAreaSize;
+    }
+
+    public double getAreaSize() {
+        return areaSize;
+    }
+
+    public void setAreaSize(double areaSize) {
+        this.areaSize = areaSize;
+    }
+
+    public void setExactArea(boolean exactArea) {
+        this.exactArea = exactArea;
+    }
 }

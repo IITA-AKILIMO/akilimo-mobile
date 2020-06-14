@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
@@ -20,6 +19,7 @@ import com.blongho.country_data.World;
 import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.MySpinnerAdapter;
+import com.iita.akilimo.databinding.FragmentCountryBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
@@ -27,6 +27,7 @@ import com.iita.akilimo.utils.enums.EnumCountry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 
@@ -37,12 +38,9 @@ import butterknife.BindView;
  */
 public class CountryFragment extends BaseFragment {
 
-    @BindView(R.id.title)
     AppCompatTextView title;
-
-
-    @BindView(R.id.spinner)
     Spinner countrySpinner;
+    FragmentCountryBinding binding;
 
     private ProfileInfo profileInfo;
     private MandatoryInfo mandatoryInfo;
@@ -69,7 +67,8 @@ public class CountryFragment extends BaseFragment {
 
     @Override
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_country, container, false);
+        binding = FragmentCountryBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
@@ -87,7 +86,7 @@ public class CountryFragment extends BaseFragment {
             }
         } catch (Exception ex) {
             mandatoryInfo = new MandatoryInfo();
-            Crashlytics.log(Log.ERROR, TAG, "An error occurred fetching info");
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred fetching info");
             Crashlytics.logException(ex);
         }
 
@@ -98,16 +97,26 @@ public class CountryFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        title = binding.title;
+        countrySpinner = binding.countrySpinner;
+
         //save this data
 
         final List<String> countries = new ArrayList<>();
         final List<Integer> countryImages = new ArrayList<>();
 
-        countries.add(EnumCountry.NIGERIA.countryName());
-        countryImages.add(World.getFlagOf(EnumCountry.NIGERIA.countryCode()));
-
-        countries.add(EnumCountry.TANZANIA.countryName());
-        countryImages.add(World.getFlagOf(EnumCountry.TANZANIA.countryCode()));
+        //let us get the current locale and limit countries to that locale
+        Locale currentLocale = getCurrentLocale();
+        if (currentLocale.getCountry().equalsIgnoreCase(EnumCountry.TANZANIA.countryCode())) {
+            countries.add(EnumCountry.TANZANIA.countryName());
+            countryImages.add(World.getFlagOf(EnumCountry.TANZANIA.countryCode()));
+        } else {
+            countries.add(EnumCountry.NIGERIA.countryName());
+            countryImages.add(World.getFlagOf(EnumCountry.NIGERIA.countryCode()));
+            countries.add(EnumCountry.TANZANIA.countryName());
+            countryImages.add(World.getFlagOf(EnumCountry.TANZANIA.countryCode()));
+        }
 
         final MySpinnerAdapter spinnerAdapter = new MySpinnerAdapter(context, countries, countryImages);
         countrySpinner.setAdapter(spinnerAdapter);

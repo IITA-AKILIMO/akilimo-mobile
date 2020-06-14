@@ -103,6 +103,18 @@ public class SessionManager {
         return pref.getBoolean("firstRun", true);
     }
 
+    @Deprecated
+    public String getDeviceId() {
+        String uniqueID = pref.getString("uuid", null);
+
+        if (uniqueID == null) {
+            uniqueID = UUID.randomUUID().toString();
+            editor.putString("uuid", uniqueID);
+            editor.commit();
+        }
+
+        return uniqueID;
+    }
 
     @SuppressWarnings("StringBufferReplaceableByString")
     public String getAppVersion() {
@@ -116,7 +128,7 @@ public class SessionManager {
         return strVersion.toString();
     }
 
-    private String getAppBuildDate() {
+    public String getAppBuildDate() {
         String appBuildDate = "";
         try {
             long unixTimestamp = BuildConfig.VERSION_CODE * 1000L;

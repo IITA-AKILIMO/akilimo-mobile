@@ -10,128 +10,177 @@
       "properties": [
         {
           "id": "1:4447780067646091954",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "2:1757957362178395685",
-          "name": "plantingDate"
+          "name": "plantingDate",
+          "type": 9
         },
         {
           "id": "3:450363313990566013",
-          "name": "plantingWindow"
+          "name": "plantingWindow",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "4:7558463006416623400",
-          "name": "harvestDate"
+          "name": "harvestDate",
+          "type": 9
         },
         {
           "id": "5:6676554955795691138",
-          "name": "harvestWindow"
+          "name": "harvestWindow",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "6:8357432700551995728",
-          "name": "deviceId"
+          "name": "deviceId",
+          "type": 9
         },
         {
           "id": "7:937297918956547118",
-          "name": "alternativeDate"
+          "name": "alternativeDate",
+          "type": 1,
+          "flags": 4
         }
       ],
       "relations": []
     },
     {
       "id": "2:145499813925595982",
-      "lastPropertyId": "22:4610954174943978740",
+      "lastPropertyId": "24:5787238515851690791",
       "name": "Fertilizer",
       "properties": [
         {
           "id": "1:3252677406411975871",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "2:8122626865847237599",
-          "name": "fertilizerId"
+          "name": "fertilizerId",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "3:8565187887196093867",
-          "name": "name"
-        },
-        {
-          "id": "4:902445641694444883",
-          "name": "type"
+          "name": "name",
+          "type": 9
         },
         {
           "id": "5:4406694370872247971",
-          "name": "weight"
+          "name": "weight",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "6:6579524991070496076",
-          "name": "price"
+          "name": "price",
+          "type": 8,
+          "flags": 2
         },
         {
           "id": "7:6263665459240901205",
+          "name": "fertilizerCountry",
           "indexId": "1:5860839264087233334",
-          "name": "fertilizerCountry"
+          "type": 9,
+          "flags": 2080
         },
         {
           "id": "8:1683600664316696230",
-          "name": "currency"
+          "name": "currency",
+          "type": 9
         },
         {
           "id": "9:7461001805050596085",
-          "name": "countryCode"
+          "name": "countryCode",
+          "type": 9
         },
         {
           "id": "10:7096008173164804860",
-          "name": "priceRange"
+          "name": "priceRange",
+          "type": 9
         },
         {
           "id": "11:2448309073887976622",
-          "name": "pricePerBag"
+          "name": "pricePerBag",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "12:2513229248463877056",
-          "name": "kContent"
+          "name": "kContent",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "13:1018540832713161105",
-          "name": "nContent"
+          "name": "nContent",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "14:7111811992201796027",
-          "name": "pContent"
+          "name": "pContent",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "15:2962284009695530058",
-          "name": "available"
+          "name": "available",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "16:5341560232862726671",
-          "name": "selected"
+          "name": "selected",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "17:6472915276269761541",
-          "name": "custom"
+          "name": "custom",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "18:46628985275921066",
-          "name": "imageId"
+          "name": "imageId",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "19:8701761912509195322",
-          "name": "exactPrice"
+          "name": "exactPrice",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "20:1245370425241580244",
-          "name": "useCase"
+          "name": "useCase",
+          "type": 9
         },
         {
           "id": "21:1699086970495514381",
-          "name": "cimAvailable"
+          "name": "cimAvailable",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "22:4610954174943978740",
-          "name": "cisAvailable"
+          "name": "cisAvailable",
+          "type": 1,
+          "flags": 4
+        },
+        {
+          "id": "24:5787238515851690791",
+          "name": "type",
+          "type": 9
         }
       ],
       "relations": []
@@ -143,48 +192,67 @@
       "properties": [
         {
           "id": "1:7633191003446653071",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "2:7600419348887188838",
-          "name": "priceId"
+          "name": "priceId",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "3:6977033841244081129",
-          "name": "minUsd"
+          "name": "minUsd",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "4:7769483139347460625",
-          "name": "maxUsd"
+          "name": "maxUsd",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "5:8782306488084122709",
-          "name": "pricePerBag"
+          "name": "pricePerBag",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "6:5047990626412715328",
-          "name": "active"
+          "name": "active",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "7:2446652734207249931",
-          "name": "priceRange"
+          "name": "priceRange",
+          "type": 9
         },
         {
           "id": "8:3379363145146842640",
-          "name": "country"
+          "name": "country",
+          "type": 9
         },
         {
           "id": "9:7180387901769405845",
+          "name": "fertilizerCountry",
           "indexId": "2:7499680936672910119",
-          "name": "fertilizerCountry"
+          "type": 9,
+          "flags": 2080
         },
         {
           "id": "10:9160889190382784880",
-          "name": "description"
+          "name": "description",
+          "type": 9
         },
         {
           "id": "11:2958529830613157479",
-          "name": "recordId"
+          "name": "recordId",
+          "type": 5,
+          "flags": 4
         }
       ],
       "relations": []
@@ -196,15 +264,20 @@
       "properties": [
         {
           "id": "1:8928463761131147183",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "3:1610354170777270332",
-          "name": "yieldAmount"
+          "name": "yieldAmount",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "4:5251416561330641674",
-          "name": "fieldYieldLabel"
+          "name": "fieldYieldLabel",
+          "type": 9
         }
       ],
       "relations": []
@@ -216,75 +289,103 @@
       "properties": [
         {
           "id": "1:7033954938810166473",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "2:6542981239076679655",
-          "name": "ploughOperations"
+          "name": "ploughOperations",
+          "type": 9
         },
         {
           "id": "3:9083907054511170654",
-          "name": "ridgeOperations"
+          "name": "ridgeOperations",
+          "type": 9
         },
         {
           "id": "4:8568431198170335308",
-          "name": "harrowOperations"
+          "name": "harrowOperations",
+          "type": 9
         },
         {
           "id": "5:6333076604123913328",
-          "name": "weedControlOperations"
+          "name": "weedControlOperations",
+          "type": 9
         },
         {
           "id": "6:8473575656198850783",
-          "name": "ploughingMethod"
+          "name": "ploughingMethod",
+          "type": 9
         },
         {
           "id": "7:1724094839614199263",
-          "name": "ridgingMethod"
+          "name": "ridgingMethod",
+          "type": 9
         },
         {
           "id": "8:6292707270729201832",
-          "name": "harrowingMethod"
+          "name": "harrowingMethod",
+          "type": 9
         },
         {
           "id": "9:3021335772697525025",
-          "name": "performPloughing"
+          "name": "performPloughing",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "10:5595601716091596954",
-          "name": "performHarrowing"
+          "name": "performHarrowing",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "11:6663823617567721661",
-          "name": "performRidging"
+          "name": "performRidging",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "12:2223418768214199557",
-          "name": "tractorAvailable"
+          "name": "tractorAvailable",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "13:5023890459374905729",
-          "name": "tractorPlough"
+          "name": "tractorPlough",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "14:2428561667108223808",
-          "name": "tractorHarrow"
+          "name": "tractorHarrow",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "15:2892706956822154176",
-          "name": "tractorRidger"
+          "name": "tractorRidger",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "16:6238997487325242799",
-          "name": "usesHerbicide"
+          "name": "usesHerbicide",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "17:2505628342280972019",
-          "name": "weedControlTechnique"
+          "name": "weedControlTechnique",
+          "type": 9
         },
         {
           "id": "18:7959099354757086409",
-          "name": "weedRadioIndex"
+          "name": "weedRadioIndex",
+          "type": 5,
+          "flags": 4
         }
       ],
       "relations": []
@@ -296,23 +397,33 @@
       "properties": [
         {
           "id": "1:3854158940373964428",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "2:7613213062469187270",
-          "name": "minInvestmentAmountUSD"
+          "name": "minInvestmentAmountUSD",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "3:4167029190016401655",
-          "name": "minInvestmentAmountLocal"
+          "name": "minInvestmentAmountLocal",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "4:3292839880996460635",
-          "name": "investmentAmountUSD"
+          "name": "investmentAmountUSD",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "5:442085438506945046",
-          "name": "investmentAmountLocal"
+          "name": "investmentAmountLocal",
+          "type": 8,
+          "flags": 4
         }
       ],
       "relations": []
@@ -324,19 +435,25 @@
       "properties": [
         {
           "id": "1:6197999857245724886",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "2:9045642563948191539",
-          "name": "maizePerformance"
+          "name": "maizePerformance",
+          "type": 9
         },
         {
           "id": "3:3294634884478720835",
-          "name": "performanceValue"
+          "name": "performanceValue",
+          "type": 9
         },
         {
           "id": "4:7122387287157718917",
-          "name": "performanceRadioIndex"
+          "name": "performanceRadioIndex",
+          "type": 5,
+          "flags": 4
         }
       ],
       "relations": []
@@ -348,32 +465,43 @@
       "properties": [
         {
           "id": "1:2133603242905331309",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "2:3205370063457592071",
-          "name": "factoryName"
+          "name": "factoryName",
+          "type": 9
         },
         {
           "id": "3:8334732343855877820",
-          "name": "factoryLabel"
+          "name": "factoryLabel",
+          "type": 9
         },
         {
           "id": "4:3622338992628446746",
+          "name": "factoryNameCountry",
           "indexId": "3:3907160947444248683",
-          "name": "factoryNameCountry"
+          "type": 9,
+          "flags": 2080
         },
         {
           "id": "5:2223004356229081442",
-          "name": "countryCode"
+          "name": "countryCode",
+          "type": 9
         },
         {
           "id": "6:3881984378417598502",
-          "name": "factoryActive"
+          "name": "factoryActive",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "7:5801781043504042067",
-          "name": "factorySelected"
+          "name": "factorySelected",
+          "type": 1,
+          "flags": 4
         }
       ],
       "relations": []
@@ -385,63 +513,85 @@
       "properties": [
         {
           "id": "1:5625971113948228728",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "5:5376203110434925408",
-          "name": "placeName"
+          "name": "placeName",
+          "type": 9
         },
         {
           "id": "6:8621905074273751226",
-          "name": "address"
+          "name": "address",
+          "type": 9
         },
         {
           "id": "7:8484043452974172292",
-          "name": "countryCode"
+          "name": "countryCode",
+          "type": 9
         },
         {
           "id": "8:8615539553052794565",
-          "name": "countryName"
+          "name": "countryName",
+          "type": 9
         },
         {
           "id": "9:8838597111007761331",
-          "name": "currency"
+          "name": "currency",
+          "type": 9
         },
         {
           "id": "10:2786163100870401935",
-          "name": "countryEnum"
+          "name": "countryEnum",
+          "type": 9
         },
         {
           "id": "11:6895718364311989127",
-          "name": "areaUnitsEnum"
+          "name": "areaUnitsEnum",
+          "type": 9
         },
         {
           "id": "12:1178746414170151158",
-          "name": "fieldAreaEnum"
+          "name": "fieldAreaEnum",
+          "type": 8,
+          "flags": 2
         },
         {
           "id": "13:4556161972336937234",
-          "name": "areaUnit"
+          "name": "areaUnit",
+          "type": 9
         },
         {
           "id": "14:720398674912052262",
-          "name": "areaSize"
+          "name": "areaSize",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "15:3481546960000596374",
-          "name": "exactArea"
+          "name": "exactArea",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "17:7887029003872444798",
-          "name": "acreAreaSize"
+          "name": "acreAreaSize",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "20:8284809458317677927",
-          "name": "fieldSizeRadioIndex"
+          "name": "fieldSizeRadioIndex",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "21:563398408001025907",
-          "name": "selectedCountryIndex"
+          "name": "selectedCountryIndex",
+          "type": 5,
+          "flags": 4
         }
       ],
       "relations": []
@@ -453,35 +603,50 @@
       "properties": [
         {
           "id": "1:4384479934104018444",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "2:3958192347034146854",
-          "name": "FR"
+          "name": "FR",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "5:2338901858248982008",
-          "name": "SPH"
+          "name": "SPH",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "6:256003125783185324",
-          "name": "SPP"
+          "name": "SPP",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "7:2636069490988598643",
-          "name": "BPP"
+          "name": "BPP",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "8:6837387778787530032",
-          "name": "CIM"
+          "name": "CIM",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "9:3594042030320892820",
-          "name": "CIS"
+          "name": "CIS",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "10:7327445568657682013",
-          "name": "useCase"
+          "name": "useCase",
+          "type": 9
         }
       ],
       "relations": []
@@ -493,59 +658,77 @@
       "properties": [
         {
           "id": "1:6686066543748173145",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "3:8266626966864369841",
-          "name": "email"
+          "name": "email",
+          "type": 9
         },
         {
           "id": "6:7900234621051308761",
-          "name": "farmName"
+          "name": "farmName",
+          "type": 9
         },
         {
           "id": "7:7386108155959466426",
-          "name": "firstName"
+          "name": "firstName",
+          "type": 9
         },
         {
           "id": "8:3011476977821937317",
-          "name": "lastName"
+          "name": "lastName",
+          "type": 9
         },
         {
           "id": "11:1071950899919450886",
-          "name": "deviceID"
+          "name": "deviceID",
+          "type": 9
         },
         {
           "id": "12:8295268029755707175",
-          "name": "userName"
+          "name": "userName",
+          "type": 9
         },
         {
           "id": "13:4219330251026851286",
-          "name": "fieldDescription"
+          "name": "fieldDescription",
+          "type": 9
         },
         {
           "id": "14:1839449274570677505",
-          "name": "mobileCode"
+          "name": "mobileCode",
+          "type": 9
         },
         {
           "id": "15:8504531756211457840",
-          "name": "fullMobileNumber"
+          "name": "fullMobileNumber",
+          "type": 9
         },
         {
           "id": "16:8123314496648917657",
-          "name": "sendEmail"
+          "name": "sendEmail",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "17:4076670459868601111",
-          "name": "sendSms"
+          "name": "sendSms",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "18:8027581746200345862",
-          "name": "selectedGenderIndex"
+          "name": "selectedGenderIndex",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "19:8280213159416820013",
-          "name": "gender"
+          "name": "gender",
+          "type": 9
         }
       ],
       "relations": []
@@ -557,27 +740,37 @@
       "properties": [
         {
           "id": "1:947364281084206904",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "2:2770689937530510761",
-          "name": "latitude"
+          "name": "latitude",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "3:107759823809150410",
-          "name": "longitude"
+          "name": "longitude",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "4:3136735963048186225",
-          "name": "altitude"
+          "name": "altitude",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "5:833422574541543342",
-          "name": "placeName"
+          "name": "placeName",
+          "type": 9
         },
         {
           "id": "6:9072511011384820497",
-          "name": "address"
+          "name": "address",
+          "type": 9
         }
       ],
       "relations": []
@@ -589,71 +782,104 @@
       "properties": [
         {
           "id": "1:7676836358332087508",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "2:1525427524859380542",
-          "name": "manualPloughCost"
+          "name": "manualPloughCost",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "3:4008284693119820596",
-          "name": "manualRidgeCost"
+          "name": "manualRidgeCost",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "4:616301956286703099",
-          "name": "manualHarrowCost"
+          "name": "manualHarrowCost",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "5:8409025733353732350",
-          "name": "tractorPloughCost"
+          "name": "tractorPloughCost",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "6:4652492758804177700",
-          "name": "tractorRidgeCost"
+          "name": "tractorRidgeCost",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "7:844560654329866020",
-          "name": "tractorHarrowCost"
+          "name": "tractorHarrowCost",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "8:68042223751146893",
-          "name": "firstWeedingOperationCost"
+          "name": "firstWeedingOperationCost",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "9:7405102343877754068",
-          "name": "secondWeedingOperationCost"
+          "name": "secondWeedingOperationCost",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "10:7974289298931458092",
-          "name": "exactManualPloughPrice"
+          "name": "exactManualPloughPrice",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "11:5645646944223213504",
-          "name": "exactManualRidgePrice"
+          "name": "exactManualRidgePrice",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "12:3123136468720907053",
-          "name": "exactManualHarrowPrice"
+          "name": "exactManualHarrowPrice",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "13:254174061632580938",
-          "name": "exactTractorPloughPrice"
+          "name": "exactTractorPloughPrice",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "14:5337176843302857888",
-          "name": "exactTractorRidgePrice"
+          "name": "exactTractorRidgePrice",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "15:2134982874192522460",
-          "name": "exactFirstWeedingPrice"
+          "name": "exactFirstWeedingPrice",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "16:1238265519927943249",
-          "name": "exactSecondWeedingPrice"
+          "name": "exactSecondWeedingPrice",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "17:8050396996012482665",
-          "name": "costLmoAreaBasis"
+          "name": "costLmoAreaBasis",
+          "type": 9
         }
       ],
       "relations": []
@@ -665,35 +891,49 @@
       "properties": [
         {
           "id": "1:761548603188264688",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "2:4257699582519272683",
-          "name": "starchFactory"
+          "name": "starchFactory",
+          "type": 9
         },
         {
           "id": "3:7724812449884602977",
-          "name": "exactPrice"
+          "name": "exactPrice",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "4:4649094456558612956",
-          "name": "starchFactoryRequired"
+          "name": "starchFactoryRequired",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "5:900596185354787037",
-          "name": "enumCassavaProduceType"
+          "name": "enumCassavaProduceType",
+          "type": 9
         },
         {
           "id": "6:916276968480450886",
-          "name": "enumUnitOfSale"
+          "name": "enumUnitOfSale",
+          "type": 5,
+          "flags": 2
         },
         {
           "id": "7:7354435872270501549",
-          "name": "enumUnitPrice"
+          "name": "enumUnitPrice",
+          "type": 8,
+          "flags": 2
         },
         {
           "id": "8:5210585780993299837",
-          "name": "averagePrice"
+          "name": "averagePrice",
+          "type": 8,
+          "flags": 4
         }
       ],
       "relations": []
@@ -705,136 +945,191 @@
       "properties": [
         {
           "id": "1:8078525225268805376",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "2:6659750979193505988",
-          "name": "exactPrice"
+          "name": "exactPrice",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "3:8748362044606950151",
-          "name": "enumMaizeProduceType"
+          "name": "enumMaizeProduceType",
+          "type": 9
         },
         {
           "id": "4:3720345029387904889",
-          "name": "enumUnitOfSale"
+          "name": "enumUnitOfSale",
+          "type": 5,
+          "flags": 2
         },
         {
           "id": "5:7955868936948476648",
-          "name": "enumUnitPrice"
+          "name": "enumUnitPrice",
+          "type": 8,
+          "flags": 2
         },
         {
           "id": "6:216679813414081366",
-          "name": "produceRadioIndex"
+          "name": "produceRadioIndex",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "7:346951593234587863",
-          "name": "grainUnitRadioIndex"
+          "name": "grainUnitRadioIndex",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "9:2902228431836835584",
-          "name": "grainUnitPriceRadioIndex"
+          "name": "grainUnitPriceRadioIndex",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "10:3753761762578632092",
-          "name": "averagePrice"
+          "name": "averagePrice",
+          "type": 8,
+          "flags": 4
         }
       ],
       "relations": []
     },
     {
       "id": "34:9085176429782641543",
-      "lastPropertyId": "22:3193353515243536779",
+      "lastPropertyId": "24:1112737396174255174",
       "name": "InterCropFertilizer",
       "properties": [
         {
           "id": "1:8695845031146164011",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "2:2837778121275629425",
-          "name": "imageId"
+          "name": "imageId",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "3:4989904445774338299",
-          "name": "fertilizerId"
+          "name": "fertilizerId",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "4:8378251755133820002",
-          "name": "name"
-        },
-        {
-          "id": "5:4855027570595324757",
-          "name": "type"
+          "name": "name",
+          "type": 9
         },
         {
           "id": "6:5385161436175293639",
-          "name": "weight"
+          "name": "weight",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "7:8813871627563122541",
-          "name": "price"
+          "name": "price",
+          "type": 8,
+          "flags": 2
         },
         {
           "id": "8:1042885176623883669",
+          "name": "fertilizerCountry",
           "indexId": "6:7967322306093668013",
-          "name": "fertilizerCountry"
+          "type": 9,
+          "flags": 2080
         },
         {
           "id": "9:8132491154670460935",
-          "name": "currency"
+          "name": "currency",
+          "type": 9
         },
         {
           "id": "10:8274461384237075014",
-          "name": "useCase"
+          "name": "useCase",
+          "type": 9
         },
         {
           "id": "11:7218478113704229800",
-          "name": "countryCode"
+          "name": "countryCode",
+          "type": 9
         },
         {
           "id": "12:1283725166924535164",
-          "name": "priceRange"
+          "name": "priceRange",
+          "type": 9
         },
         {
           "id": "13:5947965944167917909",
-          "name": "pricePerBag"
+          "name": "pricePerBag",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "14:3093057239012205515",
-          "name": "kContent"
+          "name": "kContent",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "15:7304505000953563604",
-          "name": "nContent"
+          "name": "nContent",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "16:8862778171673058117",
-          "name": "pContent"
+          "name": "pContent",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "17:188099382962740555",
-          "name": "available"
+          "name": "available",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "18:1343746951425656005",
-          "name": "cimAvailable"
+          "name": "cimAvailable",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "19:866065904096970207",
-          "name": "cisAvailable"
+          "name": "cisAvailable",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "20:5530815717020502546",
-          "name": "selected"
+          "name": "selected",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "21:6352972398547494449",
-          "name": "exactPrice"
+          "name": "exactPrice",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "22:3193353515243536779",
-          "name": "custom"
+          "name": "custom",
+          "type": 1,
+          "flags": 4
+        },
+        {
+          "id": "24:1112737396174255174",
+          "name": "type",
+          "type": 9
         }
       ],
       "relations": []
@@ -846,31 +1141,44 @@
       "properties": [
         {
           "id": "1:4936703628550836534",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "2:5772078450433357255",
-          "name": "produceTypeRadioIndex"
+          "name": "produceTypeRadioIndex",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "3:4879669664101373079",
-          "name": "potatoUnitOfSaleRadioIndex"
+          "name": "potatoUnitOfSaleRadioIndex",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "4:3475191881266545953",
-          "name": "potatoUnitPriceRadioIndex"
+          "name": "potatoUnitPriceRadioIndex",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "5:6512547248539994297",
-          "name": "exactPrice"
+          "name": "exactPrice",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "6:321285783663550036",
-          "name": "enumPotatoProduceType"
+          "name": "enumPotatoProduceType",
+          "type": 9
         },
         {
           "id": "7:1408572904382929715",
-          "name": "enumUnitOfSale"
+          "name": "enumUnitOfSale",
+          "type": 5,
+          "flags": 2
         }
       ],
       "relations": []
@@ -882,51 +1190,72 @@
       "properties": [
         {
           "id": "13:405383152082989144",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "14:1472558723505021767",
-          "name": "priceIndex"
+          "name": "priceIndex",
+          "type": 6,
+          "flags": 4
         },
         {
           "id": "15:7475944272218193089",
-          "name": "priceId"
+          "name": "priceId",
+          "type": 6,
+          "flags": 4
         },
         {
           "id": "16:1850868856536930523",
-          "name": "country"
+          "name": "country",
+          "type": 9
         },
         {
           "id": "17:8077470254591696757",
-          "name": "minLocalPrice"
+          "name": "minLocalPrice",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "18:3376453065657328359",
-          "name": "maxLocalPrice"
+          "name": "maxLocalPrice",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "19:1610701962032811728",
-          "name": "minUsd"
+          "name": "minUsd",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "20:654652098241216593",
-          "name": "maxUsd"
+          "name": "maxUsd",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "21:5481581844575082451",
-          "name": "active"
+          "name": "active",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "22:3667331651656402083",
-          "name": "createdAt"
+          "name": "createdAt",
+          "type": 10
         },
         {
           "id": "23:3784202556316612441",
-          "name": "updatedAt"
+          "name": "updatedAt",
+          "type": 10
         },
         {
           "id": "24:4790078064195899832",
-          "name": "averagePrice"
+          "name": "averagePrice",
+          "type": 8,
+          "flags": 4
         }
       ],
       "relations": []
@@ -938,51 +1267,72 @@
       "properties": [
         {
           "id": "2:7239081604941912595",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "3:4978658516076897933",
-          "name": "priceIndex"
+          "name": "priceIndex",
+          "type": 6,
+          "flags": 4
         },
         {
           "id": "4:8761035404363604467",
-          "name": "priceId"
+          "name": "priceId",
+          "type": 6,
+          "flags": 4
         },
         {
           "id": "5:8268426778846906841",
-          "name": "country"
+          "name": "country",
+          "type": 9
         },
         {
           "id": "6:6048543526354629418",
-          "name": "minLocalPrice"
+          "name": "minLocalPrice",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "7:728602585383665839",
-          "name": "maxLocalPrice"
+          "name": "maxLocalPrice",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "8:2476887572746304257",
-          "name": "minUsd"
+          "name": "minUsd",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "9:4562007666788621321",
-          "name": "maxUsd"
+          "name": "maxUsd",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "10:8457314565623570529",
-          "name": "active"
+          "name": "active",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "11:1832245676479672852",
-          "name": "createdAt"
+          "name": "createdAt",
+          "type": 10
         },
         {
           "id": "12:2515984501496682035",
-          "name": "updatedAt"
+          "name": "updatedAt",
+          "type": 10
         },
         {
           "id": "13:3956542626548278134",
-          "name": "averagePrice"
+          "name": "averagePrice",
+          "type": 8,
+          "flags": 4
         }
       ],
       "relations": []
@@ -994,51 +1344,72 @@
       "properties": [
         {
           "id": "1:3784640830873869018",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "2:5220029117343886079",
-          "name": "priceIndex"
+          "name": "priceIndex",
+          "type": 6,
+          "flags": 4
         },
         {
           "id": "3:2922424574210267007",
-          "name": "priceId"
+          "name": "priceId",
+          "type": 6,
+          "flags": 4
         },
         {
           "id": "4:8888961262584659718",
-          "name": "country"
+          "name": "country",
+          "type": 9
         },
         {
           "id": "5:6150726199275864016",
-          "name": "minLocalPrice"
+          "name": "minLocalPrice",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "6:8300436694372974150",
-          "name": "maxLocalPrice"
+          "name": "maxLocalPrice",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "7:2339799285535641927",
-          "name": "minUsd"
+          "name": "minUsd",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "8:3710690358537664450",
-          "name": "maxUsd"
+          "name": "maxUsd",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "9:1867189055716693675",
-          "name": "active"
+          "name": "active",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "10:5090543407955436495",
-          "name": "createdAt"
+          "name": "createdAt",
+          "type": 10
         },
         {
           "id": "11:4515341707527362367",
-          "name": "updatedAt"
+          "name": "updatedAt",
+          "type": 10
         },
         {
           "id": "12:473165101057244919",
-          "name": "averagePrice"
+          "name": "averagePrice",
+          "type": 8,
+          "flags": 4
         }
       ],
       "relations": []
@@ -1050,51 +1421,72 @@
       "properties": [
         {
           "id": "1:6111868032557969817",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "2:8145817935751694514",
-          "name": "priceIndex"
+          "name": "priceIndex",
+          "type": 6,
+          "flags": 4
         },
         {
           "id": "3:5221903428425690897",
-          "name": "priceId"
+          "name": "priceId",
+          "type": 6,
+          "flags": 4
         },
         {
           "id": "4:6887544277552466442",
-          "name": "country"
+          "name": "country",
+          "type": 9
         },
         {
           "id": "5:4648216548942985667",
-          "name": "minLocalPrice"
+          "name": "minLocalPrice",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "6:4065947159896875519",
-          "name": "maxLocalPrice"
+          "name": "maxLocalPrice",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "7:9078710330292588666",
-          "name": "minUsd"
+          "name": "minUsd",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "8:5225233513231820527",
-          "name": "maxUsd"
+          "name": "maxUsd",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "9:7107333405001270703",
-          "name": "active"
+          "name": "active",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "10:5091376712330128651",
-          "name": "averagePrice"
+          "name": "averagePrice",
+          "type": 8,
+          "flags": 4
         },
         {
           "id": "11:8655924194033521353",
-          "name": "createdAt"
+          "name": "createdAt",
+          "type": 10
         },
         {
           "id": "12:8530835693502977636",
-          "name": "updatedAt"
+          "name": "updatedAt",
+          "type": 10
         }
       ],
       "relations": []
@@ -1104,8 +1496,8 @@
   "lastIndexId": "6:7967322306093668013",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
-  "modelVersion": 4,
-  "modelVersionParserMinimum": 4,
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
   "retiredEntityUids": [
     6827575486241534157,
     1494859540068697480,
@@ -1268,7 +1660,11 @@
     9131067574906210884,
     8490131943735196000,
     8185504829295490996,
-    1314675879796902317
+    1314675879796902317,
+    902445641694444883,
+    4855027570595324757,
+    2666203834393551135,
+    7490237872193351090
   ],
   "retiredRelationUids": [],
   "version": 1

@@ -15,8 +15,8 @@ import androidx.fragment.app.Fragment;
 
 import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
+import com.iita.akilimo.databinding.FragmentAreaUnitBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
-import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.utils.enums.EnumAreaUnits;
 
@@ -30,8 +30,9 @@ import butterknife.BindView;
 public class AreaUnitFragment extends BaseFragment {
 
 
-    @BindView(R.id.rdgAreaUnit)
     RadioGroup rdgAreaUnit;
+
+    FragmentAreaUnitBinding binding;
 
     private String selectedAreaUnit;
     private MandatoryInfo mandatoryInfo;
@@ -53,7 +54,9 @@ public class AreaUnitFragment extends BaseFragment {
 
     @Override
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_area_unit, container, false);
+        binding = FragmentAreaUnitBinding.inflate(inflater, container, false);
+
+        return binding.getRoot();
     }
 
     @Override
@@ -77,7 +80,7 @@ public class AreaUnitFragment extends BaseFragment {
             }
         } catch (Exception ex) {
             mandatoryInfo = new MandatoryInfo();
-            Crashlytics.log(Log.ERROR, TAG, "An error occurred saving are info");
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving are info");
             Crashlytics.logException(ex);
         }
     }
@@ -85,6 +88,9 @@ public class AreaUnitFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        rdgAreaUnit = binding.rdgAreaUnit;
+
         //save this data
         rdgAreaUnit.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
             switch (radioIndex) {

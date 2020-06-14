@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-//apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 dependencies {
     debugImplementation "io.objectbox:objectbox-android-objectbrowser:$objectboxVersion"
@@ -39,9 +39,10 @@ android {
 //            pseudoLocalesEnabled true
         }
     }
-//    dataBinding {
-//        enabled = true
-//    }
+    buildFeatures {
+        viewBinding = true
+//        dataBinding = false
+    }
     lintOptions {
         checkReleaseBuilds false
 //        fatal("MissingTranslation", "HardcodedText")
@@ -63,8 +64,8 @@ android {
 
 static def computeVersionName() {
     def versionMajor = 14
-    def versionMinor = 3
-    def buildNumber = 0
+    def versionMinor = 5
+    def buildNumber = 12
 
     return String.format('%d.%d.%d', Integer.valueOf(System.env.VERSION_MAJOR ?: versionMajor),
             Integer.valueOf(System.env.VERSION_MINOR ?: versionMinor),
@@ -149,14 +150,13 @@ dependencies {
     implementation 'com.github.blongho:worldCountryData:1.5'
 //    implementation 'com.pusher:pusher-java-client:2.2.1' //pusher.com
 
-    compileOnly 'org.projectlombok:lombok:1.18.12'
-
     //If you are using Kotlin, replace annotationProcessor with kapt.
-    annotationProcessor 'com.jakewharton:butterknife:10.2.1'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
-    annotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.11.0'
-    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    kapt 'com.jakewharton:butterknife:10.2.1'
+    kapt 'com.github.bumptech.glide:compiler:4.11.0'
+    kapt 'com.jakewharton:butterknife-compiler:10.2.1'
+    kapt 'com.fasterxml.jackson.core:jackson-annotations:2.11.0'
+
+
 
     testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.11.0'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
@@ -166,5 +166,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     //debugImplementation because LeakCanary should only run in debug builds.
-//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
+    //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
 }

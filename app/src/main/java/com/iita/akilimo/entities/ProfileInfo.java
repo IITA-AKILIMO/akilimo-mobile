@@ -6,11 +6,7 @@ import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.converter.PropertyConverter;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Getter;
 
-@Data
 @Entity
 public class ProfileInfo {
     @Id
@@ -29,10 +25,10 @@ public class ProfileInfo {
 
     public int selectedGenderIndex;
 
-    @Getter(AccessLevel.NONE)
+    
     public boolean sendEmail;
 
-    @Getter(AccessLevel.NONE)
+    
     public boolean sendSms;
 
 
@@ -47,5 +43,109 @@ public class ProfileInfo {
 
     public String getNames() {
         return String.format("%s %s", this.firstName, this.lastName);
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getDeviceID() {
+        return deviceID;
+    }
+
+    public void setDeviceID(String deviceID) {
+        this.deviceID = deviceID;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getMobileCode() {
+        return mobileCode;
+    }
+
+    public void setMobileCode(String mobileCode) {
+        this.mobileCode = mobileCode;
+    }
+
+    public String getFullMobileNumber() {
+        return fullMobileNumber;
+    }
+
+    public void setFullMobileNumber(String fullMobileNumber) {
+        this.fullMobileNumber = fullMobileNumber;
+    }
+
+    public String getFarmName() {
+        return farmName;
+    }
+
+    public void setFarmName(String farmName) {
+        this.farmName = farmName;
+    }
+
+    public String getFieldDescription() {
+        return fieldDescription;
+    }
+
+    public void setFieldDescription(String fieldDescription) {
+        this.fieldDescription = fieldDescription;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public int getSelectedGenderIndex() {
+        return selectedGenderIndex;
+    }
+
+    public void setSelectedGenderIndex(int selectedGenderIndex) {
+        this.selectedGenderIndex = selectedGenderIndex;
+    }
+
+    public void setSendEmail(boolean sendEmail) {
+        this.sendEmail = sendEmail;
+    }
+
+    public void setSendSms(boolean sendSms) {
+        this.sendSms = sendSms;
     }
 }

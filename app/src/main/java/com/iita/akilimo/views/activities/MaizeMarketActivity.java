@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
+import com.iita.akilimo.databinding.ActivityMaizeMarketBinding;
 import com.iita.akilimo.entities.MaizeMarketOutlet;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
@@ -48,36 +49,24 @@ import butterknife.ButterKnife;
 
 public class MaizeMarketActivity extends BaseActivity {
 
-    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindString(R.string.title_activity_maize_market_outlet)
-    String marketOutletTitle;
 
-    @BindView(R.id.unitOfSaleGrainTitle)
     AppCompatTextView unitOfSaleGrainTitle;
-    @BindView(R.id.maizeCobPriceTitle)
     AppCompatTextView maizeCobPriceTitle;
-    @BindView(R.id.lblCurrency)
     AppCompatTextView lblCurrency;
 
-    @BindView(R.id.unitOfSaleGrainCard)
     CardView unitOfSaleGrainCard;
-    @BindView(R.id.maizeCobPriceCard)
     CardView maizeCobPriceCard;
 
-    @BindView(R.id.rdgMaizeProduceType)
     RadioGroup rdgMaizeProduceType;
-
-    @BindView(R.id.rdgUnitOfSaleGrain)
     RadioGroup rdgUnitOfSaleGrain;
 
-    @BindView(R.id.editCobPrice)
     EditText editCobPrice;
 
-    @BindView(R.id.btnFinish)
     AppCompatButton btnFinish;
-    @BindView(R.id.btnCancel)
     AppCompatButton btnCancel;
+
+    ActivityMaizeMarketBinding binding;
 
     private MathHelper mathHelper;
     private MaizeMarketOutlet maizeMarketOutlet;
@@ -110,13 +99,26 @@ public class MaizeMarketActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maize_market);
-        ButterKnife.bind(this);
+        binding = ActivityMaizeMarketBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         context = this;
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
+
+        toolbar = binding.toolbar;
+        unitOfSaleGrainTitle = binding.marketContent.unitOfSaleGrainTitle;
+        maizeCobPriceTitle = binding.marketContent.maizeCobPriceTitle;
+        lblCurrency = binding.marketContent.lblCurrency;
+        unitOfSaleGrainCard = binding.marketContent.unitOfSaleGrainCard;
+        maizeCobPriceCard = binding.marketContent.maizeCobPriceCard;
+        rdgMaizeProduceType = binding.marketContent.rdgMaizeProduceType;
+        rdgUnitOfSaleGrain = binding.marketContent.rdgUnitOfSaleGrain;
+        editCobPrice = binding.marketContent.editCobPrice;
+        btnFinish = binding.marketContent.twoButtons.btnFinish;
+        btnCancel = binding.marketContent.twoButtons.btnCancel;
+
 
         maizeMarketOutlet = objectBoxEntityProcessor.getMaizeMarketOutlet();
 
@@ -176,7 +178,7 @@ public class MaizeMarketActivity extends BaseActivity {
     protected void initToolbar() {
         toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(marketOutletTitle);
+        getSupportActionBar().setTitle(getString(R.string.title_activity_maize_market_outlet));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(v -> validate(false));
     }

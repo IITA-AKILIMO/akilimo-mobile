@@ -9,11 +9,7 @@ import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.converter.PropertyConverter;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Getter;
 
-@Data
 @Entity
 public class CassavaMarketOutlet {
     @Id
@@ -23,7 +19,6 @@ public class CassavaMarketOutlet {
     private double exactPrice;
     private double averagePrice;
 
-    @Getter(AccessLevel.NONE)
     public boolean starchFactoryRequired;
 
     public boolean isStarchFactoryRequired() {
@@ -100,5 +95,65 @@ public class CassavaMarketOutlet {
         public Integer convertToDatabaseValue(EnumUnitOfSale entityProperty) {
             return entityProperty == null ? null : entityProperty.unitWeight();
         }
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getStarchFactory() {
+        return starchFactory;
+    }
+
+    public void setStarchFactory(String starchFactory) {
+        this.starchFactory = starchFactory;
+    }
+
+    public double getExactPrice() {
+        return exactPrice;
+    }
+
+    public void setExactPrice(double exactPrice) {
+        this.exactPrice = exactPrice;
+    }
+
+    public double getAveragePrice() {
+        return averagePrice;
+    }
+
+    public void setAveragePrice(double averagePrice) {
+        this.averagePrice = averagePrice;
+    }
+
+    public void setStarchFactoryRequired(boolean starchFactoryRequired) {
+        this.starchFactoryRequired = starchFactoryRequired;
+    }
+
+    public EnumCassavaProduceType getEnumCassavaProduceType() {
+        return enumCassavaProduceType;
+    }
+
+    public void setEnumCassavaProduceType(EnumCassavaProduceType enumCassavaProduceType) {
+        this.enumCassavaProduceType = enumCassavaProduceType;
+    }
+
+    public EnumUnitOfSale getEnumUnitOfSale() {
+        return enumUnitOfSale;
+    }
+
+    public void setEnumUnitOfSale(EnumUnitOfSale enumUnitOfSale) {
+        this.enumUnitOfSale = enumUnitOfSale;
+    }
+
+    public EnumUnitPrice getEnumUnitPrice() {
+        return enumUnitPrice;
+    }
+
+    public void setEnumUnitPrice(EnumUnitPrice enumUnitPrice) {
+        this.enumUnitPrice = enumUnitPrice;
     }
 }

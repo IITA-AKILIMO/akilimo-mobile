@@ -151,9 +151,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_medium"
-                android:orientation="horizontal"
-                android:padding="@dimen/spacing_small">
+                android:layout_marginTop="@dimen/spacing_xlarge"
+                android:orientation="horizontal">
 
                 <CheckBox
                     android:id="@+id/chkPloughing"

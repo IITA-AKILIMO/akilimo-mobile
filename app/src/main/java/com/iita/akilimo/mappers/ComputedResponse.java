@@ -1,10 +1,6 @@
 package com.iita.akilimo.mappers;
 
-import lombok.Data;
-import lombok.Setter;
 
-@Data
-@Setter
 public class ComputedResponse {
     private String computedTitle;
     private String computedRecommendation;
@@ -13,5 +9,21 @@ public class ComputedResponse {
         this.setComputedTitle(title);
         this.setComputedRecommendation(body);
         return this;
+    }
+
+    public String getComputedTitle() {
+        return computedTitle;
+    }
+
+    public void setComputedTitle(String computedTitle) {
+        this.computedTitle = computedTitle;
+    }
+
+    public String getComputedRecommendation() {
+        return computedRecommendation;
+    }
+
+    public void setComputedRecommendation(String computedRecommendation) {
+        this.computedRecommendation = computedRecommendation;
     }
 }

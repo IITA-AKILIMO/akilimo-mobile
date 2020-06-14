@@ -73,13 +73,13 @@ public class AdapterGridTwoLine extends RecyclerView.Adapter<RecyclerView.ViewHo
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        CurrentFieldYield obj = items.get(position);
-        String yieldLabel = obj.getFieldYieldLabel();
-        double currentYieldAmount = obj.getYieldAmount();
+        CurrentFieldYield fieldYield =items.get(position);
+        String yieldLabel = fieldYield.getFieldYieldLabel();
+        double currentYieldAmount = fieldYield.getYieldAmount();
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder view = (OriginalViewHolder) holder;
             view.name.setText(yieldLabel);
-            Tools.displayImageOriginal(ctx, view.image, obj.getImageId());
+            Tools.displayImageOriginal(ctx, view.image, fieldYield.getImageId());
 
             view.lyt_parent.setOnClickListener(view1 -> {
                 if (mOnItemClickListener != null) {

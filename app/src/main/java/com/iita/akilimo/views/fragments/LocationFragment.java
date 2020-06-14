@@ -19,6 +19,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.iita.akilimo.R;
+import com.iita.akilimo.databinding.FragmentLocationBinding;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
@@ -35,17 +36,12 @@ import butterknife.BindView;
  */
 public class LocationFragment extends BaseFragment {
 
-    @BindView(R.id.btnCurrentLocation)
+
     AppCompatButton btnCurrentLocation;
-
-    @BindView(R.id.btnSelectLocation)
     AppCompatButton btnSelectLocation;
-
-    @BindView(R.id.locationInfo)
     TextView locationInfo;
-
-    @BindView(R.id.title)
     TextView title;
+    FragmentLocationBinding binding;
 
 
     private double currentLat;
@@ -72,7 +68,8 @@ public class LocationFragment extends BaseFragment {
 
     @Override
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_location, container, false);
+        binding = FragmentLocationBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
@@ -84,20 +81,13 @@ public class LocationFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        title = binding.title;
+        btnCurrentLocation = binding.btnCurrentLocation;
+        btnSelectLocation = binding.btnSelectLocation;
+        locationInfo = binding.locationInfo;
+
         btnCurrentLocation.setOnClickListener(view1 -> {
-            GPSTracker gps = new GPSTracker(context);
-            gps.getLocation();
-            if (gps.canGetLocation()) {
-                int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context);
-                if (status == ConnectionResult.SUCCESS) {
-                    currentLat = gps.getLatitude();
-                    currentLon = gps.getLongitude();
-                    gps.stopUsingGPS();
-                    saveLocation();
-                }
-            } else {
-                gps.showSettingsAlert();
-            }
+            getCurrentLocation();
         });
 
         btnSelectLocation.setOnClickListener(v -> {
@@ -107,6 +97,24 @@ public class LocationFragment extends BaseFragment {
             intent.putExtra(MapBoxActivity.ALT, currentAlt);
             getActivity().startActivityForResult(intent, HomeActivity.MAP_BOX_PLACE_PICKER_REQUEST_CODE);
         });
+    }
+
+    private void getCurrentLocation() {
+        GPSTracker gps = new GPSTracker(context);
+        gps.getLocation();
+        if (gps.canGetLocation()) {
+            int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context);
+            if (status == ConnectionResult.SUCCESS) {
+                currentLat = gps.getLatitude();
+                currentLon = gps.getLongitude();
+                gps.stopUsingGPS();
+                saveLocation();
+            } else {
+                showCustomWarningDialog("Google play services not available on your phone", "Google Play unavailable");
+            }
+        } else {
+            gps.showSettingsAlert();
+        }
     }
 
     private void saveLocation() {
@@ -141,7 +149,7 @@ public class LocationFragment extends BaseFragment {
             title.setText(message);
         } catch (Exception ex) {
             locationInformation = new LocationInfo();
-            Crashlytics.log(Log.ERROR, TAG, "An error occurred fetching info");
+            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred fetching info");
             Crashlytics.logException(ex);
         }
 

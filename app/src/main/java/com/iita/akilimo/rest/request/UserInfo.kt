@@ -1,8 +1,5 @@
 package com.iita.akilimo.rest.request
 
-import lombok.Data
-
-@Data
 class UserInfo {
     var deviceToken: String = "NA"
     var mobileCountryCode: String = "NA"

@@ -8,14 +8,14 @@
     <string name="title_activity_fertilizer_rec">Mapendekezo ya matumizi ya mbolea</string>
     <string name="title_activity_investment_amount">Kiasi cha uwekezaji</string>
     <string name="title_activity_cassava_root_yield">Mavuno ya muhogo</string>
-    <string name="title_activity_cassava_market_outlet">Bei ya mihogo</string>
+    <string name="title_activity_cassava_market_outlet">Bei ya muhogo</string>
     <string name="title_activity_maize_market_outlet">Bei ya mahindi</string>
     <string name="title_activity_sweet_potato_market">Bei ya viazi tamu</string>
     <string name="title_activity_maize_performance">Uzaaji wa mahindi</string>
     <string name="title_activity_farm_location">Eneo shamba ilipo</string>
-    <string name="title_tillage_operations">Shughuli za kukatua</string>
+    <string name="title_tillage_operations">Utayarishaji wa shamba</string>
     <!--    <string name="title_manual_tillage_cost">Gharama za kukabiliana na mwongozo</string>-->
-    <string name="title_manual_tillage_cost">Gharama za kulima</string>
+    <string name="title_manual_tillage_cost">Gharama za kulima kwa mkono</string>
     <string name="title_weed_control">Sugu magugu</string>
     <string name="title_maize_intercropping">Mseto wa mahindi</string>
     <string name="title_sweet_potato_intercropping">Mseto na viazi vitamu</string>
@@ -24,37 +24,39 @@
     <string name="lbl_start">Anza</string>
     <string name="lbl_proceed">Endelea</string>
     <string name="lbl_finish">Maliza</string>
-    <string name="lbl_country_location">Habari yako %1$s.\nShamba lako liko katika nchi gani?</string>
+    <string name="lbl_country_location">Habari %1$s.\nShamba lako liko katika nchi gani?</string>
     <string name="lbl_area_unit">Je! Unapima ukubwa wa shamba lako kwa kipimo gani?</string>
-    <string name="area_unit_acre">katika ekari</string>
-    <string name="area_unit_ha">katika Hektari</string>
-    <string name="area_unit_square_meter">katika mita za mraba (m \u00B2)</string>
+    <string name="area_unit_acre">Kwa Ekari</string>
+    <string name="area_unit_ha">Kwa Hektari</string>
+    <string name="area_unit_square_meter">Kwa mita za mraba (m \u00B2)</string>
     <string name="lbl_cassava_field_size_no_ph">Je! Shamba lako la muhogo lina lina ukubwa gani?</string>
     <string name="lbl_cassava_field_size">Je! Shamba lako la muhogo lina ukubwa gani katika %1$s</string>
     <!--  acres  -->
-    <string name="quarter_acre">Karibu ekari 0.25 (hekta 0.1)</string>
-    <string name="half_acre">Karibu ekari 0.5 (hekta 0.2)</string>
-    <string name="one_acre">Karibu ekari 1 (hekta 0.4)</string>
-    <string name="one_half_acre">Karibu ekari 1.5 (hekta 0.6)</string>
-    <string name="two_half_acres">Karibu ekari 2.5 (hekta 1)</string>
-    <string name="five_acres">Karibu ekari 5</string>
-    <string name="exact_field_area">Taja eneo halisi la shamba langu katika ekari</string>
+    <string name="quarter_acre">Kama ekari 0.25 (hekta 0.1)</string>
+    <string name="half_acre">Kama ekari 0.5 (hekta 0.2)</string>
+    <string name="one_acre">Kama ekari 1 (hekta 0.4)</string>
+    <string name="one_half_acre">Kama ekari 1.5 (hekta 0.6)</string>
+    <string name="two_half_acres">Kama ekari 2.5 (hekta 1)</string>
+    <string name="five_acres">Kama ekari 5</string>
+    <string name="exact_field_area">Taja eneo halisi la shamba lako katika ekari</string>
     <!--  ha  -->
-    <string name="quarter_acre_to_ha">Karibu hekta 0.1 (ekari 0.25)</string>
-    <string name="half_acre_to_ha">Karibu hekta 0.2 (ekari 0.5)</string>
-    <string name="one_acre_to_ha">Karibu hekta 0.4 (ekari 1)</string>
-    <string name="one_half_acre_to_ha">Karibu hekta 0.6 (ekari 1.5)</string>
-    <string name="two_half_acre_to_ha">Karibu hekta 1 (ekari 2.5)</string>
-    <string name="exact_acre_to_ha">Taja eneo halisi la shamba langu katika hekta</string>
+    <string name="quarter_acre_to_ha">Kama hekta 0.1 (ekari 0.25)</string>
+    <string name="half_acre_to_ha">Kama hekta 0.2 (ekari 0.5)</string>
+    <string name="one_acre_to_ha">Kama hekta 0.4 (ekari 1)</string>
+    <string name="one_half_acre_to_ha">Kama hekta 0.6 (ekari 1.5)</string>
+    <string name="two_half_acre_to_ha">Kama hekta 1 (ekari 2.5)</string>
+    <string name="exact_acre_to_ha">Taja eneo halisi la shamba lako katika hekta</string>
     <!--   m2  -->
-    <string name="quarter_acre_to_m2">Karibu 1,000 m\u00B2 (ekari 0.25)</string>
-    <string name="half_acre_to_m2">Karibu 2000 m\u00B2 (ekari 0.5)</string>
-    <string name="one_acre_to_m2">Karibu 4,000 m\u00B2 (ekari 1)</string>
-    <string name="one_half_acre_to_m2">Karibu 6,000 m\u00B2 (ekari 1.5)</string>
-    <string name="two_half_acre_to_m2">Karibu 10,000 m\u00B2 (ekari 2.5)</string>
-    <string name="exact_acre_to_m2">Taja eneo halisi la shamba langu katika m\u00B2</string>
+    <string name="quarter_acre_to_m2">Kama 1,000 m\u00B2 (ekari 0.25)</string>
+    <string name="half_acre_to_m2">Kama 2000 m\u00B2 (ekari 0.5)</string>
+    <string name="one_acre_to_m2">Kama 4,000 m\u00B2 (ekari 1)</string>
+    <string name="one_half_acre_to_m2">Kama 6,000 m\u00B2 (ekari 1.5)</string>
+    <string name="two_half_acre_to_m2">Kama 10,000 m\u00B2 (ekari 2.5)</string>
+    <string name="exact_acre_to_m2">Taja eneo halisi la shamba lako katika m\u00B2</string>
+
+
     <string name="lbl_salutation">Halo, ni vizuri kukutana nawe!</string>
-    <string name="lbl_farm_location">Shamba lako la muhogo %1$s liko wapi?</string>
+    <string name="lbl_farm_location">Shamba lako la muhogo %1$s lipo eneo gani?</string>
     <string name="lbl_current_location">Tumia eneo la sasa</string>
     <string name="lbl_manual_location">Chagua eneo nilipo</string>
     <string name="lbl_recommendations">Mapendekezo</string>
@@ -140,7 +142,7 @@
     <string name="up_100_150_usd_per_tonne">Dola 100-150 kwa tani moja</string>
     <string name="up_150_200_usd_per_tonne">Dola 150-200 kwa tani moja</string>
     <string name="lbl_exact_price_x_per_unit_of_sale">Nataka kutaja bei halisi</string>
-    <string name="lbl_submit">Peana</string>
+    <string name="lbl_submit">Wasilisha</string>
     <string name="lbl_cancel">Ghairi</string>
     <string name="lbl_please_provide_unit_price">Tafadhali toa bei ya kitengo</string>
     <string name="lbl_permission_rationale">Tafadhali ruhusu programu zifuatazo kufanya kazi vizuri</string>
@@ -157,10 +159,10 @@
     <string name="unit_price_label">%1$,.0f - %2$,.0f %3$s kwa %4$s</string>
     <string name="title_activity_dst_recommendation">Mapendekezo</string>
     <string name="lbl_get_recommendations">Pata mapendekezo</string>
-    <string name="lbl_rec_header">Ili kupata pendekezo sahihi, tafadhali toa taarifa juu ya vitu vilivyopo hapa chini</string>
+    <string name="lbl_rec_header">Ili kupata mapendekezo halisi, toa taarifa sahihi juu ya vitu vilivyopo hapa chini</string>
     <string name="lbl_compute_error">Haiwezekani kuchakata mapendekezo, tafadhali jaribu tena</string>
     <string name="lbl_rec_sample">Tunapendekeza usitumie mbolea yoyote. Hatutarajii kuwa maombi ya mbolea yatasababisha kuongezeka kwa mavuno zaidi kwa hali yako sasa.</string>
-    <string name="lbl_rec_intro">Akilimo anaweza kukushauri jinsi ya kupanda muhogo.\nNi ushauri gani unauhitaji?</string>
+    <string name="lbl_rec_intro">Akilimo atakushauri jinsi ya kupanda muhogo.\nNi ushauri gani unauhitaji?</string>
     <!--  scroll behaviors  -->
     <string name="lbl_min_selection">Tafadhali chagua angalau mbolea %d</string>
     <string name="lbl_update">Boresha</string>
@@ -186,13 +188,13 @@
     <string name="lbl_last_name_req">Tafadhali toa jina lako la mwisho</string>
     <string name="lbl_valid_number_req">Tafadhali toa nambari sahihi ya simu</string>
     <string name="lbl_gender_prompt">Chagua jinsia</string>
-    <string name="lbl_gender">Chagua jinsia</string>
+    <string name="lbl_gender">Chagua jinsi</string>
     <string name="lbl_male">Mwanaume</string>
-    <string name="lbl_female">Mwanake</string>
+    <string name="lbl_female">Mwanamke</string>
     <string name="lbl_save">Hifadhi</string>
     <string name="lbl_remove">Ondoa</string>
-    <string name="lbl_field_info">Ikiwa unajua ukubwa wa shamba lako kwa hekta, ekari au mita za mraba, tafadhali endelea ukurasa unaofuata. Ikiwa hujui, tunakushauri upakue kutoka GooglePlay n.k.\n\"GPS Fields Area Measure”, “Field Area Measure”, kitakusaidia kupima eneo la mzunguko wa  shamba lako.</string>
-    <string name="lbl_location_sub_text">Ikiwa uko kwenye shamba lako unapokuwa ukitumia programu, unashauriwa kuchagua \"Tumia eneo la sasa\".\n Ikiwa haupo shambani mwako, tafadhali  Chagua eneo kwa kupanua ramani na kuweka alama maeneo linalojulikana katika kijiji au kitongoji chako.</string>
+    <string name="lbl_field_info">Ikiwa unajua ukubwa wa shamba lako kwa hekta, ekari au mita za mraba, tafadhali endelea ukurasa unaofuata. Ikiwa hujui, tunakushauri upakue kutoka Play Store \n\"GPS Field Area Measure”, itakusaidia kupima eneo la shamba lako ukitembea kulizunguka.</string>
+    <string name="lbl_location_sub_text">Ikiwa uko kwenye shamba lako unapokuwa ukitumia program hii, unashauriwa kuchagua \"Tumia eneo la sasa\".\nIkiwa hauko shambani mwako, chagua eneo lilipo na kupanua ramani kuweka alama eneo linalojulikana katika kijiji au kitongoji chako.</string>
     <string name="title_your_field_size">UKUBWA WA SHAMBA</string>
     <string name="lbl_ok">Sawa</string>
     <string name="title_realistic_price">Toa bei za kweli</string>
@@ -211,7 +213,7 @@
     <string name="lbl_dark_green_leaves">Kupita kimo cha mtu (200 sm) lakini majani ni kijani iliyokolea</string>
     <string name="lbl_cassava_sales_outlet">Ni wapi unataka kuuza muhogo wako</string>
     <string name="lbl_starch_factory">Kiwanda cha wanga</string>
-    <string name="lbl_other_markets">Uuzaji mwingine</string>
+    <string name="lbl_other_markets">Masoko mengine</string>
     <string name="lbl_select_starch_factory">Chagua kiwanda cha wanga</string>
     <string name="lbl_fresh_cobs">Mahindi mabichi</string>
     <string name="lbl_dry_grain">Nafaka kavu</string>
@@ -225,9 +227,9 @@
     <string name="lbl_select_produce_type">Chagua aina ya mazao</string>
     <string name="lbl_roots">Mizizi</string>
     <string name="lbl_flour">Unga</string>
-    <string name="lbl_first_manual_plough_op">Operesheni ya kwanza ya kulima, mwongozo kwa mkono</string>
+    <string name="lbl_first_manual_plough_op">Operesheni ya kwanza ya kulima, kwa jembe la mkono</string>
     <string name="lbl_first_tractor_plough_op">Operesheni ya kwanza ya kulima, kwa kulima trekta</string>
-    <string name="lbl_second_manual_plough_op">Operesheni ya pili ya kulima, mwongozo kwa mkono</string>
+    <string name="lbl_second_manual_plough_op">Operesheni ya pili ya kulima, kwa jembe la mkono</string>
     <string name="lbl_second_tractor_plough_op">Operesheni ya pili ya kulima, kwa kulima trekta</string>
     <string name="lbl_tractor_harrow_op">Kupiga halo kutumia trekta</string>
     <string name="lbl_manual_ridging_op">Kuweka matuta kwa kutumi jembe la mkono</string>
@@ -252,18 +254,18 @@
     <string name="lbl_receive_email">Pokea barua pepe</string>
     <string name="lbl_receive_sms">Pokea SMS</string>
     <string name="lbl_first_name">Jina lako la kwanza</string>
-    <string name="lbl_last_name">Jina la familia</string>
+    <string name="lbl_last_name">Jina la ukoo</string>
     <string name="lbl_farm_name">Jina la shamba</string>
     <string name="lbl_farm_name_title">Kama una shamba zaidi ya moja, tafadhali andika jina la shamba hili</string>
     <string name="lbl_email_address_hint">Anauani ya barua pepe (Inatumika kutuma mapendekezo)</string>
-    <string name="lbl_email_address">Anwani ya barua pepe</string>
+    <string name="lbl_email_address">Barua pepe</string>
     <string name="lbl_phone_number">Nambari ya simu</string>
-    <string name="lbl_self_intro">Wacha tuanze kwa kuniambia kidogo juu yako mwenyewe</string>
+    <string name="lbl_self_intro">Tuanze kwa kunipatia utambilisho wako</string>
     <string name="lbl_exact_price">Bei halisi</string>
     <string name="lbl_fertilizer_price">Bei ya mbolea</string>
     <string name="lbl_operation_costs">Gharama za uendeshaji</string>
     <string name="lbl_tractor">Trekta</string>
-    <string name="lbl_manual">Mwongozo</string>
+    <string name="lbl_manual">Jembe la mkono</string>
     <string name="lbl_operation_type_validation_message">Tafadhali chagua aina sahihi ya operesheni</string>
     <string name="lbl_bag_price">Bei ya begi</string>
     <string name="lbl_how_do_you_sell_your_sweet_potato">Utauzaje viazi vitamu vyako</string>
@@ -272,7 +274,7 @@
     <string name="lbl_options">Chaguzi</string>
     <string name="lbl_search">Tafuta</string>
     <string name="lbl_settings">Mipangilio</string>
-    <string name="lbl_ploughing">Kulima</string>
+    <string name="lbl_ploughing">Kukatua</string>
     <string name="lbl_ridging">Kuweka matuta</string>
     <string name="lbl_country">Nchi</string>
     <string name="lbl_field">Shamba</string>
@@ -332,5 +334,7 @@
     <string name="lbl_field_size_prompt">Tafadhali ingiza eneo la ukubwa wa shamba lililo sahihi</string>
     <string name="lbl_per_separator">kwa</string>
     <string name="lbl_usd_currency">Dola</string>
+    <string name="lbl_gps_settings">Mipangilio ya GPS</string>
+    <string name="lbl_gps_not_enabled">GPS haijawashwa. Je! Unataka kwenda kwenye menu ya mipangilio?</string>
 
 </resources>

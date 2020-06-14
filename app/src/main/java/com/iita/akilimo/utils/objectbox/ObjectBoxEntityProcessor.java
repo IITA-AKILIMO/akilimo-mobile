@@ -182,12 +182,12 @@ public class ObjectBoxEntityProcessor {
                 .find();
     }
 
-    public Fertilizer getSavedFertilizer(@NonNull String typeName, @NonNull String deviceIdentifier) {
+    public Fertilizer getSavedFertilizer(@NonNull String fertilizerType, @NonNull String deviceIdentifier) {
         Box<Fertilizer> box = boxStore.boxFor(Fertilizer.class);
 
         return box.query()
                 .equal(Fertilizer_.countryCode, deviceIdentifier)
-                .equal(Fertilizer_.type, typeName)
+                .equal(Fertilizer_.fertilizerType, fertilizerType)
                 .build()
                 .findFirst();
     }
@@ -249,13 +249,13 @@ public class ObjectBoxEntityProcessor {
                 .find();
     }
 
-    public Fertilizer getSavedInterCropFertilizer(@NonNull String typeName, @NonNull String countryCode, @NonNull EnumUseCase useCase) {
+    public Fertilizer getSavedInterCropFertilizer(@NonNull String fertilizerType, @NonNull String countryCode, @NonNull EnumUseCase useCase) {
         Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
 
         return box.query()
                 .equal(InterCropFertilizer_.useCase, useCase.name())
                 .equal(InterCropFertilizer_.countryCode, countryCode)
-                .equal(InterCropFertilizer_.type, typeName)
+                .equal(InterCropFertilizer_.fertilizerType, fertilizerType)
                 .build()
                 .findFirst();
     }

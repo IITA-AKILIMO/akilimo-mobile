@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
+import com.iita.akilimo.databinding.ActivityCassavaMarketBinding;
 import com.iita.akilimo.entities.CassavaMarketOutlet;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
@@ -56,44 +57,21 @@ public class CassavaMarketActivity extends BaseActivity {
 
     public static String useCaseTag = "useCase";
 
-    @BindView(R.id.toolbar)
+
     Toolbar toolbar;
-    @BindString(R.string.title_activity_cassava_market_outlet)
-    String marketOutletLabel;
-
-    @BindView(R.id.marketOutLetTitle)
     AppCompatTextView marketOutLetTitle;
-
-    @BindView(R.id.factoryTitle)
     AppCompatTextView factoryTitle;
-
-    @BindView(R.id.unitOfSaleTitle)
     AppCompatTextView unitOfSaleTitle;
-
-    @BindView(R.id.rdgMarketOutlet)
     RadioGroup rdgMarketOutlet;
-
-    @BindView(R.id.rdgStarchFactories)
     RadioGroup rdgStarchFactories;
-
-    @BindView(R.id.rdgUnitOfSale)
     RadioGroup rdgUnitOfSale;
-
-    @BindView(R.id.marketOutletCard)
     CardView marketOutletCard;
-
-    @BindView(R.id.starchFactoryCard)
     CardView starchFactoryCard;
-
-
-    @BindView(R.id.unitOfSaleCard)
     CardView unitOfSaleCard;
-
-    @BindView(R.id.btnFinish)
     AppCompatButton btnFinish;
-    @BindView(R.id.btnCancel)
     AppCompatButton btnCancel;
 
+    ActivityCassavaMarketBinding binding;
 
     MathHelper mathHelper;
     private String selectedFactory = "NA";
@@ -121,9 +99,24 @@ public class CassavaMarketActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cassava_market);
-        ButterKnife.bind(this);
+//        setContentView(R.layout.activity_cassava_market);
+        binding = ActivityCassavaMarketBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         context = this;
+
+        //Set ui elements
+        toolbar = binding.toolbar;
+        marketOutLetTitle = binding.contentCassavaMarket.marketOutLetTitle;
+        factoryTitle = binding.contentCassavaMarket.factoryTitle;
+        unitOfSaleTitle = binding.contentCassavaMarket.unitOfSaleTitle;
+        rdgMarketOutlet = binding.contentCassavaMarket.rdgMarketOutlet;
+        rdgStarchFactories = binding.contentCassavaMarket.rdgStarchFactories;
+        rdgUnitOfSale = binding.contentCassavaMarket.rdgUnitOfSale;
+        marketOutletCard = binding.contentCassavaMarket.marketOutletCard;
+        starchFactoryCard = binding.contentCassavaMarket.starchFactoryCard;
+        unitOfSaleCard = binding.contentCassavaMarket.unitOfSaleCard;
+        btnFinish = binding.contentCassavaMarket.twoButtons.btnFinish;
+        btnCancel = binding.contentCassavaMarket.twoButtons.btnCancel;
 
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
         queue = Volley.newRequestQueue(context);
@@ -161,7 +154,7 @@ public class CassavaMarketActivity extends BaseActivity {
     protected void initToolbar() {
         toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(marketOutletLabel);
+        getSupportActionBar().setTitle(getString(R.string.title_activity_cassava_market_outlet));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(v -> validate(false));
     }

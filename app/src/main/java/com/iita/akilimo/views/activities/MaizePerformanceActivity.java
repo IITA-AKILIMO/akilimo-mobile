@@ -10,6 +10,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
+import com.iita.akilimo.databinding.ActivityMaizePerformanceActivityBinding;
 import com.iita.akilimo.entities.MaizePerformance;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
@@ -19,28 +20,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MaizePerformanceActivity extends BaseActivity {
-
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindString(R.string.title_activity_maize_performance)
     String activityTitle;
-
-    @BindString(R.string.lbl_maize_performance_poor)
     String poorSoil;
-    @BindString(R.string.lbl_maize_performance_rich)
     String richSoil;
 
-    @BindView(R.id.rdgMaizePerformance)
+    Toolbar toolbar;
     RadioGroup rdgMaizePerformance;
-
-    @BindView(R.id.btnFinish)
     AppCompatButton btnFinish;
-
-    @BindView(R.id.btnCancel)
     AppCompatButton btnCancel;
-
-    @BindView(R.id.exceptionTitle)
     TextView exceptionTitle;
+
+    ActivityMaizePerformanceActivityBinding binding;
 
 
     private MaizePerformance maizePerformance;
@@ -52,10 +42,16 @@ public class MaizePerformanceActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maize_performance_activity);
-        ButterKnife.bind(this);
+        binding = ActivityMaizePerformanceActivityBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         context = this;
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
+
+        toolbar = binding.toolbar;
+        rdgMaizePerformance = binding.rdgMaizePerformance;
+        exceptionTitle = binding.exceptionTitle;
+        btnFinish = binding.twoButtons.btnFinish;
+        btnCancel = binding.twoButtons.btnCancel;
 
         initToolbar();
         initComponent();
@@ -70,13 +66,17 @@ public class MaizePerformanceActivity extends BaseActivity {
     protected void initToolbar() {
         toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(activityTitle);
+        getSupportActionBar().setTitle(getString(R.string.title_activity_maize_performance));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(v -> validate(false));
     }
 
     @Override
     protected void initComponent() {
+
+        poorSoil = getString(R.string.lbl_maize_performance_poor);
+        richSoil = getString(R.string.lbl_maize_performance_rich);
+
 
         btnFinish.setOnClickListener(view -> validate(false));
         btnCancel.setOnClickListener(view -> closeActivity(false));

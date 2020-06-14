@@ -13,6 +13,7 @@ import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.AdapterListAnimation;
+import com.iita.akilimo.databinding.ActivityRecommendationsActivityBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.Recommendations;
@@ -23,6 +24,7 @@ import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -30,23 +32,16 @@ import butterknife.ButterKnife;
 
 public class RecommendationsActivity extends BaseActivity {
 
-    @BindView(R.id.recyclerView)
-    RecyclerView recyclerView;
-    @BindView(R.id.toolbar)
     Toolbar toolbar;
+    RecyclerView recyclerView;
 
-    @BindString(R.string.lbl_recommendations)
-    String recommendations;
+    ActivityRecommendationsActivityBinding binding;
 
-    @BindString(R.string.lbl_fertilizer_recommendations)
+
     String frString;
-    @BindString(R.string.lbl_intercropping_maize)
     String icMaizeString;
-    @BindString(R.string.lbl_intercropping_sweet_potato)
     String icSweetPotatoString;
-    @BindString(R.string.lbl_scheduled_planting_and_harvest)
     String sphString;
-    @BindString(R.string.lbl_best_planting_practices)
     String bppString;
 
 
@@ -57,8 +52,8 @@ public class RecommendationsActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recommendations_activity);
-        ButterKnife.bind(this);
+        binding = ActivityRecommendationsActivityBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         context = this;
 
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
@@ -66,6 +61,8 @@ public class RecommendationsActivity extends BaseActivity {
         countryCode = mandatoryInfo.getCountryCode();
         currency = mandatoryInfo.getCurrency();
 
+        toolbar = binding.toolbarLayout.toolbar;
+        recyclerView = binding.recyclerView;
         initToolbar();
         initComponent();
     }
@@ -74,7 +71,7 @@ public class RecommendationsActivity extends BaseActivity {
     protected void initToolbar() {
         toolbar.setNavigationIcon(R.drawable.ic_home);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(recommendations);
+        getSupportActionBar().setTitle(getString(R.string.lbl_recommendations));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         toolbar.setNavigationOnClickListener(v -> closeActivity(false));
@@ -83,6 +80,13 @@ public class RecommendationsActivity extends BaseActivity {
 
     @Override
     protected void initComponent() {
+        frString = getString(R.string.lbl_fertilizer_recommendations);
+        icMaizeString = getString(R.string.lbl_intercropping_maize);
+        icSweetPotatoString = getString(R.string.lbl_intercropping_sweet_potato);
+        sphString = getString(R.string.lbl_scheduled_planting_and_harvest);
+        bppString = getString(R.string.lbl_best_planting_practices);
+
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         //set data and list adapter

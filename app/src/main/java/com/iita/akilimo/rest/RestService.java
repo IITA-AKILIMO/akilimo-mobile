@@ -7,6 +7,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.RetryPolicy;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
@@ -64,10 +65,7 @@ public class RestService {
             }
         };
 
-        jsonObjReq.setRetryPolicy(new DefaultRetryPolicy(
-                restParameters.getInitialTimeout(), //69 seconds the R endpoint takes a bit of time to return results approx 39 seconds
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        jsonObjReq.setRetryPolicy(retryPolicy());
 
         queue.add(jsonObjReq);
     }
@@ -90,10 +88,7 @@ public class RestService {
             }
         };
 
-        putRequest.setRetryPolicy(new DefaultRetryPolicy(
-                restParameters.getInitialTimeout(),
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        putRequest.setRetryPolicy(retryPolicy());
         queue.add(putRequest);
     }
 
@@ -122,10 +117,7 @@ public class RestService {
             }
         };
 
-        jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(
-                restParameters.getInitialTimeout(),
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        jsonArrayRequest.setRetryPolicy(retryPolicy());
         queue.add(jsonArrayRequest);
     }
 
@@ -140,23 +132,33 @@ public class RestService {
             }
         };
 
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-                restParameters.getInitialTimeout(),
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        stringRequest.setRetryPolicy(retryPolicy());
         queue.add(stringRequest);
+    }
+
+    private RetryPolicy retryPolicy() {
+        return new DefaultRetryPolicy(
+                restParameters.getInitialTimeout(),
+                restParameters.getMaxRetries(),
+                restParameters.getBackoffMultiplier());
     }
 
 
     private Map<String, String> setHeaderParameters() {
         Map<String, String> params = new HashMap<String, String>();
         params.put("Content-Type", "application/json; charset=utf-8");
-        params.put("api-token", restParameters.getApiToken());
         params.put("user-id", restParameters.getUserId());
         params.put("country-code", restParameters.getCountryCode());
+        params.put("locale-lang", restParameters.getLocale().getLanguage());
+        params.put("locale-country", restParameters.getLocale().getCountry());
         params.put("op-type", restParameters.getOperationType());
         params.put("op-name", restParameters.getOperationName());
         params.put("context", restParameters.getContext());
+
+        if (sessionManager != null) {
+            params.put("api-token", sessionManager.getDeviceId());
+            params.put("build-date", sessionManager.getAppBuildDate());
+        }
         return params;
     }
 }

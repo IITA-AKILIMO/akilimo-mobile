@@ -7,11 +7,7 @@ import com.google.android.gms.common.util.Strings;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Unique;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Getter;
 
-@Data
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StarchFactory {
@@ -33,10 +29,8 @@ public class StarchFactory {
     String countryCode;
 
     @JsonProperty("factoryActive")
-    @Getter(AccessLevel.NONE)
     boolean factoryActive;
 
-    @Getter(AccessLevel.NONE)
     boolean factorySelected;
 
     public boolean isFactoryActive() {
@@ -49,5 +43,53 @@ public class StarchFactory {
 
     public boolean sellToStarchFactory() {
         return !Strings.isEmptyOrWhitespace(this.factoryName) && !this.factoryName.equalsIgnoreCase("NA");
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getFactoryName() {
+        return factoryName;
+    }
+
+    public void setFactoryName(String factoryName) {
+        this.factoryName = factoryName;
+    }
+
+    public String getFactoryLabel() {
+        return factoryLabel;
+    }
+
+    public void setFactoryLabel(String factoryLabel) {
+        this.factoryLabel = factoryLabel;
+    }
+
+    public String getFactoryNameCountry() {
+        return factoryNameCountry;
+    }
+
+    public void setFactoryNameCountry(String factoryNameCountry) {
+        this.factoryNameCountry = factoryNameCountry;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
+    }
+
+    public void setFactoryActive(boolean factoryActive) {
+        this.factoryActive = factoryActive;
+    }
+
+    public void setFactorySelected(boolean factorySelected) {
+        this.factorySelected = factorySelected;
     }
 }
