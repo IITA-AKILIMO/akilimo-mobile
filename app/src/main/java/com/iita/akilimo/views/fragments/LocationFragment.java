@@ -27,8 +27,6 @@ import com.iita.akilimo.services.GPSTracker;
 import com.iita.akilimo.views.activities.HomeActivity;
 import com.iita.akilimo.views.activities.MapBoxActivity;
 
-import butterknife.BindView;
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link LocationFragment#newInstance} factory method to

@@ -49,10 +49,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class IntercropFertilizersActivity extends BaseActivity {
 
     public static String useCaseTag = "useCase";

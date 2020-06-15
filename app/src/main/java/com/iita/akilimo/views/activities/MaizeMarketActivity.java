@@ -43,10 +43,6 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class MaizeMarketActivity extends BaseActivity {
 
     Toolbar toolbar;

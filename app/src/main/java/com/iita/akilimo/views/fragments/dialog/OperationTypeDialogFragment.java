@@ -21,7 +21,6 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.interfaces.IDismissOperationsDialogListener;
 import com.iita.akilimo.utils.enums.EnumOperationType;
 
-import butterknife.ButterKnife;
 
 public class OperationTypeDialogFragment extends DialogFragment {
     public static final String ARG_ITEM_ID = "OperationTypeDialogFragment";
@@ -65,7 +64,6 @@ public class OperationTypeDialogFragment extends DialogFragment {
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
         dialog.setContentView(R.layout.fragment_operation_type_dialog);
-        ButterKnife.bind(dialog);
 
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);

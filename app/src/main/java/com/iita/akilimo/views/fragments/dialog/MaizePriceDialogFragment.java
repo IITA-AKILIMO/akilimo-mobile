@@ -25,7 +25,6 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
 import com.iita.akilimo.interfaces.IPriceDialogDismissListener;
-import com.iita.akilimo.models.CassavaPrice;
 import com.iita.akilimo.models.MaizePrice;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
@@ -33,7 +32,6 @@ import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import java.util.List;
 
-import butterknife.ButterKnife;
 
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
@@ -117,7 +115,6 @@ public class MaizePriceDialogFragment extends DialogFragment {
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
         dialog.setContentView(R.layout.fragment_cassava_price_dialog);
-        ButterKnife.bind(dialog);
 
         dialog.setCancelable(true);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

@@ -24,9 +24,6 @@ import com.iita.akilimo.views.fragments.dialog.OperationCostsDialogFragment;
 
 import java.util.ArrayList;
 
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class ManualTillageCostActivity extends CostBaseActivity {
 
@@ -54,8 +51,8 @@ public class ManualTillageCostActivity extends CostBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manual_tillage_cost);
-        ButterKnife.bind(this);
+        binding = ActivityManualTillageCostBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         context = this;
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
         queue = Volley.newRequestQueue(this);

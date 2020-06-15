@@ -26,7 +26,6 @@ import com.iita.akilimo.databinding.ActivityCassavaMarketBinding;
 import com.iita.akilimo.entities.CassavaMarketOutlet;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
-import com.iita.akilimo.interfaces.IPriceDialogDismissListener;
 import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.models.CassavaPrice;
 import com.iita.akilimo.models.StarchFactory;
@@ -46,10 +45,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
-
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class CassavaMarketActivity extends BaseActivity {
 
@@ -283,6 +278,7 @@ public class CassavaMarketActivity extends BaseActivity {
             if (cassavaMarketOutlet == null) {
                 cassavaMarketOutlet = new CassavaMarketOutlet();
             }
+
             cassavaMarketOutlet.setStarchFactory(selectedFactory);
             cassavaMarketOutlet.setStarchFactoryRequired(factoryRequired);
             cassavaMarketOutlet.setEnumCassavaProduceType(enumCassavaProduceType);

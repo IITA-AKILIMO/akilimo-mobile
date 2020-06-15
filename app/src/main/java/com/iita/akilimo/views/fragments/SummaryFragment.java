@@ -35,8 +35,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link SummaryFragment#newInstance} factory method to

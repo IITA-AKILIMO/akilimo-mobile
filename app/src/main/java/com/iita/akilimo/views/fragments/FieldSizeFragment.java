@@ -30,8 +30,6 @@ import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.utils.enums.EnumAreaUnits;
 import com.iita.akilimo.utils.enums.EnumFieldArea;
 
-import butterknife.BindView;
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FieldSizeFragment#newInstance} factory method to
@@ -123,7 +121,7 @@ public class FieldSizeFragment extends BaseFragment {
                 fieldAreaEnum = mandatoryInfo.getFieldAreaEnum();
                 areaUnits = mandatoryInfo.getAreaUnitsEnum();
                 fieldSizeRadioIndex = mandatoryInfo.getFieldSizeRadioIndex();
-                isExactArea = mandatoryInfo.isExactArea();
+                isExactArea = mandatoryInfo.getExactArea();
                 setFieldLabels(areaUnits);
                 myFieldSize = String.valueOf(mandatoryInfo.getAreaSize());
 
@@ -186,8 +184,6 @@ public class FieldSizeFragment extends BaseFragment {
 
         if (isExactArea) {
             mandatoryInfo.setAreaSize(areaSize);
-        } else {
-            mandatoryInfo.convertToSelectedAreaUnit();
         }
 
         objectBoxEntityProcessor.saveMandatoryInfo(mandatoryInfo);

@@ -32,7 +32,6 @@ import com.iita.akilimo.utils.enums.EnumOperation;
 
 import java.util.ArrayList;
 
-import butterknife.ButterKnife;
 
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
@@ -107,7 +106,7 @@ public class OperationCostsDialogFragment extends DialogFragment {
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
         dialog.setContentView(R.layout.fragment_operation_cost_dialog);
-        ButterKnife.bind(dialog);
+
 
         dialog.setCancelable(true);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

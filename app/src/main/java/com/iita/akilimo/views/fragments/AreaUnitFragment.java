@@ -20,8 +20,6 @@ import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.utils.enums.EnumAreaUnits;
 
-import butterknife.BindView;
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link AreaUnitFragment#newInstance} factory method to

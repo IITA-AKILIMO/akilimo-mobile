@@ -29,10 +29,6 @@ import com.iita.akilimo.views.fragments.dialog.OperationCostsDialogFragment;
 
 import java.util.ArrayList;
 
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class TractorAccessActivity extends CostBaseActivity {
 
 

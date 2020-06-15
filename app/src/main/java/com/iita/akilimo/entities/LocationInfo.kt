@@ -1,11 +1,9 @@
 package com.iita.akilimo.entities
 
-import io.objectbox.annotation.Entity
-import io.objectbox.annotation.Id
+import com.orm.SugarRecord
 
-@Entity
-class LocationInfo {
-    @Id
+
+class LocationInfo : SugarRecord<LocationInfo>() {
     var id: Long = 0
     var latitude: Double = 0.0
     var longitude: Double = 0.0

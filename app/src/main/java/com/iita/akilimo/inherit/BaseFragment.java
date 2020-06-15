@@ -27,12 +27,9 @@ import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import java.util.Locale;
 
-import butterknife.BindString;
-import butterknife.ButterKnife;
 import dev.b3nedikt.app_locale.AppLocale;
 import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
 import dev.b3nedikt.reword.Reword;
-import io.objectbox.BoxStore;
 
 @SuppressWarnings("WeakerAccess")
 public abstract class BaseFragment extends Fragment {
@@ -48,12 +45,10 @@ public abstract class BaseFragment extends Fragment {
     protected String countryName;
 
 
-    @BindString(R.string.empty_text)
-    String emptyText;
+    String emptyText = "";
 
     private String appVersion;
     protected Context context;
-    protected BoxStore boxStore;
     protected RequestQueue queue;
     protected ObjectBoxEntityProcessor objectBoxEntityProcessor;
     protected SessionManager sessionManager;
@@ -73,7 +68,6 @@ public abstract class BaseFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
         sessionManager = new SessionManager(getContext());
-        boxStore = ObjectBox.get();
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(getActivity());
         queue = Volley.newRequestQueue(context.getApplicationContext());
         appVersion = sessionManager.getAppVersion();

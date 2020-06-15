@@ -32,8 +32,6 @@ import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import java.util.List;
 
-import butterknife.ButterKnife;
-
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
  */
@@ -100,7 +98,6 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
         dialog.setContentView(R.layout.fragment_fertilizer_price_dialog);
-        ButterKnife.bind(dialog);
 
         dialog.setCancelable(true);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -217,8 +214,8 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
         double selectedPrice = 0.0;
         if (fertilizer != null) {
             selectedPrice = fertilizer.getPricePerBag();
-            isExactPriceRequired = fertilizer.isExactPrice();
-            if (fertilizer.isSelected()) {
+            isExactPriceRequired = fertilizer.getExactPrice();
+            if (fertilizer.getSelected()) {
                 btnUpdate.setText(R.string.lbl_update);
                 btnRemove.setVisibility(View.VISIBLE);
             }

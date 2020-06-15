@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
@@ -29,14 +28,9 @@ import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.interfaces.IFragmentCallBack;
 import com.iita.akilimo.utils.ValidationHelper;
-import com.iita.akilimo.utils.enums.EnumGender;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindString;
-import butterknife.BindView;
-import dev.b3nedikt.app_locale.AppLocale;
 
 /**
  * A simple {@link Fragment} subclass.

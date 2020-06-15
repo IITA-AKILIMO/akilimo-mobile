@@ -15,10 +15,6 @@ import com.iita.akilimo.entities.MaizePerformance;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class MaizePerformanceActivity extends BaseActivity {
     String activityTitle;
     String poorSoil;

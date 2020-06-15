@@ -1,11 +1,9 @@
 package com.iita.akilimo.entities
 
-import io.objectbox.annotation.Entity
-import io.objectbox.annotation.Id
+import com.orm.SugarRecord
 
-@Entity
-class MaizePerformance {
-    @Id
+
+class MaizePerformance : SugarRecord<MaizePerformance>() {
     var id: Long = 0
     var performanceRadioIndex = 0
     var maizePerformance: String? = null

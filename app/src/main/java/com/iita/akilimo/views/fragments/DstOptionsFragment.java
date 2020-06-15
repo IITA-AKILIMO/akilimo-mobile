@@ -31,9 +31,6 @@ import com.iita.akilimo.views.activities.ScheduledPlantingActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindString;
-import butterknife.BindView;
-
 /**
  * A simple {@link Fragment} subclass.
  */

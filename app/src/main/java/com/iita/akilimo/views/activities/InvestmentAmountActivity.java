@@ -23,10 +23,6 @@ import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class InvestmentAmountActivity extends BaseActivity {
 
     private String LOG_TAG = InvestmentAmountActivity.class.getSimpleName();

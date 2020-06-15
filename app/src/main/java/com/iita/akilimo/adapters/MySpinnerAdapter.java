@@ -8,11 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.blongho.country_data.World;
 import com.iita.akilimo.R;
-import com.iita.akilimo.views.activities.LanguagePickerActivity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MySpinnerAdapter extends BaseAdapter {

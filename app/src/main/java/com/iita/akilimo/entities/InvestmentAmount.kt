@@ -1,11 +1,10 @@
 package com.iita.akilimo.entities
 
-import io.objectbox.annotation.Entity
-import io.objectbox.annotation.Id
+import com.orm.SugarRecord
 
-@Entity
-class InvestmentAmount {
-    @Id
+
+class InvestmentAmount : SugarRecord<InvestmentAmount>() {
+
     var id: Long = 0
     var minInvestmentAmountUSD: Double = 0.0
     var minInvestmentAmountLocal: Double = 0.0

@@ -39,10 +39,6 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class SweetPotatoMarketActivity extends BaseActivity {
 
 

@@ -4,8 +4,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 
-import com.iita.akilimo.views.fragments.WelcomeFragment
-
 class ViewPagerAdapter(fm: FragmentManager, behavior: Int, fragmentsSet: MutableSet<Fragment>) :
     FragmentStatePagerAdapter(fm, behavior) {
 

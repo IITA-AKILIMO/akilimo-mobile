@@ -39,8 +39,6 @@ import org.modelmapper.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 @SuppressWarnings("FieldCanBeLocal")
 public class BuildComputeData {
 
@@ -205,8 +203,8 @@ public class BuildComputeData {
                 emailAddress = Strings.isEmptyOrWhitespace(profileInfo.getEmail()) ? DEFAULT_UNAVAILABLE : profileInfo.getEmail();
                 deviceToken = sessionManager.getDeviceToken();
 
-                emailRequired = profileInfo.isSendEmail();
-                smsRequired = profileInfo.isSendSms();
+                smsRequired = profileInfo.getSendSms();
+                emailRequired = profileInfo.getSendEmail();
 
                 userInfo.setDeviceToken(deviceToken);
                 userInfo.setFirstName(firstName);
@@ -250,23 +248,23 @@ public class BuildComputeData {
         return computeRequest;
     }
 
-    private ComputeRequest buildRequestedRec(@Nonnull ComputeRequest computeRequest) {
+    private ComputeRequest buildRequestedRec(@NonNull ComputeRequest computeRequest) {
         //check for values we have to give recommendations for
         RecAdvice recAdvice = objectBoxEntityProcessor.getRecAdvice();
         if (recAdvice != null) {
-            computeRequest.setInterCroppingMaizeRec(recAdvice.isCIM());
-            computeRequest.setInterCroppingPotatoRec(recAdvice.isCIS());
+            computeRequest.setInterCroppingMaizeRec(recAdvice.getCIM());
+            computeRequest.setInterCroppingPotatoRec(recAdvice.getCIS());
             computeRequest.setUseCase(recAdvice.getUseCase());
 
-            computeRequest.setFertilizerRec(recAdvice.isFR());
-            computeRequest.setPlantingPracticesRec(recAdvice.isBPP());
-            computeRequest.setScheduledPlantingRec(recAdvice.isSPP());
-            computeRequest.setScheduledHarvestRec(recAdvice.isSPH());
+            computeRequest.setFertilizerRec(recAdvice.getFR());
+            computeRequest.setPlantingPracticesRec(recAdvice.getBPP());
+            computeRequest.setScheduledPlantingRec(recAdvice.getSPP());
+            computeRequest.setScheduledHarvestRec(recAdvice.getSPH());
         }
         return computeRequest;
     }
 
-    private ComputeRequest buildCurrentFieldYield(@Nonnull ComputeRequest computeRequest) {
+    private ComputeRequest buildCurrentFieldYield(@NonNull ComputeRequest computeRequest) {
         //check for values we have to give recommendations for
         CurrentFieldYield fieldYield = objectBoxEntityProcessor.getCurrentFieldYield();
         if (fieldYield != null) {
@@ -277,7 +275,7 @@ public class BuildComputeData {
         return computeRequest;
     }
 
-    private ComputeRequest buildPlantingDates(@Nonnull ComputeRequest computeRequest) {
+    private ComputeRequest buildPlantingDates(@NonNull ComputeRequest computeRequest) {
         PlantingHarvestDates sph = objectBoxEntityProcessor.getPlantingHarvestDates();
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy");
 
@@ -302,7 +300,7 @@ public class BuildComputeData {
         return computeRequest;
     }
 
-    private ComputeRequest buildInvestmentAmount(@Nonnull ComputeRequest computeRequest) {
+    private ComputeRequest buildInvestmentAmount(@NonNull ComputeRequest computeRequest) {
         InvestmentAmount inv = objectBoxEntityProcessor.getInvestmentAmount();
         if (inv != null) {
             maxInvestmentAmountLocal = inv.getInvestmentAmountLocal();
@@ -311,7 +309,7 @@ public class BuildComputeData {
         return computeRequest;
     }
 
-    private ComputeRequest buildCurrentPractice(@Nonnull ComputeRequest computeRequest) {
+    private ComputeRequest buildCurrentPractice(@NonNull ComputeRequest computeRequest) {
 
         CurrentPractice currentPractice = objectBoxEntityProcessor.getCurrentPractice();
 
@@ -345,7 +343,7 @@ public class BuildComputeData {
         return computeRequest;
     }
 
-    private ComputeRequest buildOperationCosts(@Nonnull ComputeRequest computeRequest) {
+    private ComputeRequest buildOperationCosts(@NonNull ComputeRequest computeRequest) {
         OperationCosts operationCosts = objectBoxEntityProcessor.getOperationCosts();
 
         costTractorPlough = operationCosts.getTractorPloughCost();
@@ -376,7 +374,7 @@ public class BuildComputeData {
         return computeRequest;
     }
 
-    private ComputeRequest buildWeedManagement(@Nonnull ComputeRequest computeRequest) {
+    private ComputeRequest buildWeedManagement(@NonNull ComputeRequest computeRequest) {
         computeRequest.setFallowType(fallowType);
         computeRequest.setFallowGreen(fallowGreen);
         computeRequest.setFallowHeight(fallowHeight);
@@ -384,7 +382,7 @@ public class BuildComputeData {
         return computeRequest;
     }
 
-    private ComputeRequest buildMaizePerformance(@Nonnull ComputeRequest computeRequest) {
+    private ComputeRequest buildMaizePerformance(@NonNull ComputeRequest computeRequest) {
         MaizePerformance maizePerformance = objectBoxEntityProcessor.getMaizePerformance();
 
         currentMaizePerformance = Strings.isEmptyOrWhitespace(maizePerformance.getPerformanceValue()) ? DEFAULT_MAIZE_PERFORMANCE_VALUE : maizePerformance.getPerformanceValue();
@@ -394,7 +392,7 @@ public class BuildComputeData {
         return computeRequest;
     }
 
-    private ComputeRequest buildCassavaMarketOutlet(@Nonnull ComputeRequest computeRequest) {
+    private ComputeRequest buildCassavaMarketOutlet(@NonNull ComputeRequest computeRequest) {
         CassavaMarketOutlet cassavaMarketOutlet = objectBoxEntityProcessor.getCassavaMarketOutlet();
 
         String currency = computeRequest.getCurrency();

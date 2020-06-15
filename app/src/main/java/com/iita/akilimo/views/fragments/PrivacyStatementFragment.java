@@ -13,11 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.FragmentPrivacyStatementBinding;
 import com.iita.akilimo.inherit.BaseFragment;
-
-import butterknife.BindView;
 
 /**
  * A simple {@link Fragment} subclass.

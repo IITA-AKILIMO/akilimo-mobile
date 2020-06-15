@@ -24,10 +24,6 @@ import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class ScheduledPlantingActivity extends BaseActivity {
 
 

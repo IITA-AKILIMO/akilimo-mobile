@@ -3,11 +3,8 @@ package com.iita.akilimo.views.activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import com.crashlytics.android.Crashlytics
 import com.iita.akilimo.inherit.BaseActivity
-import com.iita.akilimo.utils.SessionManager
-import dev.b3nedikt.app_locale.AppLocale
 
 class SplashActivity : BaseActivity() {
 

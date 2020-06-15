@@ -23,25 +23,14 @@ import com.iita.akilimo.views.fragments.dialog.DateDialogPickerFragment;
 
 import org.joda.time.LocalDate;
 
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class DatesActivity extends BaseActivity {
-    String activityTitle;
-
-
     Toolbar toolbar;
 
     RelativeLayout lytPlantingHarvest;
 
     AppCompatButton btnPickPlantingDate;
-
     AppCompatButton btnPickHarvestDate;
-
-
     AppCompatButton btnCancel;
-
     AppCompatButton btnFinish;
 
     TextView lblSelectedPlantingDate;
@@ -186,7 +175,7 @@ public class DatesActivity extends BaseActivity {
         plantingHarvestDates = objectBoxEntityProcessor.getPlantingHarvestDates();
 
         if (plantingHarvestDates != null) {
-            alternativeDate = plantingHarvestDates.isAlternativeDate();
+            alternativeDate = plantingHarvestDates.getAlternativeDate();
             String pd = plantingHarvestDates.getPlantingDate();
             String hd = plantingHarvestDates.getHarvestDate();
             int pw = plantingHarvestDates.getPlantingWindow();

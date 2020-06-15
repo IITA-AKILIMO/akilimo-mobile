@@ -14,8 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import javax.annotation.Nullable;
-
+import androidx.annotation.Nullable;
 /**
  * Use this view with width = height or width > height
  * EXAMPLE :

@@ -1,12 +1,9 @@
 package com.iita.akilimo.entities
 
-import io.objectbox.annotation.Entity
-import io.objectbox.annotation.Id
-import io.objectbox.annotation.Transient
+import com.orm.SugarRecord
 
-@Entity
-class CurrentFieldYield {
-    @Id
+
+class CurrentFieldYield : SugarRecord<CurrentFieldYield>() {
     var id: Long = 0
     var yieldAmount = 0.0
     var fieldYieldLabel: String? = null

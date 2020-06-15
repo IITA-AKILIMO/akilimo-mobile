@@ -8,7 +8,6 @@ import android.widget.CheckBox
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.DialogFragment
-import butterknife.Unbinder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.hbb20.CountryCodePicker
@@ -30,7 +29,6 @@ class RecommendationChannelDialog(
         const val TAG = "rec_dialog"
     }
 
-    lateinit var unbinder: Unbinder
 
     lateinit var toolbar: Toolbar
     lateinit var lytEmail: TextInputLayout

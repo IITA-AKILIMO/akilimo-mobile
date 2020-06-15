@@ -19,10 +19,6 @@ import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class WeedControlCostsActivity extends BaseActivity {
 
 
@@ -62,7 +58,7 @@ public class WeedControlCostsActivity extends BaseActivity {
         operationCosts = objectBoxEntityProcessor.getOperationCosts();
         currentPractice = objectBoxEntityProcessor.getCurrentPractice();
         if (mandatoryInfo != null) {
-            currency = mandatoryInfo.countryEnum.currency();
+            currency = mandatoryInfo.getCountryEnum().currency();
         }
 
         toolbar = binding.toolbar;

@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.interfaces.IDatePickerDismissListener;
-import com.iita.akilimo.interfaces.IPriceDialogDismissListener;
 import com.iita.akilimo.utils.DateHelper;
 
 import java.util.Calendar;

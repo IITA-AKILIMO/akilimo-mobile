@@ -3,6 +3,7 @@ package com.iita.akilimo.views.activities;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -22,12 +23,6 @@ import com.iita.akilimo.widget.SpacingItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.Nonnull;
-
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class RootYieldActivity extends BaseActivity {
 
@@ -142,7 +137,7 @@ public class RootYieldActivity extends BaseActivity {
         closeActivity(backPressed);
     }
 
-    private List<CurrentFieldYield> setYieldData(@Nonnull String areaUnit) {
+    private List<CurrentFieldYield> setYieldData(@NonNull String areaUnit) {
         String rd_3_tonnes;
         String rd_6_tonnes;
         String rd_9_tonnes;

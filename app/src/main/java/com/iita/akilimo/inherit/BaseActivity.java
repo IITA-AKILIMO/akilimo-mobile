@@ -20,10 +20,7 @@ import com.android.volley.RequestQueue;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 import com.iita.akilimo.R;
 import com.iita.akilimo.utils.FireBaseConfig;
 import com.iita.akilimo.utils.SessionManager;
@@ -38,12 +35,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import javax.annotation.Nonnull;
-
 import dev.b3nedikt.app_locale.AppLocale;
 import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
-import io.objectbox.BoxStore;
 
 @SuppressLint("LogNotTimber")
 public abstract class BaseActivity extends AppCompatActivity {
@@ -51,7 +45,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected String LOG_TAG = BaseActivity.class.getSimpleName();
 
     protected Context context;
-    protected BoxStore boxStore;
     protected SessionManager sessionManager;
     protected RequestQueue queue;
     protected ObjectBoxEntityProcessor objectBoxEntityProcessor = null;
