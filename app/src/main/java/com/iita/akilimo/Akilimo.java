@@ -17,8 +17,10 @@ import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
 import dev.b3nedikt.reword.RewordInterceptor;
 import io.fabric.sdk.android.Fabric;
 import io.github.inflationx.viewpump.ViewPump;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
-public class Akilimo extends SugarApp {
+public class Akilimo extends MultiDexApplication {
 
     @Override
     public void onCreate() {
@@ -43,5 +45,14 @@ public class Akilimo extends SugarApp {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         JodaTimeAndroid.init(this);
         World.init(this);
+        Realm.init(this);
+
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                .name("akilimo.realm")
+                .schemaVersion(1)
+                .deleteRealmIfMigrationNeeded()
+                .build();
+
+        Realm.setDefaultConfiguration(config);
     }
 }

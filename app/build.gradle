@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'realm-android'
 apply plugin: 'io.fabric'
 
 android {
@@ -148,7 +149,7 @@ dependencies {
     kapt 'com.jakewharton:butterknife-compiler:10.2.1'
     kapt 'com.fasterxml.jackson.core:jackson-annotations:2.11.0'
 
-    compileOnly "org.projectlombok:lombok:1.18.12"
+//    compileOnly "org.projectlombok:lombok:1.18.12"
 
 
     testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.11.0'

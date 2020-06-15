@@ -22,6 +22,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.LocationInfo;
+import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.SessionManager;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
@@ -52,6 +53,7 @@ public abstract class BaseFragment extends Fragment {
     protected RequestQueue queue;
     protected ObjectBoxEntityProcessor objectBoxEntityProcessor;
     protected SessionManager sessionManager;
+    protected RealmProcessor realmProcessor;
 
     public BaseFragment() {
 
@@ -71,6 +73,7 @@ public abstract class BaseFragment extends Fragment {
         objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(getActivity());
         queue = Volley.newRequestQueue(context.getApplicationContext());
         appVersion = sessionManager.getAppVersion();
+        realmProcessor = new RealmProcessor();
     }
 
     @Nullable

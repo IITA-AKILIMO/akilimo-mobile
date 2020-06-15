@@ -142,7 +142,7 @@ public class BioDataFragment extends BaseFragment {
     @Override
     public void refreshData() {
         try {
-            profileInfo = objectBoxEntityProcessor.getProfileInfo();
+            profileInfo = realmProcessor.getProfileInfo();
             if (profileInfo != null) {
                 firstName = profileInfo.getFirstName();
                 lastName = profileInfo.getLastName();
@@ -216,10 +216,11 @@ public class BioDataFragment extends BaseFragment {
             profileInfo.setFullMobileNumber(fullMobileNumber);
             profileInfo.setSelectedGenderIndex(selectedGenderIndex);
 
-            long id = objectBoxEntityProcessor.saveProfileInfo(profileInfo);
-            if (id > 0) {
-                nextFragment();
-            }
+            realmProcessor.saveProfileInfo(profileInfo);
+//            long id = objectBoxEntityProcessor.saveProfileInfo(profileInfo);
+//            if (id > 0) {
+//                nextFragment();
+//            }
         }
     }
 

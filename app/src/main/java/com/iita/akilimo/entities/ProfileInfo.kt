@@ -1,22 +1,34 @@
 package com.iita.akilimo.entities
 
 import com.orm.SugarRecord
+import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
+import io.realm.annotations.Required
 
-class ProfileInfo : SugarRecord<ProfileInfo>() {
-     var id: Long = 0
-     var deviceID: String? = null
-     var userName: String? = null
-     var firstName: String? = null
-     var lastName: String? = null
-     var email: String? = null
-     var mobileCode: String? = null
-     var fullMobileNumber: String? = null
-     var farmName: String? = null
-     var fieldDescription: String? = null
-     var gender: String? = null
-     var selectedGenderIndex = 0
-     var sendEmail = false
-     var sendSms = false
+open class ProfileInfo : RealmObject() {
+
+    @PrimaryKey
+    var id: Long = 0
+    var deviceID: String? = null
+    var userName: String? = null
+
+    @Required
+    var firstName: String? = null
+
+    @Required
+    var lastName: String? = null
+    var email: String? = null
+    var mobileCode: String? = null
+    var fullMobileNumber: String? = null
+    var farmName: String? = null
+    var fieldDescription: String? = null
+
+    @Required
+    var gender: String? = null
+
+    var selectedGenderIndex:Int = 0
+    var sendEmail:Boolean = false
+    var sendSms:Boolean = false
 
     fun getNames(): String {
         return String.format("%s %s", firstName, lastName)
