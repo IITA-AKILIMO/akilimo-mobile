@@ -117,7 +117,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
         mAdapter.setOnItemClickListener((view, obj, position) -> {
             //let us process the data
             Intent intent = null;
-            EnumAdviceTasks advice = obj.recCode;
+            EnumAdviceTasks advice = obj.getRecCode();
             switch (advice) {
                 case PLANTING_AND_HARVEST:
                     intent = new Intent(context, DatesActivity.class);
