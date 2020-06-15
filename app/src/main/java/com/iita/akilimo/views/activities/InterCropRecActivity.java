@@ -157,7 +157,7 @@ public class InterCropRecActivity extends BaseActivity {
 
         mAdapter.setOnItemClickListener((view, obj, position) -> {
             Intent intent = null;
-            EnumAdviceTasks advice = obj.getRecCode();
+            EnumAdviceTasks advice = obj.recCode;
             switch (advice) {
                 case PLANTING_AND_HARVEST:
                     intent = new Intent(context, DatesActivity.class);
