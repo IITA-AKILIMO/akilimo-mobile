@@ -6,16 +6,12 @@ import android.os.Parcelable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.orm.SugarRecord;
 
-import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
-import io.objectbox.annotation.Unique;
-@Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Fertilizer implements Parcelable {
+public class Fertilizer extends SugarRecord<Fertilizer> implements Parcelable {
 
 
-    @Id
     @JsonIgnore
     long id;
 
@@ -36,7 +32,6 @@ public class Fertilizer implements Parcelable {
     @JsonProperty("price")
     private Double price;
 
-    @Unique
     @JsonProperty("fertilizerCountry")
     private String fertilizerCountry;
 
@@ -133,181 +128,4 @@ public class Fertilizer implements Parcelable {
             return new Fertilizer[size];
         }
     };
-
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public int getImageId() {
-        return imageId;
-    }
-
-    public void setImageId(int imageId) {
-        this.imageId = imageId;
-    }
-
-    public int getFertilizerId() {
-        return fertilizerId;
-    }
-
-    public void setFertilizerId(int fertilizerId) {
-        this.fertilizerId = fertilizerId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getFertilizerType() {
-        return fertilizerType;
-    }
-
-    public void setFertilizerType(String fertilizerType) {
-        this.fertilizerType = fertilizerType;
-    }
-
-    public int getWeight() {
-        return weight;
-    }
-
-    public void setWeight(int weight) {
-        this.weight = weight;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public String getFertilizerCountry() {
-        return fertilizerCountry;
-    }
-
-    public void setFertilizerCountry(String fertilizerCountry) {
-        this.fertilizerCountry = fertilizerCountry;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
-    public String getUseCase() {
-        return useCase;
-    }
-
-    public void setUseCase(String useCase) {
-        this.useCase = useCase;
-    }
-
-    public String getCountryCode() {
-        return countryCode;
-    }
-
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
-    }
-
-    public String getPriceRange() {
-        return priceRange;
-    }
-
-    public void setPriceRange(String priceRange) {
-        this.priceRange = priceRange;
-    }
-
-    public double getPricePerBag() {
-        return pricePerBag;
-    }
-
-    public void setPricePerBag(double pricePerBag) {
-        this.pricePerBag = pricePerBag;
-    }
-
-    public int getKContent() {
-        return kContent;
-    }
-
-    public void setKContent(int kContent) {
-        this.kContent = kContent;
-    }
-
-    public int getNContent() {
-        return nContent;
-    }
-
-    public void setNContent(int nContent) {
-        this.nContent = nContent;
-    }
-
-    public int getPContent() {
-        return pContent;
-    }
-
-    public void setPContent(int pContent) {
-        this.pContent = pContent;
-    }
-
-    public void setAvailable(boolean available) {
-        this.available = available;
-    }
-
-    public void setCimAvailable(boolean cimAvailable) {
-        this.cimAvailable = cimAvailable;
-    }
-
-    public void setCisAvailable(boolean cisAvailable) {
-        this.cisAvailable = cisAvailable;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-    }
-
-    public void setExactPrice(boolean exactPrice) {
-        this.exactPrice = exactPrice;
-    }
-
-    public void setCustom(boolean custom) {
-        this.custom = custom;
-    }
-
-    public boolean isAvailable() {
-        return available;
-    }
-
-    public boolean isCimAvailable() {
-        return cimAvailable;
-    }
-
-    public boolean isCisAvailable() {
-        return cisAvailable;
-    }
-
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public boolean isExactPrice() {
-        return exactPrice;
-    }
-
-    public boolean isCustom() {
-        return custom;
-    }
 }

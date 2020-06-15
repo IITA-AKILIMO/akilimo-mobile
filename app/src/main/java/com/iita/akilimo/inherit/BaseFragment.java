@@ -23,7 +23,6 @@ import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.utils.SessionManager;
-import com.iita.akilimo.utils.objectbox.ObjectBox;
 import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import java.util.Locale;

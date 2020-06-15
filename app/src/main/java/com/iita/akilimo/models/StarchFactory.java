@@ -3,93 +3,32 @@ package com.iita.akilimo.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.android.gms.common.util.Strings;
+import com.orm.SugarRecord;
 
-import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
-import io.objectbox.annotation.Unique;
 
-@Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StarchFactory {
+public class StarchFactory extends SugarRecord<StarchFactory> {
 
-    @Id
-    long id;
+    private long id;
 
     @JsonProperty("factoryName")
-    String factoryName;
+    private String factoryName;
 
     @JsonProperty("factoryLabel")
-    String factoryLabel;
+    private String factoryLabel;
 
-    @Unique
     @JsonProperty("factoryNameCountry")
-    String factoryNameCountry;
+    private String factoryNameCountry;
 
     @JsonProperty("countryCode")
-    String countryCode;
+    private String countryCode;
 
     @JsonProperty("factoryActive")
-    boolean factoryActive;
+    private boolean factoryActive;
 
-    boolean factorySelected;
-
-    public boolean isFactoryActive() {
-        return this.factoryActive;
-    }
-
-    public boolean isFactorySelected() {
-        return this.factorySelected;
-    }
+    private boolean factorySelected;
 
     public boolean sellToStarchFactory() {
         return !Strings.isEmptyOrWhitespace(this.factoryName) && !this.factoryName.equalsIgnoreCase("NA");
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getFactoryName() {
-        return factoryName;
-    }
-
-    public void setFactoryName(String factoryName) {
-        this.factoryName = factoryName;
-    }
-
-    public String getFactoryLabel() {
-        return factoryLabel;
-    }
-
-    public void setFactoryLabel(String factoryLabel) {
-        this.factoryLabel = factoryLabel;
-    }
-
-    public String getFactoryNameCountry() {
-        return factoryNameCountry;
-    }
-
-    public void setFactoryNameCountry(String factoryNameCountry) {
-        this.factoryNameCountry = factoryNameCountry;
-    }
-
-    public String getCountryCode() {
-        return countryCode;
-    }
-
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
-    }
-
-    public void setFactoryActive(boolean factoryActive) {
-        this.factoryActive = factoryActive;
-    }
-
-    public void setFactorySelected(boolean factorySelected) {
-        this.factorySelected = factorySelected;
     }
 }

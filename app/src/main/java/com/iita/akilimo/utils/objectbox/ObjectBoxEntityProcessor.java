@@ -13,18 +13,13 @@ import com.iita.akilimo.utils.enums.EnumUseCase;
 
 import java.util.List;
 
-import io.objectbox.Box;
-import io.objectbox.BoxStore;
-import io.objectbox.exception.UniqueViolationException;
-import io.objectbox.query.QueryBuilder;
-
 public class ObjectBoxEntityProcessor {
     private static final String LOG_TAG = ObjectBoxEntityProcessor.class.getSimpleName();
     private static ObjectBoxEntityProcessor instance = null;
-    private BoxStore boxStore;
+
 
     private ObjectBoxEntityProcessor(Context context) {
-        boxStore = ObjectBox.get();
+
     }
 
 
@@ -36,64 +31,32 @@ public class ObjectBoxEntityProcessor {
     }
 
     public long saveProfileInfo(ProfileInfo profileInfo) {
-        try {
-            Box<ProfileInfo> box = boxStore.boxFor(ProfileInfo.class);
-            return box.put(profileInfo);
-        } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving profile infor");
-            Crashlytics.logException(ex);
-        }
         return 0;
     }
 
     public ProfileInfo getProfileInfo() {
-        Box<ProfileInfo> box = boxStore.boxFor(ProfileInfo.class);
-
-        return box.query()
-                .build()
-                .findFirst();
+        return  null;
     }
 
     public long saveLocationInfo(LocationInfo locationInfo) {
-        Box<LocationInfo> box = boxStore.boxFor(LocationInfo.class);
-        return box.put(locationInfo);
+        return 0;
     }
 
     public LocationInfo getLocationInfo() {
-        Box<LocationInfo> box = boxStore.boxFor(LocationInfo.class);
-        LocationInfo loc = box.query()
-                .build()
-                .findFirst();
-
-        if (loc == null) {
-            loc = new LocationInfo();
-        }
-        return loc;
+        return null;
     }
 
     public long saveMandatoryInfo(MandatoryInfo mandatoryInfo) {
-        Box<MandatoryInfo> box = boxStore.boxFor(MandatoryInfo.class);
-        return box.put(mandatoryInfo);
+        return 0;
     }
 
     public MandatoryInfo getMandatoryInfo() {
-        Box<MandatoryInfo> box = boxStore.boxFor(MandatoryInfo.class);
-
-        MandatoryInfo info = box.query()
-                .order(MandatoryInfo_.id, QueryBuilder.DESCENDING)
-                .build()
-                .findFirst();
-
-        if (info == null) {
-            info = new MandatoryInfo();
-        }
-        return info;
+        return null;
     }
 
 
     public long savePlantingHarvestDates(PlantingHarvestDates plantingHarvestDates) {
-        Box<PlantingHarvestDates> box = boxStore.boxFor(PlantingHarvestDates.class);
-        return box.put(plantingHarvestDates);
+        return 0;
     }
 
     /**
@@ -102,48 +65,33 @@ public class ObjectBoxEntityProcessor {
      * @return return @PlantingHarvestDates object
      */
     public PlantingHarvestDates getPlantingHarvestDates() {
-        Box<PlantingHarvestDates> box = boxStore.boxFor(PlantingHarvestDates.class);
-        return box.query()
-                .build()
-                .findFirst();
+        return null;
     }
 
 
     public void saveInvestmentAmount(InvestmentAmount investment) {
-        Box<InvestmentAmount> box = boxStore.boxFor(InvestmentAmount.class);
-        box.put(investment);
+
     }
 
     public InvestmentAmount getInvestmentAmount() {
-        Box<InvestmentAmount> box = boxStore.boxFor(InvestmentAmount.class);
-
-        return box.query()
-                .order(InvestmentAmount_.id, QueryBuilder.DESCENDING)
-                .build()
-                .findFirst();
+        return null;
     }
 
 
     public long saveCurrentFieldYield(CurrentFieldYield currentFieldYield) {
-        Box<CurrentFieldYield> box = boxStore.boxFor(CurrentFieldYield.class);
-        return box.put(currentFieldYield);
+        return 0;
     }
 
     public CurrentFieldYield getCurrentFieldYield() {
-        Box<CurrentFieldYield> box = boxStore.boxFor(CurrentFieldYield.class);
-
-        return box.query()
-                .order(CurrentFieldYield_.id, QueryBuilder.DESCENDING)
-                .build()
-                .findFirst();
+        return null;
     }
 
     public void saveFertilizerList(final List<Fertilizer> selectedFertilizers) {
         try {
-            final Box<Fertilizer> box = boxStore.boxFor(Fertilizer.class);
-            box.removeAll();
-            box.put(selectedFertilizers);
-        } catch (UniqueViolationException ex) {
+            for (Fertilizer selectedFertilizer : selectedFertilizers) {
+                saveSelectedFertilizer(selectedFertilizer);
+            }
+        } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "Unique fertilizer saving violation!");
             Crashlytics.logException(ex);
         }
@@ -151,9 +99,9 @@ public class ObjectBoxEntityProcessor {
 
     public long saveSelectedFertilizer(@NonNull final Fertilizer selectedFertilizer) {
         try {
-            final Box<Fertilizer> box = boxStore.boxFor(Fertilizer.class);
-            return box.put(selectedFertilizer);
-        } catch (UniqueViolationException ex) {
+            selectedFertilizer.save();
+            return 1;
+        } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "Unique fertilizer saving violation!");
             Crashlytics.logException(ex);
         }
@@ -162,42 +110,24 @@ public class ObjectBoxEntityProcessor {
 
 
     public List<Fertilizer> getAvailableFertilizersByCountry(@NonNull String countryCode) {
-        Box<Fertilizer> box = boxStore.boxFor(Fertilizer.class);
-        QueryBuilder<Fertilizer> fertilizerTypeQueryBuilder = box.query();
-
-        return fertilizerTypeQueryBuilder
-                .equal(Fertilizer_.countryCode, countryCode)
-                .build()
-                .find();
+        List<Fertilizer> fertilizerList = Fertilizer.find(Fertilizer.class, "countryCode=?", countryCode);
+        return fertilizerList;
     }
 
     public List<Fertilizer> getSelectedFertilizers(@NonNull String deviceIdentifier) {
-        Box<Fertilizer> box = boxStore.boxFor(Fertilizer.class);
-        QueryBuilder<Fertilizer> fertilizerTypeQueryBuilder = box.query();
-        fertilizerTypeQueryBuilder.equal(Fertilizer_.selected, true);
-
-        return fertilizerTypeQueryBuilder
-                .equal(Fertilizer_.countryCode, deviceIdentifier)
-                .build()
-                .find();
+        List<Fertilizer> fertilizerList = Fertilizer.find(Fertilizer.class, "selected=? and countryCode=?", "1", deviceIdentifier);
+        return fertilizerList;
     }
 
     public Fertilizer getSavedFertilizer(@NonNull String fertilizerType, @NonNull String deviceIdentifier) {
-        Box<Fertilizer> box = boxStore.boxFor(Fertilizer.class);
-
-        return box.query()
-                .equal(Fertilizer_.countryCode, deviceIdentifier)
-                .equal(Fertilizer_.fertilizerType, fertilizerType)
-                .build()
-                .findFirst();
+        return null;
     }
 
     /* Begin saving for intercrop fertilizer */
     public void saveInterCropFertilizerList(final List<InterCropFertilizer> selectedFertilizers) {
         try {
-            final Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
-            box.put(selectedFertilizers);
-        } catch (UniqueViolationException ex) {
+
+        } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "Unique fertilizer saving violation!");
             Crashlytics.logException(ex);
         }
@@ -205,9 +135,8 @@ public class ObjectBoxEntityProcessor {
 
     public long saveSelectedInterCropFertilizer(@NonNull final InterCropFertilizer selectedFertilizer) {
         try {
-            final Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
-            return box.put(selectedFertilizer);
-        } catch (UniqueViolationException ex) {
+
+        } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "Unique fertilizer saving violation!");
             Crashlytics.logException(ex);
         }
@@ -216,86 +145,41 @@ public class ObjectBoxEntityProcessor {
 
 
     public List<InterCropFertilizer> getAllInterCropFertilizersByCountry(@NonNull String countryCode) {
-        Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
-        QueryBuilder<InterCropFertilizer> fertilizerTypeQueryBuilder = box.query();
-
-        return fertilizerTypeQueryBuilder
-                .equal(InterCropFertilizer_.countryCode, countryCode)
-                .build()
-                .find();
+        return null;
     }
 
     public List<InterCropFertilizer> getAvailableInterCropFertilizersByCountryUseCase(@NonNull String countryCode, @NonNull EnumUseCase useCase) {
-        Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
-        QueryBuilder<InterCropFertilizer> fertilizerTypeQueryBuilder = box.query();
-
-        return fertilizerTypeQueryBuilder
-                .equal(InterCropFertilizer_.useCase, useCase.name())
-                .equal(InterCropFertilizer_.countryCode, countryCode)
-                .build()
-                .find();
+        return null;
     }
 
     public List<InterCropFertilizer> getSelectedInterCropFertilizers(@NonNull String deviceIdentifier, @NonNull EnumUseCase useCase) {
-        Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
-
-        QueryBuilder<InterCropFertilizer> fertilizerTypeQueryBuilder = box.query();
-        fertilizerTypeQueryBuilder.equal(InterCropFertilizer_.selected, true);
-        fertilizerTypeQueryBuilder.equal(InterCropFertilizer_.useCase, useCase.name());
-
-        return fertilizerTypeQueryBuilder
-                .equal(InterCropFertilizer_.countryCode, deviceIdentifier)
-                .build()
-                .find();
+        return null;
     }
 
     public Fertilizer getSavedInterCropFertilizer(@NonNull String fertilizerType, @NonNull String countryCode, @NonNull EnumUseCase useCase) {
-        Box<InterCropFertilizer> box = boxStore.boxFor(InterCropFertilizer.class);
-
-        return box.query()
-                .equal(InterCropFertilizer_.useCase, useCase.name())
-                .equal(InterCropFertilizer_.countryCode, countryCode)
-                .equal(InterCropFertilizer_.fertilizerType, fertilizerType)
-                .build()
-                .findFirst();
+        return null;
     }
     /* end saving of intercrop fertilizer */
 
     public long saveMaizePerformanceData(@NonNull MaizePerformance maizePerformanceModel) {
-        Box<MaizePerformance> box = boxStore.boxFor(MaizePerformance.class);
-        box.removeAll(); //clear first
-        return box.put(maizePerformanceModel);
+        return 0;
     }
 
 
     //@TODO Consider moving data source to the API
     @Deprecated
     public MaizePerformance getMaizePerformance() {
-        Box<MaizePerformance> box = boxStore.boxFor(MaizePerformance.class);
-
-        MaizePerformance maizePerformance = box.query()
-                .order(MaizePerformance_.id, QueryBuilder.DESCENDING)
-                .build()
-                .findFirst();
-        if (maizePerformance == null) {
-            maizePerformance = new MaizePerformance();
-        }
-        return maizePerformance;
+        return null;
     }
 
 
     public StarchFactory getSelectedStarchFactoryByTag(String factoryNameCountry) {
-        Box<StarchFactory> box = boxStore.boxFor(StarchFactory.class);
-        return box.query()
-                .equal(StarchFactory_.factoryNameCountry, factoryNameCountry)
-                .build()
-                .findFirst();
+        return null;
     }
 
     public void saveStarchFactories(@NonNull List<StarchFactory> starchFactoryList) {
         try {
-            Box<StarchFactory> box = boxStore.boxFor(StarchFactory.class);
-            box.put(starchFactoryList);
+
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving starch factories");
             Crashlytics.logException(ex);
@@ -303,18 +187,12 @@ public class ObjectBoxEntityProcessor {
     }
 
     public List<StarchFactory> getStarchFactories(@NonNull String countryCode) {
-        Box<StarchFactory> box = boxStore.boxFor(StarchFactory.class);
-        return box.query()
-                .equal(StarchFactory_.countryCode, countryCode)
-                .build()
-                .find();
+        return null;
     }
 
     public void saveFertilizerPrices(@NonNull List<FertilizerPrices> fertilizerPricesList) {
         try {
-            Box<FertilizerPrices> box = boxStore.boxFor(FertilizerPrices.class);
-            box.removeAll();
-            box.put(fertilizerPricesList);
+
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "Error occurred saving fertilizer prices");
             Crashlytics.logException(ex);
@@ -323,18 +201,12 @@ public class ObjectBoxEntityProcessor {
 
 
     public List<FertilizerPrices> getFertilizerPrices(@NonNull String countryCode) {
-        Box<FertilizerPrices> box = boxStore.boxFor(FertilizerPrices.class);
-
-        return box.query()
-                .equal(FertilizerPrices_.country, countryCode)
-                .build()
-                .find();
+ return null;
     }
 
     public long saveMarketOutlet(@NonNull CassavaMarketOutlet cassavaMarketOutlet) {
         try {
-            Box<CassavaMarketOutlet> box = boxStore.boxFor(CassavaMarketOutlet.class);
-            return box.put(cassavaMarketOutlet);
+
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving market outlet");
             Crashlytics.logException(ex);
@@ -343,17 +215,12 @@ public class ObjectBoxEntityProcessor {
     }
 
     public CassavaMarketOutlet getCassavaMarketOutlet() {
-        Box<CassavaMarketOutlet> box = boxStore.boxFor(CassavaMarketOutlet.class);
-
-        return box.query()
-                .build()
-                .findFirst();
+        return null;
     }
 
     public void saveRecAdvice(RecAdvice recAdvice) {
         try {
-            Box<RecAdvice> box = boxStore.boxFor(RecAdvice.class);
-            box.put(recAdvice);
+
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving recommendation advice");
             Crashlytics.logException(ex);
@@ -361,17 +228,12 @@ public class ObjectBoxEntityProcessor {
     }
 
     public RecAdvice getRecAdvice() {
-        Box<RecAdvice> box = boxStore.boxFor(RecAdvice.class);
-
-        return box.query()
-                .build()
-                .findFirst();
+        return null;
     }
 
     public void saveCurrentPractice(CurrentPractice currentPractice) {
         try {
-            Box<CurrentPractice> box = boxStore.boxFor(CurrentPractice.class);
-            box.put(currentPractice);
+
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving CurrentPractice");
             Crashlytics.logException(ex);
@@ -379,23 +241,12 @@ public class ObjectBoxEntityProcessor {
     }
 
     public CurrentPractice getCurrentPractice() {
-        Box<CurrentPractice> box = boxStore.boxFor(CurrentPractice.class);
-
-        CurrentPractice cp = box.query()
-                .build()
-                .findFirst();
-
-        if (cp == null) {
-            cp = new CurrentPractice();
-        }
-
-        return cp;
+        return null;
     }
 
     public void saveOperationCosts(OperationCosts operationCosts) {
         try {
-            Box<OperationCosts> box = boxStore.boxFor(OperationCosts.class);
-            box.put(operationCosts);
+
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving OperationCosts");
             Crashlytics.logException(ex);
@@ -403,44 +254,23 @@ public class ObjectBoxEntityProcessor {
     }
 
     public OperationCosts getOperationCosts() {
-        Box<OperationCosts> box = boxStore.boxFor(OperationCosts.class);
-
-        OperationCosts operationCosts = box.query()
-                .build()
-                .findFirst();
-
-        if (operationCosts == null) {
-            operationCosts = new OperationCosts();
-        }
-        return operationCosts;
+        return null;
     }
 
     public long saveMaizeMarketOutlet(MaizeMarketOutlet maizeMarketOutlet) {
         long id = 0;
-        try {
-            Box<MaizeMarketOutlet> box = boxStore.boxFor(MaizeMarketOutlet.class);
-            id = box.put(maizeMarketOutlet);
-        } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving MaizeMarketOutlet");
-            Crashlytics.logException(ex);
-        }
 
         return id;
     }
 
     public MaizeMarketOutlet getMaizeMarketOutlet() {
-        Box<MaizeMarketOutlet> box = boxStore.boxFor(MaizeMarketOutlet.class);
-
-        return box.query()
-                .build()
-                .findFirst();
+        return null;
     }
 
     public long savePotatoMarketOutlet(PotatoMarketOutlet potatoMarketOutlet) {
         long id = 0;
         try {
-            Box<PotatoMarketOutlet> box = boxStore.boxFor(PotatoMarketOutlet.class);
-            id = box.put(potatoMarketOutlet);
+
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving PotatoMarketOutlet");
             Crashlytics.logException(ex);
@@ -450,18 +280,12 @@ public class ObjectBoxEntityProcessor {
     }
 
     public PotatoMarketOutlet getPotatoMarketOutlet() {
-        Box<PotatoMarketOutlet> box = boxStore.boxFor(PotatoMarketOutlet.class);
-
-        return box.query()
-                .build()
-                .findFirst();
+        return null;
     }
 
     public void saveCassavaPrice(@NonNull List<CassavaPrice> cassavaPriceList) {
         try {
-            Box<CassavaPrice> box = boxStore.boxFor(CassavaPrice.class);
-            box.removeAll();//clear the db first
-            box.put(cassavaPriceList);
+
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving cassava prices");
             Crashlytics.logException(ex);
@@ -469,27 +293,16 @@ public class ObjectBoxEntityProcessor {
     }
 
     public List<CassavaPrice> getCassavaPrices(@NonNull String countryCode) {
-        Box<CassavaPrice> box = boxStore.boxFor(CassavaPrice.class);
-        return box.query()
-                .equal(CassavaPrice_.country, countryCode)
-                .build()
-                .find();
-
+        return null;
     }
 
     public CassavaPrice getSelectedCassavaPriceByTag(String priceTag) {
-        Box<CassavaPrice> box = boxStore.boxFor(CassavaPrice.class);
-        return box.query()
-                .equal(CassavaPrice_.priceId, priceTag)
-                .build()
-                .findFirst();
+        return null;
     }
 
     public void saveMaizePrice(List<MaizePrice> maizePriceList) {
         try {
-            Box<MaizePrice> box = boxStore.boxFor(MaizePrice.class);
-            box.removeAll();//clear the db first
-            box.put(maizePriceList);
+
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving maize prices");
             Crashlytics.logException(ex);
@@ -497,29 +310,18 @@ public class ObjectBoxEntityProcessor {
     }
 
     public List<MaizePrice> getMaizePrices(@NonNull String countryCode) {
-        Box<MaizePrice> box = boxStore.boxFor(MaizePrice.class);
-        return box.query()
-                .equal(MaizePrice_.country, countryCode)
-                .build()
-                .find();
-
+        return null;
     }
 
     public MaizePrice getSelectedMaizePriceByTag(String priceTag) {
-        Box<MaizePrice> box = boxStore.boxFor(MaizePrice.class);
-        return box.query()
-                .equal(MaizePrice_.priceId, priceTag)
-                .build()
-                .findFirst();
+        return null;
     }
 
 
     /* Sweet potato prices */
     public void savePotatoPrice(List<PotatoPrice> potatoPriceList) {
         try {
-            Box<PotatoPrice> box = boxStore.boxFor(PotatoPrice.class);
-            box.removeAll();//clear the db first
-            box.put(potatoPriceList);
+
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving maize prices");
             Crashlytics.logException(ex);
@@ -527,19 +329,11 @@ public class ObjectBoxEntityProcessor {
     }
 
     public List<PotatoPrice> getPotatoPrices(@NonNull String countryCode) {
-        Box<PotatoPrice> box = boxStore.boxFor(PotatoPrice.class);
-        return box.query()
-                .equal(PotatoPrice_.country, countryCode)
-                .build()
-                .find();
+        return null;
 
     }
 
     public PotatoPrice getSelectedPotatoPriceByTag(String priceTag) {
-        Box<PotatoPrice> box = boxStore.boxFor(PotatoPrice.class);
-        return box.query()
-                .equal(PotatoPrice_.priceId, priceTag)
-                .build()
-                .findFirst();
+        return null;
     }
 }
