@@ -6,6 +6,7 @@ import androidx.multidex.MultiDexApplication;
 
 import com.blongho.country_data.World;
 import com.crashlytics.android.Crashlytics;
+import com.orm.SugarApp;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -17,7 +18,7 @@ import dev.b3nedikt.reword.RewordInterceptor;
 import io.fabric.sdk.android.Fabric;
 import io.github.inflationx.viewpump.ViewPump;
 
-public class Akilimo extends MultiDexApplication {
+public class Akilimo extends SugarApp {
 
     @Override
     public void onCreate() {
