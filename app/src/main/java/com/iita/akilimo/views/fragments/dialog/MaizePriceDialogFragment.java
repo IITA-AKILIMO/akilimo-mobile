@@ -59,10 +59,6 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
     private Button btnUpdate;
     private Button btnRemove;
 
-
-    private EnumUnitOfSale enumUnitOfSale = EnumUnitOfSale.THOUSAND_KG;
-
-
     private double averagePrice;
     private double maizePrice;
     private List<MaizePrice> maizePriceList;
@@ -93,7 +89,6 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
             maizePrice = bundle.getDouble(SELECTED_PRICE);
             currencyCode = bundle.getString(CURRENCY_CODE);
             unitOfSale = bundle.getString(UNIT_OF_SALE);
-            enumUnitOfSale = bundle.getParcelable(ENUM_UNIT_OF_SALE);
             countryCode = bundle.getString(COUNTRY_CODE);
 
         }
@@ -241,16 +236,16 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
         double priceLower = unitPriceLower;
         double priceHigher = unitPriceUpper;
 
-        switch (enumUnitOfSale) {
-            case ONE_KG:
+        switch (unitOfSale) {
+            case "ONE_KG":
                 priceLower = (unitPriceLower * EnumUnitOfSale.ONE_KG.unitWeight()) / 1000;
                 priceHigher = (unitPriceUpper * EnumUnitOfSale.ONE_KG.unitWeight()) / 1000;
                 break;
-            case FIFTY_KG:
+            case "FIFTY_KG":
                 priceLower = (unitPriceLower * EnumUnitOfSale.FIFTY_KG.unitWeight()) / 1000;
                 priceHigher = (unitPriceUpper * EnumUnitOfSale.FIFTY_KG.unitWeight()) / 1000;
                 break;
-            case HUNDRED_KG:
+            case "HUNDRED_KG":
                 priceLower = (unitPriceLower * EnumUnitOfSale.HUNDRED_KG.unitWeight()) / 1000;
                 priceHigher = (unitPriceUpper * EnumUnitOfSale.HUNDRED_KG.unitWeight()) / 1000;
                 break;

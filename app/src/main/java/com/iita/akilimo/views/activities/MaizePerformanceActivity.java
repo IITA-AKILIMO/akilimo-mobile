@@ -13,6 +13,9 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.ActivityMaizePerformanceActivityBinding;
 import com.iita.akilimo.entities.MaizePerformance;
 import com.iita.akilimo.inherit.BaseActivity;
+import com.iita.akilimo.utils.RealmProcessor;
+
+import io.realm.Realm;
 
 
 public class MaizePerformanceActivity extends BaseActivity {
@@ -41,7 +44,8 @@ public class MaizePerformanceActivity extends BaseActivity {
         binding = ActivityMaizePerformanceActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         context = this;
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
+        realmProcessor =new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
 
         toolbar = binding.toolbar;
         rdgMaizePerformance = binding.rdgMaizePerformance;
@@ -108,7 +112,7 @@ public class MaizePerformanceActivity extends BaseActivity {
         });
 
         //preset saved data if any
-        maizePerformance = objectBoxEntityProcessor.getMaizePerformance();
+        maizePerformance = realmProcessor.getMaizePerformance();
         if (maizePerformance != null) {
             performanceRadioIndex = maizePerformance.getPerformanceRadioIndex();
             rdgMaizePerformance.check(performanceRadioIndex);
@@ -125,15 +129,18 @@ public class MaizePerformanceActivity extends BaseActivity {
         }
 
         performanceRadioIndex = rdgMaizePerformance.getCheckedRadioButtonId();
-        maizePerformance = objectBoxEntityProcessor.getMaizePerformance();
-        if (maizePerformance == null) {
-            maizePerformance = new MaizePerformance();
-        }
-        maizePerformance.setPerformanceRadioIndex(performanceRadioIndex);
-        maizePerformance.setMaizePerformance(selectedMaizePerformance);
-        maizePerformance.setPerformanceValue(maizePerformanceValue);
-
-        objectBoxEntityProcessor.saveMaizePerformanceData(maizePerformance);
-        closeActivity(backPressed);
+        maizePerformance = realmProcessor.getMaizePerformance();
+        myRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                if (maizePerformance == null) {
+                    maizePerformance = myRealm.createObject(MaizePerformance.class);
+                }
+                maizePerformance.setPerformanceRadioIndex(performanceRadioIndex);
+                maizePerformance.setMaizePerformance(selectedMaizePerformance);
+                maizePerformance.setPerformanceValue(maizePerformanceValue);
+                closeActivity(backPressed);
+            }
+        });
     }
 }
