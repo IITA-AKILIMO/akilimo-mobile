@@ -34,8 +34,8 @@ import com.iita.akilimo.models.FertilizerPrices;
 import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.FertilizerList;
+import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.views.fragments.dialog.FertilizerPriceDialogFragment;
 import com.iita.akilimo.widget.SpacingItemDecoration;
 
@@ -46,6 +46,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import io.realm.Realm;
 
 public class FertilizersActivity extends BaseActivity {
 
@@ -87,7 +89,8 @@ public class FertilizersActivity extends BaseActivity {
         errorImage = binding.errorImage;
         errorLabel = binding.errorLabel;
 
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
+        realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
         queue = Volley.newRequestQueue(context);
 
         Intent intent = getIntent();
@@ -95,7 +98,7 @@ public class FertilizersActivity extends BaseActivity {
             useCase = intent.getParcelableExtra(useCaseTag);
         }
 
-        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
         }
@@ -139,7 +142,7 @@ public class FertilizersActivity extends BaseActivity {
 
         mAdapter.setOnItemClickListener((view, clickedFertilizer, position) -> {
             mAdapter.setActiveRowIndex(position);
-            Fertilizer selectedType = objectBoxEntityProcessor.getSavedFertilizer(clickedFertilizer.getFertilizerType(), countryCode);
+            Fertilizer selectedType = realmProcessor.getSavedFertilizer(clickedFertilizer.getFertilizerType(), countryCode);
             if (selectedType == null) {
                 selectedType = clickedFertilizer;
             }
@@ -154,7 +157,7 @@ public class FertilizersActivity extends BaseActivity {
 
             priceDialogFragment.setOnDismissListener((priceSpecified, fertilizer, removeSelected) -> {
                 if ((priceSpecified || removeSelected)) {
-                    long id = objectBoxEntityProcessor.saveSelectedFertilizer(fertilizer);
+                    long id = 0;//realmProcessor.saveSelectedFertilizer(fertilizer);
                     if (id > 0) {
                         if (removeSelected) {
                             selectedFertilizers = FertilizerList.INSTANCE.removeFertilizerByType(cleanedFertilizers, fertilizer.getFertilizerType());
@@ -197,7 +200,7 @@ public class FertilizersActivity extends BaseActivity {
     @Override
     protected void validate(boolean backPressed) {
         if (mAdapter != null) {
-            availableFertilizersList = objectBoxEntityProcessor.getAvailableFertilizersByCountry(countryCode);
+            availableFertilizersList = realmProcessor.getAvailableFertilizersByCountry(countryCode);
             mAdapter.setItems(availableFertilizersList);
         }
     }
@@ -227,7 +230,7 @@ public class FertilizersActivity extends BaseActivity {
                 try {
                     availableFertilizersList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<Fertilizer>>() {
                     });
-                    objectBoxEntityProcessor.saveFertilizerList(availableFertilizersList);
+                    //save fertilizers here
                     initializeFertilizerPriceList();
                 } catch (Exception ex) {
                     lyt_progress.setVisibility(View.GONE);
@@ -279,7 +282,7 @@ public class FertilizersActivity extends BaseActivity {
                 try {
                     fertilizerPricesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<FertilizerPrices>>() {
                     });
-                    objectBoxEntityProcessor.saveFertilizerPrices(fertilizerPricesList);
+                    //save prices here
                     validate(false);
                     recyclerView.setVisibility(View.VISIBLE);
                 } catch (Exception ex) {
@@ -310,7 +313,7 @@ public class FertilizersActivity extends BaseActivity {
     }
 
     private boolean isMinSelected() {
-        int count = objectBoxEntityProcessor.getSelectedFertilizers(countryCode).size();
+        int count = realmProcessor.getSelectedFertilizers(countryCode).size();
         if (count < minSelection) {
             Snackbar snackbar = Snackbar.make(lyt_progress, String.format(Locale.US, context.getString(R.string.lbl_min_selection), minSelection), Snackbar.LENGTH_SHORT);
             snackbar.show();

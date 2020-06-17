@@ -21,6 +21,7 @@ import com.iita.akilimo.models.MaizePrice;
 import com.iita.akilimo.models.PotatoPrice;
 import com.iita.akilimo.models.StarchFactory;
 
+import java.util.Collection;
 import java.util.List;
 
 import io.realm.Realm;
@@ -143,6 +144,14 @@ public class RealmProcessor {
     }
 
     public List<StarchFactory> getStarchFactories(String countryCode) {
+        return null;
+    }
+
+    public Fertilizer getSavedFertilizer(String fertilizerType, String countryCode) {
+        return null;
+    }
+
+    public List<Fertilizer> getSelectedFertilizers(String countryCode) {
         return null;
     }
 }

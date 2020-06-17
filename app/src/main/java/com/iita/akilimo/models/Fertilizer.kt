@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.orm.SugarRecord
 import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -30,6 +31,7 @@ open class Fertilizer : RealmObject(), Parcelable {
     @JsonProperty("price")
     var price: Double? = null
 
+    @PrimaryKey
     @JsonProperty("fertilizerCountry")
     var fertilizerCountry: String? = null
 
