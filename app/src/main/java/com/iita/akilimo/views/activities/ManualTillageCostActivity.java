@@ -184,7 +184,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         }
         arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList);
         arguments.putString(OperationCostsDialogFragment.OPERATION_NAME, operation);
-        arguments.putString(OperationCostsDialogFragment.COUNTRY_CURRENCY, currency);
+        arguments.putString(OperationCostsDialogFragment.CURRENCY_CODE, currency);
         arguments.putString(OperationCostsDialogFragment.COUNTRY_CODE, countryCode);
 
         OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment();

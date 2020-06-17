@@ -20,6 +20,7 @@ import com.iita.akilimo.entities.OperationCosts;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.RealmProcessor;
+import com.iita.akilimo.utils.Tools;
 
 import io.realm.Realm;
 
@@ -172,10 +173,10 @@ public class WeedControlCostsActivity extends BaseActivity {
                 @Override
                 public void execute(Realm realm) {
                     if (currentPractice == null) {
-                        currentPractice = realm.createObject(CurrentPractice.class);
+                        currentPractice = realm.createObject(CurrentPractice.class, Tools.generateUUID());
                     }
                     if (operationCosts == null) {
-                        operationCosts = realm.createObject(OperationCosts.class);
+                        operationCosts = realm.createObject(OperationCosts.class, Tools.generateUUID());
                     }
 
                     currentPractice.setWeedControlTechnique(weedControlTechnique);

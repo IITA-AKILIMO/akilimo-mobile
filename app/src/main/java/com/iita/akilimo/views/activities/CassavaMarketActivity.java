@@ -29,7 +29,6 @@ import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.models.CassavaPrice;
-import com.iita.akilimo.models.FertilizerPrices;
 import com.iita.akilimo.models.StarchFactory;
 import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
@@ -120,10 +119,9 @@ public class CassavaMarketActivity extends BaseActivity {
         mathHelper = new MathHelper(this);
 
         cassavaMarketOutlet = realmProcessor.getCassavaMarketOutlet();
-        if (cassavaMarketOutlet == null) {
-            cassavaMarketOutlet = new CassavaMarketOutlet();
-        } else {
+        if (cassavaMarketOutlet != null) {
             selectedFactory = cassavaMarketOutlet.getStarchFactory();
+            exactPrice = cassavaMarketOutlet.getUnitPrice();
         }
 
         MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();

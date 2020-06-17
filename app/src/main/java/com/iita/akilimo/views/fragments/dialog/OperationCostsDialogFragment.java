@@ -37,7 +37,7 @@ public class OperationCostsDialogFragment extends BaseDialogFragment {
 
     public static final String OPERATION_NAME = "operation_type";
     public static final String COUNTRY_CODE = "country";
-    public static final String COUNTRY_CURRENCY = "currency_code";
+    public static final String CURRENCY_CODE = "currency_code";
     public static final String COST_LIST = "cost_list";
     public static final String DIALOG_TITLE = "dialog_title";
 
@@ -83,7 +83,7 @@ public class OperationCostsDialogFragment extends BaseDialogFragment {
         if (bundle != null) {
             operationCosts = bundle.getParcelableArrayList(COST_LIST);
             countryCode = bundle.getString(COUNTRY_CODE);
-            currencyCode = bundle.getString(COUNTRY_CURRENCY);
+            currencyCode = bundle.getString(CURRENCY_CODE);
             operationName = bundle.getString(OPERATION_NAME);
             dialogTitle = bundle.getString(DIALOG_TITLE);
         }

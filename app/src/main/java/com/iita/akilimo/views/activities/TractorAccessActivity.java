@@ -144,14 +144,14 @@ public class TractorAccessActivity extends CostBaseActivity {
             hasPlough = isChecked;
             if (buttonView.isPressed() && isChecked && !dialogOpen) {
                 String title = (getString(R.string.lbl_tractor_plough_cost, fieldSize, areaUnit));
-                loadOperationCost(EnumOperation.TILLAGE.name(), EnumOperationType.MECHANICAL.name(), title);
+                loadOperationCost(EnumOperation.TILLAGE.name(), EnumOperationType.MECHANICAL.operationName(), title);
             }
         });
         chkRidger.setOnCheckedChangeListener((buttonView, isChecked) -> {
             hasRidger = isChecked;
             if (buttonView.isPressed() && isChecked && !dialogOpen) {
                 String title = (getString(R.string.lbl_tractor_ridge_cost, fieldSize, areaUnit));
-                loadOperationCost(EnumOperation.RIDGING.name(), EnumOperationType.MECHANICAL.name(), title);
+                loadOperationCost(EnumOperation.RIDGING.name(), EnumOperationType.MECHANICAL.operationName(), title);
             }
         });
         btnFinish.setOnClickListener(view -> validate(false));
@@ -201,7 +201,7 @@ public class TractorAccessActivity extends CostBaseActivity {
     }
 
     @Override
-    protected void showDialogFullscreen(ArrayList<OperationCost> operationCostList, String operation, String enumCountry, String dialogTitle) {
+    protected void showDialogFullscreen(ArrayList<OperationCost> operationCostList, String operation, String countrycode, String dialogTitle) {
         Bundle arguments = new Bundle();
 
         if (dialogOpen) {
@@ -211,7 +211,8 @@ public class TractorAccessActivity extends CostBaseActivity {
         showCustomNotificationDialog();
         arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList);
         arguments.putString(OperationCostsDialogFragment.OPERATION_NAME, operation);
-        arguments.putString(OperationCostsDialogFragment.COUNTRY_CODE, enumCountry);
+        arguments.putString(OperationCostsDialogFragment.CURRENCY_CODE, currency);
+        arguments.putString(OperationCostsDialogFragment.COUNTRY_CODE, countrycode);
         arguments.putString(OperationCostsDialogFragment.DIALOG_TITLE, dialogTitle);
 
         OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment();
