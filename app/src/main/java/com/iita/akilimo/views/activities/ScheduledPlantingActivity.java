@@ -18,11 +18,14 @@ import com.iita.akilimo.entities.RecAdvice;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
+import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.realm.Realm;
 
 public class ScheduledPlantingActivity extends BaseActivity {
 
@@ -40,6 +43,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
     private Activity activity;
     private RecOptionsAdapter mAdapter;
     private List<RecommendationOptions> items = new ArrayList<>();
+    private RecAdvice recAdvice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +52,8 @@ public class ScheduledPlantingActivity extends BaseActivity {
         setContentView(binding.getRoot());
         context = this;
         activity = this;
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
+        realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
 
         toolbar = binding.toolbarLayout.toolbar;
         recyclerView = binding.recyclerView;
@@ -80,18 +85,22 @@ public class ScheduledPlantingActivity extends BaseActivity {
         recyclerView.setHasFixedSize(true);
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
-            RecAdvice recAdvice = objectBoxEntityProcessor.getRecAdvice();
-            if (recAdvice == null) {
-                recAdvice = new RecAdvice();
-            }
-            recAdvice.setFR(false);
-            recAdvice.setCIM(false);
-            recAdvice.setCIS(false);
-            recAdvice.setSPH(true);
-            recAdvice.setSPP(true);
-            recAdvice.setBPP(false);
-
-            objectBoxEntityProcessor.saveRecAdvice(recAdvice);
+            recAdvice = realmProcessor.getRecAdvice();
+            myRealm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    if (recAdvice == null) {
+                        recAdvice = myRealm.createObject(RecAdvice.class);
+                    }
+                    recAdvice.setFR(false);
+                    recAdvice.setCIM(false);
+                    recAdvice.setCIS(false);
+                    recAdvice.setSPH(true);
+                    recAdvice.setSPP(true);
+                    recAdvice.setBPP(false);
+                }
+            });
+            myRealm.close();
             processRecommendations(activity);
         });
         setAdapter();
