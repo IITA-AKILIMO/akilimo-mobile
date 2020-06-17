@@ -135,7 +135,7 @@ public class MaizePerformanceActivity extends BaseActivity {
                 @Override
                 public void execute(Realm realm) {
                     if (maizePerformance == null) {
-                        maizePerformance = myRealm.createObject(MaizePerformance.class);
+                        maizePerformance = realm.createObject(MaizePerformance.class);
                     }
                     maizePerformance.setPerformanceRadioIndex(performanceRadioIndex);
                     maizePerformance.setMaizePerformance(selectedMaizePerformance);

@@ -169,7 +169,7 @@ public class InvestmentAmountActivity extends BaseActivity {
                     @Override
                     public void execute(Realm realm) {
                         if (invAmount == null) {
-                            invAmount = myRealm.createObject(InvestmentAmount.class);
+                            invAmount = realm.createObject(InvestmentAmount.class);
                         }
                         invAmount.setInvestmentAmountUSD(investmentAmountUSD);
                         invAmount.setMinInvestmentAmountUSD(minimumAmountUSD);

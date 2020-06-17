@@ -122,7 +122,7 @@ public class InterCropRecActivity extends BaseActivity {
             try (Realm myRealm = getRealmInstance()) {
                 myRealm.executeTransaction(realm -> {
                     if (recAdvice == null) {
-                        recAdvice = myRealm.createObject(RecAdvice.class);
+                        recAdvice = realm.createObject(RecAdvice.class);
                     }
                     recAdvice.setFR(false);
                     recAdvice.setCIM(icMaize);

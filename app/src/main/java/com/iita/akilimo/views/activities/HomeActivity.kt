@@ -286,7 +286,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                 realmInstance.use { myRealm ->
                     myRealm.executeTransaction {
                         if (location == null) {
-                            location = myRealm.createObject(LocationInfo::class.java)
+                            location = it.createObject(LocationInfo::class.java)
                         }
 
                         location = realmProcessor.locationInfo

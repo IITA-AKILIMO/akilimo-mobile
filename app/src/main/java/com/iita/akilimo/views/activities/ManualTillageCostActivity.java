@@ -159,7 +159,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
                 @Override
                 public void execute(Realm realm) {
                     if (operationCosts == null) {
-                        operationCosts = myRealm.createObject(OperationCosts.class);
+                        operationCosts = realm.createObject(OperationCosts.class);
                     }
                     operationCosts.setManualPloughCost(manualPloughCost);
                     operationCosts.setManualRidgeCost(manualRidgeCost);

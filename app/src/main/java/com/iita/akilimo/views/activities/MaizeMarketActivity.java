@@ -294,7 +294,7 @@ public class MaizeMarketActivity extends BaseActivity {
                     @Override
                     public void execute(Realm realm) {
                         if (maizeMarketOutlet == null) {
-                            maizeMarketOutlet = myRealm.createObject(MaizeMarketOutlet.class);
+                            maizeMarketOutlet = realm.createObject(MaizeMarketOutlet.class);
                         }
 
                         maizeMarketOutlet.setProduceType(produceType);

@@ -221,7 +221,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
                 @Override
                 public void execute(Realm realm) {
                     if (potatoMarketOutlet == null) {
-                        potatoMarketOutlet = myRealm.createObject(PotatoMarketOutlet.class);
+                        potatoMarketOutlet = realm.createObject(PotatoMarketOutlet.class);
                     }
 
                     potatoMarketOutlet.setProduceType(enumPotatoProduceType);

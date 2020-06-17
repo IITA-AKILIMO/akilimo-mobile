@@ -170,10 +170,10 @@ public class TractorAccessActivity extends CostBaseActivity {
                 @Override
                 public void execute(Realm realm) {
                     if (operationCosts == null) {
-                        operationCosts = myRealm.createObject(OperationCosts.class);
+                        operationCosts = realm.createObject(OperationCosts.class);
                     }
                     if (currentPractice == null) {
-                        currentPractice = myRealm.createObject(CurrentPractice.class);
+                        currentPractice = realm.createObject(CurrentPractice.class);
                     }
 
                     dataValid = true;

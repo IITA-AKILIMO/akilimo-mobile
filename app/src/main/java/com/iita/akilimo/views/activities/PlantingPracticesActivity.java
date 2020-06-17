@@ -102,7 +102,7 @@ public class PlantingPracticesActivity extends BaseActivity {
                     @Override
                     public void execute(Realm realm) {
                         if (recAdvice == null) {
-                            recAdvice = myRealm.createObject(RecAdvice.class);
+                            recAdvice = realm.createObject(RecAdvice.class);
                         }
                         recAdvice.setFR(false);
                         recAdvice.setCIM(false);

@@ -91,7 +91,7 @@ public class FertilizerRecActivity extends BaseActivity {
             try (Realm myRealm = getRealmInstance()) {
                 myRealm.executeTransaction(realm -> {
                     if (recAdvice == null) {
-                        recAdvice = myRealm.createObject(RecAdvice.class);
+                        recAdvice = realm.createObject(RecAdvice.class);
                     }
                     recAdvice.setFR(true);
                     recAdvice.setCIM(false);
