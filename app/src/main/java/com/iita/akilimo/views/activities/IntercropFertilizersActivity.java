@@ -37,6 +37,7 @@ import com.iita.akilimo.utils.FertilizerList;
 import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.views.fragments.dialog.FertilizerPriceDialogFragment;
+import com.iita.akilimo.views.fragments.dialog.IntercropFertilizerPriceDialogFragment;
 import com.iita.akilimo.widget.SpacingItemDecoration;
 
 import org.jetbrains.annotations.NotNull;
@@ -171,7 +172,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
             Bundle arguments = new Bundle();
             arguments.putParcelable(FertilizerPriceDialogFragment.FERTILIZER_TYPE, selectedType);
 
-            FertilizerPriceDialogFragment priceDialogFragment = new FertilizerPriceDialogFragment();
+            IntercropFertilizerPriceDialogFragment priceDialogFragment = new IntercropFertilizerPriceDialogFragment();
             priceDialogFragment.setArguments(arguments);
 
             priceDialogFragment.setOnDismissListener((priceSpecified, fertilizer, removeSelected) -> {
