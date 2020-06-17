@@ -1,5 +1,6 @@
 package com.iita.akilimo.utils;
 
+import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 
 import io.realm.Realm;
@@ -31,5 +32,12 @@ public class RealmProcessor {
                 .where(ProfileInfo.class)
                 .findFirst();
         return profileInfo;
+    }
+
+    public MandatoryInfo getMandatoryInfo() {
+        MandatoryInfo mandatoryInfo = realm
+                .where(MandatoryInfo.class)
+                .findFirst();
+        return mandatoryInfo;
     }
 }

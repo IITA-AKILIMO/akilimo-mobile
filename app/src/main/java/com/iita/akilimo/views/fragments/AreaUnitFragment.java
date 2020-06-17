@@ -34,7 +34,8 @@ public class AreaUnitFragment extends BaseFragment {
 
     private String selectedAreaUnit;
     private MandatoryInfo mandatoryInfo;
-    private EnumAreaUnits areaUnitsEnum;
+    private String areaUnit = "acre";
+    private int areaUnitRadioIndex = 0;
 
     public AreaUnitFragment() {
         // Required empty public constructor
@@ -60,24 +61,13 @@ public class AreaUnitFragment extends BaseFragment {
     @Override
     public void refreshData() {
         try {
-            mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+            mandatoryInfo = realmProcessor.getMandatoryInfo();
             if (mandatoryInfo != null) {
-                areaUnitsEnum = mandatoryInfo.getAreaUnitsEnum();
-                switch (areaUnitsEnum) {
-                    default:
-                    case ACRE:
-                        rdgAreaUnit.check(R.id.rdAcre);
-                        break;
-                    case HA:
-                        rdgAreaUnit.check(R.id.rdHa);
-                        break;
-                    case SQM:
-                        rdgAreaUnit.check(R.id.rdSqm);
-                        break;
-                }
+                areaUnit = mandatoryInfo.getAreaUnit();
+                areaUnitRadioIndex = mandatoryInfo.getAreaUnitRadioIndex();
+                rdgAreaUnit.check(areaUnitRadioIndex);
             }
         } catch (Exception ex) {
-            mandatoryInfo = new MandatoryInfo();
             Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving are info");
             Crashlytics.logException(ex);
         }
@@ -93,22 +83,21 @@ public class AreaUnitFragment extends BaseFragment {
         rdgAreaUnit.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
             switch (radioIndex) {
                 case R.id.rdAcre:
-                    areaUnitsEnum = EnumAreaUnits.ACRE;
+                    areaUnit = EnumAreaUnits.ACRE.name();
                     break;
                 case R.id.rdHa:
-                    areaUnitsEnum = EnumAreaUnits.HA;
-                    break;
-                case R.id.rdSqm:
-                    areaUnitsEnum = EnumAreaUnits.SQM;
+                    areaUnit = EnumAreaUnits.HA.name();
                     break;
             }
-            mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
-            if (mandatoryInfo == null) {
-                mandatoryInfo = new MandatoryInfo();
-            }
-            mandatoryInfo.setAreaUnitsEnum(areaUnitsEnum);
-            mandatoryInfo.setAreaUnit(areaUnitsEnum.unitString());
-            objectBoxEntityProcessor.saveMandatoryInfo(mandatoryInfo);
+
+            areaUnitRadioIndex = rdgAreaUnit.getCheckedRadioButtonId();
+            myRealm.executeTransaction(realm -> {
+                if (mandatoryInfo == null) {
+                    mandatoryInfo = myRealm.createObject(MandatoryInfo.class);
+                }
+                mandatoryInfo.setAreaUnitRadioIndex(areaUnitRadioIndex);
+                mandatoryInfo.setAreaUnit(areaUnit);
+            });
         });
     }
 }
