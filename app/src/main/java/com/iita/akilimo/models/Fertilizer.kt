@@ -31,7 +31,7 @@ open class Fertilizer : RealmObject(), Parcelable {
     @JsonProperty("price")
     var price: Double? = null
 
-    @PrimaryKey
+
     @JsonProperty("fertilizerCountry")
     var fertilizerCountry: String? = null
 
