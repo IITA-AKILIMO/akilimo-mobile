@@ -31,56 +31,54 @@ public class RealmProcessor {
     Realm realm;
 
     public RealmProcessor() {
-        realm = Realm.getDefaultInstance();
-    }
 
-    public void saveProfileInfo(ProfileInfo profileInfo) {
-        realm.beginTransaction();
-        realm.copyToRealm(profileInfo);
-        realm.commitTransaction();
-    }
-
-    public void updateProfileInfo() {
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-
-            }
-        });
     }
 
     public ProfileInfo getProfileInfo() {
+        realm = Realm.getDefaultInstance();
         ProfileInfo profileInfo = realm
                 .where(ProfileInfo.class)
                 .findFirst();
+
+        realm.close();
         return profileInfo;
     }
 
     public MandatoryInfo getMandatoryInfo() {
+        realm = Realm.getDefaultInstance();
         MandatoryInfo mandatoryInfo = realm
                 .where(MandatoryInfo.class)
                 .findFirst();
+
+        realm.close();
         return mandatoryInfo;
     }
 
     public CurrentPractice getCurrentPractice() {
+        realm = Realm.getDefaultInstance();
         CurrentPractice mandatoryInfo = realm
                 .where(CurrentPractice.class)
                 .findFirst();
+        realm.close();
         return mandatoryInfo;
     }
 
     public PlantingHarvestDates getPlantingHarvestDates() {
+        realm = Realm.getDefaultInstance();
         PlantingHarvestDates mandatoryInfo = realm
                 .where(PlantingHarvestDates.class)
                 .findFirst();
+        realm.close();
         return mandatoryInfo;
     }
 
     public LocationInfo getLocationInfo() {
+        realm = Realm.getDefaultInstance();
         LocationInfo mandatoryInfo = realm
                 .where(LocationInfo.class)
                 .findFirst();
+
+        realm.close();
         return mandatoryInfo;
     }
 

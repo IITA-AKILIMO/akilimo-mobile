@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Locale;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 
 public class FertilizersActivity extends BaseActivity {
 
@@ -199,8 +200,8 @@ public class FertilizersActivity extends BaseActivity {
 
     @Override
     protected void validate(boolean backPressed) {
-        if (mAdapter != null) {
-            availableFertilizersList = realmProcessor.getAvailableFertilizersByCountry(countryCode);
+        availableFertilizersList = realmProcessor.getAvailableFertilizersByCountry(countryCode);
+        if (mAdapter != null && availableFertilizersList != null) {
             mAdapter.setItems(availableFertilizersList);
         }
     }
@@ -231,6 +232,17 @@ public class FertilizersActivity extends BaseActivity {
                     availableFertilizersList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<Fertilizer>>() {
                     });
                     //save fertilizers here
+                    myRealm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            if (availableFertilizersList.size() > 0) {
+                                RealmList<Fertilizer> _fertilizerList = new RealmList<>();
+                                _fertilizerList.addAll(availableFertilizersList);
+                                myRealm.insertOrUpdate(_fertilizerList);
+                            }
+                        }
+                    });
+                    myRealm.close();
                     initializeFertilizerPriceList();
                 } catch (Exception ex) {
                     lyt_progress.setVisibility(View.GONE);
@@ -283,6 +295,17 @@ public class FertilizersActivity extends BaseActivity {
                     fertilizerPricesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<FertilizerPrices>>() {
                     });
                     //save prices here
+                    myRealm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            if (fertilizerPricesList.size() > 0) {
+                                RealmList<FertilizerPrices> _fertilizerPricesList = new RealmList<>();
+                                _fertilizerPricesList.addAll(fertilizerPricesList);
+                                myRealm.insertOrUpdate(_fertilizerPricesList);
+                            }
+                        }
+                    });
+                    myRealm.close();
                     validate(false);
                     recyclerView.setVisibility(View.VISIBLE);
                 } catch (Exception ex) {

@@ -154,17 +154,19 @@ public class CountryFragment extends BaseFragment {
     }
 
     private void updateSelectedCountry(int selectedCountryIndex) {
+        if (myRealm != null) {
+            myRealm.executeTransaction(realm -> {
+                if (mandatoryInfo == null) {
+                    mandatoryInfo = myRealm.createObject(MandatoryInfo.class);
+                }
 
-        myRealm.executeTransaction(realm -> {
-            if (mandatoryInfo == null) {
-                mandatoryInfo = myRealm.createObject(MandatoryInfo.class);
-            }
-
-            mandatoryInfo.setSelectedCountryIndex(selectedCountryIndex);
-            mandatoryInfo.setCountryCode(countryCode);
-            mandatoryInfo.setCountryName(countryName);
-            mandatoryInfo.setCurrency(currency);
-        });
+                mandatoryInfo.setSelectedCountryIndex(selectedCountryIndex);
+                mandatoryInfo.setCountryCode(countryCode);
+                mandatoryInfo.setCountryName(countryName);
+                mandatoryInfo.setCurrency(currency);
+            });
+            myRealm.close();
+        }
     }
 
 }

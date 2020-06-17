@@ -264,5 +264,6 @@ public class CurrentPracticeFragment extends BaseFragment {
             plantingHarvestDates.setPlantingDate(selectedPlantingDate);
             plantingHarvestDates.setHarvestDate(selectedHarvestDate);
         });
+        myRealm.close();
     }
 }

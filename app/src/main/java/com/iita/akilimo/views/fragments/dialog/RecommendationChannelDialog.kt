@@ -16,6 +16,7 @@ import com.iita.akilimo.entities.ProfileInfo
 import com.iita.akilimo.inherit.BaseDialogFragment
 import com.iita.akilimo.interfaces.IRecommendationCallBack
 import com.iita.akilimo.utils.ValidationHelper
+import io.realm.Realm
 import org.jetbrains.annotations.NotNull
 
 
@@ -136,6 +137,7 @@ class RecommendationChannelDialog(
             }
 
             if (dataIsValid) {
+                myRealm = Realm.getDefaultInstance();
                 myRealm.executeTransaction {
                     if (profileInfo == null) {
                         profileInfo = myRealm.createObject(ProfileInfo::class.java)
@@ -145,10 +147,10 @@ class RecommendationChannelDialog(
                     profileInfo?.fullMobileNumber = (fullMobileNumber)
                     profileInfo?.sendEmail = (sendEmail)
                     profileInfo?.sendSms = (sendSms)
-
-                    callbackListener.onDataReceived(profileInfo!!)
-                    dismiss()
                 }
+                myRealm.close();
+                callbackListener.onDataReceived(profileInfo!!)
+                dismiss()
             }
 
         }

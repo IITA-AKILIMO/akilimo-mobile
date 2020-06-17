@@ -208,6 +208,7 @@ public class BioDataFragment extends BaseFragment {
         }
 
         if (dataIsValid) {
+            myRealm = Realm.getDefaultInstance();
             myRealm.executeTransaction(realm -> {
                 if (profileInfo == null) {
                     profileInfo = myRealm.createObject(ProfileInfo.class);
@@ -224,6 +225,7 @@ public class BioDataFragment extends BaseFragment {
                 //load the next fragment
                 nextFragment();
             });
+            myRealm.close();
         }
     }
 

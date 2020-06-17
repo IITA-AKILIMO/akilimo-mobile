@@ -6,7 +6,9 @@ import androidx.multidex.MultiDexApplication;
 
 import com.blongho.country_data.World;
 import com.crashlytics.android.Crashlytics;
+import com.facebook.stetho.Stetho;
 import com.orm.SugarApp;
+import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -54,5 +56,11 @@ public class Akilimo extends MultiDexApplication {
                 .build();
 
         Realm.setDefaultConfiguration(config);
+
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
+                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+                        .enableWebKitInspector(RealmInspectorModulesProvider
+                                .builder(this).build()).build());
     }
 }

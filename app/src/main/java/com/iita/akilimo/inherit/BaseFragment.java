@@ -73,7 +73,7 @@ public abstract class BaseFragment extends Fragment {
         sessionManager = new SessionManager(getContext());
         queue = Volley.newRequestQueue(context.getApplicationContext());
         appVersion = sessionManager.getAppVersion();
-        myRealm = Realm.getDefaultInstance();
+        //myRealm = Realm.getDefaultInstance();
         realmProcessor = new RealmProcessor();
     }
 

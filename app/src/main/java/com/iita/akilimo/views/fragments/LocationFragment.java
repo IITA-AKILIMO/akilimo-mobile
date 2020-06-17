@@ -126,6 +126,7 @@ public class LocationFragment extends BaseFragment {
 
             reloadLocationInfo();
         });
+        myRealm.close();
 
     }
 

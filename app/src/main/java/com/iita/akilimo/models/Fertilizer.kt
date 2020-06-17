@@ -22,6 +22,7 @@ open class Fertilizer : RealmObject(), Parcelable {
     @JsonProperty("name")
     var name: String? = null
 
+    @PrimaryKey
     @JsonProperty("type")
     var fertilizerType: String? = null
 

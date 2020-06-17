@@ -6,7 +6,6 @@ buildscript {
         google()
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
-        
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.0.0'
@@ -24,6 +23,8 @@ allprojects {
         maven { url 'https://mapbox.bintray.com/mapbox' }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://jitpack.io" }
+        maven { url 'https://github.com/WickeDev/stetho-realm/raw/master/maven-repo' }
+
     }
 }
 

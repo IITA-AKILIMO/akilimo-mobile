@@ -33,7 +33,6 @@ public abstract class BaseDialogFragment extends DialogFragment {
         super.onAttach(context);
         this.context = context;
         mathHelper = new MathHelper();
-        myRealm = Realm.getDefaultInstance();
         realmProcessor = new RealmProcessor();
     }
 }
