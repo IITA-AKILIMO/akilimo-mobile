@@ -21,6 +21,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.FragmentLocationBinding;
 import com.iita.akilimo.entities.LocationInfo;
+import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.services.GPSTracker;
@@ -116,21 +117,22 @@ public class LocationFragment extends BaseFragment {
     }
 
     private void saveLocation() {
-        if (locationInformation == null) {
-            locationInformation = new LocationInfo();
-        }
-        locationInformation.setLatitude(currentLat);
-        locationInformation.setLongitude(currentLon);
+        myRealm.executeTransaction(realm -> {
+            if (locationInformation == null) {
+                locationInformation = myRealm.createObject(LocationInfo.class);
+            }
+            locationInformation.setLatitude(currentLat);
+            locationInformation.setLongitude(currentLon);
 
-        objectBoxEntityProcessor.saveLocationInfo(locationInformation);
-        reloadLocationInfo();
+            reloadLocationInfo();
+        });
 
     }
 
     private void reloadLocationInfo() {
         try {
-            profileInfo = objectBoxEntityProcessor.getProfileInfo();
-            locationInformation = objectBoxEntityProcessor.getLocationInfo();
+            profileInfo = realmProcessor.getProfileInfo();
+            locationInformation = realmProcessor.getLocationInfo();
 
             if (profileInfo != null) {
                 farmName = profileInfo.getFarmName();

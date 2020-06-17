@@ -23,6 +23,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.databinding.FragmentCurrentPracticeBinding;
 import com.iita.akilimo.entities.CurrentPractice;
+import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.utils.enums.EnumOperationType;
@@ -141,11 +142,9 @@ public class CurrentPracticeFragment extends BaseFragment {
     public void refreshData() {
         try {
 
-            currentPractice = objectBoxEntityProcessor.getCurrentPractice();
-            plantingHarvestDates = objectBoxEntityProcessor.getPlantingHarvestDates();
-            if (currentPractice == null) {
-                currentPractice = new CurrentPractice();
-            } else {
+            currentPractice = realmProcessor.getCurrentPractice();
+            plantingHarvestDates = realmProcessor.getPlantingHarvestDates();
+            if (currentPractice != null) {
                 isDataRefreshing = true;
                 performPloughing = currentPractice.getPerformPloughing();
                 performRidging = currentPractice.getPerformRidging();
@@ -166,8 +165,6 @@ public class CurrentPracticeFragment extends BaseFragment {
                 selectedHarvestDate = plantingHarvestDates.getHarvestDate();
                 lblSelectedPlantingDate.setText(selectedPlantingDate);
                 lblSelectedHarvestDate.setText(selectedHarvestDate);
-            } else {
-                plantingHarvestDates = new PlantingHarvestDates();
             }
 
         } catch (Exception ex) {
@@ -249,16 +246,23 @@ public class CurrentPracticeFragment extends BaseFragment {
         if (!performHarrowing) {
             harrowingMethod = EnumOperationType.NONE.operationName();
         }
-        currentPractice.setRidgingMethod(ridgingMethod);
-        currentPractice.setPloughingMethod(ploughingMethod);
-        currentPractice.setPerformRidging(performRidging);
-        currentPractice.setPerformPloughing(performPloughing);
-        currentPractice.setPerformHarrowing(performHarrowing);
 
-        plantingHarvestDates.setPlantingDate(selectedPlantingDate);
-        plantingHarvestDates.setHarvestDate(selectedHarvestDate);
+        myRealm.executeTransaction(realm -> {
+            if (currentPractice == null) {
+                currentPractice = myRealm.createObject(CurrentPractice.class);
+            }
+            currentPractice.setRidgingMethod(ridgingMethod);
+            currentPractice.setPloughingMethod(ploughingMethod);
+            currentPractice.setPerformRidging(performRidging);
+            currentPractice.setPerformPloughing(performPloughing);
+            currentPractice.setPerformHarrowing(performHarrowing);
 
-        objectBoxEntityProcessor.saveCurrentPractice(currentPractice);
-        objectBoxEntityProcessor.savePlantingHarvestDates(plantingHarvestDates);
+            if (plantingHarvestDates == null) {
+                plantingHarvestDates = myRealm.createObject(PlantingHarvestDates.class);
+            }
+
+            plantingHarvestDates.setPlantingDate(selectedPlantingDate);
+            plantingHarvestDates.setHarvestDate(selectedHarvestDate);
+        });
     }
 }

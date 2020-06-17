@@ -73,7 +73,8 @@ public class ManualTillageCostActivity extends CostBaseActivity {
             currency = mandatoryInfo.getCurrency();
             areaUnit = mandatoryInfo.getAreaUnit();
             fieldSize = mandatoryInfo.getAreaSize();
-            enumCountry = mandatoryInfo.getCountryEnum();
+            countryCode = mandatoryInfo.getCountryCode();
+            currency = mandatoryInfo.getCurrency();
         }
         initToolbar();
         initComponent();
@@ -83,8 +84,8 @@ public class ManualTillageCostActivity extends CostBaseActivity {
             manualPloughCost = operationCosts.getManualPloughCost();
             manualRidgeCost = operationCosts.getManualRidgeCost();
 
-            manualPloughCostText.setText(getString(R.string.lbl_ploughing_cost_text, fieldSize, areaUnit, manualPloughCost, enumCountry.currency()));
-            manualRidgingCostText.setText(getString(R.string.lbl_ridging_cost_text, fieldSize, areaUnit, manualRidgeCost, enumCountry.currency()));
+            manualPloughCostText.setText(getString(R.string.lbl_ploughing_cost_text, fieldSize, areaUnit, manualPloughCost, currency));
+            manualRidgingCostText.setText(getString(R.string.lbl_ridging_cost_text, fieldSize, areaUnit, manualRidgeCost,currency));
 
         }
     }
@@ -105,13 +106,13 @@ public class ManualTillageCostActivity extends CostBaseActivity {
 
         btnPloughCost.setOnClickListener(view -> {
             if (!dialogOpen) {
-                loadOperationCost(EnumOperation.TILLAGE, EnumOperationType.MANUAL, ploughTitle);
+                loadOperationCost(EnumOperation.TILLAGE.name(), EnumOperationType.MANUAL.name(), ploughTitle);
             }
         });
 
         btnRidgeCost.setOnClickListener(view -> {
             if (!dialogOpen) {
-                loadOperationCost(EnumOperation.RIDGING, EnumOperationType.MANUAL, ridgeTitle);
+                loadOperationCost(EnumOperation.RIDGING.name(), EnumOperationType.MANUAL.name(), ridgeTitle);
             }
         });
 
@@ -157,15 +158,15 @@ public class ManualTillageCostActivity extends CostBaseActivity {
     }
 
     @Override
-    protected void showDialogFullscreen(ArrayList<OperationCost> operationCostList, EnumOperation operation, EnumCountry enumCountry, String dialogTitle) {
+    protected void showDialogFullscreen(ArrayList<OperationCost> operationCostList, String operation, String enumCountry, String dialogTitle) {
         Bundle arguments = new Bundle();
 
         if (dialogOpen) {
             return;
         }
         arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList);
-        arguments.putParcelable(OperationCostsDialogFragment.OPERATION_NAME, operation);
-        arguments.putParcelable(OperationCostsDialogFragment.SELECTED_COUNTRY, enumCountry);
+        arguments.putString(OperationCostsDialogFragment.OPERATION_NAME, operation);
+        arguments.putString(OperationCostsDialogFragment.SELECTED_COUNTRY, enumCountry);
 
         OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment();
         dialogFragment.setArguments(arguments);
@@ -173,13 +174,13 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         dialogFragment.setOnDismissListener((operationCost, enumOperation, selectedCost, cancelled, isExactCost) -> {
             if (!cancelled && enumOperation != null) {
                 switch (enumOperation) {
-                    case TILLAGE:
+                    case "TILLAGE":
                         manualPloughCost = selectedCost;
-                        manualPloughCostText.setText(getString(R.string.lbl_ploughing_cost_text, fieldSize, areaUnit, selectedCost, enumCountry.currency()));
+                        manualPloughCostText.setText(getString(R.string.lbl_ploughing_cost_text, fieldSize, areaUnit, selectedCost, currency));
                         break;
-                    case RIDGING:
+                    case "RIDGING":
                         manualRidgeCost = selectedCost;
-                        manualRidgingCostText.setText(getString(R.string.lbl_ridging_cost_text, fieldSize, areaUnit, selectedCost, enumCountry.currency()));
+                        manualRidgingCostText.setText(getString(R.string.lbl_ridging_cost_text, fieldSize, areaUnit, selectedCost, currency));
                         break;
                 }
             }

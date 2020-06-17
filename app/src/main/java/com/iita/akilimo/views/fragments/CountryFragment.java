@@ -42,7 +42,6 @@ public class CountryFragment extends BaseFragment {
 
     private ProfileInfo profileInfo;
     private MandatoryInfo mandatoryInfo;
-    private EnumCountry countryEnum = EnumCountry.OTHERS;
     private String name = "";
 
     private int selectedCountryIndex = -1;
@@ -72,18 +71,17 @@ public class CountryFragment extends BaseFragment {
     @Override
     public void refreshData() {
         try {
-            profileInfo = objectBoxEntityProcessor.getProfileInfo();
-            mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+            profileInfo = realmProcessor.getProfileInfo();
+            mandatoryInfo = realmProcessor.getMandatoryInfo();
             if (profileInfo != null) {
                 name = profileInfo.getFirstName();
             }
             if (mandatoryInfo != null) {
                 selectedCountryIndex = mandatoryInfo.getSelectedCountryIndex();
-                countryEnum = mandatoryInfo.getCountryEnum();
+                countryCode = mandatoryInfo.getCountryCode();
                 countrySpinner.setSelection(selectedCountryIndex);
             }
         } catch (Exception ex) {
-            mandatoryInfo = new MandatoryInfo();
             Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred fetching info");
             Crashlytics.logException(ex);
         }
@@ -107,12 +105,12 @@ public class CountryFragment extends BaseFragment {
         //let us get the current locale and limit countries to that locale
         Locale currentLocale = getCurrentLocale();
         if (currentLocale.getCountry().equalsIgnoreCase(EnumCountry.TANZANIA.countryCode())) {
-            countries.add(EnumCountry.TANZANIA.countryName());
-            countryImages.add(World.getFlagOf(EnumCountry.TANZANIA.countryCode()));
+            countries.add(EnumCountry.TANZANIA.name());
+            countryImages.add(World.getFlagOf(countryCode));
         } else {
-            countries.add(EnumCountry.NIGERIA.countryName());
+            countries.add(EnumCountry.NIGERIA.name());
             countryImages.add(World.getFlagOf(EnumCountry.NIGERIA.countryCode()));
-            countries.add(EnumCountry.TANZANIA.countryName());
+            countries.add(EnumCountry.TANZANIA.name());
             countryImages.add(World.getFlagOf(EnumCountry.TANZANIA.countryCode()));
         }
 
@@ -126,19 +124,27 @@ public class CountryFragment extends BaseFragment {
                 String selectedCountry = countries.get(position).toLowerCase();
                 switch (selectedCountry) {
                     case "kenya":
-                        countryEnum = EnumCountry.KENYA;
+                        countryName = EnumCountry.KENYA.name();
+                        currency = EnumCountry.KENYA.currency();
+                        countryCode = EnumCountry.KENYA.countryCode();
                         break;
                     case "tanzania":
-                        countryEnum = EnumCountry.TANZANIA;
+                        countryName = EnumCountry.TANZANIA.name();
+                        currency = EnumCountry.TANZANIA.currency();
+                        countryCode = EnumCountry.TANZANIA.countryCode();
                         break;
                     case "nigeria":
-                        countryEnum = EnumCountry.NIGERIA;
+                        countryName = EnumCountry.NIGERIA.name();
+                        currency = EnumCountry.NIGERIA.currency();
+                        countryCode = EnumCountry.NIGERIA.countryCode();
                         break;
                     default:
-                        countryEnum = EnumCountry.OTHERS;
+                        countryName = EnumCountry.OTHERS.name();
+                        currency = EnumCountry.OTHERS.currency();
+                        countryCode = EnumCountry.OTHERS.countryCode();
                         break;
                 }
-                updateSelectedCountry(countryEnum, position);
+                updateSelectedCountry(position);
             }
 
             @Override
@@ -147,18 +153,18 @@ public class CountryFragment extends BaseFragment {
         });
     }
 
-    private void updateSelectedCountry(EnumCountry countryEnum, int selectedCountryIndex) {
-        mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
-        if (mandatoryInfo == null) {
-            mandatoryInfo = new MandatoryInfo();
-        }
+    private void updateSelectedCountry(int selectedCountryIndex) {
 
-        mandatoryInfo.setSelectedCountryIndex(selectedCountryIndex);
-        mandatoryInfo.setCountryCode(countryEnum.countryCode());
-        mandatoryInfo.setCountryName(countryEnum.countryName());
-        mandatoryInfo.setCurrency(countryEnum.currency());
-        mandatoryInfo.setCountryEnum(countryEnum);
-        objectBoxEntityProcessor.saveMandatoryInfo(mandatoryInfo);
+        myRealm.executeTransaction(realm -> {
+            if (mandatoryInfo == null) {
+                mandatoryInfo = myRealm.createObject(MandatoryInfo.class);
+            }
+
+            mandatoryInfo.setSelectedCountryIndex(selectedCountryIndex);
+            mandatoryInfo.setCountryCode(countryCode);
+            mandatoryInfo.setCountryName(countryName);
+            mandatoryInfo.setCurrency(currency);
+        });
     }
 
 }

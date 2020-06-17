@@ -182,7 +182,7 @@ public class InvestmentAmountActivity extends BaseActivity {
 
         MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
         fieldSize = mandatoryInfo.getAreaSize();
-        fieldSizeAcre = mandatoryInfo.getAcreAreaSize();
+        fieldSizeAcre = mandatoryInfo.getAreaSize();
         fieldArea = String.valueOf(fieldSize);
         fieldAreaAcre = String.valueOf(fieldSizeAcre);
 

@@ -52,6 +52,8 @@ public abstract class BaseFragment extends Fragment {
     private String appVersion;
     protected Context context;
     protected RequestQueue queue;
+
+    @Deprecated
     protected ObjectBoxEntityProcessor objectBoxEntityProcessor;
     protected SessionManager sessionManager;
     protected RealmProcessor realmProcessor;

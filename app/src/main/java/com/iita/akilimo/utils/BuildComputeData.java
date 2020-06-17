@@ -235,7 +235,7 @@ public class BuildComputeData {
         }
         if (mandatoryInfo != null) {
             fieldArea = mandatoryInfo.getAreaSize();
-            areaUnits = mandatoryInfo.getAreaUnitsEnum().unitString();
+            areaUnits = mandatoryInfo.getAreaUnit();
             countryCode = mandatoryInfo.getCountryCode();
 
             computeRequest.setRiskAttitude(riskAtt);

@@ -58,7 +58,7 @@ public class WeedControlCostsActivity extends BaseActivity {
         operationCosts = objectBoxEntityProcessor.getOperationCosts();
         currentPractice = objectBoxEntityProcessor.getCurrentPractice();
         if (mandatoryInfo != null) {
-            currency = mandatoryInfo.getCountryEnum().currency();
+            currency = mandatoryInfo.getCurrency();
         }
 
         toolbar = binding.toolbar;

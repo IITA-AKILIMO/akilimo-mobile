@@ -1,9 +1,10 @@
 package com.iita.akilimo.entities
 
 import com.orm.SugarRecord
+import io.realm.RealmObject
 
 
-class LocationInfo : SugarRecord<LocationInfo>() {
+open class LocationInfo :RealmObject() {
     var id: Long = 0
     var latitude: Double = 0.0
     var longitude: Double = 0.0

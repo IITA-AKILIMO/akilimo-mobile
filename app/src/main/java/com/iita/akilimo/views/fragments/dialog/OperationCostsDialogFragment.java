@@ -71,11 +71,10 @@ public class OperationCostsDialogFragment extends DialogFragment {
     private String exactPrice = "0";
     private String dialogTitle;
 
-    private EnumCountry enumCountry;
+    private String countryCode;
     private IDismissDialog onDismissListener;
     private ArrayList<OperationCost> operationCosts;
     private OperationCost operationCost;
-    private EnumOperation enumOperation;
 
     public OperationCostsDialogFragment() {
         // Required empty public constructor
@@ -96,8 +95,8 @@ public class OperationCostsDialogFragment extends DialogFragment {
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             operationCosts = bundle.getParcelableArrayList(COST_LIST);
-            enumCountry = bundle.getParcelable(SELECTED_COUNTRY);
-            enumOperation = bundle.getParcelable(OPERATION_NAME);
+            countryCode = bundle.getString(SELECTED_COUNTRY);
+            operationName = bundle.getString(OPERATION_NAME);
             dialogTitle = bundle.getString(DIALOG_TITLE);
         }
 
@@ -175,9 +174,9 @@ public class OperationCostsDialogFragment extends DialogFragment {
 
         try {
             operationCost = operationCosts.get((int) itemTagIndex);
-            if (enumCountry.equals(EnumCountry.NIGERIA)) {
+            if (countryCode.equals(EnumCountry.NIGERIA)) {
                 selectedCost = operationCost.getAverageNgnPrice();
-            } else if (enumCountry.equals(EnumCountry.TANZANIA)) {
+            } else if (countryCode.equals(EnumCountry.TANZANIA)) {
                 selectedCost = operationCost.getAverageTzsPrice();
             }
             isExactCostRequired = false;
@@ -208,11 +207,11 @@ public class OperationCostsDialogFragment extends DialogFragment {
             double maxPrice = operationCost.getMaxUsd();
             double minPrice = operationCost.getMinUsd();
 
-            if (enumCountry.equals(EnumCountry.NIGERIA)) {
+            if (countryCode.equals(EnumCountry.NIGERIA)) {
                 price = operationCost.getAverageNgnPrice();
                 maxPrice = operationCost.getMaxNgn();
                 minPrice = operationCost.getMinNgn();
-            } else if (enumCountry.equals(EnumCountry.TANZANIA)) {
+            } else if (countryCode.equals(EnumCountry.TANZANIA)) {
                 price = operationCost.getAverageTzsPrice();
                 maxPrice = operationCost.getMaxTzs();
                 minPrice = operationCost.getMinTzs();
@@ -223,7 +222,7 @@ public class OperationCostsDialogFragment extends DialogFragment {
             radioButton.setTag(listIndex);
 
 
-            String radioLabel = String.format("%s %s %s %s", minPrice, translatedSuffix, maxPrice, enumCountry.currency());
+            String radioLabel = String.format("%s %s %s %s", minPrice, translatedSuffix, maxPrice, currencyCode);
 
             if (price >= 0 && price <= 0) {
                 radioLabel = context.getString(R.string.lbl_do_not_know);
@@ -240,7 +239,7 @@ public class OperationCostsDialogFragment extends DialogFragment {
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
         if (onDismissListener != null) {
-            onDismissListener.onDismiss(operationCost, enumOperation, selectedCost, cancelled, isExactCostRequired);
+            onDismissListener.onDismiss(operationCost, operationName, selectedCost, cancelled, isExactCostRequired);
         }
     }
 
@@ -250,6 +249,6 @@ public class OperationCostsDialogFragment extends DialogFragment {
 
     /* callback interface for pricing specification*/
     public interface IDismissDialog {
-        void onDismiss(OperationCost operationCost, EnumOperation operation, double selectedCost, boolean cancelled, boolean isExactCost);
+        void onDismiss(OperationCost operationCost, String operationName, double selectedCost, boolean cancelled, boolean isExactCost);
     }
 }

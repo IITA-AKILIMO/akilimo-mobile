@@ -1,6 +1,9 @@
 package com.iita.akilimo.utils;
 
+import com.iita.akilimo.entities.CurrentPractice;
+import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.MandatoryInfo;
+import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.entities.ProfileInfo;
 
 import io.realm.Realm;
@@ -37,6 +40,27 @@ public class RealmProcessor {
     public MandatoryInfo getMandatoryInfo() {
         MandatoryInfo mandatoryInfo = realm
                 .where(MandatoryInfo.class)
+                .findFirst();
+        return mandatoryInfo;
+    }
+
+    public CurrentPractice getCurrentPractice() {
+        CurrentPractice mandatoryInfo = realm
+                .where(CurrentPractice.class)
+                .findFirst();
+        return mandatoryInfo;
+    }
+
+    public PlantingHarvestDates getPlantingHarvestDates() {
+        PlantingHarvestDates mandatoryInfo = realm
+                .where(PlantingHarvestDates.class)
+                .findFirst();
+        return mandatoryInfo;
+    }
+
+    public LocationInfo getLocationInfo() {
+        LocationInfo mandatoryInfo = realm
+                .where(LocationInfo.class)
                 .findFirst();
         return mandatoryInfo;
     }

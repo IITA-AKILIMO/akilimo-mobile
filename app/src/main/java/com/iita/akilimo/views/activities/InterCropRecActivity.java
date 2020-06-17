@@ -71,12 +71,12 @@ public class InterCropRecActivity extends BaseActivity {
             countryCode = mandatoryInfo.getCountryCode();
             currency = mandatoryInfo.getCurrency();
 
-            switch (mandatoryInfo.getCountryEnum()) {
-                case NIGERIA:
+            switch (countryCode) {
+                case "NG":
                     recommendations = getString(R.string.title_maize_intercropping);
                     useCase = EnumUseCase.CIM;
                     break;
-                case TANZANIA:
+                case "TZ":
                     recommendations = getString(R.string.title_sweet_potato_intercropping);
                     useCase = EnumUseCase.CIS;
                     break;

@@ -1,8 +1,9 @@
 package com.iita.akilimo.entities
 
 import com.orm.SugarRecord
+import io.realm.RealmObject
 
-class CurrentPractice : SugarRecord<CurrentPractice?>() {
+open class CurrentPractice : RealmObject() {
     var id: Long = 0
     var weedRadioIndex = 0
     var weedControlTechnique: String? = null

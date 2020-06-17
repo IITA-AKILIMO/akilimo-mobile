@@ -1,8 +1,9 @@
 package com.iita.akilimo.entities
 
 import com.orm.SugarRecord
+import io.realm.RealmObject
 
-class PlantingHarvestDates : SugarRecord<PlantingHarvestDates?>() {
+open class PlantingHarvestDates : RealmObject() {
     var id: Long = 0
     var deviceId: String? = null
     var plantingDate: String? = null

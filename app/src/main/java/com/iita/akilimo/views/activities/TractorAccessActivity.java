@@ -82,7 +82,7 @@ public class TractorAccessActivity extends CostBaseActivity {
             currency = mandatoryInfo.getCurrency();
             areaUnit = mandatoryInfo.getAreaUnit();
             fieldSize = mandatoryInfo.getAreaSize();
-            enumCountry = mandatoryInfo.getCountryEnum();
+            countryCode = mandatoryInfo.getCountryCode();
         }
 
         toolbar = binding.toolbar;
@@ -135,14 +135,14 @@ public class TractorAccessActivity extends CostBaseActivity {
             hasPlough = isChecked;
             if (buttonView.isPressed() && isChecked && !dialogOpen) {
                 String title = (getString(R.string.lbl_tractor_plough_cost, fieldSize, areaUnit));
-                loadOperationCost(EnumOperation.TILLAGE, EnumOperationType.MECHANICAL, title);
+                loadOperationCost(EnumOperation.TILLAGE.name(), EnumOperationType.MECHANICAL.name(), title);
             }
         });
         chkRidger.setOnCheckedChangeListener((buttonView, isChecked) -> {
             hasRidger = isChecked;
             if (buttonView.isPressed() && isChecked && !dialogOpen) {
                 String title = (getString(R.string.lbl_tractor_ridge_cost, fieldSize, areaUnit));
-                loadOperationCost(EnumOperation.RIDGING, EnumOperationType.MECHANICAL, title);
+                loadOperationCost(EnumOperation.RIDGING.name(), EnumOperationType.MECHANICAL.name(), title);
             }
         });
         btnFinish.setOnClickListener(view -> validate(false));
@@ -184,7 +184,7 @@ public class TractorAccessActivity extends CostBaseActivity {
     }
 
     @Override
-    protected void showDialogFullscreen(ArrayList<OperationCost> operationCostList, EnumOperation operation, EnumCountry enumCountry, String dialogTitle) {
+    protected void showDialogFullscreen(ArrayList<OperationCost> operationCostList, String operation, String enumCountry, String dialogTitle) {
         Bundle arguments = new Bundle();
 
         if (dialogOpen) {
@@ -193,8 +193,8 @@ public class TractorAccessActivity extends CostBaseActivity {
 
         showCustomNotificationDialog();
         arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList);
-        arguments.putParcelable(OperationCostsDialogFragment.OPERATION_NAME, operation);
-        arguments.putParcelable(OperationCostsDialogFragment.SELECTED_COUNTRY, enumCountry);
+        arguments.putString(OperationCostsDialogFragment.OPERATION_NAME, operation);
+        arguments.putString(OperationCostsDialogFragment.SELECTED_COUNTRY, enumCountry);
         arguments.putString(OperationCostsDialogFragment.DIALOG_TITLE, dialogTitle);
 
         OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment();
@@ -203,11 +203,11 @@ public class TractorAccessActivity extends CostBaseActivity {
         dialogFragment.setOnDismissListener((operationCost, enumOperation, selectedCost, cancelled, isExactCost) -> {
             if (!cancelled && enumOperation != null) {
                 switch (enumOperation) {
-                    case TILLAGE:
+                    case "TILLAGE":
                         tractorPloughCost = selectedCost;
                         exactPloughCost = isExactCost;
                         break;
-                    case RIDGING:
+                    case "RIDGING":
                         tractorRidgeCost = selectedCost;
                         exactRidgeCost = isExactCost;
                         break;
