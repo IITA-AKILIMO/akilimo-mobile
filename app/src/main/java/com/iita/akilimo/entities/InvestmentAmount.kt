@@ -6,7 +6,8 @@ import io.realm.annotations.PrimaryKey
 
 open class InvestmentAmount : RealmObject() {
 
-    var id: Long = 0
+    @PrimaryKey
+    var id: String? = null
     var minInvestmentAmountUSD: Double = 0.0
     var minInvestmentAmountLocal: Double = 0.0
     var investmentAmountUSD: Double = 0.0

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -23,6 +24,7 @@ import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.RealmProcessor;
+import com.iita.akilimo.utils.Tools;
 
 import io.realm.Realm;
 
@@ -44,6 +46,7 @@ public class InvestmentAmountActivity extends BaseActivity {
     TextInputLayout txtEditInvestmentAmountLayout;
     MaterialButton btnFinish;
     ActivityInvestmentAmountBinding binding;
+    Realm myRealm;
 
 
     String investmentAmountError;
@@ -58,7 +61,7 @@ public class InvestmentAmountActivity extends BaseActivity {
 
     private double investmentAmountUSD;
     private double investmentAmountLocal;
-    private double minInvestmentUSD = 25;
+    private double minInvestmentUSD = 1;
     private double minimumAmountUSD;
     private double minimumAmountLocal;
     private String selectedFieldArea;
@@ -73,6 +76,7 @@ public class InvestmentAmountActivity extends BaseActivity {
         context = this;
         realmProcessor = new RealmProcessor();
         mathHelper = new MathHelper();
+        myRealm = Realm.getDefaultInstance();
 
         toolbar = binding.toolbar;
         radioGroup = binding.radioInvestmentGroup;
@@ -164,22 +168,19 @@ public class InvestmentAmountActivity extends BaseActivity {
 
             invAmount = realmProcessor.getInvestmentAmount();
 
-            try (Realm myRealm = getRealmInstance()) {
-                myRealm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        if (invAmount == null) {
-                            invAmount = realm.createObject(InvestmentAmount.class);
-                        }
-                        invAmount.setInvestmentAmountUSD(investmentAmountUSD);
-                        invAmount.setMinInvestmentAmountUSD(minimumAmountUSD);
-
-                        invAmount.setInvestmentAmountLocal(investmentAmountLocal);
-                        invAmount.setMinInvestmentAmountLocal(minimumAmountLocal);
+            try {
+                myRealm.executeTransaction(realm -> {
+                    if (invAmount == null) {
+                        invAmount = realm.createObject(InvestmentAmount.class, Tools.generateUUID());
                     }
+                    invAmount.setInvestmentAmountUSD(investmentAmountUSD);
+                    invAmount.setMinInvestmentAmountUSD(minimumAmountUSD);
+                    invAmount.setInvestmentAmountLocal(investmentAmountLocal);
+                    invAmount.setMinInvestmentAmountLocal(minimumAmountLocal);
                 });
                 closeActivity(false);
             } catch (Exception ex) {
+                Crashlytics.log(Log.ERROR,LOG_TAG,ex.getMessage());
                 Crashlytics.logException(ex);
             }
         });
@@ -195,15 +196,17 @@ public class InvestmentAmountActivity extends BaseActivity {
     private void updateLabels() {
 
         MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
-        fieldSize = mandatoryInfo.getAreaSize();
-        fieldSizeAcre = mandatoryInfo.getAreaSize();
-        fieldArea = String.valueOf(fieldSize);
-        fieldAreaAcre = String.valueOf(fieldSizeAcre);
-
-        areaUnit = mandatoryInfo.getAreaUnit();
+        if (mandatoryInfo != null) {
+            fieldSize = mandatoryInfo.getAreaSize();
+            fieldSizeAcre = mandatoryInfo.getAreaSize();
+            fieldArea = String.valueOf(fieldSize);
+            fieldAreaAcre = String.valueOf(fieldSizeAcre);
+            areaUnit = mandatoryInfo.getAreaUnit();
+            currency = mandatoryInfo.getCurrency();
+        }
         selectedFieldArea = String.format("%s %s", fieldSize, areaUnit);
 
-        currency = mandatoryInfo.getCurrency();
+
         if (Strings.isEmptyOrWhitespace(selectedFieldArea)) {
             return;
         }
@@ -248,5 +251,11 @@ public class InvestmentAmountActivity extends BaseActivity {
         hasErrors = investmentAmountLocal < minimumAmountLocal;
         return investmentAmountError = getString(R.string.lbl_investment_validation_msg, minimumAmountLocal, currency);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
     }
 }

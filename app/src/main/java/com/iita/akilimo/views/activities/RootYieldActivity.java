@@ -1,6 +1,7 @@
 package com.iita.akilimo.views.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -9,11 +10,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.AdapterGridTwoLine;
 import com.iita.akilimo.databinding.ActivityRootYieldBinding;
 import com.iita.akilimo.entities.CurrentFieldYield;
+import com.iita.akilimo.entities.InvestmentAmount;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
@@ -24,6 +27,8 @@ import com.iita.akilimo.widget.SpacingItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.realm.Realm;
 
 public class RootYieldActivity extends BaseActivity {
 
@@ -37,6 +42,7 @@ public class RootYieldActivity extends BaseActivity {
     AppCompatButton btnCancel;
 
     ActivityRootYieldBinding binding;
+    Realm myRealm;
 
     private CurrentFieldYield savedYield;
     private MathHelper mathHelper;
@@ -59,6 +65,8 @@ public class RootYieldActivity extends BaseActivity {
 
         realmProcessor = new RealmProcessor();
         mathHelper = new MathHelper();
+        myRealm = Realm.getDefaultInstance();
+
         MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
@@ -107,7 +115,19 @@ public class RootYieldActivity extends BaseActivity {
         mAdapter.setOnItemClickListener((view, fieldYield, position) -> {
             mAdapter.setActiveRowIndex(position);
             selectedYieldAmount = fieldYield.getYieldAmount();
-            //@TODO check that this data is saved
+            try {
+                myRealm.executeTransaction(realm -> {
+                    if (savedYield == null) {
+                        savedYield = realm.createObject(CurrentFieldYield.class, Tools.generateUUID());
+                    }
+                    savedYield.setYieldAmount(selectedYieldAmount);
+                });
+                //closeActivity(false);
+            } catch (Exception ex) {
+                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+                Crashlytics.logException(ex);
+            }
+
             mAdapter.setItems(selectedYieldAmount, items);
         });
 
@@ -181,5 +201,9 @@ public class RootYieldActivity extends BaseActivity {
         return cfy;
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
+    }
 }

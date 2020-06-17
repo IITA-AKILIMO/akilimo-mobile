@@ -6,7 +6,8 @@ import io.realm.annotations.PrimaryKey
 
 open class CurrentFieldYield : RealmObject() {
 
-    var id: Long = 0
+    @PrimaryKey
+    var id: String? = null
     var yieldAmount = 0.0
     var fieldYieldLabel: String? = null
 

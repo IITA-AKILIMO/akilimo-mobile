@@ -128,7 +128,10 @@ public class RealmProcessor {
     }
 
     public CurrentFieldYield getCurrentFieldYield() {
-        return null;
+        CurrentFieldYield currentFieldYield = realm.where(CurrentFieldYield.class)
+                .findFirst();
+
+        return currentFieldYield;
     }
 
     public InvestmentAmount getInvestmentAmount() {

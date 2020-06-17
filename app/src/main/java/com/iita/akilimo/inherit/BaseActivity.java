@@ -52,10 +52,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected RequestQueue queue;
 
     protected String countryCode = "NG";
-    protected String baseCurrency = "NGN";
-    protected String currency = "";
+    protected String baseCurrency = "USD";
+    protected String currency = "NGN";
     protected EnumUseCase useCase;
-    protected String areaUnit = "";
+    protected String areaUnit = "acre";
     protected double fieldSize = 0;
     protected double fieldSizeAcre = 2.471;
 
