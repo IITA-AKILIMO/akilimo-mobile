@@ -19,7 +19,7 @@ import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
+
 
 import java.util.ArrayList;
 import java.util.List;

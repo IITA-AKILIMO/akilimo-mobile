@@ -20,13 +20,16 @@ import com.iita.akilimo.entities.RecAdvice;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
+import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.enums.EnumCountry;
 import com.iita.akilimo.utils.enums.EnumUseCase;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
+
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.realm.Realm;
 
 public class InterCropRecActivity extends BaseActivity {
 
@@ -47,6 +50,7 @@ public class InterCropRecActivity extends BaseActivity {
     private Activity activity;
     private RecOptionsAdapter mAdapter;
     private List<RecommendationOptions> items = new ArrayList<>();
+    private  RecAdvice recAdvice;
     private EnumUseCase useCase;
     private boolean icMaize;
     private boolean icPotato;
@@ -64,9 +68,10 @@ public class InterCropRecActivity extends BaseActivity {
         btnGetRec = binding.singleButton.btnGetRecommendation;
 
 
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
+        realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
 
-        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
             currency = mandatoryInfo.getCurrency();
@@ -113,20 +118,21 @@ public class InterCropRecActivity extends BaseActivity {
         recyclerView.setHasFixedSize(true);
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
-            RecAdvice recAdvice = objectBoxEntityProcessor.getRecAdvice();
-            if (recAdvice == null) {
-                recAdvice = new RecAdvice();
-            }
-            recAdvice.setFR(false);
-            recAdvice.setCIM(icMaize);
-            recAdvice.setCIS(icPotato);
-            recAdvice.setSPH(false);
-            recAdvice.setSPP(false);
-            recAdvice.setBPP(false);
-            recAdvice.setUseCase(useCase.name());
+            recAdvice = realmProcessor.getRecAdvice();
+            myRealm.executeTransaction(realm -> {
+                if (recAdvice == null) {
+                    recAdvice = myRealm.createObject(RecAdvice.class);
+                }
+                recAdvice.setFR(false);
+                recAdvice.setCIM(icMaize);
+                recAdvice.setCIS(icPotato);
+                recAdvice.setSPH(false);
+                recAdvice.setSPP(false);
+                recAdvice.setBPP(false);
+                recAdvice.setUseCase(useCase.name());
+                processRecommendations(activity);
+            });
 
-            objectBoxEntityProcessor.saveRecAdvice(recAdvice);
-            processRecommendations(activity);
         });
         setAdapter();
     }

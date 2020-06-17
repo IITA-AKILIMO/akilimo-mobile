@@ -8,6 +8,7 @@ import com.orm.SugarRecord
 import io.realm.RealmObject
 import kotlinx.android.parcel.Parcelize
 
+@Deprecated("Too much duplication move to common fertilizer")
 @Parcelize
 @JsonIgnoreProperties(ignoreUnknown = true)
 open class InterCropFertilizer : RealmObject(), Parcelable {

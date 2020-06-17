@@ -21,7 +21,7 @@ import com.iita.akilimo.entities.InvestmentAmount;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
+
 
 public class InvestmentAmountActivity extends BaseActivity {
 

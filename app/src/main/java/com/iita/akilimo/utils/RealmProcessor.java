@@ -20,6 +20,7 @@ import com.iita.akilimo.models.InterCropFertilizer;
 import com.iita.akilimo.models.MaizePrice;
 import com.iita.akilimo.models.PotatoPrice;
 import com.iita.akilimo.models.StarchFactory;
+import com.iita.akilimo.utils.enums.EnumUseCase;
 
 import java.util.Collection;
 import java.util.List;
@@ -152,6 +153,18 @@ public class RealmProcessor {
     }
 
     public List<Fertilizer> getSelectedFertilizers(String countryCode) {
+        return null;
+    }
+
+    public Fertilizer getSavedInterCropFertilizer(String fertilizerType, String countryCode, EnumUseCase useCase) {
+        return null;
+    }
+
+    public List<InterCropFertilizer> getAvailableInterCropFertilizersByCountryUseCase(String countryCode, EnumUseCase useCase) {
+        return null;
+    }
+
+    public List<InterCropFertilizer> getSelectedInterCropFertilizers(String countryCode, EnumUseCase useCase) {
         return null;
     }
 }

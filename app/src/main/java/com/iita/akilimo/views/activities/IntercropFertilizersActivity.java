@@ -35,8 +35,8 @@ import com.iita.akilimo.models.InterCropFertilizer;
 import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.FertilizerList;
+import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.views.fragments.dialog.FertilizerPriceDialogFragment;
 import com.iita.akilimo.widget.SpacingItemDecoration;
 
@@ -48,6 +48,8 @@ import org.modelmapper.ModelMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import io.realm.Realm;
 
 public class IntercropFertilizersActivity extends BaseActivity {
 
@@ -93,7 +95,8 @@ public class IntercropFertilizersActivity extends BaseActivity {
         errorImage = binding.errorImage;
         errorLabel = binding.errorLabel;
 
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
+        realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
         queue = Volley.newRequestQueue(context);
         modelMapper = new ModelMapper();
 
@@ -102,7 +105,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
             useCase = intent.getParcelableExtra(useCaseTag);
         }
 
-        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
         }
@@ -145,7 +148,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
 
         mAdapter.setOnItemClickListener((view, clickedFertilizer, position) -> {
             mAdapter.setActiveRowIndex(position);
-            Fertilizer selectedType = objectBoxEntityProcessor.getSavedInterCropFertilizer(clickedFertilizer.getFertilizerType(), countryCode, useCase);
+            Fertilizer selectedType = realmProcessor.getSavedInterCropFertilizer(clickedFertilizer.getFertilizerType(), countryCode, useCase);
             if (selectedType == null) {
                 selectedType = clickedFertilizer;
             }
@@ -161,7 +164,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
             priceDialogFragment.setOnDismissListener((priceSpecified, fertilizer, removeSelected) -> {
                 InterCropFertilizer interCropFertilizer = modelMapper.map(fertilizer, InterCropFertilizer.class);
                 if ((priceSpecified || removeSelected)) {
-                    long id = objectBoxEntityProcessor.saveSelectedInterCropFertilizer(interCropFertilizer);
+                    long id = 0;
                     if (id > 0) {
                         if (removeSelected) {
                             selectedFertilizers = FertilizerList.INSTANCE.removeIntercropFertilizerByType(cleanedFertilizers, fertilizer.getFertilizerType());
@@ -197,7 +200,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
     @Override
     protected void validate(boolean backPressed) {
         if (mAdapter != null) {
-            availableFertilizersList = objectBoxEntityProcessor.getAvailableInterCropFertilizersByCountryUseCase(countryCode, useCase);
+            availableFertilizersList = realmProcessor.getAvailableInterCropFertilizersByCountryUseCase(countryCode, useCase);
             mAdapter.setItems(availableFertilizersList);
         }
     }
@@ -231,7 +234,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
                 try {
                     availableFertilizersList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<InterCropFertilizer>>() {
                     });
-                    objectBoxEntityProcessor.saveInterCropFertilizerList(availableFertilizersList);
+                   //save the record here
                     initializeFertilizerPriceList();
                 } catch (Exception ex) {
                     lyt_progress.setVisibility(View.GONE);
@@ -285,7 +288,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
                     //check if fertilizer price list is already populated
                     fertilizerPricesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<FertilizerPrices>>() {
                     });
-                    objectBoxEntityProcessor.saveFertilizerPrices(fertilizerPricesList);
+
                     validate(false);
                     recyclerView.setVisibility(View.VISIBLE);
                 } catch (Exception ex) {
@@ -316,7 +319,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
     }
 
     private boolean isMinSelected() {
-        int count = objectBoxEntityProcessor.getSelectedInterCropFertilizers(countryCode, useCase).size();
+        int count = realmProcessor.getSelectedInterCropFertilizers(countryCode, useCase).size();
         if (count < minSelection) {
             Snackbar snackbar = Snackbar
                     .make(coordinatorLayout, String.format(Locale.US, context.getString(R.string.lbl_min_selection), minSelection), Snackbar.LENGTH_LONG);

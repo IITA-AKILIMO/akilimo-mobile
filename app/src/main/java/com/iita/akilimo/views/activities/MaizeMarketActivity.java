@@ -34,7 +34,7 @@ import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumMaizeProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 import com.iita.akilimo.utils.enums.EnumUnitPrice;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
+
 import com.iita.akilimo.views.fragments.dialog.MaizePriceDialogFragment;
 
 import org.jetbrains.annotations.NotNull;
