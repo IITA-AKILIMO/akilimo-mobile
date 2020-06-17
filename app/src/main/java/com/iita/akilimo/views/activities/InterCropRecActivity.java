@@ -71,7 +71,7 @@ public class InterCropRecActivity extends BaseActivity {
 
 
         realmProcessor = new RealmProcessor();
-        myRealm = getRealmInstance();
+        myRealm = Realm.getDefaultInstance();
 
         MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {

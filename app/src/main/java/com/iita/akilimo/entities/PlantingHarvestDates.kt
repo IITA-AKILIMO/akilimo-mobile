@@ -5,7 +5,8 @@ import io.realm.annotations.PrimaryKey
 
 open class PlantingHarvestDates : RealmObject() {
 
-    var id: Long = 0
+    @PrimaryKey
+    var id: String? = null
     var deviceId: String? = null
     var plantingDate: String? = null
     var plantingWindow = 0

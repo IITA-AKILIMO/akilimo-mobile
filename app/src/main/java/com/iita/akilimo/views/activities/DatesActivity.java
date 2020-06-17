@@ -1,6 +1,7 @@
 package com.iita.akilimo.views.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -51,6 +52,7 @@ public class DatesActivity extends BaseActivity {
     SwitchCompat flexibleHarvest;
 
     ActivityDatesBinding binding;
+    Realm myRealm;
 
     String selectedPlantingDate;
     String selectedHarvestDate;
@@ -65,6 +67,11 @@ public class DatesActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityDatesBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
+        context = this;
+        realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
 
         //set widgets
         toolbar = binding.toolbar;
@@ -81,8 +88,6 @@ public class DatesActivity extends BaseActivity {
         flexiblePlanting = binding.flexiblePlanting;
         flexibleHarvest = binding.flexibleHarvest;
 
-        context = this;
-        realmProcessor = new RealmProcessor();
 
         initToolbar();
         initComponent();
@@ -107,27 +112,23 @@ public class DatesActivity extends BaseActivity {
         btnCancel.setOnClickListener(view -> closeActivity(false));
 
         flexiblePlanting.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            rdgPlantingWindow.clearCheck();
+            plantingWindow = 0;
             if (isChecked) {
                 rdgPlantingWindow.setVisibility(View.VISIBLE);
-                rdgPlantingWindow.clearCheck();
-                plantingWindow = 0;
             } else {
-                rdgPlantingWindow.clearCheck();
-                plantingWindow = 0;
                 rdgPlantingWindow.setVisibility(View.GONE);
             }
         });
 
         flexibleHarvest.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             rdgHarvestWindow.setVisibility(View.GONE);
+            rdgHarvestWindow.clearCheck();
+            harvestWindow = 0;
             if (isChecked) {
                 rdgHarvestWindow.setVisibility(View.VISIBLE);
-                rdgHarvestWindow.clearCheck();
-                harvestWindow = 0;
             } else {
                 rdgHarvestWindow.setVisibility(View.GONE);
-                rdgHarvestWindow.clearCheck();
-                harvestWindow = 0;
             }
         });
 
@@ -218,12 +219,12 @@ public class DatesActivity extends BaseActivity {
             return;
         }
 
-        try (Realm myRealm = getRealmInstance()) {
+        try {
             myRealm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
                     if (plantingHarvestDates == null) {
-                        plantingHarvestDates = myRealm.createObject(PlantingHarvestDates.class);
+                        plantingHarvestDates = myRealm.createObject(PlantingHarvestDates.class, Tools.generateUUID());
                     }
                     plantingHarvestDates.setHarvestDate(selectedHarvestDate);
                     plantingHarvestDates.setHarvestWindow(harvestWindow);
@@ -234,6 +235,7 @@ public class DatesActivity extends BaseActivity {
                 }
             });
         } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
     }
@@ -260,5 +262,11 @@ public class DatesActivity extends BaseActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
     }
 }

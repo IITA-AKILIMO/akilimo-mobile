@@ -321,7 +321,7 @@ public class MaizeMarketActivity extends BaseActivity {
                         maizeMarketOutlet.setUnitPrice(unitPrice);
                         maizeMarketOutlet.setUnitOfSale(unitOfSale);
                         maizeMarketOutlet.setExactPrice(exactPrice);
-                        
+
                         maizeMarketOutlet.setGrainUnitPriceRadioIndex(grainUnitPriceRadioIndex);
                         maizeMarketOutlet.setGrainUnitRadioIndex(grainUnitRadioIndex);
                         maizeMarketOutlet.setProduceRadioIndex(produceRadioIndex);
@@ -368,5 +368,11 @@ public class MaizeMarketActivity extends BaseActivity {
             fragmentTransaction.addToBackStack(null);
             priceDialogFragment.show(getSupportFragmentManager(), MaizePriceDialogFragment.ARG_ITEM_ID);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
     }
 }

@@ -1,6 +1,7 @@
 package com.iita.akilimo.views.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 
@@ -38,6 +39,7 @@ public class WeedControlCostsActivity extends BaseActivity {
     EditText editSecondWeedingOpCost;
 
     ActivityWeedControlCostBinding binding;
+    Realm myRealm;
 
     private MathHelper mathHelper;
     private CurrentPractice currentPractice;
@@ -55,6 +57,7 @@ public class WeedControlCostsActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
         context = this;
         mathHelper = new MathHelper();
 
@@ -164,7 +167,7 @@ public class WeedControlCostsActivity extends BaseActivity {
         currentPractice = realmProcessor.getCurrentPractice();
         operationCosts = realmProcessor.getOperationCosts();
 
-        try (Realm myRealm = getRealmInstance()) {
+        try {
             myRealm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
@@ -185,7 +188,14 @@ public class WeedControlCostsActivity extends BaseActivity {
             });
             closeActivity(backPressed);
         } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
     }
 }

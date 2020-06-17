@@ -27,7 +27,6 @@ import com.iita.akilimo.databinding.ActivityHomeBinding
 import com.iita.akilimo.entities.LocationInfo
 import com.iita.akilimo.inherit.BaseActivity
 import com.iita.akilimo.interfaces.IFragmentCallBack
-import com.iita.akilimo.models.Fertilizer
 import com.iita.akilimo.utils.AppUpdateHelper
 import com.iita.akilimo.utils.RealmProcessor
 import com.iita.akilimo.utils.Tools
@@ -49,6 +48,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
     private val maxStep = 0
 
     private lateinit var binding: ActivityHomeBinding
+    private lateinit var myRealm: Realm
     private lateinit var viewPager: ViewPager
     private lateinit var myViewPagerAdapter: ViewPagerAdapter
     private lateinit var btnStart: Button
@@ -84,6 +84,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         setContentView(binding.root)
 
         realmProcessor = RealmProcessor()
+        myRealm = Realm.getDefaultInstance()
 
         activity = this
         context = this
@@ -283,24 +284,22 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             }
 
             try {
-                realmInstance.use { myRealm ->
-                    myRealm.executeTransaction {
-                        if (location == null) {
-                            location = it.createObject(LocationInfo::class.java)
-                        }
+                myRealm.executeTransaction {
+                    if (location == null) {
+                        location = it.createObject(LocationInfo::class.java)
+                    }
 
-                        location = realmProcessor.locationInfo
-                        location.latitude = currentLat
-                        location.longitude = currentLong
-                        location.altitude = currentAlt
-                        location.placeName = when {
-                            !Strings.isEmptyOrWhitespace(placeName) -> placeName
-                            else -> defaultPlaceName
-                        }
-                        location.address = when {
-                            !Strings.isEmptyOrWhitespace(address) -> address
-                            else -> "NA"
-                        }
+                    location = realmProcessor.locationInfo
+                    location.latitude = currentLat
+                    location.longitude = currentLong
+                    location.altitude = currentAlt
+                    location.placeName = when {
+                        !Strings.isEmptyOrWhitespace(placeName) -> placeName
+                        else -> defaultPlaceName
+                    }
+                    location.address = when {
+                        !Strings.isEmptyOrWhitespace(address) -> address
+                        else -> "NA"
                     }
                 }
             } catch (ex: java.lang.Exception) {
@@ -337,5 +336,10 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             )
             Crashlytics.logException(ex)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        myRealm.close()
     }
 }

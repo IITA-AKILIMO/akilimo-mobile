@@ -1,6 +1,7 @@
 package com.iita.akilimo.views.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatButton;
@@ -18,9 +19,9 @@ import com.iita.akilimo.inherit.CostBaseActivity;
 import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.RealmProcessor;
+import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumOperation;
 import com.iita.akilimo.utils.enums.EnumOperationType;
-
 import com.iita.akilimo.views.fragments.dialog.OperationCostsDialogFragment;
 
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
     AppCompatButton btnCancel;
 
     ActivityManualTillageCostBinding binding;
+    Realm myRealm;
     MathHelper mathHelper;
     OperationCosts operationCosts;
 
@@ -58,6 +60,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         setContentView(binding.getRoot());
         context = this;
         realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
         queue = Volley.newRequestQueue(this);
         mathHelper = new MathHelper();
 
@@ -154,25 +157,26 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         }
 
         dataValid = true;
-        try (Realm myRealm = getRealmInstance()) {
+        try {
             myRealm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
                     if (operationCosts == null) {
-                        operationCosts = realm.createObject(OperationCosts.class);
+                        operationCosts = realm.createObject(OperationCosts.class, Tools.generateUUID());
                     }
                     operationCosts.setManualPloughCost(manualPloughCost);
                     operationCosts.setManualRidgeCost(manualRidgeCost);
                 }
             });
         } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
 
     }
 
     @Override
-    protected void showDialogFullscreen(ArrayList<OperationCost> operationCostList, String operation, String enumCountry, String dialogTitle) {
+    protected void showDialogFullscreen(ArrayList<OperationCost> operationCostList, String operation, String countryCode, String dialogTitle) {
         Bundle arguments = new Bundle();
 
         if (dialogOpen) {
@@ -180,7 +184,8 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         }
         arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList);
         arguments.putString(OperationCostsDialogFragment.OPERATION_NAME, operation);
-        arguments.putString(OperationCostsDialogFragment.SELECTED_COUNTRY, enumCountry);
+        arguments.putString(OperationCostsDialogFragment.COUNTRY_CURRENCY, currency);
+        arguments.putString(OperationCostsDialogFragment.COUNTRY_CODE, countryCode);
 
         OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment();
         dialogFragment.setArguments(arguments);
@@ -215,5 +220,11 @@ public class ManualTillageCostActivity extends CostBaseActivity {
             dialogOpen = true;
             dialogFragment.show(getSupportFragmentManager(), OperationCostsDialogFragment.ARG_ITEM_ID);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
     }
 }

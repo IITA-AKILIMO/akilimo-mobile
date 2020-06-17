@@ -1,6 +1,7 @@
 package com.iita.akilimo.views.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.RadioGroup;
@@ -23,9 +24,9 @@ import com.iita.akilimo.inherit.CostBaseActivity;
 import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.RealmProcessor;
+import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumOperation;
 import com.iita.akilimo.utils.enums.EnumOperationType;
-
 import com.iita.akilimo.views.fragments.dialog.OperationCostsDialogFragment;
 
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class TractorAccessActivity extends CostBaseActivity {
     AppCompatButton btnCancel;
 
     ActivityTractorAccessBinding binding;
+    Realm myRealm;
     MathHelper mathHelper;
     OperationCosts operationCosts;
     CurrentPractice currentPractice;
@@ -77,6 +79,7 @@ public class TractorAccessActivity extends CostBaseActivity {
 
         context = this;
         realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
 
         queue = Volley.newRequestQueue(this);
         mathHelper = new MathHelper();
@@ -95,6 +98,8 @@ public class TractorAccessActivity extends CostBaseActivity {
         implementCard = binding.tractorAccess.implementCard;
         chkPlough = binding.tractorAccess.chkPlough;
         chkRidger = binding.tractorAccess.chkRidger;
+        btnFinish = binding.twoButtons.btnFinish;
+        btnCancel = binding.twoButtons.btnCancel;
 
         initToolbar();
         initComponent();
@@ -165,15 +170,15 @@ public class TractorAccessActivity extends CostBaseActivity {
         operationCosts = realmProcessor.getOperationCosts();
         currentPractice = realmProcessor.getCurrentPractice();
 
-        try (Realm myRealm = getRealmInstance()) {
+        try {
             myRealm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
                     if (operationCosts == null) {
-                        operationCosts = realm.createObject(OperationCosts.class);
+                        operationCosts = realm.createObject(OperationCosts.class, Tools.generateUUID());
                     }
                     if (currentPractice == null) {
-                        currentPractice = realm.createObject(CurrentPractice.class);
+                        currentPractice = realm.createObject(CurrentPractice.class, Tools.generateUUID());
                     }
 
                     dataValid = true;
@@ -190,6 +195,7 @@ public class TractorAccessActivity extends CostBaseActivity {
                 }
             });
         } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
     }
@@ -205,7 +211,7 @@ public class TractorAccessActivity extends CostBaseActivity {
         showCustomNotificationDialog();
         arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList);
         arguments.putString(OperationCostsDialogFragment.OPERATION_NAME, operation);
-        arguments.putString(OperationCostsDialogFragment.SELECTED_COUNTRY, enumCountry);
+        arguments.putString(OperationCostsDialogFragment.COUNTRY_CODE, enumCountry);
         arguments.putString(OperationCostsDialogFragment.DIALOG_TITLE, dialogTitle);
 
         OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment();
@@ -241,5 +247,11 @@ public class TractorAccessActivity extends CostBaseActivity {
             dialogOpen = true;
             dialogFragment.show(getSupportFragmentManager(), OperationCostsDialogFragment.ARG_ITEM_ID);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
     }
 }

@@ -253,8 +253,4 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         return desiredLocale;
     }
-
-    protected Realm getRealmInstance() {
-        return Realm.getDefaultInstance();
-    }
 }

@@ -2,7 +2,6 @@ package com.iita.akilimo.views.fragments.dialog;
 
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
@@ -27,9 +25,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
 import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.models.OperationCost;
-import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.enums.EnumCountry;
-import com.iita.akilimo.utils.enums.EnumOperation;
 
 import java.util.ArrayList;
 
@@ -40,7 +36,8 @@ import java.util.ArrayList;
 public class OperationCostsDialogFragment extends BaseDialogFragment {
 
     public static final String OPERATION_NAME = "operation_type";
-    public static final String SELECTED_COUNTRY = "country";
+    public static final String COUNTRY_CODE = "country";
+    public static final String COUNTRY_CURRENCY = "currency_code";
     public static final String COST_LIST = "cost_list";
     public static final String DIALOG_TITLE = "dialog_title";
 
@@ -85,7 +82,8 @@ public class OperationCostsDialogFragment extends BaseDialogFragment {
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             operationCosts = bundle.getParcelableArrayList(COST_LIST);
-            countryCode = bundle.getString(SELECTED_COUNTRY);
+            countryCode = bundle.getString(COUNTRY_CODE);
+            currencyCode = bundle.getString(COUNTRY_CURRENCY);
             operationName = bundle.getString(OPERATION_NAME);
             dialogTitle = bundle.getString(DIALOG_TITLE);
         }
@@ -164,9 +162,9 @@ public class OperationCostsDialogFragment extends BaseDialogFragment {
 
         try {
             operationCost = operationCosts.get((int) itemTagIndex);
-            if (countryCode.equals(EnumCountry.NIGERIA)) {
+            if (countryCode.equals(EnumCountry.NIGERIA.countryCode())) {
                 selectedCost = operationCost.getAverageNgnPrice();
-            } else if (countryCode.equals(EnumCountry.TANZANIA)) {
+            } else if (countryCode.equals(EnumCountry.TANZANIA.countryCode())) {
                 selectedCost = operationCost.getAverageTzsPrice();
             }
             isExactCostRequired = false;
@@ -197,11 +195,11 @@ public class OperationCostsDialogFragment extends BaseDialogFragment {
             double maxPrice = operationCost.getMaxUsd();
             double minPrice = operationCost.getMinUsd();
 
-            if (countryCode.equals(EnumCountry.NIGERIA)) {
+            if (countryCode.equals(EnumCountry.NIGERIA.countryCode())) {
                 price = operationCost.getAverageNgnPrice();
                 maxPrice = operationCost.getMaxNgn();
                 minPrice = operationCost.getMinNgn();
-            } else if (countryCode.equals(EnumCountry.TANZANIA)) {
+            } else if (countryCode.equals(EnumCountry.TANZANIA.countryCode())) {
                 price = operationCost.getAverageTzsPrice();
                 maxPrice = operationCost.getMaxTzs();
                 minPrice = operationCost.getMinTzs();

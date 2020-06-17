@@ -3,6 +3,7 @@ package com.iita.akilimo.views.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
@@ -20,8 +21,8 @@ import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.RealmProcessor;
+import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,7 @@ public class PlantingPracticesActivity extends BaseActivity {
     String weedControlCostString;
 
     ActivityPlantingPracticesBinding binding;
+    Realm myRealm;
 
 
     private Activity activity;
@@ -61,10 +63,12 @@ public class PlantingPracticesActivity extends BaseActivity {
         context = this;
         activity = this;
         realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
 
         toolbar = binding.toolbarLayout.toolbar;
         recyclerView = binding.recyclerView;
         btnGetRec = binding.singleButton.btnGetRecommendation;
+        recAdvice = realmProcessor.getRecAdvice();
 
         initToolbar();
         initComponent();
@@ -86,6 +90,7 @@ public class PlantingPracticesActivity extends BaseActivity {
         recommendations = getString(R.string.lbl_best_planting_practices);
         plantingString = getString(R.string.lbl_planting_harvest);
         marketOutletString = getString(R.string.lbl_market_outlet);
+        weedControlCostString = getString(R.string.lbl_cost_of_weed_control);
         rootYieldString = getString(R.string.lbl_typical_yield);
         tillageOperationsString = getString(R.string.lbl_tillage_operations);
         manualTillageCostsString = getString(R.string.lbl_cost_of_manual_tillage);
@@ -96,24 +101,21 @@ public class PlantingPracticesActivity extends BaseActivity {
         recyclerView.setHasFixedSize(true);
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
-            recAdvice = realmProcessor.getRecAdvice();
-            try (Realm myRealm = getRealmInstance()) {
-                myRealm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        if (recAdvice == null) {
-                            recAdvice = realm.createObject(RecAdvice.class);
-                        }
-                        recAdvice.setFR(false);
-                        recAdvice.setCIM(false);
-                        recAdvice.setCIS(false);
-                        recAdvice.setSPH(false);
-                        recAdvice.setSPP(false);
-                        recAdvice.setBPP(true);
+            try {
+                myRealm.executeTransaction(realm -> {
+                    if (recAdvice == null) {
+                        recAdvice = realm.createObject(RecAdvice.class, Tools.generateUUID());
                     }
+                    recAdvice.setFR(false);
+                    recAdvice.setCIM(false);
+                    recAdvice.setCIS(false);
+                    recAdvice.setSPH(false);
+                    recAdvice.setSPP(false);
+                    recAdvice.setBPP(true);
                 });
                 processRecommendations(activity);
             } catch (Exception ex) {
+                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                 Crashlytics.logException(ex);
             }
         });
@@ -172,5 +174,11 @@ public class PlantingPracticesActivity extends BaseActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
     }
 }

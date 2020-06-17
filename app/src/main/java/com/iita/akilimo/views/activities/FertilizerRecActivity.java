@@ -3,6 +3,7 @@ package com.iita.akilimo.views.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
@@ -33,6 +34,7 @@ public class FertilizerRecActivity extends BaseActivity {
     AppCompatButton btnGetRec;
 
     ActivityFertilizerRecBinding binding;
+    Realm myRealm;
 
     String plantingString;
     String fertilizerString;
@@ -58,6 +60,7 @@ public class FertilizerRecActivity extends BaseActivity {
 
 
         realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
         initToolbar();
         initComponent();
     }
@@ -88,7 +91,7 @@ public class FertilizerRecActivity extends BaseActivity {
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
             recAdvice = realmProcessor.getRecAdvice();
-            try (Realm myRealm = getRealmInstance()) {
+            try {
                 myRealm.executeTransaction(realm -> {
                     if (recAdvice == null) {
                         recAdvice = realm.createObject(RecAdvice.class);
@@ -102,6 +105,7 @@ public class FertilizerRecActivity extends BaseActivity {
                     processRecommendations(activity);
                 });
             } catch (Exception ex) {
+                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                 Crashlytics.logException(ex);
             }
         });
@@ -153,5 +157,11 @@ public class FertilizerRecActivity extends BaseActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
     }
 }

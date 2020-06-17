@@ -3,6 +3,7 @@ package com.iita.akilimo.views.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
@@ -22,7 +23,6 @@ import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +36,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
     AppCompatButton btnGetRec;
 
     ActivityScheduledPlantingBinding binding;
+    Realm myRealm;
 
     String plantingString;
     String marketOutletString;
@@ -54,6 +55,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
         context = this;
         activity = this;
         realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
 
         toolbar = binding.toolbarLayout.toolbar;
         recyclerView = binding.recyclerView;
@@ -86,7 +88,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
             recAdvice = realmProcessor.getRecAdvice();
-            try (Realm myRealm = getRealmInstance()) {
+            try {
                 myRealm.executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
@@ -103,6 +105,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
                 });
                 processRecommendations(activity);
             } catch (Exception ex) {
+                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                 Crashlytics.logException(ex);
             }
         });
@@ -148,6 +151,11 @@ public class ScheduledPlantingActivity extends BaseActivity {
                 Snackbar.make(view, "Item " + obj.getRecommendationName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
             }
         });
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
     }
 }

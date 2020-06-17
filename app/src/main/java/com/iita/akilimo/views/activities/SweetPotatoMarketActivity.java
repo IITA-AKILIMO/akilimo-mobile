@@ -1,6 +1,7 @@
 package com.iita.akilimo.views.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.RadioGroup;
 
@@ -32,7 +33,6 @@ import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumPotatoProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
-
 import com.iita.akilimo.views.fragments.dialog.SweetPotatoPriceDialogFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -56,6 +56,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
     AppCompatButton btnCancel;
 
     ActivitySweetPotatoMarketBinding binding;
+    Realm myRealm;
 
     private MathHelper mathHelper;
     private PotatoMarketOutlet potatoMarketOutlet;
@@ -89,6 +90,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
         context = this;
         realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
 
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
@@ -216,7 +218,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             return;
         }
 
-        try (Realm myRealm = getRealmInstance()) {
+        try {
             myRealm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
@@ -236,6 +238,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             });
             closeActivity(backPressed);
         } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
 
@@ -276,5 +279,11 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             fragmentTransaction.addToBackStack(null);
             priceDialogFragment.show(getSupportFragmentManager(), SweetPotatoPriceDialogFragment.ARG_ITEM_ID);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
     }
 }
