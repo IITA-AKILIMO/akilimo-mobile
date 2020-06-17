@@ -1,6 +1,7 @@
 package com.iita.akilimo.views.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -34,7 +35,6 @@ import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumMaizeProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
-
 import com.iita.akilimo.views.fragments.dialog.MaizePriceDialogFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -44,6 +44,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 
 public class MaizeMarketActivity extends BaseActivity {
 
@@ -65,6 +66,7 @@ public class MaizeMarketActivity extends BaseActivity {
     AppCompatButton btnCancel;
 
     ActivityMaizeMarketBinding binding;
+    Realm myRealm;
 
     private MathHelper mathHelper;
     private MaizeMarketOutlet maizeMarketOutlet;
@@ -101,6 +103,7 @@ public class MaizeMarketActivity extends BaseActivity {
 
         context = this;
         realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
 
@@ -120,8 +123,10 @@ public class MaizeMarketActivity extends BaseActivity {
         maizeMarketOutlet = realmProcessor.getMaizeMarketOutlet();
 
         MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
-        countryCode = mandatoryInfo.getCountryCode();
-        currency = mandatoryInfo.getCurrency();
+        if (mandatoryInfo != null) {
+            countryCode = mandatoryInfo.getCountryCode();
+            currency = mandatoryInfo.getCurrency();
+        }
 
         initToolbar();
         initComponent();
@@ -149,6 +154,21 @@ public class MaizeMarketActivity extends BaseActivity {
                 try {
                     maizePriceList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<MaizePrice>>() {
                     });
+                    try {
+                        myRealm.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                                if (maizePriceList.size() > 0) {
+                                    RealmList<MaizePrice> _maizePriceList = new RealmList<>();
+                                    _maizePriceList.addAll(maizePriceList);
+                                    myRealm.insertOrUpdate(_maizePriceList);
+                                }
+                            }
+                        });
+                    } catch (Exception ex) {
+                        Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+                        Crashlytics.logException(ex);
+                    }
                     //save maize prices
                 } catch (Exception ex) {
                     Crashlytics.logException(ex);
@@ -229,7 +249,7 @@ public class MaizeMarketActivity extends BaseActivity {
         if (maizeMarketOutlet != null) {
             produceType = maizeMarketOutlet.getProduceType();
             unitOfSale = maizeMarketOutlet.getUnitOfSale();
-            unitPrice = maizeMarketOutlet.getEnumUnitPrice();
+            unitPrice = maizeMarketOutlet.getUnitPrice();
 
             grainUnitRadioIndex = maizeMarketOutlet.getGrainUnitRadioIndex();
             produceRadioIndex = maizeMarketOutlet.getProduceRadioIndex();
@@ -289,19 +309,19 @@ public class MaizeMarketActivity extends BaseActivity {
 
 
         if (dataIsValid) {
-            try (Realm myRealm = getRealmInstance()) {
+            try {
                 myRealm.executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
                         if (maizeMarketOutlet == null) {
-                            maizeMarketOutlet = realm.createObject(MaizeMarketOutlet.class);
+                            maizeMarketOutlet = realm.createObject(MaizeMarketOutlet.class, Tools.generateUUID());
                         }
 
                         maizeMarketOutlet.setProduceType(produceType);
-                        maizeMarketOutlet.setEnumUnitPrice(unitPrice);
+                        maizeMarketOutlet.setUnitPrice(unitPrice);
                         maizeMarketOutlet.setUnitOfSale(unitOfSale);
-
                         maizeMarketOutlet.setExactPrice(exactPrice);
+                        
                         maizeMarketOutlet.setGrainUnitPriceRadioIndex(grainUnitPriceRadioIndex);
                         maizeMarketOutlet.setGrainUnitRadioIndex(grainUnitRadioIndex);
                         maizeMarketOutlet.setProduceRadioIndex(produceRadioIndex);
@@ -309,6 +329,7 @@ public class MaizeMarketActivity extends BaseActivity {
                 });
                 closeActivity(backPressed);
             } catch (Exception ex) {
+                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                 Crashlytics.logException(ex);
             }
 

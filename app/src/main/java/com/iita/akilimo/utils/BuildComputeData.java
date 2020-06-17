@@ -424,7 +424,7 @@ public class BuildComputeData {
         if (maizeMarketOutlet != null) {
             maizeProdType = maizeMarketOutlet.getProduceType();
             maizeUnitWeight = maizeMarketOutlet.getUnitWeight();
-            maizeUnitPrice = maizeMarketOutlet.getEnumUnitPrice();
+            maizeUnitPrice = maizeMarketOutlet.getUnitPrice();
         }
         computeRequest.setMaizeProduceType(maizeProdType);
         computeRequest.setMaizeUnitWeight(maizeUnitWeight);

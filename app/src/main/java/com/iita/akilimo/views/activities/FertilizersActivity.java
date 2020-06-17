@@ -253,6 +253,7 @@ public class FertilizersActivity extends BaseActivity {
                             }
                         });
                     } catch (Exception ex) {
+                        Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                         Crashlytics.logException(ex);
                     }
                     initializeFertilizerPriceList();

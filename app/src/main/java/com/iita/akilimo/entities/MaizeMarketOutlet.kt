@@ -14,7 +14,7 @@ open class MaizeMarketOutlet : RealmObject() {
     var grainUnitPriceRadioIndex = 0
     var exactPrice = 0.0
     var averagePrice = 0.0
-    var enumUnitPrice: Double = 0.0
+    var unitPrice: Double = 0.0
     var unitWeight: Int = 0
 
 
