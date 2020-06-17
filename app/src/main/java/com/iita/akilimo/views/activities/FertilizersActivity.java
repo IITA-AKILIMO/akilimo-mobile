@@ -49,7 +49,6 @@ import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmList;
-import io.realm.RealmResults;
 
 public class FertilizersActivity extends BaseActivity {
 
@@ -160,6 +159,7 @@ public class FertilizersActivity extends BaseActivity {
                     }
                 });
             } catch (Exception ex) {
+                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                 Crashlytics.logException(ex);
             }
             Bundle arguments = new Bundle();

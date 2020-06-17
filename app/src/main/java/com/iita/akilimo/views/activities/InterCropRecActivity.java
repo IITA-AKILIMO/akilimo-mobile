@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
@@ -26,7 +27,6 @@ import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.enums.EnumCountry;
 import com.iita.akilimo.utils.enums.EnumUseCase;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +38,7 @@ public class InterCropRecActivity extends BaseActivity {
     Toolbar toolbar;
     AppCompatButton btnGetRec;
     ActivityInterCropRecBinding binding;
+    Realm myRealm;
 
     String recommendations;
     String plantingString;
@@ -70,23 +71,24 @@ public class InterCropRecActivity extends BaseActivity {
 
 
         realmProcessor = new RealmProcessor();
+        myRealm = getRealmInstance();
 
         MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
             currency = mandatoryInfo.getCurrency();
-
-            switch (countryCode) {
-                case "NG":
-                    recommendations = getString(R.string.title_maize_intercropping);
-                    useCase = EnumUseCase.CIM;
-                    break;
-                case "TZ":
-                    recommendations = getString(R.string.title_sweet_potato_intercropping);
-                    useCase = EnumUseCase.CIS;
-                    break;
-            }
         }
+        switch (countryCode) {
+            case "NG":
+                recommendations = getString(R.string.title_maize_intercropping);
+                useCase = EnumUseCase.CIM;
+                break;
+            case "TZ":
+                recommendations = getString(R.string.title_sweet_potato_intercropping);
+                useCase = EnumUseCase.CIS;
+                break;
+        }
+
         initToolbar();
         initComponent();
     }
@@ -119,7 +121,7 @@ public class InterCropRecActivity extends BaseActivity {
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
             recAdvice = realmProcessor.getRecAdvice();
-            try (Realm myRealm = getRealmInstance()) {
+            try {
                 myRealm.executeTransaction(realm -> {
                     if (recAdvice == null) {
                         recAdvice = realm.createObject(RecAdvice.class);
@@ -134,6 +136,7 @@ public class InterCropRecActivity extends BaseActivity {
                 });
                 processRecommendations(activity);
             } catch (Exception ex) {
+                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                 Crashlytics.logException(ex);
             }
 
@@ -202,5 +205,11 @@ public class InterCropRecActivity extends BaseActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
     }
 }

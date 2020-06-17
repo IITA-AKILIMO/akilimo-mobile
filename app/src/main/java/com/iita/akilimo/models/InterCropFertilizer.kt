@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.orm.SugarRecord
 import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 import java.io.Serializable
 
@@ -21,6 +22,7 @@ open class InterCropFertilizer() : RealmObject(), Parcelable {
     @JsonProperty("name")
     var name: String? = null
 
+    @PrimaryKey
     @JsonProperty("type")
     var fertilizerType: String? = null
 
