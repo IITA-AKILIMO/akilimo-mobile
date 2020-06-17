@@ -93,14 +93,18 @@ public class AreaUnitFragment extends BaseFragment {
             }
 
             areaUnitRadioIndex = rdgAreaUnit.getCheckedRadioButtonId();
-            Realm myRealm = getRealmInstance();
-            myRealm.executeTransaction(realm -> {
-                if (mandatoryInfo == null) {
-                    mandatoryInfo = myRealm.createObject(MandatoryInfo.class);
-                }
-                mandatoryInfo.setAreaUnitRadioIndex(areaUnitRadioIndex);
-                mandatoryInfo.setAreaUnit(areaUnit);
-            });
+            try (Realm myRealm = getRealmInstance()) {
+                myRealm.executeTransaction(realm -> {
+                    if (mandatoryInfo == null) {
+                        mandatoryInfo = myRealm.createObject(MandatoryInfo.class);
+                    }
+                    mandatoryInfo.setAreaUnitRadioIndex(areaUnitRadioIndex);
+                    mandatoryInfo.setAreaUnit(areaUnit);
+                });
+            } catch (Exception ex) {
+                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+                Crashlytics.logException(ex);
+            }
         });
     }
 }

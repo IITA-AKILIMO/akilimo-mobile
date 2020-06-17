@@ -112,7 +112,6 @@ public class CassavaMarketActivity extends BaseActivity {
         btnCancel = binding.contentCassavaMarket.twoButtons.btnCancel;
 
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
 

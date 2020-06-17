@@ -47,7 +47,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected Context context;
     protected SessionManager sessionManager;
-    protected Realm myRealm;
+    //protected Realm myRealm;
     protected RealmProcessor realmProcessor;
     protected RequestQueue queue;
 
@@ -87,9 +87,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (myRealm != null) {
-            myRealm.close();
-        }
     }
 
     protected void closeActivity(boolean backPressed) {
@@ -255,5 +252,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
 
         return desiredLocale;
+    }
+
+    protected Realm getRealmInstance() {
+        return Realm.getDefaultInstance();
     }
 }

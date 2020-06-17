@@ -11,6 +11,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.ActivityDatesBinding;
@@ -81,7 +82,6 @@ public class DatesActivity extends BaseActivity {
         flexibleHarvest = binding.flexibleHarvest;
 
         context = this;
-        myRealm = Realm.getDefaultInstance();
         realmProcessor = new RealmProcessor();
 
         initToolbar();
@@ -218,20 +218,24 @@ public class DatesActivity extends BaseActivity {
             return;
         }
 
-        myRealm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                if (plantingHarvestDates == null) {
-                    plantingHarvestDates = myRealm.createObject(PlantingHarvestDates.class);
+        try (Realm myRealm = getRealmInstance()) {
+            myRealm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    if (plantingHarvestDates == null) {
+                        plantingHarvestDates = myRealm.createObject(PlantingHarvestDates.class);
+                    }
+                    plantingHarvestDates.setHarvestDate(selectedHarvestDate);
+                    plantingHarvestDates.setHarvestWindow(harvestWindow);
+                    plantingHarvestDates.setPlantingDate(selectedPlantingDate);
+                    plantingHarvestDates.setPlantingWindow(plantingWindow);
+                    plantingHarvestDates.setAlternativeDate(alternativeDate);
+                    closeActivity(backPressed);
                 }
-                plantingHarvestDates.setHarvestDate(selectedHarvestDate);
-                plantingHarvestDates.setHarvestWindow(harvestWindow);
-                plantingHarvestDates.setPlantingDate(selectedPlantingDate);
-                plantingHarvestDates.setPlantingWindow(plantingWindow);
-                plantingHarvestDates.setAlternativeDate(alternativeDate);
-                closeActivity(backPressed);
-            }
-        });
+            });
+        } catch (Exception ex) {
+            Crashlytics.logException(ex);
+        }
     }
 
     private void dialogDatePickerLight(boolean pickPlantingDate, boolean pickHarvestDate) {

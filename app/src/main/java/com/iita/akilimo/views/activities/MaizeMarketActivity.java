@@ -101,7 +101,6 @@ public class MaizeMarketActivity extends BaseActivity {
 
         context = this;
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
 
@@ -290,25 +289,28 @@ public class MaizeMarketActivity extends BaseActivity {
 
 
         if (dataIsValid) {
+            try (Realm myRealm = getRealmInstance()) {
+                myRealm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        if (maizeMarketOutlet == null) {
+                            maizeMarketOutlet = myRealm.createObject(MaizeMarketOutlet.class);
+                        }
 
-            myRealm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    if (maizeMarketOutlet == null) {
-                        maizeMarketOutlet = myRealm.createObject(MaizeMarketOutlet.class);
+                        maizeMarketOutlet.setProduceType(produceType);
+                        maizeMarketOutlet.setEnumUnitPrice(unitPrice);
+                        maizeMarketOutlet.setUnitOfSale(unitOfSale);
+
+                        maizeMarketOutlet.setExactPrice(exactPrice);
+                        maizeMarketOutlet.setGrainUnitPriceRadioIndex(grainUnitPriceRadioIndex);
+                        maizeMarketOutlet.setGrainUnitRadioIndex(grainUnitRadioIndex);
+                        maizeMarketOutlet.setProduceRadioIndex(produceRadioIndex);
                     }
-
-                    maizeMarketOutlet.setProduceType(produceType);
-                    maizeMarketOutlet.setEnumUnitPrice(unitPrice);
-                    maizeMarketOutlet.setUnitOfSale(unitOfSale);
-
-                    maizeMarketOutlet.setExactPrice(exactPrice);
-                    maizeMarketOutlet.setGrainUnitPriceRadioIndex(grainUnitPriceRadioIndex);
-                    maizeMarketOutlet.setGrainUnitRadioIndex(grainUnitRadioIndex);
-                    maizeMarketOutlet.setProduceRadioIndex(produceRadioIndex);
-                    closeActivity(backPressed);
-                }
-            });
+                });
+                closeActivity(backPressed);
+            } catch (Exception ex) {
+                Crashlytics.logException(ex);
+            }
 
         }
     }

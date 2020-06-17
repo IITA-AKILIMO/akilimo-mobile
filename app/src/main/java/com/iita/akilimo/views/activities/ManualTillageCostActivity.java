@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.ActivityManualTillageCostBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
@@ -57,7 +58,6 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         setContentView(binding.getRoot());
         context = this;
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
         queue = Volley.newRequestQueue(this);
         mathHelper = new MathHelper();
 
@@ -154,17 +154,20 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         }
 
         dataValid = true;
-        myRealm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                if (operationCosts == null) {
-                    operationCosts = myRealm.createObject(OperationCosts.class);
+        try (Realm myRealm = getRealmInstance()) {
+            myRealm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    if (operationCosts == null) {
+                        operationCosts = myRealm.createObject(OperationCosts.class);
+                    }
+                    operationCosts.setManualPloughCost(manualPloughCost);
+                    operationCosts.setManualRidgeCost(manualRidgeCost);
                 }
-                operationCosts.setManualPloughCost(manualPloughCost);
-                operationCosts.setManualRidgeCost(manualRidgeCost);
-            }
-        });
-        myRealm.close();
+            });
+        } catch (Exception ex) {
+            Crashlytics.logException(ex);
+        }
 
     }
 

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
@@ -50,7 +51,7 @@ public class InterCropRecActivity extends BaseActivity {
     private Activity activity;
     private RecOptionsAdapter mAdapter;
     private List<RecommendationOptions> items = new ArrayList<>();
-    private  RecAdvice recAdvice;
+    private RecAdvice recAdvice;
     private EnumUseCase useCase;
     private boolean icMaize;
     private boolean icPotato;
@@ -69,7 +70,6 @@ public class InterCropRecActivity extends BaseActivity {
 
 
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
 
         MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
@@ -119,19 +119,23 @@ public class InterCropRecActivity extends BaseActivity {
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
             recAdvice = realmProcessor.getRecAdvice();
-            myRealm.executeTransaction(realm -> {
-                if (recAdvice == null) {
-                    recAdvice = myRealm.createObject(RecAdvice.class);
-                }
-                recAdvice.setFR(false);
-                recAdvice.setCIM(icMaize);
-                recAdvice.setCIS(icPotato);
-                recAdvice.setSPH(false);
-                recAdvice.setSPP(false);
-                recAdvice.setBPP(false);
-                recAdvice.setUseCase(useCase.name());
+            try (Realm myRealm = getRealmInstance()) {
+                myRealm.executeTransaction(realm -> {
+                    if (recAdvice == null) {
+                        recAdvice = myRealm.createObject(RecAdvice.class);
+                    }
+                    recAdvice.setFR(false);
+                    recAdvice.setCIM(icMaize);
+                    recAdvice.setCIS(icPotato);
+                    recAdvice.setSPH(false);
+                    recAdvice.setSPP(false);
+                    recAdvice.setBPP(false);
+                    recAdvice.setUseCase(useCase.name());
+                });
                 processRecommendations(activity);
-            });
+            } catch (Exception ex) {
+                Crashlytics.logException(ex);
+            }
 
         });
         setAdapter();

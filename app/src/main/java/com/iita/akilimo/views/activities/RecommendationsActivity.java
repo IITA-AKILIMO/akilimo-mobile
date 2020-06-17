@@ -55,7 +55,6 @@ public class RecommendationsActivity extends BaseActivity {
         context = this;
 
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
         MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
         countryCode = mandatoryInfo.getCountryCode();
         currency = mandatoryInfo.getCurrency();

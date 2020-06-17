@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.ActivityTractorAccessBinding;
 import com.iita.akilimo.entities.CurrentPractice;
@@ -76,7 +77,6 @@ public class TractorAccessActivity extends CostBaseActivity {
 
         context = this;
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
 
         queue = Volley.newRequestQueue(this);
         mathHelper = new MathHelper();
@@ -165,29 +165,33 @@ public class TractorAccessActivity extends CostBaseActivity {
         operationCosts = realmProcessor.getOperationCosts();
         currentPractice = realmProcessor.getCurrentPractice();
 
-        myRealm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                if (operationCosts == null) {
-                    operationCosts = myRealm.createObject(OperationCosts.class);
+        try (Realm myRealm = getRealmInstance()) {
+            myRealm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    if (operationCosts == null) {
+                        operationCosts = myRealm.createObject(OperationCosts.class);
+                    }
+                    if (currentPractice == null) {
+                        currentPractice = myRealm.createObject(CurrentPractice.class);
+                    }
+
+                    dataValid = true;
+                    currentPractice.setTractorAvailable(hasTractor);
+                    currentPractice.setTractorPlough(hasPlough);
+                    currentPractice.setTractorHarrow(hasHarrow);
+                    currentPractice.setTractorRidger(hasRidger);
+
+                    operationCosts.setTractorPloughCost(tractorPloughCost);
+                    operationCosts.setTractorRidgeCost(tractorRidgeCost);
+
+                    operationCosts.setExactTractorPloughPrice(exactPloughCost);
+                    operationCosts.setExactTractorRidgePrice(exactRidgeCost);
                 }
-                if (currentPractice == null) {
-                    currentPractice = myRealm.createObject(CurrentPractice.class);
-                }
-
-                dataValid = true;
-                currentPractice.setTractorAvailable(hasTractor);
-                currentPractice.setTractorPlough(hasPlough);
-                currentPractice.setTractorHarrow(hasHarrow);
-                currentPractice.setTractorRidger(hasRidger);
-
-                operationCosts.setTractorPloughCost(tractorPloughCost);
-                operationCosts.setTractorRidgeCost(tractorRidgeCost);
-
-                operationCosts.setExactTractorPloughPrice(exactPloughCost);
-                operationCosts.setExactTractorRidgePrice(exactRidgeCost);
-            }
-        });
+            });
+        } catch (Exception ex) {
+            Crashlytics.logException(ex);
+        }
     }
 
     @Override

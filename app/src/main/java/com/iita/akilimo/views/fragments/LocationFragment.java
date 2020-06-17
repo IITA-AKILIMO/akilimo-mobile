@@ -119,17 +119,18 @@ public class LocationFragment extends BaseFragment {
     }
 
     private void saveLocation() {
-        Realm myRealm = getRealmInstance();
-        myRealm.executeTransaction(realm -> {
-            if (locationInformation == null) {
-                locationInformation = myRealm.createObject(LocationInfo.class);
-            }
-            locationInformation.setLatitude(currentLat);
-            locationInformation.setLongitude(currentLon);
-
+        try (Realm myRealm = getRealmInstance()) {
+            myRealm.executeTransaction(realm -> {
+                if (locationInformation == null) {
+                    locationInformation = myRealm.createObject(LocationInfo.class);
+                }
+                locationInformation.setLatitude(currentLat);
+                locationInformation.setLongitude(currentLon);
+            });
             reloadLocationInfo();
-        });
-        myRealm.close();
+        } catch (Exception ex) {
+            Crashlytics.logException(ex);
+        }
 
     }
 

@@ -249,24 +249,26 @@ public class CurrentPracticeFragment extends BaseFragment {
             harrowingMethod = EnumOperationType.NONE.operationName();
         }
 
-        Realm myRealm = getRealmInstance();
-        myRealm.executeTransaction(realm -> {
-            if (currentPractice == null) {
-                currentPractice = myRealm.createObject(CurrentPractice.class);
-            }
-            currentPractice.setRidgingMethod(ridgingMethod);
-            currentPractice.setPloughingMethod(ploughingMethod);
-            currentPractice.setPerformRidging(performRidging);
-            currentPractice.setPerformPloughing(performPloughing);
-            currentPractice.setPerformHarrowing(performHarrowing);
+        try (Realm myRealm = getRealmInstance()) {
+            myRealm.executeTransaction(realm -> {
+                if (currentPractice == null) {
+                    currentPractice = myRealm.createObject(CurrentPractice.class);
+                }
+                currentPractice.setRidgingMethod(ridgingMethod);
+                currentPractice.setPloughingMethod(ploughingMethod);
+                currentPractice.setPerformRidging(performRidging);
+                currentPractice.setPerformPloughing(performPloughing);
+                currentPractice.setPerformHarrowing(performHarrowing);
 
-            if (plantingHarvestDates == null) {
-                plantingHarvestDates = myRealm.createObject(PlantingHarvestDates.class);
-            }
+                if (plantingHarvestDates == null) {
+                    plantingHarvestDates = myRealm.createObject(PlantingHarvestDates.class);
+                }
 
-            plantingHarvestDates.setPlantingDate(selectedPlantingDate);
-            plantingHarvestDates.setHarvestDate(selectedHarvestDate);
-        });
-        myRealm.close();
+                plantingHarvestDates.setPlantingDate(selectedPlantingDate);
+                plantingHarvestDates.setHarvestDate(selectedHarvestDate);
+            });
+        } catch (Exception ex) {
+            Crashlytics.logException(ex);
+        }
     }
 }

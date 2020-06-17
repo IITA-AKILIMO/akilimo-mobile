@@ -84,7 +84,6 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         lyt_progress = binding.lytProgress;
 
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
         initToolbar();
         initComponent();
     }

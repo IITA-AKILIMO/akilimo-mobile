@@ -96,7 +96,6 @@ public class IntercropFertilizersActivity extends BaseActivity {
         errorLabel = binding.errorLabel;
 
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
         queue = Volley.newRequestQueue(context);
         modelMapper = new ModelMapper();
 

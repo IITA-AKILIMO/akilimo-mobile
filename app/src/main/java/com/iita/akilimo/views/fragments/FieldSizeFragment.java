@@ -177,15 +177,17 @@ public class FieldSizeFragment extends BaseFragment {
         mandatoryInfo = realmProcessor.getMandatoryInfo();
 
         fieldSizeRadioIndex = rdgFieldArea.getCheckedRadioButtonId();
-        Realm myRealm = getRealmInstance();
-        myRealm.executeTransaction(realm -> {
-            if (mandatoryInfo == null) {
-                mandatoryInfo = myRealm.createObject(MandatoryInfo.class);
-            }
-            mandatoryInfo.setFieldSizeRadioIndex(fieldSizeRadioIndex);
-            mandatoryInfo.setAreaSize(areaSize);
-        });
-        myRealm.close();
+        try (Realm myRealm = getRealmInstance()) {
+            myRealm.executeTransaction(realm -> {
+                if (mandatoryInfo == null) {
+                    mandatoryInfo = myRealm.createObject(MandatoryInfo.class);
+                }
+                mandatoryInfo.setFieldSizeRadioIndex(fieldSizeRadioIndex);
+                mandatoryInfo.setAreaSize(areaSize);
+            });
+        } catch (Exception ex) {
+            Crashlytics.logException(ex);
+        }
     }
 
     private void setFieldLabels(String areaUnit) {

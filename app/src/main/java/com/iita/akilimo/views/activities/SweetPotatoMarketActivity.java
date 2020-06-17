@@ -89,7 +89,6 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
         context = this;
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
 
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
@@ -217,25 +216,28 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             return;
         }
 
-        myRealm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                if (potatoMarketOutlet == null) {
-                    potatoMarketOutlet = myRealm.createObject(PotatoMarketOutlet.class);
+        try (Realm myRealm = getRealmInstance()) {
+            myRealm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    if (potatoMarketOutlet == null) {
+                        potatoMarketOutlet = myRealm.createObject(PotatoMarketOutlet.class);
+                    }
+
+                    potatoMarketOutlet.setProduceType(enumPotatoProduceType);
+                    potatoMarketOutlet.setUnitOfSale(unitOfSale);
+                    potatoMarketOutlet.setUnitPrice(exactPrice);
+
+                    potatoMarketOutlet.setProduceTypeRadioIndex(produceTypeRadioIndex);
+                    potatoMarketOutlet.setPotatoUnitPriceRadioIndex(potatoUnitPriceRadioIndex);
+                    potatoMarketOutlet.setPotatoUnitOfSaleRadioIndex(potatoUnitOfSaleRadioIndex);
+
                 }
-
-                potatoMarketOutlet.setProduceType(enumPotatoProduceType);
-                potatoMarketOutlet.setUnitOfSale(unitOfSale);
-                potatoMarketOutlet.setUnitPrice(exactPrice);
-
-                potatoMarketOutlet.setProduceTypeRadioIndex(produceTypeRadioIndex);
-                potatoMarketOutlet.setPotatoUnitPriceRadioIndex(potatoUnitPriceRadioIndex);
-                potatoMarketOutlet.setPotatoUnitOfSaleRadioIndex(potatoUnitOfSaleRadioIndex);
-
-            }
-        });
-        myRealm.close();
-        closeActivity(backPressed);
+            });
+            closeActivity(backPressed);
+        } catch (Exception ex) {
+            Crashlytics.logException(ex);
+        }
 
 
     }

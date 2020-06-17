@@ -27,6 +27,7 @@ import com.iita.akilimo.databinding.ActivityHomeBinding
 import com.iita.akilimo.entities.LocationInfo
 import com.iita.akilimo.inherit.BaseActivity
 import com.iita.akilimo.interfaces.IFragmentCallBack
+import com.iita.akilimo.models.Fertilizer
 import com.iita.akilimo.utils.AppUpdateHelper
 import com.iita.akilimo.utils.RealmProcessor
 import com.iita.akilimo.utils.Tools
@@ -83,7 +84,6 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         setContentView(binding.root)
 
         realmProcessor = RealmProcessor()
-        myRealm = Realm.getDefaultInstance()
 
         activity = this
         context = this
@@ -282,30 +282,31 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                 }
             }
 
-            myRealm.executeTransaction { realm: Realm? ->
-                if (location == null) {
-                    location = myRealm.createObject(LocationInfo::class.java)
+            try {
+                realmInstance.use { myRealm ->
+                    myRealm.executeTransaction {
+                        if (location == null) {
+                            location = myRealm.createObject(LocationInfo::class.java)
+                        }
+
+                        location = realmProcessor.locationInfo
+                        location.latitude = currentLat
+                        location.longitude = currentLong
+                        location.altitude = currentAlt
+                        location.placeName = when {
+                            !Strings.isEmptyOrWhitespace(placeName) -> placeName
+                            else -> defaultPlaceName
+                        }
+                        location.address = when {
+                            !Strings.isEmptyOrWhitespace(address) -> address
+                            else -> "NA"
+                        }
+                    }
                 }
-
-                location = realmProcessor.locationInfo
-
-                location.latitude = currentLat
-                location.longitude = currentLong
-                location.altitude = currentAlt
-
-                location.placeName = when {
-                    !Strings.isEmptyOrWhitespace(placeName) -> placeName
-                    else -> defaultPlaceName
-                }
-                location.address = when {
-                    !Strings.isEmptyOrWhitespace(address) -> address
-                    else -> "NA"
-                }
-
-                //refresh fragment data
-                (currentFragment as? LocationFragment)?.refreshData()
-
+            } catch (ex: java.lang.Exception) {
+                Crashlytics.logException(ex)
             }
+            (currentFragment as? LocationFragment)?.refreshData()
         } catch (ex: Exception) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "Error saving location information")
             Crashlytics.logException(ex)

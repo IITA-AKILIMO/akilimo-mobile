@@ -12,6 +12,7 @@ import android.widget.RadioGroup;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
@@ -71,7 +72,6 @@ public class InvestmentAmountActivity extends BaseActivity {
 
         context = this;
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
         mathHelper = new MathHelper();
 
         toolbar = binding.toolbar;
@@ -164,20 +164,24 @@ public class InvestmentAmountActivity extends BaseActivity {
 
             invAmount = realmProcessor.getInvestmentAmount();
 
-            myRealm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    if (invAmount == null) {
-                        invAmount = myRealm.createObject(InvestmentAmount.class);
-                    }
-                    invAmount.setInvestmentAmountUSD(investmentAmountUSD);
-                    invAmount.setMinInvestmentAmountUSD(minimumAmountUSD);
+            try (Realm myRealm = getRealmInstance()) {
+                myRealm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        if (invAmount == null) {
+                            invAmount = myRealm.createObject(InvestmentAmount.class);
+                        }
+                        invAmount.setInvestmentAmountUSD(investmentAmountUSD);
+                        invAmount.setMinInvestmentAmountUSD(minimumAmountUSD);
 
-                    invAmount.setInvestmentAmountLocal(investmentAmountLocal);
-                    invAmount.setMinInvestmentAmountLocal(minimumAmountLocal);
-                    closeActivity(false);
-                }
-            });
+                        invAmount.setInvestmentAmountLocal(investmentAmountLocal);
+                        invAmount.setMinInvestmentAmountLocal(minimumAmountLocal);
+                    }
+                });
+                closeActivity(false);
+            } catch (Exception ex) {
+                Crashlytics.logException(ex);
+            }
         });
         updateLabels();
         showCustomNotificationDialog();

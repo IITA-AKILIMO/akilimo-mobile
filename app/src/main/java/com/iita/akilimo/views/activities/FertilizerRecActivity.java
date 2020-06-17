@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
+import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
 import com.iita.akilimo.databinding.ActivityFertilizerRecBinding;
@@ -57,7 +58,6 @@ public class FertilizerRecActivity extends BaseActivity {
 
 
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
         initToolbar();
         initComponent();
     }
@@ -88,18 +88,22 @@ public class FertilizerRecActivity extends BaseActivity {
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
             recAdvice = realmProcessor.getRecAdvice();
-            myRealm.executeTransaction(realm -> {
-                if (recAdvice == null) {
-                    recAdvice = myRealm.createObject(RecAdvice.class);
-                }
-                recAdvice.setFR(true);
-                recAdvice.setCIM(false);
-                recAdvice.setCIS(false);
-                recAdvice.setSPH(false);
-                recAdvice.setSPP(false);
-                recAdvice.setBPP(false);
-                processRecommendations(activity);
-            });
+            try (Realm myRealm = getRealmInstance()) {
+                myRealm.executeTransaction(realm -> {
+                    if (recAdvice == null) {
+                        recAdvice = myRealm.createObject(RecAdvice.class);
+                    }
+                    recAdvice.setFR(true);
+                    recAdvice.setCIM(false);
+                    recAdvice.setCIS(false);
+                    recAdvice.setSPH(false);
+                    recAdvice.setSPP(false);
+                    recAdvice.setBPP(false);
+                    processRecommendations(activity);
+                });
+            } catch (Exception ex) {
+                Crashlytics.logException(ex);
+            }
         });
         setAdapter();
     }

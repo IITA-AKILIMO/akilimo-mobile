@@ -156,7 +156,7 @@ public class CountryFragment extends BaseFragment {
     }
 
     private void updateSelectedCountry(int selectedCountryIndex) {
-        Realm myRealm = getRealmInstance();
+        try (Realm myRealm = getRealmInstance()) {
             myRealm.executeTransaction(realm -> {
                 if (mandatoryInfo == null) {
                     mandatoryInfo = myRealm.createObject(MandatoryInfo.class);
@@ -167,7 +167,10 @@ public class CountryFragment extends BaseFragment {
                 mandatoryInfo.setCountryName(countryName);
                 mandatoryInfo.setCurrency(currency);
             });
-            myRealm.close();
+        } catch (Exception ex) {
+            Crashlytics.logException(ex);
+        }
+
     }
 
 }

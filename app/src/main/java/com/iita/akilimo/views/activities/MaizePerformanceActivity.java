@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.ActivityMaizePerformanceActivityBinding;
@@ -45,7 +46,6 @@ public class MaizePerformanceActivity extends BaseActivity {
         setContentView(binding.getRoot());
         context = this;
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
 
         toolbar = binding.toolbar;
         rdgMaizePerformance = binding.rdgMaizePerformance;
@@ -130,18 +130,21 @@ public class MaizePerformanceActivity extends BaseActivity {
 
         performanceRadioIndex = rdgMaizePerformance.getCheckedRadioButtonId();
         maizePerformance = realmProcessor.getMaizePerformance();
-        myRealm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                if (maizePerformance == null) {
-                    maizePerformance = myRealm.createObject(MaizePerformance.class);
+        try (Realm myRealm = getRealmInstance()) {
+            myRealm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    if (maizePerformance == null) {
+                        maizePerformance = myRealm.createObject(MaizePerformance.class);
+                    }
+                    maizePerformance.setPerformanceRadioIndex(performanceRadioIndex);
+                    maizePerformance.setMaizePerformance(selectedMaizePerformance);
+                    maizePerformance.setPerformanceValue(maizePerformanceValue);
                 }
-                maizePerformance.setPerformanceRadioIndex(performanceRadioIndex);
-                maizePerformance.setMaizePerformance(selectedMaizePerformance);
-                maizePerformance.setPerformanceValue(maizePerformanceValue);
-            }
-        });
-        myRealm.close();
-        closeActivity(backPressed);
+            });
+            closeActivity(backPressed);
+        } catch (Exception ex) {
+            Crashlytics.logException(ex);
+        }
     }
 }

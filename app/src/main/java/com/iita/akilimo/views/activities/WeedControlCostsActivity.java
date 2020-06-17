@@ -9,6 +9,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.ActivityWeedControlCostBinding;
@@ -54,7 +55,6 @@ public class WeedControlCostsActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
         context = this;
         mathHelper = new MathHelper();
 
@@ -164,25 +164,28 @@ public class WeedControlCostsActivity extends BaseActivity {
         currentPractice = realmProcessor.getCurrentPractice();
         operationCosts = realmProcessor.getOperationCosts();
 
-        myRealm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                if (currentPractice == null) {
-                    currentPractice = myRealm.createObject(CurrentPractice.class);
-                }
-                if (operationCosts == null) {
-                    operationCosts = myRealm.createObject(OperationCosts.class);
-                }
+        try (Realm myRealm = getRealmInstance()) {
+            myRealm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    if (currentPractice == null) {
+                        currentPractice = realm.createObject(CurrentPractice.class);
+                    }
+                    if (operationCosts == null) {
+                        operationCosts = realm.createObject(OperationCosts.class);
+                    }
 
-                currentPractice.setWeedControlTechnique(weedControlTechnique);
-                currentPractice.setUsesHerbicide(usesHerbicide);
-                currentPractice.setWeedRadioIndex(weedRadioIndex);
+                    currentPractice.setWeedControlTechnique(weedControlTechnique);
+                    currentPractice.setUsesHerbicide(usesHerbicide);
+                    currentPractice.setWeedRadioIndex(weedRadioIndex);
 
-                operationCosts.setFirstWeedingOperationCost(firstOperationCost);
-                operationCosts.setSecondWeedingOperationCost(secondOperationCost);
-            }
-        });
-        myRealm.close();
-        closeActivity(backPressed);
+                    operationCosts.setFirstWeedingOperationCost(firstOperationCost);
+                    operationCosts.setSecondWeedingOperationCost(secondOperationCost);
+                }
+            });
+            closeActivity(backPressed);
+        } catch (Exception ex) {
+            Crashlytics.logException(ex);
+        }
     }
 }

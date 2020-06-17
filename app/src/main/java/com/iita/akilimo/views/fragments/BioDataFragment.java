@@ -208,24 +208,28 @@ public class BioDataFragment extends BaseFragment {
         }
 
         if (dataIsValid) {
-            Realm myRealm = getRealmInstance();
-            myRealm.executeTransaction(realm -> {
-                if (profileInfo == null) {
-                    profileInfo = myRealm.createObject(ProfileInfo.class);
-                }
-                profileInfo.setFirstName(firstName);
-                profileInfo.setLastName(lastName);
-                profileInfo.setGender(gender);
-                profileInfo.setEmail(email);
-                profileInfo.setFarmName(farmName);
-                profileInfo.setMobileCode(mobileCode);
-                profileInfo.setFullMobileNumber(fullMobileNumber);
-                profileInfo.setSelectedGenderIndex(selectedGenderIndex);
+            try (Realm myRealm = getRealmInstance()) {
+                myRealm.executeTransaction(realm -> {
+                    if (profileInfo == null) {
+                        profileInfo = realm.createObject(ProfileInfo.class);
+                    }
+                    profileInfo.setFirstName(firstName);
+                    profileInfo.setLastName(lastName);
+                    profileInfo.setGender(gender);
+                    profileInfo.setEmail(email);
+                    profileInfo.setFarmName(farmName);
+                    profileInfo.setMobileCode(mobileCode);
+                    profileInfo.setFullMobileNumber(fullMobileNumber);
+                    profileInfo.setSelectedGenderIndex(selectedGenderIndex);
 
-                //load the next fragment
-                nextFragment();
-            });
-            myRealm.close();
+                    //load the next fragment
+                    nextFragment();
+                });
+            } catch (Exception ex) {
+                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+                Crashlytics.logException(ex);
+            }
+
         }
     }
 
