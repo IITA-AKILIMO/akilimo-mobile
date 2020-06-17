@@ -16,6 +16,7 @@ import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.gms.common.util.Strings;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.ActivitySweetPotatoMarketBinding;
@@ -27,6 +28,7 @@ import com.iita.akilimo.models.PotatoPrice;
 import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.MathHelper;
+import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumPotatoProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
@@ -38,6 +40,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
+
+import io.realm.Realm;
 
 public class SweetPotatoMarketActivity extends BaseActivity {
 
@@ -55,8 +59,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
     private MathHelper mathHelper;
     private PotatoMarketOutlet potatoMarketOutlet;
-    private EnumPotatoProduceType enumPotatoProduceType;
-    private EnumUnitOfSale enumUnitOfSale;
+    private String enumPotatoProduceType;
     private List<PotatoPrice> potatoPriceList = null;
     private boolean selectionMade = false;
 
@@ -85,11 +88,13 @@ public class SweetPotatoMarketActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         context = this;
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
+        realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
+
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
 
-        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
         countryCode = mandatoryInfo.getCountryCode();
         currency = mandatoryInfo.getCurrency();
 
@@ -127,7 +132,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
                 try {
                     potatoPriceList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<PotatoPrice>>() {
                     });
-                    objectBoxEntityProcessor.savePotatoPrice(potatoPriceList);
+                    //objectBoxEntityProcessor.savePotatoPrice(potatoPriceList);
                 } catch (Exception ex) {
                     Crashlytics.logException(ex);
                     Crashlytics.log(ex.getMessage());
@@ -160,9 +165,9 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
     @Override
     protected void initComponent() {
-        enumPotatoProduceType = EnumPotatoProduceType.TUBERS;
+        enumPotatoProduceType = EnumPotatoProduceType.TUBERS.produce();
 
-        potatoMarketOutlet = objectBoxEntityProcessor.getPotatoMarketOutlet();
+        potatoMarketOutlet = realmProcessor.getPotatoMarketOutlet();
         if (potatoMarketOutlet != null) {
             produceTypeRadioIndex = potatoMarketOutlet.getProduceTypeRadioIndex();
             potatoUnitOfSaleRadioIndex = potatoMarketOutlet.getPotatoUnitOfSaleRadioIndex();
@@ -175,21 +180,17 @@ public class SweetPotatoMarketActivity extends BaseActivity {
         rdgUnitOfSalePotato.setOnCheckedChangeListener((group, radioIndex) -> {
             switch (radioIndex) {
                 case R.id.rd_per_kg:
-                    enumUnitOfSale = EnumUnitOfSale.ONE_KG;
+                    unitOfSale = EnumUnitOfSale.ONE_KG.unitOfSale();
                     break;
                 case R.id.rd_50_kg_bag:
-                    enumUnitOfSale = EnumUnitOfSale.FIFTY_KG;
+                    unitOfSale = EnumUnitOfSale.FIFTY_KG.unitOfSale();
                     break;
                 case R.id.rd_100_kg_bag:
-                    enumUnitOfSale = EnumUnitOfSale.HUNDRED_KG;
+                    unitOfSale = EnumUnitOfSale.HUNDRED_KG.unitOfSale();
                     break;
                 case R.id.rd_1000_kg_bag:
-                    enumUnitOfSale = EnumUnitOfSale.THOUSAND_KG;
+                    unitOfSale = EnumUnitOfSale.THOUSAND_KG.unitOfSale();
                     break;
-            }
-
-            if (enumUnitOfSale != null) {
-                unitOfSale = enumUnitOfSale.unitOfSale();
             }
         });
         btnFinish.setOnClickListener(view -> validate(false));
@@ -206,7 +207,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             showCustomWarningDialog(getString(R.string.lbl_invalid_produce), getString(R.string.lbl_potato_produce_prompt));
             return;
         }
-        if (enumUnitOfSale == null) {
+        if (Strings.isEmptyOrWhitespace(unitOfSale)) {
             showCustomWarningDialog(getString(R.string.lbl_invalid_sale_unit), getString(R.string.lbl_potato_sale_unit_prompt));
             return;
         }
@@ -216,21 +217,26 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             return;
         }
 
-        if (potatoMarketOutlet == null) {
-            potatoMarketOutlet = new PotatoMarketOutlet();
-        }
+        myRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                if (potatoMarketOutlet == null) {
+                    potatoMarketOutlet = myRealm.createObject(PotatoMarketOutlet.class);
+                }
 
-        potatoMarketOutlet.setProduceType(enumPotatoProduceType);
-        potatoMarketOutlet.setUnitOfSale(enumUnitOfSale);
-        potatoMarketOutlet.setUnitPrice(exactPrice);
+                potatoMarketOutlet.setProduceType(enumPotatoProduceType);
+                potatoMarketOutlet.setUnitOfSale(unitOfSale);
+                potatoMarketOutlet.setUnitPrice(exactPrice);
 
-        potatoMarketOutlet.setProduceTypeRadioIndex(produceTypeRadioIndex);
-        potatoMarketOutlet.setPotatoUnitPriceRadioIndex(potatoUnitPriceRadioIndex);
-        potatoMarketOutlet.setPotatoUnitOfSaleRadioIndex(potatoUnitOfSaleRadioIndex);
-        long id = objectBoxEntityProcessor.savePotatoMarketOutlet(potatoMarketOutlet);
-        if (id > 0) {
-            closeActivity(backPressed);
-        }
+                potatoMarketOutlet.setProduceTypeRadioIndex(produceTypeRadioIndex);
+                potatoMarketOutlet.setPotatoUnitPriceRadioIndex(potatoUnitPriceRadioIndex);
+                potatoMarketOutlet.setPotatoUnitOfSaleRadioIndex(potatoUnitOfSaleRadioIndex);
+
+            }
+        });
+        myRealm.close();
+        closeActivity(backPressed);
+
 
     }
 
@@ -243,18 +249,12 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
     private void showPotatoUnitPriceDialog() {
         Bundle arguments = new Bundle();
-
         //check if values are null
-        if (enumUnitOfSale == null) {
-            enumUnitOfSale = potatoMarketOutlet.getUnitOfSale();
-            unitOfSale = enumUnitOfSale.unitOfSale();
-        }
         arguments.putString(SweetPotatoPriceDialogFragment.CURRENCY_CODE, currency);
         arguments.putString(SweetPotatoPriceDialogFragment.COUNTRY_CODE, countryCode);
         arguments.putDouble(SweetPotatoPriceDialogFragment.SELECTED_PRICE, exactPrice);
         arguments.putDouble(SweetPotatoPriceDialogFragment.AVERAGE_PRICE, averagePrice);
         arguments.putString(SweetPotatoPriceDialogFragment.UNIT_OF_SALE, unitOfSale);
-        arguments.putParcelable(SweetPotatoPriceDialogFragment.ENUM_UNIT_OF_SALE, enumUnitOfSale);
 
         SweetPotatoPriceDialogFragment priceDialogFragment = new SweetPotatoPriceDialogFragment();
         priceDialogFragment.setArguments(arguments);
