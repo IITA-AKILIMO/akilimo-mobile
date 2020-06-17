@@ -17,6 +17,9 @@ import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.OperationCosts;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
+import com.iita.akilimo.utils.RealmProcessor;
+
+import io.realm.Realm;
 
 
 public class WeedControlCostsActivity extends BaseActivity {
@@ -50,13 +53,14 @@ public class WeedControlCostsActivity extends BaseActivity {
         binding = ActivityWeedControlCostBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
+        realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
         context = this;
         mathHelper = new MathHelper();
 
-        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
-        operationCosts = objectBoxEntityProcessor.getOperationCosts();
-        currentPractice = objectBoxEntityProcessor.getCurrentPractice();
+        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
+        operationCosts = realmProcessor.getOperationCosts();
+        currentPractice = realmProcessor.getCurrentPractice();
         if (mandatoryInfo != null) {
             currency = mandatoryInfo.getCurrency();
         }
@@ -156,25 +160,29 @@ public class WeedControlCostsActivity extends BaseActivity {
             return;
         }
 
-        currentPractice = objectBoxEntityProcessor.getCurrentPractice();
-        if (currentPractice == null) {
-            currentPractice = new CurrentPractice();
-        }
-        operationCosts = objectBoxEntityProcessor.getOperationCosts();
-        if (operationCosts == null) {
-            operationCosts = new OperationCosts();
-        }
 
-        currentPractice.setWeedControlTechnique(weedControlTechnique);
-        currentPractice.setUsesHerbicide(usesHerbicide);
-        currentPractice.setWeedRadioIndex(weedRadioIndex);
+        currentPractice = realmProcessor.getCurrentPractice();
+        operationCosts = realmProcessor.getOperationCosts();
 
-        operationCosts.setFirstWeedingOperationCost(firstOperationCost);
-        operationCosts.setSecondWeedingOperationCost(secondOperationCost);
-        //proceed to save
-        objectBoxEntityProcessor.saveCurrentPractice(currentPractice);
-        objectBoxEntityProcessor.saveOperationCosts(operationCosts);
+        myRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                if (currentPractice == null) {
+                    currentPractice = myRealm.createObject(CurrentPractice.class);
+                }
+                if (operationCosts == null) {
+                    operationCosts = myRealm.createObject(OperationCosts.class);
+                }
 
+                currentPractice.setWeedControlTechnique(weedControlTechnique);
+                currentPractice.setUsesHerbicide(usesHerbicide);
+                currentPractice.setWeedRadioIndex(weedRadioIndex);
+
+                operationCosts.setFirstWeedingOperationCost(firstOperationCost);
+                operationCosts.setSecondWeedingOperationCost(secondOperationCost);
+            }
+        });
+        myRealm.close();
         closeActivity(backPressed);
     }
 }

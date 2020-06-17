@@ -21,12 +21,15 @@ import com.iita.akilimo.entities.OperationCosts;
 import com.iita.akilimo.inherit.CostBaseActivity;
 import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.utils.MathHelper;
+import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.enums.EnumOperation;
 import com.iita.akilimo.utils.enums.EnumOperationType;
 
 import com.iita.akilimo.views.fragments.dialog.OperationCostsDialogFragment;
 
 import java.util.ArrayList;
+
+import io.realm.Realm;
 
 public class TractorAccessActivity extends CostBaseActivity {
 
@@ -72,11 +75,13 @@ public class TractorAccessActivity extends CostBaseActivity {
         setContentView(binding.getRoot());
 
         context = this;
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
+        realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
+
         queue = Volley.newRequestQueue(this);
         mathHelper = new MathHelper();
 
-        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             currency = mandatoryInfo.getCurrency();
             areaUnit = mandatoryInfo.getAreaUnit();
@@ -93,7 +98,7 @@ public class TractorAccessActivity extends CostBaseActivity {
 
         initToolbar();
         initComponent();
-        operationCosts = objectBoxEntityProcessor.getOperationCosts();
+        operationCosts = realmProcessor.getOperationCosts();
         if (operationCosts != null) {
             tractorPloughCost = operationCosts.getTractorPloughCost();
             tractorRidgeCost = operationCosts.getTractorRidgeCost();
@@ -157,29 +162,32 @@ public class TractorAccessActivity extends CostBaseActivity {
     }
 
     private void setData() {
-        operationCosts = objectBoxEntityProcessor.getOperationCosts();
-        currentPractice = objectBoxEntityProcessor.getCurrentPractice();
-        if (operationCosts == null) {
-            operationCosts = new OperationCosts();
-        }
-        if (currentPractice == null) {
-            currentPractice = new CurrentPractice();
-        }
+        operationCosts = realmProcessor.getOperationCosts();
+        currentPractice = realmProcessor.getCurrentPractice();
 
-        currentPractice.setTractorAvailable(hasTractor);
-        currentPractice.setTractorPlough(hasPlough);
-        currentPractice.setTractorHarrow(hasHarrow);
-        currentPractice.setTractorRidger(hasRidger);
+        myRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                if (operationCosts == null) {
+                    operationCosts = myRealm.createObject(OperationCosts.class);
+                }
+                if (currentPractice == null) {
+                    currentPractice = myRealm.createObject(CurrentPractice.class);
+                }
 
-        operationCosts.setTractorPloughCost(tractorPloughCost);
-        operationCosts.setTractorRidgeCost(tractorRidgeCost);
+                dataValid = true;
+                currentPractice.setTractorAvailable(hasTractor);
+                currentPractice.setTractorPlough(hasPlough);
+                currentPractice.setTractorHarrow(hasHarrow);
+                currentPractice.setTractorRidger(hasRidger);
 
-        operationCosts.setExactTractorPloughPrice(exactPloughCost);
-        operationCosts.setExactTractorRidgePrice(exactRidgeCost);
+                operationCosts.setTractorPloughCost(tractorPloughCost);
+                operationCosts.setTractorRidgeCost(tractorRidgeCost);
 
-        objectBoxEntityProcessor.saveOperationCosts(operationCosts);
-
-        dataValid = true;
+                operationCosts.setExactTractorPloughPrice(exactPloughCost);
+                operationCosts.setExactTractorRidgePrice(exactRidgeCost);
+            }
+        });
     }
 
     @Override
