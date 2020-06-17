@@ -33,6 +33,7 @@ public class AreaUnitFragment extends BaseFragment {
     RadioGroup rdgAreaUnit;
 
     FragmentAreaUnitBinding binding;
+    private Realm myRealm;
 
     private String selectedAreaUnit;
     private MandatoryInfo mandatoryInfo;
@@ -58,6 +59,11 @@ public class AreaUnitFragment extends BaseFragment {
         binding = FragmentAreaUnitBinding.inflate(inflater, container, false);
 
         return binding.getRoot();
+    }
+
+    @Override
+    protected void realmInstance() {
+        myRealm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -93,7 +99,7 @@ public class AreaUnitFragment extends BaseFragment {
             }
 
             areaUnitRadioIndex = rdgAreaUnit.getCheckedRadioButtonId();
-            try (Realm myRealm = getRealmInstance()) {
+            try {
                 myRealm.executeTransaction(realm -> {
                     if (mandatoryInfo == null) {
                         mandatoryInfo = myRealm.createObject(MandatoryInfo.class);
@@ -106,5 +112,11 @@ public class AreaUnitFragment extends BaseFragment {
                 Crashlytics.logException(ex);
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        myRealm.close();
     }
 }

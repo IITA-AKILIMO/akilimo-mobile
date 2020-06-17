@@ -117,6 +117,11 @@ public class SummaryFragment extends BaseFragment {
     }
 
     @Override
+    protected void realmInstance() {
+
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = binding.timelineRecycler;

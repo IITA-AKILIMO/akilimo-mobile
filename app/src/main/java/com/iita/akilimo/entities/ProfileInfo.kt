@@ -7,7 +7,8 @@ import io.realm.annotations.Required
 open class ProfileInfo : RealmObject() {
 
 
-    var id: Long = 0
+    @PrimaryKey
+    var profileId: String? = null
     var deviceID: String? = null
     var userName: String? = null
 
@@ -25,9 +26,9 @@ open class ProfileInfo : RealmObject() {
     @Required
     var gender: String? = null
 
-    var selectedGenderIndex:Int = 0
-    var sendEmail:Boolean = false
-    var sendSms:Boolean = false
+    var selectedGenderIndex: Int = 0
+    var sendEmail: Boolean = false
+    var sendSms: Boolean = false
 
     fun getNames(): String {
         return String.format("%s %s", firstName, lastName)

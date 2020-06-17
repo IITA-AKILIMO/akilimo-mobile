@@ -26,6 +26,7 @@ import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.inherit.BaseFragment;
+import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumOperationType;
 import com.iita.akilimo.views.fragments.dialog.DateDialogPickerFragment;
 import com.iita.akilimo.views.fragments.dialog.OperationTypeDialogFragment;
@@ -46,6 +47,7 @@ public class CurrentPracticeFragment extends BaseFragment {
     AppCompatButton btnPickHarvestDate;
 
     FragmentCurrentPracticeBinding binding;
+    Realm myRealm;
 
 
     private String selectedPlantingDate;
@@ -87,6 +89,11 @@ public class CurrentPracticeFragment extends BaseFragment {
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentCurrentPracticeBinding.inflate(inflater, container, false);
         return binding.getRoot();
+    }
+
+    @Override
+    protected void realmInstance() {
+        myRealm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -249,10 +256,10 @@ public class CurrentPracticeFragment extends BaseFragment {
             harrowingMethod = EnumOperationType.NONE.operationName();
         }
 
-        try (Realm myRealm = getRealmInstance()) {
+        try {
             myRealm.executeTransaction(realm -> {
                 if (currentPractice == null) {
-                    currentPractice = myRealm.createObject(CurrentPractice.class);
+                    currentPractice = myRealm.createObject(CurrentPractice.class, Tools.generateUUID());
                 }
                 currentPractice.setRidgingMethod(ridgingMethod);
                 currentPractice.setPloughingMethod(ploughingMethod);
@@ -270,5 +277,11 @@ public class CurrentPracticeFragment extends BaseFragment {
         } catch (Exception ex) {
             Crashlytics.logException(ex);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        myRealm.close();
     }
 }

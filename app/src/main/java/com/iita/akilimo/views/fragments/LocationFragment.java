@@ -43,6 +43,7 @@ public class LocationFragment extends BaseFragment {
     TextView locationInfo;
     TextView title;
     FragmentLocationBinding binding;
+    Realm myRealm;
 
 
     private double currentLat;
@@ -71,6 +72,11 @@ public class LocationFragment extends BaseFragment {
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentLocationBinding.inflate(inflater, container, false);
         return binding.getRoot();
+    }
+
+    @Override
+    protected void realmInstance() {
+        myRealm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -119,7 +125,7 @@ public class LocationFragment extends BaseFragment {
     }
 
     private void saveLocation() {
-        try (Realm myRealm = getRealmInstance()) {
+        try {
             myRealm.executeTransaction(realm -> {
                 if (locationInformation == null) {
                     locationInformation = myRealm.createObject(LocationInfo.class);
@@ -158,5 +164,11 @@ public class LocationFragment extends BaseFragment {
             Crashlytics.logException(ex);
         }
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        myRealm.close();
     }
 }

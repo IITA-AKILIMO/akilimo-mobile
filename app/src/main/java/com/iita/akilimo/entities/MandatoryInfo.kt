@@ -4,7 +4,9 @@ import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 
 open class MandatoryInfo : RealmObject() {
-    var id: Long = 0
+
+    @PrimaryKey
+    var id: String? = null
     var placeName: String? = null
     var address: String? = null
 
@@ -21,5 +23,5 @@ open class MandatoryInfo : RealmObject() {
 
     var areaUnit: String? = null
     var areaSize = 0.0
-    var exactArea:Boolean = false
+    var exactArea: Boolean = false
 }

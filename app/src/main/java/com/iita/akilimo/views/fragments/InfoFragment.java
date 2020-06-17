@@ -40,6 +40,11 @@ public class InfoFragment extends BaseFragment {
     }
 
     @Override
+    protected void realmInstance() {
+
+    }
+
+    @Override
     public void refreshData() {
 
     }

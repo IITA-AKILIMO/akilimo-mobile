@@ -27,6 +27,7 @@ import com.iita.akilimo.databinding.FragmentBioDataBinding;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.interfaces.IFragmentCallBack;
+import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.ValidationHelper;
 
 import org.jetbrains.annotations.NotNull;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import okhttp3.internal.Util;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,6 +60,8 @@ public class BioDataFragment extends BaseFragment {
     AppCompatButton btnGetRec;
 
     FragmentBioDataBinding binding;
+
+    Realm myRealm;
 
     private boolean dataIsValid;
     private String firstName;
@@ -85,10 +89,16 @@ public class BioDataFragment extends BaseFragment {
         validationHelper = new ValidationHelper();
     }
 
+
     @Override
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentBioDataBinding.inflate(inflater, container, false);
         return binding.getRoot();
+    }
+
+    @Override
+    protected void realmInstance() {
+        myRealm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -208,10 +218,10 @@ public class BioDataFragment extends BaseFragment {
         }
 
         if (dataIsValid) {
-            try (Realm myRealm = getRealmInstance()) {
+            try {
                 myRealm.executeTransaction(realm -> {
                     if (profileInfo == null) {
-                        profileInfo = realm.createObject(ProfileInfo.class);
+                        profileInfo = myRealm.createObject(ProfileInfo.class, Tools.generateUUID());
                     }
                     profileInfo.setFirstName(firstName);
                     profileInfo.setLastName(lastName);
@@ -221,10 +231,9 @@ public class BioDataFragment extends BaseFragment {
                     profileInfo.setMobileCode(mobileCode);
                     profileInfo.setFullMobileNumber(fullMobileNumber);
                     profileInfo.setSelectedGenderIndex(selectedGenderIndex);
-
-                    //load the next fragment
-                    nextFragment();
                 });
+                //load the next fragment
+                nextFragment();
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                 Crashlytics.logException(ex);
@@ -241,5 +250,11 @@ public class BioDataFragment extends BaseFragment {
         if (fragmentCallBack != null) {
             fragmentCallBack.onDataSaved();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
     }
 }

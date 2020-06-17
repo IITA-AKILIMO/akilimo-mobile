@@ -54,6 +54,7 @@ public abstract class BaseFragment extends Fragment {
 
     protected SessionManager sessionManager;
     protected RealmProcessor realmProcessor;
+//    protected Realm myRealm;
 
     public BaseFragment() {
 
@@ -78,12 +79,15 @@ public abstract class BaseFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        realmInstance();
         View view = loadFragmentLayout(inflater, container, savedInstanceState);
         Reword.reword(view);
         return view;
     }
 
     protected abstract View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
+
+    protected abstract void realmInstance();
 
     public abstract void refreshData();
 
@@ -150,7 +154,7 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
-    public Realm getRealmInstance(){
-     return Realm.getDefaultInstance();
+    public Realm getRealmInstance() {
+        return Realm.getDefaultInstance();
     }
 }

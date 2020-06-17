@@ -23,6 +23,7 @@ import com.iita.akilimo.databinding.FragmentCountryBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
+import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumCountry;
 
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ public class CountryFragment extends BaseFragment {
     AppCompatTextView title;
     Spinner countrySpinner;
     FragmentCountryBinding binding;
+    Realm myRealm;
 
     private ProfileInfo profileInfo;
     private MandatoryInfo mandatoryInfo;
@@ -68,6 +70,11 @@ public class CountryFragment extends BaseFragment {
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentCountryBinding.inflate(inflater, container, false);
         return binding.getRoot();
+    }
+
+    @Override
+    protected void realmInstance() {
+        myRealm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -156,10 +163,10 @@ public class CountryFragment extends BaseFragment {
     }
 
     private void updateSelectedCountry(int selectedCountryIndex) {
-        try (Realm myRealm = getRealmInstance()) {
+        try {
             myRealm.executeTransaction(realm -> {
                 if (mandatoryInfo == null) {
-                    mandatoryInfo = myRealm.createObject(MandatoryInfo.class);
+                    mandatoryInfo = myRealm.createObject(MandatoryInfo.class, Tools.generateUUID());
                 }
 
                 mandatoryInfo.setSelectedCountryIndex(selectedCountryIndex);
@@ -173,4 +180,9 @@ public class CountryFragment extends BaseFragment {
 
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        myRealm.close();
+    }
 }

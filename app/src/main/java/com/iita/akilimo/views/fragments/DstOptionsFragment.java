@@ -70,6 +70,11 @@ public class DstOptionsFragment extends BaseFragment {
     }
 
     @Override
+    protected void realmInstance() {
+
+    }
+
+    @Override
     public void refreshData() {
         throw new UnsupportedOperationException();
     }

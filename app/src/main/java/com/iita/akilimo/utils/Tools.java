@@ -55,6 +55,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.UUID;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
@@ -429,5 +430,8 @@ public class Tools {
         return message;
     }
 
+    public static String generateUUID() {
+        return UUID.randomUUID().toString();
+    }
 
 }

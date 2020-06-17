@@ -50,6 +50,7 @@ public class FieldSizeFragment extends BaseFragment {
     RadioButton rd_two_half_acre;
 
     FragmentFieldSizeBinding binding;
+    Realm myRealm;
 
 
     private String myFieldSize = "";
@@ -86,6 +87,11 @@ public class FieldSizeFragment extends BaseFragment {
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentFieldSizeBinding.inflate(inflater, container, false);
         return binding.getRoot();
+    }
+
+    @Override
+    protected void realmInstance() {
+        myRealm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -177,7 +183,7 @@ public class FieldSizeFragment extends BaseFragment {
         mandatoryInfo = realmProcessor.getMandatoryInfo();
 
         fieldSizeRadioIndex = rdgFieldArea.getCheckedRadioButtonId();
-        try (Realm myRealm = getRealmInstance()) {
+        try {
             myRealm.executeTransaction(realm -> {
                 if (mandatoryInfo == null) {
                     mandatoryInfo = myRealm.createObject(MandatoryInfo.class);
@@ -263,5 +269,11 @@ public class FieldSizeFragment extends BaseFragment {
 
         dialog.show();
         dialog.getWindow().setAttributes(lp);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        myRealm.close();
     }
 }

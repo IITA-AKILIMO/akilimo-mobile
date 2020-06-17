@@ -5,7 +5,8 @@ import io.realm.annotations.PrimaryKey
 
 open class CurrentPractice : RealmObject() {
 
-    var id: Long = 0
+    @PrimaryKey
+    var id: String? = null
     var weedRadioIndex = 0
     var weedControlTechnique: String? = null
     var ploughOperations: String? = null
