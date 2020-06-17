@@ -16,12 +16,15 @@ import com.iita.akilimo.entities.OperationCosts;
 import com.iita.akilimo.inherit.CostBaseActivity;
 import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.utils.MathHelper;
+import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.enums.EnumOperation;
 import com.iita.akilimo.utils.enums.EnumOperationType;
 
 import com.iita.akilimo.views.fragments.dialog.OperationCostsDialogFragment;
 
 import java.util.ArrayList;
+
+import io.realm.Realm;
 
 
 public class ManualTillageCostActivity extends CostBaseActivity {
@@ -53,7 +56,8 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         binding = ActivityManualTillageCostBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         context = this;
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
+        realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
         queue = Volley.newRequestQueue(this);
         mathHelper = new MathHelper();
 
@@ -67,7 +71,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         btnFinish = binding.twoButtons.btnFinish;
         btnCancel = binding.twoButtons.btnCancel;
 
-        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             currency = mandatoryInfo.getCurrency();
             areaUnit = mandatoryInfo.getAreaUnit();
@@ -78,13 +82,13 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         initToolbar();
         initComponent();
 
-        operationCosts = objectBoxEntityProcessor.getOperationCosts();
+        operationCosts = realmProcessor.getOperationCosts();
         if (operationCosts != null) {
             manualPloughCost = operationCosts.getManualPloughCost();
             manualRidgeCost = operationCosts.getManualRidgeCost();
 
             manualPloughCostText.setText(getString(R.string.lbl_ploughing_cost_text, fieldSize, areaUnit, manualPloughCost, currency));
-            manualRidgingCostText.setText(getString(R.string.lbl_ridging_cost_text, fieldSize, areaUnit, manualRidgeCost,currency));
+            manualRidgingCostText.setText(getString(R.string.lbl_ridging_cost_text, fieldSize, areaUnit, manualRidgeCost, currency));
 
         }
     }
@@ -133,7 +137,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
     }
 
     private void setData() {
-        operationCosts = objectBoxEntityProcessor.getOperationCosts();
+        operationCosts = realmProcessor.getOperationCosts();
         if (operationCosts == null) {
             operationCosts = new OperationCosts();
         }
@@ -150,10 +154,18 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         }
 
         dataValid = true;
-        operationCosts.setManualPloughCost(manualPloughCost);
-        operationCosts.setManualRidgeCost(manualRidgeCost);
-        //proceed to save
-        objectBoxEntityProcessor.saveOperationCosts(operationCosts);
+        myRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                if (operationCosts == null) {
+                    operationCosts = myRealm.createObject(OperationCosts.class);
+                }
+                operationCosts.setManualPloughCost(manualPloughCost);
+                operationCosts.setManualRidgeCost(manualRidgeCost);
+            }
+        });
+        myRealm.close();
+
     }
 
     @Override

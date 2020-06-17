@@ -44,7 +44,7 @@ public class MaizePerformanceActivity extends BaseActivity {
         binding = ActivityMaizePerformanceActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         context = this;
-        realmProcessor =new RealmProcessor();
+        realmProcessor = new RealmProcessor();
         myRealm = Realm.getDefaultInstance();
 
         toolbar = binding.toolbar;
@@ -139,8 +139,9 @@ public class MaizePerformanceActivity extends BaseActivity {
                 maizePerformance.setPerformanceRadioIndex(performanceRadioIndex);
                 maizePerformance.setMaizePerformance(selectedMaizePerformance);
                 maizePerformance.setPerformanceValue(maizePerformanceValue);
-                closeActivity(backPressed);
             }
         });
+        myRealm.close();
+        closeActivity(backPressed);
     }
 }

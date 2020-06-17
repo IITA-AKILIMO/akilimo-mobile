@@ -17,6 +17,7 @@ import com.iita.akilimo.entities.CurrentFieldYield;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
+import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
 
 import com.iita.akilimo.widget.SpacingItemDecoration;
@@ -56,21 +57,18 @@ public class RootYieldActivity extends BaseActivity {
         binding = ActivityRootYieldBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
+        realmProcessor = new RealmProcessor();
         mathHelper = new MathHelper();
-        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
             areaUnit = mandatoryInfo.getAreaUnit();
         }
 
-        savedYield = objectBoxEntityProcessor.getCurrentFieldYield();
+        savedYield = realmProcessor.getCurrentFieldYield();
         if (savedYield != null) {
             selectedYieldAmount = savedYield.getYieldAmount();
-        } else {
-            savedYield = new CurrentFieldYield();
         }
-
         toolbar = binding.toolbarLayout.toolbar;
         recyclerView = binding.rootYieldRecycler;
         viewPos = binding.coordinatorLayout;
@@ -109,14 +107,8 @@ public class RootYieldActivity extends BaseActivity {
         mAdapter.setOnItemClickListener((view, fieldYield, position) -> {
             mAdapter.setActiveRowIndex(position);
             selectedYieldAmount = fieldYield.getYieldAmount();
-//            toolbar.setNavigationIcon(R.drawable.ic_done);
-
-            fieldYield.setId(savedYield.getId());
-            objectBoxEntityProcessor.saveCurrentFieldYield(fieldYield);
+            //@TODO check that this data is saved
             mAdapter.setItems(selectedYieldAmount, items);
-            Snackbar.make(viewPos, fieldYield.getFieldYieldLabel(), Snackbar.LENGTH_SHORT)
-//                    .setAction(R.string.lbl_close, showListener)
-                    .show();
         });
 
         btnFinish.setOnClickListener(view -> validate(false));
