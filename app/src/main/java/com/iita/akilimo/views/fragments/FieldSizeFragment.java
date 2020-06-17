@@ -114,7 +114,7 @@ public class FieldSizeFragment extends BaseFragment {
     @Override
     public void refreshData() {
         try {
-            mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+            mandatoryInfo = realmProcessor.getMandatoryInfo();
             if (mandatoryInfo != null) {
                 isExactArea = mandatoryInfo.getExactArea();
                 areaUnit = mandatoryInfo.getAreaUnit();
@@ -182,6 +182,7 @@ public class FieldSizeFragment extends BaseFragment {
             mandatoryInfo.setFieldSizeRadioIndex(fieldSizeRadioIndex);
             mandatoryInfo.setAreaSize(areaSize);
         });
+        myRealm.close();
     }
 
     private void setFieldLabels(String areaUnit) {

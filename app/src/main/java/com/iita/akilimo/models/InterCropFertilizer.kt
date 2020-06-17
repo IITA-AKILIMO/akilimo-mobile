@@ -7,13 +7,12 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.orm.SugarRecord
 import io.realm.RealmObject
 import kotlinx.android.parcel.Parcelize
+import java.io.Serializable
 
 @Deprecated("Too much duplication move to common fertilizer")
 @Parcelize
 @JsonIgnoreProperties(ignoreUnknown = true)
 open class InterCropFertilizer : RealmObject(), Parcelable {
-
-
     var imageId = 0
 
     @JsonProperty("fertilizerId")
