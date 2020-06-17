@@ -21,6 +21,9 @@ import com.iita.akilimo.entities.InvestmentAmount;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
+import com.iita.akilimo.utils.RealmProcessor;
+
+import io.realm.Realm;
 
 
 public class InvestmentAmountActivity extends BaseActivity {
@@ -45,6 +48,7 @@ public class InvestmentAmountActivity extends BaseActivity {
     String investmentAmountError;
 
     MathHelper mathHelper;
+    private InvestmentAmount invAmount;
     private boolean isExactAmount;
     private boolean hasErrors;
 
@@ -64,9 +68,10 @@ public class InvestmentAmountActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityInvestmentAmountBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        
+
         context = this;
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
+        realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
         mathHelper = new MathHelper();
 
         toolbar = binding.toolbar;
@@ -157,17 +162,22 @@ public class InvestmentAmountActivity extends BaseActivity {
                 return;
             }
 
-            InvestmentAmount invAmount = objectBoxEntityProcessor.getInvestmentAmount();
-            if (invAmount == null) {
-                invAmount = new InvestmentAmount();
-            }
-            invAmount.setInvestmentAmountUSD(investmentAmountUSD);
-            invAmount.setInvestmentAmountLocal(investmentAmountLocal);
-            invAmount.setMinInvestmentAmountLocal(minimumAmountLocal);
-            invAmount.setMinInvestmentAmountUSD(minimumAmountUSD);
+            invAmount = realmProcessor.getInvestmentAmount();
 
-            objectBoxEntityProcessor.saveInvestmentAmount(invAmount);
-            closeActivity(false);
+            myRealm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    if (invAmount == null) {
+                        invAmount = myRealm.createObject(InvestmentAmount.class);
+                    }
+                    invAmount.setInvestmentAmountUSD(investmentAmountUSD);
+                    invAmount.setMinInvestmentAmountUSD(minimumAmountUSD);
+
+                    invAmount.setInvestmentAmountLocal(investmentAmountLocal);
+                    invAmount.setMinInvestmentAmountLocal(minimumAmountLocal);
+                    closeActivity(false);
+                }
+            });
         });
         updateLabels();
         showCustomNotificationDialog();
@@ -180,7 +190,7 @@ public class InvestmentAmountActivity extends BaseActivity {
 
     private void updateLabels() {
 
-        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
         fieldSize = mandatoryInfo.getAreaSize();
         fieldSizeAcre = mandatoryInfo.getAreaSize();
         fieldArea = String.valueOf(fieldSize);

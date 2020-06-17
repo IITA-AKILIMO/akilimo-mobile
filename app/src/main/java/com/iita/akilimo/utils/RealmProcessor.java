@@ -156,7 +156,7 @@ public class RealmProcessor {
         return null;
     }
 
-    public Fertilizer getSavedInterCropFertilizer(String fertilizerType, String countryCode, EnumUseCase useCase) {
+    public InterCropFertilizer getSavedInterCropFertilizer(String fertilizerType, String countryCode, EnumUseCase useCase) {
         return null;
     }
 

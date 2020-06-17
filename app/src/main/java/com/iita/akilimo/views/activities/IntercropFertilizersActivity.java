@@ -148,7 +148,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
 
         mAdapter.setOnItemClickListener((view, clickedFertilizer, position) -> {
             mAdapter.setActiveRowIndex(position);
-            Fertilizer selectedType = realmProcessor.getSavedInterCropFertilizer(clickedFertilizer.getFertilizerType(), countryCode, useCase);
+            InterCropFertilizer selectedType = realmProcessor.getSavedInterCropFertilizer(clickedFertilizer.getFertilizerType(), countryCode, useCase);
             if (selectedType == null) {
                 selectedType = clickedFertilizer;
             }
