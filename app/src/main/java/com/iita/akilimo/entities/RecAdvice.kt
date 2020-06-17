@@ -5,7 +5,8 @@ import io.realm.annotations.PrimaryKey
 
 open class RecAdvice : RealmObject() {
 
-    var id: Long = 0
+    @PrimaryKey
+    var id: String? = null
     var FR = false
     var CIM = false
     var CIS = false

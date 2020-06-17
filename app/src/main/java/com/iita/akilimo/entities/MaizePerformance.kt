@@ -6,7 +6,8 @@ import io.realm.annotations.PrimaryKey
 
 open class MaizePerformance : RealmObject() {
 
-    var id: Long = 0
+    @PrimaryKey
+    var id: String? = null
     var performanceRadioIndex = 0
     var maizePerformance: String? = null
     var performanceValue: String? = null

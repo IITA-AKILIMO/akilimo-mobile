@@ -22,17 +22,19 @@ import com.iita.akilimo.models.PotatoPrice;
 import com.iita.akilimo.models.StarchFactory;
 import com.iita.akilimo.utils.enums.EnumUseCase;
 
-import java.util.Collection;
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 
 public class RealmProcessor {
     private Realm realm;
 
     public RealmProcessor() {
         realm = Realm.getDefaultInstance();
+    }
+
+    public RealmProcessor(Realm myRealm) {
+        this.realm = myRealm;
     }
 
     public ProfileInfo getProfileInfo() {
@@ -83,6 +85,7 @@ public class RealmProcessor {
         return mandatoryInfo;
     }
 
+
     public List<CassavaPrice> getCassavaPrices(String countryCode) {
         List<CassavaPrice> cassavaPrices = realm.where(CassavaPrice.class)
                 .equalTo("country", countryCode)
@@ -112,7 +115,11 @@ public class RealmProcessor {
     }
 
     public List<InterCropFertilizer> getAllInterCropFertilizersByCountry(String countryCode) {
-        return null;
+        List<InterCropFertilizer> interCropFertilizers = realm.where(InterCropFertilizer.class)
+                .equalTo("countryCode", countryCode)
+                .findAll();
+
+        return interCropFertilizers;
     }
 
     public List<Fertilizer> getAvailableFertilizersByCountry(String countryCode) {
@@ -124,7 +131,10 @@ public class RealmProcessor {
     }
 
     public RecAdvice getRecAdvice() {
-        return null;
+        RecAdvice recAdvice = realm.where(RecAdvice.class)
+                .findFirst();
+
+        return recAdvice;
     }
 
     public CurrentFieldYield getCurrentFieldYield() {
@@ -135,27 +145,46 @@ public class RealmProcessor {
     }
 
     public InvestmentAmount getInvestmentAmount() {
-        return null;
+        InvestmentAmount investmentAmount = realm.where(InvestmentAmount.class)
+                .findFirst();
+
+        return investmentAmount;
     }
 
     public OperationCosts getOperationCosts() {
-        return null;
+
+        OperationCosts operationCosts = realm.where(OperationCosts.class)
+                .findFirst();
+
+        return operationCosts;
     }
 
     public MaizePerformance getMaizePerformance() {
-        return null;
+        MaizePerformance maizePerformance = realm.where(MaizePerformance.class)
+                .findFirst();
+
+        return maizePerformance;
     }
 
     public CassavaMarketOutlet getCassavaMarketOutlet() {
-        return null;
+        CassavaMarketOutlet cassavaMarketOutlet = realm.where(CassavaMarketOutlet.class)
+                .findFirst();
+
+        return cassavaMarketOutlet;
     }
 
     public MaizeMarketOutlet getMaizeMarketOutlet() {
-        return null;
+        MaizeMarketOutlet maizeMarketOutlet = realm.where(MaizeMarketOutlet.class)
+                .findFirst();
+
+        return maizeMarketOutlet;
     }
 
     public PotatoMarketOutlet getPotatoMarketOutlet() {
-        return null;
+        PotatoMarketOutlet potatoMarketOutlet = realm.where(PotatoMarketOutlet.class)
+                .findFirst();
+
+        return potatoMarketOutlet;
     }
 
     public StarchFactory getSelectedStarchFactoryByTag(String factoryName) {
@@ -175,7 +204,13 @@ public class RealmProcessor {
     }
 
     public Fertilizer getSavedFertilizer(String fertilizerType, String countryCode) {
-        return null;
+        Fertilizer fertilizer = realm.where(Fertilizer.class)
+                .equalTo("fertilizerType", fertilizerType)
+                .and()
+                .equalTo("countryCode", countryCode)
+                .findFirst();
+
+        return fertilizer;
     }
 
     public List<Fertilizer> getSelectedFertilizers(String countryCode) {
@@ -189,14 +224,41 @@ public class RealmProcessor {
     }
 
     public InterCropFertilizer getSavedInterCropFertilizer(String fertilizerType, String countryCode, EnumUseCase useCase) {
-        return null;
+        InterCropFertilizer interCropFertilizer = realm.where(InterCropFertilizer.class)
+                .equalTo("fertilizerType", fertilizerType)
+                .and()
+                .equalTo("countryCode", countryCode)
+                .and()
+                .equalTo("useCase", useCase.name())
+                .and()
+                .equalTo("selected", true)
+                .findFirst();
+
+        return interCropFertilizer;
     }
 
+    @Deprecated
     public List<InterCropFertilizer> getAvailableInterCropFertilizersByCountryUseCase(String countryCode, EnumUseCase useCase) {
-        return null;
+        List<InterCropFertilizer> interCropFertilizers = realm.where(InterCropFertilizer.class)
+                .equalTo("countryCode", countryCode)
+                .and()
+                .equalTo("useCase", useCase.name())
+                .findAll();
+
+        return interCropFertilizers;
     }
 
+
+    @Deprecated
     public List<InterCropFertilizer> getSelectedInterCropFertilizers(String countryCode, EnumUseCase useCase) {
-        return null;
+        List<InterCropFertilizer> interCropFertilizers = realm.where(InterCropFertilizer.class)
+                .equalTo("countryCode", countryCode)
+                .and()
+                .equalTo("useCase", useCase.name())
+                .and()
+                .equalTo("selected", true)
+                .findAll();
+
+        return interCropFertilizers;
     }
 }

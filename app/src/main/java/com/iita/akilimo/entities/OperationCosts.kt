@@ -5,7 +5,8 @@ import io.realm.annotations.PrimaryKey
 
 open class OperationCosts constructor() : RealmObject() {
 
-    var id: Long = 0
+    @PrimaryKey
+    var id: String? = null
     var costLmoAreaBasis: String? = null
     var manualPloughCost = 0.0
     var manualRidgeCost = 0.0

@@ -7,10 +7,12 @@ import io.realm.annotations.PrimaryKey
 
 open class PotatoMarketOutlet : RealmObject() {
 
-    var id: Long = 0
+    @PrimaryKey
+    var id: String? = null
     var produceTypeRadioIndex = 0
     var potatoUnitOfSaleRadioIndex = 0
     var potatoUnitPriceRadioIndex = 0
+
     var unitPrice = 0.0
     var unitWeight: Int = 0
 
