@@ -18,7 +18,7 @@ enum class EnumUnitOfSale : Parcelable {
             return "NA"
         }
     },
-    UNIT_ONE_KG {
+    ONE_KG {
         override fun unitWeight(): Int {
             return 1
         }
@@ -31,7 +31,7 @@ enum class EnumUnitOfSale : Parcelable {
             return "a 1 kg bag"
         }
     },
-    UNIT_FIFTY_KG {
+    FIFTY_KG {
         override fun unitWeight(): Int {
             return 50
         }
@@ -44,7 +44,7 @@ enum class EnumUnitOfSale : Parcelable {
             return "a 50 kg bag"
         }
     },
-    UNIT_HUNDRED_KG {
+    HUNDRED_KG {
         override fun unitWeight(): Int {
             return 100
         }
@@ -57,7 +57,7 @@ enum class EnumUnitOfSale : Parcelable {
             return "a 100 kg bag"
         }
     },
-    UNIT_THOUSAND_KG {
+    THOUSAND_KG {
         override fun unitWeight(): Int {
             return 1000
         }

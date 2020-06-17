@@ -5,11 +5,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.orm.SugarRecord
+import io.realm.RealmObject
 import java.util.*
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-open class ProducePrice : SugarRecord<ProducePrice?>() {
+open class ProducePrice : RealmObject() {
     @JsonProperty("priceIndex")
     var priceIndex: Long = 0
 

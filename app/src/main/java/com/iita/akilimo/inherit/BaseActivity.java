@@ -23,9 +23,9 @@ import com.google.android.gms.common.util.Strings;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.iita.akilimo.R;
 import com.iita.akilimo.utils.FireBaseConfig;
+import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.SessionManager;
 import com.iita.akilimo.utils.enums.EnumUseCase;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.views.activities.DstRecommendationActivity;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
@@ -38,6 +38,7 @@ import java.util.Locale;
 import dev.b3nedikt.app_locale.AppLocale;
 import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
+import io.realm.Realm;
 
 @SuppressLint("LogNotTimber")
 public abstract class BaseActivity extends AppCompatActivity {
@@ -46,8 +47,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected Context context;
     protected SessionManager sessionManager;
+    protected Realm myRealm;
+    protected RealmProcessor realmProcessor;
     protected RequestQueue queue;
-    protected ObjectBoxEntityProcessor objectBoxEntityProcessor = null;
 
     protected String countryCode = "ALL";
     protected String baseCurrency = "USD";
@@ -59,12 +61,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public BaseActivity() {
     }
-
-    protected abstract void initToolbar();
-
-    protected abstract void initComponent();
-
-    protected abstract void validate(boolean backPressed);
 
     @Override
     public void onBackPressed() {
@@ -82,6 +78,19 @@ public abstract class BaseActivity extends AppCompatActivity {
         return AppLocale.wrap(getBaseContext()).getResources();
     }
 
+    protected abstract void initToolbar();
+
+    protected abstract void initComponent();
+
+    protected abstract void validate(boolean backPressed);
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (myRealm != null) {
+            myRealm.close();
+        }
+    }
 
     protected void closeActivity(boolean backPressed) {
         if (!backPressed) {
@@ -236,8 +245,8 @@ public abstract class BaseActivity extends AppCompatActivity {
                         }
                     }
                 });
-}
-  
+    }
+
     protected Locale getCurrentLocale() {
         SharedPrefsAppLocaleRepository prefs = new SharedPrefsAppLocaleRepository(this);
         Locale desiredLocale = prefs.getDesiredLocale();

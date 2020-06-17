@@ -5,12 +5,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.orm.SugarRecord
+import io.realm.RealmObject
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-class OperationCost : SugarRecord<OperationCost?>(), Parcelable {
+open class OperationCost : RealmObject(), Parcelable {
 
     @JsonProperty("listIndex")
     var listIndex: Long = 0

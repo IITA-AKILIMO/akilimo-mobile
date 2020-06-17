@@ -2,14 +2,17 @@ package com.iita.akilimo.entities
 
 import com.iita.akilimo.utils.enums.EnumPotatoProduceType
 import com.iita.akilimo.utils.enums.EnumUnitOfSale
-import com.orm.SugarRecord
+import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
 
-class PotatoMarketOutlet : SugarRecord<PotatoMarketOutlet?>() {
+open class PotatoMarketOutlet : RealmObject() {
+    @PrimaryKey
     var id: Long = 0
     var produceTypeRadioIndex = 0
     var potatoUnitOfSaleRadioIndex = 0
     var potatoUnitPriceRadioIndex = 0
     var exactPrice = 0.0
-    var enumPotatoProduceType: EnumPotatoProduceType = EnumPotatoProduceType.TUBERS
-    var enumUnitOfSale: EnumUnitOfSale = EnumUnitOfSale.UNIT_ONE_KG
+
+    var produceType: String = EnumPotatoProduceType.TUBERS.produce()
+    var unitOfSale: String = EnumUnitOfSale.ONE_KG.unitOfSale()
 }

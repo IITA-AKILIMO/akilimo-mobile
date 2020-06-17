@@ -7,12 +7,13 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.DialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.hbb20.CountryCodePicker
 import com.iita.akilimo.R
+import com.iita.akilimo.entities.PlantingHarvestDates
 import com.iita.akilimo.entities.ProfileInfo
+import com.iita.akilimo.inherit.BaseDialogFragment
 import com.iita.akilimo.interfaces.IRecommendationCallBack
 import com.iita.akilimo.utils.ValidationHelper
 import org.jetbrains.annotations.NotNull
@@ -22,7 +23,7 @@ class RecommendationChannelDialog(
     private val callbackListener: @NotNull IRecommendationCallBack,
     private val myProfileInfo: @NotNull ProfileInfo
 ) :
-    DialogFragment() {
+    BaseDialogFragment() {
 
 
     companion object {
@@ -134,15 +135,20 @@ class RecommendationChannelDialog(
                 dataIsValid = numberIsValid
             }
 
-            if (profileInfo != null && dataIsValid) {
-                profileInfo?.mobileCode = (mobileCode)
-                profileInfo?.email = (email)
-                profileInfo?.fullMobileNumber = (fullMobileNumber)
-                profileInfo?.sendEmail = (sendEmail)
-                profileInfo?.sendSms = (sendSms)
+            if (dataIsValid) {
+                myRealm.executeTransaction {
+                    if (profileInfo == null) {
+                        profileInfo = myRealm.createObject(ProfileInfo::class.java)
+                    }
+                    profileInfo?.mobileCode = (mobileCode)
+                    profileInfo?.email = (email)
+                    profileInfo?.fullMobileNumber = (fullMobileNumber)
+                    profileInfo?.sendEmail = (sendEmail)
+                    profileInfo?.sendSms = (sendSms)
 
-                callbackListener.onDataReceived(profileInfo!!)
-                dismiss()
+                    callbackListener.onDataReceived(profileInfo!!)
+                    dismiss()
+                }
             }
 
         }

@@ -28,7 +28,6 @@ import com.iita.akilimo.rest.request.UserInfo;
 import com.iita.akilimo.utils.enums.EnumCassavaProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 import com.iita.akilimo.utils.enums.EnumUnitPrice;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
@@ -143,13 +142,13 @@ public class BuildComputeData {
     private String cassavaProduceType = DEFAULT_CASSAVA_PD;
     private String starchFactoryName = DEFAULT_UNAVAILABLE;
 
-    private ObjectBoxEntityProcessor objectBoxEntityProcessor;
+    private RealmProcessor realmProcessor;
     private MathHelper mathHelper;
     private ModelMapper modelMapper;
     private SessionManager sessionManager;
 
     public BuildComputeData(@NonNull Activity activity) {
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(activity);
+        realmProcessor = new RealmProcessor();
         mathHelper = new MathHelper(activity);
         modelMapper = new ModelMapper();
         sessionManager = new SessionManager(activity);
@@ -178,10 +177,10 @@ public class BuildComputeData {
         }.getType();
 
         if (computeRequest.getInterCroppingPotatoRec() || computeRequest.getInterCroppingMaizeRec()) {
-            List<InterCropFertilizer> interCropFertilizers = objectBoxEntityProcessor.getAllInterCropFertilizersByCountry(countryCode);
+            List<InterCropFertilizer> interCropFertilizers = realmProcessor.getAllInterCropFertilizersByCountry(countryCode);
             fertilizerList = modelMapper.map(interCropFertilizers, listType);
         } else {
-            fertilizerList = objectBoxEntityProcessor.getAvailableFertilizersByCountry(countryCode);
+            fertilizerList = realmProcessor.getAvailableFertilizersByCountry(countryCode);
         }
 
 
@@ -191,7 +190,7 @@ public class BuildComputeData {
     private UserInfo buildProfileInfo() {
         UserInfo userInfo = new UserInfo();
         try {
-            ProfileInfo profileInfo = objectBoxEntityProcessor.getProfileInfo();
+            ProfileInfo profileInfo = realmProcessor.getProfileInfo();
 
             if (profileInfo != null) {
                 String firstName = Strings.isEmptyOrWhitespace(profileInfo.getFirstName()) ? DEFAULT_USERNAME : profileInfo.getFirstName();
@@ -227,8 +226,8 @@ public class BuildComputeData {
 
     private ComputeRequest buildMandatoryInfo() {
         ComputeRequest computeRequest = new ComputeRequest();
-        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
-        LocationInfo locationInfo = objectBoxEntityProcessor.getLocationInfo();
+        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
+        LocationInfo locationInfo = realmProcessor.getLocationInfo();
         if (locationInfo != null) {
             computeRequest.setMapLat(locationInfo.getLatitude());
             computeRequest.setMapLong(locationInfo.getLongitude());
@@ -250,7 +249,7 @@ public class BuildComputeData {
 
     private ComputeRequest buildRequestedRec(@NonNull ComputeRequest computeRequest) {
         //check for values we have to give recommendations for
-        RecAdvice recAdvice = objectBoxEntityProcessor.getRecAdvice();
+        RecAdvice recAdvice = realmProcessor.getRecAdvice();
         if (recAdvice != null) {
             computeRequest.setInterCroppingMaizeRec(recAdvice.getCIM());
             computeRequest.setInterCroppingPotatoRec(recAdvice.getCIS());
@@ -266,7 +265,7 @@ public class BuildComputeData {
 
     private ComputeRequest buildCurrentFieldYield(@NonNull ComputeRequest computeRequest) {
         //check for values we have to give recommendations for
-        CurrentFieldYield fieldYield = objectBoxEntityProcessor.getCurrentFieldYield();
+        CurrentFieldYield fieldYield = realmProcessor.getCurrentFieldYield();
         if (fieldYield != null) {
             currentFieldYield = (int) fieldYield.getYieldAmount();
         }
@@ -276,7 +275,7 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildPlantingDates(@NonNull ComputeRequest computeRequest) {
-        PlantingHarvestDates sph = objectBoxEntityProcessor.getPlantingHarvestDates();
+        PlantingHarvestDates sph = realmProcessor.getPlantingHarvestDates();
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy");
 
         if (sph != null) {
@@ -301,7 +300,7 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildInvestmentAmount(@NonNull ComputeRequest computeRequest) {
-        InvestmentAmount inv = objectBoxEntityProcessor.getInvestmentAmount();
+        InvestmentAmount inv = realmProcessor.getInvestmentAmount();
         if (inv != null) {
             maxInvestmentAmountLocal = inv.getInvestmentAmountLocal();
         }
@@ -311,7 +310,7 @@ public class BuildComputeData {
 
     private ComputeRequest buildCurrentPractice(@NonNull ComputeRequest computeRequest) {
 
-        CurrentPractice currentPractice = objectBoxEntityProcessor.getCurrentPractice();
+        CurrentPractice currentPractice = realmProcessor.getCurrentPractice();
 
         performsPloughing = currentPractice.getPerformPloughing();
         performsHarrowing = currentPractice.getPerformHarrowing();
@@ -344,7 +343,7 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildOperationCosts(@NonNull ComputeRequest computeRequest) {
-        OperationCosts operationCosts = objectBoxEntityProcessor.getOperationCosts();
+        OperationCosts operationCosts = realmProcessor.getOperationCosts();
 
         costTractorPlough = operationCosts.getTractorPloughCost();
         costTractorHarrow = operationCosts.getTractorHarrowCost();
@@ -383,7 +382,7 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildMaizePerformance(@NonNull ComputeRequest computeRequest) {
-        MaizePerformance maizePerformance = objectBoxEntityProcessor.getMaizePerformance();
+        MaizePerformance maizePerformance = realmProcessor.getMaizePerformance();
 
         currentMaizePerformance = Strings.isEmptyOrWhitespace(maizePerformance.getPerformanceValue()) ? DEFAULT_MAIZE_PERFORMANCE_VALUE : maizePerformance.getPerformanceValue();
 
@@ -393,7 +392,7 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildCassavaMarketOutlet(@NonNull ComputeRequest computeRequest) {
-        CassavaMarketOutlet cassavaMarketOutlet = objectBoxEntityProcessor.getCassavaMarketOutlet();
+        CassavaMarketOutlet cassavaMarketOutlet = realmProcessor.getCassavaMarketOutlet();
 
         String currency = computeRequest.getCurrency();
         if (cassavaMarketOutlet != null) {
@@ -405,10 +404,10 @@ public class BuildComputeData {
             EnumUnitPrice up = cassavaMarketOutlet.getEnumUnitPrice();
             //cassavaUnitPriceLocal = up.convertToLocalCurrency(currency, mathHelper) <= 0 ? cassavaMarketOutlet.getExactPrice() : up.convertToLocalCurrency(currency, mathHelper);
 
-            EnumCassavaProduceType produce = cassavaMarketOutlet.getEnumCassavaProduceType();
+            EnumCassavaProduceType produce = cassavaMarketOutlet.getProduceType();
             cassavaProduceType = produce.produce();
 
-            EnumUnitOfSale uos = cassavaMarketOutlet.getEnumUnitOfSale();
+            EnumUnitOfSale uos = cassavaMarketOutlet.getUnitOfSale();
             cassavaUnitWeight = uos.unitWeight();
             cassavaUnitPrice = cassavaMarketOutlet.getExactPrice();
         }
@@ -429,11 +428,11 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildMaizeMarketOutlet(ComputeRequest computeRequest) {
-        MaizeMarketOutlet maizeMarketOutlet = objectBoxEntityProcessor.getMaizeMarketOutlet();
+        MaizeMarketOutlet maizeMarketOutlet = realmProcessor.getMaizeMarketOutlet();
         String currency = computeRequest.getCurrency();
         if (maizeMarketOutlet != null) {
-            maizeProdType = maizeMarketOutlet.getEnumMaizeProduceType().produce();
-            maizeUnitWeight = maizeMarketOutlet.getEnumUnitOfSale().unitWeight();
+            maizeProdType = maizeMarketOutlet.getProduceType().produce();
+            maizeUnitWeight = maizeMarketOutlet.getUnitOfSale().unitWeight();
 
             EnumUnitPrice up = maizeMarketOutlet.getEnumUnitPrice();
             maizeUnitPriceLocal = up.convertToLocalCurrency(currency, mathHelper) <= 0 ? maizeMarketOutlet.getExactPrice() : up.convertToLocalCurrency(currency, mathHelper);
@@ -447,11 +446,11 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildSweetPotatoMarketOutlet(ComputeRequest computeRequest) {
-        PotatoMarketOutlet potatoMarketOutlet = objectBoxEntityProcessor.getPotatoMarketOutlet();
+        PotatoMarketOutlet potatoMarketOutlet = realmProcessor.getPotatoMarketOutlet();
         String currency = computeRequest.getCurrency();
         if (potatoMarketOutlet != null) {
-            sweetPotatoProdType = potatoMarketOutlet.getEnumPotatoProduceType().produce();
-            sweetPotatoUnitWeight = potatoMarketOutlet.getEnumUnitOfSale().unitWeight();
+            sweetPotatoProdType = potatoMarketOutlet.getProduceType().produce();
+            sweetPotatoUnitWeight = potatoMarketOutlet.getUnitOfSale().unitWeight();
             potatoUnitPriceLocal = potatoMarketOutlet.getExactPrice();
             sweetPotatoUnitPrice = potatoUnitPriceLocal;
         }

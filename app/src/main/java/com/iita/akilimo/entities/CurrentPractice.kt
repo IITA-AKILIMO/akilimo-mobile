@@ -1,9 +1,11 @@
 package com.iita.akilimo.entities
 
-import com.orm.SugarRecord
 import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
 
 open class CurrentPractice : RealmObject() {
+
+    @PrimaryKey
     var id: Long = 0
     var weedRadioIndex = 0
     var weedControlTechnique: String? = null

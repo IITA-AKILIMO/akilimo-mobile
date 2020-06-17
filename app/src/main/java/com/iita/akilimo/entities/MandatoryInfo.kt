@@ -1,9 +1,5 @@
 package com.iita.akilimo.entities
 
-import com.iita.akilimo.utils.enums.EnumAreaUnits
-import com.iita.akilimo.utils.enums.EnumCountry
-import com.iita.akilimo.utils.enums.EnumFieldArea
-import com.orm.SugarRecord
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 

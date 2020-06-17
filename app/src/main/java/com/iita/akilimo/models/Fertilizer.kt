@@ -5,11 +5,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.orm.SugarRecord
+import io.realm.RealmObject
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonIgnoreProperties(ignoreUnknown = true)
-open class Fertilizer : SugarRecord<Fertilizer?>(), Parcelable {
+open class Fertilizer : RealmObject(), Parcelable {
 
 
     var imageId = 0

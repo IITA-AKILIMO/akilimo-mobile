@@ -1,10 +1,11 @@
 package com.iita.akilimo.entities
 
-import com.orm.SugarRecord
+import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
 
 
-class InvestmentAmount : SugarRecord<InvestmentAmount>() {
-
+open class InvestmentAmount : RealmObject() {
+    @PrimaryKey
     var id: Long = 0
     var minInvestmentAmountUSD: Double = 0.0
     var minInvestmentAmountLocal: Double = 0.0

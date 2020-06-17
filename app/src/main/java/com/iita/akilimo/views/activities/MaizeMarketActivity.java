@@ -211,13 +211,13 @@ public class MaizeMarketActivity extends BaseActivity {
         rdgUnitOfSaleGrain.setOnCheckedChangeListener((group, radioIndex) -> {
             switch (radioIndex) {
                 case R.id.rd_per_kg:
-                    enumUnitOfSale = EnumUnitOfSale.UNIT_ONE_KG;
+                    enumUnitOfSale = EnumUnitOfSale.ONE_KG;
                     break;
                 case R.id.rd_50_kg_bag:
-                    enumUnitOfSale = EnumUnitOfSale.UNIT_FIFTY_KG;
+                    enumUnitOfSale = EnumUnitOfSale.FIFTY_KG;
                     break;
                 case R.id.rd_100_kg_bag:
-                    enumUnitOfSale = EnumUnitOfSale.UNIT_HUNDRED_KG;
+                    enumUnitOfSale = EnumUnitOfSale.HUNDRED_KG;
                     break;
             }
 
@@ -230,8 +230,8 @@ public class MaizeMarketActivity extends BaseActivity {
         btnCancel.setOnClickListener(view -> closeActivity(false));
 
         if (maizeMarketOutlet != null) {
-            enumMaizeProduceType = maizeMarketOutlet.getEnumMaizeProduceType();
-            enumUnitOfSale = maizeMarketOutlet.getEnumUnitOfSale();
+            enumMaizeProduceType = maizeMarketOutlet.getProduceType();
+            enumUnitOfSale = maizeMarketOutlet.getUnitOfSale();
             enumUnitPrice = maizeMarketOutlet.getEnumUnitPrice();
 
             grainUnitRadioIndex = maizeMarketOutlet.getGrainUnitRadioIndex();
@@ -297,9 +297,9 @@ public class MaizeMarketActivity extends BaseActivity {
                 maizeMarketOutlet = new MaizeMarketOutlet();
             }
 
-            maizeMarketOutlet.setEnumMaizeProduceType(enumMaizeProduceType);
+            maizeMarketOutlet.setProduceType(enumMaizeProduceType);
             maizeMarketOutlet.setEnumUnitPrice(enumUnitPrice);
-            maizeMarketOutlet.setEnumUnitOfSale(enumUnitOfSale);
+            maizeMarketOutlet.setUnitOfSale(enumUnitOfSale);
 
             maizeMarketOutlet.setExactPrice(exactPrice);
             maizeMarketOutlet.setGrainUnitPriceRadioIndex(grainUnitPriceRadioIndex);

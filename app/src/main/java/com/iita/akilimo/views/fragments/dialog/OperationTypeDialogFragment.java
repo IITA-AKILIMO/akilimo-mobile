@@ -18,11 +18,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.iita.akilimo.R;
+import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IDismissOperationsDialogListener;
 import com.iita.akilimo.utils.enums.EnumOperationType;
 
 
-public class OperationTypeDialogFragment extends DialogFragment {
+public class OperationTypeDialogFragment extends BaseDialogFragment {
     public static final String ARG_ITEM_ID = "OperationTypeDialogFragment";
     public static final String OPERATION_TYPE = "operation_type";
     private static final String LOG_TAG = OperationTypeDialogFragment.class.getSimpleName();
@@ -35,7 +36,6 @@ public class OperationTypeDialogFragment extends DialogFragment {
     private TextView lblSelectionError;
 
     private Dialog dialog;
-    private Context context;
     private IDismissOperationsDialogListener onDismissListener;
     private EnumOperationType enumOperationType;
     private String operation;
@@ -45,11 +45,6 @@ public class OperationTypeDialogFragment extends DialogFragment {
 
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.context = context;
-    }
 
     @NonNull
     @Override

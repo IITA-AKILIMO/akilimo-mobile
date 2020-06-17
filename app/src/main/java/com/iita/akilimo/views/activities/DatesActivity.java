@@ -17,11 +17,13 @@ import com.iita.akilimo.databinding.ActivityDatesBinding;
 import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.DateHelper;
+import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.views.fragments.dialog.DateDialogPickerFragment;
 
 import org.joda.time.LocalDate;
+
+import io.realm.Realm;
 
 public class DatesActivity extends BaseActivity {
     Toolbar toolbar;
@@ -79,7 +81,8 @@ public class DatesActivity extends BaseActivity {
         flexibleHarvest = binding.flexibleHarvest;
 
         context = this;
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
+        myRealm = Realm.getDefaultInstance();
+        realmProcessor = new RealmProcessor();
 
         initToolbar();
         initComponent();
@@ -172,7 +175,7 @@ public class DatesActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        plantingHarvestDates = objectBoxEntityProcessor.getPlantingHarvestDates();
+        plantingHarvestDates = realmProcessor.getPlantingHarvestDates();
 
         if (plantingHarvestDates != null) {
             alternativeDate = plantingHarvestDates.getAlternativeDate();
@@ -215,22 +218,20 @@ public class DatesActivity extends BaseActivity {
             return;
         }
 
-        plantingHarvestDates = objectBoxEntityProcessor.getPlantingHarvestDates();
-        if (plantingHarvestDates == null) {
-            plantingHarvestDates = new PlantingHarvestDates();
-        }
-        plantingHarvestDates.setHarvestDate(selectedHarvestDate);
-        plantingHarvestDates.setHarvestWindow(harvestWindow);
-        plantingHarvestDates.setPlantingDate(selectedPlantingDate);
-        plantingHarvestDates.setPlantingWindow(plantingWindow);
-        plantingHarvestDates.setAlternativeDate(alternativeDate);
-
-        long id = objectBoxEntityProcessor.savePlantingHarvestDates(plantingHarvestDates);
-        if (id <= 0) {
-            showCustomWarningDialog(getString(R.string.lbl_unable_to_save), getString(R.string.lbl_date_save_error));
-            return;
-        }
-        closeActivity(backPressed);
+        myRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                if (plantingHarvestDates == null) {
+                    plantingHarvestDates = myRealm.createObject(PlantingHarvestDates.class);
+                }
+                plantingHarvestDates.setHarvestDate(selectedHarvestDate);
+                plantingHarvestDates.setHarvestWindow(harvestWindow);
+                plantingHarvestDates.setPlantingDate(selectedPlantingDate);
+                plantingHarvestDates.setPlantingWindow(plantingWindow);
+                plantingHarvestDates.setAlternativeDate(alternativeDate);
+                closeActivity(backPressed);
+            }
+        });
     }
 
     private void dialogDatePickerLight(boolean pickPlantingDate, boolean pickHarvestDate) {

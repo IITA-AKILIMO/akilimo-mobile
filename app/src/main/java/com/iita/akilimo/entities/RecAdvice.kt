@@ -1,8 +1,10 @@
 package com.iita.akilimo.entities
 
-import com.orm.SugarRecord
+import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
 
-class RecAdvice : SugarRecord<RecAdvice>() {
+open class RecAdvice : RealmObject() {
+    @PrimaryKey
     var id: Long = 0
     var FR = false
     var CIM = false

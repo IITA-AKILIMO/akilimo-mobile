@@ -24,7 +24,6 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.SessionManager;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import java.util.Locale;
 
@@ -53,8 +52,6 @@ public abstract class BaseFragment extends Fragment {
     protected Context context;
     protected RequestQueue queue;
 
-    @Deprecated
-    protected ObjectBoxEntityProcessor objectBoxEntityProcessor;
     protected SessionManager sessionManager;
     protected RealmProcessor realmProcessor;
     protected Realm myRealm;
@@ -74,11 +71,10 @@ public abstract class BaseFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
         sessionManager = new SessionManager(getContext());
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(getActivity());
         queue = Volley.newRequestQueue(context.getApplicationContext());
         appVersion = sessionManager.getAppVersion();
-        realmProcessor = new RealmProcessor();
         myRealm = Realm.getDefaultInstance();
+        realmProcessor = new RealmProcessor();
     }
 
     @Nullable

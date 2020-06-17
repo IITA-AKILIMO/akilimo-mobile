@@ -27,12 +27,14 @@ import com.iita.akilimo.R
 import com.iita.akilimo.adapters.ViewPagerAdapter
 import com.iita.akilimo.databinding.ActivityHomeBinding
 import com.iita.akilimo.entities.LocationInfo
+import com.iita.akilimo.entities.MandatoryInfo
 import com.iita.akilimo.inherit.BaseActivity
 import com.iita.akilimo.interfaces.IFragmentCallBack
 import com.iita.akilimo.utils.AppUpdateHelper
+import com.iita.akilimo.utils.RealmProcessor
 import com.iita.akilimo.utils.Tools
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor
 import com.iita.akilimo.views.fragments.*
+import io.realm.Realm
 import timber.log.Timber
 import kotlin.system.exitProcess
 
@@ -83,9 +85,11 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        realmProcessor = RealmProcessor()
+        myRealm = Realm.getDefaultInstance()
+
         activity = this
         context = this
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this)
 
         defaultPlaceName = getString(R.string.lbl_place_name)
         viewPager = binding.homeViewPager
@@ -281,25 +285,29 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                 }
             }
 
-            location = objectBoxEntityProcessor.locationInfo
+            myRealm.executeTransaction { realm: Realm? ->
+                if (location == null) {
+                    location = myRealm.createObject(LocationInfo::class.java)
+                }
 
-            location.latitude = currentLat
-            location.longitude = currentLong
-            location.altitude = currentAlt
+                location = realmProcessor.locationInfo
 
-            location.placeName = when {
-                !Strings.isEmptyOrWhitespace(placeName) -> placeName
-                else -> defaultPlaceName
-            }
-            location.address = when {
-                !Strings.isEmptyOrWhitespace(address) -> address
-                else -> "NA"
-            }
+                location.latitude = currentLat
+                location.longitude = currentLong
+                location.altitude = currentAlt
 
-            val id = objectBoxEntityProcessor.saveLocationInfo(location)
-            if (id > 0) {
+                location.placeName = when {
+                    !Strings.isEmptyOrWhitespace(placeName) -> placeName
+                    else -> defaultPlaceName
+                }
+                location.address = when {
+                    !Strings.isEmptyOrWhitespace(address) -> address
+                    else -> "NA"
+                }
+
                 //refresh fragment data
                 (currentFragment as? LocationFragment)?.refreshData()
+
             }
         } catch (ex: Exception) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "Error saving location information")

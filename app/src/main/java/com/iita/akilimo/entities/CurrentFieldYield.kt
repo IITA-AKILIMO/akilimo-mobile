@@ -1,9 +1,11 @@
 package com.iita.akilimo.entities
 
-import com.orm.SugarRecord
+import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
 
 
-class CurrentFieldYield : SugarRecord<CurrentFieldYield>() {
+open class CurrentFieldYield : RealmObject() {
+    @PrimaryKey
     var id: Long = 0
     var yieldAmount = 0.0
     var fieldYieldLabel: String? = null

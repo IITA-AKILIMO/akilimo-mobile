@@ -32,12 +32,11 @@ import com.iita.akilimo.models.StarchFactory;
 import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.MathHelper;
+import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumCassavaProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
-import com.iita.akilimo.utils.enums.EnumUnitPrice;
 import com.iita.akilimo.utils.enums.EnumUseCase;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.views.fragments.dialog.CassavaPriceDialogFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -45,6 +44,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
+
+import io.realm.Realm;
 
 public class CassavaMarketActivity extends BaseActivity {
 
@@ -71,14 +72,11 @@ public class CassavaMarketActivity extends BaseActivity {
     MathHelper mathHelper;
     private String selectedFactory = "NA";
 
-    EnumCassavaProduceType enumCassavaProduceType;
-    EnumUnitOfSale enumUnitOfSale;
-    EnumUnitPrice enumUnitPrice;
-
+    String produceType;
     double unitPriceLocal = 0.0;
-
     String priceText;
     String unitOfSale;
+
     private CassavaMarketOutlet cassavaMarketOutlet;
     private List<CassavaPrice> cassavaPriceList = null;
 
@@ -88,7 +86,7 @@ public class CassavaMarketActivity extends BaseActivity {
     private boolean selectionMade;
 
 
-    private double averagePrice = 0.0;
+    private double averagunitPricePrice = 0.0;
     private double exactPrice = 0.0;
 
     @Override
@@ -113,18 +111,19 @@ public class CassavaMarketActivity extends BaseActivity {
         btnFinish = binding.contentCassavaMarket.twoButtons.btnFinish;
         btnCancel = binding.contentCassavaMarket.twoButtons.btnCancel;
 
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
+        realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
 
-        cassavaMarketOutlet = objectBoxEntityProcessor.getCassavaMarketOutlet();
+        cassavaMarketOutlet = realmProcessor.getCassavaMarketOutlet();
         if (cassavaMarketOutlet == null) {
             cassavaMarketOutlet = new CassavaMarketOutlet();
         } else {
             selectedFactory = cassavaMarketOutlet.getStarchFactory();
         }
 
-        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
         countryCode = mandatoryInfo.getCountryCode();
         currency = mandatoryInfo.getCurrency();
 
@@ -167,13 +166,12 @@ public class CassavaMarketActivity extends BaseActivity {
                     factoryTitle.setVisibility(View.VISIBLE);
                     starchFactoryCard.setVisibility(View.VISIBLE);
                     factoryRequired = true;
-                    enumCassavaProduceType = null;
-                    enumUnitOfSale = null;
-                    enumUnitPrice = null;
+                    produceType = null;
+                    unitOfSale = "NA";
                     unitPriceLocal = 0.0;
                     break;
                 case R.id.rdOtherMarket:
-                    enumCassavaProduceType = EnumCassavaProduceType.ROOTS;
+                    produceType = EnumCassavaProduceType.ROOTS.produce();
                     selectedFactory = "NA";
                     otherMarketsRequired = true;
                     hideAll(false);
@@ -190,7 +188,7 @@ public class CassavaMarketActivity extends BaseActivity {
                 RadioButton radioButton = findViewById(radioButtonId);
                 String itemTagIndex = (String) radioButton.getTag();
                 if (itemTagIndex != null) {
-                    StarchFactory selectedStarchFactory = objectBoxEntityProcessor.getSelectedStarchFactoryByTag(itemTagIndex);
+                    StarchFactory selectedStarchFactory = realmProcessor.getSelectedStarchFactoryByTag(itemTagIndex);
                     if (selectedStarchFactory != null) {
                         selectedFactory = selectedStarchFactory.getFactoryName();
                     }
@@ -202,20 +200,17 @@ public class CassavaMarketActivity extends BaseActivity {
         rdgUnitOfSale.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
             switch (radioIndex) {
                 case R.id.rd_per_kg:
-                    enumUnitOfSale = EnumUnitOfSale.UNIT_ONE_KG;
+                    unitOfSale = EnumUnitOfSale.ONE_KG.name();
                     break;
                 case R.id.rd_50_kg_bag:
-                    enumUnitOfSale = EnumUnitOfSale.UNIT_FIFTY_KG;
+                    unitOfSale = EnumUnitOfSale.FIFTY_KG.name();
                     break;
                 case R.id.rd_100_kg_bag:
-                    enumUnitOfSale = EnumUnitOfSale.UNIT_HUNDRED_KG;
+                    unitOfSale = EnumUnitOfSale.HUNDRED_KG.name();
                     break;
                 case R.id.rd_per_tonne:
-                    enumUnitOfSale = EnumUnitOfSale.UNIT_THOUSAND_KG;
+                    unitOfSale = EnumUnitOfSale.THOUSAND_KG.name();
                     break;
-            }
-            if (enumUnitOfSale != null) {
-                unitOfSale = enumUnitOfSale.unitOfSale();
             }
             dataIsValid = false;
         });
@@ -224,7 +219,7 @@ public class CassavaMarketActivity extends BaseActivity {
         btnFinish.setOnClickListener(view -> validate(false));
         btnCancel.setOnClickListener(view -> closeActivity(false));
         if (useCase == EnumUseCase.CIM) {
-            enumCassavaProduceType = EnumCassavaProduceType.ROOTS;
+            produceType = EnumCassavaProduceType.ROOTS.produce();
             factoryRequired = false;
             otherMarketsRequired = false;
             selectionMade = true;
@@ -252,11 +247,11 @@ public class CassavaMarketActivity extends BaseActivity {
                 return;
             }
         } else if (otherMarketsRequired) {
-            if (enumCassavaProduceType == null) {
+            if (produceType == null) {
                 showCustomWarningDialog(getString(R.string.lbl_invalid_produce), getString(R.string.lbl_produce_prompt));
                 return;
             }
-            if (enumUnitOfSale == null) {
+            if (Strings.isEmptyOrWhitespace(unitOfSale)) {
                 showCustomWarningDialog(getString(R.string.lbl_invalid_sale_unit), getString(R.string.lbl_sale_unit_prompt));
                 return;
             }
@@ -281,16 +276,11 @@ public class CassavaMarketActivity extends BaseActivity {
 
             cassavaMarketOutlet.setStarchFactory(selectedFactory);
             cassavaMarketOutlet.setStarchFactoryRequired(factoryRequired);
-            cassavaMarketOutlet.setEnumCassavaProduceType(enumCassavaProduceType);
-            cassavaMarketOutlet.setEnumUnitOfSale(enumUnitOfSale);
-            cassavaMarketOutlet.setEnumUnitPrice(enumUnitPrice);
+            cassavaMarketOutlet.setProduceType(produceType);
+            cassavaMarketOutlet.setUnitOfSale(unitOfSale);
             cassavaMarketOutlet.setExactPrice(exactPrice);
-            cassavaMarketOutlet.setAveragePrice(averagePrice);
-
-            long id = objectBoxEntityProcessor.saveMarketOutlet(cassavaMarketOutlet);
-            if (id > 0) {
-                closeActivity(backPressed);
-            }
+            cassavaMarketOutlet.setUnitPrice(exactPrice);
+            closeActivity(backPressed);
         }
     }
 
@@ -329,7 +319,8 @@ public class CassavaMarketActivity extends BaseActivity {
                 try {
                     List<StarchFactory> starchFactoriesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<StarchFactory>>() {
                     });
-                    objectBoxEntityProcessor.saveStarchFactories(starchFactoriesList);
+
+                    //@TODO save it here
                     addFactoriesRadioButtons(starchFactoriesList);
                 } catch (Exception ex) {
                     Crashlytics.logException(ex);
@@ -373,7 +364,8 @@ public class CassavaMarketActivity extends BaseActivity {
                 try {
                     cassavaPriceList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<CassavaPrice>>() {
                     });
-                    objectBoxEntityProcessor.saveCassavaPrice(cassavaPriceList);
+
+                    //@TODO save it here
                 } catch (Exception ex) {
                     Crashlytics.logException(ex);
                     Crashlytics.log(ex.getMessage());
@@ -396,30 +388,29 @@ public class CassavaMarketActivity extends BaseActivity {
     }
 
     protected void processData() {
-        List<StarchFactory> starchFactoriesList = objectBoxEntityProcessor.getStarchFactories(countryCode);
+        List<StarchFactory> starchFactoriesList = realmProcessor.getStarchFactories(countryCode);
         addFactoriesRadioButtons(starchFactoriesList);
-        cassavaMarketOutlet = objectBoxEntityProcessor.getCassavaMarketOutlet();
+        cassavaMarketOutlet = realmProcessor.getCassavaMarketOutlet();
 
         if (cassavaMarketOutlet != null) {
             boolean sfRequired = cassavaMarketOutlet.isStarchFactoryRequired();
             priceText = String.valueOf(cassavaMarketOutlet.getExactPrice());
             rdgMarketOutlet.check(sfRequired ? R.id.rdFactory : R.id.rdOtherMarket);
             if (!sfRequired) {
-                enumCassavaProduceType = cassavaMarketOutlet.getEnumCassavaProduceType();
-                enumUnitOfSale = cassavaMarketOutlet.getEnumUnitOfSale();
-                enumUnitPrice = cassavaMarketOutlet.getEnumUnitPrice();
-                unitOfSale = enumUnitOfSale.unitOfSale();
-                switch (enumUnitOfSale) {
-                    case UNIT_ONE_KG:
+                produceType = cassavaMarketOutlet.getProduceType();
+                unitOfSale = cassavaMarketOutlet.getUnitOfSale();
+                averagunitPricePrice = cassavaMarketOutlet.getUnitPrice();
+                switch (unitOfSale) {
+                    case "ONE_KG":
                         rdgUnitOfSale.check(R.id.rd_per_kg);
                         break;
-                    case UNIT_FIFTY_KG:
+                    case "FIFTY_KG":
                         rdgUnitOfSale.check(R.id.rd_50_kg_bag);
                         break;
-                    case UNIT_HUNDRED_KG:
+                    case "HUNDRED_KG":
                         rdgUnitOfSale.check(R.id.rd_100_kg_bag);
                         break;
-                    case UNIT_THOUSAND_KG:
+                    case "THOUSAND_KG":
                         rdgUnitOfSale.check(R.id.rd_per_tonne);
                         break;
                 }
@@ -463,15 +454,14 @@ public class CassavaMarketActivity extends BaseActivity {
         arguments.putString(CassavaPriceDialogFragment.COUNTRY_CODE, countryCode);
         arguments.putString(CassavaPriceDialogFragment.UNIT_OF_SALE, uos);
         arguments.putDouble(CassavaPriceDialogFragment.SELECTED_PRICE, exactPrice);
-        arguments.putDouble(CassavaPriceDialogFragment.AVERAGE_PRICE, averagePrice);
-        arguments.putParcelable(CassavaPriceDialogFragment.ENUM_UNIT_OF_SALE, enumUnitOfSale);
+        arguments.putDouble(CassavaPriceDialogFragment.AVERAGE_PRICE, averagunitPricePrice);
 
         CassavaPriceDialogFragment priceDialogFragment = new CassavaPriceDialogFragment();
         priceDialogFragment.setArguments(arguments);
 
         priceDialogFragment.setOnDismissListener((selectedPrice, selectedAveragePrice) -> {
             exactPrice = selectedPrice;
-            averagePrice = selectedAveragePrice;
+            averagunitPricePrice = selectedAveragePrice;
         });
 
         FragmentTransaction fragmentTransaction;

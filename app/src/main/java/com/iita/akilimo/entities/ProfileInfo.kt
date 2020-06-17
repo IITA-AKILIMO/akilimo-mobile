@@ -1,6 +1,5 @@
 package com.iita.akilimo.entities
 
-import com.orm.SugarRecord
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.Required

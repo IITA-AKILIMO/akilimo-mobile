@@ -33,8 +33,8 @@ import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.rest.recommendation.RecommendationResponse;
 import com.iita.akilimo.rest.request.RecommendationRequest;
 import com.iita.akilimo.utils.BuildComputeData;
+import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.views.fragments.dialog.RecommendationChannelDialog;
 
 import org.jetbrains.annotations.NotNull;
@@ -43,6 +43,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.realm.Realm;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -81,7 +83,8 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         errorLabel = binding.errorLabel;
         lyt_progress = binding.lytProgress;
 
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
+        realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
         initToolbar();
         initComponent();
     }
@@ -103,7 +106,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
-        profileInfo = objectBoxEntityProcessor.getProfileInfo();
+        profileInfo = realmProcessor.getProfileInfo();
 
         lyt_progress.setVisibility(View.VISIBLE);
         lyt_progress.setAlpha(1.0f);
@@ -142,7 +145,6 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
 
     @Override
     public void onDataReceived(@NotNull ProfileInfo profileInfo) {
-        objectBoxEntityProcessor.saveProfileInfo(profileInfo);
         buildRecommendationData();
     }
 

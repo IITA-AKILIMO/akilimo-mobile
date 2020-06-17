@@ -3,9 +3,10 @@ package com.iita.akilimo.models
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.orm.SugarRecord
+import io.realm.RealmObject
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class FertilizerPrices : SugarRecord<FertilizerPrices?>() {
+open class FertilizerPrices : RealmObject() {
     @JsonProperty("id")
     var id: Long = 0
 

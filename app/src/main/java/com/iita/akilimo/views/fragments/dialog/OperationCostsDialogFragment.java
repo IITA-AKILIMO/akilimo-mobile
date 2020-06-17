@@ -25,6 +25,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
+import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.enums.EnumCountry;
@@ -36,7 +37,7 @@ import java.util.ArrayList;
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
  */
-public class OperationCostsDialogFragment extends DialogFragment {
+public class OperationCostsDialogFragment extends BaseDialogFragment {
 
     public static final String OPERATION_NAME = "operation_type";
     public static final String SELECTED_COUNTRY = "country";
@@ -58,10 +59,6 @@ public class OperationCostsDialogFragment extends DialogFragment {
     private TextInputLayout exactPriceWrapper;
     private EditText editExactCost;
 
-
-    private MathHelper mathHelper;
-    private Context context;
-
     private double selectedCost = 0.0;
     private String translatedSuffix;
     private String currencyCode;
@@ -78,13 +75,6 @@ public class OperationCostsDialogFragment extends DialogFragment {
 
     public OperationCostsDialogFragment() {
         // Required empty public constructor
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.context = context;
-        mathHelper = new MathHelper();
     }
 
 

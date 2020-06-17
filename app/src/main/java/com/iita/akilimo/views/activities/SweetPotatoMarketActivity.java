@@ -175,16 +175,16 @@ public class SweetPotatoMarketActivity extends BaseActivity {
         rdgUnitOfSalePotato.setOnCheckedChangeListener((group, radioIndex) -> {
             switch (radioIndex) {
                 case R.id.rd_per_kg:
-                    enumUnitOfSale = EnumUnitOfSale.UNIT_ONE_KG;
+                    enumUnitOfSale = EnumUnitOfSale.ONE_KG;
                     break;
                 case R.id.rd_50_kg_bag:
-                    enumUnitOfSale = EnumUnitOfSale.UNIT_FIFTY_KG;
+                    enumUnitOfSale = EnumUnitOfSale.FIFTY_KG;
                     break;
                 case R.id.rd_100_kg_bag:
-                    enumUnitOfSale = EnumUnitOfSale.UNIT_HUNDRED_KG;
+                    enumUnitOfSale = EnumUnitOfSale.HUNDRED_KG;
                     break;
                 case R.id.rd_1000_kg_bag:
-                    enumUnitOfSale = EnumUnitOfSale.UNIT_THOUSAND_KG;
+                    enumUnitOfSale = EnumUnitOfSale.THOUSAND_KG;
                     break;
             }
 
@@ -220,8 +220,8 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             potatoMarketOutlet = new PotatoMarketOutlet();
         }
 
-        potatoMarketOutlet.setEnumPotatoProduceType(enumPotatoProduceType);
-        potatoMarketOutlet.setEnumUnitOfSale(enumUnitOfSale);
+        potatoMarketOutlet.setProduceType(enumPotatoProduceType);
+        potatoMarketOutlet.setUnitOfSale(enumUnitOfSale);
         potatoMarketOutlet.setExactPrice(exactPrice);
 
         potatoMarketOutlet.setProduceTypeRadioIndex(produceTypeRadioIndex);
@@ -246,7 +246,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
         //check if values are null
         if (enumUnitOfSale == null) {
-            enumUnitOfSale = potatoMarketOutlet.getEnumUnitOfSale();
+            enumUnitOfSale = potatoMarketOutlet.getUnitOfSale();
             unitOfSale = enumUnitOfSale.unitOfSale();
         }
         arguments.putString(SweetPotatoPriceDialogFragment.CURRENCY_CODE, currency);

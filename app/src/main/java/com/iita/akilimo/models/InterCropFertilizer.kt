@@ -1,27 +1,68 @@
 package com.iita.akilimo.models
 
-import android.os.Parcel
 import android.os.Parcelable
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.orm.SugarRecord
+import io.realm.RealmObject
+import kotlinx.android.parcel.Parcelize
 
-class InterCropFertilizer() : Fertilizer() {
-    constructor(parcel: Parcel) : this() {
-    }
+@Parcelize
+@JsonIgnoreProperties(ignoreUnknown = true)
+open class InterCropFertilizer : RealmObject(), Parcelable {
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        super.writeToParcel(parcel, flags)
-    }
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    var imageId = 0
 
-    companion object CREATOR : Parcelable.Creator<InterCropFertilizer> {
-        override fun createFromParcel(parcel: Parcel): InterCropFertilizer {
-            return InterCropFertilizer(parcel)
-        }
+    @JsonProperty("fertilizerId")
+    var fertilizerId = 0
 
-        override fun newArray(size: Int): Array<InterCropFertilizer?> {
-            return arrayOfNulls(size)
-        }
-    }
+    @JsonProperty("name")
+    var name: String? = null
+
+    @JsonProperty("type")
+    var fertilizerType: String? = null
+
+    @JsonProperty("weight")
+    var weight = 0
+
+    @JsonProperty("price")
+    var price: Double? = null
+
+    @JsonProperty("fertilizerCountry")
+    var fertilizerCountry: String? = null
+
+    @JsonProperty("currency")
+    var currency: String? = null
+
+    @JsonProperty("useCase")
+    var useCase: String? = null
+    var countryCode: String? = null
+    var priceRange: String? = null
+    var pricePerBag = 0.0
+
+    @JsonProperty("kcontent")
+    var kContent = 0
+
+    @JsonProperty("ncontent")
+    var nContent = 0
+
+    @JsonProperty("pcontent")
+    var pContent = 0
+
+    /***---Boolean fields here--- */
+    @JsonProperty("available")
+    var available = false
+
+    @JsonProperty("cimAvailable")
+    var cimAvailable = false
+
+    @JsonProperty("cisAvailable")
+    var cisAvailable = false
+    var selected = false
+    var exactPrice = false
+
+    @JsonProperty("custom")
+    var custom = false
 }

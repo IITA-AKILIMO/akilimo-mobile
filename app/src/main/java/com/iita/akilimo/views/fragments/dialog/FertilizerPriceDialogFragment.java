@@ -24,18 +24,17 @@ import androidx.fragment.app.DialogFragment;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
+import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IDismissListener;
 import com.iita.akilimo.models.Fertilizer;
 import com.iita.akilimo.models.FertilizerPrices;
-import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import java.util.List;
 
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
  */
-public class FertilizerPriceDialogFragment extends DialogFragment {
+public class FertilizerPriceDialogFragment extends BaseDialogFragment {
 
     private static final String LOG_TAG = FertilizerPriceDialogFragment.class.getSimpleName();
 
@@ -57,9 +56,6 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
     private Button btnRemove;
 
 
-    private MathHelper mathHelper;
-    private Context context;
-    private ObjectBoxEntityProcessor objectBox;
     private Fertilizer fertilizer;
     private List<FertilizerPrices> fertilizerPricesList;
 
@@ -74,14 +70,6 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
 
     public FertilizerPriceDialogFragment() {
         // Required empty public constructor
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.context = context;
-        objectBox = ObjectBoxEntityProcessor.getInstance(context);
-        mathHelper = new MathHelper();
     }
 
 
@@ -172,8 +160,8 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
         });
 
         radioGroup.setOnCheckedChangeListener((radioGroup, i) -> radioSelected(radioGroup));
-        if (objectBox != null) {
-            fertilizerPricesList = objectBox.getFertilizerPrices(countryCode);
+        if (realmProcessor != null) {
+            fertilizerPricesList = realmProcessor.getFertilizerPrices(countryCode);
             addPriceRadioButtons(fertilizerPricesList, fertilizer);
         }
         return dialog;
