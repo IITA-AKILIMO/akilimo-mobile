@@ -31,6 +31,7 @@ import java.util.Locale;
 import dev.b3nedikt.app_locale.AppLocale;
 import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
 import dev.b3nedikt.reword.Reword;
+import io.realm.Realm;
 
 @SuppressWarnings("WeakerAccess")
 public abstract class BaseFragment extends Fragment {
@@ -54,6 +55,7 @@ public abstract class BaseFragment extends Fragment {
     protected ObjectBoxEntityProcessor objectBoxEntityProcessor;
     protected SessionManager sessionManager;
     protected RealmProcessor realmProcessor;
+    protected Realm myRealm;
 
     public BaseFragment() {
 
@@ -74,6 +76,7 @@ public abstract class BaseFragment extends Fragment {
         queue = Volley.newRequestQueue(context.getApplicationContext());
         appVersion = sessionManager.getAppVersion();
         realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
     }
 
     @Nullable
@@ -85,6 +88,14 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected abstract View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (myRealm != null) {
+            myRealm.close();
+        }
+    }
 
     public abstract void refreshData();
 

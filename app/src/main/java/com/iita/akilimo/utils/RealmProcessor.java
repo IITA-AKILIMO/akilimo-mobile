@@ -3,8 +3,6 @@ package com.iita.akilimo.utils;
 import com.iita.akilimo.entities.ProfileInfo;
 
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
-import io.realm.RealmResults;
 
 public class RealmProcessor {
     Realm realm;
@@ -15,16 +13,23 @@ public class RealmProcessor {
 
     public void saveProfileInfo(ProfileInfo profileInfo) {
         realm.beginTransaction();
-        realm.beginTransaction();
         realm.copyToRealm(profileInfo);
         realm.commitTransaction();
+    }
+
+    public void updateProfileInfo() {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+
+            }
+        });
     }
 
     public ProfileInfo getProfileInfo() {
         ProfileInfo profileInfo = realm
                 .where(ProfileInfo.class)
                 .findFirst();
-
         return profileInfo;
     }
 }

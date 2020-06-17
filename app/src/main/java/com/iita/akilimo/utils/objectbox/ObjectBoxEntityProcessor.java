@@ -30,6 +30,7 @@ import com.iita.akilimo.utils.enums.EnumUseCase;
 
 import java.util.List;
 
+@Deprecated
 public class ObjectBoxEntityProcessor {
     private static final String LOG_TAG = ObjectBoxEntityProcessor.class.getSimpleName();
     private static ObjectBoxEntityProcessor instance = null;
@@ -52,7 +53,7 @@ public class ObjectBoxEntityProcessor {
     }
 
     public ProfileInfo getProfileInfo() {
-        return  null;
+        return null;
     }
 
     public long saveLocationInfo(LocationInfo locationInfo) {
@@ -218,7 +219,7 @@ public class ObjectBoxEntityProcessor {
 
 
     public List<FertilizerPrices> getFertilizerPrices(@NonNull String countryCode) {
- return null;
+        return null;
     }
 
     public long saveMarketOutlet(@NonNull CassavaMarketOutlet cassavaMarketOutlet) {

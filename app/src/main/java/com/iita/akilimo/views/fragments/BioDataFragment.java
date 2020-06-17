@@ -32,6 +32,8 @@ import com.iita.akilimo.utils.ValidationHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -204,23 +206,26 @@ public class BioDataFragment extends BaseFragment {
         }
 
         if (dataIsValid) {
-            if (profileInfo == null) {
-                profileInfo = new ProfileInfo();
-            }
-            profileInfo.setFirstName(firstName);
-            profileInfo.setLastName(lastName);
-            profileInfo.setGender(gender);
-            profileInfo.setEmail(email);
-            profileInfo.setFarmName(farmName);
-            profileInfo.setMobileCode(mobileCode);
-            profileInfo.setFullMobileNumber(fullMobileNumber);
-            profileInfo.setSelectedGenderIndex(selectedGenderIndex);
-
-            realmProcessor.saveProfileInfo(profileInfo);
-//            long id = objectBoxEntityProcessor.saveProfileInfo(profileInfo);
-//            if (id > 0) {
-//                nextFragment();
-//            }
+            myRealm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    if (profileInfo == null) {
+                        profileInfo = myRealm.createObject(ProfileInfo.class);
+                    }
+                    profileInfo.setFirstName(firstName);
+                    profileInfo.setLastName(lastName);
+                    profileInfo.setGender(gender);
+                    profileInfo.setEmail(email);
+                    profileInfo.setFarmName(farmName);
+                    profileInfo.setMobileCode(mobileCode);
+                    profileInfo.setFullMobileNumber(fullMobileNumber);
+                    profileInfo.setSelectedGenderIndex(selectedGenderIndex);
+//                    long id = objectBoxEntityProcessor.saveProfileInfo(profileInfo);
+//                    if (id > 0) {
+//                        nextFragment();
+//                    }
+                }
+            });
         }
     }
 
