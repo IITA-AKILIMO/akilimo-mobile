@@ -30,6 +30,8 @@ import com.iita.akilimo.utils.enums.EnumOperationType;
 import com.iita.akilimo.views.fragments.dialog.DateDialogPickerFragment;
 import com.iita.akilimo.views.fragments.dialog.OperationTypeDialogFragment;
 
+import io.realm.Realm;
+
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
  */
@@ -247,6 +249,7 @@ public class CurrentPracticeFragment extends BaseFragment {
             harrowingMethod = EnumOperationType.NONE.operationName();
         }
 
+        Realm myRealm = getRealmInstance();
         myRealm.executeTransaction(realm -> {
             if (currentPractice == null) {
                 currentPractice = myRealm.createObject(CurrentPractice.class);

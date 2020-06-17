@@ -119,6 +119,7 @@ public class LocationFragment extends BaseFragment {
     }
 
     private void saveLocation() {
+        Realm myRealm = getRealmInstance();
         myRealm.executeTransaction(realm -> {
             if (locationInformation == null) {
                 locationInformation = myRealm.createObject(LocationInfo.class);

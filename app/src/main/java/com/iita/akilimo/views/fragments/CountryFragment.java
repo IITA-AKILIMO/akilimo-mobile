@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import io.realm.Realm;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link CountryFragment#newInstance} factory method to
@@ -154,7 +156,7 @@ public class CountryFragment extends BaseFragment {
     }
 
     private void updateSelectedCountry(int selectedCountryIndex) {
-        if (myRealm != null) {
+        Realm myRealm = getRealmInstance();
             myRealm.executeTransaction(realm -> {
                 if (mandatoryInfo == null) {
                     mandatoryInfo = myRealm.createObject(MandatoryInfo.class);
@@ -166,7 +168,6 @@ public class CountryFragment extends BaseFragment {
                 mandatoryInfo.setCurrency(currency);
             });
             myRealm.close();
-        }
     }
 
 }

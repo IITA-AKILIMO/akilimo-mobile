@@ -29,6 +29,8 @@ import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.utils.enums.EnumFieldArea;
 
+import io.realm.Realm;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FieldSizeFragment#newInstance} factory method to
@@ -175,6 +177,7 @@ public class FieldSizeFragment extends BaseFragment {
         mandatoryInfo = realmProcessor.getMandatoryInfo();
 
         fieldSizeRadioIndex = rdgFieldArea.getCheckedRadioButtonId();
+        Realm myRealm = getRealmInstance();
         myRealm.executeTransaction(realm -> {
             if (mandatoryInfo == null) {
                 mandatoryInfo = myRealm.createObject(MandatoryInfo.class);

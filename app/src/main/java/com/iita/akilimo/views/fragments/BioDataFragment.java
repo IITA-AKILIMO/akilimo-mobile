@@ -208,7 +208,7 @@ public class BioDataFragment extends BaseFragment {
         }
 
         if (dataIsValid) {
-            myRealm = Realm.getDefaultInstance();
+            Realm myRealm = getRealmInstance();
             myRealm.executeTransaction(realm -> {
                 if (profileInfo == null) {
                     profileInfo = myRealm.createObject(ProfileInfo.class);
