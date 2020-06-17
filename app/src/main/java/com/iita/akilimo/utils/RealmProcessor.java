@@ -26,16 +26,17 @@ import java.util.Collection;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 public class RealmProcessor {
     private Realm realm;
 
-    public RealmProcessor() {
-
-    }
-
-    public ProfileInfo getProfileInfo() {
+    public RealmProcessor() {}
+    private void realmInstance(){
         realm = Realm.getDefaultInstance();
+    }
+    public ProfileInfo getProfileInfo() {
+        realmInstance();
         ProfileInfo profileInfo = realm
                 .where(ProfileInfo.class)
                 .findFirst();
@@ -45,7 +46,7 @@ public class RealmProcessor {
     }
 
     public MandatoryInfo getMandatoryInfo() {
-        realm = Realm.getDefaultInstance();
+        realmInstance();
         MandatoryInfo mandatoryInfo = realm
                 .where(MandatoryInfo.class)
                 .findFirst();
@@ -55,25 +56,27 @@ public class RealmProcessor {
     }
 
     public CurrentPractice getCurrentPractice() {
-        realm = Realm.getDefaultInstance();
+        realmInstance();
         CurrentPractice mandatoryInfo = realm
                 .where(CurrentPractice.class)
                 .findFirst();
+
         realm.close();
         return mandatoryInfo;
     }
 
     public PlantingHarvestDates getPlantingHarvestDates() {
-        realm = Realm.getDefaultInstance();
+        realmInstance();
         PlantingHarvestDates mandatoryInfo = realm
                 .where(PlantingHarvestDates.class)
                 .findFirst();
+
         realm.close();
         return mandatoryInfo;
     }
 
     public LocationInfo getLocationInfo() {
-        realm = Realm.getDefaultInstance();
+        realmInstance();
         LocationInfo mandatoryInfo = realm
                 .where(LocationInfo.class)
                 .findFirst();
@@ -103,7 +106,12 @@ public class RealmProcessor {
     }
 
     public List<Fertilizer> getAvailableFertilizersByCountry(String countryCode) {
-        return null;
+        realmInstance();
+        List<Fertilizer> result2 = realm.where(Fertilizer.class)
+                .equalTo("countryCode", countryCode)
+                .findAll();
+        realm.close();
+        return result2;
     }
 
     public RecAdvice getRecAdvice() {

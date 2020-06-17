@@ -98,7 +98,6 @@ public class AreaUnitFragment extends BaseFragment {
                 mandatoryInfo.setAreaUnitRadioIndex(areaUnitRadioIndex);
                 mandatoryInfo.setAreaUnit(areaUnit);
             });
-            myRealm.close();
         });
     }
 }

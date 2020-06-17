@@ -54,7 +54,6 @@ public abstract class BaseFragment extends Fragment {
 
     protected SessionManager sessionManager;
     protected RealmProcessor realmProcessor;
-    protected Realm myRealm;
 
     public BaseFragment() {
 
@@ -73,7 +72,6 @@ public abstract class BaseFragment extends Fragment {
         sessionManager = new SessionManager(getContext());
         queue = Volley.newRequestQueue(context.getApplicationContext());
         appVersion = sessionManager.getAppVersion();
-        //myRealm = Realm.getDefaultInstance();
         realmProcessor = new RealmProcessor();
     }
 
@@ -86,14 +84,6 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected abstract View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (myRealm != null) {
-            myRealm.close();
-        }
-    }
 
     public abstract void refreshData();
 
@@ -158,5 +148,9 @@ public abstract class BaseFragment extends Fragment {
             Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred while displaying alert dialog");
             Crashlytics.logException(ex);
         }
+    }
+
+    public Realm getRealmInstance(){
+     return Realm.getDefaultInstance();
     }
 }
