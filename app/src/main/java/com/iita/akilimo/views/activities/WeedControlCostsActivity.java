@@ -104,6 +104,7 @@ public class WeedControlCostsActivity extends BaseActivity {
 
         if (currentPractice != null) {
             weedRadioIndex = currentPractice.getWeedRadioIndex();
+            weedControlTechnique = currentPractice.getWeedControlTechnique();
             rdgWeedControl.check(weedRadioIndex);
         }
         if (operationCosts != null) {
