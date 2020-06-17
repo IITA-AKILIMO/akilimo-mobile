@@ -14,7 +14,7 @@ open class MaizeMarketOutlet : RealmObject() {
     var exactPrice = 0.0
     var averagePrice = 0.0
     var enumUnitPrice:Double = 0.0
-    var unitWeight:Int = 0.0
+    var unitWeight:Int = 0
 
 
     var produceType: String = EnumMaizeProduceType.GRAIN.name
