@@ -28,7 +28,7 @@ import java.util.List;
 import io.realm.Realm;
 
 public class RealmProcessor {
-    Realm realm;
+    private Realm realm;
 
     public RealmProcessor() {
 

@@ -22,7 +22,6 @@ public abstract class BaseDialogFragment extends DialogFragment {
 
     protected SessionManager sessionManager;
     protected RealmProcessor realmProcessor;
-    protected Realm myRealm;
 
     public BaseDialogFragment() {
 

@@ -137,7 +137,7 @@ class RecommendationChannelDialog(
             }
 
             if (dataIsValid) {
-                myRealm = Realm.getDefaultInstance();
+                val myRealm = Realm.getDefaultInstance();
                 myRealm.executeTransaction {
                     if (profileInfo == null) {
                         profileInfo = myRealm.createObject(ProfileInfo::class.java)
