@@ -49,6 +49,7 @@ import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmResults;
 
 public class FertilizersActivity extends BaseActivity {
 
@@ -64,6 +65,7 @@ public class FertilizersActivity extends BaseActivity {
     ImageView errorImage;
     TextView errorLabel;
     ActivityFertilizersBinding binding;
+    Realm myRealm;
 
     private List<Fertilizer> availableFertilizersList = new ArrayList<>();
     private List<Fertilizer> selectedFertilizers = new ArrayList<>();
@@ -79,6 +81,7 @@ public class FertilizersActivity extends BaseActivity {
         binding = ActivityFertilizersBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         context = this;
+        myRealm = Realm.getDefaultInstance();
 
         toolbar = binding.toolbarLayout.toolbar;
         recyclerView = binding.availableFertilizers;
@@ -148,7 +151,7 @@ public class FertilizersActivity extends BaseActivity {
             }
             //let us open the price dialog now
             List<Fertilizer> cleanedFertilizers = selectedFertilizers;
-            try (Realm myRealm = getRealmInstance()) {
+            try {
                 Fertilizer finalSelectedType = selectedType;
                 myRealm.executeTransaction(new Realm.Transaction() {
                     @Override
@@ -167,16 +170,13 @@ public class FertilizersActivity extends BaseActivity {
 
             priceDialogFragment.setOnDismissListener((priceSpecified, fertilizer, removeSelected) -> {
                 if ((priceSpecified || removeSelected)) {
-                    long id = 0;//realmProcessor.saveSelectedFertilizer(fertilizer);
-                    if (id > 0) {
-                        if (removeSelected) {
-                            selectedFertilizers = FertilizerList.INSTANCE.removeFertilizerByType(cleanedFertilizers, fertilizer.getFertilizerType());
-                        } else {
-                            selectedFertilizers.add(fertilizer);
-                        }
-                        //refresh the adapter and data set
-                        validate(false);
+                    if (removeSelected) {
+                        selectedFertilizers = FertilizerList.INSTANCE.removeFertilizerByType(cleanedFertilizers, fertilizer.getFertilizerType());
+                    } else {
+                        selectedFertilizers.add(fertilizer);
                     }
+                    //refresh the adapter and data set
+                    validate(false);
                 }
             });
 
@@ -241,7 +241,7 @@ public class FertilizersActivity extends BaseActivity {
                     availableFertilizersList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<Fertilizer>>() {
                     });
                     //save fertilizers here
-                    try (Realm myRealm = getRealmInstance()) {
+                    try {
                         myRealm.executeTransaction(new Realm.Transaction() {
                             @Override
                             public void execute(Realm realm) {
@@ -307,18 +307,17 @@ public class FertilizersActivity extends BaseActivity {
                     fertilizerPricesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<FertilizerPrices>>() {
                     });
                     //save prices here
-                    try (Realm myRealm = getRealmInstance()) {
-                        myRealm.executeTransaction(new Realm.Transaction() {
-                            @Override
-                            public void execute(Realm realm) {
-                                if (fertilizerPricesList.size() > 0) {
-                                    RealmList<FertilizerPrices> _fertilizerPricesList = new RealmList<>();
-                                    _fertilizerPricesList.addAll(fertilizerPricesList);
-                                    myRealm.insertOrUpdate(_fertilizerPricesList);
-                                }
+                    try {
+                        myRealm.executeTransaction(realm -> {
+
+                            if (fertilizerPricesList.size() > 0) {
+                                RealmList<FertilizerPrices> _fertilizerPricesList = new RealmList<>();
+                                _fertilizerPricesList.addAll(fertilizerPricesList);
+                                myRealm.insertOrUpdate(_fertilizerPricesList);
                             }
                         });
                     } catch (Exception ex) {
+                        Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                         Crashlytics.logException(ex);
                     }
                     validate(false);
@@ -357,5 +356,11 @@ public class FertilizersActivity extends BaseActivity {
             snackbar.show();
         }
         return count >= minSelection;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
     }
 }

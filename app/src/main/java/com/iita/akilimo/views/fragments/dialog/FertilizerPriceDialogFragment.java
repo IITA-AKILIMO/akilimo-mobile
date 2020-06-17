@@ -31,6 +31,8 @@ import com.iita.akilimo.models.FertilizerPrices;
 
 import java.util.List;
 
+import io.realm.Realm;
+
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
  */
@@ -145,16 +147,25 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
                 isPriceValid = true;
                 editExactFertilizerPrice.setError(null);
             }
-            fertilizer.setPrice(bagPrice);
-            fertilizer.setPricePerBag(savedPricePerBag);
-            fertilizer.setPriceRange(bagPriceRange);
-            fertilizer.setSelected(true);
-            fertilizer.setExactPrice(isExactPriceRequired);
-
-            if (isPriceValid) {
-                priceSpecified = true;
-                removeSelected = false;
-                dismiss();
+            try (Realm myRealm = Realm.getDefaultInstance()) {
+                myRealm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        fertilizer.setPrice(bagPrice);
+                        fertilizer.setPricePerBag(savedPricePerBag);
+                        fertilizer.setPriceRange(bagPriceRange);
+                        fertilizer.setSelected(true);
+                        fertilizer.setExactPrice(isExactPriceRequired);
+                    }
+                });
+                if (isPriceValid) {
+                    priceSpecified = true;
+                    removeSelected = false;
+                    dismiss();
+                }
+            } catch (Exception ex) {
+                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+                Crashlytics.logException(ex);
             }
 
         });

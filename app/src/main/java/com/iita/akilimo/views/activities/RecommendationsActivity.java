@@ -56,8 +56,10 @@ public class RecommendationsActivity extends BaseActivity {
 
         realmProcessor = new RealmProcessor();
         MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
-        countryCode = mandatoryInfo.getCountryCode();
-        currency = mandatoryInfo.getCurrency();
+        if (mandatoryInfo != null) {
+            countryCode = mandatoryInfo.getCountryCode();
+            currency = mandatoryInfo.getCurrency();
+        }
 
         toolbar = binding.toolbarLayout.toolbar;
         recyclerView = binding.recyclerView;

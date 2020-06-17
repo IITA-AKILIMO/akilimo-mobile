@@ -3,8 +3,12 @@ package com.iita.akilimo.entities
 import com.iita.akilimo.utils.enums.EnumCassavaProduceType
 import com.iita.akilimo.utils.enums.EnumUnitOfSale
 import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
 
 open class CassavaMarketOutlet : RealmObject() {
+    @PrimaryKey
+    var id: String? = null
+
     var starchFactory: String? = null
 
     @Deprecated("Remove this")

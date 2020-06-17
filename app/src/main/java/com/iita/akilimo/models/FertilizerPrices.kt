@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.orm.SugarRecord
 import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 open class FertilizerPrices : RealmObject() {
@@ -34,6 +35,7 @@ open class FertilizerPrices : RealmObject() {
     @JsonProperty("country")
     var country: String? = null
 
+    @PrimaryKey
     @JsonProperty("fertilizerCountry")
     var fertilizerCountry: String? = null
 

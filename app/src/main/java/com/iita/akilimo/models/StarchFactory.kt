@@ -4,14 +4,17 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.google.android.gms.common.util.Strings
 import com.orm.SugarRecord
+import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class StarchFactory : SugarRecord<StarchFactory?>() {
+open class StarchFactory : RealmObject() {
     var id: Long = 0
 
     @JsonProperty("factoryName")
     var factoryName: String? = null
 
+    @PrimaryKey
     @JsonProperty("factoryLabel")
     var factoryLabel: String? = null
 
@@ -24,7 +27,7 @@ class StarchFactory : SugarRecord<StarchFactory?>() {
     @JsonProperty("factoryActive")
     var factoryActive = false
     var factorySelected = false
-    
+
     fun sellToStarchFactory(): Boolean {
         return !Strings.isEmptyOrWhitespace(factoryName) && !factoryName.equals(
             "NA",

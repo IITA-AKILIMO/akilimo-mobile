@@ -31,70 +31,80 @@ import io.realm.RealmConfiguration;
 public class RealmProcessor {
     private Realm realm;
 
-    public RealmProcessor() {}
-    private void realmInstance(){
+    public RealmProcessor() {
         realm = Realm.getDefaultInstance();
     }
+
     public ProfileInfo getProfileInfo() {
-        realmInstance();
+
         ProfileInfo profileInfo = realm
                 .where(ProfileInfo.class)
                 .findFirst();
 
-        realm.close();
+
         return profileInfo;
     }
 
     public MandatoryInfo getMandatoryInfo() {
-        realmInstance();
+
         MandatoryInfo mandatoryInfo = realm
                 .where(MandatoryInfo.class)
                 .findFirst();
 
-        realm.close();
+
         return mandatoryInfo;
     }
 
     public CurrentPractice getCurrentPractice() {
-        realmInstance();
         CurrentPractice mandatoryInfo = realm
                 .where(CurrentPractice.class)
                 .findFirst();
 
-        realm.close();
         return mandatoryInfo;
     }
 
     public PlantingHarvestDates getPlantingHarvestDates() {
-        realmInstance();
+
         PlantingHarvestDates mandatoryInfo = realm
                 .where(PlantingHarvestDates.class)
                 .findFirst();
 
-        realm.close();
+
         return mandatoryInfo;
     }
 
     public LocationInfo getLocationInfo() {
-        realmInstance();
+
         LocationInfo mandatoryInfo = realm
                 .where(LocationInfo.class)
                 .findFirst();
 
-        realm.close();
+
         return mandatoryInfo;
     }
 
     public List<CassavaPrice> getCassavaPrices(String countryCode) {
-        return null;
+        List<CassavaPrice> cassavaPrices = realm.where(CassavaPrice.class)
+                .equalTo("country", countryCode)
+                .findAll();
+
+        return cassavaPrices;
     }
 
     public List<FertilizerPrices> getFertilizerPrices(String countryCode) {
-        return null;
+        List<FertilizerPrices> fertilizerPrices = realm.where(FertilizerPrices.class)
+                .equalTo("country", countryCode)
+                .findAll();
+
+        return fertilizerPrices;
     }
 
     public List<MaizePrice> getMaizePrices(String countryCode) {
-        return null;
+        List<MaizePrice> maizePrices = realm.where(MaizePrice.class)
+                .equalTo("country", countryCode)
+                .findAll();
+
+        return maizePrices;
     }
 
     public List<PotatoPrice> getPotatoPrices(String countryCode) {
@@ -106,12 +116,11 @@ public class RealmProcessor {
     }
 
     public List<Fertilizer> getAvailableFertilizersByCountry(String countryCode) {
-        realmInstance();
-        List<Fertilizer> result2 = realm.where(Fertilizer.class)
+        List<Fertilizer> fertilizers = realm.where(Fertilizer.class)
                 .equalTo("countryCode", countryCode)
                 .findAll();
-        realm.close();
-        return result2;
+
+        return fertilizers;
     }
 
     public RecAdvice getRecAdvice() {
@@ -146,12 +155,20 @@ public class RealmProcessor {
         return null;
     }
 
-    public StarchFactory getSelectedStarchFactoryByTag(String itemTagIndex) {
-        return null;
+    public StarchFactory getSelectedStarchFactoryByTag(String factoryName) {
+        StarchFactory starchFactory = realm.where(StarchFactory.class)
+                .equalTo("factoryNameCountry", factoryName)
+                .findFirst();
+
+        return starchFactory;
     }
 
     public List<StarchFactory> getStarchFactories(String countryCode) {
-        return null;
+        List<StarchFactory> starchFactories = realm.where(StarchFactory.class)
+                .equalTo("countryCode", countryCode)
+                .findAll();
+
+        return starchFactories;
     }
 
     public Fertilizer getSavedFertilizer(String fertilizerType, String countryCode) {
@@ -159,7 +176,13 @@ public class RealmProcessor {
     }
 
     public List<Fertilizer> getSelectedFertilizers(String countryCode) {
-        return null;
+        List<Fertilizer> selectedFertilizers = realm.where(Fertilizer.class)
+                .equalTo("countryCode", countryCode)
+                .and()
+                .equalTo("selected", true)
+                .findAll();
+
+        return selectedFertilizers;
     }
 
     public InterCropFertilizer getSavedInterCropFertilizer(String fertilizerType, String countryCode, EnumUseCase useCase) {
