@@ -5,7 +5,7 @@ import io.realm.annotations.PrimaryKey
 
 
 open class LocationInfo :RealmObject() {
-    @PrimaryKey
+
     var id: Long = 0
     var latitude: Double = 0.0
     var longitude: Double = 0.0

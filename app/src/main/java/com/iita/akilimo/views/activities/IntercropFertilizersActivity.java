@@ -156,7 +156,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
             List<InterCropFertilizer> cleanedFertilizers = selectedFertilizers;
             selectedType.setCountryCode(countryCode);
             Bundle arguments = new Bundle();
-            arguments.putSerializable(FertilizerPriceDialogFragment.FERTILIZER_TYPE, selectedType);
+            arguments.putParcelable(FertilizerPriceDialogFragment.FERTILIZER_TYPE, selectedType);
 
             FertilizerPriceDialogFragment priceDialogFragment = new FertilizerPriceDialogFragment();
             priceDialogFragment.setArguments(arguments);

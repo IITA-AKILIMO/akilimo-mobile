@@ -6,7 +6,7 @@ import io.realm.annotations.Required
 
 open class ProfileInfo : RealmObject() {
 
-    @PrimaryKey
+
     var id: Long = 0
     var deviceID: String? = null
     var userName: String? = null
