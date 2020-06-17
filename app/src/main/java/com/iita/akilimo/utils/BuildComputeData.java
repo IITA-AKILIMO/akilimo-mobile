@@ -25,9 +25,6 @@ import com.iita.akilimo.models.Fertilizer;
 import com.iita.akilimo.models.InterCropFertilizer;
 import com.iita.akilimo.rest.request.RecommendationRequest;
 import com.iita.akilimo.rest.request.UserInfo;
-import com.iita.akilimo.utils.enums.EnumCassavaProduceType;
-import com.iita.akilimo.utils.enums.EnumUnitOfSale;
-import com.iita.akilimo.utils.enums.EnumUnitPrice;
 
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
@@ -401,15 +398,9 @@ public class BuildComputeData {
                 starchFactoryName = cassavaMarketOutlet.getStarchFactory();
             }
 
-            EnumUnitPrice up = cassavaMarketOutlet.getEnumUnitPrice();
-            //cassavaUnitPriceLocal = up.convertToLocalCurrency(currency, mathHelper) <= 0 ? cassavaMarketOutlet.getExactPrice() : up.convertToLocalCurrency(currency, mathHelper);
-
-            EnumCassavaProduceType produce = cassavaMarketOutlet.getProduceType();
-            cassavaProduceType = produce.produce();
-
-            EnumUnitOfSale uos = cassavaMarketOutlet.getUnitOfSale();
-            cassavaUnitWeight = uos.unitWeight();
-            cassavaUnitPrice = cassavaMarketOutlet.getExactPrice();
+            cassavaProduceType = cassavaMarketOutlet.getProduceType();
+            cassavaUnitWeight = cassavaMarketOutlet.getUnitWeight();
+            cassavaUnitPrice = cassavaMarketOutlet.getUnitPrice();
         }
         computeRequest.setStarchFactoryName(starchFactoryName);
         computeRequest.setSellToStarchFactory(sellToStarchFactory);
@@ -431,12 +422,9 @@ public class BuildComputeData {
         MaizeMarketOutlet maizeMarketOutlet = realmProcessor.getMaizeMarketOutlet();
         String currency = computeRequest.getCurrency();
         if (maizeMarketOutlet != null) {
-            maizeProdType = maizeMarketOutlet.getProduceType().produce();
-            maizeUnitWeight = maizeMarketOutlet.getUnitOfSale().unitWeight();
-
-            EnumUnitPrice up = maizeMarketOutlet.getEnumUnitPrice();
-            maizeUnitPriceLocal = up.convertToLocalCurrency(currency, mathHelper) <= 0 ? maizeMarketOutlet.getExactPrice() : up.convertToLocalCurrency(currency, mathHelper);
-            maizeUnitPrice = maizeUnitPriceLocal;
+            maizeProdType = maizeMarketOutlet.getProduceType();
+            maizeUnitWeight = maizeMarketOutlet.getUnitWeight();
+            maizeUnitPrice = maizeMarketOutlet.getEnumUnitPrice();
         }
         computeRequest.setMaizeProduceType(maizeProdType);
         computeRequest.setMaizeUnitWeight(maizeUnitWeight);
@@ -449,10 +437,9 @@ public class BuildComputeData {
         PotatoMarketOutlet potatoMarketOutlet = realmProcessor.getPotatoMarketOutlet();
         String currency = computeRequest.getCurrency();
         if (potatoMarketOutlet != null) {
-            sweetPotatoProdType = potatoMarketOutlet.getProduceType().produce();
-            sweetPotatoUnitWeight = potatoMarketOutlet.getUnitOfSale().unitWeight();
-            potatoUnitPriceLocal = potatoMarketOutlet.getExactPrice();
-            sweetPotatoUnitPrice = potatoUnitPriceLocal;
+            sweetPotatoProdType = potatoMarketOutlet.getProduceType();
+            sweetPotatoUnitWeight = potatoMarketOutlet.getUnitWeight();
+            sweetPotatoUnitPrice = potatoMarketOutlet.getUnitPrice();
         }
 
         computeRequest.setSweetPotatoProduceType(sweetPotatoProdType);

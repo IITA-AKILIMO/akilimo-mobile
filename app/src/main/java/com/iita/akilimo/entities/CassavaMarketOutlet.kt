@@ -6,9 +6,11 @@ import io.realm.RealmObject
 
 open class CassavaMarketOutlet : RealmObject() {
     var starchFactory: String? = null
+
+    @Deprecated("Remove this")
     var exactPrice: Double = 0.0
     var unitPrice: Double = 0.0
-    var unitWeight: Double = 0.0
+    var unitWeight: Int = 0
 
     var produceType: String = EnumCassavaProduceType.ROOTS.produce()
     var unitOfSale: String = EnumUnitOfSale.ONE_KG.unitOfSale()

@@ -31,7 +31,7 @@ public class IntercropFertilizerGridAdapter extends RecyclerView.Adapter<Recycle
     private int rowIndex = -1;
 
     public interface OnItemClickListener {
-        void onItemClick(View view, Fertilizer obj, int position);
+        void onItemClick(View view, InterCropFertilizer obj, int position);
     }
 
     public IntercropFertilizerGridAdapter(@NonNull Context context) {

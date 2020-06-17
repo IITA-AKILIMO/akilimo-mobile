@@ -170,7 +170,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
             rdgPotatoProduceType.check(produceTypeRadioIndex);
             rdgUnitOfSalePotato.check(potatoUnitOfSaleRadioIndex);
-            exactPrice = potatoMarketOutlet.getExactPrice();
+            exactPrice = potatoMarketOutlet.getUnitPrice();
         }
         rdgUnitOfSalePotato.setOnCheckedChangeListener((group, radioIndex) -> {
             switch (radioIndex) {
@@ -222,7 +222,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
         potatoMarketOutlet.setProduceType(enumPotatoProduceType);
         potatoMarketOutlet.setUnitOfSale(enumUnitOfSale);
-        potatoMarketOutlet.setExactPrice(exactPrice);
+        potatoMarketOutlet.setUnitPrice(exactPrice);
 
         potatoMarketOutlet.setProduceTypeRadioIndex(produceTypeRadioIndex);
         potatoMarketOutlet.setPotatoUnitPriceRadioIndex(potatoUnitPriceRadioIndex);
