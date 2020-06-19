@@ -285,31 +285,28 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                 }
             }
 
-            try {
-                myRealm.executeTransaction {
-                    if (location == null) {
-                        location = it.createObject(LocationInfo::class.java, Tools.generateUUID())
-                    }
-
-                    location = realmProcessor.locationInfo
-                    location.latitude = currentLat
-                    location.longitude = currentLong
-                    location.altitude = currentAlt
-                    location.placeName = when {
-                        !Strings.isEmptyOrWhitespace(placeName) -> placeName
-                        else -> defaultPlaceName
-                    }
-                    location.address = when {
-                        !Strings.isEmptyOrWhitespace(address) -> address
-                        else -> "NA"
-                    }
+            location = realmProcessor.locationInfo
+            myRealm.executeTransaction {
+                if (location == null) {
+                    location = it.createObject(LocationInfo::class.java, Tools.generateUUID())
                 }
-            } catch (ex: java.lang.Exception) {
-                Crashlytics.logException(ex)
+
+                location = realmProcessor.locationInfo
+                location.latitude = currentLat
+                location.longitude = currentLong
+                location.altitude = currentAlt
+                location.placeName = when {
+                    !Strings.isEmptyOrWhitespace(placeName) -> placeName
+                    else -> defaultPlaceName
+                }
+                location.address = when {
+                    !Strings.isEmptyOrWhitespace(address) -> address
+                    else -> "NA"
+                }
             }
             (currentFragment as? LocationFragment)?.refreshData()
         } catch (ex: Exception) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "Error saving location information")
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
             Crashlytics.logException(ex)
         }
 

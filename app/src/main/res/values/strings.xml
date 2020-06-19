@@ -42,6 +42,8 @@
     <string name="area_unit_ha">in Hectare (ha)</string>
     <string name="area_unit_square_meter">in Square meter (m\u00B2)</string>
 
+    <string name="lbl_acre" translatable="false">acre</string>
+    <string name="lbl_ha" translatable="false">ha</string>
 
     <string name="lbl_cassava_field_size_no_ph">What is the size of your cassava field?</string>
     <string name="lbl_cassava_field_size">What is the size of your cassava field in %1$s</string>
@@ -428,8 +430,10 @@
     <string name="default_notification_channel_id" translatable="false">recommendations</string>
     <string name="lbl_kiswahili" translatable="false">Kiswahili</string>
 
+
     <string name="lbl_gps_settings">GPS settings</string>
     <string name="lbl_gps_not_enabled">GPS is not enabled. Do you want to go to settings menu?</string>
     <string name="lbl_no_profile_info">It appears I don\'t have your profile information, I need it in order to send you recommendations</string>
     <string name="lbl_one_kg_bag_unit">a 1 kg bag</string>
+
 </resources>

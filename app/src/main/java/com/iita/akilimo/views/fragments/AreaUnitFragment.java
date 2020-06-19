@@ -91,10 +91,10 @@ public class AreaUnitFragment extends BaseFragment {
         rdgAreaUnit.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
             switch (radioIndex) {
                 case R.id.rdAcre:
-                    areaUnit = EnumAreaUnits.ACRE.name();
+                    areaUnit = EnumAreaUnits.ACRE.unitName(context);
                     break;
                 case R.id.rdHa:
-                    areaUnit = EnumAreaUnits.HA.name();
+                    areaUnit = EnumAreaUnits.HA.unitName(context);
                     break;
             }
 

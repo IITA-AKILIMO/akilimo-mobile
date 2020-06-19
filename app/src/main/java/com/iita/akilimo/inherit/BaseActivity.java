@@ -25,6 +25,7 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.utils.FireBaseConfig;
 import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.SessionManager;
+import com.iita.akilimo.utils.enums.EnumCountry;
 import com.iita.akilimo.utils.enums.EnumUseCase;
 import com.iita.akilimo.views.activities.DstRecommendationActivity;
 import com.nabinbhandari.android.permissions.PermissionHandler;
@@ -51,9 +52,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected RealmProcessor realmProcessor;
     protected RequestQueue queue;
 
-    protected String countryCode = "TZ";
+    protected String countryCode = EnumCountry.NIGERIA.countryCode();
     protected String baseCurrency = "USD";
-    protected String currency = "TZS";
+    protected String currency = EnumCountry.NIGERIA.currency();
     protected EnumUseCase useCase;
     protected String areaUnit = "acre";
     protected double fieldSize = 0;
