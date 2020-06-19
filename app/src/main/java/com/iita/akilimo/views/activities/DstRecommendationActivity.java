@@ -20,6 +20,7 @@ import com.crashlytics.android.Crashlytics;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.iita.akilimo.BuildConfig;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecommendationAdapter;
 import com.iita.akilimo.databinding.ActivityDstRecomendationBinding;
@@ -73,8 +74,10 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         super.onCreate(savedInstanceState);
         binding = ActivityDstRecomendationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
         context = this;
         activity = this;
+        realmProcessor = new RealmProcessor();
 
         toolbar = binding.toolbarLayout.toolbar;
         recyclerView = binding.recyclerView;
@@ -83,7 +86,6 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         errorLabel = binding.errorLabel;
         lyt_progress = binding.lytProgress;
 
-        realmProcessor = new RealmProcessor();
         initToolbar();
         initComponent();
     }
@@ -105,6 +107,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
+        recAdapter = new RecommendationAdapter();
         profileInfo = realmProcessor.getProfileInfo();
 
         lyt_progress.setVisibility(View.VISIBLE);
@@ -120,7 +123,6 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
             }
         });
 
-        recAdapter = new RecommendationAdapter();
         displayDialog(profileInfo);
     }
 
@@ -139,6 +141,13 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         if (profileInfo != null) {
             recommendationChannelDialog = new RecommendationChannelDialog(this, profileInfo);
             recommendationChannelDialog.show(getSupportFragmentManager(), RecommendationChannelDialog.TAG);
+        }else{
+            //show a message
+            errorLabel.setText(R.string.lbl_no_profile_info);
+            lyt_progress.setVisibility(View.GONE);
+            errorImage.setVisibility(View.VISIBLE);
+            errorLabel.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
         }
     }
 
@@ -165,7 +174,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
                 "v2/recommendations",
                 countryCode
         );
-        restParameters.setInitialTimeout(45000);
+        restParameters.setInitialTimeout(5000);
         restParameters.setLocale(getCurrentLocale());
         restService.setParameters(restParameters);
 
