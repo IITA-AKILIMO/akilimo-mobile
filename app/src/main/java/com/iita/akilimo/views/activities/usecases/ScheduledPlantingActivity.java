@@ -21,6 +21,7 @@ import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.RealmProcessor;
+import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.views.activities.CassavaMarketActivity;
 import com.iita.akilimo.views.activities.DatesActivity;
@@ -96,7 +97,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
                     @Override
                     public void execute(Realm realm) {
                         if (recAdvice == null) {
-                            recAdvice = realm.createObject(RecAdvice.class);
+                            recAdvice = realm.createObject(RecAdvice.class, Tools.generateUUID());
                         }
                         recAdvice.setFR(false);
                         recAdvice.setCIM(false);
@@ -149,7 +150,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
             }
             if (intent != null) {
                 startActivity(intent);
-                Animatoo.animateSlideRight(this);
+                openActivity();
             } else {
                 Snackbar.make(view, "Item " + obj.getRecommendationName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
             }

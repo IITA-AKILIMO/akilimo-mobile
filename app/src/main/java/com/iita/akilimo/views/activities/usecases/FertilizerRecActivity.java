@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.crashlytics.android.Crashlytics;
+import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
 import com.iita.akilimo.databinding.ActivityFertilizerRecBinding;
@@ -137,7 +138,6 @@ public class FertilizerRecActivity extends BaseActivity {
 
         // on item list clicked
         mAdapter.setOnItemClickListener((view, obj, position) -> {
-            //let us process the data
             Intent intent = null;
             EnumAdviceTasks advice = obj.getRecCode();
             switch (advice) {
@@ -159,7 +159,9 @@ public class FertilizerRecActivity extends BaseActivity {
             }
             if (intent != null) {
                 startActivity(intent);
-                Animatoo.animateSlideRight(context);
+                openActivity();
+            } else {
+                Snackbar.make(view, "Item " + obj.getRecommendationName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
             }
         });
 

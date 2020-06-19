@@ -175,7 +175,7 @@ public class RecommendationsActivity extends BaseActivity {
             }
             if (intent != null) {
                 startActivity(intent);
-                Animatoo.animateSlideLeft(this);
+                openActivity();
             } else {
                 Snackbar.make(view, "Item " + obj.getRecommendationName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
             }

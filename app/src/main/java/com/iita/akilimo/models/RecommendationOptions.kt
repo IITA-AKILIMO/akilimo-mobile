@@ -9,7 +9,7 @@ class RecommendationOptions {
 
     constructor() {}
 
-    constructor(recName: String, recommendationCode: EnumAdviceTasks?, imageId: Int) {
+    constructor(recName: String, recommendationCode: EnumAdviceTasks, imageId: Int) {
         recommendationName = recName
         recCode = recommendationCode
         image = imageId

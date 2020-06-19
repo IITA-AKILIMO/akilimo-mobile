@@ -23,6 +23,7 @@ import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.RealmProcessor;
+import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.enums.EnumCountry;
 import com.iita.akilimo.utils.enums.EnumUseCase;
@@ -131,7 +132,7 @@ public class InterCropRecActivity extends BaseActivity {
             try {
                 myRealm.executeTransaction(realm -> {
                     if (recAdvice == null) {
-                        recAdvice = realm.createObject(RecAdvice.class);
+                        recAdvice = realm.createObject(RecAdvice.class, Tools.generateUUID());
                     }
                     recAdvice.setFR(false);
                     recAdvice.setCIM(icMaize);
@@ -206,7 +207,7 @@ public class InterCropRecActivity extends BaseActivity {
             }
             if (intent != null) {
                 startActivity(intent);
-                Animatoo.animateSlideLeft(this);
+                openActivity();
             } else {
                 Snackbar.make(view, "Item " + obj.getRecommendationName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
             }
