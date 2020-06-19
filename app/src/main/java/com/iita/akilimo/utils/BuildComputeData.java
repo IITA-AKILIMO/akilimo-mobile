@@ -297,9 +297,9 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildInvestmentAmount(@NonNull ComputeRequest computeRequest) {
-        InvestmentAmount inv = realmProcessor.getInvestmentAmount();
-        if (inv != null) {
-            maxInvestmentAmountLocal = inv.getInvestmentAmountLocal();
+        InvestmentAmount investmentAmount = realmProcessor.getInvestmentAmount();
+        if (investmentAmount != null) {
+            maxInvestmentAmountLocal = investmentAmount.getInvestmentAmountLocal();
         }
         computeRequest.setMaxInvestment(maxInvestmentAmountLocal);
         return computeRequest;
@@ -309,14 +309,15 @@ public class BuildComputeData {
 
         CurrentPractice currentPractice = realmProcessor.getCurrentPractice();
 
-        performsPloughing = currentPractice.getPerformPloughing();
-        performsHarrowing = currentPractice.getPerformHarrowing();
-        performsRidging = currentPractice.getPerformRidging();
+        if (currentPractice != null) {
+            performsPloughing = currentPractice.getPerformPloughing();
+            performsHarrowing = currentPractice.getPerformHarrowing();
+            performsRidging = currentPractice.getPerformRidging();
 
-        methodHarrowing = Strings.isEmptyOrWhitespace(currentPractice.getHarrowingMethod()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getHarrowingMethod();
-        methodPloughing = Strings.isEmptyOrWhitespace(currentPractice.getPloughingMethod()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getPloughingMethod();
-        methodRidging = Strings.isEmptyOrWhitespace(currentPractice.getRidgingMethod()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getRidgingMethod();
-
+            methodHarrowing = Strings.isEmptyOrWhitespace(currentPractice.getHarrowingMethod()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getHarrowingMethod();
+            methodPloughing = Strings.isEmptyOrWhitespace(currentPractice.getPloughingMethod()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getPloughingMethod();
+            methodRidging = Strings.isEmptyOrWhitespace(currentPractice.getRidgingMethod()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getRidgingMethod();
+        }
 
         computeRequest.setPloughingDone(performsPloughing);
         computeRequest.setHarrowingDone(performsHarrowing);
@@ -342,17 +343,18 @@ public class BuildComputeData {
     private ComputeRequest buildOperationCosts(@NonNull ComputeRequest computeRequest) {
         OperationCosts operationCosts = realmProcessor.getOperationCosts();
 
-        costTractorPlough = operationCosts.getTractorPloughCost();
-        costTractorHarrow = operationCosts.getTractorHarrowCost();
-        costTractorRidging = operationCosts.getTractorRidgeCost();
+        if (operationCosts != null) {
+            costTractorPlough = operationCosts.getTractorPloughCost();
+            costTractorHarrow = operationCosts.getTractorHarrowCost();
+            costTractorRidging = operationCosts.getTractorRidgeCost();
 
-        costManualPloughing = operationCosts.getManualPloughCost();
-        costManualHarrowing = operationCosts.getManualHarrowCost();
-        costManualRidging = operationCosts.getManualRidgeCost();
+            costManualPloughing = operationCosts.getManualPloughCost();
+            costManualHarrowing = operationCosts.getManualHarrowCost();
+            costManualRidging = operationCosts.getManualRidgeCost();
 
-        costWeedingOne = operationCosts.getFirstWeedingOperationCost();
-        costWeedingTwo = operationCosts.getSecondWeedingOperationCost();
-
+            costWeedingOne = operationCosts.getFirstWeedingOperationCost();
+            costWeedingTwo = operationCosts.getSecondWeedingOperationCost();
+        }
 
         computeRequest.setCostLmoAreaBasis(costLmoAreaBasis);
 
@@ -375,14 +377,15 @@ public class BuildComputeData {
         computeRequest.setFallowGreen(fallowGreen);
         computeRequest.setFallowHeight(fallowHeight);
         computeRequest.setProblemWeeds(problemWeeds);
+
         return computeRequest;
     }
 
     private ComputeRequest buildMaizePerformance(@NonNull ComputeRequest computeRequest) {
         MaizePerformance maizePerformance = realmProcessor.getMaizePerformance();
-
-        currentMaizePerformance = Strings.isEmptyOrWhitespace(maizePerformance.getPerformanceValue()) ? DEFAULT_MAIZE_PERFORMANCE_VALUE : maizePerformance.getPerformanceValue();
-
+        if (maizePerformance != null) {
+            currentMaizePerformance = Strings.isEmptyOrWhitespace(maizePerformance.getPerformanceValue()) ? DEFAULT_MAIZE_PERFORMANCE_VALUE : maizePerformance.getPerformanceValue();
+        }
         computeRequest.setCurrentMaizePerformance(currentMaizePerformance);
 
         return computeRequest;
@@ -391,7 +394,6 @@ public class BuildComputeData {
     private ComputeRequest buildCassavaMarketOutlet(@NonNull ComputeRequest computeRequest) {
         CassavaMarketOutlet cassavaMarketOutlet = realmProcessor.getCassavaMarketOutlet();
 
-        String currency = computeRequest.getCurrency();
         if (cassavaMarketOutlet != null) {
             sellToStarchFactory = cassavaMarketOutlet.isStarchFactoryRequired();
             if (sellToStarchFactory) {
@@ -420,7 +422,6 @@ public class BuildComputeData {
 
     private ComputeRequest buildMaizeMarketOutlet(ComputeRequest computeRequest) {
         MaizeMarketOutlet maizeMarketOutlet = realmProcessor.getMaizeMarketOutlet();
-        String currency = computeRequest.getCurrency();
         if (maizeMarketOutlet != null) {
             maizeProdType = maizeMarketOutlet.getProduceType();
             maizeUnitWeight = maizeMarketOutlet.getUnitWeight();
@@ -435,7 +436,6 @@ public class BuildComputeData {
 
     private ComputeRequest buildSweetPotatoMarketOutlet(ComputeRequest computeRequest) {
         PotatoMarketOutlet potatoMarketOutlet = realmProcessor.getPotatoMarketOutlet();
-        String currency = computeRequest.getCurrency();
         if (potatoMarketOutlet != null) {
             sweetPotatoProdType = potatoMarketOutlet.getProduceType();
             sweetPotatoUnitWeight = potatoMarketOutlet.getUnitWeight();

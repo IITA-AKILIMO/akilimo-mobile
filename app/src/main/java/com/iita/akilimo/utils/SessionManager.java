@@ -44,7 +44,8 @@ public class SessionManager {
     }
 
     public String getApiEndPoint() {
-        return pref.getString("apiResource", "https://google.com/");
+        return "https://e4c37f235977.ngrok.io/";
+        //return pref.getString("apiResource", "https://google.com/");
     }
 
     public void setApiToken(String apiToken) {
