@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
@@ -154,25 +155,17 @@ public class MaizeMarketActivity extends BaseActivity {
                 try {
                     maizePriceList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<MaizePrice>>() {
                     });
-                    try {
-                        myRealm.executeTransaction(new Realm.Transaction() {
-                            @Override
-                            public void execute(Realm realm) {
-                                if (maizePriceList.size() > 0) {
-                                    RealmList<MaizePrice> _maizePriceList = new RealmList<>();
-                                    _maizePriceList.addAll(maizePriceList);
-                                    myRealm.insertOrUpdate(_maizePriceList);
-                                }
-                            }
-                        });
-                    } catch (Exception ex) {
-                        Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                        Crashlytics.logException(ex);
-                    }
-                    //save maize prices
-                } catch (Exception ex) {
+                    myRealm.executeTransaction(realm -> {
+                        if (maizePriceList.size() > 0) {
+                            RealmList<MaizePrice> _maizePriceList = new RealmList<>();
+                            _maizePriceList.addAll(maizePriceList);
+                            myRealm.insertOrUpdate(_maizePriceList);
+                        }
+                    });
+                } catch (JsonProcessingException ex) {
+                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                     Crashlytics.logException(ex);
-                    Crashlytics.log(ex.getMessage());
+                    Snackbar.make(maizeCobPriceCard, ex.getMessage(), Snackbar.LENGTH_SHORT).show();
                 }
             }
 
@@ -184,7 +177,7 @@ public class MaizeMarketActivity extends BaseActivity {
             @Override
             public void onError(@NotNull VolleyError volleyError) {
                 String error = Tools.parseNetworkError(volleyError).getMessage();
-                if (error != null) {
+                if (!Strings.isEmptyOrWhitespace(error)) {
                     Snackbar.make(maizeCobPriceCard, error, Snackbar.LENGTH_LONG).show();
                 }
             }
