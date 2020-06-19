@@ -96,8 +96,10 @@ public class SweetPotatoMarketActivity extends BaseActivity {
         mathHelper = new MathHelper(this);
 
         MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
-        countryCode = mandatoryInfo.getCountryCode();
-        currency = mandatoryInfo.getCurrency();
+        if (mandatoryInfo != null) {
+            countryCode = mandatoryInfo.getCountryCode();
+            currency = mandatoryInfo.getCurrency();
+        }
 
         toolbar = binding.toolbar;
         unitOfSalePotatoTitle = binding.potatoMarket.unitOfSalePotatoTitle;

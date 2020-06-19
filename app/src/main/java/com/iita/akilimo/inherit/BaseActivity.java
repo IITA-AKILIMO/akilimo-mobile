@@ -51,9 +51,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected RealmProcessor realmProcessor;
     protected RequestQueue queue;
 
-    protected String countryCode = "NG";
+    protected String countryCode = "TZ";
     protected String baseCurrency = "USD";
-    protected String currency = "NGN";
+    protected String currency = "TZS";
     protected EnumUseCase useCase;
     protected String areaUnit = "acre";
     protected double fieldSize = 0;
