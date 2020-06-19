@@ -80,16 +80,16 @@
         <activity android:name=".views.activities.DatesActivity" />
         <activity android:name=".views.activities.RecommendationsActivity" />
         <activity android:name=".views.activities.HomeActivity" />
-        <activity android:name=".views.activities.FertilizerRecActivity" />
+        <activity android:name=".views.activities.usecases.FertilizerRecActivity" />
         <activity android:name=".views.activities.MapBoxActivity" />
         <activity android:name=".views.activities.RootYieldActivity" />
         <activity android:name=".views.activities.InvestmentAmountActivity" />
         <activity android:name=".views.activities.DstRecommendationActivity" />
         <activity android:name=".views.activities.WeedControlCostsActivity" />
-        <activity android:name=".views.activities.PlantingPracticesActivity" />
-        <activity android:name=".views.activities.ScheduledPlantingActivity" />
+        <activity android:name=".views.activities.usecases.PlantingPracticesActivity" />
+        <activity android:name=".views.activities.usecases.ScheduledPlantingActivity" />
         <activity android:name=".views.activities.MaizePerformanceActivity" />
-        <activity android:name=".views.activities.InterCropRecActivity" />
+        <activity android:name=".views.activities.usecases.InterCropRecActivity" />
     </application>
 
 </manifest>

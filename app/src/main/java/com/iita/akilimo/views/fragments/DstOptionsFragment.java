@@ -23,10 +23,10 @@ import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.models.Recommendations;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.enums.EnumAdvice;
-import com.iita.akilimo.views.activities.FertilizerRecActivity;
-import com.iita.akilimo.views.activities.InterCropRecActivity;
-import com.iita.akilimo.views.activities.PlantingPracticesActivity;
-import com.iita.akilimo.views.activities.ScheduledPlantingActivity;
+import com.iita.akilimo.views.activities.usecases.FertilizerRecActivity;
+import com.iita.akilimo.views.activities.usecases.InterCropRecActivity;
+import com.iita.akilimo.views.activities.usecases.PlantingPracticesActivity;
+import com.iita.akilimo.views.activities.usecases.ScheduledPlantingActivity;
 
 import java.util.ArrayList;
 import java.util.List;

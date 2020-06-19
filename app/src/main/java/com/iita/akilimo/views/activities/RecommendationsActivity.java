@@ -21,12 +21,14 @@ import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.enums.EnumAdvice;
 import com.iita.akilimo.utils.enums.EnumCountry;
+import com.iita.akilimo.views.activities.usecases.FertilizerRecActivity;
+import com.iita.akilimo.views.activities.usecases.InterCropRecActivity;
+import com.iita.akilimo.views.activities.usecases.PlantingPracticesActivity;
+import com.iita.akilimo.views.activities.usecases.ScheduledPlantingActivity;
 
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.realm.Realm;
 
 public class RecommendationsActivity extends BaseActivity {
 
