@@ -78,6 +78,7 @@ public class CassavaMarketActivity extends BaseActivity {
     double unitPriceLocal = 0.0;
     String priceText;
     String unitOfSale;
+    EnumUnitOfSale unitOfSaleEnum = EnumUnitOfSale.ONE_KG;
 
     private CassavaMarketOutlet cassavaMarketOutlet;
     private List<CassavaPrice> cassavaPriceList = null;
@@ -88,7 +89,7 @@ public class CassavaMarketActivity extends BaseActivity {
     private boolean selectionMade;
 
 
-    private double averagunitPricePrice = 0.0;
+    private double averageUnitPricePrice = 0.0;
     private double exactPrice = 0.0;
 
     @Override
@@ -122,6 +123,7 @@ public class CassavaMarketActivity extends BaseActivity {
         if (cassavaMarketOutlet != null) {
             selectedFactory = cassavaMarketOutlet.getStarchFactory();
             exactPrice = cassavaMarketOutlet.getUnitPrice();
+            unitOfSale = cassavaMarketOutlet.getUnitOfSale();
         }
 
         MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
@@ -203,15 +205,19 @@ public class CassavaMarketActivity extends BaseActivity {
             switch (radioIndex) {
                 case R.id.rd_per_kg:
                     unitOfSale = EnumUnitOfSale.ONE_KG.unitOfSale(context);
+                    unitOfSaleEnum = EnumUnitOfSale.ONE_KG;
                     break;
                 case R.id.rd_50_kg_bag:
                     unitOfSale = EnumUnitOfSale.FIFTY_KG.unitOfSale(context);
+                    unitOfSaleEnum = EnumUnitOfSale.FIFTY_KG;
                     break;
                 case R.id.rd_100_kg_bag:
                     unitOfSale = EnumUnitOfSale.HUNDRED_KG.unitOfSale(context);
+                    unitOfSaleEnum = EnumUnitOfSale.HUNDRED_KG;
                     break;
                 case R.id.rd_per_tonne:
                     unitOfSale = EnumUnitOfSale.THOUSAND_KG.unitOfSale(context);
+                    unitOfSaleEnum = EnumUnitOfSale.THOUSAND_KG;
                     break;
             }
             dataIsValid = false;
@@ -236,7 +242,7 @@ public class CassavaMarketActivity extends BaseActivity {
 
     public void onRadioButtonClicked(View radioButton) {
         if (radioButton != null && radioButton.isPressed()) {
-            showUnitPriceDialog(currency, unitOfSale);
+            showUnitPriceDialog();
         }
     }
 
@@ -327,29 +333,22 @@ public class CassavaMarketActivity extends BaseActivity {
                 try {
                     List<StarchFactory> starchFactoriesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<StarchFactory>>() {
                     });
-                    try {
-                        myRealm.executeTransaction(realm -> {
-                            if (starchFactoriesList.size() > 0) {
-                                RealmList<StarchFactory> _starchFactoryList = new RealmList<>();
-                                _starchFactoryList.addAll(starchFactoriesList);
-                                myRealm.insertOrUpdate(_starchFactoryList);
-                            }
-                        });
-                    } catch (Exception ex) {
-                        Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                        Crashlytics.logException(ex);
-                    }
+                    myRealm.executeTransaction(realm -> {
+                        if (starchFactoriesList.size() > 0) {
+                            RealmList<StarchFactory> _starchFactoryList = new RealmList<>();
+                            _starchFactoryList.addAll(starchFactoriesList);
+                            myRealm.insertOrUpdate(_starchFactoryList);
+                        }
+                    });
                     addFactoriesRadioButtons(starchFactoriesList);
                 } catch (Exception ex) {
+                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                     Crashlytics.logException(ex);
-                    Crashlytics.log(ex.getMessage());
                 }
             }
 
             @Override
-            public void onSuccessJsonObject(@NotNull JSONObject jsonObject) {
-
-            }
+            public void onSuccessJsonObject(@NotNull JSONObject jsonObject) { }
 
             @Override
             public void onError(@NotNull VolleyError volleyError) {
@@ -429,18 +428,18 @@ public class CassavaMarketActivity extends BaseActivity {
             if (!sfRequired) {
                 produceType = cassavaMarketOutlet.getProduceType();
                 unitOfSale = cassavaMarketOutlet.getUnitOfSale();
-                averagunitPricePrice = cassavaMarketOutlet.getUnitPrice();
-                switch (unitOfSale) {
-                    case "ONE_KG":
+                averageUnitPricePrice = cassavaMarketOutlet.getUnitPrice();
+                switch (unitOfSaleEnum) {
+                    case ONE_KG:
                         rdgUnitOfSale.check(R.id.rd_per_kg);
                         break;
-                    case "FIFTY_KG":
+                    case FIFTY_KG:
                         rdgUnitOfSale.check(R.id.rd_50_kg_bag);
                         break;
-                    case "HUNDRED_KG":
+                    case HUNDRED_KG:
                         rdgUnitOfSale.check(R.id.rd_100_kg_bag);
                         break;
-                    case "THOUSAND_KG":
+                    case THOUSAND_KG:
                         rdgUnitOfSale.check(R.id.rd_per_tonne);
                         break;
                 }
@@ -478,20 +477,21 @@ public class CassavaMarketActivity extends BaseActivity {
     }
 
 
-    private void showUnitPriceDialog(String currency, String uos) {
+    private void showUnitPriceDialog() {
         Bundle arguments = new Bundle();
         arguments.putString(CassavaPriceDialogFragment.CURRENCY_CODE, currency);
         arguments.putString(CassavaPriceDialogFragment.COUNTRY_CODE, countryCode);
-        arguments.putString(CassavaPriceDialogFragment.UNIT_OF_SALE, uos);
         arguments.putDouble(CassavaPriceDialogFragment.SELECTED_PRICE, exactPrice);
-        arguments.putDouble(CassavaPriceDialogFragment.AVERAGE_PRICE, averagunitPricePrice);
+        arguments.putDouble(CassavaPriceDialogFragment.AVERAGE_PRICE, averageUnitPricePrice);
+        arguments.putString(CassavaPriceDialogFragment.UNIT_OF_SALE, unitOfSale);
+        arguments.putParcelable(CassavaPriceDialogFragment.ENUM_UNIT_OF_SALE, unitOfSaleEnum);
 
         CassavaPriceDialogFragment priceDialogFragment = new CassavaPriceDialogFragment();
         priceDialogFragment.setArguments(arguments);
 
         priceDialogFragment.setOnDismissListener((selectedPrice, selectedAveragePrice) -> {
             exactPrice = selectedPrice;
-            averagunitPricePrice = selectedAveragePrice;
+            averageUnitPricePrice = selectedAveragePrice;
         });
 
         FragmentTransaction fragmentTransaction;

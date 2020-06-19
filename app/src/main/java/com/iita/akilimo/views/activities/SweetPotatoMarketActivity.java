@@ -66,6 +66,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
     private boolean selectionMade = false;
 
     private String unitOfSale;
+    private EnumUnitOfSale unitOfSaleEnum = EnumUnitOfSale.FIFTY_KG;
 
     private int produceTypeRadioIndex;
     private int potatoUnitOfSaleRadioIndex;
@@ -144,15 +145,19 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             switch (radioIndex) {
                 case R.id.rd_per_kg:
                     unitOfSale = EnumUnitOfSale.ONE_KG.unitOfSale(context);
+                    unitOfSaleEnum = EnumUnitOfSale.ONE_KG;
                     break;
                 case R.id.rd_50_kg_bag:
                     unitOfSale = EnumUnitOfSale.FIFTY_KG.unitOfSale(context);
+                    unitOfSaleEnum = EnumUnitOfSale.FIFTY_KG;
                     break;
                 case R.id.rd_100_kg_bag:
                     unitOfSale = EnumUnitOfSale.HUNDRED_KG.unitOfSale(context);
+                    unitOfSaleEnum = EnumUnitOfSale.HUNDRED_KG;
                     break;
                 case R.id.rd_1000_kg_bag:
                     unitOfSale = EnumUnitOfSale.THOUSAND_KG.unitOfSale(context);
+                    unitOfSaleEnum = EnumUnitOfSale.THOUSAND_KG;
                     break;
             }
         });
@@ -264,12 +269,13 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
     private void showPotatoUnitPriceDialog() {
         Bundle arguments = new Bundle();
-        //check if values are null
+
         arguments.putString(SweetPotatoPriceDialogFragment.CURRENCY_CODE, currency);
         arguments.putString(SweetPotatoPriceDialogFragment.COUNTRY_CODE, countryCode);
         arguments.putDouble(SweetPotatoPriceDialogFragment.SELECTED_PRICE, unitPrice);
         arguments.putDouble(SweetPotatoPriceDialogFragment.AVERAGE_PRICE, averagePrice);
         arguments.putString(SweetPotatoPriceDialogFragment.UNIT_OF_SALE, unitOfSale);
+        arguments.putParcelable(SweetPotatoPriceDialogFragment.ENUM_UNIT_OF_SALE, unitOfSaleEnum);
 
         SweetPotatoPriceDialogFragment priceDialogFragment = new SweetPotatoPriceDialogFragment();
         priceDialogFragment.setArguments(arguments);

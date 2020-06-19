@@ -104,19 +104,6 @@ public class SessionManager {
         return pref.getBoolean("firstRun", true);
     }
 
-    @Deprecated
-    public String getDeviceId() {
-        String uniqueID = pref.getString("uuid", null);
-
-        if (uniqueID == null) {
-            uniqueID = UUID.randomUUID().toString();
-            editor.putString("uuid", uniqueID);
-            editor.commit();
-        }
-
-        return uniqueID;
-    }
-
     @SuppressWarnings("StringBufferReplaceableByString")
     public String getAppVersion() {
         StringBuilder strVersion = new StringBuilder();
@@ -144,7 +131,6 @@ public class SessionManager {
     }
 
     public int getNotificationCount() {
-        //notification wil be shown a maximum of 3 times
         return pref.getInt("notificationCount", 3);
     }
 

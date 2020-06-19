@@ -156,7 +156,7 @@ public class RestService {
         params.put("context", restParameters.getContext());
 
         if (sessionManager != null) {
-            params.put("api-token", sessionManager.getDeviceId());
+            params.put("api-token", sessionManager.getDeviceToken());
             params.put("build-date", sessionManager.getAppBuildDate());
         }
         return params;

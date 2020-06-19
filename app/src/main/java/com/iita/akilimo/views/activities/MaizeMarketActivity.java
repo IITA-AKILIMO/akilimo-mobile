@@ -82,6 +82,7 @@ public class MaizeMarketActivity extends BaseActivity {
     private String grainPrice;
     private String cobPrice;
     private String unitOfSale;
+    private EnumUnitOfSale unitOfSaleEnum = EnumUnitOfSale.ONE_KG;
     private boolean dialogOpen;
     private boolean dataIsValid;
     private boolean exactPriceSelected;
@@ -216,6 +217,7 @@ public class MaizeMarketActivity extends BaseActivity {
                     maizeCobPriceCard.setVisibility(View.VISIBLE);
                     produceType = EnumMaizeProduceType.FRESH_COB.produce();
                     unitOfSale = EnumUnitOfSale.NA.unitOfSale(context);
+                    unitOfSaleEnum = EnumUnitOfSale.NA;
                     unitPrice = -1.0;
                     cobPriceRequired = true;
                     break;
@@ -226,12 +228,15 @@ public class MaizeMarketActivity extends BaseActivity {
             switch (radioIndex) {
                 case R.id.rd_per_kg:
                     unitOfSale = EnumUnitOfSale.ONE_KG.unitOfSale(context);
+                    unitOfSaleEnum = EnumUnitOfSale.ONE_KG;
                     break;
                 case R.id.rd_50_kg_bag:
                     unitOfSale = EnumUnitOfSale.FIFTY_KG.unitOfSale(context);
+                    unitOfSaleEnum = EnumUnitOfSale.FIFTY_KG;
                     break;
                 case R.id.rd_100_kg_bag:
                     unitOfSale = EnumUnitOfSale.HUNDRED_KG.unitOfSale(context);
+                    unitOfSaleEnum = EnumUnitOfSale.HUNDRED_KG;
                     break;
             }
         });
@@ -331,17 +336,18 @@ public class MaizeMarketActivity extends BaseActivity {
 
     public void onGrainUnitRadioButtonClicked(View radioButton) {
         if (radioButton != null && radioButton.isPressed()) {
-            showUnitGrainPriceDialog(currency, unitOfSale);
+            showUnitGrainPriceDialog();
         }
     }
 
-    private void showUnitGrainPriceDialog(String currency, String uos) {
+    private void showUnitGrainPriceDialog() {
         Bundle arguments = new Bundle();
         arguments.putString(MaizePriceDialogFragment.CURRENCY_CODE, currency);
         arguments.putString(MaizePriceDialogFragment.COUNTRY_CODE, countryCode);
-        arguments.putString(MaizePriceDialogFragment.UNIT_OF_SALE, uos);
         arguments.putDouble(MaizePriceDialogFragment.SELECTED_PRICE, exactPrice);
         arguments.putDouble(MaizePriceDialogFragment.AVERAGE_PRICE, averagePrice);
+        arguments.putString(MaizePriceDialogFragment.UNIT_OF_SALE, unitOfSale);
+        arguments.putParcelable(MaizePriceDialogFragment.ENUM_UNIT_OF_SALE, unitOfSaleEnum);
 
         MaizePriceDialogFragment priceDialogFragment = new MaizePriceDialogFragment();
         priceDialogFragment.setArguments(arguments);

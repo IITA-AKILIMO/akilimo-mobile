@@ -1,7 +1,6 @@
 package com.iita.akilimo.entities
 
 import com.iita.akilimo.utils.enums.EnumMaizeProduceType
-import com.iita.akilimo.utils.enums.EnumUnitOfSale
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 
