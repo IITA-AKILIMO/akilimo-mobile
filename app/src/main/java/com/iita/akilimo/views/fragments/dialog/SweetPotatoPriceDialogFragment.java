@@ -27,6 +27,7 @@ import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IPriceDialogDismissListener;
 import com.iita.akilimo.models.PotatoPrice;
 import com.iita.akilimo.utils.MathHelper;
+import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 
 import java.util.List;
@@ -82,6 +83,13 @@ public class SweetPotatoPriceDialogFragment extends BaseDialogFragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        this.context = context;
+        mathHelper = new MathHelper();
+        realmProcessor = new RealmProcessor();
+    }
 
     @NonNull
     @Override

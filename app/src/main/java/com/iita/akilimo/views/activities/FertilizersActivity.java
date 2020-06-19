@@ -308,19 +308,13 @@ public class FertilizersActivity extends BaseActivity {
                     fertilizerPricesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<FertilizerPrices>>() {
                     });
                     //save prices here
-                    try {
-                        myRealm.executeTransaction(realm -> {
-
-                            if (fertilizerPricesList.size() > 0) {
-                                RealmList<FertilizerPrices> _fertilizerPricesList = new RealmList<>();
-                                _fertilizerPricesList.addAll(fertilizerPricesList);
-                                myRealm.insertOrUpdate(_fertilizerPricesList);
-                            }
-                        });
-                    } catch (Exception ex) {
-                        Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                        Crashlytics.logException(ex);
-                    }
+                    myRealm.executeTransaction(realm -> {
+                        if (fertilizerPricesList.size() > 0) {
+                            RealmList<FertilizerPrices> _fertilizerPricesList = new RealmList<>();
+                            _fertilizerPricesList.addAll(fertilizerPricesList);
+                            myRealm.insertOrUpdate(_fertilizerPricesList);
+                        }
+                    });
                     validate(false);
                     recyclerView.setVisibility(View.VISIBLE);
                 } catch (Exception ex) {
@@ -329,7 +323,7 @@ public class FertilizersActivity extends BaseActivity {
                     errorLabel.setVisibility(View.VISIBLE);
                     btnRetry.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
-                    Crashlytics.log(Log.ERROR, LOG_TAG, "Error saving fertilizer price list");
+                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                     Crashlytics.logException(ex);
                 }
 

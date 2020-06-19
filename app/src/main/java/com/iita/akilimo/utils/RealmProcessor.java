@@ -26,6 +26,7 @@ import java.util.List;
 
 import io.realm.Realm;
 
+@SuppressWarnings("UnnecessaryLocalVariable")
 public class RealmProcessor {
     private Realm realm;
 
@@ -111,7 +112,11 @@ public class RealmProcessor {
     }
 
     public List<PotatoPrice> getPotatoPrices(String countryCode) {
-        return null;
+        List<PotatoPrice> potatoPrices = realm.where(PotatoPrice.class)
+                .equalTo("country", countryCode)
+                .findAll();
+
+        return potatoPrices;
     }
 
     public List<InterCropFertilizer> getAllInterCropFertilizersByCountry(String countryCode) {

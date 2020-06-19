@@ -42,6 +42,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 
 public class SweetPotatoMarketActivity extends BaseActivity {
 
@@ -73,7 +74,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
     double unitPriceUSD = 0.0;
     double unitPriceLocal = 0.0;
-    private double exactPrice = 0.0;
+    private double unitPrice = 0.0;
     private double averagePrice = 0.0;
 
     private double minAmountUSD = 5.00;
@@ -114,49 +115,6 @@ public class SweetPotatoMarketActivity extends BaseActivity {
         processPotatoPrices();
     }
 
-    private void processPotatoPrices() {
-        final RestService restService = RestService.getInstance(queue, this);
-        final ObjectMapper objectMapper = new ObjectMapper();
-        final RestParameters restParameters = new RestParameters(
-                String.format("v3/potato-prices/country/%s", countryCode),
-                countryCode
-        );
-        restParameters.setInitialTimeout(5000);
-
-        restService.setParameters(restParameters);
-
-        restService.getJsonArrList(new IVolleyCallback() {
-            @Override
-            public void onSuccessJsonString(@NotNull String jsonStringResult) {
-            }
-
-            @Override
-            public void onSuccessJsonArr(@NotNull JSONArray jsonArray) {
-                try {
-                    potatoPriceList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<PotatoPrice>>() {
-                    });
-                    //objectBoxEntityProcessor.savePotatoPrice(potatoPriceList);
-                } catch (Exception ex) {
-                    Crashlytics.logException(ex);
-                    Crashlytics.log(ex.getMessage());
-                }
-            }
-
-            @Override
-            public void onSuccessJsonObject(@NotNull JSONObject jsonObject) {
-
-            }
-
-            @Override
-            public void onError(@NotNull VolleyError volleyError) {
-                String error = Tools.parseNetworkError(volleyError).getMessage();
-                if (error != null) {
-                    Snackbar.make(unitOfSalePotatoCard, error, Snackbar.LENGTH_LONG).show();
-                }
-            }
-        });
-    }
-
     @Override
     protected void initToolbar() {
         toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
@@ -178,7 +136,9 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
             rdgPotatoProduceType.check(produceTypeRadioIndex);
             rdgUnitOfSalePotato.check(potatoUnitOfSaleRadioIndex);
-            exactPrice = potatoMarketOutlet.getUnitPrice();
+            unitPrice = potatoMarketOutlet.getUnitPrice();
+            unitOfSale = potatoMarketOutlet.getUnitOfSale();
+            unitPrice = potatoMarketOutlet.getUnitPrice();
         }
         rdgUnitOfSalePotato.setOnCheckedChangeListener((group, radioIndex) -> {
             switch (radioIndex) {
@@ -215,28 +175,25 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             return;
         }
 
-        if (exactPrice <= 0) {
+        if (unitPrice <= 0) {
             showCustomWarningDialog(getString(R.string.lbl_invalid_tuber_price), getString(R.string.lbl_tuber_price_prompt));
             return;
         }
 
         try {
-            myRealm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    if (potatoMarketOutlet == null) {
-                        potatoMarketOutlet = realm.createObject(PotatoMarketOutlet.class);
-                    }
-
-                    potatoMarketOutlet.setProduceType(enumPotatoProduceType);
-                    potatoMarketOutlet.setUnitOfSale(unitOfSale);
-                    potatoMarketOutlet.setUnitPrice(exactPrice);
-
-                    potatoMarketOutlet.setProduceTypeRadioIndex(produceTypeRadioIndex);
-                    potatoMarketOutlet.setPotatoUnitPriceRadioIndex(potatoUnitPriceRadioIndex);
-                    potatoMarketOutlet.setPotatoUnitOfSaleRadioIndex(potatoUnitOfSaleRadioIndex);
-
+            myRealm.executeTransaction(realm -> {
+                if (potatoMarketOutlet == null) {
+                    potatoMarketOutlet = realm.createObject(PotatoMarketOutlet.class, Tools.generateUUID());
                 }
+
+                potatoMarketOutlet.setProduceType(enumPotatoProduceType);
+                potatoMarketOutlet.setUnitOfSale(unitOfSale);
+                potatoMarketOutlet.setUnitPrice(unitPrice);
+
+                potatoMarketOutlet.setProduceTypeRadioIndex(produceTypeRadioIndex);
+                potatoMarketOutlet.setPotatoUnitPriceRadioIndex(potatoUnitPriceRadioIndex);
+                potatoMarketOutlet.setPotatoUnitOfSaleRadioIndex(potatoUnitOfSaleRadioIndex);
+
             });
             closeActivity(backPressed);
         } catch (Exception ex) {
@@ -249,9 +206,60 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
     public void onPotatoUnitRadioButtonClicked(View radioButton) {
         if (radioButton != null && radioButton.isPressed()) {
-            //we need to validate the data first since we are passing null values there
             showPotatoUnitPriceDialog();
         }
+    }
+
+    private void processPotatoPrices() {
+        final RestService restService = RestService.getInstance(queue, this);
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final RestParameters restParameters = new RestParameters(
+                String.format("v3/potato-prices/country/%s", countryCode),
+                countryCode
+        );
+        restParameters.setInitialTimeout(5000);
+
+        restService.setParameters(restParameters);
+
+        restService.getJsonArrList(new IVolleyCallback() {
+            @Override
+            public void onSuccessJsonString(@NotNull String jsonStringResult) {
+            }
+
+            @Override
+            public void onSuccessJsonArr(@NotNull JSONArray jsonArray) {
+                try {
+                    potatoPriceList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<PotatoPrice>>() {
+                    });
+                    myRealm.executeTransaction(realm -> {
+
+                        if (potatoPriceList.size() > 0) {
+                            RealmList<PotatoPrice> _potatoPriceList = new RealmList<>();
+                            _potatoPriceList.addAll(potatoPriceList);
+                            myRealm.insertOrUpdate(_potatoPriceList);
+                        }
+                    });
+                } catch (Exception ex) {
+                    Snackbar.make(unitOfSalePotatoCard, ex.getMessage(), Snackbar.LENGTH_LONG).show();
+                    Crashlytics.logException(ex);
+                    Crashlytics.log(ex.getMessage());
+                }
+            }
+
+            @Override
+            public void onSuccessJsonObject(@NotNull JSONObject jsonObject) {
+
+            }
+
+            @Override
+            public void onError(@NotNull VolleyError volleyError) {
+                String error = Tools.parseNetworkError(volleyError).getMessage();
+                if (error != null) {
+                    Crashlytics.log(error);
+                    Snackbar.make(unitOfSalePotatoCard, error, Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     private void showPotatoUnitPriceDialog() {
@@ -259,7 +267,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
         //check if values are null
         arguments.putString(SweetPotatoPriceDialogFragment.CURRENCY_CODE, currency);
         arguments.putString(SweetPotatoPriceDialogFragment.COUNTRY_CODE, countryCode);
-        arguments.putDouble(SweetPotatoPriceDialogFragment.SELECTED_PRICE, exactPrice);
+        arguments.putDouble(SweetPotatoPriceDialogFragment.SELECTED_PRICE, unitPrice);
         arguments.putDouble(SweetPotatoPriceDialogFragment.AVERAGE_PRICE, averagePrice);
         arguments.putString(SweetPotatoPriceDialogFragment.UNIT_OF_SALE, unitOfSale);
 
@@ -267,7 +275,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
         priceDialogFragment.setArguments(arguments);
 
         priceDialogFragment.setOnDismissListener((selectedPrice, selectedAveragePrice) -> {
-            exactPrice = selectedPrice;
+            unitPrice = selectedPrice;
             averagePrice = selectedAveragePrice;
         });
 
