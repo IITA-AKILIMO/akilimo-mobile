@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.bumptech.glide.util.LogTime;
 import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.databinding.FragmentCurrentPracticeBinding;
 import com.iita.akilimo.entities.CurrentPractice;
@@ -268,13 +269,14 @@ public class CurrentPracticeFragment extends BaseFragment {
                 currentPractice.setPerformHarrowing(performHarrowing);
 
                 if (plantingHarvestDates == null) {
-                    plantingHarvestDates = myRealm.createObject(PlantingHarvestDates.class);
+                    plantingHarvestDates = myRealm.createObject(PlantingHarvestDates.class, Tools.generateUUID());
                 }
 
                 plantingHarvestDates.setPlantingDate(selectedPlantingDate);
                 plantingHarvestDates.setHarvestDate(selectedHarvestDate);
             });
         } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
     }
