@@ -1,11 +1,13 @@
 package com.iita.akilimo.entities
 
 import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
 
 
-open class LocationInfo :RealmObject() {
+open class LocationInfo : RealmObject() {
 
-    var id: Long = 0
+    @PrimaryKey
+    var id: String? = null
     var latitude: Double = 0.0
     var longitude: Double = 0.0
     var altitude: Double = 0.0

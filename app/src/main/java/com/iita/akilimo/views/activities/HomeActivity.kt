@@ -30,12 +30,14 @@ import com.iita.akilimo.interfaces.IFragmentCallBack
 import com.iita.akilimo.utils.AppUpdateHelper
 import com.iita.akilimo.utils.RealmProcessor
 import com.iita.akilimo.utils.Tools
+import com.iita.akilimo.views.activities.usecases.RecommendationsActivity
 import com.iita.akilimo.views.fragments.*
 import io.realm.Realm
 import timber.log.Timber
 import kotlin.system.exitProcess
 
 
+@Suppress("SENSELESS_COMPARISON")
 class HomeActivity : BaseActivity(), IFragmentCallBack {
     companion object {
         const val MAP_BOX_PLACE_PICKER_REQUEST_CODE = 208
@@ -286,7 +288,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             try {
                 myRealm.executeTransaction {
                     if (location == null) {
-                        location = it.createObject(LocationInfo::class.java)
+                        location = it.createObject(LocationInfo::class.java, Tools.generateUUID())
                     }
 
                     location = realmProcessor.locationInfo

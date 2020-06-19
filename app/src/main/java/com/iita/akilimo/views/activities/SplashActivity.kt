@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.iita.akilimo.inherit.BaseActivity
+import com.iita.akilimo.views.activities.usecases.RecommendationsActivity
 
 class SplashActivity : BaseActivity() {
 
