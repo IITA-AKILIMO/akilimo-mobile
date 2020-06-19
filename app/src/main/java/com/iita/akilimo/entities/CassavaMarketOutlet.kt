@@ -17,7 +17,7 @@ open class CassavaMarketOutlet : RealmObject() {
     var unitWeight: Int = 0
 
     var produceType: String = EnumCassavaProduceType.ROOTS.produce()
-    var unitOfSale: String = EnumUnitOfSale.ONE_KG.unitOfSale()
+    var unitOfSale: String? = null
     var isStarchFactoryRequired: Boolean = false
 
 }

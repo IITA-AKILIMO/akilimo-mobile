@@ -202,16 +202,16 @@ public class CassavaMarketActivity extends BaseActivity {
         rdgUnitOfSale.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
             switch (radioIndex) {
                 case R.id.rd_per_kg:
-                    unitOfSale = EnumUnitOfSale.ONE_KG.name();
+                    unitOfSale = EnumUnitOfSale.ONE_KG.unitOfSale(context);
                     break;
                 case R.id.rd_50_kg_bag:
-                    unitOfSale = EnumUnitOfSale.FIFTY_KG.name();
+                    unitOfSale = EnumUnitOfSale.FIFTY_KG.unitOfSale(context);
                     break;
                 case R.id.rd_100_kg_bag:
-                    unitOfSale = EnumUnitOfSale.HUNDRED_KG.name();
+                    unitOfSale = EnumUnitOfSale.HUNDRED_KG.unitOfSale(context);
                     break;
                 case R.id.rd_per_tonne:
-                    unitOfSale = EnumUnitOfSale.THOUSAND_KG.name();
+                    unitOfSale = EnumUnitOfSale.THOUSAND_KG.unitOfSale(context);
                     break;
             }
             dataIsValid = false;

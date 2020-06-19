@@ -430,4 +430,5 @@
 
     <string name="lbl_gps_settings">GPS settings</string>
     <string name="lbl_gps_not_enabled">GPS is not enabled. Do you want to go to settings menu?</string>
+    <string name="lbl_one_kg_bag_unit">a 1 kg bag</string>
 </resources>

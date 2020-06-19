@@ -222,7 +222,7 @@ public class MaizeMarketActivity extends BaseActivity {
                     maizeCobPriceTitle.setVisibility(View.VISIBLE);
                     maizeCobPriceCard.setVisibility(View.VISIBLE);
                     produceType = EnumMaizeProduceType.FRESH_COB.produce();
-                    unitOfSale = EnumUnitOfSale.NA.unitOfSale();
+                    unitOfSale = EnumUnitOfSale.NA.unitOfSale(context);
                     unitPrice = -1.0;
                     cobPriceRequired = true;
                     break;
@@ -232,13 +232,13 @@ public class MaizeMarketActivity extends BaseActivity {
         rdgUnitOfSaleGrain.setOnCheckedChangeListener((group, radioIndex) -> {
             switch (radioIndex) {
                 case R.id.rd_per_kg:
-                    unitOfSale = EnumUnitOfSale.ONE_KG.unitOfSale();
+                    unitOfSale = EnumUnitOfSale.ONE_KG.unitOfSale(context);
                     break;
                 case R.id.rd_50_kg_bag:
-                    unitOfSale = EnumUnitOfSale.FIFTY_KG.unitOfSale();
+                    unitOfSale = EnumUnitOfSale.FIFTY_KG.unitOfSale(context);
                     break;
                 case R.id.rd_100_kg_bag:
-                    unitOfSale = EnumUnitOfSale.HUNDRED_KG.unitOfSale();
+                    unitOfSale = EnumUnitOfSale.HUNDRED_KG.unitOfSale(context);
                     break;
             }
         });

@@ -17,5 +17,5 @@ open class PotatoMarketOutlet : RealmObject() {
     var unitWeight: Int = 0
 
     var produceType: String = EnumPotatoProduceType.TUBERS.produce()
-    var unitOfSale: String = EnumUnitOfSale.ONE_KG.unitOfSale()
+    var unitOfSale: String? = null
 }

@@ -19,5 +19,5 @@ open class MaizeMarketOutlet : RealmObject() {
 
 
     var produceType: String = EnumMaizeProduceType.GRAIN.name
-    var unitOfSale: String = EnumUnitOfSale.ONE_KG.unitOfSale()
+    var unitOfSale: String? = null
 }
