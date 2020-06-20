@@ -16,7 +16,6 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
-import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import com.crashlytics.android.Crashlytics
 import com.github.javiersantos.appupdater.AppUpdater
 import com.github.javiersantos.appupdater.enums.Display
@@ -228,7 +227,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             appUpdater.start()
             val intent = Intent(this, RecommendationsActivity::class.java)
             startActivity(intent)
-            Animatoo.animateSlideLeft(this)
+            openActivity()
         }
     }
 

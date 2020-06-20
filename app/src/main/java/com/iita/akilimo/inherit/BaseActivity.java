@@ -94,11 +94,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (!backPressed) {
             finish();
         }
-        Animatoo.animateSwipeLeft(this);
+        Animatoo.animateSwipeRight(this);
     }
 
     protected void openActivity() {
-        Animatoo.animateSwipeRight(this);
+        Animatoo.animateSwipeLeft(this);
     }
 
 

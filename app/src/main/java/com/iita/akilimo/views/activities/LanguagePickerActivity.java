@@ -107,8 +107,7 @@ public class LanguagePickerActivity extends BaseActivity {
         btnUpdateLanguage.setOnClickListener(v -> {
             Intent intent = new Intent(LanguagePickerActivity.this, HomeActivity.class);
             startActivity(intent);
-            overridePendingTransition(0, 0);
-            finish();
+            closeActivity(true);
         });
     }
 
