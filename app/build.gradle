@@ -150,11 +150,8 @@ dependencies {
     kapt 'com.jakewharton:butterknife-compiler:10.2.1'
     kapt 'com.fasterxml.jackson.core:jackson-annotations:2.11.0'
 
-//    compileOnly "org.projectlombok:lombok:1.18.12"
-
 
     testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.11.0'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
     testImplementation 'joda-time:joda-time:2.10.6'
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test:runner:1.2.0'
