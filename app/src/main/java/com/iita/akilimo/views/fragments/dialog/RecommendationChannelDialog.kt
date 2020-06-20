@@ -11,7 +11,6 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.hbb20.CountryCodePicker
 import com.iita.akilimo.R
-import com.iita.akilimo.entities.PlantingHarvestDates
 import com.iita.akilimo.entities.ProfileInfo
 import com.iita.akilimo.inherit.BaseDialogFragment
 import com.iita.akilimo.interfaces.IRecommendationCallBack

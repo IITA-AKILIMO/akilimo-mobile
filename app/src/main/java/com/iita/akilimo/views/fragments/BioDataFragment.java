@@ -30,13 +30,10 @@ import com.iita.akilimo.interfaces.IFragmentCallBack;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.ValidationHelper;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
-import okhttp3.internal.Util;
 
 /**
  * A simple {@link Fragment} subclass.

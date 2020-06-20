@@ -4,7 +4,6 @@ import android.os.Parcelable
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.orm.SugarRecord
 import io.realm.RealmObject
 import kotlinx.android.parcel.Parcelize
 

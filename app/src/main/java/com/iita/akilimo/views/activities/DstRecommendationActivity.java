@@ -20,7 +20,6 @@ import com.crashlytics.android.Crashlytics;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.iita.akilimo.BuildConfig;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecommendationAdapter;
 import com.iita.akilimo.databinding.ActivityDstRecomendationBinding;
@@ -44,8 +43,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.realm.Realm;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.

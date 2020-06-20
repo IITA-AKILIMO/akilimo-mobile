@@ -1,8 +1,8 @@
 package com.iita.akilimo.interfaces
 
 import androidx.annotation.NonNull
-import com.iita.akilimo.models.Fertilizer
 import com.iita.akilimo.models.InterCropFertilizer
+
 @Deprecated("To be removed ASAP")
 interface IDismissIntercropListener {
     fun onDismiss(

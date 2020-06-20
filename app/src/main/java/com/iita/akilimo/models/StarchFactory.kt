@@ -3,7 +3,6 @@ package com.iita.akilimo.models
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.google.android.gms.common.util.Strings
-import com.orm.SugarRecord
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 

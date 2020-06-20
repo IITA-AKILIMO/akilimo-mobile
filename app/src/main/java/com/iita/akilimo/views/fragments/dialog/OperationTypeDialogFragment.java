@@ -1,7 +1,6 @@
 package com.iita.akilimo.views.fragments.dialog;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 
 import com.iita.akilimo.R;
 import com.iita.akilimo.inherit.BaseDialogFragment;

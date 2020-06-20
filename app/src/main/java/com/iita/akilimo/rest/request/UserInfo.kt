@@ -1,7 +1,5 @@
 package com.iita.akilimo.rest.request
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder
-
 class UserInfo {
     var deviceToken: String = "NA"
     var mobileCountryCode: String = "NA"

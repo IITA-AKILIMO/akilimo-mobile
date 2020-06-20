@@ -9,7 +9,6 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.AdapterListAnimation;
@@ -21,11 +20,6 @@ import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.enums.EnumAdvice;
 import com.iita.akilimo.utils.enums.EnumCountry;
-import com.iita.akilimo.views.activities.usecases.FertilizerRecActivity;
-import com.iita.akilimo.views.activities.usecases.InterCropRecActivity;
-import com.iita.akilimo.views.activities.usecases.PlantingPracticesActivity;
-import com.iita.akilimo.views.activities.usecases.ScheduledPlantingActivity;
-
 
 import java.util.ArrayList;
 import java.util.List;

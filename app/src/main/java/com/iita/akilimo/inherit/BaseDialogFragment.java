@@ -9,8 +9,6 @@ import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.SessionManager;
 
-import io.realm.Realm;
-
 @SuppressWarnings("WeakerAccess")
 public abstract class BaseDialogFragment extends DialogFragment {
 

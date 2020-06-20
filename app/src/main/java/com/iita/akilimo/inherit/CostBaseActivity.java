@@ -12,9 +12,6 @@ import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
-import com.iita.akilimo.utils.enums.EnumCountry;
-import com.iita.akilimo.utils.enums.EnumOperation;
-import com.iita.akilimo.utils.enums.EnumOperationType;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
