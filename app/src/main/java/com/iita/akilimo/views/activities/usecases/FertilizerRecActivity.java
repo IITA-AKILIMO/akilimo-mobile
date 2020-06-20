@@ -10,7 +10,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
@@ -23,6 +22,7 @@ import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
+import com.iita.akilimo.utils.enums.EnumUseCase;
 import com.iita.akilimo.views.activities.CassavaMarketActivity;
 import com.iita.akilimo.views.activities.DatesActivity;
 import com.iita.akilimo.views.activities.FertilizersActivity;
@@ -109,6 +109,7 @@ public class FertilizerRecActivity extends BaseActivity {
                     recAdvice.setSPH(false);
                     recAdvice.setSPP(false);
                     recAdvice.setBPP(false);
+                    recAdvice.setUseCase(EnumUseCase.FR.name());
                     processRecommendations(activity);
                 });
             } catch (Exception ex) {

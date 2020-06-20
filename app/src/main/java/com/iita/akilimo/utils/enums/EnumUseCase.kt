@@ -5,5 +5,9 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 enum class EnumUseCase : Parcelable {
-    CIS, CIM
+    FR,
+    SP,
+    PP,
+    CIS,
+    CIM
 }

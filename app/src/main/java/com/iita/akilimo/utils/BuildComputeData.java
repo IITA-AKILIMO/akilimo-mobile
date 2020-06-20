@@ -114,6 +114,7 @@ public class BuildComputeData {
     private String methodHarrowing = DEFAULT_PRACTICE_METHOD;
     private String methodPloughing = DEFAULT_PRACTICE_METHOD;
     private String methodRidging = DEFAULT_PRACTICE_METHOD;
+    private String methodWeeding = DEFAULT_PRACTICE_METHOD;
 
     private double cassavaUnitPrice = 0.0;
 
@@ -195,6 +196,7 @@ public class BuildComputeData {
                 fullNames = Strings.isEmptyOrWhitespace(profileInfo.getNames()) ? DEFAULT_USERNAME : profileInfo.getNames();
                 farmName = Strings.isEmptyOrWhitespace(profileInfo.getFarmName()) ? DEFAULT_UNAVAILABLE : profileInfo.getFarmName();
                 mobileNumber = Strings.isEmptyOrWhitespace(profileInfo.getFullMobileNumber()) ? DEFAULT_UNAVAILABLE : profileInfo.getFullMobileNumber();
+                fullPhoneNumber = Strings.isEmptyOrWhitespace(profileInfo.getFullMobileNumber()) ? DEFAULT_UNAVAILABLE : profileInfo.getFullMobileNumber();
                 mobileCountryCode = Strings.isEmptyOrWhitespace(profileInfo.getMobileCode()) ? DEFAULT_UNAVAILABLE : profileInfo.getMobileCode();
                 emailAddress = Strings.isEmptyOrWhitespace(profileInfo.getEmail()) ? DEFAULT_UNAVAILABLE : profileInfo.getEmail();
                 deviceToken = sessionManager.getDeviceToken();
@@ -317,6 +319,7 @@ public class BuildComputeData {
             methodHarrowing = Strings.isEmptyOrWhitespace(currentPractice.getHarrowingMethod()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getHarrowingMethod();
             methodPloughing = Strings.isEmptyOrWhitespace(currentPractice.getPloughingMethod()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getPloughingMethod();
             methodRidging = Strings.isEmptyOrWhitespace(currentPractice.getRidgingMethod()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getRidgingMethod();
+            methodWeeding = Strings.isEmptyOrWhitespace(currentPractice.getWeedControlTechnique()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getWeedControlTechnique();
         }
 
         computeRequest.setPloughingDone(performsPloughing);
@@ -335,6 +338,7 @@ public class BuildComputeData {
         computeRequest.setMethodHarrowing(methodHarrowing);
         computeRequest.setMethodPloughing(methodPloughing);
         computeRequest.setMethodRidging(methodRidging);
+        computeRequest.setMethodWeeding(methodWeeding);
 
 
         return computeRequest;

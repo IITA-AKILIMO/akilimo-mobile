@@ -23,6 +23,7 @@ import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
+import com.iita.akilimo.utils.enums.EnumUseCase;
 import com.iita.akilimo.views.activities.CassavaMarketActivity;
 import com.iita.akilimo.views.activities.DatesActivity;
 import com.iita.akilimo.views.activities.RootYieldActivity;
@@ -105,6 +106,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
                         recAdvice.setSPH(true);
                         recAdvice.setSPP(true);
                         recAdvice.setBPP(false);
+                        recAdvice.setUseCase(EnumUseCase.SP.name());
                     }
                 });
                 processRecommendations(activity);

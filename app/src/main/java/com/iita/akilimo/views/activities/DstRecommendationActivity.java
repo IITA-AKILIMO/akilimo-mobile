@@ -209,7 +209,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
                     errorImage.setVisibility(View.VISIBLE);
                     errorLabel.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
-                    Crashlytics.log(Log.ERROR, LOG_TAG, "Error processing DST recommendations");
+                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                     Crashlytics.logException(ex);
                 }
             }
