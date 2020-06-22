@@ -23,10 +23,10 @@ import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ScheduledDates;
-import com.iita.akilimo.models.TimeLineModel;
-import com.iita.akilimo.models.TimelineAttributes;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.interfaces.IFragmentCallBack;
+import com.iita.akilimo.models.TimeLineModel;
+import com.iita.akilimo.models.TimelineAttributes;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.enums.StepStatus;
 

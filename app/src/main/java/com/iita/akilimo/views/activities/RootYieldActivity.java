@@ -19,7 +19,6 @@ import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.Tools;
-import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.widget.SpacingItemDecoration;
 
 import java.util.ArrayList;

@@ -22,10 +22,10 @@ import androidx.annotation.Nullable;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
-import com.iita.akilimo.inherit.BaseDialogFragment;
-import com.iita.akilimo.interfaces.IDismissListener;
 import com.iita.akilimo.entities.Fertilizer;
 import com.iita.akilimo.entities.FertilizerPrices;
+import com.iita.akilimo.inherit.BaseDialogFragment;
+import com.iita.akilimo.interfaces.IDismissListener;
 
 import java.util.List;
 

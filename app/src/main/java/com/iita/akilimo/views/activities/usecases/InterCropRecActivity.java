@@ -24,7 +24,6 @@ import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.enums.EnumCountry;
 import com.iita.akilimo.utils.enums.EnumUseCase;
-import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.views.activities.CassavaMarketActivity;
 import com.iita.akilimo.views.activities.DatesActivity;
 import com.iita.akilimo.views.activities.IntercropFertilizersActivity;

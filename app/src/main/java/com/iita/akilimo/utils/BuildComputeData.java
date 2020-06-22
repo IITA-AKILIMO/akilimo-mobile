@@ -8,24 +8,23 @@ import androidx.annotation.NonNull;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.entities.CassavaMarketOutlet;
-import com.iita.akilimo.models.ComputeRequest;
 import com.iita.akilimo.entities.CurrentFieldYield;
 import com.iita.akilimo.entities.CurrentPractice;
+import com.iita.akilimo.entities.Fertilizer;
+import com.iita.akilimo.entities.InterCropFertilizer;
 import com.iita.akilimo.entities.InvestmentAmount;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.MaizeMarketOutlet;
 import com.iita.akilimo.entities.MaizePerformance;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.OperationCosts;
-import com.iita.akilimo.entities.ScheduledDates;
 import com.iita.akilimo.entities.PotatoMarketOutlet;
 import com.iita.akilimo.entities.ProfileInfo;
+import com.iita.akilimo.entities.ScheduledDates;
 import com.iita.akilimo.entities.UseCases;
-import com.iita.akilimo.entities.Fertilizer;
-import com.iita.akilimo.entities.InterCropFertilizer;
+import com.iita.akilimo.models.ComputeRequest;
 import com.iita.akilimo.rest.request.RecommendationRequest;
 import com.iita.akilimo.rest.request.UserInfo;
-import com.iita.akilimo.dao.OrmProcessor;
 
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
@@ -141,7 +140,7 @@ public class BuildComputeData {
     private String cassavaProduceType = DEFAULT_CASSAVA_PD;
     private String starchFactoryName = DEFAULT_UNAVAILABLE;
 
-    private OrmProcessor ormProcessor;
+
     private MathHelper mathHelper;
     private ModelMapper modelMapper;
     private SessionManager sessionManager;

@@ -20,7 +20,6 @@ import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
-import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.enums.EnumUseCase;
 import com.iita.akilimo.views.activities.CassavaMarketActivity;

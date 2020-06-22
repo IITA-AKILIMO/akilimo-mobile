@@ -17,7 +17,6 @@ import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.Recommendations;
 import com.iita.akilimo.utils.ItemAnimation;
-import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.utils.enums.EnumAdvice;
 import com.iita.akilimo.utils.enums.EnumCountry;
 

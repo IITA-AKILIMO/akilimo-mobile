@@ -22,7 +22,6 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.dao.AppDatabase;
-import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.utils.SessionManager;
 
@@ -55,7 +54,7 @@ public abstract class BaseFragment extends Fragment {
     protected RequestQueue queue;
 
     protected SessionManager sessionManager;
-    protected OrmProcessor ormProcessor;
+
 //
 
     public BaseFragment() {

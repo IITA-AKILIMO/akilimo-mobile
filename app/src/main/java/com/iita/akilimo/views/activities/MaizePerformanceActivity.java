@@ -15,7 +15,6 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.ActivityMaizePerformanceActivityBinding;
 import com.iita.akilimo.entities.MaizePerformance;
 import com.iita.akilimo.inherit.BaseActivity;
-import com.iita.akilimo.dao.OrmProcessor;
 
 ;
 

@@ -22,9 +22,9 @@ import androidx.annotation.Nullable;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
+import com.iita.akilimo.entities.MaizePrice;
 import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IPriceDialogDismissListener;
-import com.iita.akilimo.entities.MaizePrice;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 
 import java.util.List;

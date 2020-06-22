@@ -20,7 +20,6 @@ import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.enums.EnumOperation;
 import com.iita.akilimo.utils.enums.EnumOperationType;
-import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.views.fragments.dialog.OperationCostsDialogFragment;
 
 import java.util.ArrayList;

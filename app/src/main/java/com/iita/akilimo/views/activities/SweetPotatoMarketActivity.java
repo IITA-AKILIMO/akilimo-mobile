@@ -32,7 +32,6 @@ import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumPotatoProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
-import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.views.fragments.dialog.SweetPotatoPriceDialogFragment;
 
 import org.jetbrains.annotations.NotNull;

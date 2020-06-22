@@ -20,7 +20,6 @@ import com.iita.akilimo.entities.ScheduledDates;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.DateHelper;
 import com.iita.akilimo.utils.Tools;
-import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.views.fragments.dialog.DateDialogPickerFragment;
 
 import org.joda.time.LocalDate;

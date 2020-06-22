@@ -22,16 +22,15 @@ import com.github.javiersantos.appupdater.enums.Display
 import com.google.android.gms.common.util.Strings
 import com.iita.akilimo.R
 import com.iita.akilimo.adapters.ViewPagerAdapter
+import com.iita.akilimo.dao.OrmProcessor
 import com.iita.akilimo.databinding.ActivityHomeBinding
 import com.iita.akilimo.entities.LocationInfo
 import com.iita.akilimo.inherit.BaseActivity
 import com.iita.akilimo.interfaces.IFragmentCallBack
 import com.iita.akilimo.utils.AppUpdateHelper
 import com.iita.akilimo.utils.Tools
-import com.iita.akilimo.dao.OrmProcessor
 import com.iita.akilimo.views.activities.usecases.RecommendationsActivity
 import com.iita.akilimo.views.fragments.*
-
 import kotlin.system.exitProcess
 
 
