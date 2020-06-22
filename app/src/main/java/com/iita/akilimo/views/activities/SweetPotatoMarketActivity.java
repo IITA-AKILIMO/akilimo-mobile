@@ -29,10 +29,10 @@ import com.iita.akilimo.models.PotatoPrice;
 import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumPotatoProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
+import com.iita.akilimo.utils.ormlite.RealmProcessor;
 import com.iita.akilimo.views.fragments.dialog.SweetPotatoPriceDialogFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -186,20 +186,19 @@ public class SweetPotatoMarketActivity extends BaseActivity {
         }
 
         try {
-            myRealm.executeTransaction(realm -> {
-                if (potatoMarketOutlet == null) {
-                    potatoMarketOutlet = realm.createObject(PotatoMarketOutlet.class, Tools.generateUUID());
-                }
+            if (potatoMarketOutlet == null) {
+                potatoMarketOutlet = new PotatoMarketOutlet();
+            }
 
-                potatoMarketOutlet.setProduceType(enumPotatoProduceType);
-                potatoMarketOutlet.setUnitOfSale(unitOfSale);
-                potatoMarketOutlet.setUnitPrice(unitPrice);
+            potatoMarketOutlet.setProduceType(enumPotatoProduceType);
+            potatoMarketOutlet.setUnitOfSale(unitOfSale);
+            potatoMarketOutlet.setUnitPrice(unitPrice);
 
-                potatoMarketOutlet.setProduceTypeRadioIndex(produceTypeRadioIndex);
-                potatoMarketOutlet.setPotatoUnitPriceRadioIndex(potatoUnitPriceRadioIndex);
-                potatoMarketOutlet.setPotatoUnitOfSaleRadioIndex(potatoUnitOfSaleRadioIndex);
+            potatoMarketOutlet.setProduceTypeRadioIndex(produceTypeRadioIndex);
+            potatoMarketOutlet.setPotatoUnitPriceRadioIndex(potatoUnitPriceRadioIndex);
+            potatoMarketOutlet.setPotatoUnitOfSaleRadioIndex(potatoUnitOfSaleRadioIndex);
 
-            });
+
             closeActivity(backPressed);
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
@@ -236,14 +235,14 @@ public class SweetPotatoMarketActivity extends BaseActivity {
                 try {
                     potatoPriceList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<PotatoPrice>>() {
                     });
-                    myRealm.executeTransaction(realm -> {
 
-                        if (potatoPriceList.size() > 0) {
-                            RealmList<PotatoPrice> _potatoPriceList = new RealmList<>();
-                            _potatoPriceList.addAll(potatoPriceList);
-                            myRealm.insertOrUpdate(_potatoPriceList);
-                        }
-                    });
+
+                    if (potatoPriceList.size() > 0) {
+                        RealmList<PotatoPrice> _potatoPriceList = new RealmList<>();
+                        _potatoPriceList.addAll(potatoPriceList);
+                        //insert to database
+                    }
+
                 } catch (Exception ex) {
                     Snackbar.make(unitOfSalePotatoCard, ex.getMessage(), Snackbar.LENGTH_LONG).show();
                     Crashlytics.logException(ex);

@@ -27,8 +27,8 @@ import com.iita.akilimo.entities.LocationInfo
 import com.iita.akilimo.inherit.BaseActivity
 import com.iita.akilimo.interfaces.IFragmentCallBack
 import com.iita.akilimo.utils.AppUpdateHelper
-import com.iita.akilimo.utils.RealmProcessor
 import com.iita.akilimo.utils.Tools
+import com.iita.akilimo.utils.ormlite.RealmProcessor
 import com.iita.akilimo.views.activities.usecases.RecommendationsActivity
 import com.iita.akilimo.views.fragments.*
 import io.realm.Realm
@@ -283,23 +283,21 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             }
 
             location = realmProcessor.locationInfo
-            myRealm.executeTransaction {
-                if (location == null) {
-                    location = it.createObject(LocationInfo::class.java, Tools.generateUUID())
-                }
+            if (location == null) {
+                location = LocationInfo()
+            }
 
-                location = realmProcessor.locationInfo
-                location?.latitude = currentLat
-                location?.longitude = currentLong
-                location?.altitude = currentAlt
-                location?.placeName = when {
-                    !Strings.isEmptyOrWhitespace(placeName) -> placeName
-                    else -> defaultPlaceName
-                }
-                location?.address = when {
-                    !Strings.isEmptyOrWhitespace(address) -> address
-                    else -> "NA"
-                }
+            location = realmProcessor.locationInfo
+            location?.latitude = currentLat
+            location?.longitude = currentLong
+            location?.altitude = currentAlt
+            location?.placeName = when {
+                !Strings.isEmptyOrWhitespace(placeName) -> placeName
+                else -> defaultPlaceName
+            }
+            location?.address = when {
+                !Strings.isEmptyOrWhitespace(address) -> address
+                else -> "NA"
             }
             (currentFragment as? LocationFragment)?.refreshData()
         } catch (ex: Exception) {

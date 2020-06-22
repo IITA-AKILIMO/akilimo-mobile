@@ -25,7 +25,6 @@ import com.iita.akilimo.databinding.FragmentCurrentPracticeBinding;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.inherit.BaseFragment;
-import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumOperationType;
 import com.iita.akilimo.views.fragments.dialog.DateDialogPickerFragment;
 import com.iita.akilimo.views.fragments.dialog.OperationTypeDialogFragment;
@@ -256,23 +255,22 @@ public class CurrentPracticeFragment extends BaseFragment {
         }
 
         try {
-            myRealm.executeTransaction(realm -> {
-                if (currentPractice == null) {
-                    currentPractice = myRealm.createObject(CurrentPractice.class, Tools.generateUUID());
-                }
-                currentPractice.setRidgingMethod(ridgingMethod);
-                currentPractice.setPloughingMethod(ploughingMethod);
-                currentPractice.setPerformRidging(performRidging);
-                currentPractice.setPerformPloughing(performPloughing);
-                currentPractice.setPerformHarrowing(performHarrowing);
+            if (currentPractice == null) {
+                currentPractice = new CurrentPractice();
+            }
+            currentPractice.setRidgingMethod(ridgingMethod);
+            currentPractice.setPloughingMethod(ploughingMethod);
+            currentPractice.setPerformRidging(performRidging);
+            currentPractice.setPerformPloughing(performPloughing);
+            currentPractice.setPerformHarrowing(performHarrowing);
 
-                if (plantingHarvestDates == null) {
-                    plantingHarvestDates = myRealm.createObject(PlantingHarvestDates.class, Tools.generateUUID());
-                }
+            if (plantingHarvestDates == null) {
+                plantingHarvestDates = new PlantingHarvestDates();
+            }
 
-                plantingHarvestDates.setPlantingDate(selectedPlantingDate);
-                plantingHarvestDates.setHarvestDate(selectedHarvestDate);
-            });
+            plantingHarvestDates.setPlantingDate(selectedPlantingDate);
+            plantingHarvestDates.setHarvestDate(selectedHarvestDate);
+
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);

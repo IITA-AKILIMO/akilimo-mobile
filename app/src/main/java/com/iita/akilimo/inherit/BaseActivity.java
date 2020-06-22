@@ -23,7 +23,7 @@ import com.google.android.gms.common.util.Strings;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.iita.akilimo.R;
 import com.iita.akilimo.utils.FireBaseConfig;
-import com.iita.akilimo.utils.RealmProcessor;
+import com.iita.akilimo.utils.ormlite.RealmProcessor;
 import com.iita.akilimo.utils.SessionManager;
 import com.iita.akilimo.utils.enums.EnumCountry;
 import com.iita.akilimo.utils.enums.EnumUseCase;

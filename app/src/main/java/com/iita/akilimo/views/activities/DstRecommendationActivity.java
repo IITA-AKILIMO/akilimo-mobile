@@ -33,7 +33,7 @@ import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.rest.recommendation.RecommendationResponse;
 import com.iita.akilimo.rest.request.RecommendationRequest;
 import com.iita.akilimo.utils.BuildComputeData;
-import com.iita.akilimo.utils.RealmProcessor;
+import com.iita.akilimo.utils.ormlite.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.views.fragments.dialog.RecommendationChannelDialog;
 

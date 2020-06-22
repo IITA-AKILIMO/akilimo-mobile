@@ -34,8 +34,8 @@ import com.iita.akilimo.models.InterCropFertilizer;
 import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.FertilizerList;
-import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
+import com.iita.akilimo.utils.ormlite.RealmProcessor;
 import com.iita.akilimo.views.fragments.dialog.FertilizerPriceDialogFragment;
 import com.iita.akilimo.views.fragments.dialog.IntercropFertilizerPriceDialogFragment;
 import com.iita.akilimo.widget.SpacingItemDecoration;
@@ -245,22 +245,12 @@ public class IntercropFertilizersActivity extends BaseActivity {
                 try {
                     availableFertilizersList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<InterCropFertilizer>>() {
                     });
-                    //save the record here
-                    try {
-                        myRealm.executeTransaction(new Realm.Transaction() {
-                            @Override
-                            public void execute(Realm realm) {
-                                if (availableFertilizersList.size() > 0) {
-                                    RealmList<InterCropFertilizer> _fertilizerList = new RealmList<>();
-                                    _fertilizerList.addAll(availableFertilizersList);
-                                    myRealm.insertOrUpdate(_fertilizerList);
-                                }
-                            }
-                        });
-                    } catch (Exception ex) {
-                        Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
-                        Crashlytics.logException(ex);
+
+                    if (availableFertilizersList.size() > 0) {
+                        RealmList<InterCropFertilizer> _fertilizerList = new RealmList<>();
+                        _fertilizerList.addAll(availableFertilizersList);
                     }
+
                     initializeFertilizerPriceList();
                 } catch (Exception ex) {
                     lyt_progress.setVisibility(View.GONE);
@@ -314,18 +304,10 @@ public class IntercropFertilizersActivity extends BaseActivity {
                     //check if fertilizer price list is already populated
                     fertilizerPricesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<FertilizerPrices>>() {
                     });
-                    try {
-                        myRealm.executeTransaction(realm -> {
 
-                            if (fertilizerPricesList.size() > 0) {
-                                RealmList<FertilizerPrices> _fertilizerPricesList = new RealmList<>();
-                                _fertilizerPricesList.addAll(fertilizerPricesList);
-                                myRealm.insertOrUpdate(_fertilizerPricesList);
-                            }
-                        });
-                    } catch (Exception ex) {
-                        Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                        Crashlytics.logException(ex);
+                    if (fertilizerPricesList.size() > 0) {
+                        RealmList<FertilizerPrices> _fertilizerPricesList = new RealmList<>();
+                        _fertilizerPricesList.addAll(fertilizerPricesList);
                     }
                     validate(false);
                     recyclerView.setVisibility(View.VISIBLE);

@@ -23,8 +23,7 @@ import com.iita.akilimo.entities.InvestmentAmount;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.RealmProcessor;
-import com.iita.akilimo.utils.Tools;
+import com.iita.akilimo.utils.ormlite.RealmProcessor;
 
 import io.realm.Realm;
 
@@ -169,18 +168,17 @@ public class InvestmentAmountActivity extends BaseActivity {
             invAmount = realmProcessor.getInvestmentAmount();
 
             try {
-                myRealm.executeTransaction(realm -> {
-                    if (invAmount == null) {
-                        invAmount = realm.createObject(InvestmentAmount.class, Tools.generateUUID());
-                    }
-                    invAmount.setInvestmentAmountUSD(investmentAmountUSD);
-                    invAmount.setMinInvestmentAmountUSD(minimumAmountUSD);
-                    invAmount.setInvestmentAmountLocal(investmentAmountLocal);
-                    invAmount.setMinInvestmentAmountLocal(minimumAmountLocal);
-                });
+                if (invAmount == null) {
+                    invAmount = new InvestmentAmount();
+                }
+                invAmount.setInvestmentAmountUSD(investmentAmountUSD);
+                invAmount.setMinInvestmentAmountUSD(minimumAmountUSD);
+                invAmount.setInvestmentAmountLocal(investmentAmountLocal);
+                invAmount.setMinInvestmentAmountLocal(minimumAmountLocal);
+
                 closeActivity(false);
             } catch (Exception ex) {
-                Crashlytics.log(Log.ERROR,LOG_TAG,ex.getMessage());
+                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                 Crashlytics.logException(ex);
             }
         });

@@ -33,11 +33,11 @@ import com.iita.akilimo.models.StarchFactory;
 import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumCassavaProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 import com.iita.akilimo.utils.enums.EnumUseCase;
+import com.iita.akilimo.utils.ormlite.RealmProcessor;
 import com.iita.akilimo.views.fragments.dialog.CassavaPriceDialogFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -279,17 +279,16 @@ public class CassavaMarketActivity extends BaseActivity {
 
         if (dataIsValid) {
             try {
-                myRealm.executeTransaction(realm -> {
-                    if (cassavaMarketOutlet == null) {
-                        cassavaMarketOutlet = myRealm.createObject(CassavaMarketOutlet.class, Tools.generateUUID());
-                    }
-                    cassavaMarketOutlet.setStarchFactory(selectedFactory);
-                    cassavaMarketOutlet.setStarchFactoryRequired(factoryRequired);
-                    cassavaMarketOutlet.setProduceType(produceType);
-                    cassavaMarketOutlet.setUnitOfSale(unitOfSale);
-                    cassavaMarketOutlet.setExactPrice(exactPrice);
-                    cassavaMarketOutlet.setUnitPrice(exactPrice);
-                });
+                if (cassavaMarketOutlet == null) {
+                    cassavaMarketOutlet = new CassavaMarketOutlet();
+                }
+                cassavaMarketOutlet.setStarchFactory(selectedFactory);
+                cassavaMarketOutlet.setStarchFactoryRequired(factoryRequired);
+                cassavaMarketOutlet.setProduceType(produceType);
+                cassavaMarketOutlet.setUnitOfSale(unitOfSale);
+                cassavaMarketOutlet.setExactPrice(exactPrice);
+                cassavaMarketOutlet.setUnitPrice(exactPrice);
+
                 closeActivity(backPressed);
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
@@ -333,14 +332,11 @@ public class CassavaMarketActivity extends BaseActivity {
                 try {
                     List<StarchFactory> starchFactoriesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<StarchFactory>>() {
                     });
-                    myRealm.executeTransaction(realm -> {
-                        if (starchFactoriesList.size() > 0) {
-                            RealmList<StarchFactory> _starchFactoryList = new RealmList<>();
-                            _starchFactoryList.addAll(starchFactoriesList);
-                            myRealm.insertOrUpdate(_starchFactoryList);
-                        }
-                    });
-                    addFactoriesRadioButtons(starchFactoriesList);
+                    if (starchFactoriesList.size() > 0) {
+                        RealmList<StarchFactory> _starchFactoryList = new RealmList<>();
+                        _starchFactoryList.addAll(starchFactoriesList);
+                        addFactoriesRadioButtons(starchFactoriesList);
+                    }
                 } catch (Exception ex) {
                     Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                     Crashlytics.logException(ex);
@@ -348,7 +344,8 @@ public class CassavaMarketActivity extends BaseActivity {
             }
 
             @Override
-            public void onSuccessJsonObject(@NotNull JSONObject jsonObject) { }
+            public void onSuccessJsonObject(@NotNull JSONObject jsonObject) {
+            }
 
             @Override
             public void onError(@NotNull VolleyError volleyError) {
@@ -382,18 +379,12 @@ public class CassavaMarketActivity extends BaseActivity {
                     cassavaPriceList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<CassavaPrice>>() {
                     });
 
-                    try {
-                        myRealm.executeTransaction(realm -> {
-                            if (cassavaPriceList.size() > 0) {
-                                RealmList<CassavaPrice> _cassavaPriceList = new RealmList<>();
-                                _cassavaPriceList.addAll(cassavaPriceList);
-                                myRealm.insertOrUpdate(_cassavaPriceList);
-                            }
-                        });
-                    } catch (Exception ex) {
-                        Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                        Crashlytics.logException(ex);
+                    if (cassavaPriceList.size() > 0) {
+                        RealmList<CassavaPrice> _cassavaPriceList = new RealmList<>();
+                        _cassavaPriceList.addAll(cassavaPriceList);
+
                     }
+
 
                 } catch (Exception ex) {
                     Crashlytics.logException(ex);

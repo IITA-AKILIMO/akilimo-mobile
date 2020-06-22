@@ -25,6 +25,7 @@ import com.iita.akilimo.models.Fertilizer;
 import com.iita.akilimo.models.InterCropFertilizer;
 import com.iita.akilimo.rest.request.RecommendationRequest;
 import com.iita.akilimo.rest.request.UserInfo;
+import com.iita.akilimo.utils.ormlite.RealmProcessor;
 
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;

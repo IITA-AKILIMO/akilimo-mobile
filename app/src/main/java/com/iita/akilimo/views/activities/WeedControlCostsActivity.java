@@ -19,8 +19,7 @@ import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.OperationCosts;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.RealmProcessor;
-import com.iita.akilimo.utils.Tools;
+import com.iita.akilimo.utils.ormlite.RealmProcessor;
 
 import io.realm.Realm;
 
@@ -170,29 +169,27 @@ public class WeedControlCostsActivity extends BaseActivity {
         operationCosts = realmProcessor.getOperationCosts();
 
         try {
-            myRealm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    if (currentPractice == null) {
-                        currentPractice = realm.createObject(CurrentPractice.class, Tools.generateUUID());
-                    }
-                    if (operationCosts == null) {
-                        operationCosts = realm.createObject(OperationCosts.class, Tools.generateUUID());
-                    }
+            if (currentPractice == null) {
+                currentPractice = new CurrentPractice();
+            }
+            if (operationCosts == null) {
+                operationCosts = new OperationCosts();
+            }
 
-                    currentPractice.setWeedControlTechnique(weedControlTechnique);
-                    currentPractice.setUsesHerbicide(usesHerbicide);
-                    currentPractice.setWeedRadioIndex(weedRadioIndex);
+            currentPractice.setWeedControlTechnique(weedControlTechnique);
+            currentPractice.setUsesHerbicide(usesHerbicide);
+            currentPractice.setWeedRadioIndex(weedRadioIndex);
 
-                    operationCosts.setFirstWeedingOperationCost(firstOperationCost);
-                    operationCosts.setSecondWeedingOperationCost(secondOperationCost);
-                }
-            });
+            operationCosts.setFirstWeedingOperationCost(firstOperationCost);
+            operationCosts.setSecondWeedingOperationCost(secondOperationCost);
+
             closeActivity(backPressed);
-        } catch (Exception ex) {
+        } catch (
+                Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
+
     }
 
     @Override

@@ -24,7 +24,6 @@ import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.services.GPSTracker;
-import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.views.activities.HomeActivity;
 import com.iita.akilimo.views.activities.MapBoxActivity;
 
@@ -125,14 +124,12 @@ public class LocationFragment extends BaseFragment {
     }
 
     private void saveLocation() {
+        if (locationInformation == null) {
+            locationInformation = new LocationInfo();
+        }
+        locationInformation.setLatitude(currentLat);
+        locationInformation.setLongitude(currentLon);
 
-        myRealm.executeTransaction(realm -> {
-            if (locationInformation == null) {
-                locationInformation = myRealm.createObject(LocationInfo.class, Tools.generateUUID());
-            }
-            locationInformation.setLatitude(currentLat);
-            locationInformation.setLongitude(currentLon);
-        });
         reloadLocationInfo();
     }
 

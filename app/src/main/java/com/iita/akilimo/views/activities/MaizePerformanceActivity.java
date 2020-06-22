@@ -15,8 +15,7 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.ActivityMaizePerformanceActivityBinding;
 import com.iita.akilimo.entities.MaizePerformance;
 import com.iita.akilimo.inherit.BaseActivity;
-import com.iita.akilimo.utils.RealmProcessor;
-import com.iita.akilimo.utils.Tools;
+import com.iita.akilimo.utils.ormlite.RealmProcessor;
 
 import io.realm.Realm;
 
@@ -135,17 +134,14 @@ public class MaizePerformanceActivity extends BaseActivity {
         performanceRadioIndex = rdgMaizePerformance.getCheckedRadioButtonId();
         maizePerformance = realmProcessor.getMaizePerformance();
         try {
-            myRealm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    if (maizePerformance == null) {
-                        maizePerformance = realm.createObject(MaizePerformance.class, Tools.generateUUID());
-                    }
-                    maizePerformance.setPerformanceRadioIndex(performanceRadioIndex);
-                    maizePerformance.setMaizePerformance(selectedMaizePerformance);
-                    maizePerformance.setPerformanceValue(maizePerformanceValue);
-                }
-            });
+
+            if (maizePerformance == null) {
+                maizePerformance = new MaizePerformance();
+            }
+            maizePerformance.setPerformanceRadioIndex(performanceRadioIndex);
+            maizePerformance.setMaizePerformance(selectedMaizePerformance);
+            maizePerformance.setPerformanceValue(maizePerformanceValue);
+
             closeActivity(backPressed);
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

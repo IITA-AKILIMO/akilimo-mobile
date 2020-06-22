@@ -184,14 +184,14 @@ public class FieldSizeFragment extends BaseFragment {
 
         fieldSizeRadioIndex = rdgFieldArea.getCheckedRadioButtonId();
         try {
-            myRealm.executeTransaction(realm -> {
-                if (mandatoryInfo == null) {
-                    mandatoryInfo = myRealm.createObject(MandatoryInfo.class);
-                }
-                mandatoryInfo.setFieldSizeRadioIndex(fieldSizeRadioIndex);
-                mandatoryInfo.setAreaSize(areaSize);
-            });
+            if (mandatoryInfo == null) {
+                mandatoryInfo = new MandatoryInfo();
+            }
+            mandatoryInfo.setFieldSizeRadioIndex(fieldSizeRadioIndex);
+            mandatoryInfo.setAreaSize(areaSize);
+
         } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
     }

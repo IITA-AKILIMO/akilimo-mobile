@@ -34,8 +34,8 @@ import com.iita.akilimo.models.FertilizerPrices;
 import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.FertilizerList;
-import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
+import com.iita.akilimo.utils.ormlite.RealmProcessor;
 import com.iita.akilimo.views.fragments.dialog.FertilizerPriceDialogFragment;
 import com.iita.akilimo.widget.SpacingItemDecoration;
 
@@ -241,20 +241,9 @@ public class FertilizersActivity extends BaseActivity {
                     availableFertilizersList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<Fertilizer>>() {
                     });
                     //save fertilizers here
-                    try {
-                        myRealm.executeTransaction(new Realm.Transaction() {
-                            @Override
-                            public void execute(Realm realm) {
-                                if (availableFertilizersList.size() > 0) {
-                                    RealmList<Fertilizer> _fertilizerList = new RealmList<>();
-                                    _fertilizerList.addAll(availableFertilizersList);
-                                    myRealm.insertOrUpdate(_fertilizerList);
-                                }
-                            }
-                        });
-                    } catch (Exception ex) {
-                        Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                        Crashlytics.logException(ex);
+                    if (availableFertilizersList.size() > 0) {
+                        RealmList<Fertilizer> _fertilizerList = new RealmList<>();
+                        _fertilizerList.addAll(availableFertilizersList);
                     }
                     initializeFertilizerPriceList();
                 } catch (Exception ex) {
@@ -307,14 +296,12 @@ public class FertilizersActivity extends BaseActivity {
                 try {
                     fertilizerPricesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<FertilizerPrices>>() {
                     });
-                    //save prices here
-                    myRealm.executeTransaction(realm -> {
-                        if (fertilizerPricesList.size() > 0) {
-                            RealmList<FertilizerPrices> _fertilizerPricesList = new RealmList<>();
-                            _fertilizerPricesList.addAll(fertilizerPricesList);
-                            myRealm.insertOrUpdate(_fertilizerPricesList);
-                        }
-                    });
+
+                    if (fertilizerPricesList.size() > 0) {
+                        RealmList<FertilizerPrices> _fertilizerPricesList = new RealmList<>();
+                        _fertilizerPricesList.addAll(fertilizerPricesList);
+                    }
+
                     validate(false);
                     recyclerView.setVisibility(View.VISIBLE);
                 } catch (Exception ex) {

@@ -18,10 +18,9 @@ import com.iita.akilimo.entities.OperationCosts;
 import com.iita.akilimo.inherit.CostBaseActivity;
 import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.RealmProcessor;
-import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumOperation;
 import com.iita.akilimo.utils.enums.EnumOperationType;
+import com.iita.akilimo.utils.ormlite.RealmProcessor;
 import com.iita.akilimo.views.fragments.dialog.OperationCostsDialogFragment;
 
 import java.util.ArrayList;
@@ -158,16 +157,13 @@ public class ManualTillageCostActivity extends CostBaseActivity {
 
         dataValid = true;
         try {
-            myRealm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    if (operationCosts == null) {
-                        operationCosts = realm.createObject(OperationCosts.class, Tools.generateUUID());
-                    }
-                    operationCosts.setManualPloughCost(manualPloughCost);
-                    operationCosts.setManualRidgeCost(manualRidgeCost);
-                }
-            });
+
+            if (operationCosts == null) {
+                operationCosts = new OperationCosts();
+            }
+            operationCosts.setManualPloughCost(manualPloughCost);
+            operationCosts.setManualRidgeCost(manualRidgeCost);
+
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);

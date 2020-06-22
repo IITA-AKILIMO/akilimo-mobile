@@ -100,13 +100,11 @@ public class AreaUnitFragment extends BaseFragment {
 
             areaUnitRadioIndex = rdgAreaUnit.getCheckedRadioButtonId();
             try {
-                myRealm.executeTransaction(realm -> {
-                    if (mandatoryInfo == null) {
-                        mandatoryInfo = myRealm.createObject(MandatoryInfo.class);
-                    }
-                    mandatoryInfo.setAreaUnitRadioIndex(areaUnitRadioIndex);
-                    mandatoryInfo.setAreaUnit(areaUnit);
-                });
+                if (mandatoryInfo == null) {
+                    mandatoryInfo = new MandatoryInfo();
+                }
+                mandatoryInfo.setAreaUnitRadioIndex(areaUnitRadioIndex);
+                mandatoryInfo.setAreaUnit(areaUnit);
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                 Crashlytics.logException(ex);

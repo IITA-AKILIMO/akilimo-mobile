@@ -32,10 +32,10 @@ import com.iita.akilimo.models.MaizePrice;
 import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumMaizeProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
+import com.iita.akilimo.utils.ormlite.RealmProcessor;
 import com.iita.akilimo.views.fragments.dialog.MaizePriceDialogFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -156,13 +156,11 @@ public class MaizeMarketActivity extends BaseActivity {
                 try {
                     maizePriceList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<MaizePrice>>() {
                     });
-                    myRealm.executeTransaction(realm -> {
-                        if (maizePriceList.size() > 0) {
-                            RealmList<MaizePrice> _maizePriceList = new RealmList<>();
-                            _maizePriceList.addAll(maizePriceList);
-                            myRealm.insertOrUpdate(_maizePriceList);
-                        }
-                    });
+
+                    if (maizePriceList.size() > 0) {
+                        RealmList<MaizePrice> _maizePriceList = new RealmList<>();
+                        _maizePriceList.addAll(maizePriceList);
+                    }
                 } catch (JsonProcessingException ex) {
                     Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                     Crashlytics.logException(ex);
@@ -308,23 +306,20 @@ public class MaizeMarketActivity extends BaseActivity {
 
         if (dataIsValid) {
             try {
-                myRealm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        if (maizeMarketOutlet == null) {
-                            maizeMarketOutlet = realm.createObject(MaizeMarketOutlet.class, Tools.generateUUID());
-                        }
 
-                        maizeMarketOutlet.setProduceType(produceType);
-                        maizeMarketOutlet.setUnitPrice(unitPrice);
-                        maizeMarketOutlet.setUnitOfSale(unitOfSale);
-                        maizeMarketOutlet.setExactPrice(exactPrice);
+                if (maizeMarketOutlet == null) {
+                    maizeMarketOutlet = new MaizeMarketOutlet();
+                }
 
-                        maizeMarketOutlet.setGrainUnitPriceRadioIndex(grainUnitPriceRadioIndex);
-                        maizeMarketOutlet.setGrainUnitRadioIndex(grainUnitRadioIndex);
-                        maizeMarketOutlet.setProduceRadioIndex(produceRadioIndex);
-                    }
-                });
+                maizeMarketOutlet.setProduceType(produceType);
+                maizeMarketOutlet.setUnitPrice(unitPrice);
+                maizeMarketOutlet.setUnitOfSale(unitOfSale);
+                maizeMarketOutlet.setExactPrice(exactPrice);
+
+                maizeMarketOutlet.setGrainUnitPriceRadioIndex(grainUnitPriceRadioIndex);
+                maizeMarketOutlet.setGrainUnitRadioIndex(grainUnitRadioIndex);
+                maizeMarketOutlet.setProduceRadioIndex(produceRadioIndex);
+
                 closeActivity(backPressed);
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

@@ -27,7 +27,6 @@ import com.iita.akilimo.databinding.FragmentBioDataBinding;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.interfaces.IFragmentCallBack;
-import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.ValidationHelper;
 
 import java.util.ArrayList;
@@ -216,19 +215,17 @@ public class BioDataFragment extends BaseFragment {
 
         if (dataIsValid) {
             try {
-                myRealm.executeTransaction(realm -> {
-                    if (profileInfo == null) {
-                        profileInfo = myRealm.createObject(ProfileInfo.class, Tools.generateUUID());
-                    }
-                    profileInfo.setFirstName(firstName);
-                    profileInfo.setLastName(lastName);
-                    profileInfo.setGender(gender);
-                    profileInfo.setEmail(email);
-                    profileInfo.setFarmName(farmName);
-                    profileInfo.setMobileCode(mobileCode);
-                    profileInfo.setFullMobileNumber(fullMobileNumber);
-                    profileInfo.setSelectedGenderIndex(selectedGenderIndex);
-                });
+                if (profileInfo == null) {
+                    profileInfo = new ProfileInfo();
+                }
+                profileInfo.setFirstName(firstName);
+                profileInfo.setLastName(lastName);
+                profileInfo.setGender(gender);
+                profileInfo.setEmail(email);
+                profileInfo.setFarmName(farmName);
+                profileInfo.setMobileCode(mobileCode);
+                profileInfo.setFullMobileNumber(fullMobileNumber);
+                profileInfo.setSelectedGenderIndex(selectedGenderIndex);
                 //load the next fragment
                 nextFragment();
             } catch (Exception ex) {

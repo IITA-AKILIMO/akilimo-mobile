@@ -19,8 +19,8 @@ import com.iita.akilimo.databinding.ActivityDatesBinding;
 import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.DateHelper;
-import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
+import com.iita.akilimo.utils.ormlite.RealmProcessor;
 import com.iita.akilimo.views.fragments.dialog.DateDialogPickerFragment;
 
 import org.joda.time.LocalDate;
@@ -220,20 +220,16 @@ public class DatesActivity extends BaseActivity {
         }
 
         try {
-            myRealm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    if (plantingHarvestDates == null) {
-                        plantingHarvestDates = myRealm.createObject(PlantingHarvestDates.class, Tools.generateUUID());
-                    }
-                    plantingHarvestDates.setHarvestDate(selectedHarvestDate);
-                    plantingHarvestDates.setHarvestWindow(harvestWindow);
-                    plantingHarvestDates.setPlantingDate(selectedPlantingDate);
-                    plantingHarvestDates.setPlantingWindow(plantingWindow);
-                    plantingHarvestDates.setAlternativeDate(alternativeDate);
-                    closeActivity(backPressed);
-                }
-            });
+            if (plantingHarvestDates == null) {
+                plantingHarvestDates = new PlantingHarvestDates();
+            }
+            plantingHarvestDates.setHarvestDate(selectedHarvestDate);
+            plantingHarvestDates.setHarvestWindow(harvestWindow);
+            plantingHarvestDates.setPlantingDate(selectedPlantingDate);
+            plantingHarvestDates.setPlantingWindow(plantingWindow);
+            plantingHarvestDates.setAlternativeDate(alternativeDate);
+            closeActivity(backPressed);
+
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);

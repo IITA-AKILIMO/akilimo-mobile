@@ -18,8 +18,8 @@ import com.iita.akilimo.entities.CurrentFieldYield;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
+import com.iita.akilimo.utils.ormlite.RealmProcessor;
 import com.iita.akilimo.widget.SpacingItemDecoration;
 
 import java.util.ArrayList;
@@ -113,12 +113,11 @@ public class RootYieldActivity extends BaseActivity {
             mAdapter.setActiveRowIndex(position);
             selectedYieldAmount = fieldYield.getYieldAmount();
             try {
-                myRealm.executeTransaction(realm -> {
-                    if (savedYield == null) {
-                        savedYield = realm.createObject(CurrentFieldYield.class, Tools.generateUUID());
-                    }
-                    savedYield.setYieldAmount(selectedYieldAmount);
-                });
+
+                if (savedYield == null) {
+                    savedYield = new CurrentFieldYield();
+                }
+                savedYield.setYieldAmount(selectedYieldAmount);
                 //closeActivity(false);
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

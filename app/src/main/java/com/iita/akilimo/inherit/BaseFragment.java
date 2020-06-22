@@ -22,7 +22,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.LocationInfo;
-import com.iita.akilimo.utils.RealmProcessor;
+import com.iita.akilimo.utils.ormlite.RealmProcessor;
 import com.iita.akilimo.utils.SessionManager;
 
 import java.util.Locale;

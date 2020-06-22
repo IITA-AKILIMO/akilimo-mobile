@@ -23,12 +23,10 @@ import com.iita.akilimo.databinding.FragmentCountryBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
-import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumCountry;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import io.realm.Realm;
 
@@ -156,16 +154,14 @@ public class CountryFragment extends BaseFragment {
     }
 
     private void updateSelectedCountry(int selectedCountryIndex) {
-        myRealm.executeTransaction(realm -> {
-            if (mandatoryInfo == null) {
-                mandatoryInfo = myRealm.createObject(MandatoryInfo.class, Tools.generateUUID());
-            }
+        if (mandatoryInfo == null) {
+            mandatoryInfo = new MandatoryInfo();
+        }
 
-            mandatoryInfo.setSelectedCountryIndex(selectedCountryIndex);
-            mandatoryInfo.setCountryCode(countryCode);
-            mandatoryInfo.setCountryName(countryName);
-            mandatoryInfo.setCurrency(currency);
-        });
+        mandatoryInfo.setSelectedCountryIndex(selectedCountryIndex);
+        mandatoryInfo.setCountryCode(countryCode);
+        mandatoryInfo.setCountryName(countryName);
+        mandatoryInfo.setCurrency(currency);
     }
 
     @Override

@@ -27,7 +27,7 @@ import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IPriceDialogDismissListener;
 import com.iita.akilimo.models.PotatoPrice;
 import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.RealmProcessor;
+import com.iita.akilimo.utils.ormlite.RealmProcessor;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 
 import java.util.List;
