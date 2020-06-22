@@ -1,15 +1,15 @@
-package com.iita.akilimo.models
+package com.iita.akilimo.entities
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.j256.ormlite.field.DatabaseField
-import com.j256.ormlite.table.DatabaseTable
 
 @Deprecated("Too much duplication move to common fertilizer")
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Entity
+@Entity(tableName = "intercrop_fertilizer")
 open class InterCropFertilizer() : Parcelable {
 
     @JsonProperty("id")

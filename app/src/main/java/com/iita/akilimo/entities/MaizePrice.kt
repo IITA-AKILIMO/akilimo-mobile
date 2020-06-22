@@ -1,17 +1,16 @@
-package com.iita.akilimo.models
+package com.iita.akilimo.entities
 
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.j256.ormlite.field.DatabaseField
-import com.j256.ormlite.table.DatabaseTable
-
-
 import java.util.*
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Entity
+@Entity(tableName = "maize_price")
 open class MaizePrice {
 
     @JsonProperty("id")

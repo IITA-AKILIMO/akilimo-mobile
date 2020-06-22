@@ -5,13 +5,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.j256.ormlite.field.DatabaseField
-import com.j256.ormlite.table.DatabaseTable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Entity
+@Entity(tableName = "fertilizer")
 open class Fertilizer : Parcelable {
 
     @PrimaryKey(autoGenerate = true)

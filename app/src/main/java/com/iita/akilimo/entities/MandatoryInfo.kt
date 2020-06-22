@@ -3,7 +3,7 @@ package com.iita.akilimo.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "mandatory_info")
 open class MandatoryInfo {
 
     @PrimaryKey(autoGenerate = true)

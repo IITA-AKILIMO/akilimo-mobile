@@ -3,7 +3,7 @@ package com.iita.akilimo.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "location_info")
 open class LocationInfo {
 
     @PrimaryKey(autoGenerate = true)

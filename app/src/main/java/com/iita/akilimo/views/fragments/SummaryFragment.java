@@ -22,9 +22,9 @@ import com.iita.akilimo.databinding.FragmentSummaryBinding;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.MandatoryInfo;
-import com.iita.akilimo.entities.PlantingHarvestDates;
-import com.iita.akilimo.entities.TimeLineModel;
-import com.iita.akilimo.entities.TimelineAttributes;
+import com.iita.akilimo.entities.ScheduledDates;
+import com.iita.akilimo.models.TimeLineModel;
+import com.iita.akilimo.models.TimelineAttributes;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.interfaces.IFragmentCallBack;
 import com.iita.akilimo.utils.ItemAnimation;
@@ -50,7 +50,7 @@ public class SummaryFragment extends BaseFragment {
     private LocationInfo location;
     private MandatoryInfo mandatoryInfo;
     private CurrentPractice currentPractice;
-    private PlantingHarvestDates plantingHarvestDates;
+    private ScheduledDates scheduledDates;
 
     private IFragmentCallBack fragmentCallBack;
     private MyTimeLineAdapter adapter;
@@ -143,7 +143,7 @@ public class SummaryFragment extends BaseFragment {
         location = ormProcessor.getLocationInfo();
         mandatoryInfo = ormProcessor.getMandatoryInfo();
         currentPractice = ormProcessor.getCurrentPractice();
-        plantingHarvestDates = ormProcessor.getPlantingHarvestDates();
+        scheduledDates = ormProcessor.getPlantingHarvestDates();
         countryName = "";
 
         if (!Strings.isEmptyOrWhitespace(mandatoryInfo.getCountryName())) {
@@ -167,9 +167,9 @@ public class SummaryFragment extends BaseFragment {
             locationPicked = lat != 0 || lon != 0;
         }
 
-        if (plantingHarvestDates != null) {
-            plantingDate = plantingHarvestDates.getPlantingDate();
-            harvestDate = plantingHarvestDates.getHarvestDate();
+        if (scheduledDates != null) {
+            plantingDate = scheduledDates.getPlantingDate();
+            harvestDate = scheduledDates.getHarvestDate();
             plantingDateProvided = !Strings.isEmptyOrWhitespace(plantingDate);
             harvestDateProvided = !Strings.isEmptyOrWhitespace(plantingDate);
         }

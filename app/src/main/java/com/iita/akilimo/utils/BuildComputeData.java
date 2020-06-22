@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.entities.CassavaMarketOutlet;
-import com.iita.akilimo.entities.ComputeRequest;
+import com.iita.akilimo.models.ComputeRequest;
 import com.iita.akilimo.entities.CurrentFieldYield;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.InvestmentAmount;
@@ -17,12 +17,12 @@ import com.iita.akilimo.entities.MaizeMarketOutlet;
 import com.iita.akilimo.entities.MaizePerformance;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.OperationCosts;
-import com.iita.akilimo.entities.PlantingHarvestDates;
+import com.iita.akilimo.entities.ScheduledDates;
 import com.iita.akilimo.entities.PotatoMarketOutlet;
 import com.iita.akilimo.entities.ProfileInfo;
-import com.iita.akilimo.entities.RecAdvice;
+import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.entities.Fertilizer;
-import com.iita.akilimo.models.InterCropFertilizer;
+import com.iita.akilimo.entities.InterCropFertilizer;
 import com.iita.akilimo.rest.request.RecommendationRequest;
 import com.iita.akilimo.rest.request.UserInfo;
 import com.iita.akilimo.dao.OrmProcessor;
@@ -249,16 +249,16 @@ public class BuildComputeData {
 
     private ComputeRequest buildRequestedRec(@NonNull ComputeRequest computeRequest) {
         //check for values we have to give recommendations for
-        RecAdvice recAdvice = ormProcessor.getRecAdvice();
-        if (recAdvice != null) {
-            computeRequest.setInterCroppingMaizeRec(recAdvice.getCIM());
-            computeRequest.setInterCroppingPotatoRec(recAdvice.getCIS());
-            computeRequest.setUseCase(recAdvice.getUseCase());
+        UseCases useCases = ormProcessor.getRecAdvice();
+        if (useCases != null) {
+            computeRequest.setInterCroppingMaizeRec(useCases.getCIM());
+            computeRequest.setInterCroppingPotatoRec(useCases.getCIS());
+            computeRequest.setUseCase(useCases.getUseCase());
 
-            computeRequest.setFertilizerRec(recAdvice.getFR());
-            computeRequest.setPlantingPracticesRec(recAdvice.getBPP());
-            computeRequest.setScheduledPlantingRec(recAdvice.getSPP());
-            computeRequest.setScheduledHarvestRec(recAdvice.getSPH());
+            computeRequest.setFertilizerRec(useCases.getFR());
+            computeRequest.setPlantingPracticesRec(useCases.getBPP());
+            computeRequest.setScheduledPlantingRec(useCases.getSPP());
+            computeRequest.setScheduledHarvestRec(useCases.getSPH());
         }
         return computeRequest;
     }
@@ -275,7 +275,7 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildPlantingDates(@NonNull ComputeRequest computeRequest) {
-        PlantingHarvestDates sph = ormProcessor.getPlantingHarvestDates();
+        ScheduledDates sph = ormProcessor.getPlantingHarvestDates();
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy");
 
         if (sph != null) {

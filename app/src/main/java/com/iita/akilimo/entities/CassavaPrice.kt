@@ -13,7 +13,7 @@ import java.util.*
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Entity
+@Entity(tableName = "cassava_price")
 open class CassavaPrice {
 
     @PrimaryKey(autoGenerate = true)

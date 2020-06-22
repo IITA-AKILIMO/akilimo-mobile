@@ -9,17 +9,17 @@ import com.iita.akilimo.entities.MaizeMarketOutlet;
 import com.iita.akilimo.entities.MaizePerformance;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.OperationCosts;
-import com.iita.akilimo.entities.PlantingHarvestDates;
+import com.iita.akilimo.entities.ScheduledDates;
 import com.iita.akilimo.entities.PotatoMarketOutlet;
 import com.iita.akilimo.entities.ProfileInfo;
-import com.iita.akilimo.entities.RecAdvice;
+import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.entities.CassavaPrice;
 import com.iita.akilimo.entities.Fertilizer;
 import com.iita.akilimo.entities.FertilizerPrices;
-import com.iita.akilimo.models.InterCropFertilizer;
-import com.iita.akilimo.models.MaizePrice;
+import com.iita.akilimo.entities.InterCropFertilizer;
+import com.iita.akilimo.entities.MaizePrice;
 import com.iita.akilimo.models.PotatoPrice;
-import com.iita.akilimo.models.StarchFactory;
+import com.iita.akilimo.entities.StarchFactory;
 import com.iita.akilimo.utils.enums.EnumUseCase;
 
 import java.util.List;
@@ -52,9 +52,9 @@ public class OrmProcessor {
         return mandatoryInfo;
     }
 
-    public PlantingHarvestDates getPlantingHarvestDates() {
+    public ScheduledDates getPlantingHarvestDates() {
 
-        PlantingHarvestDates mandatoryInfo = null;
+        ScheduledDates mandatoryInfo = null;
 
 
         return mandatoryInfo;
@@ -104,10 +104,10 @@ public class OrmProcessor {
         return fertilizers;
     }
 
-    public RecAdvice getRecAdvice() {
-        RecAdvice recAdvice = null;
+    public UseCases getRecAdvice() {
+        UseCases useCases = null;
 
-        return recAdvice;
+        return useCases;
     }
 
     public CurrentFieldYield getCurrentFieldYield() {

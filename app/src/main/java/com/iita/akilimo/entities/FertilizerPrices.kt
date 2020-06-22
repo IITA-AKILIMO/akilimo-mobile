@@ -10,7 +10,7 @@ import com.j256.ormlite.table.DatabaseTable
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Entity
+@Entity(tableName = "fertilizer_price")
 open class FertilizerPrices {
     @JsonProperty("id")
     @PrimaryKey(autoGenerate = true)

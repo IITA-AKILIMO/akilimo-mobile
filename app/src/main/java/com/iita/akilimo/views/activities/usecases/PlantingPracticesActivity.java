@@ -16,7 +16,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
 import com.iita.akilimo.databinding.ActivityPlantingPracticesBinding;
-import com.iita.akilimo.entities.RecAdvice;
+import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
@@ -56,7 +56,7 @@ public class PlantingPracticesActivity extends BaseActivity {
     private Activity activity;
     private RecOptionsAdapter mAdapter;
     private List<RecommendationOptions> items = new ArrayList<>();
-    private RecAdvice recAdvice;
+    private UseCases useCases;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +71,7 @@ public class PlantingPracticesActivity extends BaseActivity {
         toolbar = binding.toolbarLayout.toolbar;
         recyclerView = binding.recyclerView;
         btnGetRec = binding.singleButton.btnGetRecommendation;
-        recAdvice = ormProcessor.getRecAdvice();
+        useCases = ormProcessor.getRecAdvice();
 
         initToolbar();
         initComponent();
@@ -105,16 +105,16 @@ public class PlantingPracticesActivity extends BaseActivity {
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
             try {
-                    if (recAdvice == null) {
-                        recAdvice = new RecAdvice();
+                    if (useCases == null) {
+                        useCases = new UseCases();
                     }
-                    recAdvice.setFR(false);
-                    recAdvice.setCIM(false);
-                    recAdvice.setCIS(false);
-                    recAdvice.setSPH(false);
-                    recAdvice.setSPP(false);
-                    recAdvice.setBPP(true);
-                    recAdvice.setUseCase(EnumUseCase.PP.name());
+                    useCases.setFR(false);
+                    useCases.setCIM(false);
+                    useCases.setCIS(false);
+                    useCases.setSPH(false);
+                    useCases.setSPP(false);
+                    useCases.setBPP(true);
+                    useCases.setUseCase(EnumUseCase.PP.name());
                 processRecommendations(activity);
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

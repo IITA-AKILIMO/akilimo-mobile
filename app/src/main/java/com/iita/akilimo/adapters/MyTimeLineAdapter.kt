@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.vipulasri.timelineview.TimelineView
 import com.google.android.gms.common.util.Strings
 import com.iita.akilimo.R
-import com.iita.akilimo.entities.TimeLineModel
-import com.iita.akilimo.entities.TimelineAttributes
+import com.iita.akilimo.models.TimeLineModel
+import com.iita.akilimo.models.TimelineAttributes
 import com.iita.akilimo.utils.ItemAnimation
 import com.iita.akilimo.utils.VectorDrawableUtils
 import com.iita.akilimo.utils.enums.Orientation

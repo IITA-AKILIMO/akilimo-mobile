@@ -28,7 +28,7 @@ import com.iita.akilimo.entities.MaizeMarketOutlet;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
-import com.iita.akilimo.models.MaizePrice;
+import com.iita.akilimo.entities.MaizePrice;
 import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.MathHelper;

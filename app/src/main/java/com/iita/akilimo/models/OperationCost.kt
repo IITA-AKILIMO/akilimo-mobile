@@ -4,19 +4,13 @@ import android.os.Parcelable
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.j256.ormlite.field.DatabaseField
-import com.j256.ormlite.table.DatabaseTable
-
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Entity
-open class OperationCost: Parcelable {
+open class OperationCost : Parcelable {
 
-    @JsonProperty("id")
-    @PrimaryKey(autoGenerate = true)
     var id: Int = 0
 
     @JsonProperty("listIndex")

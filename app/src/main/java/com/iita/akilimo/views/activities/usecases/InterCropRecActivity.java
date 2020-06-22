@@ -17,7 +17,7 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
 import com.iita.akilimo.databinding.ActivityInterCropRecBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
-import com.iita.akilimo.entities.RecAdvice;
+import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
@@ -56,7 +56,7 @@ public class InterCropRecActivity extends BaseActivity {
     private Activity activity;
     private RecOptionsAdapter mAdapter;
     private List<RecommendationOptions> items = new ArrayList<>();
-    private RecAdvice recAdvice;
+    private UseCases useCases;
     private EnumUseCase useCase;
     private boolean icMaize;
     private boolean icPotato;
@@ -124,18 +124,18 @@ public class InterCropRecActivity extends BaseActivity {
         recyclerView.setHasFixedSize(true);
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
-            recAdvice = ormProcessor.getRecAdvice();
+            useCases = ormProcessor.getRecAdvice();
             try {
-                if (recAdvice == null) {
-                    recAdvice = new RecAdvice();
+                if (useCases == null) {
+                    useCases = new UseCases();
                 }
-                recAdvice.setFR(false);
-                recAdvice.setCIM(icMaize);
-                recAdvice.setCIS(icPotato);
-                recAdvice.setSPH(false);
-                recAdvice.setSPP(false);
-                recAdvice.setBPP(false);
-                recAdvice.setUseCase(useCase.name());
+                useCases.setFR(false);
+                useCases.setCIM(icMaize);
+                useCases.setCIS(icPotato);
+                useCases.setSPH(false);
+                useCases.setSPP(false);
+                useCases.setBPP(false);
+                useCases.setUseCase(useCase.name());
                 processRecommendations(activity);
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

@@ -23,7 +23,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.databinding.FragmentCurrentPracticeBinding;
 import com.iita.akilimo.entities.CurrentPractice;
-import com.iita.akilimo.entities.PlantingHarvestDates;
+import com.iita.akilimo.entities.ScheduledDates;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.utils.enums.EnumOperationType;
 import com.iita.akilimo.views.fragments.dialog.DateDialogPickerFragment;
@@ -54,7 +54,7 @@ public class CurrentPracticeFragment extends BaseFragment {
 
 
     private CurrentPractice currentPractice;
-    private PlantingHarvestDates plantingHarvestDates;
+    private ScheduledDates scheduledDates;
 
     private String ploughingMethod;
     private String ridgingMethod;
@@ -144,7 +144,7 @@ public class CurrentPracticeFragment extends BaseFragment {
         try {
 
             currentPractice = ormProcessor.getCurrentPractice();
-            plantingHarvestDates = ormProcessor.getPlantingHarvestDates();
+            scheduledDates = ormProcessor.getPlantingHarvestDates();
             if (currentPractice != null) {
                 isDataRefreshing = true;
                 performPloughing = currentPractice.getPerformPloughing();
@@ -161,9 +161,9 @@ public class CurrentPracticeFragment extends BaseFragment {
 
             }
 
-            if (plantingHarvestDates != null) {
-                selectedPlantingDate = plantingHarvestDates.getPlantingDate();
-                selectedHarvestDate = plantingHarvestDates.getHarvestDate();
+            if (scheduledDates != null) {
+                selectedPlantingDate = scheduledDates.getPlantingDate();
+                selectedHarvestDate = scheduledDates.getHarvestDate();
                 lblSelectedPlantingDate.setText(selectedPlantingDate);
                 lblSelectedHarvestDate.setText(selectedHarvestDate);
             }
@@ -258,12 +258,12 @@ public class CurrentPracticeFragment extends BaseFragment {
             currentPractice.setPerformPloughing(performPloughing);
             currentPractice.setPerformHarrowing(performHarrowing);
 
-            if (plantingHarvestDates == null) {
-                plantingHarvestDates = new PlantingHarvestDates();
+            if (scheduledDates == null) {
+                scheduledDates = new ScheduledDates();
             }
 
-            plantingHarvestDates.setPlantingDate(selectedPlantingDate);
-            plantingHarvestDates.setHarvestDate(selectedHarvestDate);
+            scheduledDates.setPlantingDate(selectedPlantingDate);
+            scheduledDates.setHarvestDate(selectedHarvestDate);
 
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

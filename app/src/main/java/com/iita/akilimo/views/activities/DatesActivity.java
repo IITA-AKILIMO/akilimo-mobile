@@ -16,7 +16,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.ActivityDatesBinding;
-import com.iita.akilimo.entities.PlantingHarvestDates;
+import com.iita.akilimo.entities.ScheduledDates;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.DateHelper;
 import com.iita.akilimo.utils.Tools;
@@ -57,7 +57,7 @@ public class DatesActivity extends BaseActivity {
     int harvestWindow = 0;
     boolean alternativeDate;
 
-    PlantingHarvestDates plantingHarvestDates;
+    ScheduledDates scheduledDates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,14 +172,14 @@ public class DatesActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        plantingHarvestDates = ormProcessor.getPlantingHarvestDates();
+        scheduledDates = ormProcessor.getPlantingHarvestDates();
 
-        if (plantingHarvestDates != null) {
-            alternativeDate = plantingHarvestDates.getAlternativeDate();
-            String pd = plantingHarvestDates.getPlantingDate();
-            String hd = plantingHarvestDates.getHarvestDate();
-            int pw = plantingHarvestDates.getPlantingWindow();
-            int hw = plantingHarvestDates.getHarvestWindow();
+        if (scheduledDates != null) {
+            alternativeDate = scheduledDates.getAlternativeDate();
+            String pd = scheduledDates.getPlantingDate();
+            String hd = scheduledDates.getHarvestDate();
+            int pw = scheduledDates.getPlantingWindow();
+            int hw = scheduledDates.getHarvestWindow();
 
             DateHelper.dateTimeFormat = "dd/MM/yyyy";
             LocalDate pDate = DateHelper.formatToLocalDate(pd);
@@ -216,14 +216,14 @@ public class DatesActivity extends BaseActivity {
         }
 
         try {
-            if (plantingHarvestDates == null) {
-                plantingHarvestDates = new PlantingHarvestDates();
+            if (scheduledDates == null) {
+                scheduledDates = new ScheduledDates();
             }
-            plantingHarvestDates.setHarvestDate(selectedHarvestDate);
-            plantingHarvestDates.setHarvestWindow(harvestWindow);
-            plantingHarvestDates.setPlantingDate(selectedPlantingDate);
-            plantingHarvestDates.setPlantingWindow(plantingWindow);
-            plantingHarvestDates.setAlternativeDate(alternativeDate);
+            scheduledDates.setHarvestDate(selectedHarvestDate);
+            scheduledDates.setHarvestWindow(harvestWindow);
+            scheduledDates.setPlantingDate(selectedPlantingDate);
+            scheduledDates.setPlantingWindow(plantingWindow);
+            scheduledDates.setAlternativeDate(alternativeDate);
             closeActivity(backPressed);
 
         } catch (Exception ex) {

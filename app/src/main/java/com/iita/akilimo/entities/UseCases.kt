@@ -3,8 +3,8 @@ package com.iita.akilimo.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
-open class RecAdvice {
+@Entity(tableName = "use_cases")
+open class UseCases {
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null
     var FR = false

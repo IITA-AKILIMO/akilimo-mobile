@@ -3,8 +3,8 @@ package com.iita.akilimo.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
-open class PlantingHarvestDates() {
+@Entity(tableName = "scheduled_dates")
+open class ScheduledDates() {
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null
     var deviceId: String? = null

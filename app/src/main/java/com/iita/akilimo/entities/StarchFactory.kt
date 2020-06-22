@@ -1,13 +1,13 @@
-package com.iita.akilimo.models
+package com.iita.akilimo.entities
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.google.android.gms.common.util.Strings
-import com.j256.ormlite.field.DatabaseField
-import com.j256.ormlite.table.DatabaseTable
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Entity
+@Entity(tableName = "starch_factory")
 open class StarchFactory {
     @JsonProperty("id")
     @PrimaryKey(autoGenerate = true)

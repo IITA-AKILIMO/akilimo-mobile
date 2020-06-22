@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.iita.akilimo.utils.enums.EnumPotatoProduceType
 
-@Entity
+@Entity(tableName = "potato_market")
 open class PotatoMarketOutlet {
 
     @PrimaryKey(autoGenerate = true)

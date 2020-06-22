@@ -15,7 +15,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
 import com.iita.akilimo.databinding.ActivityFertilizerRecBinding;
-import com.iita.akilimo.entities.RecAdvice;
+import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
@@ -51,7 +51,7 @@ public class FertilizerRecActivity extends BaseActivity {
     private Activity activity;
     private RecOptionsAdapter mAdapter;
     private List<RecommendationOptions> items = new ArrayList<>();
-    private RecAdvice recAdvice;
+    private UseCases useCases;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,18 +95,18 @@ public class FertilizerRecActivity extends BaseActivity {
 
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
-            recAdvice = ormProcessor.getRecAdvice();
+            useCases = ormProcessor.getRecAdvice();
             try {
-                if (recAdvice == null) {
-                    recAdvice = new RecAdvice();
+                if (useCases == null) {
+                    useCases = new UseCases();
                 }
-                recAdvice.setFR(true);
-                recAdvice.setCIM(false);
-                recAdvice.setCIS(false);
-                recAdvice.setSPH(false);
-                recAdvice.setSPP(false);
-                recAdvice.setBPP(false);
-                recAdvice.setUseCase(EnumUseCase.FR.name());
+                useCases.setFR(true);
+                useCases.setCIM(false);
+                useCases.setCIS(false);
+                useCases.setSPH(false);
+                useCases.setSPP(false);
+                useCases.setBPP(false);
+                useCases.setUseCase(EnumUseCase.FR.name());
                 processRecommendations(activity);
 
             } catch (Exception ex) {

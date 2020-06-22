@@ -25,7 +25,7 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IDismissIntercropListener;
 import com.iita.akilimo.entities.FertilizerPrices;
-import com.iita.akilimo.models.InterCropFertilizer;
+import com.iita.akilimo.entities.InterCropFertilizer;
 
 import java.util.List;
 

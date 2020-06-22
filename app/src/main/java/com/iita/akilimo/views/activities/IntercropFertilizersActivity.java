@@ -30,7 +30,7 @@ import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.entities.FertilizerPrices;
-import com.iita.akilimo.models.InterCropFertilizer;
+import com.iita.akilimo.entities.InterCropFertilizer;
 import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.FertilizerList;
