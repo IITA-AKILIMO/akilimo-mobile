@@ -1,12 +1,12 @@
 package com.iita.akilimo.entities
 
-import com.j256.ormlite.field.DatabaseField
-import com.j256.ormlite.table.DatabaseTable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-@DatabaseTable(tableName = "current_practice")
+@Entity(tableName = "current_practice")
 open class CurrentPractice {
 
-    @DatabaseField(columnName = "id", generatedId = true)
+    @PrimaryKey(autoGenerate = true)
     var id: Int? = null
     var weedRadioIndex = 0
     var weedControlTechnique: String? = null

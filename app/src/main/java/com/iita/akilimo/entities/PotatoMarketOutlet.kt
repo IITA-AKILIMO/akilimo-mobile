@@ -1,13 +1,13 @@
 package com.iita.akilimo.entities
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.iita.akilimo.utils.enums.EnumPotatoProduceType
-import com.j256.ormlite.field.DatabaseField
-import com.j256.ormlite.table.DatabaseTable
 
-@DatabaseTable
+@Entity
 open class PotatoMarketOutlet {
 
-    @DatabaseField(columnName = "id", generatedId = true)
+    @PrimaryKey(autoGenerate = true)
     var id: Int? = null
     var produceTypeRadioIndex = 0
     var potatoUnitOfSaleRadioIndex = 0

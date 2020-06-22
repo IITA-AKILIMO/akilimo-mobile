@@ -12,11 +12,11 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@DatabaseTable
+@Entity
 open class OperationCost: Parcelable {
 
     @JsonProperty("id")
-    @DatabaseField(columnName = "id", generatedId = true)
+    @PrimaryKey(autoGenerate = true)
     var id: Int = 0
 
     @JsonProperty("listIndex")

@@ -13,7 +13,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.iita.akilimo.R;
-import com.iita.akilimo.models.Fertilizer;
+import com.iita.akilimo.entities.Fertilizer;
 import com.iita.akilimo.utils.Tools;
 
 import java.util.ArrayList;

@@ -1,13 +1,13 @@
 package com.iita.akilimo.entities
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.iita.akilimo.utils.enums.EnumCassavaProduceType
-import com.j256.ormlite.field.DatabaseField
-import com.j256.ormlite.table.DatabaseTable
 
 
-@DatabaseTable(tableName = "cassava_market")
+@Entity(tableName = "cassava_market")
 open class CassavaMarketOutlet {
-    @DatabaseField(columnName = "id", generatedId = true)
+    @PrimaryKey(autoGenerate = true)
     var id: Int? = null
 
     var starchFactory: String? = null

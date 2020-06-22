@@ -10,7 +10,7 @@ import java.util.*
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@DatabaseTable
+@Entity
 open class ProducePrice {
     @JsonProperty("priceIndex")
     var priceIndex: Long = 0

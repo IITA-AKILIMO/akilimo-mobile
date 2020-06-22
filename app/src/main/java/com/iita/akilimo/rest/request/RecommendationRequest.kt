@@ -2,7 +2,7 @@ package com.iita.akilimo.rest.request
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.iita.akilimo.entities.ComputeRequest
-import com.iita.akilimo.models.Fertilizer
+import com.iita.akilimo.entities.Fertilizer
 
 class RecommendationRequest(
     @JsonProperty("userInfo")

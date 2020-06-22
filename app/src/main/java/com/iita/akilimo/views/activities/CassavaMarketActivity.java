@@ -28,7 +28,7 @@ import com.iita.akilimo.entities.CassavaMarketOutlet;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
-import com.iita.akilimo.models.CassavaPrice;
+import com.iita.akilimo.entities.CassavaPrice;
 import com.iita.akilimo.models.StarchFactory;
 import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;

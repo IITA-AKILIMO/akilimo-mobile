@@ -1,15 +1,17 @@
 package com.iita.akilimo.entities
 
-import androidx.room.*
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
 
 
-@Entity(tableName = "profile_info")
-//@Entity(tableName = "profile_info", indices = @Index(value = {"name"}, unique = true))
+@Entity(tableName = "profile_info", indices = [Index(value = ["user_name"], unique = true)])
 open class ProfileInfo {
 
     @PrimaryKey(autoGenerate = true)
     var profileId: Int? = null
     var deviceToken: String? = null
+
     var userName: String? = null
 
     var firstName: String? = null

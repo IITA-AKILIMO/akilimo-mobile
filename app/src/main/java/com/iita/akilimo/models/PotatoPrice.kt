@@ -11,11 +11,11 @@ import java.util.*
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@DatabaseTable
+@Entity
 open class PotatoPrice {
 
     @JsonProperty("id")
-    @DatabaseField(columnName = "id", generatedId = true)
+    @PrimaryKey(autoGenerate = true)
     var id: Int = 0
 
     @JsonProperty("priceIndex")

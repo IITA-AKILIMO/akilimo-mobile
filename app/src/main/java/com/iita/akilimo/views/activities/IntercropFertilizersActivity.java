@@ -29,7 +29,7 @@ import com.iita.akilimo.databinding.ActivityFertilizersBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
-import com.iita.akilimo.models.FertilizerPrices;
+import com.iita.akilimo.entities.FertilizerPrices;
 import com.iita.akilimo.models.InterCropFertilizer;
 import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;

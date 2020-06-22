@@ -2,7 +2,7 @@ package com.iita.akilimo.utils
 
 import android.os.Build
 
-import com.iita.akilimo.models.Fertilizer
+import com.iita.akilimo.entities.Fertilizer
 import com.iita.akilimo.models.InterCropFertilizer
 
 object FertilizerList {

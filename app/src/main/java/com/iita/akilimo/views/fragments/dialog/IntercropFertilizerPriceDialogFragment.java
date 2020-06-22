@@ -24,7 +24,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
 import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IDismissIntercropListener;
-import com.iita.akilimo.models.FertilizerPrices;
+import com.iita.akilimo.entities.FertilizerPrices;
 import com.iita.akilimo.models.InterCropFertilizer;
 
 import java.util.List;

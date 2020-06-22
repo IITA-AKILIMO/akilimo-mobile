@@ -21,7 +21,7 @@ import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.entities.PotatoMarketOutlet;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.entities.RecAdvice;
-import com.iita.akilimo.models.Fertilizer;
+import com.iita.akilimo.entities.Fertilizer;
 import com.iita.akilimo.models.InterCropFertilizer;
 import com.iita.akilimo.rest.request.RecommendationRequest;
 import com.iita.akilimo.rest.request.UserInfo;

@@ -1,11 +1,12 @@
 package com.iita.akilimo.entities
 
-import com.j256.ormlite.field.DatabaseField
-import com.j256.ormlite.table.DatabaseTable
-@DatabaseTable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity
 open class LocationInfo {
 
-    @DatabaseField(columnName = "id", generatedId = true)
+    @PrimaryKey(autoGenerate = true)
     var id: Int? = null
     var latitude: Double = 0.0
     var longitude: Double = 0.0

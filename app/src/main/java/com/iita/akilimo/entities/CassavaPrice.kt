@@ -1,5 +1,7 @@
-package com.iita.akilimo.models
+package com.iita.akilimo.entities
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -11,10 +13,10 @@ import java.util.*
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@DatabaseTable
+@Entity
 open class CassavaPrice {
 
-    @DatabaseField(columnName = "id", generatedId = true)
+    @PrimaryKey(autoGenerate = true)
     var id:Int?=null
 
     @JsonProperty("priceIndex")

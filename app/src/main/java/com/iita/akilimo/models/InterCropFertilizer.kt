@@ -9,11 +9,11 @@ import com.j256.ormlite.table.DatabaseTable
 
 @Deprecated("Too much duplication move to common fertilizer")
 @JsonIgnoreProperties(ignoreUnknown = true)
-@DatabaseTable
+@Entity
 open class InterCropFertilizer() : Parcelable {
 
     @JsonProperty("id")
-    @DatabaseField(columnName = "id", generatedId = true)
+    @PrimaryKey(autoGenerate = true)
     var id: Int = 0
 
     var imageId = 0

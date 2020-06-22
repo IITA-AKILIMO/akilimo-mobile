@@ -1,12 +1,12 @@
 package com.iita.akilimo.entities
 
-import com.j256.ormlite.field.DatabaseField
-import com.j256.ormlite.table.DatabaseTable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-@DatabaseTable
+@Entity
 open class MandatoryInfo {
 
-    @DatabaseField(columnName = "id", generatedId = true)
+    @PrimaryKey(autoGenerate = true)
     var id: Int? = null
     var placeName: String? = null
     var address: String? = null

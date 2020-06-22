@@ -10,7 +10,7 @@ interface ProfileInfoDao {
     fun getAll(): List<ProfileInfo>
 
     @Query("SELECT * FROM profile_info LIMIT 1")
-    fun findOneProfile(): ProfileInfo
+    fun findOneProfile(): ProfileInfo?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg users: ProfileInfo)

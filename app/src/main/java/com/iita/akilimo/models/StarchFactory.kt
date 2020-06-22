@@ -7,10 +7,10 @@ import com.j256.ormlite.field.DatabaseField
 import com.j256.ormlite.table.DatabaseTable
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@DatabaseTable
+@Entity
 open class StarchFactory {
     @JsonProperty("id")
-    @DatabaseField(columnName = "id", generatedId = true)
+    @PrimaryKey(autoGenerate = true)
     var id: Int = 0
 
     @JsonProperty("factoryName")

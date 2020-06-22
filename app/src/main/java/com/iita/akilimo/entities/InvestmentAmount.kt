@@ -1,13 +1,13 @@
 package com.iita.akilimo.entities
 
-import com.j256.ormlite.field.DatabaseField
-import com.j256.ormlite.table.DatabaseTable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 
-@DatabaseTable(tableName = "investment_amount")
+@Entity(tableName = "investment_amount")
 open class InvestmentAmount {
 
-    @DatabaseField(columnName = "id", generatedId = true)
+    @PrimaryKey(autoGenerate = true)
     var id: Int? = null
     var minInvestmentAmountUSD: Double = 0.0
     var minInvestmentAmountLocal: Double = 0.0

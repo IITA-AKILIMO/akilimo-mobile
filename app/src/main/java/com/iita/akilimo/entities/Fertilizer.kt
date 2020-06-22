@@ -1,6 +1,8 @@
-package com.iita.akilimo.models
+package com.iita.akilimo.entities
 
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.j256.ormlite.field.DatabaseField
@@ -9,10 +11,10 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonIgnoreProperties(ignoreUnknown = true)
-@DatabaseTable
+@Entity
 open class Fertilizer : Parcelable {
 
-    @DatabaseField(columnName = "id", generatedId = true)
+    @PrimaryKey(autoGenerate = true)
     var id: Int? = null
 
     var imageId = 0
