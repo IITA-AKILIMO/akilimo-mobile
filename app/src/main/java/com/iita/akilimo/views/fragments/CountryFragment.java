@@ -113,15 +113,12 @@ public class CountryFragment extends BaseFragment {
 
         //let us get the current locale and limit countries to that locale
         Locale currentLocale = getCurrentLocale();
-        if (currentLocale.getCountry().equalsIgnoreCase(EnumCountry.TANZANIA.countryCode())) {
-            countries.add(EnumCountry.TANZANIA.name());
-            countryImages.add(World.getFlagOf(EnumCountry.TANZANIA.countryCode()));
-        } else {
+        if (!currentLocale.getCountry().equalsIgnoreCase(EnumCountry.TANZANIA.countryCode())) {
             countries.add(EnumCountry.NIGERIA.name());
             countryImages.add(World.getFlagOf(EnumCountry.NIGERIA.countryCode()));
-            countries.add(EnumCountry.TANZANIA.name());
-            countryImages.add(World.getFlagOf(EnumCountry.TANZANIA.countryCode()));
         }
+        countries.add(EnumCountry.TANZANIA.name());
+        countryImages.add(World.getFlagOf(EnumCountry.TANZANIA.countryCode()));
 
         final MySpinnerAdapter spinnerAdapter = new MySpinnerAdapter(context, countries, countryImages);
         countrySpinner.setAdapter(spinnerAdapter);
