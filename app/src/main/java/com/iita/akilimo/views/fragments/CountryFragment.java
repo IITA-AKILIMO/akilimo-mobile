@@ -115,7 +115,7 @@ public class CountryFragment extends BaseFragment {
         Locale currentLocale = getCurrentLocale();
         if (currentLocale.getCountry().equalsIgnoreCase(EnumCountry.TANZANIA.countryCode())) {
             countries.add(EnumCountry.TANZANIA.name());
-            countryImages.add(World.getFlagOf(countryCode));
+            countryImages.add(World.getFlagOf(EnumCountry.TANZANIA.countryCode()));
         } else {
             countries.add(EnumCountry.NIGERIA.name());
             countryImages.add(World.getFlagOf(EnumCountry.NIGERIA.countryCode()));
