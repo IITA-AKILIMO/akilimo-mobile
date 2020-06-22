@@ -5,7 +5,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 
-@Entity(tableName = "profile_info", indices = [Index(value = ["user_name"], unique = true)])
+@Entity(tableName = "profile_info", indices = [Index(value = ["userName"], unique = true)])
 open class ProfileInfo {
 
     @PrimaryKey(autoGenerate = true)

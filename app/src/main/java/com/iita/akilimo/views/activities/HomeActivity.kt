@@ -22,7 +22,6 @@ import com.github.javiersantos.appupdater.enums.Display
 import com.google.android.gms.common.util.Strings
 import com.iita.akilimo.R
 import com.iita.akilimo.adapters.ViewPagerAdapter
-import com.iita.akilimo.dao.OrmProcessor
 import com.iita.akilimo.databinding.ActivityHomeBinding
 import com.iita.akilimo.entities.LocationInfo
 import com.iita.akilimo.inherit.BaseActivity
@@ -80,8 +79,6 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        ormProcessor = OrmProcessor()
 
         activity = this
         context = this
