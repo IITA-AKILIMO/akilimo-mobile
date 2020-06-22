@@ -40,11 +40,6 @@ public class FieldInfoFragment extends BaseFragment {
     }
 
     @Override
-    protected void realmInstance() {
-
-    }
-
-    @Override
     public void refreshData() {
 
     }

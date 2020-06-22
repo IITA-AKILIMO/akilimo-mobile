@@ -46,8 +46,6 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import io.realm.Realm;
-import io.realm.RealmList;
 
 public class CassavaMarketActivity extends BaseActivity {
 
@@ -70,7 +68,6 @@ public class CassavaMarketActivity extends BaseActivity {
     AppCompatButton btnCancel;
 
     ActivityCassavaMarketBinding binding;
-    Realm myRealm;
     MathHelper mathHelper;
     private String selectedFactory = "NA";
 
@@ -99,7 +96,6 @@ public class CassavaMarketActivity extends BaseActivity {
         binding = ActivityCassavaMarketBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         context = this;
-        myRealm = Realm.getDefaultInstance();
 
         //Set ui elements
         toolbar = binding.toolbar;
@@ -333,8 +329,6 @@ public class CassavaMarketActivity extends BaseActivity {
                     List<StarchFactory> starchFactoriesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<StarchFactory>>() {
                     });
                     if (starchFactoriesList.size() > 0) {
-                        RealmList<StarchFactory> _starchFactoryList = new RealmList<>();
-                        _starchFactoryList.addAll(starchFactoriesList);
                         addFactoriesRadioButtons(starchFactoriesList);
                     }
                 } catch (Exception ex) {
@@ -380,8 +374,6 @@ public class CassavaMarketActivity extends BaseActivity {
                     });
 
                     if (cassavaPriceList.size() > 0) {
-                        RealmList<CassavaPrice> _cassavaPriceList = new RealmList<>();
-                        _cassavaPriceList.addAll(cassavaPriceList);
 
                     }
 
@@ -495,11 +487,5 @@ public class CassavaMarketActivity extends BaseActivity {
             fragmentTransaction.addToBackStack(null);
             priceDialogFragment.show(getSupportFragmentManager(), CassavaPriceDialogFragment.ARG_ITEM_ID);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

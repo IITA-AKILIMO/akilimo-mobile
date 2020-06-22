@@ -19,10 +19,9 @@ import com.iita.akilimo.entities.RecAdvice;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
-import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.enums.EnumUseCase;
+import com.iita.akilimo.utils.ormlite.RealmProcessor;
 import com.iita.akilimo.views.activities.CassavaMarketActivity;
 import com.iita.akilimo.views.activities.DatesActivity;
 import com.iita.akilimo.views.activities.FertilizersActivity;
@@ -32,7 +31,7 @@ import com.iita.akilimo.views.activities.RootYieldActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.Realm;
+;
 
 public class FertilizerRecActivity extends BaseActivity {
 
@@ -41,7 +40,7 @@ public class FertilizerRecActivity extends BaseActivity {
     AppCompatButton btnGetRec;
 
     ActivityFertilizerRecBinding binding;
-    Realm myRealm;
+
 
     String plantingString;
     String fertilizerString;
@@ -67,7 +66,6 @@ public class FertilizerRecActivity extends BaseActivity {
 
 
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
         initToolbar();
         initComponent();
     }
@@ -99,19 +97,18 @@ public class FertilizerRecActivity extends BaseActivity {
             //launch the recommendation view
             recAdvice = realmProcessor.getRecAdvice();
             try {
-                myRealm.executeTransaction(realm -> {
-                    if (recAdvice == null) {
-                        recAdvice = realm.createObject(RecAdvice.class, Tools.generateUUID());
-                    }
-                    recAdvice.setFR(true);
-                    recAdvice.setCIM(false);
-                    recAdvice.setCIS(false);
-                    recAdvice.setSPH(false);
-                    recAdvice.setSPP(false);
-                    recAdvice.setBPP(false);
-                    recAdvice.setUseCase(EnumUseCase.FR.name());
-                    processRecommendations(activity);
-                });
+                if (recAdvice == null) {
+                    recAdvice = new RecAdvice();
+                }
+                recAdvice.setFR(true);
+                recAdvice.setCIM(false);
+                recAdvice.setCIS(false);
+                recAdvice.setSPH(false);
+                recAdvice.setSPP(false);
+                recAdvice.setBPP(false);
+                recAdvice.setUseCase(EnumUseCase.FR.name());
+                processRecommendations(activity);
+
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                 Crashlytics.logException(ex);
@@ -166,11 +163,5 @@ public class FertilizerRecActivity extends BaseActivity {
             }
         });
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

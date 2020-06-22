@@ -22,15 +22,14 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.LocationInfo;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
 import com.iita.akilimo.utils.SessionManager;
+import com.iita.akilimo.utils.ormlite.RealmProcessor;
 
 import java.util.Locale;
 
 import dev.b3nedikt.app_locale.AppLocale;
 import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
 import dev.b3nedikt.reword.Reword;
-import io.realm.Realm;
 
 @SuppressWarnings("WeakerAccess")
 public abstract class BaseFragment extends Fragment {
@@ -54,7 +53,7 @@ public abstract class BaseFragment extends Fragment {
 
     protected SessionManager sessionManager;
     protected RealmProcessor realmProcessor;
-//    protected Realm myRealm;
+//
 
     public BaseFragment() {
 
@@ -79,15 +78,12 @@ public abstract class BaseFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        realmInstance();
         View view = loadFragmentLayout(inflater, container, savedInstanceState);
         Reword.reword(view);
         return view;
     }
 
     protected abstract View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
-
-    protected abstract void realmInstance();
 
     public abstract void refreshData();
 
@@ -149,12 +145,8 @@ public abstract class BaseFragment extends Fragment {
             dialog.show();
             dialog.getWindow().setAttributes(lp);
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred while displaying alert dialog");
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
-    }
-
-    public Realm getRealmInstance() {
-        return Realm.getDefaultInstance();
     }
 }

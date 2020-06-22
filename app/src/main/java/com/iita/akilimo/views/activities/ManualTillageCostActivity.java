@@ -25,7 +25,7 @@ import com.iita.akilimo.views.fragments.dialog.OperationCostsDialogFragment;
 
 import java.util.ArrayList;
 
-import io.realm.Realm;
+;
 
 
 public class ManualTillageCostActivity extends CostBaseActivity {
@@ -42,7 +42,6 @@ public class ManualTillageCostActivity extends CostBaseActivity {
     AppCompatButton btnCancel;
 
     ActivityManualTillageCostBinding binding;
-    Realm myRealm;
     MathHelper mathHelper;
     OperationCosts operationCosts;
 
@@ -59,7 +58,6 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         setContentView(binding.getRoot());
         context = this;
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
         queue = Volley.newRequestQueue(this);
         mathHelper = new MathHelper();
 
@@ -216,11 +214,5 @@ public class ManualTillageCostActivity extends CostBaseActivity {
             dialogOpen = true;
             dialogFragment.show(getSupportFragmentManager(), OperationCostsDialogFragment.ARG_ITEM_ID);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

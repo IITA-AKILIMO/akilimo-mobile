@@ -24,11 +24,8 @@ import com.iita.akilimo.utils.enums.EnumUseCase;
 
 import java.util.List;
 
-import io.realm.Realm;
-
 @SuppressWarnings("UnnecessaryLocalVariable")
 public class RealmProcessor {
-    private Realm realm;
 
     public RealmProcessor() {
 

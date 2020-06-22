@@ -25,7 +25,7 @@ import com.iita.akilimo.widget.SpacingItemDecoration;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.Realm;
+;
 
 public class RootYieldActivity extends BaseActivity {
 
@@ -39,7 +39,6 @@ public class RootYieldActivity extends BaseActivity {
     AppCompatButton btnCancel;
 
     ActivityRootYieldBinding binding;
-    Realm myRealm;
 
     private CurrentFieldYield savedYield;
     private MathHelper mathHelper;
@@ -62,8 +61,6 @@ public class RootYieldActivity extends BaseActivity {
 
         realmProcessor = new RealmProcessor();
         mathHelper = new MathHelper();
-        myRealm = Realm.getDefaultInstance();
-
         MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
@@ -195,11 +192,5 @@ public class RootYieldActivity extends BaseActivity {
         cfy.setFieldYieldLabel(yieldLabel);
 
         return cfy;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

@@ -29,7 +29,7 @@ import com.iita.akilimo.utils.enums.EnumOperationType;
 import com.iita.akilimo.views.fragments.dialog.DateDialogPickerFragment;
 import com.iita.akilimo.views.fragments.dialog.OperationTypeDialogFragment;
 
-import io.realm.Realm;
+;
 
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
@@ -45,7 +45,6 @@ public class CurrentPracticeFragment extends BaseFragment {
     AppCompatButton btnPickHarvestDate;
 
     FragmentCurrentPracticeBinding binding;
-    Realm myRealm;
 
 
     private String selectedPlantingDate;
@@ -87,11 +86,6 @@ public class CurrentPracticeFragment extends BaseFragment {
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentCurrentPracticeBinding.inflate(inflater, container, false);
         return binding.getRoot();
-    }
-
-    @Override
-    protected void realmInstance() {
-        myRealm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -275,11 +269,5 @@ public class CurrentPracticeFragment extends BaseFragment {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        myRealm.close();
     }
 }

@@ -19,10 +19,9 @@ import com.iita.akilimo.entities.RecAdvice;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
-import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.enums.EnumUseCase;
+import com.iita.akilimo.utils.ormlite.RealmProcessor;
 import com.iita.akilimo.views.activities.CassavaMarketActivity;
 import com.iita.akilimo.views.activities.DatesActivity;
 import com.iita.akilimo.views.activities.RootYieldActivity;
@@ -30,7 +29,7 @@ import com.iita.akilimo.views.activities.RootYieldActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.Realm;
+;
 
 public class ScheduledPlantingActivity extends BaseActivity {
 
@@ -40,7 +39,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
     AppCompatButton btnGetRec;
 
     ActivityScheduledPlantingBinding binding;
-    Realm myRealm;
+
 
     String plantingString;
     String marketOutletString;
@@ -59,7 +58,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
         context = this;
         activity = this;
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
+
 
         toolbar = binding.toolbarLayout.toolbar;
         recyclerView = binding.recyclerView;
@@ -93,21 +92,16 @@ public class ScheduledPlantingActivity extends BaseActivity {
             //launch the recommendation view
             recAdvice = realmProcessor.getRecAdvice();
             try {
-                myRealm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        if (recAdvice == null) {
-                            recAdvice = realm.createObject(RecAdvice.class, Tools.generateUUID());
-                        }
-                        recAdvice.setFR(false);
-                        recAdvice.setCIM(false);
-                        recAdvice.setCIS(false);
-                        recAdvice.setSPH(true);
-                        recAdvice.setSPP(true);
-                        recAdvice.setBPP(false);
-                        recAdvice.setUseCase(EnumUseCase.SP.name());
-                    }
-                });
+                if (recAdvice == null) {
+                    recAdvice = new RecAdvice();
+                }
+                recAdvice.setFR(false);
+                recAdvice.setCIM(false);
+                recAdvice.setCIS(false);
+                recAdvice.setSPH(true);
+                recAdvice.setSPP(true);
+                recAdvice.setBPP(false);
+                recAdvice.setUseCase(EnumUseCase.SP.name());
                 processRecommendations(activity);
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
@@ -156,11 +150,5 @@ public class ScheduledPlantingActivity extends BaseActivity {
                 Snackbar.make(view, "Item " + obj.getRecommendationName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
             }
         });
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

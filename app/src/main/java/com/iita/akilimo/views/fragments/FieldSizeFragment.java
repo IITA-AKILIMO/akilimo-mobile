@@ -29,7 +29,7 @@ import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.utils.enums.EnumFieldArea;
 
-import io.realm.Realm;
+;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,7 +50,6 @@ public class FieldSizeFragment extends BaseFragment {
     RadioButton rd_two_half_acre;
 
     FragmentFieldSizeBinding binding;
-    Realm myRealm;
 
 
     private String myFieldSize = "";
@@ -87,11 +86,6 @@ public class FieldSizeFragment extends BaseFragment {
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentFieldSizeBinding.inflate(inflater, container, false);
         return binding.getRoot();
-    }
-
-    @Override
-    protected void realmInstance() {
-        myRealm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -269,11 +263,5 @@ public class FieldSizeFragment extends BaseFragment {
 
         dialog.show();
         dialog.getWindow().setAttributes(lp);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        myRealm.close();
     }
 }

@@ -17,7 +17,7 @@ import com.iita.akilimo.entities.MaizePerformance;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.ormlite.RealmProcessor;
 
-import io.realm.Realm;
+;
 
 
 public class MaizePerformanceActivity extends BaseActivity {
@@ -32,7 +32,6 @@ public class MaizePerformanceActivity extends BaseActivity {
     TextView exceptionTitle;
 
     ActivityMaizePerformanceActivityBinding binding;
-    Realm myRealm;
 
 
     private MaizePerformance maizePerformance;
@@ -48,7 +47,6 @@ public class MaizePerformanceActivity extends BaseActivity {
         setContentView(binding.getRoot());
         context = this;
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
 
         toolbar = binding.toolbar;
         rdgMaizePerformance = binding.rdgMaizePerformance;
@@ -149,9 +147,4 @@ public class MaizePerformanceActivity extends BaseActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
-    }
 }

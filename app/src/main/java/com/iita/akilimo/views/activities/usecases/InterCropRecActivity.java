@@ -21,11 +21,10 @@ import com.iita.akilimo.entities.RecAdvice;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
-import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.enums.EnumCountry;
 import com.iita.akilimo.utils.enums.EnumUseCase;
+import com.iita.akilimo.utils.ormlite.RealmProcessor;
 import com.iita.akilimo.views.activities.CassavaMarketActivity;
 import com.iita.akilimo.views.activities.DatesActivity;
 import com.iita.akilimo.views.activities.IntercropFertilizersActivity;
@@ -37,15 +36,13 @@ import com.iita.akilimo.views.activities.SweetPotatoMarketActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.Realm;
-
 public class InterCropRecActivity extends BaseActivity {
 
     RecyclerView recyclerView;
     Toolbar toolbar;
     AppCompatButton btnGetRec;
     ActivityInterCropRecBinding binding;
-    Realm myRealm;
+
 
     String recommendations;
     String plantingString;
@@ -78,7 +75,7 @@ public class InterCropRecActivity extends BaseActivity {
 
 
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
+
 
         MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
@@ -129,18 +126,16 @@ public class InterCropRecActivity extends BaseActivity {
             //launch the recommendation view
             recAdvice = realmProcessor.getRecAdvice();
             try {
-                myRealm.executeTransaction(realm -> {
-                    if (recAdvice == null) {
-                        recAdvice = realm.createObject(RecAdvice.class, Tools.generateUUID());
-                    }
-                    recAdvice.setFR(false);
-                    recAdvice.setCIM(icMaize);
-                    recAdvice.setCIS(icPotato);
-                    recAdvice.setSPH(false);
-                    recAdvice.setSPP(false);
-                    recAdvice.setBPP(false);
-                    recAdvice.setUseCase(useCase.name());
-                });
+                if (recAdvice == null) {
+                    recAdvice = new RecAdvice();
+                }
+                recAdvice.setFR(false);
+                recAdvice.setCIM(icMaize);
+                recAdvice.setCIS(icPotato);
+                recAdvice.setSPH(false);
+                recAdvice.setSPP(false);
+                recAdvice.setBPP(false);
+                recAdvice.setUseCase(useCase.name());
                 processRecommendations(activity);
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
@@ -212,11 +207,5 @@ public class InterCropRecActivity extends BaseActivity {
             }
         });
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

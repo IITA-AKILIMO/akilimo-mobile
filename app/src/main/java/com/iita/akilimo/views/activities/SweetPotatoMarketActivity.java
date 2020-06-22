@@ -41,9 +41,6 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import io.realm.Realm;
-import io.realm.RealmList;
-
 public class SweetPotatoMarketActivity extends BaseActivity {
 
 
@@ -57,7 +54,6 @@ public class SweetPotatoMarketActivity extends BaseActivity {
     AppCompatButton btnCancel;
 
     ActivitySweetPotatoMarketBinding binding;
-    Realm myRealm;
 
     private MathHelper mathHelper;
     private PotatoMarketOutlet potatoMarketOutlet;
@@ -92,7 +88,6 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
         context = this;
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
 
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
@@ -238,8 +233,6 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
 
                     if (potatoPriceList.size() > 0) {
-                        RealmList<PotatoPrice> _potatoPriceList = new RealmList<>();
-                        _potatoPriceList.addAll(potatoPriceList);
                         //insert to database
                     }
 
@@ -294,11 +287,5 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             fragmentTransaction.addToBackStack(null);
             priceDialogFragment.show(getSupportFragmentManager(), SweetPotatoPriceDialogFragment.ARG_ITEM_ID);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

@@ -27,7 +27,7 @@ import com.iita.akilimo.services.GPSTracker;
 import com.iita.akilimo.views.activities.HomeActivity;
 import com.iita.akilimo.views.activities.MapBoxActivity;
 
-import io.realm.Realm;
+;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,7 +42,6 @@ public class LocationFragment extends BaseFragment {
     TextView locationInfo;
     TextView title;
     FragmentLocationBinding binding;
-    Realm myRealm;
 
 
     private double currentLat;
@@ -71,11 +70,6 @@ public class LocationFragment extends BaseFragment {
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentLocationBinding.inflate(inflater, container, false);
         return binding.getRoot();
-    }
-
-    @Override
-    protected void realmInstance() {
-        myRealm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -157,11 +151,5 @@ public class LocationFragment extends BaseFragment {
             Crashlytics.logException(ex);
         }
 
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        myRealm.close();
     }
 }

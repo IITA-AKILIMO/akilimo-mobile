@@ -21,7 +21,7 @@ import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.ormlite.RealmProcessor;
 
-import io.realm.Realm;
+;
 
 
 public class WeedControlCostsActivity extends BaseActivity {
@@ -39,7 +39,6 @@ public class WeedControlCostsActivity extends BaseActivity {
     EditText editSecondWeedingOpCost;
 
     ActivityWeedControlCostBinding binding;
-    Realm myRealm;
 
     private MathHelper mathHelper;
     private CurrentPractice currentPractice;
@@ -57,7 +56,6 @@ public class WeedControlCostsActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
         context = this;
         mathHelper = new MathHelper();
 
@@ -190,11 +188,5 @@ public class WeedControlCostsActivity extends BaseActivity {
             Crashlytics.logException(ex);
         }
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

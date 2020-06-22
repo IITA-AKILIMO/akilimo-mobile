@@ -30,7 +30,7 @@ import com.iita.akilimo.views.fragments.dialog.OperationCostsDialogFragment;
 
 import java.util.ArrayList;
 
-import io.realm.Realm;
+;
 
 public class TractorAccessActivity extends CostBaseActivity {
 
@@ -46,7 +46,6 @@ public class TractorAccessActivity extends CostBaseActivity {
     AppCompatButton btnCancel;
 
     ActivityTractorAccessBinding binding;
-    Realm myRealm;
     MathHelper mathHelper;
     OperationCosts operationCosts;
     CurrentPractice currentPractice;
@@ -78,7 +77,6 @@ public class TractorAccessActivity extends CostBaseActivity {
 
         context = this;
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
 
         queue = Volley.newRequestQueue(this);
         mathHelper = new MathHelper();
@@ -243,11 +241,5 @@ public class TractorAccessActivity extends CostBaseActivity {
             dialogOpen = true;
             dialogFragment.show(getSupportFragmentManager(), OperationCostsDialogFragment.ARG_ITEM_ID);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

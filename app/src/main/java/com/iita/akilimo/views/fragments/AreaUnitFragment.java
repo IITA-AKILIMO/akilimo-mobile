@@ -20,7 +20,7 @@ import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.utils.enums.EnumAreaUnits;
 
-import io.realm.Realm;
+;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,7 +33,6 @@ public class AreaUnitFragment extends BaseFragment {
     RadioGroup rdgAreaUnit;
 
     FragmentAreaUnitBinding binding;
-    private Realm myRealm;
 
     private String selectedAreaUnit;
     private MandatoryInfo mandatoryInfo;
@@ -59,11 +58,6 @@ public class AreaUnitFragment extends BaseFragment {
         binding = FragmentAreaUnitBinding.inflate(inflater, container, false);
 
         return binding.getRoot();
-    }
-
-    @Override
-    protected void realmInstance() {
-        myRealm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -110,11 +104,5 @@ public class AreaUnitFragment extends BaseFragment {
                 Crashlytics.logException(ex);
             }
         });
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        myRealm.close();
     }
 }

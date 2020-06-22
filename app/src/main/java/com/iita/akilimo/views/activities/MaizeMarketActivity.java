@@ -44,9 +44,6 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import io.realm.Realm;
-import io.realm.RealmList;
-
 public class MaizeMarketActivity extends BaseActivity {
 
     Toolbar toolbar;
@@ -67,7 +64,6 @@ public class MaizeMarketActivity extends BaseActivity {
     AppCompatButton btnCancel;
 
     ActivityMaizeMarketBinding binding;
-    Realm myRealm;
 
     private MathHelper mathHelper;
     private MaizeMarketOutlet maizeMarketOutlet;
@@ -105,7 +101,6 @@ public class MaizeMarketActivity extends BaseActivity {
 
         context = this;
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
 
@@ -158,8 +153,7 @@ public class MaizeMarketActivity extends BaseActivity {
                     });
 
                     if (maizePriceList.size() > 0) {
-                        RealmList<MaizePrice> _maizePriceList = new RealmList<>();
-                        _maizePriceList.addAll(maizePriceList);
+
                     }
                 } catch (JsonProcessingException ex) {
                     Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
@@ -362,11 +356,5 @@ public class MaizeMarketActivity extends BaseActivity {
             fragmentTransaction.addToBackStack(null);
             priceDialogFragment.show(getSupportFragmentManager(), MaizePriceDialogFragment.ARG_ITEM_ID);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

@@ -47,7 +47,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected Context context;
     protected SessionManager sessionManager;
-    //protected Realm myRealm;
+
     protected RealmProcessor realmProcessor;
     protected RequestQueue queue;
 

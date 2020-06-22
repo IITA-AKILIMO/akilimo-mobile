@@ -25,7 +25,7 @@ import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.ormlite.RealmProcessor;
 
-import io.realm.Realm;
+;
 
 
 public class InvestmentAmountActivity extends BaseActivity {
@@ -45,7 +45,6 @@ public class InvestmentAmountActivity extends BaseActivity {
     TextInputLayout txtEditInvestmentAmountLayout;
     MaterialButton btnFinish;
     ActivityInvestmentAmountBinding binding;
-    Realm myRealm;
 
 
     String investmentAmountError;
@@ -75,7 +74,6 @@ public class InvestmentAmountActivity extends BaseActivity {
         context = this;
         realmProcessor = new RealmProcessor();
         mathHelper = new MathHelper();
-        myRealm = Realm.getDefaultInstance();
 
         toolbar = binding.toolbar;
         radioGroup = binding.radioInvestmentGroup;
@@ -249,11 +247,5 @@ public class InvestmentAmountActivity extends BaseActivity {
         hasErrors = investmentAmountLocal < minimumAmountLocal;
         return investmentAmountError = getString(R.string.lbl_investment_validation_msg, minimumAmountLocal, currency);
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

@@ -31,7 +31,7 @@ import com.iita.akilimo.utils.Tools
 import com.iita.akilimo.utils.ormlite.RealmProcessor
 import com.iita.akilimo.views.activities.usecases.RecommendationsActivity
 import com.iita.akilimo.views.fragments.*
-import io.realm.Realm
+
 import kotlin.system.exitProcess
 
 
@@ -48,7 +48,6 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
     private val maxStep = 0
 
     private lateinit var binding: ActivityHomeBinding
-    private lateinit var myRealm: Realm
     private lateinit var viewPager: ViewPager
     private lateinit var myViewPagerAdapter: ViewPagerAdapter
     private lateinit var btnStart: Button
@@ -84,7 +83,6 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         setContentView(binding.root)
 
         realmProcessor = RealmProcessor()
-        myRealm = Realm.getDefaultInstance()
 
         activity = this
         context = this
@@ -335,10 +333,5 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             )
             Crashlytics.logException(ex)
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        myRealm.close()
     }
 }

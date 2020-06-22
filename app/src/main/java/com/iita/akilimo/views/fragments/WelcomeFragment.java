@@ -34,11 +34,6 @@ public class WelcomeFragment extends BaseFragment {
     }
 
     @Override
-    protected void realmInstance() {
-
-    }
-
-    @Override
     public void refreshData() {
 
     }

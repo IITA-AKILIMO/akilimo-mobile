@@ -25,8 +25,6 @@ import com.iita.akilimo.views.fragments.dialog.DateDialogPickerFragment;
 
 import org.joda.time.LocalDate;
 
-import io.realm.Realm;
-
 public class DatesActivity extends BaseActivity {
     Toolbar toolbar;
 
@@ -52,7 +50,6 @@ public class DatesActivity extends BaseActivity {
     SwitchCompat flexibleHarvest;
 
     ActivityDatesBinding binding;
-    Realm myRealm;
 
     String selectedPlantingDate;
     String selectedHarvestDate;
@@ -71,7 +68,6 @@ public class DatesActivity extends BaseActivity {
 
         context = this;
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
 
         //set widgets
         toolbar = binding.toolbar;
@@ -258,11 +254,5 @@ public class DatesActivity extends BaseActivity {
             }
         });
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

@@ -33,9 +33,6 @@ import com.iita.akilimo.views.activities.WeedControlCostsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.realm.Realm;
-
 public class PlantingPracticesActivity extends BaseActivity {
 
 
@@ -54,7 +51,7 @@ public class PlantingPracticesActivity extends BaseActivity {
     String weedControlCostString;
 
     ActivityPlantingPracticesBinding binding;
-    Realm myRealm;
+
 
 
     private Activity activity;
@@ -70,7 +67,7 @@ public class PlantingPracticesActivity extends BaseActivity {
         context = this;
         activity = this;
         realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
+
 
         toolbar = binding.toolbarLayout.toolbar;
         recyclerView = binding.recyclerView;
@@ -109,9 +106,8 @@ public class PlantingPracticesActivity extends BaseActivity {
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
             try {
-                myRealm.executeTransaction(realm -> {
                     if (recAdvice == null) {
-                        recAdvice = realm.createObject(RecAdvice.class, Tools.generateUUID());
+                        recAdvice = new RecAdvice();
                     }
                     recAdvice.setFR(false);
                     recAdvice.setCIM(false);
@@ -120,7 +116,6 @@ public class PlantingPracticesActivity extends BaseActivity {
                     recAdvice.setSPP(false);
                     recAdvice.setBPP(true);
                     recAdvice.setUseCase(EnumUseCase.PP.name());
-                });
                 processRecommendations(activity);
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
@@ -182,11 +177,5 @@ public class PlantingPracticesActivity extends BaseActivity {
             }
         });
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

@@ -28,7 +28,7 @@ import com.iita.akilimo.utils.enums.EnumCountry;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.Realm;
+;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,7 +40,7 @@ public class CountryFragment extends BaseFragment {
     AppCompatTextView title;
     Spinner countrySpinner;
     FragmentCountryBinding binding;
-    Realm myRealm;
+
 
     private ProfileInfo profileInfo;
     private MandatoryInfo mandatoryInfo;
@@ -68,11 +68,6 @@ public class CountryFragment extends BaseFragment {
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentCountryBinding.inflate(inflater, container, false);
         return binding.getRoot();
-    }
-
-    @Override
-    protected void realmInstance() {
-        myRealm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -162,11 +157,5 @@ public class CountryFragment extends BaseFragment {
         mandatoryInfo.setCountryCode(countryCode);
         mandatoryInfo.setCountryName(countryName);
         mandatoryInfo.setCurrency(currency);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        myRealm.close();
     }
 }

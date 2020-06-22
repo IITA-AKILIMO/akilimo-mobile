@@ -29,7 +29,7 @@ import com.iita.akilimo.models.InterCropFertilizer;
 
 import java.util.List;
 
-import io.realm.Realm;
+;
 
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.

@@ -32,7 +32,7 @@ import com.iita.akilimo.utils.ValidationHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.Realm;
+;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,7 +57,7 @@ public class BioDataFragment extends BaseFragment {
 
     FragmentBioDataBinding binding;
 
-    Realm myRealm;
+
 
     private boolean dataIsValid;
     private String firstName;
@@ -92,10 +92,7 @@ public class BioDataFragment extends BaseFragment {
         return binding.getRoot();
     }
 
-    @Override
-    protected void realmInstance() {
-        myRealm = Realm.getDefaultInstance();
-    }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -244,11 +241,5 @@ public class BioDataFragment extends BaseFragment {
         if (fragmentCallBack != null) {
             fragmentCallBack.onDataSaved();
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }
