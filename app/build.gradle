@@ -113,6 +113,8 @@ dependencies {
 
     implementation "com.j256.ormlite:ormlite-android:5.1"
     implementation 'com.j256.ormlite:ormlite-core:5.1'
+
+    implementation 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
     // mapbox implementation------------------------------------------------------------------------
     // implementation 'com.mapbox.mapboxsdk:mapbox-android-navigation:0.41.0'
     // implementation 'com.mapbox.mapboxsdk:mapbox-android-navigation-ui:0.41.0'

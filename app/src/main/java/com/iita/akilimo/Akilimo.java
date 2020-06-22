@@ -4,6 +4,8 @@ package com.iita.akilimo;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.multidex.MultiDexApplication;
 
+import com.activeandroid.ActiveAndroid;
+import com.activeandroid.Configuration;
 import com.blongho.country_data.World;
 import com.crashlytics.android.Crashlytics;
 
@@ -16,6 +18,7 @@ import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
 import dev.b3nedikt.reword.RewordInterceptor;
 import io.fabric.sdk.android.Fabric;
 import io.github.inflationx.viewpump.ViewPump;
+
 public class Akilimo extends MultiDexApplication {
 
     @Override
@@ -41,5 +44,12 @@ public class Akilimo extends MultiDexApplication {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         JodaTimeAndroid.init(this);
         World.init(this);
+
+        Configuration dbConfiguration = new Configuration.Builder(this)
+                .setDatabaseName("akilimo.db")
+                .setDatabaseVersion(1)
+                .create();
+
+        ActiveAndroid.initialize(dbConfiguration);
     }
 }
