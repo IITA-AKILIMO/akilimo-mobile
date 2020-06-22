@@ -134,7 +134,7 @@ public class InterCropRecActivity extends BaseActivity {
                 useCases.setSPH(false);
                 useCases.setSPP(false);
                 useCases.setBPP(false);
-                useCases.setUseCase(useCase.name());
+                useCases.setName(useCase.name());
                 processRecommendations(activity);
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

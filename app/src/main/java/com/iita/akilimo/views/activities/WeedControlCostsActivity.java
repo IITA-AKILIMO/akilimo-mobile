@@ -16,7 +16,7 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.ActivityWeedControlCostBinding;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.MandatoryInfo;
-import com.iita.akilimo.entities.OperationCosts;
+import com.iita.akilimo.entities.FieldOperationCost;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
 
@@ -41,7 +41,7 @@ public class WeedControlCostsActivity extends BaseActivity {
 
     private MathHelper mathHelper;
     private CurrentPractice currentPractice;
-    private OperationCosts operationCosts;
+    private FieldOperationCost fieldOperationCost;
     private boolean usesHerbicide;
     private String weedControlTechnique;
     private double firstOperationCost;
@@ -59,7 +59,7 @@ public class WeedControlCostsActivity extends BaseActivity {
         mathHelper = new MathHelper();
 
         MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
-        operationCosts = ormProcessor.getOperationCosts();
+        fieldOperationCost = ormProcessor.getOperationCosts();
         currentPractice = ormProcessor.getCurrentPractice();
         if (mandatoryInfo != null) {
             currency = mandatoryInfo.getCurrency();
@@ -103,13 +103,13 @@ public class WeedControlCostsActivity extends BaseActivity {
             weedControlTechnique = currentPractice.getWeedControlTechnique();
             rdgWeedControl.check(weedRadioIndex);
         }
-        if (operationCosts != null) {
-            firstOperationCost = operationCosts.getFirstWeedingOperationCost();
+        if (fieldOperationCost != null) {
+            firstOperationCost = fieldOperationCost.getFirstWeedingOperationCost();
             if (firstOperationCost > 0) {
                 editFirstWeedingOpCost.setText(String.valueOf(firstOperationCost));
             }
 
-            secondOperationCost = operationCosts.getSecondWeedingOperationCost();
+            secondOperationCost = fieldOperationCost.getSecondWeedingOperationCost();
             if (secondOperationCost > 0) {
                 editSecondWeedingOpCost.setText(String.valueOf(secondOperationCost));
             }
@@ -163,22 +163,22 @@ public class WeedControlCostsActivity extends BaseActivity {
 
 
         currentPractice = ormProcessor.getCurrentPractice();
-        operationCosts = ormProcessor.getOperationCosts();
+        fieldOperationCost = ormProcessor.getOperationCosts();
 
         try {
             if (currentPractice == null) {
                 currentPractice = new CurrentPractice();
             }
-            if (operationCosts == null) {
-                operationCosts = new OperationCosts();
+            if (fieldOperationCost == null) {
+                fieldOperationCost = new FieldOperationCost();
             }
 
             currentPractice.setWeedControlTechnique(weedControlTechnique);
             currentPractice.setUsesHerbicide(usesHerbicide);
             currentPractice.setWeedRadioIndex(weedRadioIndex);
 
-            operationCosts.setFirstWeedingOperationCost(firstOperationCost);
-            operationCosts.setSecondWeedingOperationCost(secondOperationCost);
+            fieldOperationCost.setFirstWeedingOperationCost(firstOperationCost);
+            fieldOperationCost.setSecondWeedingOperationCost(secondOperationCost);
 
             closeActivity(backPressed);
         } catch (

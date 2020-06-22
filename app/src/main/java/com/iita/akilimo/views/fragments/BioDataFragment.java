@@ -149,7 +149,7 @@ public class BioDataFragment extends BaseFragment {
     public void refreshData() {
         try {
 
-            profileInfo = database.profileInfoDao().findOneProfile();
+            profileInfo = database.profileInfoDao().findOne();
             if (profileInfo != null) {
                 firstName = profileInfo.getFirstName();
                 lastName = profileInfo.getLastName();

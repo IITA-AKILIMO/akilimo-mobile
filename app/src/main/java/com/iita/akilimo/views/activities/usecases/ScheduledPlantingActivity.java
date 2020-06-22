@@ -100,7 +100,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
                 useCases.setSPH(true);
                 useCases.setSPP(true);
                 useCases.setBPP(false);
-                useCases.setUseCase(EnumUseCase.SP.name());
+                useCases.setName(EnumUseCase.SP.name());
                 processRecommendations(activity);
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

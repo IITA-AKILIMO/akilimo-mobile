@@ -23,7 +23,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.Fertilizer;
-import com.iita.akilimo.entities.FertilizerPrices;
+import com.iita.akilimo.entities.FertilizerPrice;
 import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IDismissListener;
 
@@ -57,7 +57,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
 
 
     private Fertilizer fertilizer;
-    private List<FertilizerPrices> fertilizerPricesList;
+    private List<FertilizerPrice> fertilizerPricesList;
 
     private double savedPricePerBag = 0.0;
     private String countryCode;
@@ -176,7 +176,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
         long itemTagIndex = (long) radioButton.getTag();
 
         try {
-            FertilizerPrices pricesResp = fertilizerPricesList.get((int) itemTagIndex);
+            FertilizerPrice pricesResp = fertilizerPricesList.get((int) itemTagIndex);
             isExactPriceRequired = false;
             isPriceValid = true;
             savedPricePerBag = pricesResp.getPricePerBag();
@@ -199,7 +199,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
         }
     }
 
-    private void addPriceRadioButtons(List<FertilizerPrices> fertilizerPricesList, Fertilizer fertilizer) {
+    private void addPriceRadioButtons(List<FertilizerPrice> fertilizerPricesList, Fertilizer fertilizer) {
         radioGroup.removeAllViews();
         double selectedPrice = 0.0;
         if (fertilizer != null) {
@@ -215,7 +215,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
                 editExactFertilizerPrice.setText(String.valueOf(exactPrice));
             }
         }
-        for (FertilizerPrices pricesResp : fertilizerPricesList) {
+        for (FertilizerPrice pricesResp : fertilizerPricesList) {
 
             long listIndex = pricesResp.getPriceId() - 1;//reduce by one so as to match the index in the list
 

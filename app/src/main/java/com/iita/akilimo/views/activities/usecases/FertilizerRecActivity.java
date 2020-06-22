@@ -105,7 +105,7 @@ public class FertilizerRecActivity extends BaseActivity {
                 useCases.setSPH(false);
                 useCases.setSPP(false);
                 useCases.setBPP(false);
-                useCases.setUseCase(EnumUseCase.FR.name());
+                useCases.setName(EnumUseCase.FR.name());
                 processRecommendations(activity);
 
             } catch (Exception ex) {

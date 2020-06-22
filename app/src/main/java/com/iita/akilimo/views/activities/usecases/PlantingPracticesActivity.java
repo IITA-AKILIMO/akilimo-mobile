@@ -113,7 +113,7 @@ public class PlantingPracticesActivity extends BaseActivity {
                     useCases.setSPH(false);
                     useCases.setSPP(false);
                     useCases.setBPP(true);
-                    useCases.setUseCase(EnumUseCase.PP.name());
+                    useCases.setName(EnumUseCase.PP.name());
                 processRecommendations(activity);
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

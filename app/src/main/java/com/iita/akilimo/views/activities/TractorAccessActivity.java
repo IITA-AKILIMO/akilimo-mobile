@@ -19,7 +19,7 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.ActivityTractorAccessBinding;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.MandatoryInfo;
-import com.iita.akilimo.entities.OperationCosts;
+import com.iita.akilimo.entities.FieldOperationCost;
 import com.iita.akilimo.inherit.CostBaseActivity;
 import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.utils.MathHelper;
@@ -46,7 +46,7 @@ public class TractorAccessActivity extends CostBaseActivity {
 
     ActivityTractorAccessBinding binding;
     MathHelper mathHelper;
-    OperationCosts operationCosts;
+    FieldOperationCost fieldOperationCost;
     CurrentPractice currentPractice;
 
 
@@ -99,10 +99,10 @@ public class TractorAccessActivity extends CostBaseActivity {
 
         initToolbar();
         initComponent();
-        operationCosts = ormProcessor.getOperationCosts();
-        if (operationCosts != null) {
-            tractorPloughCost = operationCosts.getTractorPloughCost();
-            tractorRidgeCost = operationCosts.getTractorRidgeCost();
+        fieldOperationCost = ormProcessor.getOperationCosts();
+        if (fieldOperationCost != null) {
+            tractorPloughCost = fieldOperationCost.getTractorPloughCost();
+            tractorRidgeCost = fieldOperationCost.getTractorRidgeCost();
 
         }
     }
@@ -163,12 +163,12 @@ public class TractorAccessActivity extends CostBaseActivity {
     }
 
     private void setData() {
-        operationCosts = ormProcessor.getOperationCosts();
+        fieldOperationCost = ormProcessor.getOperationCosts();
         currentPractice = ormProcessor.getCurrentPractice();
 
         try {
-            if (operationCosts == null) {
-                operationCosts = new OperationCosts();
+            if (fieldOperationCost == null) {
+                fieldOperationCost = new FieldOperationCost();
             }
             if (currentPractice == null) {
                 currentPractice = new CurrentPractice();
@@ -180,11 +180,11 @@ public class TractorAccessActivity extends CostBaseActivity {
             currentPractice.setTractorHarrow(hasHarrow);
             currentPractice.setTractorRidger(hasRidger);
 
-            operationCosts.setTractorPloughCost(tractorPloughCost);
-            operationCosts.setTractorRidgeCost(tractorRidgeCost);
+            fieldOperationCost.setTractorPloughCost(tractorPloughCost);
+            fieldOperationCost.setTractorRidgeCost(tractorRidgeCost);
 
-            operationCosts.setExactTractorPloughPrice(exactPloughCost);
-            operationCosts.setExactTractorRidgePrice(exactRidgeCost);
+            fieldOperationCost.setExactTractorPloughPrice(exactPloughCost);
+            fieldOperationCost.setExactTractorRidgePrice(exactRidgeCost);
 
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

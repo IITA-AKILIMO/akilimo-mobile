@@ -14,7 +14,7 @@ import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.ActivityManualTillageCostBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
-import com.iita.akilimo.entities.OperationCosts;
+import com.iita.akilimo.entities.FieldOperationCost;
 import com.iita.akilimo.inherit.CostBaseActivity;
 import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.utils.MathHelper;
@@ -42,7 +42,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
 
     ActivityManualTillageCostBinding binding;
     MathHelper mathHelper;
-    OperationCosts operationCosts;
+    FieldOperationCost fieldOperationCost;
 
     private double manualPloughCost = 0;
     private double manualRidgeCost = 0;
@@ -81,10 +81,10 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         initToolbar();
         initComponent();
 
-        operationCosts = ormProcessor.getOperationCosts();
-        if (operationCosts != null) {
-            manualPloughCost = operationCosts.getManualPloughCost();
-            manualRidgeCost = operationCosts.getManualRidgeCost();
+        fieldOperationCost = ormProcessor.getOperationCosts();
+        if (fieldOperationCost != null) {
+            manualPloughCost = fieldOperationCost.getManualPloughCost();
+            manualRidgeCost = fieldOperationCost.getManualRidgeCost();
 
             manualPloughCostText.setText(getString(R.string.lbl_ploughing_cost_text, fieldSize, areaUnit, manualPloughCost, currency));
             manualRidgingCostText.setText(getString(R.string.lbl_ridging_cost_text, fieldSize, areaUnit, manualRidgeCost, currency));
@@ -136,9 +136,9 @@ public class ManualTillageCostActivity extends CostBaseActivity {
     }
 
     private void setData() {
-        operationCosts = ormProcessor.getOperationCosts();
-        if (operationCosts == null) {
-            operationCosts = new OperationCosts();
+        fieldOperationCost = ormProcessor.getOperationCosts();
+        if (fieldOperationCost == null) {
+            fieldOperationCost = new FieldOperationCost();
         }
 
         dataValid = false;
@@ -155,11 +155,11 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         dataValid = true;
         try {
 
-            if (operationCosts == null) {
-                operationCosts = new OperationCosts();
+            if (fieldOperationCost == null) {
+                fieldOperationCost = new FieldOperationCost();
             }
-            operationCosts.setManualPloughCost(manualPloughCost);
-            operationCosts.setManualRidgeCost(manualRidgeCost);
+            fieldOperationCost.setManualPloughCost(manualPloughCost);
+            fieldOperationCost.setManualRidgeCost(manualRidgeCost);
 
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

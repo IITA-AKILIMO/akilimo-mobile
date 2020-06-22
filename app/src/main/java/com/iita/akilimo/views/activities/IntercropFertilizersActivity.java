@@ -26,7 +26,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.IntercropFertilizerGridAdapter;
 import com.iita.akilimo.databinding.ActivityFertilizersBinding;
-import com.iita.akilimo.entities.FertilizerPrices;
+import com.iita.akilimo.entities.FertilizerPrice;
 import com.iita.akilimo.entities.InterCropFertilizer;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
@@ -71,7 +71,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
     private List<InterCropFertilizer> availableFertilizersList = new ArrayList<>();
     private List<InterCropFertilizer> selectedFertilizers = new ArrayList<>();
     private List<InterCropFertilizer> fertilizerTypesList = new ArrayList<>();
-    private List<FertilizerPrices> fertilizerPricesList = new ArrayList<>();
+    private List<FertilizerPrice> fertilizerPricesList = new ArrayList<>();
 
     private IntercropFertilizerGridAdapter mAdapter;
     private int minSelection = 1;
@@ -288,7 +288,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
                 ObjectMapper objectMapper = new ObjectMapper();
                 try {
                     //check if fertilizer price list is already populated
-                    fertilizerPricesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<FertilizerPrices>>() {
+                    fertilizerPricesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<FertilizerPrice>>() {
                     });
 
                     if (fertilizerPricesList.size() > 0) {

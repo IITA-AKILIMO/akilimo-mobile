@@ -27,7 +27,7 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.FertilizerGridAdapter;
 import com.iita.akilimo.databinding.ActivityFertilizersBinding;
 import com.iita.akilimo.entities.Fertilizer;
-import com.iita.akilimo.entities.FertilizerPrices;
+import com.iita.akilimo.entities.FertilizerPrice;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
@@ -66,7 +66,7 @@ public class FertilizersActivity extends BaseActivity {
     private List<Fertilizer> availableFertilizersList = new ArrayList<>();
     private List<Fertilizer> selectedFertilizers = new ArrayList<>();
     private List<Fertilizer> fertilizerTypesList = new ArrayList<>();
-    private List<FertilizerPrices> fertilizerPricesList = new ArrayList<>();
+    private List<FertilizerPrice> fertilizerPricesList = new ArrayList<>();
 
     private FertilizerGridAdapter mAdapter;
     int minSelection = 2;
@@ -278,7 +278,7 @@ public class FertilizersActivity extends BaseActivity {
                 lyt_progress.setVisibility(View.GONE);
                 ObjectMapper objectMapper = new ObjectMapper();
                 try {
-                    fertilizerPricesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<FertilizerPrices>>() {
+                    fertilizerPricesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<FertilizerPrice>>() {
                     });
 
                     if (fertilizerPricesList.size() > 0) {

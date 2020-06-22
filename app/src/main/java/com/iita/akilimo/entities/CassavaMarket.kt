@@ -6,7 +6,7 @@ import com.iita.akilimo.utils.enums.EnumCassavaProduceType
 
 
 @Entity(tableName = "cassava_market")
-open class CassavaMarketOutlet {
+open class CassavaMarket {
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null
 

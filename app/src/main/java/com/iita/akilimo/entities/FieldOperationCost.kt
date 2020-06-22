@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "operation_costs")
-open class OperationCosts() {
+open class FieldOperationCost() {
 
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null

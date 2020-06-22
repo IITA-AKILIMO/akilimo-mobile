@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(tableName = "fertilizer_price")
-open class FertilizerPrices {
+open class FertilizerPrice {
     @JsonProperty("id")
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0

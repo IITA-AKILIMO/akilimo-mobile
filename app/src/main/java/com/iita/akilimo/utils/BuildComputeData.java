@@ -7,20 +7,20 @@ import androidx.annotation.NonNull;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
-import com.iita.akilimo.entities.CassavaMarketOutlet;
+import com.iita.akilimo.entities.CassavaMarket;
 import com.iita.akilimo.entities.CurrentFieldYield;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.Fertilizer;
 import com.iita.akilimo.entities.InterCropFertilizer;
 import com.iita.akilimo.entities.InvestmentAmount;
 import com.iita.akilimo.entities.LocationInfo;
-import com.iita.akilimo.entities.MaizeMarketOutlet;
+import com.iita.akilimo.entities.MaizeMarket;
 import com.iita.akilimo.entities.MaizePerformance;
 import com.iita.akilimo.entities.MandatoryInfo;
-import com.iita.akilimo.entities.OperationCosts;
+import com.iita.akilimo.entities.FieldOperationCost;
 import com.iita.akilimo.entities.PotatoMarketOutlet;
 import com.iita.akilimo.entities.ProfileInfo;
-import com.iita.akilimo.entities.ScheduledDates;
+import com.iita.akilimo.entities.ScheduledDate;
 import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.models.ComputeRequest;
 import com.iita.akilimo.rest.request.RecommendationRequest;
@@ -252,7 +252,7 @@ public class BuildComputeData {
         if (useCases != null) {
             computeRequest.setInterCroppingMaizeRec(useCases.getCIM());
             computeRequest.setInterCroppingPotatoRec(useCases.getCIS());
-            computeRequest.setUseCase(useCases.getUseCase());
+            computeRequest.setUseCase(useCases.getName());
 
             computeRequest.setFertilizerRec(useCases.getFR());
             computeRequest.setPlantingPracticesRec(useCases.getBPP());
@@ -274,7 +274,7 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildPlantingDates(@NonNull ComputeRequest computeRequest) {
-        ScheduledDates sph = ormProcessor.getPlantingHarvestDates();
+        ScheduledDate sph = ormProcessor.getPlantingHarvestDates();
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy");
 
         if (sph != null) {
@@ -345,19 +345,19 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildOperationCosts(@NonNull ComputeRequest computeRequest) {
-        OperationCosts operationCosts = ormProcessor.getOperationCosts();
+        FieldOperationCost fieldOperationCost = ormProcessor.getOperationCosts();
 
-        if (operationCosts != null) {
-            costTractorPlough = operationCosts.getTractorPloughCost();
-            costTractorHarrow = operationCosts.getTractorHarrowCost();
-            costTractorRidging = operationCosts.getTractorRidgeCost();
+        if (fieldOperationCost != null) {
+            costTractorPlough = fieldOperationCost.getTractorPloughCost();
+            costTractorHarrow = fieldOperationCost.getTractorHarrowCost();
+            costTractorRidging = fieldOperationCost.getTractorRidgeCost();
 
-            costManualPloughing = operationCosts.getManualPloughCost();
-            costManualHarrowing = operationCosts.getManualHarrowCost();
-            costManualRidging = operationCosts.getManualRidgeCost();
+            costManualPloughing = fieldOperationCost.getManualPloughCost();
+            costManualHarrowing = fieldOperationCost.getManualHarrowCost();
+            costManualRidging = fieldOperationCost.getManualRidgeCost();
 
-            costWeedingOne = operationCosts.getFirstWeedingOperationCost();
-            costWeedingTwo = operationCosts.getSecondWeedingOperationCost();
+            costWeedingOne = fieldOperationCost.getFirstWeedingOperationCost();
+            costWeedingTwo = fieldOperationCost.getSecondWeedingOperationCost();
         }
 
         computeRequest.setCostLmoAreaBasis(costLmoAreaBasis);
@@ -396,17 +396,17 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildCassavaMarketOutlet(@NonNull ComputeRequest computeRequest) {
-        CassavaMarketOutlet cassavaMarketOutlet = ormProcessor.getCassavaMarketOutlet();
+        CassavaMarket cassavaMarket = ormProcessor.getCassavaMarketOutlet();
 
-        if (cassavaMarketOutlet != null) {
-            sellToStarchFactory = cassavaMarketOutlet.isStarchFactoryRequired();
+        if (cassavaMarket != null) {
+            sellToStarchFactory = cassavaMarket.isStarchFactoryRequired();
             if (sellToStarchFactory) {
-                starchFactoryName = cassavaMarketOutlet.getStarchFactory();
+                starchFactoryName = cassavaMarket.getStarchFactory();
             }
 
-            cassavaProduceType = cassavaMarketOutlet.getProduceType();
-            cassavaUnitWeight = cassavaMarketOutlet.getUnitWeight();
-            cassavaUnitPrice = cassavaMarketOutlet.getUnitPrice();
+            cassavaProduceType = cassavaMarket.getProduceType();
+            cassavaUnitWeight = cassavaMarket.getUnitWeight();
+            cassavaUnitPrice = cassavaMarket.getUnitPrice();
         }
         computeRequest.setStarchFactoryName(starchFactoryName);
         computeRequest.setSellToStarchFactory(sellToStarchFactory);
@@ -425,11 +425,11 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildMaizeMarketOutlet(ComputeRequest computeRequest) {
-        MaizeMarketOutlet maizeMarketOutlet = ormProcessor.getMaizeMarketOutlet();
-        if (maizeMarketOutlet != null) {
-            maizeProdType = maizeMarketOutlet.getProduceType();
-            maizeUnitWeight = maizeMarketOutlet.getUnitWeight();
-            maizeUnitPrice = maizeMarketOutlet.getUnitPrice();
+        MaizeMarket maizeMarket = ormProcessor.getMaizeMarketOutlet();
+        if (maizeMarket != null) {
+            maizeProdType = maizeMarket.getProduceType();
+            maizeUnitWeight = maizeMarket.getUnitWeight();
+            maizeUnitPrice = maizeMarket.getUnitPrice();
         }
         computeRequest.setMaizeProduceType(maizeProdType);
         computeRequest.setMaizeUnitWeight(maizeUnitWeight);

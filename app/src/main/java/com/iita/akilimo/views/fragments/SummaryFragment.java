@@ -22,7 +22,7 @@ import com.iita.akilimo.databinding.FragmentSummaryBinding;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.MandatoryInfo;
-import com.iita.akilimo.entities.ScheduledDates;
+import com.iita.akilimo.entities.ScheduledDate;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.interfaces.IFragmentCallBack;
 import com.iita.akilimo.models.TimeLineModel;
@@ -50,7 +50,7 @@ public class SummaryFragment extends BaseFragment {
     private LocationInfo location;
     private MandatoryInfo mandatoryInfo;
     private CurrentPractice currentPractice;
-    private ScheduledDates scheduledDates;
+    private ScheduledDate scheduledDate;
 
     private IFragmentCallBack fragmentCallBack;
     private MyTimeLineAdapter adapter;
@@ -143,7 +143,7 @@ public class SummaryFragment extends BaseFragment {
         location = ormProcessor.getLocationInfo();
         mandatoryInfo = ormProcessor.getMandatoryInfo();
         currentPractice = ormProcessor.getCurrentPractice();
-        scheduledDates = ormProcessor.getPlantingHarvestDates();
+        scheduledDate = ormProcessor.getPlantingHarvestDates();
         countryName = "";
 
         if (!Strings.isEmptyOrWhitespace(mandatoryInfo.getCountryName())) {
@@ -167,9 +167,9 @@ public class SummaryFragment extends BaseFragment {
             locationPicked = lat != 0 || lon != 0;
         }
 
-        if (scheduledDates != null) {
-            plantingDate = scheduledDates.getPlantingDate();
-            harvestDate = scheduledDates.getHarvestDate();
+        if (scheduledDate != null) {
+            plantingDate = scheduledDate.getPlantingDate();
+            harvestDate = scheduledDate.getHarvestDate();
             plantingDateProvided = !Strings.isEmptyOrWhitespace(plantingDate);
             harvestDateProvided = !Strings.isEmptyOrWhitespace(plantingDate);
         }

@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "scheduled_dates")
-open class ScheduledDates() {
+open class ScheduledDate() {
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null
     var deviceId: String? = null

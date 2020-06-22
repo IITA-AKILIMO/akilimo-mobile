@@ -24,7 +24,7 @@ import com.google.android.gms.common.util.Strings;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.ActivityMaizeMarketBinding;
-import com.iita.akilimo.entities.MaizeMarketOutlet;
+import com.iita.akilimo.entities.MaizeMarket;
 import com.iita.akilimo.entities.MaizePrice;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
@@ -65,7 +65,7 @@ public class MaizeMarketActivity extends BaseActivity {
     ActivityMaizeMarketBinding binding;
 
     private MathHelper mathHelper;
-    private MaizeMarketOutlet maizeMarketOutlet;
+    private MaizeMarket maizeMarket;
     private String produceType;
     private Double unitPrice;
     private List<MaizePrice> maizePriceList = null;
@@ -116,7 +116,7 @@ public class MaizeMarketActivity extends BaseActivity {
         btnCancel = binding.marketContent.twoButtons.btnCancel;
 
 
-        maizeMarketOutlet = ormProcessor.getMaizeMarketOutlet();
+        maizeMarket = ormProcessor.getMaizeMarketOutlet();
 
         MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
@@ -235,18 +235,18 @@ public class MaizeMarketActivity extends BaseActivity {
         btnFinish.setOnClickListener(view -> validate(false));
         btnCancel.setOnClickListener(view -> closeActivity(false));
 
-        if (maizeMarketOutlet != null) {
-            produceType = maizeMarketOutlet.getProduceType();
-            unitOfSale = maizeMarketOutlet.getUnitOfSale();
-            unitPrice = maizeMarketOutlet.getUnitPrice();
+        if (maizeMarket != null) {
+            produceType = maizeMarket.getProduceType();
+            unitOfSale = maizeMarket.getUnitOfSale();
+            unitPrice = maizeMarket.getUnitPrice();
 
-            grainUnitRadioIndex = maizeMarketOutlet.getGrainUnitRadioIndex();
-            produceRadioIndex = maizeMarketOutlet.getProduceRadioIndex();
-            grainUnitPriceRadioIndex = maizeMarketOutlet.getGrainUnitPriceRadioIndex();
+            grainUnitRadioIndex = maizeMarket.getGrainUnitRadioIndex();
+            produceRadioIndex = maizeMarket.getProduceRadioIndex();
+            grainUnitPriceRadioIndex = maizeMarket.getGrainUnitPriceRadioIndex();
 
 
-            grainPrice = String.valueOf(maizeMarketOutlet.getExactPrice());
-            cobPrice = String.valueOf(maizeMarketOutlet.getExactPrice());
+            grainPrice = String.valueOf(maizeMarket.getExactPrice());
+            cobPrice = String.valueOf(maizeMarket.getExactPrice());
 
             rdgMaizeProduceType.check(produceRadioIndex);
 
@@ -300,18 +300,18 @@ public class MaizeMarketActivity extends BaseActivity {
         if (dataIsValid) {
             try {
 
-                if (maizeMarketOutlet == null) {
-                    maizeMarketOutlet = new MaizeMarketOutlet();
+                if (maizeMarket == null) {
+                    maizeMarket = new MaizeMarket();
                 }
 
-                maizeMarketOutlet.setProduceType(produceType);
-                maizeMarketOutlet.setUnitPrice(unitPrice);
-                maizeMarketOutlet.setUnitOfSale(unitOfSale);
-                maizeMarketOutlet.setExactPrice(exactPrice);
+                maizeMarket.setProduceType(produceType);
+                maizeMarket.setUnitPrice(unitPrice);
+                maizeMarket.setUnitOfSale(unitOfSale);
+                maizeMarket.setExactPrice(exactPrice);
 
-                maizeMarketOutlet.setGrainUnitPriceRadioIndex(grainUnitPriceRadioIndex);
-                maizeMarketOutlet.setGrainUnitRadioIndex(grainUnitRadioIndex);
-                maizeMarketOutlet.setProduceRadioIndex(produceRadioIndex);
+                maizeMarket.setGrainUnitPriceRadioIndex(grainUnitPriceRadioIndex);
+                maizeMarket.setGrainUnitRadioIndex(grainUnitRadioIndex);
+                maizeMarket.setProduceRadioIndex(produceRadioIndex);
 
                 closeActivity(backPressed);
             } catch (Exception ex) {

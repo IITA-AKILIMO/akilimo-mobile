@@ -24,7 +24,7 @@ import com.google.android.gms.common.util.Strings;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.ActivityCassavaMarketBinding;
-import com.iita.akilimo.entities.CassavaMarketOutlet;
+import com.iita.akilimo.entities.CassavaMarket;
 import com.iita.akilimo.entities.CassavaPrice;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.StarchFactory;
@@ -76,7 +76,7 @@ public class CassavaMarketActivity extends BaseActivity {
     String unitOfSale;
     EnumUnitOfSale unitOfSaleEnum = EnumUnitOfSale.ONE_KG;
 
-    private CassavaMarketOutlet cassavaMarketOutlet;
+    private CassavaMarket cassavaMarket;
     private List<CassavaPrice> cassavaPriceList = null;
 
     private boolean factoryRequired;
@@ -114,11 +114,11 @@ public class CassavaMarketActivity extends BaseActivity {
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
 
-        cassavaMarketOutlet = ormProcessor.getCassavaMarketOutlet();
-        if (cassavaMarketOutlet != null) {
-            selectedFactory = cassavaMarketOutlet.getStarchFactory();
-            exactPrice = cassavaMarketOutlet.getUnitPrice();
-            unitOfSale = cassavaMarketOutlet.getUnitOfSale();
+        cassavaMarket = ormProcessor.getCassavaMarketOutlet();
+        if (cassavaMarket != null) {
+            selectedFactory = cassavaMarket.getStarchFactory();
+            exactPrice = cassavaMarket.getUnitPrice();
+            unitOfSale = cassavaMarket.getUnitOfSale();
         }
 
         MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
@@ -274,15 +274,15 @@ public class CassavaMarketActivity extends BaseActivity {
 
         if (dataIsValid) {
             try {
-                if (cassavaMarketOutlet == null) {
-                    cassavaMarketOutlet = new CassavaMarketOutlet();
+                if (cassavaMarket == null) {
+                    cassavaMarket = new CassavaMarket();
                 }
-                cassavaMarketOutlet.setStarchFactory(selectedFactory);
-                cassavaMarketOutlet.setStarchFactoryRequired(factoryRequired);
-                cassavaMarketOutlet.setProduceType(produceType);
-                cassavaMarketOutlet.setUnitOfSale(unitOfSale);
-                cassavaMarketOutlet.setExactPrice(exactPrice);
-                cassavaMarketOutlet.setUnitPrice(exactPrice);
+                cassavaMarket.setStarchFactory(selectedFactory);
+                cassavaMarket.setStarchFactoryRequired(factoryRequired);
+                cassavaMarket.setProduceType(produceType);
+                cassavaMarket.setUnitOfSale(unitOfSale);
+                cassavaMarket.setExactPrice(exactPrice);
+                cassavaMarket.setUnitPrice(exactPrice);
 
                 closeActivity(backPressed);
             } catch (Exception ex) {
@@ -401,16 +401,16 @@ public class CassavaMarketActivity extends BaseActivity {
     protected void processData() {
         List<StarchFactory> starchFactoriesList = ormProcessor.getStarchFactories(countryCode);
         addFactoriesRadioButtons(starchFactoriesList);
-        cassavaMarketOutlet = ormProcessor.getCassavaMarketOutlet();
+        cassavaMarket = ormProcessor.getCassavaMarketOutlet();
 
-        if (cassavaMarketOutlet != null) {
-            boolean sfRequired = cassavaMarketOutlet.isStarchFactoryRequired();
-            priceText = String.valueOf(cassavaMarketOutlet.getExactPrice());
+        if (cassavaMarket != null) {
+            boolean sfRequired = cassavaMarket.isStarchFactoryRequired();
+            priceText = String.valueOf(cassavaMarket.getExactPrice());
             rdgMarketOutlet.check(sfRequired ? R.id.rdFactory : R.id.rdOtherMarket);
             if (!sfRequired) {
-                produceType = cassavaMarketOutlet.getProduceType();
-                unitOfSale = cassavaMarketOutlet.getUnitOfSale();
-                averageUnitPricePrice = cassavaMarketOutlet.getUnitPrice();
+                produceType = cassavaMarket.getProduceType();
+                unitOfSale = cassavaMarket.getUnitOfSale();
+                averageUnitPricePrice = cassavaMarket.getUnitPrice();
                 switch (unitOfSaleEnum) {
                     case ONE_KG:
                         rdgUnitOfSale.check(R.id.rd_per_kg);

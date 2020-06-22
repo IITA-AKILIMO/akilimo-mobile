@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import com.iita.akilimo.utils.enums.EnumMaizeProduceType
 
 @Entity(tableName = "maize_market")
-open class MaizeMarketOutlet {
+open class MaizeMarket {
 
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null
