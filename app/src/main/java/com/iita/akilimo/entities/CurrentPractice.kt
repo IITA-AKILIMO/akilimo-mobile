@@ -1,12 +1,13 @@
 package com.iita.akilimo.entities
 
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
+import com.j256.ormlite.field.DatabaseField
+import com.j256.ormlite.table.DatabaseTable
 
-open class CurrentPractice : RealmObject() {
+@DatabaseTable(tableName = "current_practice")
+open class CurrentPractice {
 
-    @PrimaryKey
-    var id: String? = null
+    @DatabaseField(columnName = "id", generatedId = true)
+    var id: Int? = null
     var weedRadioIndex = 0
     var weedControlTechnique: String? = null
     var ploughOperations: String? = null

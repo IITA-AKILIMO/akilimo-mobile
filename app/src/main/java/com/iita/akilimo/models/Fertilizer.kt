@@ -3,14 +3,17 @@ package com.iita.akilimo.models
 import android.os.Parcelable
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
+import com.j256.ormlite.field.DatabaseField
+import com.j256.ormlite.table.DatabaseTable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonIgnoreProperties(ignoreUnknown = true)
-open class Fertilizer : RealmObject(), Parcelable {
+@DatabaseTable
+open class Fertilizer : Parcelable {
 
+    @DatabaseField(columnName = "id", generatedId = true)
+    var id: Int? = null
 
     var imageId = 0
 
@@ -20,7 +23,7 @@ open class Fertilizer : RealmObject(), Parcelable {
     @JsonProperty("name")
     var name: String? = null
 
-    @PrimaryKey
+
     @JsonProperty("type")
     var fertilizerType: String? = null
 

@@ -1,13 +1,14 @@
 package com.iita.akilimo.entities
 
+import com.j256.ormlite.field.DatabaseField
+import com.j256.ormlite.table.DatabaseTable
 import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
 
+@DatabaseTable
+open class MaizePerformance {
 
-open class MaizePerformance : RealmObject() {
-
-    @PrimaryKey
-    var id: String? = null
+    @DatabaseField(columnName = "id", generatedId = true)
+    var id: Int? = null
     var performanceRadioIndex = 0
     var maizePerformance: String? = null
     var performanceValue: String? = null

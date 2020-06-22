@@ -1,12 +1,14 @@
 package com.iita.akilimo.entities
 
 import com.iita.akilimo.utils.enums.EnumCassavaProduceType
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
+import com.j256.ormlite.field.DatabaseField
+import com.j256.ormlite.table.DatabaseTable
 
-open class CassavaMarketOutlet : RealmObject() {
-    @PrimaryKey
-    var id: String? = null
+
+@DatabaseTable(tableName = "cassava_market")
+open class CassavaMarketOutlet {
+    @DatabaseField(columnName = "id", generatedId = true)
+    var id: Int? = null
 
     var starchFactory: String? = null
 

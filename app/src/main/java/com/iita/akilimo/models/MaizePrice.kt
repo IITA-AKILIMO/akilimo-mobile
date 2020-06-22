@@ -3,13 +3,20 @@ package com.iita.akilimo.models
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.j256.ormlite.field.DatabaseField
+import com.j256.ormlite.table.DatabaseTable
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 import java.util.*
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-open class MaizePrice : RealmObject() {
+@DatabaseTable
+open class MaizePrice {
+
+    @JsonProperty("id")
+    @DatabaseField(columnName = "id", generatedId = true)
+    var id: Int = 0
 
     @JsonProperty("priceIndex")
     var priceIndex: Long = 0
@@ -20,7 +27,6 @@ open class MaizePrice : RealmObject() {
     @JsonProperty("country")
     var country: String? = null
 
-    @PrimaryKey
     @JsonProperty("countryPrice")
     var countryPrice: String? = null
 

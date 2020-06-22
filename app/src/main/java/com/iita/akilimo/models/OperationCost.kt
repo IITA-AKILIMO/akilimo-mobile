@@ -4,13 +4,20 @@ import android.os.Parcelable
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.j256.ormlite.field.DatabaseField
+import com.j256.ormlite.table.DatabaseTable
 import io.realm.RealmObject
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@DatabaseTable
 open class OperationCost : RealmObject(), Parcelable {
+
+    @JsonProperty("id")
+    @DatabaseField(columnName = "id", generatedId = true)
+    var id: Int = 0
 
     @JsonProperty("listIndex")
     var listIndex: Long = 0

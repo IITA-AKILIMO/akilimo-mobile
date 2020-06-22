@@ -1,13 +1,14 @@
 package com.iita.akilimo.entities
 
 import com.iita.akilimo.utils.enums.EnumMaizeProduceType
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
+import com.j256.ormlite.field.DatabaseField
+import com.j256.ormlite.table.DatabaseTable
 
-open class MaizeMarketOutlet : RealmObject() {
+@DatabaseTable
+open class MaizeMarketOutlet {
 
-    @PrimaryKey
-    var id: String? = null
+    @DatabaseField(columnName = "id", generatedId = true)
+    var id: Int? = null
     var produceRadioIndex = 0
     var grainUnitRadioIndex = 0
     var grainUnitPriceRadioIndex = 0

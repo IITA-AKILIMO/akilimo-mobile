@@ -4,12 +4,18 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
+import com.j256.ormlite.field.DatabaseField
+import com.j256.ormlite.table.DatabaseTable
 
 @Deprecated("Too much duplication move to common fertilizer")
 @JsonIgnoreProperties(ignoreUnknown = true)
-open class InterCropFertilizer() : RealmObject(), Parcelable {
+@DatabaseTable
+open class InterCropFertilizer() : Parcelable {
+
+    @JsonProperty("id")
+    @DatabaseField(columnName = "id", generatedId = true)
+    var id: Int = 0
+
     var imageId = 0
 
     @JsonProperty("fertilizerId")
@@ -18,7 +24,6 @@ open class InterCropFertilizer() : RealmObject(), Parcelable {
     @JsonProperty("name")
     var name: String? = null
 
-    @PrimaryKey
     @JsonProperty("type")
     var fertilizerType: String? = null
 

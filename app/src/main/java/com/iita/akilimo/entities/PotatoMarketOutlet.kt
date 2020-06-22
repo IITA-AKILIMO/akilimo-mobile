@@ -1,13 +1,16 @@
 package com.iita.akilimo.entities
 
 import com.iita.akilimo.utils.enums.EnumPotatoProduceType
+import com.j256.ormlite.field.DatabaseField
+import com.j256.ormlite.table.DatabaseTable
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 
-open class PotatoMarketOutlet : RealmObject() {
+@DatabaseTable
+open class PotatoMarketOutlet {
 
-    @PrimaryKey
-    var id: String? = null
+    @DatabaseField(columnName = "id", generatedId = true)
+    var id: Int? = null
     var produceTypeRadioIndex = 0
     var potatoUnitOfSaleRadioIndex = 0
     var potatoUnitPriceRadioIndex = 0

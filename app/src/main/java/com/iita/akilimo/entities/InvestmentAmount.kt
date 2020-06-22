@@ -1,13 +1,14 @@
 package com.iita.akilimo.entities
 
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
+import com.j256.ormlite.field.DatabaseField
+import com.j256.ormlite.table.DatabaseTable
 
 
-open class InvestmentAmount : RealmObject() {
+@DatabaseTable(tableName = "investment_amount")
+open class InvestmentAmount {
 
-    @PrimaryKey
-    var id: String? = null
+    @DatabaseField(columnName = "id", generatedId = true)
+    var id: Int? = null
     var minInvestmentAmountUSD: Double = 0.0
     var minInvestmentAmountLocal: Double = 0.0
     var investmentAmountUSD: Double = 0.0

@@ -1,15 +1,18 @@
 package com.iita.akilimo.entities
 
+import com.j256.ormlite.field.DatabaseField
+import com.j256.ormlite.table.DatabaseTable
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.Required
 
-open class ProfileInfo : RealmObject() {
+@DatabaseTable
+open class ProfileInfo {
 
 
-    @PrimaryKey
-    var profileId: String? = null
-    var deviceID: String? = null
+    @DatabaseField(columnName = "id", generatedId = true)
+    var profileId: Int? = null
+    var deviceToken: String? = null
     var userName: String? = null
 
     @Required

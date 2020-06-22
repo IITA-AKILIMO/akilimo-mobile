@@ -2,13 +2,17 @@ package com.iita.akilimo.models
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.j256.ormlite.field.DatabaseField
+import com.j256.ormlite.table.DatabaseTable
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-open class FertilizerPrices : RealmObject() {
+@DatabaseTable
+open class FertilizerPrices {
     @JsonProperty("id")
-    var id: Long = 0
+    @DatabaseField(columnName = "id", generatedId = true)
+    var id: Int = 0
 
     @JsonProperty("recordId")
     var recordId = 0
@@ -34,7 +38,6 @@ open class FertilizerPrices : RealmObject() {
     @JsonProperty("country")
     var country: String? = null
 
-    @PrimaryKey
     @JsonProperty("fertilizerCountry")
     var fertilizerCountry: String? = null
 

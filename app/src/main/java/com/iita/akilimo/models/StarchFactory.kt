@@ -3,12 +3,16 @@ package com.iita.akilimo.models
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.google.android.gms.common.util.Strings
-import io.realm.RealmObject
+import com.j256.ormlite.field.DatabaseField
+import com.j256.ormlite.table.DatabaseTable
 import io.realm.annotations.PrimaryKey
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-open class StarchFactory : RealmObject() {
-    var id: Long = 0
+@DatabaseTable
+open class StarchFactory {
+    @JsonProperty("id")
+    @DatabaseField(columnName = "id", generatedId = true)
+    var id: Int = 0
 
     @JsonProperty("factoryName")
     var factoryName: String? = null
