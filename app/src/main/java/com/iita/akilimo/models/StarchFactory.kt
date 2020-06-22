@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.google.android.gms.common.util.Strings
 import com.j256.ormlite.field.DatabaseField
 import com.j256.ormlite.table.DatabaseTable
-import io.realm.annotations.PrimaryKey
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @DatabaseTable
@@ -17,7 +16,7 @@ open class StarchFactory {
     @JsonProperty("factoryName")
     var factoryName: String? = null
 
-    @PrimaryKey
+
     @JsonProperty("factoryLabel")
     var factoryLabel: String? = null
 

@@ -146,26 +146,19 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
                 isPriceValid = true;
                 editExactFertilizerPrice.setError(null);
             }
-            try (Realm myRealm = Realm.getDefaultInstance()) {
-                myRealm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        fertilizer.setPrice(bagPrice);
-                        fertilizer.setPricePerBag(savedPricePerBag);
-                        fertilizer.setPriceRange(bagPriceRange);
-                        fertilizer.setSelected(true);
-                        fertilizer.setExactPrice(isExactPriceRequired);
-                    }
-                });
-                if (isPriceValid) {
-                    priceSpecified = true;
-                    removeSelected = false;
-                    dismiss();
-                }
-            } catch (Exception ex) {
-                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                Crashlytics.logException(ex);
+
+            fertilizer.setPrice(bagPrice);
+            fertilizer.setPricePerBag(savedPricePerBag);
+            fertilizer.setPriceRange(bagPriceRange);
+            fertilizer.setSelected(true);
+            fertilizer.setExactPrice(isExactPriceRequired);
+
+            if (isPriceValid) {
+                priceSpecified = true;
+                removeSelected = false;
+                dismiss();
             }
+
 
         });
 

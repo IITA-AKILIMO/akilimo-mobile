@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.j256.ormlite.table.DatabaseTable
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
+
+
 import java.util.*
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -21,7 +21,7 @@ open class ProducePrice {
     @JsonProperty("country")
     var country: String? = null
 
-    @PrimaryKey
+
     @JsonProperty("countryPrice")
     var countryPrice: String? = null
 

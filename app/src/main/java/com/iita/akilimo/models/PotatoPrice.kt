@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.j256.ormlite.field.DatabaseField
 import com.j256.ormlite.table.DatabaseTable
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
+
+
 import java.util.*
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

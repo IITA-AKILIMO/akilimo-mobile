@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.j256.ormlite.field.DatabaseField
 import com.j256.ormlite.table.DatabaseTable
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
+
+
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @DatabaseTable

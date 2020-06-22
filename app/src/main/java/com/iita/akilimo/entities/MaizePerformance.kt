@@ -2,7 +2,6 @@ package com.iita.akilimo.entities
 
 import com.j256.ormlite.field.DatabaseField
 import com.j256.ormlite.table.DatabaseTable
-import io.realm.RealmObject
 
 @DatabaseTable
 open class MaizePerformance {
