@@ -169,7 +169,7 @@ public class MapBoxActivity extends BaseLocationPicker {
         if (gps.canGetLocation()) {
             int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this.context);
             if (status == ConnectionResult.SUCCESS) {
-                currentLat = gps.getLatitude();
+                currentLong = gps.getLongitude();
                 currentLat = gps.getLatitude();
             }
             gps.stopUsingGPS();

@@ -32,7 +32,6 @@ import com.iita.akilimo.utils.Tools
 import com.iita.akilimo.views.activities.usecases.RecommendationsActivity
 import com.iita.akilimo.views.fragments.*
 import io.realm.Realm
-import timber.log.Timber
 import kotlin.system.exitProcess
 
 
@@ -64,7 +63,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
     private var placeName: String? = null
     private var address: String? = null
     private lateinit var currentFragment: Fragment
-    private lateinit var location: LocationInfo
+    private var location: LocationInfo? = null
 
 
     private lateinit var activity: Activity
@@ -280,7 +279,6 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                             Toast.LENGTH_LONG
                         ).show()
                     }
-                    Timber.d(currentLong.toString())
                 }
             }
 
@@ -291,20 +289,25 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                 }
 
                 location = realmProcessor.locationInfo
-                location.latitude = currentLat
-                location.longitude = currentLong
-                location.altitude = currentAlt
-                location.placeName = when {
+                location?.latitude = currentLat
+                location?.longitude = currentLong
+                location?.altitude = currentAlt
+                location?.placeName = when {
                     !Strings.isEmptyOrWhitespace(placeName) -> placeName
                     else -> defaultPlaceName
                 }
-                location.address = when {
+                location?.address = when {
                     !Strings.isEmptyOrWhitespace(address) -> address
                     else -> "NA"
                 }
             }
             (currentFragment as? LocationFragment)?.refreshData()
         } catch (ex: Exception) {
+            Toast.makeText(
+                context,
+                getString(R.string.lbl_location_error),
+                Toast.LENGTH_LONG
+            ).show()
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
             Crashlytics.logException(ex)
         }
