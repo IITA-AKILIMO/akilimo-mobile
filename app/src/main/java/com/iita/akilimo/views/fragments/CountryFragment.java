@@ -111,12 +111,8 @@ public class CountryFragment extends BaseFragment {
         final List<String> countries = new ArrayList<>();
         final List<Integer> countryImages = new ArrayList<>();
 
-        //let us get the current locale and limit countries to that locale
-        Locale currentLocale = getCurrentLocale();
-        if (!currentLocale.getCountry().equalsIgnoreCase(EnumCountry.TANZANIA.countryCode())) {
-            countries.add(EnumCountry.NIGERIA.name());
-            countryImages.add(World.getFlagOf(EnumCountry.NIGERIA.countryCode()));
-        }
+        countries.add(EnumCountry.NIGERIA.name());
+        countryImages.add(World.getFlagOf(EnumCountry.NIGERIA.countryCode()));
         countries.add(EnumCountry.TANZANIA.name());
         countryImages.add(World.getFlagOf(EnumCountry.TANZANIA.countryCode()));
 
