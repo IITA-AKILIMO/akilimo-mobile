@@ -23,6 +23,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hbb20.CountryCodePicker;
 import com.iita.akilimo.R;
+import com.iita.akilimo.dao.ProfileInfoDao;
 import com.iita.akilimo.databinding.FragmentBioDataBinding;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
@@ -58,7 +59,6 @@ public class BioDataFragment extends BaseFragment {
     FragmentBioDataBinding binding;
 
 
-
     private boolean dataIsValid;
     private String firstName;
     private String lastName;
@@ -91,7 +91,6 @@ public class BioDataFragment extends BaseFragment {
         binding = FragmentBioDataBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
-
 
 
     @Override
@@ -149,7 +148,8 @@ public class BioDataFragment extends BaseFragment {
     @Override
     public void refreshData() {
         try {
-            profileInfo = realmProcessor.getProfileInfo();
+
+            profileInfo = database.profileInfoDao().findOneProfile();
             if (profileInfo != null) {
                 firstName = profileInfo.getFirstName();
                 lastName = profileInfo.getLastName();
@@ -187,6 +187,7 @@ public class BioDataFragment extends BaseFragment {
         farmName = lytFarmName.getEditText().getText().toString();
         email = lytEmail.getEditText().getText().toString();
         fullMobileNumber = ccp.getFullNumber();
+        mobileCode = ccp.getSelectedCountryCodeWithPlus();
 
         if (Strings.isEmptyOrWhitespace(firstName)) {
             dataIsValid = false;
@@ -215,15 +216,20 @@ public class BioDataFragment extends BaseFragment {
                 if (profileInfo == null) {
                     profileInfo = new ProfileInfo();
                 }
+                profileInfo.setUserName(profileInfo.getNames());
                 profileInfo.setFirstName(firstName);
                 profileInfo.setLastName(lastName);
                 profileInfo.setGender(gender);
                 profileInfo.setEmail(email);
                 profileInfo.setFarmName(farmName);
+                profileInfo.setFieldDescription(farmName);
                 profileInfo.setMobileCode(mobileCode);
                 profileInfo.setFullMobileNumber(fullMobileNumber);
                 profileInfo.setSelectedGenderIndex(selectedGenderIndex);
-                //load the next fragment
+
+                ProfileInfoDao profileInfoDao = database.profileInfoDao();
+                profileInfoDao.insert(profileInfo);
+
                 nextFragment();
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

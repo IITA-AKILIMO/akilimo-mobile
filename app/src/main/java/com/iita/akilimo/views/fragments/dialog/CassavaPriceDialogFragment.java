@@ -148,8 +148,8 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
         });
 
         radioGroup.setOnCheckedChangeListener((radioGroup, i) -> radioSelected(radioGroup));
-        if (realmProcessor != null) {
-            cassavaPriceList = realmProcessor.getCassavaPrices(countryCode);
+        if (ormProcessor != null) {
+            cassavaPriceList = ormProcessor.getCassavaPrices(countryCode);
             addPriceRadioButtons(cassavaPriceList, averagePrice);
         }
         return dialog;

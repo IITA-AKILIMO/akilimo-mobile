@@ -129,8 +129,8 @@ public class LocationFragment extends BaseFragment {
 
     private void reloadLocationInfo() {
         try {
-            profileInfo = realmProcessor.getProfileInfo();
-            locationInformation = realmProcessor.getLocationInfo();
+            profileInfo = ormProcessor.getProfileInfo();
+            locationInformation = ormProcessor.getLocationInfo();
 
             if (profileInfo != null) {
                 farmName = profileInfo.getFarmName();

@@ -116,7 +116,7 @@ public class FieldSizeFragment extends BaseFragment {
     @Override
     public void refreshData() {
         try {
-            mandatoryInfo = realmProcessor.getMandatoryInfo();
+            mandatoryInfo = ormProcessor.getMandatoryInfo();
             if (mandatoryInfo != null) {
                 isExactArea = mandatoryInfo.getExactArea();
                 areaUnit = mandatoryInfo.getAreaUnit();
@@ -174,7 +174,7 @@ public class FieldSizeFragment extends BaseFragment {
     }
 
     private void saveFieldSize() {
-        mandatoryInfo = realmProcessor.getMandatoryInfo();
+        mandatoryInfo = ormProcessor.getMandatoryInfo();
 
         fieldSizeRadioIndex = rdgFieldArea.getCheckedRadioButtonId();
         try {

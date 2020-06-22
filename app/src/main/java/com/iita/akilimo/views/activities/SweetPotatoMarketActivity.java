@@ -32,7 +32,7 @@ import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumPotatoProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
+import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.views.fragments.dialog.SweetPotatoPriceDialogFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -87,12 +87,12 @@ public class SweetPotatoMarketActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         context = this;
-        realmProcessor = new RealmProcessor();
+        ormProcessor = new OrmProcessor();
 
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
 
-        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
             currency = mandatoryInfo.getCurrency();
@@ -124,7 +124,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
     protected void initComponent() {
         enumPotatoProduceType = EnumPotatoProduceType.TUBERS.produce();
 
-        potatoMarketOutlet = realmProcessor.getPotatoMarketOutlet();
+        potatoMarketOutlet = ormProcessor.getPotatoMarketOutlet();
         if (potatoMarketOutlet != null) {
             produceTypeRadioIndex = potatoMarketOutlet.getProduceTypeRadioIndex();
             potatoUnitOfSaleRadioIndex = potatoMarketOutlet.getPotatoUnitOfSaleRadioIndex();

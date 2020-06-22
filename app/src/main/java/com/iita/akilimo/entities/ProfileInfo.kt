@@ -1,13 +1,13 @@
 package com.iita.akilimo.entities
 
-import com.j256.ormlite.field.DatabaseField
-import com.j256.ormlite.table.DatabaseTable
+import androidx.room.*
 
-@DatabaseTable
+
+@Entity(tableName = "profile_info")
+//@Entity(tableName = "profile_info", indices = @Index(value = {"name"}, unique = true))
 open class ProfileInfo {
 
-
-    @DatabaseField(columnName = "id", generatedId = true)
+    @PrimaryKey(autoGenerate = true)
     var profileId: Int? = null
     var deviceToken: String? = null
     var userName: String? = null

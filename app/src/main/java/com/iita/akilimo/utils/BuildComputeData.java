@@ -25,7 +25,7 @@ import com.iita.akilimo.models.Fertilizer;
 import com.iita.akilimo.models.InterCropFertilizer;
 import com.iita.akilimo.rest.request.RecommendationRequest;
 import com.iita.akilimo.rest.request.UserInfo;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
+import com.iita.akilimo.dao.OrmProcessor;
 
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
@@ -141,13 +141,13 @@ public class BuildComputeData {
     private String cassavaProduceType = DEFAULT_CASSAVA_PD;
     private String starchFactoryName = DEFAULT_UNAVAILABLE;
 
-    private RealmProcessor realmProcessor;
+    private OrmProcessor ormProcessor;
     private MathHelper mathHelper;
     private ModelMapper modelMapper;
     private SessionManager sessionManager;
 
     public BuildComputeData(@NonNull Activity activity) {
-        realmProcessor = new RealmProcessor();
+        ormProcessor = new OrmProcessor();
         mathHelper = new MathHelper(activity);
         modelMapper = new ModelMapper();
         sessionManager = new SessionManager(activity);
@@ -176,10 +176,10 @@ public class BuildComputeData {
         }.getType();
 
         if (computeRequest.getInterCroppingPotatoRec() || computeRequest.getInterCroppingMaizeRec()) {
-            List<InterCropFertilizer> interCropFertilizers = realmProcessor.getAllInterCropFertilizersByCountry(countryCode);
+            List<InterCropFertilizer> interCropFertilizers = ormProcessor.getAllInterCropFertilizersByCountry(countryCode);
             fertilizerList = modelMapper.map(interCropFertilizers, listType);
         } else {
-            fertilizerList = realmProcessor.getAvailableFertilizersByCountry(countryCode);
+            fertilizerList = ormProcessor.getAvailableFertilizersByCountry(countryCode);
         }
 
 
@@ -189,7 +189,7 @@ public class BuildComputeData {
     private UserInfo buildProfileInfo() {
         UserInfo userInfo = new UserInfo();
         try {
-            ProfileInfo profileInfo = realmProcessor.getProfileInfo();
+            ProfileInfo profileInfo = ormProcessor.getProfileInfo();
 
             if (profileInfo != null) {
                 String firstName = Strings.isEmptyOrWhitespace(profileInfo.getFirstName()) ? DEFAULT_USERNAME : profileInfo.getFirstName();
@@ -226,8 +226,8 @@ public class BuildComputeData {
 
     private ComputeRequest buildMandatoryInfo() {
         ComputeRequest computeRequest = new ComputeRequest();
-        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
-        LocationInfo locationInfo = realmProcessor.getLocationInfo();
+        MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
+        LocationInfo locationInfo = ormProcessor.getLocationInfo();
         if (locationInfo != null) {
             computeRequest.setMapLat(locationInfo.getLatitude());
             computeRequest.setMapLong(locationInfo.getLongitude());
@@ -249,7 +249,7 @@ public class BuildComputeData {
 
     private ComputeRequest buildRequestedRec(@NonNull ComputeRequest computeRequest) {
         //check for values we have to give recommendations for
-        RecAdvice recAdvice = realmProcessor.getRecAdvice();
+        RecAdvice recAdvice = ormProcessor.getRecAdvice();
         if (recAdvice != null) {
             computeRequest.setInterCroppingMaizeRec(recAdvice.getCIM());
             computeRequest.setInterCroppingPotatoRec(recAdvice.getCIS());
@@ -265,7 +265,7 @@ public class BuildComputeData {
 
     private ComputeRequest buildCurrentFieldYield(@NonNull ComputeRequest computeRequest) {
         //check for values we have to give recommendations for
-        CurrentFieldYield fieldYield = realmProcessor.getCurrentFieldYield();
+        CurrentFieldYield fieldYield = ormProcessor.getCurrentFieldYield();
         if (fieldYield != null) {
             currentFieldYield = (int) fieldYield.getYieldAmount();
         }
@@ -275,7 +275,7 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildPlantingDates(@NonNull ComputeRequest computeRequest) {
-        PlantingHarvestDates sph = realmProcessor.getPlantingHarvestDates();
+        PlantingHarvestDates sph = ormProcessor.getPlantingHarvestDates();
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy");
 
         if (sph != null) {
@@ -300,7 +300,7 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildInvestmentAmount(@NonNull ComputeRequest computeRequest) {
-        InvestmentAmount investmentAmount = realmProcessor.getInvestmentAmount();
+        InvestmentAmount investmentAmount = ormProcessor.getInvestmentAmount();
         if (investmentAmount != null) {
             maxInvestmentAmountLocal = investmentAmount.getInvestmentAmountLocal();
         }
@@ -310,7 +310,7 @@ public class BuildComputeData {
 
     private ComputeRequest buildCurrentPractice(@NonNull ComputeRequest computeRequest) {
 
-        CurrentPractice currentPractice = realmProcessor.getCurrentPractice();
+        CurrentPractice currentPractice = ormProcessor.getCurrentPractice();
 
         if (currentPractice != null) {
             performsPloughing = currentPractice.getPerformPloughing();
@@ -346,7 +346,7 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildOperationCosts(@NonNull ComputeRequest computeRequest) {
-        OperationCosts operationCosts = realmProcessor.getOperationCosts();
+        OperationCosts operationCosts = ormProcessor.getOperationCosts();
 
         if (operationCosts != null) {
             costTractorPlough = operationCosts.getTractorPloughCost();
@@ -387,7 +387,7 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildMaizePerformance(@NonNull ComputeRequest computeRequest) {
-        MaizePerformance maizePerformance = realmProcessor.getMaizePerformance();
+        MaizePerformance maizePerformance = ormProcessor.getMaizePerformance();
         if (maizePerformance != null) {
             currentMaizePerformance = Strings.isEmptyOrWhitespace(maizePerformance.getPerformanceValue()) ? DEFAULT_MAIZE_PERFORMANCE_VALUE : maizePerformance.getPerformanceValue();
         }
@@ -397,7 +397,7 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildCassavaMarketOutlet(@NonNull ComputeRequest computeRequest) {
-        CassavaMarketOutlet cassavaMarketOutlet = realmProcessor.getCassavaMarketOutlet();
+        CassavaMarketOutlet cassavaMarketOutlet = ormProcessor.getCassavaMarketOutlet();
 
         if (cassavaMarketOutlet != null) {
             sellToStarchFactory = cassavaMarketOutlet.isStarchFactoryRequired();
@@ -426,7 +426,7 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildMaizeMarketOutlet(ComputeRequest computeRequest) {
-        MaizeMarketOutlet maizeMarketOutlet = realmProcessor.getMaizeMarketOutlet();
+        MaizeMarketOutlet maizeMarketOutlet = ormProcessor.getMaizeMarketOutlet();
         if (maizeMarketOutlet != null) {
             maizeProdType = maizeMarketOutlet.getProduceType();
             maizeUnitWeight = maizeMarketOutlet.getUnitWeight();
@@ -440,7 +440,7 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildSweetPotatoMarketOutlet(ComputeRequest computeRequest) {
-        PotatoMarketOutlet potatoMarketOutlet = realmProcessor.getPotatoMarketOutlet();
+        PotatoMarketOutlet potatoMarketOutlet = ormProcessor.getPotatoMarketOutlet();
         if (potatoMarketOutlet != null) {
             sweetPotatoProdType = potatoMarketOutlet.getProduceType();
             sweetPotatoUnitWeight = potatoMarketOutlet.getUnitWeight();

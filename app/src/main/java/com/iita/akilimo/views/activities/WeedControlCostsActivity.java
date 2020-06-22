@@ -19,7 +19,7 @@ import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.OperationCosts;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
+import com.iita.akilimo.dao.OrmProcessor;
 
 ;
 
@@ -55,13 +55,13 @@ public class WeedControlCostsActivity extends BaseActivity {
         binding = ActivityWeedControlCostBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        realmProcessor = new RealmProcessor();
+        ormProcessor = new OrmProcessor();
         context = this;
         mathHelper = new MathHelper();
 
-        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
-        operationCosts = realmProcessor.getOperationCosts();
-        currentPractice = realmProcessor.getCurrentPractice();
+        MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
+        operationCosts = ormProcessor.getOperationCosts();
+        currentPractice = ormProcessor.getCurrentPractice();
         if (mandatoryInfo != null) {
             currency = mandatoryInfo.getCurrency();
         }
@@ -163,8 +163,8 @@ public class WeedControlCostsActivity extends BaseActivity {
         }
 
 
-        currentPractice = realmProcessor.getCurrentPractice();
-        operationCosts = realmProcessor.getOperationCosts();
+        currentPractice = ormProcessor.getCurrentPractice();
+        operationCosts = ormProcessor.getOperationCosts();
 
         try {
             if (currentPractice == null) {

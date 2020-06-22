@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
+import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.utils.SessionManager;
 
 @SuppressWarnings("WeakerAccess")
@@ -19,7 +19,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
     protected Context context;
 
     protected SessionManager sessionManager;
-    protected RealmProcessor realmProcessor;
+    protected OrmProcessor ormProcessor;
 
     public BaseDialogFragment() {
 
@@ -30,6 +30,6 @@ public abstract class BaseDialogFragment extends DialogFragment {
         super.onAttach(context);
         this.context = context;
         mathHelper = new MathHelper();
-        realmProcessor = new RealmProcessor();
+        ormProcessor = new OrmProcessor();
     }
 }

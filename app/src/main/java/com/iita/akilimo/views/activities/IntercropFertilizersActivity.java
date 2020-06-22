@@ -35,7 +35,7 @@ import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.FertilizerList;
 import com.iita.akilimo.utils.Tools;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
+import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.views.fragments.dialog.FertilizerPriceDialogFragment;
 import com.iita.akilimo.views.fragments.dialog.IntercropFertilizerPriceDialogFragment;
 import com.iita.akilimo.widget.SpacingItemDecoration;
@@ -95,7 +95,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
         errorImage = binding.errorImage;
         errorLabel = binding.errorLabel;
 
-        realmProcessor = new RealmProcessor();
+        ormProcessor = new OrmProcessor();
         queue = Volley.newRequestQueue(context);
         modelMapper = new ModelMapper();
 
@@ -104,7 +104,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
             useCase = intent.getParcelableExtra(useCaseTag);
         }
 
-        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
         }
@@ -147,7 +147,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
 
         mAdapter.setOnItemClickListener((view, clickedFertilizer, position) -> {
             mAdapter.setActiveRowIndex(position);
-            InterCropFertilizer selectedType = realmProcessor.getSavedInterCropFertilizer(clickedFertilizer.getFertilizerType(), countryCode, useCase);
+            InterCropFertilizer selectedType = ormProcessor.getSavedInterCropFertilizer(clickedFertilizer.getFertilizerType(), countryCode, useCase);
             if (selectedType == null) {
                 selectedType = clickedFertilizer;
             }
@@ -199,7 +199,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
     @Override
     protected void validate(boolean backPressed) {
         if (mAdapter != null) {
-            availableFertilizersList = realmProcessor.getAvailableInterCropFertilizersByCountryUseCase(countryCode, useCase);
+            availableFertilizersList = ormProcessor.getAvailableInterCropFertilizersByCountryUseCase(countryCode, useCase);
             mAdapter.setItems(availableFertilizersList);
         }
     }
@@ -325,7 +325,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
     }
 
     private boolean isMinSelected() {
-        int count = realmProcessor.getSelectedInterCropFertilizers(countryCode, useCase).size();
+        int count = ormProcessor.getSelectedInterCropFertilizers(countryCode, useCase).size();
         if (count < minSelection) {
             Snackbar snackbar = Snackbar
                     .make(coordinatorLayout, String.format(Locale.US, context.getString(R.string.lbl_min_selection), minSelection), Snackbar.LENGTH_LONG);

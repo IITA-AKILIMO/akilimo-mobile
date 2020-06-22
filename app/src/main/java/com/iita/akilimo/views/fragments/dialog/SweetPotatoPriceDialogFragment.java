@@ -27,7 +27,7 @@ import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IPriceDialogDismissListener;
 import com.iita.akilimo.models.PotatoPrice;
 import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
+import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 
 import java.util.List;
@@ -89,7 +89,7 @@ public class SweetPotatoPriceDialogFragment extends BaseDialogFragment {
         super.onAttach(context);
         this.context = context;
         mathHelper = new MathHelper();
-        realmProcessor = new RealmProcessor();
+        ormProcessor = new OrmProcessor();
     }
 
     @NonNull
@@ -158,8 +158,8 @@ public class SweetPotatoPriceDialogFragment extends BaseDialogFragment {
         });
 
         radioGroup.setOnCheckedChangeListener((radioGroup, i) -> radioSelected(radioGroup));
-        if (realmProcessor != null) {
-            potatoPriceList = realmProcessor.getPotatoPrices(countryCode);
+        if (ormProcessor != null) {
+            potatoPriceList = ormProcessor.getPotatoPrices(countryCode);
             addPriceRadioButtons(potatoPriceList, averagePrice);
         }
         return dialog;

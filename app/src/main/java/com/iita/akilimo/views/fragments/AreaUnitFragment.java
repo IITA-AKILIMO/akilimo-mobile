@@ -63,7 +63,7 @@ public class AreaUnitFragment extends BaseFragment {
     @Override
     public void refreshData() {
         try {
-            mandatoryInfo = realmProcessor.getMandatoryInfo();
+            mandatoryInfo = ormProcessor.getMandatoryInfo();
             if (mandatoryInfo != null) {
                 areaUnit = mandatoryInfo.getAreaUnit();
                 areaUnitRadioIndex = mandatoryInfo.getAreaUnitRadioIndex();

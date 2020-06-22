@@ -21,9 +21,10 @@ import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
+import com.iita.akilimo.dao.AppDatabase;
+import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.utils.SessionManager;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
 
 import java.util.Locale;
 
@@ -44,6 +45,8 @@ public abstract class BaseFragment extends Fragment {
     protected String countryCode;
     protected String countryName;
 
+    protected AppDatabase database;
+
 
     String emptyText = "";
 
@@ -52,7 +55,7 @@ public abstract class BaseFragment extends Fragment {
     protected RequestQueue queue;
 
     protected SessionManager sessionManager;
-    protected RealmProcessor realmProcessor;
+    protected OrmProcessor ormProcessor;
 //
 
     public BaseFragment() {
@@ -69,10 +72,11 @@ public abstract class BaseFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
-        sessionManager = new SessionManager(getContext());
+        sessionManager = new SessionManager(context);
         queue = Volley.newRequestQueue(context.getApplicationContext());
         appVersion = sessionManager.getAppVersion();
-        realmProcessor = new RealmProcessor();
+        ormProcessor = new OrmProcessor();
+        database = AppDatabase.getDatabase(context);
     }
 
     @Nullable

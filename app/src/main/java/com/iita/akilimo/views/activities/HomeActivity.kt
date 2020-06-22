@@ -28,7 +28,7 @@ import com.iita.akilimo.inherit.BaseActivity
 import com.iita.akilimo.interfaces.IFragmentCallBack
 import com.iita.akilimo.utils.AppUpdateHelper
 import com.iita.akilimo.utils.Tools
-import com.iita.akilimo.utils.ormlite.RealmProcessor
+import com.iita.akilimo.dao.OrmProcessor
 import com.iita.akilimo.views.activities.usecases.RecommendationsActivity
 import com.iita.akilimo.views.fragments.*
 
@@ -82,7 +82,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        realmProcessor = RealmProcessor()
+        ormProcessor = OrmProcessor()
 
         activity = this
         context = this
@@ -280,12 +280,12 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                 }
             }
 
-            location = realmProcessor.locationInfo
+            location = ormProcessor.locationInfo
             if (location == null) {
                 location = LocationInfo()
             }
 
-            location = realmProcessor.locationInfo
+            location = ormProcessor.locationInfo
             location?.latitude = currentLat
             location?.longitude = currentLong
             location?.altitude = currentAlt

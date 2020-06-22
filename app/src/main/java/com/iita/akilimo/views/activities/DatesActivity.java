@@ -20,7 +20,7 @@ import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.DateHelper;
 import com.iita.akilimo.utils.Tools;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
+import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.views.fragments.dialog.DateDialogPickerFragment;
 
 import org.joda.time.LocalDate;
@@ -67,7 +67,7 @@ public class DatesActivity extends BaseActivity {
 
 
         context = this;
-        realmProcessor = new RealmProcessor();
+        ormProcessor = new OrmProcessor();
 
         //set widgets
         toolbar = binding.toolbar;
@@ -172,7 +172,7 @@ public class DatesActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        plantingHarvestDates = realmProcessor.getPlantingHarvestDates();
+        plantingHarvestDates = ormProcessor.getPlantingHarvestDates();
 
         if (plantingHarvestDates != null) {
             alternativeDate = plantingHarvestDates.getAlternativeDate();

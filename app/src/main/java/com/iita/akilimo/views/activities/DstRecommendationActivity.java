@@ -33,7 +33,7 @@ import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.rest.recommendation.RecommendationResponse;
 import com.iita.akilimo.rest.request.RecommendationRequest;
 import com.iita.akilimo.utils.BuildComputeData;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
+import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.views.fragments.dialog.RecommendationChannelDialog;
 
@@ -74,7 +74,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
 
         context = this;
         activity = this;
-        realmProcessor = new RealmProcessor();
+        ormProcessor = new OrmProcessor();
 
         toolbar = binding.toolbarLayout.toolbar;
         recyclerView = binding.recyclerView;
@@ -105,7 +105,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         recyclerView.setHasFixedSize(true);
 
         recAdapter = new RecommendationAdapter();
-        profileInfo = realmProcessor.getProfileInfo();
+        profileInfo = ormProcessor.getProfileInfo();
 
         lyt_progress.setVisibility(View.VISIBLE);
         lyt_progress.setAlpha(1.0f);

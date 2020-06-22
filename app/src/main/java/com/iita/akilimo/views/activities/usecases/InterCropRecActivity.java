@@ -24,7 +24,7 @@ import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.enums.EnumCountry;
 import com.iita.akilimo.utils.enums.EnumUseCase;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
+import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.views.activities.CassavaMarketActivity;
 import com.iita.akilimo.views.activities.DatesActivity;
 import com.iita.akilimo.views.activities.IntercropFertilizersActivity;
@@ -74,10 +74,10 @@ public class InterCropRecActivity extends BaseActivity {
         btnGetRec = binding.singleButton.btnGetRecommendation;
 
 
-        realmProcessor = new RealmProcessor();
+        ormProcessor = new OrmProcessor();
 
 
-        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
             currency = mandatoryInfo.getCurrency();
@@ -124,7 +124,7 @@ public class InterCropRecActivity extends BaseActivity {
         recyclerView.setHasFixedSize(true);
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
-            recAdvice = realmProcessor.getRecAdvice();
+            recAdvice = ormProcessor.getRecAdvice();
             try {
                 if (recAdvice == null) {
                     recAdvice = new RecAdvice();

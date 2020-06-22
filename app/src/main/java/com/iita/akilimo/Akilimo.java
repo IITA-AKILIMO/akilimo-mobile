@@ -4,8 +4,6 @@ package com.iita.akilimo;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.multidex.MultiDexApplication;
 
-import com.activeandroid.ActiveAndroid;
-import com.activeandroid.Configuration;
 import com.blongho.country_data.World;
 import com.crashlytics.android.Crashlytics;
 
@@ -44,12 +42,5 @@ public class Akilimo extends MultiDexApplication {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         JodaTimeAndroid.init(this);
         World.init(this);
-
-        Configuration dbConfiguration = new Configuration.Builder(this)
-                .setDatabaseName("akilimo.db")
-                .setDatabaseVersion(1)
-                .create();
-
-        ActiveAndroid.initialize(dbConfiguration);
     }
 }

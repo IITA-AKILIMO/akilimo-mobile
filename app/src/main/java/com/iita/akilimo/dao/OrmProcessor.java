@@ -1,4 +1,4 @@
-package com.iita.akilimo.utils.ormlite;
+package com.iita.akilimo.dao;
 
 import com.iita.akilimo.entities.CassavaMarketOutlet;
 import com.iita.akilimo.entities.CurrentFieldYield;
@@ -25,16 +25,15 @@ import com.iita.akilimo.utils.enums.EnumUseCase;
 import java.util.List;
 
 @SuppressWarnings("UnnecessaryLocalVariable")
-public class RealmProcessor {
+public class OrmProcessor {
 
-    public RealmProcessor() {
+    public OrmProcessor() {
 
     }
 
     public ProfileInfo getProfileInfo() {
 
         ProfileInfo profileInfo = null;
-
 
         return profileInfo;
     }

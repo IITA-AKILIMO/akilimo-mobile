@@ -20,8 +20,7 @@ import com.iita.akilimo.entities.RecAdvice;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
-import com.iita.akilimo.utils.Tools;
+import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.enums.EnumUseCase;
 import com.iita.akilimo.views.activities.CassavaMarketActivity;
@@ -66,13 +65,13 @@ public class PlantingPracticesActivity extends BaseActivity {
         setContentView(binding.getRoot());
         context = this;
         activity = this;
-        realmProcessor = new RealmProcessor();
+        ormProcessor = new OrmProcessor();
 
 
         toolbar = binding.toolbarLayout.toolbar;
         recyclerView = binding.recyclerView;
         btnGetRec = binding.singleButton.btnGetRecommendation;
-        recAdvice = realmProcessor.getRecAdvice();
+        recAdvice = ormProcessor.getRecAdvice();
 
         initToolbar();
         initComponent();

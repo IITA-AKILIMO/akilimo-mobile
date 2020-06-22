@@ -143,8 +143,8 @@ public class CurrentPracticeFragment extends BaseFragment {
     public void refreshData() {
         try {
 
-            currentPractice = realmProcessor.getCurrentPractice();
-            plantingHarvestDates = realmProcessor.getPlantingHarvestDates();
+            currentPractice = ormProcessor.getCurrentPractice();
+            plantingHarvestDates = ormProcessor.getPlantingHarvestDates();
             if (currentPractice != null) {
                 isDataRefreshing = true;
                 performPloughing = currentPractice.getPerformPloughing();

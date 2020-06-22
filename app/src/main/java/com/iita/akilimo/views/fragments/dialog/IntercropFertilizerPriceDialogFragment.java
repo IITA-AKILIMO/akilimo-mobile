@@ -163,8 +163,8 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
         });
 
         radioGroup.setOnCheckedChangeListener((radioGroup, i) -> radioSelected(radioGroup));
-        if (realmProcessor != null) {
-            fertilizerPricesList = realmProcessor.getFertilizerPrices(countryCode);
+        if (ormProcessor != null) {
+            fertilizerPricesList = ormProcessor.getFertilizerPrices(countryCode);
             addPriceRadioButtons(fertilizerPricesList, fertilizer);
         }
         return dialog;

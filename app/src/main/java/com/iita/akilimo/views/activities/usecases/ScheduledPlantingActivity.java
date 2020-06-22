@@ -21,7 +21,7 @@ import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.enums.EnumUseCase;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
+import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.views.activities.CassavaMarketActivity;
 import com.iita.akilimo.views.activities.DatesActivity;
 import com.iita.akilimo.views.activities.RootYieldActivity;
@@ -57,7 +57,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
         setContentView(binding.getRoot());
         context = this;
         activity = this;
-        realmProcessor = new RealmProcessor();
+        ormProcessor = new OrmProcessor();
 
 
         toolbar = binding.toolbarLayout.toolbar;
@@ -90,7 +90,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
         recyclerView.setHasFixedSize(true);
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
-            recAdvice = realmProcessor.getRecAdvice();
+            recAdvice = ormProcessor.getRecAdvice();
             try {
                 if (recAdvice == null) {
                     recAdvice = new RecAdvice();

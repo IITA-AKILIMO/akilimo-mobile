@@ -20,7 +20,7 @@ import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.enums.EnumOperation;
 import com.iita.akilimo.utils.enums.EnumOperationType;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
+import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.views.fragments.dialog.OperationCostsDialogFragment;
 
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         binding = ActivityManualTillageCostBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         context = this;
-        realmProcessor = new RealmProcessor();
+        ormProcessor = new OrmProcessor();
         queue = Volley.newRequestQueue(this);
         mathHelper = new MathHelper();
 
@@ -71,7 +71,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         btnFinish = binding.twoButtons.btnFinish;
         btnCancel = binding.twoButtons.btnCancel;
 
-        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             currency = mandatoryInfo.getCurrency();
             areaUnit = mandatoryInfo.getAreaUnit();
@@ -82,7 +82,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         initToolbar();
         initComponent();
 
-        operationCosts = realmProcessor.getOperationCosts();
+        operationCosts = ormProcessor.getOperationCosts();
         if (operationCosts != null) {
             manualPloughCost = operationCosts.getManualPloughCost();
             manualRidgeCost = operationCosts.getManualRidgeCost();
@@ -137,7 +137,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
     }
 
     private void setData() {
-        operationCosts = realmProcessor.getOperationCosts();
+        operationCosts = ormProcessor.getOperationCosts();
         if (operationCosts == null) {
             operationCosts = new OperationCosts();
         }

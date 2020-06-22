@@ -25,7 +25,7 @@ import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.enums.EnumOperation;
 import com.iita.akilimo.utils.enums.EnumOperationType;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
+import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.views.fragments.dialog.OperationCostsDialogFragment;
 
 import java.util.ArrayList;
@@ -76,12 +76,12 @@ public class TractorAccessActivity extends CostBaseActivity {
         setContentView(binding.getRoot());
 
         context = this;
-        realmProcessor = new RealmProcessor();
+        ormProcessor = new OrmProcessor();
 
         queue = Volley.newRequestQueue(this);
         mathHelper = new MathHelper();
 
-        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             currency = mandatoryInfo.getCurrency();
             areaUnit = mandatoryInfo.getAreaUnit();
@@ -100,7 +100,7 @@ public class TractorAccessActivity extends CostBaseActivity {
 
         initToolbar();
         initComponent();
-        operationCosts = realmProcessor.getOperationCosts();
+        operationCosts = ormProcessor.getOperationCosts();
         if (operationCosts != null) {
             tractorPloughCost = operationCosts.getTractorPloughCost();
             tractorRidgeCost = operationCosts.getTractorRidgeCost();
@@ -164,8 +164,8 @@ public class TractorAccessActivity extends CostBaseActivity {
     }
 
     private void setData() {
-        operationCosts = realmProcessor.getOperationCosts();
-        currentPractice = realmProcessor.getCurrentPractice();
+        operationCosts = ormProcessor.getOperationCosts();
+        currentPractice = ormProcessor.getCurrentPractice();
 
         try {
             if (operationCosts == null) {

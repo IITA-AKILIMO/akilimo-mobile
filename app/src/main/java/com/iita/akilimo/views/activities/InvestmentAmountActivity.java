@@ -23,7 +23,7 @@ import com.iita.akilimo.entities.InvestmentAmount;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
+import com.iita.akilimo.dao.OrmProcessor;
 
 ;
 
@@ -72,7 +72,7 @@ public class InvestmentAmountActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         context = this;
-        realmProcessor = new RealmProcessor();
+        ormProcessor = new OrmProcessor();
         mathHelper = new MathHelper();
 
         toolbar = binding.toolbar;
@@ -163,7 +163,7 @@ public class InvestmentAmountActivity extends BaseActivity {
                 return;
             }
 
-            invAmount = realmProcessor.getInvestmentAmount();
+            invAmount = ormProcessor.getInvestmentAmount();
 
             try {
                 if (invAmount == null) {
@@ -191,7 +191,7 @@ public class InvestmentAmountActivity extends BaseActivity {
 
     private void updateLabels() {
 
-        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             fieldSize = mandatoryInfo.getAreaSize();
             fieldSizeAcre = mandatoryInfo.getAreaSize();

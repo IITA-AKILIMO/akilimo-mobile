@@ -37,7 +37,7 @@ import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumCassavaProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 import com.iita.akilimo.utils.enums.EnumUseCase;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
+import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.views.fragments.dialog.CassavaPriceDialogFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -111,18 +111,18 @@ public class CassavaMarketActivity extends BaseActivity {
         btnFinish = binding.contentCassavaMarket.twoButtons.btnFinish;
         btnCancel = binding.contentCassavaMarket.twoButtons.btnCancel;
 
-        realmProcessor = new RealmProcessor();
+        ormProcessor = new OrmProcessor();
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
 
-        cassavaMarketOutlet = realmProcessor.getCassavaMarketOutlet();
+        cassavaMarketOutlet = ormProcessor.getCassavaMarketOutlet();
         if (cassavaMarketOutlet != null) {
             selectedFactory = cassavaMarketOutlet.getStarchFactory();
             exactPrice = cassavaMarketOutlet.getUnitPrice();
             unitOfSale = cassavaMarketOutlet.getUnitOfSale();
         }
 
-        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
             currency = mandatoryInfo.getCurrency();
@@ -188,7 +188,7 @@ public class CassavaMarketActivity extends BaseActivity {
                 RadioButton radioButton = findViewById(radioButtonId);
                 String itemTagIndex = (String) radioButton.getTag();
                 if (itemTagIndex != null) {
-                    StarchFactory selectedStarchFactory = realmProcessor.getSelectedStarchFactoryByTag(itemTagIndex);
+                    StarchFactory selectedStarchFactory = ormProcessor.getSelectedStarchFactoryByTag(itemTagIndex);
                     if (selectedStarchFactory != null) {
                         selectedFactory = selectedStarchFactory.getFactoryName();
                     }
@@ -400,9 +400,9 @@ public class CassavaMarketActivity extends BaseActivity {
     }
 
     protected void processData() {
-        List<StarchFactory> starchFactoriesList = realmProcessor.getStarchFactories(countryCode);
+        List<StarchFactory> starchFactoriesList = ormProcessor.getStarchFactories(countryCode);
         addFactoriesRadioButtons(starchFactoriesList);
-        cassavaMarketOutlet = realmProcessor.getCassavaMarketOutlet();
+        cassavaMarketOutlet = ormProcessor.getCassavaMarketOutlet();
 
         if (cassavaMarketOutlet != null) {
             boolean sfRequired = cassavaMarketOutlet.isStarchFactoryRequired();

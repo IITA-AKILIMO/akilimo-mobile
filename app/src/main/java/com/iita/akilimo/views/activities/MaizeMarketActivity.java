@@ -35,7 +35,7 @@ import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumMaizeProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
+import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.views.fragments.dialog.MaizePriceDialogFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -100,7 +100,7 @@ public class MaizeMarketActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         context = this;
-        realmProcessor = new RealmProcessor();
+        ormProcessor = new OrmProcessor();
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
 
@@ -117,9 +117,9 @@ public class MaizeMarketActivity extends BaseActivity {
         btnCancel = binding.marketContent.twoButtons.btnCancel;
 
 
-        maizeMarketOutlet = realmProcessor.getMaizeMarketOutlet();
+        maizeMarketOutlet = ormProcessor.getMaizeMarketOutlet();
 
-        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
             currency = mandatoryInfo.getCurrency();

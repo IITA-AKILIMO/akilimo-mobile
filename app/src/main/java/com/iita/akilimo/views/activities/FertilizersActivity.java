@@ -35,7 +35,7 @@ import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.FertilizerList;
 import com.iita.akilimo.utils.Tools;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
+import com.iita.akilimo.dao.OrmProcessor;
 import com.iita.akilimo.views.fragments.dialog.FertilizerPriceDialogFragment;
 import com.iita.akilimo.widget.SpacingItemDecoration;
 
@@ -89,7 +89,7 @@ public class FertilizersActivity extends BaseActivity {
         errorImage = binding.errorImage;
         errorLabel = binding.errorLabel;
 
-        realmProcessor = new RealmProcessor();
+        ormProcessor = new OrmProcessor();
         queue = Volley.newRequestQueue(context);
 
         Intent intent = getIntent();
@@ -97,7 +97,7 @@ public class FertilizersActivity extends BaseActivity {
             useCase = intent.getParcelableExtra(useCaseTag);
         }
 
-        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
         }
@@ -141,7 +141,7 @@ public class FertilizersActivity extends BaseActivity {
 
         mAdapter.setOnItemClickListener((view, clickedFertilizer, position) -> {
             mAdapter.setActiveRowIndex(position);
-            Fertilizer selectedType = realmProcessor.getSavedFertilizer(clickedFertilizer.getFertilizerType(), countryCode);
+            Fertilizer selectedType = ormProcessor.getSavedFertilizer(clickedFertilizer.getFertilizerType(), countryCode);
             if (selectedType == null) {
                 selectedType = clickedFertilizer;
             }
@@ -196,7 +196,7 @@ public class FertilizersActivity extends BaseActivity {
 
     @Override
     protected void validate(boolean backPressed) {
-        availableFertilizersList = realmProcessor.getAvailableFertilizersByCountry(countryCode);
+        availableFertilizersList = ormProcessor.getAvailableFertilizersByCountry(countryCode);
         if (mAdapter != null && availableFertilizersList != null) {
             mAdapter.setItems(availableFertilizersList);
         }
@@ -316,7 +316,7 @@ public class FertilizersActivity extends BaseActivity {
     }
 
     private boolean isMinSelected() {
-        int count = realmProcessor.getSelectedFertilizers(countryCode).size();
+        int count = ormProcessor.getSelectedFertilizers(countryCode).size();
         if (count < minSelection) {
             Snackbar snackbar = Snackbar.make(lyt_progress, String.format(Locale.US, context.getString(R.string.lbl_min_selection), minSelection), Snackbar.LENGTH_SHORT);
             snackbar.show();

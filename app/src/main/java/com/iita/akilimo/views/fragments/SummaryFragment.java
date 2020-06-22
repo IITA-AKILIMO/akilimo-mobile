@@ -136,14 +136,14 @@ public class SummaryFragment extends BaseFragment {
         StringBuilder ploughStr = new StringBuilder();
         StringBuilder ridgeStr = new StringBuilder();
 
-        if (realmProcessor == null) {
+        if (ormProcessor == null) {
             return;
         }
 
-        location = realmProcessor.getLocationInfo();
-        mandatoryInfo = realmProcessor.getMandatoryInfo();
-        currentPractice = realmProcessor.getCurrentPractice();
-        plantingHarvestDates = realmProcessor.getPlantingHarvestDates();
+        location = ormProcessor.getLocationInfo();
+        mandatoryInfo = ormProcessor.getMandatoryInfo();
+        currentPractice = ormProcessor.getCurrentPractice();
+        plantingHarvestDates = ormProcessor.getPlantingHarvestDates();
         countryName = "";
 
         if (!Strings.isEmptyOrWhitespace(mandatoryInfo.getCountryName())) {

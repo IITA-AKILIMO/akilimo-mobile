@@ -73,8 +73,8 @@ public class CountryFragment extends BaseFragment {
     @Override
     public void refreshData() {
         try {
-            profileInfo = realmProcessor.getProfileInfo();
-            mandatoryInfo = realmProcessor.getMandatoryInfo();
+            profileInfo = ormProcessor.getProfileInfo();
+            mandatoryInfo = ormProcessor.getMandatoryInfo();
             if (profileInfo != null) {
                 name = profileInfo.getFirstName();
             }

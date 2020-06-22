@@ -15,7 +15,7 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.ActivityMaizePerformanceActivityBinding;
 import com.iita.akilimo.entities.MaizePerformance;
 import com.iita.akilimo.inherit.BaseActivity;
-import com.iita.akilimo.utils.ormlite.RealmProcessor;
+import com.iita.akilimo.dao.OrmProcessor;
 
 ;
 
@@ -46,7 +46,7 @@ public class MaizePerformanceActivity extends BaseActivity {
         binding = ActivityMaizePerformanceActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         context = this;
-        realmProcessor = new RealmProcessor();
+        ormProcessor = new OrmProcessor();
 
         toolbar = binding.toolbar;
         rdgMaizePerformance = binding.rdgMaizePerformance;
@@ -113,7 +113,7 @@ public class MaizePerformanceActivity extends BaseActivity {
         });
 
         //preset saved data if any
-        maizePerformance = realmProcessor.getMaizePerformance();
+        maizePerformance = ormProcessor.getMaizePerformance();
         if (maizePerformance != null) {
             performanceRadioIndex = maizePerformance.getPerformanceRadioIndex();
             rdgMaizePerformance.check(performanceRadioIndex);
@@ -130,7 +130,7 @@ public class MaizePerformanceActivity extends BaseActivity {
         }
 
         performanceRadioIndex = rdgMaizePerformance.getCheckedRadioButtonId();
-        maizePerformance = realmProcessor.getMaizePerformance();
+        maizePerformance = ormProcessor.getMaizePerformance();
         try {
 
             if (maizePerformance == null) {
