@@ -202,7 +202,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             override fun onPageSelected(position: Int) {
                 bottomProgressDots(position)
 
-                Tools.setSystemBarColor(activity, R.color.colorPrimary)
+                Tools.setSystemBarColor(activity, R.color.colorAccent)
                 //stop the updater
                 appUpdater.stop();
                 btnStart.visibility = View.GONE
@@ -210,7 +210,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                     0 -> {
                         appUpdater.start()
                         btnStart.visibility = View.GONE
-                        Tools.setSystemBarColor(activity, R.color.deep_purple_600)
+                        //Tools.setSystemBarColor(activity, R.color.green_700)
                     }
                     fragmentArray.size - 1 -> {
                         if (showProceedButton) {
@@ -243,7 +243,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
             params.setMargins(10, 10, 10, 10)
             dots[dotIndex]?.layoutParams = params
-            dots[dotIndex]?.setImageResource(R.drawable.shape_circle)
+            dots[dotIndex]?.setImageResource(R.drawable.shape_rect_outline)
             dots[dotIndex]?.setColorFilter(
                 ContextCompat.getColor(this, R.color.grey_20), PorterDuff.Mode.SRC_IN
             )
@@ -251,11 +251,11 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         }
 
         if (dots.isNotEmpty()) {
-            dots[currentIndex]?.setImageResource(R.drawable.shape_circle)
+            dots[currentIndex]?.setImageResource(R.drawable.shape_rect_outline)
             dots[currentIndex]?.setColorFilter(
                 ContextCompat.getColor(
                     this,
-                    R.color.colorAccent
+                    R.color.colorPrimary
                 ), PorterDuff.Mode.SRC_IN
             )
         }
