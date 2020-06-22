@@ -7,10 +7,10 @@ import com.iita.akilimo.entities.ProfileInfo
 interface ProfileInfoDao {
 
     @Query("SELECT * FROM profile_info")
-    fun getAll(): List<ProfileInfo>
+    fun listAll(): List<ProfileInfo>
 
     @Query("SELECT * FROM profile_info LIMIT 1")
-    fun findOneProfile(): ProfileInfo?
+    fun findOne(): ProfileInfo?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg users: ProfileInfo)
