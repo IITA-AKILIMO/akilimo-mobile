@@ -23,7 +23,7 @@ import java.util.List;
  */
 
 public class SessionManager {
-    private static final String PREF_NAME = "FET";
+    private static final String PREF_NAME = "akilimo_pref";
 
     private SharedPreferences.Editor editor;
     private Context context;
