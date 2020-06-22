@@ -13,11 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.FragmentPrivacyStatementBinding;
 import com.iita.akilimo.inherit.BaseFragment;
-
-import butterknife.BindView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,6 +43,11 @@ public class PrivacyStatementFragment extends BaseFragment {
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentPrivacyStatementBinding.inflate(inflater, container, false);
         return binding.getRoot();
+    }
+
+    @Override
+    protected void realmInstance() {
+
     }
 
     @Override

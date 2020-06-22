@@ -1,6 +1,7 @@
 package com.iita.akilimo.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,11 +9,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.blongho.country_data.World;
+import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
-import com.iita.akilimo.views.activities.LanguagePickerActivity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MySpinnerAdapter extends BaseAdapter {
@@ -48,9 +47,13 @@ public class MySpinnerAdapter extends BaseAdapter {
         view = layoutInflater.inflate(R.layout.custom_spinner, null);
         ImageView icon = (ImageView) view.findViewById(R.id.spinnerImage);
         TextView names = (TextView) view.findViewById(R.id.spinnerText);
-
-        icon.setImageResource(spinnerImages.get(position));
-        names.setText(spinnerItems.get(position));
+        try {
+            icon.setImageResource(spinnerImages.get(position));
+            names.setText(spinnerItems.get(position));
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, "SPINNER_ADAPTER", ex.getMessage());
+            Crashlytics.logException(ex);
+        }
         return view;
     }
 }

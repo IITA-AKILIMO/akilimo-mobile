@@ -1,12 +1,13 @@
 package com.iita.akilimo.entities
 
-import io.objectbox.annotation.Entity
-import io.objectbox.annotation.Id
+import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
 
-@Entity
-class MaizePerformance {
-    @Id
-    var id: Long = 0
+
+open class MaizePerformance : RealmObject() {
+
+    @PrimaryKey
+    var id: String? = null
     var performanceRadioIndex = 0
     var maizePerformance: String? = null
     var performanceValue: String? = null

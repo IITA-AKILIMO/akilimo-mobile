@@ -2,7 +2,6 @@ package com.iita.akilimo.views.fragments.dialog;
 
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -19,28 +18,26 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
+import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.models.OperationCost;
-import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.enums.EnumCountry;
-import com.iita.akilimo.utils.enums.EnumOperation;
 
 import java.util.ArrayList;
 
-import butterknife.ButterKnife;
 
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
  */
-public class OperationCostsDialogFragment extends DialogFragment {
+public class OperationCostsDialogFragment extends BaseDialogFragment {
 
     public static final String OPERATION_NAME = "operation_type";
-    public static final String SELECTED_COUNTRY = "country";
+    public static final String COUNTRY_CODE = "country";
+    public static final String CURRENCY_CODE = "currency_code";
     public static final String COST_LIST = "cost_list";
     public static final String DIALOG_TITLE = "dialog_title";
 
@@ -59,10 +56,6 @@ public class OperationCostsDialogFragment extends DialogFragment {
     private TextInputLayout exactPriceWrapper;
     private EditText editExactCost;
 
-
-    private MathHelper mathHelper;
-    private Context context;
-
     private double selectedCost = 0.0;
     private String translatedSuffix;
     private String currencyCode;
@@ -72,21 +65,13 @@ public class OperationCostsDialogFragment extends DialogFragment {
     private String exactPrice = "0";
     private String dialogTitle;
 
-    private EnumCountry enumCountry;
+    private String countryCode;
     private IDismissDialog onDismissListener;
     private ArrayList<OperationCost> operationCosts;
     private OperationCost operationCost;
-    private EnumOperation enumOperation;
 
     public OperationCostsDialogFragment() {
         // Required empty public constructor
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.context = context;
-        mathHelper = new MathHelper();
     }
 
 
@@ -97,8 +82,9 @@ public class OperationCostsDialogFragment extends DialogFragment {
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             operationCosts = bundle.getParcelableArrayList(COST_LIST);
-            enumCountry = bundle.getParcelable(SELECTED_COUNTRY);
-            enumOperation = bundle.getParcelable(OPERATION_NAME);
+            countryCode = bundle.getString(COUNTRY_CODE);
+            currencyCode = bundle.getString(CURRENCY_CODE);
+            operationName = bundle.getString(OPERATION_NAME);
             dialogTitle = bundle.getString(DIALOG_TITLE);
         }
 
@@ -107,7 +93,7 @@ public class OperationCostsDialogFragment extends DialogFragment {
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
         dialog.setContentView(R.layout.fragment_operation_cost_dialog);
-        ButterKnife.bind(dialog);
+
 
         dialog.setCancelable(true);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -176,9 +162,9 @@ public class OperationCostsDialogFragment extends DialogFragment {
 
         try {
             operationCost = operationCosts.get((int) itemTagIndex);
-            if (enumCountry.equals(EnumCountry.NIGERIA)) {
+            if (countryCode.equals(EnumCountry.NIGERIA.countryCode())) {
                 selectedCost = operationCost.getAverageNgnPrice();
-            } else if (enumCountry.equals(EnumCountry.TANZANIA)) {
+            } else if (countryCode.equals(EnumCountry.TANZANIA.countryCode())) {
                 selectedCost = operationCost.getAverageTzsPrice();
             }
             isExactCostRequired = false;
@@ -209,11 +195,11 @@ public class OperationCostsDialogFragment extends DialogFragment {
             double maxPrice = operationCost.getMaxUsd();
             double minPrice = operationCost.getMinUsd();
 
-            if (enumCountry.equals(EnumCountry.NIGERIA)) {
+            if (countryCode.equals(EnumCountry.NIGERIA.countryCode())) {
                 price = operationCost.getAverageNgnPrice();
                 maxPrice = operationCost.getMaxNgn();
                 minPrice = operationCost.getMinNgn();
-            } else if (enumCountry.equals(EnumCountry.TANZANIA)) {
+            } else if (countryCode.equals(EnumCountry.TANZANIA.countryCode())) {
                 price = operationCost.getAverageTzsPrice();
                 maxPrice = operationCost.getMaxTzs();
                 minPrice = operationCost.getMinTzs();
@@ -224,7 +210,7 @@ public class OperationCostsDialogFragment extends DialogFragment {
             radioButton.setTag(listIndex);
 
 
-            String radioLabel = String.format("%s %s %s %s", minPrice, translatedSuffix, maxPrice, enumCountry.currency());
+            String radioLabel = String.format("%s %s %s %s", minPrice, translatedSuffix, maxPrice, currencyCode);
 
             if (price >= 0 && price <= 0) {
                 radioLabel = context.getString(R.string.lbl_do_not_know);
@@ -241,7 +227,7 @@ public class OperationCostsDialogFragment extends DialogFragment {
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
         if (onDismissListener != null) {
-            onDismissListener.onDismiss(operationCost, enumOperation, selectedCost, cancelled, isExactCostRequired);
+            onDismissListener.onDismiss(operationCost, operationName, selectedCost, cancelled, isExactCostRequired);
         }
     }
 
@@ -251,6 +237,6 @@ public class OperationCostsDialogFragment extends DialogFragment {
 
     /* callback interface for pricing specification*/
     public interface IDismissDialog {
-        void onDismiss(OperationCost operationCost, EnumOperation operation, double selectedCost, boolean cancelled, boolean isExactCost);
+        void onDismiss(OperationCost operationCost, String operationName, double selectedCost, boolean cancelled, boolean isExactCost);
     }
 }

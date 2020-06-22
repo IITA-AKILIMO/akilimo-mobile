@@ -24,10 +24,11 @@ import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.services.GPSTracker;
+import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.views.activities.HomeActivity;
 import com.iita.akilimo.views.activities.MapBoxActivity;
 
-import butterknife.BindView;
+import io.realm.Realm;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,6 +43,7 @@ public class LocationFragment extends BaseFragment {
     TextView locationInfo;
     TextView title;
     FragmentLocationBinding binding;
+    Realm myRealm;
 
 
     private double currentLat;
@@ -70,6 +72,11 @@ public class LocationFragment extends BaseFragment {
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentLocationBinding.inflate(inflater, container, false);
         return binding.getRoot();
+    }
+
+    @Override
+    protected void realmInstance() {
+        myRealm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -118,21 +125,21 @@ public class LocationFragment extends BaseFragment {
     }
 
     private void saveLocation() {
-        if (locationInformation == null) {
-            locationInformation = new LocationInfo();
-        }
-        locationInformation.setLatitude(currentLat);
-        locationInformation.setLongitude(currentLon);
 
-        objectBoxEntityProcessor.saveLocationInfo(locationInformation);
+        myRealm.executeTransaction(realm -> {
+            if (locationInformation == null) {
+                locationInformation = myRealm.createObject(LocationInfo.class, Tools.generateUUID());
+            }
+            locationInformation.setLatitude(currentLat);
+            locationInformation.setLongitude(currentLon);
+        });
         reloadLocationInfo();
-
     }
 
     private void reloadLocationInfo() {
         try {
-            profileInfo = objectBoxEntityProcessor.getProfileInfo();
-            locationInformation = objectBoxEntityProcessor.getLocationInfo();
+            profileInfo = realmProcessor.getProfileInfo();
+            locationInformation = realmProcessor.getLocationInfo();
 
             if (profileInfo != null) {
                 farmName = profileInfo.getFarmName();
@@ -153,5 +160,11 @@ public class LocationFragment extends BaseFragment {
             Crashlytics.logException(ex);
         }
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        myRealm.close();
     }
 }

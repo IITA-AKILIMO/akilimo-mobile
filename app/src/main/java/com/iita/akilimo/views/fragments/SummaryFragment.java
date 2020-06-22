@@ -35,8 +35,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link SummaryFragment#newInstance} factory method to
@@ -119,6 +117,11 @@ public class SummaryFragment extends BaseFragment {
     }
 
     @Override
+    protected void realmInstance() {
+
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = binding.timelineRecycler;
@@ -138,14 +141,14 @@ public class SummaryFragment extends BaseFragment {
         StringBuilder ploughStr = new StringBuilder();
         StringBuilder ridgeStr = new StringBuilder();
 
-        if (objectBoxEntityProcessor == null) {
+        if (realmProcessor == null) {
             return;
         }
 
-        location = objectBoxEntityProcessor.getLocationInfo();
-        mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
-        currentPractice = objectBoxEntityProcessor.getCurrentPractice();
-        plantingHarvestDates = objectBoxEntityProcessor.getPlantingHarvestDates();
+        location = realmProcessor.getLocationInfo();
+        mandatoryInfo = realmProcessor.getMandatoryInfo();
+        currentPractice = realmProcessor.getCurrentPractice();
+        plantingHarvestDates = realmProcessor.getPlantingHarvestDates();
         countryName = "";
 
         if (!Strings.isEmptyOrWhitespace(mandatoryInfo.getCountryName())) {

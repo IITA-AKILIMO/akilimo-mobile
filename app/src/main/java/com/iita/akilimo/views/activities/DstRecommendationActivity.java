@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -34,8 +33,8 @@ import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.rest.recommendation.RecommendationResponse;
 import com.iita.akilimo.rest.request.RecommendationRequest;
 import com.iita.akilimo.utils.BuildComputeData;
+import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.views.fragments.dialog.RecommendationChannelDialog;
 
 import org.jetbrains.annotations.NotNull;
@@ -44,10 +43,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -76,8 +71,10 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         super.onCreate(savedInstanceState);
         binding = ActivityDstRecomendationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
         context = this;
         activity = this;
+        realmProcessor = new RealmProcessor();
 
         toolbar = binding.toolbarLayout.toolbar;
         recyclerView = binding.recyclerView;
@@ -86,7 +83,6 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         errorLabel = binding.errorLabel;
         lyt_progress = binding.lytProgress;
 
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
         initToolbar();
         initComponent();
     }
@@ -108,7 +104,8 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
-        profileInfo = objectBoxEntityProcessor.getProfileInfo();
+        recAdapter = new RecommendationAdapter();
+        profileInfo = realmProcessor.getProfileInfo();
 
         lyt_progress.setVisibility(View.VISIBLE);
         lyt_progress.setAlpha(1.0f);
@@ -123,7 +120,6 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
             }
         });
 
-        recAdapter = new RecommendationAdapter();
         displayDialog(profileInfo);
     }
 
@@ -142,12 +138,18 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         if (profileInfo != null) {
             recommendationChannelDialog = new RecommendationChannelDialog(this, profileInfo);
             recommendationChannelDialog.show(getSupportFragmentManager(), RecommendationChannelDialog.TAG);
+        }else{
+            //show a message
+            errorLabel.setText(R.string.lbl_no_profile_info);
+            lyt_progress.setVisibility(View.GONE);
+            errorImage.setVisibility(View.VISIBLE);
+            errorLabel.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void onDataReceived(@NotNull ProfileInfo profileInfo) {
-        objectBoxEntityProcessor.saveProfileInfo(profileInfo);
         buildRecommendationData();
     }
 
@@ -169,7 +171,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
                 "v2/recommendations",
                 countryCode
         );
-        restParameters.setInitialTimeout(45000);
+        restParameters.setInitialTimeout(5000);
         restParameters.setLocale(getCurrentLocale());
         restService.setParameters(restParameters);
 
@@ -204,7 +206,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
                     errorImage.setVisibility(View.VISIBLE);
                     errorLabel.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
-                    Crashlytics.log(Log.ERROR, LOG_TAG, "Error processing DST recommendations");
+                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                     Crashlytics.logException(ex);
                 }
             }

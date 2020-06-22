@@ -1,6 +1,7 @@
 package com.iita.akilimo.views.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -16,6 +17,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
@@ -30,11 +32,10 @@ import com.iita.akilimo.models.MaizePrice;
 import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.MathHelper;
+import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumMaizeProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
-import com.iita.akilimo.utils.enums.EnumUnitPrice;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.views.fragments.dialog.MaizePriceDialogFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -43,9 +44,8 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmList;
 
 public class MaizeMarketActivity extends BaseActivity {
 
@@ -67,12 +67,12 @@ public class MaizeMarketActivity extends BaseActivity {
     AppCompatButton btnCancel;
 
     ActivityMaizeMarketBinding binding;
+    Realm myRealm;
 
     private MathHelper mathHelper;
     private MaizeMarketOutlet maizeMarketOutlet;
-    private EnumMaizeProduceType enumMaizeProduceType;
-    private EnumUnitOfSale enumUnitOfSale;
-    private EnumUnitPrice enumUnitPrice;
+    private String produceType;
+    private Double unitPrice;
     private List<MaizePrice> maizePriceList = null;
     private boolean selectionMade = false;
 
@@ -82,6 +82,7 @@ public class MaizeMarketActivity extends BaseActivity {
     private String grainPrice;
     private String cobPrice;
     private String unitOfSale;
+    private EnumUnitOfSale unitOfSaleEnum = EnumUnitOfSale.ONE_KG;
     private boolean dialogOpen;
     private boolean dataIsValid;
     private boolean exactPriceSelected;
@@ -103,7 +104,8 @@ public class MaizeMarketActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         context = this;
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
+        realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
 
@@ -120,11 +122,13 @@ public class MaizeMarketActivity extends BaseActivity {
         btnCancel = binding.marketContent.twoButtons.btnCancel;
 
 
-        maizeMarketOutlet = objectBoxEntityProcessor.getMaizeMarketOutlet();
+        maizeMarketOutlet = realmProcessor.getMaizeMarketOutlet();
 
-        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
-        countryCode = mandatoryInfo.getCountryCode();
-        currency = mandatoryInfo.getCurrency();
+        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
+        if (mandatoryInfo != null) {
+            countryCode = mandatoryInfo.getCountryCode();
+            currency = mandatoryInfo.getCurrency();
+        }
 
         initToolbar();
         initComponent();
@@ -152,10 +156,17 @@ public class MaizeMarketActivity extends BaseActivity {
                 try {
                     maizePriceList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<MaizePrice>>() {
                     });
-                    objectBoxEntityProcessor.saveMaizePrice(maizePriceList);
-                } catch (Exception ex) {
+                    myRealm.executeTransaction(realm -> {
+                        if (maizePriceList.size() > 0) {
+                            RealmList<MaizePrice> _maizePriceList = new RealmList<>();
+                            _maizePriceList.addAll(maizePriceList);
+                            myRealm.insertOrUpdate(_maizePriceList);
+                        }
+                    });
+                } catch (JsonProcessingException ex) {
+                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                     Crashlytics.logException(ex);
-                    Crashlytics.log(ex.getMessage());
+                    Snackbar.make(maizeCobPriceCard, ex.getMessage(), Snackbar.LENGTH_SHORT).show();
                 }
             }
 
@@ -167,7 +178,7 @@ public class MaizeMarketActivity extends BaseActivity {
             @Override
             public void onError(@NotNull VolleyError volleyError) {
                 String error = Tools.parseNetworkError(volleyError).getMessage();
-                if (error != null) {
+                if (!Strings.isEmptyOrWhitespace(error)) {
                     Snackbar.make(maizeCobPriceCard, error, Snackbar.LENGTH_LONG).show();
                 }
             }
@@ -196,7 +207,7 @@ public class MaizeMarketActivity extends BaseActivity {
                     unitOfSaleGrainCard.setVisibility(View.VISIBLE);
                     maizeCobPriceTitle.setVisibility(View.GONE);
                     maizeCobPriceCard.setVisibility(View.GONE);
-                    enumMaizeProduceType = EnumMaizeProduceType.GRAIN;
+                    produceType = EnumMaizeProduceType.GRAIN.produce();
                     grainPriceRequired = true;
                     break;
                 case R.id.rdFreshCobs:
@@ -204,9 +215,10 @@ public class MaizeMarketActivity extends BaseActivity {
                     unitOfSaleGrainCard.setVisibility(View.GONE);
                     maizeCobPriceTitle.setVisibility(View.VISIBLE);
                     maizeCobPriceCard.setVisibility(View.VISIBLE);
-                    enumMaizeProduceType = EnumMaizeProduceType.FRESH_COB;
-                    enumUnitOfSale = EnumUnitOfSale.NA;
-                    enumUnitPrice = EnumUnitPrice.PRICE_EXACT;
+                    produceType = EnumMaizeProduceType.FRESH_COB.produce();
+                    unitOfSale = EnumUnitOfSale.NA.unitOfSale(context);
+                    unitOfSaleEnum = EnumUnitOfSale.NA;
+                    unitPrice = -1.0;
                     cobPriceRequired = true;
                     break;
             }
@@ -215,18 +227,17 @@ public class MaizeMarketActivity extends BaseActivity {
         rdgUnitOfSaleGrain.setOnCheckedChangeListener((group, radioIndex) -> {
             switch (radioIndex) {
                 case R.id.rd_per_kg:
-                    enumUnitOfSale = EnumUnitOfSale.UNIT_ONE_KG;
+                    unitOfSale = EnumUnitOfSale.ONE_KG.unitOfSale(context);
+                    unitOfSaleEnum = EnumUnitOfSale.ONE_KG;
                     break;
                 case R.id.rd_50_kg_bag:
-                    enumUnitOfSale = EnumUnitOfSale.UNIT_FIFTY_KG;
+                    unitOfSale = EnumUnitOfSale.FIFTY_KG.unitOfSale(context);
+                    unitOfSaleEnum = EnumUnitOfSale.FIFTY_KG;
                     break;
                 case R.id.rd_100_kg_bag:
-                    enumUnitOfSale = EnumUnitOfSale.UNIT_HUNDRED_KG;
+                    unitOfSale = EnumUnitOfSale.HUNDRED_KG.unitOfSale(context);
+                    unitOfSaleEnum = EnumUnitOfSale.HUNDRED_KG;
                     break;
-            }
-
-            if (enumUnitOfSale != null) {
-                unitOfSale = enumUnitOfSale.unitOfSale();
             }
         });
 
@@ -234,9 +245,9 @@ public class MaizeMarketActivity extends BaseActivity {
         btnCancel.setOnClickListener(view -> closeActivity(false));
 
         if (maizeMarketOutlet != null) {
-            enumMaizeProduceType = maizeMarketOutlet.getEnumMaizeProduceType();
-            enumUnitOfSale = maizeMarketOutlet.getEnumUnitOfSale();
-            enumUnitPrice = maizeMarketOutlet.getEnumUnitPrice();
+            produceType = maizeMarketOutlet.getProduceType();
+            unitOfSale = maizeMarketOutlet.getUnitOfSale();
+            unitPrice = maizeMarketOutlet.getUnitPrice();
 
             grainUnitRadioIndex = maizeMarketOutlet.getGrainUnitRadioIndex();
             produceRadioIndex = maizeMarketOutlet.getProduceRadioIndex();
@@ -246,12 +257,11 @@ public class MaizeMarketActivity extends BaseActivity {
             grainPrice = String.valueOf(maizeMarketOutlet.getExactPrice());
             cobPrice = String.valueOf(maizeMarketOutlet.getExactPrice());
 
-            unitOfSale = enumUnitOfSale.unitOfSale();
             rdgMaizeProduceType.check(produceRadioIndex);
 
-            if (enumMaizeProduceType == EnumMaizeProduceType.GRAIN) {
+            if (produceType.equals(EnumMaizeProduceType.GRAIN.produce())) {
                 rdgUnitOfSaleGrain.check(grainUnitRadioIndex);
-            } else if (enumMaizeProduceType == EnumMaizeProduceType.FRESH_COB) {
+            } else if (produceType.equals(EnumMaizeProduceType.FRESH_COB.produce())) {
                 editCobPrice.setText(grainPrice);
             }
         }
@@ -263,7 +273,7 @@ public class MaizeMarketActivity extends BaseActivity {
     protected void validate(boolean backPressed) {
 
         dataIsValid = false;
-        if (enumMaizeProduceType == null) {
+        if (produceType == null) {
             showCustomWarningDialog(getString(R.string.lbl_invalid_produce), getString(R.string.lbl_maize_produce_prompt));
             return;
         }
@@ -271,7 +281,7 @@ public class MaizeMarketActivity extends BaseActivity {
         produceRadioIndex = rdgMaizeProduceType.getCheckedRadioButtonId();
 
         if (grainPriceRequired) {
-            if (enumUnitOfSale == null) {
+            if (Strings.isEmptyOrWhitespace(unitOfSale)) {
                 showCustomWarningDialog(getString(R.string.lbl_invalid_sale_unit), getString(R.string.lbl_maize_sale_unit_prompt));
                 return;
             }
@@ -297,40 +307,47 @@ public class MaizeMarketActivity extends BaseActivity {
 
 
         if (dataIsValid) {
-            if (maizeMarketOutlet == null) {
-                maizeMarketOutlet = new MaizeMarketOutlet();
-            }
+            try {
+                myRealm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        if (maizeMarketOutlet == null) {
+                            maizeMarketOutlet = realm.createObject(MaizeMarketOutlet.class, Tools.generateUUID());
+                        }
 
-            maizeMarketOutlet.setEnumMaizeProduceType(enumMaizeProduceType);
-            maizeMarketOutlet.setEnumUnitPrice(enumUnitPrice);
-            maizeMarketOutlet.setEnumUnitOfSale(enumUnitOfSale);
+                        maizeMarketOutlet.setProduceType(produceType);
+                        maizeMarketOutlet.setUnitPrice(unitPrice);
+                        maizeMarketOutlet.setUnitOfSale(unitOfSale);
+                        maizeMarketOutlet.setExactPrice(exactPrice);
 
-            maizeMarketOutlet.setExactPrice(exactPrice);
-            maizeMarketOutlet.setGrainUnitPriceRadioIndex(grainUnitPriceRadioIndex);
-            maizeMarketOutlet.setGrainUnitRadioIndex(grainUnitRadioIndex);
-            maizeMarketOutlet.setProduceRadioIndex(produceRadioIndex);
-
-            long id = objectBoxEntityProcessor.saveMaizeMarketOutlet(maizeMarketOutlet);
-            if (id > 0) {
+                        maizeMarketOutlet.setGrainUnitPriceRadioIndex(grainUnitPriceRadioIndex);
+                        maizeMarketOutlet.setGrainUnitRadioIndex(grainUnitRadioIndex);
+                        maizeMarketOutlet.setProduceRadioIndex(produceRadioIndex);
+                    }
+                });
                 closeActivity(backPressed);
+            } catch (Exception ex) {
+                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+                Crashlytics.logException(ex);
             }
+
         }
     }
 
     public void onGrainUnitRadioButtonClicked(View radioButton) {
         if (radioButton != null && radioButton.isPressed()) {
-            showUnitGrainPriceDialog(currency, unitOfSale);
+            showUnitGrainPriceDialog();
         }
     }
 
-    private void showUnitGrainPriceDialog(String currency, String uos) {
+    private void showUnitGrainPriceDialog() {
         Bundle arguments = new Bundle();
         arguments.putString(MaizePriceDialogFragment.CURRENCY_CODE, currency);
         arguments.putString(MaizePriceDialogFragment.COUNTRY_CODE, countryCode);
-        arguments.putString(MaizePriceDialogFragment.UNIT_OF_SALE, uos);
         arguments.putDouble(MaizePriceDialogFragment.SELECTED_PRICE, exactPrice);
         arguments.putDouble(MaizePriceDialogFragment.AVERAGE_PRICE, averagePrice);
-        arguments.putParcelable(MaizePriceDialogFragment.ENUM_UNIT_OF_SALE, enumUnitOfSale);
+        arguments.putString(MaizePriceDialogFragment.UNIT_OF_SALE, unitOfSale);
+        arguments.putParcelable(MaizePriceDialogFragment.ENUM_UNIT_OF_SALE, unitOfSaleEnum);
 
         MaizePriceDialogFragment priceDialogFragment = new MaizePriceDialogFragment();
         priceDialogFragment.setArguments(arguments);
@@ -350,5 +367,11 @@ public class MaizeMarketActivity extends BaseActivity {
             fragmentTransaction.addToBackStack(null);
             priceDialogFragment.show(getSupportFragmentManager(), MaizePriceDialogFragment.ARG_ITEM_ID);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
     }
 }

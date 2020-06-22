@@ -1,12 +1,13 @@
 package com.iita.akilimo.entities
 
-import io.objectbox.annotation.Entity
-import io.objectbox.annotation.Id
+import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
 
-@Entity
-class InvestmentAmount {
-    @Id
-    var id: Long = 0
+
+open class InvestmentAmount : RealmObject() {
+
+    @PrimaryKey
+    var id: String? = null
     var minInvestmentAmountUSD: Double = 0.0
     var minInvestmentAmountLocal: Double = 0.0
     var investmentAmountUSD: Double = 0.0

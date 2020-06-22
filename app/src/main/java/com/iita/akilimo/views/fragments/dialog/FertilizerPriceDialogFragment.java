@@ -2,7 +2,6 @@ package com.iita.akilimo.views.fragments.dialog;
 
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -19,25 +18,23 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
+import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IDismissListener;
 import com.iita.akilimo.models.Fertilizer;
 import com.iita.akilimo.models.FertilizerPrices;
-import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import java.util.List;
 
-import butterknife.ButterKnife;
+import io.realm.Realm;
 
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
  */
-public class FertilizerPriceDialogFragment extends DialogFragment {
+public class FertilizerPriceDialogFragment extends BaseDialogFragment {
 
     private static final String LOG_TAG = FertilizerPriceDialogFragment.class.getSimpleName();
 
@@ -59,9 +56,6 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
     private Button btnRemove;
 
 
-    private MathHelper mathHelper;
-    private Context context;
-    private ObjectBoxEntityProcessor objectBox;
     private Fertilizer fertilizer;
     private List<FertilizerPrices> fertilizerPricesList;
 
@@ -78,14 +72,6 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
         // Required empty public constructor
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.context = context;
-        objectBox = ObjectBoxEntityProcessor.getInstance(context);
-        mathHelper = new MathHelper();
-    }
-
 
     @NonNull
     @Override
@@ -100,7 +86,6 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
         dialog.setContentView(R.layout.fragment_fertilizer_price_dialog);
-        ButterKnife.bind(dialog);
 
         dialog.setCancelable(true);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -160,23 +145,32 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
                 isPriceValid = true;
                 editExactFertilizerPrice.setError(null);
             }
-            fertilizer.setPrice(bagPrice);
-            fertilizer.setPricePerBag(savedPricePerBag);
-            fertilizer.setPriceRange(bagPriceRange);
-            fertilizer.setSelected(true);
-            fertilizer.setExactPrice(isExactPriceRequired);
-
-            if (isPriceValid) {
-                priceSpecified = true;
-                removeSelected = false;
-                dismiss();
+            try (Realm myRealm = Realm.getDefaultInstance()) {
+                myRealm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        fertilizer.setPrice(bagPrice);
+                        fertilizer.setPricePerBag(savedPricePerBag);
+                        fertilizer.setPriceRange(bagPriceRange);
+                        fertilizer.setSelected(true);
+                        fertilizer.setExactPrice(isExactPriceRequired);
+                    }
+                });
+                if (isPriceValid) {
+                    priceSpecified = true;
+                    removeSelected = false;
+                    dismiss();
+                }
+            } catch (Exception ex) {
+                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+                Crashlytics.logException(ex);
             }
 
         });
 
         radioGroup.setOnCheckedChangeListener((radioGroup, i) -> radioSelected(radioGroup));
-        if (objectBox != null) {
-            fertilizerPricesList = objectBox.getFertilizerPrices(countryCode);
+        if (realmProcessor != null) {
+            fertilizerPricesList = realmProcessor.getFertilizerPrices(countryCode);
             addPriceRadioButtons(fertilizerPricesList, fertilizer);
         }
         return dialog;
@@ -217,8 +211,8 @@ public class FertilizerPriceDialogFragment extends DialogFragment {
         double selectedPrice = 0.0;
         if (fertilizer != null) {
             selectedPrice = fertilizer.getPricePerBag();
-            isExactPriceRequired = fertilizer.isExactPrice();
-            if (fertilizer.isSelected()) {
+            isExactPriceRequired = fertilizer.getExactPrice();
+            if (fertilizer.getSelected()) {
                 btnUpdate.setText(R.string.lbl_update);
                 btnRemove.setVisibility(View.VISIBLE);
             }

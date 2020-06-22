@@ -16,10 +16,6 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
-
-import butterknife.BindString
-import butterknife.ButterKnife
-import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import com.crashlytics.android.Crashlytics
 import com.github.javiersantos.appupdater.AppUpdater
 import com.github.javiersantos.appupdater.enums.Display
@@ -31,13 +27,15 @@ import com.iita.akilimo.entities.LocationInfo
 import com.iita.akilimo.inherit.BaseActivity
 import com.iita.akilimo.interfaces.IFragmentCallBack
 import com.iita.akilimo.utils.AppUpdateHelper
+import com.iita.akilimo.utils.RealmProcessor
 import com.iita.akilimo.utils.Tools
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor
+import com.iita.akilimo.views.activities.usecases.RecommendationsActivity
 import com.iita.akilimo.views.fragments.*
-import timber.log.Timber
+import io.realm.Realm
 import kotlin.system.exitProcess
 
 
+@Suppress("SENSELESS_COMPARISON")
 class HomeActivity : BaseActivity(), IFragmentCallBack {
     companion object {
         const val MAP_BOX_PLACE_PICKER_REQUEST_CODE = 208
@@ -50,6 +48,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
     private val maxStep = 0
 
     private lateinit var binding: ActivityHomeBinding
+    private lateinit var myRealm: Realm
     private lateinit var viewPager: ViewPager
     private lateinit var myViewPagerAdapter: ViewPagerAdapter
     private lateinit var btnStart: Button
@@ -64,7 +63,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
     private var placeName: String? = null
     private var address: String? = null
     private lateinit var currentFragment: Fragment
-    private lateinit var location: LocationInfo
+    private var location: LocationInfo? = null
 
 
     private lateinit var activity: Activity
@@ -84,9 +83,11 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        realmProcessor = RealmProcessor()
+        myRealm = Realm.getDefaultInstance()
+
         activity = this
         context = this
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this)
 
         defaultPlaceName = getString(R.string.lbl_place_name)
         viewPager = binding.homeViewPager
@@ -94,8 +95,8 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
         //Add the various fragments
         val bioDataFragment = BioDataFragment.newInstance()
-        fragmentArray.add(WelcomeFragment.newInstance())
-        fragmentArray.add(InfoFragment.newInstance())
+        //fragmentArray.add(WelcomeFragment.newInstance())
+        //fragmentArray.add(InfoFragment.newInstance())
         /**
          * @TODO Add privacy statement links to the app
          * @body Check for updated content from christine.
@@ -201,7 +202,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             override fun onPageSelected(position: Int) {
                 bottomProgressDots(position)
 
-                Tools.setSystemBarColor(activity, R.color.colorPrimary)
+                Tools.setSystemBarColor(activity, R.color.colorAccent)
                 //stop the updater
                 appUpdater.stop();
                 btnStart.visibility = View.GONE
@@ -209,7 +210,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                     0 -> {
                         appUpdater.start()
                         btnStart.visibility = View.GONE
-                        Tools.setSystemBarColor(activity, R.color.deep_purple_600)
+                        //Tools.setSystemBarColor(activity, R.color.green_700)
                     }
                     fragmentArray.size - 1 -> {
                         if (showProceedButton) {
@@ -225,7 +226,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             appUpdater.start()
             val intent = Intent(this, RecommendationsActivity::class.java)
             startActivity(intent)
-            Animatoo.animateSlideLeft(this)
+            openActivity()
         }
     }
 
@@ -242,7 +243,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
             params.setMargins(10, 10, 10, 10)
             dots[dotIndex]?.layoutParams = params
-            dots[dotIndex]?.setImageResource(R.drawable.shape_circle)
+            dots[dotIndex]?.setImageResource(R.drawable.shape_rect_outline)
             dots[dotIndex]?.setColorFilter(
                 ContextCompat.getColor(this, R.color.grey_20), PorterDuff.Mode.SRC_IN
             )
@@ -250,11 +251,11 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         }
 
         if (dots.isNotEmpty()) {
-            dots[currentIndex]?.setImageResource(R.drawable.shape_circle)
+            dots[currentIndex]?.setImageResource(R.drawable.shape_rect_outline)
             dots[currentIndex]?.setColorFilter(
                 ContextCompat.getColor(
                     this,
-                    R.color.colorAccent
+                    R.color.colorPrimary
                 ), PorterDuff.Mode.SRC_IN
             )
         }
@@ -278,32 +279,36 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                             Toast.LENGTH_LONG
                         ).show()
                     }
-                    Timber.d(currentLong.toString())
                 }
             }
 
-            location = objectBoxEntityProcessor.locationInfo
+            location = realmProcessor.locationInfo
+            myRealm.executeTransaction {
+                if (location == null) {
+                    location = it.createObject(LocationInfo::class.java, Tools.generateUUID())
+                }
 
-            location.latitude = currentLat
-            location.longitude = currentLong
-            location.altitude = currentAlt
-
-            location.placeName = when {
-                !Strings.isEmptyOrWhitespace(placeName) -> placeName
-                else -> defaultPlaceName
+                location = realmProcessor.locationInfo
+                location?.latitude = currentLat
+                location?.longitude = currentLong
+                location?.altitude = currentAlt
+                location?.placeName = when {
+                    !Strings.isEmptyOrWhitespace(placeName) -> placeName
+                    else -> defaultPlaceName
+                }
+                location?.address = when {
+                    !Strings.isEmptyOrWhitespace(address) -> address
+                    else -> "NA"
+                }
             }
-            location.address = when {
-                !Strings.isEmptyOrWhitespace(address) -> address
-                else -> "NA"
-            }
-
-            val id = objectBoxEntityProcessor.saveLocationInfo(location)
-            if (id > 0) {
-                //refresh fragment data
-                (currentFragment as? LocationFragment)?.refreshData()
-            }
+            (currentFragment as? LocationFragment)?.refreshData()
         } catch (ex: Exception) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "Error saving location information")
+            Toast.makeText(
+                context,
+                getString(R.string.lbl_location_error),
+                Toast.LENGTH_LONG
+            ).show()
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
             Crashlytics.logException(ex)
         }
 
@@ -332,5 +337,10 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             )
             Crashlytics.logException(ex)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        myRealm.close()
     }
 }

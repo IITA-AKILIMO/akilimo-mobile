@@ -7,15 +7,15 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.DialogFragment
-import butterknife.Unbinder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.hbb20.CountryCodePicker
 import com.iita.akilimo.R
 import com.iita.akilimo.entities.ProfileInfo
+import com.iita.akilimo.inherit.BaseDialogFragment
 import com.iita.akilimo.interfaces.IRecommendationCallBack
 import com.iita.akilimo.utils.ValidationHelper
+import io.realm.Realm
 import org.jetbrains.annotations.NotNull
 
 
@@ -23,14 +23,13 @@ class RecommendationChannelDialog(
     private val callbackListener: @NotNull IRecommendationCallBack,
     private val myProfileInfo: @NotNull ProfileInfo
 ) :
-    DialogFragment() {
+    BaseDialogFragment() {
 
 
     companion object {
         const val TAG = "rec_dialog"
     }
 
-    lateinit var unbinder: Unbinder
 
     lateinit var toolbar: Toolbar
     lateinit var lytEmail: TextInputLayout
@@ -136,13 +135,19 @@ class RecommendationChannelDialog(
                 dataIsValid = numberIsValid
             }
 
-            if (profileInfo != null && dataIsValid) {
-                profileInfo?.mobileCode = (mobileCode)
-                profileInfo?.email = (email)
-                profileInfo?.fullMobileNumber = (fullMobileNumber)
-                profileInfo?.sendEmail = (sendEmail)
-                profileInfo?.sendSms = (sendSms)
-
+            if (dataIsValid) {
+                val myRealm = Realm.getDefaultInstance();
+                myRealm.executeTransaction {
+                    if (profileInfo == null) {
+                        profileInfo = myRealm.createObject(ProfileInfo::class.java)
+                    }
+                    profileInfo?.mobileCode = (mobileCode)
+                    profileInfo?.email = (email)
+                    profileInfo?.fullMobileNumber = (fullMobileNumber)
+                    profileInfo?.sendEmail = (sendEmail)
+                    profileInfo?.sendSms = (sendSms)
+                }
+                myRealm.close();
                 callbackListener.onDataReceived(profileInfo!!)
                 dismiss()
             }

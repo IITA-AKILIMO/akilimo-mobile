@@ -1,6 +1,7 @@
 package com.iita.akilimo.views.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -11,37 +12,29 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.ActivityDatesBinding;
 import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.DateHelper;
+import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.views.fragments.dialog.DateDialogPickerFragment;
 
 import org.joda.time.LocalDate;
 
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import io.realm.Realm;
 
 public class DatesActivity extends BaseActivity {
-    String activityTitle;
-
-
     Toolbar toolbar;
 
     RelativeLayout lytPlantingHarvest;
 
     AppCompatButton btnPickPlantingDate;
-
     AppCompatButton btnPickHarvestDate;
-
-
     AppCompatButton btnCancel;
-
     AppCompatButton btnFinish;
 
     TextView lblSelectedPlantingDate;
@@ -59,6 +52,7 @@ public class DatesActivity extends BaseActivity {
     SwitchCompat flexibleHarvest;
 
     ActivityDatesBinding binding;
+    Realm myRealm;
 
     String selectedPlantingDate;
     String selectedHarvestDate;
@@ -73,6 +67,11 @@ public class DatesActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityDatesBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
+        context = this;
+        realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
 
         //set widgets
         toolbar = binding.toolbar;
@@ -89,8 +88,6 @@ public class DatesActivity extends BaseActivity {
         flexiblePlanting = binding.flexiblePlanting;
         flexibleHarvest = binding.flexibleHarvest;
 
-        context = this;
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
 
         initToolbar();
         initComponent();
@@ -115,27 +112,23 @@ public class DatesActivity extends BaseActivity {
         btnCancel.setOnClickListener(view -> closeActivity(false));
 
         flexiblePlanting.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            rdgPlantingWindow.clearCheck();
+            plantingWindow = 0;
             if (isChecked) {
                 rdgPlantingWindow.setVisibility(View.VISIBLE);
-                rdgPlantingWindow.clearCheck();
-                plantingWindow = 0;
             } else {
-                rdgPlantingWindow.clearCheck();
-                plantingWindow = 0;
                 rdgPlantingWindow.setVisibility(View.GONE);
             }
         });
 
         flexibleHarvest.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             rdgHarvestWindow.setVisibility(View.GONE);
+            rdgHarvestWindow.clearCheck();
+            harvestWindow = 0;
             if (isChecked) {
                 rdgHarvestWindow.setVisibility(View.VISIBLE);
-                rdgHarvestWindow.clearCheck();
-                harvestWindow = 0;
             } else {
                 rdgHarvestWindow.setVisibility(View.GONE);
-                rdgHarvestWindow.clearCheck();
-                harvestWindow = 0;
             }
         });
 
@@ -183,10 +176,10 @@ public class DatesActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        plantingHarvestDates = objectBoxEntityProcessor.getPlantingHarvestDates();
+        plantingHarvestDates = realmProcessor.getPlantingHarvestDates();
 
         if (plantingHarvestDates != null) {
-            alternativeDate = plantingHarvestDates.isAlternativeDate();
+            alternativeDate = plantingHarvestDates.getAlternativeDate();
             String pd = plantingHarvestDates.getPlantingDate();
             String hd = plantingHarvestDates.getHarvestDate();
             int pw = plantingHarvestDates.getPlantingWindow();
@@ -226,22 +219,25 @@ public class DatesActivity extends BaseActivity {
             return;
         }
 
-        plantingHarvestDates = objectBoxEntityProcessor.getPlantingHarvestDates();
-        if (plantingHarvestDates == null) {
-            plantingHarvestDates = new PlantingHarvestDates();
+        try {
+            myRealm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    if (plantingHarvestDates == null) {
+                        plantingHarvestDates = myRealm.createObject(PlantingHarvestDates.class, Tools.generateUUID());
+                    }
+                    plantingHarvestDates.setHarvestDate(selectedHarvestDate);
+                    plantingHarvestDates.setHarvestWindow(harvestWindow);
+                    plantingHarvestDates.setPlantingDate(selectedPlantingDate);
+                    plantingHarvestDates.setPlantingWindow(plantingWindow);
+                    plantingHarvestDates.setAlternativeDate(alternativeDate);
+                    closeActivity(backPressed);
+                }
+            });
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+            Crashlytics.logException(ex);
         }
-        plantingHarvestDates.setHarvestDate(selectedHarvestDate);
-        plantingHarvestDates.setHarvestWindow(harvestWindow);
-        plantingHarvestDates.setPlantingDate(selectedPlantingDate);
-        plantingHarvestDates.setPlantingWindow(plantingWindow);
-        plantingHarvestDates.setAlternativeDate(alternativeDate);
-
-        long id = objectBoxEntityProcessor.savePlantingHarvestDates(plantingHarvestDates);
-        if (id <= 0) {
-            showCustomWarningDialog(getString(R.string.lbl_unable_to_save), getString(R.string.lbl_date_save_error));
-            return;
-        }
-        closeActivity(backPressed);
     }
 
     private void dialogDatePickerLight(boolean pickPlantingDate, boolean pickHarvestDate) {
@@ -266,5 +262,11 @@ public class DatesActivity extends BaseActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
     }
 }

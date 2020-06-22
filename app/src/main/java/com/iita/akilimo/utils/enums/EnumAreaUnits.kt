@@ -1,27 +1,20 @@
 package com.iita.akilimo.utils.enums
 
+import android.content.Context
+import com.iita.akilimo.R
+import org.jetbrains.annotations.NotNull
+
 enum class EnumAreaUnits {
-    UNKNOWN {
-        override fun unitString(): String {
-            return "NA"
-        }
-    },
     ACRE {
-        override fun unitString(): String {
-            return "acre"
+        override fun unitName(context: Context): String {
+            return context.getString(R.string.lbl_acre)
         }
     },
     HA {
-        override fun unitString(): String {
-            return "ha"
-        }
-    },
-    SQM {
-        override fun unitString(): String {
-            return "m2"
+        override fun unitName(context: Context): String {
+            return context.getString(R.string.lbl_ha)
         }
     };
 
-    abstract fun unitString(): String
-
+    abstract fun unitName(context: Context): @NotNull String
 }

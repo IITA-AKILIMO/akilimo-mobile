@@ -20,15 +20,13 @@ import com.android.volley.RequestQueue;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 import com.iita.akilimo.R;
 import com.iita.akilimo.utils.FireBaseConfig;
+import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.SessionManager;
+import com.iita.akilimo.utils.enums.EnumCountry;
 import com.iita.akilimo.utils.enums.EnumUseCase;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.views.activities.DstRecommendationActivity;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
@@ -38,12 +36,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import javax.annotation.Nonnull;
-
 import dev.b3nedikt.app_locale.AppLocale;
 import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
-import io.objectbox.BoxStore;
 
 @SuppressLint("LogNotTimber")
 public abstract class BaseActivity extends AppCompatActivity {
@@ -51,27 +46,21 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected String LOG_TAG = BaseActivity.class.getSimpleName();
 
     protected Context context;
-    protected BoxStore boxStore;
     protected SessionManager sessionManager;
+    //protected Realm myRealm;
+    protected RealmProcessor realmProcessor;
     protected RequestQueue queue;
-    protected ObjectBoxEntityProcessor objectBoxEntityProcessor = null;
 
-    protected String countryCode = "ALL";
+    protected String countryCode = EnumCountry.NIGERIA.countryCode();
     protected String baseCurrency = "USD";
-    protected String currency = "";
+    protected String currency = EnumCountry.NIGERIA.currency();
     protected EnumUseCase useCase;
-    protected String areaUnit = "";
+    protected String areaUnit = "acre";
     protected double fieldSize = 0;
     protected double fieldSizeAcre = 2.471;
 
     public BaseActivity() {
     }
-
-    protected abstract void initToolbar();
-
-    protected abstract void initComponent();
-
-    protected abstract void validate(boolean backPressed);
 
     @Override
     public void onBackPressed() {
@@ -89,12 +78,26 @@ public abstract class BaseActivity extends AppCompatActivity {
         return AppLocale.wrap(getBaseContext()).getResources();
     }
 
+    protected abstract void initToolbar();
+
+    protected abstract void initComponent();
+
+    protected abstract void validate(boolean backPressed);
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
     protected void closeActivity(boolean backPressed) {
         if (!backPressed) {
             finish();
         }
-        Animatoo.animateSlideRight(this);
+        Animatoo.animateSwipeRight(this);
+    }
+
+    protected void openActivity() {
+        Animatoo.animateSwipeLeft(this);
     }
 
 
@@ -243,8 +246,8 @@ public abstract class BaseActivity extends AppCompatActivity {
                         }
                     }
                 });
-}
-  
+    }
+
     protected Locale getCurrentLocale() {
         SharedPrefsAppLocaleRepository prefs = new SharedPrefsAppLocaleRepository(this);
         Locale desiredLocale = prefs.getDesiredLocale();

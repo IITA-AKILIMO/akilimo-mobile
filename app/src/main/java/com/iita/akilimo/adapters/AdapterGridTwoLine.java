@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,7 +18,6 @@ import com.iita.akilimo.utils.Tools;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nonnull;
 
 public class AdapterGridTwoLine extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -41,7 +41,7 @@ public class AdapterGridTwoLine extends RecyclerView.Adapter<RecyclerView.ViewHo
         ctx = context;
     }
 
-    public void setItems(double selectedYieldAmount, @Nonnull List<CurrentFieldYield> items) {
+    public void setItems(double selectedYieldAmount, @NonNull List<CurrentFieldYield> items) {
         this.items = items;
         this.selectedYieldAmount = selectedYieldAmount;
         notifyDataSetChanged();

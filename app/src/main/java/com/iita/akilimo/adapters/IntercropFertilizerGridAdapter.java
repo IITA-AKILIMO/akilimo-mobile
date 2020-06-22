@@ -13,7 +13,6 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.iita.akilimo.R;
-import com.iita.akilimo.models.Fertilizer;
 import com.iita.akilimo.models.InterCropFertilizer;
 import com.iita.akilimo.utils.Tools;
 
@@ -31,7 +30,7 @@ public class IntercropFertilizerGridAdapter extends RecyclerView.Adapter<Recycle
     private int rowIndex = -1;
 
     public interface OnItemClickListener {
-        void onItemClick(View view, Fertilizer obj, int position);
+        void onItemClick(View view, InterCropFertilizer obj, int position);
     }
 
     public IntercropFertilizerGridAdapter(@NonNull Context context) {
@@ -62,7 +61,7 @@ public class IntercropFertilizerGridAdapter extends RecyclerView.Adapter<Recycle
         InterCropFertilizer obj = items.get(position);
         String fertilizerName = obj.getName();
         String bagPrice = obj.getPriceRange();
-        boolean isSelected = obj.isSelected();
+        boolean isSelected = obj.getSelected();
 
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder view = (OriginalViewHolder) holder;
@@ -106,7 +105,7 @@ public class IntercropFertilizerGridAdapter extends RecyclerView.Adapter<Recycle
     public List<InterCropFertilizer> getSelected() {
         List<InterCropFertilizer> selected = new ArrayList<>();
         for (int i = 0; i < items.size(); i++) {
-            if (items.get(i).isSelected()) {
+            if (items.get(i).getSelected()) {
                 selected.add(items.get(i));
             }
         }

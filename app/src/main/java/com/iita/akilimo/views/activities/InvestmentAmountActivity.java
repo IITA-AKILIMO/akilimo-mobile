@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -12,6 +13,7 @@ import android.widget.RadioGroup;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
@@ -21,11 +23,11 @@ import com.iita.akilimo.entities.InvestmentAmount;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
+import com.iita.akilimo.utils.RealmProcessor;
+import com.iita.akilimo.utils.Tools;
 
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import io.realm.Realm;
+
 
 public class InvestmentAmountActivity extends BaseActivity {
 
@@ -44,11 +46,13 @@ public class InvestmentAmountActivity extends BaseActivity {
     TextInputLayout txtEditInvestmentAmountLayout;
     MaterialButton btnFinish;
     ActivityInvestmentAmountBinding binding;
+    Realm myRealm;
 
 
     String investmentAmountError;
 
     MathHelper mathHelper;
+    private InvestmentAmount invAmount;
     private boolean isExactAmount;
     private boolean hasErrors;
 
@@ -57,7 +61,7 @@ public class InvestmentAmountActivity extends BaseActivity {
 
     private double investmentAmountUSD;
     private double investmentAmountLocal;
-    private double minInvestmentUSD = 25;
+    private double minInvestmentUSD = 1;
     private double minimumAmountUSD;
     private double minimumAmountLocal;
     private String selectedFieldArea;
@@ -68,10 +72,11 @@ public class InvestmentAmountActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityInvestmentAmountBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        
+
         context = this;
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
+        realmProcessor = new RealmProcessor();
         mathHelper = new MathHelper();
+        myRealm = Realm.getDefaultInstance();
 
         toolbar = binding.toolbar;
         radioGroup = binding.radioInvestmentGroup;
@@ -161,17 +166,23 @@ public class InvestmentAmountActivity extends BaseActivity {
                 return;
             }
 
-            InvestmentAmount invAmount = objectBoxEntityProcessor.getInvestmentAmount();
-            if (invAmount == null) {
-                invAmount = new InvestmentAmount();
-            }
-            invAmount.setInvestmentAmountUSD(investmentAmountUSD);
-            invAmount.setInvestmentAmountLocal(investmentAmountLocal);
-            invAmount.setMinInvestmentAmountLocal(minimumAmountLocal);
-            invAmount.setMinInvestmentAmountUSD(minimumAmountUSD);
+            invAmount = realmProcessor.getInvestmentAmount();
 
-            objectBoxEntityProcessor.saveInvestmentAmount(invAmount);
-            closeActivity(false);
+            try {
+                myRealm.executeTransaction(realm -> {
+                    if (invAmount == null) {
+                        invAmount = realm.createObject(InvestmentAmount.class, Tools.generateUUID());
+                    }
+                    invAmount.setInvestmentAmountUSD(investmentAmountUSD);
+                    invAmount.setMinInvestmentAmountUSD(minimumAmountUSD);
+                    invAmount.setInvestmentAmountLocal(investmentAmountLocal);
+                    invAmount.setMinInvestmentAmountLocal(minimumAmountLocal);
+                });
+                closeActivity(false);
+            } catch (Exception ex) {
+                Crashlytics.log(Log.ERROR,LOG_TAG,ex.getMessage());
+                Crashlytics.logException(ex);
+            }
         });
         updateLabels();
         showCustomNotificationDialog();
@@ -184,16 +195,18 @@ public class InvestmentAmountActivity extends BaseActivity {
 
     private void updateLabels() {
 
-        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
-        fieldSize = mandatoryInfo.getAreaSize();
-        fieldSizeAcre = mandatoryInfo.getAcreAreaSize();
-        fieldArea = String.valueOf(fieldSize);
-        fieldAreaAcre = String.valueOf(fieldSizeAcre);
-
-        areaUnit = mandatoryInfo.getAreaUnit();
+        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
+        if (mandatoryInfo != null) {
+            fieldSize = mandatoryInfo.getAreaSize();
+            fieldSizeAcre = mandatoryInfo.getAreaSize();
+            fieldArea = String.valueOf(fieldSize);
+            fieldAreaAcre = String.valueOf(fieldSizeAcre);
+            areaUnit = mandatoryInfo.getAreaUnit();
+            currency = mandatoryInfo.getCurrency();
+        }
         selectedFieldArea = String.format("%s %s", fieldSize, areaUnit);
 
-        currency = mandatoryInfo.getCurrency();
+
         if (Strings.isEmptyOrWhitespace(selectedFieldArea)) {
             return;
         }
@@ -238,5 +251,11 @@ public class InvestmentAmountActivity extends BaseActivity {
         hasErrors = investmentAmountLocal < minimumAmountLocal;
         return investmentAmountError = getString(R.string.lbl_investment_validation_msg, minimumAmountLocal, currency);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
     }
 }

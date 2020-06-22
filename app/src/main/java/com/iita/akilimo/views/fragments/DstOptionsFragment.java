@@ -23,16 +23,13 @@ import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.models.Recommendations;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.enums.EnumAdvice;
-import com.iita.akilimo.views.activities.FertilizerRecActivity;
-import com.iita.akilimo.views.activities.InterCropRecActivity;
-import com.iita.akilimo.views.activities.PlantingPracticesActivity;
-import com.iita.akilimo.views.activities.ScheduledPlantingActivity;
+import com.iita.akilimo.views.activities.usecases.FertilizerRecActivity;
+import com.iita.akilimo.views.activities.usecases.InterCropRecActivity;
+import com.iita.akilimo.views.activities.usecases.PlantingPracticesActivity;
+import com.iita.akilimo.views.activities.usecases.ScheduledPlantingActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindString;
-import butterknife.BindView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -70,6 +67,11 @@ public class DstOptionsFragment extends BaseFragment {
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentDstOptionsBinding.inflate(inflater, container, false);
         return binding.getRoot();
+    }
+
+    @Override
+    protected void realmInstance() {
+
     }
 
     @Override

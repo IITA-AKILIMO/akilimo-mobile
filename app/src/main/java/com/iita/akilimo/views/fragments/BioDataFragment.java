@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
@@ -28,15 +27,13 @@ import com.iita.akilimo.databinding.FragmentBioDataBinding;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.interfaces.IFragmentCallBack;
+import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.ValidationHelper;
-import com.iita.akilimo.utils.enums.EnumGender;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindString;
-import butterknife.BindView;
-import dev.b3nedikt.app_locale.AppLocale;
+import io.realm.Realm;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,6 +57,8 @@ public class BioDataFragment extends BaseFragment {
     AppCompatButton btnGetRec;
 
     FragmentBioDataBinding binding;
+
+    Realm myRealm;
 
     private boolean dataIsValid;
     private String firstName;
@@ -87,10 +86,16 @@ public class BioDataFragment extends BaseFragment {
         validationHelper = new ValidationHelper();
     }
 
+
     @Override
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentBioDataBinding.inflate(inflater, container, false);
         return binding.getRoot();
+    }
+
+    @Override
+    protected void realmInstance() {
+        myRealm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -148,7 +153,7 @@ public class BioDataFragment extends BaseFragment {
     @Override
     public void refreshData() {
         try {
-            profileInfo = objectBoxEntityProcessor.getProfileInfo();
+            profileInfo = realmProcessor.getProfileInfo();
             if (profileInfo != null) {
                 firstName = profileInfo.getFirstName();
                 lastName = profileInfo.getLastName();
@@ -210,22 +215,27 @@ public class BioDataFragment extends BaseFragment {
         }
 
         if (dataIsValid) {
-            if (profileInfo == null) {
-                profileInfo = new ProfileInfo();
-            }
-            profileInfo.setFirstName(firstName);
-            profileInfo.setLastName(lastName);
-            profileInfo.setGender(gender);
-            profileInfo.setEmail(email);
-            profileInfo.setFarmName(farmName);
-            profileInfo.setMobileCode(mobileCode);
-            profileInfo.setFullMobileNumber(fullMobileNumber);
-            profileInfo.setSelectedGenderIndex(selectedGenderIndex);
-
-            long id = objectBoxEntityProcessor.saveProfileInfo(profileInfo);
-            if (id > 0) {
+            try {
+                myRealm.executeTransaction(realm -> {
+                    if (profileInfo == null) {
+                        profileInfo = myRealm.createObject(ProfileInfo.class, Tools.generateUUID());
+                    }
+                    profileInfo.setFirstName(firstName);
+                    profileInfo.setLastName(lastName);
+                    profileInfo.setGender(gender);
+                    profileInfo.setEmail(email);
+                    profileInfo.setFarmName(farmName);
+                    profileInfo.setMobileCode(mobileCode);
+                    profileInfo.setFullMobileNumber(fullMobileNumber);
+                    profileInfo.setSelectedGenderIndex(selectedGenderIndex);
+                });
+                //load the next fragment
                 nextFragment();
+            } catch (Exception ex) {
+                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+                Crashlytics.logException(ex);
             }
+
         }
     }
 
@@ -237,5 +247,11 @@ public class BioDataFragment extends BaseFragment {
         if (fragmentCallBack != null) {
             fragmentCallBack.onDataSaved();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
     }
 }

@@ -16,11 +16,8 @@ import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
 import dev.b3nedikt.reword.RewordInterceptor;
 import io.fabric.sdk.android.Fabric;
 import io.github.inflationx.viewpump.ViewPump;
-import io.objectbox.BoxStore;
-import io.objectbox.android.AndroidObjectBrowser;
-
-import com.iita.akilimo.BuildConfig;
-import com.iita.akilimo.utils.objectbox.ObjectBox;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 public class Akilimo extends MultiDexApplication {
 
@@ -46,7 +43,15 @@ public class Akilimo extends MultiDexApplication {
         //@FIX This is used to enable proper vector support for android 4.4 and below, it causes crashing when firing up the application
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         JodaTimeAndroid.init(this);
-        ObjectBox.init(this);
         World.init(this);
+        Realm.init(this);
+
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                .name("akilimo.realm")
+                .schemaVersion(1)
+                .deleteRealmIfMigrationNeeded()
+                .build();
+
+        Realm.setDefaultConfiguration(config);
     }
 }

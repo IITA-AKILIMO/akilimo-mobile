@@ -1,6 +1,5 @@
 package com.iita.akilimo.views.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,8 +34,8 @@ import com.iita.akilimo.models.FertilizerPrices;
 import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.FertilizerList;
+import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.views.fragments.dialog.FertilizerPriceDialogFragment;
 import com.iita.akilimo.widget.SpacingItemDecoration;
 
@@ -48,9 +47,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmList;
 
 public class FertilizersActivity extends BaseActivity {
 
@@ -66,6 +64,7 @@ public class FertilizersActivity extends BaseActivity {
     ImageView errorImage;
     TextView errorLabel;
     ActivityFertilizersBinding binding;
+    Realm myRealm;
 
     private List<Fertilizer> availableFertilizersList = new ArrayList<>();
     private List<Fertilizer> selectedFertilizers = new ArrayList<>();
@@ -81,6 +80,7 @@ public class FertilizersActivity extends BaseActivity {
         binding = ActivityFertilizersBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         context = this;
+        myRealm = Realm.getDefaultInstance();
 
         toolbar = binding.toolbarLayout.toolbar;
         recyclerView = binding.availableFertilizers;
@@ -92,7 +92,7 @@ public class FertilizersActivity extends BaseActivity {
         errorImage = binding.errorImage;
         errorLabel = binding.errorLabel;
 
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
+        realmProcessor = new RealmProcessor();
         queue = Volley.newRequestQueue(context);
 
         Intent intent = getIntent();
@@ -100,7 +100,7 @@ public class FertilizersActivity extends BaseActivity {
             useCase = intent.getParcelableExtra(useCaseTag);
         }
 
-        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
         }
@@ -144,13 +144,24 @@ public class FertilizersActivity extends BaseActivity {
 
         mAdapter.setOnItemClickListener((view, clickedFertilizer, position) -> {
             mAdapter.setActiveRowIndex(position);
-            Fertilizer selectedType = objectBoxEntityProcessor.getSavedFertilizer(clickedFertilizer.getFertilizerType(), countryCode);
+            Fertilizer selectedType = realmProcessor.getSavedFertilizer(clickedFertilizer.getFertilizerType(), countryCode);
             if (selectedType == null) {
                 selectedType = clickedFertilizer;
             }
             //let us open the price dialog now
             List<Fertilizer> cleanedFertilizers = selectedFertilizers;
-            selectedType.setCountryCode(countryCode);
+            try {
+                Fertilizer finalSelectedType = selectedType;
+                myRealm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        finalSelectedType.setCountryCode(countryCode);
+                    }
+                });
+            } catch (Exception ex) {
+                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+                Crashlytics.logException(ex);
+            }
             Bundle arguments = new Bundle();
             arguments.putParcelable(FertilizerPriceDialogFragment.FERTILIZER_TYPE, selectedType);
 
@@ -159,16 +170,13 @@ public class FertilizersActivity extends BaseActivity {
 
             priceDialogFragment.setOnDismissListener((priceSpecified, fertilizer, removeSelected) -> {
                 if ((priceSpecified || removeSelected)) {
-                    long id = objectBoxEntityProcessor.saveSelectedFertilizer(fertilizer);
-                    if (id > 0) {
-                        if (removeSelected) {
-                            selectedFertilizers = FertilizerList.INSTANCE.removeFertilizerByType(cleanedFertilizers, fertilizer.getFertilizerType());
-                        } else {
-                            selectedFertilizers.add(fertilizer);
-                        }
-                        //refresh the adapter and data set
-                        validate(false);
+                    if (removeSelected) {
+                        selectedFertilizers = FertilizerList.INSTANCE.removeFertilizerByType(cleanedFertilizers, fertilizer.getFertilizerType());
+                    } else {
+                        selectedFertilizers.add(fertilizer);
                     }
+                    //refresh the adapter and data set
+                    validate(false);
                 }
             });
 
@@ -201,8 +209,8 @@ public class FertilizersActivity extends BaseActivity {
 
     @Override
     protected void validate(boolean backPressed) {
-        if (mAdapter != null) {
-            availableFertilizersList = objectBoxEntityProcessor.getAvailableFertilizersByCountry(countryCode);
+        availableFertilizersList = realmProcessor.getAvailableFertilizersByCountry(countryCode);
+        if (mAdapter != null && availableFertilizersList != null) {
             mAdapter.setItems(availableFertilizersList);
         }
     }
@@ -232,7 +240,22 @@ public class FertilizersActivity extends BaseActivity {
                 try {
                     availableFertilizersList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<Fertilizer>>() {
                     });
-                    objectBoxEntityProcessor.saveFertilizerList(availableFertilizersList);
+                    //save fertilizers here
+                    try {
+                        myRealm.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                                if (availableFertilizersList.size() > 0) {
+                                    RealmList<Fertilizer> _fertilizerList = new RealmList<>();
+                                    _fertilizerList.addAll(availableFertilizersList);
+                                    myRealm.insertOrUpdate(_fertilizerList);
+                                }
+                            }
+                        });
+                    } catch (Exception ex) {
+                        Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+                        Crashlytics.logException(ex);
+                    }
                     initializeFertilizerPriceList();
                 } catch (Exception ex) {
                     lyt_progress.setVisibility(View.GONE);
@@ -284,7 +307,14 @@ public class FertilizersActivity extends BaseActivity {
                 try {
                     fertilizerPricesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<FertilizerPrices>>() {
                     });
-                    objectBoxEntityProcessor.saveFertilizerPrices(fertilizerPricesList);
+                    //save prices here
+                    myRealm.executeTransaction(realm -> {
+                        if (fertilizerPricesList.size() > 0) {
+                            RealmList<FertilizerPrices> _fertilizerPricesList = new RealmList<>();
+                            _fertilizerPricesList.addAll(fertilizerPricesList);
+                            myRealm.insertOrUpdate(_fertilizerPricesList);
+                        }
+                    });
                     validate(false);
                     recyclerView.setVisibility(View.VISIBLE);
                 } catch (Exception ex) {
@@ -293,7 +323,7 @@ public class FertilizersActivity extends BaseActivity {
                     errorLabel.setVisibility(View.VISIBLE);
                     btnRetry.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
-                    Crashlytics.log(Log.ERROR, LOG_TAG, "Error saving fertilizer price list");
+                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                     Crashlytics.logException(ex);
                 }
 
@@ -315,11 +345,17 @@ public class FertilizersActivity extends BaseActivity {
     }
 
     private boolean isMinSelected() {
-        int count = objectBoxEntityProcessor.getSelectedFertilizers(countryCode).size();
+        int count = realmProcessor.getSelectedFertilizers(countryCode).size();
         if (count < minSelection) {
             Snackbar snackbar = Snackbar.make(lyt_progress, String.format(Locale.US, context.getString(R.string.lbl_min_selection), minSelection), Snackbar.LENGTH_SHORT);
             snackbar.show();
         }
         return count >= minSelection;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
     }
 }

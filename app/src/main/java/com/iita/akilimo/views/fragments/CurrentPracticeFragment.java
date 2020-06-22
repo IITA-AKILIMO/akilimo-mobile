@@ -21,16 +21,16 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.crashlytics.android.Crashlytics;
-import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.FragmentCurrentPracticeBinding;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.PlantingHarvestDates;
 import com.iita.akilimo.inherit.BaseFragment;
+import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumOperationType;
 import com.iita.akilimo.views.fragments.dialog.DateDialogPickerFragment;
 import com.iita.akilimo.views.fragments.dialog.OperationTypeDialogFragment;
 
-import butterknife.BindView;
+import io.realm.Realm;
 
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
@@ -46,6 +46,7 @@ public class CurrentPracticeFragment extends BaseFragment {
     AppCompatButton btnPickHarvestDate;
 
     FragmentCurrentPracticeBinding binding;
+    Realm myRealm;
 
 
     private String selectedPlantingDate;
@@ -87,6 +88,11 @@ public class CurrentPracticeFragment extends BaseFragment {
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentCurrentPracticeBinding.inflate(inflater, container, false);
         return binding.getRoot();
+    }
+
+    @Override
+    protected void realmInstance() {
+        myRealm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -144,11 +150,9 @@ public class CurrentPracticeFragment extends BaseFragment {
     public void refreshData() {
         try {
 
-            currentPractice = objectBoxEntityProcessor.getCurrentPractice();
-            plantingHarvestDates = objectBoxEntityProcessor.getPlantingHarvestDates();
-            if (currentPractice == null) {
-                currentPractice = new CurrentPractice();
-            } else {
+            currentPractice = realmProcessor.getCurrentPractice();
+            plantingHarvestDates = realmProcessor.getPlantingHarvestDates();
+            if (currentPractice != null) {
                 isDataRefreshing = true;
                 performPloughing = currentPractice.getPerformPloughing();
                 performRidging = currentPractice.getPerformRidging();
@@ -169,8 +173,6 @@ public class CurrentPracticeFragment extends BaseFragment {
                 selectedHarvestDate = plantingHarvestDates.getHarvestDate();
                 lblSelectedPlantingDate.setText(selectedPlantingDate);
                 lblSelectedHarvestDate.setText(selectedHarvestDate);
-            } else {
-                plantingHarvestDates = new PlantingHarvestDates();
             }
 
         } catch (Exception ex) {
@@ -252,16 +254,34 @@ public class CurrentPracticeFragment extends BaseFragment {
         if (!performHarrowing) {
             harrowingMethod = EnumOperationType.NONE.operationName();
         }
-        currentPractice.setRidgingMethod(ridgingMethod);
-        currentPractice.setPloughingMethod(ploughingMethod);
-        currentPractice.setPerformRidging(performRidging);
-        currentPractice.setPerformPloughing(performPloughing);
-        currentPractice.setPerformHarrowing(performHarrowing);
 
-        plantingHarvestDates.setPlantingDate(selectedPlantingDate);
-        plantingHarvestDates.setHarvestDate(selectedHarvestDate);
+        try {
+            myRealm.executeTransaction(realm -> {
+                if (currentPractice == null) {
+                    currentPractice = myRealm.createObject(CurrentPractice.class, Tools.generateUUID());
+                }
+                currentPractice.setRidgingMethod(ridgingMethod);
+                currentPractice.setPloughingMethod(ploughingMethod);
+                currentPractice.setPerformRidging(performRidging);
+                currentPractice.setPerformPloughing(performPloughing);
+                currentPractice.setPerformHarrowing(performHarrowing);
 
-        objectBoxEntityProcessor.saveCurrentPractice(currentPractice);
-        objectBoxEntityProcessor.savePlantingHarvestDates(plantingHarvestDates);
+                if (plantingHarvestDates == null) {
+                    plantingHarvestDates = myRealm.createObject(PlantingHarvestDates.class, Tools.generateUUID());
+                }
+
+                plantingHarvestDates.setPlantingDate(selectedPlantingDate);
+                plantingHarvestDates.setHarvestDate(selectedHarvestDate);
+            });
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+            Crashlytics.logException(ex);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        myRealm.close();
     }
 }

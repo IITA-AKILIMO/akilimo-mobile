@@ -25,10 +25,6 @@ import com.iita.akilimo.models.Fertilizer;
 import com.iita.akilimo.models.InterCropFertilizer;
 import com.iita.akilimo.rest.request.RecommendationRequest;
 import com.iita.akilimo.rest.request.UserInfo;
-import com.iita.akilimo.utils.enums.EnumCassavaProduceType;
-import com.iita.akilimo.utils.enums.EnumUnitOfSale;
-import com.iita.akilimo.utils.enums.EnumUnitPrice;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
@@ -38,8 +34,6 @@ import org.modelmapper.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.List;
-
-import javax.annotation.Nonnull;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class BuildComputeData {
@@ -120,6 +114,7 @@ public class BuildComputeData {
     private String methodHarrowing = DEFAULT_PRACTICE_METHOD;
     private String methodPloughing = DEFAULT_PRACTICE_METHOD;
     private String methodRidging = DEFAULT_PRACTICE_METHOD;
+    private String methodWeeding = DEFAULT_PRACTICE_METHOD;
 
     private double cassavaUnitPrice = 0.0;
 
@@ -145,13 +140,13 @@ public class BuildComputeData {
     private String cassavaProduceType = DEFAULT_CASSAVA_PD;
     private String starchFactoryName = DEFAULT_UNAVAILABLE;
 
-    private ObjectBoxEntityProcessor objectBoxEntityProcessor;
+    private RealmProcessor realmProcessor;
     private MathHelper mathHelper;
     private ModelMapper modelMapper;
     private SessionManager sessionManager;
 
     public BuildComputeData(@NonNull Activity activity) {
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(activity);
+        realmProcessor = new RealmProcessor();
         mathHelper = new MathHelper(activity);
         modelMapper = new ModelMapper();
         sessionManager = new SessionManager(activity);
@@ -180,10 +175,10 @@ public class BuildComputeData {
         }.getType();
 
         if (computeRequest.getInterCroppingPotatoRec() || computeRequest.getInterCroppingMaizeRec()) {
-            List<InterCropFertilizer> interCropFertilizers = objectBoxEntityProcessor.getAllInterCropFertilizersByCountry(countryCode);
+            List<InterCropFertilizer> interCropFertilizers = realmProcessor.getAllInterCropFertilizersByCountry(countryCode);
             fertilizerList = modelMapper.map(interCropFertilizers, listType);
         } else {
-            fertilizerList = objectBoxEntityProcessor.getAvailableFertilizersByCountry(countryCode);
+            fertilizerList = realmProcessor.getAvailableFertilizersByCountry(countryCode);
         }
 
 
@@ -193,7 +188,7 @@ public class BuildComputeData {
     private UserInfo buildProfileInfo() {
         UserInfo userInfo = new UserInfo();
         try {
-            ProfileInfo profileInfo = objectBoxEntityProcessor.getProfileInfo();
+            ProfileInfo profileInfo = realmProcessor.getProfileInfo();
 
             if (profileInfo != null) {
                 String firstName = Strings.isEmptyOrWhitespace(profileInfo.getFirstName()) ? DEFAULT_USERNAME : profileInfo.getFirstName();
@@ -201,12 +196,13 @@ public class BuildComputeData {
                 fullNames = Strings.isEmptyOrWhitespace(profileInfo.getNames()) ? DEFAULT_USERNAME : profileInfo.getNames();
                 farmName = Strings.isEmptyOrWhitespace(profileInfo.getFarmName()) ? DEFAULT_UNAVAILABLE : profileInfo.getFarmName();
                 mobileNumber = Strings.isEmptyOrWhitespace(profileInfo.getFullMobileNumber()) ? DEFAULT_UNAVAILABLE : profileInfo.getFullMobileNumber();
+                fullPhoneNumber = Strings.isEmptyOrWhitespace(profileInfo.getFullMobileNumber()) ? DEFAULT_UNAVAILABLE : profileInfo.getFullMobileNumber();
                 mobileCountryCode = Strings.isEmptyOrWhitespace(profileInfo.getMobileCode()) ? DEFAULT_UNAVAILABLE : profileInfo.getMobileCode();
                 emailAddress = Strings.isEmptyOrWhitespace(profileInfo.getEmail()) ? DEFAULT_UNAVAILABLE : profileInfo.getEmail();
                 deviceToken = sessionManager.getDeviceToken();
 
-                emailRequired = profileInfo.isSendEmail();
-                smsRequired = profileInfo.isSendSms();
+                smsRequired = profileInfo.getSendSms();
+                emailRequired = profileInfo.getSendEmail();
 
                 userInfo.setDeviceToken(deviceToken);
                 userInfo.setFirstName(firstName);
@@ -229,15 +225,15 @@ public class BuildComputeData {
 
     private ComputeRequest buildMandatoryInfo() {
         ComputeRequest computeRequest = new ComputeRequest();
-        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
-        LocationInfo locationInfo = objectBoxEntityProcessor.getLocationInfo();
+        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
+        LocationInfo locationInfo = realmProcessor.getLocationInfo();
         if (locationInfo != null) {
             computeRequest.setMapLat(locationInfo.getLatitude());
             computeRequest.setMapLong(locationInfo.getLongitude());
         }
         if (mandatoryInfo != null) {
             fieldArea = mandatoryInfo.getAreaSize();
-            areaUnits = mandatoryInfo.getAreaUnitsEnum().unitString();
+            areaUnits = mandatoryInfo.getAreaUnit();
             countryCode = mandatoryInfo.getCountryCode();
 
             computeRequest.setRiskAttitude(riskAtt);
@@ -250,25 +246,25 @@ public class BuildComputeData {
         return computeRequest;
     }
 
-    private ComputeRequest buildRequestedRec(@Nonnull ComputeRequest computeRequest) {
+    private ComputeRequest buildRequestedRec(@NonNull ComputeRequest computeRequest) {
         //check for values we have to give recommendations for
-        RecAdvice recAdvice = objectBoxEntityProcessor.getRecAdvice();
+        RecAdvice recAdvice = realmProcessor.getRecAdvice();
         if (recAdvice != null) {
-            computeRequest.setInterCroppingMaizeRec(recAdvice.isCIM());
-            computeRequest.setInterCroppingPotatoRec(recAdvice.isCIS());
+            computeRequest.setInterCroppingMaizeRec(recAdvice.getCIM());
+            computeRequest.setInterCroppingPotatoRec(recAdvice.getCIS());
             computeRequest.setUseCase(recAdvice.getUseCase());
 
-            computeRequest.setFertilizerRec(recAdvice.isFR());
-            computeRequest.setPlantingPracticesRec(recAdvice.isBPP());
-            computeRequest.setScheduledPlantingRec(recAdvice.isSPP());
-            computeRequest.setScheduledHarvestRec(recAdvice.isSPH());
+            computeRequest.setFertilizerRec(recAdvice.getFR());
+            computeRequest.setPlantingPracticesRec(recAdvice.getBPP());
+            computeRequest.setScheduledPlantingRec(recAdvice.getSPP());
+            computeRequest.setScheduledHarvestRec(recAdvice.getSPH());
         }
         return computeRequest;
     }
 
-    private ComputeRequest buildCurrentFieldYield(@Nonnull ComputeRequest computeRequest) {
+    private ComputeRequest buildCurrentFieldYield(@NonNull ComputeRequest computeRequest) {
         //check for values we have to give recommendations for
-        CurrentFieldYield fieldYield = objectBoxEntityProcessor.getCurrentFieldYield();
+        CurrentFieldYield fieldYield = realmProcessor.getCurrentFieldYield();
         if (fieldYield != null) {
             currentFieldYield = (int) fieldYield.getYieldAmount();
         }
@@ -277,8 +273,8 @@ public class BuildComputeData {
         return computeRequest;
     }
 
-    private ComputeRequest buildPlantingDates(@Nonnull ComputeRequest computeRequest) {
-        PlantingHarvestDates sph = objectBoxEntityProcessor.getPlantingHarvestDates();
+    private ComputeRequest buildPlantingDates(@NonNull ComputeRequest computeRequest) {
+        PlantingHarvestDates sph = realmProcessor.getPlantingHarvestDates();
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy");
 
         if (sph != null) {
@@ -302,27 +298,29 @@ public class BuildComputeData {
         return computeRequest;
     }
 
-    private ComputeRequest buildInvestmentAmount(@Nonnull ComputeRequest computeRequest) {
-        InvestmentAmount inv = objectBoxEntityProcessor.getInvestmentAmount();
-        if (inv != null) {
-            maxInvestmentAmountLocal = inv.getInvestmentAmountLocal();
+    private ComputeRequest buildInvestmentAmount(@NonNull ComputeRequest computeRequest) {
+        InvestmentAmount investmentAmount = realmProcessor.getInvestmentAmount();
+        if (investmentAmount != null) {
+            maxInvestmentAmountLocal = investmentAmount.getInvestmentAmountLocal();
         }
         computeRequest.setMaxInvestment(maxInvestmentAmountLocal);
         return computeRequest;
     }
 
-    private ComputeRequest buildCurrentPractice(@Nonnull ComputeRequest computeRequest) {
+    private ComputeRequest buildCurrentPractice(@NonNull ComputeRequest computeRequest) {
 
-        CurrentPractice currentPractice = objectBoxEntityProcessor.getCurrentPractice();
+        CurrentPractice currentPractice = realmProcessor.getCurrentPractice();
 
-        performsPloughing = currentPractice.getPerformPloughing();
-        performsHarrowing = currentPractice.getPerformHarrowing();
-        performsRidging = currentPractice.getPerformRidging();
+        if (currentPractice != null) {
+            performsPloughing = currentPractice.getPerformPloughing();
+            performsHarrowing = currentPractice.getPerformHarrowing();
+            performsRidging = currentPractice.getPerformRidging();
 
-        methodHarrowing = Strings.isEmptyOrWhitespace(currentPractice.getHarrowingMethod()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getHarrowingMethod();
-        methodPloughing = Strings.isEmptyOrWhitespace(currentPractice.getPloughingMethod()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getPloughingMethod();
-        methodRidging = Strings.isEmptyOrWhitespace(currentPractice.getRidgingMethod()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getRidgingMethod();
-
+            methodHarrowing = Strings.isEmptyOrWhitespace(currentPractice.getHarrowingMethod()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getHarrowingMethod();
+            methodPloughing = Strings.isEmptyOrWhitespace(currentPractice.getPloughingMethod()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getPloughingMethod();
+            methodRidging = Strings.isEmptyOrWhitespace(currentPractice.getRidgingMethod()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getRidgingMethod();
+            methodWeeding = Strings.isEmptyOrWhitespace(currentPractice.getWeedControlTechnique()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getWeedControlTechnique();
+        }
 
         computeRequest.setPloughingDone(performsPloughing);
         computeRequest.setHarrowingDone(performsHarrowing);
@@ -340,25 +338,27 @@ public class BuildComputeData {
         computeRequest.setMethodHarrowing(methodHarrowing);
         computeRequest.setMethodPloughing(methodPloughing);
         computeRequest.setMethodRidging(methodRidging);
+        computeRequest.setMethodWeeding(methodWeeding);
 
 
         return computeRequest;
     }
 
-    private ComputeRequest buildOperationCosts(@Nonnull ComputeRequest computeRequest) {
-        OperationCosts operationCosts = objectBoxEntityProcessor.getOperationCosts();
+    private ComputeRequest buildOperationCosts(@NonNull ComputeRequest computeRequest) {
+        OperationCosts operationCosts = realmProcessor.getOperationCosts();
 
-        costTractorPlough = operationCosts.getTractorPloughCost();
-        costTractorHarrow = operationCosts.getTractorHarrowCost();
-        costTractorRidging = operationCosts.getTractorRidgeCost();
+        if (operationCosts != null) {
+            costTractorPlough = operationCosts.getTractorPloughCost();
+            costTractorHarrow = operationCosts.getTractorHarrowCost();
+            costTractorRidging = operationCosts.getTractorRidgeCost();
 
-        costManualPloughing = operationCosts.getManualPloughCost();
-        costManualHarrowing = operationCosts.getManualHarrowCost();
-        costManualRidging = operationCosts.getManualRidgeCost();
+            costManualPloughing = operationCosts.getManualPloughCost();
+            costManualHarrowing = operationCosts.getManualHarrowCost();
+            costManualRidging = operationCosts.getManualRidgeCost();
 
-        costWeedingOne = operationCosts.getFirstWeedingOperationCost();
-        costWeedingTwo = operationCosts.getSecondWeedingOperationCost();
-
+            costWeedingOne = operationCosts.getFirstWeedingOperationCost();
+            costWeedingTwo = operationCosts.getSecondWeedingOperationCost();
+        }
 
         computeRequest.setCostLmoAreaBasis(costLmoAreaBasis);
 
@@ -376,43 +376,37 @@ public class BuildComputeData {
         return computeRequest;
     }
 
-    private ComputeRequest buildWeedManagement(@Nonnull ComputeRequest computeRequest) {
+    private ComputeRequest buildWeedManagement(@NonNull ComputeRequest computeRequest) {
         computeRequest.setFallowType(fallowType);
         computeRequest.setFallowGreen(fallowGreen);
         computeRequest.setFallowHeight(fallowHeight);
         computeRequest.setProblemWeeds(problemWeeds);
+
         return computeRequest;
     }
 
-    private ComputeRequest buildMaizePerformance(@Nonnull ComputeRequest computeRequest) {
-        MaizePerformance maizePerformance = objectBoxEntityProcessor.getMaizePerformance();
-
-        currentMaizePerformance = Strings.isEmptyOrWhitespace(maizePerformance.getPerformanceValue()) ? DEFAULT_MAIZE_PERFORMANCE_VALUE : maizePerformance.getPerformanceValue();
-
+    private ComputeRequest buildMaizePerformance(@NonNull ComputeRequest computeRequest) {
+        MaizePerformance maizePerformance = realmProcessor.getMaizePerformance();
+        if (maizePerformance != null) {
+            currentMaizePerformance = Strings.isEmptyOrWhitespace(maizePerformance.getPerformanceValue()) ? DEFAULT_MAIZE_PERFORMANCE_VALUE : maizePerformance.getPerformanceValue();
+        }
         computeRequest.setCurrentMaizePerformance(currentMaizePerformance);
 
         return computeRequest;
     }
 
-    private ComputeRequest buildCassavaMarketOutlet(@Nonnull ComputeRequest computeRequest) {
-        CassavaMarketOutlet cassavaMarketOutlet = objectBoxEntityProcessor.getCassavaMarketOutlet();
+    private ComputeRequest buildCassavaMarketOutlet(@NonNull ComputeRequest computeRequest) {
+        CassavaMarketOutlet cassavaMarketOutlet = realmProcessor.getCassavaMarketOutlet();
 
-        String currency = computeRequest.getCurrency();
         if (cassavaMarketOutlet != null) {
             sellToStarchFactory = cassavaMarketOutlet.isStarchFactoryRequired();
             if (sellToStarchFactory) {
                 starchFactoryName = cassavaMarketOutlet.getStarchFactory();
             }
 
-            EnumUnitPrice up = cassavaMarketOutlet.getEnumUnitPrice();
-            //cassavaUnitPriceLocal = up.convertToLocalCurrency(currency, mathHelper) <= 0 ? cassavaMarketOutlet.getExactPrice() : up.convertToLocalCurrency(currency, mathHelper);
-
-            EnumCassavaProduceType produce = cassavaMarketOutlet.getEnumCassavaProduceType();
-            cassavaProduceType = produce.produce();
-
-            EnumUnitOfSale uos = cassavaMarketOutlet.getEnumUnitOfSale();
-            cassavaUnitWeight = uos.unitWeight();
-            cassavaUnitPrice = cassavaMarketOutlet.getExactPrice();
+            cassavaProduceType = cassavaMarketOutlet.getProduceType();
+            cassavaUnitWeight = cassavaMarketOutlet.getUnitWeight();
+            cassavaUnitPrice = cassavaMarketOutlet.getUnitPrice();
         }
         computeRequest.setStarchFactoryName(starchFactoryName);
         computeRequest.setSellToStarchFactory(sellToStarchFactory);
@@ -431,15 +425,11 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildMaizeMarketOutlet(ComputeRequest computeRequest) {
-        MaizeMarketOutlet maizeMarketOutlet = objectBoxEntityProcessor.getMaizeMarketOutlet();
-        String currency = computeRequest.getCurrency();
+        MaizeMarketOutlet maizeMarketOutlet = realmProcessor.getMaizeMarketOutlet();
         if (maizeMarketOutlet != null) {
-            maizeProdType = maizeMarketOutlet.getEnumMaizeProduceType().produce();
-            maizeUnitWeight = maizeMarketOutlet.getEnumUnitOfSale().unitWeight();
-
-            EnumUnitPrice up = maizeMarketOutlet.getEnumUnitPrice();
-            maizeUnitPriceLocal = up.convertToLocalCurrency(currency, mathHelper) <= 0 ? maizeMarketOutlet.getExactPrice() : up.convertToLocalCurrency(currency, mathHelper);
-            maizeUnitPrice = maizeUnitPriceLocal;
+            maizeProdType = maizeMarketOutlet.getProduceType();
+            maizeUnitWeight = maizeMarketOutlet.getUnitWeight();
+            maizeUnitPrice = maizeMarketOutlet.getUnitPrice();
         }
         computeRequest.setMaizeProduceType(maizeProdType);
         computeRequest.setMaizeUnitWeight(maizeUnitWeight);
@@ -449,13 +439,11 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildSweetPotatoMarketOutlet(ComputeRequest computeRequest) {
-        PotatoMarketOutlet potatoMarketOutlet = objectBoxEntityProcessor.getPotatoMarketOutlet();
-        String currency = computeRequest.getCurrency();
+        PotatoMarketOutlet potatoMarketOutlet = realmProcessor.getPotatoMarketOutlet();
         if (potatoMarketOutlet != null) {
-            sweetPotatoProdType = potatoMarketOutlet.getEnumPotatoProduceType().produce();
-            sweetPotatoUnitWeight = potatoMarketOutlet.getEnumUnitOfSale().unitWeight();
-            potatoUnitPriceLocal = potatoMarketOutlet.getExactPrice();
-            sweetPotatoUnitPrice = potatoUnitPriceLocal;
+            sweetPotatoProdType = potatoMarketOutlet.getProduceType();
+            sweetPotatoUnitWeight = potatoMarketOutlet.getUnitWeight();
+            sweetPotatoUnitPrice = potatoMarketOutlet.getUnitPrice();
         }
 
         computeRequest.setSweetPotatoProduceType(sweetPotatoProdType);

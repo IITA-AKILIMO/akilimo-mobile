@@ -3,11 +3,9 @@ package com.iita.akilimo.views.activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
+import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import com.crashlytics.android.Crashlytics
 import com.iita.akilimo.inherit.BaseActivity
-import com.iita.akilimo.utils.SessionManager
-import dev.b3nedikt.app_locale.AppLocale
 
 class SplashActivity : BaseActivity() {
 
@@ -47,10 +45,7 @@ class SplashActivity : BaseActivity() {
         val intent = Intent(this@SplashActivity, LanguagePickerActivity::class.java)
 //        val intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
         startActivity(intent)
-        closeActivity()
-    }
-
-    fun closeActivity() {
         finish()
+       Animatoo.animateFade(this)
     }
 }

@@ -1,14 +1,16 @@
 package com.iita.akilimo.views.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
+import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.AdapterGridTwoLine;
 import com.iita.akilimo.databinding.ActivityRootYieldBinding;
@@ -16,18 +18,14 @@ import com.iita.akilimo.entities.CurrentFieldYield;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
+import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.widget.SpacingItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import io.realm.Realm;
 
 public class RootYieldActivity extends BaseActivity {
 
@@ -41,6 +39,7 @@ public class RootYieldActivity extends BaseActivity {
     AppCompatButton btnCancel;
 
     ActivityRootYieldBinding binding;
+    Realm myRealm;
 
     private CurrentFieldYield savedYield;
     private MathHelper mathHelper;
@@ -61,21 +60,20 @@ public class RootYieldActivity extends BaseActivity {
         binding = ActivityRootYieldBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(this);
+        realmProcessor = new RealmProcessor();
         mathHelper = new MathHelper();
-        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        myRealm = Realm.getDefaultInstance();
+
+        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
             areaUnit = mandatoryInfo.getAreaUnit();
         }
 
-        savedYield = objectBoxEntityProcessor.getCurrentFieldYield();
+        savedYield = realmProcessor.getCurrentFieldYield();
         if (savedYield != null) {
             selectedYieldAmount = savedYield.getYieldAmount();
-        } else {
-            savedYield = new CurrentFieldYield();
         }
-
         toolbar = binding.toolbarLayout.toolbar;
         recyclerView = binding.rootYieldRecycler;
         viewPos = binding.coordinatorLayout;
@@ -114,14 +112,20 @@ public class RootYieldActivity extends BaseActivity {
         mAdapter.setOnItemClickListener((view, fieldYield, position) -> {
             mAdapter.setActiveRowIndex(position);
             selectedYieldAmount = fieldYield.getYieldAmount();
-//            toolbar.setNavigationIcon(R.drawable.ic_done);
+            try {
+                myRealm.executeTransaction(realm -> {
+                    if (savedYield == null) {
+                        savedYield = realm.createObject(CurrentFieldYield.class, Tools.generateUUID());
+                    }
+                    savedYield.setYieldAmount(selectedYieldAmount);
+                });
+                //closeActivity(false);
+            } catch (Exception ex) {
+                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+                Crashlytics.logException(ex);
+            }
 
-            fieldYield.setId(savedYield.getId());
-            objectBoxEntityProcessor.saveCurrentFieldYield(fieldYield);
             mAdapter.setItems(selectedYieldAmount, items);
-            Snackbar.make(viewPos, fieldYield.getFieldYieldLabel(), Snackbar.LENGTH_SHORT)
-//                    .setAction(R.string.lbl_close, showListener)
-                    .show();
         });
 
         btnFinish.setOnClickListener(view -> validate(false));
@@ -142,7 +146,7 @@ public class RootYieldActivity extends BaseActivity {
         closeActivity(backPressed);
     }
 
-    private List<CurrentFieldYield> setYieldData(@Nonnull String areaUnit) {
+    private List<CurrentFieldYield> setYieldData(@NonNull String areaUnit) {
         String rd_3_tonnes;
         String rd_6_tonnes;
         String rd_9_tonnes;
@@ -194,5 +198,9 @@ public class RootYieldActivity extends BaseActivity {
         return cfy;
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
+    }
 }

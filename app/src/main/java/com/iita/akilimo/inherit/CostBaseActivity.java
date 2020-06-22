@@ -12,9 +12,6 @@ import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
-import com.iita.akilimo.utils.enums.EnumCountry;
-import com.iita.akilimo.utils.enums.EnumOperation;
-import com.iita.akilimo.utils.enums.EnumOperationType;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -25,18 +22,17 @@ import java.util.ArrayList;
 public abstract class CostBaseActivity extends BaseActivity {
 
     protected ArrayList<OperationCost> operationCostList;
-    protected EnumCountry enumCountry;
 
     public CostBaseActivity() {
     }
 
 
-    protected void loadOperationCost(EnumOperation enumOperation, EnumOperationType operationType, String dialogTitle) {
+    protected void loadOperationCost(String operationName, String operationType, String dialogTitle) {
 
         final RestService restService = RestService.getInstance(queue, this);
         final RestParameters restParameters = new RestParameters("v3/operation-cost", countryCode);
-        restParameters.setOperationName(enumOperation.name());
-        restParameters.setOperationType(operationType.operationName());
+        restParameters.setOperationName(operationName);
+        restParameters.setOperationType(operationType);
         restService.setParameters(restParameters);
 
         restService.getJsonArrList(new IVolleyCallback() {
@@ -52,7 +48,7 @@ public abstract class CostBaseActivity extends BaseActivity {
                     operationCostList = objectMapper.readValue(jsonArray.toString(), new TypeReference<ArrayList<OperationCost>>() {
                     });
 
-                    showDialogFullscreen(operationCostList, enumOperation, enumCountry, dialogTitle);
+                    showDialogFullscreen(operationCostList, operationName, countryCode, dialogTitle);
                 } catch (Exception ex) {
                     Crashlytics.log(Log.ERROR, LOG_TAG, "Error saving price list");
                     Crashlytics.logException(ex);
@@ -72,6 +68,6 @@ public abstract class CostBaseActivity extends BaseActivity {
         });
     }
 
-    protected abstract void showDialogFullscreen(ArrayList<OperationCost> operationCostList, EnumOperation operation, EnumCountry enumCountry, String dialogTitle);
+    protected abstract void showDialogFullscreen(ArrayList<OperationCost> operationCostList, String operationName, String countryCode, String dialogTitle);
 
 }

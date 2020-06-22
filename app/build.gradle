@@ -2,14 +2,9 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-
-dependencies {
-    debugImplementation "io.objectbox:objectbox-android-objectbrowser:$objectboxVersion"
-    releaseImplementation "io.objectbox:objectbox-android:$objectboxVersion"
-}
-apply plugin: 'io.objectbox'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
+apply plugin: 'realm-android'
 
 android {
     def releaseVersionName = computeBuildNumber()
@@ -63,9 +58,9 @@ android {
 }
 
 static def computeVersionName() {
-    def versionMajor = 14
-    def versionMinor = 5
-    def buildNumber = 12
+    def versionMajor = 15
+    def versionMinor = 0
+    def buildNumber = 0
 
     return String.format('%d.%d.%d', Integer.valueOf(System.env.VERSION_MAJOR ?: versionMajor),
             Integer.valueOf(System.env.VERSION_MINOR ?: versionMinor),
@@ -82,7 +77,10 @@ static def computeBuildNumber() {
 
 def computeVersionCode() {
     long unixTimestamp = Instant.now().getEpochSecond()
-    return unixTimestamp.intValue()
+    def versionCode =  System.env.RELEASE_VERSION ? unixTimestamp.intValue() : 1592812564
+
+    println("This build version number is " + versionCode)
+    return versionCode
 }
 
 
@@ -90,7 +88,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72"
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.2.0'
+    implementation 'androidx.core:core-ktx:1.3.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha03'
@@ -104,10 +102,14 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-places:17.0.0'
     implementation 'com.google.firebase:firebase-config:19.1.4'
-    implementation 'com.google.firebase:firebase-analytics:17.4.2'
-    implementation 'com.google.firebase:firebase-messaging:20.2.0' //for push notifications
+    implementation 'com.google.firebase:firebase-analytics:17.4.3'
+    implementation 'com.google.firebase:firebase-messaging:20.2.1' //for push notifications
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.google.android:flexbox:0.3.2'                   // google flexible box
+
+    implementation "com.github.vicpinm:krealmextensions:2.5.0"
+    implementation "io.reactivex.rxjava2:rxjava:2.1.9"
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
 
     // mapbox implementation------------------------------------------------------------------------
     // implementation 'com.mapbox.mapboxsdk:mapbox-android-navigation:0.41.0'
@@ -121,11 +123,8 @@ dependencies {
     // third party dependencies -------------------------------------------------------------------
     implementation 'com.balysv:material-ripple:1.0.2'                   // ripple effect
     implementation 'com.github.bumptech.glide:glide:4.11.0'              // image loader
-//    implementation 'com.wdullaer:materialdatetimepicker:4.2.3'          // title & time picker
     implementation 'com.mikhaellopez:circularimageview:3.2.0'           // circle image view
-//    implementation 'com.github.pchmn:MaterialChipsInput:1.0.5'          // material chip
-//    implementation 'com.hootsuite.android:nachos:1.1.1'                 // material chips
-//    implementation 'com.crystal:crystalrangeseekbar:1.1.3'              // range seek bar
+
     implementation 'net.danlew:android.joda:2.10.6'
     implementation 'com.github.mohammadatif:Animatoo:master'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
@@ -138,33 +137,30 @@ dependencies {
     implementation 'com.github.vipulasri:timelineview:1.1.1'
     implementation 'com.github.javiersantos:AppUpdater:2.7'
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.4'
+
     //https://stackoverflow.com/questions/44826452/highlight-new-feature-in-android
-    implementation 'com.jakewharton:butterknife:10.2.1' //Butterknife library
     implementation 'org.modelmapper:modelmapper:2.3.7'
     implementation 'com.hbb20:ccp:2.3.7'
 
     implementation 'dev.b3nedikt.applocale:applocale:1.2.4' //App language switcher
     implementation 'io.github.inflationx:viewpump:2.0.3'
     implementation 'dev.b3nedikt.reword:reword:1.0.0'
-    implementation 'com.akexorcist:localization:1.2.5'
     implementation 'com.github.blongho:worldCountryData:1.5'
-//    implementation 'com.pusher:pusher-java-client:2.2.1' //pusher.com
+
 
     //If you are using Kotlin, replace annotationProcessor with kapt.
-    kapt 'com.jakewharton:butterknife:10.2.1'
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
     kapt 'com.jakewharton:butterknife-compiler:10.2.1'
     kapt 'com.fasterxml.jackson.core:jackson-annotations:2.11.0'
 
 
-
     testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.11.0'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
-    testImplementation 'joda-time:joda-time:2.10.3'
+    testImplementation 'joda-time:joda-time:2.10.6'
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     //debugImplementation because LeakCanary should only run in debug builds.
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
+
 }

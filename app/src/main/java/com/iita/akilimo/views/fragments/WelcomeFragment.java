@@ -13,8 +13,6 @@ import androidx.fragment.app.Fragment;
 import com.iita.akilimo.R;
 import com.iita.akilimo.inherit.BaseFragment;
 
-import dev.b3nedikt.app_locale.AppLocale;
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -33,6 +31,11 @@ public class WelcomeFragment extends BaseFragment {
     @Override
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_welcome, container, false);
+    }
+
+    @Override
+    protected void realmInstance() {
+
     }
 
     @Override

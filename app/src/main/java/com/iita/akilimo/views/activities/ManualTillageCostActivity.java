@@ -1,6 +1,7 @@
 package com.iita.akilimo.views.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatButton;
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.ActivityManualTillageCostBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
@@ -16,17 +18,16 @@ import com.iita.akilimo.entities.OperationCosts;
 import com.iita.akilimo.inherit.CostBaseActivity;
 import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.enums.EnumCountry;
+import com.iita.akilimo.utils.RealmProcessor;
+import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumOperation;
 import com.iita.akilimo.utils.enums.EnumOperationType;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.views.fragments.dialog.OperationCostsDialogFragment;
 
 import java.util.ArrayList;
 
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import io.realm.Realm;
+
 
 public class ManualTillageCostActivity extends CostBaseActivity {
 
@@ -42,6 +43,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
     AppCompatButton btnCancel;
 
     ActivityManualTillageCostBinding binding;
+    Realm myRealm;
     MathHelper mathHelper;
     OperationCosts operationCosts;
 
@@ -54,10 +56,11 @@ public class ManualTillageCostActivity extends CostBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manual_tillage_cost);
-        ButterKnife.bind(this);
+        binding = ActivityManualTillageCostBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         context = this;
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
+        realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
         queue = Volley.newRequestQueue(this);
         mathHelper = new MathHelper();
 
@@ -71,23 +74,24 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         btnFinish = binding.twoButtons.btnFinish;
         btnCancel = binding.twoButtons.btnCancel;
 
-        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             currency = mandatoryInfo.getCurrency();
             areaUnit = mandatoryInfo.getAreaUnit();
             fieldSize = mandatoryInfo.getAreaSize();
-            enumCountry = mandatoryInfo.getCountryEnum();
+            countryCode = mandatoryInfo.getCountryCode();
+            currency = mandatoryInfo.getCurrency();
         }
         initToolbar();
         initComponent();
 
-        operationCosts = objectBoxEntityProcessor.getOperationCosts();
+        operationCosts = realmProcessor.getOperationCosts();
         if (operationCosts != null) {
             manualPloughCost = operationCosts.getManualPloughCost();
             manualRidgeCost = operationCosts.getManualRidgeCost();
 
-            manualPloughCostText.setText(getString(R.string.lbl_ploughing_cost_text, fieldSize, areaUnit, manualPloughCost, enumCountry.currency()));
-            manualRidgingCostText.setText(getString(R.string.lbl_ridging_cost_text, fieldSize, areaUnit, manualRidgeCost, enumCountry.currency()));
+            manualPloughCostText.setText(getString(R.string.lbl_ploughing_cost_text, fieldSize, areaUnit, manualPloughCost, currency));
+            manualRidgingCostText.setText(getString(R.string.lbl_ridging_cost_text, fieldSize, areaUnit, manualRidgeCost, currency));
 
         }
     }
@@ -108,13 +112,13 @@ public class ManualTillageCostActivity extends CostBaseActivity {
 
         btnPloughCost.setOnClickListener(view -> {
             if (!dialogOpen) {
-                loadOperationCost(EnumOperation.TILLAGE, EnumOperationType.MANUAL, ploughTitle);
+                loadOperationCost(EnumOperation.TILLAGE.name(), EnumOperationType.MANUAL.name(), ploughTitle);
             }
         });
 
         btnRidgeCost.setOnClickListener(view -> {
             if (!dialogOpen) {
-                loadOperationCost(EnumOperation.RIDGING, EnumOperationType.MANUAL, ridgeTitle);
+                loadOperationCost(EnumOperation.RIDGING.name(), EnumOperationType.MANUAL.name(), ridgeTitle);
             }
         });
 
@@ -136,7 +140,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
     }
 
     private void setData() {
-        operationCosts = objectBoxEntityProcessor.getOperationCosts();
+        operationCosts = realmProcessor.getOperationCosts();
         if (operationCosts == null) {
             operationCosts = new OperationCosts();
         }
@@ -153,22 +157,35 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         }
 
         dataValid = true;
-        operationCosts.setManualPloughCost(manualPloughCost);
-        operationCosts.setManualRidgeCost(manualRidgeCost);
-        //proceed to save
-        objectBoxEntityProcessor.saveOperationCosts(operationCosts);
+        try {
+            myRealm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    if (operationCosts == null) {
+                        operationCosts = realm.createObject(OperationCosts.class, Tools.generateUUID());
+                    }
+                    operationCosts.setManualPloughCost(manualPloughCost);
+                    operationCosts.setManualRidgeCost(manualRidgeCost);
+                }
+            });
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+            Crashlytics.logException(ex);
+        }
+
     }
 
     @Override
-    protected void showDialogFullscreen(ArrayList<OperationCost> operationCostList, EnumOperation operation, EnumCountry enumCountry, String dialogTitle) {
+    protected void showDialogFullscreen(ArrayList<OperationCost> operationCostList, String operation, String countryCode, String dialogTitle) {
         Bundle arguments = new Bundle();
 
         if (dialogOpen) {
             return;
         }
         arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList);
-        arguments.putParcelable(OperationCostsDialogFragment.OPERATION_NAME, operation);
-        arguments.putParcelable(OperationCostsDialogFragment.SELECTED_COUNTRY, enumCountry);
+        arguments.putString(OperationCostsDialogFragment.OPERATION_NAME, operation);
+        arguments.putString(OperationCostsDialogFragment.CURRENCY_CODE, currency);
+        arguments.putString(OperationCostsDialogFragment.COUNTRY_CODE, countryCode);
 
         OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment();
         dialogFragment.setArguments(arguments);
@@ -176,13 +193,13 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         dialogFragment.setOnDismissListener((operationCost, enumOperation, selectedCost, cancelled, isExactCost) -> {
             if (!cancelled && enumOperation != null) {
                 switch (enumOperation) {
-                    case TILLAGE:
+                    case "TILLAGE":
                         manualPloughCost = selectedCost;
-                        manualPloughCostText.setText(getString(R.string.lbl_ploughing_cost_text, fieldSize, areaUnit, selectedCost, enumCountry.currency()));
+                        manualPloughCostText.setText(getString(R.string.lbl_ploughing_cost_text, fieldSize, areaUnit, selectedCost, currency));
                         break;
-                    case RIDGING:
+                    case "RIDGING":
                         manualRidgeCost = selectedCost;
-                        manualRidgingCostText.setText(getString(R.string.lbl_ridging_cost_text, fieldSize, areaUnit, selectedCost, enumCountry.currency()));
+                        manualRidgingCostText.setText(getString(R.string.lbl_ridging_cost_text, fieldSize, areaUnit, selectedCost, currency));
                         break;
                 }
             }
@@ -203,5 +220,11 @@ public class ManualTillageCostActivity extends CostBaseActivity {
             dialogOpen = true;
             dialogFragment.show(getSupportFragmentManager(), OperationCostsDialogFragment.ARG_ITEM_ID);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
     }
 }

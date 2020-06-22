@@ -1,6 +1,7 @@
 package com.iita.akilimo.views.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.RadioGroup;
@@ -13,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.ActivityTractorAccessBinding;
 import com.iita.akilimo.entities.CurrentPractice;
@@ -21,17 +23,15 @@ import com.iita.akilimo.entities.OperationCosts;
 import com.iita.akilimo.inherit.CostBaseActivity;
 import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.enums.EnumCountry;
+import com.iita.akilimo.utils.RealmProcessor;
+import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumOperation;
 import com.iita.akilimo.utils.enums.EnumOperationType;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 import com.iita.akilimo.views.fragments.dialog.OperationCostsDialogFragment;
 
 import java.util.ArrayList;
 
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import io.realm.Realm;
 
 public class TractorAccessActivity extends CostBaseActivity {
 
@@ -47,6 +47,7 @@ public class TractorAccessActivity extends CostBaseActivity {
     AppCompatButton btnCancel;
 
     ActivityTractorAccessBinding binding;
+    Realm myRealm;
     MathHelper mathHelper;
     OperationCosts operationCosts;
     CurrentPractice currentPractice;
@@ -77,16 +78,18 @@ public class TractorAccessActivity extends CostBaseActivity {
         setContentView(binding.getRoot());
 
         context = this;
-        objectBoxEntityProcessor = ObjectBoxEntityProcessor.getInstance(context);
+        realmProcessor = new RealmProcessor();
+        myRealm = Realm.getDefaultInstance();
+
         queue = Volley.newRequestQueue(this);
         mathHelper = new MathHelper();
 
-        MandatoryInfo mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
         if (mandatoryInfo != null) {
             currency = mandatoryInfo.getCurrency();
             areaUnit = mandatoryInfo.getAreaUnit();
             fieldSize = mandatoryInfo.getAreaSize();
-            enumCountry = mandatoryInfo.getCountryEnum();
+            countryCode = mandatoryInfo.getCountryCode();
         }
 
         toolbar = binding.toolbar;
@@ -95,10 +98,12 @@ public class TractorAccessActivity extends CostBaseActivity {
         implementCard = binding.tractorAccess.implementCard;
         chkPlough = binding.tractorAccess.chkPlough;
         chkRidger = binding.tractorAccess.chkRidger;
+        btnFinish = binding.twoButtons.btnFinish;
+        btnCancel = binding.twoButtons.btnCancel;
 
         initToolbar();
         initComponent();
-        operationCosts = objectBoxEntityProcessor.getOperationCosts();
+        operationCosts = realmProcessor.getOperationCosts();
         if (operationCosts != null) {
             tractorPloughCost = operationCosts.getTractorPloughCost();
             tractorRidgeCost = operationCosts.getTractorRidgeCost();
@@ -139,14 +144,14 @@ public class TractorAccessActivity extends CostBaseActivity {
             hasPlough = isChecked;
             if (buttonView.isPressed() && isChecked && !dialogOpen) {
                 String title = (getString(R.string.lbl_tractor_plough_cost, fieldSize, areaUnit));
-                loadOperationCost(EnumOperation.TILLAGE, EnumOperationType.MECHANICAL, title);
+                loadOperationCost(EnumOperation.TILLAGE.name(), EnumOperationType.MECHANICAL.operationName(), title);
             }
         });
         chkRidger.setOnCheckedChangeListener((buttonView, isChecked) -> {
             hasRidger = isChecked;
             if (buttonView.isPressed() && isChecked && !dialogOpen) {
                 String title = (getString(R.string.lbl_tractor_ridge_cost, fieldSize, areaUnit));
-                loadOperationCost(EnumOperation.RIDGING, EnumOperationType.MECHANICAL, title);
+                loadOperationCost(EnumOperation.RIDGING.name(), EnumOperationType.MECHANICAL.operationName(), title);
             }
         });
         btnFinish.setOnClickListener(view -> validate(false));
@@ -162,33 +167,41 @@ public class TractorAccessActivity extends CostBaseActivity {
     }
 
     private void setData() {
-        operationCosts = objectBoxEntityProcessor.getOperationCosts();
-        currentPractice = objectBoxEntityProcessor.getCurrentPractice();
-        if (operationCosts == null) {
-            operationCosts = new OperationCosts();
+        operationCosts = realmProcessor.getOperationCosts();
+        currentPractice = realmProcessor.getCurrentPractice();
+
+        try {
+            myRealm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    if (operationCosts == null) {
+                        operationCosts = realm.createObject(OperationCosts.class, Tools.generateUUID());
+                    }
+                    if (currentPractice == null) {
+                        currentPractice = realm.createObject(CurrentPractice.class, Tools.generateUUID());
+                    }
+
+                    dataValid = true;
+                    currentPractice.setTractorAvailable(hasTractor);
+                    currentPractice.setTractorPlough(hasPlough);
+                    currentPractice.setTractorHarrow(hasHarrow);
+                    currentPractice.setTractorRidger(hasRidger);
+
+                    operationCosts.setTractorPloughCost(tractorPloughCost);
+                    operationCosts.setTractorRidgeCost(tractorRidgeCost);
+
+                    operationCosts.setExactTractorPloughPrice(exactPloughCost);
+                    operationCosts.setExactTractorRidgePrice(exactRidgeCost);
+                }
+            });
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+            Crashlytics.logException(ex);
         }
-        if (currentPractice == null) {
-            currentPractice = new CurrentPractice();
-        }
-
-        currentPractice.setTractorAvailable(hasTractor);
-        currentPractice.setTractorPlough(hasPlough);
-        currentPractice.setTractorHarrow(hasHarrow);
-        currentPractice.setTractorRidger(hasRidger);
-
-        operationCosts.setTractorPloughCost(tractorPloughCost);
-        operationCosts.setTractorRidgeCost(tractorRidgeCost);
-
-        operationCosts.setExactTractorPloughPrice(exactPloughCost);
-        operationCosts.setExactTractorRidgePrice(exactRidgeCost);
-
-        objectBoxEntityProcessor.saveOperationCosts(operationCosts);
-
-        dataValid = true;
     }
 
     @Override
-    protected void showDialogFullscreen(ArrayList<OperationCost> operationCostList, EnumOperation operation, EnumCountry enumCountry, String dialogTitle) {
+    protected void showDialogFullscreen(ArrayList<OperationCost> operationCostList, String operation, String countrycode, String dialogTitle) {
         Bundle arguments = new Bundle();
 
         if (dialogOpen) {
@@ -197,8 +210,9 @@ public class TractorAccessActivity extends CostBaseActivity {
 
         showCustomNotificationDialog();
         arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList);
-        arguments.putParcelable(OperationCostsDialogFragment.OPERATION_NAME, operation);
-        arguments.putParcelable(OperationCostsDialogFragment.SELECTED_COUNTRY, enumCountry);
+        arguments.putString(OperationCostsDialogFragment.OPERATION_NAME, operation);
+        arguments.putString(OperationCostsDialogFragment.CURRENCY_CODE, currency);
+        arguments.putString(OperationCostsDialogFragment.COUNTRY_CODE, countrycode);
         arguments.putString(OperationCostsDialogFragment.DIALOG_TITLE, dialogTitle);
 
         OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment();
@@ -207,11 +221,11 @@ public class TractorAccessActivity extends CostBaseActivity {
         dialogFragment.setOnDismissListener((operationCost, enumOperation, selectedCost, cancelled, isExactCost) -> {
             if (!cancelled && enumOperation != null) {
                 switch (enumOperation) {
-                    case TILLAGE:
+                    case "TILLAGE":
                         tractorPloughCost = selectedCost;
                         exactPloughCost = isExactCost;
                         break;
-                    case RIDGING:
+                    case "RIDGING":
                         tractorRidgeCost = selectedCost;
                         exactRidgeCost = isExactCost;
                         break;
@@ -234,5 +248,11 @@ public class TractorAccessActivity extends CostBaseActivity {
             dialogOpen = true;
             dialogFragment.show(getSupportFragmentManager(), OperationCostsDialogFragment.ARG_ITEM_ID);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
     }
 }

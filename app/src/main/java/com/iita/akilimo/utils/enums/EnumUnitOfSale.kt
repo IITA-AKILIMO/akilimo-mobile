@@ -1,6 +1,8 @@
 package com.iita.akilimo.utils.enums
 
+import android.content.Context
 import android.os.Parcelable
+import com.iita.akilimo.R
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -10,68 +12,68 @@ enum class EnumUnitOfSale : Parcelable {
             return 0
         }
 
-        override fun unitOfSale(): String {
+        override fun unitOfSale(context: Context): String {
             return "NA"
         }
 
-        override fun unitOfSaleText(): String {
+        override fun unitOfSaleText(context: Context): String {
             return "NA"
         }
     },
-    UNIT_ONE_KG {
+    ONE_KG {
         override fun unitWeight(): Int {
             return 1
         }
 
-        override fun unitOfSale(): String {
+        override fun unitOfSale(context: Context): String {
             return "kg"
         }
 
-        override fun unitOfSaleText(): String {
-            return "a 1 kg bag"
+        override fun unitOfSaleText(context: Context): String {
+            return context.getString(R.string.lbl_one_kg_bag_unit)
         }
     },
-    UNIT_FIFTY_KG {
+    FIFTY_KG {
         override fun unitWeight(): Int {
             return 50
         }
 
-        override fun unitOfSale(): String {
+        override fun unitOfSale(context: Context): String {
             return "50 kg bag"
         }
 
-        override fun unitOfSaleText(): String {
+        override fun unitOfSaleText(context: Context): String {
             return "a 50 kg bag"
         }
     },
-    UNIT_HUNDRED_KG {
+    HUNDRED_KG {
         override fun unitWeight(): Int {
             return 100
         }
 
-        override fun unitOfSale(): String {
+        override fun unitOfSale(context: Context): String {
             return "100 kg bag"
         }
 
-        override fun unitOfSaleText(): String {
+        override fun unitOfSaleText(context: Context): String {
             return "a 100 kg bag"
         }
     },
-    UNIT_THOUSAND_KG {
+    THOUSAND_KG {
         override fun unitWeight(): Int {
             return 1000
         }
 
-        override fun unitOfSale(): String {
+        override fun unitOfSale(context: Context): String {
             return "tonne"
         }
 
-        override fun unitOfSaleText(): String {
+        override fun unitOfSaleText(context: Context): String {
             return "1 tonne"
         }
     };
 
     abstract fun unitWeight(): Int
-    abstract fun unitOfSale(): String
-    abstract fun unitOfSaleText(): String
+    abstract fun unitOfSale(context: Context): String
+    abstract fun unitOfSaleText(context: Context): String
 }

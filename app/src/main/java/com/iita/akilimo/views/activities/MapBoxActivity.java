@@ -26,10 +26,6 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import static com.mapbox.mapboxsdk.style.layers.Property.VISIBLE;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.visibility;
 
@@ -173,7 +169,7 @@ public class MapBoxActivity extends BaseLocationPicker {
         if (gps.canGetLocation()) {
             int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this.context);
             if (status == ConnectionResult.SUCCESS) {
-                currentLat = gps.getLatitude();
+                currentLong = gps.getLongitude();
                 currentLat = gps.getLatitude();
             }
             gps.stopUsingGPS();

@@ -20,7 +20,7 @@ import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.utils.enums.EnumAreaUnits;
 
-import butterknife.BindView;
+import io.realm.Realm;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,10 +33,12 @@ public class AreaUnitFragment extends BaseFragment {
     RadioGroup rdgAreaUnit;
 
     FragmentAreaUnitBinding binding;
+    private Realm myRealm;
 
     private String selectedAreaUnit;
     private MandatoryInfo mandatoryInfo;
-    private EnumAreaUnits areaUnitsEnum;
+    private String areaUnit = "acre";
+    private int areaUnitRadioIndex = 0;
 
     public AreaUnitFragment() {
         // Required empty public constructor
@@ -60,26 +62,20 @@ public class AreaUnitFragment extends BaseFragment {
     }
 
     @Override
+    protected void realmInstance() {
+        myRealm = Realm.getDefaultInstance();
+    }
+
+    @Override
     public void refreshData() {
         try {
-            mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
+            mandatoryInfo = realmProcessor.getMandatoryInfo();
             if (mandatoryInfo != null) {
-                areaUnitsEnum = mandatoryInfo.getAreaUnitsEnum();
-                switch (areaUnitsEnum) {
-                    default:
-                    case ACRE:
-                        rdgAreaUnit.check(R.id.rdAcre);
-                        break;
-                    case HA:
-                        rdgAreaUnit.check(R.id.rdHa);
-                        break;
-                    case SQM:
-                        rdgAreaUnit.check(R.id.rdSqm);
-                        break;
-                }
+                areaUnit = mandatoryInfo.getAreaUnit();
+                areaUnitRadioIndex = mandatoryInfo.getAreaUnitRadioIndex();
+                rdgAreaUnit.check(areaUnitRadioIndex);
             }
         } catch (Exception ex) {
-            mandatoryInfo = new MandatoryInfo();
             Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving are info");
             Crashlytics.logException(ex);
         }
@@ -95,22 +91,32 @@ public class AreaUnitFragment extends BaseFragment {
         rdgAreaUnit.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
             switch (radioIndex) {
                 case R.id.rdAcre:
-                    areaUnitsEnum = EnumAreaUnits.ACRE;
+                    areaUnit = EnumAreaUnits.ACRE.unitName(context);
                     break;
                 case R.id.rdHa:
-                    areaUnitsEnum = EnumAreaUnits.HA;
-                    break;
-                case R.id.rdSqm:
-                    areaUnitsEnum = EnumAreaUnits.SQM;
+                    areaUnit = EnumAreaUnits.HA.unitName(context);
                     break;
             }
-            mandatoryInfo = objectBoxEntityProcessor.getMandatoryInfo();
-            if (mandatoryInfo == null) {
-                mandatoryInfo = new MandatoryInfo();
+
+            areaUnitRadioIndex = rdgAreaUnit.getCheckedRadioButtonId();
+            try {
+                myRealm.executeTransaction(realm -> {
+                    if (mandatoryInfo == null) {
+                        mandatoryInfo = myRealm.createObject(MandatoryInfo.class);
+                    }
+                    mandatoryInfo.setAreaUnitRadioIndex(areaUnitRadioIndex);
+                    mandatoryInfo.setAreaUnit(areaUnit);
+                });
+            } catch (Exception ex) {
+                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+                Crashlytics.logException(ex);
             }
-            mandatoryInfo.setAreaUnitsEnum(areaUnitsEnum);
-            mandatoryInfo.setAreaUnit(areaUnitsEnum.unitString());
-            objectBoxEntityProcessor.saveMandatoryInfo(mandatoryInfo);
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        myRealm.close();
     }
 }

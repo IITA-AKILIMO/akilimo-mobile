@@ -1,10 +1,8 @@
 package com.iita.akilimo.utils
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.graphics.Color
-
-import java.util.Random
+import java.util.*
 
 class MaterialColor {
 

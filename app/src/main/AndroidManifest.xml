@@ -26,6 +26,10 @@
         tools:replace="android:icon, android:theme, android:label, android:allowBackup"
         tools:targetApi="m">
 
+        <meta-data android:name="DATABASE" android:value="akilimo_database.db" />
+        <meta-data android:name="VERSION" android:value="1" />
+        <meta-data android:name="QUERY_LOG" android:value="true" />
+        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="com.iita.akilimo" />
 
         <service android:name=".services.GPSTracker" />
 
@@ -52,16 +56,16 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity android:name=".views.activities.PusherActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <activity
             android:name=".views.activities.SplashActivity"
-            android:theme="@style/SplashTheme"></activity>
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".views.activities.LanguagePickerActivity"
             android:label="@string/title_activity_language_picker"
@@ -74,18 +78,18 @@
         <activity android:name=".views.activities.FertilizersActivity" />
         <activity android:name=".views.activities.IntercropFertilizersActivity" />
         <activity android:name=".views.activities.DatesActivity" />
-        <activity android:name=".views.activities.RecommendationsActivity" />
+        <activity android:name=".views.activities.usecases.RecommendationsActivity" />
         <activity android:name=".views.activities.HomeActivity" />
-        <activity android:name=".views.activities.FertilizerRecActivity" />
+        <activity android:name=".views.activities.usecases.FertilizerRecActivity" />
         <activity android:name=".views.activities.MapBoxActivity" />
         <activity android:name=".views.activities.RootYieldActivity" />
         <activity android:name=".views.activities.InvestmentAmountActivity" />
         <activity android:name=".views.activities.DstRecommendationActivity" />
         <activity android:name=".views.activities.WeedControlCostsActivity" />
-        <activity android:name=".views.activities.PlantingPracticesActivity" />
-        <activity android:name=".views.activities.ScheduledPlantingActivity" />
+        <activity android:name=".views.activities.usecases.PlantingPracticesActivity" />
+        <activity android:name=".views.activities.usecases.ScheduledPlantingActivity" />
         <activity android:name=".views.activities.MaizePerformanceActivity" />
-        <activity android:name=".views.activities.InterCropRecActivity" />
+        <activity android:name=".views.activities.usecases.InterCropRecActivity" />
     </application>
 
 </manifest>

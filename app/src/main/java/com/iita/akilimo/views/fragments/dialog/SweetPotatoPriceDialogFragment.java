@@ -19,25 +19,24 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
+import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IPriceDialogDismissListener;
 import com.iita.akilimo.models.PotatoPrice;
 import com.iita.akilimo.utils.MathHelper;
+import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
-import com.iita.akilimo.utils.objectbox.ObjectBoxEntityProcessor;
 
 import java.util.List;
 
-import butterknife.ButterKnife;
 
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
  */
-public class SweetPotatoPriceDialogFragment extends DialogFragment {
+public class SweetPotatoPriceDialogFragment extends BaseDialogFragment {
 
     private static final String LOG_TAG = SweetPotatoPriceDialogFragment.class.getSimpleName();
 
@@ -63,12 +62,8 @@ public class SweetPotatoPriceDialogFragment extends DialogFragment {
     private Button btnUpdate;
     private Button btnRemove;
 
-
-    private EnumUnitOfSale enumUnitOfSale = EnumUnitOfSale.UNIT_THOUSAND_KG;
-
     private MathHelper mathHelper;
     private Context context;
-    private ObjectBoxEntityProcessor objectBox;
     private double averagePrice;
     private double potatoPrice;
     private List<PotatoPrice> potatoPriceList;
@@ -76,6 +71,7 @@ public class SweetPotatoPriceDialogFragment extends DialogFragment {
     private String countryCode;
     private String currencyCode;
     private String unitOfSale;
+    private EnumUnitOfSale enumUnitOfSale;
 
     double unitPriceUSD = 0.0;
     double unitPriceLocal = 0.0;
@@ -92,10 +88,9 @@ public class SweetPotatoPriceDialogFragment extends DialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
-        objectBox = ObjectBoxEntityProcessor.getInstance(context);
         mathHelper = new MathHelper();
+        realmProcessor = new RealmProcessor();
     }
-
 
     @NonNull
     @Override
@@ -107,15 +102,14 @@ public class SweetPotatoPriceDialogFragment extends DialogFragment {
             potatoPrice = bundle.getDouble(SELECTED_PRICE);
             currencyCode = bundle.getString(CURRENCY_CODE);
             unitOfSale = bundle.getString(UNIT_OF_SALE);
-            enumUnitOfSale = bundle.getParcelable(ENUM_UNIT_OF_SALE);
             countryCode = bundle.getString(COUNTRY_CODE);
+            enumUnitOfSale = bundle.getParcelable(ENUM_UNIT_OF_SALE);
         }
         dialog = new Dialog(context);
 
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
         dialog.setContentView(R.layout.fragment_cassava_price_dialog);
-        ButterKnife.bind(dialog);
 
         dialog.setCancelable(true);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -164,8 +158,8 @@ public class SweetPotatoPriceDialogFragment extends DialogFragment {
         });
 
         radioGroup.setOnCheckedChangeListener((radioGroup, i) -> radioSelected(radioGroup));
-        if (objectBox != null) {
-            potatoPriceList = objectBox.getPotatoPrices(countryCode);
+        if (realmProcessor != null) {
+            potatoPriceList = realmProcessor.getPotatoPrices(countryCode);
             addPriceRadioButtons(potatoPriceList, averagePrice);
         }
         return dialog;
@@ -252,26 +246,26 @@ public class SweetPotatoPriceDialogFragment extends DialogFragment {
     }
 
     private String labelText(double unitPriceLower, double unitPriceUpper, String currency, String uos, boolean... doConversions) {
-        double priceLower = unitPriceLower;
-        double priceHigher = unitPriceUpper;
+        double priceLower;
+        double priceHigher;
 
         switch (enumUnitOfSale) {
             default:
-            case UNIT_ONE_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_ONE_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_ONE_KG.unitWeight()) / 1000;
+            case ONE_KG:
+                priceLower = (unitPriceLower * EnumUnitOfSale.ONE_KG.unitWeight()) / 1000;
+                priceHigher = (unitPriceUpper * EnumUnitOfSale.ONE_KG.unitWeight()) / 1000;
                 break;
-            case UNIT_FIFTY_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_FIFTY_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_FIFTY_KG.unitWeight()) / 1000;
+            case FIFTY_KG:
+                priceLower = (unitPriceLower * EnumUnitOfSale.FIFTY_KG.unitWeight()) / 1000;
+                priceHigher = (unitPriceUpper * EnumUnitOfSale.FIFTY_KG.unitWeight()) / 1000;
                 break;
-            case UNIT_HUNDRED_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_HUNDRED_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_HUNDRED_KG.unitWeight()) / 1000;
+            case HUNDRED_KG:
+                priceLower = (unitPriceLower * EnumUnitOfSale.HUNDRED_KG.unitWeight()) / 1000;
+                priceHigher = (unitPriceUpper * EnumUnitOfSale.HUNDRED_KG.unitWeight()) / 1000;
                 break;
-            case UNIT_THOUSAND_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.UNIT_THOUSAND_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.UNIT_THOUSAND_KG.unitWeight()) / 1000;
+            case THOUSAND_KG:
+                priceLower = (unitPriceLower * EnumUnitOfSale.THOUSAND_KG.unitWeight()) / 1000;
+                priceHigher = (unitPriceUpper * EnumUnitOfSale.THOUSAND_KG.unitWeight()) / 1000;
                 break;
         }
 
