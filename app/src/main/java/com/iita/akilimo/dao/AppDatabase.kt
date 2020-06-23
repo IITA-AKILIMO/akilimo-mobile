@@ -12,7 +12,11 @@ import java.util.concurrent.Executors
     entities = [
         CassavaMarket::class,
         CassavaPrice::class,
+        CurrentPractice::class,
+        Fertilizer::class,
+        FertilizerPrice::class,
         FieldYield::class,
+        FieldOperationCost::class,
         InterCropFertilizer::class,
         InvestmentAmount::class,
         LocationInfo::class,
@@ -21,17 +25,24 @@ import java.util.concurrent.Executors
         MaizePrice::class,
         MandatoryInfo::class,
         PotatoMarket::class,
+        PotatoPrice::class,
         ProfileInfo::class,
         ScheduledDate::class,
         StarchFactory::class,
         UseCases::class
-    ], version = 1, exportSchema = false
+    ], version = 3, exportSchema = true
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun cassavaMarketDao(): CassavaMarketDao
     abstract fun cassavaPriceDao(): CassavaPriceDao
+    abstract fun currentPracticeDao(): CurrentPracticeDao
+    abstract fun fertilizerDao(): FertilizerDao
+    abstract fun fertilizerPriceDao(): FertilizerPriceDao
+    abstract fun fieldOperationCostDao(): FieldOperationCostsDao
     abstract fun fieldYieldDao(): FieldYieldDao
+
+    @Deprecated("To be removed in future release")
     abstract fun interCropFertilizerDao(): InterCropFertilizerDao
     abstract fun investmentAmountDao(): InvestmentAmountDao
     abstract fun locationInfoDao(): LocationInfoDao
@@ -40,6 +51,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun maizePriceDao(): MaizePriceDao
     abstract fun mandatoryInfoDao(): MandatoryInfoDao
     abstract fun potatoMarketDao(): PotatoMarketDao
+    abstract fun potatoPriceDao(): PotatoPriceDao
     abstract fun profileInfoDao(): ProfileInfoDao
     abstract fun scheduleDateDao(): ScheduleDateDao
     abstract fun starchFactoryDao(): StarchFactoryDao
@@ -64,6 +76,7 @@ abstract class AppDatabase : RoomDatabase() {
                             context.applicationContext,
                             AppDatabase::class.java, "akilimo_db"
                         )
+                            .fallbackToDestructiveMigration()
                             .allowMainThreadQueries()
                             .build()
                     }

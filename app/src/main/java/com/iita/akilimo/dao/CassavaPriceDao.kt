@@ -15,9 +15,15 @@ interface CassavaPriceDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg prices: CassavaPrice)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(cassavaPriceList: List<CassavaPrice>)
+
     @Update
     fun update(vararg price: CassavaPrice)
 
     @Delete
     fun delete(market: CassavaPrice?)
+
+    @Query("SELECT * FROM cassava_price where country=:countryCode")
+    fun findAllByCountry(countryCode: String): List<CassavaPrice>
 }

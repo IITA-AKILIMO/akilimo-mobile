@@ -13,10 +13,10 @@ interface CassavaMarketDao {
     fun findOne(): CassavaMarket?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg markets: CassavaMarket)
+    fun insert(markets: CassavaMarket)
 
     @Update
-    fun update(vararg markets: CassavaMarket)
+    fun update(markets: CassavaMarket)
 
     @Delete
     fun delete(market: CassavaMarket?)

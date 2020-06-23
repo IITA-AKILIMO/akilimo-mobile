@@ -1,7 +1,6 @@
 package com.iita.akilimo.dao
 
 import androidx.room.*
-import com.iita.akilimo.entities.MaizeMarket
 import com.iita.akilimo.entities.MaizePrice
 
 @Dao
@@ -21,4 +20,10 @@ interface MaizePriceDao {
 
     @Delete
     fun delete(location: MaizePrice?)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(maizePriceList: List<MaizePrice>)
+
+    @Query("SELECT * FROM maize_price where country=:countryCode")
+    fun findAllByCountry(countryCode: String): MutableList<MaizePrice>
 }
