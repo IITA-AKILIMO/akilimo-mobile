@@ -178,7 +178,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         arguments.putString(OperationCostsDialogFragment.CURRENCY_CODE, currency);
         arguments.putString(OperationCostsDialogFragment.COUNTRY_CODE, countryCode);
 
-        OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment();
+        OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment(context);
         dialogFragment.setArguments(arguments);
 
         dialogFragment.setOnDismissListener((operationCost, enumOperation, selectedCost, cancelled, isExactCost) -> {

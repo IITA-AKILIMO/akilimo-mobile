@@ -339,7 +339,7 @@ public class MaizeMarketActivity extends BaseActivity {
         arguments.putString(MaizePriceDialogFragment.UNIT_OF_SALE, unitOfSale);
         arguments.putParcelable(MaizePriceDialogFragment.ENUM_UNIT_OF_SALE, unitOfSaleEnum);
 
-        MaizePriceDialogFragment priceDialogFragment = new MaizePriceDialogFragment();
+        MaizePriceDialogFragment priceDialogFragment = new MaizePriceDialogFragment(context);
         priceDialogFragment.setArguments(arguments);
 
         priceDialogFragment.setOnDismissListener((selectedPrice, selectedAveragePrice) -> {

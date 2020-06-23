@@ -207,7 +207,7 @@ public class TractorAccessActivity extends CostBaseActivity {
         arguments.putString(OperationCostsDialogFragment.COUNTRY_CODE, countrycode);
         arguments.putString(OperationCostsDialogFragment.DIALOG_TITLE, dialogTitle);
 
-        OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment();
+        OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment(context);
         dialogFragment.setArguments(arguments);
 
         dialogFragment.setOnDismissListener((operationCost, enumOperation, selectedCost, cancelled, isExactCost) -> {

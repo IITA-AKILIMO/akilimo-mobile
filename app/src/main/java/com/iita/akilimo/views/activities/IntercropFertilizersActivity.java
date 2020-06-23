@@ -159,7 +159,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
             Bundle arguments = new Bundle();
             arguments.putParcelable(FertilizerPriceDialogFragment.FERTILIZER_TYPE, selectedType);
 
-            IntercropFertilizerPriceDialogFragment priceDialogFragment = new IntercropFertilizerPriceDialogFragment();
+            IntercropFertilizerPriceDialogFragment priceDialogFragment = new IntercropFertilizerPriceDialogFragment(context);
             priceDialogFragment.setArguments(arguments);
 
             priceDialogFragment.setOnDismissListener((priceSpecified, fertilizer, removeSelected) -> {

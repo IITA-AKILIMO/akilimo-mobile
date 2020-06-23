@@ -22,13 +22,11 @@ public abstract class BaseDialogFragment extends DialogFragment {
 
 
     public BaseDialogFragment() {
-
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        this.context = context;
         mathHelper = new MathHelper();
         database = AppDatabase.getDatabase(context);
     }

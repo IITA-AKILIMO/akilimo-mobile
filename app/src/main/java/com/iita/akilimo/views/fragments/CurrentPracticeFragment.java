@@ -182,7 +182,7 @@ public class CurrentPracticeFragment extends BaseFragment {
         Bundle arguments = new Bundle();
         arguments.putString(OperationTypeDialogFragment.OPERATION_TYPE, operation);
 
-        OperationTypeDialogFragment operationTypeDialogFragment = new OperationTypeDialogFragment();
+        OperationTypeDialogFragment operationTypeDialogFragment = new OperationTypeDialogFragment(context);
         operationTypeDialogFragment.setArguments(arguments);
         FragmentTransaction fragmentTransaction;
 
