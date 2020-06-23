@@ -30,7 +30,7 @@ import java.util.concurrent.Executors
         ScheduledDate::class,
         StarchFactory::class,
         UseCases::class
-    ], version = 2, exportSchema = true
+    ], version = 1, exportSchema = true
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {

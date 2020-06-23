@@ -38,8 +38,8 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
     @Override
     public void onBindViewHolder(@NonNull RecViewHolder recViewHolder, int i) {
         ComputedResponse cr = computedResponseList.get(i);
-        recViewHolder.computedTitle.setText(cr.getComputedTitle());
-        recViewHolder.computedBody.setText(cr.getComputedRecommendation());
+        recViewHolder.computedTitle.setText(cr.computedTitle);
+        recViewHolder.computedBody.setText(cr.computedRecommendation);
     }
 
     @Override
