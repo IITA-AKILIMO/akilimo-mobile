@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey
 open class ProfileInfo {
 
     @PrimaryKey(autoGenerate = true)
-    var profileId: Int? = null
+    var profileId: Int = 0
     var deviceToken: String? = null
 
     var userName: String? = null

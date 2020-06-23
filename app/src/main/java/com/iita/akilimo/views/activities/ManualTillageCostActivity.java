@@ -12,9 +12,10 @@ import androidx.fragment.app.FragmentTransaction;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityManualTillageCostBinding;
-import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.FieldOperationCost;
+import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.CostBaseActivity;
 import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.utils.MathHelper;
@@ -56,7 +57,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         binding = ActivityManualTillageCostBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         context = this;
-        ormProcessor = new OrmProcessor();
+        database = AppDatabase.getDatabase(context);
         queue = Volley.newRequestQueue(this);
         mathHelper = new MathHelper();
 
@@ -70,7 +71,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         btnFinish = binding.twoButtons.btnFinish;
         btnCancel = binding.twoButtons.btnCancel;
 
-        MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
             currency = mandatoryInfo.getCurrency();
             areaUnit = mandatoryInfo.getAreaUnit();
@@ -81,7 +82,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         initToolbar();
         initComponent();
 
-        fieldOperationCost = ormProcessor.getOperationCosts();
+        fieldOperationCost = database.fieldOperationCostDao().findOne();
         if (fieldOperationCost != null) {
             manualPloughCost = fieldOperationCost.getManualPloughCost();
             manualRidgeCost = fieldOperationCost.getManualRidgeCost();
@@ -136,7 +137,6 @@ public class ManualTillageCostActivity extends CostBaseActivity {
     }
 
     private void setData() {
-        fieldOperationCost = ormProcessor.getOperationCosts();
         if (fieldOperationCost == null) {
             fieldOperationCost = new FieldOperationCost();
         }
@@ -155,11 +155,9 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         dataValid = true;
         try {
 
-            if (fieldOperationCost == null) {
-                fieldOperationCost = new FieldOperationCost();
-            }
             fieldOperationCost.setManualPloughCost(manualPloughCost);
             fieldOperationCost.setManualRidgeCost(manualRidgeCost);
+            database.fieldOperationCostDao().insert(fieldOperationCost);
 
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

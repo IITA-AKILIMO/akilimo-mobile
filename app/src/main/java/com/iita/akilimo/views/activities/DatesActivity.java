@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentManager;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityDatesBinding;
 import com.iita.akilimo.entities.ScheduledDate;
 import com.iita.akilimo.inherit.BaseActivity;
@@ -66,7 +67,7 @@ public class DatesActivity extends BaseActivity {
 
 
         context = this;
-        ormProcessor = new OrmProcessor();
+        database = AppDatabase.getDatabase(context);
 
         //set widgets
         toolbar = binding.toolbar;
@@ -171,7 +172,7 @@ public class DatesActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        scheduledDate = ormProcessor.getPlantingHarvestDates();
+        scheduledDate = database.scheduleDateDao().findOne();
 
         if (scheduledDate != null) {
             alternativeDate = scheduledDate.getAlternativeDate();
@@ -223,6 +224,8 @@ public class DatesActivity extends BaseActivity {
             scheduledDate.setPlantingDate(selectedPlantingDate);
             scheduledDate.setPlantingWindow(plantingWindow);
             scheduledDate.setAlternativeDate(alternativeDate);
+
+            database.scheduleDateDao().insert(scheduledDate);
             closeActivity(backPressed);
 
         } catch (Exception ex) {

@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityMaizePerformanceActivityBinding;
 import com.iita.akilimo.entities.MaizePerformance;
 import com.iita.akilimo.inherit.BaseActivity;
@@ -45,7 +46,7 @@ public class MaizePerformanceActivity extends BaseActivity {
         binding = ActivityMaizePerformanceActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         context = this;
-        ormProcessor = new OrmProcessor();
+        database = AppDatabase.getDatabase(context);
 
         toolbar = binding.toolbar;
         rdgMaizePerformance = binding.rdgMaizePerformance;
@@ -112,7 +113,7 @@ public class MaizePerformanceActivity extends BaseActivity {
         });
 
         //preset saved data if any
-        maizePerformance = ormProcessor.getMaizePerformance();
+        maizePerformance = database.maizePerformanceDao().findOne();
         if (maizePerformance != null) {
             performanceRadioIndex = maizePerformance.getPerformanceRadioIndex();
             rdgMaizePerformance.check(performanceRadioIndex);
@@ -129,7 +130,6 @@ public class MaizePerformanceActivity extends BaseActivity {
         }
 
         performanceRadioIndex = rdgMaizePerformance.getCheckedRadioButtonId();
-        maizePerformance = ormProcessor.getMaizePerformance();
         try {
 
             if (maizePerformance == null) {
@@ -139,6 +139,7 @@ public class MaizePerformanceActivity extends BaseActivity {
             maizePerformance.setMaizePerformance(selectedMaizePerformance);
             maizePerformance.setPerformanceValue(maizePerformanceValue);
 
+            database.maizePerformanceDao().insert(maizePerformance);
             closeActivity(backPressed);
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

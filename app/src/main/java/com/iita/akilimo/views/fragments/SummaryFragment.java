@@ -136,15 +136,13 @@ public class SummaryFragment extends BaseFragment {
         StringBuilder ploughStr = new StringBuilder();
         StringBuilder ridgeStr = new StringBuilder();
 
-        if (ormProcessor == null) {
+        if (database == null) {
             return;
         }
-
-        location = ormProcessor.getLocationInfo();
-        mandatoryInfo = ormProcessor.getMandatoryInfo();
-        currentPractice = ormProcessor.getCurrentPractice();
-        scheduledDate = ormProcessor.getPlantingHarvestDates();
-        countryName = "";
+        location = database.locationInfoDao().findOne();
+        mandatoryInfo = database.mandatoryInfoDao().findOne();
+        currentPractice = database.currentPracticeDao().findOne();
+        scheduledDate = database.scheduleDateDao().findOne();
 
         if (!Strings.isEmptyOrWhitespace(mandatoryInfo.getCountryName())) {
             countrySelected = true;

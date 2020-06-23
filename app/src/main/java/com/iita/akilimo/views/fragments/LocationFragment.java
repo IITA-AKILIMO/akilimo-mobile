@@ -19,7 +19,6 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.iita.akilimo.R;
-import com.iita.akilimo.dao.LocationInfoDao;
 import com.iita.akilimo.databinding.FragmentLocationBinding;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.ProfileInfo;
@@ -125,8 +124,8 @@ public class LocationFragment extends BaseFragment {
         locationInformation.setLatitude(currentLat);
         locationInformation.setLongitude(currentLon);
 
-        LocationInfoDao locationInfoDao = database.locationInfoDao();
-        locationInfoDao.insert(locationInformation);
+        database.locationInfoDao().insert(locationInformation);
+        locationInformation = database.locationInfoDao().findOne();
         reloadLocationInfo();
     }
 

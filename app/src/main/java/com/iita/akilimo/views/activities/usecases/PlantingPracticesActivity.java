@@ -15,6 +15,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityPlantingPracticesBinding;
 import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.inherit.BaseActivity;
@@ -31,6 +32,7 @@ import com.iita.akilimo.views.activities.WeedControlCostsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+
 public class PlantingPracticesActivity extends BaseActivity {
 
 
@@ -51,7 +53,6 @@ public class PlantingPracticesActivity extends BaseActivity {
     ActivityPlantingPracticesBinding binding;
 
 
-
     private Activity activity;
     private RecOptionsAdapter mAdapter;
     private List<RecommendationOptions> items = new ArrayList<>();
@@ -64,13 +65,14 @@ public class PlantingPracticesActivity extends BaseActivity {
         setContentView(binding.getRoot());
         context = this;
         activity = this;
-        ormProcessor = new OrmProcessor();
+        database = AppDatabase.getDatabase(context);
 
 
         toolbar = binding.toolbarLayout.toolbar;
         recyclerView = binding.recyclerView;
         btnGetRec = binding.singleButton.btnGetRecommendation;
-        useCases = ormProcessor.getRecAdvice();
+
+        useCases = database.useCaseDao().findOne();
 
         initToolbar();
         initComponent();
@@ -104,16 +106,18 @@ public class PlantingPracticesActivity extends BaseActivity {
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
             try {
-                    if (useCases == null) {
-                        useCases = new UseCases();
-                    }
-                    useCases.setFR(false);
-                    useCases.setCIM(false);
-                    useCases.setCIS(false);
-                    useCases.setSPH(false);
-                    useCases.setSPP(false);
-                    useCases.setBPP(true);
-                    useCases.setName(EnumUseCase.PP.name());
+                if (useCases == null) {
+                    useCases = new UseCases();
+                }
+                useCases.setFR(false);
+                useCases.setCIM(false);
+                useCases.setCIS(false);
+                useCases.setSPH(false);
+                useCases.setSPP(false);
+                useCases.setBPP(true);
+                useCases.setName(EnumUseCase.PP.name());
+
+                database.useCaseDao().insert(useCases);
                 processRecommendations(activity);
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

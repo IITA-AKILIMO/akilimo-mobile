@@ -13,10 +13,11 @@ import androidx.cardview.widget.CardView;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityWeedControlCostBinding;
 import com.iita.akilimo.entities.CurrentPractice;
-import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.FieldOperationCost;
+import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
 
@@ -54,16 +55,16 @@ public class WeedControlCostsActivity extends BaseActivity {
         binding = ActivityWeedControlCostBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        ormProcessor = new OrmProcessor();
+        database = AppDatabase.getDatabase(context);
         context = this;
         mathHelper = new MathHelper();
 
-        MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
-        fieldOperationCost = ormProcessor.getOperationCosts();
-        currentPractice = ormProcessor.getCurrentPractice();
+        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
             currency = mandatoryInfo.getCurrency();
         }
+        fieldOperationCost = database.fieldOperationCostDao().findOne();
+        currentPractice = database.currentPracticeDao().findOne();
 
         toolbar = binding.toolbar;
         firstWeedingOpCostTitle = binding.weedControlCosts.firstWeedingOpCostTitle;
@@ -161,10 +162,6 @@ public class WeedControlCostsActivity extends BaseActivity {
             return;
         }
 
-
-        currentPractice = ormProcessor.getCurrentPractice();
-        fieldOperationCost = ormProcessor.getOperationCosts();
-
         try {
             if (currentPractice == null) {
                 currentPractice = new CurrentPractice();
@@ -177,8 +174,12 @@ public class WeedControlCostsActivity extends BaseActivity {
             currentPractice.setUsesHerbicide(usesHerbicide);
             currentPractice.setWeedRadioIndex(weedRadioIndex);
 
+            database.currentPracticeDao().insert(currentPractice);
+
             fieldOperationCost.setFirstWeedingOperationCost(firstOperationCost);
             fieldOperationCost.setSecondWeedingOperationCost(secondOperationCost);
+
+            database.fieldOperationCostDao().insert(fieldOperationCost);
 
             closeActivity(backPressed);
         } catch (

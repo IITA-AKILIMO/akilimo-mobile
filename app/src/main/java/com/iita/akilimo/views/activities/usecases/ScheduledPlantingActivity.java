@@ -14,6 +14,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityScheduledPlantingBinding;
 import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.inherit.BaseActivity;
@@ -56,7 +57,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
         setContentView(binding.getRoot());
         context = this;
         activity = this;
-        ormProcessor = new OrmProcessor();
+        database = AppDatabase.getDatabase(context);
 
 
         toolbar = binding.toolbarLayout.toolbar;
@@ -89,7 +90,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
         recyclerView.setHasFixedSize(true);
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
-            useCases = ormProcessor.getRecAdvice();
+            useCases = database.useCaseDao().findOne();
             try {
                 if (useCases == null) {
                     useCases = new UseCases();
@@ -101,6 +102,8 @@ public class ScheduledPlantingActivity extends BaseActivity {
                 useCases.setSPP(true);
                 useCases.setBPP(false);
                 useCases.setName(EnumUseCase.SP.name());
+
+                database.useCaseDao().insert(useCases);
                 processRecommendations(activity);
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 open class CurrentPractice {
 
     @PrimaryKey(autoGenerate = true)
-    var id: Int? = null
+    var id: Long? = null
     var weedRadioIndex = 0
     var weedControlTechnique: String? = null
     var ploughOperations: String? = null

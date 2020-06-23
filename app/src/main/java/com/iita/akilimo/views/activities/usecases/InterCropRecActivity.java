@@ -15,6 +15,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityInterCropRecBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.UseCases;
@@ -73,10 +74,10 @@ public class InterCropRecActivity extends BaseActivity {
         btnGetRec = binding.singleButton.btnGetRecommendation;
 
 
-        ormProcessor = new OrmProcessor();
+        database = AppDatabase.getDatabase(context);
 
 
-        MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
             currency = mandatoryInfo.getCurrency();
@@ -123,7 +124,7 @@ public class InterCropRecActivity extends BaseActivity {
         recyclerView.setHasFixedSize(true);
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
-            useCases = ormProcessor.getRecAdvice();
+            useCases = database.useCaseDao().findOne();
             try {
                 if (useCases == null) {
                     useCases = new UseCases();
@@ -135,6 +136,8 @@ public class InterCropRecActivity extends BaseActivity {
                 useCases.setSPP(false);
                 useCases.setBPP(false);
                 useCases.setName(useCase.name());
+
+                database.useCaseDao().insert(useCases);
                 processRecommendations(activity);
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

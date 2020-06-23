@@ -3,7 +3,7 @@ package com.iita.akilimo.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "operation_costs")
+@Entity(tableName = "field_operation_cost")
 open class FieldOperationCost() {
 
     @PrimaryKey(autoGenerate = true)

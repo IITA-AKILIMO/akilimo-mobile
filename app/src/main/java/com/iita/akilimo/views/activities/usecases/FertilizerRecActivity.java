@@ -14,6 +14,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityFertilizerRecBinding;
 import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.inherit.BaseActivity;
@@ -64,7 +65,7 @@ public class FertilizerRecActivity extends BaseActivity {
         btnGetRec = binding.singleButton.btnGetRecommendation;
 
 
-        ormProcessor = new OrmProcessor();
+        database = AppDatabase.getDatabase(context);
         initToolbar();
         initComponent();
     }
@@ -94,7 +95,7 @@ public class FertilizerRecActivity extends BaseActivity {
 
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
-            useCases = ormProcessor.getRecAdvice();
+            useCases = database.useCaseDao().findOne();
             try {
                 if (useCases == null) {
                     useCases = new UseCases();
@@ -106,6 +107,8 @@ public class FertilizerRecActivity extends BaseActivity {
                 useCases.setSPP(false);
                 useCases.setBPP(false);
                 useCases.setName(EnumUseCase.FR.name());
+
+                database.useCaseDao().insert(useCases);
                 processRecommendations(activity);
 
             } catch (Exception ex) {

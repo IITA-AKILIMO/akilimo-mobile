@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.FertilizerGridAdapter;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityFertilizersBinding;
 import com.iita.akilimo.entities.Fertilizer;
 import com.iita.akilimo.entities.FertilizerPrice;
@@ -88,7 +89,7 @@ public class FertilizersActivity extends BaseActivity {
         errorImage = binding.errorImage;
         errorLabel = binding.errorLabel;
 
-        ormProcessor = new OrmProcessor();
+        database = AppDatabase.getDatabase(context);
         queue = Volley.newRequestQueue(context);
 
         Intent intent = getIntent();
@@ -96,7 +97,7 @@ public class FertilizersActivity extends BaseActivity {
             useCase = intent.getParcelableExtra(useCaseTag);
         }
 
-        MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
         }
@@ -140,7 +141,7 @@ public class FertilizersActivity extends BaseActivity {
 
         mAdapter.setOnItemClickListener((view, clickedFertilizer, position) -> {
             mAdapter.setActiveRowIndex(position);
-            Fertilizer selectedType = ormProcessor.getSavedFertilizer(clickedFertilizer.getFertilizerType(), countryCode);
+            Fertilizer selectedType = database.fertilizerDao().findOneByTypeAndCountry(clickedFertilizer.getFertilizerType(), countryCode);
             if (selectedType == null) {
                 selectedType = clickedFertilizer;
             }
@@ -156,6 +157,7 @@ public class FertilizersActivity extends BaseActivity {
 
             priceDialogFragment.setOnDismissListener((priceSpecified, fertilizer, removeSelected) -> {
                 if ((priceSpecified || removeSelected)) {
+                    database.fertilizerDao().update(fertilizer);
                     if (removeSelected) {
                         selectedFertilizers = FertilizerList.INSTANCE.removeFertilizerByType(cleanedFertilizers, fertilizer.getFertilizerType());
                     } else {
@@ -195,7 +197,7 @@ public class FertilizersActivity extends BaseActivity {
 
     @Override
     protected void validate(boolean backPressed) {
-        availableFertilizersList = ormProcessor.getAvailableFertilizersByCountry(countryCode);
+        availableFertilizersList = database.fertilizerDao().findAllByCountry(countryCode);
         if (mAdapter != null && availableFertilizersList != null) {
             mAdapter.setItems(availableFertilizersList);
         }
@@ -282,7 +284,7 @@ public class FertilizersActivity extends BaseActivity {
                     });
 
                     if (fertilizerPricesList.size() > 0) {
-
+                        database.fertilizerPriceDao().insertAll(fertilizerPricesList);
                     }
 
                     validate(false);
@@ -315,7 +317,7 @@ public class FertilizersActivity extends BaseActivity {
     }
 
     private boolean isMinSelected() {
-        int count = ormProcessor.getSelectedFertilizers(countryCode).size();
+        int count = database.fertilizerDao().findAllSelectedByCountry(countryCode).size();
         if (count < minSelection) {
             Snackbar snackbar = Snackbar.make(lyt_progress, String.format(Locale.US, context.getString(R.string.lbl_min_selection), minSelection), Snackbar.LENGTH_SHORT);
             snackbar.show();

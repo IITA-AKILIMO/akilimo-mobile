@@ -146,8 +146,8 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
         });
 
         radioGroup.setOnCheckedChangeListener((radioGroup, i) -> radioSelected(radioGroup));
-        if (ormProcessor != null) {
-            maizePriceList = ormProcessor.getMaizePrices(countryCode);
+        if (database != null) {
+            maizePriceList = database.maizePriceDao().findAllByCountry(countryCode);
             addPriceRadioButtons(maizePriceList, averagePrice);
         }
         return dialog;

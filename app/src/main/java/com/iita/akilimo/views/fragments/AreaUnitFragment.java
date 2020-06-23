@@ -56,14 +56,13 @@ public class AreaUnitFragment extends BaseFragment {
     @Override
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentAreaUnitBinding.inflate(inflater, container, false);
-
         return binding.getRoot();
     }
 
     @Override
     public void refreshData() {
         try {
-            mandatoryInfo = ormProcessor.getMandatoryInfo();
+            mandatoryInfo = database.mandatoryInfoDao().findOne();
             if (mandatoryInfo != null) {
                 areaUnit = mandatoryInfo.getAreaUnit();
                 areaUnitRadioIndex = mandatoryInfo.getAreaUnitRadioIndex();
@@ -99,6 +98,10 @@ public class AreaUnitFragment extends BaseFragment {
                 }
                 mandatoryInfo.setAreaUnitRadioIndex(areaUnitRadioIndex);
                 mandatoryInfo.setAreaUnit(areaUnit);
+
+                database.mandatoryInfoDao().insert(mandatoryInfo);
+                mandatoryInfo = database.mandatoryInfoDao().findOne();
+
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                 Crashlytics.logException(ex);

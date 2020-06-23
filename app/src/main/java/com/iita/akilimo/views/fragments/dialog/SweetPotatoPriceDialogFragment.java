@@ -23,9 +23,10 @@ import androidx.annotation.Nullable;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IPriceDialogDismissListener;
-import com.iita.akilimo.models.PotatoPrice;
+import com.iita.akilimo.entities.PotatoPrice;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 
@@ -81,14 +82,6 @@ public class SweetPotatoPriceDialogFragment extends BaseDialogFragment {
 
     public SweetPotatoPriceDialogFragment() {
         // Required empty public constructor
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.context = context;
-        mathHelper = new MathHelper();
-        ormProcessor = new OrmProcessor();
     }
 
     @NonNull
@@ -157,8 +150,8 @@ public class SweetPotatoPriceDialogFragment extends BaseDialogFragment {
         });
 
         radioGroup.setOnCheckedChangeListener((radioGroup, i) -> radioSelected(radioGroup));
-        if (ormProcessor != null) {
-            potatoPriceList = ormProcessor.getPotatoPrices(countryCode);
+        if (database != null) {
+            potatoPriceList = database.potatoPriceDao().findAllByCountry(countryCode);
             addPriceRadioButtons(potatoPriceList, averagePrice);
         }
         return dialog;

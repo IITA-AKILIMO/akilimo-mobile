@@ -20,12 +20,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivitySweetPotatoMarketBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.PotatoMarket;
+import com.iita.akilimo.entities.PotatoPrice;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
-import com.iita.akilimo.models.PotatoPrice;
 import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.MathHelper;
@@ -86,12 +87,12 @@ public class SweetPotatoMarketActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         context = this;
-        ormProcessor = new OrmProcessor();
+        database = AppDatabase.getDatabase(context);
 
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
 
-        MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
             currency = mandatoryInfo.getCurrency();
@@ -123,7 +124,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
     protected void initComponent() {
         enumPotatoProduceType = EnumPotatoProduceType.TUBERS.produce();
 
-        potatoMarket = ormProcessor.getPotatoMarketOutlet();
+        potatoMarket = database.potatoMarketDao().findOne();
         if (potatoMarket != null) {
             produceTypeRadioIndex = potatoMarket.getProduceTypeRadioIndex();
             potatoUnitOfSaleRadioIndex = potatoMarket.getPotatoUnitOfSaleRadioIndex();
@@ -192,7 +193,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             potatoMarket.setPotatoUnitPriceRadioIndex(potatoUnitPriceRadioIndex);
             potatoMarket.setPotatoUnitOfSaleRadioIndex(potatoUnitOfSaleRadioIndex);
 
-
+            database.potatoMarketDao().insert(potatoMarket);
             closeActivity(backPressed);
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
@@ -230,9 +231,8 @@ public class SweetPotatoMarketActivity extends BaseActivity {
                     potatoPriceList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<PotatoPrice>>() {
                     });
 
-
                     if (potatoPriceList.size() > 0) {
-                        //insert to database
+                        database.potatoPriceDao().insertAll(potatoPriceList);
                     }
 
                 } catch (Exception ex) {

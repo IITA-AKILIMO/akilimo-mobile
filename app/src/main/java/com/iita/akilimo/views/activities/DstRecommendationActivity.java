@@ -22,6 +22,7 @@ import com.google.android.gms.common.util.Strings;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecommendationAdapter;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityDstRecomendationBinding;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseActivity;
@@ -73,7 +74,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
 
         context = this;
         activity = this;
-        ormProcessor = new OrmProcessor();
+        database = AppDatabase.getDatabase(context);
 
         toolbar = binding.toolbarLayout.toolbar;
         recyclerView = binding.recyclerView;
@@ -104,7 +105,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         recyclerView.setHasFixedSize(true);
 
         recAdapter = new RecommendationAdapter();
-        profileInfo = ormProcessor.getProfileInfo();
+        profileInfo = database.profileInfoDao().findOne();
 
         lyt_progress.setVisibility(View.VISIBLE);
         lyt_progress.setAlpha(1.0f);

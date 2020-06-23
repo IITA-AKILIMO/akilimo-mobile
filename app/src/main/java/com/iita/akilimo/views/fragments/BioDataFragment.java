@@ -23,7 +23,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hbb20.CountryCodePicker;
 import com.iita.akilimo.R;
-import com.iita.akilimo.dao.ProfileInfoDao;
 import com.iita.akilimo.databinding.FragmentBioDataBinding;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
@@ -216,7 +215,6 @@ public class BioDataFragment extends BaseFragment {
                 if (profileInfo == null) {
                     profileInfo = new ProfileInfo();
                 }
-                profileInfo.setUserName(profileInfo.getNames());
                 profileInfo.setFirstName(firstName);
                 profileInfo.setLastName(lastName);
                 profileInfo.setGender(gender);
@@ -227,8 +225,15 @@ public class BioDataFragment extends BaseFragment {
                 profileInfo.setFullMobileNumber(fullMobileNumber);
                 profileInfo.setSelectedGenderIndex(selectedGenderIndex);
 
-                ProfileInfoDao profileInfoDao = database.profileInfoDao();
-                profileInfoDao.insert(profileInfo);
+                profileInfo.setUserName(profileInfo.getNames());
+
+                int pk = profileInfo.getProfileId();
+                if (pk > 0) {
+                    database.profileInfoDao().update(profileInfo);
+                } else {
+                    database.profileInfoDao().insert(profileInfo);
+                }
+
 
                 nextFragment();
             } catch (Exception ex) {

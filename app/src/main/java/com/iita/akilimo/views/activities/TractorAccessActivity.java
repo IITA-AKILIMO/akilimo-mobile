@@ -16,10 +16,11 @@ import androidx.fragment.app.FragmentTransaction;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityTractorAccessBinding;
 import com.iita.akilimo.entities.CurrentPractice;
-import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.FieldOperationCost;
+import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.CostBaseActivity;
 import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.utils.MathHelper;
@@ -75,12 +76,12 @@ public class TractorAccessActivity extends CostBaseActivity {
         setContentView(binding.getRoot());
 
         context = this;
-        ormProcessor = new OrmProcessor();
+        database = AppDatabase.getDatabase(context);
 
         queue = Volley.newRequestQueue(this);
         mathHelper = new MathHelper();
 
-        MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
             currency = mandatoryInfo.getCurrency();
             areaUnit = mandatoryInfo.getAreaUnit();
@@ -99,11 +100,11 @@ public class TractorAccessActivity extends CostBaseActivity {
 
         initToolbar();
         initComponent();
-        fieldOperationCost = ormProcessor.getOperationCosts();
+        fieldOperationCost = database.fieldOperationCostDao().findOne();
+        currentPractice = database.currentPracticeDao().findOne();
         if (fieldOperationCost != null) {
             tractorPloughCost = fieldOperationCost.getTractorPloughCost();
             tractorRidgeCost = fieldOperationCost.getTractorRidgeCost();
-
         }
     }
 
@@ -163,9 +164,6 @@ public class TractorAccessActivity extends CostBaseActivity {
     }
 
     private void setData() {
-        fieldOperationCost = ormProcessor.getOperationCosts();
-        currentPractice = ormProcessor.getCurrentPractice();
-
         try {
             if (fieldOperationCost == null) {
                 fieldOperationCost = new FieldOperationCost();
@@ -180,12 +178,14 @@ public class TractorAccessActivity extends CostBaseActivity {
             currentPractice.setTractorHarrow(hasHarrow);
             currentPractice.setTractorRidger(hasRidger);
 
+            database.currentPracticeDao().insert(currentPractice);
+
             fieldOperationCost.setTractorPloughCost(tractorPloughCost);
             fieldOperationCost.setTractorRidgeCost(tractorRidgeCost);
-
             fieldOperationCost.setExactTractorPloughPrice(exactPloughCost);
             fieldOperationCost.setExactTractorRidgePrice(exactRidgeCost);
 
+            database.fieldOperationCostDao().insert(fieldOperationCost);
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);

@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityMaizeMarketBinding;
 import com.iita.akilimo.entities.MaizeMarket;
 import com.iita.akilimo.entities.MaizePrice;
@@ -99,7 +100,7 @@ public class MaizeMarketActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         context = this;
-        ormProcessor = new OrmProcessor();
+        database = AppDatabase.getDatabase(context);
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
 
@@ -116,9 +117,9 @@ public class MaizeMarketActivity extends BaseActivity {
         btnCancel = binding.marketContent.twoButtons.btnCancel;
 
 
-        maizeMarket = ormProcessor.getMaizeMarketOutlet();
+        maizeMarket = database.maizeMarketDao().findOne();
 
-        MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
             currency = mandatoryInfo.getCurrency();
@@ -152,7 +153,7 @@ public class MaizeMarketActivity extends BaseActivity {
                     });
 
                     if (maizePriceList.size() > 0) {
-
+                        database.maizePriceDao().insertAll(maizePriceList);
                     }
                 } catch (JsonProcessingException ex) {
                     Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
@@ -313,6 +314,7 @@ public class MaizeMarketActivity extends BaseActivity {
                 maizeMarket.setGrainUnitRadioIndex(grainUnitRadioIndex);
                 maizeMarket.setProduceRadioIndex(produceRadioIndex);
 
+                database.maizeMarketDao().insert(maizeMarket);
                 closeActivity(backPressed);
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

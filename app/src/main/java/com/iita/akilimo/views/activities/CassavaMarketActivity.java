@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityCassavaMarketBinding;
 import com.iita.akilimo.entities.CassavaMarket;
 import com.iita.akilimo.entities.CassavaPrice;
@@ -110,18 +111,18 @@ public class CassavaMarketActivity extends BaseActivity {
         btnFinish = binding.contentCassavaMarket.twoButtons.btnFinish;
         btnCancel = binding.contentCassavaMarket.twoButtons.btnCancel;
 
-        ormProcessor = new OrmProcessor();
+        database = AppDatabase.getDatabase(context);
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
 
-        cassavaMarket = ormProcessor.getCassavaMarketOutlet();
+        cassavaMarket = database.cassavaMarketDao().findOne();
         if (cassavaMarket != null) {
             selectedFactory = cassavaMarket.getStarchFactory();
             exactPrice = cassavaMarket.getUnitPrice();
             unitOfSale = cassavaMarket.getUnitOfSale();
         }
 
-        MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
             currency = mandatoryInfo.getCurrency();
@@ -185,9 +186,9 @@ public class CassavaMarketActivity extends BaseActivity {
             dataIsValid = false;
             if (radioButtonId > -1) {
                 RadioButton radioButton = findViewById(radioButtonId);
-                String itemTagIndex = (String) radioButton.getTag();
-                if (itemTagIndex != null) {
-                    StarchFactory selectedStarchFactory = ormProcessor.getSelectedStarchFactoryByTag(itemTagIndex);
+                String factoryName = (String) radioButton.getTag();
+                if (factoryName != null) {
+                    StarchFactory selectedStarchFactory = database.starchFactoryDao().findStarchFactoryByName(factoryName);
                     if (selectedStarchFactory != null) {
                         selectedFactory = selectedStarchFactory.getFactoryName();
                     }
@@ -284,6 +285,7 @@ public class CassavaMarketActivity extends BaseActivity {
                 cassavaMarket.setExactPrice(exactPrice);
                 cassavaMarket.setUnitPrice(exactPrice);
 
+                database.cassavaMarketDao().insert(cassavaMarket);
                 closeActivity(backPressed);
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
@@ -328,6 +330,7 @@ public class CassavaMarketActivity extends BaseActivity {
                     List<StarchFactory> starchFactoriesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<StarchFactory>>() {
                     });
                     if (starchFactoriesList.size() > 0) {
+                        database.starchFactoryDao().insertAll(starchFactoriesList);
                         addFactoriesRadioButtons(starchFactoriesList);
                     }
                 } catch (Exception ex) {
@@ -371,12 +374,9 @@ public class CassavaMarketActivity extends BaseActivity {
                 try {
                     cassavaPriceList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<CassavaPrice>>() {
                     });
-
                     if (cassavaPriceList.size() > 0) {
-
+                        database.cassavaPriceDao().insertAll(cassavaPriceList);
                     }
-
-
                 } catch (Exception ex) {
                     Crashlytics.logException(ex);
                     Crashlytics.log(ex.getMessage());
@@ -399,9 +399,9 @@ public class CassavaMarketActivity extends BaseActivity {
     }
 
     protected void processData() {
-        List<StarchFactory> starchFactoriesList = ormProcessor.getStarchFactories(countryCode);
+        List<StarchFactory> starchFactoriesList = database.starchFactoryDao().findStarchFactoriesByCountry(countryCode);
         addFactoriesRadioButtons(starchFactoriesList);
-        cassavaMarket = ormProcessor.getCassavaMarketOutlet();
+        cassavaMarket = database.cassavaMarketDao().findOne();
 
         if (cassavaMarket != null) {
             boolean sfRequired = cassavaMarket.isStarchFactoryRequired();

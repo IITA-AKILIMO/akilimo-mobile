@@ -1,6 +1,7 @@
-package com.iita.akilimo.models
+package com.iita.akilimo.entities
 
 
+import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
@@ -9,6 +10,7 @@ import java.util.*
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Entity(tableName = "potato_price")
 open class PotatoPrice {
 
     @JsonProperty("id")
@@ -45,9 +47,9 @@ open class PotatoPrice {
     @JsonProperty("averagePrice")
     var averagePrice = 0.0
 
-    @JsonProperty("createdAt")
-    var createdAt: Date? = null
-
-    @JsonProperty("updatedAt")
-    var updatedAt: Date? = null
+//    @JsonProperty("createdAt")
+//    var createdAt: Date? = null
+//
+//    @JsonProperty("updatedAt")
+//    var updatedAt: Date? = null
 }

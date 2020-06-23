@@ -116,7 +116,7 @@ public class FieldSizeFragment extends BaseFragment {
     @Override
     public void refreshData() {
         try {
-            mandatoryInfo = ormProcessor.getMandatoryInfo();
+            mandatoryInfo = database.mandatoryInfoDao().findOne();
             if (mandatoryInfo != null) {
                 isExactArea = mandatoryInfo.getExactArea();
                 areaUnit = mandatoryInfo.getAreaUnit();
@@ -174,8 +174,6 @@ public class FieldSizeFragment extends BaseFragment {
     }
 
     private void saveFieldSize() {
-        mandatoryInfo = ormProcessor.getMandatoryInfo();
-
         fieldSizeRadioIndex = rdgFieldArea.getCheckedRadioButtonId();
         try {
             if (mandatoryInfo == null) {
@@ -183,6 +181,9 @@ public class FieldSizeFragment extends BaseFragment {
             }
             mandatoryInfo.setFieldSizeRadioIndex(fieldSizeRadioIndex);
             mandatoryInfo.setAreaSize(areaSize);
+
+            database.mandatoryInfoDao().insert(mandatoryInfo);
+            mandatoryInfo = database.mandatoryInfoDao().findOne();
 
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

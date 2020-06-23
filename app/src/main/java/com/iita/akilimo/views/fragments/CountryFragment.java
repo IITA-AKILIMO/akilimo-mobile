@@ -73,8 +73,8 @@ public class CountryFragment extends BaseFragment {
     @Override
     public void refreshData() {
         try {
-            profileInfo = ormProcessor.getProfileInfo();
-            mandatoryInfo = ormProcessor.getMandatoryInfo();
+            profileInfo = database.profileInfoDao().findOne();
+            mandatoryInfo = database.mandatoryInfoDao().findOne();
             if (profileInfo != null) {
                 name = profileInfo.getFirstName();
             }
@@ -157,5 +157,8 @@ public class CountryFragment extends BaseFragment {
         mandatoryInfo.setCountryCode(countryCode);
         mandatoryInfo.setCountryName(countryName);
         mandatoryInfo.setCurrency(currency);
+
+        database.mandatoryInfoDao().insert(mandatoryInfo);
+        mandatoryInfo = database.mandatoryInfoDao().findOne();
     }
 }

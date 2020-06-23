@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.SessionManager;
 
@@ -16,7 +17,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
 
     protected MathHelper mathHelper;
     protected Context context;
-
+    protected AppDatabase database;
     protected SessionManager sessionManager;
 
 
@@ -29,6 +30,6 @@ public abstract class BaseDialogFragment extends DialogFragment {
         super.onAttach(context);
         this.context = context;
         mathHelper = new MathHelper();
-        ormProcessor = new OrmProcessor();
+        database = AppDatabase.getDatabase(context);
     }
 }

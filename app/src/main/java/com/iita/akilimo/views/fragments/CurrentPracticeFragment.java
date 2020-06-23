@@ -143,8 +143,8 @@ public class CurrentPracticeFragment extends BaseFragment {
     public void refreshData() {
         try {
 
-            currentPractice = ormProcessor.getCurrentPractice();
-            scheduledDate = ormProcessor.getPlantingHarvestDates();
+            currentPractice = database.currentPracticeDao().findOne();
+            scheduledDate = database.scheduleDateDao().findOne();
             if (currentPractice != null) {
                 isDataRefreshing = true;
                 performPloughing = currentPractice.getPerformPloughing();
@@ -258,6 +258,12 @@ public class CurrentPracticeFragment extends BaseFragment {
             currentPractice.setPerformPloughing(performPloughing);
             currentPractice.setPerformHarrowing(performHarrowing);
 
+            if (currentPractice.getId() != null) {
+                database.currentPracticeDao().update(currentPractice);
+            } else {
+                database.currentPracticeDao().insert(currentPractice);
+            }
+
             if (scheduledDate == null) {
                 scheduledDate = new ScheduledDate();
             }
@@ -265,6 +271,15 @@ public class CurrentPracticeFragment extends BaseFragment {
             scheduledDate.setPlantingDate(selectedPlantingDate);
             scheduledDate.setHarvestDate(selectedHarvestDate);
 
+            if (scheduledDate.getId() != null) {
+                database.scheduleDateDao().update(scheduledDate);
+            } else {
+                database.scheduleDateDao().insert(scheduledDate);
+            }
+
+            //requesry the data
+            currentPractice = database.currentPracticeDao().findOne();
+            scheduledDate = database.scheduleDateDao().findOne();
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);

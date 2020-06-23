@@ -18,6 +18,7 @@ import com.google.android.gms.common.util.Strings;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityInvestmentAmountBinding;
 import com.iita.akilimo.entities.InvestmentAmount;
 import com.iita.akilimo.entities.MandatoryInfo;
@@ -71,7 +72,7 @@ public class InvestmentAmountActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         context = this;
-        ormProcessor = new OrmProcessor();
+        database = AppDatabase.getDatabase(context);
         mathHelper = new MathHelper();
 
         toolbar = binding.toolbar;
@@ -162,7 +163,7 @@ public class InvestmentAmountActivity extends BaseActivity {
                 return;
             }
 
-            invAmount = ormProcessor.getInvestmentAmount();
+            invAmount = database.investmentAmountDao().findOne();
 
             try {
                 if (invAmount == null) {
@@ -173,6 +174,7 @@ public class InvestmentAmountActivity extends BaseActivity {
                 invAmount.setInvestmentAmountLocal(investmentAmountLocal);
                 invAmount.setMinInvestmentAmountLocal(minimumAmountLocal);
 
+                database.investmentAmountDao().insert(invAmount);
                 closeActivity(false);
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
@@ -190,7 +192,7 @@ public class InvestmentAmountActivity extends BaseActivity {
 
     private void updateLabels() {
 
-        MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
             fieldSize = mandatoryInfo.getAreaSize();
             fieldSizeAcre = mandatoryInfo.getAreaSize();

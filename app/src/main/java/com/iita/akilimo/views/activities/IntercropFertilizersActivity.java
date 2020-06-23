@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.IntercropFertilizerGridAdapter;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityFertilizersBinding;
 import com.iita.akilimo.entities.FertilizerPrice;
 import com.iita.akilimo.entities.InterCropFertilizer;
@@ -94,7 +95,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
         errorImage = binding.errorImage;
         errorLabel = binding.errorLabel;
 
-        ormProcessor = new OrmProcessor();
+        database = AppDatabase.getDatabase(context);
         queue = Volley.newRequestQueue(context);
         modelMapper = new ModelMapper();
 
@@ -103,7 +104,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
             useCase = intent.getParcelableExtra(useCaseTag);
         }
 
-        MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
         }
@@ -146,7 +147,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
 
         mAdapter.setOnItemClickListener((view, clickedFertilizer, position) -> {
             mAdapter.setActiveRowIndex(position);
-            InterCropFertilizer selectedType = ormProcessor.getSavedInterCropFertilizer(clickedFertilizer.getFertilizerType(), countryCode, useCase);
+            InterCropFertilizer selectedType = database.interCropFertilizerDao().findByTypeCountryAndUseCase(clickedFertilizer.getFertilizerType(), countryCode, useCase.name());
             if (selectedType == null) {
                 selectedType = clickedFertilizer;
             }
@@ -164,6 +165,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
 
             priceDialogFragment.setOnDismissListener((priceSpecified, fertilizer, removeSelected) -> {
                 InterCropFertilizer interCropFertilizer = modelMapper.map(fertilizer, InterCropFertilizer.class);
+                database.interCropFertilizerDao().update(fertilizer);
                 if ((priceSpecified || removeSelected)) {
                     if (removeSelected) {
                         selectedFertilizers = FertilizerList.INSTANCE.removeIntercropFertilizerByType(cleanedFertilizers, fertilizer.getFertilizerType());
@@ -198,7 +200,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
     @Override
     protected void validate(boolean backPressed) {
         if (mAdapter != null) {
-            availableFertilizersList = ormProcessor.getAvailableInterCropFertilizersByCountryUseCase(countryCode, useCase);
+            availableFertilizersList = database.interCropFertilizerDao().findAllByCountryAndUseCase(countryCode, useCase.name());
             mAdapter.setItems(availableFertilizersList);
         }
     }
@@ -324,7 +326,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
     }
 
     private boolean isMinSelected() {
-        int count = ormProcessor.getSelectedInterCropFertilizers(countryCode, useCase).size();
+        int count = database.interCropFertilizerDao().findAllSelectedByCountryAndUseCase(countryCode, useCase.name()).size();
         if (count < minSelection) {
             Snackbar snackbar = Snackbar
                     .make(coordinatorLayout, String.format(Locale.US, context.getString(R.string.lbl_min_selection), minSelection), Snackbar.LENGTH_LONG);

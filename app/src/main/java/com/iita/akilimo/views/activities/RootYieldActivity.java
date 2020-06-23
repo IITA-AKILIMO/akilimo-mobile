@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.AdapterGridTwoLine;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityRootYieldBinding;
 import com.iita.akilimo.entities.FieldYield;
 import com.iita.akilimo.entities.MandatoryInfo;
@@ -58,15 +59,15 @@ public class RootYieldActivity extends BaseActivity {
         binding = ActivityRootYieldBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        ormProcessor = new OrmProcessor();
+        database = AppDatabase.getDatabase(context);
         mathHelper = new MathHelper();
-        MandatoryInfo mandatoryInfo = ormProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
             areaUnit = mandatoryInfo.getAreaUnit();
         }
 
-        savedYield = ormProcessor.getCurrentFieldYield();
+        savedYield = database.fieldYieldDao().findOne();
         if (savedYield != null) {
             selectedYieldAmount = savedYield.getYieldAmount();
         }
@@ -114,7 +115,7 @@ public class RootYieldActivity extends BaseActivity {
                     savedYield = new FieldYield();
                 }
                 savedYield.setYieldAmount(selectedYieldAmount);
-                //closeActivity(false);
+                database.fieldYieldDao().insert(savedYield);
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                 Crashlytics.logException(ex);

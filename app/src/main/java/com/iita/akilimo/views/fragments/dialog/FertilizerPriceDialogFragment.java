@@ -162,8 +162,8 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
         });
 
         radioGroup.setOnCheckedChangeListener((radioGroup, i) -> radioSelected(radioGroup));
-        if (ormProcessor != null) {
-            fertilizerPricesList = ormProcessor.getFertilizerPrices(countryCode);
+        if (database != null) {
+            fertilizerPricesList = database.fertilizerPriceDao().findAllByCountry(countryCode);
             addPriceRadioButtons(fertilizerPricesList, fertilizer);
         }
         return dialog;
