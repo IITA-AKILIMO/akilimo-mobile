@@ -2,6 +2,7 @@ package com.iita.akilimo.entities
 
 import android.os.Parcelable
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -9,9 +10,12 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Entity(tableName = "fertilizer")
-open class Fertilizer : Parcelable {
 
+@Entity(
+    tableName = "fertilizer",
+    indices = arrayOf(Index(value = ["fertilizerCountry"], unique = true))
+)
+open class Fertilizer : Parcelable {
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null
 

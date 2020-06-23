@@ -87,6 +87,8 @@ public class InvestmentAmountActivity extends BaseActivity {
         txtEditInvestmentAmountLayout = binding.editInvestmentAmountLayout;
         btnFinish = binding.btnFinish;
 
+        invAmount = database.investmentAmountDao().findOne();
+
 
         initToolbar();
         initComponent();
@@ -173,6 +175,7 @@ public class InvestmentAmountActivity extends BaseActivity {
                 invAmount.setMinInvestmentAmountUSD(minimumAmountUSD);
                 invAmount.setInvestmentAmountLocal(investmentAmountLocal);
                 invAmount.setMinInvestmentAmountLocal(minimumAmountLocal);
+                invAmount.setFieldSize(fieldSizeAcre);
 
                 database.investmentAmountDao().insert(invAmount);
                 closeActivity(false);

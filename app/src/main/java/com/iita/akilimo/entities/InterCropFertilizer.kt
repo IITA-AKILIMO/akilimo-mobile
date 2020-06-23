@@ -3,13 +3,17 @@ package com.iita.akilimo.entities
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 
 @Deprecated("Too much duplication move to common fertilizer")
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Entity(tableName = "intercrop_fertilizer")
+@Entity(
+    tableName = "intercrop_fertilizer",
+    indices = arrayOf(Index(value = ["fertilizerCountry"], unique = true))
+)
 open class InterCropFertilizer() : Parcelable {
 
     @JsonProperty("id")

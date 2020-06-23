@@ -21,11 +21,15 @@ interface FertilizerDao {
     @Query("SELECT * FROM fertilizer where countryCode=:countryCode")
     fun findAllByCountry(countryCode: String): List<Fertilizer>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg fieldYield: Fertilizer)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insert(fieldYield: Fertilizer)
+
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertAll(availableFertilizersList: List<Fertilizer>)
 
     @Update
-    fun update(vararg fieldYield: Fertilizer?)
+    fun update(fieldYield: Fertilizer?)
 
     @Delete
     fun delete(fieldYield: Fertilizer?)

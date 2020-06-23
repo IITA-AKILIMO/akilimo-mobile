@@ -186,9 +186,9 @@ public class CassavaMarketActivity extends BaseActivity {
             dataIsValid = false;
             if (radioButtonId > -1) {
                 RadioButton radioButton = findViewById(radioButtonId);
-                String factoryName = (String) radioButton.getTag();
-                if (factoryName != null) {
-                    StarchFactory selectedStarchFactory = database.starchFactoryDao().findStarchFactoryByName(factoryName);
+                String factoryNameCountry = (String) radioButton.getTag();
+                if (factoryNameCountry != null) {
+                    StarchFactory selectedStarchFactory = database.starchFactoryDao().findStarchFactoryByNameCountry(factoryNameCountry);
                     if (selectedStarchFactory != null) {
                         selectedFactory = selectedStarchFactory.getFactoryName();
                     }

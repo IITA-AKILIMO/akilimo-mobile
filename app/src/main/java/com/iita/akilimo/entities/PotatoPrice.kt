@@ -13,10 +13,7 @@ import java.util.*
 @Entity(tableName = "potato_price")
 open class PotatoPrice {
 
-    @JsonProperty("id")
-    @PrimaryKey(autoGenerate = true)
-    var id: Int = 0
-
+    @PrimaryKey(autoGenerate = false)
     @JsonProperty("priceIndex")
     var priceIndex: Long = 0
 

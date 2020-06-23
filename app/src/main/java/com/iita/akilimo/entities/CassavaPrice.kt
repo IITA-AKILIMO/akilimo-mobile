@@ -6,18 +6,15 @@ import androidx.room.PrimaryKey
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.util.*
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(tableName = "cassava_price")
 open class CassavaPrice {
 
-    @PrimaryKey(autoGenerate = true)
-    var id:Int?=null
-
+    @PrimaryKey(autoGenerate = false)
     @JsonProperty("priceIndex")
-    var priceIndex: Long = 0
+    var priceIndex: Long? = null
 
     @JsonProperty("priceId")
     var priceId: Long = 0

@@ -12,10 +12,10 @@ interface FertilizerPriceDao {
     @Query("SELECT * FROM fertilizer_price LIMIT 1")
     fun findOne(): FertilizerPrice?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(vararg fieldYield: FertilizerPrice)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAll(fertilizerPricesList: List<FertilizerPrice>)
 
     @Update

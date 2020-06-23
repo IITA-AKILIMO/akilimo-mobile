@@ -9,13 +9,11 @@ import com.fasterxml.jackson.annotation.JsonProperty
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(tableName = "fertilizer_price")
 open class FertilizerPrice {
-    @JsonProperty("id")
-    @PrimaryKey(autoGenerate = true)
-    var id: Int = 0
 
     @JsonProperty("recordId")
     var recordId = 0
 
+    @PrimaryKey(autoGenerate = false)
     @JsonProperty("priceId")
     var priceId = 0
 

@@ -59,6 +59,7 @@ public class RootYieldActivity extends BaseActivity {
         binding = ActivityRootYieldBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        context = this;
         database = AppDatabase.getDatabase(context);
         mathHelper = new MathHelper();
         MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
@@ -109,13 +110,15 @@ public class RootYieldActivity extends BaseActivity {
         mAdapter.setOnItemClickListener((view, fieldYield, position) -> {
             mAdapter.setActiveRowIndex(position);
             selectedYieldAmount = fieldYield.getYieldAmount();
+            String yieldLabel = fieldYield.getFieldYieldLabel();
             try {
-
                 if (savedYield == null) {
                     savedYield = new FieldYield();
                 }
                 savedYield.setYieldAmount(selectedYieldAmount);
+                savedYield.setFieldYieldLabel(yieldLabel);
                 database.fieldYieldDao().insert(savedYield);
+
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                 Crashlytics.logException(ex);

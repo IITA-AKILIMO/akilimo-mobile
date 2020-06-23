@@ -13,12 +13,9 @@ import java.util.*
 @Entity(tableName = "maize_price")
 open class MaizePrice {
 
-    @JsonProperty("id")
-    @PrimaryKey(autoGenerate = true)
-    var id: Int = 0
-
+    @PrimaryKey(autoGenerate = false)
     @JsonProperty("priceIndex")
-    var priceIndex: Long = 0
+    var priceIndex: Long?=null
 
     @JsonProperty("priceId")
     var priceId: Long = 0

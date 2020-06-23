@@ -230,6 +230,7 @@ public class FertilizersActivity extends BaseActivity {
                     });
                     //save fertilizers here
                     if (availableFertilizersList.size() > 0) {
+                        database.fertilizerDao().insertAll(availableFertilizersList);
                     }
                     initializeFertilizerPriceList();
                 } catch (Exception ex) {

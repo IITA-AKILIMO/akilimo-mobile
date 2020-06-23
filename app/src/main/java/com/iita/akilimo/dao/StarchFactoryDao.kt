@@ -12,12 +12,19 @@ interface StarchFactoryDao {
     @Query("SELECT * FROM starch_factory LIMIT 1")
     fun findOne(): StarchFactory?
 
+    @Query("SELECT * FROM starch_factory where countryCode=:countryCode and factorySelected=1")
+    fun findOneByCountry(countryCode: String): StarchFactory?
+
     @Query("SELECT * FROM starch_factory where factoryName=:factoryName LIMIT 1")
     fun findStarchFactoryByName(factoryName: String): StarchFactory?
 
+
+    @Query("SELECT * FROM starch_factory where factoryNameCountry=:factoryNameCountry LIMIT 1")
+    fun findStarchFactoryByNameCountry(factoryNameCountry: String): StarchFactory?
+
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg users: StarchFactory)
-
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(starchFactoriesList: List<StarchFactory>)
