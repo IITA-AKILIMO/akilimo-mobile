@@ -59,7 +59,7 @@ android {
 }
 
 static def computeVersionName() {
-    def versionMajor = 15
+    def versionMajor = 16
     def versionMinor = 0
     def buildNumber = 0
 

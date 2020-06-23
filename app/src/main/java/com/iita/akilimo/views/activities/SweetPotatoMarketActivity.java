@@ -268,7 +268,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
         arguments.putString(SweetPotatoPriceDialogFragment.UNIT_OF_SALE, unitOfSale);
         arguments.putParcelable(SweetPotatoPriceDialogFragment.ENUM_UNIT_OF_SALE, unitOfSaleEnum);
 
-        SweetPotatoPriceDialogFragment priceDialogFragment = new SweetPotatoPriceDialogFragment();
+        SweetPotatoPriceDialogFragment priceDialogFragment = new SweetPotatoPriceDialogFragment(context);
         priceDialogFragment.setArguments(arguments);
 
         priceDialogFragment.setOnDismissListener((selectedPrice, selectedAveragePrice) -> {

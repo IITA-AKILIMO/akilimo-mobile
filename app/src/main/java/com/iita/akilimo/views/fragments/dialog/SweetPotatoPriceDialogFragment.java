@@ -23,10 +23,9 @@ import androidx.annotation.Nullable;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
-import com.iita.akilimo.dao.AppDatabase;
+import com.iita.akilimo.entities.PotatoPrice;
 import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IPriceDialogDismissListener;
-import com.iita.akilimo.entities.PotatoPrice;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 
@@ -82,6 +81,10 @@ public class SweetPotatoPriceDialogFragment extends BaseDialogFragment {
 
     public SweetPotatoPriceDialogFragment() {
         // Required empty public constructor
+    }
+
+    public SweetPotatoPriceDialogFragment(Context context) {
+        this.context = context;
     }
 
     @NonNull

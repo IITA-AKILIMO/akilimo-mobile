@@ -2,6 +2,7 @@ package com.iita.akilimo.views.fragments.dialog;
 
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -76,10 +77,9 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
 
     private IPriceDialogDismissListener onDismissListener;
 
-    public CassavaPriceDialogFragment() {
-        // Required empty public constructor
+    public CassavaPriceDialogFragment(Context context) {
+        this.context = context;
     }
-
 
     @NonNull
     @Override

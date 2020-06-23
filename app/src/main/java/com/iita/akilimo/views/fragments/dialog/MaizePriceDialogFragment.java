@@ -2,6 +2,7 @@ package com.iita.akilimo.views.fragments.dialog;
 
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -75,8 +76,8 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
 
     private IPriceDialogDismissListener onDismissListener;
 
-    public MaizePriceDialogFragment() {
-        // Required empty public constructor
+    public MaizePriceDialogFragment(Context context) {
+        this.context = context;
     }
 
 

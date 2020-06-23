@@ -468,7 +468,7 @@ public class CassavaMarketActivity extends BaseActivity {
         arguments.putString(CassavaPriceDialogFragment.UNIT_OF_SALE, unitOfSale);
         arguments.putParcelable(CassavaPriceDialogFragment.ENUM_UNIT_OF_SALE, unitOfSaleEnum);
 
-        CassavaPriceDialogFragment priceDialogFragment = new CassavaPriceDialogFragment();
+        CassavaPriceDialogFragment priceDialogFragment = new CassavaPriceDialogFragment(context);
         priceDialogFragment.setArguments(arguments);
 
         priceDialogFragment.setOnDismissListener((selectedPrice, selectedAveragePrice) -> {
