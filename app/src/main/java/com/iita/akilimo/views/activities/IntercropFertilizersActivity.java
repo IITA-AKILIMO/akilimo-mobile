@@ -154,7 +154,6 @@ public class IntercropFertilizersActivity extends BaseActivity {
             //let us open the price dialog now
             List<InterCropFertilizer> cleanedFertilizers = selectedFertilizers;
 
-            InterCropFertilizer finalSelectedType = selectedType;
             selectedType.setCountryCode(countryCode);
 
             Bundle arguments = new Bundle();
@@ -193,7 +192,11 @@ public class IntercropFertilizersActivity extends BaseActivity {
         initializeFertilizers();
 
         btnRetry.setOnClickListener(view -> initializeFertilizers());
-        btnSave.setOnClickListener(view -> closeActivity(false));
+        btnSave.setOnClickListener(view -> {
+            if (isMinSelected()) {
+                closeActivity(false);
+            }
+        });
         btnCancel.setOnClickListener(view -> closeActivity(false));
     }
 
@@ -236,7 +239,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
                     });
 
                     if (availableFertilizersList.size() > 0) {
-
+                        database.interCropFertilizerDao().insertAll(availableFertilizersList);
                     }
 
                     initializeFertilizerPriceList();
@@ -294,7 +297,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
                     });
 
                     if (fertilizerPricesList.size() > 0) {
-
+                        database.fertilizerPriceDao().insertAll(fertilizerPricesList);
                     }
                     validate(false);
                     recyclerView.setVisibility(View.VISIBLE);

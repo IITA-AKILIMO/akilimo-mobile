@@ -1,13 +1,15 @@
 package com.iita.akilimo.entities
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Entity(tableName = "fertilizer_price")
+@Entity(tableName = "fertilizer_price",
+    indices = arrayOf(Index(value = ["fertilizerCountry"], unique = true)))
 open class FertilizerPrice {
 
     @JsonProperty("recordId")

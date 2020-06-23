@@ -49,7 +49,7 @@ import java.util.List;
  * status bar and navigation/system bar) with user interaction.
  */
 public class DstRecommendationActivity extends BaseActivity implements IRecommendationCallBack {
-    public static final String REC_TAG = "REC";
+    public static final String REC_TAG = DstRecommendationActivity.class.getSimpleName();
 
     Toolbar toolbar;
     RecyclerView recyclerView;
@@ -138,7 +138,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         if (profileInfo != null) {
             recommendationChannelDialog = new RecommendationChannelDialog(this, profileInfo);
             recommendationChannelDialog.show(getSupportFragmentManager(), RecommendationChannelDialog.TAG);
-        }else{
+        } else {
             //show a message
             errorLabel.setText(R.string.lbl_no_profile_info);
             lyt_progress.setVisibility(View.GONE);
@@ -206,7 +206,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
                     errorImage.setVisibility(View.VISIBLE);
                     errorLabel.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
-                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+                    Crashlytics.log(Log.ERROR, REC_TAG, ex.getMessage());
                     Crashlytics.logException(ex);
                 }
             }

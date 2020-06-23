@@ -35,6 +35,9 @@ interface InterCropFertilizerDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg interCropFertilizer: InterCropFertilizer)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(availableFertilizersList: List<InterCropFertilizer>)
+
     @Update
     fun update(vararg interCropFertilizer: InterCropFertilizer)
 

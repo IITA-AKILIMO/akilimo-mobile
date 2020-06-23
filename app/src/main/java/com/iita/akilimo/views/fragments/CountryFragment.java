@@ -84,7 +84,7 @@ public class CountryFragment extends BaseFragment {
                 countrySpinner.setSelection(selectedCountryIndex);
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred fetching info");
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
 
@@ -112,6 +112,7 @@ public class CountryFragment extends BaseFragment {
         final MySpinnerAdapter spinnerAdapter = new MySpinnerAdapter(context, countries, countryImages);
         countrySpinner.setAdapter(spinnerAdapter);
 
+        countrySpinner.setSelection(selectedCountryIndex);
         countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -149,6 +150,7 @@ public class CountryFragment extends BaseFragment {
     }
 
     private void updateSelectedCountry(int selectedCountryIndex) {
+        mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo == null) {
             mandatoryInfo = new MandatoryInfo();
         }
@@ -159,6 +161,5 @@ public class CountryFragment extends BaseFragment {
         mandatoryInfo.setCurrency(currency);
 
         database.mandatoryInfoDao().insert(mandatoryInfo);
-        mandatoryInfo = database.mandatoryInfoDao().findOne();
     }
 }
