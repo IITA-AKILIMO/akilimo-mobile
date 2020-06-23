@@ -78,7 +78,7 @@ static def computeBuildNumber() {
 
 def computeVersionCode() {
     long unixTimestamp = Instant.now().getEpochSecond()
-    def versionCode = System.env.RELEASE_VERSION ? unixTimestamp.intValue() : 1592812564
+    def versionCode = System.env.RELEASE_VERSION ? unixTimestamp.intValue() : 1592922755
 
     println("This build version number is " + versionCode)
     return versionCode

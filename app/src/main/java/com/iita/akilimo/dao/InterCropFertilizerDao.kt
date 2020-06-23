@@ -32,10 +32,10 @@ interface InterCropFertilizerDao {
     @Query("SELECT * FROM intercrop_fertilizer where countryCode=:countryCode and selected=1")
     fun findAllSelectedByCountry(countryCode: String): List<InterCropFertilizer>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(vararg interCropFertilizer: InterCropFertilizer)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAll(availableFertilizersList: List<InterCropFertilizer>)
 
     @Update

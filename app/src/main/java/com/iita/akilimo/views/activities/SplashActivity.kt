@@ -43,8 +43,8 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun launchActivity() {
-//        val intent = Intent(this@SplashActivity, LanguagePickerActivity::class.java)
-        val intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
+        val intent = Intent(this@SplashActivity, LanguagePickerActivity::class.java)
+//        val intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
         startActivity(intent)
         finish()
        Animatoo.animateFade(this)
