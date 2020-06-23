@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.entities.CassavaMarket;
-import com.iita.akilimo.entities.CurrentFieldYield;
+import com.iita.akilimo.entities.FieldYield;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.Fertilizer;
 import com.iita.akilimo.entities.InterCropFertilizer;
@@ -18,7 +18,7 @@ import com.iita.akilimo.entities.MaizeMarket;
 import com.iita.akilimo.entities.MaizePerformance;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.FieldOperationCost;
-import com.iita.akilimo.entities.PotatoMarketOutlet;
+import com.iita.akilimo.entities.PotatoMarket;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.entities.ScheduledDate;
 import com.iita.akilimo.entities.UseCases;
@@ -264,7 +264,7 @@ public class BuildComputeData {
 
     private ComputeRequest buildCurrentFieldYield(@NonNull ComputeRequest computeRequest) {
         //check for values we have to give recommendations for
-        CurrentFieldYield fieldYield = ormProcessor.getCurrentFieldYield();
+        FieldYield fieldYield = ormProcessor.getCurrentFieldYield();
         if (fieldYield != null) {
             currentFieldYield = (int) fieldYield.getYieldAmount();
         }
@@ -439,11 +439,11 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildSweetPotatoMarketOutlet(ComputeRequest computeRequest) {
-        PotatoMarketOutlet potatoMarketOutlet = ormProcessor.getPotatoMarketOutlet();
-        if (potatoMarketOutlet != null) {
-            sweetPotatoProdType = potatoMarketOutlet.getProduceType();
-            sweetPotatoUnitWeight = potatoMarketOutlet.getUnitWeight();
-            sweetPotatoUnitPrice = potatoMarketOutlet.getUnitPrice();
+        PotatoMarket potatoMarket = ormProcessor.getPotatoMarketOutlet();
+        if (potatoMarket != null) {
+            sweetPotatoProdType = potatoMarket.getProduceType();
+            sweetPotatoUnitWeight = potatoMarket.getUnitWeight();
+            sweetPotatoUnitPrice = potatoMarket.getUnitPrice();
         }
 
         computeRequest.setSweetPotatoProduceType(sweetPotatoProdType);

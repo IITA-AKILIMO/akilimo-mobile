@@ -3,7 +3,7 @@ package com.iita.akilimo.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "scheduled_dates")
+@Entity(tableName = "scheduled_date")
 open class ScheduledDate() {
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null

@@ -14,7 +14,7 @@ import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.AdapterGridTwoLine;
 import com.iita.akilimo.databinding.ActivityRootYieldBinding;
-import com.iita.akilimo.entities.CurrentFieldYield;
+import com.iita.akilimo.entities.FieldYield;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
@@ -39,7 +39,7 @@ public class RootYieldActivity extends BaseActivity {
 
     ActivityRootYieldBinding binding;
 
-    private CurrentFieldYield savedYield;
+    private FieldYield savedYield;
     private MathHelper mathHelper;
     private AdapterGridTwoLine mAdapter;
 
@@ -98,7 +98,7 @@ public class RootYieldActivity extends BaseActivity {
         recyclerView.addItemDecoration(new SpacingItemDecoration(2, Tools.dpToPx(this, 3), true));
         recyclerView.setHasFixedSize(true);
 
-        List<CurrentFieldYield> items = setYieldData(areaUnit);
+        List<FieldYield> items = setYieldData(areaUnit);
         //set data and list adapter
         mAdapter = new AdapterGridTwoLine(this);
         recyclerView.setAdapter(mAdapter);
@@ -111,7 +111,7 @@ public class RootYieldActivity extends BaseActivity {
             try {
 
                 if (savedYield == null) {
-                    savedYield = new CurrentFieldYield();
+                    savedYield = new FieldYield();
                 }
                 savedYield.setYieldAmount(selectedYieldAmount);
                 //closeActivity(false);
@@ -141,7 +141,7 @@ public class RootYieldActivity extends BaseActivity {
         closeActivity(backPressed);
     }
 
-    private List<CurrentFieldYield> setYieldData(@NonNull String areaUnit) {
+    private List<FieldYield> setYieldData(@NonNull String areaUnit) {
         String rd_3_tonnes;
         String rd_6_tonnes;
         String rd_9_tonnes;
@@ -173,7 +173,7 @@ public class RootYieldActivity extends BaseActivity {
 
         }
 
-        List<CurrentFieldYield> items = new ArrayList<>();
+        List<FieldYield> items = new ArrayList<>();
         items.add(yieldObject(imageIDs[0], rd_3_tonnes, 3.75));
         items.add(yieldObject(imageIDs[1], rd_6_tonnes, 11.25));
         items.add(yieldObject(imageIDs[2], rd_9_tonnes, 18.75));
@@ -183,9 +183,9 @@ public class RootYieldActivity extends BaseActivity {
         return items;
     }
 
-    private CurrentFieldYield yieldObject(Integer imageID, String yieldLabel, double fieldYieldAmount) {
+    private FieldYield yieldObject(Integer imageID, String yieldLabel, double fieldYieldAmount) {
         double currentFieldYieldAmount = mathHelper.computeFieldYield(fieldYieldAmount, currency);
-        CurrentFieldYield cfy = new CurrentFieldYield();
+        FieldYield cfy = new FieldYield();
         cfy.setYieldAmount(currentFieldYieldAmount);
         cfy.setImageId(imageID);
         cfy.setFieldYieldLabel(yieldLabel);

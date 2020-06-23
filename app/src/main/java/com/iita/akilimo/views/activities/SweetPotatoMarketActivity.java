@@ -22,7 +22,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.ActivitySweetPotatoMarketBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
-import com.iita.akilimo.entities.PotatoMarketOutlet;
+import com.iita.akilimo.entities.PotatoMarket;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.models.PotatoPrice;
@@ -55,7 +55,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
     ActivitySweetPotatoMarketBinding binding;
 
     private MathHelper mathHelper;
-    private PotatoMarketOutlet potatoMarketOutlet;
+    private PotatoMarket potatoMarket;
     private String enumPotatoProduceType;
     private List<PotatoPrice> potatoPriceList = null;
     private boolean selectionMade = false;
@@ -123,17 +123,17 @@ public class SweetPotatoMarketActivity extends BaseActivity {
     protected void initComponent() {
         enumPotatoProduceType = EnumPotatoProduceType.TUBERS.produce();
 
-        potatoMarketOutlet = ormProcessor.getPotatoMarketOutlet();
-        if (potatoMarketOutlet != null) {
-            produceTypeRadioIndex = potatoMarketOutlet.getProduceTypeRadioIndex();
-            potatoUnitOfSaleRadioIndex = potatoMarketOutlet.getPotatoUnitOfSaleRadioIndex();
-            potatoUnitPriceRadioIndex = potatoMarketOutlet.getPotatoUnitPriceRadioIndex();
+        potatoMarket = ormProcessor.getPotatoMarketOutlet();
+        if (potatoMarket != null) {
+            produceTypeRadioIndex = potatoMarket.getProduceTypeRadioIndex();
+            potatoUnitOfSaleRadioIndex = potatoMarket.getPotatoUnitOfSaleRadioIndex();
+            potatoUnitPriceRadioIndex = potatoMarket.getPotatoUnitPriceRadioIndex();
 
             rdgPotatoProduceType.check(produceTypeRadioIndex);
             rdgUnitOfSalePotato.check(potatoUnitOfSaleRadioIndex);
-            unitPrice = potatoMarketOutlet.getUnitPrice();
-            unitOfSale = potatoMarketOutlet.getUnitOfSale();
-            unitPrice = potatoMarketOutlet.getUnitPrice();
+            unitPrice = potatoMarket.getUnitPrice();
+            unitOfSale = potatoMarket.getUnitOfSale();
+            unitPrice = potatoMarket.getUnitPrice();
         }
         rdgUnitOfSalePotato.setOnCheckedChangeListener((group, radioIndex) -> {
             switch (radioIndex) {
@@ -180,17 +180,17 @@ public class SweetPotatoMarketActivity extends BaseActivity {
         }
 
         try {
-            if (potatoMarketOutlet == null) {
-                potatoMarketOutlet = new PotatoMarketOutlet();
+            if (potatoMarket == null) {
+                potatoMarket = new PotatoMarket();
             }
 
-            potatoMarketOutlet.setProduceType(enumPotatoProduceType);
-            potatoMarketOutlet.setUnitOfSale(unitOfSale);
-            potatoMarketOutlet.setUnitPrice(unitPrice);
+            potatoMarket.setProduceType(enumPotatoProduceType);
+            potatoMarket.setUnitOfSale(unitOfSale);
+            potatoMarket.setUnitPrice(unitPrice);
 
-            potatoMarketOutlet.setProduceTypeRadioIndex(produceTypeRadioIndex);
-            potatoMarketOutlet.setPotatoUnitPriceRadioIndex(potatoUnitPriceRadioIndex);
-            potatoMarketOutlet.setPotatoUnitOfSaleRadioIndex(potatoUnitOfSaleRadioIndex);
+            potatoMarket.setProduceTypeRadioIndex(produceTypeRadioIndex);
+            potatoMarket.setPotatoUnitPriceRadioIndex(potatoUnitPriceRadioIndex);
+            potatoMarket.setPotatoUnitOfSaleRadioIndex(potatoUnitOfSaleRadioIndex);
 
 
             closeActivity(backPressed);

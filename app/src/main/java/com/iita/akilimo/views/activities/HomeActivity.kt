@@ -22,6 +22,8 @@ import com.github.javiersantos.appupdater.enums.Display
 import com.google.android.gms.common.util.Strings
 import com.iita.akilimo.R
 import com.iita.akilimo.adapters.ViewPagerAdapter
+import com.iita.akilimo.dao.AppDatabase
+import com.iita.akilimo.dao.LocationInfoDao
 import com.iita.akilimo.databinding.ActivityHomeBinding
 import com.iita.akilimo.entities.LocationInfo
 import com.iita.akilimo.inherit.BaseActivity
@@ -82,6 +84,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
         activity = this
         context = this
+        database = AppDatabase.getDatabase(context)
 
         defaultPlaceName = getString(R.string.lbl_place_name)
         viewPager = binding.homeViewPager
@@ -276,12 +279,10 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                 }
             }
 
-            location = ormProcessor.locationInfo
+            location = database.locationInfoDao().findOne()
             if (location == null) {
                 location = LocationInfo()
             }
-
-            location = ormProcessor.locationInfo
             location?.latitude = currentLat
             location?.longitude = currentLong
             location?.altitude = currentAlt
@@ -293,6 +294,9 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                 !Strings.isEmptyOrWhitespace(address) -> address
                 else -> "NA"
             }
+
+            val locationInfoDao: LocationInfoDao = database.locationInfoDao()
+            locationInfoDao.insert(location!!)
             (currentFragment as? LocationFragment)?.refreshData()
         } catch (ex: Exception) {
             Toast.makeText(

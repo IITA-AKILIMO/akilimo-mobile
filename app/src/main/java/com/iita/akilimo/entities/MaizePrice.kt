@@ -47,9 +47,9 @@ open class MaizePrice {
     @JsonProperty("averagePrice")
     var averagePrice = 0.0
 
-    @JsonProperty("createdAt")
-    var createdAt: Date? = null
-
-    @JsonProperty("updatedAt")
-    var updatedAt: Date? = null
+//    @JsonProperty("createdAt")
+//    var createdAt: Date? = null
+//
+//    @JsonProperty("updatedAt")
+//    var updatedAt: Date? = null
 }

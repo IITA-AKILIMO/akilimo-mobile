@@ -74,7 +74,6 @@ public abstract class BaseFragment extends Fragment {
         sessionManager = new SessionManager(context);
         queue = Volley.newRequestQueue(context.getApplicationContext());
         appVersion = sessionManager.getAppVersion();
-        ormProcessor = new OrmProcessor();
         database = AppDatabase.getDatabase(context);
     }
 

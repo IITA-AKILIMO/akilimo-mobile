@@ -4,8 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 
-@Entity(tableName = "current_field_yield")
-open class CurrentFieldYield {
+@Entity(tableName = "field_yield")
+open class FieldYield {
 
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null

@@ -3,9 +3,9 @@ package com.iita.akilimo.dao
 import androidx.room.*
 import com.iita.akilimo.entities.InterCropFertilizer
 
-@Deprecated("To be removed when app is stable")
+//@Deprecated("To be removed when app is stable")
 @Dao
-interface IntecropFertilizerDao {
+interface InterCropFertilizerDao {
 
     @Query("SELECT * FROM intercrop_fertilizer")
     fun listAll(): List<InterCropFertilizer>
