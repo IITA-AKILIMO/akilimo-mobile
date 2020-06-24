@@ -1,19 +1,22 @@
-package com.iita.akilimo.models
+package com.iita.akilimo.entities
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.google.android.gms.common.util.Strings
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-open class StarchFactory : RealmObject() {
-    var id: Long = 0
+@Entity(tableName = "starch_factory")
+open class StarchFactory {
+    @JsonProperty("id")
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0
 
     @JsonProperty("factoryName")
     var factoryName: String? = null
 
-    @PrimaryKey
+
     @JsonProperty("factoryLabel")
     var factoryLabel: String? = null
 

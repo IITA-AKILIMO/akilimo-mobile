@@ -29,7 +29,7 @@ import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.utils.enums.EnumFieldArea;
 
-import io.realm.Realm;
+;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,7 +50,6 @@ public class FieldSizeFragment extends BaseFragment {
     RadioButton rd_two_half_acre;
 
     FragmentFieldSizeBinding binding;
-    Realm myRealm;
 
 
     private String myFieldSize = "";
@@ -90,11 +89,6 @@ public class FieldSizeFragment extends BaseFragment {
     }
 
     @Override
-    protected void realmInstance() {
-        myRealm = Realm.getDefaultInstance();
-    }
-
-    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -122,7 +116,7 @@ public class FieldSizeFragment extends BaseFragment {
     @Override
     public void refreshData() {
         try {
-            mandatoryInfo = realmProcessor.getMandatoryInfo();
+            mandatoryInfo = database.mandatoryInfoDao().findOne();
             if (mandatoryInfo != null) {
                 isExactArea = mandatoryInfo.getExactArea();
                 areaUnit = mandatoryInfo.getAreaUnit();
@@ -180,18 +174,19 @@ public class FieldSizeFragment extends BaseFragment {
     }
 
     private void saveFieldSize() {
-        mandatoryInfo = realmProcessor.getMandatoryInfo();
-
         fieldSizeRadioIndex = rdgFieldArea.getCheckedRadioButtonId();
         try {
-            myRealm.executeTransaction(realm -> {
-                if (mandatoryInfo == null) {
-                    mandatoryInfo = myRealm.createObject(MandatoryInfo.class);
-                }
-                mandatoryInfo.setFieldSizeRadioIndex(fieldSizeRadioIndex);
-                mandatoryInfo.setAreaSize(areaSize);
-            });
+            if (mandatoryInfo == null) {
+                mandatoryInfo = new MandatoryInfo();
+            }
+            mandatoryInfo.setFieldSizeRadioIndex(fieldSizeRadioIndex);
+            mandatoryInfo.setAreaSize(areaSize);
+
+            database.mandatoryInfoDao().insert(mandatoryInfo);
+            mandatoryInfo = database.mandatoryInfoDao().findOne();
+
         } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
     }
@@ -269,11 +264,5 @@ public class FieldSizeFragment extends BaseFragment {
 
         dialog.show();
         dialog.getWindow().setAttributes(lp);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        myRealm.close();
     }
 }

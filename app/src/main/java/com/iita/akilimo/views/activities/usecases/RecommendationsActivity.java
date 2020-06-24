@@ -12,12 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.AdapterListAnimation;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityRecommendationsActivityBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.Recommendations;
 import com.iita.akilimo.utils.ItemAnimation;
-import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.enums.EnumAdvice;
 import com.iita.akilimo.utils.enums.EnumCountry;
 
@@ -49,9 +49,10 @@ public class RecommendationsActivity extends BaseActivity {
         binding = ActivityRecommendationsActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         context = this;
+        database = AppDatabase.getDatabase(context);
 
-        realmProcessor = new RealmProcessor();
-        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
+
+        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
             currency = mandatoryInfo.getCurrency();

@@ -2,6 +2,7 @@ package com.iita.akilimo.views.fragments.dialog;
 
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -70,8 +71,8 @@ public class OperationCostsDialogFragment extends BaseDialogFragment {
     private ArrayList<OperationCost> operationCosts;
     private OperationCost operationCost;
 
-    public OperationCostsDialogFragment() {
-        // Required empty public constructor
+    public OperationCostsDialogFragment(Context context) {
+        this.context = context;
     }
 
 

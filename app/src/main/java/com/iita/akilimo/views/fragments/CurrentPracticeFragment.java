@@ -23,14 +23,13 @@ import androidx.fragment.app.FragmentTransaction;
 import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.databinding.FragmentCurrentPracticeBinding;
 import com.iita.akilimo.entities.CurrentPractice;
-import com.iita.akilimo.entities.PlantingHarvestDates;
+import com.iita.akilimo.entities.ScheduledDate;
 import com.iita.akilimo.inherit.BaseFragment;
-import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumOperationType;
 import com.iita.akilimo.views.fragments.dialog.DateDialogPickerFragment;
 import com.iita.akilimo.views.fragments.dialog.OperationTypeDialogFragment;
 
-import io.realm.Realm;
+;
 
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
@@ -46,7 +45,6 @@ public class CurrentPracticeFragment extends BaseFragment {
     AppCompatButton btnPickHarvestDate;
 
     FragmentCurrentPracticeBinding binding;
-    Realm myRealm;
 
 
     private String selectedPlantingDate;
@@ -56,7 +54,7 @@ public class CurrentPracticeFragment extends BaseFragment {
 
 
     private CurrentPractice currentPractice;
-    private PlantingHarvestDates plantingHarvestDates;
+    private ScheduledDate scheduledDate;
 
     private String ploughingMethod;
     private String ridgingMethod;
@@ -88,11 +86,6 @@ public class CurrentPracticeFragment extends BaseFragment {
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentCurrentPracticeBinding.inflate(inflater, container, false);
         return binding.getRoot();
-    }
-
-    @Override
-    protected void realmInstance() {
-        myRealm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -150,8 +143,8 @@ public class CurrentPracticeFragment extends BaseFragment {
     public void refreshData() {
         try {
 
-            currentPractice = realmProcessor.getCurrentPractice();
-            plantingHarvestDates = realmProcessor.getPlantingHarvestDates();
+            currentPractice = database.currentPracticeDao().findOne();
+            scheduledDate = database.scheduleDateDao().findOne();
             if (currentPractice != null) {
                 isDataRefreshing = true;
                 performPloughing = currentPractice.getPerformPloughing();
@@ -168,9 +161,9 @@ public class CurrentPracticeFragment extends BaseFragment {
 
             }
 
-            if (plantingHarvestDates != null) {
-                selectedPlantingDate = plantingHarvestDates.getPlantingDate();
-                selectedHarvestDate = plantingHarvestDates.getHarvestDate();
+            if (scheduledDate != null) {
+                selectedPlantingDate = scheduledDate.getPlantingDate();
+                selectedHarvestDate = scheduledDate.getHarvestDate();
                 lblSelectedPlantingDate.setText(selectedPlantingDate);
                 lblSelectedHarvestDate.setText(selectedHarvestDate);
             }
@@ -189,7 +182,7 @@ public class CurrentPracticeFragment extends BaseFragment {
         Bundle arguments = new Bundle();
         arguments.putString(OperationTypeDialogFragment.OPERATION_TYPE, operation);
 
-        OperationTypeDialogFragment operationTypeDialogFragment = new OperationTypeDialogFragment();
+        OperationTypeDialogFragment operationTypeDialogFragment = new OperationTypeDialogFragment(context);
         operationTypeDialogFragment.setArguments(arguments);
         FragmentTransaction fragmentTransaction;
 
@@ -256,32 +249,40 @@ public class CurrentPracticeFragment extends BaseFragment {
         }
 
         try {
-            myRealm.executeTransaction(realm -> {
-                if (currentPractice == null) {
-                    currentPractice = myRealm.createObject(CurrentPractice.class, Tools.generateUUID());
-                }
-                currentPractice.setRidgingMethod(ridgingMethod);
-                currentPractice.setPloughingMethod(ploughingMethod);
-                currentPractice.setPerformRidging(performRidging);
-                currentPractice.setPerformPloughing(performPloughing);
-                currentPractice.setPerformHarrowing(performHarrowing);
+            if (currentPractice == null) {
+                currentPractice = new CurrentPractice();
+            }
+            currentPractice.setRidgingMethod(ridgingMethod);
+            currentPractice.setPloughingMethod(ploughingMethod);
+            currentPractice.setPerformRidging(performRidging);
+            currentPractice.setPerformPloughing(performPloughing);
+            currentPractice.setPerformHarrowing(performHarrowing);
 
-                if (plantingHarvestDates == null) {
-                    plantingHarvestDates = myRealm.createObject(PlantingHarvestDates.class, Tools.generateUUID());
-                }
+            if (currentPractice.getId() != null) {
+                database.currentPracticeDao().update(currentPractice);
+            } else {
+                database.currentPracticeDao().insert(currentPractice);
+            }
 
-                plantingHarvestDates.setPlantingDate(selectedPlantingDate);
-                plantingHarvestDates.setHarvestDate(selectedHarvestDate);
-            });
+            if (scheduledDate == null) {
+                scheduledDate = new ScheduledDate();
+            }
+
+            scheduledDate.setPlantingDate(selectedPlantingDate);
+            scheduledDate.setHarvestDate(selectedHarvestDate);
+
+            if (scheduledDate.getId() != null) {
+                database.scheduleDateDao().update(scheduledDate);
+            } else {
+                database.scheduleDateDao().insert(scheduledDate);
+            }
+
+            //requesry the data
+            currentPractice = database.currentPracticeDao().findOne();
+            scheduledDate = database.scheduleDateDao().findOne();
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        myRealm.close();
     }
 }

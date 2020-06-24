@@ -1,15 +1,19 @@
-package com.iita.akilimo.models
+package com.iita.akilimo.entities
 
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
 import java.util.*
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-open class PotatoPrice : RealmObject() {
+@Entity(tableName = "potato_price")
+open class PotatoPrice {
+
+    @PrimaryKey(autoGenerate = false)
     @JsonProperty("priceIndex")
     var priceIndex: Long = 0
 
@@ -19,7 +23,6 @@ open class PotatoPrice : RealmObject() {
     @JsonProperty("country")
     var country: String? = null
 
-    @PrimaryKey
     @JsonProperty("countryPrice")
     var countryPrice: String? = null
 
@@ -41,9 +44,9 @@ open class PotatoPrice : RealmObject() {
     @JsonProperty("averagePrice")
     var averagePrice = 0.0
 
-    @JsonProperty("createdAt")
-    var createdAt: Date? = null
-
-    @JsonProperty("updatedAt")
-    var updatedAt: Date? = null
+//    @JsonProperty("createdAt")
+//    var createdAt: Date? = null
+//
+//    @JsonProperty("updatedAt")
+//    var updatedAt: Date? = null
 }

@@ -16,22 +16,21 @@ import androidx.fragment.app.FragmentTransaction;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityTractorAccessBinding;
 import com.iita.akilimo.entities.CurrentPractice;
+import com.iita.akilimo.entities.FieldOperationCost;
 import com.iita.akilimo.entities.MandatoryInfo;
-import com.iita.akilimo.entities.OperationCosts;
 import com.iita.akilimo.inherit.CostBaseActivity;
 import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.RealmProcessor;
-import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumOperation;
 import com.iita.akilimo.utils.enums.EnumOperationType;
 import com.iita.akilimo.views.fragments.dialog.OperationCostsDialogFragment;
 
 import java.util.ArrayList;
 
-import io.realm.Realm;
+;
 
 public class TractorAccessActivity extends CostBaseActivity {
 
@@ -47,9 +46,8 @@ public class TractorAccessActivity extends CostBaseActivity {
     AppCompatButton btnCancel;
 
     ActivityTractorAccessBinding binding;
-    Realm myRealm;
     MathHelper mathHelper;
-    OperationCosts operationCosts;
+    FieldOperationCost fieldOperationCost;
     CurrentPractice currentPractice;
 
 
@@ -78,13 +76,12 @@ public class TractorAccessActivity extends CostBaseActivity {
         setContentView(binding.getRoot());
 
         context = this;
-        realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
+        database = AppDatabase.getDatabase(context);
 
         queue = Volley.newRequestQueue(this);
         mathHelper = new MathHelper();
 
-        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
             currency = mandatoryInfo.getCurrency();
             areaUnit = mandatoryInfo.getAreaUnit();
@@ -103,11 +100,11 @@ public class TractorAccessActivity extends CostBaseActivity {
 
         initToolbar();
         initComponent();
-        operationCosts = realmProcessor.getOperationCosts();
-        if (operationCosts != null) {
-            tractorPloughCost = operationCosts.getTractorPloughCost();
-            tractorRidgeCost = operationCosts.getTractorRidgeCost();
-
+        fieldOperationCost = database.fieldOperationCostDao().findOne();
+        currentPractice = database.currentPracticeDao().findOne();
+        if (fieldOperationCost != null) {
+            tractorPloughCost = fieldOperationCost.getTractorPloughCost();
+            tractorRidgeCost = fieldOperationCost.getTractorRidgeCost();
         }
     }
 
@@ -167,33 +164,28 @@ public class TractorAccessActivity extends CostBaseActivity {
     }
 
     private void setData() {
-        operationCosts = realmProcessor.getOperationCosts();
-        currentPractice = realmProcessor.getCurrentPractice();
-
         try {
-            myRealm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    if (operationCosts == null) {
-                        operationCosts = realm.createObject(OperationCosts.class, Tools.generateUUID());
-                    }
-                    if (currentPractice == null) {
-                        currentPractice = realm.createObject(CurrentPractice.class, Tools.generateUUID());
-                    }
+            if (fieldOperationCost == null) {
+                fieldOperationCost = new FieldOperationCost();
+            }
+            if (currentPractice == null) {
+                currentPractice = new CurrentPractice();
+            }
 
-                    dataValid = true;
-                    currentPractice.setTractorAvailable(hasTractor);
-                    currentPractice.setTractorPlough(hasPlough);
-                    currentPractice.setTractorHarrow(hasHarrow);
-                    currentPractice.setTractorRidger(hasRidger);
+            dataValid = true;
+            currentPractice.setTractorAvailable(hasTractor);
+            currentPractice.setTractorPlough(hasPlough);
+            currentPractice.setTractorHarrow(hasHarrow);
+            currentPractice.setTractorRidger(hasRidger);
 
-                    operationCosts.setTractorPloughCost(tractorPloughCost);
-                    operationCosts.setTractorRidgeCost(tractorRidgeCost);
+            database.currentPracticeDao().insert(currentPractice);
 
-                    operationCosts.setExactTractorPloughPrice(exactPloughCost);
-                    operationCosts.setExactTractorRidgePrice(exactRidgeCost);
-                }
-            });
+            fieldOperationCost.setTractorPloughCost(tractorPloughCost);
+            fieldOperationCost.setTractorRidgeCost(tractorRidgeCost);
+            fieldOperationCost.setExactTractorPloughPrice(exactPloughCost);
+            fieldOperationCost.setExactTractorRidgePrice(exactRidgeCost);
+
+            database.fieldOperationCostDao().insert(fieldOperationCost);
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
@@ -215,7 +207,7 @@ public class TractorAccessActivity extends CostBaseActivity {
         arguments.putString(OperationCostsDialogFragment.COUNTRY_CODE, countrycode);
         arguments.putString(OperationCostsDialogFragment.DIALOG_TITLE, dialogTitle);
 
-        OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment();
+        OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment(context);
         dialogFragment.setArguments(arguments);
 
         dialogFragment.setOnDismissListener((operationCost, enumOperation, selectedCost, cancelled, isExactCost) -> {
@@ -248,11 +240,5 @@ public class TractorAccessActivity extends CostBaseActivity {
             dialogOpen = true;
             dialogFragment.show(getSupportFragmentManager(), OperationCostsDialogFragment.ARG_ITEM_ID);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

@@ -2,6 +2,7 @@ package com.iita.akilimo.views.fragments.dialog;
 
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -22,9 +23,9 @@ import androidx.annotation.Nullable;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
+import com.iita.akilimo.entities.CassavaPrice;
 import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IPriceDialogDismissListener;
-import com.iita.akilimo.models.CassavaPrice;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 
 import java.util.List;
@@ -76,10 +77,9 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
 
     private IPriceDialogDismissListener onDismissListener;
 
-    public CassavaPriceDialogFragment() {
-        // Required empty public constructor
+    public CassavaPriceDialogFragment(Context context) {
+        this.context = context;
     }
-
 
     @NonNull
     @Override
@@ -148,8 +148,8 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
         });
 
         radioGroup.setOnCheckedChangeListener((radioGroup, i) -> radioSelected(radioGroup));
-        if (realmProcessor != null) {
-            cassavaPriceList = realmProcessor.getCassavaPrices(countryCode);
+        if (database != null) {
+            cassavaPriceList = database.cassavaPriceDao().findAllByCountry(countryCode);
             addPriceRadioButtons(cassavaPriceList, averagePrice);
         }
         return dialog;

@@ -1,21 +1,21 @@
 package com.iita.akilimo.entities
 
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
-import io.realm.annotations.Required
-
-open class ProfileInfo : RealmObject() {
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
 
 
-    @PrimaryKey
-    var profileId: String? = null
-    var deviceID: String? = null
+@Entity(tableName = "profile_info", indices = [Index(value = ["userName"], unique = true)])
+open class ProfileInfo {
+
+    @PrimaryKey(autoGenerate = true)
+    var profileId: Int = 0
+    var deviceToken: String? = null
+
     var userName: String? = null
 
-    @Required
     var firstName: String? = null
 
-    @Required
     var lastName: String? = null
     var email: String? = null
     var mobileCode: String? = null
@@ -23,7 +23,6 @@ open class ProfileInfo : RealmObject() {
     var farmName: String? = null
     var fieldDescription: String? = null
 
-    @Required
     var gender: String? = null
 
     var selectedGenderIndex: Int = 0

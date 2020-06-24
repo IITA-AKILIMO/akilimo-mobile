@@ -27,13 +27,12 @@ import com.iita.akilimo.databinding.FragmentBioDataBinding;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.interfaces.IFragmentCallBack;
-import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.ValidationHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.Realm;
+;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,7 +57,6 @@ public class BioDataFragment extends BaseFragment {
 
     FragmentBioDataBinding binding;
 
-    Realm myRealm;
 
     private boolean dataIsValid;
     private String firstName;
@@ -93,10 +91,6 @@ public class BioDataFragment extends BaseFragment {
         return binding.getRoot();
     }
 
-    @Override
-    protected void realmInstance() {
-        myRealm = Realm.getDefaultInstance();
-    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -153,7 +147,8 @@ public class BioDataFragment extends BaseFragment {
     @Override
     public void refreshData() {
         try {
-            profileInfo = realmProcessor.getProfileInfo();
+
+            profileInfo = database.profileInfoDao().findOne();
             if (profileInfo != null) {
                 firstName = profileInfo.getFirstName();
                 lastName = profileInfo.getLastName();
@@ -191,6 +186,7 @@ public class BioDataFragment extends BaseFragment {
         farmName = lytFarmName.getEditText().getText().toString();
         email = lytEmail.getEditText().getText().toString();
         fullMobileNumber = ccp.getFullNumber();
+        mobileCode = ccp.getSelectedCountryCodeWithPlus();
 
         if (Strings.isEmptyOrWhitespace(firstName)) {
             dataIsValid = false;
@@ -216,20 +212,29 @@ public class BioDataFragment extends BaseFragment {
 
         if (dataIsValid) {
             try {
-                myRealm.executeTransaction(realm -> {
-                    if (profileInfo == null) {
-                        profileInfo = myRealm.createObject(ProfileInfo.class, Tools.generateUUID());
-                    }
-                    profileInfo.setFirstName(firstName);
-                    profileInfo.setLastName(lastName);
-                    profileInfo.setGender(gender);
-                    profileInfo.setEmail(email);
-                    profileInfo.setFarmName(farmName);
-                    profileInfo.setMobileCode(mobileCode);
-                    profileInfo.setFullMobileNumber(fullMobileNumber);
-                    profileInfo.setSelectedGenderIndex(selectedGenderIndex);
-                });
-                //load the next fragment
+                if (profileInfo == null) {
+                    profileInfo = new ProfileInfo();
+                }
+                profileInfo.setFirstName(firstName);
+                profileInfo.setLastName(lastName);
+                profileInfo.setGender(gender);
+                profileInfo.setEmail(email);
+                profileInfo.setFarmName(farmName);
+                profileInfo.setFieldDescription(farmName);
+                profileInfo.setMobileCode(mobileCode);
+                profileInfo.setFullMobileNumber(fullMobileNumber);
+                profileInfo.setSelectedGenderIndex(selectedGenderIndex);
+
+                profileInfo.setUserName(profileInfo.getNames());
+
+                int pk = profileInfo.getProfileId();
+                if (pk > 0) {
+                    database.profileInfoDao().update(profileInfo);
+                } else {
+                    database.profileInfoDao().insert(profileInfo);
+                }
+
+
                 nextFragment();
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
@@ -247,11 +252,5 @@ public class BioDataFragment extends BaseFragment {
         if (fragmentCallBack != null) {
             fragmentCallBack.onDataSaved();
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

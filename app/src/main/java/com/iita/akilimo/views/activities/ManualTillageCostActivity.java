@@ -12,21 +12,20 @@ import androidx.fragment.app.FragmentTransaction;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityManualTillageCostBinding;
+import com.iita.akilimo.entities.FieldOperationCost;
 import com.iita.akilimo.entities.MandatoryInfo;
-import com.iita.akilimo.entities.OperationCosts;
 import com.iita.akilimo.inherit.CostBaseActivity;
 import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.RealmProcessor;
-import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumOperation;
 import com.iita.akilimo.utils.enums.EnumOperationType;
 import com.iita.akilimo.views.fragments.dialog.OperationCostsDialogFragment;
 
 import java.util.ArrayList;
 
-import io.realm.Realm;
+;
 
 
 public class ManualTillageCostActivity extends CostBaseActivity {
@@ -43,9 +42,8 @@ public class ManualTillageCostActivity extends CostBaseActivity {
     AppCompatButton btnCancel;
 
     ActivityManualTillageCostBinding binding;
-    Realm myRealm;
     MathHelper mathHelper;
-    OperationCosts operationCosts;
+    FieldOperationCost fieldOperationCost;
 
     private double manualPloughCost = 0;
     private double manualRidgeCost = 0;
@@ -59,8 +57,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         binding = ActivityManualTillageCostBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         context = this;
-        realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
+        database = AppDatabase.getDatabase(context);
         queue = Volley.newRequestQueue(this);
         mathHelper = new MathHelper();
 
@@ -74,7 +71,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         btnFinish = binding.twoButtons.btnFinish;
         btnCancel = binding.twoButtons.btnCancel;
 
-        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
             currency = mandatoryInfo.getCurrency();
             areaUnit = mandatoryInfo.getAreaUnit();
@@ -85,10 +82,10 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         initToolbar();
         initComponent();
 
-        operationCosts = realmProcessor.getOperationCosts();
-        if (operationCosts != null) {
-            manualPloughCost = operationCosts.getManualPloughCost();
-            manualRidgeCost = operationCosts.getManualRidgeCost();
+        fieldOperationCost = database.fieldOperationCostDao().findOne();
+        if (fieldOperationCost != null) {
+            manualPloughCost = fieldOperationCost.getManualPloughCost();
+            manualRidgeCost = fieldOperationCost.getManualRidgeCost();
 
             manualPloughCostText.setText(getString(R.string.lbl_ploughing_cost_text, fieldSize, areaUnit, manualPloughCost, currency));
             manualRidgingCostText.setText(getString(R.string.lbl_ridging_cost_text, fieldSize, areaUnit, manualRidgeCost, currency));
@@ -140,9 +137,8 @@ public class ManualTillageCostActivity extends CostBaseActivity {
     }
 
     private void setData() {
-        operationCosts = realmProcessor.getOperationCosts();
-        if (operationCosts == null) {
-            operationCosts = new OperationCosts();
+        if (fieldOperationCost == null) {
+            fieldOperationCost = new FieldOperationCost();
         }
 
         dataValid = false;
@@ -158,16 +154,11 @@ public class ManualTillageCostActivity extends CostBaseActivity {
 
         dataValid = true;
         try {
-            myRealm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    if (operationCosts == null) {
-                        operationCosts = realm.createObject(OperationCosts.class, Tools.generateUUID());
-                    }
-                    operationCosts.setManualPloughCost(manualPloughCost);
-                    operationCosts.setManualRidgeCost(manualRidgeCost);
-                }
-            });
+
+            fieldOperationCost.setManualPloughCost(manualPloughCost);
+            fieldOperationCost.setManualRidgeCost(manualRidgeCost);
+            database.fieldOperationCostDao().insert(fieldOperationCost);
+
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
@@ -187,7 +178,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         arguments.putString(OperationCostsDialogFragment.CURRENCY_CODE, currency);
         arguments.putString(OperationCostsDialogFragment.COUNTRY_CODE, countryCode);
 
-        OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment();
+        OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment(context);
         dialogFragment.setArguments(arguments);
 
         dialogFragment.setOnDismissListener((operationCost, enumOperation, selectedCost, cancelled, isExactCost) -> {
@@ -220,11 +211,5 @@ public class ManualTillageCostActivity extends CostBaseActivity {
             dialogOpen = true;
             dialogFragment.show(getSupportFragmentManager(), OperationCostsDialogFragment.ARG_ITEM_ID);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

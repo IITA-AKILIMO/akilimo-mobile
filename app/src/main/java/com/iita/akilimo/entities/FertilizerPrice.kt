@@ -1,18 +1,21 @@
-package com.iita.akilimo.models
+package com.iita.akilimo.entities
 
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
+
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-open class FertilizerPrices : RealmObject() {
-    @JsonProperty("id")
-    var id: Long = 0
+@Entity(tableName = "fertilizer_price",
+    indices = arrayOf(Index(value = ["fertilizerCountry"], unique = true)))
+open class FertilizerPrice {
 
     @JsonProperty("recordId")
     var recordId = 0
 
+    @PrimaryKey(autoGenerate = false)
     @JsonProperty("priceId")
     var priceId = 0
 
@@ -34,7 +37,6 @@ open class FertilizerPrices : RealmObject() {
     @JsonProperty("country")
     var country: String? = null
 
-    @PrimaryKey
     @JsonProperty("fertilizerCountry")
     var fertilizerCountry: String? = null
 

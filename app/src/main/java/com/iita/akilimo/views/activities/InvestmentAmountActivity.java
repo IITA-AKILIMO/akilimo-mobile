@@ -18,15 +18,14 @@ import com.google.android.gms.common.util.Strings;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityInvestmentAmountBinding;
 import com.iita.akilimo.entities.InvestmentAmount;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.RealmProcessor;
-import com.iita.akilimo.utils.Tools;
 
-import io.realm.Realm;
+;
 
 
 public class InvestmentAmountActivity extends BaseActivity {
@@ -46,7 +45,6 @@ public class InvestmentAmountActivity extends BaseActivity {
     TextInputLayout txtEditInvestmentAmountLayout;
     MaterialButton btnFinish;
     ActivityInvestmentAmountBinding binding;
-    Realm myRealm;
 
 
     String investmentAmountError;
@@ -74,9 +72,8 @@ public class InvestmentAmountActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         context = this;
-        realmProcessor = new RealmProcessor();
+        database = AppDatabase.getDatabase(context);
         mathHelper = new MathHelper();
-        myRealm = Realm.getDefaultInstance();
 
         toolbar = binding.toolbar;
         radioGroup = binding.radioInvestmentGroup;
@@ -89,6 +86,8 @@ public class InvestmentAmountActivity extends BaseActivity {
         txtEditInvestmentAmount = binding.editInvestmentAmount;
         txtEditInvestmentAmountLayout = binding.editInvestmentAmountLayout;
         btnFinish = binding.btnFinish;
+
+        invAmount = database.investmentAmountDao().findOne();
 
 
         initToolbar();
@@ -166,21 +165,22 @@ public class InvestmentAmountActivity extends BaseActivity {
                 return;
             }
 
-            invAmount = realmProcessor.getInvestmentAmount();
+            invAmount = database.investmentAmountDao().findOne();
 
             try {
-                myRealm.executeTransaction(realm -> {
-                    if (invAmount == null) {
-                        invAmount = realm.createObject(InvestmentAmount.class, Tools.generateUUID());
-                    }
-                    invAmount.setInvestmentAmountUSD(investmentAmountUSD);
-                    invAmount.setMinInvestmentAmountUSD(minimumAmountUSD);
-                    invAmount.setInvestmentAmountLocal(investmentAmountLocal);
-                    invAmount.setMinInvestmentAmountLocal(minimumAmountLocal);
-                });
+                if (invAmount == null) {
+                    invAmount = new InvestmentAmount();
+                }
+                invAmount.setInvestmentAmountUSD(investmentAmountUSD);
+                invAmount.setMinInvestmentAmountUSD(minimumAmountUSD);
+                invAmount.setInvestmentAmountLocal(investmentAmountLocal);
+                invAmount.setMinInvestmentAmountLocal(minimumAmountLocal);
+                invAmount.setFieldSize(fieldSizeAcre);
+
+                database.investmentAmountDao().insert(invAmount);
                 closeActivity(false);
             } catch (Exception ex) {
-                Crashlytics.log(Log.ERROR,LOG_TAG,ex.getMessage());
+                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                 Crashlytics.logException(ex);
             }
         });
@@ -195,7 +195,7 @@ public class InvestmentAmountActivity extends BaseActivity {
 
     private void updateLabels() {
 
-        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
             fieldSize = mandatoryInfo.getAreaSize();
             fieldSizeAcre = mandatoryInfo.getAreaSize();
@@ -251,11 +251,5 @@ public class InvestmentAmountActivity extends BaseActivity {
         hasErrors = investmentAmountLocal < minimumAmountLocal;
         return investmentAmountError = getString(R.string.lbl_investment_validation_msg, minimumAmountLocal, currency);
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

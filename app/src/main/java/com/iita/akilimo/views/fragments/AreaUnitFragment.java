@@ -20,7 +20,7 @@ import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.utils.enums.EnumAreaUnits;
 
-import io.realm.Realm;
+;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,7 +33,6 @@ public class AreaUnitFragment extends BaseFragment {
     RadioGroup rdgAreaUnit;
 
     FragmentAreaUnitBinding binding;
-    private Realm myRealm;
 
     private String selectedAreaUnit;
     private MandatoryInfo mandatoryInfo;
@@ -57,19 +56,13 @@ public class AreaUnitFragment extends BaseFragment {
     @Override
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentAreaUnitBinding.inflate(inflater, container, false);
-
         return binding.getRoot();
-    }
-
-    @Override
-    protected void realmInstance() {
-        myRealm = Realm.getDefaultInstance();
     }
 
     @Override
     public void refreshData() {
         try {
-            mandatoryInfo = realmProcessor.getMandatoryInfo();
+            mandatoryInfo = database.mandatoryInfoDao().findOne();
             if (mandatoryInfo != null) {
                 areaUnit = mandatoryInfo.getAreaUnit();
                 areaUnitRadioIndex = mandatoryInfo.getAreaUnitRadioIndex();
@@ -100,23 +93,19 @@ public class AreaUnitFragment extends BaseFragment {
 
             areaUnitRadioIndex = rdgAreaUnit.getCheckedRadioButtonId();
             try {
-                myRealm.executeTransaction(realm -> {
-                    if (mandatoryInfo == null) {
-                        mandatoryInfo = myRealm.createObject(MandatoryInfo.class);
-                    }
-                    mandatoryInfo.setAreaUnitRadioIndex(areaUnitRadioIndex);
-                    mandatoryInfo.setAreaUnit(areaUnit);
-                });
+                if (mandatoryInfo == null) {
+                    mandatoryInfo = new MandatoryInfo();
+                }
+                mandatoryInfo.setAreaUnitRadioIndex(areaUnitRadioIndex);
+                mandatoryInfo.setAreaUnit(areaUnit);
+
+                database.mandatoryInfoDao().insert(mandatoryInfo);
+                mandatoryInfo = database.mandatoryInfoDao().findOne();
+
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                 Crashlytics.logException(ex);
             }
         });
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        myRealm.close();
     }
 }

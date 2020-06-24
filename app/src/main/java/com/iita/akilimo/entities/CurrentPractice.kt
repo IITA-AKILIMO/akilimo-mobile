@@ -1,12 +1,13 @@
 package com.iita.akilimo.entities
 
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-open class CurrentPractice : RealmObject() {
+@Entity(tableName = "current_practice")
+open class CurrentPractice {
 
-    @PrimaryKey
-    var id: String? = null
+    @PrimaryKey(autoGenerate = true)
+    var id: Long? = null
     var weedRadioIndex = 0
     var weedControlTechnique: String? = null
     var ploughOperations: String? = null

@@ -23,14 +23,12 @@ import com.iita.akilimo.databinding.FragmentCountryBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
-import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumCountry;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-import io.realm.Realm;
+;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,7 +40,7 @@ public class CountryFragment extends BaseFragment {
     AppCompatTextView title;
     Spinner countrySpinner;
     FragmentCountryBinding binding;
-    Realm myRealm;
+
 
     private ProfileInfo profileInfo;
     private MandatoryInfo mandatoryInfo;
@@ -73,15 +71,10 @@ public class CountryFragment extends BaseFragment {
     }
 
     @Override
-    protected void realmInstance() {
-        myRealm = Realm.getDefaultInstance();
-    }
-
-    @Override
     public void refreshData() {
         try {
-            profileInfo = realmProcessor.getProfileInfo();
-            mandatoryInfo = realmProcessor.getMandatoryInfo();
+            profileInfo = database.profileInfoDao().findOne();
+            mandatoryInfo = database.mandatoryInfoDao().findOne();
             if (profileInfo != null) {
                 name = profileInfo.getFirstName();
             }
@@ -91,7 +84,7 @@ public class CountryFragment extends BaseFragment {
                 countrySpinner.setSelection(selectedCountryIndex);
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred fetching info");
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
 
@@ -119,6 +112,7 @@ public class CountryFragment extends BaseFragment {
         final MySpinnerAdapter spinnerAdapter = new MySpinnerAdapter(context, countries, countryImages);
         countrySpinner.setAdapter(spinnerAdapter);
 
+        countrySpinner.setSelection(selectedCountryIndex);
         countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -156,21 +150,16 @@ public class CountryFragment extends BaseFragment {
     }
 
     private void updateSelectedCountry(int selectedCountryIndex) {
-        myRealm.executeTransaction(realm -> {
-            if (mandatoryInfo == null) {
-                mandatoryInfo = myRealm.createObject(MandatoryInfo.class, Tools.generateUUID());
-            }
+        mandatoryInfo = database.mandatoryInfoDao().findOne();
+        if (mandatoryInfo == null) {
+            mandatoryInfo = new MandatoryInfo();
+        }
 
-            mandatoryInfo.setSelectedCountryIndex(selectedCountryIndex);
-            mandatoryInfo.setCountryCode(countryCode);
-            mandatoryInfo.setCountryName(countryName);
-            mandatoryInfo.setCurrency(currency);
-        });
-    }
+        mandatoryInfo.setSelectedCountryIndex(selectedCountryIndex);
+        mandatoryInfo.setCountryCode(countryCode);
+        mandatoryInfo.setCountryName(countryName);
+        mandatoryInfo.setCurrency(currency);
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        myRealm.close();
+        database.mandatoryInfoDao().insert(mandatoryInfo);
     }
 }

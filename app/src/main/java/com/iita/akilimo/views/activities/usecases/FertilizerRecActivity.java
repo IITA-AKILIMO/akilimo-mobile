@@ -14,13 +14,12 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityFertilizerRecBinding;
-import com.iita.akilimo.entities.RecAdvice;
+import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
-import com.iita.akilimo.utils.RealmProcessor;
-import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.enums.EnumUseCase;
 import com.iita.akilimo.views.activities.CassavaMarketActivity;
@@ -32,7 +31,7 @@ import com.iita.akilimo.views.activities.RootYieldActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.Realm;
+;
 
 public class FertilizerRecActivity extends BaseActivity {
 
@@ -41,7 +40,7 @@ public class FertilizerRecActivity extends BaseActivity {
     AppCompatButton btnGetRec;
 
     ActivityFertilizerRecBinding binding;
-    Realm myRealm;
+
 
     String plantingString;
     String fertilizerString;
@@ -52,7 +51,7 @@ public class FertilizerRecActivity extends BaseActivity {
     private Activity activity;
     private RecOptionsAdapter mAdapter;
     private List<RecommendationOptions> items = new ArrayList<>();
-    private RecAdvice recAdvice;
+    private UseCases useCases;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +65,7 @@ public class FertilizerRecActivity extends BaseActivity {
         btnGetRec = binding.singleButton.btnGetRecommendation;
 
 
-        realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
+        database = AppDatabase.getDatabase(context);
         initToolbar();
         initComponent();
     }
@@ -97,21 +95,22 @@ public class FertilizerRecActivity extends BaseActivity {
 
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
-            recAdvice = realmProcessor.getRecAdvice();
+            useCases = database.useCaseDao().findOne();
             try {
-                myRealm.executeTransaction(realm -> {
-                    if (recAdvice == null) {
-                        recAdvice = realm.createObject(RecAdvice.class, Tools.generateUUID());
-                    }
-                    recAdvice.setFR(true);
-                    recAdvice.setCIM(false);
-                    recAdvice.setCIS(false);
-                    recAdvice.setSPH(false);
-                    recAdvice.setSPP(false);
-                    recAdvice.setBPP(false);
-                    recAdvice.setUseCase(EnumUseCase.FR.name());
-                    processRecommendations(activity);
-                });
+                if (useCases == null) {
+                    useCases = new UseCases();
+                }
+                useCases.setFR(true);
+                useCases.setCIM(false);
+                useCases.setCIS(false);
+                useCases.setSPH(false);
+                useCases.setSPP(false);
+                useCases.setBPP(false);
+                useCases.setName(EnumUseCase.FR.name());
+
+                database.useCaseDao().insert(useCases);
+                processRecommendations(activity);
+
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                 Crashlytics.logException(ex);
@@ -166,11 +165,5 @@ public class FertilizerRecActivity extends BaseActivity {
             }
         });
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

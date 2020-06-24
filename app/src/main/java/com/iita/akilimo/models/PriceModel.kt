@@ -1,4 +1,4 @@
-package com.iita.akilimo.entities
+package com.iita.akilimo.models
 
 import android.os.Parcelable
 import com.iita.akilimo.utils.enums.EnumOperation

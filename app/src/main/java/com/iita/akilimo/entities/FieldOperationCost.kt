@@ -1,12 +1,13 @@
 package com.iita.akilimo.entities
 
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-open class OperationCosts constructor() : RealmObject() {
+@Entity(tableName = "field_operation_cost")
+open class FieldOperationCost() {
 
-    @PrimaryKey
-    var id: String? = null
+    @PrimaryKey(autoGenerate = true)
+    var id: Int? = null
     var costLmoAreaBasis: String? = null
     var manualPloughCost = 0.0
     var manualRidgeCost = 0.0

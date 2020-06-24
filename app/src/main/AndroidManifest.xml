@@ -26,11 +26,6 @@
         tools:replace="android:icon, android:theme, android:label, android:allowBackup"
         tools:targetApi="m">
 
-        <meta-data android:name="DATABASE" android:value="akilimo_database.db" />
-        <meta-data android:name="VERSION" android:value="1" />
-        <meta-data android:name="QUERY_LOG" android:value="true" />
-        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="com.iita.akilimo" />
-
         <service android:name=".services.GPSTracker" />
 
         <service
@@ -55,8 +50,7 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".views.activities.PusherActivity">
-        </activity>
+        <activity android:name=".views.activities.PusherActivity"></activity>
 
         <activity
             android:name=".views.activities.SplashActivity"

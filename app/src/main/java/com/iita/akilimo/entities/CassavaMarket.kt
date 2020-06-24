@@ -1,12 +1,14 @@
 package com.iita.akilimo.entities
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.iita.akilimo.utils.enums.EnumCassavaProduceType
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
 
-open class CassavaMarketOutlet : RealmObject() {
-    @PrimaryKey
-    var id: String? = null
+
+@Entity(tableName = "cassava_market")
+open class CassavaMarket {
+    @PrimaryKey(autoGenerate = true)
+    var id: Int? = null
 
     var starchFactory: String? = null
 

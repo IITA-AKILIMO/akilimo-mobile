@@ -2,6 +2,7 @@ package com.iita.akilimo.views.fragments.dialog;
 
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -22,9 +23,9 @@ import androidx.annotation.Nullable;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
+import com.iita.akilimo.entities.MaizePrice;
 import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IPriceDialogDismissListener;
-import com.iita.akilimo.models.MaizePrice;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 
 import java.util.List;
@@ -75,8 +76,8 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
 
     private IPriceDialogDismissListener onDismissListener;
 
-    public MaizePriceDialogFragment() {
-        // Required empty public constructor
+    public MaizePriceDialogFragment(Context context) {
+        this.context = context;
     }
 
 
@@ -146,8 +147,8 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
         });
 
         radioGroup.setOnCheckedChangeListener((radioGroup, i) -> radioSelected(radioGroup));
-        if (realmProcessor != null) {
-            maizePriceList = realmProcessor.getMaizePrices(countryCode);
+        if (database != null) {
+            maizePriceList = database.maizePriceDao().findAllByCountry(countryCode);
             addPriceRadioButtons(maizePriceList, averagePrice);
         }
         return dialog;

@@ -22,6 +22,7 @@ import com.google.android.gms.common.util.Strings;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecommendationAdapter;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityDstRecomendationBinding;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseActivity;
@@ -33,7 +34,6 @@ import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.rest.recommendation.RecommendationResponse;
 import com.iita.akilimo.rest.request.RecommendationRequest;
 import com.iita.akilimo.utils.BuildComputeData;
-import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.views.fragments.dialog.RecommendationChannelDialog;
 
@@ -49,7 +49,7 @@ import java.util.List;
  * status bar and navigation/system bar) with user interaction.
  */
 public class DstRecommendationActivity extends BaseActivity implements IRecommendationCallBack {
-    public static final String REC_TAG = "REC";
+    public static final String REC_TAG = DstRecommendationActivity.class.getSimpleName();
 
     Toolbar toolbar;
     RecyclerView recyclerView;
@@ -74,7 +74,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
 
         context = this;
         activity = this;
-        realmProcessor = new RealmProcessor();
+        database = AppDatabase.getDatabase(context);
 
         toolbar = binding.toolbarLayout.toolbar;
         recyclerView = binding.recyclerView;
@@ -105,7 +105,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         recyclerView.setHasFixedSize(true);
 
         recAdapter = new RecommendationAdapter();
-        profileInfo = realmProcessor.getProfileInfo();
+        profileInfo = database.profileInfoDao().findOne();
 
         lyt_progress.setVisibility(View.VISIBLE);
         lyt_progress.setAlpha(1.0f);
@@ -138,7 +138,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         if (profileInfo != null) {
             recommendationChannelDialog = new RecommendationChannelDialog(this, profileInfo);
             recommendationChannelDialog.show(getSupportFragmentManager(), RecommendationChannelDialog.TAG);
-        }else{
+        } else {
             //show a message
             errorLabel.setText(R.string.lbl_no_profile_info);
             lyt_progress.setVisibility(View.GONE);
@@ -206,7 +206,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
                     errorImage.setVisibility(View.VISIBLE);
                     errorLabel.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
-                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+                    Crashlytics.log(Log.ERROR, REC_TAG, ex.getMessage());
                     Crashlytics.logException(ex);
                 }
             }

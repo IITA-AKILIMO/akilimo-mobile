@@ -23,17 +23,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityCassavaMarketBinding;
-import com.iita.akilimo.entities.CassavaMarketOutlet;
+import com.iita.akilimo.entities.CassavaMarket;
+import com.iita.akilimo.entities.CassavaPrice;
 import com.iita.akilimo.entities.MandatoryInfo;
+import com.iita.akilimo.entities.StarchFactory;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
-import com.iita.akilimo.models.CassavaPrice;
-import com.iita.akilimo.models.StarchFactory;
 import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumCassavaProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
@@ -46,8 +46,6 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import io.realm.Realm;
-import io.realm.RealmList;
 
 public class CassavaMarketActivity extends BaseActivity {
 
@@ -70,7 +68,6 @@ public class CassavaMarketActivity extends BaseActivity {
     AppCompatButton btnCancel;
 
     ActivityCassavaMarketBinding binding;
-    Realm myRealm;
     MathHelper mathHelper;
     private String selectedFactory = "NA";
 
@@ -80,7 +77,7 @@ public class CassavaMarketActivity extends BaseActivity {
     String unitOfSale;
     EnumUnitOfSale unitOfSaleEnum = EnumUnitOfSale.ONE_KG;
 
-    private CassavaMarketOutlet cassavaMarketOutlet;
+    private CassavaMarket cassavaMarket;
     private List<CassavaPrice> cassavaPriceList = null;
 
     private boolean factoryRequired;
@@ -99,7 +96,6 @@ public class CassavaMarketActivity extends BaseActivity {
         binding = ActivityCassavaMarketBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         context = this;
-        myRealm = Realm.getDefaultInstance();
 
         //Set ui elements
         toolbar = binding.toolbar;
@@ -115,18 +111,18 @@ public class CassavaMarketActivity extends BaseActivity {
         btnFinish = binding.contentCassavaMarket.twoButtons.btnFinish;
         btnCancel = binding.contentCassavaMarket.twoButtons.btnCancel;
 
-        realmProcessor = new RealmProcessor();
+        database = AppDatabase.getDatabase(context);
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
 
-        cassavaMarketOutlet = realmProcessor.getCassavaMarketOutlet();
-        if (cassavaMarketOutlet != null) {
-            selectedFactory = cassavaMarketOutlet.getStarchFactory();
-            exactPrice = cassavaMarketOutlet.getUnitPrice();
-            unitOfSale = cassavaMarketOutlet.getUnitOfSale();
+        cassavaMarket = database.cassavaMarketDao().findOne();
+        if (cassavaMarket != null) {
+            selectedFactory = cassavaMarket.getStarchFactory();
+            exactPrice = cassavaMarket.getUnitPrice();
+            unitOfSale = cassavaMarket.getUnitOfSale();
         }
 
-        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
             currency = mandatoryInfo.getCurrency();
@@ -190,9 +186,9 @@ public class CassavaMarketActivity extends BaseActivity {
             dataIsValid = false;
             if (radioButtonId > -1) {
                 RadioButton radioButton = findViewById(radioButtonId);
-                String itemTagIndex = (String) radioButton.getTag();
-                if (itemTagIndex != null) {
-                    StarchFactory selectedStarchFactory = realmProcessor.getSelectedStarchFactoryByTag(itemTagIndex);
+                String factoryNameCountry = (String) radioButton.getTag();
+                if (factoryNameCountry != null) {
+                    StarchFactory selectedStarchFactory = database.starchFactoryDao().findStarchFactoryByNameCountry(factoryNameCountry);
                     if (selectedStarchFactory != null) {
                         selectedFactory = selectedStarchFactory.getFactoryName();
                     }
@@ -279,17 +275,17 @@ public class CassavaMarketActivity extends BaseActivity {
 
         if (dataIsValid) {
             try {
-                myRealm.executeTransaction(realm -> {
-                    if (cassavaMarketOutlet == null) {
-                        cassavaMarketOutlet = myRealm.createObject(CassavaMarketOutlet.class, Tools.generateUUID());
-                    }
-                    cassavaMarketOutlet.setStarchFactory(selectedFactory);
-                    cassavaMarketOutlet.setStarchFactoryRequired(factoryRequired);
-                    cassavaMarketOutlet.setProduceType(produceType);
-                    cassavaMarketOutlet.setUnitOfSale(unitOfSale);
-                    cassavaMarketOutlet.setExactPrice(exactPrice);
-                    cassavaMarketOutlet.setUnitPrice(exactPrice);
-                });
+                if (cassavaMarket == null) {
+                    cassavaMarket = new CassavaMarket();
+                }
+                cassavaMarket.setStarchFactory(selectedFactory);
+                cassavaMarket.setStarchFactoryRequired(factoryRequired);
+                cassavaMarket.setProduceType(produceType);
+                cassavaMarket.setUnitOfSale(unitOfSale);
+                cassavaMarket.setExactPrice(exactPrice);
+                cassavaMarket.setUnitPrice(exactPrice);
+
+                database.cassavaMarketDao().insert(cassavaMarket);
                 closeActivity(backPressed);
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
@@ -333,14 +329,10 @@ public class CassavaMarketActivity extends BaseActivity {
                 try {
                     List<StarchFactory> starchFactoriesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<StarchFactory>>() {
                     });
-                    myRealm.executeTransaction(realm -> {
-                        if (starchFactoriesList.size() > 0) {
-                            RealmList<StarchFactory> _starchFactoryList = new RealmList<>();
-                            _starchFactoryList.addAll(starchFactoriesList);
-                            myRealm.insertOrUpdate(_starchFactoryList);
-                        }
-                    });
-                    addFactoriesRadioButtons(starchFactoriesList);
+                    if (starchFactoriesList.size() > 0) {
+                        database.starchFactoryDao().insertAll(starchFactoriesList);
+                        addFactoriesRadioButtons(starchFactoriesList);
+                    }
                 } catch (Exception ex) {
                     Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                     Crashlytics.logException(ex);
@@ -348,7 +340,8 @@ public class CassavaMarketActivity extends BaseActivity {
             }
 
             @Override
-            public void onSuccessJsonObject(@NotNull JSONObject jsonObject) { }
+            public void onSuccessJsonObject(@NotNull JSONObject jsonObject) {
+            }
 
             @Override
             public void onError(@NotNull VolleyError volleyError) {
@@ -381,20 +374,9 @@ public class CassavaMarketActivity extends BaseActivity {
                 try {
                     cassavaPriceList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<CassavaPrice>>() {
                     });
-
-                    try {
-                        myRealm.executeTransaction(realm -> {
-                            if (cassavaPriceList.size() > 0) {
-                                RealmList<CassavaPrice> _cassavaPriceList = new RealmList<>();
-                                _cassavaPriceList.addAll(cassavaPriceList);
-                                myRealm.insertOrUpdate(_cassavaPriceList);
-                            }
-                        });
-                    } catch (Exception ex) {
-                        Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                        Crashlytics.logException(ex);
+                    if (cassavaPriceList.size() > 0) {
+                        database.cassavaPriceDao().insertAll(cassavaPriceList);
                     }
-
                 } catch (Exception ex) {
                     Crashlytics.logException(ex);
                     Crashlytics.log(ex.getMessage());
@@ -417,18 +399,18 @@ public class CassavaMarketActivity extends BaseActivity {
     }
 
     protected void processData() {
-        List<StarchFactory> starchFactoriesList = realmProcessor.getStarchFactories(countryCode);
+        List<StarchFactory> starchFactoriesList = database.starchFactoryDao().findStarchFactoriesByCountry(countryCode);
         addFactoriesRadioButtons(starchFactoriesList);
-        cassavaMarketOutlet = realmProcessor.getCassavaMarketOutlet();
+        cassavaMarket = database.cassavaMarketDao().findOne();
 
-        if (cassavaMarketOutlet != null) {
-            boolean sfRequired = cassavaMarketOutlet.isStarchFactoryRequired();
-            priceText = String.valueOf(cassavaMarketOutlet.getExactPrice());
+        if (cassavaMarket != null) {
+            boolean sfRequired = cassavaMarket.isStarchFactoryRequired();
+            priceText = String.valueOf(cassavaMarket.getExactPrice());
             rdgMarketOutlet.check(sfRequired ? R.id.rdFactory : R.id.rdOtherMarket);
             if (!sfRequired) {
-                produceType = cassavaMarketOutlet.getProduceType();
-                unitOfSale = cassavaMarketOutlet.getUnitOfSale();
-                averageUnitPricePrice = cassavaMarketOutlet.getUnitPrice();
+                produceType = cassavaMarket.getProduceType();
+                unitOfSale = cassavaMarket.getUnitOfSale();
+                averageUnitPricePrice = cassavaMarket.getUnitPrice();
                 switch (unitOfSaleEnum) {
                     case ONE_KG:
                         rdgUnitOfSale.check(R.id.rd_per_kg);
@@ -486,7 +468,7 @@ public class CassavaMarketActivity extends BaseActivity {
         arguments.putString(CassavaPriceDialogFragment.UNIT_OF_SALE, unitOfSale);
         arguments.putParcelable(CassavaPriceDialogFragment.ENUM_UNIT_OF_SALE, unitOfSaleEnum);
 
-        CassavaPriceDialogFragment priceDialogFragment = new CassavaPriceDialogFragment();
+        CassavaPriceDialogFragment priceDialogFragment = new CassavaPriceDialogFragment(context);
         priceDialogFragment.setArguments(arguments);
 
         priceDialogFragment.setOnDismissListener((selectedPrice, selectedAveragePrice) -> {
@@ -504,11 +486,5 @@ public class CassavaMarketActivity extends BaseActivity {
             fragmentTransaction.addToBackStack(null);
             priceDialogFragment.show(getSupportFragmentManager(), CassavaPriceDialogFragment.ARG_ITEM_ID);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

@@ -1,15 +1,25 @@
-package com.iita.akilimo.models
+package com.iita.akilimo.entities
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
 
 @Deprecated("Too much duplication move to common fertilizer")
 @JsonIgnoreProperties(ignoreUnknown = true)
-open class InterCropFertilizer() : RealmObject(), Parcelable {
+@Entity(
+    tableName = "intercrop_fertilizer",
+    indices = arrayOf(Index(value = ["fertilizerCountry"], unique = true))
+)
+open class InterCropFertilizer() : Parcelable {
+
+    @JsonProperty("id")
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0
+
     var imageId = 0
 
     @JsonProperty("fertilizerId")
@@ -18,7 +28,6 @@ open class InterCropFertilizer() : RealmObject(), Parcelable {
     @JsonProperty("name")
     var name: String? = null
 
-    @PrimaryKey
     @JsonProperty("type")
     var fertilizerType: String? = null
 

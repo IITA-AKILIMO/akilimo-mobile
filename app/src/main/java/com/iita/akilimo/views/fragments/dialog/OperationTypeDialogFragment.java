@@ -1,6 +1,7 @@
 package com.iita.akilimo.views.fragments.dialog;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -39,8 +40,8 @@ public class OperationTypeDialogFragment extends BaseDialogFragment {
     private String operation;
     private boolean cancelled;
 
-    public OperationTypeDialogFragment() {
-
+    public OperationTypeDialogFragment(Context context) {
+        this.context = context;
     }
 
 

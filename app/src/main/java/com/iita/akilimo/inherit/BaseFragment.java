@@ -21,8 +21,8 @@ import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.entities.LocationInfo;
-import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.SessionManager;
 
 import java.util.Locale;
@@ -30,7 +30,6 @@ import java.util.Locale;
 import dev.b3nedikt.app_locale.AppLocale;
 import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
 import dev.b3nedikt.reword.Reword;
-import io.realm.Realm;
 
 @SuppressWarnings("WeakerAccess")
 public abstract class BaseFragment extends Fragment {
@@ -45,6 +44,8 @@ public abstract class BaseFragment extends Fragment {
     protected String countryCode;
     protected String countryName;
 
+    protected AppDatabase database;
+
 
     String emptyText = "";
 
@@ -53,8 +54,8 @@ public abstract class BaseFragment extends Fragment {
     protected RequestQueue queue;
 
     protected SessionManager sessionManager;
-    protected RealmProcessor realmProcessor;
-//    protected Realm myRealm;
+
+//
 
     public BaseFragment() {
 
@@ -70,24 +71,21 @@ public abstract class BaseFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
-        sessionManager = new SessionManager(getContext());
+        sessionManager = new SessionManager(context);
         queue = Volley.newRequestQueue(context.getApplicationContext());
         appVersion = sessionManager.getAppVersion();
-        realmProcessor = new RealmProcessor();
+        database = AppDatabase.getDatabase(context);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        realmInstance();
         View view = loadFragmentLayout(inflater, container, savedInstanceState);
         Reword.reword(view);
         return view;
     }
 
     protected abstract View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
-
-    protected abstract void realmInstance();
 
     public abstract void refreshData();
 
@@ -149,12 +147,8 @@ public abstract class BaseFragment extends Fragment {
             dialog.show();
             dialog.getWindow().setAttributes(lp);
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred while displaying alert dialog");
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
-    }
-
-    public Realm getRealmInstance() {
-        return Realm.getDefaultInstance();
     }
 }

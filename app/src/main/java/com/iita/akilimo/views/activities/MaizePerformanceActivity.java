@@ -12,13 +12,12 @@ import androidx.appcompat.widget.Toolbar;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityMaizePerformanceActivityBinding;
 import com.iita.akilimo.entities.MaizePerformance;
 import com.iita.akilimo.inherit.BaseActivity;
-import com.iita.akilimo.utils.RealmProcessor;
-import com.iita.akilimo.utils.Tools;
 
-import io.realm.Realm;
+;
 
 
 public class MaizePerformanceActivity extends BaseActivity {
@@ -33,7 +32,6 @@ public class MaizePerformanceActivity extends BaseActivity {
     TextView exceptionTitle;
 
     ActivityMaizePerformanceActivityBinding binding;
-    Realm myRealm;
 
 
     private MaizePerformance maizePerformance;
@@ -48,8 +46,7 @@ public class MaizePerformanceActivity extends BaseActivity {
         binding = ActivityMaizePerformanceActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         context = this;
-        realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
+        database = AppDatabase.getDatabase(context);
 
         toolbar = binding.toolbar;
         rdgMaizePerformance = binding.rdgMaizePerformance;
@@ -116,7 +113,7 @@ public class MaizePerformanceActivity extends BaseActivity {
         });
 
         //preset saved data if any
-        maizePerformance = realmProcessor.getMaizePerformance();
+        maizePerformance = database.maizePerformanceDao().findOne();
         if (maizePerformance != null) {
             performanceRadioIndex = maizePerformance.getPerformanceRadioIndex();
             rdgMaizePerformance.check(performanceRadioIndex);
@@ -133,19 +130,16 @@ public class MaizePerformanceActivity extends BaseActivity {
         }
 
         performanceRadioIndex = rdgMaizePerformance.getCheckedRadioButtonId();
-        maizePerformance = realmProcessor.getMaizePerformance();
         try {
-            myRealm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    if (maizePerformance == null) {
-                        maizePerformance = realm.createObject(MaizePerformance.class, Tools.generateUUID());
-                    }
-                    maizePerformance.setPerformanceRadioIndex(performanceRadioIndex);
-                    maizePerformance.setMaizePerformance(selectedMaizePerformance);
-                    maizePerformance.setPerformanceValue(maizePerformanceValue);
-                }
-            });
+
+            if (maizePerformance == null) {
+                maizePerformance = new MaizePerformance();
+            }
+            maizePerformance.setPerformanceRadioIndex(performanceRadioIndex);
+            maizePerformance.setMaizePerformance(selectedMaizePerformance);
+            maizePerformance.setPerformanceValue(maizePerformanceValue);
+
+            database.maizePerformanceDao().insert(maizePerformance);
             closeActivity(backPressed);
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
@@ -153,9 +147,4 @@ public class MaizePerformanceActivity extends BaseActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
-    }
 }

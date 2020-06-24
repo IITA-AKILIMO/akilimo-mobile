@@ -1,13 +1,13 @@
 package com.iita.akilimo.entities
 
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
+@Entity(tableName = "location_info")
+open class LocationInfo {
 
-open class LocationInfo : RealmObject() {
-
-    @PrimaryKey
-    var id: String? = null
+    @PrimaryKey(autoGenerate = true)
+    var id: Int? = null
     var latitude: Double = 0.0
     var longitude: Double = 0.0
     var altitude: Double = 0.0

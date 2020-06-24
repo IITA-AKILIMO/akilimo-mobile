@@ -12,8 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.iita.akilimo.R;
+import com.iita.akilimo.entities.Fertilizer;
 import com.iita.akilimo.interfaces.IRecyclerViewClickListener;
-import com.iita.akilimo.models.Fertilizer;
 
 import java.util.ArrayList;
 import java.util.List;

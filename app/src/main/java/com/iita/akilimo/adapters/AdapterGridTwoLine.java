@@ -12,7 +12,7 @@ import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.iita.akilimo.R;
-import com.iita.akilimo.entities.CurrentFieldYield;
+import com.iita.akilimo.entities.FieldYield;
 import com.iita.akilimo.utils.Tools;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import java.util.List;
 
 public class AdapterGridTwoLine extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<CurrentFieldYield> items = new ArrayList<>();
+    private List<FieldYield> items = new ArrayList<>();
 
 
     private Context ctx;
@@ -30,7 +30,7 @@ public class AdapterGridTwoLine extends RecyclerView.Adapter<RecyclerView.ViewHo
     private double selectedYieldAmount = 0.0;
 
     public interface OnItemClickListener {
-        void onItemClick(View view, CurrentFieldYield obj, int position);
+        void onItemClick(View view, FieldYield obj, int position);
     }
 
     public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
@@ -41,7 +41,7 @@ public class AdapterGridTwoLine extends RecyclerView.Adapter<RecyclerView.ViewHo
         ctx = context;
     }
 
-    public void setItems(double selectedYieldAmount, @NonNull List<CurrentFieldYield> items) {
+    public void setItems(double selectedYieldAmount, @NonNull List<FieldYield> items) {
         this.items = items;
         this.selectedYieldAmount = selectedYieldAmount;
         notifyDataSetChanged();
@@ -73,7 +73,7 @@ public class AdapterGridTwoLine extends RecyclerView.Adapter<RecyclerView.ViewHo
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        CurrentFieldYield fieldYield =items.get(position);
+        FieldYield fieldYield =items.get(position);
         String yieldLabel = fieldYield.getFieldYieldLabel();
         double currentYieldAmount = fieldYield.getYieldAmount();
         if (holder instanceof OriginalViewHolder) {

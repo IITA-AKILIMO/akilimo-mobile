@@ -1,13 +1,14 @@
 package com.iita.akilimo.entities
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.iita.akilimo.utils.enums.EnumPotatoProduceType
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
 
-open class PotatoMarketOutlet : RealmObject() {
+@Entity(tableName = "potato_market")
+open class PotatoMarket {
 
-    @PrimaryKey
-    var id: String? = null
+    @PrimaryKey(autoGenerate = true)
+    var id: Int? = null
     var produceTypeRadioIndex = 0
     var potatoUnitOfSaleRadioIndex = 0
     var potatoUnitPriceRadioIndex = 0

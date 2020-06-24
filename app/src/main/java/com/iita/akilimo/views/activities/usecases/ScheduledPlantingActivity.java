@@ -14,13 +14,12 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityScheduledPlantingBinding;
-import com.iita.akilimo.entities.RecAdvice;
+import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
-import com.iita.akilimo.utils.RealmProcessor;
-import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.enums.EnumUseCase;
 import com.iita.akilimo.views.activities.CassavaMarketActivity;
@@ -30,7 +29,7 @@ import com.iita.akilimo.views.activities.RootYieldActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.Realm;
+;
 
 public class ScheduledPlantingActivity extends BaseActivity {
 
@@ -40,7 +39,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
     AppCompatButton btnGetRec;
 
     ActivityScheduledPlantingBinding binding;
-    Realm myRealm;
+
 
     String plantingString;
     String marketOutletString;
@@ -49,7 +48,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
     private Activity activity;
     private RecOptionsAdapter mAdapter;
     private List<RecommendationOptions> items = new ArrayList<>();
-    private RecAdvice recAdvice;
+    private UseCases useCases;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +57,8 @@ public class ScheduledPlantingActivity extends BaseActivity {
         setContentView(binding.getRoot());
         context = this;
         activity = this;
-        realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
+        database = AppDatabase.getDatabase(context);
+
 
         toolbar = binding.toolbarLayout.toolbar;
         recyclerView = binding.recyclerView;
@@ -91,23 +90,20 @@ public class ScheduledPlantingActivity extends BaseActivity {
         recyclerView.setHasFixedSize(true);
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
-            recAdvice = realmProcessor.getRecAdvice();
+            useCases = database.useCaseDao().findOne();
             try {
-                myRealm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        if (recAdvice == null) {
-                            recAdvice = realm.createObject(RecAdvice.class, Tools.generateUUID());
-                        }
-                        recAdvice.setFR(false);
-                        recAdvice.setCIM(false);
-                        recAdvice.setCIS(false);
-                        recAdvice.setSPH(true);
-                        recAdvice.setSPP(true);
-                        recAdvice.setBPP(false);
-                        recAdvice.setUseCase(EnumUseCase.SP.name());
-                    }
-                });
+                if (useCases == null) {
+                    useCases = new UseCases();
+                }
+                useCases.setFR(false);
+                useCases.setCIM(false);
+                useCases.setCIS(false);
+                useCases.setSPH(true);
+                useCases.setSPP(true);
+                useCases.setBPP(false);
+                useCases.setName(EnumUseCase.SP.name());
+
+                database.useCaseDao().insert(useCases);
                 processRecommendations(activity);
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
@@ -156,11 +152,5 @@ public class ScheduledPlantingActivity extends BaseActivity {
                 Snackbar.make(view, "Item " + obj.getRecommendationName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
             }
         });
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

@@ -7,22 +7,23 @@ import androidx.annotation.NonNull;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
-import com.iita.akilimo.entities.CassavaMarketOutlet;
-import com.iita.akilimo.entities.ComputeRequest;
-import com.iita.akilimo.entities.CurrentFieldYield;
+import com.iita.akilimo.dao.AppDatabase;
+import com.iita.akilimo.entities.CassavaMarket;
 import com.iita.akilimo.entities.CurrentPractice;
+import com.iita.akilimo.entities.Fertilizer;
+import com.iita.akilimo.entities.FieldOperationCost;
+import com.iita.akilimo.entities.FieldYield;
+import com.iita.akilimo.entities.InterCropFertilizer;
 import com.iita.akilimo.entities.InvestmentAmount;
 import com.iita.akilimo.entities.LocationInfo;
-import com.iita.akilimo.entities.MaizeMarketOutlet;
+import com.iita.akilimo.entities.MaizeMarket;
 import com.iita.akilimo.entities.MaizePerformance;
 import com.iita.akilimo.entities.MandatoryInfo;
-import com.iita.akilimo.entities.OperationCosts;
-import com.iita.akilimo.entities.PlantingHarvestDates;
-import com.iita.akilimo.entities.PotatoMarketOutlet;
+import com.iita.akilimo.entities.PotatoMarket;
 import com.iita.akilimo.entities.ProfileInfo;
-import com.iita.akilimo.entities.RecAdvice;
-import com.iita.akilimo.models.Fertilizer;
-import com.iita.akilimo.models.InterCropFertilizer;
+import com.iita.akilimo.entities.ScheduledDate;
+import com.iita.akilimo.entities.UseCases;
+import com.iita.akilimo.models.ComputeRequest;
 import com.iita.akilimo.rest.request.RecommendationRequest;
 import com.iita.akilimo.rest.request.UserInfo;
 
@@ -140,13 +141,14 @@ public class BuildComputeData {
     private String cassavaProduceType = DEFAULT_CASSAVA_PD;
     private String starchFactoryName = DEFAULT_UNAVAILABLE;
 
-    private RealmProcessor realmProcessor;
+
     private MathHelper mathHelper;
     private ModelMapper modelMapper;
     private SessionManager sessionManager;
+    private AppDatabase database;
 
     public BuildComputeData(@NonNull Activity activity) {
-        realmProcessor = new RealmProcessor();
+        database = AppDatabase.getDatabase(activity);
         mathHelper = new MathHelper(activity);
         modelMapper = new ModelMapper();
         sessionManager = new SessionManager(activity);
@@ -175,10 +177,10 @@ public class BuildComputeData {
         }.getType();
 
         if (computeRequest.getInterCroppingPotatoRec() || computeRequest.getInterCroppingMaizeRec()) {
-            List<InterCropFertilizer> interCropFertilizers = realmProcessor.getAllInterCropFertilizersByCountry(countryCode);
+            List<InterCropFertilizer> interCropFertilizers = database.interCropFertilizerDao().findAllByCountry(countryCode);
             fertilizerList = modelMapper.map(interCropFertilizers, listType);
         } else {
-            fertilizerList = realmProcessor.getAvailableFertilizersByCountry(countryCode);
+            fertilizerList = database.fertilizerDao().findAllByCountry(countryCode);
         }
 
 
@@ -188,7 +190,7 @@ public class BuildComputeData {
     private UserInfo buildProfileInfo() {
         UserInfo userInfo = new UserInfo();
         try {
-            ProfileInfo profileInfo = realmProcessor.getProfileInfo();
+            ProfileInfo profileInfo = database.profileInfoDao().findOne();
 
             if (profileInfo != null) {
                 String firstName = Strings.isEmptyOrWhitespace(profileInfo.getFirstName()) ? DEFAULT_USERNAME : profileInfo.getFirstName();
@@ -225,8 +227,8 @@ public class BuildComputeData {
 
     private ComputeRequest buildMandatoryInfo() {
         ComputeRequest computeRequest = new ComputeRequest();
-        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
-        LocationInfo locationInfo = realmProcessor.getLocationInfo();
+        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
+        LocationInfo locationInfo = database.locationInfoDao().findOne();
         if (locationInfo != null) {
             computeRequest.setMapLat(locationInfo.getLatitude());
             computeRequest.setMapLong(locationInfo.getLongitude());
@@ -248,23 +250,23 @@ public class BuildComputeData {
 
     private ComputeRequest buildRequestedRec(@NonNull ComputeRequest computeRequest) {
         //check for values we have to give recommendations for
-        RecAdvice recAdvice = realmProcessor.getRecAdvice();
-        if (recAdvice != null) {
-            computeRequest.setInterCroppingMaizeRec(recAdvice.getCIM());
-            computeRequest.setInterCroppingPotatoRec(recAdvice.getCIS());
-            computeRequest.setUseCase(recAdvice.getUseCase());
+        UseCases useCases = database.useCaseDao().findOne();
+        if (useCases != null) {
+            computeRequest.setInterCroppingMaizeRec(useCases.getCIM());
+            computeRequest.setInterCroppingPotatoRec(useCases.getCIS());
+            computeRequest.setUseCase(useCases.getName());
 
-            computeRequest.setFertilizerRec(recAdvice.getFR());
-            computeRequest.setPlantingPracticesRec(recAdvice.getBPP());
-            computeRequest.setScheduledPlantingRec(recAdvice.getSPP());
-            computeRequest.setScheduledHarvestRec(recAdvice.getSPH());
+            computeRequest.setFertilizerRec(useCases.getFR());
+            computeRequest.setPlantingPracticesRec(useCases.getBPP());
+            computeRequest.setScheduledPlantingRec(useCases.getSPP());
+            computeRequest.setScheduledHarvestRec(useCases.getSPH());
         }
         return computeRequest;
     }
 
     private ComputeRequest buildCurrentFieldYield(@NonNull ComputeRequest computeRequest) {
         //check for values we have to give recommendations for
-        CurrentFieldYield fieldYield = realmProcessor.getCurrentFieldYield();
+        FieldYield fieldYield = database.fieldYieldDao().findOne();
         if (fieldYield != null) {
             currentFieldYield = (int) fieldYield.getYieldAmount();
         }
@@ -274,7 +276,7 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildPlantingDates(@NonNull ComputeRequest computeRequest) {
-        PlantingHarvestDates sph = realmProcessor.getPlantingHarvestDates();
+        ScheduledDate sph = database.scheduleDateDao().findOne();
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy");
 
         if (sph != null) {
@@ -299,7 +301,7 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildInvestmentAmount(@NonNull ComputeRequest computeRequest) {
-        InvestmentAmount investmentAmount = realmProcessor.getInvestmentAmount();
+        InvestmentAmount investmentAmount = database.investmentAmountDao().findOne();
         if (investmentAmount != null) {
             maxInvestmentAmountLocal = investmentAmount.getInvestmentAmountLocal();
         }
@@ -309,7 +311,7 @@ public class BuildComputeData {
 
     private ComputeRequest buildCurrentPractice(@NonNull ComputeRequest computeRequest) {
 
-        CurrentPractice currentPractice = realmProcessor.getCurrentPractice();
+        CurrentPractice currentPractice = database.currentPracticeDao().findOne();
 
         if (currentPractice != null) {
             performsPloughing = currentPractice.getPerformPloughing();
@@ -345,19 +347,19 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildOperationCosts(@NonNull ComputeRequest computeRequest) {
-        OperationCosts operationCosts = realmProcessor.getOperationCosts();
+        FieldOperationCost fieldOperationCost = database.fieldOperationCostDao().findOne();
 
-        if (operationCosts != null) {
-            costTractorPlough = operationCosts.getTractorPloughCost();
-            costTractorHarrow = operationCosts.getTractorHarrowCost();
-            costTractorRidging = operationCosts.getTractorRidgeCost();
+        if (fieldOperationCost != null) {
+            costTractorPlough = fieldOperationCost.getTractorPloughCost();
+            costTractorHarrow = fieldOperationCost.getTractorHarrowCost();
+            costTractorRidging = fieldOperationCost.getTractorRidgeCost();
 
-            costManualPloughing = operationCosts.getManualPloughCost();
-            costManualHarrowing = operationCosts.getManualHarrowCost();
-            costManualRidging = operationCosts.getManualRidgeCost();
+            costManualPloughing = fieldOperationCost.getManualPloughCost();
+            costManualHarrowing = fieldOperationCost.getManualHarrowCost();
+            costManualRidging = fieldOperationCost.getManualRidgeCost();
 
-            costWeedingOne = operationCosts.getFirstWeedingOperationCost();
-            costWeedingTwo = operationCosts.getSecondWeedingOperationCost();
+            costWeedingOne = fieldOperationCost.getFirstWeedingOperationCost();
+            costWeedingTwo = fieldOperationCost.getSecondWeedingOperationCost();
         }
 
         computeRequest.setCostLmoAreaBasis(costLmoAreaBasis);
@@ -386,7 +388,7 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildMaizePerformance(@NonNull ComputeRequest computeRequest) {
-        MaizePerformance maizePerformance = realmProcessor.getMaizePerformance();
+        MaizePerformance maizePerformance = database.maizePerformanceDao().findOne();
         if (maizePerformance != null) {
             currentMaizePerformance = Strings.isEmptyOrWhitespace(maizePerformance.getPerformanceValue()) ? DEFAULT_MAIZE_PERFORMANCE_VALUE : maizePerformance.getPerformanceValue();
         }
@@ -396,17 +398,17 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildCassavaMarketOutlet(@NonNull ComputeRequest computeRequest) {
-        CassavaMarketOutlet cassavaMarketOutlet = realmProcessor.getCassavaMarketOutlet();
+        CassavaMarket cassavaMarket = database.cassavaMarketDao().findOne();
 
-        if (cassavaMarketOutlet != null) {
-            sellToStarchFactory = cassavaMarketOutlet.isStarchFactoryRequired();
+        if (cassavaMarket != null) {
+            sellToStarchFactory = cassavaMarket.isStarchFactoryRequired();
             if (sellToStarchFactory) {
-                starchFactoryName = cassavaMarketOutlet.getStarchFactory();
+                starchFactoryName = cassavaMarket.getStarchFactory();
             }
 
-            cassavaProduceType = cassavaMarketOutlet.getProduceType();
-            cassavaUnitWeight = cassavaMarketOutlet.getUnitWeight();
-            cassavaUnitPrice = cassavaMarketOutlet.getUnitPrice();
+            cassavaProduceType = cassavaMarket.getProduceType();
+            cassavaUnitWeight = cassavaMarket.getUnitWeight();
+            cassavaUnitPrice = cassavaMarket.getUnitPrice();
         }
         computeRequest.setStarchFactoryName(starchFactoryName);
         computeRequest.setSellToStarchFactory(sellToStarchFactory);
@@ -425,11 +427,11 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildMaizeMarketOutlet(ComputeRequest computeRequest) {
-        MaizeMarketOutlet maizeMarketOutlet = realmProcessor.getMaizeMarketOutlet();
-        if (maizeMarketOutlet != null) {
-            maizeProdType = maizeMarketOutlet.getProduceType();
-            maizeUnitWeight = maizeMarketOutlet.getUnitWeight();
-            maizeUnitPrice = maizeMarketOutlet.getUnitPrice();
+        MaizeMarket maizeMarket = database.maizeMarketDao().findOne();
+        if (maizeMarket != null) {
+            maizeProdType = maizeMarket.getProduceType();
+            maizeUnitWeight = maizeMarket.getUnitWeight();
+            maizeUnitPrice = maizeMarket.getUnitPrice();
         }
         computeRequest.setMaizeProduceType(maizeProdType);
         computeRequest.setMaizeUnitWeight(maizeUnitWeight);
@@ -439,11 +441,11 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildSweetPotatoMarketOutlet(ComputeRequest computeRequest) {
-        PotatoMarketOutlet potatoMarketOutlet = realmProcessor.getPotatoMarketOutlet();
-        if (potatoMarketOutlet != null) {
-            sweetPotatoProdType = potatoMarketOutlet.getProduceType();
-            sweetPotatoUnitWeight = potatoMarketOutlet.getUnitWeight();
-            sweetPotatoUnitPrice = potatoMarketOutlet.getUnitPrice();
+        PotatoMarket potatoMarket = database.potatoMarketDao().findOne();
+        if (potatoMarket != null) {
+            sweetPotatoProdType = potatoMarket.getProduceType();
+            sweetPotatoUnitWeight = potatoMarket.getUnitWeight();
+            sweetPotatoUnitPrice = potatoMarket.getUnitPrice();
         }
 
         computeRequest.setSweetPotatoProduceType(sweetPotatoProdType);

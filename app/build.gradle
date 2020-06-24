@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
-apply plugin: 'realm-android'
+//apply plugin: 'realm-android'
 
 android {
     def releaseVersionName = computeBuildNumber()
@@ -30,6 +30,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
+            resValue("string", "PORT_NUMBER", "9080")
             versionNameSuffix ".debug"
 //            pseudoLocalesEnabled true
         }
@@ -58,7 +59,7 @@ android {
 }
 
 static def computeVersionName() {
-    def versionMajor = 15
+    def versionMajor = 16
     def versionMinor = 0
     def buildNumber = 0
 
@@ -77,7 +78,7 @@ static def computeBuildNumber() {
 
 def computeVersionCode() {
     long unixTimestamp = Instant.now().getEpochSecond()
-    def versionCode =  System.env.RELEASE_VERSION ? unixTimestamp.intValue() : 1592812564
+    def versionCode = System.env.RELEASE_VERSION ? unixTimestamp.intValue() : 1592812564
 
     println("This build version number is " + versionCode)
     return versionCode
@@ -107,9 +108,17 @@ dependencies {
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.google.android:flexbox:0.3.2'                   // google flexible box
 
-    implementation "com.github.vicpinm:krealmextensions:2.5.0"
-    implementation "io.reactivex.rxjava2:rxjava:2.1.9"
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+//    implementation "com.github.vicpinm:krealmextensions:2.5.0"
+//    implementation "io.reactivex.rxjava2:rxjava:2.1.9"
+//    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+
+    implementation "com.j256.ormlite:ormlite-android:5.1"
+    implementation 'com.j256.ormlite:ormlite-core:5.1'
+
+    def room_version = "2.2.5"
+    implementation "androidx.room:room-runtime:2.2.5"
+    kapt "androidx.room:room-compiler:2.2.5" // For Kotlin use kapt instead of annotationProcessor
+
 
     // mapbox implementation------------------------------------------------------------------------
     // implementation 'com.mapbox.mapboxsdk:mapbox-android-navigation:0.41.0'
@@ -153,7 +162,6 @@ dependencies {
     kapt 'com.jakewharton:butterknife-compiler:10.2.1'
     kapt 'com.fasterxml.jackson.core:jackson-annotations:2.11.0'
 
-
     testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.11.0'
     testImplementation 'joda-time:joda-time:2.10.6'
     testImplementation 'junit:junit:4.13'
@@ -162,5 +170,6 @@ dependencies {
 
     //debugImplementation because LeakCanary should only run in debug builds.
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 
 }

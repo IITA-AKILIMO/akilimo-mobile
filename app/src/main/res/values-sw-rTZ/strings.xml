@@ -307,7 +307,7 @@
     <string name="lbl_planting_practices_rec">Mbinu za kupanda</string>
     <string name="lbl_scheduled_planting_rec">Utofauti wa wakati wa kupanda na kuvuna</string>
     <string name="lbl_no_recommendations">Hakuna mapendekezo</string>
-    <string name="lbl_no_recommendations_prompt">Hakuna mapendekezo, tafadhali please provide more information to help us get better predictions</string>
+    <string name="lbl_no_recommendations_prompt">Hakuna mapendekezo, tafadhali toa habari zaidi kutusaidia kupata utabiri bora</string>
     <string name="lbl_invalid_investment_amount">Kiasi cha kuwekeza si sahihi</string>
     <string name="lbl_investment_amount_prompt">Ingiza kiasi sahihi cha kuwekeza</string>
     <string name="lbl_maize_produce_prompt">Tafadhali onyesha hali ya zao la mahindi (hayajasagwa/yamesagwa) </string>

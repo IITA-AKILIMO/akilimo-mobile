@@ -15,14 +15,13 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityInterCropRecBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
-import com.iita.akilimo.entities.RecAdvice;
+import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
-import com.iita.akilimo.utils.RealmProcessor;
-import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.enums.EnumCountry;
 import com.iita.akilimo.utils.enums.EnumUseCase;
@@ -37,15 +36,13 @@ import com.iita.akilimo.views.activities.SweetPotatoMarketActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.Realm;
-
 public class InterCropRecActivity extends BaseActivity {
 
     RecyclerView recyclerView;
     Toolbar toolbar;
     AppCompatButton btnGetRec;
     ActivityInterCropRecBinding binding;
-    Realm myRealm;
+
 
     String recommendations;
     String plantingString;
@@ -59,7 +56,7 @@ public class InterCropRecActivity extends BaseActivity {
     private Activity activity;
     private RecOptionsAdapter mAdapter;
     private List<RecommendationOptions> items = new ArrayList<>();
-    private RecAdvice recAdvice;
+    private UseCases useCases;
     private EnumUseCase useCase;
     private boolean icMaize;
     private boolean icPotato;
@@ -77,10 +74,10 @@ public class InterCropRecActivity extends BaseActivity {
         btnGetRec = binding.singleButton.btnGetRecommendation;
 
 
-        realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
+        database = AppDatabase.getDatabase(context);
 
-        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
+
+        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
             currency = mandatoryInfo.getCurrency();
@@ -127,20 +124,20 @@ public class InterCropRecActivity extends BaseActivity {
         recyclerView.setHasFixedSize(true);
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
-            recAdvice = realmProcessor.getRecAdvice();
+            useCases = database.useCaseDao().findOne();
             try {
-                myRealm.executeTransaction(realm -> {
-                    if (recAdvice == null) {
-                        recAdvice = realm.createObject(RecAdvice.class, Tools.generateUUID());
-                    }
-                    recAdvice.setFR(false);
-                    recAdvice.setCIM(icMaize);
-                    recAdvice.setCIS(icPotato);
-                    recAdvice.setSPH(false);
-                    recAdvice.setSPP(false);
-                    recAdvice.setBPP(false);
-                    recAdvice.setUseCase(useCase.name());
-                });
+                if (useCases == null) {
+                    useCases = new UseCases();
+                }
+                useCases.setFR(false);
+                useCases.setCIM(icMaize);
+                useCases.setCIS(icPotato);
+                useCases.setSPH(false);
+                useCases.setSPP(false);
+                useCases.setBPP(false);
+                useCases.setName(useCase.name());
+
+                database.useCaseDao().insert(useCases);
                 processRecommendations(activity);
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
@@ -212,11 +209,5 @@ public class InterCropRecActivity extends BaseActivity {
             }
         });
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

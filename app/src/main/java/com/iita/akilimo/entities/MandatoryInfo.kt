@@ -1,12 +1,13 @@
 package com.iita.akilimo.entities
 
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-open class MandatoryInfo : RealmObject() {
+@Entity(tableName = "mandatory_info")
+open class MandatoryInfo {
 
-    @PrimaryKey
-    var id: String? = null
+    @PrimaryKey(autoGenerate = true)
+    var id: Int? = null
     var placeName: String? = null
     var address: String? = null
 

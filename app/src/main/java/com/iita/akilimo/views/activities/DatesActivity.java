@@ -15,17 +15,15 @@ import androidx.fragment.app.FragmentManager;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityDatesBinding;
-import com.iita.akilimo.entities.PlantingHarvestDates;
+import com.iita.akilimo.entities.ScheduledDate;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.DateHelper;
-import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.views.fragments.dialog.DateDialogPickerFragment;
 
 import org.joda.time.LocalDate;
-
-import io.realm.Realm;
 
 public class DatesActivity extends BaseActivity {
     Toolbar toolbar;
@@ -52,7 +50,6 @@ public class DatesActivity extends BaseActivity {
     SwitchCompat flexibleHarvest;
 
     ActivityDatesBinding binding;
-    Realm myRealm;
 
     String selectedPlantingDate;
     String selectedHarvestDate;
@@ -60,7 +57,7 @@ public class DatesActivity extends BaseActivity {
     int harvestWindow = 0;
     boolean alternativeDate;
 
-    PlantingHarvestDates plantingHarvestDates;
+    ScheduledDate scheduledDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +67,7 @@ public class DatesActivity extends BaseActivity {
 
 
         context = this;
-        realmProcessor = new RealmProcessor();
-        myRealm = Realm.getDefaultInstance();
+        database = AppDatabase.getDatabase(context);
 
         //set widgets
         toolbar = binding.toolbar;
@@ -176,14 +172,14 @@ public class DatesActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        plantingHarvestDates = realmProcessor.getPlantingHarvestDates();
+        scheduledDate = database.scheduleDateDao().findOne();
 
-        if (plantingHarvestDates != null) {
-            alternativeDate = plantingHarvestDates.getAlternativeDate();
-            String pd = plantingHarvestDates.getPlantingDate();
-            String hd = plantingHarvestDates.getHarvestDate();
-            int pw = plantingHarvestDates.getPlantingWindow();
-            int hw = plantingHarvestDates.getHarvestWindow();
+        if (scheduledDate != null) {
+            alternativeDate = scheduledDate.getAlternativeDate();
+            String pd = scheduledDate.getPlantingDate();
+            String hd = scheduledDate.getHarvestDate();
+            int pw = scheduledDate.getPlantingWindow();
+            int hw = scheduledDate.getHarvestWindow();
 
             DateHelper.dateTimeFormat = "dd/MM/yyyy";
             LocalDate pDate = DateHelper.formatToLocalDate(pd);
@@ -220,20 +216,18 @@ public class DatesActivity extends BaseActivity {
         }
 
         try {
-            myRealm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    if (plantingHarvestDates == null) {
-                        plantingHarvestDates = myRealm.createObject(PlantingHarvestDates.class, Tools.generateUUID());
-                    }
-                    plantingHarvestDates.setHarvestDate(selectedHarvestDate);
-                    plantingHarvestDates.setHarvestWindow(harvestWindow);
-                    plantingHarvestDates.setPlantingDate(selectedPlantingDate);
-                    plantingHarvestDates.setPlantingWindow(plantingWindow);
-                    plantingHarvestDates.setAlternativeDate(alternativeDate);
-                    closeActivity(backPressed);
-                }
-            });
+            if (scheduledDate == null) {
+                scheduledDate = new ScheduledDate();
+            }
+            scheduledDate.setHarvestDate(selectedHarvestDate);
+            scheduledDate.setHarvestWindow(harvestWindow);
+            scheduledDate.setPlantingDate(selectedPlantingDate);
+            scheduledDate.setPlantingWindow(plantingWindow);
+            scheduledDate.setAlternativeDate(alternativeDate);
+
+            database.scheduleDateDao().insert(scheduledDate);
+            closeActivity(backPressed);
+
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
@@ -262,11 +256,5 @@ public class DatesActivity extends BaseActivity {
             }
         });
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

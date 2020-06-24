@@ -13,19 +13,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.AdapterGridTwoLine;
+import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityRootYieldBinding;
-import com.iita.akilimo.entities.CurrentFieldYield;
+import com.iita.akilimo.entities.FieldYield;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
-import com.iita.akilimo.utils.RealmProcessor;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.widget.SpacingItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.Realm;
+;
 
 public class RootYieldActivity extends BaseActivity {
 
@@ -39,9 +39,8 @@ public class RootYieldActivity extends BaseActivity {
     AppCompatButton btnCancel;
 
     ActivityRootYieldBinding binding;
-    Realm myRealm;
 
-    private CurrentFieldYield savedYield;
+    private FieldYield savedYield;
     private MathHelper mathHelper;
     private AdapterGridTwoLine mAdapter;
 
@@ -60,17 +59,16 @@ public class RootYieldActivity extends BaseActivity {
         binding = ActivityRootYieldBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        realmProcessor = new RealmProcessor();
+        context = this;
+        database = AppDatabase.getDatabase(context);
         mathHelper = new MathHelper();
-        myRealm = Realm.getDefaultInstance();
-
-        MandatoryInfo mandatoryInfo = realmProcessor.getMandatoryInfo();
+        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
             countryCode = mandatoryInfo.getCountryCode();
             areaUnit = mandatoryInfo.getAreaUnit();
         }
 
-        savedYield = realmProcessor.getCurrentFieldYield();
+        savedYield = database.fieldYieldDao().findOne();
         if (savedYield != null) {
             selectedYieldAmount = savedYield.getYieldAmount();
         }
@@ -102,7 +100,7 @@ public class RootYieldActivity extends BaseActivity {
         recyclerView.addItemDecoration(new SpacingItemDecoration(2, Tools.dpToPx(this, 3), true));
         recyclerView.setHasFixedSize(true);
 
-        List<CurrentFieldYield> items = setYieldData(areaUnit);
+        List<FieldYield> items = setYieldData(areaUnit);
         //set data and list adapter
         mAdapter = new AdapterGridTwoLine(this);
         recyclerView.setAdapter(mAdapter);
@@ -112,14 +110,15 @@ public class RootYieldActivity extends BaseActivity {
         mAdapter.setOnItemClickListener((view, fieldYield, position) -> {
             mAdapter.setActiveRowIndex(position);
             selectedYieldAmount = fieldYield.getYieldAmount();
+            String yieldLabel = fieldYield.getFieldYieldLabel();
             try {
-                myRealm.executeTransaction(realm -> {
-                    if (savedYield == null) {
-                        savedYield = realm.createObject(CurrentFieldYield.class, Tools.generateUUID());
-                    }
-                    savedYield.setYieldAmount(selectedYieldAmount);
-                });
-                //closeActivity(false);
+                if (savedYield == null) {
+                    savedYield = new FieldYield();
+                }
+                savedYield.setYieldAmount(selectedYieldAmount);
+                savedYield.setFieldYieldLabel(yieldLabel);
+                database.fieldYieldDao().insert(savedYield);
+
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                 Crashlytics.logException(ex);
@@ -146,7 +145,7 @@ public class RootYieldActivity extends BaseActivity {
         closeActivity(backPressed);
     }
 
-    private List<CurrentFieldYield> setYieldData(@NonNull String areaUnit) {
+    private List<FieldYield> setYieldData(@NonNull String areaUnit) {
         String rd_3_tonnes;
         String rd_6_tonnes;
         String rd_9_tonnes;
@@ -178,7 +177,7 @@ public class RootYieldActivity extends BaseActivity {
 
         }
 
-        List<CurrentFieldYield> items = new ArrayList<>();
+        List<FieldYield> items = new ArrayList<>();
         items.add(yieldObject(imageIDs[0], rd_3_tonnes, 3.75));
         items.add(yieldObject(imageIDs[1], rd_6_tonnes, 11.25));
         items.add(yieldObject(imageIDs[2], rd_9_tonnes, 18.75));
@@ -188,19 +187,13 @@ public class RootYieldActivity extends BaseActivity {
         return items;
     }
 
-    private CurrentFieldYield yieldObject(Integer imageID, String yieldLabel, double fieldYieldAmount) {
+    private FieldYield yieldObject(Integer imageID, String yieldLabel, double fieldYieldAmount) {
         double currentFieldYieldAmount = mathHelper.computeFieldYield(fieldYieldAmount, currency);
-        CurrentFieldYield cfy = new CurrentFieldYield();
+        FieldYield cfy = new FieldYield();
         cfy.setYieldAmount(currentFieldYieldAmount);
         cfy.setImageId(imageID);
         cfy.setFieldYieldLabel(yieldLabel);
 
         return cfy;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRealm.close();
     }
 }

@@ -22,11 +22,11 @@ import com.iita.akilimo.databinding.FragmentSummaryBinding;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.MandatoryInfo;
-import com.iita.akilimo.entities.PlantingHarvestDates;
-import com.iita.akilimo.entities.TimeLineModel;
-import com.iita.akilimo.entities.TimelineAttributes;
+import com.iita.akilimo.entities.ScheduledDate;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.interfaces.IFragmentCallBack;
+import com.iita.akilimo.models.TimeLineModel;
+import com.iita.akilimo.models.TimelineAttributes;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.enums.StepStatus;
 
@@ -50,7 +50,7 @@ public class SummaryFragment extends BaseFragment {
     private LocationInfo location;
     private MandatoryInfo mandatoryInfo;
     private CurrentPractice currentPractice;
-    private PlantingHarvestDates plantingHarvestDates;
+    private ScheduledDate scheduledDate;
 
     private IFragmentCallBack fragmentCallBack;
     private MyTimeLineAdapter adapter;
@@ -117,11 +117,6 @@ public class SummaryFragment extends BaseFragment {
     }
 
     @Override
-    protected void realmInstance() {
-
-    }
-
-    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = binding.timelineRecycler;
@@ -141,15 +136,13 @@ public class SummaryFragment extends BaseFragment {
         StringBuilder ploughStr = new StringBuilder();
         StringBuilder ridgeStr = new StringBuilder();
 
-        if (realmProcessor == null) {
+        if (database == null) {
             return;
         }
-
-        location = realmProcessor.getLocationInfo();
-        mandatoryInfo = realmProcessor.getMandatoryInfo();
-        currentPractice = realmProcessor.getCurrentPractice();
-        plantingHarvestDates = realmProcessor.getPlantingHarvestDates();
-        countryName = "";
+        location = database.locationInfoDao().findOne();
+        mandatoryInfo = database.mandatoryInfoDao().findOne();
+        currentPractice = database.currentPracticeDao().findOne();
+        scheduledDate = database.scheduleDateDao().findOne();
 
         if (!Strings.isEmptyOrWhitespace(mandatoryInfo.getCountryName())) {
             countrySelected = true;
@@ -172,9 +165,9 @@ public class SummaryFragment extends BaseFragment {
             locationPicked = lat != 0 || lon != 0;
         }
 
-        if (plantingHarvestDates != null) {
-            plantingDate = plantingHarvestDates.getPlantingDate();
-            harvestDate = plantingHarvestDates.getHarvestDate();
+        if (scheduledDate != null) {
+            plantingDate = scheduledDate.getPlantingDate();
+            harvestDate = scheduledDate.getHarvestDate();
             plantingDateProvided = !Strings.isEmptyOrWhitespace(plantingDate);
             harvestDateProvided = !Strings.isEmptyOrWhitespace(plantingDate);
         }

@@ -2,6 +2,7 @@ package com.iita.akilimo.views.fragments.dialog;
 
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -22,14 +23,14 @@ import androidx.annotation.Nullable;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
+import com.iita.akilimo.entities.FertilizerPrice;
+import com.iita.akilimo.entities.InterCropFertilizer;
 import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IDismissIntercropListener;
-import com.iita.akilimo.models.FertilizerPrices;
-import com.iita.akilimo.models.InterCropFertilizer;
 
 import java.util.List;
 
-import io.realm.Realm;
+;
 
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
@@ -58,7 +59,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
 
 
     private InterCropFertilizer fertilizer;
-    private List<FertilizerPrices> fertilizerPricesList;
+    private List<FertilizerPrice> fertilizerPricesList;
 
     private double savedPricePerBag = 0.0;
     private String countryCode;
@@ -69,8 +70,8 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
 
     private IDismissIntercropListener onDismissListener;
 
-    public IntercropFertilizerPriceDialogFragment() {
-        // Required empty public constructor
+    public IntercropFertilizerPriceDialogFragment(Context context) {
+        this.context = context;
     }
 
 
@@ -146,32 +147,25 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
                 isPriceValid = true;
                 editExactFertilizerPrice.setError(null);
             }
-            try (Realm myRealm = Realm.getDefaultInstance()) {
-                myRealm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        fertilizer.setPrice(bagPrice);
-                        fertilizer.setPricePerBag(savedPricePerBag);
-                        fertilizer.setPriceRange(bagPriceRange);
-                        fertilizer.setSelected(true);
-                        fertilizer.setExactPrice(isExactPriceRequired);
-                    }
-                });
-                if (isPriceValid) {
-                    priceSpecified = true;
-                    removeSelected = false;
-                    dismiss();
-                }
-            } catch (Exception ex) {
-                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                Crashlytics.logException(ex);
+
+            fertilizer.setPrice(bagPrice);
+            fertilizer.setPricePerBag(savedPricePerBag);
+            fertilizer.setPriceRange(bagPriceRange);
+            fertilizer.setSelected(true);
+            fertilizer.setExactPrice(isExactPriceRequired);
+
+            if (isPriceValid) {
+                priceSpecified = true;
+                removeSelected = false;
+                dismiss();
             }
+
 
         });
 
         radioGroup.setOnCheckedChangeListener((radioGroup, i) -> radioSelected(radioGroup));
-        if (realmProcessor != null) {
-            fertilizerPricesList = realmProcessor.getFertilizerPrices(countryCode);
+        if (database != null) {
+            fertilizerPricesList = database.fertilizerPriceDao().findAllByCountry(countryCode);
             addPriceRadioButtons(fertilizerPricesList, fertilizer);
         }
         return dialog;
@@ -184,7 +178,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
         long itemTagIndex = (long) radioButton.getTag();
 
         try {
-            FertilizerPrices pricesResp = fertilizerPricesList.get((int) itemTagIndex);
+            FertilizerPrice pricesResp = fertilizerPricesList.get((int) itemTagIndex);
             isExactPriceRequired = false;
             isPriceValid = true;
             savedPricePerBag = pricesResp.getPricePerBag();
@@ -207,7 +201,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
         }
     }
 
-    private void addPriceRadioButtons(List<FertilizerPrices> fertilizerPricesList, InterCropFertilizer fertilizer) {
+    private void addPriceRadioButtons(List<FertilizerPrice> fertilizerPricesList, InterCropFertilizer fertilizer) {
         radioGroup.removeAllViews();
         double selectedPrice = 0.0;
         if (fertilizer != null) {
@@ -223,7 +217,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
                 editExactFertilizerPrice.setText(String.valueOf(exactPrice));
             }
         }
-        for (FertilizerPrices pricesResp : fertilizerPricesList) {
+        for (FertilizerPrice pricesResp : fertilizerPricesList) {
 
             long listIndex = pricesResp.getPriceId() - 1;//reduce by one so as to match the index in the list
 
