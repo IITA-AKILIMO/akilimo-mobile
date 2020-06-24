@@ -55,8 +55,8 @@ public class WeedControlCostsActivity extends BaseActivity {
         binding = ActivityWeedControlCostBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        database = AppDatabase.getDatabase(context);
         context = this;
+        database = AppDatabase.getDatabase(context);
         mathHelper = new MathHelper();
 
         MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();

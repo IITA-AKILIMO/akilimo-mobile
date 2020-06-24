@@ -150,6 +150,9 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
 
     @Override
     public void onDataReceived(@NotNull ProfileInfo profileInfo) {
+
+        //update the profile info
+        database.profileInfoDao().update(profileInfo);
         buildRecommendationData();
     }
 
