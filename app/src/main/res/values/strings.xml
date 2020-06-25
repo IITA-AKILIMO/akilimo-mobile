@@ -204,7 +204,7 @@
     <string name="lbl_please_provide_unit_price">Please provide unit price</string>
 
     <string name="lbl_permission_rationale">Please allow the following permissions for the app to work optimally</string>
-    <string name="lbl_place_name">Your farm location</string>
+    <string name="lbl_place_name">Your field location</string>
     <string name="lbl_select_location">Select a location</string>
 
     <!--LocationPickerActivity activity-->
