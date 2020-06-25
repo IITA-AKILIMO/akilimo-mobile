@@ -4,10 +4,10 @@ package com.iita.akilimo.rest;
 import android.app.Activity;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
@@ -137,10 +137,22 @@ public class RestService {
     }
 
     private RetryPolicy retryPolicy() {
-        return new DefaultRetryPolicy(
-                restParameters.getInitialTimeout(),
-                restParameters.getMaxRetries(),
-                restParameters.getBackoffMultiplier());
+        return new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return restParameters.getInitialTimeout();
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return restParameters.getMaxRetries();
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+
+            }
+        };
     }
 
 

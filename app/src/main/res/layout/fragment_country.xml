@@ -44,5 +44,8 @@
             android:spinnerMode="dialog"
             tools:listitem="@android:layout/simple_dropdown_item_1line" />
 
+        <include
+            android:id="@+id/single_button"
+            layout="@layout/bottom_single_button_layout" />
     </LinearLayout>
 </RelativeLayout>

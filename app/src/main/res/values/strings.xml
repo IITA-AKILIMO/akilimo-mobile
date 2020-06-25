@@ -223,6 +223,7 @@
     <string name="lbl_get_recommendations">Get recommendations</string>
     <string name="lbl_rec_header">To get a more tailored recommendation, please provide information on the items below</string>
     <string name="lbl_compute_error">Unable to compute recommendations, please try again</string>
+    <string name="lbl_compute_timeout_error">Unable to compute recommendations, please try again</string>
 
     <string name="lbl_rec_sample">We recommend to not apply any fertilizer. We do not expect that fertilizer application will result in a profitable yield increase in your situation.</string>
     <string name="lbl_rec_intro">Akilimo can advise you on how to grow cassava.\nWhat advise can we help you with?</string>

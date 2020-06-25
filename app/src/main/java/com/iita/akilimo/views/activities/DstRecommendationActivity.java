@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.RequestQueue;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
@@ -216,6 +217,11 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
 
             @Override
             public void onError(@NonNull VolleyError volleyError) {
+                if (volleyError instanceof TimeoutError) {
+                    // your stuf
+                }else{
+
+                }
                 lyt_progress.setVisibility(View.GONE);
                 errorImage.setVisibility(View.VISIBLE);
                 errorLabel.setVisibility(View.VISIBLE);

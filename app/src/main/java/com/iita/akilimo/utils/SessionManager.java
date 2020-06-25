@@ -109,7 +109,7 @@ public class SessionManager {
         strVersion.append("Version: ");
         strVersion.append(BuildConfig.VERSION_NAME);
         strVersion.append("\n");
-        strVersion.append("Release title: ");
+        strVersion.append("Release date: ");
         strVersion.append(getAppBuildDate());
 
         return strVersion.toString();

@@ -10,14 +10,14 @@ android {
     def releaseVersionName = computeBuildNumber()
     def appVersionCode = computeVersionCode()
 
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    compileSdkVersion 30
+    buildToolsVersion "30.0.0-rc4"
     ndkVersion "21.1.6352462"
 
     defaultConfig {
         applicationId "com.iita.akilimo"
         minSdkVersion 19
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode appVersionCode
         versionName releaseVersionName
         multiDexEnabled true
@@ -33,6 +33,10 @@ android {
             resValue("string", "PORT_NUMBER", "9080")
             versionNameSuffix ".debug"
 //            pseudoLocalesEnabled true
+        }
+        staging {
+            initWith release
+            versionNameSuffix ".testing"
         }
     }
     buildFeatures {
@@ -78,7 +82,8 @@ static def computeBuildNumber() {
 
 def computeVersionCode() {
     long unixTimestamp = Instant.now().getEpochSecond()
-    def versionCode = System.env.RELEASE_VERSION ? unixTimestamp.intValue() : 1592922755
+//    def versionCode = System.env.RELEASE_VERSION ? unixTimestamp.intValue() : 1592922755
+    def versionCode = unixTimestamp.intValue()
 
     println("This build version number is " + versionCode)
     return versionCode

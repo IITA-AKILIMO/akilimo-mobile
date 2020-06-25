@@ -12,6 +12,7 @@ import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
@@ -38,6 +39,7 @@ import java.util.List;
 public class CountryFragment extends BaseFragment {
 
     AppCompatTextView title;
+    AppCompatButton btnSave;
     Spinner countrySpinner;
     FragmentCountryBinding binding;
 
@@ -98,8 +100,11 @@ public class CountryFragment extends BaseFragment {
 
         title = binding.title;
         countrySpinner = binding.countrySpinner;
+        btnSave = binding.singleButton.btnGetRecommendation;
 
         //save this data
+
+        btnSave.setText(getString(R.string.lbl_save));
 
         final List<String> countries = new ArrayList<>();
         final List<Integer> countryImages = new ArrayList<>();
@@ -140,13 +145,14 @@ public class CountryFragment extends BaseFragment {
                         countryCode = EnumCountry.OTHERS.countryCode();
                         break;
                 }
-                updateSelectedCountry(position);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+        btnSave.setOnClickListener(view1 -> updateSelectedCountry(selectedCountryIndex));
     }
 
     private void updateSelectedCountry(int selectedCountryIndex) {
