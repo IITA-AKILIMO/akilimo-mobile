@@ -10,6 +10,7 @@ open class FieldYield {
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null
     var yieldAmount = 0.0
+
     var fieldYieldLabel: String? = null
 
     @Transient

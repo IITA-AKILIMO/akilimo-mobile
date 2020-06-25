@@ -188,9 +188,9 @@ public class RootYieldActivity extends BaseActivity {
     }
 
     private FieldYield yieldObject(Integer imageID, String yieldLabel, double fieldYieldAmount) {
-        double currentFieldYieldAmount = mathHelper.computeFieldYield(fieldYieldAmount, currency);
+        //double currentFieldYieldAmount = mathHelper.computeFieldYield(fieldYieldAmount, currency);
         FieldYield cfy = new FieldYield();
-        cfy.setYieldAmount(currentFieldYieldAmount);
+        cfy.setYieldAmount(fieldYieldAmount);
         cfy.setImageId(imageID);
         cfy.setFieldYieldLabel(yieldLabel);
 

@@ -51,6 +51,7 @@ public class BuildComputeData {
 
     private static final int DEFAULT_FIELD_YIELD = 11;
     private static final int DEFAULT_UNAVAILABLE_INT = 0;
+    private static final int DEFAULT_UNIT_WEIGHT = 50;
     private static final String DEFAULT_LMNO_BASIS = "areaUnit";
     private static final String DEFAULT_USERNAME = "Akilimo Farmer";
     private static final String DEFAULT_FIELD_DESC = "Akilimo field";
@@ -65,7 +66,7 @@ public class BuildComputeData {
     private String mobileCountryCode = DEFAULT_UNAVAILABLE;
 
 
-    private int cassavaUnitWeight = DEFAULT_UNAVAILABLE_INT;
+    private int cassavaUnitWeight = DEFAULT_UNIT_WEIGHT;
     private double cassavaUnitPriceLocal;
     private double maizeUnitPriceLocal;
     private double potatoUnitPriceLocal;
@@ -117,15 +118,13 @@ public class BuildComputeData {
     private String methodRidging = DEFAULT_PRACTICE_METHOD;
     private String methodWeeding = DEFAULT_PRACTICE_METHOD;
 
-    private double cassavaUnitPrice = 0.0;
-
     private String maizeProdType = DEFAULT_MAIZE_PD;
-    private int maizeUnitWeight;
+    private int maizeUnitWeight = DEFAULT_UNIT_WEIGHT;
     private double maizeUnitPrice;
     private String currentMaizePerformance = DEFAULT_MAIZE_PERFORMANCE_VALUE;
 
     private String sweetPotatoProdType = DEFAULT_SWEET_POTATO_PD;
-    private int sweetPotatoUnitWeight;
+    private int sweetPotatoUnitWeight = DEFAULT_UNIT_WEIGHT;
     private double sweetPotatoUnitPrice;
 
     private String deviceToken = DEFAULT_USERNAME;
@@ -138,6 +137,7 @@ public class BuildComputeData {
     private double cassavaUpmTwo;
     private double cassavaUppOne;
     private double cassavaUppTwo;
+    private double cassavaUnitPrice = 0.0;
     private String cassavaProduceType = DEFAULT_CASSAVA_PD;
     private String starchFactoryName = DEFAULT_UNAVAILABLE;
 
@@ -407,7 +407,9 @@ public class BuildComputeData {
             }
 
             cassavaProduceType = cassavaMarket.getProduceType();
-            cassavaUnitWeight = cassavaMarket.getUnitWeight();
+            int uw = cassavaMarket.getUnitWeight();
+            cassavaUnitWeight = uw <= 0 ? DEFAULT_UNIT_WEIGHT : uw;
+
             cassavaUnitPrice = cassavaMarket.getUnitPrice();
         }
         computeRequest.setStarchFactoryName(starchFactoryName);
@@ -432,6 +434,10 @@ public class BuildComputeData {
             maizeProdType = maizeMarket.getProduceType();
             maizeUnitWeight = maizeMarket.getUnitWeight();
             maizeUnitPrice = maizeMarket.getUnitPrice();
+
+            int uw = maizeMarket.getUnitWeight();
+            maizeUnitWeight = uw <= 0 ? DEFAULT_UNIT_WEIGHT : uw;
+
         }
         computeRequest.setMaizeProduceType(maizeProdType);
         computeRequest.setMaizeUnitWeight(maizeUnitWeight);
@@ -446,6 +452,9 @@ public class BuildComputeData {
             sweetPotatoProdType = potatoMarket.getProduceType();
             sweetPotatoUnitWeight = potatoMarket.getUnitWeight();
             sweetPotatoUnitPrice = potatoMarket.getUnitPrice();
+
+            int uw = potatoMarket.getUnitWeight();
+            sweetPotatoUnitWeight = uw <= 0 ? DEFAULT_UNIT_WEIGHT : uw;
         }
 
         computeRequest.setSweetPotatoProduceType(sweetPotatoProdType);
