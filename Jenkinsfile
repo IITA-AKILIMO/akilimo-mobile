@@ -10,6 +10,8 @@ pipeline {
         sh 'printenv | sort'
         sh 'git fetch --tags'
         sh 'ghr --version'
+        sh 'echo $ANDROID_HOME >> local.properties'
+        sh 'cat local.properties'
       }
     }
 
