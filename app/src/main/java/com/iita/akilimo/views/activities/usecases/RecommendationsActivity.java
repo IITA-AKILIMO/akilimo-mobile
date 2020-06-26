@@ -15,6 +15,7 @@ import com.iita.akilimo.adapters.AdapterListAnimation;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityRecommendationsActivityBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
+import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.Recommendations;
 import com.iita.akilimo.utils.ItemAnimation;
@@ -51,11 +52,10 @@ public class RecommendationsActivity extends BaseActivity {
         context = this;
         database = AppDatabase.getDatabase(context);
 
-
-        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
-        if (mandatoryInfo != null) {
-            countryCode = mandatoryInfo.getCountryCode();
-            currency = mandatoryInfo.getCurrency();
+        ProfileInfo profileInfo = database.profileInfoDao().findOne();
+        if (profileInfo != null) {
+            countryCode = profileInfo.getCountryCode();
+            currency = profileInfo.getCurrency();
         }
 
         toolbar = binding.toolbarLayout.toolbar;

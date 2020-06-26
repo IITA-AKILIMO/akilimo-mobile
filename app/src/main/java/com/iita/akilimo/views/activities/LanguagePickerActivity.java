@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
@@ -33,6 +34,7 @@ public class LanguagePickerActivity extends BaseActivity {
 
     private Spinner languageSpinner;
     private Toolbar toolbar;
+    private TextView versionInfo;
     private AppCompatButton btnUpdateLanguage;
 
     ActivityLanguagePickerBinding binding;
@@ -51,6 +53,7 @@ public class LanguagePickerActivity extends BaseActivity {
         sessionManager = new SessionManager(this);
 
         toolbar = binding.toolbarLayout.toolbar;
+        versionInfo = binding.contentLanguage.versionInfo;
         languageSpinner = binding.contentLanguage.languageSpinner;
         btnUpdateLanguage = binding.contentLanguage.btnUpdateLanguage;
 
@@ -131,5 +134,6 @@ public class LanguagePickerActivity extends BaseActivity {
 
     private void updateToolBarTitle() {
         getSupportActionBar().setTitle(R.string.title_activity_language_picker);
+        versionInfo.setText(sessionManager.getAppVersion());
     }
 }

@@ -22,6 +22,7 @@ import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityInvestmentAmountBinding;
 import com.iita.akilimo.entities.InvestmentAmount;
 import com.iita.akilimo.entities.MandatoryInfo;
+import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
 
@@ -195,6 +196,12 @@ public class InvestmentAmountActivity extends BaseActivity {
 
     private void updateLabels() {
 
+        ProfileInfo profileInfo = database.profileInfoDao().findOne();
+        if (profileInfo != null) {
+            countryCode = profileInfo.getCountryCode();
+            currency = profileInfo.getCurrency();
+        }
+
         MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
             fieldSize = mandatoryInfo.getAreaSize();
@@ -202,7 +209,6 @@ public class InvestmentAmountActivity extends BaseActivity {
             fieldArea = String.valueOf(fieldSize);
             fieldAreaAcre = String.valueOf(fieldSizeAcre);
             areaUnit = mandatoryInfo.getAreaUnit();
-            currency = mandatoryInfo.getCurrency();
         }
         selectedFieldArea = String.format("%s %s", fieldSize, areaUnit);
 

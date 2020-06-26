@@ -30,6 +30,7 @@ import com.iita.akilimo.databinding.ActivityFertilizersBinding;
 import com.iita.akilimo.entities.FertilizerPrice;
 import com.iita.akilimo.entities.InterCropFertilizer;
 import com.iita.akilimo.entities.MandatoryInfo;
+import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.rest.RestParameters;
@@ -104,10 +105,12 @@ public class IntercropFertilizersActivity extends BaseActivity {
             useCase = intent.getParcelableExtra(useCaseTag);
         }
 
-        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
-        if (mandatoryInfo != null) {
-            countryCode = mandatoryInfo.getCountryCode();
+        ProfileInfo profileInfo = database.profileInfoDao().findOne();
+        if (profileInfo != null) {
+            countryCode = profileInfo.getCountryCode();
+            currency = profileInfo.getCurrency();
         }
+
         initToolbar();
         initComponent();
     }

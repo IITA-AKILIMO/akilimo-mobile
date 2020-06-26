@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey
 open class ProfileInfo {
 
     @PrimaryKey(autoGenerate = true)
-    var profileId: Int = 0
+    var profileId: Int? = null
     var deviceToken: String? = null
 
     var userName: String? = null
@@ -28,6 +28,11 @@ open class ProfileInfo {
     var selectedGenderIndex: Int = 0
     var sendEmail: Boolean = false
     var sendSms: Boolean = false
+
+    var countryCode: String? = null
+    var countryName: String? = null
+    var selectedCountryIndex: Int? = null
+    var currency: String? = null
 
     fun getNames(): String {
         return String.format("%s %s", firstName, lastName)

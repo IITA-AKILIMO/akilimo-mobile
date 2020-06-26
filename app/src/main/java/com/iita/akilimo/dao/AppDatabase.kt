@@ -30,7 +30,7 @@ import java.util.concurrent.Executors
         ScheduledDate::class,
         StarchFactory::class,
         UseCases::class
-    ], version = 1, exportSchema = true
+    ], version = 1, exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -74,7 +74,7 @@ abstract class AppDatabase : RoomDatabase() {
                     if (INSTANCE == null) {
                         INSTANCE = Room.databaseBuilder(
                             context.applicationContext,
-                            AppDatabase::class.java, "akilimo_db"
+                            AppDatabase::class.java, "AKILIMO_26_JUN"
                         )
                             .fallbackToDestructiveMigration()
                             .allowMainThreadQueries()

@@ -8,14 +8,18 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Entity(tableName = "fertilizer_price",
-    indices = arrayOf(Index(value = ["fertilizerCountry"], unique = true)))
+@Entity(
+    tableName = "fertilizer_price",
+    indices = arrayOf(Index(value = ["fertilizerCountry"], unique = true))
+)
 open class FertilizerPrice {
+
+    @PrimaryKey(autoGenerate = true)
+    var id: Int? = null
 
     @JsonProperty("recordId")
     var recordId = 0
 
-    @PrimaryKey(autoGenerate = false)
     @JsonProperty("priceId")
     var priceId = 0
 

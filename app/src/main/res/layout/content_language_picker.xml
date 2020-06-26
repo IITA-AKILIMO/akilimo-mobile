@@ -35,4 +35,14 @@
         android:theme="@style/Button.Green"
         app:cornerRadius="@dimen/spacing_small" />
 
+    <TextView
+        android:id="@+id/versionInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:fontFamily="@font/ubuntu"
+        android:text="@string/app_name"
+        android:textAlignment="center"
+        android:textColor="@color/deep_purple_A100" />
+
 </LinearLayout>

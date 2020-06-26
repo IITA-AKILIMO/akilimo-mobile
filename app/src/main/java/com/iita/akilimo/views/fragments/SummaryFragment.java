@@ -22,6 +22,7 @@ import com.iita.akilimo.databinding.FragmentSummaryBinding;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.MandatoryInfo;
+import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.entities.ScheduledDate;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.interfaces.IFragmentCallBack;
@@ -144,9 +145,10 @@ public class SummaryFragment extends BaseFragment {
         currentPractice = database.currentPracticeDao().findOne();
         scheduledDate = database.scheduleDateDao().findOne();
 
-        if (!Strings.isEmptyOrWhitespace(mandatoryInfo.getCountryName())) {
+        ProfileInfo profileInfo = database.profileInfoDao().findOne();
+        if (profileInfo != null) {
             countrySelected = true;
-            countryName = mandatoryInfo.getCountryName();
+            countryName = profileInfo.getCountryName();
         }
         if (!Strings.isEmptyOrWhitespace(mandatoryInfo.getAreaUnit())) {
             areaUnitSelected = true;

@@ -16,6 +16,7 @@ import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityManualTillageCostBinding;
 import com.iita.akilimo.entities.FieldOperationCost;
 import com.iita.akilimo.entities.MandatoryInfo;
+import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.CostBaseActivity;
 import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.utils.MathHelper;
@@ -73,12 +74,16 @@ public class ManualTillageCostActivity extends CostBaseActivity {
 
         MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
-            currency = mandatoryInfo.getCurrency();
             areaUnit = mandatoryInfo.getAreaUnit();
             fieldSize = mandatoryInfo.getAreaSize();
-            countryCode = mandatoryInfo.getCountryCode();
-            currency = mandatoryInfo.getCurrency();
         }
+
+        ProfileInfo profileInfo = database.profileInfoDao().findOne();
+        if (profileInfo != null) {
+            countryCode = profileInfo.getCountryCode();
+            currency = profileInfo.getCurrency();
+        }
+
         initToolbar();
         initComponent();
 

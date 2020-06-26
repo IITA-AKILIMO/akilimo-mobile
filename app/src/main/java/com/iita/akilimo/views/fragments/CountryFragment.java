@@ -12,6 +12,7 @@ import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
@@ -38,12 +39,12 @@ import java.util.List;
 public class CountryFragment extends BaseFragment {
 
     AppCompatTextView title;
+    AppCompatButton btnSave;
     Spinner countrySpinner;
     FragmentCountryBinding binding;
 
 
     private ProfileInfo profileInfo;
-    private MandatoryInfo mandatoryInfo;
     private String name = "";
 
     private int selectedCountryIndex = -1;
@@ -74,15 +75,13 @@ public class CountryFragment extends BaseFragment {
     public void refreshData() {
         try {
             profileInfo = database.profileInfoDao().findOne();
-            mandatoryInfo = database.mandatoryInfoDao().findOne();
             if (profileInfo != null) {
                 name = profileInfo.getFirstName();
-            }
-            if (mandatoryInfo != null) {
-                selectedCountryIndex = mandatoryInfo.getSelectedCountryIndex();
-                countryCode = mandatoryInfo.getCountryCode();
+                selectedCountryIndex = profileInfo.getSelectedCountryIndex();
+                countryCode = profileInfo.getCountryCode();
                 countrySpinner.setSelection(selectedCountryIndex);
             }
+
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
@@ -98,8 +97,11 @@ public class CountryFragment extends BaseFragment {
 
         title = binding.title;
         countrySpinner = binding.countrySpinner;
+        btnSave = binding.singleButton.btnGetRecommendation;
 
         //save this data
+
+        btnSave.setText(getString(R.string.lbl_save));
 
         final List<String> countries = new ArrayList<>();
         final List<Integer> countryImages = new ArrayList<>();
@@ -140,26 +142,34 @@ public class CountryFragment extends BaseFragment {
                         countryCode = EnumCountry.OTHERS.countryCode();
                         break;
                 }
-                updateSelectedCountry(position);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+        btnSave.setOnClickListener(view1 -> updateSelectedCountry(selectedCountryIndex));
     }
 
     private void updateSelectedCountry(int selectedCountryIndex) {
-        mandatoryInfo = database.mandatoryInfoDao().findOne();
-        if (mandatoryInfo == null) {
-            mandatoryInfo = new MandatoryInfo();
+        if (profileInfo == null) {
+            profileInfo = new ProfileInfo();
         }
 
-        mandatoryInfo.setSelectedCountryIndex(selectedCountryIndex);
-        mandatoryInfo.setCountryCode(countryCode);
-        mandatoryInfo.setCountryName(countryName);
-        mandatoryInfo.setCurrency(currency);
+        profileInfo.setSelectedCountryIndex(selectedCountryIndex);
+        profileInfo.setCountryCode(countryCode);
+        profileInfo.setCountryName(countryName);
+        profileInfo.setCurrency(currency);
 
-        database.mandatoryInfoDao().insert(mandatoryInfo);
+        int data = 0;
+        if (profileInfo.getProfileId() != null) {
+            int id = profileInfo.getProfileId();
+            if (id > 0) {
+                database.profileInfoDao().update(profileInfo);
+                return;
+            }
+        }
+        database.profileInfoDao().insert(profileInfo);
     }
 }

@@ -13,10 +13,10 @@ interface FieldYieldDao {
     fun findOne(): FieldYield?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg fieldYield: FieldYield)
+    fun insert(fieldYield: FieldYield)
 
     @Update
-    fun update(vararg fieldYield: FieldYield?)
+    fun update(fieldYield: FieldYield?)
 
     @Delete
     fun delete(fieldYield: FieldYield?)

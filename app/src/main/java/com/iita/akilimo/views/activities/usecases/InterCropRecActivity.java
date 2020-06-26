@@ -18,6 +18,7 @@ import com.iita.akilimo.adapters.RecOptionsAdapter;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityInterCropRecBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
+import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
@@ -77,11 +78,12 @@ public class InterCropRecActivity extends BaseActivity {
         database = AppDatabase.getDatabase(context);
 
 
-        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
-        if (mandatoryInfo != null) {
-            countryCode = mandatoryInfo.getCountryCode();
-            currency = mandatoryInfo.getCurrency();
+        ProfileInfo profileInfo = database.profileInfoDao().findOne();
+        if (profileInfo != null) {
+            countryCode = profileInfo.getCountryCode();
+            currency = profileInfo.getCurrency();
         }
+
         switch (countryCode) {
             case "NG":
                 recommendations = getString(R.string.title_maize_intercropping);

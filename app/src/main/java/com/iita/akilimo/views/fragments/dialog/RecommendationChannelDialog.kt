@@ -137,7 +137,7 @@ class RecommendationChannelDialog(
             if (dataIsValid) {
 
                 if (profileInfo == null) {
-
+                    profileInfo = ProfileInfo()
                 }
                 profileInfo?.mobileCode = (mobileCode)
                 profileInfo?.email = (email)

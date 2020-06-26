@@ -15,8 +15,8 @@ interface FertilizerPriceDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(vararg fieldYield: FertilizerPrice)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertAll(fertilizerPricesList: List<FertilizerPrice>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(fertilizerPricesList: List<FertilizerPrice>):LongArray?
 
     @Update
     fun update(vararg fieldYield: FertilizerPrice?)

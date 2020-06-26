@@ -204,7 +204,7 @@
     <string name="lbl_please_provide_unit_price">Please provide unit price</string>
 
     <string name="lbl_permission_rationale">Please allow the following permissions for the app to work optimally</string>
-    <string name="lbl_place_name">Your farm location</string>
+    <string name="lbl_place_name">Your field location</string>
     <string name="lbl_select_location">Select a location</string>
 
     <!--LocationPickerActivity activity-->
@@ -223,6 +223,7 @@
     <string name="lbl_get_recommendations">Get recommendations</string>
     <string name="lbl_rec_header">To get a more tailored recommendation, please provide information on the items below</string>
     <string name="lbl_compute_error">Unable to compute recommendations, please try again</string>
+    <string name="lbl_compute_timeout_error">Unable to compute recommendations, please try again</string>
 
     <string name="lbl_rec_sample">We recommend to not apply any fertilizer. We do not expect that fertilizer application will result in a profitable yield increase in your situation.</string>
     <string name="lbl_rec_intro">Akilimo can advise you on how to grow cassava.\nWhat advise can we help you with?</string>
@@ -310,10 +311,10 @@
     <string name="lbl_second_manual_plough_op">Second ploughing operation, manual by hand hoe</string>
     <string name="lbl_second_tractor_plough_op">Second ploughing operation, by tractor+plough</string>
     <string name="lbl_19000" translatable="false">19000</string>
-    <string name="lbl_10000" translatable="false">>10000</string>
-    <string name="lbl_15000" translatable="false">>15000</string>
-    <string name="lbl_8000" translatable="false">>8000</string>
-    <string name="lbl_7500" translatable="false">>7500</string>
+    <string name="lbl_10000" translatable="false">10000</string>
+    <string name="lbl_15000" translatable="false">15000</string>
+    <string name="lbl_8000" translatable="false">8000</string>
+    <string name="lbl_7500" translatable="false">7500</string>
     <string name="lbl_tractor_harrow_op">Harrowing, by tractor+harrow</string>
     <string name="lbl_manual_ridging_op">Ridging, manual by hand hoe</string>
     <string name="lbl_tractor_ridger">Ridging, by tractor+ridger</string>
@@ -339,7 +340,7 @@
     <string name="lbl_first_name">First Name</string>
     <string name="lbl_last_name">Last Name</string>
     <string name="lbl_farm_name">Farm name</string>
-    <string name="lbl_farm_name_title">If you have more than one farm, please give this farm a name</string>
+    <string name="lbl_farm_name_title">If you have more than one field, please give this field a name</string>
     <string name="lbl_email_address_hint">Email address (used to send recommendations)</string>
     <string name="lbl_email_address">Email address</string>
     <string name="lbl_phone_number">Phone number</string>
