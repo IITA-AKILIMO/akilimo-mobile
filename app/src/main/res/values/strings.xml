@@ -311,10 +311,10 @@
     <string name="lbl_second_manual_plough_op">Second ploughing operation, manual by hand hoe</string>
     <string name="lbl_second_tractor_plough_op">Second ploughing operation, by tractor+plough</string>
     <string name="lbl_19000" translatable="false">19000</string>
-    <string name="lbl_10000" translatable="false">>10000</string>
-    <string name="lbl_15000" translatable="false">>15000</string>
-    <string name="lbl_8000" translatable="false">>8000</string>
-    <string name="lbl_7500" translatable="false">>7500</string>
+    <string name="lbl_10000" translatable="false">10000</string>
+    <string name="lbl_15000" translatable="false">15000</string>
+    <string name="lbl_8000" translatable="false">8000</string>
+    <string name="lbl_7500" translatable="false">7500</string>
     <string name="lbl_tractor_harrow_op">Harrowing, by tractor+harrow</string>
     <string name="lbl_manual_ridging_op">Ridging, manual by hand hoe</string>
     <string name="lbl_tractor_ridger">Ridging, by tractor+ridger</string>
