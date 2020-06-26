@@ -10,7 +10,7 @@ pipeline {
         sh 'printenv | sort'
         sh 'git fetch --tags'
         sh 'ghr --version'
-        sh 'echo "sdk.dir=$ANDROID_HOME" >> local.properties'
+        sh 'echo "sdk.dir=$GRADLE_DROID" >> local.properties'
         sh 'cat local.properties'
       }
     }
