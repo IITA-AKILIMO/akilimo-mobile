@@ -25,6 +25,7 @@ import com.iita.akilimo.databinding.ActivitySweetPotatoMarketBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.PotatoMarket;
 import com.iita.akilimo.entities.PotatoPrice;
+import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.rest.RestParameters;
@@ -92,10 +93,10 @@ public class SweetPotatoMarketActivity extends BaseActivity {
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
 
-        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
-        if (mandatoryInfo != null) {
-            countryCode = mandatoryInfo.getCountryCode();
-            currency = mandatoryInfo.getCurrency();
+        ProfileInfo profileInfo = database.profileInfoDao().findOne();
+        if (profileInfo != null) {
+            countryCode = profileInfo.getCountryCode();
+            currency = profileInfo.getCurrency();
         }
 
         toolbar = binding.toolbar;

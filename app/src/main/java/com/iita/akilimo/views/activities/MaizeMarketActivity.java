@@ -28,6 +28,7 @@ import com.iita.akilimo.databinding.ActivityMaizeMarketBinding;
 import com.iita.akilimo.entities.MaizeMarket;
 import com.iita.akilimo.entities.MaizePrice;
 import com.iita.akilimo.entities.MandatoryInfo;
+import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.rest.RestParameters;
@@ -119,10 +120,10 @@ public class MaizeMarketActivity extends BaseActivity {
 
         maizeMarket = database.maizeMarketDao().findOne();
 
-        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
-        if (mandatoryInfo != null) {
-            countryCode = mandatoryInfo.getCountryCode();
-            currency = mandatoryInfo.getCurrency();
+        ProfileInfo profileInfo = database.profileInfoDao().findOne();
+        if (profileInfo != null) {
+            countryCode = profileInfo.getCountryCode();
+            currency = profileInfo.getCurrency();
         }
 
         initToolbar();

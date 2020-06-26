@@ -2,7 +2,6 @@ package com.iita.akilimo.dao
 
 import androidx.room.*
 import com.iita.akilimo.entities.MandatoryInfo
-import com.iita.akilimo.entities.ProfileInfo
 
 @Dao
 interface MandatoryInfoDao {
@@ -14,10 +13,10 @@ interface MandatoryInfoDao {
     fun findOne(): MandatoryInfo?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg users: MandatoryInfo)
+    fun insert(users: MandatoryInfo)
 
     @Update
-    fun update(vararg users: MandatoryInfo)
+    fun update(users: MandatoryInfo)
 
     @Delete
     fun delete(user: MandatoryInfo?)

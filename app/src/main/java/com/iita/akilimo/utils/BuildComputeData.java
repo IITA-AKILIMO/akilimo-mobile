@@ -229,6 +229,7 @@ public class BuildComputeData {
         ComputeRequest computeRequest = new ComputeRequest();
         MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         LocationInfo locationInfo = database.locationInfoDao().findOne();
+        ProfileInfo profileInfo = database.profileInfoDao().findOne();
         if (locationInfo != null) {
             computeRequest.setMapLat(locationInfo.getLatitude());
             computeRequest.setMapLong(locationInfo.getLongitude());
@@ -236,14 +237,16 @@ public class BuildComputeData {
         if (mandatoryInfo != null) {
             fieldArea = mandatoryInfo.getAreaSize();
             areaUnits = mandatoryInfo.getAreaUnit();
-            countryCode = mandatoryInfo.getCountryCode();
-
             computeRequest.setRiskAttitude(riskAtt);
 
-            computeRequest.setCurrency(mandatoryInfo.getCurrency());
-            computeRequest.setCountry(countryCode);
             computeRequest.setFieldArea(fieldArea);
             computeRequest.setAreaUnits(areaUnits);
+        }
+
+        if (profileInfo != null) {
+            countryCode = profileInfo.getCountryCode();
+            computeRequest.setCurrency(profileInfo.getCurrency());
+            computeRequest.setCountry(countryCode);
         }
         return computeRequest;
     }

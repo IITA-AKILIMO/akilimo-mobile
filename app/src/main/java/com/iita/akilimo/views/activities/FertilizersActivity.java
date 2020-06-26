@@ -30,6 +30,7 @@ import com.iita.akilimo.databinding.ActivityFertilizersBinding;
 import com.iita.akilimo.entities.Fertilizer;
 import com.iita.akilimo.entities.FertilizerPrice;
 import com.iita.akilimo.entities.MandatoryInfo;
+import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.rest.RestParameters;
@@ -97,10 +98,12 @@ public class FertilizersActivity extends BaseActivity {
             useCase = intent.getParcelableExtra(useCaseTag);
         }
 
-        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
-        if (mandatoryInfo != null) {
-            countryCode = mandatoryInfo.getCountryCode();
+        ProfileInfo profileInfo = database.profileInfoDao().findOne();
+        if (profileInfo != null) {
+            countryCode = profileInfo.getCountryCode();
+            currency = profileInfo.getCurrency();
         }
+
         initToolbar();
         initComponent();
     }
@@ -284,8 +287,9 @@ public class FertilizersActivity extends BaseActivity {
                     fertilizerPricesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<FertilizerPrice>>() {
                     });
 
+                    long[] status = null;
                     if (fertilizerPricesList.size() > 0) {
-                        database.fertilizerPriceDao().insertAll(fertilizerPricesList);
+                        status = database.fertilizerPriceDao().insertAll(fertilizerPricesList);
                     }
 
                     validate(false);
