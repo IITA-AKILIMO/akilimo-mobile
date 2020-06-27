@@ -228,7 +228,7 @@ public class BioDataFragment extends BaseFragment {
                 profileInfo.setUserName(profileInfo.getNames());
                 
                  int pk = 0;
-                if(profileInfo.getProfileId!=null){
+                if(profileInfo.getProfileId()!=null){
                     pk = profileInfo.getProfileId();
                 }
                 if (pk > 0) {
