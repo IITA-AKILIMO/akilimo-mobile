@@ -226,8 +226,11 @@ public class BioDataFragment extends BaseFragment {
                 profileInfo.setSelectedGenderIndex(selectedGenderIndex);
 
                 profileInfo.setUserName(profileInfo.getNames());
-
-                int pk = profileInfo.getProfileId();
+                
+                 int pk = 0;
+                if(profileInfo.getProfileId!=null){
+                    pk = profileInfo.getProfileId();
+                }
                 if (pk > 0) {
                     database.profileInfoDao().update(profileInfo);
                 } else {
