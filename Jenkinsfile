@@ -45,7 +45,7 @@ pipeline {
         stage('generate android apk') {
           when {
             beforeAgent true
-            branch 'masters'
+            branch 'master'
           }
           environment {
             RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
