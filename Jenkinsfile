@@ -47,7 +47,6 @@ pipeline {
           when {
             beforeAgent true
             anyOf {
-              branch 'develop'
               branch 'master'
             }
           }
@@ -64,7 +63,6 @@ pipeline {
             beforeAgent true
             anyOf {
               branch 'develop'
-              branch 'master'
             }
           }
           environment {
