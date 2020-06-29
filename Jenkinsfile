@@ -18,6 +18,7 @@ pipeline {
         beforeAgent true
         not {
           branch 'master'
+          branch 'develop'
         }
 
       }
@@ -55,10 +56,10 @@ pipeline {
           }
         }
 
-        stage('generate android bundle') {
+        stage('generate android aab') {
           when {
             beforeAgent true
-            branch 'master'
+            branch 'develop'
           }
           environment {
             RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
@@ -76,7 +77,7 @@ pipeline {
         stage('apk signing') {
           when {
             beforeAgent true
-            branch 'legacy/master'
+            branch 'master'
           }
           steps {
             signAndroidApks(keyStoreId: 'akilimo', keyAlias: 'akilimo', apksToSign: '**/*-unsigned.apk', skipZipalign: true)
@@ -86,7 +87,7 @@ pipeline {
         stage('AAB Jar Signer') {
           when {
             beforeAgent true
-            branch 'master'
+            branch 'develop'
           }
           steps {
             withCredentials(bindings: [usernamePassword(credentialsId: 'keystore-credentials', passwordVariable: 'pass', usernameVariable: 'alias')]) {
