@@ -172,12 +172,5 @@ pipeline {
         fingerprint '**/build/outputs/**/*-release.*'
       }
     }
-
-    stage('clean WS') {
-      steps {
-        cleanWs()
-      }
-    }
-
   }
 }
