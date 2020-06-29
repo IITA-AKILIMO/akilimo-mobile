@@ -45,7 +45,7 @@ pipeline {
         stage('generate android apk') {
           when {
             beforeAgent true
-            branch 'masters'
+            branch 'master'
           }
           environment {
             RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
@@ -115,10 +115,10 @@ pipeline {
 
     stage('Upload production artifacts') {
       parallel {
-        stage('aab upload') {
+        stage('aab upload to beta') {
           when {
             beforeAgent true
-            branch 'master'
+            branch 'develop'
           }
           steps {
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
@@ -126,14 +126,14 @@ pipeline {
                                    - New content
                                    - New features
                                    - Bug fixes
-                                   - Performance improvements''']], trackName: 'production')
+                                   - Performance improvements''']], trackName: 'beta')
           }
         }
 
-        stage('apk upload') {
+        stage('apk upload to production') {
           when {
             beforeAgent true
-            branch 'legacy/master'
+            branch 'master'
           }
           steps {
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
@@ -172,12 +172,5 @@ pipeline {
         fingerprint '**/build/outputs/**/*-release.*'
       }
     }
-
-    stage('clean WS') {
-      steps {
-        cleanWs()
-      }
-    }
-
   }
 }
