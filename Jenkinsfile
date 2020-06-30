@@ -16,7 +16,7 @@ pipeline {
     stage('Download versiontag tool') {
       environment {
         TAG = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
-        RELEASE_VERSION = "$TAG-beta"
+        RELEASE_VERSION = "$TAG-rc-$BUILD_NUMBER"
       }
       steps {
         sh 'curl -L https://raw.githubusercontent.com/franiglesias/versiontag/master/versiontag -o versiontag.sh'
@@ -217,6 +217,7 @@ stage('Build and generate production artifacts') {
       }
       environment {
         RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
+        RELEASE_VERSION = "$TAG-rc-$BUILD_NUMBER"
       }
       steps {
         sh 'cp app/build/outputs/**/*.* uploads/'
