@@ -19,8 +19,11 @@ pipeline {
         not {
           branch 'master'
         }
-
       }
+    environment {
+       PRE_RELEASE = true
+       RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
+    }
       steps {
         sh 'gradle testDebug -x lint'
       }
@@ -51,7 +54,8 @@ pipeline {
             }
           }
           environment {
-            RELEASE_VERSION = sh(script: '(git describe --tags $(git rev-list --tags --max-count=1))-beta', , returnStdout: true).trim()
+             PRE_RELEASE = true
+            RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
           }
           steps {
             sh 'gradle assembleRelease -x test --no-daemon'
@@ -66,7 +70,8 @@ pipeline {
             }
           }
           environment {
-            RELEASE_VERSION = sh(script: '(git describe --tags $(git rev-list --tags --max-count=1))-beta', , returnStdout: true).trim()
+            PRE_RELEASE = true
+            RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
           }
           steps {
             sh 'gradle bundleRelease -x test --no-daemon'
@@ -204,7 +209,8 @@ stage('Build and generate production artifacts') {
         }
       }
       environment {
-        RELEASE_VERSION = sh(script: '(git describe --tags $(git rev-list --tags --max-count=1))-beta', , returnStdout: true).trim()
+        TAG = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
+        RELEASE_VERSION = "$TAG-rc-$BUILD_NUMBER"
       }
       steps {
         sh 'cp app/build/outputs/**/*.* uploads/'
