@@ -17,7 +17,7 @@ pipeline {
       environment {
         TAG = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
         RELEASE_VERSION = "$TAG-rc-$BUILD_NUMBER"
-        IFS='.' read -r -a array <<< "$TAG"
+        sh 'IFS="." read -r -a array <<< "$TAG"'
         K = "${array[0]}"
       }
       steps {
