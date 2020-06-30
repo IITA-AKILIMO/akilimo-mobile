@@ -13,17 +13,6 @@ pipeline {
       }
     }
 
-    stage('Download versiontag tool') {
-      environment {
-         PRE_RELEASE = true
-         RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
-      }
-      steps {
-        echo "is pre release $PRE_RELEASE"
-        echo "Tag is $RELEASE_VERSION"
-      }
-    }
-
     stage('Run test for non release branch') {
       when {
         beforeAgent true
@@ -31,6 +20,10 @@ pipeline {
           branch 'master'
         }
       }
+    environment {
+       PRE_RELEASE = true
+       RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
+    }
       steps {
         sh 'gradle testDebug -x lint'
       }
@@ -61,6 +54,7 @@ pipeline {
             }
           }
           environment {
+             PRE_RELEASE = true
             RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
           }
           steps {
@@ -76,6 +70,7 @@ pipeline {
             }
           }
           environment {
+            PRE_RELEASE = true
             RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
           }
           steps {
