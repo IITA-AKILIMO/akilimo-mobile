@@ -162,11 +162,27 @@ pipeline {
       }
     }
 
-    stage('Upload Build artifacts') {
+    stage('Upload prerelease build artifacts') {
       when {
         beforeAgent true
         anyOf {
           branch 'develop'
+        }
+      }
+      environment {
+        RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
+      }
+      steps {
+        sh 'cp app/build/outputs/**/*.* uploads/'
+        sh 'cp app/build/outputs/**/*/*.* uploads/'
+        sh 'ghr -replace -prerelease $RELEASE_VERSION uploads/'
+      }
+    }
+
+    stage('Upload production build artifacts') {
+      when {
+        beforeAgent true
+        anyOf {
           branch 'master'
         }
       }
@@ -179,7 +195,6 @@ pipeline {
         sh 'ghr -replace $RELEASE_VERSION uploads/'
       }
     }
-
     stage('Fingerprint files') {
       when {
         beforeAgent true
