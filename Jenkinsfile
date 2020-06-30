@@ -45,7 +45,7 @@ pipeline {
     }
 
     stage('Build and generate beta artifacts') {
-      parallel {
+      stages {
         stage('generate android apk') {
           when {
             beforeAgent true
