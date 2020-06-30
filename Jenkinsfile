@@ -216,7 +216,7 @@ stage('Build and generate production artifacts') {
         }
       }
       environment {
-        RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
+        TAG = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
         RELEASE_VERSION = "$TAG-rc-$BUILD_NUMBER"
       }
       steps {
