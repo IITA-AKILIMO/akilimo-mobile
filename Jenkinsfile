@@ -41,7 +41,42 @@ pipeline {
       }
     }
 
-    stage('Build and generate artifacts') {
+    stage('Build and generate beta artifacts') {
+      parallel {
+        stage('generate android apk') {
+          when {
+            beforeAgent true
+            anyOf {
+              branch 'develop'
+            }
+          }
+          environment {
+            RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)-beta', , returnStdout: true).trim()
+          }
+          steps {
+            sh 'gradle assembleRelease -x test --no-daemon'
+          }
+        }
+
+        stage('generate android aab') {
+          when {
+            beforeAgent true
+            anyOf {
+              branch 'develop'
+            }
+          }
+          environment {
+            RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)-beta', , returnStdout: true).trim()
+          }
+          steps {
+            sh 'gradle bundleRelease -x test --no-daemon'
+          }
+        }
+
+      }
+    }
+
+stage('Build and generate production artifacts') {
       parallel {
         stage('generate android apk') {
           when {
@@ -62,7 +97,7 @@ pipeline {
           when {
             beforeAgent true
             anyOf {
-              branch 'develop'
+              branch 'master'
             }
           }
           environment {
@@ -75,7 +110,6 @@ pipeline {
 
       }
     }
-
     stage('Sign production binaries') {
       parallel {
         stage('apk signing') {
@@ -132,7 +166,7 @@ pipeline {
         stage('aab upload to beta') {
           when {
             beforeAgent true
-            branch 'develop'
+            branch 'develops'
           }
           steps {
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
@@ -162,7 +196,7 @@ pipeline {
       }
     }
 
-    stage('Upload prerelease build artifacts') {
+    stage('Upload pre-release build artifacts') {
       when {
         beforeAgent true
         anyOf {
@@ -170,7 +204,7 @@ pipeline {
         }
       }
       environment {
-        RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
+        RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)-beta', , returnStdout: true).trim()
       }
       steps {
         sh 'cp app/build/outputs/**/*.* uploads/'
