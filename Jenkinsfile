@@ -17,7 +17,7 @@ pipeline {
       steps {
         sh 'curl -L https://raw.githubusercontent.com/franiglesias/versiontag/master/versiontag -o versiontag.sh'
         sh 'chmod +x versiontag.sh'
-        sh 'versiontag.sh help'
+        sh './versiontag.sh help'
       }
     }
 
