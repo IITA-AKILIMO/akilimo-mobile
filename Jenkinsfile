@@ -18,7 +18,6 @@ pipeline {
         TAG = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
         RELEASE_VERSION = "$TAG-rc-$BUILD_NUMBER"
         K = sh(script: 'IFS="." read -r -a array <<< "$TAG"', , returnStdout: true).trim()
-        KL = "${array[0]}"
       }
       steps {
         sh 'IFS='.' read -r -a array <<< "$TAG"'
