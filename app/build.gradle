@@ -74,7 +74,7 @@ android {
 static def computeVersionName() {
     def versionMajor = 16
     def versionMinor = 0
-    def buildNumber = 0
+    def buildNumber = 1
 
     return String.format('%d.%d.%d', Integer.valueOf(System.env.VERSION_MAJOR ?: versionMajor),
             Integer.valueOf(System.env.VERSION_MINOR ?: versionMinor),
@@ -82,11 +82,23 @@ static def computeVersionName() {
 }
 
 static def computeBuildNumber() {
-    def versionName = System.env.RELEASE_VERSION ?: computeVersionName()
+    def gitVersionTag = System.env.RELEASE_VERSION ?: computeVersionName()
+    def buildNumber = System.env.BUILD_NUMBER ?: 1
 
-    println("This build release number is " + versionName)
 
-    return versionName
+    if (System.env.PRE_RELEASE) {
+        def splitMe = gitVersionTag.split('\\.')
+        def versionMajor = splitMe[0]
+        def versionMinor = splitMe[1]
+        def versionPatch = splitMe[2].toInteger() + 1
+        gitVersionTag = String.format('%d.%d.%d-beta-%d', Integer.valueOf(versionMajor),
+                Integer.valueOf(versionMinor),
+                Integer.valueOf(versionPatch),
+                Integer.valueOf(buildNumber))
+    }
+
+    println("This build tag is " + gitVersionTag)
+    return gitVersionTag
 }
 
 def computeVersionCode() {
@@ -129,9 +141,7 @@ dependencies {
     implementation "com.j256.ormlite:ormlite-android:5.1"
     implementation 'com.j256.ormlite:ormlite-core:5.1'
 
-    def room_version = "2.2.5"
     implementation "androidx.room:room-runtime:2.2.5"
-    kapt "androidx.room:room-compiler:2.2.5" // For Kotlin use kapt instead of annotationProcessor
 
 
     // mapbox implementation------------------------------------------------------------------------
@@ -172,6 +182,7 @@ dependencies {
 
 
     //If you are using Kotlin, replace annotationProcessor with kapt.
+    kapt 'androidx.room:room-compiler:2.2.5'
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
     kapt 'com.jakewharton:butterknife-compiler:10.2.1'
     kapt 'com.fasterxml.jackson.core:jackson-annotations:2.11.0'

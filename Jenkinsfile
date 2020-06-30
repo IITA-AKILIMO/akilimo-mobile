@@ -15,15 +15,11 @@ pipeline {
 
     stage('Download versiontag tool') {
       environment {
-        TAG = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
-        RELEASE_VERSION = "$TAG-rc-$BUILD_NUMBER"
-        K = sh(script: 'IFS="." read -r -a array <<< "$TAG"', , returnStdout: true).trim()
+         PRE_RELEASE = true
+         RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
       }
       steps {
-        sh 'IFS='.' read -r -a array <<< "$TAG"'
-        sh 'curl -L https://raw.githubusercontent.com/franiglesias/versiontag/master/versiontag -o versiontag.sh'
-        sh 'chmod +x versiontag.sh'
-        echo "Tag is $K"
+        echo "is pre release $PRE_RELEASE"
         echo "Tag is $RELEASE_VERSION"
       }
     }
@@ -34,7 +30,6 @@ pipeline {
         not {
           branch 'master'
         }
-
       }
       steps {
         sh 'gradle testDebug -x lint'
