@@ -82,7 +82,7 @@ static def computeVersionName() {
 }
 
 static def computeBuildNumber() {
-    def gitVersionTag = "16.0.1-rc-15"//System.env.RELEASE_VERSION ?: computeVersionName()
+    def gitVersionTag = System.env.RELEASE_VERSION ?: computeVersionName()
     def buildNumber = System.env.BUILD_NUMBER ?: 1
 
     println("Old build tag is " + gitVersionTag)
