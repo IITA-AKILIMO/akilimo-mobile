@@ -82,7 +82,7 @@ pipeline {
     }
 
 stage('Build and generate production artifacts') {
-      parallel {
+      stages {
         stage('generate android apk') {
           when {
             beforeAgent true
@@ -116,7 +116,7 @@ stage('Build and generate production artifacts') {
       }
     }
     stage('Sign production binaries') {
-      parallel {
+      stages {
         stage('apk signing') {
           when {
             beforeAgent true
