@@ -15,9 +15,9 @@ pipeline {
 
     stage('Download versiontag tool') {
       steps {
-        sh 'curl -L https://raw.githubusercontent.com/franiglesias/versiontag/master/versiontag -o versiontag'
-        sh 'chmod +x versiontag'
-        sh 'versiontag help'
+        sh 'curl -L https://raw.githubusercontent.com/franiglesias/versiontag/master/versiontag -o versiontag.sh'
+        sh 'chmod +x versiontag.sh'
+        sh './versiontag.sh help'
       }
     }
 
