@@ -20,7 +20,7 @@ pipeline {
       steps {
         sh 'curl -L https://raw.githubusercontent.com/franiglesias/versiontag/master/versiontag -o versiontag.sh'
         sh 'chmod +x versiontag.sh'
-        echo $RELEASE_VERSION
+        echo "Tag is $RELEASE_VERSION"
         bash './versiontag.sh help'
       }
     }
