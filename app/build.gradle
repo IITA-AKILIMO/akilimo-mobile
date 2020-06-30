@@ -82,7 +82,7 @@ static def computeVersionName() {
 }
 
 static def computeBuildNumber() {
-    def gitVersionTag = System.env.RELEASE_VERSION ?: computeVersionName()
+    def gitVersionTag = "16.0.1-rc-15"//System.env.RELEASE_VERSION ?: computeVersionName()
     def buildNumber = System.env.BUILD_NUMBER ?: 1
 
     println("Old build tag is " + gitVersionTag)
@@ -90,8 +90,9 @@ static def computeBuildNumber() {
         def splitMe = gitVersionTag.split('\\.')
         def versionMajor = splitMe[0]
         def versionMinor = splitMe[1]
-        def versionPatch = splitMe[2]//.toInteger() + 1
-        gitVersionTag = String.format('%d.%d.%d-beta-%d',
+        def versionPatchRaw = splitMe[2].split('-')
+        def versionPatch = versionPatchRaw[0].toInteger() + 1
+        gitVersionTag = String.format('%d.%d.%d-beta%d',
                 Integer.valueOf(versionMajor),
                 Integer.valueOf(versionMinor),
                 Integer.valueOf(versionPatch),
