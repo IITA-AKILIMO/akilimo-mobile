@@ -85,7 +85,7 @@ static def computeBuildNumber() {
     def gitVersionTag = System.env.RELEASE_VERSION ?: computeVersionName()
     def buildNumber = System.env.BUILD_NUMBER ?: 1
 
-
+    println("Old build tag is " + gitVersionTag)
     if (System.env.PRE_RELEASE) {
         def splitMe = gitVersionTag.split('\\.')
         def versionMajor = splitMe[0]
@@ -95,9 +95,9 @@ static def computeBuildNumber() {
                 Integer.valueOf(versionMinor),
                 Integer.valueOf(versionPatch),
                 Integer.valueOf(buildNumber))
-    }
 
-    println("This build tag is " + gitVersionTag)
+        println("This build tag is " + gitVersionTag)
+    }
     return gitVersionTag
 }
 
