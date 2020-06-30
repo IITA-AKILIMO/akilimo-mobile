@@ -45,23 +45,7 @@ pipeline {
     }
 
     stage('Build and generate beta artifacts') {
-      stages {
-        stage('generate android apk') {
-          when {
-            beforeAgent true
-            anyOf {
-              branch 'develop'
-            }
-          }
-          environment {
-             PRE_RELEASE = true
-            RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
-          }
-          steps {
-            sh 'gradle assembleRelease -x test --no-daemon'
-          }
-        }
-
+      parallel {
         stage('generate android aab') {
           when {
             beforeAgent true
@@ -82,7 +66,7 @@ pipeline {
     }
 
 stage('Build and generate production artifacts') {
-      stages {
+      parallel {
         stage('generate android apk') {
           when {
             beforeAgent true
@@ -102,7 +86,7 @@ stage('Build and generate production artifacts') {
           when {
             beforeAgent true
             anyOf {
-              branch 'master'
+              branch 'new/master'
             }
           }
           environment {
@@ -171,7 +155,7 @@ stage('Build and generate production artifacts') {
         stage('aab upload to beta') {
           when {
             beforeAgent true
-            branch 'develops'
+            branch 'develop'
           }
           steps {
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
