@@ -15,13 +15,14 @@ pipeline {
 
     stage('Download versiontag tool') {
       environment {
-        RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
+        TAG = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
+        RELEASE_VERSION = TAG+'-beta'
       }
       steps {
         sh 'curl -L https://raw.githubusercontent.com/franiglesias/versiontag/master/versiontag -o versiontag.sh'
         sh 'chmod +x versiontag.sh'
         echo "Tag is $RELEASE_VERSION"
-        bash './versiontag.sh help'
+        sh './versiontag.sh help'
       }
     }
 
