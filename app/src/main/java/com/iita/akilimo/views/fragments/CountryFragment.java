@@ -21,7 +21,6 @@ import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.MySpinnerAdapter;
 import com.iita.akilimo.databinding.FragmentCountryBinding;
-import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.utils.enums.EnumCountry;
@@ -82,13 +81,12 @@ public class CountryFragment extends BaseFragment {
                 countrySpinner.setSelection(selectedCountryIndex);
             }
 
+            String message = context.getString(R.string.lbl_country_location, name);
+            title.setText(message);
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
-
-        String message = context.getString(R.string.lbl_country_location, name);
-        title.setText(message);
     }
 
     @Override

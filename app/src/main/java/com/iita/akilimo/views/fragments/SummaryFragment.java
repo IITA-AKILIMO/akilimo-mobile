@@ -52,6 +52,7 @@ public class SummaryFragment extends BaseFragment {
     private MandatoryInfo mandatoryInfo;
     private CurrentPractice currentPractice;
     private ScheduledDate scheduledDate;
+    private ProfileInfo profileInfo;
 
     private IFragmentCallBack fragmentCallBack;
     private MyTimeLineAdapter adapter;
@@ -145,20 +146,21 @@ public class SummaryFragment extends BaseFragment {
         currentPractice = database.currentPracticeDao().findOne();
         scheduledDate = database.scheduleDateDao().findOne();
 
-        ProfileInfo profileInfo = database.profileInfoDao().findOne();
+        profileInfo = database.profileInfoDao().findOne();
         if (profileInfo != null) {
             countrySelected = true;
             countryName = profileInfo.getCountryName();
         }
-        if (!Strings.isEmptyOrWhitespace(mandatoryInfo.getAreaUnit())) {
-            areaUnitSelected = true;
+        if (mandatoryInfo != null) {
             areaUnit = mandatoryInfo.getAreaUnit();
+            if (!Strings.isEmptyOrWhitespace(areaUnit)) {
+                areaUnitSelected = true;
+            }
+            fieldSize = mandatoryInfo.getAreaSize();
+            if (fieldSize > 0.0) {
+                fieldSizeSelected = true;
+            }
         }
-        fieldSize = mandatoryInfo.getAreaSize();
-        if (fieldSize > 0.0) {
-            fieldSizeSelected = true;
-        }
-
 
         if (location != null) {
             pickedLocation = loadLocationInfo(location).toString();
@@ -202,7 +204,7 @@ public class SummaryFragment extends BaseFragment {
         }
 
         fieldInfo.append(fieldSize)
-                .append(" ")
+                .append(context.getString(R.string.empty_text))
                 .append(areaUnit);
 
         mDataList = new ArrayList<>();

@@ -43,10 +43,6 @@ android {
             versionNameSuffix ".debug"
 //            pseudoLocalesEnabled true
         }
-        staging {
-            initWith release
-            versionNameSuffix ".testing"
-        }
     }
     buildFeatures {
         viewBinding = true
@@ -83,10 +79,11 @@ static def computeVersionName() {
 
 static def computeBuildNumber() {
     def gitVersionTag = System.env.RELEASE_VERSION ?: computeVersionName()
+    def preRelease = System.env.PRE_RELEASE ?: "NO"
     def buildNumber = System.env.BUILD_NUMBER ?: 1
 
     println("Old build tag is " + gitVersionTag)
-    if (System.env.PRE_RELEASE) {
+    if (preRelease == "YES") {
         def splitMe = gitVersionTag.split('\\.')
         def versionMajor = splitMe[0]
         def versionMinor = splitMe[1]
@@ -126,6 +123,7 @@ dependencies {
 
     implementation 'androidx.multidex:multidex:2.0.1'
 
+
     // google library ------------------------------------------------------------------------
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
@@ -135,6 +133,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:20.2.1' //for push notifications
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.google.android:flexbox:0.3.2'                   // google flexible box
+    implementation 'com.google.android.gms:play-services-ads:19.2.0' //Google ads
 
 //    implementation "com.github.vicpinm:krealmextensions:2.5.0"
 //    implementation "io.reactivex.rxjava2:rxjava:2.1.9"
@@ -191,6 +190,7 @@ dependencies {
 
     testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.11.0'
     testImplementation 'joda-time:joda-time:2.10.6'
+
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
@@ -198,5 +198,7 @@ dependencies {
     //debugImplementation because LeakCanary should only run in debug builds.
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
+
+    implementation project(':nativetemplates') //google add templates
 
 }

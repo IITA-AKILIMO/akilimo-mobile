@@ -3,6 +3,7 @@
     <string name="hello_blank_fragment" translatable="false">Initialize fragments</string>
     <string name="empty_text" translatable="false" />
     <string name="dummy_coordinates" translatable="false">Lat:-1.567657567 Lon:35.47829734</string>
+    <string name="ad_attribution" translatable="false">Ad</string>
 
     <string name="welcome_title">Welcome to AKILIMO</string>
     <string name="welcome_instructions">I will assist you with personalized advice to grow and improve the yield of your cassava once you provide me some essential information.</string>

@@ -31,7 +31,7 @@ open class ProfileInfo {
 
     var countryCode: String? = null
     var countryName: String? = null
-    var selectedCountryIndex: Int? = null
+    var selectedCountryIndex: Int = 0
     var currency: String? = null
 
     fun getNames(): String {

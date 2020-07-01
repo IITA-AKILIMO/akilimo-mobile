@@ -21,7 +21,7 @@ pipeline {
         }
       }
     environment {
-       PRE_RELEASE = true
+       PRE_RELEASE = "YES"
        RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
     }
       steps {
@@ -54,7 +54,7 @@ pipeline {
             }
           }
           environment {
-            PRE_RELEASE = true
+            PRE_RELEASE = "YES"
             RELEASE_VERSION = sh(script: 'git describe --tags $(git rev-list --tags --max-count=1)', , returnStdout: true).trim()
           }
           steps {

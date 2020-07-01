@@ -279,25 +279,30 @@ public class BuildComputeData {
     }
 
     private ComputeRequest buildPlantingDates(@NonNull ComputeRequest computeRequest) {
-        ScheduledDate sph = database.scheduleDateDao().findOne();
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy");
+        try {
+            ScheduledDate sph = database.scheduleDateDao().findOne();
+            DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy");
 
-        if (sph != null) {
+            if (sph != null) {
 
-            plantingDate = sph.getPlantingDate();
-            plantingDateWindow = sph.getPlantingWindow();
-            harvestDate = sph.getHarvestDate();
-            harvestDateWindow = sph.getHarvestWindow();
+                plantingDate = sph.getPlantingDate();
+                plantingDateWindow = sph.getPlantingWindow();
+                harvestDate = sph.getHarvestDate();
+                harvestDateWindow = sph.getHarvestWindow();
 
 
-            LocalDate PD = formatter.parseLocalDate(plantingDate);
-            LocalDate HD = formatter.parseLocalDate(harvestDate);
+                LocalDate PD = formatter.parseLocalDate(plantingDate);
+                LocalDate HD = formatter.parseLocalDate(harvestDate);
 
-            computeRequest.setPlantingDate(PD.toString("yyyy-MM-dd"));
-            computeRequest.setPlantingDateWindow(plantingDateWindow);
+                computeRequest.setPlantingDate(PD.toString("yyyy-MM-dd"));
+                computeRequest.setPlantingDateWindow(plantingDateWindow);
 
-            computeRequest.setHarvestDate(HD.toString("yyyy-MM-dd"));
-            computeRequest.setHarvestDateWindow(harvestDateWindow);
+                computeRequest.setHarvestDate(HD.toString("yyyy-MM-dd"));
+                computeRequest.setHarvestDateWindow(harvestDateWindow);
+            }
+        } catch (Exception ex) {
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+            Crashlytics.logException(ex);
         }
 
         return computeRequest;
