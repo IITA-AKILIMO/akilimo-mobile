@@ -41,6 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
             android:fontFamily="@font/ubuntu"
+            android:justificationMode="inter_word"
             android:padding="@dimen/spacing_medium"
             android:text="@string/welcome_instructions"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
