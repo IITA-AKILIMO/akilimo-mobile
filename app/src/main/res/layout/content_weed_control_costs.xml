@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".views.activities.WeedControlCostsActivity"
+    tools:showIn="@layout/activity_weed_control_cost">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/spacing_medium">
+
+        <!-- show this section if herbicide use is yes -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/herbicideUseTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:fontFamily="@font/roboto_bold"
+            android:text="@string/lbl_how_do_you_control_weeds_in_your_field"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:visibility="visible" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/herbicideUseCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/herbicideUseTitle"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:visibility="visible"
+            app:cardBackgroundColor="@color/grey_3"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="2dp"
+            app:cardMaxElevation="6dp"
+            app:contentPadding="@dimen/spacing_small">
+
+            <RadioGroup
+                android:id="@+id/rdgWeedControl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RadioButton
+                    android:id="@+id/rdManualOnlyControl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lbl_manual_weed_control" />
+
+                <RadioButton
+                    android:id="@+id/rdHerbicideControl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lbl_herbicide_weed_control" />
+
+                <RadioButton
+                    android:id="@+id/rdManualHerbicideControl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lbl_both_weed_control" />
+
+            </RadioGroup>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- first weeding operation costs -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/firstWeedingOpCostTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/herbicideUseCard"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:fontFamily="@font/roboto_bold"
+            android:text="@string/lbl_cost_of_weed_control"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+        <EditText
+            android:id="@+id/editFirstWeedingOpCost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/firstWeedingOpCostTitle"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:background="@color/grey_5"
+            android:hint="@string/app_name"
+            android:inputType="numberDecimal"
+            android:padding="@dimen/spacing_large" />
+
+        <!-- end first weeding operation costs -->
+
+
+        <!-- second weeding operation costs -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/secondWeedingOpCostTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/editFirstWeedingOpCost"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:fontFamily="@font/roboto_bold"
+            android:text="@string/lbl_cost_of_weed_control"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+        <EditText
+            android:id="@+id/editSecondWeedingOpCost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/secondWeedingOpCostTitle"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:background="@color/grey_5"
+            android:hint="@string/app_name"
+            android:inputType="numberDecimal"
+            android:padding="@dimen/spacing_large" />
+
+        <!-- end second weeding operation costs -->
+    </RelativeLayout>
+
+
+</androidx.core.widget.NestedScrollView>

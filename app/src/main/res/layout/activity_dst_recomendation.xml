@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".views.activities.DstRecommendationActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include
+                android:id="@+id/toolbar_layout"
+                layout="@layout/toolbar" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:scrollbars="none"
+                android:scrollingCache="true"
+                tools:itemCount="1"
+                tools:listitem="@layout/content_compute_card" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/errorImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="visible"
+                app:srcCompat="@drawable/ic_error" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/errorLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/errorImage"
+                android:layout_centerInParent="true"
+                android:layout_margin="@dimen/spacing_medium"
+                android:fontFamily="@font/ubuntu_bold"
+                android:text="@string/lbl_compute_error"
+                android:textAlignment="center"
+                android:textColor="@color/red_A400"
+                android:visibility="visible" />
+
+            <LinearLayout
+                android:id="@+id/lyt_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_margin="@dimen/spacing_medium"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <com.iita.akilimo.widget.ViewLoadingDotsBounce
+                    android:layout_width="50dp"
+                    android:layout_height="40dp"
+                    android:background="@color/colorAccent" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabRetry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_large"
+        android:tint="@color/colorAccentDark"
+        app:backgroundTint="@color/white"
+        app:fabSize="auto"
+        app:layout_anchor="@id/toolbar_layout"
+        app:layout_anchorGravity="end|right|bottom"
+        app:rippleColor="@color/purple_100"
+        app:srcCompat="@drawable/ic_refresh" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

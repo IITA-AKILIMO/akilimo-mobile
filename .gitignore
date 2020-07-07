@@ -1,0 +1,14 @@
+*.iml
+.gradle
+/local.properties
+/.idea/*
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+/app/release
+android-console.json
+fertilizer.jks
+nativetemplates/build
+nextrelease.txt

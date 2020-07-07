@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.iita.akilimo">
+    <!-- let us add permissions here -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <application
+        android:name=".Akilimo"
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:replace="android:icon, android:theme, android:label, android:allowBackup"
+        tools:targetApi="m">
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-7182284303548130~4184115109"/>
+
+
+
+        <service android:name=".services.GPSTracker" />
+
+        <service
+            android:name=".services.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="ca1a8f3133ce2b7f055369923b3532240ee2202b" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
+        <activity android:name=".views.activities.PusherActivity">
+        </activity>
+
+        <activity
+            android:name=".views.activities.SplashActivity"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".views.activities.LanguagePickerActivity"
+            android:label="@string/title_activity_language_picker"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".views.activities.SweetPotatoMarketActivity" />
+        <activity android:name=".views.activities.TractorAccessActivity" />
+        <activity android:name=".views.activities.ManualTillageCostActivity" />
+        <activity android:name=".views.activities.CassavaMarketActivity" />
+        <activity android:name=".views.activities.MaizeMarketActivity" />
+        <activity android:name=".views.activities.FertilizersActivity" />
+        <activity android:name=".views.activities.IntercropFertilizersActivity" />
+        <activity android:name=".views.activities.DatesActivity" />
+        <activity android:name=".views.activities.usecases.RecommendationsActivity" />
+        <activity android:name=".views.activities.HomeActivity" />
+        <activity android:name=".views.activities.usecases.FertilizerRecActivity" />
+        <activity android:name=".views.activities.MapBoxActivity" />
+        <activity android:name=".views.activities.RootYieldActivity" />
+        <activity android:name=".views.activities.InvestmentAmountActivity" />
+        <activity android:name=".views.activities.DstRecommendationActivity" />
+        <activity android:name=".views.activities.WeedControlCostsActivity" />
+        <activity android:name=".views.activities.usecases.PlantingPracticesActivity" />
+        <activity android:name=".views.activities.usecases.ScheduledPlantingActivity" />
+        <activity android:name=".views.activities.MaizePerformanceActivity" />
+        <activity android:name=".views.activities.usecases.InterCropRecActivity" />
+    </application>
+
+</manifest>

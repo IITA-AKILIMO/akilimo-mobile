@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".views.activities.MaizeMarketActivity"
+    tools:showIn="@layout/activity_maize_market">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/spacing_medium">
+
+        <!-- produce type section -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/produceTypeTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/starchFactoryCard"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:fontFamily="@font/roboto_bold"
+            android:text="@string/lbl_maize_outlets"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/produceTypeCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/produceTypeTitle"
+            android:layout_marginTop="@dimen/spacing_medium"
+            app:cardBackgroundColor="@color/grey_5"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="2dp"
+            app:cardMaxElevation="6dp"
+            app:contentPadding="@dimen/spacing_small">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_small">
+
+                <RadioGroup
+                    android:id="@+id/rdgMaizeProduceType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <RadioButton
+                        android:id="@+id/rdFreshCobs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lbl_fresh_cobs" />
+
+                    <RadioButton
+                        android:id="@+id/rdDryGrain"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lbl_dry_grain" />
+
+                </RadioGroup>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- unit of sale grain -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/unitOfSaleGrainTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/produceTypeCard"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:fontFamily="@font/roboto_bold"
+            android:text="@string/lbl_maize_sale_unit"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:visibility="gone" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/unitOfSaleGrainCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/unitOfSaleGrainTitle"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/grey_5"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="2dp"
+            app:cardMaxElevation="6dp"
+            app:contentPadding="@dimen/spacing_small">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_small">
+
+                <RadioGroup
+                    android:id="@+id/rdgUnitOfSaleGrain"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:id="@+id/rd_per_kg"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:onClick="onGrainUnitRadioButtonClicked"
+                        android:text="@string/per_kg_sale_unit" />
+
+                    <RadioButton
+                        android:id="@+id/rd_50_kg_bag"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:onClick="onGrainUnitRadioButtonClicked"
+                        android:text="@string/per_50_kg_sale_unit" />
+
+                    <RadioButton
+                        android:id="@+id/rd_100_kg_bag"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:onClick="onGrainUnitRadioButtonClicked"
+                        android:text="@string/per_100_kg_sale_unit" />
+
+                </RadioGroup>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- unit of sale grain -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/maizeCobPriceTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/unitOfSaleGrainCard"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:fontFamily="@font/roboto_bold"
+            android:text="@string/lbl_fresh_cob_price"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:visibility="gone" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/maizeCobPriceCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/maizeCobPriceTitle"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/grey_5"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="2dp"
+            app:cardMaxElevation="6dp"
+            app:contentPadding="@dimen/spacing_small">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/spacing_small">
+
+                <EditText
+                    android:id="@+id/editCobPrice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/lbl_price_per_cob"
+                    android:inputType="numberDecimal" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/lblCurrency"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_small"
+                    android:layout_marginTop="@dimen/spacing_medium"
+                    android:fontFamily="@font/ubuntu"
+                    android:text="@string/lbl_currency_ngn"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/colorAccent" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <include
+            android:id="@+id/two_buttons"
+            layout="@layout/bottom_two_buttons_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/maizeCobPriceCard"
+            android:layout_marginTop="@dimen/spacing_large" />
+
+    </RelativeLayout>
+
+
+</androidx.core.widget.NestedScrollView>

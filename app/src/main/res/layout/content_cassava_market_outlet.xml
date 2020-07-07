@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".views.activities.CassavaMarketActivity"
+    tools:showIn="@layout/activity_cassava_market">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/spacing_medium">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_bold"
+            android:text="@string/lbl_market_outlet"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textColor="@color/colorAccent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/marketOutLetTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
+            android:layout_marginTop="@dimen/spacing_large"
+            android:fontFamily="@font/roboto_bold"
+            android:text="@string/lbl_cassava_sales_outlet"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/marketOutletCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/marketOutLetTitle"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:checkable="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="visible"
+            app:cardBackgroundColor="@color/grey_5"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="2dp"
+            app:cardMaxElevation="6dp"
+            app:contentPadding="@dimen/spacing_small">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_small">
+
+                <RadioGroup
+                    android:id="@+id/rdgMarketOutlet"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:id="@+id/rdFactory"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lbl_starch_factory" />
+
+
+                    <RadioButton
+                        android:id="@+id/rdOtherMarket"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lbl_other_markets" />
+
+                </RadioGroup>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- starch factory section -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/factoryTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/marketOutletCard"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:fontFamily="@font/roboto_bold"
+            android:text="@string/lbl_select_starch_factory"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:visibility="gone" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/starchFactoryCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/factoryTitle"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/grey_5"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="2dp"
+            app:cardMaxElevation="6dp"
+            app:contentPadding="@dimen/spacing_small">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_small">
+
+                <RadioGroup
+                    android:id="@+id/rdgStarchFactories"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- unit of sale roots -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/unitOfSaleTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/starchFactoryCard"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:fontFamily="@font/roboto_bold"
+            android:text="@string/unit_of_sale"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:visibility="gone" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/unitOfSaleCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/unitOfSaleTitle"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/purple_50"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="2dp"
+            app:cardMaxElevation="6dp"
+            app:contentPadding="@dimen/spacing_small">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_small">
+
+                <RadioGroup
+                    android:id="@+id/rdgUnitOfSale"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:id="@+id/rd_per_kg"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:onClick="onRadioButtonClicked"
+                        android:text="@string/per_kg_sale_unit" />
+
+                    <RadioButton
+                        android:id="@+id/rd_50_kg_bag"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:onClick="onRadioButtonClicked"
+                        android:text="@string/per_50_kg_sale_unit" />
+
+                    <RadioButton
+                        android:id="@+id/rd_100_kg_bag"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:onClick="onRadioButtonClicked"
+                        android:text="@string/per_100_kg_sale_unit" />
+
+                    <RadioButton
+                        android:id="@+id/rd_per_tonne"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:onClick="onRadioButtonClicked"
+                        android:text="@string/per_tonne_sale_unit" />
+
+                </RadioGroup>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <include
+            android:id="@+id/two_buttons"
+            layout="@layout/bottom_two_buttons_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/unitOfSaleCard"
+            android:layout_marginTop="@dimen/spacing_large" />
+
+    </RelativeLayout>
+
+
+</androidx.core.widget.NestedScrollView>

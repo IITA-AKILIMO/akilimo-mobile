@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".views.activities.MapBoxActivity">
+
+
+    <include
+        android:id="@+id/toolbar_layout"
+        layout="@layout/toolbar" />
+
+    <include
+        android:id="@+id/map_box"
+        layout="@layout/content_map_box" />
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnGetLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:tint="@color/colorAccentDark"
+        app:backgroundTint="@color/white"
+        app:fabSize="auto"
+        app:layout_anchor="@id/map_box"
+        app:layout_anchorGravity="bottom|end"
+        app:rippleColor="@color/purple_A100"
+        app:srcCompat="@drawable/ic_save" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
