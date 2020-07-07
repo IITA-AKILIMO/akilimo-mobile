@@ -3,7 +3,7 @@ pipeline {
     KEYSTORE_FILE = 'D:\\gdrive\\keystores\\fertilizer.jks'
     LATEST_TAG_FILE = 'latest_tag_file.txt'
     TAG_FILE = 'nextrelease.txt'
-    REPO_NAME = 'masgeek/akilimo-mobile'
+    REPO_NAME = 'masgeek/akilimo-droid-dst'
   }
   agent any
   stages {
