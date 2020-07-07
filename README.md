@@ -1,4 +1,4 @@
-# Akilimo mobile app
+# Akilimo decision support tools mobile edition
 > UI changes
 > Better data processing
 > adb shell am clear-debug-app
