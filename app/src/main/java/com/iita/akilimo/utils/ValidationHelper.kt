@@ -30,7 +30,7 @@ class ValidationHelper {
             Crashlytics.log(
                 Log.ERROR,
                 LOG_TAG,
-                "An error occurred parsing the phone number and checking validity"
+                ex.message
             )
             Crashlytics.logException(ex)
         }
@@ -43,7 +43,7 @@ class ValidationHelper {
         try {
             phoneNumber = phoneUtil.parse(userPhoneNumber, country)
         } catch (ex: NumberParseException) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred parsing the phone number")
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
             Crashlytics.logException(ex)
         }
 
