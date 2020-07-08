@@ -13,7 +13,6 @@ pipeline {
         sh 'curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/requirements.txt -o requirements.txt'
         sh 'python -m pip install python-env'
         sh 'python latest-tag.py'
-        pushbullet users: ''
       }
     }
 
@@ -145,7 +144,7 @@ pipeline {
                                    - Experimental features
                                    - Bug fixes
                                    - Performance improvements''']], trackName: 'beta')
-            pushbullet users: ''
+            
           }
         }
 
@@ -169,7 +168,7 @@ pipeline {
                                    - Experimental features
                                    - Bug fixes
                                    - Performance improvements''']], trackName: 'beta')
-            pushbullet users: ''
+            
           }
         }
 
@@ -190,7 +189,7 @@ pipeline {
                                    - New features
                                    - Bug fixes
                                    - Performance improvements''']], trackName: 'production')
-            pushbullet users: ''
+            
           }
         }
 
@@ -206,7 +205,7 @@ pipeline {
                                    - New features
                                    - Bug fixes
                                    - Performance improvements''']], trackName: 'production')
-            pushbullet users: ''
+            
           }
         }
 
@@ -225,7 +224,7 @@ pipeline {
         sh 'cp app/build/outputs/**/*.* uploads/'
         sh 'cp app/build/outputs/**/*/*.* uploads/'
         sh 'ghr -replace -prerelease $RELEASE_VERSION uploads/'
-        pushbullet users: ''
+        
       }
     }
     stage('Upload Production to github') {
@@ -240,7 +239,7 @@ pipeline {
         sh 'cp app/build/outputs/**/*.* uploads/'
         sh 'cp app/build/outputs/**/*/*.* uploads/'
         sh 'ghr -replace $RELEASE_VERSION uploads/'
-        pushbullet users: ''
+        
       }
     }
 
