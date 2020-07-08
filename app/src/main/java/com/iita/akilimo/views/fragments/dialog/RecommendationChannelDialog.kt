@@ -21,12 +21,11 @@ import org.jetbrains.annotations.NotNull
 class RecommendationChannelDialog(
     private val callbackListener: @NotNull IRecommendationCallBack,
     private val myProfileInfo: @NotNull ProfileInfo
-) :
-    BaseDialogFragment() {
+) : BaseDialogFragment() {
 
 
     companion object {
-        const val TAG = "rec_dialog"
+        val TAG: String? = RecommendationChannelDialog::class.simpleName
     }
 
 
@@ -42,7 +41,7 @@ class RecommendationChannelDialog(
     lateinit var btnCancel: AppCompatButton
 
     private var profileInfo: ProfileInfo? = null
-    private lateinit var validationHelper: ValidationHelper
+
     private var dataIsValid = false
     private var numberIsValid = false
     private var email: String? = null
@@ -71,7 +70,6 @@ class RecommendationChannelDialog(
         val view = inflater.inflate(R.layout.dialog_recommendations_channel, container, false)
 
         this.profileInfo = myProfileInfo
-        validationHelper = ValidationHelper()
 
         toolbar = view.findViewById(R.id.toolbar)
         lytEmail = view.findViewById(R.id.lytEmail)
@@ -122,6 +120,7 @@ class RecommendationChannelDialog(
             dismiss()
         }
         btnFinish.setOnClickListener {
+            val validationHelper = ValidationHelper()
             if (!validationHelper.isValidEmail(email!!) && sendEmail) {
                 dataIsValid = false
                 lytEmail.error = getString(R.string.lbl_valid_email_req)
