@@ -25,7 +25,7 @@ class RecommendationChannelDialog(
 
 
     companion object {
-        val TAG: String? = RecommendationChannelDialog::class.simpleName
+        const val TAG: String = "rec_dialog"
     }
 
 
