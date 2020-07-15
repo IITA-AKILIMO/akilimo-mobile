@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/grey_3" />
+    <!--    <item-->
+    <!--        android:id="@+id/splash_resource"-->
+    <!--        android:drawable="@drawable/ic_akilimo_logo_black"-->
+    <!--        android:gravity="center" />-->
+    <item>
+        <bitmap
+            android:gravity="center"
+            android:scaleType="centerInside"
+            android:src="@drawable/raster_akilimo_logo_colored" />
+    </item>
+</layer-list>

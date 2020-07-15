@@ -14,7 +14,7 @@
 
     <style name="SplashThemeCommon" parent="AppTheme.NoActionBar">
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="android:windowBackground">@drawable/splash_background_raster</item>
     </style>
 
     <style name="SplashTheme" parent="SplashThemeCommon">

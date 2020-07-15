@@ -1,0 +1,8 @@
+<resources>
+
+    <style name="SplashThemeCommon" parent="AppTheme.NoActionBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@drawable/splash_background</item>
+    </style>
+
+</resources>
