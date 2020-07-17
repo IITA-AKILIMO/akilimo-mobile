@@ -9,48 +9,68 @@
     android:padding="@dimen/spacing_small"
     tools:context=".views.fragments.WelcomeFragment">
 
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center_horizontal"
+        android:layout_height="match_parent"
+        android:baselineAligned="false"
         android:orientation="vertical"
-        android:paddingBottom="?attr/actionBarSize">
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin">
 
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/spacing_small"
-            app:srcCompat="@drawable/ic_akilimo_logo" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/ubuntu"
-            android:text="@string/welcome_title"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/red_500" />
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_small"
+                app:srcCompat="@drawable/ic_akilimo_logo" />
 
-        <TextView
-            android:id="@+id/description"
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu"
+                android:text="@string/welcome_title"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/red_500" />
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:fontFamily="@font/ubuntu"
+                android:justificationMode="inter_word"
+                android:padding="@dimen/spacing_medium"
+                android:text="@string/welcome_instructions"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/grey_60" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:fontFamily="@font/ubuntu"
-            android:justificationMode="inter_word"
-            android:padding="@dimen/spacing_medium"
-            android:text="@string/welcome_instructions"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/grey_60" />
-        
-        <Spinner
-            android:id="@+id/language_picker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dialog"
-            tools:listitem="@android:layout/simple_dropdown_item_1line" />
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingBottom="?attr/actionBarSize">
+
+            <Spinner
+                android:id="@+id/language_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_large"
+                android:spinnerMode="dialog"
+                tools:listitem="@android:layout/simple_dropdown_item_1line" />
+        </LinearLayout>
     </LinearLayout>
+
+
 </RelativeLayout>
