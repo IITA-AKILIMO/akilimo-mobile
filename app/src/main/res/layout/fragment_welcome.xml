@@ -36,7 +36,7 @@
                 android:fontFamily="@font/ubuntu"
                 android:text="@string/welcome_title"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/red_500" />
+                android:textColor="@color/akilimoDarkGreen" />
 
             <TextView
                 android:id="@+id/description"
