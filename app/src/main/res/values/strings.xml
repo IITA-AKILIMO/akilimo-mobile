@@ -5,9 +5,9 @@
     <string name="dummy_coordinates" translatable="false">Lat:-1.567657567 Lon:35.47829734</string>
     <string name="ad_attribution" translatable="false">Ad</string>
 
-    <string name="welcome_title">Welcome to AKILIMO</string>
-    <string name="welcome_instructions">I will assist you with personalized advice to grow and improve the yield of your cassava once you provide me some essential information.</string>
-    <string name="important_instructions_title">IMPORTANT INSTRUCTIONS</string>
+    <string name="welcome_title">Welcome</string>
+    <string name="welcome_instructions">AKILIMO can assist you with personalized advice to grow and improve the yield of your cassava once you provide me some essential information.</string>
+    <string name="important_instructions_title">IMPORTANT INFORMATION</string>
     <string name="important_instructions">All AKILIMO recommendations are based on the <b>correctness</b> of your location, the size of your field and your prices.\nFor example, overly optimistic farm size results in unnecessary cost and loss because the required investment will be overestimated. On the other hand if your estimated field size is much less than in reality this leads to an underestimation of your yield and you may lose an opportunity to make profit from your farm.</string>
 
     <string name="title_activity_fertilizer_choice">Available fertilizers</string>
@@ -19,7 +19,7 @@
     <string name="title_activity_sweet_potato_market">Sweet potato prices</string>
     <string name="title_activity_maize_performance">Maize performance</string>
     <string name="title_activity_farm_location">Farm location</string>
-    <string name="title_tillage_operations">Tillage operations</string>
+    <string name="title_tillage_operations">Basic management operations</string>
     <string name="title_manual_tillage_cost">Manual tillage costs</string>
     <string name="title_weed_control">Weed operations</string>
     <string name="title_maize_intercropping">Intercropping with maize</string>
@@ -264,6 +264,7 @@
 
     <string name="lbl_gender_prompt">Select gender</string>
     <string name="lbl_gender">Choose gender</string>
+    <string name="lbl_prefer_not_to_say">Prefer no to answer</string>
     <string name="lbl_male">Male</string>
     <string name="lbl_female">Female</string>
     <string name="lbl_save">Save</string>

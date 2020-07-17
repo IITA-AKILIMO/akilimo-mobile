@@ -82,7 +82,7 @@ public class LanguagePickerActivity extends BaseActivity {
         final List<Integer> countryImages = new ArrayList<>();
         for (Locale locale : Locales.APP_LOCALES) {
             String languageCountry = locale.getCountry();
-            if (languageCountry.equalsIgnoreCase(EnumCountry.TANZANIA.countryCode())) {
+            if (languageCountry.equalsIgnoreCase(EnumCountry.Tanzania.countryCode())) {
                 localeStrings.add(getString(R.string.lbl_kiswahili));
             } else {
                 localeStrings.add(locale.getDisplayLanguage());

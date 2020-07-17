@@ -23,7 +23,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/spacing_small"
-            android:tint="@color/colorPrimary"
             app:srcCompat="@drawable/ic_akilimo_logo" />
 
         <TextView

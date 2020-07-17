@@ -172,4 +172,13 @@ public class SessionManager {
     public boolean showAd() {
         return pref.getBoolean("showAd", false);
     }
+
+    public void setTermsAgreed(boolean termsAgreed) {
+        editor.putBoolean("termsAgreed", termsAgreed);
+        editor.commit();
+    }
+
+    public boolean termsAgreed() {
+        return pref.getBoolean("termsAgreed", false);
+    }
 }

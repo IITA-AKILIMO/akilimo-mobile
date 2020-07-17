@@ -111,8 +111,9 @@ public class BioDataFragment extends BaseFragment {
         btnGetRec.setText(getString(R.string.lbl_save));
 
         final List<String> genderStrings = new ArrayList<>();
-        genderStrings.add(this.getString(R.string.lbl_male));
+        genderStrings.add(this.getString(R.string.lbl_prefer_not_to_say));
         genderStrings.add(this.getString(R.string.lbl_female));
+        genderStrings.add(this.getString(R.string.lbl_male));
 
         final SpinnerAdapter adapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, genderStrings);
         genderSpinner.setAdapter(adapter);

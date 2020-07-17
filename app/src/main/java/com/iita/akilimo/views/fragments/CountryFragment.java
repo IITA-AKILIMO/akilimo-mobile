@@ -108,8 +108,8 @@ public class CountryFragment extends BaseFragment {
         countryImage = binding.countryImage;
 
         final String[] countries = new String[]{
-                EnumCountry.NIGERIA.name(),
-                EnumCountry.TANZANIA.name()
+                EnumCountry.Nigeria.name(),
+                EnumCountry.Tanzania.name()
         };
 
         btnPickCountry.setOnClickListener(new View.OnClickListener() {
@@ -124,24 +124,24 @@ public class CountryFragment extends BaseFragment {
                         selectedCountryIndex = i;
                         switch (countryName.toLowerCase()) {
                             case "kenya":
-                                countryName = EnumCountry.KENYA.name();
-                                currency = EnumCountry.KENYA.currency();
-                                countryCode = EnumCountry.KENYA.countryCode();
+                                countryName = EnumCountry.Kenya.name();
+                                currency = EnumCountry.Kenya.currency();
+                                countryCode = EnumCountry.Kenya.countryCode();
                                 break;
                             case "tanzania":
-                                countryName = EnumCountry.TANZANIA.name();
-                                currency = EnumCountry.TANZANIA.currency();
-                                countryCode = EnumCountry.TANZANIA.countryCode();
+                                countryName = EnumCountry.Tanzania.name();
+                                currency = EnumCountry.Tanzania.currency();
+                                countryCode = EnumCountry.Tanzania.countryCode();
                                 break;
                             case "nigeria":
-                                countryName = EnumCountry.NIGERIA.name();
-                                currency = EnumCountry.NIGERIA.currency();
-                                countryCode = EnumCountry.NIGERIA.countryCode();
+                                countryName = EnumCountry.Nigeria.name();
+                                currency = EnumCountry.Nigeria.currency();
+                                countryCode = EnumCountry.Nigeria.countryCode();
                                 break;
                             default:
-                                countryName = EnumCountry.OTHERS.name();
-                                currency = EnumCountry.OTHERS.currency();
-                                countryCode = EnumCountry.OTHERS.countryCode();
+                                countryName = EnumCountry.Other.name();
+                                currency = EnumCountry.Other.currency();
+                                countryCode = EnumCountry.Other.countryCode();
                                 break;
                         }
 

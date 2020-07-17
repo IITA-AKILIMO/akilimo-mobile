@@ -52,9 +52,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected RequestQueue queue;
 
-    protected String countryCode = EnumCountry.NIGERIA.countryCode();
+    protected String countryCode = EnumCountry.Nigeria.countryCode();
     protected String baseCurrency = "USD";
-    protected String currency = EnumCountry.NIGERIA.currency();
+    protected String currency = EnumCountry.Nigeria.currency();
     protected EnumUseCase useCase;
     protected String areaUnit = "acre";
     protected double fieldSize = 0;
