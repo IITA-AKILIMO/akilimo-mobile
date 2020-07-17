@@ -26,7 +26,6 @@ import com.iita.akilimo.databinding.FragmentCountryBinding;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseFragment;
 import com.iita.akilimo.utils.enums.EnumCountry;
-import com.jakewharton.processphoenix.ProcessPhoenix;
 
 ;
 
@@ -146,17 +145,23 @@ public class CountryFragment extends BaseFragment {
                                 break;
                         }
 
-                        countryImage.setImageResource(World.getFlagOf(countryCode));
-                        txtCountryName.setText(countryName);
-                        updateSelectedCountry();
-                        dialogInterface.dismiss();
                     }
                 });
+                builder.setPositiveButton(context.getString(R.string.lbl_ok), (dialogInterface, whichButton) -> {
+                    countryImage.setImageResource(World.getFlagOf(countryCode));
+                    txtCountryName.setText(countryName);
+                    if (selectedCountryIndex >= 0) {
+                        dialogInterface.dismiss();
+                        updateSelectedCountry();
+                    }
+                });
+                builder.setNegativeButton(context.getString(R.string.lbl_cancel), ((dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                }));
 
-                // Create the alert dialog
                 AlertDialog dialog = builder.create();
-
-                // Finally, display the alert dialog
+                dialog.setCancelable(false);
+                dialog.setCanceledOnTouchOutside(false);
                 dialog.show();
             }
         });
