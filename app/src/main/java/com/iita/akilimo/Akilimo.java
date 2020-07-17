@@ -47,11 +47,8 @@ public class Akilimo extends MultiDexApplication {
         JodaTimeAndroid.init(this);
         World.init(this);
 
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-                InitializationStatus h = initializationStatus;
-            }
+        MobileAds.initialize(this, initializationStatus -> {
+            InitializationStatus h = initializationStatus;
         });
     }
 }
