@@ -335,6 +335,7 @@
     <string name="lbl_first_weeding_costs_prompt">Tafadhali taja gharama za palizi la kwanza</string>
     <string name="lbl_second_weeding_cost_prompt">Tafandali taja gharama za palizi la pili</string>
     <string name="lbl_field_size_prompt">Tafadhali ingiza eneo la ukubwa wa shamba lililo sahihi</string>
+    <string name="lbl_area_unit_prompt">Tafadhali ingiza eneo halali la eneo</string>
     <string name="lbl_per_separator">kwa</string>
     <string name="lbl_usd_currency">Dola</string>
     <string name="lbl_gps_settings">Mipangilio ya GPS</string>

@@ -422,6 +422,7 @@
     <string name="lbl_first_weeding_costs_prompt">Please specify cost for first weeding operation</string>
     <string name="lbl_second_weeding_cost_prompt">Please specify cost for second weeding operation</string>
     <string name="lbl_field_size_prompt">Please enter a valid field size</string>
+    <string name="lbl_area_unit_prompt">Please enter a valid area unit</string>
 
     <string name="lbl_per_separator">per</string>
     <string name="lbl_usd_currency">USD</string>

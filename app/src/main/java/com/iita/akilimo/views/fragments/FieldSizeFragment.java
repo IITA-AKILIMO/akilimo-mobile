@@ -26,8 +26,9 @@ import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.FragmentFieldSizeBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
-import com.iita.akilimo.inherit.BaseFragment;
+import com.iita.akilimo.inherit.BaseStepFragment;
 import com.iita.akilimo.utils.enums.EnumFieldArea;
+import com.stepstone.stepper.VerificationError;
 
 ;
 
@@ -36,7 +37,7 @@ import com.iita.akilimo.utils.enums.EnumFieldArea;
  * Use the {@link FieldSizeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FieldSizeFragment extends BaseFragment {
+public class FieldSizeFragment extends BaseStepFragment {
 
 
     AppCompatTextView title;
@@ -65,7 +66,7 @@ public class FieldSizeFragment extends BaseFragment {
     private String titleMessage;
 
     private MandatoryInfo mandatoryInfo;
-    private String areaUnit = "acre";
+    private String areaUnit = "";
     private int fieldSizeRadioIndex;
 
     @Override
@@ -113,7 +114,6 @@ public class FieldSizeFragment extends BaseFragment {
         });
     }
 
-    @Override
     public void refreshData() {
         try {
             mandatoryInfo = database.mandatoryInfoDao().findOne();
@@ -122,7 +122,11 @@ public class FieldSizeFragment extends BaseFragment {
                 areaUnit = mandatoryInfo.getAreaUnit();
                 fieldSizeRadioIndex = mandatoryInfo.getFieldSizeRadioIndex();
                 myFieldSize = String.valueOf(mandatoryInfo.getAreaSize());
-                setFieldLabels(areaUnit);
+                dataIsValid = mandatoryInfo.getAreaSize() > 0;
+
+                if (dataIsValid) {
+                    setFieldLabels(areaUnit);
+                }
 
                 rdgFieldArea.check(fieldSizeRadioIndex);
                 if (isExactArea) {
@@ -172,16 +176,18 @@ public class FieldSizeFragment extends BaseFragment {
         }
 
         //convert to specified area unit
-        double convertedAreaSize = mathHelper.convertFromAcreToSpecifiedArea(areaSize,areaUnit);
+        double convertedAreaSize = mathHelper.convertFromAcreToSpecifiedArea(areaSize, areaUnit);
         saveFieldSize(convertedAreaSize);
     }
 
     private void saveFieldSize(double convertedAreaSize) {
         fieldSizeRadioIndex = rdgFieldArea.getCheckedRadioButtonId();
-        if (convertedAreaSize <= 0) {
+        dataIsValid = convertedAreaSize > 0;
+        if (!dataIsValid) {
             showCustomWarningDialog(context.getString(R.string.lbl_field_size_prompt), context.getString(R.string.lbl_field_size_prompt));
             return;
         }
+
         try {
             if (mandatoryInfo == null) {
                 mandatoryInfo = new MandatoryInfo();
@@ -272,5 +278,25 @@ public class FieldSizeFragment extends BaseFragment {
 
         dialog.show();
         dialog.getWindow().setAttributes(lp);
+    }
+
+    @Nullable
+    @Override
+    public VerificationError verifyStep() {
+        if (!dataIsValid) {
+            errorMessage = context.getString(R.string.lbl_field_size_prompt);
+            return new VerificationError(errorMessage);
+        }
+        return null;
+    }
+
+    @Override
+    public void onSelected() {
+        refreshData();
+    }
+
+    @Override
+    public void onError(@NonNull VerificationError error) {
+
     }
 }

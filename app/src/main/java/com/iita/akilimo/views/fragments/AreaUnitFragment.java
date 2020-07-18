@@ -41,7 +41,6 @@ public class AreaUnitFragment extends BaseStepFragment {
     private MandatoryInfo mandatoryInfo;
     private String areaUnit = "acre";
     private int areaUnitRadioIndex = 0;
-    private boolean isTouched;
 
     public AreaUnitFragment() {
         // Required empty public constructor
@@ -84,43 +83,35 @@ public class AreaUnitFragment extends BaseStepFragment {
 
         rdgAreaUnit = binding.rdgAreaUnit;
 
-        //save this data
-        rdgAreaUnit.setOnTouchListener((view1, motionEvent) -> {
-            isTouched = true;
-            return false;
-        });
         rdgAreaUnit.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
-            if (isTouched) {
-                switch (radioIndex) {
-                    case R.id.rdAcre:
-                        areaUnit = EnumAreaUnits.ACRE.unitName(context);
-                        break;
-                    case R.id.rdHa:
-                        areaUnit = EnumAreaUnits.HA.unitName(context);
-                        break;
-                }
-
-                areaUnitRadioIndex = rdgAreaUnit.getCheckedRadioButtonId();
-                try {
-                    if (mandatoryInfo == null) {
-                        mandatoryInfo = new MandatoryInfo();
-                    }
-                    mandatoryInfo.setAreaUnitRadioIndex(areaUnitRadioIndex);
-                    mandatoryInfo.setAreaUnit(areaUnit);
-                    mandatoryInfo.setFieldSizeRadioIndex(0);
-                    mandatoryInfo.setAreaSize(0);
-
-                    database.mandatoryInfoDao().insert(mandatoryInfo);
-                    mandatoryInfo = database.mandatoryInfoDao().findOne();
-                    dataIsValid = true;
-                } catch (Exception ex) {
-                    Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                    Crashlytics.logException(ex);
-                    dataIsValid = false;
-                }
+            switch (radioIndex) {
+                case R.id.rdAcre:
+                    areaUnit = EnumAreaUnits.ACRE.unitName(context);
+                    break;
+                case R.id.rdHa:
+                    areaUnit = EnumAreaUnits.HA.unitName(context);
+                    break;
             }
-            isTouched = false;
+
+            areaUnitRadioIndex = rdgAreaUnit.getCheckedRadioButtonId();
+            try {
+                if (mandatoryInfo == null) {
+                    mandatoryInfo = new MandatoryInfo();
+                }
+                mandatoryInfo.setAreaUnitRadioIndex(areaUnitRadioIndex);
+                mandatoryInfo.setAreaUnit(areaUnit);
+                mandatoryInfo.setFieldSizeRadioIndex(0);
+                mandatoryInfo.setAreaSize(0);
+
+                database.mandatoryInfoDao().insert(mandatoryInfo);
+                mandatoryInfo = database.mandatoryInfoDao().findOne();
+                dataIsValid = true;
+            } catch (Exception ex) {
+                Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+                Crashlytics.logException(ex);
+                dataIsValid = false;
+            }
         });
     }
 
@@ -128,6 +119,7 @@ public class AreaUnitFragment extends BaseStepFragment {
     @Override
     public VerificationError verifyStep() {
         if (!dataIsValid) {
+            errorMessage = context.getString(R.string.lbl_area_unit_prompt);
             return new VerificationError(errorMessage);
         }
         return null;

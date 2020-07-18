@@ -41,7 +41,8 @@ public abstract class BaseStepFragment extends Fragment implements Step {
     protected String currency;
     protected String countryCode;
     protected String countryName;
-    protected String errorMessage="";
+    protected String errorMessage = "";
+    protected boolean isTouched;
 
     protected AppDatabase database;
     protected VerificationError verificationError = null;

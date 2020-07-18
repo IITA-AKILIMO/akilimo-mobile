@@ -74,7 +74,7 @@ class HomeStepperActivity : BaseActivity() {
         fragmentArray.add(LocationFragment.newInstance())
         fragmentArray.add(FieldInfoFragment.newInstance())
         fragmentArray.add(AreaUnitFragment.newInstance())
-//        fragmentArray.add(FieldSizeFragment.newInstance())
+        fragmentArray.add(FieldSizeFragment.newInstance())
 //        fragmentArray.add(CurrentPracticeFragment.newInstance())
 //        fragmentArray.add(SummaryFragment.newInstance())
     }
@@ -117,6 +117,7 @@ class HomeStepperActivity : BaseActivity() {
         throw UnsupportedOperationException()
     }
 
+    @Suppress("RedundantOverride")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
     }
