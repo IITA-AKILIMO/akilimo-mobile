@@ -54,7 +54,8 @@ class SplashActivity : BaseActivity() {
             Crashlytics.logException(ex)
         }
 //        val intent = Intent(this@SplashActivity, LanguagePickerActivity::class.java)
-        val intent = Intent(this@SplashActivity, HomeActivity::class.java)
+//        val intent = Intent(this@SplashActivity, HomeActivity::class.java)
+        val intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
         startActivity(intent)
         finish()
         Animatoo.animateFade(this)

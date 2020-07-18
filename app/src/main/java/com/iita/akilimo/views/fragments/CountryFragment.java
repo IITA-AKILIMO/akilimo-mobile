@@ -24,8 +24,9 @@ import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.FragmentCountryBinding;
 import com.iita.akilimo.entities.ProfileInfo;
-import com.iita.akilimo.inherit.BaseFragment;
+import com.iita.akilimo.inherit.BaseStepFragment;
 import com.iita.akilimo.utils.enums.EnumCountry;
+import com.stepstone.stepper.VerificationError;
 
 ;
 
@@ -34,7 +35,7 @@ import com.iita.akilimo.utils.enums.EnumCountry;
  * Use the {@link CountryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CountryFragment extends BaseFragment {
+public class CountryFragment extends BaseStepFragment {
 
     AppCompatTextView title;
     AppCompatButton btnPickCountry;
@@ -45,8 +46,6 @@ public class CountryFragment extends BaseFragment {
 
     private ProfileInfo profileInfo;
     private String name = "";
-
-    boolean userSelect = false;
     private int selectedCountryIndex = -1;
 
 
@@ -71,7 +70,6 @@ public class CountryFragment extends BaseFragment {
         return binding.getRoot();
     }
 
-    @Override
     public void refreshData() {
         try {
             profileInfo = database.profileInfoDao().findOne();
@@ -168,22 +166,49 @@ public class CountryFragment extends BaseFragment {
     }
 
     private void updateSelectedCountry() {
-        if (profileInfo == null) {
-            profileInfo = new ProfileInfo();
-        }
-
-        profileInfo.setSelectedCountryIndex(selectedCountryIndex);
-        profileInfo.setCountryCode(countryCode);
-        profileInfo.setCountryName(countryName);
-        profileInfo.setCurrency(currency);
-
-        if (profileInfo.getProfileId() != null) {
-            int id = profileInfo.getProfileId();
-            if (id > 0) {
-                database.profileInfoDao().update(profileInfo);
+        try {
+            if (profileInfo == null) {
+                profileInfo = new ProfileInfo();
             }
-        } else {
-            database.profileInfoDao().insert(profileInfo);
+
+            profileInfo.setSelectedCountryIndex(selectedCountryIndex);
+            profileInfo.setCountryCode(countryCode);
+            profileInfo.setCountryName(countryName);
+            profileInfo.setCurrency(currency);
+
+            dataIsValid = true;
+            if (profileInfo.getProfileId() != null) {
+                int id = profileInfo.getProfileId();
+                if (id > 0) {
+                    database.profileInfoDao().update(profileInfo);
+                }
+            } else {
+                database.profileInfoDao().insert(profileInfo);
+            }
+        } catch (Exception ex) {
+            dataIsValid = false;
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+            Crashlytics.logException(ex);
         }
+    }
+
+    @Nullable
+    @Override
+    public VerificationError verifyStep() {
+        updateSelectedCountry();
+        if (!dataIsValid) {
+            return new VerificationError("Please select country");
+        }
+        return null;
+    }
+
+    @Override
+    public void onSelected() {
+        refreshData();
+    }
+
+    @Override
+    public void onError(@NonNull VerificationError error) {
+
     }
 }

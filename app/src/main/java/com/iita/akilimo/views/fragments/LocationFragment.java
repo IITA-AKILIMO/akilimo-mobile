@@ -23,10 +23,11 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.FragmentLocationBinding;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.ProfileInfo;
-import com.iita.akilimo.inherit.BaseFragment;
+import com.iita.akilimo.inherit.BaseStepFragment;
 import com.iita.akilimo.services.GPSTracker;
 import com.iita.akilimo.views.activities.HomeActivity;
 import com.iita.akilimo.views.activities.MapBoxActivity;
+import com.stepstone.stepper.VerificationError;
 
 ;
 
@@ -35,7 +36,7 @@ import com.iita.akilimo.views.activities.MapBoxActivity;
  * Use the {@link LocationFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LocationFragment extends BaseFragment {
+public class LocationFragment extends BaseStepFragment {
 
 
     AppCompatButton btnCurrentLocation;
@@ -71,11 +72,6 @@ public class LocationFragment extends BaseFragment {
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentLocationBinding.inflate(inflater, container, false);
         return binding.getRoot();
-    }
-
-    @Override
-    public void refreshData() {
-        reloadLocationInfo();
     }
 
     @Override
@@ -125,9 +121,13 @@ public class LocationFragment extends BaseFragment {
         locationInformation.setLatitude(currentLat);
         locationInformation.setLongitude(currentLon);
 
-        database.locationInfoDao().insert(locationInformation);
-        locationInformation = database.locationInfoDao().findOne();
-        reloadLocationInfo();
+        if (locationInformation.getId() != null) {
+            database.locationInfoDao().update(locationInformation);
+        } else {
+            database.locationInfoDao().insert(locationInformation);
+        }
+
+        dataIsValid = currentLat != 0 || currentLon != 0;
     }
 
     private void reloadLocationInfo() {
@@ -140,10 +140,13 @@ public class LocationFragment extends BaseFragment {
             }
             if (locationInformation != null) {
                 StringBuilder locInfo = loadLocationInfo(locationInformation);
-                locationInfo.setText(locInfo.toString());
                 currentLon = locationInformation.getLongitude();
                 currentLat = locationInformation.getLatitude();
                 currentAlt = locationInformation.getAltitude();
+                dataIsValid = currentLat != 0 || currentLon != 0;
+                if (dataIsValid) {
+                    locationInfo.setText(locInfo.toString());
+                }
             }
 
             String message = context.getString(R.string.lbl_farm_location, farmName);
@@ -153,6 +156,26 @@ public class LocationFragment extends BaseFragment {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
+
+    }
+
+    @Nullable
+    @Override
+    public VerificationError verifyStep() {
+        saveLocation();
+        if (!dataIsValid) {
+            return new VerificationError("Please provide location");
+        }
+        return null;
+    }
+
+    @Override
+    public void onSelected() {
+        reloadLocationInfo();
+    }
+
+    @Override
+    public void onError(@NonNull VerificationError error) {
 
     }
 }

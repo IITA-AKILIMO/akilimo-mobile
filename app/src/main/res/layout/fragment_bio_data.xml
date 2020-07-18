@@ -177,10 +177,6 @@
                 android:textColorHint="@android:color/transparent" />
 
         </com.google.android.material.textfield.TextInputLayout>
-
-        <include
-            android:id="@+id/single_button"
-            layout="@layout/bottom_single_button_layout" />
     </LinearLayout>
 
 

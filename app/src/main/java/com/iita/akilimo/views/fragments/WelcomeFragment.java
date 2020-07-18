@@ -18,8 +18,9 @@ import com.iita.akilimo.Locales;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.MySpinnerAdapter;
 import com.iita.akilimo.databinding.FragmentWelcomeBinding;
-import com.iita.akilimo.inherit.BaseFragment;
+import com.iita.akilimo.inherit.BaseStepFragment;
 import com.iita.akilimo.utils.enums.EnumCountry;
+import com.stepstone.stepper.VerificationError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ import dev.b3nedikt.reword.Reword;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class WelcomeFragment extends BaseFragment {
+public class WelcomeFragment extends BaseStepFragment {
 
     FragmentWelcomeBinding binding;
     private Spinner languagePicker;
@@ -61,10 +62,6 @@ public class WelcomeFragment extends BaseFragment {
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentWelcomeBinding.inflate(inflater, container, false);
         return binding.getRoot();
-    }
-
-    @Override
-    public void refreshData() {
     }
 
     @Override
@@ -131,5 +128,20 @@ public class WelcomeFragment extends BaseFragment {
             selectedLanguageIndex = localeDisplayName.indexOf(selectedLocale.getDisplayLanguage());
         }
         languagePicker.setSelection(selectedLanguageIndex);
+    }
+
+    @Nullable
+    @Override
+    public VerificationError verifyStep() {
+        return verificationError;
+    }
+
+    @Override
+    public void onSelected() {
+
+    }
+
+    @Override
+    public void onError(@NonNull VerificationError error) {
     }
 }

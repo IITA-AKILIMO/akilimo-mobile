@@ -25,33 +25,26 @@ import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.SessionManager;
+import com.stepstone.stepper.Step;
 import com.stepstone.stepper.VerificationError;
 
-import java.util.Locale;
-
-import dev.b3nedikt.app_locale.AppLocale;
-import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
 import dev.b3nedikt.reword.Reword;
 
 @SuppressWarnings("WeakerAccess")
-public abstract class BaseFragment extends Fragment {
+public abstract class BaseStepFragment extends Fragment implements Step {
 
-    protected String LOG_TAG = BaseFragment.class.getSimpleName();
+    protected String LOG_TAG = BaseStepFragment.class.getSimpleName();
 
-    protected int nextTab = 0;
-    protected int prevTab = 0;
     protected double baseAcre = 2.471;
     protected double baseSqm = 4046.86;
 
     protected String currency;
     protected String countryCode;
     protected String countryName;
+    protected String errorMessage="";
 
     protected AppDatabase database;
     protected VerificationError verificationError = null;
-
-
-    String emptyText = "";
 
     private String appVersion;
     protected Context context;
@@ -59,11 +52,9 @@ public abstract class BaseFragment extends Fragment {
 
     protected SessionManager sessionManager;
     protected MathHelper mathHelper;
+    protected boolean dataIsValid;
 
-//
-
-    public BaseFragment() {
-
+    public BaseStepFragment() {
     }
 
     @Override
@@ -92,33 +83,6 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected abstract View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
-
-    public abstract void refreshData();
-
-    protected StringBuilder loadLocationInfo(LocationInfo locationInfo) {
-        StringBuilder stBuilder = new StringBuilder();
-        if (locationInfo != null) {
-            String latitude = String.valueOf(locationInfo.getLatitude());
-            String longitude = String.valueOf(locationInfo.getLongitude());
-            stBuilder.append("Lat:");
-            stBuilder.append(latitude);
-            stBuilder.append(" ");
-            stBuilder.append("Lon:");
-            stBuilder.append(longitude);
-        }
-
-        return stBuilder;
-    }
-
-    protected Locale getCurrentLocale() {
-        SharedPrefsAppLocaleRepository prefs = new SharedPrefsAppLocaleRepository(context);
-        Locale desiredLocale = prefs.getDesiredLocale();
-        if (desiredLocale != null) {
-            AppLocale.setDesiredLocale(desiredLocale);
-        }
-
-        return desiredLocale;
-    }
 
     protected void showCustomWarningDialog(String titleText, String contentText) {
         showCustomWarningDialog(titleText, contentText, null);
@@ -158,4 +122,20 @@ public abstract class BaseFragment extends Fragment {
             Crashlytics.logException(ex);
         }
     }
+
+    protected StringBuilder loadLocationInfo(LocationInfo locationInfo) {
+        StringBuilder stBuilder = new StringBuilder();
+        if (locationInfo != null) {
+            String latitude = String.valueOf(locationInfo.getLatitude());
+            String longitude = String.valueOf(locationInfo.getLongitude());
+            stBuilder.append("Lat:");
+            stBuilder.append(latitude);
+            stBuilder.append(" ");
+            stBuilder.append("Lon:");
+            stBuilder.append(longitude);
+        }
+
+        return stBuilder;
+    }
+
 }
