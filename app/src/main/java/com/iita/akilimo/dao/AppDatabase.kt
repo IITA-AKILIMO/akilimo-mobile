@@ -6,9 +6,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.iita.akilimo.entities.*
-import java.text.SimpleDateFormat
-import java.util.*
-import java.util.concurrent.Executors
 
 @Database(
     entities = [
@@ -74,7 +71,7 @@ abstract class AppDatabase : RoomDatabase() {
                     if (INSTANCE == null) {
                         INSTANCE = Room.databaseBuilder(
                             context.applicationContext,
-                            AppDatabase::class.java, "AKILIMO_07_JULY"
+                            AppDatabase::class.java, "AKILIMO_18_JULY"
                         )
                             .fallbackToDestructiveMigration()
                             .allowMainThreadQueries()

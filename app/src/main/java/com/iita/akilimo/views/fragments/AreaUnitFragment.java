@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.FragmentAreaUnitBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
@@ -69,6 +70,10 @@ public class AreaUnitFragment extends BaseStepFragment {
                 areaUnit = mandatoryInfo.getAreaUnit();
                 areaUnitRadioIndex = mandatoryInfo.getAreaUnitRadioIndex();
                 rdgAreaUnit.check(areaUnitRadioIndex);
+                dataIsValid = !Strings.isEmptyOrWhitespace(areaUnit);
+            } else {
+                areaUnitRadioIndex = -1;
+                areaUnit = null;
             }
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving are info");
@@ -83,6 +88,7 @@ public class AreaUnitFragment extends BaseStepFragment {
 
         rdgAreaUnit = binding.rdgAreaUnit;
 
+        errorMessage = context.getString(R.string.lbl_area_unit_prompt);
         rdgAreaUnit.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
             switch (radioIndex) {
                 case R.id.rdAcre:
@@ -93,19 +99,25 @@ public class AreaUnitFragment extends BaseStepFragment {
                     break;
             }
 
-            areaUnitRadioIndex = rdgAreaUnit.getCheckedRadioButtonId();
+            dataIsValid = !Strings.isEmptyOrWhitespace(areaUnit);
+            if (!dataIsValid) {
+                showCustomWarningDialog(errorMessage);
+                return;
+            }
             try {
+                mandatoryInfo = database.mandatoryInfoDao().findOne();
                 if (mandatoryInfo == null) {
                     mandatoryInfo = new MandatoryInfo();
                 }
+                areaUnitRadioIndex = rdgAreaUnit.getCheckedRadioButtonId();
                 mandatoryInfo.setAreaUnitRadioIndex(areaUnitRadioIndex);
                 mandatoryInfo.setAreaUnit(areaUnit);
-                mandatoryInfo.setFieldSizeRadioIndex(0);
-                mandatoryInfo.setAreaSize(0);
+                if (mandatoryInfo.getId() != null) {
+                    database.mandatoryInfoDao().update(mandatoryInfo);
+                } else {
+                    database.mandatoryInfoDao().insert(mandatoryInfo);
+                }
 
-                database.mandatoryInfoDao().insert(mandatoryInfo);
-                mandatoryInfo = database.mandatoryInfoDao().findOne();
-                dataIsValid = true;
             } catch (Exception ex) {
                 Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
@@ -119,7 +131,6 @@ public class AreaUnitFragment extends BaseStepFragment {
     @Override
     public VerificationError verifyStep() {
         if (!dataIsValid) {
-            errorMessage = context.getString(R.string.lbl_area_unit_prompt);
             return new VerificationError(errorMessage);
         }
         return null;

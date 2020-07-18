@@ -85,6 +85,10 @@ public abstract class BaseStepFragment extends Fragment implements Step {
 
     protected abstract View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
 
+    protected void showCustomWarningDialog(String titleText) {
+        showCustomWarningDialog(titleText, titleText, null);
+    }
+
     protected void showCustomWarningDialog(String titleText, String contentText) {
         showCustomWarningDialog(titleText, contentText, null);
     }

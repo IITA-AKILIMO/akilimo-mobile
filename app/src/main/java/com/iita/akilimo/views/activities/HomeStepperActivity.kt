@@ -75,7 +75,7 @@ class HomeStepperActivity : BaseActivity() {
         fragmentArray.add(FieldInfoFragment.newInstance())
         fragmentArray.add(AreaUnitFragment.newInstance())
         fragmentArray.add(FieldSizeFragment.newInstance())
-//        fragmentArray.add(CurrentPracticeFragment.newInstance())
+        fragmentArray.add(CurrentPracticeFragment.newInstance())
 //        fragmentArray.add(SummaryFragment.newInstance())
     }
 

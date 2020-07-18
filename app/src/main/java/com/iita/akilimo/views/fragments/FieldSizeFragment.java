@@ -1,6 +1,7 @@
 package com.iita.akilimo.views.fragments;
 
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -29,8 +30,6 @@ import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.inherit.BaseStepFragment;
 import com.iita.akilimo.utils.enums.EnumFieldArea;
 import com.stepstone.stepper.VerificationError;
-
-;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -89,6 +88,7 @@ public class FieldSizeFragment extends BaseStepFragment {
         return binding.getRoot();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -120,9 +120,10 @@ public class FieldSizeFragment extends BaseStepFragment {
             if (mandatoryInfo != null) {
                 isExactArea = mandatoryInfo.getExactArea();
                 areaUnit = mandatoryInfo.getAreaUnit();
+                areaSize = mandatoryInfo.getAreaSize();
                 fieldSizeRadioIndex = mandatoryInfo.getFieldSizeRadioIndex();
-                myFieldSize = String.valueOf(mandatoryInfo.getAreaSize());
-                dataIsValid = mandatoryInfo.getAreaSize() > 0;
+                myFieldSize = String.valueOf(areaSize);
+                dataIsValid = areaSize > 0;
 
                 if (dataIsValid) {
                     setFieldLabels(areaUnit);
@@ -145,7 +146,6 @@ public class FieldSizeFragment extends BaseStepFragment {
 
     private void radioSelected(int checked) {
         specifiedArea.setVisibility(View.GONE);
-        areaSize = 0;
         isExactArea = false;
         switch (checked) {
             case R.id.rd_quarter_acre:
@@ -166,7 +166,6 @@ public class FieldSizeFragment extends BaseStepFragment {
             case R.id.rd_five_acre:
                 areaSize = EnumFieldArea.FIVE_ACRE.areaValue();
                 break;
-            default:
             case R.id.rd_specify_acre:
                 isExactArea = true;
                 areaSize = EnumFieldArea.EXACT_AREA.areaValue();
@@ -194,10 +193,12 @@ public class FieldSizeFragment extends BaseStepFragment {
             }
             mandatoryInfo.setFieldSizeRadioIndex(fieldSizeRadioIndex);
             mandatoryInfo.setAreaSize(convertedAreaSize);
-
-            database.mandatoryInfoDao().insert(mandatoryInfo);
+            if (mandatoryInfo.getId() != null) {
+                database.mandatoryInfoDao().update(mandatoryInfo);
+            } else {
+                database.mandatoryInfoDao().insert(mandatoryInfo);
+            }
             mandatoryInfo = database.mandatoryInfoDao().findOne();
-
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

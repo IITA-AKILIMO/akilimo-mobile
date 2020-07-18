@@ -22,20 +22,23 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.common.util.Strings;
+import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.FragmentCurrentPracticeBinding;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.ScheduledDate;
-import com.iita.akilimo.inherit.BaseFragment;
+import com.iita.akilimo.inherit.BaseStepFragment;
 import com.iita.akilimo.utils.enums.EnumOperationType;
 import com.iita.akilimo.views.fragments.dialog.DateDialogPickerFragment;
 import com.iita.akilimo.views.fragments.dialog.OperationTypeDialogFragment;
+import com.stepstone.stepper.VerificationError;
 
 ;
 
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
  */
-public class CurrentPracticeFragment extends BaseFragment {
+public class CurrentPracticeFragment extends BaseStepFragment {
 
 
     CheckBox chkPloughing;
@@ -140,7 +143,6 @@ public class CurrentPracticeFragment extends BaseFragment {
 
     }
 
-    @Override
     public void refreshData() {
         try {
 
@@ -228,7 +230,7 @@ public class CurrentPracticeFragment extends BaseFragment {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == DateDialogPickerFragment.PLANTING_REQUEST_CODE) {
                 selectedPlantingDate = data.getStringExtra("selectedDate");
-                selectedHarvestDate = null; //make this null so as to require reselection of harvest date
+                selectedHarvestDate = null;
             } else if (requestCode == DateDialogPickerFragment.HARVEST_REQUEST_CODE) {
                 selectedHarvestDate = data.getStringExtra("selectedDate");
             }
@@ -250,6 +252,18 @@ public class CurrentPracticeFragment extends BaseFragment {
             harrowingMethod = EnumOperationType.NONE.operationName();
         }
 
+        dataIsValid = !Strings.isEmptyOrWhitespace(selectedPlantingDate);
+        if (!dataIsValid) {
+            errorMessage = context.getString(R.string.lbl_planting_date_prompt);
+            showCustomWarningDialog(errorMessage);
+            return;
+        }
+        dataIsValid = !Strings.isEmptyOrWhitespace(selectedHarvestDate);
+        if (!dataIsValid) {
+            errorMessage = context.getString(R.string.lbl_harvest_date_prompt);
+            showCustomWarningDialog(errorMessage);
+            return;
+        }
         try {
             if (currentPractice == null) {
                 currentPractice = new CurrentPractice();
@@ -278,13 +292,32 @@ public class CurrentPracticeFragment extends BaseFragment {
             } else {
                 database.scheduleDateDao().insert(scheduledDate);
             }
-
-            //requesry the data
             currentPractice = database.currentPracticeDao().findOne();
             scheduledDate = database.scheduleDateDao().findOne();
         } catch (Exception ex) {
+            dataIsValid = false;
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
+    }
+
+    @Nullable
+    @Override
+    public VerificationError verifyStep() {
+        saveEntities();
+        if (!dataIsValid) {
+            return new VerificationError(errorMessage);
+        }
+        return null;
+    }
+
+    @Override
+    public void onSelected() {
+        refreshData();
+    }
+
+    @Override
+    public void onError(@NonNull VerificationError error) {
+
     }
 }
