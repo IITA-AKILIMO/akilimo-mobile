@@ -75,11 +75,11 @@ public class CountryFragment extends BaseStepFragment {
             profileInfo = database.profileInfoDao().findOne();
             if (profileInfo != null) {
                 name = profileInfo.getFirstName();
-                selectedCountryIndex = profileInfo.getSelectedCountryIndex();
                 countryCode = profileInfo.getCountryCode();
                 countryName = profileInfo.getCountryName();
 
                 if (!Strings.isEmptyOrWhitespace(countryCode)) {
+                    selectedCountryIndex = profileInfo.getSelectedCountryIndex();
                     countryImage.setImageResource(World.getFlagOf(countryCode));
                 }
                 if (!Strings.isEmptyOrWhitespace(countryName)) {
@@ -118,8 +118,12 @@ public class CountryFragment extends BaseStepFragment {
                 builder.setSingleChoiceItems(countries, selectedCountryIndex, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        countryName = countries[i];
                         selectedCountryIndex = i;
+                    }
+                });
+                builder.setPositiveButton(context.getString(R.string.lbl_ok), (dialogInterface, whichButton) -> {
+                    if (selectedCountryIndex >= 0) {
+                        countryName = countries[selectedCountryIndex];
                         switch (countryName.toLowerCase()) {
                             case "kenya":
                                 countryName = EnumCountry.Kenya.name();
@@ -142,13 +146,8 @@ public class CountryFragment extends BaseStepFragment {
                                 countryCode = EnumCountry.Other.countryCode();
                                 break;
                         }
-
-                    }
-                });
-                builder.setPositiveButton(context.getString(R.string.lbl_ok), (dialogInterface, whichButton) -> {
-                    countryImage.setImageResource(World.getFlagOf(countryCode));
-                    txtCountryName.setText(countryName);
-                    if (selectedCountryIndex >= 0) {
+                        countryImage.setImageResource(World.getFlagOf(countryCode));
+                        txtCountryName.setText(countryName);
                         dialogInterface.dismiss();
                         updateSelectedCountry();
                     }
@@ -176,7 +175,7 @@ public class CountryFragment extends BaseStepFragment {
             profileInfo.setCountryName(countryName);
             profileInfo.setCurrency(currency);
 
-            dataIsValid = true;
+            dataIsValid = !Strings.isEmptyOrWhitespace(countryCode);
             if (profileInfo.getProfileId() != null) {
                 int id = profileInfo.getProfileId();
                 if (id > 0) {

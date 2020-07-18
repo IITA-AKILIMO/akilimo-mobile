@@ -189,7 +189,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             dialog.show();
             dialog.getWindow().setAttributes(lp);
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred while displaying alert dialog");
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
     }

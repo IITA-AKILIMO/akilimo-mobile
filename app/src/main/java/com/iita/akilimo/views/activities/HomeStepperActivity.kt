@@ -3,15 +3,15 @@ package com.iita.akilimo.views.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.crashlytics.android.Crashlytics
-import com.google.android.gms.common.util.Strings
 import com.iita.akilimo.R
 import com.iita.akilimo.adapters.MyStepperAdapter
-import com.iita.akilimo.dao.LocationInfoDao
+import com.iita.akilimo.dao.AppDatabase
 import com.iita.akilimo.databinding.ActivityHomeStepperBinding
 import com.iita.akilimo.entities.LocationInfo
 import com.iita.akilimo.inherit.BaseActivity
@@ -19,6 +19,7 @@ import com.iita.akilimo.views.fragments.*
 import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.StepperLayout.StepperListener
 import com.stepstone.stepper.VerificationError
+import kotlin.system.exitProcess
 
 
 class HomeStepperActivity : BaseActivity() {
@@ -42,6 +43,7 @@ class HomeStepperActivity : BaseActivity() {
     private var address: String? = null
     private var defaultPlaceName: String = ""
     private var location: LocationInfo? = null
+    private var exit: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +52,7 @@ class HomeStepperActivity : BaseActivity() {
 
         activity = this
         context = this
+        database = AppDatabase.getDatabase(context)
         mStepperLayout = binding.stepperLayout
 
         createFragmentArray()
@@ -69,8 +72,8 @@ class HomeStepperActivity : BaseActivity() {
         fragmentArray.add(BioDataFragment.newInstance())
         fragmentArray.add(CountryFragment.newInstance())
         fragmentArray.add(LocationFragment.newInstance())
-//        fragmentArray.add(FieldInfoFragment.newInstance())
-//        fragmentArray.add(AreaUnitFragment.newInstance())
+        fragmentArray.add(FieldInfoFragment.newInstance())
+        fragmentArray.add(AreaUnitFragment.newInstance())
 //        fragmentArray.add(FieldSizeFragment.newInstance())
 //        fragmentArray.add(CurrentPracticeFragment.newInstance())
 //        fragmentArray.add(SummaryFragment.newInstance())
@@ -99,6 +102,11 @@ class HomeStepperActivity : BaseActivity() {
                 finish()
             }
         })
+
+        val rationale: String = getString(R.string.lbl_permission_rationale)
+
+        checkAppPermissions(rationale)
+        fetchFireBaseConfig(activity)
     }
 
     override fun validate(backPressed: Boolean) {
@@ -111,52 +119,31 @@ class HomeStepperActivity : BaseActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onBackPressed() {
         try {
-            if (requestCode == HomeActivity.MAP_BOX_PLACE_PICKER_REQUEST_CODE) {
-                if (resultCode == RESULT_OK) {
-                    if (data != null) {
-                        currentLat = data.getDoubleExtra(MapBoxActivity.LAT, 0.0)
-                        currentLong = data.getDoubleExtra(MapBoxActivity.LON, 0.0)
-                        currentAlt = data.getDoubleExtra(MapBoxActivity.ALT, 0.0)
-                        placeName = data.getStringExtra(MapBoxActivity.PLACE_NAME)
-
-                    } else {
-                        Toast.makeText(
-                            context,
-                            getString(R.string.lbl_location_error),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
+            if (exit) {
+                finish() // finish activity
+                System.gc() //run the garbage collector to free up memory resources
+                exitProcess(0) //exit the system
+            } else {
+                Toast.makeText(
+                    this,
+                    getString(R.string.lbl_exit_tip),
+                    Toast.LENGTH_SHORT
+                ).show()
+                exit = true
+                Handler().postDelayed({ exit = false }, (3 * 1000).toLong())
             }
-
-            location = database.locationInfoDao().findOne()
-            if (location == null) {
-                location = LocationInfo()
-            }
-            location?.latitude = currentLat
-            location?.longitude = currentLong
-            location?.altitude = currentAlt
-            location?.placeName = when {
-                !Strings.isEmptyOrWhitespace(placeName) -> placeName
-                else -> defaultPlaceName
-            }
-            location?.address = when {
-                !Strings.isEmptyOrWhitespace(address) -> address
-                else -> "NA"
-            }
-
-            val locationInfoDao: LocationInfoDao = database.locationInfoDao()
-            locationInfoDao.insert(location!!)
         } catch (ex: Exception) {
-            Toast.makeText(
-                context,
-                ex.message,
-                Toast.LENGTH_LONG
-            ).show()
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
+            Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+            Crashlytics.log(
+                Log.ERROR,
+                LOG_TAG,
+                ex.message
+            )
             Crashlytics.logException(ex)
         }
-
     }
 }

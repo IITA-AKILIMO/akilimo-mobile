@@ -1,6 +1,7 @@
 package com.iita.akilimo.views.fragments;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,8 +19,9 @@ import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.FragmentAreaUnitBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
-import com.iita.akilimo.inherit.BaseFragment;
+import com.iita.akilimo.inherit.BaseStepFragment;
 import com.iita.akilimo.utils.enums.EnumAreaUnits;
+import com.stepstone.stepper.VerificationError;
 
 ;
 
@@ -28,7 +30,7 @@ import com.iita.akilimo.utils.enums.EnumAreaUnits;
  * Use the {@link AreaUnitFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AreaUnitFragment extends BaseFragment {
+public class AreaUnitFragment extends BaseStepFragment {
 
 
     RadioGroup rdgAreaUnit;
@@ -39,6 +41,7 @@ public class AreaUnitFragment extends BaseFragment {
     private MandatoryInfo mandatoryInfo;
     private String areaUnit = "acre";
     private int areaUnitRadioIndex = 0;
+    private boolean isTouched;
 
     public AreaUnitFragment() {
         // Required empty public constructor
@@ -60,7 +63,6 @@ public class AreaUnitFragment extends BaseFragment {
         return binding.getRoot();
     }
 
-    @Override
     public void refreshData() {
         try {
             mandatoryInfo = database.mandatoryInfoDao().findOne();
@@ -75,6 +77,7 @@ public class AreaUnitFragment extends BaseFragment {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -82,34 +85,61 @@ public class AreaUnitFragment extends BaseFragment {
         rdgAreaUnit = binding.rdgAreaUnit;
 
         //save this data
-        rdgAreaUnit.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
-            switch (radioIndex) {
-                case R.id.rdAcre:
-                    areaUnit = EnumAreaUnits.ACRE.unitName(context);
-                    break;
-                case R.id.rdHa:
-                    areaUnit = EnumAreaUnits.HA.unitName(context);
-                    break;
-            }
-
-            areaUnitRadioIndex = rdgAreaUnit.getCheckedRadioButtonId();
-            try {
-                if (mandatoryInfo == null) {
-                    mandatoryInfo = new MandatoryInfo();
-                }
-                mandatoryInfo.setAreaUnitRadioIndex(areaUnitRadioIndex);
-                mandatoryInfo.setAreaUnit(areaUnit);
-                mandatoryInfo.setFieldSizeRadioIndex(0);
-                mandatoryInfo.setAreaSize(0);
-
-                database.mandatoryInfoDao().insert(mandatoryInfo);
-                mandatoryInfo = database.mandatoryInfoDao().findOne();
-
-            } catch (Exception ex) {
-                Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                Crashlytics.logException(ex);
-            }
+        rdgAreaUnit.setOnTouchListener((view1, motionEvent) -> {
+            isTouched = true;
+            return false;
         });
+        rdgAreaUnit.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
+            if (isTouched) {
+                switch (radioIndex) {
+                    case R.id.rdAcre:
+                        areaUnit = EnumAreaUnits.ACRE.unitName(context);
+                        break;
+                    case R.id.rdHa:
+                        areaUnit = EnumAreaUnits.HA.unitName(context);
+                        break;
+                }
+
+                areaUnitRadioIndex = rdgAreaUnit.getCheckedRadioButtonId();
+                try {
+                    if (mandatoryInfo == null) {
+                        mandatoryInfo = new MandatoryInfo();
+                    }
+                    mandatoryInfo.setAreaUnitRadioIndex(areaUnitRadioIndex);
+                    mandatoryInfo.setAreaUnit(areaUnit);
+                    mandatoryInfo.setFieldSizeRadioIndex(0);
+                    mandatoryInfo.setAreaSize(0);
+
+                    database.mandatoryInfoDao().insert(mandatoryInfo);
+                    mandatoryInfo = database.mandatoryInfoDao().findOne();
+                    dataIsValid = true;
+                } catch (Exception ex) {
+                    Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+                    Crashlytics.logException(ex);
+                    dataIsValid = false;
+                }
+            }
+            isTouched = false;
+        });
+    }
+
+    @Nullable
+    @Override
+    public VerificationError verifyStep() {
+        if (!dataIsValid) {
+            return new VerificationError(errorMessage);
+        }
+        return null;
+    }
+
+    @Override
+    public void onSelected() {
+        refreshData();
+    }
+
+    @Override
+    public void onError(@NonNull VerificationError error) {
+
     }
 }

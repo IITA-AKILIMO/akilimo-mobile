@@ -25,9 +25,11 @@ import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseStepFragment;
 import com.iita.akilimo.services.GPSTracker;
-import com.iita.akilimo.views.activities.HomeActivity;
+import com.iita.akilimo.views.activities.HomeStepperActivity;
 import com.iita.akilimo.views.activities.MapBoxActivity;
 import com.stepstone.stepper.VerificationError;
+
+import static android.app.Activity.RESULT_OK;
 
 ;
 
@@ -92,8 +94,9 @@ public class LocationFragment extends BaseStepFragment {
             intent.putExtra(MapBoxActivity.LAT, currentLat);
             intent.putExtra(MapBoxActivity.LON, currentLon);
             intent.putExtra(MapBoxActivity.ALT, currentAlt);
-            getActivity().startActivityForResult(intent, HomeActivity.MAP_BOX_PLACE_PICKER_REQUEST_CODE);
+            this.startActivityForResult(intent, HomeStepperActivity.MAP_BOX_PLACE_PICKER_REQUEST_CODE);
         });
+        errorMessage = context.getString(R.string.lbl_location_error);
     }
 
     private void getCurrentLocation() {
@@ -128,6 +131,7 @@ public class LocationFragment extends BaseStepFragment {
         }
 
         dataIsValid = currentLat != 0 || currentLon != 0;
+        reloadLocationInfo();
     }
 
     private void reloadLocationInfo() {
@@ -159,12 +163,36 @@ public class LocationFragment extends BaseStepFragment {
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            if (requestCode == HomeStepperActivity.MAP_BOX_PLACE_PICKER_REQUEST_CODE) {
+                if (resultCode == RESULT_OK) {
+                    if (data != null) {
+                        currentLat = data.getDoubleExtra(MapBoxActivity.LAT, 0.0);
+                        currentLon = data.getDoubleExtra(MapBoxActivity.LON, 0.0);
+                        currentAlt = data.getDoubleExtra(MapBoxActivity.ALT, 0.0);
+                        saveLocation();
+                    } else {
+                        dataIsValid = false;
+                        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+            Crashlytics.logException(ex);
+        }
+    }
+
     @Nullable
     @Override
     public VerificationError verifyStep() {
         saveLocation();
         if (!dataIsValid) {
-            return new VerificationError("Please provide location");
+            return new VerificationError(errorMessage);
         }
         return null;
     }
