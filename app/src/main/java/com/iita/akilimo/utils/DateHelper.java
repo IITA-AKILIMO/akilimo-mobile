@@ -191,4 +191,19 @@ public class DateHelper {
         }
         return parse;
     }
+
+    public static boolean olderThanCurrent(String dateOne) {
+        LocalDate d1 = formatToLocalDate(dateOne);
+        LocalDate currentDate = LocalDate.now();
+
+        boolean dateOlderThanCurrent = false;
+        if (d1.compareTo(currentDate) > 0) {
+            dateOlderThanCurrent = false;
+        } else if (d1.compareTo(currentDate) < 0) {
+            dateOlderThanCurrent = true;
+        } else if (d1.compareTo(currentDate) == 0) {
+            dateOlderThanCurrent = false;
+        }
+        return dateOlderThanCurrent;
+    }
 }

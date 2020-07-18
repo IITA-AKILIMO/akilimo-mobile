@@ -13,5 +13,5 @@ open class ScheduledDate() {
     var harvestDate: String? = null
     var harvestWindow: Int = 0
     var alternativeDate: Boolean = false
-    val isAlreadyPlanted: Boolean = false
+    var isAlreadyPlanted: Boolean = false
 }
