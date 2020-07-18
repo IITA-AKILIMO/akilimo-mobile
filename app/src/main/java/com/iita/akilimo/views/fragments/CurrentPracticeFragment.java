@@ -69,6 +69,7 @@ public class CurrentPracticeFragment extends BaseStepFragment {
     private boolean performRidging;
     private boolean performHarrowing;
     private boolean isDataRefreshing = false;
+    private boolean isAlreadyPlanted = false;
 
     public CurrentPracticeFragment() {
         // Required empty public constructor

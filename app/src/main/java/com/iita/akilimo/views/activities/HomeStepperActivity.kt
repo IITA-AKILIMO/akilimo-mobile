@@ -76,7 +76,7 @@ class HomeStepperActivity : BaseActivity() {
         fragmentArray.add(AreaUnitFragment.newInstance())
         fragmentArray.add(FieldSizeFragment.newInstance())
         fragmentArray.add(CurrentPracticeFragment.newInstance())
-//        fragmentArray.add(SummaryFragment.newInstance())
+        fragmentArray.add(SummaryFragment.newInstance())
     }
 
     override fun initComponent() {
@@ -85,6 +85,7 @@ class HomeStepperActivity : BaseActivity() {
 
         mStepperLayout.setListener(object : StepperListener {
             override fun onCompleted(completeButton: View?) {
+                Toast.makeText(context, "onCompleted!", Toast.LENGTH_SHORT).show();
             }
 
             override fun onError(verificationError: VerificationError) {

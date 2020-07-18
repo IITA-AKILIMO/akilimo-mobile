@@ -24,12 +24,13 @@ import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.entities.ScheduledDate;
-import com.iita.akilimo.inherit.BaseFragment;
+import com.iita.akilimo.inherit.BaseStepFragment;
 import com.iita.akilimo.interfaces.IFragmentCallBack;
 import com.iita.akilimo.models.TimeLineModel;
 import com.iita.akilimo.models.TimelineAttributes;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.enums.StepStatus;
+import com.stepstone.stepper.VerificationError;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +42,7 @@ import java.util.List;
  * Use the {@link SummaryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SummaryFragment extends BaseFragment {
+public class SummaryFragment extends BaseStepFragment {
 
     RecyclerView recyclerView;
     FragmentSummaryBinding binding;
@@ -260,5 +261,21 @@ public class SummaryFragment extends BaseFragment {
     public void onDetach() {
         super.onDetach();
         fragmentCallBack = null;
+    }
+
+    @Nullable
+    @Override
+    public VerificationError verifyStep() {
+        return null;
+    }
+
+    @Override
+    public void onSelected() {
+
+    }
+
+    @Override
+    public void onError(@NonNull VerificationError error) {
+
     }
 }
