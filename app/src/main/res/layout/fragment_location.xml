@@ -35,7 +35,8 @@
             android:text="@string/lbl_farm_location"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/akilimoDarkGreen"
+            android:textStyle="bold" />
 
 
         <TextView

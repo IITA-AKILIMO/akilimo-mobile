@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-    <string name="welcome_title">Mimi ni  AKILIMO</string>
-    <string name="welcome_instructions">Nitakupatia ushauri binafsi wa kuongeza mavuno ya muhogo katika shamba lako iwapo utanipatia taarifa muhimu za kuniwezesha kufanya hivyo .</string>
-    <string name="important_instructions_title">MAAGIZO MUHIMU</string>
+    <string name="welcome_title">Karibu</string>
+    <string name="welcome_instructions">AKILIMO inaweza kupatia ushauri binafsi wa kuongeza mavuno ya muhogo katika shamba lako iwapo utanipatia taarifa muhimu za kuniwezesha kufanya hivyo .</string>
+    <string name="important_instructions_title">HABARI MUHIMU</string>
     <string name="important_instructions">Mapendekezo atakayo kupatia AKILIMO, yanategemea usahihi wa taarifa utakazo zitoa yaani eneo lilipo shamba lako, ukubwa wa shamba, bei ya mazao, mbolea, n.k. Kwa mfano, ukubwa wa shamba ukitajwa kuwa mkubwa kuliko ulivyo, utaongeza gharama zisizo za lazima, yaani  kuongezeka uwekezaji na kusababisha hasara; na ikiwa ukubwa wa shamba unaotajwa utakuwa ni chini ya ukweli,  itapunguza fursa ya kupata faida kutoka kwenye shamba lako.</string>
     <string name="title_activity_fertilizer_choice">Mbolea inayopatikana</string>
     <string name="title_activity_fertilizer_rec">Mapendekezo ya matumizi ya mbolea</string>
@@ -13,7 +13,7 @@
     <string name="title_activity_sweet_potato_market">Bei ya viazi tamu</string>
     <string name="title_activity_maize_performance">Uzaaji wa mahindi</string>
     <string name="title_activity_farm_location">Eneo shamba ilipo</string>
-    <string name="title_tillage_operations">Utayarishaji wa shamba</string>
+    <string name="title_tillage_operations">Shughuli za usimamizi wa kimsingi</string>
     <!--    <string name="title_manual_tillage_cost">Gharama za kukabiliana na mwongozo</string>-->
     <string name="title_manual_tillage_cost">Gharama za kulima kwa mkono</string>
     <string name="title_weed_control">Sugu magugu</string>
@@ -24,6 +24,9 @@
     <string name="lbl_start">Anza</string>
     <string name="lbl_proceed">Endelea</string>
     <string name="lbl_finish">Maliza</string>
+    <string name="lbl_back">Rudi</string>
+    <string name="lbl_next">Endelea</string>
+
     <string name="lbl_country_location">Habari %1$s. Shamba lako liko katika nchi gani?</string>
     <string name="lbl_area_unit">Je! Unapima ukubwa wa shamba lako kwa kipimo gani?</string>
     <string name="area_unit_acre">Kwa Ekari</string>
@@ -189,8 +192,11 @@
     <string name="lbl_valid_number_req">Tafadhali toa nambari sahihi ya simu</string>
     <string name="lbl_gender_prompt">Chagua jinsia</string>
     <string name="lbl_gender">Chagua jinsi</string>
-    <string name="lbl_male">Mwanaume</string>
+
+    <string name="lbl_prefer_not_to_say">Pendelea kutosema</string>
     <string name="lbl_female">Mwanamke</string>
+    <string name="lbl_male">Mwanaume</string>
+
     <string name="lbl_save">Hifadhi</string>
     <string name="lbl_remove">Ondoa</string>
     <string name="lbl_field_info">Ikiwa unajua ukubwa wa shamba lako kwa hekta, ekari au mita za mraba, tafadhali endelea ukurasa unaofuata. Ikiwa hujui, tunakushauri upakue kutoka Play Store \n\"GPS Field Area Measure”, itakusaidia kupima eneo la shamba lako ukitembea kulizunguka.</string>
@@ -332,6 +338,7 @@
     <string name="lbl_first_weeding_costs_prompt">Tafadhali taja gharama za palizi la kwanza</string>
     <string name="lbl_second_weeding_cost_prompt">Tafandali taja gharama za palizi la pili</string>
     <string name="lbl_field_size_prompt">Tafadhali ingiza eneo la ukubwa wa shamba lililo sahihi</string>
+    <string name="lbl_area_unit_prompt">Tafadhali ingiza eneo halali la eneo</string>
     <string name="lbl_per_separator">kwa</string>
     <string name="lbl_usd_currency">Dola</string>
     <string name="lbl_gps_settings">Mipangilio ya GPS</string>
@@ -340,5 +347,13 @@
     <string name="lbl_pick_your_country">Chagua nchi yako</string>
     <string name="lbl_no_profile_info">Inaonekana sina habari yako ya wasifu, ninahitaji ili niweze kukutumia maoni ya kupanda</string>
     <string name="lbl_compute_timeout_error">Haiwezi kusanya maalamisho, tafadhali jaribu tena</string>
+    <string name="lbl_already_planted_title">Imepandwa tayari</string>
+    <string name="lbl_already_planted_text">Inaonekana tayari umepanda, kwa hivyo huwezi kuweka ubadilikaji</string>
+    <string name="lbl_agree_to_terms">Bonyeza hapa kuashiria kuwa umesoma na unakubali masharti yaliyowasilishwa katika makubaliano ya Masharti</string>
+    <string name="lbl_accept_terms_prompt">Tafadhali kubali sheria na masharti kabla ya kuendelea</string>
+    <string name="lbl_restart_app_prompt">Anzisha tena programu ili kuongeza tafsiri kwenye urambazaji?</string>
+    <string name="lbl_acre">ekari</string>
+    <string name="lbl_ha">hekta</string>
+
 
 </resources>

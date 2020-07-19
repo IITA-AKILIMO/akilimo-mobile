@@ -1,8 +1,6 @@
 package com.iita.akilimo;
 
 
-import android.util.Log;
-
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.multidex.MultiDexApplication;
 
@@ -11,7 +9,6 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.iita.akilimo.dao.AppDatabase;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -35,7 +32,6 @@ public class Akilimo extends MultiDexApplication {
         AppLocale.setSupportedLocales(Locales.APP_LOCALES);
         SharedPrefsAppLocaleRepository prefs = new SharedPrefsAppLocaleRepository(this);
 
-
         AppLocale.setAppLocaleRepository(prefs); //persist changes
         Locale desiredLocale = prefs.getDesiredLocale();
         if (desiredLocale != null) {
@@ -51,11 +47,8 @@ public class Akilimo extends MultiDexApplication {
         JodaTimeAndroid.init(this);
         World.init(this);
 
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-                InitializationStatus h = initializationStatus;
-            }
+        MobileAds.initialize(this, initializationStatus -> {
+            InitializationStatus h = initializationStatus;
         });
     }
 }

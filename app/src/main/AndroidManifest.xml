@@ -28,12 +28,9 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-7182284303548130~4184115109"/>
-
-
+            android:value="ca-app-pub-7182284303548130~4184115109" />
 
         <service android:name=".services.GPSTracker" />
-
         <service
             android:name=".services.MyFirebaseMessagingService"
             android:exported="false">
@@ -56,14 +53,14 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".views.activities.PusherActivity">
-        </activity>
-
+        <activity android:name=".views.activities.HomeStepperActivity" />
+        <activity android:name=".views.activities.PusherActivity" />
         <activity
             android:name=".views.activities.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

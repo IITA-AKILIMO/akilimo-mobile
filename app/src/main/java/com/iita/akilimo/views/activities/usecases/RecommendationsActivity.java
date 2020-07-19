@@ -119,13 +119,13 @@ public class RecommendationsActivity extends BaseActivity {
         FR.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft));
         items.add(FR);
 
-        if (countryCode.equals(EnumCountry.NIGERIA.countryCode())) {
+        if (countryCode.equals(EnumCountry.Nigeria.countryCode())) {
             Recommendations IC_MAIZE = new Recommendations();
             IC_MAIZE.setRecCode(EnumAdvice.IC_MAIZE);
             IC_MAIZE.setRecommendationName(icMaizeString);
             IC_MAIZE.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft));
             items.add(IC_MAIZE);
-        } else if (countryCode.equals(EnumCountry.TANZANIA.countryCode())) {
+        } else if (countryCode.equals(EnumCountry.Tanzania.countryCode())) {
             Recommendations IC_SWEET_POTATO = new Recommendations();
             IC_SWEET_POTATO.setRecCode(EnumAdvice.IC_SWEET_POTATO);
             IC_SWEET_POTATO.setRecommendationName(icSweetPotatoString);

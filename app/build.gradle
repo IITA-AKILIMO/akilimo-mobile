@@ -1,3 +1,5 @@
+import java.time.LocalDateTime
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
@@ -69,8 +71,8 @@ android {
 
 static def computeVersionName() {
     def versionMajor = 16
-    def versionMinor = 2
-    def buildNumber = 0
+    def versionMinor = LocalDateTime.now().getMonthValue()
+    def buildNumber = LocalDateTime.now().getDayOfMonth()
 
     return String.format('%d.%d.%d', Integer.valueOf(System.env.VERSION_MAJOR ?: versionMajor),
             Integer.valueOf(System.env.VERSION_MINOR ?: versionMinor),
@@ -80,6 +82,8 @@ static def computeVersionName() {
 static def computeBuildNumber() {
     def newFile = new File("nextrelease.txt")
     newFile.createNewFile()
+
+    String dayOfYear = LocalDateTime.now().getYear() + "" + LocalDateTime.now().getDayOfYear()
 
     def gitVersionTag = System.env.RELEASE_VERSION ?: computeVersionName()
     def preRelease = System.env.BRANCH_NAME ?: "unknown"
@@ -97,7 +101,7 @@ static def computeBuildNumber() {
         gitVersionTag = String.format('%d.%d.beta%d',
                 Integer.valueOf(versionMajor),
                 Integer.valueOf(versionMinor),
-                Integer.valueOf(buildNumber))
+                Integer.valueOf(dayOfYear))
 
         println("This build tag is " + gitVersionTag)
     }
@@ -106,11 +110,13 @@ static def computeBuildNumber() {
 }
 
 def computeVersionCode() {
-    long unixTimestamp = Instant.now().getEpochSecond()
-//    def versionCode = System.env.RELEASE_VERSION ? unixTimestamp.intValue() : 1592922755
-    def versionCode = unixTimestamp.intValue()
 
-    println("This build version number is " + versionCode)
+//    long unixTimestamp =Instant.now().getDayOfYear()
+    String dayOfYear = LocalDateTime.now().getYear() + "" + LocalDateTime.now().getDayOfYear()
+//    def versionCode = System.env.RELEASE_VERSION ? unixTimestamp.intValue() : 1594994638286
+    def versionCode = Integer.parseInt(dayOfYear)
+
+    println("This build version timecode " + versionCode)
     return versionCode
 }
 
@@ -133,9 +139,9 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-places:17.0.0'
-    implementation 'com.google.firebase:firebase-config:19.1.4'
-    implementation 'com.google.firebase:firebase-analytics:17.4.3'
-    implementation 'com.google.firebase:firebase-messaging:20.2.1' //for push notifications
+    implementation 'com.google.firebase:firebase-config:19.2.0'
+    implementation 'com.google.firebase:firebase-analytics:17.4.4'
+    implementation 'com.google.firebase:firebase-messaging:20.2.3' //for push notifications
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.google.android:flexbox:0.3.2'                   // google flexible box
     implementation 'com.google.android.gms:play-services-ads:19.2.0' //Google ads
@@ -185,7 +191,8 @@ dependencies {
     implementation 'io.github.inflationx:viewpump:2.0.3'
     implementation 'dev.b3nedikt.reword:reword:1.0.0'
     implementation 'com.github.blongho:worldCountryData:1.5'
-
+    implementation 'com.jakewharton:process-phoenix:2.0.0'
+    implementation 'com.stepstone.stepper:material-stepper:4.3.1'
 
     //If you are using Kotlin, replace annotationProcessor with kapt.
     kapt 'androidx.room:room-compiler:2.2.5'

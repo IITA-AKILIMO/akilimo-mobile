@@ -7,15 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.iita.akilimo.databinding.FragmentFieldInfoBinding;
-import com.iita.akilimo.inherit.BaseFragment;
+import com.iita.akilimo.inherit.BaseStepFragment;
+import com.stepstone.stepper.VerificationError;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FieldInfoFragment extends BaseFragment {
+public class FieldInfoFragment extends BaseStepFragment {
 
     FragmentFieldInfoBinding binding;
 
@@ -39,8 +41,19 @@ public class FieldInfoFragment extends BaseFragment {
         return binding.getRoot();
     }
 
+    @Nullable
     @Override
-    public void refreshData() {
+    public VerificationError verifyStep() {
+        return null;
+    }
+
+    @Override
+    public void onSelected() {
+
+    }
+
+    @Override
+    public void onError(@NonNull VerificationError error) {
 
     }
 }

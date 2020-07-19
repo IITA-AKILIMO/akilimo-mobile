@@ -25,16 +25,20 @@
     <color name="colorAccentDark">@color/secondaryDarkColor</color>
     <color name="colorAccentLight">@color/secondaryLightColor</color>
 
+
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
 
     <!-- akilimo colors -->
     <color name="primaryColor">#689f38</color>
-    <color name="primaryLightColor">#99d066</color>
-    <color name="primaryDarkColor">#387002</color>
+    <color name="primaryLightColor">@color/akilimoLightGreen</color>
+    <color name="primaryDarkColor">@color/akilimoDarkGreen</color>
     <color name="secondaryColor">#b71c1c</color>
     <color name="secondaryLightColor">#f05545</color>
     <color name="secondaryDarkColor">#7f0000</color>
+
+    <color name="akilimoLightGreen">@color/green_400</color>
+    <color name="akilimoDarkGreen">@color/green_900</color>
 
     <color name="overlay_dark_10">#1A000000</color>
     <color name="overlay_dark_20">#33000000</color>

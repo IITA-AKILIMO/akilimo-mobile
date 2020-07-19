@@ -25,7 +25,8 @@
             android:text="@string/lbl_summary_title"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textColor="@color/grey_80"
+            android:textColor="@color/akilimoDarkGreen"
+            android:textStyle="bold"
             app:fontFamily="@font/ubuntu" />
     </LinearLayout>
 

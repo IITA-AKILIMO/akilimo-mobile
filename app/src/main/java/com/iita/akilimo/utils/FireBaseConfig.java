@@ -46,35 +46,36 @@ public class FireBaseConfig {
 
                         boolean updated = task.getResult();
 
+                        if (updated) {
+                            String apiToken = mFireBaseRemoteConfig.getString("api_token");
+                            String locationIqToken = mFireBaseRemoteConfig.getString("locationIqToken");
+                            String mapBoxKey = mFireBaseRemoteConfig.getString("mapBoxApiKey");
+                            String akilimoApi = mFireBaseRemoteConfig.getString("akilimo_api");
 
-                        String apiToken = mFireBaseRemoteConfig.getString("api_token");
-                        String akilimoApi = mFireBaseRemoteConfig.getString("akilimo_api");
+                            if (BuildConfig.DEBUG) {
+                                akilimoApi = mFireBaseRemoteConfig.getString("akilimo_api_demo");
+                                Toast.makeText(activity, "Api endpoint is " + akilimoApi, Toast.LENGTH_SHORT).show();
+                            }
 
-                        if (BuildConfig.DEBUG) {
-                            akilimoApi = mFireBaseRemoteConfig.getString("akilimo_api_demo");
-                            Toast.makeText(activity, "Api endpoint is " + akilimoApi, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(activity, "Data fetch succeeded and " + fetchIntervalInSeconds + " updated " + updated, Toast.LENGTH_SHORT).show();
+
+                            String termsLink = mFireBaseRemoteConfig.getString("termsLink");
+                            String firebaseTopicString = mFireBaseRemoteConfig.getString("firebase_topics");
+                            boolean showAds = mFireBaseRemoteConfig.getBoolean("showAd");
+                            String ngnRate = mFireBaseRemoteConfig.getString("ngnRate");
+                            String tzsRate = mFireBaseRemoteConfig.getString("tzsRate");
+
+                            sessionManager.setApiEndPoint(akilimoApi);
+                            sessionManager.setMapBoxApiKey(mapBoxKey);
+                            sessionManager.setLocationIqToken(locationIqToken);
+                            sessionManager.setApiToken(apiToken);
+                            sessionManager.setNgnRate(ngnRate);
+                            sessionManager.setTzsRate(tzsRate);
+                            sessionManager.setFireBaseTopics(firebaseTopicString);
+                            sessionManager.setAdToggle(showAds);
+                            sessionManager.setTermsLink(termsLink);
+                            subscribeTopic();
                         }
-
-                        Toast.makeText(activity, "Data fetch succeeded and " + fetchIntervalInSeconds + " updated " + updated, Toast.LENGTH_SHORT).show();
-
-                        String mapBoxKey = mFireBaseRemoteConfig.getString("mapBoxApiKey");
-                        String locationIqToken = mFireBaseRemoteConfig.getString("locationIqToken");
-                        String firebaseTopicString = mFireBaseRemoteConfig.getString("firebase_topics");
-                        boolean showAds = mFireBaseRemoteConfig.getBoolean("showAd");
-
-                        String ngnRate = mFireBaseRemoteConfig.getString("ngnRate");
-                        String tzsRate = mFireBaseRemoteConfig.getString("tzsRate");
-
-                        sessionManager.setApiEndPoint(akilimoApi);
-                        sessionManager.setMapBoxApiKey(mapBoxKey);
-                        sessionManager.setLocationIqToken(locationIqToken);
-                        sessionManager.setApiToken(apiToken);
-                        sessionManager.setNgnRate(ngnRate);
-                        sessionManager.setTzsRate(tzsRate);
-                        sessionManager.setFireBaseTopics(firebaseTopicString);
-                        sessionManager.setAdToggle(showAds);
-
-                        subscribeTopic();
                     }
                 });
     }
@@ -86,7 +87,6 @@ public class FireBaseConfig {
             for (FirebaseTopic topic : topics) {
                 FirebaseMessaging.getInstance().subscribeToTopic(topic.getTopicName());
             }
-            Toast.makeText(activity, "Subscribed to firebase topics for later updates", Toast.LENGTH_SHORT).show();
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);

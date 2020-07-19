@@ -69,16 +69,16 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
     private lateinit var appUpdateHelper: AppUpdateHelper
     private lateinit var appUpdater: AppUpdater
 
-    override fun onAttachFragment(fragment: Fragment) {
-        when (fragment) {
-            is SummaryFragment -> {
-                fragment.setOnFragmentCloseListener(this)
-            }
-            is BioDataFragment -> {
-                fragment.setOnFragmentCloseListener(this)
-            }
-        }
-    }
+//    override fun onAttachFragment(fragment: Fragment) {
+//        when (fragment) {
+//            is SummaryFragment -> {
+//                fragment.setOnFragmentCloseListener(this)
+//            }
+//            is BioDataFragment -> {
+//                fragment.setOnFragmentCloseListener(this)
+//            }
+//        }
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,11 +128,11 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
     }
 
-    override fun onDataSaved() {
+    fun onDataSaved() {
         viewPager.currentItem = currentPosition + 1
     }
 
-    override fun onFragmentClose(hideButton: Boolean) {
+    fun onFragmentClose(hideButton: Boolean) {
         showProceedButton = hideButton
         when {
             !hideButton -> {
@@ -142,11 +142,6 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             else -> btnStart.visibility = View.GONE
         }
     }
-
-    override fun sendResult(requestCode: Int, obj: Any) {
-        throw UnsupportedOperationException()
-    }
-
     override fun initToolbar() {
         throw UnsupportedOperationException()
     }
@@ -183,19 +178,19 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                 try {
                     val activeFragment: Fragment = fragmentArray.elementAt(newPosition)
 
-                    (activeFragment as? CurrentPracticeFragment)?.refreshData()
+//                    (activeFragment as? CurrentPracticeFragment)?.refreshData()
+//
+//                    (activeFragment as? CountryFragment)?.refreshData()
+//
+//                    (activeFragment as? AreaUnitFragment)?.refreshData()
+//
+//                    (activeFragment as? FieldSizeFragment)?.refreshData()
+//
+//                    (activeFragment as? LocationFragment)?.refreshData()
+//
+//                    (activeFragment as? SummaryFragment)?.refreshData()
 
-                    (activeFragment as? CountryFragment)?.refreshData()
-
-                    (activeFragment as? AreaUnitFragment)?.refreshData()
-
-                    (activeFragment as? FieldSizeFragment)?.refreshData()
-
-                    (activeFragment as? LocationFragment)?.refreshData()
-
-                    (activeFragment as? SummaryFragment)?.refreshData()
-
-                    (activeFragment as? BioDataFragment)?.refreshData()
+//                    (activeFragment as? BioDataFragment)?.refreshData()
 
                     currentFragment = activeFragment
                 } catch (ex: Exception) {
@@ -309,7 +304,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
             val locationInfoDao: LocationInfoDao = database.locationInfoDao()
             locationInfoDao.insert(location!!)
-            (currentFragment as? LocationFragment)?.refreshData()
+//            (currentFragment as? LocationFragment)?.refreshData()
         } catch (ex: Exception) {
             Toast.makeText(
                 context,
@@ -346,5 +341,9 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             )
             Crashlytics.logException(ex)
         }
+    }
+
+    override fun reloadView() {
+        TODO("Not yet implemented")
     }
 }

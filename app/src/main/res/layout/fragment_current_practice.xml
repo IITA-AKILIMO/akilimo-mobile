@@ -34,7 +34,8 @@
             android:text="@string/title_tillage_operations"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/akilimoDarkGreen"
+            android:textStyle="bold" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/plantingCard"
@@ -146,12 +147,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/lbl_which_of_these_tillage_operations_do_you_perform"
-                android:textColor="@color/colorAccent" />
+                android:textColor="@color/akilimoDarkGreen" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_xlarge"
+                android:layout_marginTop="@dimen/spacing_medium"
                 android:orientation="horizontal">
 
                 <CheckBox

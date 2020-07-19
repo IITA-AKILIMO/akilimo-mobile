@@ -11,13 +11,11 @@ open class MandatoryInfo {
     var placeName: String? = null
     var address: String? = null
 
-    var areaUnitRadioIndex = 0
-    var fieldSizeRadioIndex = 0
-
-    // var areaUnitsEnum: EnumAreaUnits = EnumAreaUnits.ACRE
-    // var fieldAreaEnum: EnumFieldArea = EnumFieldArea.ONE_ACRE
+    var areaUnitRadioIndex: Int = 0
+    var fieldSizeRadioIndex: Int = 0
 
     var areaUnit: String? = null
-    var areaSize = 0.0
+    var displayAreaUnit: String? = null
+    var areaSize: Double = 0.0
     var exactArea: Boolean = false
 }
