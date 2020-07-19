@@ -157,10 +157,9 @@ public class SessionManager {
 
         String topics = pref.getString("firebaseTopics", "[]");
         ObjectMapper mapper = new ObjectMapper();
-        List<FirebaseTopic> firebaseTopics = mapper.readValue(topics, new TypeReference<List<FirebaseTopic>>() {
-        });
 
-        return firebaseTopics;
+        return mapper.readValue(topics, new TypeReference<List<FirebaseTopic>>() {
+        });
     }
 
 

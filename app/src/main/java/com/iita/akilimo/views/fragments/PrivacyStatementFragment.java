@@ -59,7 +59,11 @@ public class PrivacyStatementFragment extends BaseStepFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         webView = binding.webView;
-        WebView.setWebContentsDebuggingEnabled(true);
+        if (sessionManager != null) {
+            sessionManager = new SessionManager(context);
+        }
+
+        WebView.setWebContentsDebuggingEnabled(false);
         webView.setWebChromeClient(new WebChromeClient());
         webView.setScrollContainer(true);
         webView.setVerticalScrollBarEnabled(false);
@@ -71,15 +75,10 @@ public class PrivacyStatementFragment extends BaseStepFragment {
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setGeolocationEnabled(true);
 
-        if (sessionManager != null) {
-            sessionManager = new SessionManager(context);
-        }
 
         String termsLink = sessionManager.getTermsLink();
         chkAgreeToTerms = binding.chkAgreeToTerms;
         webView.loadUrl(termsLink);
-//        webView.loadUrl("https://www.akilimo.org/post/accessing-akilimo-tools-and-resources");
-
         chkAgreeToTerms.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
@@ -91,8 +90,7 @@ public class PrivacyStatementFragment extends BaseStepFragment {
     @Nullable
     @Override
     public VerificationError verifyStep() {
-        sessionManager.setTermsAccepted(false);
-
+        sessionManager.setTermsAccepted(policyAccepted);
         if (policyAccepted) {
             //save to session and skip in future startup
             return null;
