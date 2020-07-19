@@ -443,5 +443,7 @@
 
     <string name="lbl_already_planted_title">Already planted</string>
     <string name="lbl_already_planted_text">It appears you have already planted, so you cannot set the flexibility</string>
+    <string name="lbl_agree_to_terms">Click here to indicate that you have read and agree to the terms presented in the Terms and Conditions agreement</string>
+    <string name="lbl_accept_terms_prompt">Please accept the terms and conditions before proceeding</string>
 
 </resources>

@@ -346,6 +346,8 @@
     <string name="lbl_compute_timeout_error">Haiwezi kusanya maalamisho, tafadhali jaribu tena</string>
     <string name="lbl_already_planted_title">Imepandwa tayari</string>
     <string name="lbl_already_planted_text">Inaonekana tayari umepanda, kwa hivyo huwezi kuweka ubadilikaji</string>
+    <string name="lbl_agree_to_terms">Bonyeza hapa kuashiria kuwa umesoma na unakubali masharti yaliyowasilishwa katika makubaliano ya Masharti</string>
+    <string name="lbl_accept_terms_prompt">Tafadhali kubali sheria na masharti kabla ya kuendelea</string>
 
 
 </resources>

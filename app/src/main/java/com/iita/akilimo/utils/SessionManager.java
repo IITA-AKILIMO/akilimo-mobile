@@ -173,12 +173,21 @@ public class SessionManager {
         return pref.getBoolean("showAd", false);
     }
 
-    public void setTermsAgreed(boolean termsAgreed) {
-        editor.putBoolean("termsAgreed", termsAgreed);
+    public void setTermsAccepted(boolean termsAccepted) {
+        editor.putBoolean("termsAccepted", termsAccepted);
         editor.commit();
     }
 
-    public boolean termsAgreed() {
-        return pref.getBoolean("termsAgreed", false);
+    public boolean termsAccepted() {
+        return pref.getBoolean("termsAccepted", false);
+    }
+
+    public void setTermsLink(String termsAccepted) {
+        editor.putString("termsLink", termsAccepted);
+        editor.commit();
+    }
+
+    public String getTermsLink() {
+        return pref.getString("termsLink", "https://www.akilimo.org/blog/categories/fertilizer-recommendations");
     }
 }

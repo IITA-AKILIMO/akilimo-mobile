@@ -15,6 +15,7 @@ import com.iita.akilimo.dao.AppDatabase
 import com.iita.akilimo.databinding.ActivityHomeStepperBinding
 import com.iita.akilimo.entities.LocationInfo
 import com.iita.akilimo.inherit.BaseActivity
+import com.iita.akilimo.utils.SessionManager
 import com.iita.akilimo.views.activities.usecases.RecommendationsActivity
 import com.iita.akilimo.views.fragments.*
 import com.stepstone.stepper.StepperLayout
@@ -54,6 +55,7 @@ class HomeStepperActivity : BaseActivity() {
         activity = this
         context = this
         database = AppDatabase.getDatabase(context)
+        sessionManager = SessionManager(this)
         mStepperLayout = binding.stepperLayout
 
         createFragmentArray()
@@ -64,12 +66,9 @@ class HomeStepperActivity : BaseActivity() {
 
         fragmentArray.add(WelcomeFragment.newInstance())
         fragmentArray.add(InfoFragment.newInstance())
-        /**
-         * @TODO Add privacy statement links to the app
-         * @body Check for updated content from christine.
-         * @body The privacy statement should also be translated to the relevant languages
-         */
-//        fragmentArray.add(PrivacyStatementFragment.newInstance())
+        if(!sessionManager.termsAccepted()) {
+            fragmentArray.add(PrivacyStatementFragment.newInstance())
+        }
         fragmentArray.add(BioDataFragment.newInstance())
         fragmentArray.add(CountryFragment.newInstance())
         fragmentArray.add(LocationFragment.newInstance())
