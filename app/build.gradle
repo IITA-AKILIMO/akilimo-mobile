@@ -110,11 +110,9 @@ static def computeBuildNumber() {
 }
 
 def computeVersionCode() {
-
-//    long unixTimestamp =Instant.now().getDayOfYear()
-    String dayOfYear = LocalDateTime.now().getYear() + "" + LocalDateTime.now().getDayOfYear()
-//    def versionCode = System.env.RELEASE_VERSION ? unixTimestamp.intValue() : 1594994638286
-    def versionCode = Integer.parseInt(dayOfYear)
+    long unixTimestamp = Instant.now().getEpochSecond()
+    def versionCode = System.env.RELEASE_VERSION ? unixTimestamp.intValue() : 1595147953
+//    def versionCode = unixTimestamp.intValue()
 
     println("This build version timecode " + versionCode)
     return versionCode
