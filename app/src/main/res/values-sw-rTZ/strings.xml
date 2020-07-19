@@ -24,6 +24,9 @@
     <string name="lbl_start">Anza</string>
     <string name="lbl_proceed">Endelea</string>
     <string name="lbl_finish">Maliza</string>
+    <string name="lbl_back">Rudi</string>
+    <string name="lbl_next">Endelea</string>
+
     <string name="lbl_country_location">Habari %1$s. Shamba lako liko katika nchi gani?</string>
     <string name="lbl_area_unit">Je! Unapima ukubwa wa shamba lako kwa kipimo gani?</string>
     <string name="area_unit_acre">Kwa Ekari</string>
@@ -348,6 +351,9 @@
     <string name="lbl_already_planted_text">Inaonekana tayari umepanda, kwa hivyo huwezi kuweka ubadilikaji</string>
     <string name="lbl_agree_to_terms">Bonyeza hapa kuashiria kuwa umesoma na unakubali masharti yaliyowasilishwa katika makubaliano ya Masharti</string>
     <string name="lbl_accept_terms_prompt">Tafadhali kubali sheria na masharti kabla ya kuendelea</string>
+    <string name="lbl_restart_app_prompt">Anzisha tena programu ili kuongeza tafsiri kwenye urambazaji?</string>
+    <string name="lbl_acre">ekari</string>
+    <string name="lbl_ha">hekta</string>
 
 
 </resources>

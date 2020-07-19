@@ -2,6 +2,7 @@
     <string name="app_name" translatable="false">AKILIMO</string>
     <string name="hello_blank_fragment" translatable="false">Initialize fragments</string>
     <string name="empty_text" translatable="false" />
+    <string name="lbl_empty_space" translatable="false"> </string>
     <string name="dummy_coordinates" translatable="false">Lat:-1.567657567 Lon:35.47829734</string>
     <string name="ad_attribution" translatable="false">Ad</string>
 
@@ -31,6 +32,8 @@
     <string name="lbl_start">Start</string>
     <string name="lbl_proceed">Proceed</string>
     <string name="lbl_finish">Finish</string>
+    <string name="lbl_back">Back</string>
+    <string name="lbl_next">Next</string>
 
     <string name="lbl_country_location">Nice to meet you %1$s. In which country is your field located?</string>
 
@@ -43,8 +46,8 @@
     <string name="area_unit_ha">in Hectare (ha)</string>
     <string name="area_unit_square_meter">in Square meter (m\u00B2)</string>
 
-    <string name="lbl_acre" translatable="false">acre</string>
-    <string name="lbl_ha" translatable="false">ha</string>
+    <string name="lbl_acre">acre</string>
+    <string name="lbl_ha">ha</string>
 
     <string name="lbl_cassava_field_size_no_ph">What is the size of your cassava field?</string>
     <string name="lbl_cassava_field_size">What is the size of your cassava field in %1$s</string>
@@ -264,7 +267,7 @@
 
     <string name="lbl_gender_prompt">Select gender</string>
     <string name="lbl_gender">Choose gender</string>
-    <string name="lbl_prefer_not_to_say">Prefer no to answer</string>
+    <string name="lbl_prefer_not_to_say">Prefer not to answer</string>
     <string name="lbl_male">Male</string>
     <string name="lbl_female">Female</string>
     <string name="lbl_save">Save</string>
@@ -445,5 +448,6 @@
     <string name="lbl_already_planted_text">It appears you have already planted, so you cannot set the flexibility</string>
     <string name="lbl_agree_to_terms">Click here to indicate that you have read and agree to the terms presented in the Terms and Conditions agreement</string>
     <string name="lbl_accept_terms_prompt">Please accept the terms and conditions before proceeding</string>
+    <string name="lbl_restart_app_prompt">Restart the app in order to apply translations to the navigation buttons?</string>
 
 </resources>

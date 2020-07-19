@@ -28,6 +28,10 @@ import com.iita.akilimo.utils.SessionManager;
 import com.stepstone.stepper.Step;
 import com.stepstone.stepper.VerificationError;
 
+import java.util.Locale;
+
+import dev.b3nedikt.app_locale.AppLocale;
+import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
 import dev.b3nedikt.reword.Reword;
 
 @SuppressWarnings("WeakerAccess")
@@ -141,6 +145,16 @@ public abstract class BaseStepFragment extends Fragment implements Step {
         }
 
         return stBuilder;
+    }
+
+
+    protected Locale getCurrentLocale() {
+        SharedPrefsAppLocaleRepository prefs = new SharedPrefsAppLocaleRepository(context);
+        Locale desiredLocale = prefs.getDesiredLocale();
+        if (desiredLocale != null) {
+            AppLocale.setDesiredLocale(desiredLocale);
+        }
+        return desiredLocale;
     }
 
 }

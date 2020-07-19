@@ -15,6 +15,7 @@ import com.iita.akilimo.dao.AppDatabase
 import com.iita.akilimo.databinding.ActivityHomeStepperBinding
 import com.iita.akilimo.entities.LocationInfo
 import com.iita.akilimo.inherit.BaseActivity
+import com.iita.akilimo.interfaces.IFragmentCallBack
 import com.iita.akilimo.utils.SessionManager
 import com.iita.akilimo.views.activities.usecases.RecommendationsActivity
 import com.iita.akilimo.views.fragments.*
@@ -24,7 +25,7 @@ import com.stepstone.stepper.VerificationError
 import kotlin.system.exitProcess
 
 
-class HomeStepperActivity : BaseActivity() {
+class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
     companion object {
         const val MAP_BOX_PLACE_PICKER_REQUEST_CODE = 208
     }
@@ -47,6 +48,15 @@ class HomeStepperActivity : BaseActivity() {
     private var location: LocationInfo? = null
     private var exit: Boolean = false
 
+    override fun onAttachFragment(fragment: Fragment) {
+        when (fragment) {
+            is WelcomeFragment -> {
+                fragment.setOnFragmentCloseListener(this)
+            }
+        }
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeStepperBinding.inflate(layoutInflater)
@@ -66,7 +76,7 @@ class HomeStepperActivity : BaseActivity() {
 
         fragmentArray.add(WelcomeFragment.newInstance())
         fragmentArray.add(InfoFragment.newInstance())
-        if(!sessionManager.termsAccepted()) {
+        if (!sessionManager.termsAccepted()) {
             fragmentArray.add(PrivacyStatementFragment.newInstance())
         }
         fragmentArray.add(BioDataFragment.newInstance())
@@ -150,5 +160,9 @@ class HomeStepperActivity : BaseActivity() {
             )
             Crashlytics.logException(ex)
         }
+    }
+
+    override fun reloadView() {
+
     }
 }

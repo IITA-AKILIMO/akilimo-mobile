@@ -41,6 +41,7 @@ public class AreaUnitFragment extends BaseStepFragment {
     private String selectedAreaUnit;
     private MandatoryInfo mandatoryInfo;
     private String areaUnit = "acre";
+    private String areaUnitDisplay = "acre";
     private int areaUnitRadioIndex = 0;
 
     public AreaUnitFragment() {
@@ -76,7 +77,7 @@ public class AreaUnitFragment extends BaseStepFragment {
                 areaUnit = null;
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred saving are info");
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
     }
@@ -92,9 +93,13 @@ public class AreaUnitFragment extends BaseStepFragment {
         rdgAreaUnit.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
             switch (radioIndex) {
                 case R.id.rdAcre:
+                    areaUnitRadioIndex = R.id.rdAcre;
+                    areaUnitDisplay = context.getString(R.string.lbl_acre);
                     areaUnit = EnumAreaUnits.ACRE.unitName(context);
                     break;
                 case R.id.rdHa:
+                    areaUnitRadioIndex = R.id.rdHa;
+                    areaUnitDisplay = context.getString(R.string.lbl_ha);
                     areaUnit = EnumAreaUnits.HA.unitName(context);
                     break;
             }
@@ -109,9 +114,9 @@ public class AreaUnitFragment extends BaseStepFragment {
                 if (mandatoryInfo == null) {
                     mandatoryInfo = new MandatoryInfo();
                 }
-                areaUnitRadioIndex = rdgAreaUnit.getCheckedRadioButtonId();
                 mandatoryInfo.setAreaUnitRadioIndex(areaUnitRadioIndex);
                 mandatoryInfo.setAreaUnit(areaUnit);
+                mandatoryInfo.setDisplayAreaUnit(areaUnitDisplay);
                 if (mandatoryInfo.getId() != null) {
                     database.mandatoryInfoDao().update(mandatoryInfo);
                 } else {

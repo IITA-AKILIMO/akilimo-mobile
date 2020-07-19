@@ -2,24 +2,30 @@ package com.iita.akilimo.views.fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.Locales;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.MySpinnerAdapter;
 import com.iita.akilimo.databinding.FragmentWelcomeBinding;
 import com.iita.akilimo.inherit.BaseStepFragment;
+import com.iita.akilimo.interfaces.IFragmentCallBack;
 import com.iita.akilimo.utils.enums.EnumCountry;
+import com.iita.akilimo.views.activities.HomeStepperActivity;
+import com.jakewharton.processphoenix.ProcessPhoenix;
 import com.stepstone.stepper.VerificationError;
 
 import java.util.ArrayList;
@@ -35,12 +41,15 @@ import dev.b3nedikt.reword.Reword;
  */
 public class WelcomeFragment extends BaseStepFragment {
 
-    FragmentWelcomeBinding binding;
+    private FragmentWelcomeBinding binding;
+    private IFragmentCallBack fragmentCallBack;
     private Spinner languagePicker;
-    SharedPrefsAppLocaleRepository prefs;
+    private SharedPrefsAppLocaleRepository prefs;
     private int selectedLanguageIndex = -1;
     private Locale selectedLocale;
     private boolean languagePicked = false;
+
+    LinearLayout layout;
 
     public WelcomeFragment() {
         // Required empty public constructor
@@ -69,6 +78,7 @@ public class WelcomeFragment extends BaseStepFragment {
         super.onViewCreated(view, savedInstanceState);
 
         languagePicker = binding.languagePicker;
+        layout = binding.welcomeLayout;
         prefs = new SharedPrefsAppLocaleRepository(context);
 
         languagePicker.setOnTouchListener(new View.OnTouchListener() {
@@ -94,6 +104,12 @@ public class WelcomeFragment extends BaseStepFragment {
 
                     final View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
                     Reword.reword(rootView);
+
+                    Intent intent = new Intent(context, HomeStepperActivity.class);
+                    Snackbar snackBar = Snackbar
+                            .make(layout, getString(R.string.lbl_restart_app_prompt), Snackbar.LENGTH_INDEFINITE)
+                            .setAction(context.getString(R.string.lbl_ok), view1 -> ProcessPhoenix.triggerRebirth(context, intent));
+                    snackBar.show();
                     initSpinnerItems();
                 }
                 languagePicked = false;
@@ -143,5 +159,15 @@ public class WelcomeFragment extends BaseStepFragment {
 
     @Override
     public void onError(@NonNull VerificationError error) {
+    }
+
+    public void setOnFragmentCloseListener(IFragmentCallBack callBack) {
+        this.fragmentCallBack = callBack;
+    }
+
+    private void reloadView() {
+        if (fragmentCallBack != null) {
+            fragmentCallBack.reloadView();
+        }
     }
 }

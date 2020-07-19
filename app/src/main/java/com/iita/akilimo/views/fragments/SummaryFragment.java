@@ -35,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -124,7 +125,7 @@ public class SummaryFragment extends BaseStepFragment {
     private void setDataListItems() {
         String plantingDate = "";
         String harvestDate = "";
-        StringBuilder fieldInfo = new StringBuilder();
+        String fieldInfo = "";
         StringBuilder ploughStr = new StringBuilder();
         StringBuilder ridgeStr = new StringBuilder();
 
@@ -142,14 +143,23 @@ public class SummaryFragment extends BaseStepFragment {
             countrySelected = !Strings.isEmptyOrWhitespace(countryName);
         }
         if (mandatoryInfo != null) {
-            areaUnit = mandatoryInfo.getAreaUnit();
-            if (!Strings.isEmptyOrWhitespace(areaUnit)) {
-                areaUnitSelected = true;
-            } else {
-                areaUnit = context.getString(R.string.empty_text);
+            areaUnit = mandatoryInfo.getDisplayAreaUnit();
+            areaUnitSelected = !Strings.isEmptyOrWhitespace(areaUnit);
+            if (areaUnitSelected) {
+                fieldSize = mandatoryInfo.getAreaSize();
+                fieldSizeSelected = fieldSize > 0.0;
+
+                Locale locale = getCurrentLocale();
+                if (locale.getLanguage().equalsIgnoreCase("sw")) {
+                    fieldInfo = String.format("%s %s", areaUnit, fieldSize);
+                } else {
+                    if (fieldSize == 1) {
+                        fieldInfo = String.format("%s %s", fieldSize, areaUnit);
+                    } else {
+                        fieldInfo = String.format("%s %ss", fieldSize, areaUnit);
+                    }
+                }
             }
-            fieldSize = mandatoryInfo.getAreaSize();
-            fieldSizeSelected = fieldSize > 0.0;
         }
 
         if (location != null) {
@@ -193,13 +203,10 @@ public class SummaryFragment extends BaseStepFragment {
             }
         }
 
-        fieldInfo.append(fieldSize)
-                .append(context.getString(R.string.empty_text))
-                .append(areaUnit);
 
         mDataList = new ArrayList<>();
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_country), countryName, countrySelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_field), fieldInfo.toString(), fieldSizeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_field), fieldInfo, fieldSizeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_location), pickedLocation, locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_planting_date), plantingDate, plantingDateProvided ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_harvesting_date), harvestDate, harvestDateProvided ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));

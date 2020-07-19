@@ -128,11 +128,11 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
     }
 
-    override fun onDataSaved() {
+    fun onDataSaved() {
         viewPager.currentItem = currentPosition + 1
     }
 
-    override fun onFragmentClose(hideButton: Boolean) {
+    fun onFragmentClose(hideButton: Boolean) {
         showProceedButton = hideButton
         when {
             !hideButton -> {
@@ -142,11 +142,6 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             else -> btnStart.visibility = View.GONE
         }
     }
-
-    override fun sendResult(requestCode: Int, obj: Any) {
-        throw UnsupportedOperationException()
-    }
-
     override fun initToolbar() {
         throw UnsupportedOperationException()
     }
@@ -346,5 +341,9 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             )
             Crashlytics.logException(ex)
         }
+    }
+
+    override fun reloadView() {
+        TODO("Not yet implemented")
     }
 }
