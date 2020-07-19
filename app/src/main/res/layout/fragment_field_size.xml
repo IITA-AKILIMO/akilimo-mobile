@@ -33,7 +33,8 @@
             android:text="@string/lbl_cassava_field_size_no_ph"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/akilimoDarkGreen"
+            android:textStyle="bold" />
 
         <ScrollView
             android:layout_width="match_parent"

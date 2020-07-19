@@ -36,7 +36,8 @@
                 android:fontFamily="@font/ubuntu"
                 android:text="@string/welcome_title"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/akilimoDarkGreen" />
+                android:textColor="@color/akilimoDarkGreen"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/description"
@@ -57,12 +58,10 @@
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:paddingBottom="?attr/actionBarSize">
-
             <Spinner
                 android:id="@+id/language_picker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_large"
                 android:spinnerMode="dialog"
                 tools:listitem="@android:layout/simple_dropdown_item_1line" />
         </LinearLayout>
