@@ -45,38 +45,36 @@ public class FireBaseConfig {
                     if (task.isSuccessful()) {
 
                         boolean updated = task.getResult();
+                        String apiToken = mFireBaseRemoteConfig.getString("api_token");
+                        String locationIqToken = mFireBaseRemoteConfig.getString("locationIqToken");
+                        String mapBoxKey = mFireBaseRemoteConfig.getString("mapBoxApiKey");
+                        String akilimoApi = mFireBaseRemoteConfig.getString("akilimo_api");
 
-                        if (updated) {
-                            String apiToken = mFireBaseRemoteConfig.getString("api_token");
-                            String locationIqToken = mFireBaseRemoteConfig.getString("locationIqToken");
-                            String mapBoxKey = mFireBaseRemoteConfig.getString("mapBoxApiKey");
-                            String akilimoApi = mFireBaseRemoteConfig.getString("akilimo_api");
-
-                            if (BuildConfig.DEBUG) {
-                                akilimoApi = mFireBaseRemoteConfig.getString("akilimo_api_demo");
-                                Toast.makeText(activity, "Api endpoint is " + akilimoApi, Toast.LENGTH_SHORT).show();
-                            }
-
-                            Toast.makeText(activity, "Data fetch succeeded and " + fetchIntervalInSeconds + " updated " + updated, Toast.LENGTH_SHORT).show();
-
-                            String termsLink = mFireBaseRemoteConfig.getString("termsLink");
-                            String firebaseTopicString = mFireBaseRemoteConfig.getString("firebase_topics");
-                            boolean showAds = mFireBaseRemoteConfig.getBoolean("showAd");
-                            String ngnRate = mFireBaseRemoteConfig.getString("ngnRate");
-                            String tzsRate = mFireBaseRemoteConfig.getString("tzsRate");
-
-                            sessionManager.setApiEndPoint(akilimoApi);
-                            sessionManager.setMapBoxApiKey(mapBoxKey);
-                            sessionManager.setLocationIqToken(locationIqToken);
-                            sessionManager.setApiToken(apiToken);
-                            sessionManager.setNgnRate(ngnRate);
-                            sessionManager.setTzsRate(tzsRate);
-                            sessionManager.setFireBaseTopics(firebaseTopicString);
-                            sessionManager.setAdToggle(showAds);
-                            sessionManager.setTermsLink(termsLink);
-                            subscribeTopic();
+                        if (BuildConfig.DEBUG) {
+                            akilimoApi = mFireBaseRemoteConfig.getString("akilimo_api_demo");
+                            Toast.makeText(activity, "Api endpoint is " + akilimoApi, Toast.LENGTH_SHORT).show();
                         }
+
+                        Toast.makeText(activity, "Data fetch succeeded and " + fetchIntervalInSeconds + " updated " + updated, Toast.LENGTH_SHORT).show();
+
+                        String termsLink = mFireBaseRemoteConfig.getString("termsLink");
+                        String firebaseTopicString = mFireBaseRemoteConfig.getString("firebase_topics");
+                        boolean showAds = mFireBaseRemoteConfig.getBoolean("showAd");
+                        String ngnRate = mFireBaseRemoteConfig.getString("ngnRate");
+                        String tzsRate = mFireBaseRemoteConfig.getString("tzsRate");
+
+                        sessionManager.setApiEndPoint(akilimoApi);
+                        sessionManager.setMapBoxApiKey(mapBoxKey);
+                        sessionManager.setLocationIqToken(locationIqToken);
+                        sessionManager.setApiToken(apiToken);
+                        sessionManager.setNgnRate(ngnRate);
+                        sessionManager.setTzsRate(tzsRate);
+                        sessionManager.setFireBaseTopics(firebaseTopicString);
+                        sessionManager.setAdToggle(showAds);
+                        sessionManager.setTermsLink(termsLink);
+                        subscribeTopic();
                     }
+
                 });
     }
 
