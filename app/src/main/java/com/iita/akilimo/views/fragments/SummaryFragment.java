@@ -3,6 +3,7 @@ package com.iita.akilimo.views.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.crashlytics.android.Crashlytics;
 import com.github.vipulasri.timelineview.TimelineView;
 import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
@@ -149,15 +151,25 @@ public class SummaryFragment extends BaseStepFragment {
                 fieldSize = mandatoryInfo.getAreaSize();
                 fieldSizeSelected = fieldSize > 0.0;
 
-                Locale locale = getCurrentLocale();
-                if (locale.getLanguage().equalsIgnoreCase("sw")) {
-                    fieldInfo = String.format("%s %s", areaUnit, fieldSize);
-                } else {
+                try {
+                    Locale locale = getCurrentLocale();
+                    if (locale.getLanguage().equalsIgnoreCase("sw")) {
+                        fieldInfo = String.format("%s %s", areaUnit, fieldSize);
+                    } else {
+                        if (fieldSize == 1) {
+                            fieldInfo = String.format("%s %s", fieldSize, areaUnit);
+                        } else {
+                            fieldInfo = String.format("%s %ss", fieldSize, areaUnit);
+                        }
+                    }
+                } catch (Exception ex) {
                     if (fieldSize == 1) {
                         fieldInfo = String.format("%s %s", fieldSize, areaUnit);
                     } else {
                         fieldInfo = String.format("%s %ss", fieldSize, areaUnit);
                     }
+                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+                    Crashlytics.logException(ex);
                 }
             }
         }
