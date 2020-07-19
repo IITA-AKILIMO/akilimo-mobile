@@ -344,6 +344,8 @@
     <string name="lbl_pick_your_country">Chagua nchi yako</string>
     <string name="lbl_no_profile_info">Inaonekana sina habari yako ya wasifu, ninahitaji ili niweze kukutumia maoni ya kupanda</string>
     <string name="lbl_compute_timeout_error">Haiwezi kusanya maalamisho, tafadhali jaribu tena</string>
+    <string name="lbl_already_planted_title">Imepandwa tayari</string>
+    <string name="lbl_already_planted_text">Inaonekana tayari umepanda, kwa hivyo huwezi kuweka ubadilikaji</string>
 
 
 </resources>

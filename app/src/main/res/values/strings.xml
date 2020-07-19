@@ -441,4 +441,7 @@
     <string name="lbl_one_kg_bag_unit">a 1 kg bag</string>
     <string name="lbl_pick_your_country">Pick your country</string>
 
+    <string name="lbl_already_planted_title">Already planted</string>
+    <string name="lbl_already_planted_text">It appears you have already planted, so you cannot set the flexibility</string>
+
 </resources>

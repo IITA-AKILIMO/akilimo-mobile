@@ -57,6 +57,7 @@ public class DatesActivity extends BaseActivity {
     int plantingWindow = 0;
     int harvestWindow = 0;
     boolean alternativeDate;
+    boolean alreadyPlanted;
 
     ScheduledDate scheduledDate;
 
@@ -112,7 +113,12 @@ public class DatesActivity extends BaseActivity {
             rdgPlantingWindow.clearCheck();
             plantingWindow = 0;
             if (isChecked) {
-                rdgPlantingWindow.setVisibility(View.VISIBLE);
+                if (alreadyPlanted) {
+                    showCustomWarningDialog(getString(R.string.lbl_already_planted_title), getString(R.string.lbl_already_planted_text));
+                    flexiblePlanting.setChecked(false);
+                } else {
+                    rdgPlantingWindow.setVisibility(View.VISIBLE);
+                }
             } else {
                 rdgPlantingWindow.setVisibility(View.GONE);
             }
@@ -182,10 +188,11 @@ public class DatesActivity extends BaseActivity {
             int pw = scheduledDate.getPlantingWindow();
             int hw = scheduledDate.getHarvestWindow();
 
+            alreadyPlanted = scheduledDate.getAlreadyPlanted();
+
             DateHelper.dateTimeFormat = "dd/MM/yyyy";
             LocalDate pDate = DateHelper.formatToLocalDate(pd);
             LocalDate hDate = DateHelper.formatToLocalDate(hd);
-
             lblSelectedPlantingDate.setText(pDate.toString());
             lblSelectedHarvestDate.setText(hDate.toString());
             rdgAlternativeDate.check(alternativeDate ? R.id.rdYes : R.id.rdNo);
@@ -220,11 +227,14 @@ public class DatesActivity extends BaseActivity {
             if (scheduledDate == null) {
                 scheduledDate = new ScheduledDate();
             }
+
+            alreadyPlanted = DateHelper.olderThanCurrent(selectedPlantingDate);
             scheduledDate.setHarvestDate(selectedHarvestDate);
             scheduledDate.setHarvestWindow(harvestWindow);
             scheduledDate.setPlantingDate(selectedPlantingDate);
             scheduledDate.setPlantingWindow(plantingWindow);
             scheduledDate.setAlternativeDate(alternativeDate);
+            scheduledDate.setAlreadyPlanted(alreadyPlanted);
 
             database.scheduleDateDao().insert(scheduledDate);
             closeActivity(backPressed);
@@ -252,6 +262,10 @@ public class DatesActivity extends BaseActivity {
                 lblSelectedPlantingDate.setText(Tools.formatLongToDateString(date_ship_millis));
                 selectedHarvestDate = null;
                 lblSelectedHarvestDate.setText(null);
+                alreadyPlanted = DateHelper.olderThanCurrent(selectedPlantingDate);
+                if (alreadyPlanted) {
+                    flexiblePlanting.setChecked(false);
+                }
             } else if (pickHarvestDate) {
                 selectedHarvestDate = DateHelper.getSimpleDateFormatter().format(myCalendar.getTime());
                 lblSelectedHarvestDate.setText(Tools.formatLongToDateString(date_ship_millis));
