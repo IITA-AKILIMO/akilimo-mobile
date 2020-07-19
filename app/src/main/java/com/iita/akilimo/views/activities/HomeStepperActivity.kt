@@ -9,6 +9,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.crashlytics.android.Crashlytics
+import com.github.javiersantos.appupdater.AppUpdater
+import com.github.javiersantos.appupdater.enums.Display
 import com.iita.akilimo.R
 import com.iita.akilimo.adapters.MyStepperAdapter
 import com.iita.akilimo.dao.AppDatabase
@@ -16,6 +18,7 @@ import com.iita.akilimo.databinding.ActivityHomeStepperBinding
 import com.iita.akilimo.entities.LocationInfo
 import com.iita.akilimo.inherit.BaseActivity
 import com.iita.akilimo.interfaces.IFragmentCallBack
+import com.iita.akilimo.utils.AppUpdateHelper
 import com.iita.akilimo.utils.SessionManager
 import com.iita.akilimo.views.activities.usecases.RecommendationsActivity
 import com.iita.akilimo.views.fragments.*
@@ -36,6 +39,8 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
     private lateinit var stepperAdapter: MyStepperAdapter
 
     private lateinit var mStepperLayout: StepperLayout
+    private lateinit var appUpdateHelper: AppUpdateHelper
+    private lateinit var appUpdater: AppUpdater
 
     private val fragmentArray: MutableList<Fragment> = arrayListOf()
 
@@ -68,6 +73,12 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         sessionManager = SessionManager(this)
         mStepperLayout = binding.stepperLayout
 
+        appUpdateHelper = AppUpdateHelper(this)
+        appUpdater = appUpdateHelper
+            .showUpdateMessage(Display.DIALOG)
+            .setButtonDoNotShowAgain("")
+        appUpdater.start()
+
         createFragmentArray()
         initComponent()
     }
@@ -95,6 +106,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
         mStepperLayout.setListener(object : StepperListener {
             override fun onCompleted(completeButton: View?) {
+                appUpdater.stop();
                 // Toast.makeText(context, "onCompleted!", Toast.LENGTH_SHORT).show();
                 val intent = Intent(context, RecommendationsActivity::class.java)
                 startActivity(intent)
@@ -110,9 +122,11 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
             }
 
             override fun onStepSelected(newStepPosition: Int) {
+                appUpdater.stop()
             }
 
             override fun onReturn() {
+                appUpdater.start()
                 finish()
             }
         })
