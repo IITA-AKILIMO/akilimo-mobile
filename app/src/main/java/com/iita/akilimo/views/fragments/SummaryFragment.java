@@ -25,7 +25,6 @@ import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.entities.ScheduledDate;
 import com.iita.akilimo.inherit.BaseStepFragment;
-import com.iita.akilimo.interfaces.IFragmentCallBack;
 import com.iita.akilimo.models.TimeLineModel;
 import com.iita.akilimo.models.TimelineAttributes;
 import com.iita.akilimo.utils.ItemAnimation;
@@ -55,7 +54,6 @@ public class SummaryFragment extends BaseStepFragment {
     private ScheduledDate scheduledDate;
     private ProfileInfo profileInfo;
 
-    private IFragmentCallBack fragmentCallBack;
     private MyTimeLineAdapter adapter;
 
 
@@ -83,10 +81,6 @@ public class SummaryFragment extends BaseStepFragment {
         this.context = context;
     }
 
-    public void setOnFragmentCloseListener(IFragmentCallBack callBack) {
-        this.fragmentCallBack = callBack;
-    }
-
     public static SummaryFragment newInstance() {
         return new SummaryFragment();
     }
@@ -96,7 +90,7 @@ public class SummaryFragment extends BaseStepFragment {
         super.onCreate(savedInstanceState);
         mAttributes = new TimelineAttributes(
                 48,
-                ContextCompat.getColor(context, R.color.green_500),
+                ContextCompat.getColor(context, R.color.akilimoLightGreen),
                 ContextCompat.getColor(context, R.color.red_A400),
                 true,
                 0,
@@ -125,11 +119,6 @@ public class SummaryFragment extends BaseStepFragment {
         recyclerView = binding.timelineRecycler;
 
         initRecyclerView();
-    }
-
-    public void refreshData() {
-        setDataListItems();
-        initFragmentCallback();
     }
 
     private void setDataListItems() {
@@ -220,47 +209,15 @@ public class SummaryFragment extends BaseStepFragment {
         initAdapter();
     }
 
-    private void initFragmentCallback() {
-        if (countrySelected && areaUnitSelected && fieldSizeSelected && locationPicked && plantingDateProvided && harvestDateProvided && currentPracticeSelected) {
-            if (fragmentCallBack == null) {
-                fragmentCallBack = (IFragmentCallBack) context;
-                setOnFragmentCloseListener(fragmentCallBack);
-            }
-            if (fragmentCallBack != null) {
-                fragmentCallBack.onFragmentClose(false);
-            }
-        }
-    }
-
     private void initRecyclerView() {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setHasFixedSize(true);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                initFragmentCallback();
-            }
-        });
-
     }
 
     private void initAdapter() {
         adapter = new MyTimeLineAdapter(mDataList, mAttributes, context, ItemAnimation.FADE_IN);
         recyclerView.setAdapter(adapter);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        fragmentCallBack = null;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        fragmentCallBack = null;
     }
 
     @Nullable
@@ -271,7 +228,7 @@ public class SummaryFragment extends BaseStepFragment {
 
     @Override
     public void onSelected() {
-
+        setDataListItems();
     }
 
     @Override

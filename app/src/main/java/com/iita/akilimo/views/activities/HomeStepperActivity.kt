@@ -15,6 +15,7 @@ import com.iita.akilimo.dao.AppDatabase
 import com.iita.akilimo.databinding.ActivityHomeStepperBinding
 import com.iita.akilimo.entities.LocationInfo
 import com.iita.akilimo.inherit.BaseActivity
+import com.iita.akilimo.views.activities.usecases.RecommendationsActivity
 import com.iita.akilimo.views.fragments.*
 import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.StepperLayout.StepperListener
@@ -85,7 +86,10 @@ class HomeStepperActivity : BaseActivity() {
 
         mStepperLayout.setListener(object : StepperListener {
             override fun onCompleted(completeButton: View?) {
-                Toast.makeText(context, "onCompleted!", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(context, "onCompleted!", Toast.LENGTH_SHORT).show();
+                val intent = Intent(context, RecommendationsActivity::class.java)
+                startActivity(intent)
+                openActivity()
             }
 
             override fun onError(verificationError: VerificationError) {
