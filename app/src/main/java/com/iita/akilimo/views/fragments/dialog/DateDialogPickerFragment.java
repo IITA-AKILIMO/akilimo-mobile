@@ -84,10 +84,13 @@ public class DateDialogPickerFragment extends AppCompatDialogFragment implements
         // send date back to the target fragment
         Fragment target = getTargetFragment();
         if (target != null) {
+            Intent intent = new Intent();
+            intent.putExtra("selectedDate", selectedDate);
+            intent.putExtra("selectedDateObject", myCalendar.getTime());
             target.onActivityResult(
                     getTargetRequestCode(),
                     Activity.RESULT_OK,
-                    new Intent().putExtra("selectedDate", selectedDate)
+                    intent
             );
         }
     }

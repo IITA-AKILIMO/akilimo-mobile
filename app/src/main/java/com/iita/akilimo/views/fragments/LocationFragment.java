@@ -23,10 +23,13 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.FragmentLocationBinding;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.ProfileInfo;
-import com.iita.akilimo.inherit.BaseFragment;
+import com.iita.akilimo.inherit.BaseStepFragment;
 import com.iita.akilimo.services.GPSTracker;
-import com.iita.akilimo.views.activities.HomeActivity;
+import com.iita.akilimo.views.activities.HomeStepperActivity;
 import com.iita.akilimo.views.activities.MapBoxActivity;
+import com.stepstone.stepper.VerificationError;
+
+import static android.app.Activity.RESULT_OK;
 
 ;
 
@@ -35,7 +38,7 @@ import com.iita.akilimo.views.activities.MapBoxActivity;
  * Use the {@link LocationFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LocationFragment extends BaseFragment {
+public class LocationFragment extends BaseStepFragment {
 
 
     AppCompatButton btnCurrentLocation;
@@ -74,11 +77,6 @@ public class LocationFragment extends BaseFragment {
     }
 
     @Override
-    public void refreshData() {
-        reloadLocationInfo();
-    }
-
-    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -96,8 +94,9 @@ public class LocationFragment extends BaseFragment {
             intent.putExtra(MapBoxActivity.LAT, currentLat);
             intent.putExtra(MapBoxActivity.LON, currentLon);
             intent.putExtra(MapBoxActivity.ALT, currentAlt);
-            getActivity().startActivityForResult(intent, HomeActivity.MAP_BOX_PLACE_PICKER_REQUEST_CODE);
+            this.startActivityForResult(intent, HomeStepperActivity.MAP_BOX_PLACE_PICKER_REQUEST_CODE);
         });
+        errorMessage = context.getString(R.string.lbl_location_error);
     }
 
     private void getCurrentLocation() {
@@ -125,8 +124,13 @@ public class LocationFragment extends BaseFragment {
         locationInformation.setLatitude(currentLat);
         locationInformation.setLongitude(currentLon);
 
-        database.locationInfoDao().insert(locationInformation);
-        locationInformation = database.locationInfoDao().findOne();
+        if (locationInformation.getId() != null) {
+            database.locationInfoDao().update(locationInformation);
+        } else {
+            database.locationInfoDao().insert(locationInformation);
+        }
+
+        dataIsValid = currentLat != 0 || currentLon != 0;
         reloadLocationInfo();
     }
 
@@ -140,10 +144,13 @@ public class LocationFragment extends BaseFragment {
             }
             if (locationInformation != null) {
                 StringBuilder locInfo = loadLocationInfo(locationInformation);
-                locationInfo.setText(locInfo.toString());
                 currentLon = locationInformation.getLongitude();
                 currentLat = locationInformation.getLatitude();
                 currentAlt = locationInformation.getAltitude();
+                dataIsValid = currentLat != 0 || currentLon != 0;
+                if (dataIsValid) {
+                    locationInfo.setText(locInfo.toString());
+                }
             }
 
             String message = context.getString(R.string.lbl_farm_location, farmName);
@@ -153,6 +160,50 @@ public class LocationFragment extends BaseFragment {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            if (requestCode == HomeStepperActivity.MAP_BOX_PLACE_PICKER_REQUEST_CODE) {
+                if (resultCode == RESULT_OK) {
+                    if (data != null) {
+                        currentLat = data.getDoubleExtra(MapBoxActivity.LAT, 0.0);
+                        currentLon = data.getDoubleExtra(MapBoxActivity.LON, 0.0);
+                        currentAlt = data.getDoubleExtra(MapBoxActivity.ALT, 0.0);
+                        saveLocation();
+                    } else {
+                        dataIsValid = false;
+                        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+            Crashlytics.logException(ex);
+        }
+    }
+
+    @Nullable
+    @Override
+    public VerificationError verifyStep() {
+        saveLocation();
+        if (!dataIsValid) {
+            return new VerificationError(errorMessage);
+        }
+        return null;
+    }
+
+    @Override
+    public void onSelected() {
+        reloadLocationInfo();
+    }
+
+    @Override
+    public void onError(@NonNull VerificationError error) {
 
     }
 }

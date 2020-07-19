@@ -5,7 +5,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 enum class EnumCountry : Parcelable {
-    NIGERIA {
+    Nigeria {
         override fun countryName(): String {
             return "Nigeria"
         }
@@ -22,7 +22,7 @@ enum class EnumCountry : Parcelable {
             return "Naira"
         }
     },
-    TANZANIA {
+    Tanzania {
         override fun countryName(): String {
             return "Tanzania"
         }
@@ -39,7 +39,7 @@ enum class EnumCountry : Parcelable {
             return "Tanzania shillings"
         }
     },
-    KENYA {
+    Kenya {
         override fun countryName(): String {
             return "Kenya"
         }
@@ -56,7 +56,7 @@ enum class EnumCountry : Parcelable {
             return "Kenya shillings"
         }
     },
-    OTHERS {
+    Other {
         override fun countryName(): String {
             return "U.S.A"
         }

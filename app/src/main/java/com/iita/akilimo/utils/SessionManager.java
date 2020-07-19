@@ -157,10 +157,9 @@ public class SessionManager {
 
         String topics = pref.getString("firebaseTopics", "[]");
         ObjectMapper mapper = new ObjectMapper();
-        List<FirebaseTopic> firebaseTopics = mapper.readValue(topics, new TypeReference<List<FirebaseTopic>>() {
-        });
 
-        return firebaseTopics;
+        return mapper.readValue(topics, new TypeReference<List<FirebaseTopic>>() {
+        });
     }
 
 
@@ -171,5 +170,23 @@ public class SessionManager {
 
     public boolean showAd() {
         return pref.getBoolean("showAd", false);
+    }
+
+    public void setTermsAccepted(boolean termsAccepted) {
+        editor.putBoolean("termsAccepted", termsAccepted);
+        editor.commit();
+    }
+
+    public boolean termsAccepted() {
+        return pref.getBoolean("termsAccepted", false);
+    }
+
+    public void setTermsLink(String termsAccepted) {
+        editor.putString("termsLink", termsAccepted);
+        editor.commit();
+    }
+
+    public String getTermsLink() {
+        return pref.getString("termsLink", "https://www.akilimo.org/blog/categories/fertilizer-recommendations");
     }
 }

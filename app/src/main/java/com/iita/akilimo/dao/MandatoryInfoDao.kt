@@ -13,11 +13,11 @@ interface MandatoryInfoDao {
     fun findOne(): MandatoryInfo?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(users: MandatoryInfo)
+    fun insert(mandatoryInfo: MandatoryInfo)
 
     @Update
-    fun update(users: MandatoryInfo)
+    fun update(mandatoryInfo: MandatoryInfo)
 
     @Delete
-    fun delete(user: MandatoryInfo?)
+    fun delete(mandatoryInfo: MandatoryInfo?)
 }

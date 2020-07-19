@@ -24,8 +24,9 @@ import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.FragmentCountryBinding;
 import com.iita.akilimo.entities.ProfileInfo;
-import com.iita.akilimo.inherit.BaseFragment;
+import com.iita.akilimo.inherit.BaseStepFragment;
 import com.iita.akilimo.utils.enums.EnumCountry;
+import com.stepstone.stepper.VerificationError;
 
 ;
 
@@ -34,7 +35,7 @@ import com.iita.akilimo.utils.enums.EnumCountry;
  * Use the {@link CountryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CountryFragment extends BaseFragment {
+public class CountryFragment extends BaseStepFragment {
 
     AppCompatTextView title;
     AppCompatButton btnPickCountry;
@@ -45,8 +46,6 @@ public class CountryFragment extends BaseFragment {
 
     private ProfileInfo profileInfo;
     private String name = "";
-
-    boolean userSelect = false;
     private int selectedCountryIndex = -1;
 
 
@@ -71,17 +70,16 @@ public class CountryFragment extends BaseFragment {
         return binding.getRoot();
     }
 
-    @Override
     public void refreshData() {
         try {
             profileInfo = database.profileInfoDao().findOne();
             if (profileInfo != null) {
                 name = profileInfo.getFirstName();
-                selectedCountryIndex = profileInfo.getSelectedCountryIndex();
                 countryCode = profileInfo.getCountryCode();
                 countryName = profileInfo.getCountryName();
 
                 if (!Strings.isEmptyOrWhitespace(countryCode)) {
+                    selectedCountryIndex = profileInfo.getSelectedCountryIndex();
                     countryImage.setImageResource(World.getFlagOf(countryCode));
                 }
                 if (!Strings.isEmptyOrWhitespace(countryName)) {
@@ -108,8 +106,8 @@ public class CountryFragment extends BaseFragment {
         countryImage = binding.countryImage;
 
         final String[] countries = new String[]{
-                EnumCountry.NIGERIA.name(),
-                EnumCountry.TANZANIA.name()
+                EnumCountry.Nigeria.name(),
+                EnumCountry.Tanzania.name()
         };
 
         btnPickCountry.setOnClickListener(new View.OnClickListener() {
@@ -120,64 +118,96 @@ public class CountryFragment extends BaseFragment {
                 builder.setSingleChoiceItems(countries, selectedCountryIndex, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        countryName = countries[i];
                         selectedCountryIndex = i;
-                        switch (countryName.toLowerCase()) {
-                            case "kenya":
-                                countryName = EnumCountry.KENYA.name();
-                                currency = EnumCountry.KENYA.currency();
-                                countryCode = EnumCountry.KENYA.countryCode();
-                                break;
-                            case "tanzania":
-                                countryName = EnumCountry.TANZANIA.name();
-                                currency = EnumCountry.TANZANIA.currency();
-                                countryCode = EnumCountry.TANZANIA.countryCode();
-                                break;
-                            case "nigeria":
-                                countryName = EnumCountry.NIGERIA.name();
-                                currency = EnumCountry.NIGERIA.currency();
-                                countryCode = EnumCountry.NIGERIA.countryCode();
-                                break;
-                            default:
-                                countryName = EnumCountry.OTHERS.name();
-                                currency = EnumCountry.OTHERS.currency();
-                                countryCode = EnumCountry.OTHERS.countryCode();
-                                break;
-                        }
-
-                        countryImage.setImageResource(World.getFlagOf(countryCode));
-                        txtCountryName.setText(countryName);
-                        updateSelectedCountry();
-                        dialogInterface.dismiss();
                     }
                 });
+                builder.setPositiveButton(context.getString(R.string.lbl_ok), (dialogInterface, whichButton) -> {
+                    if (selectedCountryIndex >= 0) {
+                        countryName = countries[selectedCountryIndex];
+                        switch (countryName.toLowerCase()) {
+                            case "kenya":
+                                countryName = EnumCountry.Kenya.name();
+                                currency = EnumCountry.Kenya.currency();
+                                countryCode = EnumCountry.Kenya.countryCode();
+                                break;
+                            case "tanzania":
+                                countryName = EnumCountry.Tanzania.name();
+                                currency = EnumCountry.Tanzania.currency();
+                                countryCode = EnumCountry.Tanzania.countryCode();
+                                break;
+                            case "nigeria":
+                                countryName = EnumCountry.Nigeria.name();
+                                currency = EnumCountry.Nigeria.currency();
+                                countryCode = EnumCountry.Nigeria.countryCode();
+                                break;
+                            default:
+                                countryName = EnumCountry.Other.name();
+                                currency = EnumCountry.Other.currency();
+                                countryCode = EnumCountry.Other.countryCode();
+                                break;
+                        }
+                        countryImage.setImageResource(World.getFlagOf(countryCode));
+                        txtCountryName.setText(countryName);
+                        dialogInterface.dismiss();
+                        updateSelectedCountry();
+                    }
+                });
+                builder.setNegativeButton(context.getString(R.string.lbl_cancel), ((dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                }));
 
-                // Create the alert dialog
                 AlertDialog dialog = builder.create();
-
-                // Finally, display the alert dialog
+                dialog.setCancelable(false);
+                dialog.setCanceledOnTouchOutside(false);
                 dialog.show();
             }
         });
     }
 
     private void updateSelectedCountry() {
-        if (profileInfo == null) {
-            profileInfo = new ProfileInfo();
-        }
-
-        profileInfo.setSelectedCountryIndex(selectedCountryIndex);
-        profileInfo.setCountryCode(countryCode);
-        profileInfo.setCountryName(countryName);
-        profileInfo.setCurrency(currency);
-
-        if (profileInfo.getProfileId() != null) {
-            int id = profileInfo.getProfileId();
-            if (id > 0) {
-                database.profileInfoDao().update(profileInfo);
+        try {
+            if (profileInfo == null) {
+                profileInfo = new ProfileInfo();
             }
-        } else {
-            database.profileInfoDao().insert(profileInfo);
+
+            profileInfo.setSelectedCountryIndex(selectedCountryIndex);
+            profileInfo.setCountryCode(countryCode);
+            profileInfo.setCountryName(countryName);
+            profileInfo.setCurrency(currency);
+
+            dataIsValid = !Strings.isEmptyOrWhitespace(countryCode);
+            if (profileInfo.getProfileId() != null) {
+                int id = profileInfo.getProfileId();
+                if (id > 0) {
+                    database.profileInfoDao().update(profileInfo);
+                }
+            } else {
+                database.profileInfoDao().insert(profileInfo);
+            }
+        } catch (Exception ex) {
+            dataIsValid = false;
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+            Crashlytics.logException(ex);
         }
+    }
+
+    @Nullable
+    @Override
+    public VerificationError verifyStep() {
+        updateSelectedCountry();
+        if (!dataIsValid) {
+            return new VerificationError("Please select country");
+        }
+        return null;
+    }
+
+    @Override
+    public void onSelected() {
+        refreshData();
+    }
+
+    @Override
+    public void onError(@NonNull VerificationError error) {
+
     }
 }

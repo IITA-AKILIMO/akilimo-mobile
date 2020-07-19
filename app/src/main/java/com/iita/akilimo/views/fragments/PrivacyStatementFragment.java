@@ -3,26 +3,35 @@ package com.iita.akilimo.views.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
+import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.fragment.app.Fragment;
 
+import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.FragmentPrivacyStatementBinding;
-import com.iita.akilimo.inherit.BaseFragment;
+import com.iita.akilimo.inherit.BaseStepFragment;
+import com.iita.akilimo.utils.SessionManager;
+import com.stepstone.stepper.VerificationError;
 
 /**
  * A simple {@link Fragment} subclass.
+ * https://app-privacy-policy-generator.firebaseapp.com/#
  */
-public class PrivacyStatementFragment extends BaseFragment {
+public class PrivacyStatementFragment extends BaseStepFragment {
 
-    TextView statementText;
+
+    WebView webView;
+    AppCompatCheckBox chkAgreeToTerms;
     FragmentPrivacyStatementBinding binding;
+    private boolean policyAccepted;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -49,23 +58,53 @@ public class PrivacyStatementFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        statementText = binding.statementText;
-        loadDoc();
+        webView = binding.webView;
+        if (sessionManager != null) {
+            sessionManager = new SessionManager(context);
+        }
+
+        WebView.setWebContentsDebuggingEnabled(false);
+        webView.setWebChromeClient(new WebChromeClient());
+        webView.setScrollContainer(true);
+        webView.setVerticalScrollBarEnabled(false);
+        webView.setHorizontalScrollBarEnabled(false);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setSupportZoom(true);
+        webView.getSettings().setDisplayZoomControls(false);
+        webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setUseWideViewPort(true);
+        webView.getSettings().setGeolocationEnabled(true);
+
+
+        String termsLink = sessionManager.getTermsLink();
+        chkAgreeToTerms = binding.chkAgreeToTerms;
+        webView.loadUrl(termsLink);
+        chkAgreeToTerms.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                policyAccepted = checked;
+            }
+        });
+    }
+
+    @Nullable
+    @Override
+    public VerificationError verifyStep() {
+        sessionManager.setTermsAccepted(policyAccepted);
+        if (policyAccepted) {
+            //save to session and skip in future startup
+            return null;
+        }
+        return new VerificationError(getString(R.string.lbl_accept_terms_prompt));
     }
 
     @Override
-    public void refreshData() {
+    public void onSelected() {
+
     }
 
+    @Override
+    public void onError(@NonNull VerificationError error) {
 
-    private void loadDoc() {
-
-        StringBuilder statementString = new StringBuilder();
-
-        for (int x = 0; x <= 100; x++) {
-            statementString.append("Line: ").append(String.valueOf(x)).append("\n");
-        }
-        statementText.setMovementMethod(new ScrollingMovementMethod());
-        statementText.setText(statementString.toString());
     }
 }

@@ -9,8 +9,9 @@ open class ScheduledDate() {
     var id: Int? = null
     var deviceId: String? = null
     var plantingDate: String? = null
-    var plantingWindow = 0
+    var plantingWindow: Int = 0
     var harvestDate: String? = null
-    var harvestWindow = 0
-    var alternativeDate = false
+    var harvestWindow: Int = 0
+    var alternativeDate: Boolean = false
+    var alreadyPlanted: Boolean = false
 }

@@ -16,6 +16,7 @@
         android:padding="@dimen/spacing_medium"
         android:paddingBottom="?attr/actionBarSize">
 
+
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
@@ -24,7 +25,8 @@
             android:text="@string/lbl_self_intro"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/akilimoDarkGreen"
+            android:textStyle="bold" />
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -177,10 +179,6 @@
                 android:textColorHint="@android:color/transparent" />
 
         </com.google.android.material.textfield.TextInputLayout>
-
-        <include
-            android:id="@+id/single_button"
-            layout="@layout/bottom_single_button_layout" />
     </LinearLayout>
 
 

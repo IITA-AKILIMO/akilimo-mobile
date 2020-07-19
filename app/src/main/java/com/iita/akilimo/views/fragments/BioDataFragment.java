@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import com.crashlytics.android.Crashlytics;
@@ -26,9 +25,10 @@ import com.hbb20.CountryCodePicker;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.FragmentBioDataBinding;
 import com.iita.akilimo.entities.ProfileInfo;
-import com.iita.akilimo.inherit.BaseFragment;
+import com.iita.akilimo.inherit.BaseStepFragment;
 import com.iita.akilimo.interfaces.IFragmentCallBack;
 import com.iita.akilimo.utils.ValidationHelper;
+import com.stepstone.stepper.VerificationError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BioDataFragment extends BaseFragment {
+public class BioDataFragment extends BaseStepFragment {
 
     private String LOG_TAG = BioDataFragment.class.getSimpleName();
     private IFragmentCallBack fragmentCallBack;
@@ -54,12 +54,9 @@ public class BioDataFragment extends BaseFragment {
     TextInputLayout lytPhone;
     TextInputEditText edtPhone;
     CountryCodePicker ccp;
-    AppCompatButton btnGetRec;
 
     FragmentBioDataBinding binding;
 
-
-    private boolean dataIsValid;
     private String firstName;
     private String lastName;
     private String email;
@@ -105,19 +102,14 @@ public class BioDataFragment extends BaseFragment {
         lytPhone = binding.lytPhone;
         edtPhone = binding.edtPhone;
         ccp = binding.ccp;
-        btnGetRec = binding.singleButton.btnGetRecommendation;
-
-
-        btnGetRec.setText(getString(R.string.lbl_save));
 
         final List<String> genderStrings = new ArrayList<>();
-        genderStrings.add(this.getString(R.string.lbl_male));
+        genderStrings.add(this.getString(R.string.lbl_prefer_not_to_say));
         genderStrings.add(this.getString(R.string.lbl_female));
+        genderStrings.add(this.getString(R.string.lbl_male));
 
         final SpinnerAdapter adapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, genderStrings);
         genderSpinner.setAdapter(adapter);
-
-        btnGetRec.setOnClickListener(view1 -> saveBioData());
 
         genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -145,7 +137,6 @@ public class BioDataFragment extends BaseFragment {
 
     }
 
-    @Override
     public void refreshData() {
         try {
 
@@ -170,7 +161,7 @@ public class BioDataFragment extends BaseFragment {
             }
 
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred getting BioDataInfo info");
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
     }
@@ -191,12 +182,14 @@ public class BioDataFragment extends BaseFragment {
 
         if (Strings.isEmptyOrWhitespace(firstName)) {
             dataIsValid = false;
-            lytFirstName.setError(this.getString(R.string.lbl_first_name_req));
+            errorMessage = this.getString(R.string.lbl_first_name_req);
+            lytFirstName.setError(errorMessage);
         }
 
         if (Strings.isEmptyOrWhitespace(lastName)) {
             dataIsValid = false;
-            lytLastName.setError(this.getString(R.string.lbl_last_name_req));
+            errorMessage = this.getString(R.string.lbl_last_name_req);
+            lytLastName.setError(errorMessage);
         }
 
         if (Strings.isEmptyOrWhitespace(farmName)) {
@@ -208,7 +201,8 @@ public class BioDataFragment extends BaseFragment {
 
         if (!validationHelper.isValidEmail(email) && !Strings.isEmptyOrWhitespace(email)) {
             dataIsValid = false;
-            lytEmail.setError(this.getString(R.string.lbl_valid_email_req));
+            errorMessage = this.getString(R.string.lbl_valid_email_req);
+            lytEmail.setError(errorMessage);
         }
 
         if (dataIsValid) {
@@ -231,16 +225,11 @@ public class BioDataFragment extends BaseFragment {
 
                 profileInfo.setUserName(profileInfo.getNames());
 
-                int pk = 0;
                 if (profileInfo.getProfileId() != null) {
-                    pk = profileInfo.getProfileId();
-                }
-                if (pk > 0) {
                     database.profileInfoDao().update(profileInfo);
                 } else {
                     database.profileInfoDao().insert(profileInfo);
                 }
-                nextFragment();
             } catch (Exception ex) {
                 Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
@@ -250,13 +239,24 @@ public class BioDataFragment extends BaseFragment {
         }
     }
 
-    public void setOnFragmentCloseListener(IFragmentCallBack callBack) {
-        this.fragmentCallBack = callBack;
+
+    @Nullable
+    @Override
+    public VerificationError verifyStep() {
+        saveBioData();
+        if (!dataIsValid) {
+            return new VerificationError(errorMessage);
+        }
+        return null;
     }
 
-    private void nextFragment() {
-        if (fragmentCallBack != null) {
-            fragmentCallBack.onDataSaved();
-        }
+    @Override
+    public void onSelected() {
+        refreshData();
+    }
+
+    @Override
+    public void onError(@NonNull VerificationError error) {
+
     }
 }

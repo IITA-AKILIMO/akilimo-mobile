@@ -163,9 +163,9 @@ public class OperationCostsDialogFragment extends BaseDialogFragment {
 
         try {
             operationCost = operationCosts.get((int) itemTagIndex);
-            if (countryCode.equals(EnumCountry.NIGERIA.countryCode())) {
+            if (countryCode.equals(EnumCountry.Nigeria.countryCode())) {
                 selectedCost = operationCost.getAverageNgnPrice();
-            } else if (countryCode.equals(EnumCountry.TANZANIA.countryCode())) {
+            } else if (countryCode.equals(EnumCountry.Tanzania.countryCode())) {
                 selectedCost = operationCost.getAverageTzsPrice();
             }
             isExactCostRequired = false;
@@ -196,11 +196,11 @@ public class OperationCostsDialogFragment extends BaseDialogFragment {
             double maxPrice = operationCost.getMaxUsd();
             double minPrice = operationCost.getMinUsd();
 
-            if (countryCode.equals(EnumCountry.NIGERIA.countryCode())) {
+            if (countryCode.equals(EnumCountry.Nigeria.countryCode())) {
                 price = operationCost.getAverageNgnPrice();
                 maxPrice = operationCost.getMaxNgn();
                 minPrice = operationCost.getMinNgn();
-            } else if (countryCode.equals(EnumCountry.TANZANIA.countryCode())) {
+            } else if (countryCode.equals(EnumCountry.Tanzania.countryCode())) {
                 price = operationCost.getAverageTzsPrice();
                 maxPrice = operationCost.getMaxTzs();
                 minPrice = operationCost.getMinTzs();

@@ -25,11 +25,8 @@ import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.SessionManager;
+import com.stepstone.stepper.VerificationError;
 
-import java.util.Locale;
-
-import dev.b3nedikt.app_locale.AppLocale;
-import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
 import dev.b3nedikt.reword.Reword;
 
 @SuppressWarnings("WeakerAccess")
@@ -47,6 +44,7 @@ public abstract class BaseFragment extends Fragment {
     protected String countryName;
 
     protected AppDatabase database;
+    protected VerificationError verificationError = null;
 
 
     String emptyText = "";
@@ -108,15 +106,6 @@ public abstract class BaseFragment extends Fragment {
         return stBuilder;
     }
 
-    protected Locale getCurrentLocale() {
-        SharedPrefsAppLocaleRepository prefs = new SharedPrefsAppLocaleRepository(context);
-        Locale desiredLocale = prefs.getDesiredLocale();
-        if (desiredLocale != null) {
-            AppLocale.setDesiredLocale(desiredLocale);
-        }
-
-        return desiredLocale;
-    }
 
     protected void showCustomWarningDialog(String titleText, String contentText) {
         showCustomWarningDialog(titleText, contentText, null);
@@ -129,10 +118,10 @@ public abstract class BaseFragment extends Fragment {
             dialog.setContentView(R.layout.dialog_warning);
             dialog.setCancelable(true);
 
-            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-            lp.copyFrom(dialog.getWindow().getAttributes());
-            lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
-            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+            layoutParams.copyFrom(dialog.getWindow().getAttributes());
+            layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
 
             final TextView title = dialog.findViewById(R.id.title);
@@ -147,9 +136,10 @@ public abstract class BaseFragment extends Fragment {
             btnClose.setOnClickListener(view -> {
                 dialog.dismiss();
             });
-
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
             dialog.show();
-            dialog.getWindow().setAttributes(lp);
+            dialog.getWindow().setAttributes(layoutParams);
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);

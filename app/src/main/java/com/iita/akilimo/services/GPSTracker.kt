@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 
 import androidx.appcompat.app.AlertDialog
 import com.crashlytics.android.Crashlytics
@@ -98,7 +99,8 @@ class GPSTracker : Service, LocationListener {
 
             // no network provider is enabled
         } catch (ex: Exception) {
-            Crashlytics.log(Log.ERROR, "GPS_TRACKER", "Error saving location information")
+            Toast.makeText(mContext, ex.message, Toast.LENGTH_SHORT).show()
+            Crashlytics.log(Log.ERROR, "GPS_TRACKER", ex.message)
             Crashlytics.logException(ex)
         }
 
