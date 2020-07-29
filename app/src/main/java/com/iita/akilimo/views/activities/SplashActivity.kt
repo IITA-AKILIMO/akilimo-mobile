@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import com.crashlytics.android.Crashlytics
-import com.iita.akilimo.BuildConfig
-import com.iita.akilimo.dao.AppDatabase.Companion.getDatabase
 import com.iita.akilimo.inherit.BaseActivity
 
 
@@ -45,14 +43,14 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun launchActivity() {
-        try {
-            if (!BuildConfig.DEBUG) {
-                getDatabase(this)!!.clearAllTables()
-            }
-        } catch (ex: Exception) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
-            Crashlytics.logException(ex)
-        }
+//        try {
+//            if (!BuildConfig.DEBUG) {
+//                getDatabase(this)!!.clearAllTables()
+//            }
+//        } catch (ex: Exception) {
+//            Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
+//            Crashlytics.logException(ex)
+//        }
 //        val intent = Intent(this@SplashActivity, LanguagePickerActivity::class.java)
 //        val intent = Intent(this@SplashActivity, HomeActivity::class.java)
         val intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
