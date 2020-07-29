@@ -161,8 +161,8 @@ public class RestService {
         params.put("Content-Type", "application/json; charset=utf-8");
         params.put("user-id", restParameters.getUserId());
         params.put("country-code", restParameters.getCountryCode());
-        params.put("locale-lang", restParameters.getLocale().getLanguage());
-        params.put("locale-country", restParameters.getLocale().getCountry());
+//        params.put("locale-lang", restParameters.getLocale().getLanguage());
+//        params.put("locale-country", restParameters.getLocale().getCountry());
         params.put("op-type", restParameters.getOperationType());
         params.put("op-name", restParameters.getOperationName());
         params.put("context", restParameters.getContext());
