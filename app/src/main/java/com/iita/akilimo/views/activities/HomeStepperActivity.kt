@@ -122,6 +122,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
             }
 
             override fun onStepSelected(newStepPosition: Int) {
+                appUpdater.stop()
             }
 
             override fun onReturn() {

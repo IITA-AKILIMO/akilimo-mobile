@@ -13,5 +13,6 @@ open class LocationInfo {
     var altitude: Double = 0.0
 
     var placeName: String? = null
+    var locationCountry: String? = null
     var address: String? = null
 }

@@ -29,7 +29,7 @@ import com.iita.akilimo.entities.*
         ScheduledDate::class,
         StarchFactory::class,
         UseCases::class
-    ], version = 1, exportSchema = false
+    ], version = 2, exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {

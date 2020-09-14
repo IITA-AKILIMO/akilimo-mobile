@@ -27,7 +27,20 @@ import com.iita.akilimo.inherit.BaseStepFragment;
 import com.iita.akilimo.services.GPSTracker;
 import com.iita.akilimo.views.activities.HomeStepperActivity;
 import com.iita.akilimo.views.activities.MapBoxActivity;
+import com.mapbox.api.geocoding.v5.GeocodingCriteria;
+import com.mapbox.api.geocoding.v5.MapboxGeocoding;
+import com.mapbox.api.geocoding.v5.models.CarmenFeature;
+import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
+import com.mapbox.geojson.Point;
 import com.stepstone.stepper.VerificationError;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -51,9 +64,13 @@ public class LocationFragment extends BaseStepFragment {
     private double currentLat;
     private double currentLon;
     private double currentAlt;
+    private String countryLocation;
+    private String placeName;
+
     private ProfileInfo profileInfo;
     private LocationInfo locationInformation;
     private String farmName = "";
+    private String MAP_BOX_ACCESS_TOKEN = "";
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -97,6 +114,8 @@ public class LocationFragment extends BaseStepFragment {
             this.startActivityForResult(intent, HomeStepperActivity.MAP_BOX_PLACE_PICKER_REQUEST_CODE);
         });
         errorMessage = context.getString(R.string.lbl_location_error);
+
+        MAP_BOX_ACCESS_TOKEN = sessionManager.getMapBoxApiKey();
     }
 
     private void getCurrentLocation() {
@@ -108,7 +127,7 @@ public class LocationFragment extends BaseStepFragment {
                 currentLat = gps.getLatitude();
                 currentLon = gps.getLongitude();
                 gps.stopUsingGPS();
-                saveLocation();
+                reverseGeoCode(currentLat, currentLon);
             } else {
                 showCustomWarningDialog("Google play services not available on your phone", "Google Play unavailable");
             }
@@ -117,20 +136,60 @@ public class LocationFragment extends BaseStepFragment {
         }
     }
 
+    private void reverseGeoCode(double lat, double lon) {
+        MapboxGeocoding reverseGeocode = MapboxGeocoding.builder()
+                .accessToken(MAP_BOX_ACCESS_TOKEN)
+                .query(Point.fromLngLat(lon, lat))
+                .geocodingTypes(GeocodingCriteria.TYPE_COUNTRY)
+                .build();
+
+        reverseGeocode.enqueueCall(new Callback<GeocodingResponse>() {
+            @Override
+            public void onResponse(@NotNull Call<GeocodingResponse> call, @NotNull Response<GeocodingResponse> response) {
+                if (response.body() != null) {
+                    List<CarmenFeature> features = response.body().features();
+                    placeName = "Unknown";
+                    countryLocation = "Unknown";
+                    if (features.size() > 0) {
+                        CarmenFeature carmenFeature = response.body().features().get(0);
+                        countryLocation = carmenFeature.properties().get("short_code").getAsString();
+                        placeName = carmenFeature.placeName();
+                    }
+                }
+                saveLocation();
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<GeocodingResponse> call, @NotNull Throwable throwable) {
+                saveLocation();
+                Crashlytics.log(Log.ERROR, LOG_TAG, throwable.getMessage());
+                Crashlytics.logException(throwable);
+            }
+        });
+    }
+
     private void saveLocation() {
-        if (locationInformation == null) {
-            locationInformation = new LocationInfo();
-        }
-        locationInformation.setLatitude(currentLat);
-        locationInformation.setLongitude(currentLon);
+        try {
+            if (locationInformation == null) {
+                locationInformation = new LocationInfo();
+            }
+            locationInformation.setLocationCountry(countryLocation);
+            locationInformation.setPlaceName(placeName);
+            locationInformation.setLatitude(currentLat);
+            locationInformation.setLongitude(currentLon);
 
-        if (locationInformation.getId() != null) {
-            database.locationInfoDao().update(locationInformation);
-        } else {
-            database.locationInfoDao().insert(locationInformation);
-        }
+            if (locationInformation.getId() != null) {
+                database.locationInfoDao().update(locationInformation);
+            } else {
+                database.locationInfoDao().insert(locationInformation);
+            }
 
-        dataIsValid = currentLat != 0 || currentLon != 0;
+            dataIsValid = currentLat != 0 || currentLon != 0;
+        } catch (Exception ex) {
+            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+            Crashlytics.logException(ex);
+        }
         reloadLocationInfo();
     }
 
@@ -173,7 +232,7 @@ public class LocationFragment extends BaseStepFragment {
                         currentLat = data.getDoubleExtra(MapBoxActivity.LAT, 0.0);
                         currentLon = data.getDoubleExtra(MapBoxActivity.LON, 0.0);
                         currentAlt = data.getDoubleExtra(MapBoxActivity.ALT, 0.0);
-                        saveLocation();
+                        reverseGeoCode(currentLat, currentLon);
                     } else {
                         dataIsValid = false;
                         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
@@ -190,7 +249,7 @@ public class LocationFragment extends BaseStepFragment {
     @Nullable
     @Override
     public VerificationError verifyStep() {
-        saveLocation();
+        reverseGeoCode(currentLat, currentLon);
         if (!dataIsValid) {
             return new VerificationError(errorMessage);
         }
