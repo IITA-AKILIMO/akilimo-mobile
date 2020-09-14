@@ -1,7 +1,8 @@
 package com.iita.akilimo.utils.enums
 
-enum class StepStatus{
+enum class StepStatus {
     COMPLETED,
     CANCELLED,
+    WARNING,
     INCOMPLETE
 }

@@ -36,6 +36,8 @@ import com.stepstone.stepper.VerificationError;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -145,9 +147,14 @@ public class LocationFragment extends BaseStepFragment {
             @Override
             public void onResponse(@NotNull Call<GeocodingResponse> call, @NotNull Response<GeocodingResponse> response) {
                 if (response.body() != null) {
-                    CarmenFeature carmenFeature = response.body().features().get(0);
-                    countryLocation = carmenFeature.properties().get("short_code").getAsString();
-                    placeName = carmenFeature.placeName();
+                    List<CarmenFeature> features = response.body().features();
+                    placeName = "Unknown";
+                    countryLocation = "Unknown";
+                    if (features.size() > 0) {
+                        CarmenFeature carmenFeature = response.body().features().get(0);
+                        countryLocation = carmenFeature.properties().get("short_code").getAsString();
+                        placeName = carmenFeature.placeName();
+                    }
                 }
                 saveLocation();
             }

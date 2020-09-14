@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -105,7 +106,7 @@ public class SummaryFragment extends BaseStepFragment {
                 ContextCompat.getColor(context, R.color.colorAccent),
                 ContextCompat.getColor(context, R.color.colorAccent),
                 TimelineView.LineStyle.DASHED,
-                2,
+                4,
                 2
         );
     }
@@ -128,8 +129,10 @@ public class SummaryFragment extends BaseStepFragment {
         String plantingDate = "";
         String harvestDate = "";
         String fieldInfo = "";
+        String placeName = "";
         StringBuilder ploughStr = new StringBuilder();
         StringBuilder ridgeStr = new StringBuilder();
+        StepStatus stepStatus = StepStatus.WARNING;
 
         if (database == null) {
             return;
@@ -178,7 +181,18 @@ public class SummaryFragment extends BaseStepFragment {
             pickedLocation = loadLocationInfo(location).toString();
             double lat = location.getLatitude();
             double lon = location.getLongitude();
+            String farmCountryCode = location.getLocationCountry();
+            placeName = location.getPlaceName();
             locationPicked = lat != 0 || lon != 0;
+
+            if (!Strings.isEmptyOrWhitespace(farmCountryCode)) {
+                if (farmCountryCode.equalsIgnoreCase("ng") || farmCountryCode.equalsIgnoreCase("tz")) {
+                    stepStatus = StepStatus.COMPLETED;
+                } else {
+//                    stepStatus = StepStatus.WARNING;
+                    Toast.makeText(context, "Farm location is outside supported countries, recommendations might not work", Toast.LENGTH_LONG).show();
+                }
+            }
         }
 
         if (scheduledDate != null) {
@@ -220,6 +234,8 @@ public class SummaryFragment extends BaseStepFragment {
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_country), countryName, countrySelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_field), fieldInfo, fieldSizeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_location), pickedLocation, locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_farm_place), placeName, stepStatus));
+
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_planting_date), plantingDate, plantingDateProvided ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_harvesting_date), harvestDate, harvestDateProvided ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_ploughing), ploughStr.toString(), currentPracticeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));

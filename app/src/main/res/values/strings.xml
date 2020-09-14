@@ -370,6 +370,7 @@
     <string name="lbl_country">Country</string>
     <string name="lbl_field">Field</string>
     <string name="lbl_location">Location</string>
+    <string name="lbl_farm_place">Farm location</string>
     <string name="lbl_planting_date">Planting date</string>
     <string name="lbl_harvesting_date">Harvesting date</string>
     <string name="lbl_no_ploughing">No ploughing</string>
