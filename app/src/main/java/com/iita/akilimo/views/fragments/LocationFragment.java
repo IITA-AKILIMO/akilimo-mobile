@@ -19,7 +19,6 @@ import androidx.fragment.app.Fragment;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.gson.JsonElement;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.FragmentLocationBinding;
 import com.iita.akilimo.entities.LocationInfo;
@@ -63,6 +62,9 @@ public class LocationFragment extends BaseStepFragment {
     private double currentLat;
     private double currentLon;
     private double currentAlt;
+    private String countryLocation;
+    private String placeName;
+
     private ProfileInfo profileInfo;
     private LocationInfo locationInformation;
     private String farmName = "";
@@ -142,29 +144,30 @@ public class LocationFragment extends BaseStepFragment {
         reverseGeocode.enqueueCall(new Callback<GeocodingResponse>() {
             @Override
             public void onResponse(@NotNull Call<GeocodingResponse> call, @NotNull Response<GeocodingResponse> response) {
-                String countryLocationCode = "";
                 if (response.body() != null) {
                     CarmenFeature carmenFeature = response.body().features().get(0);
-                    countryLocationCode = carmenFeature.properties().get("short_code").getAsString();
+                    countryLocation = carmenFeature.properties().get("short_code").getAsString();
+                    placeName = carmenFeature.placeName();
                 }
-                saveLocation(countryLocationCode);
+                saveLocation();
             }
 
             @Override
             public void onFailure(@NotNull Call<GeocodingResponse> call, @NotNull Throwable throwable) {
-                saveLocation("");
+                saveLocation();
                 Crashlytics.log(Log.ERROR, LOG_TAG, throwable.getMessage());
                 Crashlytics.logException(throwable);
             }
         });
     }
 
-    private void saveLocation(String countryLoc) {
+    private void saveLocation() {
         try {
             if (locationInformation == null) {
                 locationInformation = new LocationInfo();
             }
-            locationInformation.setLocationCountry(countryLoc);
+            locationInformation.setLocationCountry(countryLocation);
+            locationInformation.setPlaceName(placeName);
             locationInformation.setLatitude(currentLat);
             locationInformation.setLongitude(currentLon);
 
