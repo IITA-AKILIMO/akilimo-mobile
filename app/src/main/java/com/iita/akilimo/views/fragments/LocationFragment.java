@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.gson.JsonElement;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.FragmentLocationBinding;
 import com.iita.akilimo.entities.LocationInfo;
@@ -27,7 +28,18 @@ import com.iita.akilimo.inherit.BaseStepFragment;
 import com.iita.akilimo.services.GPSTracker;
 import com.iita.akilimo.views.activities.HomeStepperActivity;
 import com.iita.akilimo.views.activities.MapBoxActivity;
+import com.mapbox.api.geocoding.v5.GeocodingCriteria;
+import com.mapbox.api.geocoding.v5.MapboxGeocoding;
+import com.mapbox.api.geocoding.v5.models.CarmenFeature;
+import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
+import com.mapbox.geojson.Point;
 import com.stepstone.stepper.VerificationError;
+
+import org.jetbrains.annotations.NotNull;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -54,6 +66,7 @@ public class LocationFragment extends BaseStepFragment {
     private ProfileInfo profileInfo;
     private LocationInfo locationInformation;
     private String farmName = "";
+    private String MAP_BOX_ACCESS_TOKEN = "";
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -97,6 +110,8 @@ public class LocationFragment extends BaseStepFragment {
             this.startActivityForResult(intent, HomeStepperActivity.MAP_BOX_PLACE_PICKER_REQUEST_CODE);
         });
         errorMessage = context.getString(R.string.lbl_location_error);
+
+        MAP_BOX_ACCESS_TOKEN = sessionManager.getMapBoxApiKey();
     }
 
     private void getCurrentLocation() {
@@ -108,7 +123,7 @@ public class LocationFragment extends BaseStepFragment {
                 currentLat = gps.getLatitude();
                 currentLon = gps.getLongitude();
                 gps.stopUsingGPS();
-                saveLocation();
+                reverseGeoCode(currentLat, currentLon);
             } else {
                 showCustomWarningDialog("Google play services not available on your phone", "Google Play unavailable");
             }
@@ -117,20 +132,54 @@ public class LocationFragment extends BaseStepFragment {
         }
     }
 
-    private void saveLocation() {
-        if (locationInformation == null) {
-            locationInformation = new LocationInfo();
-        }
-        locationInformation.setLatitude(currentLat);
-        locationInformation.setLongitude(currentLon);
+    private void reverseGeoCode(double lat, double lon) {
+        MapboxGeocoding reverseGeocode = MapboxGeocoding.builder()
+                .accessToken(MAP_BOX_ACCESS_TOKEN)
+                .query(Point.fromLngLat(lon, lat))
+                .geocodingTypes(GeocodingCriteria.TYPE_COUNTRY)
+                .build();
 
-        if (locationInformation.getId() != null) {
-            database.locationInfoDao().update(locationInformation);
-        } else {
-            database.locationInfoDao().insert(locationInformation);
-        }
+        reverseGeocode.enqueueCall(new Callback<GeocodingResponse>() {
+            @Override
+            public void onResponse(@NotNull Call<GeocodingResponse> call, @NotNull Response<GeocodingResponse> response) {
+                String countryLocationCode = "";
+                if (response.body() != null) {
+                    CarmenFeature carmenFeature = response.body().features().get(0);
+                    countryLocationCode = carmenFeature.properties().get("short_code").getAsString();
+                }
+                saveLocation(countryLocationCode);
+            }
 
-        dataIsValid = currentLat != 0 || currentLon != 0;
+            @Override
+            public void onFailure(@NotNull Call<GeocodingResponse> call, @NotNull Throwable throwable) {
+                saveLocation("");
+                Crashlytics.log(Log.ERROR, LOG_TAG, throwable.getMessage());
+                Crashlytics.logException(throwable);
+            }
+        });
+    }
+
+    private void saveLocation(String countryLoc) {
+        try {
+            if (locationInformation == null) {
+                locationInformation = new LocationInfo();
+            }
+            locationInformation.setLocationCountry(countryLoc);
+            locationInformation.setLatitude(currentLat);
+            locationInformation.setLongitude(currentLon);
+
+            if (locationInformation.getId() != null) {
+                database.locationInfoDao().update(locationInformation);
+            } else {
+                database.locationInfoDao().insert(locationInformation);
+            }
+
+            dataIsValid = currentLat != 0 || currentLon != 0;
+        } catch (Exception ex) {
+            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+            Crashlytics.logException(ex);
+        }
         reloadLocationInfo();
     }
 

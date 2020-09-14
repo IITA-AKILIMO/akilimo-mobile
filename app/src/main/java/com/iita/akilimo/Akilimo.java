@@ -48,7 +48,6 @@ public class Akilimo extends MultiDexApplication {
         World.init(this);
 
         MobileAds.initialize(this, initializationStatus -> {
-            InitializationStatus h = initializationStatus;
         });
     }
 }
