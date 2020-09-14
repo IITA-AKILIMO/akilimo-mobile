@@ -222,7 +222,7 @@ public class LocationFragment extends BaseStepFragment {
                         currentLat = data.getDoubleExtra(MapBoxActivity.LAT, 0.0);
                         currentLon = data.getDoubleExtra(MapBoxActivity.LON, 0.0);
                         currentAlt = data.getDoubleExtra(MapBoxActivity.ALT, 0.0);
-                        saveLocation();
+                        reverseGeoCode(currentLat, currentLon);
                     } else {
                         dataIsValid = false;
                         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
@@ -239,7 +239,7 @@ public class LocationFragment extends BaseStepFragment {
     @Nullable
     @Override
     public VerificationError verifyStep() {
-        saveLocation();
+        reverseGeoCode(currentLat, currentLon);
         if (!dataIsValid) {
             return new VerificationError(errorMessage);
         }
