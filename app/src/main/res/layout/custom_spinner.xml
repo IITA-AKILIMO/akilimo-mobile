@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_xmedium"
         android:layout_marginTop="@dimen/spacing_large"
+        android:layout_marginBottom="@dimen/spacing_large"
         android:text="@string/empty_text"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 

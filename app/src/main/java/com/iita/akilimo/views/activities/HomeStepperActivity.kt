@@ -107,7 +107,6 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         mStepperLayout.setListener(object : StepperListener {
             override fun onCompleted(completeButton: View?) {
                 appUpdater.stop();
-                // Toast.makeText(context, "onCompleted!", Toast.LENGTH_SHORT).show();
                 val intent = Intent(context, RecommendationsActivity::class.java)
                 startActivity(intent)
                 openActivity()

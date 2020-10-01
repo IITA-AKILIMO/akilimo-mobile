@@ -24,7 +24,7 @@
             android:layout_height="200dp"
             android:contentDescription="@string/app_name"
             android:padding="@dimen/spacing_xlarge"
-            app:srcCompat="@drawable/ic_gps_map" />
+            app:srcCompat="@drawable/ic_gps_marker" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/title"
