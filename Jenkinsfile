@@ -11,7 +11,7 @@ pipeline {
       steps {
         sh 'curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/get-tag-raw.py -o latest-tag.py'
         sh 'curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/requirements.txt -o requirements.txt'
-        sh 'python -m pip install python-env'
+        sh 'pip install -r requirements.txt'
         sh 'python latest-tag.py'
       }
     }
