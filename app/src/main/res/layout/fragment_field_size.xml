@@ -23,7 +23,7 @@
             android:layout_width="@dimen/img_width"
             android:layout_height="@dimen/img_height"
             android:padding="@dimen/spacing_xlarge"
-            app:srcCompat="@drawable/ic_field_map" />
+            app:srcCompat="@drawable/ic_land_measure" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/title"
