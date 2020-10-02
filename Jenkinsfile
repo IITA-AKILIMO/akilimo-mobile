@@ -9,7 +9,7 @@ pipeline {
   stages {
     stage('Execute python scripts') {
       steps {
-	sh 'java -version'
+	    sh 'java -version'
         sh 'curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/get-tag-raw.py -o latest-tag.py'
         sh 'curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/requirements.txt -o requirements.txt'
         sh 'pip install -r requirements.txt'

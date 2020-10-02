@@ -201,7 +201,10 @@ public class InvestmentAmountActivity extends BaseActivity {
         ProfileInfo profileInfo = database.profileInfoDao().findOne();
         if (profileInfo != null) {
             countryCode = profileInfo.getCountryCode();
-            currency = profileInfo.getCurrency();
+            String _currency = profileInfo.getCurrency();
+            if (!Strings.isEmptyOrWhitespace(_currency)) {
+                currency = _currency;
+            }
         }
 
         MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();

@@ -146,14 +146,16 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_small"
                 android:text="@string/lbl_which_of_these_tillage_operations_do_you_perform"
                 android:textColor="@color/akilimoDarkGreen" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_medium"
-                android:orientation="horizontal">
+                android:layout_marginTop="@dimen/spacing_large"
+                android:orientation="horizontal"
+                android:padding="@dimen/spacing_small">
 
                 <CheckBox
                     android:id="@+id/chkPloughing"
