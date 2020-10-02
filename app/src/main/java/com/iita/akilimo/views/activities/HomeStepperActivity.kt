@@ -115,7 +115,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
             override fun onError(verificationError: VerificationError) {
                 Toast.makeText(
                     context,
-                    "onError! -> " + verificationError.errorMessage,
+                    verificationError.errorMessage,
                     Toast.LENGTH_SHORT
                 ).show();
             }
