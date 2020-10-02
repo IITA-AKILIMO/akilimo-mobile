@@ -121,12 +121,15 @@ def computeVersionCode() {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72"
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.3.0'
+
+    implementation project(':nativetemplates') //google ad templates
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10"
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.core:core-ktx:1.3.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha04'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha05'
     implementation "androidx.cardview:cardview:1.0.0"
     implementation 'androidx.preference:preference:1.1.1'
 
@@ -134,15 +137,16 @@ dependencies {
 
 
     // google library ------------------------------------------------------------------------
-    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'com.google.android.material:material:1.2.1'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-places:17.0.0'
     implementation 'com.google.firebase:firebase-config:19.2.0'
-    implementation 'com.google.firebase:firebase-analytics:17.4.4'
-    implementation 'com.google.firebase:firebase-messaging:20.2.3' //for push notifications
+    implementation 'com.google.firebase:firebase-analytics:17.5.0'
+    implementation 'com.google.firebase:firebase-messaging:20.3.0' //for push notifications
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.google.android:flexbox:0.3.2'                   // google flexible box
-    implementation 'com.google.android.gms:play-services-ads:19.2.0' //Google ads
+    implementation 'com.google.android.gms:play-services-ads:19.4.0' //Google ads
+
 
 //    implementation "com.github.vicpinm:krealmextensions:2.5.0"
     implementation "io.reactivex.rxjava2:rxjava:2.1.9"
@@ -173,13 +177,13 @@ dependencies {
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.0' //feature discovery library
     implementation 'eu.the4thfloor.volley:com.android.volley:2015.05.28' //Volley library
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.11.0'
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.11.0'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.0'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.11.2'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.11.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.2'
     implementation 'com.nabinbhandari.android:permissions:3.7'
     implementation 'com.github.vipulasri:timelineview:1.1.1'
     implementation 'com.github.javiersantos:AppUpdater:2.7'
-    implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.4'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.9'
 
     //https://stackoverflow.com/questions/44826452/highlight-new-feature-in-android
     implementation 'org.modelmapper:modelmapper:2.3.7'
@@ -196,19 +200,18 @@ dependencies {
     kapt 'androidx.room:room-compiler:2.2.5'
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
     kapt 'com.jakewharton:butterknife-compiler:10.2.1'
-    kapt 'com.fasterxml.jackson.core:jackson-annotations:2.11.0'
+    kapt 'com.fasterxml.jackson.core:jackson-annotations:2.11.2'
 
-    testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.11.0'
+    testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.11.2'
     testImplementation 'joda-time:joda-time:2.10.6'
 
     testImplementation 'junit:junit:4.13'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     //debugImplementation because LeakCanary should only run in debug builds.
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 
-    implementation project(':nativetemplates') //google add templates
 
 }
