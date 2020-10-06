@@ -9,6 +9,7 @@
     app:ms_backButtonBackground="@android:color/transparent"
     app:ms_backButtonColor="@color/akilimoDarkGreen"
     app:ms_backButtonText="@string/lbl_back"
+    app:ms_completeButtonColor="@color/pink_600"
     app:ms_completeButtonText="@string/lbl_finish"
     app:ms_nextButtonColor="@color/akilimoLightGreen"
     app:ms_nextButtonText="@string/lbl_next"
