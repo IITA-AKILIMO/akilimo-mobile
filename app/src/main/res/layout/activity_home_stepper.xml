@@ -15,5 +15,5 @@
     app:ms_nextButtonText="@string/lbl_next"
     app:ms_showErrorMessageEnabled="true"
     app:ms_showErrorStateEnabled="true"
-    app:ms_stepperType="dots"
+    app:ms_stepperType="progress_bar"
     tools:context=".views.activities.HomeStepperActivity" />
