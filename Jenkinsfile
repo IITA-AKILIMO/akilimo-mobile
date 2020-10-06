@@ -142,9 +142,11 @@ pipeline {
           steps {
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
                                          text: '''This update includes:
-                                   - Experimental features
-                                   - Bug fixes
-                                   - Performance improvements''']], trackName: 'beta')
+                                               - Experimental features
+                                               - New content
+                                               - New features
+                                               - Bug fixes
+                                               - Performance improvements''']], trackName: 'beta', rolloutPercentage: '100')
           }
         }
 
@@ -165,9 +167,11 @@ pipeline {
           steps {
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
                                          text: '''This update includes:
-                                   - Experimental features
-                                   - Bug fixes
-                                   - Performance improvements''']], trackName: 'beta')
+                                               - Experimental features
+                                               - New content
+                                               - New features
+                                               - Bug fixes
+                                               - Performance improvements''']], trackName: 'beta',  rolloutPercentage: '100')
           }
         }
 
@@ -184,10 +188,10 @@ pipeline {
           steps {
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
                                          text: '''This update includes:
-                                   - New content
-                                   - New features
-                                   - Bug fixes
-                                   - Performance improvements''']], trackName: 'production')
+                                               - New content
+                                               - New features
+                                               - Bug fixes
+                                               - Performance improvements'''], trackName: 'production', rolloutPercentage: '100')
           }
         }
 
@@ -198,11 +202,11 @@ pipeline {
           }
           steps {
             androidApkUpload(filesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB',
-                                         text: '''This update includes:
-                                   - New content
-                                   - New features
-                                   - Bug fixes
-                                   - Performance improvements''']], trackName: 'production')
+                                         text:'''This update includes:
+                                              - New content
+                                              - New features
+                                              - Bug fixes
+                                              - Performance improvements''']], trackName: 'production', rolloutPercentage: '100')
           }
         }
 
