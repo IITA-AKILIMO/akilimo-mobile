@@ -13,7 +13,7 @@ android {
     def appVersionCode = computeVersionCode()
 
     compileSdkVersion 30
-    buildToolsVersion "30.0.0"
+    buildToolsVersion "30.0.2"
     ndkVersion "21.1.6352462"
 
     defaultConfig {
