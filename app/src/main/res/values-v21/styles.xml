@@ -1,10 +1,10 @@
 <resources>
 
-<!--    <style name="SplashThemeCommon" parent="AppTheme.NoActionBar">-->
-<!--        <item name="android:windowContentOverlay">@null</item>-->
-<!--        <item name="android:windowBackground">@drawable/splash_background</item>-->
-<!--        <item name="android:adjustViewBounds">true</item>-->
-<!--        <item name="android:scaleType">fitCenter</item>-->
-<!--    </style>-->
+    <style name="SplashThemeCommon" parent="AppTheme.NoActionBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:scaleType">fitCenter</item>
+    </style>
 
 </resources>
