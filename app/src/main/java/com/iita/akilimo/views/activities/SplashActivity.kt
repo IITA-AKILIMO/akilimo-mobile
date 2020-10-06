@@ -23,23 +23,21 @@ class SplashActivity : BaseActivity() {
         try {
             val background = object : Thread() {
                 override fun run() {
-//                    launchActivity()
+                    launchActivity()
                 }
             }
             background.start()
         } catch (ex: Exception) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
             Crashlytics.logException(ex)
-//            launchActivity()
+            launchActivity()
         }
     }
 
     override fun validate(backPressed: Boolean) {
-        TODO("Not yet implemented")
     }
 
     override fun initToolbar() {
-        TODO("Not yet implemented")
     }
 
     private fun launchActivity() {
