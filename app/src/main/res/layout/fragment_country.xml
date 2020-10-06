@@ -43,8 +43,7 @@
             android:layout_width="120dp"
             android:layout_height="60dp"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:contentDescription="@string/select_country"
-            app:srcCompat="@drawable/ic_akilimo_head" />
+            android:contentDescription="@string/select_country" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/countryName"
@@ -52,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
             android:fontFamily="@font/ubuntu"
-            android:text="@string/lbl_country"
+            android:text="@string/empty_text"
             android:textColor="@color/black" />
 
         <androidx.appcompat.widget.AppCompatButton

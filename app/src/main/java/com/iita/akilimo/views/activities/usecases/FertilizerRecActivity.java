@@ -142,6 +142,9 @@ public class FertilizerRecActivity extends BaseActivity {
         mAdapter.setOnItemClickListener((view, obj, position) -> {
             Intent intent = null;
             EnumAdviceTasks advice = obj.getRecCode();
+            if (advice == null) {
+                advice = EnumAdviceTasks.NOT_SELECTED;
+            }
             switch (advice) {
                 case PLANTING_AND_HARVEST:
                     intent = new Intent(context, DatesActivity.class);

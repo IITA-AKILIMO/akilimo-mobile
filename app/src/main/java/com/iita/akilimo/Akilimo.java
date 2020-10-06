@@ -25,6 +25,8 @@ public class Akilimo extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        //@TODO Replace crashlytics with new firebase before November 1st
         Fabric.with(this, new Crashlytics());
 
         AppLocale.setSupportedLocales(Locales.APP_LOCALES);
@@ -46,7 +48,6 @@ public class Akilimo extends MultiDexApplication {
         World.init(this);
 
         MobileAds.initialize(this, initializationStatus -> {
-
         });
     }
 }

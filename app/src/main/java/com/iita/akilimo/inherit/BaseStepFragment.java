@@ -137,6 +137,7 @@ public abstract class BaseStepFragment extends Fragment implements Step {
         if (locationInfo != null) {
             String latitude = String.valueOf(locationInfo.getLatitude());
             String longitude = String.valueOf(locationInfo.getLongitude());
+            String place = locationInfo.getPlaceName();
             stBuilder.append("Lat:");
             stBuilder.append(latitude);
             stBuilder.append(" ");

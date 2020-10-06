@@ -6,6 +6,8 @@ import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.github.vipulasri.timelineview.TimelineView
 import com.google.android.gms.common.util.Strings
@@ -64,6 +66,13 @@ class MyTimeLineAdapter(
                     holder.itemView.context,
                     R.drawable.ic_done,
                     mAttributes.markerCompleteColor
+                )
+            }
+            StepStatus.WARNING -> {
+                holder.timeline.marker = VectorDrawableUtils.getDrawable(
+                    holder.itemView.context,
+                    R.drawable.ic_warn,
+                    ResourcesCompat.getColor(context.resources, R.color.yellow_900, null)
                 )
             }
             StepStatus.CANCELLED -> {

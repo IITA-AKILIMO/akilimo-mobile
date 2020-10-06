@@ -107,7 +107,6 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         mStepperLayout.setListener(object : StepperListener {
             override fun onCompleted(completeButton: View?) {
                 appUpdater.stop();
-                // Toast.makeText(context, "onCompleted!", Toast.LENGTH_SHORT).show();
                 val intent = Intent(context, RecommendationsActivity::class.java)
                 startActivity(intent)
                 openActivity()
@@ -116,12 +115,13 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
             override fun onError(verificationError: VerificationError) {
                 Toast.makeText(
                     context,
-                    "onError! -> " + verificationError.errorMessage,
+                    verificationError.errorMessage,
                     Toast.LENGTH_SHORT
                 ).show();
             }
 
             override fun onStepSelected(newStepPosition: Int) {
+                appUpdater.stop()
             }
 
             override fun onReturn() {
