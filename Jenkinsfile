@@ -40,7 +40,7 @@ pipeline {
       }
       steps {
         sh 'gradle :app:lintDebug -x test'
-        androidLint(pattern: '**/lint-results*.xml')
+        recordIssues(tools: [androidLintParser(name: 'lintMe', pattern: '**/lint-results*.xml')])
       }
     }
 
