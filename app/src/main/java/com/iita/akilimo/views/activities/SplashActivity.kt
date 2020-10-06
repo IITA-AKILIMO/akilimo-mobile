@@ -35,11 +35,9 @@ class SplashActivity : BaseActivity() {
     }
 
     override fun validate(backPressed: Boolean) {
-        TODO("Not yet implemented")
     }
 
     override fun initToolbar() {
-        TODO("Not yet implemented")
     }
 
     private fun launchActivity() {
