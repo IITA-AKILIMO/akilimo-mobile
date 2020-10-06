@@ -82,7 +82,6 @@ static def computeVersionName() {
 static def computeBuildNumber() {
     def newFile = new File("nextrelease.txt")
     newFile.createNewFile()
-
     String dayOfYear = LocalDateTime.now().getYear() + "" + LocalDateTime.now().getDayOfYear()
 
     def gitVersionTag = System.env.RELEASE_VERSION ?: computeVersionName()
