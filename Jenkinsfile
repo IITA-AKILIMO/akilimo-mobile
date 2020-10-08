@@ -17,19 +17,22 @@ pipeline {
       }
     }
 
-    stage('Run test for non release branch') {
-      when {
-        beforeAgent true
-        not {
-          branch 'master'
-        }
-
-      }
+    stage('Run tests) {
       environment {
           RELEASE_VERSION = sh(script: 'cat $LATEST_TAG_FILE', , returnStdout: true).trim()
       }
       steps {
-        sh 'gradle testDebug -x lint'
+        sh 'gradle test -x lint'
+      }
+    }
+
+    stage('Run code coverage test) {
+      environment {
+          RELEASE_VERSION = sh(script: 'cat $LATEST_TAG_FILE', , returnStdout: true).trim()
+      }
+      steps {
+        sh 'gradle jacocoTestReportRelease'
+        jacoco changeBuildStatus: true, sourcePattern: '**/src/main/java,**/src/main/kotlin'
       }
     }
 
