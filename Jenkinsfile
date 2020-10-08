@@ -3,7 +3,7 @@ pipeline {
     KEYSTORE_FILE = 'D:\\gdrive\\keystores\\fertilizer.jks'
     LATEST_TAG_FILE = 'latest_tag_file.txt'
     TAG_FILE = 'nextrelease.txt'
-    REPO_NAME = 'masgeek/akilimo-droid-dst'
+    REPO_NAME = 'masgeek/akilimo-mobile'
   }
   agent any
   stages {
@@ -25,6 +25,9 @@ pipeline {
         }
 
       }
+      environment {
+          RELEASE_VERSION = sh(script: 'cat $LATEST_TAG_FILE', , returnStdout: true).trim()
+      }
       steps {
         sh 'gradle testDebug -x lint'
       }
@@ -37,6 +40,9 @@ pipeline {
           branch 'develop'
         }
 
+      }
+      environment {
+          RELEASE_VERSION = sh(script: 'cat $LATEST_TAG_FILE', , returnStdout: true).trim()
       }
       steps {
         sh 'gradle :app:lintDebug -x test'
