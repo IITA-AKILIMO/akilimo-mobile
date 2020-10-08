@@ -83,7 +83,6 @@ static def computeBuildNumber() {
     def newFile = new File("nextrelease.txt")
     newFile.createNewFile()
 
-    println("Env variables are " + System.env)
     String dayOfYear = LocalDateTime.now().getYear() + "" + LocalDateTime.now().getDayOfYear()
 
     def gitVersionTag = System.env.RELEASE_VERSION ?: computeVersionName()
@@ -93,7 +92,7 @@ static def computeBuildNumber() {
     println("Branch is " + preRelease)
     println("Old build tag is " + gitVersionTag)
 
-    if (preRelease == "develop") {
+    if (preRelease != "develop") {
         def splitMe = gitVersionTag.split('\\.')
         def versionMajor = splitMe[0]
         def versionMinor = splitMe[1]
