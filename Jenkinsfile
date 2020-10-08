@@ -8,9 +8,6 @@ pipeline {
   agent any
   stages {
     stage('Execute python scripts') {
-      when {
-        beforeAgent true
-      }
       steps {
 	    sh 'java -version'
         sh 'curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/get-tag-raw.py -o latest-tag.py'
