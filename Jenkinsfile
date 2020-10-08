@@ -23,27 +23,15 @@ pipeline {
       }
     }
 
-    stage('Publish test results') {
-      steps {
-        junit 'app/build/test-results/**/*/*.xml'
-      }
-    }
-
     stage('Run code coverage test') {
       steps {
         sh 'gradle jacocoTestReportRelease'
       }
     }
 
-    stage('Publish coverage test') {
-      steps {
-        jacoco changeBuildStatus: true, sourcePattern: '**/src/main/java,**/src/main/kotlin'
-      }
-    }
     stage('Run linting for develop branch only') {
       steps {
         sh 'gradle :app:lintDebug -x test'
-        recordIssues(tools: [androidLintParser(name: 'lintMe', pattern: '**/lint-results*.xml')])
       }
     }
 
@@ -250,12 +238,13 @@ pipeline {
         fingerprint '**/build/outputs/**/*-release.*'
       }
     }
+  }
 
-    stage('clean WS') {
-      steps {
-        cleanWs()
+  post {
+      always {
+        junit 'app/build/test-results/**/*/*.xml'
+        jacoco changeBuildStatus: true, sourcePattern: '**/src/main/java,**/src/main/kotlin'
+        recordIssues(tools: [androidLintParser(name: 'lintMe', pattern: '**/lint-results*.xml')])
       }
-    }
-
   }
 }
