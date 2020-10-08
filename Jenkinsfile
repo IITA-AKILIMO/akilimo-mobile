@@ -10,10 +10,6 @@ pipeline {
     stage('Execute python scripts') {
       when {
         beforeAgent true
-        anyOf {
-            branch 'develop'
-            branch 'master'
-          }
       }
       steps {
 	    sh 'java -version'
