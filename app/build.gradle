@@ -71,8 +71,8 @@ android {
 
 static def computeVersionName() {
     def versionMajor = 17
-    def versionMinor = 0//LocalDateTime.now().getMonthValue()
-    def buildNumber = 6//LocalDateTime.now().getDayOfMonth()
+    def versionMinor = LocalDateTime.now().getMonthValue()
+    def buildNumber = LocalDateTime.now().getDayOfMonth()
 
     return String.format('%d.%d.%d', Integer.valueOf(System.env.VERSION_MAJOR ?: versionMajor),
             Integer.valueOf(System.env.VERSION_MINOR ?: versionMinor),
@@ -111,8 +111,8 @@ static def computeBuildNumber() {
 
 def computeVersionCode() {
     long unixTimestamp = Instant.now().getEpochSecond()
-//    def versionCode = System.env.RELEASE_VERSION ? unixTimestamp.intValue() : 1595147953
-    def versionCode = unixTimestamp.intValue()
+    def versionCode = System.env.RELEASE_VERSION ? unixTimestamp.intValue() : 1595147953
+//    def versionCode = unixTimestamp.intValue()
 
     println("This build version timecode " + versionCode)
     return versionCode

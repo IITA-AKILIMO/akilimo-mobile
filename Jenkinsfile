@@ -38,6 +38,9 @@ pipeline {
         }
 
       }
+      environment {
+          RELEASE_VERSION = sh(script: 'cat $LATEST_TAG_FILE', , returnStdout: true).trim()
+      }
       steps {
         sh 'gradle :app:lintDebug -x test'
         recordIssues(tools: [androidLintParser(name: 'lintMe', pattern: '**/lint-results*.xml')])
