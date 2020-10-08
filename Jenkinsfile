@@ -11,8 +11,9 @@ pipeline {
       when {
         beforeAgent true
         anyOf {
-          branch 'develop'
-        }
+            branch 'develop'
+            branch 'master'
+          }
       }
       steps {
 	    sh 'java -version'
@@ -25,21 +26,27 @@ pipeline {
 
     stage('Run tests') {
       steps {
-        sh 'gradle test -x lint'
-        junit 'build/reports/**/*.xml'
+        sh 'gradle testDebug -x lint'
+      }
+    }
+
+    stage('Publish test results') {
+      steps {
+        junit 'app/build/test-results/**/*/*.xml'
       }
     }
 
     stage('Run code coverage test') {
-      environment {
-          RELEASE_VERSION = sh(script: 'cat $LATEST_TAG_FILE', , returnStdout: true).trim()
-      }
       steps {
         sh 'gradle jacocoTestReportRelease'
-        jacoco changeBuildStatus: true, sourcePattern: '**/src/main/java,**/src/main/kotlin'
       }
     }
 
+    stage('Publish coverage test') {
+      steps {
+        jacoco changeBuildStatus: true, sourcePattern: '**/src/main/java,**/src/main/kotlin'
+      }
+    }
     stage('Run linting for develop branch only') {
       when {
         beforeAgent true
