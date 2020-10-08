@@ -83,6 +83,7 @@ static def computeBuildNumber() {
     def newFile = new File("nextrelease.txt")
     newFile.createNewFile()
 
+    println("Env variables are " + System.env)
     String dayOfYear = LocalDateTime.now().getYear() + "" + LocalDateTime.now().getDayOfYear()
 
     def gitVersionTag = System.env.RELEASE_VERSION ?: computeVersionName()
@@ -121,7 +122,7 @@ def computeVersionCode() {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
-    
+
     implementation project(':nativetemplates') //google add templates
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10"
     implementation 'androidx.appcompat:appcompat:1.2.0'

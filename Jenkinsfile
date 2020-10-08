@@ -25,6 +25,9 @@ pipeline {
         }
 
       }
+      environment {
+          RELEASE_VERSION = sh(script: 'cat $LATEST_TAG_FILE', , returnStdout: true).trim()
+      }
       steps {
         sh 'gradle testDebug -x lint'
       }
