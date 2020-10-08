@@ -24,9 +24,6 @@ pipeline {
     }
 
     stage('Run tests') {
-      environment {
-          RELEASE_VERSION = sh(script: 'cat $LATEST_TAG_FILE', , returnStdout: true).trim()
-      }
       steps {
         sh 'gradle test -x lint'
         junit 'build/reports/**/*.xml'
