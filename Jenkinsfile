@@ -8,6 +8,12 @@ pipeline {
   agent any
   stages {
     stage('Execute python scripts') {
+      when {
+        beforeAgent true
+        anyOf {
+          branch 'develop'
+        }
+      }
       steps {
 	    sh 'java -version'
         sh 'curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/get-tag-raw.py -o latest-tag.py'
@@ -43,7 +49,6 @@ pipeline {
         anyOf {
           branch 'develop'
         }
-
       }
       environment {
           RELEASE_VERSION = sh(script: 'cat $LATEST_TAG_FILE', , returnStdout: true).trim()
