@@ -245,6 +245,7 @@ pipeline {
         junit 'app/build/test-results/**/*/*.xml'
         jacoco changeBuildStatus: true, sourcePattern: '**/src/main/java,**/src/main/kotlin'
         recordIssues(tools: [androidLintParser(name: 'lintMe', pattern: '**/lint-results*.xml')])
+        deleteDir()
       }
   }
 }
