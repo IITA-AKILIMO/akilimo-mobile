@@ -29,9 +29,9 @@ pipeline {
       }
     }
 
-    stage('Run linting for develop branch only') {
+    stage('Run linting checks') {
       steps {
-        sh 'gradle :app:lintDebug -x test'
+        sh 'gradle :app:lint -x test'
       }
     }
 
@@ -242,9 +242,9 @@ pipeline {
 
   post {
       always {
+        recordIssues(tools: [androidLintParser(name: 'lintMe', pattern: '**/lint-results*.xml')])
         junit 'app/build/test-results/**/*/*.xml'
         jacoco changeBuildStatus: true, sourcePattern: '**/src/main/java,**/src/main/kotlin'
-        recordIssues(tools: [androidLintParser(name: 'lintMe', pattern: '**/lint-results*.xml')])
         deleteDir()
       }
   }
