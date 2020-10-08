@@ -95,7 +95,7 @@ static def computeBuildNumber() {
     if (preRelease != "develop") {
         def splitMe = gitVersionTag.split('\\.')
 
-        println("Split build tag is " + splitMe)
+        println("Split tag name is " + splitMe)
         def versionMajor = splitMe[0]
         def versionMinor = splitMe[1]
         def versionPatchRaw = splitMe[2].split('-')
