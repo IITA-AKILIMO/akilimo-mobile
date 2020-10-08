@@ -17,12 +17,6 @@ pipeline {
       }
     }
 
-    stage('Run tests') {
-      steps {
-        sh 'gradle testDebug -x lint'
-      }
-    }
-
     stage('Run code coverage test') {
       steps {
         sh 'gradle jacocoTestReportRelease'
@@ -35,6 +29,12 @@ pipeline {
       }
     }
 
+    stage('Run tests') {
+      steps {
+        sh 'gradle test -x lint'
+      }
+    }
+    
     stage('Build and generate artifacts') {
       stages {
         stage('Generate android APK') {
