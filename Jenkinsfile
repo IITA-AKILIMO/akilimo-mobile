@@ -27,7 +27,7 @@ pipeline {
       }
     }
 
-    stage('Run code coverage test) {
+    stage('Run code coverage test') {
       environment {
           RELEASE_VERSION = sh(script: 'cat $LATEST_TAG_FILE', , returnStdout: true).trim()
       }
