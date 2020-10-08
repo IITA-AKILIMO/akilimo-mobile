@@ -17,7 +17,7 @@ pipeline {
       }
     }
 
-    stage('Run tests) {
+    stage('Run tests') {
       environment {
           RELEASE_VERSION = sh(script: 'cat $LATEST_TAG_FILE', , returnStdout: true).trim()
       }
