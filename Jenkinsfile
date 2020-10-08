@@ -23,6 +23,7 @@ pipeline {
       }
       steps {
         sh 'gradle test -x lint'
+        junit 'build/reports/**/*.xml'
       }
     }
 
