@@ -94,14 +94,16 @@ static def computeBuildNumber() {
 
     if (preRelease != "develop") {
         def splitMe = gitVersionTag.split('\\.')
+
+        println("Split build tag is " + splitMe)
         def versionMajor = splitMe[0]
         def versionMinor = splitMe[1]
         def versionPatchRaw = splitMe[2].split('-')
         def versionPatch = versionPatchRaw[0].toInteger()
-        gitVersionTag = String.format('%d.%d.beta%d',
+        gitVersionTag = String.format('%d.%d-beta.%d',
                 Integer.valueOf(versionMajor),
                 Integer.valueOf(versionMinor),
-                Integer.valueOf(dayOfYear))
+                Integer.valueOf(versionPatch))
 
         println("This build tag is " + gitVersionTag)
     }
@@ -113,8 +115,6 @@ def computeVersionCode() {
     long unixTimestamp = Instant.now().getEpochSecond()
     def versionCode = System.env.RELEASE_VERSION ? unixTimestamp.intValue() : 1595147953
 //    def versionCode = unixTimestamp.intValue()
-
-    println("This build version timecode " + versionCode)
     return versionCode
 }
 
