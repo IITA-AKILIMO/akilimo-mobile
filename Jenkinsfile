@@ -34,7 +34,7 @@ pipeline {
         sh 'gradle test -x lint'
       }
     }
-    
+
     stage('Build and generate artifacts') {
       stages {
         stage('Generate android APK') {
