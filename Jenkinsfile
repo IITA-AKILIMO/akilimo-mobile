@@ -17,36 +17,21 @@ pipeline {
       }
     }
 
-    stage('Run test for non release branch') {
-      when {
-        beforeAgent true
-        not {
-          branch 'master'
-        }
-
-      }
-      environment {
-          RELEASE_VERSION = sh(script: 'cat $LATEST_TAG_FILE', , returnStdout: true).trim()
-      }
+    stage('Run code coverage test') {
       steps {
-        sh 'gradle testDebug -x lint'
+        sh 'gradle jacocoTestReportRelease'
       }
     }
 
-    stage('Run linting for develop branch only') {
-      when {
-        beforeAgent true
-        anyOf {
-          branch 'develop'
-        }
-
-      }
-      environment {
-          RELEASE_VERSION = sh(script: 'cat $LATEST_TAG_FILE', , returnStdout: true).trim()
-      }
+    stage('Run linting checks') {
       steps {
-        sh 'gradle :app:lintDebug -x test'
-        recordIssues(tools: [androidLintParser(name: 'lintMe', pattern: '**/lint-results*.xml')])
+        sh 'gradle :app:lint -x test'
+      }
+    }
+
+    stage('Run tests') {
+      steps {
+        sh 'gradle test -x lint'
       }
     }
 
@@ -253,12 +238,14 @@ pipeline {
         fingerprint '**/build/outputs/**/*-release.*'
       }
     }
+  }
 
-    stage('clean WS') {
-      steps {
-        cleanWs()
+  post {
+      always {
+        recordIssues(tools: [androidLintParser(name: 'lintMe', pattern: '**/lint-results*.xml')])
+        junit 'app/build/test-results/**/*/*.xml'
+        jacoco changeBuildStatus: true, sourcePattern: '**/src/main/java,**/src/main/kotlin'
+        deleteDir()
       }
-    }
-
   }
 }
