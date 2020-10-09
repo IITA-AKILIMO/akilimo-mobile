@@ -78,10 +78,4 @@ internal class MathHelperTest {
         val result = mathHelper.convertFromAcreToSpecifiedArea(1.0, "sqm")
         Assert.assertEquals(4046.9, result, 0.0)
     }
-
-
-    @Test
-    fun failThisTest() {
-        Assert.assertEquals("5", "NO")
-    }
 }
