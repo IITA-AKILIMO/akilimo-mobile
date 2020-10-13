@@ -121,7 +121,7 @@ public class RootYieldActivity extends BaseActivity {
                 savedYield.setYieldAmount(selectedYieldAmount);
                 savedYield.setFieldYieldLabel(yieldLabel);
                 database.fieldYieldDao().insert(savedYield);
-                
+
                 Toast.makeText(context, yieldLabel, Toast.LENGTH_SHORT).show();
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
