@@ -15,6 +15,7 @@ open class MandatoryInfo {
     var fieldSizeRadioIndex: Int = 0
 
     var areaUnit: String? = null
+    var oldAreaUnit: String? = null
     var displayAreaUnit: String? = null
     var areaSize: Double = 0.0
     var exactArea: Boolean = false

@@ -56,6 +56,7 @@ public class FieldSizeFragment extends BaseStepFragment {
 
     private double areaSize;
     private boolean isExactArea;
+    private boolean areaUnitChanged;
     private String quarterAcre;
     private String halfAcre;
     private String oneAcre;
@@ -66,6 +67,7 @@ public class FieldSizeFragment extends BaseStepFragment {
 
     private MandatoryInfo mandatoryInfo;
     private String areaUnit = "";
+    private String oldAreaUnit = "";
     private int fieldSizeRadioIndex;
 
     @Override
@@ -120,16 +122,24 @@ public class FieldSizeFragment extends BaseStepFragment {
             if (mandatoryInfo != null) {
                 isExactArea = mandatoryInfo.getExactArea();
                 areaUnit = mandatoryInfo.getAreaUnit();
+                oldAreaUnit = mandatoryInfo.getOldAreaUnit();
                 areaSize = mandatoryInfo.getAreaSize();
                 fieldSizeRadioIndex = mandatoryInfo.getFieldSizeRadioIndex();
                 myFieldSize = String.valueOf(areaSize);
                 dataIsValid = areaSize > 0;
-
+                areaUnitChanged = !areaUnit.equalsIgnoreCase(oldAreaUnit);
                 if (dataIsValid) {
                     setFieldLabels(areaUnit);
                 }
 
-                rdgFieldArea.check(fieldSizeRadioIndex);
+                if (areaUnitChanged) {
+                    areaSize = 0;
+                    myFieldSize = null;
+                    rdgFieldArea.clearCheck();
+                    dataIsValid = false;
+                } else {
+                    rdgFieldArea.check(fieldSizeRadioIndex);
+                }
                 if (isExactArea) {
                     specifiedArea.setText(String.format("%s %s", myFieldSize, areaUnit));
                     specifiedArea.setVisibility(View.VISIBLE);
@@ -139,7 +149,7 @@ public class FieldSizeFragment extends BaseStepFragment {
 
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "An error occurred fetching info");
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
         }
     }
@@ -187,12 +197,14 @@ public class FieldSizeFragment extends BaseStepFragment {
             return;
         }
 
+        areaUnitChanged = false; //Reset the area unit changed flag
         try {
             if (mandatoryInfo == null) {
                 mandatoryInfo = new MandatoryInfo();
             }
             mandatoryInfo.setFieldSizeRadioIndex(fieldSizeRadioIndex);
             mandatoryInfo.setAreaSize(convertedAreaSize);
+            mandatoryInfo.setOldAreaUnit(areaUnit);
             if (mandatoryInfo.getId() != null) {
                 database.mandatoryInfoDao().update(mandatoryInfo);
             } else {

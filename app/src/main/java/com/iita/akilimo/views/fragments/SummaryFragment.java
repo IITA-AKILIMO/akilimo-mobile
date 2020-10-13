@@ -159,18 +159,10 @@ public class SummaryFragment extends BaseStepFragment {
                     if (locale.getLanguage().equalsIgnoreCase("sw")) {
                         fieldInfo = String.format("%s %s", areaUnit, fieldSize);
                     } else {
-                        if (fieldSize == 1) {
-                            fieldInfo = String.format("%s %s", fieldSize, areaUnit);
-                        } else {
-                            fieldInfo = String.format("%s %ss", fieldSize, areaUnit);
-                        }
+                        fieldInfo = String.format("%s %s", fieldSize, areaUnit);
                     }
                 } catch (Exception ex) {
-                    if (fieldSize == 1) {
-                        fieldInfo = String.format("%s %s", fieldSize, areaUnit);
-                    } else {
-                        fieldInfo = String.format("%s %ss", fieldSize, areaUnit);
-                    }
+                    fieldInfo = String.format("%s %s", fieldSize, areaUnit);
                     Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                     Crashlytics.logException(ex);
                 }

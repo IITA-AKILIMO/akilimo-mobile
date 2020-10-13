@@ -3,6 +3,7 @@ package com.iita.akilimo.views.activities;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
@@ -42,11 +43,10 @@ public class RootYieldActivity extends BaseActivity {
     ActivityRootYieldBinding binding;
 
     private FieldYield savedYield;
-    private MathHelper mathHelper;
     private AdapterGridTwoLine mAdapter;
 
     private double selectedYieldAmount = 0.0;
-    private Integer[] imageIDs = {
+    private final Integer[] yieldImages = {
             R.drawable.yield_less_than_7point5,
             R.drawable.yield_7point5_to_15,
             R.drawable.yield_15_to_22point5,
@@ -62,7 +62,6 @@ public class RootYieldActivity extends BaseActivity {
 
         context = this;
         database = AppDatabase.getDatabase(context);
-        mathHelper = new MathHelper();
         MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
             areaUnit = mandatoryInfo.getAreaUnit();
@@ -111,7 +110,6 @@ public class RootYieldActivity extends BaseActivity {
         recyclerView.setAdapter(mAdapter);
         mAdapter.setItems(selectedYieldAmount, items);
 
-        // on item list clicked
         mAdapter.setOnItemClickListener((view, fieldYield, position) -> {
             mAdapter.setActiveRowIndex(position);
             selectedYieldAmount = fieldYield.getYieldAmount();
@@ -124,6 +122,7 @@ public class RootYieldActivity extends BaseActivity {
                 savedYield.setFieldYieldLabel(yieldLabel);
                 database.fieldYieldDao().insert(savedYield);
 
+                Toast.makeText(context, yieldLabel, Toast.LENGTH_SHORT).show();
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                 Crashlytics.logException(ex);
@@ -183,11 +182,11 @@ public class RootYieldActivity extends BaseActivity {
         }
 
         List<FieldYield> items = new ArrayList<>();
-        items.add(yieldObject(imageIDs[0], rd_3_tonnes, 3.75));
-        items.add(yieldObject(imageIDs[1], rd_6_tonnes, 11.25));
-        items.add(yieldObject(imageIDs[2], rd_9_tonnes, 18.75));
-        items.add(yieldObject(imageIDs[3], rd_12_tonnes, 26.25));
-        items.add(yieldObject(imageIDs[4], rd_more, 33.75));
+        items.add(yieldObject(yieldImages[0], rd_3_tonnes, 3.75));
+        items.add(yieldObject(yieldImages[1], rd_6_tonnes, 11.25));
+        items.add(yieldObject(yieldImages[2], rd_9_tonnes, 18.75));
+        items.add(yieldObject(yieldImages[3], rd_12_tonnes, 26.25));
+        items.add(yieldObject(yieldImages[4], rd_more, 33.75));
 
         return items;
     }
