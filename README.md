@@ -1,5 +1,6 @@
 ### Akilimo decision support tools mobile edition
 * UI changes
+* Improved UX
 * Better data processing
 * `adb shell am clear-debug-app`
 
