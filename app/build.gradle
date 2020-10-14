@@ -6,7 +6,8 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
-//apply plugin: 'realm-android'
+apply plugin: "com.vanniktech.android.junit.jacoco"
+
 
 android {
     def releaseVersionName = computeBuildNumber()
@@ -35,6 +36,7 @@ android {
             enableSplit = false
         }
     }
+
     buildTypes {
         release {
             minifyEnabled false //for some strange reason minifying causes the code to flip
@@ -71,8 +73,8 @@ android {
 
 static def computeVersionName() {
     def versionMajor = 17
-    def versionMinor = 0//LocalDateTime.now().getMonthValue()
-    def buildNumber = 6//LocalDateTime.now().getDayOfMonth()
+    def versionMinor = LocalDateTime.now().getMonthValue()
+    def buildNumber = LocalDateTime.now().getDayOfMonth()
 
     return String.format('%d.%d.%d', Integer.valueOf(System.env.VERSION_MAJOR ?: versionMajor),
             Integer.valueOf(System.env.VERSION_MINOR ?: versionMinor),
@@ -83,51 +85,45 @@ static def computeBuildNumber() {
     def newFile = new File("nextrelease.txt")
     newFile.createNewFile()
 
-    String dayOfYear = LocalDateTime.now().getYear() + "" + LocalDateTime.now().getDayOfYear()
-
     def gitVersionTag = System.env.RELEASE_VERSION ?: computeVersionName()
-    def preRelease = System.env.BRANCH_NAME ?: "unknown"
-    def buildNumber = System.env.BUILD_NUMBER ?: 1
+    def branch = System.env.BRANCH_NAME ?: "unknown"
+    def buildNumber = System.env.BUILD_NUMBER ?: LocalDateTime.now().getDayOfMonth()
 
-    println("Branch is " + preRelease)
-    println("Old build tag is " + gitVersionTag)
-
-    if (preRelease == "develop") {
+    if (branch == "develop") {
         def splitMe = gitVersionTag.split('\\.')
         def versionMajor = splitMe[0]
         def versionMinor = splitMe[1]
         def versionPatchRaw = splitMe[2].split('-')
         def versionPatch = versionPatchRaw[0].toInteger()
-        gitVersionTag = String.format('%d.%d.beta%d',
+        gitVersionTag = String.format('%d.%d.%d-beta+%d',
                 Integer.valueOf(versionMajor),
                 Integer.valueOf(versionMinor),
-                Integer.valueOf(dayOfYear))
+                Integer.valueOf(versionPatch),
+                Integer.valueOf(buildNumber))
 
-        println("This build tag is " + gitVersionTag)
     }
+    println("This build tag is:" + gitVersionTag)
     newFile.write(gitVersionTag)
     return gitVersionTag
 }
 
 def computeVersionCode() {
     long unixTimestamp = Instant.now().getEpochSecond()
-//    def versionCode = System.env.RELEASE_VERSION ? unixTimestamp.intValue() : 1595147953
-    def versionCode = unixTimestamp.intValue()
-
-    println("This build version timecode " + versionCode)
+    def versionCode = System.env.RELEASE_VERSION ? unixTimestamp.intValue() : 1595147953
+    // def versionCode = unixTimestamp.intValue()
     return versionCode
 }
 
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
-    
-    implementation project(':nativetemplates') //google add templates
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10"
+
+    // implementation project(':nativetemplates') //google ad templates
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
     implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha06'
     implementation "androidx.cardview:cardview:1.0.0"
     implementation 'androidx.preference:preference:1.1.1'
@@ -140,13 +136,13 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-places:17.0.0'
     implementation 'com.google.firebase:firebase-config:19.2.0'
-    implementation 'com.google.firebase:firebase-analytics:17.5.0'
+    implementation 'com.google.firebase:firebase-analytics:17.6.0'
     implementation 'com.google.firebase:firebase-messaging:20.3.0' //for push notifications
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
-    implementation 'com.google.android:flexbox:0.3.2'                   // google flexible box
+    implementation 'com.google.android:flexbox:0.3.2'                 // google flexible box
     implementation 'com.google.android.gms:play-services-ads:19.4.0' //Google ads
 
-//    implementation "com.github.vicpinm:krealmextensions:2.5.0"
+    //implementation "com.github.vicpinm:krealmextensions:2.5.0"
     implementation "io.reactivex.rxjava2:rxjava:2.1.9"
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
 
@@ -173,7 +169,7 @@ dependencies {
     implementation 'net.danlew:android.joda:2.10.6'
     implementation 'com.github.mohammadatif:Animatoo:master'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
-    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.0' //feature discovery library
+    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.0' //Feature discovery library
     implementation 'eu.the4thfloor.volley:com.android.volley:2015.05.28' //Volley library
     implementation 'com.fasterxml.jackson.core:jackson-core:2.11.2'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.11.2'
@@ -210,6 +206,4 @@ dependencies {
     //debugImplementation because LeakCanary should only run in debug builds.
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
-
-
 }

@@ -3,7 +3,7 @@ pipeline {
     KEYSTORE_FILE = 'D:\\gdrive\\keystores\\fertilizer.jks'
     LATEST_TAG_FILE = 'latest_tag_file.txt'
     TAG_FILE = 'nextrelease.txt'
-    REPO_NAME = 'masgeek/akilimo-droid-dst'
+    REPO_NAME = 'masgeek/akilimo-mobile'
   }
   agent any
   stages {
@@ -17,30 +17,21 @@ pipeline {
       }
     }
 
-    stage('Run test for non release branch') {
-      when {
-        beforeAgent true
-        not {
-          branch 'master'
-        }
-
-      }
+    stage('Run code coverage test') {
       steps {
-        sh 'gradle testDebug -x lint'
+        sh './gradlew jacocoTestReportRelease -x test'
       }
     }
 
-    stage('Run linting for develop branch only') {
-      when {
-        beforeAgent true
-        anyOf {
-          branch 'develop'
-        }
-
-      }
+    stage('Run linting checks') {
       steps {
-        sh 'gradle :app:lintDebug -x test'
-        recordIssues(tools: [androidLintParser(name: 'lintMe', pattern: '**/lint-results*.xml')])
+        sh './gradlew :app:lint -x test'
+      }
+    }
+
+    stage('Run tests') {
+      steps {
+        sh './gradlew test -x lint'
       }
     }
 
@@ -58,7 +49,7 @@ pipeline {
             RELEASE_VERSION = sh(script: 'cat $LATEST_TAG_FILE', , returnStdout: true).trim()
           }
           steps {
-            sh 'gradle assembleRelease -x test --no-daemon'
+            sh './gradlew assembleRelease -x test --no-daemon'
           }
         }
 
@@ -74,7 +65,7 @@ pipeline {
             RELEASE_VERSION = sh(script: 'cat $LATEST_TAG_FILE', , returnStdout: true).trim()
           }
           steps {
-            sh 'gradle bundleRelease -x test --no-daemon'
+            sh './gradlew bundleRelease -x test --no-daemon'
           }
         }
 
@@ -247,12 +238,14 @@ pipeline {
         fingerprint '**/build/outputs/**/*-release.*'
       }
     }
+  }
 
-    stage('clean WS') {
-      steps {
-        cleanWs()
+  post {
+      always {
+        recordIssues(tools: [androidLintParser(name: 'lintMe', pattern: '**/lint-results*.xml')])
+        junit 'app/build/test-results/**/*/*.xml'
+        jacoco changeBuildStatus: true, sourcePattern: '**/src/main/java,**/src/main/kotlin'
+        deleteDir()
       }
-    }
-
   }
 }

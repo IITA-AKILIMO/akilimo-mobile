@@ -41,8 +41,10 @@ public class AreaUnitFragment extends BaseStepFragment {
     private String selectedAreaUnit;
     private MandatoryInfo mandatoryInfo;
     private String areaUnit = "acre";
+    private String oldAreaUnit = "";
     private String areaUnitDisplay = "acre";
     private int areaUnitRadioIndex = 0;
+    private boolean areaUnitChanged = false;
 
     public AreaUnitFragment() {
         // Required empty public constructor
@@ -69,6 +71,7 @@ public class AreaUnitFragment extends BaseStepFragment {
             mandatoryInfo = database.mandatoryInfoDao().findOne();
             if (mandatoryInfo != null) {
                 areaUnit = mandatoryInfo.getAreaUnit();
+                oldAreaUnit = mandatoryInfo.getOldAreaUnit();
                 areaUnitRadioIndex = mandatoryInfo.getAreaUnitRadioIndex();
                 rdgAreaUnit.check(areaUnitRadioIndex);
                 dataIsValid = !Strings.isEmptyOrWhitespace(areaUnit);

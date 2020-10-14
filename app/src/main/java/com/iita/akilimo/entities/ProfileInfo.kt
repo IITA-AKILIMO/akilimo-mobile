@@ -29,6 +29,7 @@ open class ProfileInfo {
     var sendEmail: Boolean = false
     var sendSms: Boolean = false
 
+    var language: String? = null
     var countryCode: String? = null
     var countryName: String? = null
     var selectedCountryIndex: Int = 0
