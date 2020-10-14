@@ -19,19 +19,19 @@ pipeline {
 
     stage('Run code coverage test') {
       steps {
-        sh 'gradle jacocoTestReportRelease'
+        sh './gradlew jacocoTestReportRelease -x test'
       }
     }
 
     stage('Run linting checks') {
       steps {
-        sh 'gradle :app:lint -x test'
+        sh './gradlew :app:lint -x test'
       }
     }
 
     stage('Run tests') {
       steps {
-        sh 'gradle test -x lint'
+        sh './gradlew test -x lint'
       }
     }
 
@@ -49,7 +49,7 @@ pipeline {
             RELEASE_VERSION = sh(script: 'cat $LATEST_TAG_FILE', , returnStdout: true).trim()
           }
           steps {
-            sh 'gradle assembleRelease -x test --no-daemon'
+            sh './gradlew assembleRelease -x test --no-daemon'
           }
         }
 
@@ -65,7 +65,7 @@ pipeline {
             RELEASE_VERSION = sh(script: 'cat $LATEST_TAG_FILE', , returnStdout: true).trim()
           }
           steps {
-            sh 'gradle bundleRelease -x test --no-daemon'
+            sh './gradlew bundleRelease -x test --no-daemon'
           }
         }
 

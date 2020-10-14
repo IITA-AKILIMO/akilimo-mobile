@@ -86,26 +86,23 @@ static def computeBuildNumber() {
     newFile.createNewFile()
 
     def gitVersionTag = System.env.RELEASE_VERSION ?: computeVersionName()
-    def preRelease = System.env.BRANCH_NAME ?: "unknown"
+    def branch = System.env.BRANCH_NAME ?: "unknown"
     def buildNumber = System.env.BUILD_NUMBER ?: LocalDateTime.now().getDayOfMonth()
 
-    println("Branch is " + preRelease)
-    println("Old build tag is " + gitVersionTag)
-
-    if (preRelease == "develop") {
+    if (branch == "develop") {
         def splitMe = gitVersionTag.split('\\.')
         def versionMajor = splitMe[0]
         def versionMinor = splitMe[1]
         def versionPatchRaw = splitMe[2].split('-')
         def versionPatch = versionPatchRaw[0].toInteger()
-        gitVersionTag = String.format('%d.%d.%dbeta%d',
+        gitVersionTag = String.format('%d.%d.%d-beta+%d',
                 Integer.valueOf(versionMajor),
                 Integer.valueOf(versionMinor),
                 Integer.valueOf(versionPatch),
                 Integer.valueOf(buildNumber))
 
-        println("This build tag is:" + gitVersionTag)
     }
+    println("This build tag is:" + gitVersionTag)
     newFile.write(gitVersionTag)
     return gitVersionTag
 }
@@ -126,7 +123,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
     implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha06'
     implementation "androidx.cardview:cardview:1.0.0"
     implementation 'androidx.preference:preference:1.1.1'
@@ -139,7 +136,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-places:17.0.0'
     implementation 'com.google.firebase:firebase-config:19.2.0'
-    implementation 'com.google.firebase:firebase-analytics:17.5.0'
+    implementation 'com.google.firebase:firebase-analytics:17.6.0'
     implementation 'com.google.firebase:firebase-messaging:20.3.0' //for push notifications
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.google.android:flexbox:0.3.2'                 // google flexible box

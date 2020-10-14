@@ -46,8 +46,13 @@ public class CountryFragment extends BaseStepFragment {
 
     private ProfileInfo profileInfo;
     private String name = "";
+    private String selectedLanguage = "";
     private int selectedCountryIndex = -1;
 
+    private String[] countries = new String[]{
+            EnumCountry.Nigeria.name(),
+            EnumCountry.Tanzania.name()
+    };
 
     public CountryFragment() {
         // Required empty public constructor
@@ -77,6 +82,7 @@ public class CountryFragment extends BaseStepFragment {
                 name = profileInfo.getFirstName();
                 countryCode = profileInfo.getCountryCode();
                 countryName = profileInfo.getCountryName();
+                selectedLanguage = profileInfo.getLanguage();
 
                 if (!Strings.isEmptyOrWhitespace(countryCode)) {
                     selectedCountryIndex = profileInfo.getSelectedCountryIndex();
@@ -105,14 +111,16 @@ public class CountryFragment extends BaseStepFragment {
         txtCountryName = binding.countryName;
         countryImage = binding.countryImage;
 
-        final String[] countries = new String[]{
-                EnumCountry.Nigeria.name(),
-                EnumCountry.Tanzania.name()
-        };
-
         btnPickCountry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (selectedLanguage.equalsIgnoreCase("sw")) {
+                    countries = new String[]{
+                            EnumCountry.Tanzania.name()
+                    };
+                }
+
+
                 final AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle(context.getString(R.string.lbl_pick_your_country));
                 builder.setSingleChoiceItems(countries, selectedCountryIndex, new DialogInterface.OnClickListener() {

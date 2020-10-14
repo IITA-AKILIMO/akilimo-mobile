@@ -71,7 +71,7 @@ abstract class AppDatabase : RoomDatabase() {
                     if (INSTANCE == null) {
                         INSTANCE = Room.databaseBuilder(
                             context.applicationContext,
-                            AppDatabase::class.java, "AKILIMO_13_OCT"
+                            AppDatabase::class.java, "AKILIMO_14_OCT"
                         )
                             .fallbackToDestructiveMigration()
                             .allowMainThreadQueries()

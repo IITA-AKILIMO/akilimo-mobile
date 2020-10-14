@@ -51,6 +51,6 @@ class SplashActivity : BaseActivity() {
         val intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
         startActivity(intent)
         finish()
-        Animatoo.animateFade(this)
+        Animatoo.animateSlideDown(this)
     }
 }
