@@ -22,9 +22,8 @@
             android:id="@+id/image"
             android:layout_width="@dimen/img_width"
             android:layout_height="@dimen/img_height"
-            android:contentDescription="@string/app_name"
             android:padding="@dimen/spacing_xlarge"
-            app:srcCompat="@drawable/ic_young_cassava" />
+            app:srcCompat="@drawable/ic_land_measure" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/title"
