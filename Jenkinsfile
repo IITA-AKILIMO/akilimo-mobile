@@ -200,20 +200,6 @@ pipeline {
       }
     }
 
-    stage('Upload Beta artifacts to github') {
-      when {
-        beforeAgent true
-        branch 'develop'
-      }
-      environment {
-         RELEASE_VERSION = sh(script: 'cat $TAG_FILE', , returnStdout: true).trim()
-      }
-      steps {
-        sh 'cp app/build/outputs/**/*.* uploads/'
-        sh 'cp app/build/outputs/**/*/*.* uploads/'
-        sh 'ghr -replace -prerelease $RELEASE_VERSION uploads/'
-      }
-    }
     stage('Upload Production to github') {
       when {
         beforeAgent true
