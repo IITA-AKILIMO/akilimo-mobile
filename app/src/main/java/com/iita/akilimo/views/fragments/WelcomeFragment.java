@@ -21,6 +21,7 @@ import com.iita.akilimo.Locales;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.MySpinnerAdapter;
 import com.iita.akilimo.databinding.FragmentWelcomeBinding;
+import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseStepFragment;
 import com.iita.akilimo.interfaces.IFragmentCallBack;
 import com.iita.akilimo.utils.enums.EnumCountry;
@@ -45,8 +46,10 @@ public class WelcomeFragment extends BaseStepFragment {
     private IFragmentCallBack fragmentCallBack;
     private Spinner languagePicker;
     private SharedPrefsAppLocaleRepository prefs;
+    private ProfileInfo profileInfo;
     private int selectedLanguageIndex = -1;
     private Locale selectedLocale;
+    String selectedLanguage = "en";
     private boolean languagePicked = false;
 
     LinearLayout layout;
@@ -80,6 +83,7 @@ public class WelcomeFragment extends BaseStepFragment {
         languagePicker = binding.languagePicker;
         layout = binding.welcomeLayout;
         prefs = new SharedPrefsAppLocaleRepository(context);
+        profileInfo = database.profileInfoDao().findOne();
 
         languagePicker.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -108,7 +112,7 @@ public class WelcomeFragment extends BaseStepFragment {
                     Intent intent = new Intent(context, HomeStepperActivity.class);
                     Snackbar snackBar = Snackbar
                             .make(layout, getString(R.string.lbl_restart_app_prompt), Snackbar.LENGTH_INDEFINITE)
-                            .setAction(context.getString(R.string.lbl_ok), view1 -> ProcessPhoenix.triggerRebirth(context, intent));
+                            .setAction(context.getString(R.string.lbl_ok), snackView -> ProcessPhoenix.triggerRebirth(context, intent));
                     snackBar.show();
                     initSpinnerItems();
                 }
@@ -144,17 +148,34 @@ public class WelcomeFragment extends BaseStepFragment {
             selectedLanguageIndex = localeDisplayName.indexOf(selectedLocale.getDisplayLanguage());
         }
         languagePicker.setSelection(selectedLanguageIndex);
+
     }
 
     @Nullable
     @Override
     public VerificationError verifyStep() {
+        profileInfo = database.profileInfoDao().findOne();
+        if (profileInfo == null) {
+            profileInfo = new ProfileInfo();
+        }
+        if (selectedLocale != null) {
+            selectedLanguage = selectedLocale.getLanguage();
+        }
+        profileInfo.setLanguage(selectedLanguage);
+        if (profileInfo.getProfileId() != null) {
+            int id = profileInfo.getProfileId();
+            if (id > 0) {
+                database.profileInfoDao().update(profileInfo);
+            }
+        } else {
+            database.profileInfoDao().insert(profileInfo);
+        }
+
         return verificationError;
     }
 
     @Override
     public void onSelected() {
-
     }
 
     @Override

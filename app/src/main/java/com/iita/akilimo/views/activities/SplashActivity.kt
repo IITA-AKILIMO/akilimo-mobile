@@ -40,9 +40,6 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun launchActivity() {
-
-    }
-    private fun launchActivityOld() {
         try {
             if (!BuildConfig.DEBUG) {
                 getDatabase(this)?.clearAllTables()
@@ -54,6 +51,6 @@ class SplashActivity : BaseActivity() {
         val intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
         startActivity(intent)
         finish()
-        Animatoo.animateSplit(this)
+        Animatoo.animateSlideDown(this)
     }
 }
