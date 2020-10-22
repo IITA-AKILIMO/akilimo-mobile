@@ -36,26 +36,26 @@
     <string name="lbl_cassava_field_size_no_ph">Je! Shamba lako la muhogo lina lina ukubwa gani?</string>
     <string name="lbl_cassava_field_size">Je! Shamba lako la muhogo lina ukubwa gani katika %1$s</string>
     <!--  acres  -->
-    <string name="quarter_acre">Kama ekari 0.25 (hekta 0.1)</string>
-    <string name="half_acre">Kama ekari 0.5 (hekta 0.2)</string>
-    <string name="one_acre">Kama ekari 1 (hekta 0.4)</string>
-    <string name="one_half_acre">Kama ekari 1.5 (hekta 0.6)</string>
-    <string name="two_half_acres">Kama ekari 2.5 (hekta 1)</string>
+    <string name="quarter_acre">Kama ekari 0.25</string>
+    <string name="half_acre">Kama ekari 0.5</string>
+    <string name="one_acre">Kama ekari 1</string>
+    <string name="one_half_acre">Kama ekari 1.5</string>
+    <string name="two_half_acres">Kama ekari 2.5</string>
     <string name="five_acres">Kama ekari 5</string>
     <string name="exact_field_area">Taja eneo halisi la shamba lako katika ekari</string>
     <!--  ha  -->
-    <string name="quarter_acre_to_ha">Kama hekta 0.1 (ekari 0.25)</string>
-    <string name="half_acre_to_ha">Kama hekta 0.2 (ekari 0.5)</string>
-    <string name="one_acre_to_ha">Kama hekta 0.4 (ekari 1)</string>
-    <string name="one_half_acre_to_ha">Kama hekta 0.6 (ekari 1.5)</string>
-    <string name="two_half_acre_to_ha">Kama hekta 1 (ekari 2.5)</string>
+    <string name="quarter_acre_to_ha">Kama hekta 0.1</string>
+    <string name="half_acre_to_ha">Kama hekta 0.2</string>
+    <string name="one_acre_to_ha">Kama hekta 0.4</string>
+    <string name="one_half_acre_to_ha">Kama hekta 0.6)</string>
+    <string name="two_half_acre_to_ha">Kama hekta 1</string>
     <string name="exact_acre_to_ha">Taja eneo halisi la shamba lako katika hekta</string>
     <!--   m2  -->
-    <string name="quarter_acre_to_m2">Kama 1,000 m\u00B2 (ekari 0.25)</string>
-    <string name="half_acre_to_m2">Kama 2000 m\u00B2 (ekari 0.5)</string>
-    <string name="one_acre_to_m2">Kama 4,000 m\u00B2 (ekari 1)</string>
-    <string name="one_half_acre_to_m2">Kama 6,000 m\u00B2 (ekari 1.5)</string>
-    <string name="two_half_acre_to_m2">Kama 10,000 m\u00B2 (ekari 2.5)</string>
+    <string name="quarter_acre_to_m2">Kama 1,000 m\u00B2</string>
+    <string name="half_acre_to_m2">Kama 2000 m\u00B2</string>
+    <string name="one_acre_to_m2">Kama 4,000 m\u00B2</string>
+    <string name="one_half_acre_to_m2">Kama 6,000 m\u00B2</string>
+    <string name="two_half_acre_to_m2">Kama 10,000 m\u00B2</string>
     <string name="exact_acre_to_m2">Taja eneo halisi la shamba lako katika m\u00B2</string>
 
 
@@ -338,7 +338,7 @@
     <string name="lbl_invalid_cost">Kiasi cha gharama si sahihi</string>
     <string name="lbl_first_weeding_costs_prompt">Tafadhali taja gharama za palizi la kwanza</string>
     <string name="lbl_second_weeding_cost_prompt">Tafandali taja gharama za palizi la pili</string>
-    <string name="lbl_field_size_prompt">Tafadhali ingiza eneo la ukubwa wa shamba lililo sahihi</string>
+    <string name="lbl_field_size_prompt">Tafadhali ingiza eneo la ukubwa wa shamba lililo sahihi kwa %s</string>
     <string name="lbl_area_unit_prompt">Tafadhali ingiza eneo halali la eneo</string>
     <string name="lbl_per_separator">kwa</string>
     <string name="lbl_usd_currency">Dola</string>

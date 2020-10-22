@@ -42,9 +42,9 @@
     <string name="lbl_nigeria" translatable="false">Nigeria</string>
     <string name="lbl_tanzania" translatable="false">Tanzania</string>
 
-    <string name="lbl_area_unit">How do you measure the size of your field?</string>
-    <string name="area_unit_acre">in Acre (acre)</string>
-    <string name="area_unit_ha">in Hectare (ha)</string>
+    <string name="lbl_area_unit">Select you preferred land area unit</string>
+    <string name="area_unit_acre">Acre (acre)</string>
+    <string name="area_unit_ha">Hectare (ha)</string>
     <string name="area_unit_square_meter">in Square meter (m\u00B2)</string>
 
     <string name="lbl_acre">acre</string>
@@ -53,28 +53,28 @@
     <string name="lbl_cassava_field_size_no_ph">What is the size of your cassava field?</string>
     <string name="lbl_cassava_field_size">What is the size of your cassava field in %1$s</string>
     <!-- acres -->
-    <string name="quarter_acre">About 0.25 acre (0.1 ha)</string>
-    <string name="half_acre">About 0.5 acre (0.2 ha)</string>
-    <string name="one_acre">About 1 acre (0.4 ha)</string>
-    <string name="one_half_acre">About 1.5 acre (0.6 ha)</string>
-    <string name="two_half_acres">About 2.5 acre (1 ha)</string>
+    <string name="quarter_acre">About 0.25 acre</string>
+    <string name="half_acre">About 0.5 acre</string>
+    <string name="one_acre">About 1 acre</string>
+    <string name="one_half_acre">About 1.5 acre</string>
+    <string name="two_half_acres">About 2.5 acre</string>
     <string name="five_acres">About 5 acre</string>
     <string name="exact_field_area">Specify the exact area of my field in acre</string>
 
     <!-- ha -->
-    <string name="quarter_acre_to_ha">About 0.1 ha (0.25 acre)</string>
-    <string name="half_acre_to_ha">About 0.2 ha (0.5 acre)</string>
-    <string name="one_acre_to_ha">About 0.4 ha (1 acre)</string>
-    <string name="one_half_acre_to_ha">About 0.6 ha (1.5 acre)</string>
-    <string name="two_half_acre_to_ha">About 1 ha (2.5 acre)</string>
+    <string name="quarter_acre_to_ha">About 0.1 ha</string>
+    <string name="half_acre_to_ha">About 0.2 ha</string>
+    <string name="one_acre_to_ha">About 0.4 ha</string>
+    <string name="one_half_acre_to_ha">About 0.6 ha</string>
+    <string name="two_half_acre_to_ha">About 1 ha</string>
     <string name="exact_acre_to_ha">Specify the exact area of my field in ha</string>
 
     <!--  m2 -->
-    <string name="quarter_acre_to_m2">About 1,000 m\u00B2 (0.25 acre)</string>
-    <string name="half_acre_to_m2">About 2,000 m\u00B2 (0.5 acre)</string>
-    <string name="one_acre_to_m2">About 4,000 m\u00B2 (1 acre)</string>
-    <string name="one_half_acre_to_m2">About 6,000 m\u00B2 (1.5 acre)</string>
-    <string name="two_half_acre_to_m2">About 10,000 m\u00B2 (2.5 acre)</string>
+    <string name="quarter_acre_to_m2">About 1,000 m\u00B2</string>
+    <string name="half_acre_to_m2">About 2,000 m\u00B2</string>
+    <string name="one_acre_to_m2">About 4,000 m\u00B2</string>
+    <string name="one_half_acre_to_m2">About 6,000 m\u00B2</string>
+    <string name="two_half_acre_to_m2">About 10,000 m\u00B2</string>
     <string name="exact_acre_to_m2">Specify the exact area of my field in m\u00B2</string>
 
     <string name="lbl_salutation">Hi, nice to meet you!</string>
@@ -273,7 +273,7 @@
     <string name="lbl_female">Female</string>
     <string name="lbl_save">Save</string>
     <string name="lbl_remove">Remove</string>
-    <string name="lbl_field_info">If you know the size of your field in ha or acre, proceed to the next page.\n\nIf not, we advise you download from Play Store e.g. `GPS Fields Area Measure` \n\nThis will help you to measure your area by walking around your field.</string>
+    <string name="lbl_field_info">If you know the size of your field in ha or acre, proceed to the next page.\n\nIf not, we advise you download from a measuring app from Play Store e.g. `GPS Fields Area Measure` \n\nThis will help you to measure your area by walking around your field.</string>
 
     <string name="lbl_location_sub_text">If you are in your field while running the app, you are strongly advised to choose the option `Use current location`.\n\nIf you are not in your field, please use `Select location manually` option and zoom in the map to find known places in your field neighborhood.</string>
 
@@ -426,7 +426,7 @@
     <string name="lbl_invalid_cost">Invalid cost amount</string>
     <string name="lbl_first_weeding_costs_prompt">Please specify cost for first weeding operation</string>
     <string name="lbl_second_weeding_cost_prompt">Please specify cost for second weeding operation</string>
-    <string name="lbl_field_size_prompt">Please select a valid field size</string>
+    <string name="lbl_field_size_prompt">Please select a valid field size in %s</string>
     <string name="lbl_area_unit_prompt">Please select a valid area unit</string>
 
     <string name="lbl_per_separator">per</string>
