@@ -181,7 +181,7 @@ dependencies {
 
     //https://stackoverflow.com/questions/44826452/highlight-new-feature-in-android
     implementation 'org.modelmapper:modelmapper:2.3.7'
-    implementation 'com.hbb20:ccp:2.3.7'
+    implementation 'com.hbb20:ccp:2.4.0'
 
     implementation 'dev.b3nedikt.applocale:applocale:1.2.4' //App language switcher
     implementation 'io.github.inflationx:viewpump:2.0.3'

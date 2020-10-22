@@ -27,7 +27,8 @@
     <string name="lbl_back">Rudi</string>
     <string name="lbl_next">Endelea</string>
 
-    <string name="lbl_country_location">Habari %1$s. Shamba lako liko katika nchi gani?</string>
+    <string name="lbl_country_location">Habari -%1$s-.</string>
+    <string name="lbl_country_location_sub">Shamba lako liko katika nchi gani?</string>
     <string name="lbl_area_unit">Je! Unapima ukubwa wa shamba lako kwa kipimo gani?</string>
     <string name="area_unit_acre">Kwa Ekari</string>
     <string name="area_unit_ha">Kwa Hektari</string>
@@ -344,7 +345,7 @@
     <string name="lbl_gps_settings">Mipangilio ya GPS</string>
     <string name="lbl_gps_not_enabled">GPS haijawashwa. Je! Unataka kwenda kwenye menu ya mipangilio?</string>
     <string name="lbl_one_kg_bag_unit">begi ya kilo 1</string>
-    <string name="lbl_pick_your_country">Chagua nchi yako</string>
+    <string name="lbl_pick_your_country">Chagua nchi</string>
     <string name="lbl_no_profile_info">Inaonekana sina habari yako ya wasifu, ninahitaji ili niweze kukutumia maoni ya kupanda</string>
     <string name="lbl_compute_timeout_error">Haiwezi kusanya maalamisho, tafadhali jaribu tena</string>
     <string name="lbl_already_planted_title">Imepandwa tayari</string>
@@ -354,6 +355,8 @@
     <string name="lbl_restart_app_prompt">Anzisha tena programu ili kuongeza tafsiri kwenye urambazaji?</string>
     <string name="lbl_acre">ekari</string>
     <string name="lbl_ha">hekta</string>
+    <string name="lbl_optional">(Hiari)</string>
+    <string name="lbl_farm_place">Eneo la shamba</string>
 
 
 </resources>
