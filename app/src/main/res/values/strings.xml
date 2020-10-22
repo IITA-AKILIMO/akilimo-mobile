@@ -367,16 +367,16 @@
     <string name="lbl_search">Search</string>
     <string name="lbl_settings">Settings</string>
 
-    <string name="lbl_lat">Farm lat</string>
-    <string name="lbl_lon">Farm lon</string>
+    <string name="lbl_lat">Field lat</string>
+    <string name="lbl_lon">Field lon</string>
 
     <string name="lbl_ploughing">Ploughing</string>
     <string name="lbl_ridging">Ridging</string>
     <string name="lbl_country">Country</string>
     <string name="lbl_field">Field</string>
-    <string name="lbl_farm_size">Farm size</string>
+    <string name="lbl_farm_size">Field size</string>
     <string name="lbl_location">Location</string>
-    <string name="lbl_farm_place">Farm location</string>
+    <string name="lbl_farm_place">Field location</string>
     <string name="lbl_planting_date">Planting date</string>
     <string name="lbl_harvesting_date">Harvesting date</string>
     <string name="lbl_no_ploughing">No ploughing</string>
