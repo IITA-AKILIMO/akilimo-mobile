@@ -207,9 +207,9 @@
     <string name="lbl_exact_price_x_per_unit_of_sale">I want to specify the exact price</string>
     <string name="lbl_submit">Submit</string>
     <string name="lbl_cancel">Cancel</string>
-    <string name="lbl_please_provide_unit_price">Please provide unit price</string>
+    <string name="lbl_provide_unit_price">Provide unit price</string>
 
-    <string name="lbl_permission_rationale">Please allow the following permissions for the app to work optimally</string>
+    <string name="lbl_permission_rationale">Allow the following permissions for the app to work optimally</string>
     <string name="lbl_place_name">Your field location</string>
     <string name="lbl_select_location">Select a location</string>
 
@@ -227,7 +227,7 @@
     <string name="title_activity_dst_recommendation">Recommendation</string>
 
     <string name="lbl_get_recommendations">Get recommendations</string>
-    <string name="lbl_rec_header">To get a more tailored recommendation, please provide information on the items below</string>
+    <string name="lbl_rec_header">To get a more tailored recommendation, provide information on the items below</string>
     <string name="lbl_compute_error">Unable to compute recommendations, please try again</string>
     <string name="lbl_compute_timeout_error">Unable to compute recommendations, please try again</string>
 
@@ -238,7 +238,7 @@
     <string name="hide_bottom_on_scroll" translatable="false">com.google.android.material.behavior.HideBottomViewOnScrollBehavior</string>
     <string name="bar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
 
-    <string name="lbl_min_selection">Please select at least %d fertilizers</string>
+    <string name="lbl_min_selection">Select at least %d fertilizers</string>
 
     <string name="lbl_update">Update</string>
     <string name="lbl_unit_price">Unit price</string>
@@ -257,15 +257,15 @@
     <string name="lbl_cost_of_first_weeding_operation">Cost of first weeding operation in %s</string>
     <string name="lbl_cost_of_second_weeding_operation">Cost of second weeding operation in %s</string>
 
-    <string name="lbl_valid_bag_price">Please provide a valid bag price</string>
+    <string name="lbl_valid_bag_price">Provide a valid bag price</string>
     <string name="lbl_ploughing_cost_text">Cost of ploughing %.2f %s %.2f %s</string>
     <string name="lbl_ridging_cost_text">Cost of ridging %.2f %s %.2f %s</string>
     <string name="lbl_harrowing_cost_text">Cost of harrowing %.2f %s %.2f %s</string>
     <string name="lbl_weeding_cost_text">Cost of weeding %.2f %s %.2f %s</string>
-    <string name="lbl_valid_email_req">Please provide a valid email</string>
-    <string name="lbl_first_name_req">Please provide your first name</string>
-    <string name="lbl_last_name_req">Please provide your last name</string>
-    <string name="lbl_valid_number_req">Please provide a valid phone number</string>
+    <string name="lbl_valid_email_req">Provide a valid email</string>
+    <string name="lbl_first_name_req">Provide your first name</string>
+    <string name="lbl_last_name_req">Provide your last name</string>
+    <string name="lbl_valid_number_req">Provide a valid phone number</string>
 
     <string name="lbl_gender_prompt">Select gender</string>
     <string name="lbl_gender">Choose gender</string>
@@ -276,14 +276,14 @@
     <string name="lbl_remove">Remove</string>
     <string name="lbl_field_info">If you know the size of your field in ha or acre, proceed to the next page.\n\nIf not, we advise you download from a measuring app from Play Store e.g. `GPS Fields Area Measure` \n\nThis will help you to measure your area by walking around your field.</string>
 
-    <string name="lbl_location_sub_text">If you are in your field while running the app, you are strongly advised to choose the option `Use current location`.\n\nIf you are not in your field, please use `Select location manually` option and zoom in the map to find known places in your field neighborhood.</string>
+    <string name="lbl_location_sub_text">If you are in your field while running the app, you are strongly advised to choose the option `Use current location`.\n\nIf you are not in your field, use `Select location manually` option and zoom in the map to find known places in your field neighborhood.</string>
 
     <string name="title_your_field_size">YOUR FIELD SIZE</string>
     <string name="lbl_ok">OK</string>
     <string name="title_realistic_price">Provide realistic prices</string>
-    <string name="lbl_realistic_price">Please provide realistic information to the best of your knowledge</string>
+    <string name="lbl_realistic_price">Provide realistic information to the best of your knowledge</string>
     <string name="lbl_investment_validation_msg">Investment amount should be more or equal to %.2f %s</string>
-    <string name="lbl_provide_valid_unit_price">Please provide a valid unit price</string>
+    <string name="lbl_provide_valid_unit_price">Provide a valid unit price</string>
 
 
     <string name="lbl_plough_op_type">How do you perform your ploughing operations?</string>
@@ -357,7 +357,7 @@
     <string name="lbl_operation_costs">Operation costs</string>
     <string name="lbl_tractor">By tractor</string>
     <string name="lbl_manual">Manually</string>
-    <string name="lbl_operation_type_validation_message">Please select a proper operation type</string>
+    <string name="lbl_operation_type_validation_message">Select a proper operation type</string>
     <string name="lbl_bag_price">Bag price</string>
     <string name="lbl_how_do_you_sell_your_sweet_potato">How do you sell your sweet potato?</string>
     <string name="lbl_do_you_want_to_receive_recommendations_via_email_and_sms">Do you want to receive recommendations via email and SMS?</string>
@@ -385,21 +385,21 @@
     <string name="lbl_exit_tip">Press back again to exit</string>
     <string name="lbl_location_error">Unable to fetch your current location, please try again</string>
 
-    <string name="lbl_back_instructions">Please use the press the home button to got back to the summary page</string>
+    <string name="lbl_back_instructions">Press the home button to got back to the summary page</string>
     <string name="lbl_invalid_factory">Invalid factory</string>
-    <string name="lbl_factory_prompt">Please select a starch factory</string>
+    <string name="lbl_factory_prompt">Select a starch factory</string>
     <string name="lbl_invalid_produce">Invalid produce type</string>
-    <string name="lbl_produce_prompt">Please specify a valid produce type</string>
+    <string name="lbl_produce_prompt">Specify a valid produce type</string>
     <string name="lbl_invalid_sale_unit">Invalid unit of sale</string>
-    <string name="lbl_sale_unit_prompt">Please specify a valid unit of sale</string>
+    <string name="lbl_sale_unit_prompt">Specify a valid unit of sale</string>
     <string name="lbl_invalid_unit_price">Invalid unit price</string>
-    <string name="lbl_unit_price_prompt">Please specify a valid unit price</string>
+    <string name="lbl_unit_price_prompt">Specify a valid unit price</string>
     <string name="lbl_nothing">Nothing selected</string>
     <string name="lbl_nothing_prompt">You have not made any selection</string>
     <string name="lbl_invalid_planting_date">Invalid planting date</string>
-    <string name="lbl_planting_date_prompt">Please provide a valid planting date</string>
+    <string name="lbl_planting_date_prompt">Provide a valid planting date</string>
     <string name="lbl_invalid_harvest_date">Invalid harvest date</string>
-    <string name="lbl_harvest_date_prompt">Please provide a valid harvest date</string>
+    <string name="lbl_harvest_date_prompt">Provide a valid harvest date</string>
     <string name="lbl_unable_to_save">Unable to save</string>
     <string name="lbl_date_save_error">Unable to save planting and harvest dates, please try again</string>
     <string name="lbl_fertilizer_rec">Fertilizer Recommendation</string>
@@ -407,32 +407,32 @@
     <string name="lbl_planting_practices_rec">Planting Practices</string>
     <string name="lbl_scheduled_planting_rec">Scheduled Planting</string>
     <string name="lbl_no_recommendations">There are no recommendations available</string>
-    <string name="lbl_no_recommendations_prompt">No recommendations, please provide more information to help us get better predictions</string>
+    <string name="lbl_no_recommendations_prompt">No recommendations, provide more information to help us get better predictions</string>
     <string name="lbl_invalid_investment_amount">Invalid investment amount</string>
     <string name="lbl_investment_amount_prompt">Enter a valid investment amount</string>
-    <string name="lbl_maize_produce_prompt">Please indicate maize produce type</string>
-    <string name="lbl_maize_sale_unit_prompt">Please indicate maize unit of sale</string>
+    <string name="lbl_maize_produce_prompt">Indicate maize produce type</string>
+    <string name="lbl_maize_sale_unit_prompt">Indicate maize unit of sale</string>
     <string name="lbl_invalid_grain_price">Invalid grain price</string>
-    <string name="lbl_grain_price_prompt">Please provide valid grain price</string>
+    <string name="lbl_grain_price_prompt">Provide valid grain price</string>
     <string name="lbl_invalid_cob_price">Invalid cob price</string>
-    <string name="lbl_cob_price_prompt">Please provide valid cob price</string>
+    <string name="lbl_cob_price_prompt">Provide valid cob prices</string>
     <string name="lbl_invalid_selection">Invalid selection</string>
-    <string name="lbl_maize_performance_prompt">Please provide a valid maize performance selection</string>
-    <string name="lbl_manual_plough_cost_prompt">Please specify the cost of manual ploughing on your field</string>
-    <string name="lbl_manual_ridge_cost_prompt">Please specify the cost of manual ridging on your field</string>
+    <string name="lbl_maize_performance_prompt">Provide a valid maize performance selection</string>
+    <string name="lbl_manual_plough_cost_prompt">Specify the cost of manual ploughing on your field</string>
+    <string name="lbl_manual_ridge_cost_prompt">Specify the cost of manual ridging on your field</string>
     <string name="lbl_invalid_yield">Invalid yield</string>
-    <string name="lbl_current_field_yield_prompt">Please specify your current field yield</string>
-    <string name="lbl_potato_produce_prompt">Please indicate sweet potato produce type</string>
-    <string name="lbl_potato_sale_unit_prompt">Please indicate sweet potato unit of sale</string>
+    <string name="lbl_current_field_yield_prompt">Specify your current field yield</string>
+    <string name="lbl_potato_produce_prompt">Indicate sweet potato produce type</string>
+    <string name="lbl_potato_sale_unit_prompt">Indicate sweet potato unit of sale</string>
     <string name="lbl_invalid_tuber_price">Invalid tuber price</string>
-    <string name="lbl_tuber_price_prompt">Please provide valid tuber price</string>
-    <string name="lbl_valid_amount_prompt">Please enter a valid amount</string>
-    <string name="lbl_weed_control_prompt">Please specify how you control weeds on your field</string>
+    <string name="lbl_tuber_price_prompt">Provide valid tuber price</string>
+    <string name="lbl_valid_amount_prompt">Enter a valid amount</string>
+    <string name="lbl_weed_control_prompt">Specify how you control weeds on your field</string>
     <string name="lbl_invalid_cost">Invalid cost amount</string>
-    <string name="lbl_first_weeding_costs_prompt">Please specify cost for first weeding operation</string>
-    <string name="lbl_second_weeding_cost_prompt">Please specify cost for second weeding operation</string>
-    <string name="lbl_field_size_prompt">Please select a valid field size in %s</string>
-    <string name="lbl_area_unit_prompt">Please select a valid area unit</string>
+    <string name="lbl_first_weeding_costs_prompt">Specify cost for first weeding operation</string>
+    <string name="lbl_second_weeding_cost_prompt">Specify cost for second weeding operation</string>
+    <string name="lbl_field_size_prompt">Select a valid field size in %s</string>
+    <string name="lbl_area_unit_prompt">Select a valid area unit</string>
 
     <string name="lbl_per_separator">per</string>
     <string name="lbl_usd_currency">USD</string>
@@ -454,7 +454,7 @@
     <string name="lbl_already_planted_title">Already planted</string>
     <string name="lbl_already_planted_text">It appears you have already planted, so you cannot set the flexibility</string>
     <string name="lbl_agree_to_terms">I accept the terms and conditions of the application</string>
-    <string name="lbl_accept_terms_prompt">Please accept the terms and conditions before proceeding</string>
+    <string name="lbl_accept_terms_prompt">Accept the terms and conditions before proceeding</string>
     <string name="lbl_restart_app_prompt">Restart the app in order to apply translations to the navigation buttons?</string>
     <string name="lbl_optional">(Optional)</string>
     <string name="lbl_country_supported">AKILIMO currently supports Nigeria and Tanzania only</string>

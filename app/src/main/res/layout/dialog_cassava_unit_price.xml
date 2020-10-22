@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:background="@color/grey_5"
             android:fontFamily="@font/ubuntu"
-            android:hint="@string/lbl_please_provide_unit_price"
+            android:hint="@string/lbl_provide_unit_price"
             android:inputType="numberDecimal"
             android:padding="@dimen/spacing_large"
             android:visibility="gone" />

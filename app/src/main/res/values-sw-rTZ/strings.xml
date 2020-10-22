@@ -153,7 +153,7 @@
     <string name="lbl_exact_price_x_per_unit_of_sale">Nataka kutaja bei halisi</string>
     <string name="lbl_submit">Wasilisha</string>
     <string name="lbl_cancel">Ghairi</string>
-    <string name="lbl_please_provide_unit_price">Tafadhali toa bei ya kitengo</string>
+    <string name="lbl_provide_unit_price">Tafadhali toa bei ya kitengo</string>
     <string name="lbl_permission_rationale">Tafadhali ruhusu programu zifuatazo kufanya kazi vizuri</string>
     <string name="lbl_place_name">Eneo lilipo shamba lako</string>
     <string name="lbl_select_location">Chagua eneo</string>
