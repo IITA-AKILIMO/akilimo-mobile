@@ -355,8 +355,8 @@
     <string name="lbl_exact_price">Exact price</string>
     <string name="lbl_fertilizer_price">Fertilizer price</string>
     <string name="lbl_operation_costs">Operation costs</string>
-    <string name="lbl_tractor">Tractor</string>
-    <string name="lbl_manual">Manual</string>
+    <string name="lbl_tractor">By tractor</string>
+    <string name="lbl_manual">Manually</string>
     <string name="lbl_operation_type_validation_message">Please select a proper operation type</string>
     <string name="lbl_bag_price">Bag price</string>
     <string name="lbl_how_do_you_sell_your_sweet_potato">How do you sell your sweet potato?</string>

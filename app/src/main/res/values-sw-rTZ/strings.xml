@@ -276,8 +276,8 @@
     <string name="lbl_exact_price">Bei halisi</string>
     <string name="lbl_fertilizer_price">Bei ya mbolea</string>
     <string name="lbl_operation_costs">Gharama za uendeshaji</string>
-    <string name="lbl_tractor">Trekta</string>
-    <string name="lbl_manual">Jembe la mkono</string>
+    <string name="lbl_tractor">Kwa trekta</string>
+    <string name="lbl_manual">Kwa jembe la mkono</string>
     <string name="lbl_operation_type_validation_message">Tafadhali chagua aina sahihi ya operesheni</string>
     <string name="lbl_bag_price">Bei ya begi</string>
     <string name="lbl_how_do_you_sell_your_sweet_potato">Utauzaje viazi vitamu vyako</string>
