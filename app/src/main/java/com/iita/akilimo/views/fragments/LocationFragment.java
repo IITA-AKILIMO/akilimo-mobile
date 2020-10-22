@@ -25,6 +25,7 @@ import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseStepFragment;
 import com.iita.akilimo.services.GPSTracker;
+import com.iita.akilimo.utils.enums.EnumCountry;
 import com.iita.akilimo.views.activities.HomeStepperActivity;
 import com.iita.akilimo.views.activities.MapBoxActivity;
 import com.mapbox.api.geocoding.v5.GeocodingCriteria;
@@ -66,6 +67,7 @@ public class LocationFragment extends BaseStepFragment {
     private double currentAlt;
     private String countryLocation;
     private String placeName;
+    private boolean countrySupported;
 
     private ProfileInfo profileInfo;
     private LocationInfo locationInformation;
@@ -206,6 +208,8 @@ public class LocationFragment extends BaseStepFragment {
                 currentLon = locationInformation.getLongitude();
                 currentLat = locationInformation.getLatitude();
                 currentAlt = locationInformation.getAltitude();
+                countryLocation = locationInformation.getLocationCountry();
+                isSupportedCountry(countryLocation);
                 dataIsValid = currentLat != 0 || currentLon != 0;
                 if (dataIsValid) {
                     locationInfo.setText(locInfo.toString());
@@ -220,6 +224,11 @@ public class LocationFragment extends BaseStepFragment {
             Crashlytics.logException(ex);
         }
 
+    }
+
+    private void isSupportedCountry(String countryLocation) {
+        countrySupported = countryLocation.equalsIgnoreCase(EnumCountry.Nigeria.countryCode()) || countryLocation.equalsIgnoreCase(EnumCountry.Tanzania.countryCode());
+        errorMessage = getString(R.string.lbl_country_supported);
     }
 
     @Override
@@ -250,10 +259,10 @@ public class LocationFragment extends BaseStepFragment {
     @Override
     public VerificationError verifyStep() {
         reverseGeoCode(currentLat, currentLon);
-        if (!dataIsValid) {
-            return new VerificationError(errorMessage);
+        if (dataIsValid && countrySupported) {
+            return null;
         }
-        return null;
+        return new VerificationError(errorMessage);
     }
 
     @Override

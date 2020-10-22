@@ -181,7 +181,6 @@ public class SummaryFragment extends BaseStepFragment {
                 if (farmCountryCode.equalsIgnoreCase("ng") || farmCountryCode.equalsIgnoreCase("tz")) {
                     stepStatus = StepStatus.COMPLETED;
                 } else {
-//                    stepStatus = StepStatus.WARNING;
                     Toast.makeText(context, "Farm location is outside supported countries, recommendations might not work", Toast.LENGTH_LONG).show();
                 }
             }

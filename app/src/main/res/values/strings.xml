@@ -273,7 +273,7 @@
     <string name="lbl_female">Female</string>
     <string name="lbl_save">Save</string>
     <string name="lbl_remove">Remove</string>
-    <string name="lbl_field_info">If you know the <b>size</b> of your field in <b>ha, acre</b> or <b>square meter</b>,please proceed to the next page.\n\nIf not, we advise you download from Play Store e.g.\n<ol><li>GPS Fields Area Measure</li></ol>\n\nThis will help you to measure your area by walking around your field.</string>
+    <string name="lbl_field_info">If you know the <b>size</b> of your field in <b>ha or acre</b>,proceed to the next page.\n\nIf not, we advise you download from Play Store e.g.\n<ol><li>GPS Fields Area Measure</li></ol>\n\nThis will help you to measure your area by walking around your field.</string>
 
     <string name="lbl_location_sub_text">If you are in your field while running the app, you are strongly advised to choose the option <b>Use current location</b>.\n\nIf you are not in your field, please use <b>Pick location manually</b> option and zoom in the map to find known places in your field neighborhood.\n</string>
 
@@ -452,5 +452,6 @@
     <string name="lbl_accept_terms_prompt">Please accept the terms and conditions before proceeding</string>
     <string name="lbl_restart_app_prompt">Restart the app in order to apply translations to the navigation buttons?</string>
     <string name="lbl_optional">(Optional)</string>
+    <string name="lbl_country_supported">AKILIMO currently supports Nigeria and Tanzania only</string>
 
 </resources>

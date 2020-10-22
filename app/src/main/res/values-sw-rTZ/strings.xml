@@ -200,7 +200,7 @@
 
     <string name="lbl_save">Hifadhi</string>
     <string name="lbl_remove">Ondoa</string>
-    <string name="lbl_field_info">Ikiwa unajua ukubwa wa shamba lako kwa hekta, ekari au mita za mraba, tafadhali endelea ukurasa unaofuata. Ikiwa hujui, tunakushauri upakue kutoka Play Store \n\"GPS Field Area Measure”, itakusaidia kupima eneo la shamba lako ukitembea kulizunguka.</string>
+    <string name="lbl_field_info">Ikiwa unajua ukubwa wa shamba lako kwa hekta au ekari, endelea ukurasa unaofuata. Ikiwa hujui, tunakushauri upakue kutoka Play Store \n\"GPS Field Area Measure”, itakusaidia kupima eneo la shamba lako ukitembea kulizunguka.</string>
     <string name="lbl_location_sub_text">Ikiwa uko kwenye shamba lako unapokuwa ukitumia program hii, unashauriwa kuchagua \"Tumia eneo la sasa\".\nIkiwa hauko shambani mwako, chagua eneo lilipo na kupanua ramani kuweka alama eneo linalojulikana katika kijiji au kitongoji chako.</string>
     <string name="title_your_field_size">UKUBWA WA SHAMBA</string>
     <string name="lbl_ok">Sawa</string>
@@ -357,6 +357,7 @@
     <string name="lbl_ha">hekta</string>
     <string name="lbl_optional">(Hiari)</string>
     <string name="lbl_farm_place">Eneo la shamba</string>
+    <string name="lbl_country_supported">AKILIMO kwa sasa inasaidia Nigeria na Tanzania tu</string>
 
 
 </resources>
