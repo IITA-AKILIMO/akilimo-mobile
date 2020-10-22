@@ -102,8 +102,6 @@ public class FieldSizeFragment extends BaseStepFragment {
         rd_quarter_acre = binding.rdQuarterAcre;
         rd_half_acre = binding.rdHalfAcre;
         rd_one_acre = binding.rdOneAcre;
-        rd_one_half_acre = binding.rdOneHalfAcre;
-        rd_two_half_acre = binding.rdTwoHalfAcre;
 
         rdgFieldArea.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
             RadioButton radioButton = view.findViewById(radioIndex);
@@ -166,12 +164,6 @@ public class FieldSizeFragment extends BaseStepFragment {
                 break;
             case R.id.rd_one_acre:
                 areaSize = EnumFieldArea.ONE_ACRE.areaValue();
-                break;
-            case R.id.rd_one_half_acre:
-                areaSize = EnumFieldArea.ONE_HALF_ACRE.areaValue();
-                break;
-            case R.id.rd_two_half_acre:
-                areaSize = EnumFieldArea.TWO_HALF_ACRE.areaValue();
                 break;
             case R.id.rd_five_acre:
                 areaSize = EnumFieldArea.FIVE_ACRE.areaValue();
