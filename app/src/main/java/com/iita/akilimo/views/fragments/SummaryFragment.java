@@ -31,11 +31,14 @@ import com.iita.akilimo.inherit.BaseStepFragment;
 import com.iita.akilimo.models.TimeLineModel;
 import com.iita.akilimo.models.TimelineAttributes;
 import com.iita.akilimo.utils.ItemAnimation;
+import com.iita.akilimo.utils.enums.EnumCountry;
 import com.iita.akilimo.utils.enums.StepStatus;
 import com.stepstone.stepper.VerificationError;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -130,9 +133,13 @@ public class SummaryFragment extends BaseStepFragment {
         String harvestDate = "";
         String fieldInfo = "";
         String placeName = "";
+        double lat = 0.0;
+        double lon = 0.0;
         StringBuilder ploughStr = new StringBuilder();
         StringBuilder ridgeStr = new StringBuilder();
         StepStatus stepStatus = StepStatus.WARNING;
+        DecimalFormat df = new DecimalFormat("#.#####");
+        df.setRoundingMode(RoundingMode.CEILING);
 
         if (database == null) {
             return;
@@ -171,14 +178,14 @@ public class SummaryFragment extends BaseStepFragment {
 
         if (location != null) {
             pickedLocation = loadLocationInfo(location).toString();
-            double lat = location.getLatitude();
-            double lon = location.getLongitude();
+            lat = location.getLatitude();
+            lon = location.getLongitude();
             String farmCountryCode = location.getLocationCountry();
             placeName = location.getPlaceName();
             locationPicked = lat != 0 || lon != 0;
 
             if (!Strings.isEmptyOrWhitespace(farmCountryCode)) {
-                if (farmCountryCode.equalsIgnoreCase("ng") || farmCountryCode.equalsIgnoreCase("tz")) {
+                if (farmCountryCode.equalsIgnoreCase(EnumCountry.Nigeria.countryCode()) || farmCountryCode.equalsIgnoreCase(EnumCountry.Tanzania.countryCode())) {
                     stepStatus = StepStatus.COMPLETED;
                 } else {
                     Toast.makeText(context, "Farm location is outside supported countries, recommendations might not work", Toast.LENGTH_LONG).show();
@@ -223,9 +230,10 @@ public class SummaryFragment extends BaseStepFragment {
 
         mDataList = new ArrayList<>();
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_country), countryName, countrySelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_field), fieldInfo, fieldSizeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_location), pickedLocation, locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_farm_place), placeName, stepStatus));
+//        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_location), pickedLocation, locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_lat), df.format(lat), locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_lon), df.format(lon), locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_farm_size), fieldInfo, fieldSizeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
 
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_planting_date), plantingDate, plantingDateProvided ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_harvesting_date), harvestDate, harvestDateProvided ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
