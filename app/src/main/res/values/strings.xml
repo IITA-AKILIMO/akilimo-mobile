@@ -36,7 +36,7 @@
     <string name="lbl_back">Back</string>
     <string name="lbl_next">Next</string>
 
-    <string name="lbl_country_location">Nice to meet you -%1$s-.</string>
+    <string name="lbl_country_location">Nice to meet you "%1$s".</string>
     <string name="lbl_country_location_sub">In which country is your field located?</string>
 
 
@@ -79,7 +79,7 @@
     <string name="exact_acre_to_m2">Specify the exact area of my field in m\u00B2</string>
 
     <string name="lbl_salutation">Hi, nice to meet you!</string>
-    <string name="lbl_farm_location">Where is your cassava field -%1$s- located?</string>
+    <string name="lbl_farm_location">Where is your cassava field "%1$s" located?</string>
     <string name="lbl_current_location">Use current location</string>
     <string name="lbl_manual_location">Select location manually</string>
 
