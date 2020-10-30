@@ -177,15 +177,16 @@ dependencies {
     implementation 'com.nabinbhandari.android:permissions:3.7'
     implementation 'com.github.vipulasri:timelineview:1.1.1'
     implementation 'com.github.javiersantos:AppUpdater:2.7'
-    implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.9'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.11'
+    implementation 'com.github.midorikocak:currency-picker-android:1.2.1' //for handling currency
 
     //https://stackoverflow.com/questions/44826452/highlight-new-feature-in-android
     implementation 'org.modelmapper:modelmapper:2.3.7'
     implementation 'com.hbb20:ccp:2.4.0'
 
     implementation 'dev.b3nedikt.applocale:applocale:1.2.4' //App language switcher
-    implementation 'io.github.inflationx:viewpump:2.0.3'
     implementation 'dev.b3nedikt.reword:reword:1.0.0'
+    implementation 'io.github.inflationx:viewpump:2.0.3'
     implementation 'com.github.blongho:worldCountryData:1.5'
     implementation 'com.jakewharton:process-phoenix:2.0.0'
     implementation 'com.stepstone.stepper:material-stepper:4.3.1'
