@@ -8,16 +8,16 @@ internal class CurrencyCodeTest {
     fun should_match_symbol_for_nigeria() {
         val currencyCode = "NGN"
 
-        val symbol = CurrencyCode.getCurrencySymbol(currencyCode)
-        Assert.assertNotNull(symbol)
-        Assert.assertEquals("₦", symbol)
+        val extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode)
+        Assert.assertNotNull(extendedCurrency)
+        Assert.assertEquals("₦", extendedCurrency.symbol)
     }
 
     @Test
     fun should_match_symbol_for_tanzania() {
         val currencyCode = "TZS"
-        val symbol = CurrencyCode.getCurrencySymbol(currencyCode)
-        Assert.assertNotNull(symbol)
-        Assert.assertEquals("TSh", symbol)
+        val extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode)
+        Assert.assertNotNull(extendedCurrency)
+        Assert.assertEquals("TSh", extendedCurrency.symbol)
     }
 }
