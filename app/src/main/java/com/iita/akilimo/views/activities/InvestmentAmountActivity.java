@@ -49,7 +49,7 @@ public class InvestmentAmountActivity extends BaseActivity {
     TextInputLayout txtEditInvestmentAmountLayout;
     MaterialButton btnFinish;
     ActivityInvestmentAmountBinding binding;
-
+    ExtendedCurrency extendedCurrency;
 
     String investmentAmountError;
 
@@ -210,9 +210,11 @@ public class InvestmentAmountActivity extends BaseActivity {
         }
 
         String currencySymbol = currency;
-        ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currency);
+        String currencyName = currency;
+        extendedCurrency = CurrencyCode.getCurrencySymbol(currency);
         if (extendedCurrency != null) {
             currencySymbol = extendedCurrency.getSymbol();
+            currencyName = extendedCurrency.getName();
         }
 
         MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
@@ -236,6 +238,7 @@ public class InvestmentAmountActivity extends BaseActivity {
         String band_200 = getString(R.string.inv_200_usd_per_acre);
 
         String exactText = getString(R.string.exact_investment_x_per_field_area);
+        String exactTextHint = getString(R.string.exact_investment_x_per_field_area_hint, currencyName, String.valueOf(fieldSize), areaUnit);
         String separator = getString(R.string.lbl_per_separator);
 
         //convert the currencies
@@ -246,7 +249,8 @@ public class InvestmentAmountActivity extends BaseActivity {
         rd_200_per_acre.setText(mathHelper.convertCurrency(band_200, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
 
         rd_exact_investment.setText(exactText);
-        txtEditInvestmentAmount.setHint(exactText);
+        txtEditInvestmentAmountLayout.setHint(exactTextHint);
+        txtEditInvestmentAmount.setHint(exactTextHint);
     }
 
     private void validateEditText(Editable editable) {

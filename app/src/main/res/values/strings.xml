@@ -158,6 +158,7 @@
 
     <string name="current_field_yield">Exact investment (x %1$s per %2$s acre)</string>
     <string name="exact_investment_x_per_field_area">I want to specify the exact amount</string>
+    <string name="exact_investment_x_per_field_area_hint">Price in %1$s for %2$s %3$s</string>
     <string name="exact_fertilizer_price">I want to specify the exact price</string>
 
     <string name="unit_of_sale">Unit of Sale</string>

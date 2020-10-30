@@ -137,7 +137,6 @@
                         android:text="@string/inv_200_usd_per_acre" />
 
 
-
                 </RadioGroup>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -146,7 +145,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/radioInvestmentGroup"
                     android:layout_marginTop="@dimen/spacing_medium"
-                    android:hint="@string/exact_investment_x_per_field_area"
+                    android:hint="@string/exact_investment_x_per_field_area_hint"
                     android:visibility="gone">
 
                     <EditText

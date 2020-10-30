@@ -210,6 +210,11 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
     private void addPriceRadioButtons(List<FertilizerPrice> fertilizerPricesList, Fertilizer fertilizer) {
         radioGroup.removeAllViews();
         double selectedPrice = 0.0;
+        String currencySymbol = currencyCode;
+        ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
+        if (extendedCurrency != null) {
+            currencySymbol = extendedCurrency.getSymbol();
+        }
         if (fertilizer != null) {
             selectedPrice = fertilizer.getPricePerBag();
             isExactPriceRequired = fertilizer.getExactPrice();
@@ -236,7 +241,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
 //            radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.spacing_large));
 
             double price = pricesResp.getPricePerBag();
-            String radioLabel = pricesResp.getPriceRange();
+            String radioLabel = String.format("%s-%s %s", pricesResp.getMinLocalPrice(), pricesResp.getMaxLocalPrice(), currencySymbol);
             if (price == 0) {
                 radioLabel = context.getString(R.string.lbl_do_not_know);
             } else if (price < 0) {

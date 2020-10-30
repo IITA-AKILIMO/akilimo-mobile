@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(
     tableName = "fertilizer_price",
-    indices = arrayOf(Index(value = ["fertilizerCountry"], unique = true))
+    indices = [Index(value = ["fertilizerCountry"], unique = true)]
 )
 open class FertilizerPrice {
 
@@ -23,8 +23,14 @@ open class FertilizerPrice {
     @JsonProperty("priceId")
     var priceId = 0
 
+    @JsonProperty("minLocalPrice")
+    var minLocalPrice = 0.0
+
     @JsonProperty("minUsd")
     var minUsd = 0.0
+
+    @JsonProperty("maxLocalPrice")
+    var maxLocalPrice = 0.0
 
     @JsonProperty("maxUsd")
     var maxUsd = 0.0

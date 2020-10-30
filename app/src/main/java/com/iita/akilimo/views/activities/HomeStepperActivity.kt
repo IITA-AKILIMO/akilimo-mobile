@@ -85,19 +85,19 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
     private fun createFragmentArray() {
 
-        fragmentArray.add(WelcomeFragment.newInstance())
-        fragmentArray.add(InfoFragment.newInstance())
+//        fragmentArray.add(WelcomeFragment.newInstance())
+//        fragmentArray.add(InfoFragment.newInstance())
         if (!sessionManager.termsAccepted()) {
             fragmentArray.add(PrivacyStatementFragment.newInstance())
         }
-        fragmentArray.add(BioDataFragment.newInstance())
-        fragmentArray.add(CountryFragment.newInstance())
-        fragmentArray.add(LocationFragment.newInstance())
-        fragmentArray.add(FieldInfoFragment.newInstance())
-        fragmentArray.add(AreaUnitFragment.newInstance())
-        fragmentArray.add(FieldSizeFragment.newInstance())
-        fragmentArray.add(PlantingDateFragment.newInstance())
-        fragmentArray.add(TillageOperationFragment.newInstance())
+//        fragmentArray.add(BioDataFragment.newInstance())
+//        fragmentArray.add(CountryFragment.newInstance())
+//        fragmentArray.add(LocationFragment.newInstance())
+//        fragmentArray.add(FieldInfoFragment.newInstance())
+//        fragmentArray.add(AreaUnitFragment.newInstance())
+//        fragmentArray.add(FieldSizeFragment.newInstance())
+//        fragmentArray.add(PlantingDateFragment.newInstance())
+//        fragmentArray.add(TillageOperationFragment.newInstance())
         fragmentArray.add(SummaryFragment.newInstance())
     }
 
