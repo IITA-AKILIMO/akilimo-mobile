@@ -78,7 +78,7 @@ public class RecommendationsActivity extends BaseActivity {
             currency = profileInfo.getCurrency();
         }
 
-        toolbar = binding.toolbarLayout.toolbar;
+        toolbar = binding.toolbar;
         recyclerView = binding.recyclerView;
         initToolbar();
         initComponent();

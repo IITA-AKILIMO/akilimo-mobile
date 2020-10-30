@@ -105,11 +105,14 @@ public class AreaUnitFragment extends BaseStepFragment {
                     areaUnitDisplay = context.getString(R.string.lbl_ha);
                     areaUnit = EnumAreaUnits.HA.unitName(context);
                     break;
+                default:
+                    areaUnitRadioIndex = -1;
+                    areaUnit = null;
+                    break;
             }
 
             dataIsValid = !Strings.isEmptyOrWhitespace(areaUnit);
             if (!dataIsValid) {
-                showCustomWarningDialog(errorMessage);
                 return;
             }
             try {

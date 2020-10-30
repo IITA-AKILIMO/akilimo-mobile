@@ -267,7 +267,7 @@
     <string name="lbl_first_name">Jina lako la kwanza</string>
     <string name="lbl_last_name">Jina la ukoo</string>
     <string name="lbl_farm_name">Jina la shamba</string>
-    <string name="lbl_farm_name_title">Kama una shamba zaidi ya moja, tafadhali andika jina la shamba hili</string>
+    <string name="lbl_farm_name_title">Jina la shamba</string>
     <string name="lbl_email_address_hint">Anauani ya barua pepe (Inatumika kutuma mapendekezo)</string>
     <string name="lbl_email_address">Barua pepe</string>
     <string name="lbl_phone_number">Nambari ya simu</string>
