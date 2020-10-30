@@ -77,7 +77,6 @@
         <activity android:name=".views.activities.IntercropFertilizersActivity" />
         <activity android:name=".views.activities.DatesActivity" />
         <activity android:name=".views.activities.usecases.RecommendationsActivity" />
-        <activity android:name=".views.activities.HomeActivity" />
         <activity android:name=".views.activities.usecases.FertilizerRecActivity" />
         <activity android:name=".views.activities.MapBoxActivity" />
         <activity android:name=".views.activities.RootYieldActivity" />
