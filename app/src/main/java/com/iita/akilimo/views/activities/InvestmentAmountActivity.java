@@ -29,7 +29,7 @@ import com.iita.akilimo.utils.CurrencyCode;
 import com.iita.akilimo.utils.MathHelper;
 import com.mynameismidori.currencypicker.ExtendedCurrency;
 
-;
+;import java.util.Objects;
 
 
 public class InvestmentAmountActivity extends BaseActivity {
@@ -209,7 +209,7 @@ public class InvestmentAmountActivity extends BaseActivity {
             }
         }
 
-        String currencySymbol = currency;
+        currencySymbol = currency;
         String currencyName = currency;
         extendedCurrency = CurrencyCode.getCurrencySymbol(currency);
         if (extendedCurrency != null) {
@@ -263,7 +263,7 @@ public class InvestmentAmountActivity extends BaseActivity {
     }
 
     private String validateInvestmentAmount() {
-        String amount = txtEditInvestmentAmountLayout.getEditText().getText().toString();
+        String amount = Objects.requireNonNull(txtEditInvestmentAmountLayout.getEditText()).getText().toString();
         if (!Strings.isEmptyOrWhitespace(amount)) {
             investmentAmountLocal = Double.parseDouble(amount);
             investmentAmountUSD = mathHelper.convertToUSD(investmentAmountLocal, currency);
@@ -272,7 +272,7 @@ public class InvestmentAmountActivity extends BaseActivity {
         minimumAmountUSD = mathHelper.computeInvestmentAmount(minInvestmentUSD, fieldSizeAcre, baseCurrency);
         minimumAmountLocal = mathHelper.convertToLocalCurrency(minimumAmountUSD, currency);
         hasErrors = investmentAmountLocal < minimumAmountLocal;
-        return investmentAmountError = getString(R.string.lbl_investment_validation_msg, minimumAmountLocal, currency);
+        return investmentAmountError = getString(R.string.lbl_investment_validation_msg, minimumAmountLocal, currencySymbol);
 
     }
 }

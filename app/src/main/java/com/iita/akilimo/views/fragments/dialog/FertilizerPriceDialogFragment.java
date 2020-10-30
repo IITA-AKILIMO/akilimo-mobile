@@ -107,7 +107,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
         if (fertilizer != null) {
             countryCode = fertilizer.getCountryCode();
             currencyCode = fertilizer.getCurrency();
-            String currencySymbol = currencyCode;
+            currencySymbol = currencyCode;
             ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
             if (extendedCurrency != null) {
                 currencySymbol = extendedCurrency.getSymbol();
@@ -195,7 +195,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
             exactPriceWrapper.getEditText().setText(null);
             if (savedPricePerBag == 0) {
                 bagPrice = 0.0;
-                bagPriceRange = "NA";
+                bagPriceRange = getString(R.string.lbl_do_not_know);
             } else if (savedPricePerBag < 0) {
                 isExactPriceRequired = true;
                 isPriceValid = false;
@@ -210,7 +210,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
     private void addPriceRadioButtons(List<FertilizerPrice> fertilizerPricesList, Fertilizer fertilizer) {
         radioGroup.removeAllViews();
         double selectedPrice = 0.0;
-        String currencySymbol = currencyCode;
+        currencySymbol = currencyCode;
         ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
         if (extendedCurrency != null) {
             currencySymbol = extendedCurrency.getSymbol();

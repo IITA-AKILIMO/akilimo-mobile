@@ -109,7 +109,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
         if (fertilizer != null) {
             countryCode = fertilizer.getCountryCode();
             currencyCode = fertilizer.getCurrency();
-            String currencySymbol = currencyCode;
+            currencySymbol = currencyCode;
             ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
             if (extendedCurrency != null) {
                 currencySymbol = extendedCurrency.getSymbol();
@@ -198,7 +198,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
             exactPriceWrapper.getEditText().setText(null);
             if (savedPricePerBag == 0) {
                 bagPrice = 0.0;
-                bagPriceRange = "NA";
+                bagPriceRange = getString(R.string.lbl_do_not_know);
             } else if (savedPricePerBag < 0) {
                 isExactPriceRequired = true;
                 isPriceValid = false;
