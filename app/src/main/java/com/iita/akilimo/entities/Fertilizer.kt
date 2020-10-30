@@ -48,6 +48,7 @@ open class Fertilizer : Parcelable {
     var useCase: String? = null
     var countryCode: String? = null
     var priceRange: String? = null
+
     var pricePerBag = 0.0
 
     @JsonProperty("kcontent")

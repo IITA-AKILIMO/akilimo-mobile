@@ -282,16 +282,15 @@ public class FertilizersActivity extends BaseActivity {
             }
 
             @Override
-            public void onSuccessJsonArr(JSONArray jsonArray) {
+            public void onSuccessJsonArr(@NotNull JSONArray jsonArray) {
                 lyt_progress.setVisibility(View.GONE);
                 ObjectMapper objectMapper = new ObjectMapper();
                 try {
                     fertilizerPricesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<FertilizerPrice>>() {
                     });
 
-                    long[] status = null;
                     if (fertilizerPricesList.size() > 0) {
-                        status = database.fertilizerPriceDao().insertAll(fertilizerPricesList);
+                        database.fertilizerPriceDao().insertAll(fertilizerPricesList);
                     }
 
                     validate(false);

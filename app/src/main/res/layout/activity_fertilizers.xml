@@ -33,7 +33,7 @@
                 android:visibility="visible"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:spanCount="2"
-                tools:itemCount="2"
+                tools:itemCount="6"
                 tools:listitem="@layout/list_fertilizer_grid_row" />
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -41,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:srcCompat="@drawable/ic_error" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -54,7 +54,7 @@
                 android:fontFamily="@font/ubuntu"
                 android:text="@string/lbl_fertilizer_load_error"
                 android:textColor="@color/red_500"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnRetry"
@@ -67,6 +67,7 @@
                 android:fontFamily="@font/ubuntu"
                 android:paddingLeft="@dimen/spacing_xlarge"
                 android:paddingRight="@dimen/spacing_xlarge"
+                android:visibility="gone"
                 android:text="@string/lbl_retry"
                 android:textColor="@color/white" />
 

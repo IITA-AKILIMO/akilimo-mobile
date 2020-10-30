@@ -112,7 +112,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
             if (extendedCurrency != null) {
                 currencySymbol = extendedCurrency.getSymbol();
             }
-            String titleText = context.getString(R.string.price_per_bag, currencySymbol, fertilizer.getName());
+            String titleText = context.getString(R.string.price_per_bag, fertilizer.getName());
             lblPricePerBag.setText(titleText);
         }
 
@@ -182,13 +182,18 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
         int radioButtonId = radioGroup.getCheckedRadioButtonId();
         RadioButton radioButton = dialog.findViewById(radioButtonId);
         long itemTagIndex = (long) radioButton.getTag();
+        currencySymbol = currencyCode;
+        ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
+        if (extendedCurrency != null) {
+            currencySymbol = extendedCurrency.getSymbol();
+        }
 
         try {
             FertilizerPrice pricesResp = fertilizerPricesList.get((int) itemTagIndex);
             isExactPriceRequired = false;
             isPriceValid = true;
             savedPricePerBag = pricesResp.getPricePerBag();
-            bagPriceRange = pricesResp.getPriceRange();
+            bagPriceRange = String.format("%s-%s %s", pricesResp.getMinLocalPrice(), pricesResp.getMaxLocalPrice(), currencySymbol);
 
             bagPrice = savedPricePerBag;
             exactPriceWrapper.setVisibility(View.GONE);

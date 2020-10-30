@@ -62,7 +62,7 @@ import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOption
 public class Tools {
 
     private static final String LOG_TAG = Tools.class.getSimpleName();
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     public static void setSystemBarColor(Activity act) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

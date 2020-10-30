@@ -109,7 +109,7 @@
     <string name="lbl_no_internet">Hakuna mtandao!</string>
     <string name="lbl_retry">Jaribu tena</string>
     <string name="lbl_do_not_know">Sijui</string>
-    <string name="price_per_bag">Bei (%1$s kwa kila mfuko wa kilo 50) kwa %2$s</string>
+    <string name="price_per_bag">Bei kwa kila mfuko wa kilo 50 ya %1$s</string>
     <string name="lbl_operation_cost">Gharama ya uendeshaji wa shamba lako</string>
     <string name="current_field_yield">Uwekezaji halisi (x %1$s kwa ekari %2$s)</string>
     <string name="exact_investment_x_per_field_area">Ninataka kutaja kiwango halisi</string>

@@ -66,20 +66,18 @@ public class IntercropFertilizerGridAdapter extends RecyclerView.Adapter<Recycle
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder view = (OriginalViewHolder) holder;
             view.fertilizerName.setText(fertilizerName);
-            view.bagPrice.setText(isSelected ? bagPrice : fertilizerName);
+            view.bagPrice.setText(isSelected ? bagPrice : null);
             view.lyt_parent.setOnClickListener(view1 -> {
                 if (mOnItemClickListener != null) {
                     mOnItemClickListener.onItemClick(view1, obj, position);
                 }
             });
+
+            Tools.displayImageOriginal(ctx, view.image, R.drawable.ic_fertilizer_bag);
             if (isSelected) {
-                view.selectionIndicator.setImageResource(R.drawable.ic_check_box_checked);
-                view.selectionIndicator.setColorFilter(ctx.getResources().getColor(R.color.colorAccent));
-                Tools.displayImageOriginal(ctx, view.image, R.drawable.ic_sack_solid);
+                view.lyt_parent.setCardBackgroundColor(ctx.getResources().getColor(R.color.green_200));
             } else {
-                view.selectionIndicator.setImageResource(R.drawable.ic_check_box_unchecked);
-                view.selectionIndicator.setColorFilter(ctx.getResources().getColor(R.color.grey_5));
-                Tools.displayImageOriginal(ctx, view.image, R.drawable.ic_sack_outline);
+                view.lyt_parent.setCardBackgroundColor(ctx.getResources().getColor(R.color.grey_5));
             }
         }
     }
@@ -116,9 +114,7 @@ public class IntercropFertilizerGridAdapter extends RecyclerView.Adapter<Recycle
         public ImageView image;
         public TextView fertilizerName;
         public TextView bagPrice;
-        public AppCompatImageButton selectionIndicator;
         public CardView lyt_parent;
-        public View bagPricePanel;
 
         public OriginalViewHolder(View view) {
             super(view);
@@ -126,8 +122,6 @@ public class IntercropFertilizerGridAdapter extends RecyclerView.Adapter<Recycle
             fertilizerName = view.findViewById(R.id.fertilizerName);
             bagPrice = view.findViewById(R.id.bagPrice);
             lyt_parent = view.findViewById(R.id.lyt_parent);
-            bagPricePanel = view.findViewById(R.id.bagPricePanel);
-            selectionIndicator = view.findViewById(R.id.selectionIndicator);
         }
     }
 
