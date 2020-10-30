@@ -5,17 +5,14 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:elevation="0dp">
 
-        <androidx.appcompat.widget.Toolbar
+        <include
             android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:paddingStart="6dp"
-            android:paddingEnd="16dp"
-            app:contentInsetStartWithNavigation="0dp" />
+            layout="@layout/toolbar" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -37,13 +34,18 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
+                android:fontFamily="@font/roboto"
                 android:text="@string/lbl_do_you_want_to_receive_recommendations_via_email_and_sms"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/colorAccent" />
 
-            <!-- contact info -->
+            <CheckBox
+                android:id="@+id/chkEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu"
+                android:text="@string/lbl_receive_email" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/lytEmail"
@@ -51,6 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_medium"
                 android:background="@color/transparent"
+                android:visibility="gone"
                 app:boxBackgroundColor="@color/transparent">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -64,11 +67,20 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+
+            <CheckBox
+                android:id="@+id/chkSms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu"
+                android:text="@string/lbl_receive_sms" />
+
             <com.hbb20.CountryCodePicker
                 android:id="@+id/ccp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_large"
+                android:visibility="gone"
                 app:ccp_autoDetectCountry="true"
                 app:ccp_hintExampleNumber="true"
                 app:ccp_rememberLastSelection="true"
@@ -82,6 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
+                android:visibility="gone"
                 app:boxBackgroundColor="@color/transparent">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -94,21 +107,14 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-
-            <CheckBox
-                android:id="@+id/chkEmail"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/finalTextView"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
-                android:text="@string/lbl_receive_email" />
-
-            <CheckBox
-                android:id="@+id/chkSms"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
-                android:text="@string/lbl_receive_sms" />
-
+                android:fontFamily="@font/roboto"
+                android:text="@string/lbl_finalize"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimaryDark" />
 
             <include
                 layout="@layout/bottom_two_buttons_layout"

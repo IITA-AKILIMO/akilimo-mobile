@@ -343,8 +343,8 @@
     <string name="lbl_herbicide_weed_control">Using herbicides</string>
     <string name="lbl_both_weed_control">Both manual and using herbicides</string>
     <string name="lbl_enter_your_field_size">Enter your field size</string>
-    <string name="lbl_receive_email">Receive email</string>
-    <string name="lbl_receive_sms">Receive SMS</string>
+    <string name="lbl_receive_email">Check to receive email</string>
+    <string name="lbl_receive_sms">Check to receive SMS</string>
     <string name="lbl_first_name">First name</string>
     <string name="lbl_last_name">Last name</string>
     <string name="lbl_farm_name">Field name</string>
@@ -361,7 +361,7 @@
     <string name="lbl_operation_type_validation_message">Select a proper operation type</string>
     <string name="lbl_bag_price">Bag price</string>
     <string name="lbl_how_do_you_sell_your_sweet_potato">How do you sell your sweet potato?</string>
-    <string name="lbl_do_you_want_to_receive_recommendations_via_email_and_sms">Do you want to receive recommendations via email and SMS?</string>
+    <string name="lbl_do_you_want_to_receive_recommendations_via_email_and_sms">We are ready to calculate your recommendation. You can choose also to receive the advice via email and SMS.</string>
     <string name="lbl_which_of_these_tillage_operations_do_you_perform">Which of these tillage operations do you perform?</string>
     <string name="lbl_dummy_fertilizer" translatable="false">NPK 20:10:10</string>
     <string name="lbl_options">Options</string>
@@ -468,4 +468,5 @@
     <string name="fcy_2_3_times_higher">2–3 times higher</string>
     <string name="fcy_more_than_3_times_higher">More than 3 times higher</string>
     <string name="fcy_not_sure">I\'m not sure</string>
+    <string name="lbl_finalize">Press finish when you are ready</string>
 </resources>

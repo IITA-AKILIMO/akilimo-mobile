@@ -141,6 +141,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         if (profileInfo != null) {
             recommendationChannelDialog = new RecommendationChannelDialog(this, profileInfo);
             recommendationChannelDialog.show(getSupportFragmentManager(), RecommendationChannelDialog.TAG);
+            recommendationChannelDialog.setCancelable(false);
         } else {
             //show a message
             errorLabel.setText(R.string.lbl_no_profile_info);
@@ -153,7 +154,6 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
 
     @Override
     public void onDataReceived(@NotNull ProfileInfo profileInfo) {
-
         //update the profile info
         database.profileInfoDao().update(profileInfo);
         buildRecommendationData();

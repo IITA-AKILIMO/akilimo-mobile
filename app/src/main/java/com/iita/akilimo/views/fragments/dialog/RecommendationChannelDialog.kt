@@ -1,5 +1,6 @@
 package com.iita.akilimo.views.fragments.dialog
 
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -152,11 +153,13 @@ class RecommendationChannelDialog(
         chkEmail.setOnCheckedChangeListener { _, isChecked ->
             run {
                 sendEmail = isChecked
+                flagVisibility(sendSms, sendEmail)
             }
         }
         chkSms.setOnCheckedChangeListener { _, isChecked ->
             run {
                 sendSms = isChecked
+                flagVisibility(sendSms, sendEmail)
             }
         }
         ccp.registerCarrierNumberEditText(edtPhone)
@@ -164,6 +167,21 @@ class RecommendationChannelDialog(
 
         ccp.fullNumber = fullMobileNumber
         lytEmail.editText?.setText(email)
+        flagVisibility(sendSms, sendEmail)
+    }
 
+    private fun flagVisibility(sendSms: Boolean, sendEmail: Boolean) {
+        if (sendEmail) {
+            lytEmail.visibility = View.VISIBLE
+        } else {
+            lytEmail.visibility = View.GONE
+        }
+        if (sendSms) {
+            ccp.visibility = View.VISIBLE
+            lytPhone.visibility = View.VISIBLE
+        } else {
+            ccp.visibility = View.GONE
+            lytPhone.visibility = View.GONE
+        }
     }
 }
