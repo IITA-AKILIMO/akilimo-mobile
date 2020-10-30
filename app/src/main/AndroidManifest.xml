@@ -64,10 +64,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".views.activities.LanguagePickerActivity"
-            android:label="@string/title_activity_language_picker"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".views.activities.SweetPotatoMarketActivity" />
         <activity android:name=".views.activities.TractorAccessActivity" />
         <activity android:name=".views.activities.ManualTillageCostActivity" />
