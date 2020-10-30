@@ -77,7 +77,7 @@
     <string name="lbl_planting_harvest">Je! Unataka kuzingatia upandaji mbadala na tarehe za mavuno?</string>
     <string name="lbl_investment_amount">Je! Uko tayari kuwekeza kiasi gani kwenye mbolea?</string>
     <string name="lbl_typical_yield">Je! Kwa kawaida shamba lako hutoa mavuno kiasi gani?</string>
-    <string name="lbl_typical_yield_question">Je! ni kiasi gani cha mavuno ya muhogo umekuwa ukipata?</string>
+    <string name="lbl_typical_yield_question">Mavuno ya kawaida ya mizizi ya muhogo katika eneo lako ni %1$s. Je! Unatarajia mavuno mengi kutoka kwa shamba lako?</string>
     <string name="lbl_maize_performance">Urefu wa kawaida wa mahindi ukipandwa bila kuwekewa mbolea</string>
     <string name="lbl_sweet_potato_prices">Bei ya viazi tamu</string>
     <string name="lbl_height_of_maize_at_tasseling">Urefu wa mahindi wakati wa kutoa mbelewele</string>
@@ -144,11 +144,11 @@
     <string name="exact_sale_unit">Ninataka kutaja uzito halisi wa kizio changu cha kuuza</string>
     <string name="exact_sale_unit_hint">Ingiza ukubwa wa kizio chako cha kuuza i.e x kg</string>
     <string name="lbl_price_per_bag">Bei (%1$s kwa kila mfuko wa kilo 50) kwa %2$s</string>
-    <string name="up_20_30_usd_per_tonne">Dola 20-30 kwa tani</string>
-    <string name="up_30_50_usd_per_tonne">Dola 30-50 kwa tani moja</string>
-    <string name="up_50_100_usd_per_tonne">Dola 50-100 kwa tani moja</string>
-    <string name="up_100_150_usd_per_tonne">Dola 100-150 kwa tani moja</string>
-    <string name="up_150_200_usd_per_tonne">Dola 150-200 kwa tani moja</string>
+    <string name="up_20_30_usd_per_tonne">Dola 20–30 kwa tani</string>
+    <string name="up_30_50_usd_per_tonne">Dola 30–50 kwa tani moja</string>
+    <string name="up_50_100_usd_per_tonne">Dola 50–100 kwa tani moja</string>
+    <string name="up_100_150_usd_per_tonne">Dola 100–150 kwa tani moja</string>
+    <string name="up_150_200_usd_per_tonne">Dola 150–200 kwa tani moja</string>
     <string name="lbl_exact_price_x_per_unit_of_sale">Nataka kutaja bei halisi</string>
     <string name="lbl_submit">Wasilisha</string>
     <string name="lbl_cancel">Ghairi</string>
@@ -366,6 +366,8 @@
     <string name="lbl_farm_place">Eneo la shamba</string>
     <string name="lbl_country_supported">AKILIMO kwa sasa inasaidia Nigeria na Tanzania tu</string>
     <string name="lbl_farm_size">Ukubwa wa shamba</string>
+    <string name="lbl_acre_yield">3–6 t/ekari</string>
+    <string name="lbl_ha_yield">7.5–15 t/hekta</string>
 
 
 </resources>

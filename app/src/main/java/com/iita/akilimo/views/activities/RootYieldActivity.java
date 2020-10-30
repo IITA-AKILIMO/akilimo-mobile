@@ -3,6 +3,7 @@ package com.iita.akilimo.views.activities;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,9 +21,11 @@ import com.iita.akilimo.entities.FieldYield;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseActivity;
+import com.iita.akilimo.utils.CurrencyCode;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.widget.SpacingItemDecoration;
+import com.mynameismidori.currencypicker.ExtendedCurrency;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +42,7 @@ public class RootYieldActivity extends BaseActivity {
     View viewPos;
     AppCompatButton btnFinish;
     AppCompatButton btnCancel;
+    TextView rootYieldTitle;
 
     ActivityRootYieldBinding binding;
 
@@ -81,6 +85,7 @@ public class RootYieldActivity extends BaseActivity {
         viewPos = binding.coordinatorLayout;
         btnFinish = binding.twoButtons.btnFinish;
         btnCancel = binding.twoButtons.btnCancel;
+        rootYieldTitle = binding.rootYieldTitle;
 
         initToolbar();
         initComponent();
@@ -103,6 +108,11 @@ public class RootYieldActivity extends BaseActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.addItemDecoration(new SpacingItemDecoration(2, Tools.dpToPx(this, 3), true));
         recyclerView.setHasFixedSize(true);
+        String tonnage = getString(R.string.lbl_acre_yield);
+        if (areaUnit.equalsIgnoreCase("ha")) {
+            tonnage = getString(R.string.lbl_ha_yield);
+        }
+        rootYieldTitle.setText(getString(R.string.lbl_typical_yield_question, tonnage, areaUnit));
 
         List<FieldYield> items = setYieldData(areaUnit);
         //set data and list adapter

@@ -111,7 +111,7 @@
     <string name="lbl_planting_harvest">Do you want to consider alternative planting and harvest dates?</string>
     <string name="lbl_investment_amount">How much are you willing to invest in fertilizers?</string>
     <string name="lbl_typical_yield">What is the typical cassava yield of your field?</string>
-    <string name="lbl_typical_yield_question">What is the typical cassava root yield you have been getting so far?</string>
+    <string name="lbl_typical_yield_question">A typical cassava root yield in your area is %1$s. How much yield do you expect from your field?</string>
     <string name="lbl_maize_performance">The typical height of maize when grown without fertilizer</string>
     <string name="lbl_sweet_potato_prices">Sweet potato prices</string>
     <string name="lbl_height_of_maize_at_tasseling">Height of maize at tasseling</string>
@@ -459,5 +459,7 @@
     <string name="lbl_restart_app_prompt">Restart the app in order to apply translations to the navigation buttons?</string>
     <string name="lbl_optional">(Optional)</string>
     <string name="lbl_country_supported">AKILIMO currently supports Nigeria and Tanzania only</string>
+    <string name="lbl_acre_yield">3–6 t/acre</string>
+    <string name="lbl_ha_yield">7.5–15 t/acre</string>
 
 </resources>

@@ -45,12 +45,13 @@
                     android:padding="@dimen/spacing_mlarge">
 
                     <TextView
+                        android:id="@+id/rootYieldTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_medium"
-                        android:fontFamily="@font/ubuntu"
+                        android:fontFamily="@font/roboto"
                         android:lineSpacingExtra="@dimen/spacing_medium"
-                        android:text="@string/lbl_typical_yield_question"
+                        android:text="@string/app_name"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
                         android:textColor="@color/white" />
 
