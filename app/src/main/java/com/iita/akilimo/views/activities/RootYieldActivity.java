@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.AdapterGridTwoLine;
+import com.iita.akilimo.adapters.FieldYieldAdapter;
+import com.iita.akilimo.adapters.RecOptionsAdapter;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityRootYieldBinding;
 import com.iita.akilimo.entities.FieldYield;
@@ -22,6 +24,7 @@ import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.CurrencyCode;
+import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.widget.SpacingItemDecoration;
@@ -47,7 +50,7 @@ public class RootYieldActivity extends BaseActivity {
     ActivityRootYieldBinding binding;
 
     private FieldYield savedYield;
-    private AdapterGridTwoLine mAdapter;
+    private FieldYieldAdapter mAdapter;
 
     private double selectedYieldAmount = 0.0;
     private final Integer[] yieldImages = {
@@ -105,18 +108,18 @@ public class RootYieldActivity extends BaseActivity {
     @Override
     protected void initComponent() {
         btnFinish.setText(getString(R.string.lbl_finish));
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        recyclerView.addItemDecoration(new SpacingItemDecoration(2, Tools.dpToPx(this, 3), true));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
+        recyclerView.addItemDecoration(new SpacingItemDecoration(1, Tools.dpToPx(this, 3), true));
         recyclerView.setHasFixedSize(true);
         String tonnage = getString(R.string.lbl_acre_yield);
-        if (areaUnit.equalsIgnoreCase("ha")) {
+        if (areaUnit.equalsIgnoreCase("ha") || areaUnit.equalsIgnoreCase("hekta")) {
             tonnage = getString(R.string.lbl_ha_yield);
         }
-        rootYieldTitle.setText(getString(R.string.lbl_typical_yield_question, tonnage, areaUnit));
+        rootYieldTitle.setText(getString(R.string.lbl_typical_yield_question, tonnage));
 
         List<FieldYield> items = setYieldData(areaUnit);
         //set data and list adapter
-        mAdapter = new AdapterGridTwoLine(this);
+        mAdapter = new FieldYieldAdapter(this, items, ItemAnimation.FADE_IN);
         recyclerView.setAdapter(mAdapter);
         mAdapter.setItems(selectedYieldAmount, items);
 
@@ -192,21 +195,21 @@ public class RootYieldActivity extends BaseActivity {
         }
 
         List<FieldYield> items = new ArrayList<>();
-        items.add(yieldObject(yieldImages[0], rd_3_tonnes, 3.75));
-        items.add(yieldObject(yieldImages[1], rd_6_tonnes, 11.25));
-        items.add(yieldObject(yieldImages[2], rd_9_tonnes, 18.75));
-        items.add(yieldObject(yieldImages[3], rd_12_tonnes, 26.25));
-        items.add(yieldObject(yieldImages[4], rd_more, 33.75));
+        items.add(yieldObject(yieldImages[0], getString(R.string.fcy_lower), rd_3_tonnes, 3.75));
+        items.add(yieldObject(yieldImages[1], getString(R.string.fcy_about_the_same), rd_6_tonnes, 11.25));
+        items.add(yieldObject(yieldImages[2], getString(R.string.fcy_somewhat_higher), rd_9_tonnes, 18.75));
+        items.add(yieldObject(yieldImages[3], getString(R.string.fcy_2_3_times_higher), rd_12_tonnes, 26.25));
+        items.add(yieldObject(yieldImages[4], getString(R.string.fcy_more_than_3_times_higher), rd_more, 33.75));
 
         return items;
     }
 
-    private FieldYield yieldObject(Integer imageID, String yieldLabel, double fieldYieldAmount) {
-        //double currentFieldYieldAmount = mathHelper.computeFieldYield(fieldYieldAmount, currency);
+    private FieldYield yieldObject(Integer imageID, String yieldLabel, String fieldYieldAmountLabel, double fieldYieldAmount) {
         FieldYield cfy = new FieldYield();
+        cfy.setFieldYieldAmountLabel(fieldYieldAmountLabel);
         cfy.setYieldAmount(fieldYieldAmount);
-        cfy.setImageId(imageID);
         cfy.setFieldYieldLabel(yieldLabel);
+        cfy.setImageId(imageID);
 
         return cfy;
     }

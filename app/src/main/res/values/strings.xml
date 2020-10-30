@@ -462,4 +462,10 @@
     <string name="lbl_acre_yield">3–6 t/acre</string>
     <string name="lbl_ha_yield">7.5–15 t/acre</string>
 
+    <string name="fcy_lower">Lower</string>
+    <string name="fcy_about_the_same">About the same</string>
+    <string name="fcy_somewhat_higher">Somewhat higher</string>
+    <string name="fcy_2_3_times_higher">2–3 times higher</string>
+    <string name="fcy_more_than_3_times_higher">More than 3 times higher</string>
+    <string name="fcy_not_sure">I\'m not sure</string>
 </resources>

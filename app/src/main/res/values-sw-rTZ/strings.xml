@@ -368,6 +368,13 @@
     <string name="lbl_farm_size">Ukubwa wa shamba</string>
     <string name="lbl_acre_yield">3–6 t/ekari</string>
     <string name="lbl_ha_yield">7.5–15 t/hekta</string>
+    <string name="exact_investment_x_per_field_area_hint">Bei katika %1$s for %2$s %3$s</string>
+    <string name="fcy_lower">Chini</string>
+    <string name="fcy_about_the_same">Karibu sawa</string>
+    <string name="fcy_somewhat_higher">Kiwango cha juu zidi</string>
+    <string name="fcy_2_3_times_higher">Mara 2-3 juu</string>
+    <string name="fcy_more_than_3_times_higher">Zaidi ya mara 3 juu</string>
+    <string name="fcy_not_sure">Sina uhakika</string>
 
 
 </resources>
