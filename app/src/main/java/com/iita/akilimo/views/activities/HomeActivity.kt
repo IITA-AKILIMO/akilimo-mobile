@@ -36,6 +36,7 @@ import kotlin.system.exitProcess
 
 
 @Suppress("SENSELESS_COMPARISON")
+@Deprecated("To be removed in future releases")
 class HomeActivity : BaseActivity(), IFragmentCallBack {
     companion object {
         const val MAP_BOX_PLACE_PICKER_REQUEST_CODE = 208
@@ -136,6 +137,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             else -> btnStart.visibility = View.GONE
         }
     }
+
     override fun initToolbar() {
         throw UnsupportedOperationException()
     }

@@ -43,21 +43,21 @@
     <string name="one_half_acre">Kama ekari 1.5</string>
     <string name="two_half_acres">Kama ekari 2.5</string>
     <string name="five_acres">Kama ekari 5</string>
-    <string name="exact_field_area">Taja eneo halisi la shamba lako katika ekari</string>
+    <string name="exact_field_area">Taja eneo halisi la shamba langu</string>
     <!--  ha  -->
     <string name="quarter_acre_to_ha">Kama hekta 0.1</string>
     <string name="half_acre_to_ha">Kama hekta 0.2</string>
     <string name="one_acre_to_ha">Kama hekta 0.4</string>
-    <string name="one_half_acre_to_ha">Kama hekta 0.6)</string>
+    <string name="one_half_acre_to_ha">Kama hekta 0.6</string>
     <string name="two_half_acre_to_ha">Kama hekta 1</string>
-    <string name="exact_acre_to_ha">Taja eneo halisi la shamba lako katika hekta</string>
+    <string name="exact_acre_to_ha">Taja eneo halisi la shamba langu</string>
     <!--   m2  -->
     <string name="quarter_acre_to_m2">Kama 1,000 m\u00B2</string>
     <string name="half_acre_to_m2">Kama 2000 m\u00B2</string>
     <string name="one_acre_to_m2">Kama 4,000 m\u00B2</string>
     <string name="one_half_acre_to_m2">Kama 6,000 m\u00B2</string>
     <string name="two_half_acre_to_m2">Kama 10,000 m\u00B2</string>
-    <string name="exact_acre_to_m2">Taja eneo halisi la shamba lako katika m\u00B2</string>
+    <string name="exact_acre_to_m2">Taja eneo halisi la shamba langu</string>
 
 
     <string name="lbl_salutation">Halo, ni vizuri kukutana nawe!</string>
@@ -83,7 +83,7 @@
     <string name="lbl_height_of_maize_at_tasseling">Urefu wa mahindi wakati wa kutoa mbelewele</string>
     <string name="lbl_maize_performance_poor">Hizi ni dalili za udongo usio na rutuba lakini sio za kawaida</string>
     <string name="lbl_maize_performance_rich">Hizi ni dalili za udongo wenye rutuba lakini sio za kawaida</string>
-    <string name="lbl_market_outlet">Bei ya muhogo wakati wa kuvuna</string>
+    <string name="lbl_market_outlet">Unatarajia bei gani kwa muhogo wako wakati wa mavuno?</string>
     <string name="lbl_market_outlet_maize">Bei ya mahindi</string>
     <string name="lbl_tillage_operations">Shughuli za ukatuaji na bei zake</string>
     <string name="lbl_cost_of_manual_tillage">Gharama za kulima kwa mkono</string>
@@ -168,7 +168,7 @@
     <string name="unit_price_label">%1$,.0f - %2$,.0f %3$s kwa %4$s</string>
     <string name="title_activity_dst_recommendation">Mapendekezo</string>
     <string name="lbl_get_recommendations">Pata mapendekezo</string>
-    <string name="lbl_rec_header">Ili kupata mapendekezo halisi, toa taarifa sahihi juu ya vitu vilivyopo hapa chini</string>
+    <string name="lbl_rec_header">Tuko tayari kukupa maoni. Ikiwa unataka ushauri zaidi umeboreshwa jibu maswali hapa chini vinginevyo piga kitufe cha "Pata mapendekezo" chini</string>
     <string name="lbl_compute_error">Haiwezekani kuchakata mapendekezo, tafadhali jaribu tena</string>
     <string name="lbl_rec_sample">Tunapendekeza usitumie mbolea yoyote. Hatutarajii kuwa maombi ya mbolea yatasababisha kuongezeka kwa mavuno zaidi kwa hali yako sasa.</string>
     <string name="lbl_rec_intro">Akilimo atakushauri jinsi ya kupanda muhogo.\nNi ushauri gani unauhitaji?</string>
@@ -225,7 +225,7 @@
     <string name="lbl_dark_green_leaves">Kupita kimo cha mtu (200 sm) lakini majani ni kijani iliyokolea</string>
     <string name="lbl_cassava_sales_outlet">Ni wapi unataka kuuza muhogo wako</string>
     <string name="lbl_starch_factory">Kiwanda cha wanga</string>
-    <string name="lbl_other_markets">Masoko mengine</string>
+    <string name="lbl_regular_market">Masoko ya mizizi ya muhogo mara kwa mara</string>
     <string name="lbl_select_starch_factory">Chagua kiwanda cha wanga</string>
     <string name="lbl_fresh_cobs">Mahindi mabichi</string>
     <string name="lbl_dry_grain">Nafaka kavu</string>

@@ -61,7 +61,7 @@
                         android:id="@+id/rdOtherMarket"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/lbl_other_markets" />
+                        android:text="@string/lbl_regular_market" />
 
                 </RadioGroup>
 

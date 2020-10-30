@@ -60,7 +60,7 @@
     <string name="one_half_acre">About 1.5 acre</string>
     <string name="two_half_acres">About 2.5 acre</string>
     <string name="five_acres">About 5 acre</string>
-    <string name="exact_field_area">Specify the exact area of my field in acre</string>
+    <string name="exact_field_area">Specify the exact area of my field</string>
 
     <!-- ha -->
     <string name="quarter_acre_to_ha">About 0.1 ha</string>
@@ -68,7 +68,7 @@
     <string name="one_acre_to_ha">About 0.4 ha</string>
     <string name="one_half_acre_to_ha">About 0.6 ha</string>
     <string name="two_half_acre_to_ha">About 1 ha</string>
-    <string name="exact_acre_to_ha">Specify the exact area of my field in ha</string>
+    <string name="exact_acre_to_ha">Specify the exact area of my field</string>
 
     <!--  m2 -->
     <string name="quarter_acre_to_m2">About 1,000 m\u00B2</string>
@@ -76,7 +76,7 @@
     <string name="one_acre_to_m2">About 4,000 m\u00B2</string>
     <string name="one_half_acre_to_m2">About 6,000 m\u00B2</string>
     <string name="two_half_acre_to_m2">About 10,000 m\u00B2</string>
-    <string name="exact_acre_to_m2">Specify the exact area of my field in m\u00B2</string>
+    <string name="exact_acre_to_m2">Specify the exact area of my field in</string>
 
     <string name="lbl_salutation">Hi, nice to meet you!</string>
     <string name="lbl_farm_location">Where is your cassava field "%1$s" located?</string>
@@ -109,7 +109,7 @@
     <string name="lbl_fertilizer_costs">Fertilizer costs</string>
 
     <string name="lbl_planting_harvest">Do you want to consider alternative planting and harvest dates?</string>
-    <string name="lbl_investment_amount">How much are you willing to invest on fertilizers?</string>
+    <string name="lbl_investment_amount">How much are you willing to invest in fertilizers?</string>
     <string name="lbl_typical_yield">What is the typical cassava yield of your field?</string>
     <string name="lbl_typical_yield_question">What is the typical cassava root yield you have been getting so far?</string>
     <string name="lbl_maize_performance">The typical height of maize when grown without fertilizer</string>
@@ -119,7 +119,7 @@
     <string name="lbl_maize_performance_poor">These are very poor soil conditions and not very common</string>
     <string name="lbl_maize_performance_rich">These are very rich soil conditions and not very common</string>
 
-    <string name="lbl_market_outlet">Cassava root prices at harvest</string>
+    <string name="lbl_market_outlet">What price do you expect for your cassava at harvest?</string>
     <string name="lbl_market_outlet_maize">Price of maize produce</string>
     <string name="lbl_tillage_operations">Tillage operations and related cost</string>
     <string name="lbl_cost_of_manual_tillage">Cost of manual tillage</string>
@@ -227,7 +227,7 @@
     <string name="title_activity_dst_recommendation">Recommendation</string>
 
     <string name="lbl_get_recommendations">Get recommendations</string>
-    <string name="lbl_rec_header">To get a more tailored recommendation, provide information on the items below</string>
+    <string name="lbl_rec_header">We are ready to give you recommendation. If you want more customized advice answer the questions below otherwise hit the "Get recommendations" button at the bottom</string>
     <string name="lbl_compute_error">Unable to compute recommendations, please try again</string>
     <string name="lbl_compute_timeout_error">Unable to compute recommendations, please try again</string>
 
@@ -299,7 +299,7 @@
     <string name="lbl_dark_green_leaves">Larger than a person (200 cm) but with dark green leaves</string>
     <string name="lbl_cassava_sales_outlet">Where do you want to sell your cassava?</string>
     <string name="lbl_starch_factory">Starch factory</string>
-    <string name="lbl_other_markets">Other markets</string>
+    <string name="lbl_regular_market">Regular cassava root markets</string>
     <string name="lbl_select_starch_factory">Select starch factory</string>
     <string name="lbl_fresh_cobs">Fresh cobs</string>
     <string name="lbl_dry_grain">Dry grain</string>

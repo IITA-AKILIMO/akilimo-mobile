@@ -51,6 +51,7 @@ import java.util.List;
  * status bar and navigation/system bar) with user interaction.
  */
 public class DstRecommendationActivity extends BaseActivity implements IRecommendationCallBack {
+
     public static final String REC_TAG = DstRecommendationActivity.class.getSimpleName();
 
     Toolbar toolbar;
@@ -221,7 +222,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
             public void onError(@NonNull VolleyError volleyError) {
                 if (volleyError instanceof TimeoutError) {
                     // your stuf
-                }else{
+                } else {
 
                 }
                 lyt_progress.setVisibility(View.GONE);
