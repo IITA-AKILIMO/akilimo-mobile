@@ -127,6 +127,7 @@ public class RootYieldActivity extends BaseActivity {
             mAdapter.setActiveRowIndex(position);
             selectedYieldAmount = fieldYield.getYieldAmount();
             String yieldLabel = fieldYield.getFieldYieldLabel();
+            String fieldYieldAmountLabel = fieldYield.getFieldYieldAmountLabel();
             try {
                 if (savedYield == null) {
                     savedYield = new FieldYield();
@@ -135,7 +136,7 @@ public class RootYieldActivity extends BaseActivity {
                 savedYield.setFieldYieldLabel(yieldLabel);
                 database.fieldYieldDao().insert(savedYield);
 
-                Toast.makeText(context, yieldLabel, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, fieldYieldAmountLabel, Toast.LENGTH_SHORT).show();
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                 Crashlytics.logException(ex);
