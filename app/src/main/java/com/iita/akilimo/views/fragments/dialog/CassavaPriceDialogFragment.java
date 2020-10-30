@@ -27,7 +27,9 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.entities.CassavaPrice;
 import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IPriceDialogDismissListener;
+import com.iita.akilimo.utils.CurrencyCode;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
+import com.mynameismidori.currencypicker.ExtendedCurrency;
 
 import java.util.List;
 
@@ -237,16 +239,19 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
         this.onDismissListener = dismissListener;
     }
 
-    private String labelText(double unitPriceLower, double unitPriceUpper, String currency, String uos, boolean... doConversions) {
+    private String labelText(double unitPriceLower, double unitPriceUpper, String currencyCode, String uos, boolean... doConversions) {
         //cross convert according to weight
-
         boolean convertCurrency = true;
         if (doConversions.length > 0) {
             convertCurrency = doConversions[0];
         }
         double priceLower = unitPriceLower;
         double priceHigher = unitPriceUpper;
-
+        String currencySymbol = currencyCode;
+        ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
+        if (extendedCurrency != null) {
+            currencySymbol = extendedCurrency.getSymbol();
+        }
         switch (unitOfSaleEnum) {
             case ONE_KG:
                 priceLower = (unitPriceLower * EnumUnitOfSale.ONE_KG.unitWeight()) / 1000;
@@ -263,15 +268,15 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
         }
 
         minAmountUSD = priceLower; //minimum amount will be dynamic based on weight being sold, max amount will be constant
-        double localLower = mathHelper.convertToLocalCurrency(priceLower, currency, 100);
-        double localHigher = mathHelper.convertToLocalCurrency(priceHigher, currency, 100);
+        double localLower = mathHelper.convertToLocalCurrency(priceLower, currencyCode, 100);
+        double localHigher = mathHelper.convertToLocalCurrency(priceHigher, currencyCode, 100);
 
         if (!convertCurrency) {
             localLower = priceLower;
             localHigher = priceHigher;
         }
 
-        return context.getString(R.string.unit_price_label, localLower, localHigher, currency, uos);
+        return context.getString(R.string.unit_price_label, localLower, localHigher, currencySymbol, uos);
     }
 
 }

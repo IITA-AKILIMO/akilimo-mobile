@@ -27,7 +27,9 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.entities.MaizePrice;
 import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IPriceDialogDismissListener;
+import com.iita.akilimo.utils.CurrencyCode;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
+import com.mynameismidori.currencypicker.ExtendedCurrency;
 
 import java.util.List;
 
@@ -236,9 +238,14 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
         this.onDismissListener = dismissListener;
     }
 
-    private String labelText(double unitPriceLower, double unitPriceUpper, String currency, String uos, boolean... doConversions) {
+    private String labelText(double unitPriceLower, double unitPriceUpper, String currencyCode, String uos, boolean... doConversions) {
         double priceLower = unitPriceLower;
         double priceHigher = unitPriceUpper;
+        String currencySymbol = currencyCode;
+        ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
+        if (extendedCurrency != null) {
+            currencySymbol = extendedCurrency.getSymbol();
+        }
 
         switch (unitOfSaleEnum) {
             case ONE_KG:
@@ -257,7 +264,7 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
 
         minAmountUSD = priceLower; //minimum amount will be dynamic based on weight being sold, max amount will be constant
 
-        return context.getString(R.string.unit_price_label, priceLower, priceHigher, currency, uos);
+        return context.getString(R.string.unit_price_label, priceLower, priceHigher, currencySymbol, uos);
     }
 
 }

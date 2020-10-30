@@ -26,7 +26,9 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
 import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.models.OperationCost;
+import com.iita.akilimo.utils.CurrencyCode;
 import com.iita.akilimo.utils.enums.EnumCountry;
+import com.mynameismidori.currencypicker.ExtendedCurrency;
 
 import java.util.ArrayList;
 
@@ -190,6 +192,13 @@ public class OperationCostsDialogFragment extends BaseDialogFragment {
 
     private void addCostRadioButtons(@NonNull ArrayList<OperationCost> operationCosts) {
         radioGroup.removeAllViews();
+
+        String currencySymbol = currencyCode;
+        ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
+        if (extendedCurrency != null) {
+            currencySymbol = extendedCurrency.getSymbol();
+        }
+
         for (OperationCost operationCost : operationCosts) {
             long listIndex = operationCost.getListIndex();
             double price = operationCost.getAverageUsdPrice();
@@ -211,7 +220,7 @@ public class OperationCostsDialogFragment extends BaseDialogFragment {
             radioButton.setTag(listIndex);
 
 
-            String radioLabel = String.format("%s %s %s %s", minPrice, translatedSuffix, maxPrice, currencyCode);
+            String radioLabel = String.format("%s %s %s %s", minPrice, translatedSuffix, maxPrice, currencySymbol);
 
             if (price >= 0 && price <= 0) {
                 radioLabel = context.getString(R.string.lbl_do_not_know);

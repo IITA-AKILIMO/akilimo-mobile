@@ -202,7 +202,7 @@ public class FertilizersActivity extends BaseActivity {
     @Override
     protected void validate(boolean backPressed) {
         availableFertilizersList = database.fertilizerDao().findAllByCountry(countryCode);
-        if (mAdapter != null && availableFertilizersList != null) {
+        if (mAdapter != null) {
             mAdapter.setItems(availableFertilizersList);
         }
     }

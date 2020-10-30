@@ -27,6 +27,8 @@ import com.iita.akilimo.entities.Fertilizer;
 import com.iita.akilimo.entities.FertilizerPrice;
 import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IDismissListener;
+import com.iita.akilimo.utils.CurrencyCode;
+import com.mynameismidori.currencypicker.ExtendedCurrency;
 
 import java.util.List;
 
@@ -105,7 +107,12 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
         if (fertilizer != null) {
             countryCode = fertilizer.getCountryCode();
             currencyCode = fertilizer.getCurrency();
-            String titleText = context.getString(R.string.price_per_bag, currencyCode, fertilizer.getName());
+            String currencySymbol = currencyCode;
+            ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
+            if (extendedCurrency != null) {
+                currencySymbol = extendedCurrency.getSymbol();
+            }
+            String titleText = context.getString(R.string.price_per_bag, currencySymbol, fertilizer.getName());
             lblPricePerBag.setText(titleText);
         }
 

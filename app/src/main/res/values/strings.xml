@@ -139,7 +139,7 @@
     <string name="lbl_one_month_window">1 month</string>
     <string name="lbl_two_month_window">2 months</string>
 
-    <string name="lbl_to">to</string>
+    <string name="lbl_to" translatable="false">-</string>
     <string name="lbl_no">No</string>
     <string name="lbl_yes">Yes</string>
     <string name="lbl_planting_harvest_dates">Planting and harvest dates</string>

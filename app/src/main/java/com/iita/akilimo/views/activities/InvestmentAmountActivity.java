@@ -25,7 +25,9 @@ import com.iita.akilimo.entities.InvestmentAmount;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseActivity;
+import com.iita.akilimo.utils.CurrencyCode;
 import com.iita.akilimo.utils.MathHelper;
+import com.mynameismidori.currencypicker.ExtendedCurrency;
 
 ;
 
@@ -207,6 +209,12 @@ public class InvestmentAmountActivity extends BaseActivity {
             }
         }
 
+        String currencySymbol = currency;
+        ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currency);
+        if (extendedCurrency != null) {
+            currencySymbol = extendedCurrency.getSymbol();
+        }
+
         MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
             fieldSize = mandatoryInfo.getAreaSize();
@@ -231,11 +239,11 @@ public class InvestmentAmountActivity extends BaseActivity {
         String separator = getString(R.string.lbl_per_separator);
 
         //convert the currencies
-        rd_25_per_acre.setText(mathHelper.convertCurrency(band_25, currency, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
-        rd_50_per_acre.setText(mathHelper.convertCurrency(band_50, currency, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
-        rd_100_per_acre.setText(mathHelper.convertCurrency(band_100, currency, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
-        rd_150_per_acre.setText(mathHelper.convertCurrency(band_150, currency, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
-        rd_200_per_acre.setText(mathHelper.convertCurrency(band_200, currency, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
+        rd_25_per_acre.setText(mathHelper.convertCurrency(band_25, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
+        rd_50_per_acre.setText(mathHelper.convertCurrency(band_50, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
+        rd_100_per_acre.setText(mathHelper.convertCurrency(band_100, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
+        rd_150_per_acre.setText(mathHelper.convertCurrency(band_150, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
+        rd_200_per_acre.setText(mathHelper.convertCurrency(band_200, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
 
         rd_exact_investment.setText(exactText);
         txtEditInvestmentAmount.setHint(exactText);
