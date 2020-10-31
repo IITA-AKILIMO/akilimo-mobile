@@ -29,7 +29,7 @@ import com.iita.akilimo.entities.*
         ScheduledDate::class,
         StarchFactory::class,
         UseCases::class
-    ], version = 5, exportSchema = false
+    ], version = 6, exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -71,7 +71,7 @@ abstract class AppDatabase : RoomDatabase() {
                     if (INSTANCE == null) {
                         INSTANCE = Room.databaseBuilder(
                             context.applicationContext,
-                            AppDatabase::class.java, "AKILIMO_14_OCT"
+                            AppDatabase::class.java, "AKILIMO_28_OCT"
                         )
                             .fallbackToDestructiveMigration()
                             .allowMainThreadQueries()

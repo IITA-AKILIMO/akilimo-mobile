@@ -28,6 +28,8 @@ import com.iita.akilimo.entities.FertilizerPrice;
 import com.iita.akilimo.entities.InterCropFertilizer;
 import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IDismissIntercropListener;
+import com.iita.akilimo.utils.CurrencyCode;
+import com.mynameismidori.currencypicker.ExtendedCurrency;
 
 import java.util.List;
 
@@ -107,7 +109,12 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
         if (fertilizer != null) {
             countryCode = fertilizer.getCountryCode();
             currencyCode = fertilizer.getCurrency();
-            String titleText = context.getString(R.string.price_per_bag, currencyCode, fertilizer.getName());
+            currencySymbol = currencyCode;
+            ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
+            if (extendedCurrency != null) {
+                currencySymbol = extendedCurrency.getSymbol();
+            }
+            String titleText = context.getString(R.string.price_per_bag, currencySymbol, fertilizer.getName());
             lblPricePerBag.setText(titleText);
         }
 
@@ -191,7 +198,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
             exactPriceWrapper.getEditText().setText(null);
             if (savedPricePerBag == 0) {
                 bagPrice = 0.0;
-                bagPriceRange = "NA";
+                bagPriceRange = getString(R.string.lbl_do_not_know);
             } else if (savedPricePerBag < 0) {
                 isExactPriceRequired = true;
                 isPriceValid = false;
@@ -206,6 +213,11 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
     private void addPriceRadioButtons(List<FertilizerPrice> fertilizerPricesList, InterCropFertilizer fertilizer) {
         radioGroup.removeAllViews();
         double selectedPrice = 0.0;
+        String currencySymbol = currencyCode;
+        ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
+        if (extendedCurrency != null) {
+            currencySymbol = extendedCurrency.getSymbol();
+        }
         if (fertilizer != null) {
             selectedPrice = fertilizer.getPricePerBag();
             isExactPriceRequired = fertilizer.getExactPrice();
@@ -229,10 +241,11 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
             RadioButton radioButton = new RadioButton(getActivity());
             radioButton.setId(View.generateViewId());
             radioButton.setTag(listIndex);
-//            radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.spacing_large));
+            //radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.spacing_large));
 
             double price = pricesResp.getPricePerBag();
-            String radioLabel = pricesResp.getPriceRange();
+            String radioLabel = String.format("%s-%s %s", pricesResp.getMinLocalPrice(), pricesResp.getMaxLocalPrice(), currencySymbol);
+
             if (price == 0) {
                 radioLabel = context.getString(R.string.lbl_do_not_know);
             } else if (price < 0) {

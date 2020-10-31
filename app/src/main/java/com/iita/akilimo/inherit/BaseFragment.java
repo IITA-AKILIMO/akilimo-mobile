@@ -25,6 +25,7 @@ import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.entities.LocationInfo;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.SessionManager;
+import com.iita.akilimo.utils.enums.EnumCountry;
 import com.stepstone.stepper.VerificationError;
 
 import dev.b3nedikt.reword.Reword;
@@ -40,6 +41,7 @@ public abstract class BaseFragment extends Fragment {
     protected double baseSqm = 4046.86;
 
     protected String currency;
+    protected String currencySymbol;
     protected String countryCode;
     protected String countryName;
 

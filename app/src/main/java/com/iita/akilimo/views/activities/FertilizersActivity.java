@@ -48,6 +48,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 
 public class FertilizersActivity extends BaseActivity {
@@ -202,7 +203,7 @@ public class FertilizersActivity extends BaseActivity {
     @Override
     protected void validate(boolean backPressed) {
         availableFertilizersList = database.fertilizerDao().findAllByCountry(countryCode);
-        if (mAdapter != null && availableFertilizersList != null) {
+        if (mAdapter != null) {
             mAdapter.setItems(availableFertilizersList);
         }
     }
@@ -281,16 +282,15 @@ public class FertilizersActivity extends BaseActivity {
             }
 
             @Override
-            public void onSuccessJsonArr(JSONArray jsonArray) {
+            public void onSuccessJsonArr(@NotNull JSONArray jsonArray) {
                 lyt_progress.setVisibility(View.GONE);
                 ObjectMapper objectMapper = new ObjectMapper();
                 try {
                     fertilizerPricesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<FertilizerPrice>>() {
                     });
 
-                    long[] status = null;
                     if (fertilizerPricesList.size() > 0) {
-                        status = database.fertilizerPriceDao().insertAll(fertilizerPricesList);
+                        database.fertilizerPriceDao().insertAll(fertilizerPricesList);
                     }
 
                     validate(false);

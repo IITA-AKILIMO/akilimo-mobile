@@ -51,6 +51,7 @@ import java.util.List;
  * status bar and navigation/system bar) with user interaction.
  */
 public class DstRecommendationActivity extends BaseActivity implements IRecommendationCallBack {
+
     public static final String REC_TAG = DstRecommendationActivity.class.getSimpleName();
 
     Toolbar toolbar;
@@ -140,6 +141,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         if (profileInfo != null) {
             recommendationChannelDialog = new RecommendationChannelDialog(this, profileInfo);
             recommendationChannelDialog.show(getSupportFragmentManager(), RecommendationChannelDialog.TAG);
+            recommendationChannelDialog.setCancelable(false);
         } else {
             //show a message
             errorLabel.setText(R.string.lbl_no_profile_info);
@@ -152,7 +154,6 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
 
     @Override
     public void onDataReceived(@NotNull ProfileInfo profileInfo) {
-
         //update the profile info
         database.profileInfoDao().update(profileInfo);
         buildRecommendationData();
@@ -221,7 +222,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
             public void onError(@NonNull VolleyError volleyError) {
                 if (volleyError instanceof TimeoutError) {
                     // your stuf
-                }else{
+                } else {
 
                 }
                 lyt_progress.setVisibility(View.GONE);

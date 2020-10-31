@@ -53,6 +53,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected RequestQueue queue;
 
     protected String countryCode = EnumCountry.Nigeria.countryCode();
+    protected String currencySymbol = EnumCountry.Nigeria.countryCode();
     protected String baseCurrency = "USD";
     protected String currency = EnumCountry.Nigeria.currency();
     protected EnumUseCase useCase;

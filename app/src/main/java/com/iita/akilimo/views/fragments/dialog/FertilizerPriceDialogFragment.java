@@ -27,6 +27,8 @@ import com.iita.akilimo.entities.Fertilizer;
 import com.iita.akilimo.entities.FertilizerPrice;
 import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IDismissListener;
+import com.iita.akilimo.utils.CurrencyCode;
+import com.mynameismidori.currencypicker.ExtendedCurrency;
 
 import java.util.List;
 
@@ -105,7 +107,12 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
         if (fertilizer != null) {
             countryCode = fertilizer.getCountryCode();
             currencyCode = fertilizer.getCurrency();
-            String titleText = context.getString(R.string.price_per_bag, currencyCode, fertilizer.getName());
+            currencySymbol = currencyCode;
+            ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
+            if (extendedCurrency != null) {
+                currencySymbol = extendedCurrency.getSymbol();
+            }
+            String titleText = context.getString(R.string.price_per_bag, fertilizer.getName());
             lblPricePerBag.setText(titleText);
         }
 
@@ -175,20 +182,25 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
         int radioButtonId = radioGroup.getCheckedRadioButtonId();
         RadioButton radioButton = dialog.findViewById(radioButtonId);
         long itemTagIndex = (long) radioButton.getTag();
+        currencySymbol = currencyCode;
+        ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
+        if (extendedCurrency != null) {
+            currencySymbol = extendedCurrency.getSymbol();
+        }
 
         try {
             FertilizerPrice pricesResp = fertilizerPricesList.get((int) itemTagIndex);
             isExactPriceRequired = false;
             isPriceValid = true;
             savedPricePerBag = pricesResp.getPricePerBag();
-            bagPriceRange = pricesResp.getPriceRange();
+            bagPriceRange = String.format("%s-%s %s", pricesResp.getMinLocalPrice(), pricesResp.getMaxLocalPrice(), currencySymbol);
 
             bagPrice = savedPricePerBag;
             exactPriceWrapper.setVisibility(View.GONE);
             exactPriceWrapper.getEditText().setText(null);
             if (savedPricePerBag == 0) {
                 bagPrice = 0.0;
-                bagPriceRange = "NA";
+                bagPriceRange = getString(R.string.lbl_do_not_know);
             } else if (savedPricePerBag < 0) {
                 isExactPriceRequired = true;
                 isPriceValid = false;
@@ -203,6 +215,11 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
     private void addPriceRadioButtons(List<FertilizerPrice> fertilizerPricesList, Fertilizer fertilizer) {
         radioGroup.removeAllViews();
         double selectedPrice = 0.0;
+        currencySymbol = currencyCode;
+        ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
+        if (extendedCurrency != null) {
+            currencySymbol = extendedCurrency.getSymbol();
+        }
         if (fertilizer != null) {
             selectedPrice = fertilizer.getPricePerBag();
             isExactPriceRequired = fertilizer.getExactPrice();
@@ -229,7 +246,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
 //            radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.spacing_large));
 
             double price = pricesResp.getPricePerBag();
-            String radioLabel = pricesResp.getPriceRange();
+            String radioLabel = String.format("%s-%s %s", pricesResp.getMinLocalPrice(), pricesResp.getMaxLocalPrice(), currencySymbol);
             if (price == 0) {
                 radioLabel = context.getString(R.string.lbl_do_not_know);
             } else if (price < 0) {

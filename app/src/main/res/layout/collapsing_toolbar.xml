@@ -19,7 +19,7 @@
         android:fitsSystemWindows="true"
         android:scaleType="centerCrop"
         app:layout_collapseMode="parallax"
-        app:srcCompat="@drawable/bg_polygon" />
+        app:srcCompat="@drawable/bg_header" />
 
     <include
         layout="@layout/toolbar"

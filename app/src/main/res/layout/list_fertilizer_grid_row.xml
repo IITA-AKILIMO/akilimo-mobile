@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/lyt_parent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -15,11 +16,11 @@
         android:layout_gravity="center_horizontal|bottom"
         android:alpha="1"
         android:orientation="vertical"
-        android:padding="3dp">
+        android:padding="@dimen/spacing_medium">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="250dp">
+            android:layout_height="150dp">
 
             <ImageView
                 android:id="@+id/fertilizerImage"
@@ -27,66 +28,51 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                app:srcCompat="@drawable/ic_sack_outline" />
+                app:srcCompat="@drawable/ic_fertilizer_bag" />
+
+            <View
+                android:id="@+id/titleSpacer"
+                android:layout_width="10dp"
+                android:layout_height="60dp"
+                android:layout_alignStart="@+id/fertilizerImage"
+                android:layout_alignEnd="@+id/fertilizerImage"
+                android:layout_centerVertical="true"
+                android:gravity="center" />
 
             <TextView
                 android:id="@+id/fertilizerName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/titleSpacer"
                 android:layout_alignStart="@+id/fertilizerImage"
                 android:layout_alignEnd="@+id/fertilizerImage"
                 android:layout_centerVertical="true"
-                android:fontFamily="@font/ubuntu"
+                android:fontFamily="@font/roboto_bold"
                 android:gravity="center"
                 android:paddingBottom="@dimen/spacing_medium"
                 android:text="@string/lbl_dummy_fertilizer"
-                android:textColor="@color/colorAccent" />
+                android:textColor="@color/grey_5"
+                android:textSize="11sp"
+                tools:ignore="SmallSp" />
+
+
+            <TextView
+                android:id="@+id/bagPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/fertilizerName"
+                android:layout_alignStart="@+id/fertilizerImage"
+                android:layout_alignEnd="@+id/fertilizerImage"
+                android:layout_centerVertical="true"
+                android:fontFamily="@font/roboto"
+                android:gravity="center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="@string/lbl_bag_price"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                android:textColor="@color/grey_5" />
 
         </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/bagPricePanel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:background="@color/blue_grey_800"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="@dimen/spacing_medium">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/bagPrice"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/ubuntu_bold"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:text="@string/lbl_bag_price"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                    android:textColor="@color/white" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="@dimen/spacing_small"
-                android:layout_height="0dp" />
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/selectionIndicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:tint="@color/grey_5"
-                app:srcCompat="@drawable/ic_check_box_unchecked" />
-
-        </LinearLayout>
-
     </LinearLayout>
 
 
