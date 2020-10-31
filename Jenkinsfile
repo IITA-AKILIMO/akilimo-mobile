@@ -233,7 +233,7 @@ pipeline {
           jacoco changeBuildStatus: true, sourcePattern: '**/src/main/java,**/src/main/kotlin'
           cleanWs()
         }
-      always {
+      failure {
         cleanWs()
       }
   }
