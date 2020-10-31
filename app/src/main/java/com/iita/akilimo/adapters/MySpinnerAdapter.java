@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.iita.akilimo.R;
 
 import java.util.List;
@@ -57,8 +57,11 @@ public class MySpinnerAdapter extends BaseAdapter {
         try {
             names.setText(spinnerItems.get(position));
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, "SPINNER_ADAPTER", ex.getMessage());
-            Crashlytics.logException(ex);
+
+//            Crashlytics.log(Log.ERROR, "SPINNER_ADAPTER", ex.getMessage());
+//            Crashlytics.logException(ex);
+            FirebaseCrashlytics.getInstance().log("SPINNER_ADAPTER");
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
         return view;
     }
