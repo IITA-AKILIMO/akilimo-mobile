@@ -224,6 +224,12 @@ pipeline {
         fingerprint '**/build/outputs/**/*-release.*'
       }
     }
+
+    stage('Clean workspace'){
+        steps{
+            cleanWs()
+        }
+    }
   }
 
   post {
