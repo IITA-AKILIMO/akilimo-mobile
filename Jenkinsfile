@@ -224,20 +224,17 @@ pipeline {
         fingerprint '**/build/outputs/**/*-release.*'
       }
     }
-
-    stage('Clean workspace'){
-        steps{
-            cleanWs()
-        }
-    }
   }
 
   post {
+        success {
+          recordIssues(tools: [androidLintParser(name: 'lintMe', pattern: '**/lint-results*.xml')])
+          junit 'app/build/test-results/**/*/*.xml'
+          jacoco changeBuildStatus: true, sourcePattern: '**/src/main/java,**/src/main/kotlin'
+          cleanWs()
+        }
       always {
-        recordIssues(tools: [androidLintParser(name: 'lintMe', pattern: '**/lint-results*.xml')])
-        junit 'app/build/test-results/**/*/*.xml'
-        jacoco changeBuildStatus: true, sourcePattern: '**/src/main/java,**/src/main/kotlin'
-        deleteDir()
+        cleanWs()
       }
   }
 }
