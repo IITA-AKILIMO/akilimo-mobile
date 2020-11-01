@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -16,10 +15,10 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
-import com.crashlytics.android.Crashlytics
 import com.github.javiersantos.appupdater.AppUpdater
 import com.github.javiersantos.appupdater.enums.Display
 import com.google.android.gms.common.util.Strings
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.iita.akilimo.R
 import com.iita.akilimo.adapters.ViewPagerAdapter
 import com.iita.akilimo.dao.AppDatabase
@@ -165,9 +164,9 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             }
 
             override fun onPageScrolled(
-                newPosition: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
+                    newPosition: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
             ) {
                 try {
                     val activeFragment: Fragment = fragmentArray.elementAt(newPosition)
@@ -188,12 +187,8 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
                     currentFragment = activeFragment
                 } catch (ex: Exception) {
-                    Crashlytics.log(
-                        Log.ERROR,
-                        LOG_TAG,
-                        ex.message
-                    )
-                    Crashlytics.logException(ex)
+                    FirebaseCrashlytics.getInstance().log(ex.message!!)
+                    FirebaseCrashlytics.getInstance().recordException(ex)
                 }
             }
 
@@ -243,7 +238,7 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
             dots[dotIndex]?.layoutParams = params
             dots[dotIndex]?.setImageResource(R.drawable.shape_rect_outline)
             dots[dotIndex]?.setColorFilter(
-                ContextCompat.getColor(this, R.color.grey_20), PorterDuff.Mode.SRC_IN
+                    ContextCompat.getColor(this, R.color.grey_20), PorterDuff.Mode.SRC_IN
             )
             dotsLayout.addView(dots[dotIndex])
         }
@@ -251,10 +246,10 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
         if (dots.isNotEmpty()) {
             dots[currentIndex]?.setImageResource(R.drawable.shape_rect_outline)
             dots[currentIndex]?.setColorFilter(
-                ContextCompat.getColor(
-                    this,
-                    R.color.colorPrimary
-                ), PorterDuff.Mode.SRC_IN
+                    ContextCompat.getColor(
+                            this,
+                            R.color.colorPrimary
+                    ), PorterDuff.Mode.SRC_IN
             )
         }
     }
@@ -272,9 +267,9 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 
                     } else {
                         Toast.makeText(
-                            context,
-                            getString(R.string.lbl_location_error),
-                            Toast.LENGTH_LONG
+                                context,
+                                getString(R.string.lbl_location_error),
+                                Toast.LENGTH_LONG
                         ).show()
                     }
                 }
@@ -301,12 +296,12 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
 //            (currentFragment as? LocationFragment)?.refreshData()
         } catch (ex: Exception) {
             Toast.makeText(
-                context,
-                ex.message,
-                Toast.LENGTH_LONG
+                    context,
+                    ex.message,
+                    Toast.LENGTH_LONG
             ).show()
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
-            Crashlytics.logException(ex)
+            FirebaseCrashlytics.getInstance().log(ex.message!!)
+            FirebaseCrashlytics.getInstance().recordException(ex)
         }
 
     }
@@ -319,21 +314,17 @@ class HomeActivity : BaseActivity(), IFragmentCallBack {
                 exitProcess(0) //exit the system
             } else {
                 Toast.makeText(
-                    this,
-                    getString(R.string.lbl_exit_tip),
-                    Toast.LENGTH_SHORT
+                        this,
+                        getString(R.string.lbl_exit_tip),
+                        Toast.LENGTH_SHORT
                 ).show()
                 exit = true
                 Handler().postDelayed({ exit = false }, (3 * 1000).toLong())
             }
         } catch (ex: Exception) {
             Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
-            Crashlytics.log(
-                Log.ERROR,
-                LOG_TAG,
-                ex.message
-            )
-            Crashlytics.logException(ex)
+            FirebaseCrashlytics.getInstance().log(ex.message!!)
+            FirebaseCrashlytics.getInstance().recordException(ex)
         }
     }
 

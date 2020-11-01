@@ -60,7 +60,7 @@ public class MySpinnerAdapter extends BaseAdapter {
 
 //            Crashlytics.log(Log.ERROR, "SPINNER_ADAPTER", ex.getMessage());
 //            Crashlytics.logException(ex);
-            FirebaseCrashlytics.getInstance().log("SPINNER_ADAPTER");
+            FirebaseCrashlytics.getInstance().log(ex.getMessage());
             FirebaseCrashlytics.getInstance().recordException(ex);
         }
         return view;

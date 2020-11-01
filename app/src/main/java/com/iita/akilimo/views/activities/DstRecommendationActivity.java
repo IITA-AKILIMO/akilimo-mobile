@@ -18,10 +18,11 @@ import com.android.volley.RequestQueue;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecommendationAdapter;
 import com.iita.akilimo.dao.AppDatabase;
@@ -212,8 +213,8 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
                     errorLabel.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    Crashlytics.log(Log.ERROR, REC_TAG, ex.getMessage());
-                    Crashlytics.logException(ex);
+                    FirebaseCrashlytics.getInstance().log(ex.getMessage());
+                    FirebaseCrashlytics.getInstance().recordException(ex);
                 }
             }
 

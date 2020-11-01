@@ -11,7 +11,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.crashlytics.android.Crashlytics;
+
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.AdapterGridTwoLine;
 import com.iita.akilimo.dao.AppDatabase;
@@ -124,8 +125,8 @@ public class RootYieldActivity extends BaseActivity {
 
                 Toast.makeText(context, yieldLabel, Toast.LENGTH_SHORT).show();
             } catch (Exception ex) {
-                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                Crashlytics.logException(ex);
+                FirebaseCrashlytics.getInstance().log(ex.getMessage());
+                FirebaseCrashlytics.getInstance().recordException(ex);
             }
 
             mAdapter.setItems(selectedYieldAmount, items);

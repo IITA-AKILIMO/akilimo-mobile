@@ -27,7 +27,7 @@ public class Akilimo extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
 
-        //@TODO Replace crashlytics with new firebase before November 1st --Replaced
+
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
 
         AppLocale.setSupportedLocales(Locales.APP_LOCALES);

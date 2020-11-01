@@ -18,11 +18,12 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityCassavaMarketBinding;
@@ -290,8 +291,10 @@ public class CassavaMarketActivity extends BaseActivity {
                 database.cassavaMarketDao().insert(cassavaMarket);
                 closeActivity(backPressed);
             } catch (Exception ex) {
-                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                Crashlytics.logException(ex);
+
+                FirebaseCrashlytics.getInstance().log(ex.getMessage());
+                FirebaseCrashlytics.getInstance().recordException(ex);
+
             }
         }
     }
@@ -337,8 +340,8 @@ public class CassavaMarketActivity extends BaseActivity {
                     }
                 } catch (Exception ex) {
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                    Crashlytics.logException(ex);
+                    FirebaseCrashlytics.getInstance().log(ex.getMessage());
+                    FirebaseCrashlytics.getInstance().recordException(ex);
                 }
             }
 
@@ -382,8 +385,8 @@ public class CassavaMarketActivity extends BaseActivity {
                     }
                 } catch (Exception ex) {
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    Crashlytics.logException(ex);
-                    Crashlytics.log(ex.getMessage());
+                    FirebaseCrashlytics.getInstance().log(ex.getMessage());
+                    FirebaseCrashlytics.getInstance().recordException(ex);
                 }
             }
 

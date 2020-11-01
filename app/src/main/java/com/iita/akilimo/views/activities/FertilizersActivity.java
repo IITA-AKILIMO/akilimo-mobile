@@ -19,10 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.FertilizerGridAdapter;
 import com.iita.akilimo.dao.AppDatabase;
@@ -244,8 +245,8 @@ public class FertilizersActivity extends BaseActivity {
                     errorImage.setVisibility(View.VISIBLE);
                     btnRetry.setVisibility(View.VISIBLE);
 
-                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                    Crashlytics.logException(ex);
+                    FirebaseCrashlytics.getInstance().log(ex.getMessage());
+                    FirebaseCrashlytics.getInstance().recordException(ex);
                 }
             }
 
@@ -262,8 +263,9 @@ public class FertilizersActivity extends BaseActivity {
                 btnRetry.setVisibility(View.VISIBLE);
 
                 Toast.makeText(context, getString(R.string.lbl_fertilizer_load_error), Toast.LENGTH_LONG).show();
-                Crashlytics.log(Log.ERROR, LOG_TAG, "Fertilizer list not able to load");
-                Crashlytics.logException(volleyError);
+
+                FirebaseCrashlytics.getInstance().log("Fertilizer list not able to load");
+                FirebaseCrashlytics.getInstance().recordException(volleyError);
             }
         });
     }
@@ -302,8 +304,8 @@ public class FertilizersActivity extends BaseActivity {
                     btnRetry.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                    Crashlytics.logException(ex);
+                    FirebaseCrashlytics.getInstance().log(ex.getMessage());
+                    FirebaseCrashlytics.getInstance().recordException(ex);
                 }
 
             }

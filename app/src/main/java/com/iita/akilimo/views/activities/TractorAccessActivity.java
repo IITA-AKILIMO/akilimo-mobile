@@ -15,7 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
+
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityTractorAccessBinding;
@@ -194,8 +195,8 @@ public class TractorAccessActivity extends CostBaseActivity {
             database.fieldOperationCostDao().insert(fieldOperationCost);
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            FirebaseCrashlytics.getInstance().log(ex.getMessage());
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
     }
 

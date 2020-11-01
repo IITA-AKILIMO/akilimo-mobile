@@ -4,13 +4,12 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.crashlytics.android.Crashlytics
 import com.github.javiersantos.appupdater.AppUpdater
 import com.github.javiersantos.appupdater.enums.Display
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.iita.akilimo.R
 import com.iita.akilimo.adapters.MyStepperAdapter
 import com.iita.akilimo.dao.AppDatabase
@@ -114,9 +113,9 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
             override fun onError(verificationError: VerificationError) {
                 Toast.makeText(
-                    context,
-                    verificationError.errorMessage,
-                    Toast.LENGTH_SHORT
+                        context,
+                        verificationError.errorMessage,
+                        Toast.LENGTH_SHORT
                 ).show();
             }
 
@@ -157,21 +156,17 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
                 exitProcess(0) //exit the system
             } else {
                 Toast.makeText(
-                    this,
-                    getString(R.string.lbl_exit_tip),
-                    Toast.LENGTH_SHORT
+                        this,
+                        getString(R.string.lbl_exit_tip),
+                        Toast.LENGTH_SHORT
                 ).show()
                 exit = true
                 Handler().postDelayed({ exit = false }, (3 * 1000).toLong())
             }
         } catch (ex: Exception) {
             Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
-            Crashlytics.log(
-                Log.ERROR,
-                LOG_TAG,
-                ex.message
-            )
-            Crashlytics.logException(ex)
+            FirebaseCrashlytics.getInstance().log(ex.message!!)
+            FirebaseCrashlytics.getInstance().recordException(ex)
         }
     }
 

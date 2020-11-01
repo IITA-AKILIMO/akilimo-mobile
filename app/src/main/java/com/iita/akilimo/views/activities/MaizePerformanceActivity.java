@@ -10,8 +10,9 @@ import android.widget.Toast;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.common.util.Strings;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityMaizePerformanceActivityBinding;
@@ -144,8 +145,8 @@ public class MaizePerformanceActivity extends BaseActivity {
             closeActivity(backPressed);
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            FirebaseCrashlytics.getInstance().log(ex.getMessage());
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
     }
 

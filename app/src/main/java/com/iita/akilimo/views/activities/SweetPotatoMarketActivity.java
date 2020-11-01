@@ -15,11 +15,12 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivitySweetPotatoMarketBinding;
@@ -199,8 +200,8 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             closeActivity(backPressed);
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            FirebaseCrashlytics.getInstance().log(ex.getMessage());
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
 
 
@@ -240,8 +241,8 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
                 } catch (Exception ex) {
                     Snackbar.make(unitOfSalePotatoCard, ex.getMessage(), Snackbar.LENGTH_LONG).show();
-                    Crashlytics.logException(ex);
-                    Crashlytics.log(ex.getMessage());
+                    FirebaseCrashlytics.getInstance().log(ex.getMessage());
+                    FirebaseCrashlytics.getInstance().recordException(ex);
                 }
             }
 
@@ -254,7 +255,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             public void onError(@NotNull VolleyError volleyError) {
                 String error = Tools.parseNetworkError(volleyError).getMessage();
                 if (error != null) {
-                    Crashlytics.log(error);
+                    FirebaseCrashlytics.getInstance().log(error);
                     Snackbar.make(unitOfSalePotatoCard, error, Snackbar.LENGTH_LONG).show();
                 }
             }

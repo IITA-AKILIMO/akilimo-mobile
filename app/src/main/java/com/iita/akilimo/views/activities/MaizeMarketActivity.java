@@ -17,12 +17,13 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityMaizeMarketBinding;
@@ -158,8 +159,8 @@ public class MaizeMarketActivity extends BaseActivity {
                         database.maizePriceDao().insertAll(maizePriceList);
                     }
                 } catch (JsonProcessingException ex) {
-                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                    Crashlytics.logException(ex);
+                    FirebaseCrashlytics.getInstance().log(ex.getMessage());
+                    FirebaseCrashlytics.getInstance().recordException(ex);
                     Snackbar.make(maizeCobPriceCard, ex.getMessage(), Snackbar.LENGTH_SHORT).show();
                 }
             }
@@ -321,8 +322,8 @@ public class MaizeMarketActivity extends BaseActivity {
                 closeActivity(backPressed);
             } catch (Exception ex) {
                 Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                Crashlytics.logException(ex);
+                FirebaseCrashlytics.getInstance().log(ex.getMessage());
+                FirebaseCrashlytics.getInstance().recordException(ex);
             }
 
         }
