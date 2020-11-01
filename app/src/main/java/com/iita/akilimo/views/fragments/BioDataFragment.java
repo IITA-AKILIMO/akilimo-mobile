@@ -17,10 +17,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.hbb20.CountryCodePicker;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.FragmentBioDataBinding;
@@ -161,8 +162,8 @@ public class BioDataFragment extends BaseStepFragment {
             }
 
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            FirebaseCrashlytics.getInstance().log(ex.getMessage());
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
     }
 
@@ -232,8 +233,8 @@ public class BioDataFragment extends BaseStepFragment {
                 }
             } catch (Exception ex) {
                 Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                Crashlytics.logException(ex);
+                FirebaseCrashlytics.getInstance().log(ex.getMessage());
+                FirebaseCrashlytics.getInstance().recordException(ex);
             }
 
         }

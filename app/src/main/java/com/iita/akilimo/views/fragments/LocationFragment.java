@@ -16,9 +16,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.FragmentLocationBinding;
 import com.iita.akilimo.entities.LocationInfo;
@@ -162,8 +163,8 @@ public class LocationFragment extends BaseStepFragment {
             @Override
             public void onFailure(@NotNull Call<GeocodingResponse> call, @NotNull Throwable throwable) {
                 saveLocation();
-                Crashlytics.log(Log.ERROR, LOG_TAG, throwable.getMessage());
-                Crashlytics.logException(throwable);
+                FirebaseCrashlytics.getInstance().log(throwable.getMessage());
+                FirebaseCrashlytics.getInstance().recordException(throwable);
             }
         });
     }
@@ -187,8 +188,8 @@ public class LocationFragment extends BaseStepFragment {
             dataIsValid = currentLat != 0 || currentLon != 0;
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            FirebaseCrashlytics.getInstance().log(ex.getMessage());
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
         reloadLocationInfo();
     }
@@ -216,8 +217,8 @@ public class LocationFragment extends BaseStepFragment {
             title.setText(message);
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            FirebaseCrashlytics.getInstance().log(ex.getMessage());
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
 
     }
@@ -241,8 +242,8 @@ public class LocationFragment extends BaseStepFragment {
             }
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            FirebaseCrashlytics.getInstance().log(ex.getMessage());
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
     }
 
