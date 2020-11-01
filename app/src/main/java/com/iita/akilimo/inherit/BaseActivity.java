@@ -18,8 +18,9 @@ import androidx.appcompat.widget.AppCompatButton;
 
 import com.android.volley.RequestQueue;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.common.util.Strings;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.iita.akilimo.R;
 import com.iita.akilimo.dao.AppDatabase;
@@ -189,8 +190,8 @@ public abstract class BaseActivity extends AppCompatActivity {
             dialog.show();
             dialog.getWindow().setAttributes(lp);
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            FirebaseCrashlytics.getInstance().log(ex.getMessage());
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
     }
 
