@@ -5,10 +5,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.iita.akilimo.BuildConfig;
 import com.iita.akilimo.models.FirebaseTopic;
 
@@ -122,8 +122,10 @@ public class SessionManager {
             DateTime parsedDateTime = DateHelper.unixTimeStampToDate(unixTimestamp, DateTimeZone.UTC);
             appBuildDate = parsedDateTime.toDate().toString();
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, "PREFS", ex.getMessage());
-            Crashlytics.logException(ex);
+//            Crashlytics.log(Log.ERROR, "PREFS", ex.getMessage());
+//            Crashlytics.logException(ex);
+            FirebaseCrashlytics.getInstance().log(ex.getMessage());
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
 
         return appBuildDate;

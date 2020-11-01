@@ -1,9 +1,8 @@
 package com.iita.akilimo.utils
 
 import android.text.TextUtils
-import android.util.Log
 import android.util.Patterns
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.i18n.phonenumbers.NumberParseException
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.google.i18n.phonenumbers.Phonenumber
@@ -27,12 +26,8 @@ class ValidationHelper {
             isNumberValid = phoneUtil.isValidNumber(phoneNumber)
 
         } catch (ex: NumberParseException) {
-            Crashlytics.log(
-                Log.ERROR,
-                LOG_TAG,
-                ex.message
-            )
-            Crashlytics.logException(ex)
+            FirebaseCrashlytics.getInstance().log(ex.message!!)
+            FirebaseCrashlytics.getInstance().recordException(ex)
         }
 
         return isNumberValid
@@ -43,8 +38,8 @@ class ValidationHelper {
         try {
             phoneNumber = phoneUtil.parse(userPhoneNumber, country)
         } catch (ex: NumberParseException) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
-            Crashlytics.logException(ex)
+            FirebaseCrashlytics.getInstance().log(ex.message!!)
+            FirebaseCrashlytics.getInstance().recordException(ex)
         }
 
         return phoneNumber

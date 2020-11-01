@@ -3,8 +3,9 @@ package com.iita.akilimo.utils;
 import android.app.Activity;
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.common.util.Strings;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.util.Locale;
 
@@ -68,8 +69,8 @@ public class MathHelper {
                 joined = formatNumber(rate1, toCurrency);
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            FirebaseCrashlytics.getInstance().log(ex.getMessage());
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
         return joined;
     }
@@ -90,8 +91,8 @@ public class MathHelper {
                 data = String.format("%s %s %s %s", formattedNumber, toCurrency, separator, selectedField);
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            FirebaseCrashlytics.getInstance().log(ex.getMessage());
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
         return data;
 
@@ -124,8 +125,8 @@ public class MathHelper {
                     break;
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            FirebaseCrashlytics.getInstance().log(ex.getMessage());
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
 
         return nearestSpecifiedValue > 0 ? roundToNearestSpecifiedValue(converted, nearestSpecifiedValue) : converted;
@@ -149,8 +150,8 @@ public class MathHelper {
                     return currencyToConvert;
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            FirebaseCrashlytics.getInstance().log(ex.getMessage());
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
 
         double convertedTemp = roundToNearestSpecifiedValue(converted, nearestSpecifiedValue);
@@ -189,8 +190,8 @@ public class MathHelper {
         try {
             fieldYieldAmount = convertToLocalCurrency(fieldYield, currency);
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            FirebaseCrashlytics.getInstance().log(ex.getMessage());
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
         return fieldYieldAmount;
     }
@@ -200,8 +201,8 @@ public class MathHelper {
             try {
                 return Double.parseDouble(numberText.trim());
             } catch (Exception ex) {
-                Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
-                Crashlytics.logException(ex);
+                FirebaseCrashlytics.getInstance().log(ex.getMessage());
+                FirebaseCrashlytics.getInstance().recordException(ex);
             }
         }
         return 0.0;
