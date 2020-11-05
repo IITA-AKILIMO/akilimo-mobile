@@ -234,7 +234,7 @@ public class SweetPotatoPriceDialogFragment extends BaseDialogFragment {
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
         if (onDismissListener != null) {
-            onDismissListener.onDismiss(potatoPrice, averagePrice);
+            onDismissListener.onDismiss(potatoPrice, isExactPriceRequired);
         }
     }
 

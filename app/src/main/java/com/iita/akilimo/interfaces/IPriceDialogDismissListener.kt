@@ -1,5 +1,5 @@
 package com.iita.akilimo.interfaces
 
 interface IPriceDialogDismissListener {
-    fun onDismiss(selectedPrice: Double, averagePrice: Double)
+    fun onDismiss(selectedPrice: Double, isExactPrice: Boolean)
 }

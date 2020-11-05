@@ -83,6 +83,7 @@ public class CountryFragment extends BaseStepFragment {
                 countryCode = profileInfo.getCountryCode();
                 currency = profileInfo.getCurrency();
                 countryName = profileInfo.getCountryName();
+                currency = profileInfo.getCurrency();
                 selectedLanguage = profileInfo.getLanguage();
 
                 if (!Strings.isEmptyOrWhitespace(countryCode)) {

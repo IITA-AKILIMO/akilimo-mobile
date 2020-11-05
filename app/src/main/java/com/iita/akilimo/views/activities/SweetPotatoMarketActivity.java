@@ -74,7 +74,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
     double unitPriceUSD = 0.0;
     double unitPriceLocal = 0.0;
     private double unitPrice = 0.0;
-    private double averagePrice = 0.0;
+    private int unitWeight;
 
     private double minAmountUSD = 5.00;
     private double maxAmountUSD = 500.00;
@@ -143,18 +143,22 @@ public class SweetPotatoMarketActivity extends BaseActivity {
                 case R.id.rd_per_kg:
                     unitOfSale = EnumUnitOfSale.ONE_KG.unitOfSale(context);
                     unitOfSaleEnum = EnumUnitOfSale.ONE_KG;
+                    unitWeight = EnumUnitOfSale.ONE_KG.unitWeight();
                     break;
                 case R.id.rd_50_kg_bag:
                     unitOfSale = EnumUnitOfSale.FIFTY_KG.unitOfSale(context);
                     unitOfSaleEnum = EnumUnitOfSale.FIFTY_KG;
+                    unitWeight = EnumUnitOfSale.FIFTY_KG.unitWeight();
                     break;
                 case R.id.rd_100_kg_bag:
                     unitOfSale = EnumUnitOfSale.HUNDRED_KG.unitOfSale(context);
                     unitOfSaleEnum = EnumUnitOfSale.HUNDRED_KG;
+                    unitWeight = EnumUnitOfSale.HUNDRED_KG.unitWeight();
                     break;
                 case R.id.rd_1000_kg_bag:
                     unitOfSale = EnumUnitOfSale.THOUSAND_KG.unitOfSale(context);
                     unitOfSaleEnum = EnumUnitOfSale.THOUSAND_KG;
+                    unitWeight = EnumUnitOfSale.THOUSAND_KG.unitWeight();
                     break;
             }
         });
@@ -189,6 +193,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
             potatoMarket.setProduceType(enumPotatoProduceType);
             potatoMarket.setUnitOfSale(unitOfSale);
+            potatoMarket.setUnitWeight(unitWeight);
             potatoMarket.setUnitPrice(unitPrice);
 
             potatoMarket.setProduceTypeRadioIndex(produceTypeRadioIndex);
@@ -267,16 +272,14 @@ public class SweetPotatoMarketActivity extends BaseActivity {
         arguments.putString(SweetPotatoPriceDialogFragment.CURRENCY_CODE, currency);
         arguments.putString(SweetPotatoPriceDialogFragment.COUNTRY_CODE, countryCode);
         arguments.putDouble(SweetPotatoPriceDialogFragment.SELECTED_PRICE, unitPrice);
-        arguments.putDouble(SweetPotatoPriceDialogFragment.AVERAGE_PRICE, averagePrice);
         arguments.putString(SweetPotatoPriceDialogFragment.UNIT_OF_SALE, unitOfSale);
         arguments.putParcelable(SweetPotatoPriceDialogFragment.ENUM_UNIT_OF_SALE, unitOfSaleEnum);
 
         SweetPotatoPriceDialogFragment priceDialogFragment = new SweetPotatoPriceDialogFragment(context);
         priceDialogFragment.setArguments(arguments);
 
-        priceDialogFragment.setOnDismissListener((selectedPrice, selectedAveragePrice) -> {
-            unitPrice = selectedPrice;
-            averagePrice = selectedAveragePrice;
+        priceDialogFragment.setOnDismissListener((selectedPrice, isExactPrice) -> {
+            unitPrice = isExactPrice ? selectedPrice : mathHelper.convertToUnitWeightPrice(selectedPrice, unitWeight);
         });
 
         FragmentTransaction fragmentTransaction;
