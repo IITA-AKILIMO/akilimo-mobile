@@ -28,7 +28,6 @@ import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityCassavaMarketBinding;
 import com.iita.akilimo.entities.CassavaMarket;
 import com.iita.akilimo.entities.CassavaPrice;
-import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.entities.StarchFactory;
 import com.iita.akilimo.inherit.BaseActivity;
@@ -74,9 +73,10 @@ public class CassavaMarketActivity extends BaseActivity {
     private String selectedFactory = "NA";
 
     String produceType;
-    double unitPriceLocal = 0.0;
+    private double unitPrice = 0.0;
     String priceText;
     String unitOfSale;
+    int unitWeight;
     EnumUnitOfSale unitOfSaleEnum = EnumUnitOfSale.ONE_KG;
 
     private CassavaMarket cassavaMarket;
@@ -87,9 +87,6 @@ public class CassavaMarketActivity extends BaseActivity {
     private boolean dataIsValid;
     private boolean selectionMade;
 
-
-    private double averageUnitPricePrice = 0.0;
-    private double exactPrice = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +117,7 @@ public class CassavaMarketActivity extends BaseActivity {
         cassavaMarket = database.cassavaMarketDao().findOne();
         if (cassavaMarket != null) {
             selectedFactory = cassavaMarket.getStarchFactory();
-            exactPrice = cassavaMarket.getUnitPrice();
+            unitPrice = cassavaMarket.getUnitPrice();
             unitOfSale = cassavaMarket.getUnitOfSale();
         }
 
@@ -170,7 +167,7 @@ public class CassavaMarketActivity extends BaseActivity {
                     factoryRequired = true;
                     produceType = EnumCassavaProduceType.ROOTS.produce();
                     unitOfSale = "NA";
-                    unitPriceLocal = 0.0;
+                    unitPrice = 0.0;
                     break;
                 case R.id.rdOtherMarket:
                     produceType = EnumCassavaProduceType.ROOTS.produce();
@@ -204,18 +201,22 @@ public class CassavaMarketActivity extends BaseActivity {
                 case R.id.rd_per_kg:
                     unitOfSale = EnumUnitOfSale.ONE_KG.unitOfSale(context);
                     unitOfSaleEnum = EnumUnitOfSale.ONE_KG;
+                    unitWeight = EnumUnitOfSale.ONE_KG.unitWeight();
                     break;
                 case R.id.rd_50_kg_bag:
                     unitOfSale = EnumUnitOfSale.FIFTY_KG.unitOfSale(context);
                     unitOfSaleEnum = EnumUnitOfSale.FIFTY_KG;
+                    unitWeight = EnumUnitOfSale.FIFTY_KG.unitWeight();
                     break;
                 case R.id.rd_100_kg_bag:
                     unitOfSale = EnumUnitOfSale.HUNDRED_KG.unitOfSale(context);
                     unitOfSaleEnum = EnumUnitOfSale.HUNDRED_KG;
+                    unitWeight = EnumUnitOfSale.HUNDRED_KG.unitWeight();
                     break;
                 case R.id.rd_per_tonne:
                     unitOfSale = EnumUnitOfSale.THOUSAND_KG.unitOfSale(context);
                     unitOfSaleEnum = EnumUnitOfSale.THOUSAND_KG;
+                    unitWeight = EnumUnitOfSale.THOUSAND_KG.unitWeight();
                     break;
             }
             dataIsValid = false;
@@ -261,7 +262,7 @@ public class CassavaMarketActivity extends BaseActivity {
                 showCustomWarningDialog(getString(R.string.lbl_invalid_sale_unit), getString(R.string.lbl_sale_unit_prompt));
                 return;
             }
-            if (exactPrice <= 0) {
+            if (unitPrice <= 0) {
                 showCustomWarningDialog(getString(R.string.lbl_invalid_unit_price), getString(R.string.lbl_unit_price_prompt));
                 return;
             }
@@ -284,8 +285,9 @@ public class CassavaMarketActivity extends BaseActivity {
                 cassavaMarket.setStarchFactoryRequired(factoryRequired);
                 cassavaMarket.setProduceType(produceType);
                 cassavaMarket.setUnitOfSale(unitOfSale);
-                cassavaMarket.setExactPrice(exactPrice);
-                cassavaMarket.setUnitPrice(exactPrice);
+                cassavaMarket.setUnitWeight(unitWeight);
+                cassavaMarket.setExactPrice(unitPrice);
+                cassavaMarket.setUnitPrice(unitPrice);
 
                 database.cassavaMarketDao().insert(cassavaMarket);
                 closeActivity(backPressed);
@@ -414,7 +416,7 @@ public class CassavaMarketActivity extends BaseActivity {
             if (!sfRequired) {
                 produceType = cassavaMarket.getProduceType();
                 unitOfSale = cassavaMarket.getUnitOfSale();
-                averageUnitPricePrice = cassavaMarket.getUnitPrice();
+                unitPrice = cassavaMarket.getUnitPrice();
                 switch (unitOfSaleEnum) {
                     case ONE_KG:
                         rdgUnitOfSale.check(R.id.rd_per_kg);
@@ -467,17 +469,20 @@ public class CassavaMarketActivity extends BaseActivity {
         Bundle arguments = new Bundle();
         arguments.putString(CassavaPriceDialogFragment.CURRENCY_CODE, currency);
         arguments.putString(CassavaPriceDialogFragment.COUNTRY_CODE, countryCode);
-        arguments.putDouble(CassavaPriceDialogFragment.SELECTED_PRICE, exactPrice);
-        arguments.putDouble(CassavaPriceDialogFragment.AVERAGE_PRICE, averageUnitPricePrice);
+        arguments.putDouble(CassavaPriceDialogFragment.SELECTED_PRICE, unitPrice);
+        arguments.putDouble(CassavaPriceDialogFragment.AVERAGE_PRICE, unitPrice);
         arguments.putString(CassavaPriceDialogFragment.UNIT_OF_SALE, unitOfSale);
         arguments.putParcelable(CassavaPriceDialogFragment.ENUM_UNIT_OF_SALE, unitOfSaleEnum);
 
         CassavaPriceDialogFragment priceDialogFragment = new CassavaPriceDialogFragment(context);
         priceDialogFragment.setArguments(arguments);
 
-        priceDialogFragment.setOnDismissListener((selectedPrice, selectedAveragePrice) -> {
-            exactPrice = selectedPrice;
-            averageUnitPricePrice = selectedAveragePrice;
+        priceDialogFragment.setOnDismissListener((selectedPrice, isExactPrice) -> {
+            if (isExactPrice) {
+                unitPrice = selectedPrice;
+            } else {
+                unitPrice = (selectedPrice * unitWeight) / 1000;
+            }
         });
 
         FragmentTransaction fragmentTransaction;

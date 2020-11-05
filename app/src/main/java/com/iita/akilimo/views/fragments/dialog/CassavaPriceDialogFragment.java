@@ -63,7 +63,7 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
 
 
     private double averagePrice;
-    private double cassavaPrice;
+    private double unitPrice;
     private List<CassavaPrice> cassavaPriceList;
 
     private String countryCode;
@@ -89,8 +89,9 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             averagePrice = bundle.getDouble(AVERAGE_PRICE);
-            cassavaPrice = bundle.getDouble(SELECTED_PRICE);
+            unitPrice = bundle.getDouble(SELECTED_PRICE);
             currencyCode = bundle.getString(CURRENCY_CODE);
+            unitOfSale = bundle.getString(UNIT_OF_SALE);
             unitOfSale = bundle.getString(UNIT_OF_SALE);
             countryCode = bundle.getString(COUNTRY_CODE);
             unitOfSaleEnum = bundle.getParcelable(ENUM_UNIT_OF_SALE);
@@ -129,12 +130,12 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
 
             if (isExactPriceRequired) {
                 try {
-                    cassavaPrice = Double.parseDouble(editExactFertilizerPrice.getText().toString());
+                    unitPrice = Double.parseDouble(editExactFertilizerPrice.getText().toString());
                 } catch (Exception ex) {
                     Crashlytics.log(Log.ERROR, LOG_TAG, "The price appears not be valid");
                     Crashlytics.logException(ex);
                 }
-                if (cassavaPrice <= 0) {
+                if (unitPrice <= 0) {
                     editExactFertilizerPrice.setError(getString(R.string.lbl_provide_valid_unit_price));
                     isPriceValid = false;
                     return;
@@ -174,7 +175,7 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
                 isPriceValid = false;
                 exactPriceWrapper.setVisibility(View.VISIBLE);
             } else {
-                cassavaPrice = pricesResp.getAveragePrice();
+                unitPrice = pricesResp.getAveragePrice();
             }
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
@@ -216,7 +217,7 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
                 isPriceValid = true;
                 isExactPriceRequired = true;
                 exactPriceWrapper.setVisibility(View.VISIBLE);
-                editExactFertilizerPrice.setText(String.valueOf(cassavaPrice));
+                editExactFertilizerPrice.setText(String.valueOf(unitPrice));
             }
 
             if (pricesResp.getAveragePrice() == selectedPrice) {
@@ -229,7 +230,7 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
         if (onDismissListener != null) {
-            onDismissListener.onDismiss(cassavaPrice, averagePrice);
+            onDismissListener.onDismiss(unitPrice, isExactPriceRequired);
         }
     }
 

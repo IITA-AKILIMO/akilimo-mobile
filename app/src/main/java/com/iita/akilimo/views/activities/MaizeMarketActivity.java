@@ -88,6 +88,7 @@ public class MaizeMarketActivity extends BaseActivity {
     private boolean cobPriceRequired;
 
     private double unitPriceUSD = 0.0;
+    private int unitWeight;
     private double exactPrice = 0.0;
     private double averagePrice = 0.0;
 
@@ -223,14 +224,17 @@ public class MaizeMarketActivity extends BaseActivity {
                 case R.id.rd_per_kg:
                     unitOfSale = EnumUnitOfSale.ONE_KG.unitOfSale(context);
                     unitOfSaleEnum = EnumUnitOfSale.ONE_KG;
+                    unitWeight = EnumUnitOfSale.ONE_KG.unitWeight();
                     break;
                 case R.id.rd_50_kg_bag:
                     unitOfSale = EnumUnitOfSale.FIFTY_KG.unitOfSale(context);
                     unitOfSaleEnum = EnumUnitOfSale.FIFTY_KG;
+                    unitWeight = EnumUnitOfSale.FIFTY_KG.unitWeight();
                     break;
                 case R.id.rd_100_kg_bag:
                     unitOfSale = EnumUnitOfSale.HUNDRED_KG.unitOfSale(context);
                     unitOfSaleEnum = EnumUnitOfSale.HUNDRED_KG;
+                    unitWeight = EnumUnitOfSale.HUNDRED_KG.unitWeight();
                     break;
             }
         });
@@ -242,6 +246,7 @@ public class MaizeMarketActivity extends BaseActivity {
             produceType = maizeMarket.getProduceType();
             unitOfSale = maizeMarket.getUnitOfSale();
             unitPrice = maizeMarket.getUnitPrice();
+            unitWeight = maizeMarket.getUnitWeight();
 
             grainUnitRadioIndex = maizeMarket.getGrainUnitRadioIndex();
             produceRadioIndex = maizeMarket.getProduceRadioIndex();
@@ -311,6 +316,7 @@ public class MaizeMarketActivity extends BaseActivity {
                 maizeMarket.setProduceType(produceType);
                 maizeMarket.setUnitPrice(unitPrice);
                 maizeMarket.setUnitOfSale(unitOfSale);
+                maizeMarket.setUnitWeight(unitWeight);
                 maizeMarket.setExactPrice(exactPrice);
 
                 maizeMarket.setGrainUnitPriceRadioIndex(grainUnitPriceRadioIndex);
@@ -346,10 +352,12 @@ public class MaizeMarketActivity extends BaseActivity {
         MaizePriceDialogFragment priceDialogFragment = new MaizePriceDialogFragment(context);
         priceDialogFragment.setArguments(arguments);
 
-        priceDialogFragment.setOnDismissListener((selectedPrice, selectedAveragePrice) -> {
-            exactPrice = selectedPrice;
-            unitPrice = selectedPrice;
-            averagePrice = selectedAveragePrice;
+        priceDialogFragment.setOnDismissListener((selectedPrice, isExactPrice) -> {
+            if (isExactPrice) {
+                unitPrice = selectedPrice;
+            } else {
+                unitPrice = (selectedPrice * unitWeight) / 1000;
+            }
         });
 
         FragmentTransaction fragmentTransaction;
