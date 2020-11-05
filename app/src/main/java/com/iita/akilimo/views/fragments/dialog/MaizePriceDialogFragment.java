@@ -228,7 +228,7 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
         if (onDismissListener != null) {
-            onDismissListener.onDismiss(maizePrice, averagePrice);
+            onDismissListener.onDismiss(maizePrice, isExactPriceRequired);
         }
     }
 

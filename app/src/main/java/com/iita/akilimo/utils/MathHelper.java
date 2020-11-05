@@ -6,6 +6,8 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Locale;
 
 public class MathHelper {
@@ -207,7 +209,7 @@ public class MathHelper {
         return 0.0;
     }
 
-    public double convertFromAcreToSpecifiedArea(double areaSizeAcre, String toAreaUnit) {
+    public double convertFromAcreToSpecifiedArea(double areaSizeAcre, @NotNull String toAreaUnit) {
         double convertedAreaSize = 0.0;
         switch (toAreaUnit) {
             default:
@@ -222,5 +224,9 @@ public class MathHelper {
         }
 
         return roundToNDecimalPlaces(convertedAreaSize, 10);
+    }
+
+    public double convertToUnitWeightPrice(double selectedPrice, int unitWeight) {
+        return (selectedPrice * unitWeight) / 1000;
     }
 }
