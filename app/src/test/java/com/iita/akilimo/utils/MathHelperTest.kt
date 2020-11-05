@@ -78,4 +78,44 @@ internal class MathHelperTest {
         val result = mathHelper.convertFromAcreToSpecifiedArea(1.0, "sqm")
         Assert.assertEquals(4046.9, result, 0.0)
     }
+
+    @Test
+    fun compute_price_by_per_tonne_of_cassava() {
+        val expected = 166000.00
+        val unitWeight = 1000
+        val mathHelper = MathHelper()
+
+        val result = mathHelper.convertToUnitWeightPrice(166000.00, unitWeight)
+        Assert.assertEquals(expected, result, 0.0)
+    }
+
+    @Test
+    fun compute_price_by_per_100_kg_of_cassava() {
+        val expected = 16600.00
+        val unitWeight = 100
+        val mathHelper = MathHelper()
+
+        val result = mathHelper.convertToUnitWeightPrice(166000.00, unitWeight)
+        Assert.assertEquals(expected, result, 0.0)
+    }
+
+    @Test
+    fun compute_price_by_per_50_kg_of_cassava() {
+        val expected = 8300.00
+        val unitWeight = 50
+        val mathHelper = MathHelper()
+
+        val result = mathHelper.convertToUnitWeightPrice(166000.00, unitWeight)
+        Assert.assertEquals(expected, result, 0.0)
+    }
+
+    @Test
+    fun compute_price_by_per_kg_of_cassava() {
+        val expected = 166.00
+        val unitWeight = 1
+        val mathHelper = MathHelper()
+
+        val result = mathHelper.convertToUnitWeightPrice(166000.00, unitWeight)
+        Assert.assertEquals(expected, result, 0.0)
+    }
 }

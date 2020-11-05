@@ -478,11 +478,7 @@ public class CassavaMarketActivity extends BaseActivity {
         priceDialogFragment.setArguments(arguments);
 
         priceDialogFragment.setOnDismissListener((selectedPrice, isExactPrice) -> {
-            if (isExactPrice) {
-                unitPrice = selectedPrice;
-            } else {
-                unitPrice = (selectedPrice * unitWeight) / 1000;
-            }
+            unitPrice = isExactPrice ? selectedPrice : mathHelper.convertToUnitWeightPrice(selectedPrice, unitWeight);
         });
 
         FragmentTransaction fragmentTransaction;
