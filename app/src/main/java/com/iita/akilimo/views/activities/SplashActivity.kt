@@ -39,6 +39,7 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun launchActivity() {
+
         try {
             if (!BuildConfig.DEBUG) {
                 getDatabase(this)?.clearAllTables()
@@ -51,5 +52,6 @@ class SplashActivity : BaseActivity() {
         startActivity(intent)
         finish()
         Animatoo.animateSlideDown(this)
+
     }
 }
