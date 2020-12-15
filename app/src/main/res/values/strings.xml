@@ -114,13 +114,14 @@
     <string name="lbl_typical_yield_question">A typical cassava root yield in your area is %1$s. How much yield do you expect from your field?</string>
     <string name="lbl_maize_performance">The typical height of maize when grown without fertilizer</string>
     <string name="lbl_sweet_potato_prices">Sweet potato prices</string>
-    <string name="lbl_height_of_maize_at_tasseling">Height of maize at tasseling</string>
+<!--    <string name="lbl_height_of_maize_at_tasseling">Height of maize at tasseling</string>-->
+    <string name="lbl_height_of_maize_at_tasseling">Maize without fertilizer in your area usually reaches up to chest height about 150cm. What is the height of your maize crop in your field at tasseling without fertilizer</string>
 
     <string name="lbl_maize_performance_poor">These are very poor soil conditions and not very common</string>
     <string name="lbl_maize_performance_rich">These are very rich soil conditions and not very common</string>
 
     <string name="lbl_market_outlet">What price do you expect for your cassava at harvest?</string>
-    <string name="lbl_market_outlet_maize">Price of maize produce</string>
+    <string name="lbl_market_outlet_maize">What price do you expect for your maize at harvest?</string>
     <string name="lbl_tillage_operations">Tillage operations and related cost</string>
     <string name="lbl_cost_of_manual_tillage">Cost of manual tillage</string>
     <string name="lbl_tractor_access">Tractor access</string>
@@ -224,6 +225,7 @@
     <string name="lbl_summary_title">Here is what we have so far</string>
 
     <string name="unit_price_label">%1$,.0f - %2$,.0f %3$s per %4$s</string>
+    <string name="unit_price_label_single" translatable="false">About %1$,.0f %2$s per %3$s</string>
 
     <string name="title_activity_dst_recommendation">Recommendation</string>
 
@@ -293,11 +295,19 @@
     <string name="lbl_loading_fertilizers">Loading available fertilizers</string>
 
     <!-- maize info section -->
-    <string name="lbl_knee_height">About knee-height (~50 cm)</string>
-    <string name="lbl_chest_height">About chest-height (~150 cm)</string>
-    <string name="lbl_yellowish_leaves">Larger than a person (200 cm) but with yellowish leaves</string>
-    <string name="lbl_green_leaves">Larger than a person (200 cm) but with somewhat green leaves</string>
-    <string name="lbl_dark_green_leaves">Larger than a person (200 cm) but with dark green leaves</string>
+<!--    <string name="lbl_knee_height">About knee-height (~50 cm)</string>-->
+<!--    <string name="lbl_chest_height">About chest-height (~150 cm)</string>-->
+<!--    <string name="lbl_yellowish_leaves">Larger than a person (200 cm) but with yellowish leaves</string>-->
+<!--    <string name="lbl_green_leaves">Larger than a person (200 cm) but with somewhat green leaves</string>-->
+<!--    <string name="lbl_dark_green_leaves">Larger than a person (200 cm) but with dark green leaves</string>-->
+
+    <string name="lbl_knee_height">Smaller</string>
+    <string name="lbl_chest_height">About the same</string>
+    <string name="lbl_yellowish_leaves">About the same with yellow leaves</string>
+    <string name="lbl_green_leaves">About the same with green leaves</string>
+    <string name="lbl_dark_green_leaves">About the same with dark green leaves</string>
+
+
     <string name="lbl_cassava_sales_outlet">Where do you want to sell your cassava?</string>
     <string name="lbl_starch_factory">Starch factory</string>
     <string name="lbl_regular_market">Regular cassava root markets</string>

@@ -277,7 +277,9 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
             localHigher = priceHigher;
         }
 
-        return context.getString(R.string.unit_price_label, localLower, localHigher, currencySymbol, uos);
+        String data = context.getString(R.string.unit_price_label_single, priceLower, currencySymbol, uos);
+
+        return data;
     }
 
 }
