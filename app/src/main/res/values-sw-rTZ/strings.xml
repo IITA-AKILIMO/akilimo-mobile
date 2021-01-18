@@ -43,21 +43,19 @@
     <string name="one_half_acre">Kama ekari 1.5</string>
     <string name="two_half_acres">Kama ekari 2.5</string>
     <string name="five_acres">Kama ekari 5</string>
-    <string name="exact_field_area">Taja eneo halisi la shamba langu</string>
+    <string name="exact_field_area">Taja eneo halisi la shamba langu. (%1$s)</string>
     <!--  ha  -->
     <string name="quarter_acre_to_ha">Kama hekta 0.1</string>
     <string name="half_acre_to_ha">Kama hekta 0.2</string>
     <string name="one_acre_to_ha">Kama hekta 0.4</string>
     <string name="one_half_acre_to_ha">Kama hekta 0.6</string>
     <string name="two_half_acre_to_ha">Kama hekta 1</string>
-    <string name="exact_acre_to_ha">Taja eneo halisi la shamba langu</string>
     <!--   m2  -->
     <string name="quarter_acre_to_m2">Kama 1,000 m\u00B2</string>
     <string name="half_acre_to_m2">Kama 2000 m\u00B2</string>
     <string name="one_acre_to_m2">Kama 4,000 m\u00B2</string>
     <string name="one_half_acre_to_m2">Kama 6,000 m\u00B2</string>
     <string name="two_half_acre_to_m2">Kama 10,000 m\u00B2</string>
-    <string name="exact_acre_to_m2">Taja eneo halisi la shamba langu</string>
 
 
     <string name="lbl_salutation">Halo, ni vizuri kukutana nawe!</string>

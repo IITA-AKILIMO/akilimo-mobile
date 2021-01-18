@@ -76,7 +76,7 @@ public class MathHelper {
         return joined;
     }
 
-    public String convertCurrency(String stringToSplit, String toCurrency, String unitType, String fieldSize, String selectedField, String separator) {
+    public String convertCurrency(String stringToSplit, String toCurrency,String currencySymbol, String unitType, String fieldSize, String selectedField, String separator) {
         String data = convertCurrency(stringToSplit, toCurrency);
         try {
             if (unitType != null) {
@@ -89,7 +89,7 @@ public class MathHelper {
                 double myFieldSize = Double.parseDouble(fieldSize);
                 double investmentAmount = amount * myFieldSize;
                 String formattedNumber = formatNumber(roundToNearestSpecifiedValue(investmentAmount, 1000), null);
-                data = String.format("%s %s %s %s", formattedNumber, toCurrency, separator, selectedField);
+                data = String.format("%s %s %s %s", formattedNumber, currencySymbol, separator, selectedField);
             }
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, TAG, ex.getMessage());

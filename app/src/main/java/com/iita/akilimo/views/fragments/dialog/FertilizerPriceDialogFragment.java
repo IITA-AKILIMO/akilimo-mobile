@@ -193,7 +193,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
             isExactPriceRequired = false;
             isPriceValid = true;
             savedPricePerBag = pricesResp.getPricePerBag();
-            bagPriceRange = String.format("About %s %s", pricesResp.getMaxLocalPrice(), currencySymbol);
+            bagPriceRange = pricesResp.getPriceRange();
 
             bagPrice = savedPricePerBag;
             exactPriceWrapper.setVisibility(View.GONE);
@@ -246,7 +246,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
 //            radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.spacing_large));
 
             double price = pricesResp.getPricePerBag();
-            String radioLabel = String.format("About %s %s", pricesResp.getMaxLocalPrice(), currencySymbol);
+            String radioLabel = pricesResp.getPriceRange();
             if (price == 0) {
                 radioLabel = context.getString(R.string.lbl_do_not_know);
             } else if (price < 0) {
