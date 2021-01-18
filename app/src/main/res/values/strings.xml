@@ -273,6 +273,7 @@
     <string name="lbl_male">Male</string>
     <string name="lbl_female">Female</string>
     <string name="lbl_save">Save</string>
+    <string name="lbl_confirm">Confirm</string>
     <string name="lbl_remove">Remove</string>
     <string name="lbl_field_info">If you know the size of your field in ha or acre, proceed to the next page.\n\nIf not, we advise you download from a measuring app from Play Store e.g. `GPS Fields Area Measure` \n\nThis will help you to measure your area by walking around your field.</string>
 
@@ -475,7 +476,14 @@
     <string name="fcy_about_the_same">About the same</string>
     <string name="fcy_somewhat_higher">Somewhat higher</string>
     <string name="fcy_2_3_times_higher">2–3 times higher</string>
-    <string name="fcy_more_than_3_times_higher">More than 3 times higher</string>
+    <string name="fcy_more_than_3_times_higher">More than 3 times or higher</string>
     <string name="fcy_not_sure">I\'m not sure</string>
     <string name="lbl_finalize">Press finish when you are ready</string>
+
+    <string name="lbl_low_yield">This is a low yield</string>
+    <string name="lbl_normal_yield">This is a normal yield</string>
+    <string name="lbl_high_yield">This is a high yield</string>
+    <string name="lbl_very_high_yield">This is a very high yield</string>
+    <string name="lbl_you_selected">You selected</string>
+    <string name="lbl_you_expect_yield">You expect a yield of %1$s. %2$s</string>
 </resources>

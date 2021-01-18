@@ -26,7 +26,7 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.entities.Fertilizer;
 import com.iita.akilimo.entities.FertilizerPrice;
 import com.iita.akilimo.inherit.BaseDialogFragment;
-import com.iita.akilimo.interfaces.IDismissListener;
+import com.iita.akilimo.interfaces.IFertilizerDismissListener;
 import com.iita.akilimo.utils.CurrencyCode;
 import com.mynameismidori.currencypicker.ExtendedCurrency;
 
@@ -69,7 +69,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
     private String bagPriceRange = "NA";
     private Double exactPrice = 0.0;
 
-    private IDismissListener onDismissListener;
+    private IFertilizerDismissListener onDismissListener;
 
     public FertilizerPriceDialogFragment(Context context) {
         this.context = context;
@@ -276,7 +276,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
         }
     }
 
-    public void setOnDismissListener(IDismissListener dismissListener) {
+    public void setOnDismissListener(IFertilizerDismissListener dismissListener) {
         this.onDismissListener = dismissListener;
     }
 }
