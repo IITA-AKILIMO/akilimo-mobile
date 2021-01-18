@@ -119,10 +119,10 @@ public class RootYieldActivity extends BaseActivity {
             tonnage = getString(R.string.lbl_ha_yield);
         }
 
-        String title = getString(R.string.lbl_typical_yield_question, tonnage, "?");
+        String title = getString(R.string.lbl_typical_yield_question, tonnage);
         if (useCase != null) {
             if (useCase.getName().equals(EnumUseCase.FR.name())) {
-                title = getString(R.string.lbl_typical_yield_question, tonnage, getString(R.string.lbl_typical_yield_no_fertilizer));
+                title = getString(R.string.lbl_typical_yield_question_fr, tonnage);
             }
         }
         rootYieldTitle.setText(title);
