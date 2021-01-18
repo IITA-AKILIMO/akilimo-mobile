@@ -75,7 +75,7 @@
     <string name="lbl_planting_harvest">Je! Unataka kuzingatia upandaji mbadala na tarehe za mavuno?</string>
     <string name="lbl_investment_amount">Je! Uko tayari kuwekeza kiasi gani kwenye mbolea?</string>
     <string name="lbl_typical_yield">Je! Kwa kawaida shamba lako hutoa mavuno kiasi gani?</string>
-    <string name="lbl_typical_yield_question">Mavuno ya kawaida ya mizizi ya muhogo katika eneo lako ni %1$s. Je! Unatarajia mavuno mengi kutoka kwa shamba lako?</string>
+    <string name="lbl_typical_yield_question">Mavuno ya kawaida ya mizizi ya muhogo katika eneo lako ni %1$s. Je! Unatarajia mavuno mengi kutoka kwa shamba lako %2$s?</string>
     <string name="lbl_maize_performance">Urefu wa kawaida wa mahindi ukipandwa bila kuwekewa mbolea</string>
     <string name="lbl_sweet_potato_prices">Bei ya viazi tamu</string>
     <string name="lbl_height_of_maize_at_tasseling">Urefu wa mahindi wakati wa kutoa mbelewele</string>

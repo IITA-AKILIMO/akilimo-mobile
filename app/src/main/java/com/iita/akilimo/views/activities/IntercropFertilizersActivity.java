@@ -101,7 +101,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
 
         Intent intent = getIntent();
         if (intent != null) {
-            useCase = intent.getParcelableExtra(useCaseTag);
+            enumUseCase = intent.getParcelableExtra(useCaseTag);
         }
 
         ProfileInfo profileInfo = database.profileInfoDao().findOne();
@@ -149,7 +149,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
 
         mAdapter.setOnItemClickListener((view, clickedFertilizer, position) -> {
             mAdapter.setActiveRowIndex(position);
-            InterCropFertilizer selectedType = database.interCropFertilizerDao().findByTypeCountryAndUseCase(clickedFertilizer.getFertilizerType(), countryCode, useCase.name());
+            InterCropFertilizer selectedType = database.interCropFertilizerDao().findByTypeCountryAndUseCase(clickedFertilizer.getFertilizerType(), countryCode, enumUseCase.name());
             if (selectedType == null) {
                 selectedType = clickedFertilizer;
             }
@@ -205,7 +205,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
     @Override
     protected void validate(boolean backPressed) {
         if (mAdapter != null) {
-            availableFertilizersList = database.interCropFertilizerDao().findAllByCountryAndUseCase(countryCode, useCase.name());
+            availableFertilizersList = database.interCropFertilizerDao().findAllByCountryAndUseCase(countryCode, enumUseCase.name());
             mAdapter.setItems(availableFertilizersList);
         }
     }
@@ -334,7 +334,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
     }
 
     private boolean isMinSelected() {
-        int count = database.interCropFertilizerDao().findAllSelectedByCountryAndUseCase(countryCode, useCase.name()).size();
+        int count = database.interCropFertilizerDao().findAllSelectedByCountryAndUseCase(countryCode, enumUseCase.name()).size();
         if (count < minSelection) {
             Snackbar snackbar = Snackbar
                     .make(coordinatorLayout, String.format(Locale.US, context.getString(R.string.lbl_min_selection), minSelection), Snackbar.LENGTH_LONG);

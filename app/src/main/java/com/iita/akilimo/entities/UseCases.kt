@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 open class UseCases {
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null
-    var name: String? = null
+    var name: String = ""
     var FR = false
     var CIM = false
     var CIS = false

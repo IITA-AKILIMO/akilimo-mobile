@@ -128,7 +128,7 @@ public class CassavaMarketActivity extends BaseActivity {
         }
         Intent intent = getIntent();
         if (intent != null) {
-            useCase = intent.getParcelableExtra(useCaseTag);
+            enumUseCase = intent.getParcelableExtra(useCaseTag);
         }
 
         initToolbar();
@@ -225,7 +225,7 @@ public class CassavaMarketActivity extends BaseActivity {
 
         btnFinish.setOnClickListener(view -> validate(false));
         btnCancel.setOnClickListener(view -> closeActivity(false));
-        if (useCase == EnumUseCase.CIM) {
+        if (enumUseCase == EnumUseCase.CIM) {
             produceType = EnumCassavaProduceType.ROOTS.produce();
             factoryRequired = false;
             otherMarketsRequired = false;

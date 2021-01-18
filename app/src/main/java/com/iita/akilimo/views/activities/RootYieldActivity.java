@@ -22,9 +22,11 @@ import com.iita.akilimo.databinding.ActivityRootYieldBinding;
 import com.iita.akilimo.entities.FieldYield;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
+import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.Tools;
+import com.iita.akilimo.utils.enums.EnumUseCase;
 import com.iita.akilimo.views.fragments.dialog.FertilizerPriceDialogFragment;
 import com.iita.akilimo.views.fragments.dialog.RootYieldDialogFragment;
 import com.iita.akilimo.widget.SpacingItemDecoration;
@@ -49,6 +51,7 @@ public class RootYieldActivity extends BaseActivity {
     ActivityRootYieldBinding binding;
 
     private FieldYield savedYield;
+    private UseCases useCase;
     private FieldYieldAdapter mAdapter;
 
     private double selectedYieldAmount = 0.0;
@@ -69,6 +72,7 @@ public class RootYieldActivity extends BaseActivity {
         context = this;
         database = AppDatabase.getDatabase(context);
         MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
+        useCase = database.useCaseDao().findOne();
         if (mandatoryInfo != null) {
             areaUnit = mandatoryInfo.getAreaUnit();
         }
@@ -114,7 +118,14 @@ public class RootYieldActivity extends BaseActivity {
         if (areaUnit.equalsIgnoreCase("ha") || areaUnit.equalsIgnoreCase("hekta")) {
             tonnage = getString(R.string.lbl_ha_yield);
         }
-        rootYieldTitle.setText(getString(R.string.lbl_typical_yield_question, tonnage));
+
+        String title = getString(R.string.lbl_typical_yield_question, tonnage, "?");
+        if (useCase != null) {
+            if (useCase.getName().equals(EnumUseCase.FR.name())) {
+                title = getString(R.string.lbl_typical_yield_question, tonnage, getString(R.string.lbl_typical_yield_no_fertilizer));
+            }
+        }
+        rootYieldTitle.setText(title);
 
         List<FieldYield> items = setYieldData(areaUnit);
         //set data and list adapter

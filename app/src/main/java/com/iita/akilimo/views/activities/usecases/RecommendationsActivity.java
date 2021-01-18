@@ -31,6 +31,7 @@ import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityRecommendationsActivityBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
+import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.Recommendations;
 import com.iita.akilimo.utils.ItemAnimation;
@@ -56,8 +57,8 @@ public class RecommendationsActivity extends BaseActivity {
     String sphString;
     String bppString;
 
-
     private MandatoryInfo mandatoryInfo;
+    private UseCases useCase;
     private AdapterListAnimation mAdapter;
     private List<Recommendations> items = new ArrayList<>();
 
@@ -73,6 +74,7 @@ public class RecommendationsActivity extends BaseActivity {
             sessionManager = new SessionManager(context);
         }
         ProfileInfo profileInfo = database.profileInfoDao().findOne();
+        useCase = database.useCaseDao().findOne();
         if (profileInfo != null) {
             countryCode = profileInfo.getCountryCode();
             currency = profileInfo.getCurrency();
@@ -193,6 +195,11 @@ public class RecommendationsActivity extends BaseActivity {
                     break;
             }
             if (intent != null) {
+                if (useCase == null) {
+                    useCase = new UseCases();
+                }
+                useCase.setName(advice.name());
+                database.useCaseDao().insert(useCase);
                 startActivity(intent);
                 openActivity();
             } else {

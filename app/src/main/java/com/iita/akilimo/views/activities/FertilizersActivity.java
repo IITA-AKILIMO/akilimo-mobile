@@ -94,7 +94,7 @@ public class FertilizersActivity extends BaseActivity {
 
         Intent intent = getIntent();
         if (intent != null) {
-            useCase = intent.getParcelableExtra(useCaseTag);
+            enumUseCase = intent.getParcelableExtra(useCaseTag);
         }
 
         ProfileInfo profileInfo = database.profileInfoDao().findOne();

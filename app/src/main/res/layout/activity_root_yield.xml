@@ -31,7 +31,7 @@
             android:layout_marginTop="@dimen/spacing_medium"
             android:layout_marginRight="@dimen/spacing_medium"
             android:layout_marginBottom="@dimen/spacing_medium"
-            android:fontFamily="@font/roboto_bold"
+            android:fontFamily="@font/ubuntu_bold"
             android:gravity="center"
             android:text="@string/app_name"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"

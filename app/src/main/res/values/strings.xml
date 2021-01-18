@@ -108,7 +108,8 @@
     <string name="lbl_planting_harvest">Do you want to consider alternative planting and harvest dates?</string>
     <string name="lbl_investment_amount">How much are you willing to invest in fertilizers?</string>
     <string name="lbl_typical_yield">What is the typical cassava yield of your field?</string>
-    <string name="lbl_typical_yield_question">A typical cassava root yield in your area is %1$s. How much yield do you expect from your field?</string>
+    <string name="lbl_typical_yield_question">A typical cassava root yield in your area is %1$s. How much yield do you expect from your field %2$s</string>
+    <string name="lbl_typical_yield_no_fertilizer">without fertilizer application?</string>
     <string name="lbl_maize_performance">The typical height of maize when grown without fertilizer</string>
     <string name="lbl_sweet_potato_prices">Sweet potato prices</string>
     <!--    <string name="lbl_height_of_maize_at_tasseling">Height of maize at tasseling</string>-->
