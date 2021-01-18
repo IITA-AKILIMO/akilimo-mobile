@@ -65,7 +65,6 @@ public class TractorAccessActivity extends CostBaseActivity {
     private String ploughCostText;
     private String ridgingCostText;
 
-
     private boolean dataValid;
     private double tractorPloughCost;
     private double tractorRidgeCost;

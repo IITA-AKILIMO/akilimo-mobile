@@ -264,7 +264,8 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
 
         minAmountUSD = priceLower; //minimum amount will be dynamic based on weight being sold, max amount will be constant
 
-        return context.getString(R.string.unit_price_label, priceLower, priceHigher, currencySymbol, uos);
+//        return context.getString(R.string.unit_price_label, priceLower, priceHigher, currencySymbol, uos);
+        return context.getString(R.string.unit_price_label_single, priceHigher, currencySymbol, uos);
     }
 
 }

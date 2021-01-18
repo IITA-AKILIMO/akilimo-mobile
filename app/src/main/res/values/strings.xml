@@ -114,7 +114,7 @@
     <string name="lbl_typical_yield_question">A typical cassava root yield in your area is %1$s. How much yield do you expect from your field?</string>
     <string name="lbl_maize_performance">The typical height of maize when grown without fertilizer</string>
     <string name="lbl_sweet_potato_prices">Sweet potato prices</string>
-<!--    <string name="lbl_height_of_maize_at_tasseling">Height of maize at tasseling</string>-->
+    <!--    <string name="lbl_height_of_maize_at_tasseling">Height of maize at tasseling</string>-->
     <string name="lbl_height_of_maize_at_tasseling">Maize without fertilizer in your area usually reaches up to chest height about 150cm. What is the height of your maize crop in your field at tasseling without fertilizer</string>
 
     <string name="lbl_maize_performance_poor">These are very poor soil conditions and not very common</string>
@@ -123,9 +123,9 @@
     <string name="lbl_market_outlet">What price do you expect for your cassava at harvest?</string>
     <string name="lbl_market_outlet_maize">What price do you expect for your maize at harvest?</string>
     <string name="lbl_tillage_operations">Tillage operations and related cost</string>
-    <string name="lbl_cost_of_manual_tillage">Cost of manual tillage</string>
-    <string name="lbl_tractor_access">Tractor access</string>
-    <string name="lbl_cost_of_weed_control">Cost of weed control</string>
+    <string name="lbl_cost_of_manual_tillage">What is the cost of manual tillage?</string>
+    <string name="lbl_tractor_access">What operation can the tractor perform?</string>
+    <string name="lbl_cost_of_weed_control">How do you control weeds in your field?</string>
 
     <string name="lbl_pick_planting_date">Select planting date</string>
     <string name="lbl_change_planting_date">Change planting date</string>
@@ -295,11 +295,11 @@
     <string name="lbl_loading_fertilizers">Loading available fertilizers</string>
 
     <!-- maize info section -->
-<!--    <string name="lbl_knee_height">About knee-height (~50 cm)</string>-->
-<!--    <string name="lbl_chest_height">About chest-height (~150 cm)</string>-->
-<!--    <string name="lbl_yellowish_leaves">Larger than a person (200 cm) but with yellowish leaves</string>-->
-<!--    <string name="lbl_green_leaves">Larger than a person (200 cm) but with somewhat green leaves</string>-->
-<!--    <string name="lbl_dark_green_leaves">Larger than a person (200 cm) but with dark green leaves</string>-->
+    <!--    <string name="lbl_knee_height">About knee-height (~50 cm)</string>-->
+    <!--    <string name="lbl_chest_height">About chest-height (~150 cm)</string>-->
+    <!--    <string name="lbl_yellowish_leaves">Larger than a person (200 cm) but with yellowish leaves</string>-->
+    <!--    <string name="lbl_green_leaves">Larger than a person (200 cm) but with somewhat green leaves</string>-->
+    <!--    <string name="lbl_dark_green_leaves">Larger than a person (200 cm) but with dark green leaves</string>-->
 
     <string name="lbl_knee_height">Smaller</string>
     <string name="lbl_chest_height">About the same</string>
@@ -346,7 +346,9 @@
     <string name="lbl_single_plough_op">Single plough operation</string>
     <string name="lbl_do_you_ridge_your_field">Do you ridge your field?</string>
     <string name="lbl_add_operation_costs">Add operation costs</string>
+
     <string name="lbl_access_to_tractor">Do you have access to a tractor?</string>
+
     <string name="lbl_which_implements_do_you_have_access_to">Which implements do you have access to?</string>
     <string name="lbl_how_do_you_control_weeds_in_your_field">How do you control weeds in your field</string>
     <string name="lbl_manual_weed_control">Manual (by hand hoe and cutlass)</string>

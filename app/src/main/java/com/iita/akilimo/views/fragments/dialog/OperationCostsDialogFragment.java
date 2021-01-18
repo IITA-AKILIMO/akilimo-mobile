@@ -220,7 +220,8 @@ public class OperationCostsDialogFragment extends BaseDialogFragment {
             radioButton.setTag(listIndex);
 
 
-            String radioLabel = String.format("%s %s %s %s", minPrice, translatedSuffix, maxPrice, currencySymbol);
+//            String radioLabel = String.format("%s %s %s %s", minPrice, translatedSuffix, maxPrice, currencySymbol);
+            String radioLabel = String.format("About %s %s", maxPrice, currencySymbol);
 
             if (price >= 0 && price <= 0) {
                 radioLabel = context.getString(R.string.lbl_do_not_know);
