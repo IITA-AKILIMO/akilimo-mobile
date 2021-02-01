@@ -247,25 +247,32 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
             currencySymbol = extendedCurrency.getSymbol();
         }
 
+        double finalPrice = 0.0;
         switch (unitOfSaleEnum) {
             case ONE_KG:
                 priceLower = (unitPriceLower * EnumUnitOfSale.ONE_KG.unitWeight()) / 1000;
                 priceHigher = (unitPriceUpper * EnumUnitOfSale.ONE_KG.unitWeight()) / 1000;
+
+                finalPrice = mathHelper.roundToNearestSpecifiedValue(priceHigher, 10);
                 break;
             case FIFTY_KG:
                 priceLower = (unitPriceLower * EnumUnitOfSale.FIFTY_KG.unitWeight()) / 1000;
                 priceHigher = (unitPriceUpper * EnumUnitOfSale.FIFTY_KG.unitWeight()) / 1000;
+                
+                finalPrice = mathHelper.roundToNearestSpecifiedValue(priceHigher, 10);
                 break;
             case HUNDRED_KG:
                 priceLower = (unitPriceLower * EnumUnitOfSale.HUNDRED_KG.unitWeight()) / 1000;
                 priceHigher = (unitPriceUpper * EnumUnitOfSale.HUNDRED_KG.unitWeight()) / 1000;
+
+                finalPrice = mathHelper.roundToNearestSpecifiedValue(priceHigher, 100);
                 break;
         }
 
         minAmountUSD = priceLower; //minimum amount will be dynamic based on weight being sold, max amount will be constant
 
 //        return context.getString(R.string.unit_price_label, priceLower, priceHigher, currencySymbol, uos);
-        return context.getString(R.string.unit_price_label_single, priceHigher, currencySymbol, uos);
+        return context.getString(R.string.unit_price_label_single, finalPrice, currencySymbol, uos);
     }
 
 }
