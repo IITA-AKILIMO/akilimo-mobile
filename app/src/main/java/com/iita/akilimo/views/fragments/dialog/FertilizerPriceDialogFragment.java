@@ -30,6 +30,7 @@ import com.iita.akilimo.interfaces.IFertilizerDismissListener;
 import com.iita.akilimo.utils.CurrencyCode;
 import com.mynameismidori.currencypicker.ExtendedCurrency;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 ;
@@ -63,12 +64,16 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
     private List<FertilizerPrice> fertilizerPricesList;
 
     private double savedPricePerBag = 0.0;
+    private double maxPrice = 0.0;
+    private double minPrice = 0.0;
     private String countryCode;
     private String currencyCode;
+    private String currencyName;
     private Double bagPrice;
     private String bagPriceRange = "NA";
     private Double exactPrice = 0.0;
 
+    DecimalFormat format;
     private IFertilizerDismissListener onDismissListener;
 
     public FertilizerPriceDialogFragment(Context context) {
@@ -85,6 +90,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
             fertilizer = bundle.getParcelable(FERTILIZER_TYPE);
         }
         dialog = new Dialog(context);
+        format = new DecimalFormat("0.#");
 
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
@@ -111,8 +117,9 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
             ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
             if (extendedCurrency != null) {
                 currencySymbol = extendedCurrency.getSymbol();
+                currencyName = extendedCurrency.getName();
             }
-            String titleText = context.getString(R.string.price_per_bag, fertilizer.getName());
+            String titleText = context.getString(R.string.price_per_bag, fertilizer.getName(), currencyName);
             lblPricePerBag.setText(titleText);
         }
 
@@ -143,8 +150,9 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
                     Crashlytics.log(Log.ERROR, LOG_TAG, "The number appears not be valid");
                     Crashlytics.logException(ex);
                 }
-                if (bagPrice <= 0) {
-                    editExactFertilizerPrice.setError("Please provide a valid bag price");
+                if (bagPrice <= 0 || bagPrice < minPrice || bagPrice > maxPrice) {
+                    editExactFertilizerPrice.setError(String.format("Please provide a valid bag price between %s and %s",
+                            format.format(minPrice), format.format(maxPrice)));
                     isPriceValid = false;
                     return;
                 }
@@ -200,7 +208,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
             exactPriceWrapper.getEditText().setText(null);
             if (savedPricePerBag == 0) {
                 bagPrice = 0.0;
-                bagPriceRange = getString(R.string.lbl_do_not_know);
+                bagPriceRange = getString(R.string.lbl_unknown_price);
             } else if (savedPricePerBag < 0) {
                 isExactPriceRequired = true;
                 isPriceValid = false;
@@ -246,11 +254,16 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
 //            radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.spacing_large));
 
             double price = pricesResp.getPricePerBag();
+
             String radioLabel = pricesResp.getPriceRange();
+            minPrice = pricesResp.getMinAllowedPrice();
+            maxPrice = pricesResp.getMaxAllowedPrice();
             if (price == 0) {
                 radioLabel = context.getString(R.string.lbl_do_not_know);
             } else if (price < 0) {
                 radioLabel = context.getString(R.string.exact_fertilizer_price);
+                String exactTextHint = getString(R.string.exact_fertilizer_price_currency, currencyName);
+                exactPriceWrapper.setHint(exactTextHint);
             }
             radioButton.setText(radioLabel);
 

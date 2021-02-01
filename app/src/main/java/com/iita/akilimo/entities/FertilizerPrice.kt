@@ -26,6 +26,12 @@ open class FertilizerPrice {
     @JsonProperty("minLocalPrice")
     var minLocalPrice = 0.0
 
+    @JsonProperty("minAllowedPrice")
+    var minAllowedPrice = 0.0
+
+    @JsonProperty("maxAllowedPrice")
+    var maxAllowedPrice = 0.0
+
     @JsonProperty("minUsd")
     var minUsd = 0.0
 

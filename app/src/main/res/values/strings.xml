@@ -147,11 +147,12 @@
     <string name="lbl_close" translatable="false">x</string>
 
     <string name="lbl_do_not_know">I don\'t know</string>
+    <string name="lbl_unknown_price">Unknown price</string>
     <string name="lbl_30_to_40" translatable="false">30–40</string>
     <string name="lbl_40_to_50" translatable="false">40–50</string>
     <string name="lbl_50_to_60" translatable="false">50–60</string>
     <string name="lbl_20_to_30" translatable="false">20–30</string>
-    <string name="price_per_bag">Price per 50 kg bag of %1$s</string>
+    <string name="price_per_bag">Price per 50 kg bag of %1$s in %2$s</string>
 
     <string name="lbl_operation_cost">Operation cost for your field</string>
 
@@ -159,6 +160,7 @@
     <string name="exact_investment_x_per_field_area">I want to specify the exact amount</string>
     <string name="exact_investment_x_per_field_area_hint">Price in %1$s for %2$s %3$s</string>
     <string name="exact_fertilizer_price">I want to specify the exact price</string>
+    <string name="exact_fertilizer_price_currency">Exact price in %1$s</string>
 
     <string name="unit_of_sale">Unit of Sale</string>
 

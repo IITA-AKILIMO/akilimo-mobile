@@ -64,8 +64,10 @@ public class InvestmentAmountActivity extends BaseActivity {
     private double investmentAmountUSD;
     private double investmentAmountLocal;
     private double minInvestmentUSD = 1;
+    private double maxInvestmentUSD = 1;
     private double minimumAmountUSD;
     private double minimumAmountLocal;
+    private double maxAmountLocal;
     private String selectedFieldArea;
 
 
