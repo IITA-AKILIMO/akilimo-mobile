@@ -55,11 +55,11 @@ public class MaizePerformanceActivity extends BaseActivity {
     private int performanceRadioIndex;
 
     private final Integer[] performanceImages = {
-            R.drawable.yield_less_than_7point5,
-            R.drawable.yield_7point5_to_15,
-            R.drawable.yield_15_to_22point5,
-            R.drawable.yield_22_to_30,
-            R.drawable.yield_more_than_30,
+            R.drawable.ic_maize_1,
+            R.drawable.ic_maize_2,
+            R.drawable.ic_maize_3,
+            R.drawable.ic_maize_4,
+            R.drawable.ic_maize_5,
     };
 
     @Override

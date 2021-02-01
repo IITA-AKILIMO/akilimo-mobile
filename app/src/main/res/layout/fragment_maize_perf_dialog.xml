@@ -38,7 +38,7 @@
             android:layout_marginEnd="@dimen/spacing_xlarge"
             android:fontFamily="@font/ubuntu"
             android:padding="@dimen/spacing_medium"
-            android:text="@string/title_activity_cassava_root_yield" />
+            android:text="@string/lbl_maize_performance" />
 
 
         <RelativeLayout
@@ -53,8 +53,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:contentDescription="@string/title_activity_cassava_root_yield"
-                android:scaleType="centerCrop"
-                app:srcCompat="@drawable/yield_7point5_to_15" />
+                app:srcCompat="@drawable/ic_maize_5" />
 
         </RelativeLayout>
 
