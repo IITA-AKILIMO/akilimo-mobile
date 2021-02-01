@@ -147,6 +147,7 @@ public class MaizePerformanceActivity extends BaseActivity {
                         database.maizePerformanceDao().insert(savedMaizePerformance);
 
                         mAdapter.setActiveRowIndex(position);
+                        maizePerformanceValue = selectedPerformanceValue;
                     }
                     mAdapter.setItems(selectedPerformanceValue, items);
                 });
@@ -184,7 +185,7 @@ public class MaizePerformanceActivity extends BaseActivity {
     @Override
     protected void validate(boolean backPressed) {
 
-        if (Strings.isEmptyOrWhitespace(selectedPerformanceValue) || Strings.isEmptyOrWhitespace(maizePerformanceValue)) {
+        if (Strings.isEmptyOrWhitespace(selectedPerformanceValue)) {
             showCustomWarningDialog(getString(R.string.lbl_invalid_selection), getString(R.string.lbl_maize_performance_prompt));
             return;
         }
