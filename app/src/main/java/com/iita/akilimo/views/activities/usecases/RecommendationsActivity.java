@@ -2,6 +2,7 @@ package com.iita.akilimo.views.activities.usecases;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -15,6 +16,11 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
@@ -29,15 +35,24 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.AdapterListAnimation;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityRecommendationsActivityBinding;
+import com.iita.akilimo.entities.Currency;
+import com.iita.akilimo.entities.FertilizerPrice;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.inherit.BaseActivity;
+import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.models.Recommendations;
+import com.iita.akilimo.rest.RestParameters;
+import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.SessionManager;
 import com.iita.akilimo.utils.enums.EnumAdvice;
 import com.iita.akilimo.utils.enums.EnumCountry;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +85,8 @@ public class RecommendationsActivity extends BaseActivity {
 
         context = this;
         database = AppDatabase.getDatabase(context);
+        queue = Volley.newRequestQueue(context);
+
         if (sessionManager == null) {
             sessionManager = new SessionManager(context);
         }
@@ -86,6 +103,7 @@ public class RecommendationsActivity extends BaseActivity {
         initComponent();
 
         refreshAd();
+        updateCurrencyList();
     }
 
     @Override
@@ -352,5 +370,43 @@ public class RecommendationsActivity extends BaseActivity {
             nativeAd.destroy();
         }
         super.onDestroy();
+    }
+
+    private void updateCurrencyList() {
+        final RestService restService = RestService.getInstance(queue, this);
+        final RestParameters restParameters = new RestParameters("/v3/currency", countryCode);
+        restParameters.setInitialTimeout(5000);
+        restService.setParameters(restParameters);
+        restService.getJsonArrList(new IVolleyCallback() {
+            @Override
+            public void onSuccessJsonString(@NotNull String jsonStringResult) {
+            }
+
+            @Override
+            public void onSuccessJsonArr(@NotNull JSONArray jsonArray) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                try {
+
+                    List<Currency> currencyList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<Currency>>() {
+                    });
+
+                    if (currencyList.size() > 0) {
+                        database.currencyDao().insertAll(currencyList);
+                    }
+                } catch (Exception ex) {
+                    Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+                    Crashlytics.logException(ex);
+                }
+            }
+
+            @Override
+            public void onSuccessJsonObject(JSONObject jsonObject) {
+            }
+
+            @Override
+            public void onError(VolleyError volleyError) {
+            }
+        });
     }
 }

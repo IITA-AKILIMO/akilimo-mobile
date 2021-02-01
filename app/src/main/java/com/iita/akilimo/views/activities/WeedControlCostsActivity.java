@@ -16,6 +16,7 @@ import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityWeedControlCostBinding;
+import com.iita.akilimo.entities.Currency;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.FieldOperationCost;
 import com.iita.akilimo.entities.MandatoryInfo;
@@ -51,6 +52,9 @@ public class WeedControlCostsActivity extends BaseActivity {
     private double secondOperationCost;
     private int weedRadioIndex;
 
+    private double minCost = 1.0;
+    private double maxCost;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,10 +65,20 @@ public class WeedControlCostsActivity extends BaseActivity {
         database = AppDatabase.getDatabase(context);
         mathHelper = new MathHelper();
 
+        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
+        if (mandatoryInfo != null) {
+            areaUnit = mandatoryInfo.getAreaUnit();
+            fieldSize = mandatoryInfo.getAreaSize();
+        }
+
         ProfileInfo profileInfo = database.profileInfoDao().findOne();
         if (profileInfo != null) {
             countryCode = profileInfo.getCountryCode();
             currency = profileInfo.getCurrency();
+            currencyCode = profileInfo.getCurrency();
+            Currency myCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode);
+            currencySymbol = myCurrency.getCurrencySymbol();
+            currencyName = myCurrency.getCurrencyName();
         }
 
         fieldOperationCost = database.fieldOperationCostDao().findOne();
@@ -119,8 +133,8 @@ public class WeedControlCostsActivity extends BaseActivity {
                 editSecondWeedingOpCost.setText(String.valueOf(secondOperationCost));
             }
         }
-        firstWeedingOpCostTitle.setText(getString(R.string.lbl_cost_of_first_weeding_operation, currency));
-        secondWeedingOpCostTitle.setText(getString(R.string.lbl_cost_of_second_weeding_operation, currency));
+        firstWeedingOpCostTitle.setText(getString(R.string.lbl_cost_of_first_weeding_operation, currencyName, mathHelper.removeLeadingZero(fieldSize), areaUnit));
+        secondWeedingOpCostTitle.setText(getString(R.string.lbl_cost_of_second_weeding_operation, currencyName, mathHelper.removeLeadingZero(fieldSize), areaUnit));
 
         rdgWeedControl.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
             switch (radioIndex) {
@@ -157,11 +171,11 @@ public class WeedControlCostsActivity extends BaseActivity {
         firstOperationCost = mathHelper.convertToDouble(editFirstWeedingOpCost.getText().toString());
         secondOperationCost = mathHelper.convertToDouble(editSecondWeedingOpCost.getText().toString());
 
-        if (firstOperationCost <= 0) {
+        if (firstOperationCost <= minCost) {
             showCustomWarningDialog(getString(R.string.lbl_invalid_cost), getString(R.string.lbl_first_weeding_costs_prompt));
             return;
         }
-        if (secondOperationCost <= 0) {
+        if (secondOperationCost <= minCost) {
             showCustomWarningDialog(getString(R.string.lbl_invalid_cost), getString(R.string.lbl_second_weeding_cost_prompt));
             return;
         }

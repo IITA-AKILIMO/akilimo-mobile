@@ -8,6 +8,7 @@ import com.google.android.gms.common.util.Strings;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
 import java.util.Locale;
 
 public class MathHelper {
@@ -76,7 +77,7 @@ public class MathHelper {
         return joined;
     }
 
-    public String convertCurrency(String stringToSplit, String toCurrency,String currencySymbol, String unitType, String fieldSize, String selectedField, String separator) {
+    public String convertCurrency(String stringToSplit, String toCurrency, String currencySymbol, String unitType, String fieldSize, String selectedField, String separator) {
         String data = convertCurrency(stringToSplit, toCurrency);
         try {
             if (unitType != null) {
@@ -228,5 +229,10 @@ public class MathHelper {
 
     public double convertToUnitWeightPrice(double selectedPrice, int unitWeight) {
         return (selectedPrice * unitWeight) / 1000;
+    }
+
+    public String removeLeadingZero(double numberValue) {
+        DecimalFormat format = new DecimalFormat("0.#");
+        return format.format(numberValue);
     }
 }

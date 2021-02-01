@@ -108,8 +108,8 @@
     <string name="lbl_planting_harvest">Do you want to consider alternative planting and harvest dates?</string>
     <string name="lbl_investment_amount">How much are you willing to invest in fertilizers?</string>
     <string name="lbl_typical_yield">What is the typical cassava yield of your field?</string>
-    <string name="lbl_typical_yield_question">A typical cassava root yield in your area is %1$s. How much yield do you expect from your field?</string>
-    <string name="lbl_typical_yield_question_fr">A typical cassava root yield in your area is %1$s. How much yield do you expect from your field without fertilizer application?</string>
+    <string name="lbl_typical_yield_question">A typical cassava root yield is %1$s. How much yield do you expect from your field?</string>
+    <string name="lbl_typical_yield_question_fr">A typical cassava root yield is %1$s. How much yield do you expect from your field without fertilizer application?</string>
     <string name="lbl_maize_performance">The typical height of maize when grown without fertilizer</string>
     <string name="lbl_sweet_potato_prices">Sweet potato prices</string>
     <!--    <string name="lbl_height_of_maize_at_tasseling">Height of maize at tasseling</string>-->
@@ -251,20 +251,27 @@
     <string name="lbl_grain_unit_price_per">Unit price of dry grain in %s per %s</string>
     <string name="lbl_sweet_potato_tuber_unit_price_per">Unit price of sweet potato tuber in %s per %s</string>
 
-    <string name="lbl_manual_tillage_cost">How much does it cost you to manually plough %.2f %s?</string>
-    <string name="lbl_manual_ridge_cost">How much does it cost you to manually ridge %.2f %s?</string>
-    <string name="lbl_tractor_plough_cost">How much does it cost you to plough %.2f %s using a tractor?</string>
-    <string name="lbl_tractor_ridge_cost">How much does it cost you to ridge %.2f %s using a tractor?</string>
+    <string name="lbl_manual_tillage_cost">How much does it cost you to manually plough %s %s?</string>
+    <string name="lbl_manual_ridge_cost">How much does it cost you to manually ridge %s %s?</string>
+    <string name="lbl_manual_tillage_cost_hint">Cost to manually plough %s %s</string>
+    <string name="lbl_manual_ridge_cost_hint">Cost to manually ridge %s %s</string>
+
+    <string name="lbl_tractor_plough_cost">How much does it cost you to plough %s %s using a tractor?</string>
+    <string name="lbl_tractor_ridge_cost">How much does it cost you to ridge %s %s using a tractor?</string>
+    <string name="lbl_tractor_plough_cost_hint">Cost to plough %s %s using a tractor</string>
+    <string name="lbl_tractor_ridge_cost_hint">Cost to ridge %s %s using a tractor</string>
+
     <string name="lbl_specify_my_cost">I want to specify my costs</string>
     <string name="lbl_exact_cost">Exact cost</string>
-    <string name="lbl_cost_of_first_weeding_operation">Cost of first weeding operation in %s</string>
-    <string name="lbl_cost_of_second_weeding_operation">Cost of second weeding operation in %s</string>
+
+    <string name="lbl_cost_of_first_weeding_operation">Cost of first weeding operation in %s for %s %s</string>
+    <string name="lbl_cost_of_second_weeding_operation">Cost of second weeding operation in %s for %s %s</string>
 
     <string name="lbl_valid_bag_price">Provide a valid bag price</string>
-    <string name="lbl_ploughing_cost_text">Cost of ploughing %.2f %s %.2f %s</string>
-    <string name="lbl_ridging_cost_text">Cost of ridging %.2f %s %.2f %s</string>
-    <string name="lbl_harrowing_cost_text">Cost of harrowing %.2f %s %.2f %s</string>
-    <string name="lbl_weeding_cost_text">Cost of weeding %.2f %s %.2f %s</string>
+    <string name="lbl_ploughing_cost_text">Cost of ploughing %s %s is %s %s</string>
+    <string name="lbl_ridging_cost_text">Cost of ridging %s %s is %s %s</string>
+    <string name="lbl_harrowing_cost_text">Cost of harrowing %s %s is %s %s</string>
+    <string name="lbl_weeding_cost_text">Cost of weeding %s %s is %s %s</string>
     <string name="lbl_valid_email_req">Provide a valid email</string>
     <string name="lbl_first_name_req">Provide your first name</string>
     <string name="lbl_last_name_req">Provide your last name</string>

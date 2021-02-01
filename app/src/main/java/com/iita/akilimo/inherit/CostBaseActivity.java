@@ -27,7 +27,7 @@ public abstract class CostBaseActivity extends BaseActivity {
     }
 
 
-    protected void loadOperationCost(String operationName, String operationType, String dialogTitle) {
+    protected void loadOperationCost(String operationName, String operationType, String dialogTitle, String hintText) {
 
         final RestService restService = RestService.getInstance(queue, this);
         final RestParameters restParameters = new RestParameters("v3/operation-cost", countryCode);
@@ -48,7 +48,7 @@ public abstract class CostBaseActivity extends BaseActivity {
                     operationCostList = objectMapper.readValue(jsonArray.toString(), new TypeReference<ArrayList<OperationCost>>() {
                     });
 
-                    showDialogFullscreen(operationCostList, operationName, countryCode, dialogTitle);
+                    showDialogFullscreen(operationCostList, operationName, countryCode, dialogTitle, hintText);
                 } catch (Exception ex) {
                     Crashlytics.log(Log.ERROR, LOG_TAG, "Error saving price list");
                     Crashlytics.logException(ex);
@@ -68,6 +68,6 @@ public abstract class CostBaseActivity extends BaseActivity {
         });
     }
 
-    protected abstract void showDialogFullscreen(ArrayList<OperationCost> operationCostList, String operationName, String countryCode, String dialogTitle);
+    protected abstract void showDialogFullscreen(ArrayList<OperationCost> operationCostList, String operationName, String countryCode, String dialogTitle, String hintText);
 
 }
