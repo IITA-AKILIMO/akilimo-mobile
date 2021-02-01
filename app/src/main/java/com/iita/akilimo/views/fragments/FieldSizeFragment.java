@@ -223,7 +223,7 @@ public class FieldSizeFragment extends BaseStepFragment {
                 break;
         }
 
-        exactArea = context.getString(R.string.exact_field_area, areaUnit);
+        exactArea = context.getString(R.string.exact_field_area);
         rd_quarter_acre.setText(quarterAcre);
         rd_half_acre.setText(halfAcre);
         rd_one_acre.setText(oneAcre);
