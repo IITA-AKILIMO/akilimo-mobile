@@ -102,6 +102,7 @@ public class RiskAttFragment extends BaseStepFragment {
                             riskAtt = 2;
                             break;
                     }
+                    dataIsValid = true;
                     txtRiskText.setText(riskName);
                     dialogInterface.dismiss();
                     updatedRiskAttitude();
