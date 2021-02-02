@@ -20,6 +20,19 @@ enum class EnumUnitOfSale : Parcelable {
             return "NA"
         }
     },
+    FRESH_COB {
+        override fun unitWeight(): Int {
+            return 1000
+        }
+
+        override fun unitOfSale(context: Context): String {
+            return "fresh cob"
+        }
+
+        override fun unitOfSaleText(context: Context): String {
+            return context.getString(R.string.lbl_fresh_cob)
+        }
+    },
     ONE_KG {
         override fun unitWeight(): Int {
             return 1

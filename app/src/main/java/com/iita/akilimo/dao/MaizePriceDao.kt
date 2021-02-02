@@ -26,4 +26,13 @@ interface MaizePriceDao {
 
     @Query("SELECT * FROM maize_price where country=:countryCode")
     fun findAllByCountry(countryCode: String): MutableList<MaizePrice>
+
+    @Query("SELECT * FROM maize_price where country=:countryCode and produceType=:produceType")
+    fun findAllByCountryAndProduceType(
+        countryCode: String,
+        produceType: String
+    ): MutableList<MaizePrice>
+
+    @Query("SELECT * FROM maize_price where priceIndex=:itemTagIndex")
+    fun findPriceByPriceIndex(itemTagIndex: Int): MaizePrice
 }

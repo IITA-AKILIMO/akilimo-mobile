@@ -64,8 +64,10 @@ public class InvestmentAmountActivity extends BaseActivity {
     private double investmentAmountUSD;
     private double investmentAmountLocal;
     private double minInvestmentUSD = 1;
+    private double maxInvestmentUSD = 1;
     private double minimumAmountUSD;
     private double minimumAmountLocal;
+    private double maxAmountLocal;
     private String selectedFieldArea;
 
 
@@ -209,7 +211,8 @@ public class InvestmentAmountActivity extends BaseActivity {
             }
         }
 
-        currencySymbol = currency;
+        currencyCode = currency;
+        String currencySymbol = currency;
         String currencyName = currency;
         extendedCurrency = CurrencyCode.getCurrencySymbol(currency);
         if (extendedCurrency != null) {
@@ -242,11 +245,12 @@ public class InvestmentAmountActivity extends BaseActivity {
         String separator = getString(R.string.lbl_per_separator);
 
         //convert the currencies
-        rd_25_per_acre.setText(mathHelper.convertCurrency(band_25, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
-        rd_50_per_acre.setText(mathHelper.convertCurrency(band_50, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
-        rd_100_per_acre.setText(mathHelper.convertCurrency(band_100, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
-        rd_150_per_acre.setText(mathHelper.convertCurrency(band_150, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
-        rd_200_per_acre.setText(mathHelper.convertCurrency(band_200, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
+        //@TODO move this data functionality to the API
+        rd_25_per_acre.setText(mathHelper.convertCurrency(band_25, currencyCode, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
+        rd_50_per_acre.setText(mathHelper.convertCurrency(band_50, currencyCode, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
+        rd_100_per_acre.setText(mathHelper.convertCurrency(band_100, currencyCode, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
+        rd_150_per_acre.setText(mathHelper.convertCurrency(band_150, currencyCode, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
+        rd_200_per_acre.setText(mathHelper.convertCurrency(band_200, currencyCode, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
 
         rd_exact_investment.setText(exactText);
         txtEditInvestmentAmountLayout.setHint(exactTextHint);
@@ -272,7 +276,7 @@ public class InvestmentAmountActivity extends BaseActivity {
         minimumAmountUSD = mathHelper.computeInvestmentAmount(minInvestmentUSD, fieldSizeAcre, baseCurrency);
         minimumAmountLocal = mathHelper.convertToLocalCurrency(minimumAmountUSD, currency);
         hasErrors = investmentAmountLocal < minimumAmountLocal;
-        return investmentAmountError = getString(R.string.lbl_investment_validation_msg, minimumAmountLocal, currencySymbol);
+        return investmentAmountError = getString(R.string.lbl_investment_validation_msg, minimumAmountLocal, currencyCode);
 
     }
 }

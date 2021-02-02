@@ -91,6 +91,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
             fragmentArray.add(PrivacyStatementFragment.newInstance())
         }
         fragmentArray.add(BioDataFragment.newInstance())
+        fragmentArray.add(RiskAttFragment.newInstance())
         fragmentArray.add(CountryFragment.newInstance())
         fragmentArray.add(LocationFragment.newInstance())
         fragmentArray.add(FieldInfoFragment.newInstance())

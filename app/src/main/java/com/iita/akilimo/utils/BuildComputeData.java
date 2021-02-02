@@ -129,6 +129,7 @@ public class BuildComputeData {
 
     private String deviceToken = DEFAULT_USERNAME;
     private String fullNames = DEFAULT_USERNAME;
+    private String gender = DEFAULT_UNAVAILABLE;
     private String secondName = DEFAULT_USERNAME;
     private String farmName = DEFAULT_FIELD_DESC;
     private int riskAtt = DEFAULT_UNAVAILABLE_INT;
@@ -155,9 +156,10 @@ public class BuildComputeData {
     }
 
     public RecommendationRequest buildRecommendationReq() {
+        UserInfo userInfo = buildProfileInfo();
+
         ComputeRequest computeRequest = buildMandatoryInfo();
 
-        UserInfo userInfo = buildProfileInfo();
 
         buildRequestedRec(computeRequest);
         buildPlantingDates(computeRequest);
@@ -196,6 +198,7 @@ public class BuildComputeData {
                 String firstName = Strings.isEmptyOrWhitespace(profileInfo.getFirstName()) ? DEFAULT_USERNAME : profileInfo.getFirstName();
                 String lastName = Strings.isEmptyOrWhitespace(profileInfo.getLastName()) ? DEFAULT_USERNAME : profileInfo.getLastName();
                 fullNames = Strings.isEmptyOrWhitespace(profileInfo.getNames()) ? DEFAULT_USERNAME : profileInfo.getNames();
+                gender = Strings.isEmptyOrWhitespace(profileInfo.getGender()) ? DEFAULT_UNAVAILABLE : profileInfo.getGender();
                 farmName = Strings.isEmptyOrWhitespace(profileInfo.getFarmName()) ? DEFAULT_UNAVAILABLE : profileInfo.getFarmName();
                 mobileNumber = Strings.isEmptyOrWhitespace(profileInfo.getFullMobileNumber()) ? DEFAULT_UNAVAILABLE : profileInfo.getFullMobileNumber();
                 fullPhoneNumber = Strings.isEmptyOrWhitespace(profileInfo.getFullMobileNumber()) ? DEFAULT_UNAVAILABLE : profileInfo.getFullMobileNumber();
@@ -247,6 +250,7 @@ public class BuildComputeData {
             countryCode = profileInfo.getCountryCode();
             computeRequest.setCurrency(profileInfo.getCurrency());
             computeRequest.setCountry(countryCode);
+            computeRequest.setRiskAttitude(profileInfo.getRiskAtt());
         }
         return computeRequest;
     }

@@ -15,6 +15,7 @@ import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityManualTillageCostBinding;
+import com.iita.akilimo.entities.Currency;
 import com.iita.akilimo.entities.FieldOperationCost;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
@@ -52,6 +53,8 @@ public class ManualTillageCostActivity extends CostBaseActivity {
     private boolean dataValid;
     private boolean dialogOpen;
 
+    private String hintText;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +86,9 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         if (profileInfo != null) {
             countryCode = profileInfo.getCountryCode();
             currency = profileInfo.getCurrency();
+            currencyCode = profileInfo.getCurrency();
+            Currency myCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode);
+            currencySymbol = myCurrency.getCurrencySymbol();
         }
 
         initToolbar();
@@ -93,8 +99,8 @@ public class ManualTillageCostActivity extends CostBaseActivity {
             manualPloughCost = fieldOperationCost.getManualPloughCost();
             manualRidgeCost = fieldOperationCost.getManualRidgeCost();
 
-            manualPloughCostText.setText(getString(R.string.lbl_ploughing_cost_text, fieldSize, areaUnit, manualPloughCost, currency));
-            manualRidgingCostText.setText(getString(R.string.lbl_ridging_cost_text, fieldSize, areaUnit, manualRidgeCost, currency));
+            manualPloughCostText.setText(getString(R.string.lbl_ploughing_cost_text, mathHelper.removeLeadingZero(fieldSize), areaUnit, mathHelper.removeLeadingZero(manualPloughCost), currencySymbol));
+            manualRidgingCostText.setText(getString(R.string.lbl_ridging_cost_text, mathHelper.removeLeadingZero(fieldSize), areaUnit, mathHelper.removeLeadingZero(manualRidgeCost), currencySymbol));
 
         }
     }
@@ -110,18 +116,20 @@ public class ManualTillageCostActivity extends CostBaseActivity {
 
     @Override
     protected void initComponent() {
-        String ploughTitle = context.getString(R.string.lbl_manual_tillage_cost, fieldSize, areaUnit);
-        String ridgeTitle = context.getString(R.string.lbl_manual_ridge_cost, fieldSize, areaUnit);
+        String ploughTitle = context.getString(R.string.lbl_manual_tillage_cost, mathHelper.removeLeadingZero(fieldSize), areaUnit);
+        String ridgeTitle = context.getString(R.string.lbl_manual_ridge_cost, mathHelper.removeLeadingZero(fieldSize), areaUnit);
 
         btnPloughCost.setOnClickListener(view -> {
+            hintText = context.getString(R.string.lbl_manual_tillage_cost_hint, mathHelper.removeLeadingZero(fieldSize), areaUnit);
             if (!dialogOpen) {
-                loadOperationCost(EnumOperation.TILLAGE.name(), EnumOperationType.MANUAL.name(), ploughTitle);
+                loadOperationCost(EnumOperation.TILLAGE.name(), EnumOperationType.MANUAL.name(), ploughTitle, hintText);
             }
         });
 
         btnRidgeCost.setOnClickListener(view -> {
+            hintText = context.getString(R.string.lbl_manual_ridge_cost_hint, mathHelper.removeLeadingZero(fieldSize), areaUnit);
             if (!dialogOpen) {
-                loadOperationCost(EnumOperation.RIDGING.name(), EnumOperationType.MANUAL.name(), ridgeTitle);
+                loadOperationCost(EnumOperation.RIDGING.name(), EnumOperationType.MANUAL.name(), ridgeTitle, hintText);
             }
         });
 
@@ -130,6 +138,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
 
         manualPloughCostTitle.setText(ploughTitle);
         manualRidgeCostTitle.setText(ridgeTitle);
+
 
         showCustomNotificationDialog();
     }
@@ -174,7 +183,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
     }
 
     @Override
-    protected void showDialogFullscreen(ArrayList<OperationCost> operationCostList, String operation, String countryCode, String dialogTitle) {
+    protected void showDialogFullscreen(ArrayList<OperationCost> operationCostList, String operation, String countryCode, String dialogTitle, String hintText) {
         Bundle arguments = new Bundle();
 
         if (dialogOpen) {
@@ -182,22 +191,29 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         }
         arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList);
         arguments.putString(OperationCostsDialogFragment.OPERATION_NAME, operation);
+        arguments.putString(OperationCostsDialogFragment.DIALOG_TITLE, dialogTitle);
+        arguments.putString(OperationCostsDialogFragment.EXACT_PRICE_HINT, hintText);
         arguments.putString(OperationCostsDialogFragment.CURRENCY_CODE, currency);
+        arguments.putString(OperationCostsDialogFragment.CURRENCY_SYMBOL, currencySymbol);
         arguments.putString(OperationCostsDialogFragment.COUNTRY_CODE, countryCode);
 
         OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment(context);
         dialogFragment.setArguments(arguments);
 
         dialogFragment.setOnDismissListener((operationCost, enumOperation, selectedCost, cancelled, isExactCost) -> {
+
             if (!cancelled && enumOperation != null) {
+                double roundedCost = mathHelper.roundToNearestSpecifiedValue(selectedCost, 1000);
                 switch (enumOperation) {
                     case "TILLAGE":
-                        manualPloughCost = selectedCost;
-                        manualPloughCostText.setText(getString(R.string.lbl_ploughing_cost_text, fieldSize, areaUnit, selectedCost, currency));
+                        manualPloughCost = roundedCost;
+                        manualPloughCostText.setText(getString(R.string.lbl_ploughing_cost_text, mathHelper.removeLeadingZero(fieldSize),
+                                areaUnit, mathHelper.formatNumber(roundedCost, null), currencySymbol));
                         break;
                     case "RIDGING":
-                        manualRidgeCost = selectedCost;
-                        manualRidgingCostText.setText(getString(R.string.lbl_ridging_cost_text, fieldSize, areaUnit, selectedCost, currency));
+                        manualRidgeCost = roundedCost;
+                        manualRidgingCostText.setText(getString(R.string.lbl_ridging_cost_text, mathHelper.removeLeadingZero(fieldSize),
+                                areaUnit, mathHelper.formatNumber(roundedCost, null), currencySymbol));
                         break;
                 }
             }

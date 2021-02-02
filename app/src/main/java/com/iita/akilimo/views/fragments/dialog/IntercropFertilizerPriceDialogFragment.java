@@ -65,8 +65,11 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
     private List<FertilizerPrice> fertilizerPricesList;
 
     private double savedPricePerBag = 0.0;
+    private double maxPrice = 0.0;
+    private double minPrice = 0.0;
     private String countryCode;
     private String currencyCode;
+    private String currencyName;
     private Double bagPrice;
     private String bagPriceRange = "NA";
     private Double exactPrice = 0.0;
@@ -113,6 +116,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
             ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
             if (extendedCurrency != null) {
                 currencySymbol = extendedCurrency.getSymbol();
+                currencyName = extendedCurrency.getName();
             }
             String titleText = context.getString(R.string.price_per_bag, currencySymbol, fertilizer.getName());
             lblPricePerBag.setText(titleText);
@@ -146,8 +150,10 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
                     Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                     Crashlytics.logException(ex);
                 }
-                if (bagPrice <= 0) {
-                    editExactFertilizerPrice.setError("Please provide a valid bag price");
+
+                if (bagPrice <= 0 || bagPrice < minPrice || bagPrice > maxPrice) {
+                    editExactFertilizerPrice.setError(String.format("Please provide a valid bag price between %s and %s",
+                            mathHelper.removeLeadingZero(minPrice), mathHelper.removeLeadingZero(maxPrice)));
                     isPriceValid = false;
                     return;
                 }
@@ -198,7 +204,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
             exactPriceWrapper.getEditText().setText(null);
             if (savedPricePerBag == 0) {
                 bagPrice = 0.0;
-                bagPriceRange = getString(R.string.lbl_do_not_know);
+                bagPriceRange = getString(R.string.lbl_unknown_price);
             } else if (savedPricePerBag < 0) {
                 isExactPriceRequired = true;
                 isPriceValid = false;
@@ -244,12 +250,15 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
             //radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.spacing_large));
 
             double price = pricesResp.getPricePerBag();
-            String radioLabel = String.format("%s-%s %s", pricesResp.getMinLocalPrice(), pricesResp.getMaxLocalPrice(), currencySymbol);
-
+            String radioLabel = pricesResp.getPriceRange();
+            minPrice = pricesResp.getMinAllowedPrice();
+            maxPrice = pricesResp.getMaxAllowedPrice();
             if (price == 0) {
                 radioLabel = context.getString(R.string.lbl_do_not_know);
             } else if (price < 0) {
                 radioLabel = context.getString(R.string.exact_fertilizer_price);
+                String exactTextHint = getString(R.string.exact_fertilizer_price_currency, currencyName);
+                exactPriceWrapper.setHint(exactTextHint);
             }
             radioButton.setText(radioLabel);
 

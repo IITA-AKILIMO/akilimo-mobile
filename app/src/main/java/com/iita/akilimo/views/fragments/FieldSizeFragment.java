@@ -58,7 +58,7 @@ public class FieldSizeFragment extends BaseStepFragment {
     private String quarterAcre;
     private String halfAcre;
     private String oneAcre;
-    private String exactAcre;
+    private String exactArea;
     private String titleMessage;
 
     private MandatoryInfo mandatoryInfo;
@@ -210,26 +210,24 @@ public class FieldSizeFragment extends BaseStepFragment {
                 quarterAcre = getString(R.string.quarter_acre);
                 halfAcre = getString(R.string.half_acre);
                 oneAcre = getString(R.string.one_acre);
-                exactAcre = getString(R.string.exact_field_area);
                 break;
             case "ha":
                 quarterAcre = getString(R.string.quarter_acre_to_ha);
                 halfAcre = getString(R.string.half_acre_to_ha);
                 oneAcre = getString(R.string.one_acre_to_ha);
-                exactAcre = getString(R.string.exact_acre_to_ha);
                 break;
             case "sqm":
                 quarterAcre = getString(R.string.quarter_acre_to_m2);
                 halfAcre = getString(R.string.half_acre_to_m2);
                 oneAcre = getString(R.string.one_acre_to_m2);
-                exactAcre = getString(R.string.exact_acre_to_m2);
                 break;
         }
 
+        exactArea = context.getString(R.string.exact_field_area);
         rd_quarter_acre.setText(quarterAcre);
         rd_half_acre.setText(halfAcre);
         rd_one_acre.setText(oneAcre);
-        rdSpecifyArea.setText(exactAcre);
+        rdSpecifyArea.setText(exactArea);
         titleMessage = context.getString(R.string.lbl_cassava_field_size, areaUnit);
         title.setText(titleMessage);
     }

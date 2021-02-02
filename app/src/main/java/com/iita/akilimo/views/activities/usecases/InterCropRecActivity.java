@@ -115,7 +115,7 @@ public class InterCropRecActivity extends BaseActivity {
 
         recommendations = getString(R.string.lbl_intercropping);
         plantingString = getString(R.string.lbl_planting_harvest);
-        fertilizerString = getString(R.string.lbl_fertilizer_costs);
+        fertilizerString = getString(R.string.lbl_available_fertilizers);
         marketOutletString = getString(R.string.lbl_market_outlet);
         marketOutletMaizeString = getString(R.string.lbl_market_outlet_maize);
         rootYieldString = getString(R.string.lbl_typical_yield);

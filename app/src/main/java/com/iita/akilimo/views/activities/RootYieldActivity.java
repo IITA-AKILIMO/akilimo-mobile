@@ -9,26 +9,27 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
-import com.iita.akilimo.adapters.AdapterGridTwoLine;
 import com.iita.akilimo.adapters.FieldYieldAdapter;
-import com.iita.akilimo.adapters.RecOptionsAdapter;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityRootYieldBinding;
 import com.iita.akilimo.entities.FieldYield;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
+import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.inherit.BaseActivity;
-import com.iita.akilimo.utils.CurrencyCode;
 import com.iita.akilimo.utils.ItemAnimation;
-import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.Tools;
+import com.iita.akilimo.utils.enums.EnumUseCase;
+import com.iita.akilimo.views.fragments.dialog.FertilizerPriceDialogFragment;
+import com.iita.akilimo.views.fragments.dialog.RootYieldDialogFragment;
 import com.iita.akilimo.widget.SpacingItemDecoration;
-import com.mynameismidori.currencypicker.ExtendedCurrency;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,7 @@ public class RootYieldActivity extends BaseActivity {
     ActivityRootYieldBinding binding;
 
     private FieldYield savedYield;
+    private UseCases useCase;
     private FieldYieldAdapter mAdapter;
 
     private double selectedYieldAmount = 0.0;
@@ -70,6 +72,7 @@ public class RootYieldActivity extends BaseActivity {
         context = this;
         database = AppDatabase.getDatabase(context);
         MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
+        useCase = database.useCaseDao().findOne();
         if (mandatoryInfo != null) {
             areaUnit = mandatoryInfo.getAreaUnit();
         }
@@ -115,7 +118,14 @@ public class RootYieldActivity extends BaseActivity {
         if (areaUnit.equalsIgnoreCase("ha") || areaUnit.equalsIgnoreCase("hekta")) {
             tonnage = getString(R.string.lbl_ha_yield);
         }
-        rootYieldTitle.setText(getString(R.string.lbl_typical_yield_question, tonnage));
+
+        String title = getString(R.string.lbl_typical_yield_question, tonnage);
+        if (useCase != null) {
+            if (useCase.getName().equals(EnumUseCase.FR.name())) {
+                title = getString(R.string.lbl_typical_yield_question_fr, tonnage);
+            }
+        }
+        rootYieldTitle.setText(title);
 
         List<FieldYield> items = setYieldData(areaUnit);
         //set data and list adapter
@@ -124,25 +134,48 @@ public class RootYieldActivity extends BaseActivity {
         mAdapter.setItems(selectedYieldAmount, items);
 
         mAdapter.setOnItemClickListener((view, fieldYield, position) -> {
-            mAdapter.setActiveRowIndex(position);
-            selectedYieldAmount = fieldYield.getYieldAmount();
-            String yieldLabel = fieldYield.getFieldYieldLabel();
-            String fieldYieldAmountLabel = fieldYield.getFieldYieldAmountLabel();
             try {
-                if (savedYield == null) {
-                    savedYield = new FieldYield();
-                }
-                savedYield.setYieldAmount(selectedYieldAmount);
-                savedYield.setFieldYieldLabel(yieldLabel);
-                database.fieldYieldDao().insert(savedYield);
+                //show a popup dialog here
+                Bundle arguments = new Bundle();
+                arguments.putParcelable(RootYieldDialogFragment.YIELD_DATA, fieldYield);
 
-                Toast.makeText(context, fieldYieldAmountLabel, Toast.LENGTH_SHORT).show();
+                RootYieldDialogFragment rootYieldDialogFragment = new RootYieldDialogFragment(context);
+                rootYieldDialogFragment.setArguments(arguments);
+
+                rootYieldDialogFragment.setOnDismissListener((yield, yieldConfirmed) -> {
+                    if (yieldConfirmed) {
+                        if (savedYield == null) {
+                            savedYield = new FieldYield();
+                        }
+                        String yieldLabel = yield.getFieldYieldLabel();
+                        selectedYieldAmount = yield.getYieldAmount();
+                        savedYield.setYieldAmount(selectedYieldAmount);
+                        savedYield.setFieldYieldLabel(yieldLabel);
+                        database.fieldYieldDao().insert(savedYield);
+
+                        mAdapter.setActiveRowIndex(position);
+                    }
+                    mAdapter.setItems(selectedYieldAmount, items);
+                });
+
+
+                FragmentTransaction fragmentTransaction;
+                if (getFragmentManager() != null) {
+                    fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    Fragment prev = getSupportFragmentManager().findFragmentByTag(RootYieldDialogFragment.ARG_ITEM_ID);
+                    if (prev != null) {
+                        fragmentTransaction.remove(prev);
+                    }
+                    fragmentTransaction.addToBackStack(null);
+                    rootYieldDialogFragment.show(getSupportFragmentManager(), RootYieldDialogFragment.ARG_ITEM_ID);
+                }
+
+//                Toast.makeText(context, yieldAmountLabel, Toast.LENGTH_SHORT).show();
             } catch (Exception ex) {
                 Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
                 Crashlytics.logException(ex);
             }
 
-            mAdapter.setItems(selectedYieldAmount, items);
         });
 
         btnFinish.setOnClickListener(view -> validate(false));
@@ -196,18 +229,23 @@ public class RootYieldActivity extends BaseActivity {
         }
 
         List<FieldYield> items = new ArrayList<>();
-        items.add(yieldObject(yieldImages[0], getString(R.string.fcy_lower), rd_3_tonnes, 3.75));
-        items.add(yieldObject(yieldImages[1], getString(R.string.fcy_about_the_same), rd_6_tonnes, 11.25));
-        items.add(yieldObject(yieldImages[2], getString(R.string.fcy_somewhat_higher), rd_9_tonnes, 18.75));
-        items.add(yieldObject(yieldImages[3], getString(R.string.fcy_2_3_times_higher), rd_12_tonnes, 26.25));
-        items.add(yieldObject(yieldImages[4], getString(R.string.fcy_more_than_3_times_higher), rd_more, 33.75));
+        items.add(createYieldObject(yieldImages[0], getString(R.string.fcy_lower), rd_3_tonnes, 3.75, getString(R.string.lbl_low_yield)));
+
+        items.add(createYieldObject(yieldImages[1], getString(R.string.fcy_about_the_same), rd_6_tonnes, 11.25, getString(R.string.lbl_normal_yield)));
+
+        items.add(createYieldObject(yieldImages[2], getString(R.string.fcy_somewhat_higher), rd_9_tonnes, 18.75, getString(R.string.lbl_high_yield)));
+
+        items.add(createYieldObject(yieldImages[3], getString(R.string.fcy_2_3_times_higher), rd_12_tonnes, 26.25, getString(R.string.lbl_very_high_yield)));
+
+        items.add(createYieldObject(yieldImages[4], getString(R.string.fcy_more_than_3_times_higher), rd_more, 33.75, getString(R.string.lbl_very_high_yield)));
 
         return items;
     }
 
-    private FieldYield yieldObject(Integer imageID, String yieldLabel, String fieldYieldAmountLabel, double fieldYieldAmount) {
+    private FieldYield createYieldObject(Integer imageID, String yieldLabel, String fieldYieldAmountLabel, double fieldYieldAmount, String fieldYieldDesc) {
         FieldYield cfy = new FieldYield();
         cfy.setFieldYieldAmountLabel(fieldYieldAmountLabel);
+        cfy.setFieldYieldDesc(fieldYieldDesc);
         cfy.setYieldAmount(fieldYieldAmount);
         cfy.setFieldYieldLabel(yieldLabel);
         cfy.setImageId(imageID);

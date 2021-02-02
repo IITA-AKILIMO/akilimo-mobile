@@ -34,9 +34,8 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto"
+                android:fontFamily="@font/ubuntu"
                 android:text="@string/lbl_do_you_want_to_receive_recommendations_via_email_and_sms"
-                android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/colorAccent" />
 
@@ -111,7 +110,7 @@
                 android:id="@+id/finalTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto"
+                android:fontFamily="@font/ubuntu"
                 android:text="@string/lbl_finalize"
                 android:textAlignment="center"
                 android:textColor="@color/colorPrimaryDark" />

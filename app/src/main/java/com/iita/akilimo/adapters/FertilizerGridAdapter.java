@@ -74,7 +74,6 @@ public class FertilizerGridAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             view.lyt_parent.setOnClickListener(v -> clickListener(v, obj, position));
             Tools.displayImageOriginal(ctx, view.image, R.drawable.ic_fertilizer_bag);
             if (isSelected) {
-                ;
                 view.lyt_parent.setCardBackgroundColor(ctx.getResources().getColor(R.color.green_200));
             } else {
                 view.lyt_parent.setCardBackgroundColor(ctx.getResources().getColor(R.color.grey_5));

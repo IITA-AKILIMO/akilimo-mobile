@@ -45,18 +45,18 @@ android {
         debug {
             resValue("string", "PORT_NUMBER", "9080")
             versionNameSuffix ".debug"
-//            pseudoLocalesEnabled true
+        //  pseudoLocalesEnabled true
         }
     }
     buildFeatures {
         viewBinding = true
-//        dataBinding = false
+    //  dataBinding = false
     }
     lintOptions {
         checkReleaseBuilds false
-//        fatal("MissingTranslation", "HardcodedText")
+    //  fatal("MissingTranslation", "HardcodedText")
         abortOnError false
-//        disable 'UselessParent','InvalidPackage', 'UnusedResources', 'TrustAllX509TrustManager', 'LabelFor'
+    //  disable 'UselessParent','InvalidPackage', 'UnusedResources', 'TrustAllX509TrustManager', 'LabelFor'
     }
     dexOptions {
         javaMaxHeapSize "4g"
@@ -119,12 +119,12 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
 
     // implementation project(':nativetemplates') //google ad templates
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.21'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
-    implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha06'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.recyclerview:recyclerview:1.2.0-beta01'
     implementation "androidx.cardview:cardview:1.0.0"
     implementation 'androidx.preference:preference:1.1.1'
 
@@ -135,12 +135,12 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-places:17.0.0'
-    implementation 'com.google.firebase:firebase-config:19.2.0'
-    implementation 'com.google.firebase:firebase-analytics:17.6.0'
-    implementation 'com.google.firebase:firebase-messaging:20.3.0' //for push notifications
+    implementation 'com.google.firebase:firebase-config:20.0.2'
+    implementation 'com.google.firebase:firebase-analytics:18.0.1'
+    implementation 'com.google.firebase:firebase-messaging:21.0.1' //for push notifications
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.google.android:flexbox:0.3.2'                 // google flexible box
-    implementation 'com.google.android.gms:play-services-ads:19.4.0' //Google ads
+    implementation 'com.google.android.gms:play-services-ads:19.6.0' //Google ads
 
     //implementation "com.github.vicpinm:krealmextensions:2.5.0"
     implementation "io.reactivex.rxjava2:rxjava:2.1.9"
@@ -149,7 +149,7 @@ dependencies {
     implementation "com.j256.ormlite:ormlite-android:5.1"
     implementation 'com.j256.ormlite:ormlite-core:5.1'
 
-    implementation "androidx.room:room-runtime:2.2.5"
+    implementation "androidx.room:room-runtime:2.2.6"
 
 
     // mapbox implementation------------------------------------------------------------------------
@@ -171,9 +171,9 @@ dependencies {
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.0' //Feature discovery library
     implementation 'eu.the4thfloor.volley:com.android.volley:2015.05.28' //Volley library
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.11.2'
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.11.2'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.2'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.11.3'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
     implementation 'com.nabinbhandari.android:permissions:3.7'
     implementation 'com.github.vipulasri:timelineview:1.1.1'
     implementation 'com.github.javiersantos:AppUpdater:2.7'
@@ -192,15 +192,15 @@ dependencies {
     implementation 'com.stepstone.stepper:material-stepper:4.3.1'
 
     //If you are using Kotlin, replace annotationProcessor with kapt.
-    kapt 'androidx.room:room-compiler:2.2.5'
+    kapt 'androidx.room:room-compiler:2.2.6'
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
     kapt 'com.jakewharton:butterknife-compiler:10.2.1'
-    kapt 'com.fasterxml.jackson.core:jackson-annotations:2.11.2'
+    kapt 'com.fasterxml.jackson.core:jackson-annotations:2.11.3'
 
-    testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.11.2'
+    testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.11.3'
     testImplementation 'joda-time:joda-time:2.10.6'
 
-    testImplementation 'junit:junit:4.13'
+    testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test:runner:1.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 

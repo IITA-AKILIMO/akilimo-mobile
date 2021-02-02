@@ -15,10 +15,13 @@ open class MaizePrice {
 
     @PrimaryKey(autoGenerate = false)
     @JsonProperty("priceIndex")
-    var priceIndex: Long?=null
+    var priceIndex: Long? = null
 
     @JsonProperty("priceId")
     var priceId: Long = 0
+
+    @JsonProperty("produceType")
+    var produceType: String? = null
 
     @JsonProperty("country")
     var country: String? = null
@@ -31,6 +34,12 @@ open class MaizePrice {
 
     @JsonProperty("maxLocalPrice")
     var maxLocalPrice = 0.0
+
+    @JsonProperty("minAllowedPrice")
+    var minAllowedPrice = 0.0
+
+    @JsonProperty("maxAllowedPrice")
+    var maxAllowedPrice = 0.0
 
     @JsonProperty("minUsd")
     var minUsd = 0.0
