@@ -30,7 +30,7 @@ import com.iita.akilimo.entities.*
         StarchFactory::class,
         UseCases::class,
         Currency::class
-    ], version = 3, exportSchema = false
+    ], version = 4, exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {

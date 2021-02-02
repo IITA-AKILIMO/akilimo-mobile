@@ -3,7 +3,6 @@ package com.iita.akilimo.views.activities;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -28,7 +27,6 @@ import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityMaizeMarketBinding;
 import com.iita.akilimo.entities.MaizeMarket;
 import com.iita.akilimo.entities.MaizePrice;
-import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
@@ -52,7 +50,7 @@ public class MaizeMarketActivity extends BaseActivity {
 
     AppCompatTextView unitOfSaleGrainTitle;
     AppCompatTextView maizeCobPriceTitle;
-    AppCompatTextView lblCurrency;
+    AppCompatTextView lblPricePerCob;
 
     CardView unitOfSaleGrainCard;
     CardView maizeCobPriceCard;
@@ -60,8 +58,8 @@ public class MaizeMarketActivity extends BaseActivity {
     RadioGroup rdgMaizeProduceType;
     RadioGroup rdgUnitOfSaleGrain;
 
-    EditText editCobPrice;
 
+    AppCompatButton btnPickCobPrice;
     AppCompatButton btnFinish;
     AppCompatButton btnCancel;
 
@@ -110,12 +108,12 @@ public class MaizeMarketActivity extends BaseActivity {
         toolbar = binding.toolbar;
         unitOfSaleGrainTitle = binding.marketContent.unitOfSaleGrainTitle;
         maizeCobPriceTitle = binding.marketContent.maizeCobPriceTitle;
-        lblCurrency = binding.marketContent.lblCurrency;
+        lblPricePerCob = binding.marketContent.lblPricePerCob;
         unitOfSaleGrainCard = binding.marketContent.unitOfSaleGrainCard;
         maizeCobPriceCard = binding.marketContent.maizeCobPriceCard;
         rdgMaizeProduceType = binding.marketContent.rdgMaizeProduceType;
         rdgUnitOfSaleGrain = binding.marketContent.rdgUnitOfSaleGrain;
-        editCobPrice = binding.marketContent.editCobPrice;
+        btnPickCobPrice = binding.marketContent.btnPickCobPrice;
         btnFinish = binding.marketContent.twoButtons.btnFinish;
         btnCancel = binding.marketContent.twoButtons.btnCancel;
 
@@ -133,52 +131,6 @@ public class MaizeMarketActivity extends BaseActivity {
         processMaizePrices();
     }
 
-    private void processMaizePrices() {
-        final RestService restService = RestService.getInstance(queue, this);
-        final ObjectMapper objectMapper = new ObjectMapper();
-        final RestParameters restParameters = new RestParameters(
-                String.format("v3/maize-prices/country/%s", countryCode),
-                countryCode
-        );
-        restParameters.setInitialTimeout(5000);
-
-        restService.setParameters(restParameters);
-
-        restService.getJsonArrList(new IVolleyCallback() {
-            @Override
-            public void onSuccessJsonString(@NotNull String jsonStringResult) {
-            }
-
-            @Override
-            public void onSuccessJsonArr(@NotNull JSONArray jsonArray) {
-                try {
-                    maizePriceList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<MaizePrice>>() {
-                    });
-
-                    if (maizePriceList.size() > 0) {
-                        database.maizePriceDao().insertAll(maizePriceList);
-                    }
-                } catch (JsonProcessingException ex) {
-                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                    Crashlytics.logException(ex);
-                    Snackbar.make(maizeCobPriceCard, ex.getMessage(), Snackbar.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onSuccessJsonObject(@NotNull JSONObject jsonObject) {
-
-            }
-
-            @Override
-            public void onError(@NotNull VolleyError volleyError) {
-                String error = Tools.parseNetworkError(volleyError).getMessage();
-                if (!Strings.isEmptyOrWhitespace(error)) {
-                    Snackbar.make(maizeCobPriceCard, error, Snackbar.LENGTH_LONG).show();
-                }
-            }
-        });
-    }
 
     @Override
     protected void initToolbar() {
@@ -192,7 +144,7 @@ public class MaizeMarketActivity extends BaseActivity {
     @Override
     protected void initComponent() {
 
-        lblCurrency.setText(currency);
+        lblPricePerCob.setText(currency);
         rdgMaizeProduceType.setOnCheckedChangeListener((group, radioIndex) -> {
             grainPriceRequired = false;
             cobPriceRequired = false;
@@ -241,7 +193,14 @@ public class MaizeMarketActivity extends BaseActivity {
 
         btnFinish.setOnClickListener(view -> validate(false));
         btnCancel.setOnClickListener(view -> closeActivity(false));
+        btnPickCobPrice.setOnClickListener(view -> {
+            unitOfSale = EnumUnitOfSale.FRESH_COB.unitOfSale(context);
+            unitWeight = EnumUnitOfSale.FRESH_COB.unitWeight();
+            unitOfSaleEnum = EnumUnitOfSale.FRESH_COB;
+            showUnitGrainPriceDialog("cob");
+        });
 
+        //@TODO Ensure you cater for dry cob and fresh cob selections
         if (maizeMarket != null) {
             produceType = maizeMarket.getProduceType();
             unitOfSale = maizeMarket.getUnitOfSale();
@@ -260,8 +219,6 @@ public class MaizeMarketActivity extends BaseActivity {
 
             if (produceType.equals(EnumMaizeProduceType.GRAIN.produce())) {
                 rdgUnitOfSaleGrain.check(grainUnitRadioIndex);
-            } else if (produceType.equals(EnumMaizeProduceType.FRESH_COB.produce())) {
-                editCobPrice.setText(grainPrice);
             }
         }
 
@@ -295,13 +252,10 @@ public class MaizeMarketActivity extends BaseActivity {
         }
 
         if (cobPriceRequired) {
-            cobPrice = editCobPrice.getText().toString();
-            if (Strings.isEmptyOrWhitespace(cobPrice)) {
+            if (unitPrice <= 0) {
                 showCustomWarningDialog(getString(R.string.lbl_invalid_cob_price), getString(R.string.lbl_cob_price_prompt));
                 return;
             }
-            exactPrice = mathHelper.convertToDouble(cobPrice);
-            unitPrice = exactPrice;
             dataIsValid = true;
         }
 
@@ -336,17 +290,18 @@ public class MaizeMarketActivity extends BaseActivity {
 
     public void onGrainUnitRadioButtonClicked(View radioButton) {
         if (radioButton != null && radioButton.isPressed()) {
-            showUnitGrainPriceDialog();
+            showUnitGrainPriceDialog("grain");
         }
     }
 
-    private void showUnitGrainPriceDialog() {
+    private void showUnitGrainPriceDialog(String produceType) {
         Bundle arguments = new Bundle();
         arguments.putString(MaizePriceDialogFragment.CURRENCY_CODE, currency);
         arguments.putString(MaizePriceDialogFragment.COUNTRY_CODE, countryCode);
         arguments.putDouble(MaizePriceDialogFragment.SELECTED_PRICE, exactPrice);
         arguments.putDouble(MaizePriceDialogFragment.AVERAGE_PRICE, averagePrice);
         arguments.putString(MaizePriceDialogFragment.UNIT_OF_SALE, unitOfSale);
+        arguments.putString(MaizePriceDialogFragment.PRODUCE_TYPE, produceType);
         arguments.putParcelable(MaizePriceDialogFragment.ENUM_UNIT_OF_SALE, unitOfSaleEnum);
 
         MaizePriceDialogFragment priceDialogFragment = new MaizePriceDialogFragment(context);
@@ -366,5 +321,53 @@ public class MaizeMarketActivity extends BaseActivity {
             fragmentTransaction.addToBackStack(null);
             priceDialogFragment.show(getSupportFragmentManager(), MaizePriceDialogFragment.ARG_ITEM_ID);
         }
+    }
+
+
+    private void processMaizePrices() {
+        final RestService restService = RestService.getInstance(queue, this);
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final RestParameters restParameters = new RestParameters(
+                String.format("v3/maize-prices/country/%s", countryCode),
+                countryCode
+        );
+        restParameters.setInitialTimeout(5000);
+
+        restService.setParameters(restParameters);
+
+        restService.getJsonArrList(new IVolleyCallback() {
+            @Override
+            public void onSuccessJsonString(@NotNull String jsonStringResult) {
+            }
+
+            @Override
+            public void onSuccessJsonArr(@NotNull JSONArray jsonArray) {
+                try {
+                    maizePriceList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<MaizePrice>>() {
+                    });
+
+                    if (maizePriceList.size() > 0) {
+                        database.maizePriceDao().insertAll(maizePriceList);
+                    }
+                } catch (JsonProcessingException ex) {
+                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+                    Crashlytics.logException(ex);
+                    Snackbar.make(maizeCobPriceCard, ex.getMessage(), Snackbar.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onSuccessJsonObject(@NotNull JSONObject jsonObject) {
+
+            }
+
+            @Override
+            public void onError(@NotNull VolleyError volleyError) {
+                String error = Tools.parseNetworkError(volleyError).getMessage();
+                if (!Strings.isEmptyOrWhitespace(error)) {
+                    Snackbar.make(maizeCobPriceCard, error, Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 }

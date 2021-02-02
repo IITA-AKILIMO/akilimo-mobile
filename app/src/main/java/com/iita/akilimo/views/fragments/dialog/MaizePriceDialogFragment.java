@@ -43,6 +43,7 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
 
     public static final String ARG_ITEM_ID = "mazie_price_dialog_fragment";
     public static final String AVERAGE_PRICE = "average_price";
+    public static final String PRODUCE_TYPE = "produce_type";
     public static final String SELECTED_PRICE = "selected_price";
     public static final String UNIT_OF_SALE = "unit_of_sale";
     public static final String ENUM_UNIT_OF_SALE = "enum_unit_of_sale";
@@ -69,6 +70,7 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
 
     private String countryCode;
     private String currencyCode;
+    private String produceType;
     private String unitOfSale;
     private EnumUnitOfSale unitOfSaleEnum;
 
@@ -92,6 +94,7 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
         if (bundle != null) {
             averagePrice = bundle.getDouble(AVERAGE_PRICE);
             maizePrice = bundle.getDouble(SELECTED_PRICE);
+            produceType = bundle.getString(PRODUCE_TYPE, "grain");
             currencyCode = bundle.getString(CURRENCY_CODE);
             unitOfSale = bundle.getString(UNIT_OF_SALE);
             countryCode = bundle.getString(COUNTRY_CODE);
@@ -151,7 +154,7 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
 
         radioGroup.setOnCheckedChangeListener((radioGroup, i) -> radioSelected(radioGroup));
         if (database != null) {
-            maizePriceList = database.maizePriceDao().findAllByCountry(countryCode);
+            maizePriceList = database.maizePriceDao().findAllByCountryAndProduceType(countryCode, produceType);
             addPriceRadioButtons(maizePriceList, averagePrice);
         }
         return dialog;
@@ -163,7 +166,8 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
         long itemTagIndex = (long) radioButton.getTag();
 
         try {
-            MaizePrice pricesResp = maizePriceList.get((int) itemTagIndex);
+//            MaizePrice pricesResp = maizePriceList.get((int) itemTagIndex);
+            MaizePrice pricesResp = database.maizePriceDao().findPriceByPriceIndex((int) itemTagIndex);
             isExactPriceRequired = false;
             isPriceValid = true;
             averagePrice = pricesResp.getAveragePrice();
@@ -258,7 +262,7 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
             case FIFTY_KG:
                 priceLower = (unitPriceLower * EnumUnitOfSale.FIFTY_KG.unitWeight()) / 1000;
                 priceHigher = (unitPriceUpper * EnumUnitOfSale.FIFTY_KG.unitWeight()) / 1000;
-                
+
                 finalPrice = mathHelper.roundToNearestSpecifiedValue(priceHigher, 10);
                 break;
             case HUNDRED_KG:
@@ -267,11 +271,12 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
 
                 finalPrice = mathHelper.roundToNearestSpecifiedValue(priceHigher, 100);
                 break;
+            case FRESH_COB:
+                finalPrice = priceHigher;
+                break;
         }
 
-        minAmountUSD = priceLower; //minimum amount will be dynamic based on weight being sold, max amount will be constant
-
-//        return context.getString(R.string.unit_price_label, priceLower, priceHigher, currencySymbol, uos);
+        minAmountUSD = priceLower;
         return context.getString(R.string.unit_price_label_single, finalPrice, currencySymbol, uos);
     }
 

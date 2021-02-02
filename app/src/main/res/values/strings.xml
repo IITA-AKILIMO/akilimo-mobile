@@ -321,10 +321,12 @@
     <string name="lbl_regular_market">Regular cassava root markets</string>
     <string name="lbl_select_starch_factory">Select starch factory</string>
     <string name="lbl_fresh_cobs">Fresh cobs</string>
+    <string name="lbl_fresh_cob">Fresh cob</string>
     <string name="lbl_dry_grain">Dry grain</string>
     <string name="lbl_maize_sale_unit">Unit of sale of maize grain</string>
     <string name="lbl_fresh_cob_price">At what price do you expect to sell 1 fresh cob?</string>
-    <string name="lbl_price_per_cob">Price per cob</string>
+    <string name="lbl_price_per_cob_in_currency_unit">At what price do you expect to sell 1 fresh cob in %s?</string>
+    <string name="lbl_price_per_cob">Select price per cob</string>
     <string name="lbl_maize_outlets">How do you sell your maize produce?</string>
     <string name="lbl_add_ploughing_cost">Add ploughing cost</string>
     <string name="lbl_add_ridging_costs">Add ridging costs</string>

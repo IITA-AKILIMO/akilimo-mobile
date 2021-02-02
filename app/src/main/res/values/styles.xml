@@ -64,6 +64,11 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="Button.Brown" parent="@style/Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/brown_400</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
     <style name="Button.White" parent="@style/Widget.AppCompat.Button.Colored">
         <item name="colorButtonNormal">@android:color/white</item>
         <item name="android:textColor">@color/grey_60</item>

@@ -230,8 +230,6 @@
     <string name="lbl_fresh_cobs">Mahindi mabichi</string>
     <string name="lbl_dry_grain">Nafaka kavu</string>
     <string name="lbl_maize_sale_unit">Kizio cha kuuza mahindi</string>
-    <string name="lbl_fresh_cob_price">Unararajia kuuza muhindi 1 mbichi kwa bei gani?</string>
-    <string name="lbl_price_per_cob">Bei kwa kila cob</string>
     <string name="lbl_maize_outlets">How do you sell your maize produce?</string>
     <string name="lbl_add_ploughing_cost">Ongeza gharama ya kulima</string>
     <string name="lbl_add_ridging_costs">Ongeza gharama ya kuweka matuta</string>
