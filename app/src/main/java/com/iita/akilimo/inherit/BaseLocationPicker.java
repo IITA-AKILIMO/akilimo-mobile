@@ -6,7 +6,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.crashlytics.android.Crashlytics;
+
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.iita.akilimo.R;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.api.geocoding.v5.GeocodingCriteria;
@@ -115,13 +116,15 @@ public abstract class BaseLocationPicker extends BaseActivity implements OnMapRe
 
                 @Override
                 public void onFailure(Call<GeocodingResponse> call, Throwable throwable) {
-                    Crashlytics.log("Mapbox geocoding failure");
-                    Crashlytics.logException(throwable);
+
+                    FirebaseCrashlytics.getInstance().log("Mapbox geocoding failure");
+                    FirebaseCrashlytics.getInstance().recordException(throwable);
                 }
             });
         } catch (ServicesException servicesException) {
-            Crashlytics.log("Mapbox issue happening");
-            Crashlytics.logException(servicesException);
+
+            FirebaseCrashlytics.getInstance().log("Mapbox issue happening");
+            FirebaseCrashlytics.getInstance().recordException(servicesException);
         }
     }
 
@@ -136,7 +139,8 @@ public abstract class BaseLocationPicker extends BaseActivity implements OnMapRe
             locationComponent.setRenderMode(RenderMode.NORMAL);
         } else {
             Toast.makeText(context, "Im unable to enable the location component", Toast.LENGTH_LONG).show();
-            Crashlytics.log("Mapbox geocoding failure");
+
+            FirebaseCrashlytics.getInstance().log("Mapbox geocoding failure");
         }
     }
 

@@ -21,8 +21,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.FertilizerPrice;
 import com.iita.akilimo.entities.InterCropFertilizer;
@@ -147,8 +148,8 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
                     bagPrice = Double.valueOf(editExactFertilizerPrice.getText().toString());
                 } catch (Exception ex) {
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                    Crashlytics.logException(ex);
+                    FirebaseCrashlytics.getInstance().log(ex.getMessage());
+                    FirebaseCrashlytics.getInstance().recordException(ex);
                 }
 
                 if (bagPrice <= 0 || bagPrice < minPrice || bagPrice > maxPrice) {
@@ -211,8 +212,8 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
                 exactPriceWrapper.setVisibility(View.VISIBLE);
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "Radio selection issues");
-            Crashlytics.logException(ex);
+            FirebaseCrashlytics.getInstance().log("Radio selection issues");
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
     }
 

@@ -20,8 +20,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.PotatoPrice;
 import com.iita.akilimo.inherit.BaseDialogFragment;
@@ -137,8 +137,9 @@ public class SweetPotatoPriceDialogFragment extends BaseDialogFragment {
                 try {
                     potatoPrice = Double.parseDouble(editExactFertilizerPrice.getText().toString());
                 } catch (Exception ex) {
-                    Crashlytics.log(Log.ERROR, LOG_TAG, "The price appears not be valid");
-                    Crashlytics.logException(ex);
+
+                    FirebaseCrashlytics.getInstance().log("The price appears not be valid");
+                    FirebaseCrashlytics.getInstance().recordException(ex);
                 }
                 if (potatoPrice <= 0) {
                     editExactFertilizerPrice.setError(getString(R.string.lbl_provide_valid_unit_price));
@@ -183,8 +184,8 @@ public class SweetPotatoPriceDialogFragment extends BaseDialogFragment {
                 potatoPrice = pricesResp.getAveragePrice();
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "Radio selection issues");
-            Crashlytics.logException(ex);
+            FirebaseCrashlytics.getInstance().log("Radio selection issues");
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
     }
 

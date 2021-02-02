@@ -16,12 +16,13 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityMaizeMarketBinding;
@@ -135,6 +136,52 @@ public class MaizeMarketActivity extends BaseActivity {
         processMaizePrices();
     }
 
+    private void processMaizePrices() {
+        final RestService restService = RestService.getInstance(queue, this);
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final RestParameters restParameters = new RestParameters(
+                String.format("v3/maize-prices/country/%s", countryCode),
+                countryCode
+        );
+        restParameters.setInitialTimeout(5000);
+
+        restService.setParameters(restParameters);
+
+        restService.getJsonArrList(new IVolleyCallback() {
+            @Override
+            public void onSuccessJsonString(@NotNull String jsonStringResult) {
+            }
+
+            @Override
+            public void onSuccessJsonArr(@NotNull JSONArray jsonArray) {
+                try {
+                    maizePriceList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<MaizePrice>>() {
+                    });
+
+                    if (maizePriceList.size() > 0) {
+                        database.maizePriceDao().insertAll(maizePriceList);
+                    }
+                } catch (JsonProcessingException ex) {
+                    FirebaseCrashlytics.getInstance().log(ex.getMessage());
+                    FirebaseCrashlytics.getInstance().recordException(ex);
+                    Snackbar.make(maizeCobPriceCard, ex.getMessage(), Snackbar.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onSuccessJsonObject(@NotNull JSONObject jsonObject) {
+
+            }
+
+            @Override
+            public void onError(@NotNull VolleyError volleyError) {
+                String error = Tools.parseNetworkError(volleyError).getMessage();
+                if (!Strings.isEmptyOrWhitespace(error)) {
+                    Snackbar.make(maizeCobPriceCard, error, Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
 
     @Override
     protected void initToolbar() {
@@ -287,8 +334,8 @@ public class MaizeMarketActivity extends BaseActivity {
                 closeActivity(backPressed);
             } catch (Exception ex) {
                 Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                Crashlytics.logException(ex);
+                FirebaseCrashlytics.getInstance().log(ex.getMessage());
+                FirebaseCrashlytics.getInstance().recordException(ex);
             }
 
         }

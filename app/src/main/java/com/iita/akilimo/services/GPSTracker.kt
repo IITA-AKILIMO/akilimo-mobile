@@ -10,11 +10,9 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.Settings
-import android.util.Log
 import android.widget.Toast
-
 import androidx.appcompat.app.AlertDialog
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.iita.akilimo.R
 
 
@@ -63,9 +61,9 @@ class GPSTracker : Service, LocationListener {
                 // First get location from Network Provider
                 if (isNetworkEnabled) {
                     locationManager!!.requestLocationUpdates(
-                        LocationManager.NETWORK_PROVIDER,
-                        MIN_TIME_BW_UPDATES,
-                        MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), this
+                            LocationManager.NETWORK_PROVIDER,
+                            MIN_TIME_BW_UPDATES,
+                            MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), this
                     )
                     if (locationManager != null) {
                         location = locationManager!!
@@ -81,9 +79,9 @@ class GPSTracker : Service, LocationListener {
                 if (isGPSEnabled) {
                     if (location == null) {
                         locationManager!!.requestLocationUpdates(
-                            LocationManager.GPS_PROVIDER,
-                            MIN_TIME_BW_UPDATES,
-                            MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), this
+                                LocationManager.GPS_PROVIDER,
+                                MIN_TIME_BW_UPDATES,
+                                MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), this
                         )
                         if (locationManager != null) {
                             location = locationManager!!
@@ -100,8 +98,10 @@ class GPSTracker : Service, LocationListener {
             // no network provider is enabled
         } catch (ex: Exception) {
             Toast.makeText(mContext, ex.message, Toast.LENGTH_SHORT).show()
-            Crashlytics.log(Log.ERROR, "GPS_TRACKER", ex.message)
-            Crashlytics.logException(ex)
+//            Crashlytics.log(Log.ERROR, "GPS_TRACKER", ex.message)
+//            Crashlytics.logException(ex)
+            FirebaseCrashlytics.getInstance().log(ex.message!!)
+            FirebaseCrashlytics.getInstance().recordException(ex)
         }
 
         return location
@@ -144,8 +144,8 @@ class GPSTracker : Service, LocationListener {
             alertDialog.setCancelable(false)
             alertDialog.show()
         } catch (ex: Exception) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
-            Crashlytics.logException(ex)
+            FirebaseCrashlytics.getInstance().log(ex.message!!)
+            FirebaseCrashlytics.getInstance().recordException(ex)
         }
     }
 

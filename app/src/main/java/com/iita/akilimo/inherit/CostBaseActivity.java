@@ -5,9 +5,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
-import com.crashlytics.android.Crashlytics;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.iita.akilimo.interfaces.IVolleyCallback;
 import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.rest.RestParameters;
@@ -50,8 +51,9 @@ public abstract class CostBaseActivity extends BaseActivity {
 
                     showDialogFullscreen(operationCostList, operationName, countryCode, dialogTitle, hintText);
                 } catch (Exception ex) {
-                    Crashlytics.log(Log.ERROR, LOG_TAG, "Error saving price list");
-                    Crashlytics.logException(ex);
+
+                    FirebaseCrashlytics.getInstance().log("Error saving price list");
+                    FirebaseCrashlytics.getInstance().recordException(ex);
                 }
             }
 
@@ -62,8 +64,9 @@ public abstract class CostBaseActivity extends BaseActivity {
             @Override
             public void onError(@NotNull VolleyError volleyError) {
                 Toast.makeText(context, "Unable to load OperationCost list", Toast.LENGTH_LONG).show();
-                Crashlytics.log(Log.ERROR, LOG_TAG, "OperationCost list not able to load");
-                Crashlytics.logException(volleyError);
+
+                FirebaseCrashlytics.getInstance().log("OperationCost list not able to load");
+                FirebaseCrashlytics.getInstance().recordException(volleyError);
             }
         });
     }

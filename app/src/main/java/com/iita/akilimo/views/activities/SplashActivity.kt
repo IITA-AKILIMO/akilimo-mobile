@@ -2,9 +2,8 @@ package com.iita.akilimo.views.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import com.blogspot.atifsoftwares.animatoolib.Animatoo
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.iita.akilimo.BuildConfig
 import com.iita.akilimo.dao.AppDatabase.Companion.getDatabase
 import com.iita.akilimo.inherit.BaseActivity
@@ -28,8 +27,8 @@ class SplashActivity : BaseActivity() {
             }
             background.start()
         } catch (ex: Exception) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
-            Crashlytics.logException(ex)
+            FirebaseCrashlytics.getInstance().log(ex.message!!)
+            FirebaseCrashlytics.getInstance().recordException(ex)
             launchActivity()
         }
     }
@@ -41,13 +40,14 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun launchActivity() {
+
         try {
             if (!BuildConfig.DEBUG) {
                 getDatabase(this)?.clearAllTables()
             }
         } catch (ex: Exception) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
-            Crashlytics.logException(ex)
+            FirebaseCrashlytics.getInstance().log(ex.message!!)
+            FirebaseCrashlytics.getInstance().recordException(ex)
         }
         val intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
 //        val intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
@@ -55,5 +55,6 @@ class SplashActivity : BaseActivity() {
         startActivity(intent)
         finish()
         Animatoo.animateSlideDown(this)
+
     }
 }

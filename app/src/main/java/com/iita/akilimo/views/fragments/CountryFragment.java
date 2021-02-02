@@ -19,8 +19,9 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
 import com.blongho.country_data.World;
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.common.util.Strings;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.FragmentCountryBinding;
 import com.iita.akilimo.entities.ProfileInfo;
@@ -99,8 +100,8 @@ public class CountryFragment extends BaseStepFragment {
             title.setText(message);
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            FirebaseCrashlytics.getInstance().log(ex.getMessage());
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
     }
 
@@ -193,8 +194,8 @@ public class CountryFragment extends BaseStepFragment {
             }
         } catch (Exception ex) {
             dataIsValid = false;
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            FirebaseCrashlytics.getInstance().log(ex.getMessage());
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
     }
 

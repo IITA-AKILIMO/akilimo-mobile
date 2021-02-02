@@ -20,8 +20,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.entities.Fertilizer;
 import com.iita.akilimo.entities.FertilizerPrice;
@@ -147,8 +147,9 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
                 try {
                     bagPrice = Double.valueOf(editExactFertilizerPrice.getText().toString());
                 } catch (Exception ex) {
-                    Crashlytics.log(Log.ERROR, LOG_TAG, "The number appears not be valid");
-                    Crashlytics.logException(ex);
+
+                    FirebaseCrashlytics.getInstance().log("The number appears not be valid");
+                    FirebaseCrashlytics.getInstance().recordException(ex);
                 }
                 if (bagPrice <= 0 || bagPrice < minPrice || bagPrice > maxPrice) {
                     editExactFertilizerPrice.setError(String.format("Please provide a valid bag price between %s and %s",
@@ -215,8 +216,9 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
                 exactPriceWrapper.setVisibility(View.VISIBLE);
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "Radio selection issues");
-            Crashlytics.logException(ex);
+
+            FirebaseCrashlytics.getInstance().log("Radio selection issues");
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
     }
 

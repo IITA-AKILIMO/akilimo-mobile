@@ -5,8 +5,9 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.common.util.Strings;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.entities.CassavaMarket;
 import com.iita.akilimo.entities.CurrentPractice;
@@ -222,8 +223,8 @@ public class BuildComputeData {
                 userInfo.setSendEmail(emailRequired);
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            FirebaseCrashlytics.getInstance().log(ex.getMessage());
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
         return userInfo;
     }
@@ -305,8 +306,8 @@ public class BuildComputeData {
                 computeRequest.setHarvestDateWindow(harvestDateWindow);
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            FirebaseCrashlytics.getInstance().log(ex.getMessage());
+            FirebaseCrashlytics.getInstance().recordException(ex);
         }
 
         return computeRequest;
