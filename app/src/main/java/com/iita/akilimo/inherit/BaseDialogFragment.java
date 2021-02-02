@@ -19,6 +19,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
     protected Context context;
     protected AppDatabase database;
     protected SessionManager sessionManager;
+    protected String currencySymbol;
 
 
     public BaseDialogFragment() {

@@ -39,8 +39,10 @@ public class OperationCostsDialogFragment extends BaseDialogFragment {
     public static final String OPERATION_NAME = "operation_type";
     public static final String COUNTRY_CODE = "country";
     public static final String CURRENCY_CODE = "currency_code";
+    public static final String CURRENCY_SYMBOL = "currency_symbol";
     public static final String COST_LIST = "cost_list";
     public static final String DIALOG_TITLE = "dialog_title";
+    public static final String EXACT_PRICE_HINT = "exact_price_title";
 
     private static final String LOG_TAG = OperationCostsDialogFragment.class.getSimpleName();
 
@@ -60,11 +62,13 @@ public class OperationCostsDialogFragment extends BaseDialogFragment {
     private double selectedCost = 0.0;
     private String translatedSuffix;
     private String currencyCode;
+    private String currencySymbol;
     private String operationName;
     private String bagPrice;
     private String bagPriceRange = "NA";
     private String exactPrice = "0";
     private String dialogTitle;
+    private String exactPriceHint;
 
     private String countryCode;
     private IDismissDialog onDismissListener;
@@ -85,8 +89,10 @@ public class OperationCostsDialogFragment extends BaseDialogFragment {
             operationCosts = bundle.getParcelableArrayList(COST_LIST);
             countryCode = bundle.getString(COUNTRY_CODE);
             currencyCode = bundle.getString(CURRENCY_CODE);
+            currencySymbol = bundle.getString(CURRENCY_SYMBOL);
             operationName = bundle.getString(OPERATION_NAME);
             dialogTitle = bundle.getString(DIALOG_TITLE);
+            exactPriceHint = bundle.getString(EXACT_PRICE_HINT);
         }
 
         dialog = new Dialog(context);
@@ -137,7 +143,7 @@ public class OperationCostsDialogFragment extends BaseDialogFragment {
                     return;
                 }
                 selectedCost = Double.parseDouble(bagPrice);
-                bagPriceRange = mathHelper.formatNumber(selectedCost, currencyCode);
+                bagPriceRange = mathHelper.formatNumber(selectedCost, currencySymbol);
                 isPriceValid = true;
                 cancelled = false;
                 editExactCost.setError(null);
@@ -153,6 +159,7 @@ public class OperationCostsDialogFragment extends BaseDialogFragment {
 
         radioGroup.setOnCheckedChangeListener((radioGroup, i) -> radioSelected(radioGroup));
         addCostRadioButtons(operationCosts);
+        exactPriceWrapper.setHint(exactPriceHint);
         return dialog;
     }
 
@@ -190,6 +197,7 @@ public class OperationCostsDialogFragment extends BaseDialogFragment {
 
     private void addCostRadioButtons(@NonNull ArrayList<OperationCost> operationCosts) {
         radioGroup.removeAllViews();
+
         for (OperationCost operationCost : operationCosts) {
             long listIndex = operationCost.getListIndex();
             double price = operationCost.getAverageUsdPrice();
@@ -211,7 +219,8 @@ public class OperationCostsDialogFragment extends BaseDialogFragment {
             radioButton.setTag(listIndex);
 
 
-            String radioLabel = String.format("%s %s %s %s", minPrice, translatedSuffix, maxPrice, currencyCode);
+//            String radioLabel = String.format("%s %s %s %s", minPrice, translatedSuffix, maxPrice, currencySymbol);
+            String radioLabel = String.format("About %s %s", mathHelper.formatNumber(maxPrice, null), currencySymbol);
 
             if (price >= 0 && price <= 0) {
                 radioLabel = context.getString(R.string.lbl_do_not_know);

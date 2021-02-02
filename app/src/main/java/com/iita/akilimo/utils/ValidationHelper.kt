@@ -20,10 +20,10 @@ class ValidationHelper {
         phoneUtil = PhoneNumberUtil.getInstance()
     }
 
-    fun isValidPhoneNumber(userPhoneNumber: String, allowedCountry: String): Boolean {
+    fun isValidPhoneNumber(userPhoneNumber: String, country: String): Boolean {
 
         try {
-            val phoneNumber = phoneUtil.parse(userPhoneNumber, allowedCountry)
+            val phoneNumber = phoneUtil.parse(userPhoneNumber, country)
             isNumberValid = phoneUtil.isValidNumber(phoneNumber)
 
         } catch (ex: NumberParseException) {

@@ -18,7 +18,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.iita.akilimo.R;
 import com.iita.akilimo.utils.SessionManager;
-import com.iita.akilimo.views.activities.HomeActivity;
+import com.iita.akilimo.views.activities.HomeStepperActivity;
 
 import java.util.Map;
 
@@ -72,7 +72,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * @param messageBody FCM message body received.
      */
     private void sendNotification(String messageBody) {
-        Intent intent = new Intent(this, HomeActivity.class);
+        Intent intent = new Intent(this, HomeStepperActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
@@ -112,7 +112,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * @param notification notification data
      */
     private void createNotification(Map<String, String> data, RemoteMessage.Notification notification) {
-        Intent intent = new Intent(this, HomeActivity.class);
+        Intent intent = new Intent(this, HomeStepperActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent resultIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);

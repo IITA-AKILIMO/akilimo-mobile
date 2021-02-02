@@ -28,8 +28,9 @@ import com.iita.akilimo.entities.*
         ProfileInfo::class,
         ScheduledDate::class,
         StarchFactory::class,
-        UseCases::class
-    ], version = 5, exportSchema = false
+        UseCases::class,
+        Currency::class
+    ], version = 4, exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -43,6 +44,7 @@ abstract class AppDatabase : RoomDatabase() {
 
     @Deprecated("To be removed in future release")
     abstract fun interCropFertilizerDao(): InterCropFertilizerDao
+
     abstract fun investmentAmountDao(): InvestmentAmountDao
     abstract fun locationInfoDao(): LocationInfoDao
     abstract fun maizeMarketDao(): MaizeMarketDao
@@ -55,6 +57,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun scheduleDateDao(): ScheduleDateDao
     abstract fun starchFactoryDao(): StarchFactoryDao
     abstract fun useCaseDao(): UseCaseDao
+    abstract fun currencyDao(): CurrencyDao
 
 
     companion object {
@@ -71,7 +74,7 @@ abstract class AppDatabase : RoomDatabase() {
                     if (INSTANCE == null) {
                         INSTANCE = Room.databaseBuilder(
                             context.applicationContext,
-                            AppDatabase::class.java, "AKILIMO_14_OCT"
+                            AppDatabase::class.java, "AKILIMO_01_FEB_2021"
                         )
                             .fallbackToDestructiveMigration()
                             .allowMainThreadQueries()

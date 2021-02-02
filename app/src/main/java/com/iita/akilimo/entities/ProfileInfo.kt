@@ -35,6 +35,9 @@ open class ProfileInfo {
     var selectedCountryIndex: Int = 0
     var currency: String? = null
 
+    var riskAtt: Int = 0
+    var selectedRiskIndex: Int = 0
+
     fun getNames(): String {
         return String.format("%s %s", firstName, lastName)
     }

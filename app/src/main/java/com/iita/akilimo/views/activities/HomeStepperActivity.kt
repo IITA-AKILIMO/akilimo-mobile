@@ -91,12 +91,14 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
             fragmentArray.add(PrivacyStatementFragment.newInstance())
         }
         fragmentArray.add(BioDataFragment.newInstance())
+        fragmentArray.add(RiskAttFragment.newInstance())
         fragmentArray.add(CountryFragment.newInstance())
         fragmentArray.add(LocationFragment.newInstance())
         fragmentArray.add(FieldInfoFragment.newInstance())
         fragmentArray.add(AreaUnitFragment.newInstance())
         fragmentArray.add(FieldSizeFragment.newInstance())
-        fragmentArray.add(CurrentPracticeFragment.newInstance())
+        fragmentArray.add(PlantingDateFragment.newInstance())
+        fragmentArray.add(TillageOperationFragment.newInstance())
         fragmentArray.add(SummaryFragment.newInstance())
     }
 

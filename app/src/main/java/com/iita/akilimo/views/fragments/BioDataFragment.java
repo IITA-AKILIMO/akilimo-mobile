@@ -20,7 +20,6 @@ import androidx.fragment.app.Fragment;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.hbb20.CountryCodePicker;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.FragmentBioDataBinding;
@@ -44,18 +43,16 @@ public class BioDataFragment extends BaseStepFragment {
     private IFragmentCallBack fragmentCallBack;
     private ProfileInfo profileInfo;
     private ValidationHelper validationHelper;
-
-
-    Spinner genderSpinner;
-    TextInputLayout lytFirstName;
-    TextInputLayout lytLastName;
-    TextInputLayout lytFarmName;
-    TextInputLayout lytEmail;
-    TextInputLayout lytPhone;
-    TextInputEditText edtPhone;
-    CountryCodePicker ccp;
+    private boolean phoneIsValid = true;
 
     FragmentBioDataBinding binding;
+    Spinner genderSpinner;
+    TextInputEditText edtFirstName;
+    TextInputEditText edtLastName;
+    TextInputEditText edtFamName;
+    TextInputEditText edtEmail;
+    TextInputEditText edtPhone;
+    CountryCodePicker ccp;
 
     private String firstName;
     private String lastName;
@@ -95,11 +92,10 @@ public class BioDataFragment extends BaseStepFragment {
         super.onViewCreated(view, savedInstanceState);
 
         genderSpinner = binding.genderSpinner;
-        lytFirstName = binding.lytFirstName;
-        lytLastName = binding.lytLastName;
-        lytFarmName = binding.lytFarmName;
-        lytEmail = binding.lytEmail;
-        lytPhone = binding.lytPhone;
+        edtFirstName = binding.edtFirstName;
+        edtLastName = binding.edtLastName;
+        edtFamName = binding.edtFarmName;
+        edtEmail = binding.edtEmail;
         edtPhone = binding.edtPhone;
         ccp = binding.ccp;
 
@@ -124,12 +120,7 @@ public class BioDataFragment extends BaseStepFragment {
         });
 
         ccp.setPhoneNumberValidityChangeListener(isValidNumber -> {
-            dataIsValid = true;
-            if (!isValidNumber) {
-                lytPhone.setError(this.getString(R.string.lbl_valid_number_req));
-            } else {
-                lytPhone.setError(null);
-            }
+            phoneIsValid = isValidNumber;
         });
 
         ccp.setOnCountryChangeListener(() -> mobileCode = ccp.getSelectedCountryCodeWithPlus());
@@ -151,11 +142,13 @@ public class BioDataFragment extends BaseStepFragment {
                 gender = profileInfo.getGender();
                 selectedGenderIndex = profileInfo.getSelectedGenderIndex();
 
-                lytFirstName.getEditText().setText(firstName);
-                lytLastName.getEditText().setText(lastName);
-                lytFarmName.getEditText().setText(farmName);
-                lytEmail.getEditText().setText(email);
-                ccp.setFullNumber(fullMobileNumber);
+                edtFirstName.setText(firstName);
+                edtLastName.setText(lastName);
+                edtFamName.setText(farmName);
+                edtEmail.setText(email);
+                if (!Strings.isEmptyOrWhitespace(fullMobileNumber)) {
+                    ccp.setFullNumber(fullMobileNumber);
+                }
 
                 genderSpinner.setSelection(selectedGenderIndex);
             }
@@ -167,42 +160,50 @@ public class BioDataFragment extends BaseStepFragment {
     }
 
     private void saveBioData() {
-        lytFirstName.setError(null);
-        lytLastName.setError(null);
-        lytFarmName.setError(null);
-        lytEmail.setError(null);
+        edtFirstName.setError(null);
+        edtLastName.setError(null);
+        edtFamName.setError(null);
+        edtEmail.setError(null);
         dataIsValid = true;
 
-        firstName = lytFirstName.getEditText().getText().toString();
-        lastName = lytLastName.getEditText().getText().toString();
-        farmName = lytFarmName.getEditText().getText().toString();
-        email = lytEmail.getEditText().getText().toString();
+        firstName = edtFirstName.getText().toString();
+        lastName = edtLastName.getText().toString();
+        farmName = edtFamName.getText().toString();
+        email = edtEmail.getText().toString();
         fullMobileNumber = ccp.getFullNumber();
         mobileCode = ccp.getSelectedCountryCodeWithPlus();
 
         if (Strings.isEmptyOrWhitespace(firstName)) {
             dataIsValid = false;
             errorMessage = this.getString(R.string.lbl_first_name_req);
-            lytFirstName.setError(errorMessage);
+            edtFirstName.setError(errorMessage);
         }
 
         if (Strings.isEmptyOrWhitespace(lastName)) {
             dataIsValid = false;
             errorMessage = this.getString(R.string.lbl_last_name_req);
-            lytLastName.setError(errorMessage);
+            edtLastName.setError(errorMessage);
         }
 
         if (Strings.isEmptyOrWhitespace(farmName)) {
-            //dataIsValid = false;
-            //lytFarmName.setError(this.getString(R.string.lbl_last_name_req));
             farmName = String.format("%s%s", firstName, lastName);
-            lytFarmName.getEditText().setText(farmName);
+            edtFamName.setText(farmName);
+        }
+
+        if (!Strings.isEmptyOrWhitespace(fullMobileNumber)) {
+            if (!phoneIsValid) {
+                dataIsValid = false;
+                errorMessage = this.getString(R.string.lbl_valid_number_req);
+                edtPhone.setError(errorMessage);
+            } else {
+                edtPhone.setError(null);
+            }
         }
 
         if (!validationHelper.isValidEmail(email) && !Strings.isEmptyOrWhitespace(email)) {
             dataIsValid = false;
             errorMessage = this.getString(R.string.lbl_valid_email_req);
-            lytEmail.setError(errorMessage);
+            edtEmail.setError(errorMessage);
         }
 
         if (dataIsValid) {
@@ -257,6 +258,5 @@ public class BioDataFragment extends BaseStepFragment {
 
     @Override
     public void onError(@NonNull VerificationError error) {
-
     }
 }

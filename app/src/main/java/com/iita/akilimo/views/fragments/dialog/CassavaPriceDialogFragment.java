@@ -27,7 +27,9 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.entities.CassavaPrice;
 import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IPriceDialogDismissListener;
+import com.iita.akilimo.utils.CurrencyCode;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
+import com.mynameismidori.currencypicker.ExtendedCurrency;
 
 import java.util.List;
 
@@ -46,6 +48,9 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
     public static final String ENUM_UNIT_OF_SALE = "enum_unit_of_sale";
     public static final String CURRENCY_CODE = "currency_code";
     public static final String COUNTRY_CODE = "country_code";
+
+    private double maxPrice = 0.0;
+    private double minPrice = 0.0;
 
     private boolean isExactPriceRequired = false;
     private boolean isPriceValid = false;
@@ -67,6 +72,7 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
     private List<CassavaPrice> cassavaPriceList;
 
     private String countryCode;
+    private String currencyName;
     private String currencyCode;
     private String unitOfSale;
     private EnumUnitOfSale unitOfSaleEnum;
@@ -95,6 +101,12 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
             unitOfSale = bundle.getString(UNIT_OF_SALE);
             countryCode = bundle.getString(COUNTRY_CODE);
             unitOfSaleEnum = bundle.getParcelable(ENUM_UNIT_OF_SALE);
+
+            ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
+            if (extendedCurrency != null) {
+                currencySymbol = extendedCurrency.getSymbol();
+                currencyName = extendedCurrency.getName();
+            }
         }
         dialog = new Dialog(context);
 
@@ -192,9 +204,12 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
             btnUpdate.setText(R.string.lbl_update);
             btnRemove.setVisibility(View.VISIBLE);
         }
-
+//@TODO move the about to the API for easier computations
         for (CassavaPrice pricesResp : cassavaPriceList) {
             double price = pricesResp.getAveragePrice();
+            minPrice = pricesResp.getMinAllowedPrice();
+            maxPrice = pricesResp.getMaxAllowedPrice();
+
             long listIndex = pricesResp.getPriceIndex() - 1;//reduce by one so as to match the index in the list
 
             RadioButton radioButton = new RadioButton(getActivity());
@@ -205,6 +220,8 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
             String radioLabel = labelText(pricesResp.getMinLocalPrice(), pricesResp.getMaxLocalPrice(), currencyCode, unitOfSale, false);
             if (price < 0) {
                 radioLabel = context.getString(R.string.lbl_exact_price_x_per_unit_of_sale);
+                String exactTextHint = getString(R.string.exact_fertilizer_price_currency, currencyName);
+                exactPriceWrapper.setHint(exactTextHint);
             } else if (price == 0) {
                 radioLabel = context.getString(R.string.lbl_do_not_know);
             }
@@ -238,16 +255,19 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
         this.onDismissListener = dismissListener;
     }
 
-    private String labelText(double unitPriceLower, double unitPriceUpper, String currency, String uos, boolean... doConversions) {
-        //cross convert according to weight
-
+    private String labelText(double unitPriceLower, double unitPriceUpper, String currencyCode, String uos, boolean... doConversions) {
+        //@TODO cross convert according to weight
         boolean convertCurrency = true;
         if (doConversions.length > 0) {
             convertCurrency = doConversions[0];
         }
         double priceLower = unitPriceLower;
         double priceHigher = unitPriceUpper;
-
+        String currencySymbol = currencyCode;
+        ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
+        if (extendedCurrency != null) {
+            currencySymbol = extendedCurrency.getSymbol();
+        }
         switch (unitOfSaleEnum) {
             case ONE_KG:
                 priceLower = (unitPriceLower * EnumUnitOfSale.ONE_KG.unitWeight()) / 1000;
@@ -264,15 +284,17 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
         }
 
         minAmountUSD = priceLower; //minimum amount will be dynamic based on weight being sold, max amount will be constant
-        double localLower = mathHelper.convertToLocalCurrency(priceLower, currency, 100);
-        double localHigher = mathHelper.convertToLocalCurrency(priceHigher, currency, 100);
+        double localLower = mathHelper.convertToLocalCurrency(priceLower, currencyCode, 100);
+        double localHigher = mathHelper.convertToLocalCurrency(priceHigher, currencyCode, 100);
 
         if (!convertCurrency) {
             localLower = priceLower;
             localHigher = priceHigher;
         }
 
-        return context.getString(R.string.unit_price_label, localLower, localHigher, currency, uos);
+        String data = context.getString(R.string.unit_price_label_single, priceLower, currencySymbol, uos);
+
+        return data;
     }
 
 }

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/close_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:fontFamily="@font/ubuntu_bold"
+        android:text="@string/lbl_close"
+        android:theme="@style/Button.Accent" />
+
+    <LinearLayout
+        android:id="@+id/top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/spacing_medium"
+        android:layout_marginRight="@dimen/spacing_medium"
+        android:background="@drawable/custom_dialog_bg"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="@dimen/padding"
+        android:paddingBottom="@dimen/spacing_medium">
+
+
+        <TextView
+            android:id="@+id/lblFragmentTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_large"
+            android:layout_marginEnd="@dimen/spacing_xlarge"
+            android:fontFamily="@font/ubuntu"
+            android:padding="@dimen/spacing_medium"
+            android:text="@string/lbl_maize_performance" />
+
+
+        <RelativeLayout
+            android:layout_width="170dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="@dimen/spacing_small">
+
+            <ImageView
+                android:id="@+id/rootYieldImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:contentDescription="@string/title_activity_cassava_root_yield"
+                app:srcCompat="@drawable/ic_maize_5" />
+
+        </RelativeLayout>
+
+
+        <TextView
+            android:id="@+id/perfDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_large"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:layout_marginEnd="@dimen/spacing_xlarge"
+            android:fontFamily="@font/ubuntu"
+            android:padding="@dimen/spacing_medium"
+            android:text="@string/empty_text"
+            android:textAlignment="center"
+            android:textColor="@color/red_500" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/confirm_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_medium"
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:layout_marginRight="@dimen/spacing_medium"
+                android:adjustViewBounds="true"
+                android:fontFamily="@font/ubuntu"
+                android:text="@string/lbl_confirm"
+                android:textAllCaps="false"
+                android:theme="@style/Button.Primary" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/cancel_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_medium"
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:layout_marginRight="@dimen/spacing_medium"
+                android:fontFamily="@font/ubuntu"
+                android:text="@string/lbl_cancel"
+                android:textAllCaps="false" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

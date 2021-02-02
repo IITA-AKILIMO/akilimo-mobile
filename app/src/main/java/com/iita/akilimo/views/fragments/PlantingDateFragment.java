@@ -39,11 +39,9 @@ import com.stepstone.stepper.VerificationError;
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
  */
-public class CurrentPracticeFragment extends BaseStepFragment {
+public class PlantingDateFragment extends BaseStepFragment {
 
 
-    CheckBox chkPloughing;
-    CheckBox chkRidging;
     TextView lblSelectedPlantingDate;
     TextView lblSelectedHarvestDate;
     AppCompatButton btnPickPlantingDate;
@@ -58,26 +56,16 @@ public class CurrentPracticeFragment extends BaseStepFragment {
     private int harvestWindow = 0;
 
 
-    private CurrentPractice currentPractice;
     private ScheduledDate scheduledDate;
 
-    private String ploughingMethod;
-    private String ridgingMethod;
-    private String harrowingMethod;
-    private String operation;
-
-    private boolean performPloughing;
-    private boolean performRidging;
-    private boolean performHarrowing;
-    private boolean isDataRefreshing = false;
     private boolean alreadyPlanted = false;
 
-    public CurrentPracticeFragment() {
+    public PlantingDateFragment() {
         // Required empty public constructor
     }
 
-    public static CurrentPracticeFragment newInstance() {
-        return new CurrentPracticeFragment();
+    public static PlantingDateFragment newInstance() {
+        return new PlantingDateFragment();
     }
 
 
@@ -98,8 +86,6 @@ public class CurrentPracticeFragment extends BaseStepFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        chkPloughing = binding.chkPloughing;
-        chkRidging = binding.chkRidging;
         lblSelectedPlantingDate = binding.lblSelectedPlantingDate;
         lblSelectedHarvestDate = binding.lblSelectedHarvestDate;
         btnPickPlantingDate = binding.btnPickPlantingDate;
@@ -107,28 +93,11 @@ public class CurrentPracticeFragment extends BaseStepFragment {
 
         final FragmentManager fm = getActivity().getSupportFragmentManager();
 
-        chkPloughing.setOnCheckedChangeListener((buttonView, checked) -> {
-            operation = checked ? "Plough" : "NA";
-            performPloughing = checked;
-            if (buttonView.isPressed()) {
-                onCheckboxClicked(checked);
-            }
-            isDataRefreshing = false;
-        });
-        chkRidging.setOnCheckedChangeListener((buttonView, checked) -> {
-            performRidging = checked;
-            operation = checked ? "Ridge" : "NA";
-            if (buttonView.isPressed()) {
-                onCheckboxClicked(checked);
-            }
-            isDataRefreshing = false;
-        });
-
         btnPickPlantingDate.setOnClickListener(v -> {
             // create the datePickerFragment
             AppCompatDialogFragment newFragment = new DateDialogPickerFragment(true);
             // set the targetFragment to receive the results, specifying the request code
-            newFragment.setTargetFragment(CurrentPracticeFragment.this, DateDialogPickerFragment.PLANTING_REQUEST_CODE);
+            newFragment.setTargetFragment(PlantingDateFragment.this, DateDialogPickerFragment.PLANTING_REQUEST_CODE);
             // show the datePicker
             newFragment.show(fm, "PlantingDatePicker");
         });
@@ -137,7 +106,7 @@ public class CurrentPracticeFragment extends BaseStepFragment {
             // create the datePickerFragment
             AppCompatDialogFragment newFragment = new DateDialogPickerFragment(true, selectedPlantingDate);
             // set the targetFragment to receive the results, specifying the request code
-            newFragment.setTargetFragment(CurrentPracticeFragment.this, DateDialogPickerFragment.HARVEST_REQUEST_CODE);
+            newFragment.setTargetFragment(PlantingDateFragment.this, DateDialogPickerFragment.HARVEST_REQUEST_CODE);
             // show the datePicker
             newFragment.show(fm, "HarvestDatePicker");
         });
@@ -148,23 +117,7 @@ public class CurrentPracticeFragment extends BaseStepFragment {
     public void refreshData() {
         try {
 
-            currentPractice = database.currentPracticeDao().findOne();
             scheduledDate = database.scheduleDateDao().findOne();
-            if (currentPractice != null) {
-                isDataRefreshing = true;
-                performPloughing = currentPractice.getPerformPloughing();
-                performRidging = currentPractice.getPerformRidging();
-                ploughingMethod = currentPractice.getPloughingMethod();
-                ridgingMethod = currentPractice.getRidgingMethod();
-
-                if (performPloughing) {
-                    chkPloughing.setChecked(true);
-                }
-                if (performRidging) {
-                    chkRidging.setChecked(true);
-                }
-
-            }
 
             if (scheduledDate != null) {
                 selectedPlantingDate = scheduledDate.getPlantingDate();
@@ -180,50 +133,6 @@ public class CurrentPracticeFragment extends BaseStepFragment {
         }
     }
 
-    private void onCheckboxClicked(boolean checked) {
-        if (!checked) {
-            saveEntities();
-            return;
-        }
-        Bundle arguments = new Bundle();
-        arguments.putString(OperationTypeDialogFragment.OPERATION_TYPE, operation);
-
-        OperationTypeDialogFragment operationTypeDialogFragment = new OperationTypeDialogFragment(context);
-        operationTypeDialogFragment.setArguments(arguments);
-        FragmentTransaction fragmentTransaction;
-
-
-        fragmentTransaction = getParentFragmentManager().beginTransaction();
-        Fragment prev = getParentFragmentManager().findFragmentByTag(OperationTypeDialogFragment.ARG_ITEM_ID);
-        if (prev != null) {
-            fragmentTransaction.remove(prev);
-        }
-        fragmentTransaction.addToBackStack(null);
-        operationTypeDialogFragment.show(getParentFragmentManager(), OperationTypeDialogFragment.ARG_ITEM_ID);
-
-
-        operationTypeDialogFragment.setOnDismissListener((operation, enumOperationType, cancelled) -> {
-            switch (operation) {
-                case "Plough":
-                    performPloughing = !cancelled;
-                    chkPloughing.setChecked(!cancelled);
-                    ploughingMethod = enumOperationType.operationName();
-                    break;
-                case "Ridge":
-                    performRidging = !cancelled;
-                    chkRidging.setChecked(!cancelled);
-                    ridgingMethod = enumOperationType.operationName();
-                    break;
-                default:
-                    ridgingMethod = EnumOperationType.NONE.operationName();
-                    performPloughing = false;
-                    performRidging = false;
-                    break;
-            }
-            saveEntities();
-        });
-
-    }
 
 
     @Override
@@ -242,15 +151,6 @@ public class CurrentPracticeFragment extends BaseStepFragment {
     }
 
     private void saveEntities() {
-        if (!performPloughing) {
-            ploughingMethod = EnumOperationType.NONE.operationName();
-        }
-        if (!performRidging) {
-            ridgingMethod = EnumOperationType.NONE.operationName();
-        }
-        if (!performHarrowing) {
-            harrowingMethod = EnumOperationType.NONE.operationName();
-        }
 
         dataIsValid = !Strings.isEmptyOrWhitespace(selectedPlantingDate);
         if (!dataIsValid) {
@@ -263,20 +163,7 @@ public class CurrentPracticeFragment extends BaseStepFragment {
             return;
         }
         try {
-            if (currentPractice == null) {
-                currentPractice = new CurrentPractice();
-            }
-            currentPractice.setRidgingMethod(ridgingMethod);
-            currentPractice.setPloughingMethod(ploughingMethod);
-            currentPractice.setPerformRidging(performRidging);
-            currentPractice.setPerformPloughing(performPloughing);
-            currentPractice.setPerformHarrowing(performHarrowing);
 
-            if (currentPractice.getId() != null) {
-                database.currentPracticeDao().update(currentPractice);
-            } else {
-                database.currentPracticeDao().insert(currentPractice);
-            }
 
             if (scheduledDate == null) {
                 scheduledDate = new ScheduledDate();
@@ -293,7 +180,6 @@ public class CurrentPracticeFragment extends BaseStepFragment {
             } else {
                 database.scheduleDateDao().insert(scheduledDate);
             }
-            currentPractice = database.currentPracticeDao().findOne();
             scheduledDate = database.scheduleDateDao().findOne();
             dataIsValid = true;
         } catch (Exception ex) {

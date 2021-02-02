@@ -8,6 +8,7 @@ import com.crashlytics.android.Crashlytics
 import com.iita.akilimo.BuildConfig
 import com.iita.akilimo.dao.AppDatabase.Companion.getDatabase
 import com.iita.akilimo.inherit.BaseActivity
+import com.iita.akilimo.views.activities.usecases.RecommendationsActivity
 
 
 class SplashActivity : BaseActivity() {
@@ -49,6 +50,8 @@ class SplashActivity : BaseActivity() {
             Crashlytics.logException(ex)
         }
         val intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
+//        val intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
+//        val intent = Intent(this@SplashActivity, RootYieldActivity::class.java)
         startActivity(intent)
         finish()
         Animatoo.animateSlideDown(this)

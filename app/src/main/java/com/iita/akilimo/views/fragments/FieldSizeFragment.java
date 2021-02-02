@@ -46,8 +46,6 @@ public class FieldSizeFragment extends BaseStepFragment {
     RadioButton rd_quarter_acre;
     RadioButton rd_half_acre;
     RadioButton rd_one_acre;
-    RadioButton rd_one_half_acre;
-    RadioButton rd_two_half_acre;
 
     FragmentFieldSizeBinding binding;
 
@@ -60,9 +58,7 @@ public class FieldSizeFragment extends BaseStepFragment {
     private String quarterAcre;
     private String halfAcre;
     private String oneAcre;
-    private String oneHalfAcres;
-    private String twoHalfAcres;
-    private String exactAcre;
+    private String exactArea;
     private String titleMessage;
 
     private MandatoryInfo mandatoryInfo;
@@ -102,8 +98,6 @@ public class FieldSizeFragment extends BaseStepFragment {
         rd_quarter_acre = binding.rdQuarterAcre;
         rd_half_acre = binding.rdHalfAcre;
         rd_one_acre = binding.rdOneAcre;
-        rd_one_half_acre = binding.rdOneHalfAcre;
-        rd_two_half_acre = binding.rdTwoHalfAcre;
 
         rdgFieldArea.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
             RadioButton radioButton = view.findViewById(radioIndex);
@@ -167,15 +161,6 @@ public class FieldSizeFragment extends BaseStepFragment {
             case R.id.rd_one_acre:
                 areaSize = EnumFieldArea.ONE_ACRE.areaValue();
                 break;
-            case R.id.rd_one_half_acre:
-                areaSize = EnumFieldArea.ONE_HALF_ACRE.areaValue();
-                break;
-            case R.id.rd_two_half_acre:
-                areaSize = EnumFieldArea.TWO_HALF_ACRE.areaValue();
-                break;
-            case R.id.rd_five_acre:
-                areaSize = EnumFieldArea.FIVE_ACRE.areaValue();
-                break;
             case R.id.rd_specify_acre:
                 isExactArea = true;
                 areaSize = EnumFieldArea.EXACT_AREA.areaValue();
@@ -225,34 +210,24 @@ public class FieldSizeFragment extends BaseStepFragment {
                 quarterAcre = getString(R.string.quarter_acre);
                 halfAcre = getString(R.string.half_acre);
                 oneAcre = getString(R.string.one_acre);
-                oneHalfAcres = getString(R.string.one_half_acre);
-                twoHalfAcres = getString(R.string.two_half_acres);
-                exactAcre = getString(R.string.exact_field_area);
                 break;
             case "ha":
                 quarterAcre = getString(R.string.quarter_acre_to_ha);
                 halfAcre = getString(R.string.half_acre_to_ha);
                 oneAcre = getString(R.string.one_acre_to_ha);
-                twoHalfAcres = getString(R.string.two_half_acre_to_ha);
-                oneHalfAcres = getString(R.string.one_half_acre_to_ha);
-                exactAcre = getString(R.string.exact_acre_to_ha);
                 break;
             case "sqm":
                 quarterAcre = getString(R.string.quarter_acre_to_m2);
                 halfAcre = getString(R.string.half_acre_to_m2);
                 oneAcre = getString(R.string.one_acre_to_m2);
-                oneHalfAcres = getString(R.string.one_half_acre_to_m2);
-                twoHalfAcres = getString(R.string.two_half_acre_to_m2);
-                exactAcre = getString(R.string.exact_acre_to_m2);
                 break;
         }
 
+        exactArea = context.getString(R.string.exact_field_area);
         rd_quarter_acre.setText(quarterAcre);
         rd_half_acre.setText(halfAcre);
         rd_one_acre.setText(oneAcre);
-        rd_one_half_acre.setText(oneHalfAcres);
-        rd_two_half_acre.setText(twoHalfAcres);
-        rdSpecifyArea.setText(exactAcre);
+        rdSpecifyArea.setText(exactArea);
         titleMessage = context.getString(R.string.lbl_cassava_field_size, areaUnit);
         title.setText(titleMessage);
     }
@@ -268,6 +243,7 @@ public class FieldSizeFragment extends BaseStepFragment {
         lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
+        titleMessage = context.getString(R.string.lbl_cassava_field_size, areaUnit);
 
         final TextView dialogTitle = dialog.findViewById(R.id.dialogTitle);
         final EditText et_post = dialog.findViewById(R.id.et_post);
@@ -280,7 +256,8 @@ public class FieldSizeFragment extends BaseStepFragment {
         dialog.findViewById(R.id.bt_submit).setOnClickListener(v -> {
             myFieldSize = et_post.getText().toString().trim();
             if (Strings.isEmptyOrWhitespace(myFieldSize)) {
-                Toast.makeText(context, R.string.lbl_field_size_prompt, Toast.LENGTH_SHORT).show();
+                String prompt = context.getString(R.string.lbl_field_size_prompt, areaUnit);
+                Toast.makeText(context, prompt, Toast.LENGTH_SHORT).show();
             } else {
                 areaSize = Double.parseDouble(myFieldSize);
                 dialog.dismiss();
@@ -297,7 +274,7 @@ public class FieldSizeFragment extends BaseStepFragment {
     @Override
     public VerificationError verifyStep() {
         if (!dataIsValid) {
-            errorMessage = context.getString(R.string.lbl_field_size_prompt);
+            errorMessage = context.getString(R.string.lbl_field_size_prompt, areaUnit);
             return new VerificationError(errorMessage);
         }
         return null;

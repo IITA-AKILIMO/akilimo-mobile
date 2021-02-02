@@ -29,7 +29,6 @@ import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityFertilizersBinding;
 import com.iita.akilimo.entities.Fertilizer;
 import com.iita.akilimo.entities.FertilizerPrice;
-import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
@@ -44,7 +43,6 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -96,7 +94,7 @@ public class FertilizersActivity extends BaseActivity {
 
         Intent intent = getIntent();
         if (intent != null) {
-            useCase = intent.getParcelableExtra(useCaseTag);
+            enumUseCase = intent.getParcelableExtra(useCaseTag);
         }
 
         ProfileInfo profileInfo = database.profileInfoDao().findOne();
@@ -202,7 +200,7 @@ public class FertilizersActivity extends BaseActivity {
     @Override
     protected void validate(boolean backPressed) {
         availableFertilizersList = database.fertilizerDao().findAllByCountry(countryCode);
-        if (mAdapter != null && availableFertilizersList != null) {
+        if (mAdapter != null) {
             mAdapter.setItems(availableFertilizersList);
         }
     }
@@ -281,16 +279,16 @@ public class FertilizersActivity extends BaseActivity {
             }
 
             @Override
-            public void onSuccessJsonArr(JSONArray jsonArray) {
+            public void onSuccessJsonArr(@NotNull JSONArray jsonArray) {
                 lyt_progress.setVisibility(View.GONE);
                 ObjectMapper objectMapper = new ObjectMapper();
                 try {
+
                     fertilizerPricesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<FertilizerPrice>>() {
                     });
 
-                    long[] status = null;
                     if (fertilizerPricesList.size() > 0) {
-                        status = database.fertilizerPriceDao().insertAll(fertilizerPricesList);
+                        database.fertilizerPriceDao().insertAll(fertilizerPricesList);
                     }
 
                     validate(false);

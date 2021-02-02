@@ -19,6 +19,7 @@ import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityTractorAccessBinding;
+import com.iita.akilimo.entities.Currency;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.FieldOperationCost;
 import com.iita.akilimo.entities.MandatoryInfo;
@@ -65,7 +66,6 @@ public class TractorAccessActivity extends CostBaseActivity {
     private String ploughCostText;
     private String ridgingCostText;
 
-
     private boolean dataValid;
     private double tractorPloughCost;
     private double tractorRidgeCost;
@@ -93,6 +93,9 @@ public class TractorAccessActivity extends CostBaseActivity {
         if (profileInfo != null) {
             countryCode = profileInfo.getCountryCode();
             currency = profileInfo.getCurrency();
+            currencyCode = profileInfo.getCurrency();
+            Currency myCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode);
+            currencySymbol = myCurrency.getCurrencySymbol();
         }
 
         toolbar = binding.toolbar;
@@ -146,15 +149,17 @@ public class TractorAccessActivity extends CostBaseActivity {
         chkPlough.setOnCheckedChangeListener((buttonView, isChecked) -> {
             hasPlough = isChecked;
             if (buttonView.isPressed() && isChecked && !dialogOpen) {
-                String title = (getString(R.string.lbl_tractor_plough_cost, fieldSize, areaUnit));
-                loadOperationCost(EnumOperation.TILLAGE.name(), EnumOperationType.MECHANICAL.operationName(), title);
+                String title = (getString(R.string.lbl_tractor_plough_cost, mathHelper.removeLeadingZero(fieldSize), areaUnit));
+                String hintText = (getString(R.string.lbl_tractor_plough_cost_hint, mathHelper.removeLeadingZero(fieldSize), areaUnit));
+                loadOperationCost(EnumOperation.TILLAGE.name(), EnumOperationType.MECHANICAL.operationName(), title, hintText);
             }
         });
         chkRidger.setOnCheckedChangeListener((buttonView, isChecked) -> {
             hasRidger = isChecked;
             if (buttonView.isPressed() && isChecked && !dialogOpen) {
-                String title = (getString(R.string.lbl_tractor_ridge_cost, fieldSize, areaUnit));
-                loadOperationCost(EnumOperation.RIDGING.name(), EnumOperationType.MECHANICAL.operationName(), title);
+                String title = (getString(R.string.lbl_tractor_ridge_cost, mathHelper.removeLeadingZero(fieldSize), areaUnit));
+                String hintText = (getString(R.string.lbl_tractor_ridge_cost_hint, mathHelper.removeLeadingZero(fieldSize), areaUnit));
+                loadOperationCost(EnumOperation.RIDGING.name(), EnumOperationType.MECHANICAL.operationName(), title, hintText);
             }
         });
         btnFinish.setOnClickListener(view -> validate(false));
@@ -200,7 +205,7 @@ public class TractorAccessActivity extends CostBaseActivity {
     }
 
     @Override
-    protected void showDialogFullscreen(ArrayList<OperationCost> operationCostList, String operation, String countrycode, String dialogTitle) {
+    protected void showDialogFullscreen(ArrayList<OperationCost> operationCostList, String operation, String countrycode, String dialogTitle, String hintText) {
         Bundle arguments = new Bundle();
 
         if (dialogOpen) {
@@ -211,21 +216,24 @@ public class TractorAccessActivity extends CostBaseActivity {
         arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList);
         arguments.putString(OperationCostsDialogFragment.OPERATION_NAME, operation);
         arguments.putString(OperationCostsDialogFragment.CURRENCY_CODE, currency);
+        arguments.putString(OperationCostsDialogFragment.CURRENCY_SYMBOL, currencySymbol);
         arguments.putString(OperationCostsDialogFragment.COUNTRY_CODE, countrycode);
         arguments.putString(OperationCostsDialogFragment.DIALOG_TITLE, dialogTitle);
+        arguments.putString(OperationCostsDialogFragment.EXACT_PRICE_HINT, hintText);
 
         OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment(context);
         dialogFragment.setArguments(arguments);
 
         dialogFragment.setOnDismissListener((operationCost, enumOperation, selectedCost, cancelled, isExactCost) -> {
             if (!cancelled && enumOperation != null) {
+                double roundedCost = mathHelper.roundToNearestSpecifiedValue(selectedCost, 1000);
                 switch (enumOperation) {
                     case "TILLAGE":
-                        tractorPloughCost = selectedCost;
+                        tractorPloughCost = roundedCost;
                         exactPloughCost = isExactCost;
                         break;
                     case "RIDGING":
-                        tractorRidgeCost = selectedCost;
+                        tractorRidgeCost = roundedCost;
                         exactRidgeCost = isExactCost;
                         break;
                 }

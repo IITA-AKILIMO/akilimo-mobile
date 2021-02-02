@@ -81,6 +81,7 @@ public class CountryFragment extends BaseStepFragment {
             if (profileInfo != null) {
                 name = profileInfo.getFirstName();
                 countryCode = profileInfo.getCountryCode();
+                currency = profileInfo.getCurrency();
                 countryName = profileInfo.getCountryName();
                 currency = profileInfo.getCurrency();
                 selectedLanguage = profileInfo.getLanguage();
@@ -112,64 +113,61 @@ public class CountryFragment extends BaseStepFragment {
         txtCountryName = binding.countryName;
         countryImage = binding.countryImage;
 
-        btnPickCountry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (selectedLanguage.equalsIgnoreCase("sw")) {
-                    countries = new String[]{
-                            EnumCountry.Tanzania.name()
-                    };
-                }
-
-
-                final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle(context.getString(R.string.lbl_pick_your_country));
-                builder.setSingleChoiceItems(countries, selectedCountryIndex, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        selectedCountryIndex = i;
-                    }
-                });
-                builder.setPositiveButton(context.getString(R.string.lbl_ok), (dialogInterface, whichButton) -> {
-                    if (selectedCountryIndex >= 0) {
-                        countryName = countries[selectedCountryIndex];
-                        switch (countryName.toLowerCase()) {
-                            case "kenya":
-                                countryName = EnumCountry.Kenya.name();
-                                currency = EnumCountry.Kenya.currency();
-                                countryCode = EnumCountry.Kenya.countryCode();
-                                break;
-                            case "tanzania":
-                                countryName = EnumCountry.Tanzania.name();
-                                currency = EnumCountry.Tanzania.currency();
-                                countryCode = EnumCountry.Tanzania.countryCode();
-                                break;
-                            case "nigeria":
-                                countryName = EnumCountry.Nigeria.name();
-                                currency = EnumCountry.Nigeria.currency();
-                                countryCode = EnumCountry.Nigeria.countryCode();
-                                break;
-                            default:
-                                countryName = EnumCountry.Other.name();
-                                currency = EnumCountry.Other.currency();
-                                countryCode = EnumCountry.Other.countryCode();
-                                break;
-                        }
-                        countryImage.setImageResource(World.getFlagOf(countryCode));
-                        txtCountryName.setText(countryName);
-                        dialogInterface.dismiss();
-                        updateSelectedCountry();
-                    }
-                });
-                builder.setNegativeButton(context.getString(R.string.lbl_cancel), ((dialogInterface, i) -> {
-                    dialogInterface.dismiss();
-                }));
-
-                AlertDialog dialog = builder.create();
-                dialog.setCancelable(false);
-                dialog.setCanceledOnTouchOutside(false);
-                dialog.show();
+        btnPickCountry.setOnClickListener(pickerDialog -> {
+            if (selectedLanguage.equalsIgnoreCase("sw")) {
+                countries = new String[]{
+                        EnumCountry.Tanzania.name()
+                };
             }
+
+
+            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle(context.getString(R.string.lbl_pick_your_country));
+            builder.setSingleChoiceItems(countries, selectedCountryIndex, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    selectedCountryIndex = i;
+                }
+            });
+            builder.setPositiveButton(context.getString(R.string.lbl_ok), (dialogInterface, whichButton) -> {
+                if (selectedCountryIndex >= 0) {
+                    countryName = countries[selectedCountryIndex];
+                    switch (countryName.toLowerCase()) {
+                        case "kenya":
+                            countryName = EnumCountry.Kenya.name();
+                            currency = EnumCountry.Kenya.currency();
+                            countryCode = EnumCountry.Kenya.countryCode();
+                            break;
+                        case "tanzania":
+                            countryName = EnumCountry.Tanzania.name();
+                            currency = EnumCountry.Tanzania.currency();
+                            countryCode = EnumCountry.Tanzania.countryCode();
+                            break;
+                        case "nigeria":
+                            countryName = EnumCountry.Nigeria.name();
+                            currency = EnumCountry.Nigeria.currency();
+                            countryCode = EnumCountry.Nigeria.countryCode();
+                            break;
+                        default:
+                            countryName = EnumCountry.Other.name();
+                            currency = EnumCountry.Other.currency();
+                            countryCode = EnumCountry.Other.countryCode();
+                            break;
+                    }
+                    countryImage.setImageResource(World.getFlagOf(countryCode));
+                    txtCountryName.setText(countryName);
+                    dialogInterface.dismiss();
+                    updateSelectedCountry();
+                }
+            });
+            builder.setNegativeButton(context.getString(R.string.lbl_cancel), ((dialogInterface, i) -> {
+                dialogInterface.dismiss();
+            }));
+
+            AlertDialog dialog = builder.create();
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
         });
     }
 

@@ -29,48 +29,52 @@
             android:textStyle="bold" />
 
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/lytFirstName"
+        <TextView
+            android:id="@+id/firstNameLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_large"
+            android:maxLines="3"
+            android:text="@string/lbl_first_name"
+            android:textColor="@color/grey_40"
+            app:fontFamily="@font/ubuntu" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtFirstName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            app:boxBackgroundColor="@color/transparent">
+            android:fontFamily="@font/ubuntu"
+            android:hint="@string/lbl_first_name"
+            android:inputType="text"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColorHint="@android:color/transparent" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtFirstName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
-                android:hint="@string/lbl_first_name"
-                android:inputType="text"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColorHint="@android:color/transparent" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+        <!--  Last names -->
+        <TextView
+            android:id="@+id/lastNameLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_large"
+            android:maxLines="3"
+            android:text="@string/lbl_last_name"
+            android:textColor="@color/grey_40"
+            app:fontFamily="@font/ubuntu" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/lytLastName"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtLastName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:background="@color/transparent"
-            app:boxBackgroundColor="@color/transparent">
+            android:fontFamily="@font/ubuntu"
+            android:hint="@string/lbl_last_name"
+            android:inputType="text"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColorHint="@android:color/transparent" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtLastName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
-                android:hint="@string/lbl_last_name"
-                android:inputType="text"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColorHint="@android:color/transparent" />
-
-        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/genderLabel"
@@ -91,27 +95,66 @@
 
 
         <!-- contact info -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/lytEmail"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:background="@color/transparent"
-            app:boxBackgroundColor="@color/transparent">
+            android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtEmail"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/emailLabel"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
-                android:hint="@string/lbl_email_address"
-                android:inputType="textEmailAddress"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColorHint="@android:color/transparent" />
+                android:maxLines="3"
+                android:text="@string/lbl_email_address"
+                android:textColor="@color/grey_40"
+                app:fontFamily="@font/ubuntu" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:id="@+id/email_optional"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_small"
+                android:text="@string/lbl_optional"
+                android:textColor="@color/akilimoDarkGreen"
+                app:fontFamily="@font/roboto_mono_thin" />
+        </LinearLayout>
+
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ubuntu"
+            android:hint="@string/lbl_email_address"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColorHint="@android:color/transparent" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="3"
+                android:text="@string/lbl_phone_number"
+                android:textColor="@color/grey_40"
+                app:fontFamily="@font/ubuntu" />
+
+            <TextView
+                android:id="@+id/phone_optional"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_small"
+                android:text="@string/lbl_optional"
+                android:textColor="@color/akilimoDarkGreen"
+                app:fontFamily="@font/roboto_mono_thin" />
+        </LinearLayout>
 
         <com.hbb20.CountryCodePicker
             android:id="@+id/ccp"
@@ -119,66 +162,62 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
             app:ccp_autoDetectCountry="true"
+            app:ccp_countryPreference="NG,TZ"
             app:ccp_hintExampleNumber="true"
             app:ccp_rememberLastSelection="true"
-            app:ccp_showFullName="true"
-            app:ccp_showNameCode="false"
+            app:ccp_showFullName="false"
+            app:ccp_showNameCode="true"
             app:ccp_showPhoneCode="true"
             app:ccp_textGravity="LEFT" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/lytPhone"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            app:boxBackgroundColor="@color/transparent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtPhone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
-                android:hint="@string/lbl_phone_number"
-                android:inputType="phone"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textColorHint="@android:color/transparent" />
-
-        </com.google.android.material.textfield.TextInputLayout>
+            android:fontFamily="@font/ubuntu"
+            android:hint="@string/lbl_phone_number"
+            android:inputType="phone"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColorHint="@android:color/transparent" />
 
 
         <!-- farm information -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_large"
-            android:maxLines="3"
-            android:text="@string/lbl_farm_name_title"
-            android:textColor="@color/grey_40"
-            app:fontFamily="@font/ubuntu" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/lytFarmName"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:background="@color/transparent"
-            app:boxBackgroundColor="@color/transparent">
+            android:orientation="horizontal">
 
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtFarmName"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/fieldLabel"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
-                android:hint="@string/lbl_farm_name"
-                android:inputType="text"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColorHint="@android:color/transparent" />
+                android:maxLines="3"
+                android:text="@string/lbl_farm_name_title"
+                android:textColor="@color/grey_40"
+                app:fontFamily="@font/ubuntu" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:id="@+id/field_optional"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_small"
+                android:text="@string/lbl_optional"
+                android:textColor="@color/akilimoDarkGreen"
+                app:fontFamily="@font/roboto_mono_thin" />
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtFarmName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ubuntu"
+            android:hint="@string/lbl_farm_name"
+            android:inputType="text"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColorHint="@android:color/transparent" />
     </LinearLayout>
 
 
