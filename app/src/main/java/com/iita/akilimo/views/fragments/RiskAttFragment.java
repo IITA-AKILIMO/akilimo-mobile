@@ -104,7 +104,7 @@ public class RiskAttFragment extends BaseStepFragment {
                     }
                     txtRiskText.setText(riskName);
                     dialogInterface.dismiss();
-                    updateSelectedCountry();
+                    updatedRiskAttitude();
                 }
             });
             builder.setNegativeButton(context.getString(R.string.lbl_cancel), ((dialogInterface, i) -> {
@@ -118,7 +118,7 @@ public class RiskAttFragment extends BaseStepFragment {
         });
     }
 
-    private void updateSelectedCountry() {
+    private void updatedRiskAttitude() {
         try {
             if (profileInfo == null) {
                 profileInfo = new ProfileInfo();
@@ -159,7 +159,6 @@ public class RiskAttFragment extends BaseStepFragment {
 
     @Override
     public void onError(@NonNull VerificationError error) {
-
     }
 
     private void refreshData() {
@@ -168,6 +167,7 @@ public class RiskAttFragment extends BaseStepFragment {
             if (profileInfo != null) {
                 riskAtt = profileInfo.getRiskAtt();
                 selectedRiskIndex = profileInfo.getSelectedRiskIndex();
+                dataIsValid = true;
             }
 
             riskName = risks[riskAtt];

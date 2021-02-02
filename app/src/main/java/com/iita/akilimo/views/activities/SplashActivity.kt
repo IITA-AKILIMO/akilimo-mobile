@@ -49,8 +49,8 @@ class SplashActivity : BaseActivity() {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
             Crashlytics.logException(ex)
         }
-        val intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
-//        val intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
+//        val intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
+        val intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
 //        val intent = Intent(this@SplashActivity, RootYieldActivity::class.java)
         startActivity(intent)
         finish()
