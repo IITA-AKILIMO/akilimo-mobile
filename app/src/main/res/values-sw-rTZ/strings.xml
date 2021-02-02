@@ -263,8 +263,8 @@
     <string name="lbl_herbicide_weed_control">Kwa kutumia kiuagugu</string>
     <string name="lbl_both_weed_control">Njia zote mbili, kwa mkono na kwa kutumia kiuagugu</string>
     <string name="lbl_enter_your_field_size">Ingiza eneo la shamba lako</string>
-    <string name="lbl_receive_email">Pokea barua pepe</string>
-    <string name="lbl_receive_sms">Pokea SMS</string>
+    <string name="lbl_receive_email">Barua pepe</string>
+    <string name="lbl_receive_sms">SMS</string>
     <string name="lbl_first_name">Jina lako la kwanza</string>
     <string name="lbl_last_name">Jina la ukoo</string>
     <string name="lbl_farm_name">Jina la shamba</string>
