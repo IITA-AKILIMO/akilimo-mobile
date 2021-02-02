@@ -25,6 +25,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityMaizeMarketBinding;
+import com.iita.akilimo.entities.Currency;
 import com.iita.akilimo.entities.MaizeMarket;
 import com.iita.akilimo.entities.MaizePrice;
 import com.iita.akilimo.entities.ProfileInfo;
@@ -124,6 +125,9 @@ public class MaizeMarketActivity extends BaseActivity {
         if (profileInfo != null) {
             countryCode = profileInfo.getCountryCode();
             currency = profileInfo.getCurrency();
+
+            Currency myCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode);
+            currencyName = myCurrency.getCurrencyName();
         }
 
         initToolbar();
@@ -167,6 +171,8 @@ public class MaizeMarketActivity extends BaseActivity {
                     unitOfSaleEnum = EnumUnitOfSale.NA;
                     unitPrice = -1.0;
                     cobPriceRequired = true;
+
+                    maizeCobPriceTitle.setText(getString(R.string.lbl_price_per_cob_in_currency_unit, currencyName));
                     break;
             }
         });
