@@ -9,6 +9,7 @@ internal class MathHelperTest {
         val mathHelper = MathHelper()
         val band25 = "Dola 25 kwa"
         val currency = "TZS"
+        val currencySymbol = "TZS"
         val areaUnit = "acre"
         val fieldAreaAcre = "1.0"
         val selectedFieldArea = "1.0 acre"
@@ -17,6 +18,7 @@ internal class MathHelperTest {
         val result = mathHelper.convertCurrency(
             band25,
             currency,
+            currencySymbol,
             areaUnit,
             fieldAreaAcre,
             selectedFieldArea,
@@ -30,6 +32,7 @@ internal class MathHelperTest {
         val mathHelper = MathHelper()
         val band25 = "25 USD per"
         val currency = "NGN"
+        val currencySymbol = "NGN"
         val areaUnit = "acre"
         val fieldAreaAcre = "1.0"
         val selectedFieldArea = "1.0 acre"
@@ -38,6 +41,7 @@ internal class MathHelperTest {
         val result = mathHelper.convertCurrency(
             band25,
             currency,
+            currencySymbol,
             areaUnit,
             fieldAreaAcre,
             selectedFieldArea,
