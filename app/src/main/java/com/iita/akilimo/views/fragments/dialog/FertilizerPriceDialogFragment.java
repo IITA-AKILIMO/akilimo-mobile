@@ -245,7 +245,8 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
             }
         }
         for (FertilizerPrice pricesResp : fertilizerPricesList) {
-
+            minPrice = pricesResp.getMinAllowedPrice();
+            maxPrice = pricesResp.getMaxAllowedPrice();
             long listIndex = pricesResp.getPriceId() - 1;//reduce by one so as to match the index in the list
 
             RadioButton radioButton = new RadioButton(getActivity());
@@ -256,8 +257,6 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
             double price = pricesResp.getPricePerBag();
 
             String radioLabel = pricesResp.getPriceRange();
-            minPrice = pricesResp.getMinAllowedPrice();
-            maxPrice = pricesResp.getMaxAllowedPrice();
             if (price == 0) {
                 radioLabel = context.getString(R.string.lbl_do_not_know);
             } else if (price < 0) {

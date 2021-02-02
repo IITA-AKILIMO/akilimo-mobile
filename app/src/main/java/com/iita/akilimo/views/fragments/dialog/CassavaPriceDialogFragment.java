@@ -49,6 +49,9 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
     public static final String CURRENCY_CODE = "currency_code";
     public static final String COUNTRY_CODE = "country_code";
 
+    private double maxPrice = 0.0;
+    private double minPrice = 0.0;
+
     private boolean isExactPriceRequired = false;
     private boolean isPriceValid = false;
     private boolean priceSpecified = false;
@@ -69,6 +72,7 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
     private List<CassavaPrice> cassavaPriceList;
 
     private String countryCode;
+    private String currencyName;
     private String currencyCode;
     private String unitOfSale;
     private EnumUnitOfSale unitOfSaleEnum;
@@ -97,6 +101,12 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
             unitOfSale = bundle.getString(UNIT_OF_SALE);
             countryCode = bundle.getString(COUNTRY_CODE);
             unitOfSaleEnum = bundle.getParcelable(ENUM_UNIT_OF_SALE);
+
+            ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
+            if (extendedCurrency != null) {
+                currencySymbol = extendedCurrency.getSymbol();
+                currencyName = extendedCurrency.getName();
+            }
         }
         dialog = new Dialog(context);
 
@@ -194,9 +204,12 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
             btnUpdate.setText(R.string.lbl_update);
             btnRemove.setVisibility(View.VISIBLE);
         }
-
+//@TODO move the about to the API for easier computations
         for (CassavaPrice pricesResp : cassavaPriceList) {
             double price = pricesResp.getAveragePrice();
+            minPrice = pricesResp.getMinAllowedPrice();
+            maxPrice = pricesResp.getMaxAllowedPrice();
+
             long listIndex = pricesResp.getPriceIndex() - 1;//reduce by one so as to match the index in the list
 
             RadioButton radioButton = new RadioButton(getActivity());
@@ -207,6 +220,8 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
             String radioLabel = labelText(pricesResp.getMinLocalPrice(), pricesResp.getMaxLocalPrice(), currencyCode, unitOfSale, false);
             if (price < 0) {
                 radioLabel = context.getString(R.string.lbl_exact_price_x_per_unit_of_sale);
+                String exactTextHint = getString(R.string.exact_fertilizer_price_currency, currencyName);
+                exactPriceWrapper.setHint(exactTextHint);
             } else if (price == 0) {
                 radioLabel = context.getString(R.string.lbl_do_not_know);
             }
@@ -241,7 +256,7 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
     }
 
     private String labelText(double unitPriceLower, double unitPriceUpper, String currencyCode, String uos, boolean... doConversions) {
-        //cross convert according to weight
+        //@TODO cross convert according to weight
         boolean convertCurrency = true;
         if (doConversions.length > 0) {
             convertCurrency = doConversions[0];
