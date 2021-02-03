@@ -211,7 +211,7 @@ public class BioDataFragment extends BaseStepFragment {
         if (!dataIsValid) {
             return;
         }
-        
+
         try {
             if (profileInfo == null) {
                 profileInfo = new ProfileInfo();
