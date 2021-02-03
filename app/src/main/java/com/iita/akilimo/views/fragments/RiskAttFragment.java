@@ -102,7 +102,6 @@ public class RiskAttFragment extends BaseStepFragment {
                             riskAtt = 2;
                             break;
                     }
-                    dataIsValid = true;
                     txtRiskText.setText(riskName);
                     dialogInterface.dismiss();
                     updatedRiskAttitude();
@@ -128,7 +127,7 @@ public class RiskAttFragment extends BaseStepFragment {
             profileInfo.setSelectedRiskIndex(selectedRiskIndex);
             profileInfo.setRiskAtt(riskAtt);
 
-            dataIsValid = !Strings.isEmptyOrWhitespace(countryCode);
+            dataIsValid = !Strings.isEmptyOrWhitespace(riskName);
             if (profileInfo.getProfileId() != null) {
                 int id = profileInfo.getProfileId();
                 if (id > 0) {

@@ -60,6 +60,7 @@ public class BioDataFragment extends BaseStepFragment {
     private String farmName;
     private String mobileCode;
     private String fullMobileNumber;
+    private String userEnteredNumber;
     private String gender;
     private int selectedGenderIndex = -1;
 
@@ -170,6 +171,7 @@ public class BioDataFragment extends BaseStepFragment {
         lastName = edtLastName.getText().toString();
         farmName = edtFamName.getText().toString();
         email = edtEmail.getText().toString();
+        userEnteredNumber = edtPhone.getText().toString();
         fullMobileNumber = ccp.getFullNumber();
         mobileCode = ccp.getSelectedCountryCodeWithPlus();
 
@@ -190,7 +192,7 @@ public class BioDataFragment extends BaseStepFragment {
             edtFamName.setText(farmName);
         }
 
-        if (!Strings.isEmptyOrWhitespace(fullMobileNumber)) {
+        if (!Strings.isEmptyOrWhitespace(fullMobileNumber) && !Strings.isEmptyOrWhitespace(userEnteredNumber)) {
             if (!phoneIsValid) {
                 dataIsValid = false;
                 errorMessage = this.getString(R.string.lbl_valid_number_req);
@@ -206,38 +208,40 @@ public class BioDataFragment extends BaseStepFragment {
             edtEmail.setError(errorMessage);
         }
 
-        if (dataIsValid) {
-            try {
-                if (profileInfo == null) {
-                    profileInfo = new ProfileInfo();
-                }
-                profileInfo.setFirstName(firstName);
-                profileInfo.setLastName(lastName);
-                profileInfo.setGender(gender);
-                profileInfo.setEmail(email);
-                profileInfo.setFarmName(farmName);
-                profileInfo.setFieldDescription(farmName);
-                profileInfo.setMobileCode(mobileCode);
-                profileInfo.setFullMobileNumber(fullMobileNumber);
-                profileInfo.setSelectedGenderIndex(selectedGenderIndex);
-                if (sessionManager != null) {
-                    profileInfo.setDeviceToken(sessionManager.getDeviceToken());
-                }
+        if (!dataIsValid) {
+            return;
+        }
 
-                profileInfo.setUserName(profileInfo.getNames());
-
-                if (profileInfo.getProfileId() != null) {
-                    database.profileInfoDao().update(profileInfo);
-                } else {
-                    database.profileInfoDao().insert(profileInfo);
-                }
-            } catch (Exception ex) {
-                Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                Crashlytics.logException(ex);
+        try {
+            if (profileInfo == null) {
+                profileInfo = new ProfileInfo();
+            }
+            profileInfo.setFirstName(firstName);
+            profileInfo.setLastName(lastName);
+            profileInfo.setGender(gender);
+            profileInfo.setEmail(email);
+            profileInfo.setFarmName(farmName);
+            profileInfo.setFieldDescription(farmName);
+            profileInfo.setMobileCode(mobileCode);
+            profileInfo.setFullMobileNumber(fullMobileNumber);
+            profileInfo.setSelectedGenderIndex(selectedGenderIndex);
+            if (sessionManager != null) {
+                profileInfo.setDeviceToken(sessionManager.getDeviceToken());
             }
 
+            profileInfo.setUserName(profileInfo.getNames());
+
+            if (profileInfo.getProfileId() != null) {
+                database.profileInfoDao().update(profileInfo);
+            } else {
+                database.profileInfoDao().insert(profileInfo);
+            }
+        } catch (Exception ex) {
+            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+            Crashlytics.logException(ex);
         }
+
     }
 
 
