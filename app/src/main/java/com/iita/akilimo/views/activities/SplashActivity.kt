@@ -42,9 +42,9 @@ class SplashActivity : BaseActivity() {
 
     private fun launchActivity() {
         try {
-            if (!BuildConfig.DEBUG) {
+//            if (!BuildConfig.DEBUG) {
                 getDatabase(this)?.clearAllTables()
-            }
+//            }
         } catch (ex: Exception) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
             Crashlytics.logException(ex)
