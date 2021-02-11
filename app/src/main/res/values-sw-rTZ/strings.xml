@@ -76,10 +76,10 @@
     <string name="lbl_investment_amount">Je! Uko tayari kuwekeza kiasi gani kwenye mbolea?</string>
     <string name="lbl_typical_yield">Je! Kwa kawaida shamba lako hutoa mavuno kiasi gani?</string>
     <string name="lbl_typical_yield_question">Mavuno ya kawaida ya mizizi ya muhogo ni %1$s. Je! Unatarajia mavuno mengi kutoka kwa shamba lako?</string>
-
+    <string name="lbl_typical_yield_question_fr">Mavuno ya kawaida ya mizizi ya mihogo ni %1$s. Je! Unatarajia mavuno mangapi kutoka kwa shamba lako bila matumizi ya mbolea?</string>
     <string name="lbl_maize_performance">Urefu wa kawaida wa mahindi ukipandwa bila kuwekewa mbolea</string>
     <!--    <string name="lbl_sweet_potato_prices">Bei ya viazi tamu</string>-->
-    <string name="lbl_height_of_maize_at_tasseling">Urefu wa mahindi wakati wa kutoa mbelewele</string>
+    <string name="lbl_height_of_maize_at_tasseling">Mahindi bila mbolea kawaida hufikia urefu wa kifua karibu 150cm. Je! Ni urefu gani wa mazao yako ya mahindi kwenye shamba lako ukiwa bila mbolea</string>
     <string name="lbl_maize_performance_poor">Hizi ni dalili za udongo usio na rutuba lakini sio za kawaida</string>
     <string name="lbl_maize_performance_rich">Hizi ni dalili za udongo wenye rutuba lakini sio za kawaida</string>
     <string name="lbl_market_outlet">Unatarajia bei gani kwa muhogo wako wakati wa mavuno?</string>

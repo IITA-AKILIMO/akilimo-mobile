@@ -112,8 +112,7 @@
     <string name="lbl_typical_yield_question_fr">A typical cassava root yield is %1$s. How much yield do you expect from your field without fertilizer application?</string>
     <string name="lbl_maize_performance">The typical height of maize when grown without fertilizer</string>
     <string name="lbl_sweet_potato_prices">What price do you expect to sell your sweet potatoes at  harvest?</string>
-    <!--    <string name="lbl_height_of_maize_at_tasseling">Height of maize at tasseling</string>-->
-    <string name="lbl_height_of_maize_at_tasseling">Maize without fertilizer in your area usually reaches up to chest height about 150cm. What is the height of your maize crop in your field at tasseling without fertilizer</string>
+    <string name="lbl_height_of_maize_at_tasseling">Maize without fertilizer usually reaches up to chest height about 150cm. What is the height of your maize crop in your field at tasseling without fertilizer</string>
 
     <string name="lbl_maize_performance_poor">These are very poor soil conditions and not very common</string>
     <string name="lbl_maize_performance_rich">These are very rich soil conditions and not very common</string>
