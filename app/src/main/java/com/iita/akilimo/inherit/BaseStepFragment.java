@@ -135,14 +135,13 @@ public abstract class BaseStepFragment extends Fragment implements Step {
     protected StringBuilder loadLocationInfo(LocationInfo locationInfo) {
         StringBuilder stBuilder = new StringBuilder();
         if (locationInfo != null) {
-            String latitude = String.valueOf(locationInfo.getLatitude());
-            String longitude = String.valueOf(locationInfo.getLongitude());
+            double lat = mathHelper.roundToNDecimalPlaces(locationInfo.getLatitude(), 1000);
+            double lon = mathHelper.roundToNDecimalPlaces(locationInfo.getLongitude(), 1000);
+
             String place = locationInfo.getPlaceName();
-            stBuilder.append("Lat:");
-            stBuilder.append(latitude);
+            stBuilder.append(String.format("Lat:%s", lat));
             stBuilder.append(" ");
-            stBuilder.append("Lon:");
-            stBuilder.append(longitude);
+            stBuilder.append(String.format("Lon:%s", lon));
         }
 
         return stBuilder;

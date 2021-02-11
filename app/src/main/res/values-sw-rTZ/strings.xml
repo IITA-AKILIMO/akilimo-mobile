@@ -59,7 +59,7 @@
 
 
     <string name="lbl_salutation">Halo, ni vizuri kukutana nawe!</string>
-    <string name="lbl_farm_location">Shamba lako la muhogo -%1$s- lipo eneo gani?</string>
+    <string name="lbl_farm_location">Shamba lako la muhogo `%1$s` lipo eneo gani?</string>
     <string name="lbl_current_location">Tumia eneo la sasa</string>
     <string name="lbl_manual_location">Chagua eneo nilipo</string>
     <string name="lbl_recommendations">Mapendekezo</string>

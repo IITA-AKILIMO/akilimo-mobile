@@ -232,6 +232,7 @@ public class MathHelper {
     }
 
     public String removeLeadingZero(double numberValue) {
+        //#.#####
         DecimalFormat format = new DecimalFormat("0.#");
         return format.format(numberValue);
     }
