@@ -78,7 +78,7 @@
     <string name="lbl_typical_yield_question">Mavuno ya kawaida ya mizizi ya muhogo ni %1$s. Je! Unatarajia mavuno mengi kutoka kwa shamba lako?</string>
 
     <string name="lbl_maize_performance">Urefu wa kawaida wa mahindi ukipandwa bila kuwekewa mbolea</string>
-<!--    <string name="lbl_sweet_potato_prices">Bei ya viazi tamu</string>-->
+    <!--    <string name="lbl_sweet_potato_prices">Bei ya viazi tamu</string>-->
     <string name="lbl_height_of_maize_at_tasseling">Urefu wa mahindi wakati wa kutoa mbelewele</string>
     <string name="lbl_maize_performance_poor">Hizi ni dalili za udongo usio na rutuba lakini sio za kawaida</string>
     <string name="lbl_maize_performance_rich">Hizi ni dalili za udongo wenye rutuba lakini sio za kawaida</string>
@@ -184,8 +184,8 @@
     <string name="lbl_specify_my_cost">Nataka kutaja gharama zangu</string>
     <string name="lbl_exact_cost">Gharama halisi</string>
 
-<!--    <string name="lbl_cost_of_first_weeding_operation">Gharama ya palizi la kwanza katika %s</string>-->
-<!--    <string name="lbl_cost_of_second_weeding_operation">Gharama ya palizi la pili katika %s</string>-->
+    <!--    <string name="lbl_cost_of_first_weeding_operation">Gharama ya palizi la kwanza katika %s</string>-->
+    <!--    <string name="lbl_cost_of_second_weeding_operation">Gharama ya palizi la pili katika %s</string>-->
 
     <string name="lbl_valid_bag_price">Tafadhali toa bei halisi</string>
     <string name="lbl_ploughing_cost_text">Gharama ya kukatua %s %s %s %s</string>
@@ -266,11 +266,11 @@
     <string name="lbl_first_name">Jina lako la kwanza</string>
     <string name="lbl_last_name">Jina la ukoo</string>
     <string name="lbl_farm_name">Jina la shamba</string>
-    <string name="lbl_farm_name_title">Jina la shamba</string>
+    <string name="lbl_farm_name_title">Ipe shamba lako jina</string>
     <string name="lbl_email_address_hint">Anauani ya barua pepe (Inatumika kutuma mapendekezo)</string>
     <string name="lbl_email_address">Barua pepe</string>
     <string name="lbl_phone_number">Nambari ya simu</string>
-    <string name="lbl_self_intro">Tuanze kwa kunipatia utambilisho wako</string>
+    <string name="lbl_self_intro">Tafadhali tuambie wewe ni nani</string>
     <string name="lbl_exact_price">Bei halisi</string>
     <string name="lbl_fertilizer_price">Bei ya mbolea</string>
     <string name="lbl_operation_costs">Gharama za uendeshaji</string>
