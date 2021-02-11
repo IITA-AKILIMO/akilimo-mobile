@@ -34,11 +34,9 @@ class SplashActivity : BaseActivity() {
         }
     }
 
-    override fun validate(backPressed: Boolean) {
-    }
+    override fun validate(backPressed: Boolean) {}
 
-    override fun initToolbar() {
-    }
+    override fun initToolbar() {}
 
     private fun launchActivity() {
         try {
@@ -51,7 +49,7 @@ class SplashActivity : BaseActivity() {
         }
         val intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
 //        val intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
-//        val intent = Intent(this@SplashActivity, RootYieldActivity::class.java)
+//        val intent = Intent(this@SplashActivity, InvestmentAmountActivity::class.java)
         startActivity(intent)
         finish()
         Animatoo.animateSlideDown(this)

@@ -73,7 +73,6 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
     private String bagPriceRange = "NA";
     private Double exactPrice = 0.0;
 
-    DecimalFormat format;
     private IFertilizerDismissListener onDismissListener;
 
     public FertilizerPriceDialogFragment(Context context) {
@@ -90,7 +89,6 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
             fertilizer = bundle.getParcelable(FERTILIZER_TYPE);
         }
         dialog = new Dialog(context);
-        format = new DecimalFormat("0.#");
 
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
@@ -151,8 +149,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
                     Crashlytics.logException(ex);
                 }
                 if (bagPrice <= 0 || bagPrice < minPrice || bagPrice > maxPrice) {
-                    editExactFertilizerPrice.setError(String.format("Please provide a valid bag price between %s and %s",
-                            format.format(minPrice), format.format(maxPrice)));
+                    editExactFertilizerPrice.setError(String.format(getString(R.string.lbl_min_fert_price), mathHelper.removeLeadingZero(minPrice), mathHelper.removeLeadingZero(maxPrice)));
                     isPriceValid = false;
                     return;
                 }
@@ -256,7 +253,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
 
             double price = pricesResp.getPricePerBag();
 
-            String radioLabel = pricesResp.getPriceRange();
+            String radioLabel = context.getString(R.string.lbl_about, pricesResp.getPriceRange());
             if (price == 0) {
                 radioLabel = context.getString(R.string.lbl_do_not_know);
             } else if (price < 0) {

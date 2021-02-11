@@ -60,6 +60,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected String baseCurrency = "USD";
     protected EnumUseCase enumUseCase;
     protected String areaUnit = "acre";
+    protected String areaUnitText = "acre";
     protected double fieldSize = 0;
     protected double fieldSizeAcre = 2.471;
 
