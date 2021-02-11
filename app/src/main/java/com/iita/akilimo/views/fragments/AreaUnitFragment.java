@@ -98,12 +98,12 @@ public class AreaUnitFragment extends BaseStepFragment {
                 case R.id.rdAcre:
                     areaUnitRadioIndex = R.id.rdAcre;
                     areaUnitDisplay = context.getString(R.string.lbl_acre);
-                    areaUnit = EnumAreaUnits.ACRE.unitName(context);
+                    areaUnit = EnumAreaUnits.ACRE.name();
                     break;
                 case R.id.rdHa:
                     areaUnitRadioIndex = R.id.rdHa;
                     areaUnitDisplay = context.getString(R.string.lbl_ha);
-                    areaUnit = EnumAreaUnits.HA.unitName(context);
+                    areaUnit = EnumAreaUnits.HA.name();
                     break;
                 default:
                     areaUnitRadioIndex = -1;
@@ -121,7 +121,7 @@ public class AreaUnitFragment extends BaseStepFragment {
                     mandatoryInfo = new MandatoryInfo();
                 }
                 mandatoryInfo.setAreaUnitRadioIndex(areaUnitRadioIndex);
-                mandatoryInfo.setAreaUnit(areaUnit);
+                mandatoryInfo.setAreaUnit(areaUnit.toLowerCase());
                 mandatoryInfo.setDisplayAreaUnit(areaUnitDisplay);
                 if (mandatoryInfo.getId() != null) {
                     database.mandatoryInfoDao().update(mandatoryInfo);
