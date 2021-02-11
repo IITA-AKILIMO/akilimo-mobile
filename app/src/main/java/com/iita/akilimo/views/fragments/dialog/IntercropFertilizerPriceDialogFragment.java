@@ -152,8 +152,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
                 }
 
                 if (bagPrice <= 0 || bagPrice < minPrice || bagPrice > maxPrice) {
-                    editExactFertilizerPrice.setError(String.format("Please provide a valid bag price between %s and %s",
-                            mathHelper.removeLeadingZero(minPrice), mathHelper.removeLeadingZero(maxPrice)));
+                    editExactFertilizerPrice.setError(String.format(getString(R.string.lbl_min_fert_price), mathHelper.removeLeadingZero(minPrice), mathHelper.removeLeadingZero(maxPrice)));
                     isPriceValid = false;
                     return;
                 }
@@ -250,7 +249,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
             //radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.spacing_large));
 
             double price = pricesResp.getPricePerBag();
-            String radioLabel = pricesResp.getPriceRange();
+            String radioLabel = context.getString(R.string.lbl_about, pricesResp.getPriceRange());
             minPrice = pricesResp.getMinAllowedPrice();
             maxPrice = pricesResp.getMaxAllowedPrice();
             if (price == 0) {

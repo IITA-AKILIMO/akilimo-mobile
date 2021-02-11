@@ -76,7 +76,7 @@
     <string name="two_half_acre_to_m2">About 10,000 m\u00B2</string>
 
     <string name="lbl_salutation">Hi, nice to meet you!</string>
-    <string name="lbl_farm_location">Where is your cassava field "%1$s" located?</string>
+    <string name="lbl_farm_location">Where is your cassava field `%1$s` located?</string>
     <string name="lbl_current_location">Use current location</string>
     <string name="lbl_manual_location">Select location manually</string>
 
@@ -112,8 +112,7 @@
     <string name="lbl_typical_yield_question_fr">A typical cassava root yield is %1$s. How much yield do you expect from your field without fertilizer application?</string>
     <string name="lbl_maize_performance">The typical height of maize when grown without fertilizer</string>
     <string name="lbl_sweet_potato_prices">What price do you expect to sell your sweet potatoes at  harvest?</string>
-    <!--    <string name="lbl_height_of_maize_at_tasseling">Height of maize at tasseling</string>-->
-    <string name="lbl_height_of_maize_at_tasseling">Maize without fertilizer in your area usually reaches up to chest height about 150cm. What is the height of your maize crop in your field at tasseling without fertilizer</string>
+    <string name="lbl_height_of_maize_at_tasseling">Maize without fertilizer usually reaches up to chest height about 150cm. What is the height of your maize crop in your field at tasseling without fertilizer</string>
 
     <string name="lbl_maize_performance_poor">These are very poor soil conditions and not very common</string>
     <string name="lbl_maize_performance_rich">These are very rich soil conditions and not very common</string>
@@ -225,7 +224,7 @@
     <string name="lbl_summary_title">Here is what we have so far</string>
 
     <string name="unit_price_label">%1$,.0f - %2$,.0f %3$s per %4$s</string>
-    <string name="unit_price_label_single" translatable="false">About %1$,.0f %2$s per %3$s</string>
+    <string name="unit_price_label_single">About %1$,.0f %2$s per %3$s</string>
 
     <string name="title_activity_dst_recommendation">Recommendation</string>
 
@@ -370,11 +369,11 @@
     <string name="lbl_first_name">First name</string>
     <string name="lbl_last_name">Last name</string>
     <string name="lbl_farm_name">Field name</string>
-    <string name="lbl_farm_name_title">Field name</string>
+    <string name="lbl_farm_name_title">Give your field a name</string>
     <string name="lbl_email_address_hint">Email address (used to send recommendations)</string>
     <string name="lbl_email_address">Email address</string>
     <string name="lbl_phone_number">Phone number</string>
-    <string name="lbl_self_intro">Tell us about yourself</string>
+    <string name="lbl_self_intro">Please tell us who you are</string>
     <string name="lbl_exact_price">Exact price</string>
     <string name="lbl_fertilizer_price">Fertilizer price</string>
     <string name="lbl_operation_costs">Operation costs</string>
@@ -396,6 +395,7 @@
     <string name="lbl_ploughing">Ploughing</string>
     <string name="lbl_ridging">Ridging</string>
     <string name="lbl_country">Country</string>
+    <string name="lbl_risk_attitude">Investment in technology</string>
     <string name="lbl_field">Field</string>
     <string name="lbl_farm_size">Field size</string>
     <string name="lbl_location">Location</string>
@@ -471,7 +471,6 @@
     <string name="lbl_gps_settings">GPS settings</string>
     <string name="lbl_gps_not_enabled">GPS is not enabled. Do you want to go to settings menu?</string>
     <string name="lbl_no_profile_info">It appears I don\'t have your profile information, I need it in order to send you recommendations</string>
-    <string name="lbl_one_kg_bag_unit">a 1 kg bag</string>
     <string name="lbl_pick_your_country">Select country</string>
 
     <string name="lbl_already_planted_title">Already planted</string>
@@ -482,7 +481,7 @@
     <string name="lbl_optional">(Optional)</string>
     <string name="lbl_country_supported">Currently AKILIMO gives advice for farms located in Nigeria and Tanzania. Your area is outside the area covered by AKILIMO</string>
     <string name="lbl_acre_yield">3–6 t/acre</string>
-    <string name="lbl_ha_yield">7.5–15 t/acre</string>
+    <string name="lbl_ha_yield">7.5–15 t/ha</string>
 
     <string name="fcy_lower">Lower</string>
     <string name="fcy_about_the_same">About the same</string>
@@ -500,4 +499,23 @@
     <string name="lbl_you_expect_yield">You expect a yield of %1$s. %2$s</string>
     <string name="lbl_select_risk_att">Select option</string>
     <string name="lbl_risk_att">How often do you invest on new technologies?</string>
+
+    <string name="lbl_often">Often</string>
+    <string name="lbl_sometimes">Sometimes</string>
+    <string name="lbl_never">Never</string>
+
+    <string name="lbl_about">About %1$s</string>
+    <string name="lbl_min_fert_price">Please provide a valid bag price between %s and %s</string>
+
+    <string name="lbl_one_kg_bag_unit">a 1 kg bag</string>
+    <string name="lbl_50_kg_bag_unit">a 50 kg bag</string>
+    <string name="lbl_100_kg_bag_unit">a 100 kg bag</string>
+    <string name="lbl_1000_kg_bag_unit">1 tonne</string>
+
+    <string name="lbl_one_kg_unit">kg</string>
+    <string name="lbl_50_kg_unit">50 kg bag</string>
+    <string name="lbl_100_kg_unit">100 kg bag</string>
+    <string name="lbl_1000_kg_unit">tonne</string>
+
+    <string name="lbl_operation_cost_label">About %s %s</string>
 </resources>

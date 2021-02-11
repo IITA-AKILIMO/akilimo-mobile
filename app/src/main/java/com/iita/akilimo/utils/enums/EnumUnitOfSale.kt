@@ -39,7 +39,7 @@ enum class EnumUnitOfSale : Parcelable {
         }
 
         override fun unitOfSale(context: Context): String {
-            return "kg"
+            return context.getString(R.string.lbl_one_kg_unit)
         }
 
         override fun unitOfSaleText(context: Context): String {
@@ -52,11 +52,11 @@ enum class EnumUnitOfSale : Parcelable {
         }
 
         override fun unitOfSale(context: Context): String {
-            return "50 kg bag"
+            return context.getString(R.string.lbl_50_kg_unit)
         }
 
         override fun unitOfSaleText(context: Context): String {
-            return "a 50 kg bag"
+            return context.getString(R.string.lbl_50_kg_bag_unit)
         }
     },
     HUNDRED_KG {
@@ -65,11 +65,11 @@ enum class EnumUnitOfSale : Parcelable {
         }
 
         override fun unitOfSale(context: Context): String {
-            return "100 kg bag"
+            return context.getString(R.string.lbl_100_kg_unit)
         }
 
         override fun unitOfSaleText(context: Context): String {
-            return "a 100 kg bag"
+            return context.getString(R.string.lbl_100_kg_bag_unit)
         }
     },
     THOUSAND_KG {
@@ -78,11 +78,11 @@ enum class EnumUnitOfSale : Parcelable {
         }
 
         override fun unitOfSale(context: Context): String {
-            return "tonne"
+            return context.getString(R.string.lbl_1000_kg_unit)
         }
 
         override fun unitOfSaleText(context: Context): String {
-            return "1 tonne"
+            return context.getString(R.string.lbl_1000_kg_bag_unit)
         }
     };
 

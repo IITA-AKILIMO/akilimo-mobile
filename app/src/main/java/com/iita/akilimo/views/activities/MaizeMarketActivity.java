@@ -303,6 +303,7 @@ public class MaizeMarketActivity extends BaseActivity {
     private void showUnitGrainPriceDialog(String produceType) {
         Bundle arguments = new Bundle();
         arguments.putString(MaizePriceDialogFragment.CURRENCY_CODE, currency);
+        arguments.putString(MaizePriceDialogFragment.CURRENCY_NAME, currencyName);
         arguments.putString(MaizePriceDialogFragment.COUNTRY_CODE, countryCode);
         arguments.putDouble(MaizePriceDialogFragment.SELECTED_PRICE, exactPrice);
         arguments.putDouble(MaizePriceDialogFragment.AVERAGE_PRICE, averagePrice);

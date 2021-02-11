@@ -227,8 +227,9 @@ public class InvestmentAmountActivity extends BaseActivity {
             fieldArea = String.valueOf(fieldSize);
             fieldAreaAcre = String.valueOf(fieldSizeAcre);
             areaUnit = mandatoryInfo.getAreaUnit();
+            areaUnitText = mandatoryInfo.getDisplayAreaUnit();
         }
-        selectedFieldArea = String.format("%s %s", fieldSize, areaUnit);
+        selectedFieldArea = String.format("%s %s", fieldSize, areaUnitText);
 
 
         if (Strings.isEmptyOrWhitespace(selectedFieldArea)) {
