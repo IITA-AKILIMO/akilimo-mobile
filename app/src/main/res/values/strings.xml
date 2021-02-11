@@ -482,7 +482,7 @@
     <string name="lbl_optional">(Optional)</string>
     <string name="lbl_country_supported">Currently AKILIMO gives advice for farms located in Nigeria and Tanzania. Your area is outside the area covered by AKILIMO</string>
     <string name="lbl_acre_yield">3–6 t/acre</string>
-    <string name="lbl_ha_yield">7.5–15 t/acre</string>
+    <string name="lbl_ha_yield">7.5–15 t/ha</string>
 
     <string name="fcy_lower">Lower</string>
     <string name="fcy_about_the_same">About the same</string>
