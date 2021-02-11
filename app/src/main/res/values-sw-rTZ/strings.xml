@@ -290,6 +290,7 @@
     <string name="lbl_ploughing">Kukatua</string>
     <string name="lbl_ridging">Kuweka matuta</string>
     <string name="lbl_country">Nchi</string>
+    <string name="lbl_risk_attitude">Uwekezaji katika teknolojia</string>
     <string name="lbl_field">Shamba</string>
     <string name="lbl_location">Mahali</string>
     <string name="lbl_planting_date">Tarehe ya kupanda</string>
