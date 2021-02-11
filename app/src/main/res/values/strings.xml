@@ -516,4 +516,6 @@
     <string name="lbl_50_kg_unit">50 kg bag</string>
     <string name="lbl_100_kg_unit">100 kg bag</string>
     <string name="lbl_1000_kg_unit">tonne</string>
+
+    <string name="lbl_operation_cost_label">About %s %s</string>
 </resources>
