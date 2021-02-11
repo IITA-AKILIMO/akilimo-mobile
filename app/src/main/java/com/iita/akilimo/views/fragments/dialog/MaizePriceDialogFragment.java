@@ -48,6 +48,7 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
     public static final String UNIT_OF_SALE = "unit_of_sale";
     public static final String ENUM_UNIT_OF_SALE = "enum_unit_of_sale";
     public static final String CURRENCY_CODE = "currency_code";
+    public static final String CURRENCY_NAME = "currency_name";
     public static final String COUNTRY_CODE = "country_code";
 
     private boolean isExactPriceRequired = false;
@@ -66,6 +67,7 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
 
     private double averagePrice;
     private double maizePrice;
+    private String currencyName;
     private List<MaizePrice> maizePriceList;
 
     private String countryCode;
@@ -73,11 +75,6 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
     private String produceType;
     private String unitOfSale;
     private EnumUnitOfSale unitOfSaleEnum;
-
-    double unitPriceUSD = 0.0;
-    double unitPriceLocal = 0.0;
-    private double minAmountUSD = 5.00;
-    private double maxAmountUSD = 500.00;
 
     private IPriceDialogDismissListener onDismissListener;
 
@@ -96,6 +93,7 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
             maizePrice = bundle.getDouble(SELECTED_PRICE);
             produceType = bundle.getString(PRODUCE_TYPE, "grain");
             currencyCode = bundle.getString(CURRENCY_CODE);
+            currencyName = bundle.getString(CURRENCY_NAME);
             unitOfSale = bundle.getString(UNIT_OF_SALE);
             countryCode = bundle.getString(COUNTRY_CODE);
             unitOfSaleEnum = bundle.getParcelable(ENUM_UNIT_OF_SALE);
@@ -166,7 +164,6 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
         long itemTagIndex = (long) radioButton.getTag();
 
         try {
-//            MaizePrice pricesResp = maizePriceList.get((int) itemTagIndex);
             MaizePrice pricesResp = database.maizePriceDao().findPriceByPriceIndex((int) itemTagIndex);
             isExactPriceRequired = false;
             isPriceValid = true;
@@ -199,7 +196,7 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
 
         for (MaizePrice pricesResp : maizePriceList) {
             double price = pricesResp.getAveragePrice();
-            long listIndex = pricesResp.getPriceIndex() - 1;//reduce by one so as to match the index in the list
+            long listIndex = pricesResp.getPriceIndex();//reduce by one so as to match the index in the list
 
             RadioButton radioButton = new RadioButton(getActivity());
             radioButton.setId(View.generateViewId());
@@ -209,6 +206,8 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
             String radioLabel = labelText(pricesResp.getMinLocalPrice(), pricesResp.getMaxLocalPrice(), currencyCode, unitOfSale);
             if (price < 0) {
                 radioLabel = context.getString(R.string.lbl_exact_price_x_per_unit_of_sale);
+                String exactTextHint = getString(R.string.exact_fertilizer_price_currency, currencyName);
+                exactPriceWrapper.setHint(exactTextHint);
             } else if (price == 0) {
                 radioLabel = context.getString(R.string.lbl_do_not_know);
             }
@@ -275,8 +274,6 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
                 finalPrice = priceHigher;
                 break;
         }
-
-        minAmountUSD = priceLower;
         return context.getString(R.string.unit_price_label_single, finalPrice, currencySymbol, uos);
     }
 
