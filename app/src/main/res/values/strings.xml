@@ -112,8 +112,7 @@
     <string name="lbl_typical_yield_question_fr">A typical cassava root yield is %1$s. How much yield do you expect from your field without fertilizer application?</string>
     <string name="lbl_maize_performance">The typical height of maize when grown without fertilizer</string>
     <string name="lbl_sweet_potato_prices">What price do you expect to sell your sweet potatoes at  harvest?</string>
-    <!--    <string name="lbl_height_of_maize_at_tasseling">Height of maize at tasseling</string>-->
-    <string name="lbl_height_of_maize_at_tasseling">Maize without fertilizer in your area usually reaches up to chest height about 150cm. What is the height of your maize crop in your field at tasseling without fertilizer</string>
+    <string name="lbl_height_of_maize_at_tasseling">Maize without fertilizer usually reaches up to chest height about 150cm. What is the height of your maize crop in your field at tasseling without fertilizer</string>
 
     <string name="lbl_maize_performance_poor">These are very poor soil conditions and not very common</string>
     <string name="lbl_maize_performance_rich">These are very rich soil conditions and not very common</string>
@@ -396,6 +395,7 @@
     <string name="lbl_ploughing">Ploughing</string>
     <string name="lbl_ridging">Ridging</string>
     <string name="lbl_country">Country</string>
+    <string name="lbl_risk_attitude">Investment in technology</string>
     <string name="lbl_field">Field</string>
     <string name="lbl_farm_size">Field size</string>
     <string name="lbl_location">Location</string>
@@ -481,7 +481,7 @@
     <string name="lbl_optional">(Optional)</string>
     <string name="lbl_country_supported">Currently AKILIMO gives advice for farms located in Nigeria and Tanzania. Your area is outside the area covered by AKILIMO</string>
     <string name="lbl_acre_yield">3–6 t/acre</string>
-    <string name="lbl_ha_yield">7.5–15 t/acre</string>
+    <string name="lbl_ha_yield">7.5–15 t/ha</string>
 
     <string name="fcy_lower">Lower</string>
     <string name="fcy_about_the_same">About the same</string>

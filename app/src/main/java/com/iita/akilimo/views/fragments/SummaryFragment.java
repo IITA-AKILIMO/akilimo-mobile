@@ -32,6 +32,7 @@ import com.iita.akilimo.models.TimeLineModel;
 import com.iita.akilimo.models.TimelineAttributes;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.enums.EnumCountry;
+import com.iita.akilimo.utils.enums.EnumRiskAtt;
 import com.iita.akilimo.utils.enums.StepStatus;
 import com.stepstone.stepper.VerificationError;
 
@@ -77,6 +78,7 @@ public class SummaryFragment extends BaseStepFragment {
     private String areaUnit = "";
     private double fieldSize;
     private String pickedLocation = "";
+    private String[] risks = null;
 
     public SummaryFragment() {
         // Required empty public constructor
@@ -86,6 +88,11 @@ public class SummaryFragment extends BaseStepFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
+        risks = new String[]{
+                EnumRiskAtt.Never.riskName(context),
+                EnumRiskAtt.Sometimes.riskName(context),
+                EnumRiskAtt.Often.riskName(context)
+        };
     }
 
     public static SummaryFragment newInstance() {
@@ -133,6 +140,8 @@ public class SummaryFragment extends BaseStepFragment {
         String harvestDate = "";
         String fieldInfo = "";
         String placeName = "";
+        int riskAttitude = 0;
+        String riskAttitudeName = "";
         double lat = 0.0;
         double lon = 0.0;
         StringBuilder ploughStr = new StringBuilder();
@@ -151,14 +160,16 @@ public class SummaryFragment extends BaseStepFragment {
         if (profileInfo != null) {
             countryName = profileInfo.getCountryName();
             countrySelected = !Strings.isEmptyOrWhitespace(countryName);
+            riskAttitude = profileInfo.getRiskAtt();
         }
+        riskAttitudeName = risks[riskAttitude];
+
         if (mandatoryInfo != null) {
             areaUnit = mandatoryInfo.getDisplayAreaUnit();
             areaUnitSelected = !Strings.isEmptyOrWhitespace(areaUnit);
             if (areaUnitSelected) {
                 fieldSize = mandatoryInfo.getAreaSize();
                 fieldSizeSelected = fieldSize > 0.0;
-
                 try {
                     Locale locale = getCurrentLocale();
                     if (locale.getLanguage().equalsIgnoreCase("sw")) {
@@ -178,17 +189,7 @@ public class SummaryFragment extends BaseStepFragment {
             pickedLocation = loadLocationInfo(location).toString();
             lat = location.getLatitude();
             lon = location.getLongitude();
-            String farmCountryCode = location.getLocationCountry();
-            placeName = location.getPlaceName();
             locationPicked = lat != 0 || lon != 0;
-
-            if (!Strings.isEmptyOrWhitespace(farmCountryCode)) {
-                if (farmCountryCode.equalsIgnoreCase(EnumCountry.Nigeria.countryCode()) || farmCountryCode.equalsIgnoreCase(EnumCountry.Tanzania.countryCode())) {
-                    stepStatus = StepStatus.COMPLETED;
-                } else {
-                    Toast.makeText(context, "Farm location is outside supported countries, recommendations might not work", Toast.LENGTH_LONG).show();
-                }
-            }
         }
 
         if (scheduledDate != null) {
@@ -228,6 +229,7 @@ public class SummaryFragment extends BaseStepFragment {
 
         mDataList = new ArrayList<>();
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_country), countryName, countrySelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_risk_attitude), riskAttitudeName, StepStatus.COMPLETED));
 //        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_location), pickedLocation, locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_lat), mathHelper.removeLeadingZero(lat, "#.####"), locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_lon), mathHelper.removeLeadingZero(lon, "#.####"), locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
