@@ -127,7 +127,7 @@
     <string name="yield_less_than_3_tonnes_per_hectare">Chini ya tani 7.5 kwa hekta moja</string>
     <string name="yield_3_to_6_tonnes_per_hectare">Tani 7.5 kwa hekta 15 kwa</string>
     <string name="yield_6_to_9_tonnes_per_hectare">Tani 15–22.5 kwa hekta</string>
-    <string name="yield_9_to_12_tonnes_per_hectare">Tani 22.5 30 kwa hekta</string>
+    <string name="yield_9_to_12_tonnes_per_hectare">Tani 22.5–30 kwa hekta</string>
     <string name="yield_more_than_12_tonnes_per_hectare">Zaidi ya tani 30 kwa hekta moja</string>
     <string name="yield_less_than_3_tonnes_per_meter">Chini ya tani 7.5 kwa m 4,000 m \u00B2</string>
     <string name="yield_3_to_6_tonnes_per_meter">Tani 7.5 hadi 15 kwa m 4,000 m \u00B2</string>
@@ -396,7 +396,7 @@
     <string name="lbl_manual_tillage_cost_hint">Gharama ya kulima %s %s kwa mikono</string>
     <string name="lbl_about">Karibu %1$s</string>
     <string name="lbl_min_fert_price">Tafadhali toa bei halali ya begi kati ya %s na %s</string>
-    <string name="lbl_you_expect_yield">Unatarajia mavuno ya %1$s. 2%$s</string>
+    <string name="lbl_you_expect_yield">Unatarajia mavuno ya %1$s. %2$s</string>
     <string name="unit_price_label_single">Karibu %1$,.0f %2$s kwa %3$s</string>
 
     <string name="lbl_one_kg_bag_unit">begi ya kilo 1</string>
