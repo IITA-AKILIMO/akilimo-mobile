@@ -371,9 +371,27 @@
     <string name="fcy_lower">Chini</string>
     <string name="fcy_about_the_same">Karibu sawa</string>
     <string name="fcy_somewhat_higher">Kiwango cha juu zidi</string>
-    <string name="fcy_2_3_times_higher">Mara 2-3 juu</string>
+    <string name="fcy_2_3_times_higher">Mara 2–3 juu</string>
     <string name="fcy_more_than_3_times_higher">Zaidi ya mara 3 juu</string>
     <string name="fcy_not_sure">Sina uhakika</string>
+    <string name="lbl_risk_att">Je! Unawekeza mara ngapi katika teknolojia mpya?</string>
+    <string name="lbl_select_risk_att">Chagua</string>
+    <string name="lbl_you_selected">Umechagua</string>
+    <string name="lbl_very_high_yield">Hii ni mavuno mengi sana</string>
+    <string name="lbl_high_yield">Hii ni mavuno mengi</string>
+    <string name="lbl_normal_yield">Hii ni mavuno ya kawaida</string>
+    <string name="lbl_low_yield">Hii ni mavuno kidogo</string>
+    <string name="lbl_finalize">Bonyeza Kumaliza ukiwa tayari</string>
+    <string name="lbl_price_per_cob">Chagua bei la hindi moja</string>
+    <string name="lbl_fresh_cob">Mahindi mbichi</string>
+    <string name="lbl_confirm">Thibitisha</string>
+    <string name="lbl_unknown_price">Bei isiyojulikana</string>
+    <string name="lbl_sweet_potato_prices">Unatarajia kuuza bei gani za viazi vitamu wakati wa mavuno?</string>
+    <string name="exact_fertilizer_price_currency">Bei halisi katika %1$s</string>
 
+    <string name="lbl_often">Mara nyingi</string>
+    <string name="lbl_sometimes">Mara nyingine</string>
+    <string name="lbl_never">Kamwe</string>
+    <string name="lbl_manual_tillage_cost_hint">Gharama ya kulima %s %s kwa mikono</string>
 
 </resources>

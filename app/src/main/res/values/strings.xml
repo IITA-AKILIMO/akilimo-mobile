@@ -500,4 +500,8 @@
     <string name="lbl_you_expect_yield">You expect a yield of %1$s. %2$s</string>
     <string name="lbl_select_risk_att">Select option</string>
     <string name="lbl_risk_att">How often do you invest on new technologies?</string>
+
+    <string name="lbl_often">Often</string>
+    <string name="lbl_sometimes">Sometimes</string>
+    <string name="lbl_never">Never</string>
 </resources>
