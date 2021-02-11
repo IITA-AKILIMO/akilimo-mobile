@@ -8,6 +8,7 @@ import com.google.android.gms.common.util.Strings;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Locale;
 
@@ -231,9 +232,24 @@ public class MathHelper {
         return (selectedPrice * unitWeight) / 1000;
     }
 
+    /**
+     * @param numberValue 0.0
+     * @return String
+     */
     public String removeLeadingZero(double numberValue) {
-        //#.#####
         DecimalFormat format = new DecimalFormat("0.#");
         return format.format(numberValue);
     }
+
+    /**
+     * @param numberValue 0.000
+     * @param pattern     #.#####
+     * @return String
+     */
+    public String removeLeadingZero(double numberValue, String pattern) {
+        DecimalFormat format = new DecimalFormat(pattern);
+        format.setRoundingMode(RoundingMode.CEILING);
+        return format.format(numberValue);
+    }
+
 }

@@ -138,8 +138,6 @@ public class SummaryFragment extends BaseStepFragment {
         StringBuilder ploughStr = new StringBuilder();
         StringBuilder ridgeStr = new StringBuilder();
         StepStatus stepStatus = StepStatus.WARNING;
-        DecimalFormat df = new DecimalFormat("#.#####");
-        df.setRoundingMode(RoundingMode.CEILING);
 
         if (database == null) {
             return;
@@ -231,8 +229,8 @@ public class SummaryFragment extends BaseStepFragment {
         mDataList = new ArrayList<>();
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_country), countryName, countrySelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
 //        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_location), pickedLocation, locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_lat), df.format(lat), locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_lon), df.format(lon), locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_lat), mathHelper.removeLeadingZero(lat, "#.####"), locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_lon), mathHelper.removeLeadingZero(lon, "#.####"), locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_farm_size), fieldInfo, fieldSizeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
 
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_planting_date), plantingDate, plantingDateProvided ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
