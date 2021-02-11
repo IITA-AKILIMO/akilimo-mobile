@@ -350,7 +350,6 @@
     <string name="lbl_usd_currency">Dola</string>
     <string name="lbl_gps_settings">Mipangilio ya GPS</string>
     <string name="lbl_gps_not_enabled">GPS haijawashwa. Je! Unataka kwenda kwenye menu ya mipangilio?</string>
-    <string name="lbl_one_kg_bag_unit">begi ya kilo 1</string>
     <string name="lbl_pick_your_country">Chagua nchi</string>
     <string name="lbl_no_profile_info">Inaonekana sina habari yako ya wasifu, ninahitaji ili niweze kukutumia maoni ya kupanda</string>
     <string name="lbl_compute_timeout_error">Haiwezi kusanya maalamisho, tafadhali jaribu tena</string>
@@ -392,6 +391,20 @@
     <string name="lbl_often">Mara nyingi</string>
     <string name="lbl_sometimes">Mara nyingine</string>
     <string name="lbl_never">Kamwe</string>
+    
     <string name="lbl_manual_tillage_cost_hint">Gharama ya kulima %s %s kwa mikono</string>
+    <string name="lbl_about">Karibu %1$s</string>
+    <string name="lbl_min_fert_price">Tafadhali toa bei halali ya begi kati ya %s na %s</string>
+    <string name="lbl_you_expect_yield">Unatarajia mavuno ya %1$s. 2%$s</string>
+    <string name="unit_price_label_single">Karibu %1$,.0f %2$s kwa %3$s</string>
 
+    <string name="lbl_one_kg_bag_unit">begi ya kilo 1</string>
+    <string name="lbl_50_kg_bag_unit">begi ya kilo 50</string>
+    <string name="lbl_100_kg_bag_unit">begi ya kilo 100</string>
+    <string name="lbl_1000_kg_bag_unit">tani 1</string>
+
+    <string name="lbl_one_kg_unit">kilo</string>
+    <string name="lbl_50_kg_unit">begi ya kilo 50</string>
+    <string name="lbl_100_kg_unit">begi ya kilo 100</string>
+    <string name="lbl_1000_kg_unit">tani</string>
 </resources>
