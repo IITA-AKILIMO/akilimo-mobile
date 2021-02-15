@@ -44,13 +44,6 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
     private val fragmentArray: MutableList<Fragment> = arrayListOf()
 
-    private var currentLat: Double = 0.0
-    private var currentLong: Double = 0.0
-    private var currentAlt: Double = 0.0
-    private var placeName: String? = null
-    private var address: String? = null
-    private var defaultPlaceName: String = ""
-    private var location: LocationInfo? = null
     private var exit: Boolean = false
 
     override fun onAttachFragment(fragment: Fragment) {
