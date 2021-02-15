@@ -59,7 +59,7 @@
 
 
     <string name="lbl_salutation">Halo, ni vizuri kukutana nawe!</string>
-    <string name="lbl_farm_location">Shamba lako la muhogo -%1$s- lipo eneo gani?</string>
+    <string name="lbl_farm_location">Shamba lako la muhogo `%1$s` lipo eneo gani?</string>
     <string name="lbl_current_location">Tumia eneo la sasa</string>
     <string name="lbl_manual_location">Chagua eneo nilipo</string>
     <string name="lbl_recommendations">Mapendekezo</string>
@@ -76,10 +76,10 @@
     <string name="lbl_investment_amount">Je! Uko tayari kuwekeza kiasi gani kwenye mbolea?</string>
     <string name="lbl_typical_yield">Je! Kwa kawaida shamba lako hutoa mavuno kiasi gani?</string>
     <string name="lbl_typical_yield_question">Mavuno ya kawaida ya mizizi ya muhogo ni %1$s. Je! Unatarajia mavuno mengi kutoka kwa shamba lako?</string>
-
+    <string name="lbl_typical_yield_question_fr">Mavuno ya kawaida ya mizizi ya mihogo ni %1$s. Je! Unatarajia mavuno mangapi kutoka kwa shamba lako bila matumizi ya mbolea?</string>
     <string name="lbl_maize_performance">Urefu wa kawaida wa mahindi ukipandwa bila kuwekewa mbolea</string>
-<!--    <string name="lbl_sweet_potato_prices">Bei ya viazi tamu</string>-->
-    <string name="lbl_height_of_maize_at_tasseling">Urefu wa mahindi wakati wa kutoa mbelewele</string>
+    <!--    <string name="lbl_sweet_potato_prices">Bei ya viazi tamu</string>-->
+    <string name="lbl_height_of_maize_at_tasseling">Mahindi bila mbolea kawaida hufikia urefu wa kifua karibu 150cm. Je! Ni urefu gani wa mazao yako ya mahindi kwenye shamba lako ukiwa bila mbolea</string>
     <string name="lbl_maize_performance_poor">Hizi ni dalili za udongo usio na rutuba lakini sio za kawaida</string>
     <string name="lbl_maize_performance_rich">Hizi ni dalili za udongo wenye rutuba lakini sio za kawaida</string>
     <string name="lbl_market_outlet">Unatarajia bei gani kwa muhogo wako wakati wa mavuno?</string>
@@ -127,7 +127,7 @@
     <string name="yield_less_than_3_tonnes_per_hectare">Chini ya tani 7.5 kwa hekta moja</string>
     <string name="yield_3_to_6_tonnes_per_hectare">Tani 7.5 kwa hekta 15 kwa</string>
     <string name="yield_6_to_9_tonnes_per_hectare">Tani 15–22.5 kwa hekta</string>
-    <string name="yield_9_to_12_tonnes_per_hectare">Tani 22.5 30 kwa hekta</string>
+    <string name="yield_9_to_12_tonnes_per_hectare">Tani 22.5–30 kwa hekta</string>
     <string name="yield_more_than_12_tonnes_per_hectare">Zaidi ya tani 30 kwa hekta moja</string>
     <string name="yield_less_than_3_tonnes_per_meter">Chini ya tani 7.5 kwa m 4,000 m \u00B2</string>
     <string name="yield_3_to_6_tonnes_per_meter">Tani 7.5 hadi 15 kwa m 4,000 m \u00B2</string>
@@ -184,8 +184,8 @@
     <string name="lbl_specify_my_cost">Nataka kutaja gharama zangu</string>
     <string name="lbl_exact_cost">Gharama halisi</string>
 
-<!--    <string name="lbl_cost_of_first_weeding_operation">Gharama ya palizi la kwanza katika %s</string>-->
-<!--    <string name="lbl_cost_of_second_weeding_operation">Gharama ya palizi la pili katika %s</string>-->
+    <!--    <string name="lbl_cost_of_first_weeding_operation">Gharama ya palizi la kwanza katika %s</string>-->
+    <!--    <string name="lbl_cost_of_second_weeding_operation">Gharama ya palizi la pili katika %s</string>-->
 
     <string name="lbl_valid_bag_price">Tafadhali toa bei halisi</string>
     <string name="lbl_ploughing_cost_text">Gharama ya kukatua %s %s %s %s</string>
@@ -266,11 +266,11 @@
     <string name="lbl_first_name">Jina lako la kwanza</string>
     <string name="lbl_last_name">Jina la ukoo</string>
     <string name="lbl_farm_name">Jina la shamba</string>
-    <string name="lbl_farm_name_title">Jina la shamba</string>
+    <string name="lbl_farm_name_title">Ipe shamba lako jina</string>
     <string name="lbl_email_address_hint">Anauani ya barua pepe (Inatumika kutuma mapendekezo)</string>
     <string name="lbl_email_address">Barua pepe</string>
     <string name="lbl_phone_number">Nambari ya simu</string>
-    <string name="lbl_self_intro">Tuanze kwa kunipatia utambilisho wako</string>
+    <string name="lbl_self_intro">Tafadhali tuambie wewe ni nani</string>
     <string name="lbl_exact_price">Bei halisi</string>
     <string name="lbl_fertilizer_price">Bei ya mbolea</string>
     <string name="lbl_operation_costs">Gharama za uendeshaji</string>
@@ -290,6 +290,7 @@
     <string name="lbl_ploughing">Kukatua</string>
     <string name="lbl_ridging">Kuweka matuta</string>
     <string name="lbl_country">Nchi</string>
+    <string name="lbl_risk_attitude">Uwekezaji katika teknolojia</string>
     <string name="lbl_field">Shamba</string>
     <string name="lbl_location">Mahali</string>
     <string name="lbl_planting_date">Tarehe ya kupanda</string>
@@ -350,7 +351,6 @@
     <string name="lbl_usd_currency">Dola</string>
     <string name="lbl_gps_settings">Mipangilio ya GPS</string>
     <string name="lbl_gps_not_enabled">GPS haijawashwa. Je! Unataka kwenda kwenye menu ya mipangilio?</string>
-    <string name="lbl_one_kg_bag_unit">begi ya kilo 1</string>
     <string name="lbl_pick_your_country">Chagua nchi</string>
     <string name="lbl_no_profile_info">Inaonekana sina habari yako ya wasifu, ninahitaji ili niweze kukutumia maoni ya kupanda</string>
     <string name="lbl_compute_timeout_error">Haiwezi kusanya maalamisho, tafadhali jaribu tena</string>
@@ -371,9 +371,42 @@
     <string name="fcy_lower">Chini</string>
     <string name="fcy_about_the_same">Karibu sawa</string>
     <string name="fcy_somewhat_higher">Kiwango cha juu zidi</string>
-    <string name="fcy_2_3_times_higher">Mara 2-3 juu</string>
+    <string name="fcy_2_3_times_higher">Mara 2–3 juu</string>
     <string name="fcy_more_than_3_times_higher">Zaidi ya mara 3 juu</string>
     <string name="fcy_not_sure">Sina uhakika</string>
+    <string name="lbl_risk_att">Je! Unawekeza mara ngapi katika teknolojia mpya?</string>
+    <string name="lbl_select_risk_att">Chagua</string>
+    <string name="lbl_you_selected">Umechagua</string>
+    <string name="lbl_very_high_yield">Hii ni mavuno mengi sana</string>
+    <string name="lbl_high_yield">Hii ni mavuno mengi</string>
+    <string name="lbl_normal_yield">Hii ni mavuno ya kawaida</string>
+    <string name="lbl_low_yield">Hii ni mavuno kidogo</string>
+    <string name="lbl_finalize">Bonyeza Kumaliza ukiwa tayari</string>
+    <string name="lbl_price_per_cob">Chagua bei la hindi moja</string>
+    <string name="lbl_fresh_cob">Mahindi mbichi</string>
+    <string name="lbl_confirm">Thibitisha</string>
+    <string name="lbl_unknown_price">Bei isiyojulikana</string>
+    <string name="lbl_sweet_potato_prices">Unatarajia kuuza bei gani za viazi vitamu wakati wa mavuno?</string>
+    <string name="exact_fertilizer_price_currency">Bei halisi katika %1$s</string>
 
+    <string name="lbl_often">Mara nyingi</string>
+    <string name="lbl_sometimes">Mara nyingine</string>
+    <string name="lbl_never">Kamwe</string>
 
+    <string name="lbl_manual_tillage_cost_hint">Gharama ya kulima %s %s kwa mikono</string>
+    <string name="lbl_about">Karibu %1$s</string>
+    <string name="lbl_min_fert_price">Tafadhali toa bei halali ya begi kati ya %s na %s</string>
+    <string name="lbl_you_expect_yield">Unatarajia mavuno ya %1$s. %2$s</string>
+    <string name="unit_price_label_single">Karibu %1$,.0f %2$s kwa %3$s</string>
+
+    <string name="lbl_one_kg_bag_unit">begi ya kilo 1</string>
+    <string name="lbl_50_kg_bag_unit">begi ya kilo 50</string>
+    <string name="lbl_100_kg_bag_unit">begi ya kilo 100</string>
+    <string name="lbl_1000_kg_bag_unit">tani 1</string>
+
+    <string name="lbl_one_kg_unit">kilo</string>
+    <string name="lbl_50_kg_unit">begi ya kilo 50</string>
+    <string name="lbl_100_kg_unit">begi ya kilo 100</string>
+    <string name="lbl_1000_kg_unit">tani</string>
+    <string name="lbl_operation_cost_label">Karibu %s %s</string>
 </resources>

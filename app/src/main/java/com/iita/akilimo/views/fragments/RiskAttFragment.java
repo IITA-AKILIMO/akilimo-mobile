@@ -43,11 +43,7 @@ public class RiskAttFragment extends BaseStepFragment {
     private int riskAtt = 0;
     private int selectedRiskIndex = -1;
 
-    private final String[] risks = new String[]{
-            EnumRiskAtt.Never.name(),
-            EnumRiskAtt.Sometimes.name(),
-            EnumRiskAtt.Often.name()
-    };
+    private String[] risks = null;
 
     public RiskAttFragment() {
         // Required empty public constructor
@@ -61,6 +57,11 @@ public class RiskAttFragment extends BaseStepFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
+        risks = new String[]{
+                EnumRiskAtt.Never.riskName(context),
+                EnumRiskAtt.Sometimes.riskName(context),
+                EnumRiskAtt.Often.riskName(context)
+        };
     }
 
 
@@ -127,7 +128,7 @@ public class RiskAttFragment extends BaseStepFragment {
             profileInfo.setSelectedRiskIndex(selectedRiskIndex);
             profileInfo.setRiskAtt(riskAtt);
 
-            dataIsValid = !Strings.isEmptyOrWhitespace(countryCode);
+            dataIsValid = !Strings.isEmptyOrWhitespace(riskName);
             if (profileInfo.getProfileId() != null) {
                 int id = profileInfo.getProfileId();
                 if (id > 0) {

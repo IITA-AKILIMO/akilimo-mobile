@@ -33,31 +33,35 @@
             android:fontFamily="@font/ubuntu"
             android:text="@string/lbl_area_unit"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/grey_80"
+            android:textColor="@color/akilimoDarkGreen"
             android:textStyle="bold" />
 
         <RadioGroup
             android:id="@+id/rdgAreaUnit"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/fab_margin">
+            android:layout_marginTop="@dimen/spacing_small"
+            android:padding="@dimen/spacing_medium">
 
             <RadioButton
                 android:id="@+id/rdAcre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu"
                 android:text="@string/area_unit_acre" />
 
             <RadioButton
                 android:id="@+id/rdHa"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu"
                 android:text="@string/area_unit_ha" />
 
             <RadioButton
                 android:id="@+id/rdSqm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu"
                 android:text="@string/area_unit_square_meter"
                 android:visibility="gone" />
         </RadioGroup>
