@@ -75,8 +75,8 @@
     <string name="lbl_planting_harvest">Je! Unataka kuzingatia upandaji mbadala na tarehe za mavuno?</string>
     <string name="lbl_investment_amount">Je! Uko tayari kuwekeza kiasi gani kwenye mbolea?</string>
     <string name="lbl_typical_yield">Je! Kwa kawaida shamba lako hutoa mavuno kiasi gani?</string>
-    <string name="lbl_typical_yield_question">Mavuno ya kawaida ya mizizi ya muhogo ni %1$s. Je! Unatarajia mavuno mengi kutoka kwa shamba lako?</string>
-    <string name="lbl_typical_yield_question_fr">Mavuno ya kawaida ya mizizi ya mihogo ni %1$s. Je! Unatarajia mavuno mangapi kutoka kwa shamba lako bila matumizi ya mbolea?</string>
+    <string name="lbl_typical_yield_question">Mavuno ya kawaida ya mizizi ya muhogo ni %1$s.Je! Unatarajia mavuno kiasi gani kwenye shamba lako?</string>
+    <string name="lbl_typical_yield_question_fr">Mavuno ya kawaida ya mizizi ya muhogo ni %1$s. Je! Unatarajia mavuno kiasi gani kwenye shamba lako bila kutumia mbolea?</string>
     <string name="lbl_maize_performance">Urefu wa kawaida wa mahindi ukipandwa bila kuwekewa mbolea</string>
     <!--    <string name="lbl_sweet_potato_prices">Bei ya viazi tamu</string>-->
     <string name="lbl_height_of_maize_at_tasseling">Mahindi bila mbolea kawaida hufikia urefu wa kifua karibu 150cm. Je! Ni urefu gani wa mazao yako ya mahindi kwenye shamba lako ukiwa bila mbolea</string>
@@ -225,7 +225,7 @@
     <string name="lbl_dark_green_leaves">Kupita kimo cha mtu (200 sm) lakini majani ni kijani iliyokolea</string>
     <string name="lbl_cassava_sales_outlet">Ni wapi unataka kuuza muhogo wako</string>
     <string name="lbl_starch_factory">Kiwanda cha wanga</string>
-    <string name="lbl_regular_market">Masoko ya mizizi ya muhogo mara kwa mara</string>
+    <string name="lbl_regular_market">Masoko ya muhogo mara kwa mara</string>
     <string name="lbl_select_starch_factory">Chagua kiwanda cha wanga</string>
     <string name="lbl_fresh_cobs">Mahindi mabichi</string>
     <string name="lbl_dry_grain">Nafaka kavu</string>
@@ -236,6 +236,7 @@
 
     <string name="lbl_select_produce_type">Chagua aina ya mazao</string>
     <string name="lbl_roots">Mizizi</string>
+    <string name="lbl_tubers">Mizizi</string>
     <string name="lbl_flour">Unga</string>
     <string name="lbl_first_manual_plough_op">Operesheni ya kwanza ya kulima, kwa jembe la mkono</string>
     <string name="lbl_first_tractor_plough_op">Operesheni ya kwanza ya kulima, kwa kulima trekta</string>
@@ -244,7 +245,6 @@
     <string name="lbl_tractor_harrow_op">Kupiga halo kutumia trekta</string>
     <string name="lbl_manual_ridging_op">Kuweka matuta kwa kutumi jembe la mkono</string>
     <string name="lbl_tractor_ridger">Kuweka matuta kwa kutumia trekta</string>
-    <string name="lbl_tubers">Mizizi</string>
     <string name="lbl_potato_sale_unit">Kizio cha kuuza viazi vitamu</string>
     <string name="lbl_implements_access">Mi vifaa vipi un uwezo navyo</string>
     <string name="lbl_plough">Jembe la kukatua kutumia trekta au wanyama kazi</string>
@@ -365,8 +365,8 @@
     <string name="lbl_farm_place">Eneo la shamba</string>
     <string name="lbl_country_supported">AKILIMO kwa sasa inasaidia Nigeria na Tanzania tu</string>
     <string name="lbl_farm_size">Ukubwa wa shamba</string>
-    <string name="lbl_acre_yield">3–6 t/ekari</string>
-    <string name="lbl_ha_yield">7.5–15 t/hekta</string>
+    <string name="lbl_acre_yield">tani 3–6 kwa ekari</string>
+    <string name="lbl_ha_yield">tani 7.5–15 kwa hekta</string>
     <string name="exact_investment_x_per_field_area_hint">Bei katika %1$s for %2$s %3$s</string>
     <string name="fcy_lower">Chini</string>
     <string name="fcy_about_the_same">Karibu sawa</string>
@@ -390,7 +390,7 @@
     <string name="exact_fertilizer_price_currency">Bei halisi katika %1$s</string>
 
     <string name="lbl_often">Mara nyingi</string>
-    <string name="lbl_sometimes">Mara nyingine</string>
+    <string name="lbl_sometimes">Mara chache</string>
     <string name="lbl_never">Kamwe</string>
 
     <string name="lbl_manual_tillage_cost_hint">Gharama ya kulima %s %s kwa mikono</string>
