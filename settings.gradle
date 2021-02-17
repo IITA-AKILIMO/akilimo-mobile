@@ -1,3 +1,0 @@
-//include ':nativetemplates'
-include ':app'
-rootProject.name='akilimo'

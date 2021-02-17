@@ -1,4 +1,0 @@
-Changes since the last successful build:
-${GIT_COMMIT}
-Changelog
-${GITCHANGELOG}
