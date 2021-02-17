@@ -10,11 +10,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonIgnoreProperties(ignoreUnknown = true)
-
-@Entity(
-    tableName = "fertilizer",
-    indices = [Index(value = ["fertilizerCountry"], unique = true)]
-)
+@Entity(tableName = "fertilizer", indices = [Index(value = ["fertilizerCountry"], unique = true)])
 open class Fertilizer : Parcelable {
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null
@@ -46,7 +42,9 @@ open class Fertilizer : Parcelable {
 
     @JsonProperty("useCase")
     var useCase: String? = null
+
     var countryCode: String? = null
+
     var priceRange: String? = null
 
     var pricePerBag = 0.0
@@ -69,7 +67,9 @@ open class Fertilizer : Parcelable {
 
     @JsonProperty("cisAvailable")
     var cisAvailable = false
+
     var selected = false
+
     var exactPrice = false
 
     @JsonProperty("custom")

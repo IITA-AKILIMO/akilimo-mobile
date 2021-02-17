@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import androidx.annotation.NonNull
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +17,6 @@ import com.iita.akilimo.models.TimelineAttributes
 import com.iita.akilimo.utils.ItemAnimation
 import com.iita.akilimo.utils.VectorDrawableUtils
 import com.iita.akilimo.utils.enums.StepStatus
-import kotlinx.android.synthetic.main.item_timeline.view.*
 
 class MyTimeLineAdapter(
     private val mFeedList: List<TimeLineModel>,
@@ -67,53 +65,52 @@ class MyTimeLineAdapter(
 
         val title: AppCompatTextView = itemView.timelineTitle
         val message: AppCompatTextView = itemView.timelineContent
-        val timeline: TimelineView = itemView.timeline
+        val timelineView: TimelineView = itemView.timeline
 
         init {
-            timeline.initLine(viewType)
-            timeline.markerSize = mAttributes.markerSize
-            timeline.setMarkerColor(mAttributes.markerCompleteColor)
-            timeline.isMarkerInCenter = mAttributes.markerInCenter
-            timeline.markerPaddingLeft = mAttributes.markerLeftPadding
-            timeline.markerPaddingTop = mAttributes.markerTopPadding
-            timeline.markerPaddingRight = mAttributes.markerRightPadding
-            timeline.markerPaddingBottom = mAttributes.markerBottomPadding
-            timeline.linePadding = mAttributes.linePadding
+            timelineView.initLine(viewType)
+            timelineView.markerSize = mAttributes.markerSize
+            timelineView.setMarkerColor(mAttributes.markerCompleteColor)
+            timelineView.isMarkerInCenter = mAttributes.markerInCenter
+            timelineView.markerPaddingLeft = mAttributes.markerLeftPadding
+            timelineView.markerPaddingTop = mAttributes.markerTopPadding
+            timelineView.markerPaddingRight = mAttributes.markerRightPadding
+            timelineView.markerPaddingBottom = mAttributes.markerBottomPadding
+            timelineView.linePadding = mAttributes.linePadding
 
-            timeline.lineWidth = mAttributes.lineWidth
-            timeline.setStartLineColor(mAttributes.startLineColor, viewType)
-            timeline.setEndLineColor(mAttributes.endLineColor, viewType)
-            timeline.lineStyle = mAttributes.lineStyle
-            timeline.lineStyleDashLength = mAttributes.lineDashWidth
-            timeline.lineStyleDashGap = mAttributes.lineDashGap
-//        }
+            timelineView.lineWidth = mAttributes.lineWidth
+            timelineView.setStartLineColor(mAttributes.startLineColor, viewType)
+            timelineView.setEndLineColor(mAttributes.endLineColor, viewType)
+            timelineView.lineStyle = mAttributes.lineStyle
+            timelineView.lineStyleDashLength = mAttributes.lineDashWidth
+            timelineView.lineStyleDashGap = mAttributes.lineDashGap
         }
 
         fun bind(timeLineModel: TimeLineModel) {
             when (timeLineModel.status) {
                 StepStatus.INCOMPLETE -> {
-                    timeline.marker = VectorDrawableUtils.getDrawable(
+                    timelineView.marker = VectorDrawableUtils.getDrawable(
                         itemView.context,
                         R.drawable.ic_highlight_off,
                         mAttributes.markerIncompleteColor
                     )
                 }
                 StepStatus.COMPLETED -> {
-                    timeline.marker = VectorDrawableUtils.getDrawable(
+                    timelineView.marker = VectorDrawableUtils.getDrawable(
                         itemView.context,
                         R.drawable.ic_done,
                         mAttributes.markerCompleteColor
                     )
                 }
                 StepStatus.WARNING -> {
-                    timeline.marker = VectorDrawableUtils.getDrawable(
+                    timelineView.marker = VectorDrawableUtils.getDrawable(
                         itemView.context,
                         R.drawable.ic_warn,
                         ResourcesCompat.getColor(context.resources, R.color.yellow_900, null)
                     )
                 }
                 StepStatus.CANCELLED -> {
-                    timeline.marker = VectorDrawableUtils.getDrawable(
+                    timelineView.marker = VectorDrawableUtils.getDrawable(
                         itemView.context,
                         R.drawable.ic_clear_all_white_24dp,
                         mAttributes.markerCompleteColor
