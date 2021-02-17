@@ -77,6 +77,7 @@
     <string name="lbl_typical_yield">Je! Kwa kawaida shamba lako hutoa mavuno kiasi gani?</string>
     <string name="lbl_typical_yield_question">Mavuno ya kawaida ya mizizi ya muhogo ni %1$s.Je! Unatarajia mavuno kiasi gani kwenye shamba lako?</string>
     <string name="lbl_typical_yield_question_fr">Mavuno ya kawaida ya mizizi ya muhogo ni %1$s. Je! Unatarajia mavuno kiasi gani kwenye shamba lako bila kutumia mbolea?</string>
+
     <string name="lbl_maize_performance">Urefu wa kawaida wa mahindi ukipandwa bila kuwekewa mbolea</string>
     <!--    <string name="lbl_sweet_potato_prices">Bei ya viazi tamu</string>-->
     <string name="lbl_height_of_maize_at_tasseling">Mahindi bila mbolea kawaida hufikia urefu wa kifua karibu 150cm. Je! Ni urefu gani wa mazao yako ya mahindi kwenye shamba lako ukiwa bila mbolea</string>
