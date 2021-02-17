@@ -13,3 +13,10 @@
 .externalNativeBuild
 .cxx
 local.properties
+/app/release
+android-console.json
+fertilizer.jks
+nativetemplates/build
+nextrelease.txt
+langtool.jar
+akilimo-translations.xls
