@@ -27,6 +27,7 @@ import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.databinding.FragmentFieldSizeBinding;
 import com.iita.akilimo.entities.MandatoryInfo;
+import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseStepFragment;
 import com.iita.akilimo.utils.enums.EnumFieldArea;
 import com.stepstone.stepper.VerificationError;
@@ -39,6 +40,8 @@ import com.stepstone.stepper.VerificationError;
 public class FieldSizeFragment extends BaseStepFragment {
 
 
+    FragmentFieldSizeBinding binding;
+
     AppCompatTextView title;
     AppCompatTextView specifiedArea;
     RadioGroup rdgFieldArea;
@@ -47,22 +50,17 @@ public class FieldSizeFragment extends BaseStepFragment {
     RadioButton rd_half_acre;
     RadioButton rd_one_acre;
 
-    FragmentFieldSizeBinding binding;
-
+    private ProfileInfo profileInfo;
+    private MandatoryInfo mandatoryInfo;
 
     private String myFieldSize = "";
-
     private double areaSize;
     private boolean isExactArea;
     private boolean areaUnitChanged;
-    private String quarterAcre;
-    private String halfAcre;
-    private String oneAcre;
-    private String exactArea;
     private String titleMessage;
-
-    private MandatoryInfo mandatoryInfo;
     private String areaUnit = "";
+    private String displayLanguage = "";
+    private String displayAreaUnit = "";
     private String oldAreaUnit = "";
     private int fieldSizeRadioIndex;
 
@@ -99,6 +97,8 @@ public class FieldSizeFragment extends BaseStepFragment {
         rd_half_acre = binding.rdHalfAcre;
         rd_one_acre = binding.rdOneAcre;
 
+
+
         rdgFieldArea.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
             RadioButton radioButton = view.findViewById(radioIndex);
             if (radioButton != null) {
@@ -108,14 +108,25 @@ public class FieldSizeFragment extends BaseStepFragment {
             }
 
         });
+
+        rdSpecifyArea.setOnClickListener(radioButton -> {
+            if (radioButton != null && radioButton.isPressed()) {
+                showCustomDialog();
+            }
+        });
     }
 
     public void refreshData() {
         try {
+            profileInfo = database.profileInfoDao().findOne();
+            if (profileInfo != null) {
+                displayLanguage = profileInfo.getLanguage();
+            }
             mandatoryInfo = database.mandatoryInfoDao().findOne();
             if (mandatoryInfo != null) {
                 isExactArea = mandatoryInfo.getExactArea();
                 areaUnit = mandatoryInfo.getAreaUnit();
+                displayAreaUnit = mandatoryInfo.getDisplayAreaUnit();
                 oldAreaUnit = mandatoryInfo.getOldAreaUnit();
                 areaSize = mandatoryInfo.getAreaSize();
                 fieldSizeRadioIndex = mandatoryInfo.getFieldSizeRadioIndex();
@@ -135,7 +146,7 @@ public class FieldSizeFragment extends BaseStepFragment {
                     rdgFieldArea.check(fieldSizeRadioIndex);
                 }
                 if (isExactArea) {
-                    specifiedArea.setText(String.format("%s %s", myFieldSize, areaUnit));
+                    setExactAreaText(areaSize, displayAreaUnit);
                     specifiedArea.setVisibility(View.VISIBLE);
                 } else {
                     specifiedArea.setVisibility(View.GONE);
@@ -147,6 +158,16 @@ public class FieldSizeFragment extends BaseStepFragment {
             Crashlytics.logException(ex);
         }
     }
+
+    private void setExactAreaText(double areaSize, String displayUnit) {
+        String fieldSize = mathHelper.removeLeadingZero(areaSize);
+        String areaUnitLabel = String.format("%s %s", fieldSize, displayUnit);
+        if (displayLanguage.equalsIgnoreCase("sw")) {
+            areaUnitLabel = String.format("%s %s", displayUnit, fieldSize);
+        }
+        specifiedArea.setText(areaUnitLabel);
+    }
+
 
     private void radioSelected(int checked) {
         specifiedArea.setVisibility(View.GONE);
@@ -165,7 +186,6 @@ public class FieldSizeFragment extends BaseStepFragment {
                 isExactArea = true;
                 areaSize = EnumFieldArea.EXACT_AREA.areaValue();
                 specifiedArea.setVisibility(View.VISIBLE);
-                showCustomDialog();
                 return;
         }
 
@@ -174,36 +194,10 @@ public class FieldSizeFragment extends BaseStepFragment {
         saveFieldSize(convertedAreaSize);
     }
 
-    private void saveFieldSize(double convertedAreaSize) {
-        fieldSizeRadioIndex = rdgFieldArea.getCheckedRadioButtonId();
-        dataIsValid = convertedAreaSize > 0;
-        if (!dataIsValid) {
-            showCustomWarningDialog(context.getString(R.string.lbl_field_size_prompt), context.getString(R.string.lbl_field_size_prompt));
-            return;
-        }
-
-        areaUnitChanged = false; //Reset the area unit changed flag
-        try {
-            if (mandatoryInfo == null) {
-                mandatoryInfo = new MandatoryInfo();
-            }
-            mandatoryInfo.setFieldSizeRadioIndex(fieldSizeRadioIndex);
-            mandatoryInfo.setAreaSize(convertedAreaSize);
-            mandatoryInfo.setOldAreaUnit(areaUnit);
-            if (mandatoryInfo.getId() != null) {
-                database.mandatoryInfoDao().update(mandatoryInfo);
-            } else {
-                database.mandatoryInfoDao().insert(mandatoryInfo);
-            }
-            mandatoryInfo = database.mandatoryInfoDao().findOne();
-        } catch (Exception ex) {
-            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
-        }
-    }
-
     private void setFieldLabels(String areaUnit) {
+        String quarterAcre;
+        String halfAcre;
+        String oneAcre;
         switch (areaUnit) {
             default:
             case "acre":
@@ -223,12 +217,12 @@ public class FieldSizeFragment extends BaseStepFragment {
                 break;
         }
 
-        exactArea = context.getString(R.string.exact_field_area);
+        String exactArea = context.getString(R.string.exact_field_area);
         rd_quarter_acre.setText(quarterAcre);
         rd_half_acre.setText(halfAcre);
         rd_one_acre.setText(oneAcre);
         rdSpecifyArea.setText(exactArea);
-        titleMessage = context.getString(R.string.lbl_cassava_field_size, areaUnit);
+        titleMessage = context.getString(R.string.lbl_cassava_field_size, displayAreaUnit);
         title.setText(titleMessage);
     }
 
@@ -243,7 +237,7 @@ public class FieldSizeFragment extends BaseStepFragment {
         lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
-        titleMessage = context.getString(R.string.lbl_cassava_field_size, areaUnit);
+        titleMessage = context.getString(R.string.lbl_cassava_field_size, displayAreaUnit);
 
         final TextView dialogTitle = dialog.findViewById(R.id.dialogTitle);
         final EditText et_post = dialog.findViewById(R.id.et_post);
@@ -256,12 +250,12 @@ public class FieldSizeFragment extends BaseStepFragment {
         dialog.findViewById(R.id.bt_submit).setOnClickListener(v -> {
             myFieldSize = et_post.getText().toString().trim();
             if (Strings.isEmptyOrWhitespace(myFieldSize)) {
-                String prompt = context.getString(R.string.lbl_field_size_prompt, areaUnit);
+                String prompt = context.getString(R.string.lbl_field_size_prompt, displayAreaUnit);
                 Toast.makeText(context, prompt, Toast.LENGTH_SHORT).show();
             } else {
                 areaSize = Double.parseDouble(myFieldSize);
                 dialog.dismiss();
-                specifiedArea.setText(String.format("%s %s", myFieldSize, areaUnit));
+                setExactAreaText(areaSize, displayAreaUnit);
                 saveFieldSize(areaSize);
             }
         });
@@ -270,11 +264,41 @@ public class FieldSizeFragment extends BaseStepFragment {
         dialog.getWindow().setAttributes(lp);
     }
 
+    private void saveFieldSize(double convertedAreaSize) {
+        fieldSizeRadioIndex = rdgFieldArea.getCheckedRadioButtonId();
+        dataIsValid = convertedAreaSize > 0;
+        if (!dataIsValid) {
+            showCustomWarningDialog(context.getString(R.string.lbl_field_size_prompt, displayAreaUnit), context.getString(R.string.lbl_field_size_prompt, displayAreaUnit));
+            return;
+        }
+
+        areaUnitChanged = false; //Reset the area unit changed flag
+        try {
+            if (mandatoryInfo == null) {
+                mandatoryInfo = new MandatoryInfo();
+            }
+            mandatoryInfo.setFieldSizeRadioIndex(fieldSizeRadioIndex);
+            mandatoryInfo.setAreaSize(convertedAreaSize);
+            mandatoryInfo.setOldAreaUnit(areaUnit);
+            mandatoryInfo.setExactArea(isExactArea);
+            if (mandatoryInfo.getId() != null) {
+                database.mandatoryInfoDao().update(mandatoryInfo);
+            } else {
+                database.mandatoryInfoDao().insert(mandatoryInfo);
+            }
+            mandatoryInfo = database.mandatoryInfoDao().findOne();
+        } catch (Exception ex) {
+            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+            Crashlytics.logException(ex);
+        }
+    }
+
     @Nullable
     @Override
     public VerificationError verifyStep() {
         if (!dataIsValid) {
-            errorMessage = context.getString(R.string.lbl_field_size_prompt, areaUnit);
+            errorMessage = context.getString(R.string.lbl_field_size_prompt, displayAreaUnit);
             return new VerificationError(errorMessage);
         }
         return null;
