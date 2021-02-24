@@ -8,6 +8,7 @@ class UserInfo {
     var userName: String = "NA"
     var firstName: String = "NA"
     var lastName: String = "NA"
+    var gender: String = "NA"
     var emailAddress: String = "NA"
     var fieldDescription: String = "NA"
     var sendSms: Boolean = false
