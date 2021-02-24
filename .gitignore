@@ -13,4 +13,5 @@ fertilizer.jks
 nativetemplates/build
 nextrelease.txt
 langtool.jar
-akilimo-translations.xls
+*akilimo-translations*
+out/*
