@@ -30,7 +30,7 @@ import com.iita.akilimo.entities.*
         StarchFactory::class,
         UseCases::class,
         Currency::class
-    ], version = 4, exportSchema = false
+    ], version = 5, exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -63,18 +63,18 @@ abstract class AppDatabase : RoomDatabase() {
     companion object {
         // For Singleton instantiation
         @Volatile
-        private var INSTANCE: AppDatabase? = null
+        private var database: AppDatabase? = null
         private const val NUMBER_OF_THREADS = 4
 
         @JvmStatic
         @Synchronized
         fun getDatabase(context: Context): AppDatabase? {
-            if (INSTANCE == null) {
+            if (database == null) {
                 synchronized(AppDatabase::class.java) {
-                    if (INSTANCE == null) {
-                        INSTANCE = Room.databaseBuilder(
+                    if (database == null) {
+                        database = Room.databaseBuilder(
                             context.applicationContext,
-                            AppDatabase::class.java, "AKILIMO_01_FEB_2021"
+                            AppDatabase::class.java, "AKILIMO_24_FEB_2021"
                         )
                             .fallbackToDestructiveMigration()
                             .allowMainThreadQueries()
@@ -82,7 +82,7 @@ abstract class AppDatabase : RoomDatabase() {
                     }
                 }
             }
-            return INSTANCE
+            return database
         }
     }
 }
