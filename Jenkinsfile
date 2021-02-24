@@ -41,7 +41,7 @@ pipeline {
           when {
             beforeAgent true
             anyOf {
-              branch 'develop'
+              branch 'develop-'
               branch 'master'
             }
           }
@@ -57,7 +57,7 @@ pipeline {
           when {
             beforeAgent true
             anyOf {
-              branch 'develop'
+              branch 'develop-'
               branch 'master'
             }
           }
@@ -78,7 +78,7 @@ pipeline {
           when {
             beforeAgent true
             anyOf {
-              branch 'develop'
+              branch 'develop-'
               branch 'master'
             }
           }
@@ -91,7 +91,7 @@ pipeline {
           when {
             beforeAgent true
             anyOf {
-              branch 'develop'
+              branch 'develop-'
               branch 'master'
             }
           }
@@ -110,7 +110,7 @@ pipeline {
       when {
         beforeAgent true
         anyOf {
-          branch 'develop'
+          branch 'develop-'
           branch 'master'
         }
       }
@@ -128,7 +128,7 @@ pipeline {
         stage('AAB upload') {
           when {
             beforeAgent true
-            branch 'develop'
+            branch 'develop-'
           }
           steps {
                 androidApkUpload filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB', text: '''This update includes:

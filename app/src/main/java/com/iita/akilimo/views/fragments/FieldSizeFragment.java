@@ -98,7 +98,6 @@ public class FieldSizeFragment extends BaseStepFragment {
         rd_one_acre = binding.rdOneAcre;
 
 
-
         rdgFieldArea.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
             RadioButton radioButton = view.findViewById(radioIndex);
             if (radioButton != null) {
@@ -133,10 +132,8 @@ public class FieldSizeFragment extends BaseStepFragment {
                 myFieldSize = String.valueOf(areaSize);
                 dataIsValid = areaSize > 0;
                 areaUnitChanged = !areaUnit.equalsIgnoreCase(oldAreaUnit);
-                if (dataIsValid) {
-                    setFieldLabels(areaUnit);
-                }
 
+                setFieldLabels(areaUnit);
                 if (areaUnitChanged) {
                     areaSize = 0;
                     myFieldSize = null;

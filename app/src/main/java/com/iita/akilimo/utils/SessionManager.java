@@ -188,6 +188,6 @@ public class SessionManager {
     }
 
     public String getTermsLink() {
-        return pref.getString("termsLink", "https://www.akilimo.org/blog/categories/fertilizer-recommendations");
+        return pref.getString("termsLink", "https://www.akilimo.org/privacy-policy");
     }
 }
