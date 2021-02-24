@@ -70,6 +70,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         appUpdater = appUpdateHelper
             .showUpdateMessage(Display.DIALOG)
             .setButtonDoNotShowAgain("")
+
         appUpdater.start()
 
         createFragmentArray()
@@ -101,7 +102,6 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
         mStepperLayout.setListener(object : StepperListener {
             override fun onCompleted(completeButton: View?) {
-                appUpdater.stop();
                 val intent = Intent(context, RecommendationsActivity::class.java)
                 startActivity(intent)
                 openActivity()
@@ -116,11 +116,15 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
             }
 
             override fun onStepSelected(newStepPosition: Int) {
-                appUpdater.stop()
+                if (newStepPosition == 0) {
+                    appUpdater.start()
+                } else {
+                    appUpdater.stop()
+                }
             }
 
             override fun onReturn() {
-                appUpdater.start()
+//                appUpdater.start()
                 finish()
             }
         })
