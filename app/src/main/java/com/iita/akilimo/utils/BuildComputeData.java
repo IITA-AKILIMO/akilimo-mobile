@@ -213,6 +213,7 @@ public class BuildComputeData {
                 userInfo.setFirstName(firstName);
                 userInfo.setLastName(lastName);
                 userInfo.setUserName(fullNames);
+                userInfo.setGender(gender);
                 userInfo.setMobileCountryCode(mobileCountryCode);
                 userInfo.setMobileNumber(mobileNumber);
                 userInfo.setFullPhoneNumber(fullPhoneNumber);
