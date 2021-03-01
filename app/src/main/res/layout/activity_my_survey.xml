@@ -1,35 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_centerHorizontal="true"
+    android:layout_centerVertical="true"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_medium"
     tools:context=".views.activities.MySurveyActivity">
 
-    <LinearLayout
+
+    <TextView
+        android:id="@+id/textView0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:orientation="vertical">
+        android:text="How would you describe your use of the AKILIMO tool best?" />
 
-        <Button
-            android:id="@+id/button_survey_example_1"
+    <RadioGroup
+        android:id="@+id/rdAkilimoUser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <RadioButton
+            android:id="@+id/rdGrower"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Example #1" />
+            android:text="I'm a cassava grower using the app for my farm" />
 
-        <Button
-            android:id="@+id/button_survey_example_2"
+        <RadioButton
+            android:id="@+id/rdFarmer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Example #2" />
+            android:text="I'm a farmer or community member using the app to assist a fellow farmer" />
 
-        <Button
-            android:id="@+id/button_survey_example_3"
+        <RadioButton
+            android:id="@+id/rdExtAgent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Example #3" />
-    </LinearLayout>
+            android:text="I'm an extension worker or other service provider using the app to advise a farmer" />
 
-</RelativeLayout>
+        <RadioButton
+            android:id="@+id/rdOther"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Other" />
+
+    </RadioGroup>
+
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="On a scale of 1 to 5 how useful is the AKILIMO advice to you?" />
+
+    <com.willy.ratingbar.RotationRatingBar
+        android:id="@+id/rateAkilimoUseful"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srb_clearRatingEnabled="true"
+        app:srb_clickable="true"
+        app:srb_isIndicator="false"
+        app:srb_minimumStars="1"
+        app:srb_numStars="5"
+        app:srb_rating="2"
+        app:srb_scrollable="true"
+        app:srb_starHeight="30dp"
+        app:srb_starPadding="15dp"
+        app:srb_starWidth="30dp"
+        app:srb_stepSize="1" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:text="On scale from 1 to 5 how likely would you recommend AKILIMO to others?" />
+
+    <com.willy.ratingbar.RotationRatingBar
+        android:id="@+id/rateAkilimoRec"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srb_clearRatingEnabled="true"
+        app:srb_clickable="true"
+        app:srb_isIndicator="false"
+        app:srb_minimumStars="1"
+        app:srb_numStars="5"
+        app:srb_rating="2"
+        app:srb_scrollable="true"
+        app:srb_starHeight="30dp"
+        app:srb_starPadding="15dp"
+        app:srb_starWidth="30dp"
+        app:srb_stepSize="1" />
+
+</LinearLayout>

@@ -193,7 +193,7 @@
     <string name="lbl_last_name_req">Tafadhali toa jina lako la mwisho</string>
     <string name="lbl_valid_number_req">Tafadhali toa nambari sahihi ya simu</string>
     <string name="lbl_gender_prompt">Chagua jinsia</string>
-    <string name="lbl_gender">Chagua jinsi</string>
+    <string name="lbl_gender">Chagua jinsia</string>
     <string name="lbl_prefer_not_to_say">Pendelea kutosema</string>
     <string name="lbl_male">Mwanaume</string>
     <string name="lbl_female">Mwanamke</string>

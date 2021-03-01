@@ -181,7 +181,8 @@ dependencies {
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.11'
     implementation 'com.github.midorikocak:currency-picker-android:1.2.1' //for handling currency
 
-    implementation('com.androidadvance.surveylib:surveylib:0.0.1')
+    implementation 'com.github.giswangsj:AndRatingBar:1.0.5'
+    implementation 'com.github.ome450901:SimpleRatingBar:1.5.1'
 
     //https://stackoverflow.com/questions/44826452/highlight-new-feature-in-android
     implementation 'org.modelmapper:modelmapper:2.3.7'
