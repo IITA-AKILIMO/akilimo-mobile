@@ -4,9 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 
 class SurveyRequest(
-    @JsonProperty("deviceToken")
-    var deviceToken: String,
-
     @JsonProperty("akilimoUsage")
     val akilimoUsage: String,
 
