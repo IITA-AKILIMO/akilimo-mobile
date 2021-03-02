@@ -92,4 +92,8 @@
         app:rippleColor="@color/purple_100"
         app:srcCompat="@drawable/ic_refresh" />
 
+    <include
+        android:id="@+id/feedback_button"
+        layout="@layout/bottom_single_button_layout" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
