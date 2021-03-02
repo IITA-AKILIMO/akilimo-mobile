@@ -184,7 +184,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
 
         //print recommendation data here
 
-        JSONObject data = Tools.prepareRecommendationJson(recData);
+        JSONObject data = Tools.prepareJsonObject(recData);
         restService.postJsonObject(data, new IVolleyCallback() {
             @Override
             public void onSuccessJsonString(@NonNull String jsonStringResult) {

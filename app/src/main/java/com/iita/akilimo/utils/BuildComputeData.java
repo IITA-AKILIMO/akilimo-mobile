@@ -23,7 +23,7 @@ import com.iita.akilimo.entities.PotatoMarket;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.entities.ScheduledDate;
 import com.iita.akilimo.entities.UseCases;
-import com.iita.akilimo.models.ComputeRequest;
+import com.iita.akilimo.rest.request.ComputeRequest;
 import com.iita.akilimo.rest.request.RecommendationRequest;
 import com.iita.akilimo.rest.request.UserInfo;
 

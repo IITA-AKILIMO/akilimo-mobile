@@ -7,10 +7,19 @@ import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatButton
-import com.iita.akilimo.Locales
-import com.iita.akilimo.R
+import com.android.volley.VolleyError
+import com.android.volley.toolbox.Volley
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.iita.akilimo.databinding.ActivityMySurveyBinding
 import com.iita.akilimo.inherit.BaseActivity
+import com.iita.akilimo.interfaces.IVolleyCallback
+import com.iita.akilimo.rest.RestParameters
+import com.iita.akilimo.rest.RestService
+import com.iita.akilimo.rest.recommendation.RecommendationResponse
+import com.iita.akilimo.rest.request.SurveyRequest
+import com.iita.akilimo.utils.Tools
+import org.json.JSONArray
+import org.json.JSONObject
 import java.util.*
 
 
@@ -76,5 +85,37 @@ class MySurveyActivity : BaseActivity() {
         val configuration = Configuration(resources.configuration)
         configuration.setLocale(locale)
         return createConfigurationContext(configuration).resources.getString(stringRes, *formatArgs)
+    }
+
+    private fun submitUserReview(deviceToken: String, surveyRequest: SurveyRequest) {
+        val queue = Volley.newRequestQueue(context.applicationContext)
+        val restService = RestService.getInstance(queue, this)
+        val restParameters = RestParameters(
+            "v1/user-feedback/survey/${deviceToken}",
+            countryCode
+        )
+        restService.setParameters(restParameters)
+
+
+        //print recommendation data here
+        val data = Tools.prepareJsonObject(surveyRequest)
+        restService.postJsonObject(data, object : IVolleyCallback {
+            override fun onSuccessJsonString(jsonStringResult: String) {}
+            override fun onSuccessJsonArr(jsonArray: JSONArray) {}
+            override fun onSuccessJsonObject(jsonObject: JSONObject) {
+                try {
+                    val objectMapper = ObjectMapper()
+                    val recommendationResponse = objectMapper.readValue(
+                        jsonObject.toString(),
+                        RecommendationResponse::class.java
+                    )
+                } catch (ex: Exception) {
+                    Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onError(volleyError: VolleyError) {
+            }
+        })
     }
 }

@@ -383,10 +383,10 @@ public class Tools {
     }
 
     /**
-     * @param recommendationRequest @Link RecommendationRequest
+     * @param objectClass
      * @return JsonObject
      */
-    public static JSONObject prepareRecommendationJson(RecommendationRequest recommendationRequest) {
+    public static JSONObject prepareJsonObject(RecommendationRequest objectClass) {
         JSONObject jsonObject = null;
         String jsonString;
         try {
@@ -394,7 +394,7 @@ public class Tools {
             mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
             mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 
-            jsonString = mapper.writeValueAsString(recommendationRequest);
+            jsonString = mapper.writeValueAsString(objectClass);
             jsonObject = new JSONObject(jsonString);
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
