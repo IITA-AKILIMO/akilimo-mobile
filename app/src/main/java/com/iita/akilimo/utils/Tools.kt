@@ -48,6 +48,7 @@ object Tools {
     private val LOG_TAG = Tools::class.java.simpleName
     private val mapper = ObjectMapper()
 
+    @JvmStatic
     fun displayImageOriginal(ctx: Context?, img: ImageView?, @DrawableRes drawable: Int) {
         try {
             Glide.with(ctx!!).load(drawable)
@@ -58,6 +59,7 @@ object Tools {
         }
     }
 
+    @JvmStatic
     fun formatCalendarToDateString(dateTime: Date): String {
         val newFormat = SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH)
         return newFormat.format(dateTime)

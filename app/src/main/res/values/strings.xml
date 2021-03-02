@@ -532,4 +532,6 @@
     <string name="lbl_farmer">I\'m a farmer or community member using the app to assist a fellow farmer</string>
     <string name="lbl_ext_worker">I\'m an extension worker or other service provider using the app to advise a farmer</string>
     <string name="lbl_other">Other</string>
+    <string name="lbl_provide_feedback">Provide feedback</string>
+    <string name="lbl_thank_feedback_you">Feedback sent</string>
 </resources>

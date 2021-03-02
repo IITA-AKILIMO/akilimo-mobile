@@ -1,5 +1,6 @@
 package com.iita.akilimo.views.activities
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.RadioButton
@@ -10,6 +11,7 @@ import androidx.appcompat.widget.AppCompatButton
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.Volley
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.iita.akilimo.R
 import com.iita.akilimo.dao.AppDatabase.Companion.getDatabase
 import com.iita.akilimo.databinding.ActivityMySurveyBinding
 import com.iita.akilimo.inherit.BaseActivity
@@ -75,11 +77,19 @@ class MySurveyActivity : BaseActivity() {
         //now we submit to the API
         btnFinish.setOnClickListener {
             //send data to REST api
-            val surveyRequest = SurveyRequest(akilimoUsage = akilimoUsage,
+            val surveyRequest = SurveyRequest(
+                akilimoUsage = akilimoUsage,
                 akilimoRecRating = akilimoRecRating,
-                akilimoUsefulRating = akilimoUsefulRating)
+                akilimoUsefulRating = akilimoUsefulRating,
+                language = profileInfo?.language!!,
+                deviceToken = profileInfo.deviceToken!!
+            )
 
-            submitUserReview(deviceToken = profileInfo?.deviceToken, surveyRequest = surveyRequest)
+            submitUserReview(surveyRequest = surveyRequest)
+            val intent = Intent()
+            intent.putExtra("MESSAGE", getString(R.string.lbl_thank_feedback_you));
+            setResult(2, intent)
+            closeActivity(false)
         }
     }
 
@@ -97,11 +107,11 @@ class MySurveyActivity : BaseActivity() {
         return createConfigurationContext(configuration).resources.getString(stringRes, *formatArgs)
     }
 
-    private fun submitUserReview(deviceToken: String?, surveyRequest: SurveyRequest) {
-        val queue = Volley.newRequestQueue(context.applicationContext)
+    private fun submitUserReview(surveyRequest: SurveyRequest) {
+        val queue = Volley.newRequestQueue(this)
         val restService = RestService.getInstance(queue, this)
         val restParameters = RestParameters(
-            "v1/user-feedback/survey/${deviceToken}",
+            "v1/user-feedback/survey",
             countryCode
         )
         restService.setParameters(restParameters)
@@ -113,15 +123,6 @@ class MySurveyActivity : BaseActivity() {
             override fun onSuccessJsonString(jsonStringResult: String) {}
             override fun onSuccessJsonArr(jsonArray: JSONArray) {}
             override fun onSuccessJsonObject(jsonObject: JSONObject) {
-                try {
-                    val objectMapper = ObjectMapper()
-                    val recommendationResponse = objectMapper.readValue(
-                        jsonObject.toString(),
-                        RecommendationResponse::class.java
-                    )
-                } catch (ex: Exception) {
-                    Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
-                }
             }
 
             override fun onError(volleyError: VolleyError) {
