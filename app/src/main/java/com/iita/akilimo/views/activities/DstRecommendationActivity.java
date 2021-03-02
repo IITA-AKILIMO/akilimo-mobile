@@ -1,6 +1,7 @@
 package com.iita.akilimo.views.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -57,6 +60,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
     Toolbar toolbar;
     RecyclerView recyclerView;
     FloatingActionButton fabRetry;
+    AppCompatButton btnFeedback;
     ImageView errorImage;
     TextView errorLabel;
     LinearLayout lyt_progress;
@@ -82,10 +86,12 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         toolbar = binding.toolbarLayout.toolbar;
         recyclerView = binding.recyclerView;
         fabRetry = binding.fabRetry;
+        btnFeedback = binding.feedbackButton.btnGetRecommendation;
         errorImage = binding.errorImage;
         errorLabel = binding.errorLabel;
         lyt_progress = binding.lytProgress;
 
+        btnFeedback.setText(R.string.lbl_provide_feedback);
         initToolbar();
         initComponent();
     }
@@ -123,7 +129,21 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
             }
         });
 
+        btnFeedback.setOnClickListener(view -> {
+            //launch the feedback dialog
+            Intent intent = new Intent(this, MySurveyActivity.class);
+            startActivityForResult(intent, 2);// Activity is started with requestCode 2
+        });
+
         displayDialog(profileInfo);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 2) {
+            String message = data.getStringExtra("MESSAGE");
+        }
     }
 
     private void buildRecommendationData() {
@@ -184,7 +204,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
 
         //print recommendation data here
 
-        JSONObject data = Tools.prepareRecommendationJson(recData);
+        JSONObject data = Tools.prepareJsonObject(recData);
         restService.postJsonObject(data, new IVolleyCallback() {
             @Override
             public void onSuccessJsonString(@NonNull String jsonStringResult) {
@@ -220,11 +240,6 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
 
             @Override
             public void onError(@NonNull VolleyError volleyError) {
-                if (volleyError instanceof TimeoutError) {
-                    // your stuf
-                } else {
-
-                }
                 lyt_progress.setVisibility(View.GONE);
                 errorImage.setVisibility(View.VISIBLE);
                 errorLabel.setVisibility(View.VISIBLE);

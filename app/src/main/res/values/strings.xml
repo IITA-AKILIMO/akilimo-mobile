@@ -30,6 +30,12 @@
     <string name="title_recommendations_delivery">Recommendations delivery</string>
 
 
+    <string name="lbl_one" translatable="false">1</string>
+    <string name="lbl_two" translatable="false">2</string>
+    <string name="lbl_three" translatable="false">3</string>
+    <string name="lbl_four" translatable="false">4</string>
+    <string name="lbl_five" translatable="false">5</string>
+
     <string name="lbl_start">Start</string>
     <string name="lbl_proceed">Proceed</string>
     <string name="lbl_finish">Finish</string>
@@ -518,4 +524,14 @@
     <string name="lbl_1000_kg_unit">tonne</string>
 
     <string name="lbl_operation_cost_label">About %s %s</string>
+
+    <string name="lbl_describe_tool_use">How would you best describe your use of the AKILIMO tool?</string>
+    <string name="lbl_advice_usefulness_scale">On a scale of 1 to 5 how useful is the AKILIMO advice to you?</string>
+    <string name="lbl_recommendation_scale">On scale from 1 to 5 how likely would you recommend AKILIMO to others?</string>
+    <string name="lbl_grower">I\'m a cassava grower using the app for my farm</string>
+    <string name="lbl_farmer">I\'m a farmer or community member using the app to assist a fellow farmer</string>
+    <string name="lbl_ext_worker">I\'m an extension worker or other service provider using the app to advise a farmer</string>
+    <string name="lbl_other">Other</string>
+    <string name="lbl_provide_feedback">Provide feedback</string>
+    <string name="lbl_thank_feedback_you">Feedback sent</string>
 </resources>

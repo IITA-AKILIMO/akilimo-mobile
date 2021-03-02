@@ -1,0 +1,22 @@
+{
+  "survey_properties": {
+    "intro_message": "<strong>Your feedback helps us to build a better mobile product.</strong><br><br><br>   Hello, Feedback from our clients, friends and family is how we make key decisions on what the future holds for AKILIMO App.<br><br>By combining data and previous feedback we have introduced many new features.<br><br>It will take less than a minute to answer the feedback quiz.",
+    "end_message": "Thank you for having the time to take our survey.",
+    "skip_intro": false
+  },
+  "questions": [
+    {
+      "question_type": "Radioboxes",
+      "question_title": "How would you describe your use of the AKILIMO tool best?",
+      "description": "",
+      "required": true,
+      "random_choices": false,
+      "choices": [
+        "I'm a cassava grower using the app for my farm",
+        "I'm a farmer or community member using the app to assist a fellow farmer",
+        "I'm an extension worker or other service provider using the app to advise a farmer",
+        "Other"
+      ]
+    }
+  ]
+}
