@@ -18,12 +18,30 @@ pipeline {
     }
 
     stage('Run code coverage test') {
+      when {
+            beforeAgent true
+            anyOf {
+              branch 'develop'
+              branch 'legacy-develop'
+              branch 'master'
+              branch 'legacy-master'
+            }
+        }
       steps {
         sh './gradlew jacocoTestReportRelease -x test'
       }
     }
 
     stage('Run linting checks') {
+      when {
+            beforeAgent true
+            anyOf {
+              branch 'develop'
+              branch 'legacy-develop'
+              branch 'master'
+              branch 'legacy-master'
+            }
+        }
       steps {
         sh './gradlew :app:lint -x test'
       }
