@@ -178,11 +178,17 @@
     <string name="lbl_sweet_potato_tuber_unit_price_per">Kizio cha bei ya viazi vitamu katika %s kwa %s</string>
     <string name="lbl_manual_tillage_cost">Je! Ni gharama kiasi gani kulima kwa jembe la mkono %s %s?</string>
     <string name="lbl_manual_ridge_cost">Je! Inagharimu kiasi gani kuweka matuta kwa jembe la mkono %s %s?</string>
+    <string name="lbl_manual_ridge_cost_hint">Gharama ya kuweka matuta katika %s %s kwa mkono</string>
     <string name="lbl_manual_tillage_cost_hint">Gharama ya kulima %s %s kwa mikono</string>
     <string name="lbl_tractor_plough_cost">Je! Inagharimu kiasi gani kulima %s %s kwa trekta?</string>
     <string name="lbl_tractor_ridge_cost">Je! Inagharimu kiasi gani kuweka matuta %s %s kwa trekta?</string>
+    <string name="lbl_tractor_plough_cost_hint">Gharama ya kulima %s %s kwa trekta</string>
+    <string name="lbl_tractor_ridge_cost_hint">Gharama ya kuweka matuta kwa %s %s kutumia trekta</string>
+
     <string name="lbl_specify_my_cost">Nataka kutaja gharama zangu</string>
     <string name="lbl_exact_cost">Gharama halisi</string>
+    <string name="lbl_cost_of_first_weeding_operation">Gharama ya upalilizi wa kwanza kwa %s ya %s %s</string>
+    <string name="lbl_cost_of_second_weeding_operation">Gharama ya upalilizi wa pili kwa %s ya %s %s</string>
     <string name="lbl_valid_bag_price">Tafadhali toa bei halisi</string>
     <string name="lbl_ploughing_cost_text">Gharama ya kukatua %s %s %s %s</string>
     <string name="lbl_ridging_cost_text">Gharama ya kuweka matuta %s %s %s %s</string>
@@ -388,12 +394,15 @@
     <string name="lbl_100_kg_unit">mfuko wa kilo 100</string>
     <string name="lbl_1000_kg_unit">tani</string>
     <string name="lbl_operation_cost_label">Karibu %s %s</string>
-
-    <string name="lbl_describe_tool_use">How would you best describe your use of the AKILIMO tool?</string>
-    <string name="lbl_advice_usefulness_scale">On a scale of 1 to 5 how useful is the AKILIMO advice to you?</string>
-    <string name="lbl_recommendation_scale">On scale from 1 to 5 how likely would you recommend AKILIMO to others?</string>
-    <string name="lbl_grower">I\'m a cassava grower using the app for my farm</string>
-    <string name="lbl_farmer">I\'m a farmer or community member using the app to assist a fellow farmer</string>
-    <string name="lbl_ext_worker">I\'m an extension worker or other service provider using the app to advise a farmer</string>
+    <string name="lbl_describe_tool_use">Je! Unaweza kuelezeaje matumizi yako ya chombo cha AKILIMO?</string>
+    <string name="lbl_advice_usefulness_scale">Kwa kipimo cha 1 hadi 5 ushauri unayopata kwa AKILIMO ina manufaa kwako?</string>
+    <string name="lbl_recommendation_scale">Kwa kiwango kutoka 1 hadi 5 unaweza kupendekeza AKILIMO kwa wengine?</string>
+    <string name="lbl_grower">Mimi ni mkulima wa muhogo natumia programu kwenye shamba langu</string>
+    <string name="lbl_farmer">Mimi ni mkulima au mwanajamii anayetumia programu hiyo kusaidia mkulima mwenzangu</string>
+    <string name="lbl_ext_worker">Mimi ni mfanyakazi wa ugani au mtoa huduma mwingine anayetumia programu hiyo kumshauri mkulima</string>
     <string name="lbl_other">Nyingine</string>
+    <string name="lbl_provide_feedback">Toa maoni</string>
+    <string name="lbl_thank_feedback_you">Asante kwa maoni yako</string>
+    <string name="lbl_fresh_cob_price">Je! Unatarajia kuuza hindi moja mbichi kwa bei gani?</string>
+    <string name="lbl_price_per_cob_in_currency_unit">Je! Unatarajia kuuza hindi moja mbichi kwa %s?</string>
 </resources>
