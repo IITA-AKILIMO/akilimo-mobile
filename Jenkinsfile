@@ -41,8 +41,8 @@ pipeline {
           when {
             beforeAgent true
             anyOf {
-              branch 'develop-'
-              branch 'master'
+              branch 'legacy-develop'
+              branch 'legacy-master'
             }
           }
           environment {
@@ -57,7 +57,7 @@ pipeline {
           when {
             beforeAgent true
             anyOf {
-              branch 'develop-'
+              branch 'develop'
               branch 'master'
             }
           }
@@ -78,8 +78,8 @@ pipeline {
           when {
             beforeAgent true
             anyOf {
-              branch 'develop-'
-              branch 'master'
+              branch 'legacy-develop'
+              branch 'legacy-master'
             }
           }
           steps {
@@ -91,7 +91,7 @@ pipeline {
           when {
             beforeAgent true
             anyOf {
-              branch 'develop-'
+              branch 'develop'
               branch 'master'
             }
           }
@@ -110,7 +110,7 @@ pipeline {
       when {
         beforeAgent true
         anyOf {
-          branch 'develop-'
+          branch 'develop'
           branch 'master'
         }
       }
@@ -145,7 +145,7 @@ pipeline {
             beforeAgent true
             beforeInput true
             beforeOptions true
-            branch 'legacy/develop'
+            branch 'legacy-develop'
           }
             options {
               timeout(activity: true, time: 2, unit: 'HOURS')
@@ -172,7 +172,7 @@ pipeline {
         stage('AAB upload') {
           when {
             beforeAgent true
-            branch 'legacy/master'
+            branch 'master'
           }
           steps {
                 androidApkUpload filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB', text: '''This update includes:
@@ -186,7 +186,7 @@ pipeline {
         stage('APK upload') {
           when {
             beforeAgent true
-            branch 'master'
+            branch 'legacy-master'
           }
           steps {
                 androidApkUpload filesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB', text: '''This update includes:

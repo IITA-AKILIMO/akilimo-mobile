@@ -30,9 +30,6 @@ class MySurveyActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMySurveyBinding
 
-    private lateinit var btnSave: AppCompatButton
-    private lateinit var rdgAkilimoUser: RadioGroup
-
     private var akilimoUsage: String = ""
     private var akilimoRecRating: Int = 0
     private var akilimoUsefulRating: Int = 0
