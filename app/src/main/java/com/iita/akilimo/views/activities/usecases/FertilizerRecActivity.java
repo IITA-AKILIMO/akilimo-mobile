@@ -171,7 +171,7 @@ public class FertilizerRecActivity extends BaseActivity {
         if (adviceStatus != null) {
             return adviceStatus;
         }
-        return new AdviceStatus(0, taskName.name(), false);
+        return new AdviceStatus(taskName.name(), false);
     }
 
     @Override
