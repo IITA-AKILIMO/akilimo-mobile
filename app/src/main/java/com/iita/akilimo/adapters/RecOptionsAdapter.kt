@@ -6,10 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.iita.akilimo.R
 import com.iita.akilimo.databinding.ItemCardRecommendationArrowBinding
 import com.iita.akilimo.models.RecommendationOptions
 import com.iita.akilimo.utils.ItemAnimation
+import com.iita.akilimo.utils.VectorDrawableUtils
 
 class RecOptionsAdapter(
     private val ctx: Context,
@@ -75,6 +78,17 @@ class RecOptionsAdapter(
 
         fun bind(recModel: RecommendationOptions, position: Int) {
             name.text = recModel.recName
+            var icon = R.drawable.ic_info
+            var statusColor = ContextCompat.getColor(itemView.context, R.color.red_400)
+            if (recModel.completed) {
+                icon = R.drawable.ic_done
+                statusColor = ContextCompat.getColor(itemView.context, R.color.green_600)
+            }
+
+            val drawable = VectorDrawableUtils.getDrawable(itemView.context, icon, statusColor)
+
+            image.setImageDrawable(drawable)
+
             cardView.setOnClickListener { view: View? ->
                 if (mOnItemClickListener != null) {
                     mOnItemClickListener!!.onItemClick(view, recModel, position)
