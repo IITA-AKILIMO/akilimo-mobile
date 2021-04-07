@@ -133,7 +133,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
         mAdapter.setOnItemClickListener((view, obj, position) -> {
             //let us process the data
             Intent intent = null;
-            EnumAdviceTasks advice = obj.getRecCode();
+            EnumAdviceTasks advice = obj.getAdviceName();
             switch (advice) {
                 case PLANTING_AND_HARVEST:
                     intent = new Intent(context, DatesActivity.class);
@@ -149,7 +149,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
                 startActivity(intent);
                 openActivity();
             } else {
-                Snackbar.make(view, "Item " + obj.getRecommendationName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(view, "Item " + obj.getRecName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
             }
         });
     }

@@ -3,15 +3,16 @@ package com.iita.akilimo.models
 import com.iita.akilimo.utils.enums.EnumAdviceTasks
 
 class RecommendationOptions {
-    var recommendationName: String? = null
-    var recCode: EnumAdviceTasks? = null
-    var image = 0
+    var recName: String? = null
+    var adviceName: EnumAdviceTasks? = null
+    var statusImage: Int = 0
+    var completed: Boolean = false
 
     constructor() {}
 
-    constructor(recName: String, recommendationCode: EnumAdviceTasks, imageId: Int) {
-        recommendationName = recName
-        recCode = recommendationCode
-        image = imageId
+    constructor(recName: String, adviceName: EnumAdviceTasks, statusImage: Int) {
+        this.recName = recName
+        this.adviceName = adviceName
+        this.statusImage = statusImage
     }
 }

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
+import com.iita.akilimo.adapters.FertilizerGridAdapter;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityFertilizerRecBinding;
@@ -93,6 +94,10 @@ public class FertilizerRecActivity extends BaseActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
+        //set data and list adapter
+        items = getRecItems();
+        mAdapter = new RecOptionsAdapter(this, items, ItemAnimation.RIGHT_LEFT);
+        recyclerView.setAdapter(mAdapter);
 
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
@@ -121,27 +126,26 @@ public class FertilizerRecActivity extends BaseActivity {
         setAdapter();
     }
 
+    private List<RecommendationOptions> getRecItems() {
+        List<RecommendationOptions> myItems = new ArrayList<>();
+        myItems.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
+        myItems.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS, 0));
+        myItems.add(new RecommendationOptions(investmentString, EnumAdviceTasks.INVESTMENT_AMOUNT, 0));
+        myItems.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, 0));
+
+        return myItems;
+    }
+
     @Override
     protected void validate(boolean backPressed) {
         throw new UnsupportedOperationException();
     }
 
     private void setAdapter() {
-        //set data and list adapter
-        items = new ArrayList<>();
-
-        items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
-        items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS, 0));
-        items.add(new RecommendationOptions(investmentString, EnumAdviceTasks.INVESTMENT_AMOUNT, 0));
-        items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, 0));
-
-        mAdapter = new RecOptionsAdapter(this, items, ItemAnimation.RIGHT_LEFT);
-        recyclerView.setAdapter(mAdapter);
-
         // on item list clicked
         mAdapter.setOnItemClickListener((view, obj, position) -> {
             Intent intent = null;
-            EnumAdviceTasks advice = obj.getRecCode();
+            EnumAdviceTasks advice = obj.getAdviceName();
             if (advice == null) {
                 advice = EnumAdviceTasks.NOT_SELECTED;
             }
@@ -166,7 +170,7 @@ public class FertilizerRecActivity extends BaseActivity {
                 startActivity(intent);
                 openActivity();
             } else {
-                Snackbar.make(view, "Item " + obj.getRecommendationName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(view, "Item " + obj.getRecName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
             }
         });
 
