@@ -29,8 +29,9 @@ import com.iita.akilimo.entities.*
         ScheduledDate::class,
         StarchFactory::class,
         UseCases::class,
-        Currency::class
-    ], version = 5, exportSchema = false
+        Currency::class,
+        UseCaseStepStatus::class
+    ], version = 1, exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -57,6 +58,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun scheduleDateDao(): ScheduleDateDao
     abstract fun starchFactoryDao(): StarchFactoryDao
     abstract fun useCaseDao(): UseCaseDao
+    abstract fun useCaseStepStatusDao(): UseCaseStepStatusDao
     abstract fun currencyDao(): CurrencyDao
 
 
@@ -74,7 +76,7 @@ abstract class AppDatabase : RoomDatabase() {
                     if (database == null) {
                         database = Room.databaseBuilder(
                             context.applicationContext,
-                            AppDatabase::class.java, "AKILIMO_24_FEB_2021"
+                            AppDatabase::class.java, "AKILIMO_07_APR_2021"
                         )
                             .fallbackToDestructiveMigration()
                             .allowMainThreadQueries()

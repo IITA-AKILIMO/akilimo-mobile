@@ -44,7 +44,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
-            resValue("string", "PORT_NUMBER", "9080")
+            resValue("string", "PORT_NUMBER", "9085")
             versionNameSuffix ".debug"
         //  pseudoLocalesEnabled true
         }
