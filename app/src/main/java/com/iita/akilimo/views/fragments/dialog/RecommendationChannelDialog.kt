@@ -122,12 +122,13 @@ class RecommendationChannelDialog(
         }
         btnFinish.setOnClickListener {
             val validationHelper = ValidationHelper()
+            email = lytEmail.editText!!.text.toString()
             if (!validationHelper.isValidEmail(email!!) && sendEmail) {
                 dataIsValid = false
                 lytEmail.error = getString(R.string.lbl_valid_email_req)
             } else {
                 dataIsValid = true
-                email = lytEmail.editText!!.text.toString()
+                lytEmail.error = null
             }
             if (sendSms) {
                 fullMobileNumber = ccp.fullNumber
