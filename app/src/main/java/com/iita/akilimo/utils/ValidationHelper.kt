@@ -9,23 +9,18 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.google.i18n.phonenumbers.Phonenumber
 
 class ValidationHelper {
-    private var isNumberValid: Boolean = false
-    private val phoneUtil: PhoneNumberUtil
+    private val phoneUtil: PhoneNumberUtil = PhoneNumberUtil.getInstance()
+    private val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
 
     companion object {
         private val LOG_TAG = ValidationHelper::class.java.simpleName
-    }
-
-    init {
-        phoneUtil = PhoneNumberUtil.getInstance()
     }
 
     fun isValidPhoneNumber(userPhoneNumber: String, country: String): Boolean {
 
         try {
             val phoneNumber = phoneUtil.parse(userPhoneNumber, country)
-            isNumberValid = phoneUtil.isValidNumber(phoneNumber)
-
+            return phoneUtil.isValidNumber(phoneNumber)
         } catch (ex: NumberParseException) {
             Crashlytics.log(
                 Log.ERROR,
@@ -35,7 +30,7 @@ class ValidationHelper {
             Crashlytics.logException(ex)
         }
 
-        return isNumberValid
+        return false
     }
 
     fun convertPhoneNumber(userPhoneNumber: String, country: String): Phonenumber.PhoneNumber? {
@@ -50,7 +45,11 @@ class ValidationHelper {
         return phoneNumber
     }
 
-    fun isValidEmail(target: CharSequence): Boolean {
-        return !TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches()
+    fun isValidEmail(email: String): Boolean {
+//        return !TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches()
+        if (email.matches(emailPattern.toRegex())) {
+            return true
+        }
+        return false
     }
 }
