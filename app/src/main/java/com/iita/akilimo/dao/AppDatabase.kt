@@ -31,7 +31,7 @@ import com.iita.akilimo.entities.*
         UseCases::class,
         Currency::class,
         AdviceStatus::class
-    ], version = 1, exportSchema = false
+    ], version = 2, exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {

@@ -134,7 +134,7 @@ public class FertilizerRecActivity extends BaseActivity {
                 case PLANTING_AND_HARVEST:
                     intent = new Intent(context, DatesActivity.class);
                     break;
-                case AVAILABLE_FERTILIZERS_CIS:
+                case AVAILABLE_FERTILIZERS:
                     intent = new Intent(context, FertilizersActivity.class);
                     break;
                 case INVESTMENT_AMOUNT:
@@ -159,7 +159,7 @@ public class FertilizerRecActivity extends BaseActivity {
     private List<RecommendationOptions> getRecItems() {
         List<RecommendationOptions> myItems = new ArrayList<>();
         myItems.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0, checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)));
-        myItems.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS, 0, checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS)));
+        myItems.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS, 0, checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS)));
         myItems.add(new RecommendationOptions(investmentString, EnumAdviceTasks.INVESTMENT_AMOUNT, 0, checkStatus(EnumAdviceTasks.INVESTMENT_AMOUNT)));
         myItems.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, 0, checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)));
 

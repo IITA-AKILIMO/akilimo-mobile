@@ -27,6 +27,7 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.FertilizerGridAdapter;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityFertilizersBinding;
+import com.iita.akilimo.entities.AdviceStatus;
 import com.iita.akilimo.entities.Fertilizer;
 import com.iita.akilimo.entities.FertilizerPrice;
 import com.iita.akilimo.entities.ProfileInfo;
@@ -36,6 +37,7 @@ import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.FertilizerList;
 import com.iita.akilimo.utils.Tools;
+import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.views.fragments.dialog.FertilizerPriceDialogFragment;
 import com.iita.akilimo.widget.SpacingItemDecoration;
 
@@ -187,6 +189,7 @@ public class FertilizersActivity extends BaseActivity {
 
         btnRetry.setOnClickListener(view -> initializeFertilizers());
         btnSave.setOnClickListener(view -> {
+            database.adviceStatusDao().insert(new AdviceStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS.name(), isMinSelected()));
             if (isMinSelected()) {
                 closeActivity(false);
             }
