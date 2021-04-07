@@ -308,14 +308,8 @@
     <string name="lbl_loading_fertilizers">Loading available fertilizers</string>
 
     <!-- maize info section -->
-    <!--    <string name="lbl_knee_height">About knee-height (~50 cm)</string>-->
-    <!--    <string name="lbl_chest_height">About chest-height (~150 cm)</string>-->
-    <!--    <string name="lbl_yellowish_leaves">Larger than a person (200 cm) but with yellowish leaves</string>-->
-    <!--    <string name="lbl_green_leaves">Larger than a person (200 cm) but with somewhat green leaves</string>-->
-    <!--    <string name="lbl_dark_green_leaves">Larger than a person (200 cm) but with dark green leaves</string>-->
-
     <string name="lbl_knee_height">About knee height</string>
-    <string name="lbl_chest_height">About chest height</string>
+    <string name="lbl_chest_height">Between knee and chest high with yellowish leaves</string>
     <string name="lbl_yellowish_leaves">Taller than a person with yellow leaves</string>
     <string name="lbl_green_leaves">Taller than a person with green leaves</string>
     <string name="lbl_dark_green_leaves">Taller than a person with dark green leaves</string>

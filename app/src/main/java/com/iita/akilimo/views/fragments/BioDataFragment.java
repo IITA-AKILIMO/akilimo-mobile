@@ -170,7 +170,7 @@ public class BioDataFragment extends BaseStepFragment {
         firstName = edtFirstName.getText().toString();
         lastName = edtLastName.getText().toString();
         farmName = edtFamName.getText().toString();
-        email = edtEmail.getText().toString();
+        email = edtEmail.getText().toString().trim();
         userEnteredNumber = edtPhone.getText().toString();
         fullMobileNumber = ccp.getFullNumber();
         mobileCode = ccp.getSelectedCountryCodeWithPlus();
