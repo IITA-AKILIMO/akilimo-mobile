@@ -14,10 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
-import com.iita.akilimo.adapters.FertilizerGridAdapter;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityFertilizerRecBinding;
+import com.iita.akilimo.entities.AdviceStatus;
 import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
@@ -123,26 +123,7 @@ public class FertilizerRecActivity extends BaseActivity {
                 Crashlytics.logException(ex);
             }
         });
-        setAdapter();
-    }
 
-    private List<RecommendationOptions> getRecItems() {
-        List<RecommendationOptions> myItems = new ArrayList<>();
-        myItems.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
-        myItems.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS, 0));
-        myItems.add(new RecommendationOptions(investmentString, EnumAdviceTasks.INVESTMENT_AMOUNT, 0));
-        myItems.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, 0));
-
-        return myItems;
-    }
-
-    @Override
-    protected void validate(boolean backPressed) {
-        throw new UnsupportedOperationException();
-    }
-
-    private void setAdapter() {
-        // on item list clicked
         mAdapter.setOnItemClickListener((view, obj, position) -> {
             Intent intent = null;
             EnumAdviceTasks advice = obj.getAdviceName();
@@ -173,6 +154,29 @@ public class FertilizerRecActivity extends BaseActivity {
                 Snackbar.make(view, "Item " + obj.getRecName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
             }
         });
-
     }
+
+    private List<RecommendationOptions> getRecItems() {
+        List<RecommendationOptions> myItems = new ArrayList<>();
+        myItems.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0, checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)));
+        myItems.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS, 0, checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS)));
+        myItems.add(new RecommendationOptions(investmentString, EnumAdviceTasks.INVESTMENT_AMOUNT, 0, checkStatus(EnumAdviceTasks.INVESTMENT_AMOUNT)));
+        myItems.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, 0, checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)));
+
+        return myItems;
+    }
+
+    private AdviceStatus checkStatus(EnumAdviceTasks taskName) {
+        AdviceStatus adviceStatus = database.adviceStatusDao().findOne(taskName.name());
+        if (adviceStatus != null) {
+            return adviceStatus;
+        }
+        return new AdviceStatus(0, taskName.name(), false);
+    }
+
+    @Override
+    protected void validate(boolean backPressed) {
+        throw new UnsupportedOperationException();
+    }
+
 }

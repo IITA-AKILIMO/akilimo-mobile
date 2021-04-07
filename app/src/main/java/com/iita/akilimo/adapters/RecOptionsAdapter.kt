@@ -80,7 +80,7 @@ class RecOptionsAdapter(
             name.text = recModel.recName
             var icon = R.drawable.ic_info
             var statusColor = ContextCompat.getColor(itemView.context, R.color.red_400)
-            if (recModel.completed) {
+            if (recModel.adviceStatus!!.completed) {
                 icon = R.drawable.ic_done
                 statusColor = ContextCompat.getColor(itemView.context, R.color.green_600)
             }
