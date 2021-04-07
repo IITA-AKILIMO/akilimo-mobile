@@ -30,7 +30,7 @@ import com.iita.akilimo.entities.*
         StarchFactory::class,
         UseCases::class,
         Currency::class,
-        UseCaseStepStatus::class
+        AdviceStatus::class
     ], version = 1, exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -58,7 +58,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun scheduleDateDao(): ScheduleDateDao
     abstract fun starchFactoryDao(): StarchFactoryDao
     abstract fun useCaseDao(): UseCaseDao
-    abstract fun useCaseStepStatusDao(): UseCaseStepStatusDao
+    abstract fun adviceStatusDao(): AdviceStatusDao
     abstract fun currencyDao(): CurrencyDao
 
 

@@ -8,6 +8,7 @@ import com.crashlytics.android.Crashlytics
 import com.iita.akilimo.BuildConfig
 import com.iita.akilimo.dao.AppDatabase.Companion.getDatabase
 import com.iita.akilimo.inherit.BaseActivity
+import com.iita.akilimo.views.activities.usecases.FertilizerRecActivity
 import com.iita.akilimo.views.activities.usecases.RecommendationsActivity
 
 
@@ -41,14 +42,16 @@ class SplashActivity : BaseActivity() {
     private fun launchActivity() {
         try {
             if (!BuildConfig.DEBUG) {
+                //For developers sanity no data is cleared in debug mode
                 getDatabase(this)?.clearAllTables()
             }
         } catch (ex: Exception) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
             Crashlytics.logException(ex)
         }
-        val intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
+//        val intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
 //        val intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
+        val intent = Intent(this@SplashActivity, FertilizerRecActivity::class.java)
 //        val intent = Intent(this@SplashActivity, RootYieldActivity::class.java)
 //        val intent = Intent(this@SplashActivity, InvestmentAmountActivity::class.java)
         startActivity(intent)
