@@ -278,7 +278,7 @@ public class CassavaMarketActivity extends BaseActivity {
         }
 
 
-        database.adviceStatusDao().insert(new AdviceStatus(EnumAdviceTasks.PLANTING_AND_HARVEST.name(), dataIsValid));
+        database.adviceStatusDao().insert(new AdviceStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA.name(), dataIsValid));
 
         if (dataIsValid) {
             try {

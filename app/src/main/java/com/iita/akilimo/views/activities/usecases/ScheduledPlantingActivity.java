@@ -89,6 +89,9 @@ public class ScheduledPlantingActivity extends BaseActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(mAdapter);
+
+        
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
             useCases = database.useCaseDao().findOne();
@@ -111,19 +114,6 @@ public class ScheduledPlantingActivity extends BaseActivity {
                 Crashlytics.logException(ex);
             }
         });
-        setAdapter();
-    }
-
-    @Override
-    protected void validate(boolean backPressed) {
-        throw new UnsupportedOperationException();
-    }
-
-    private void setAdapter() {
-        //set data and list adapter
-        items = getRecItems();
-        mAdapter.setData(items, ItemAnimation.LEFT_RIGHT);
-        recyclerView.setAdapter(mAdapter);
 
         // on item list clicked
         mAdapter.setOnItemClickListener((view, obj, position) -> {
@@ -148,11 +138,22 @@ public class ScheduledPlantingActivity extends BaseActivity {
                 Snackbar.make(view, "Item " + obj.getRecName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
             }
         });
+        setAdapter();
     }
+
+    @Override
+    protected void validate(boolean backPressed) {
+        throw new UnsupportedOperationException();
+    }
+
 
     @Override
     protected void onResume() {
         super.onResume();
+        setAdapter();
+    }
+
+    private void setAdapter() {
         items = getRecItems();
         mAdapter.setData(items);
     }

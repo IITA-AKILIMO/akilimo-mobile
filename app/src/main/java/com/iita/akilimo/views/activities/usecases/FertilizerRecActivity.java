@@ -95,11 +95,7 @@ public class FertilizerRecActivity extends BaseActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
-        //set data and list adapter
-        items = getRecItems();
-        mAdapter.setData(items);
         recyclerView.setAdapter(mAdapter);
-
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
             useCases = database.useCaseDao().findOne();
@@ -124,7 +120,6 @@ public class FertilizerRecActivity extends BaseActivity {
                 Crashlytics.logException(ex);
             }
         });
-
         mAdapter.setOnItemClickListener((view, obj, position) -> {
             Intent intent = null;
             EnumAdviceTasks advice = obj.getAdviceName();
@@ -155,6 +150,21 @@ public class FertilizerRecActivity extends BaseActivity {
                 Snackbar.make(view, "Item " + obj.getRecName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
             }
         });
+
+        setAdapter();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setAdapter();
+    }
+
+    private void setAdapter() {
+        //set data and list adapter
+        items = getRecItems();
+        mAdapter.setData(items);
+        recyclerView.setAdapter(mAdapter);
     }
 
     private List<RecommendationOptions> getRecItems() {

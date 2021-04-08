@@ -104,8 +104,9 @@ public class PlantingPracticesActivity extends BaseActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(mAdapter);
+
         btnGetRec.setOnClickListener(view -> {
-            //launch the recommendation view
             try {
                 if (useCases == null) {
                     useCases = new UseCases();
@@ -127,20 +128,7 @@ public class PlantingPracticesActivity extends BaseActivity {
             }
         });
 
-        setAdapter();
-    }
 
-    @Override
-    protected void validate(boolean backPressed) {
-        throw new UnsupportedOperationException();
-    }
-
-    private void setAdapter() {
-        //set data and list adapter
-        items = getRecItems();
-        mAdapter.setData(items);
-        recyclerView.setAdapter(mAdapter);
-        // on item list clicked
         mAdapter.setOnItemClickListener((view, obj, position) -> {
             //let us process the data
             Intent intent = null;
@@ -173,6 +161,23 @@ public class PlantingPracticesActivity extends BaseActivity {
             }
         });
 
+        setAdapter();
+    }
+
+    @Override
+    protected void validate(boolean backPressed) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setAdapter();
+    }
+
+    private void setAdapter() {
+        items = getRecItems();
+        mAdapter.setData(items);
     }
 
     private List<RecommendationOptions> getRecItems() {

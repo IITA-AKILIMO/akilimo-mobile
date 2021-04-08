@@ -78,7 +78,7 @@ public class InterCropRecActivity extends BaseActivity {
 
         database = AppDatabase.getDatabase(context);
 
-
+        mAdapter = new RecOptionsAdapter();
         ProfileInfo profileInfo = database.profileInfoDao().findOne();
         if (profileInfo != null) {
             countryCode = profileInfo.getCountryCode();
@@ -125,6 +125,8 @@ public class InterCropRecActivity extends BaseActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(mAdapter);
+
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
             useCases = database.useCaseDao().findOne();
@@ -149,20 +151,7 @@ public class InterCropRecActivity extends BaseActivity {
             }
 
         });
-        setAdapter();
-    }
 
-    @Override
-    protected void validate(boolean backPressed) {
-        throw new UnsupportedOperationException();
-    }
-
-    private void setAdapter() {
-        //set data and list adapter
-        items = getRecItems();
-
-        mAdapter = new RecOptionsAdapter(this, items, ItemAnimation.FADE_IN);
-        recyclerView.setAdapter(mAdapter);
 
         mAdapter.setOnItemClickListener((view, obj, position) -> {
             Intent intent = null;
@@ -201,7 +190,25 @@ public class InterCropRecActivity extends BaseActivity {
             }
         });
 
+        setAdapter();
     }
+
+    @Override
+    protected void validate(boolean backPressed) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setAdapter();
+    }
+
+    private void setAdapter() {
+        items = getRecItems();
+        mAdapter.setData(items);
+    }
+
 
     private List<RecommendationOptions> getRecItems() {
         List<RecommendationOptions> myItems = new ArrayList<>();
