@@ -2,6 +2,7 @@ package com.iita.akilimo.utils.enums
 
 enum class EnumAdviceTasks {
     PLANTING_AND_HARVEST,
+    AVAILABLE_FERTILIZERS,
     AVAILABLE_FERTILIZERS_CIS,
     AVAILABLE_FERTILIZERS_CIM,
     INVESTMENT_AMOUNT,

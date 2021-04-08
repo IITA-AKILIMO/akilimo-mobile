@@ -18,10 +18,12 @@ import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityDatesBinding;
+import com.iita.akilimo.entities.AdviceStatus;
 import com.iita.akilimo.entities.ScheduledDate;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.DateHelper;
 import com.iita.akilimo.utils.Tools;
+import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.views.fragments.dialog.DateDialogPickerFragment;
 
 import org.joda.time.LocalDate;
@@ -237,6 +239,9 @@ public class DatesActivity extends BaseActivity {
             scheduledDate.setAlreadyPlanted(alreadyPlanted);
 
             database.scheduleDateDao().insert(scheduledDate);
+
+            database.adviceStatusDao().insert(new AdviceStatus(EnumAdviceTasks.PLANTING_AND_HARVEST.name(), true));
+
             closeActivity(backPressed);
 
         } catch (Exception ex) {

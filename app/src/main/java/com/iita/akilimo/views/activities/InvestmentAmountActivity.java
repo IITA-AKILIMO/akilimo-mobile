@@ -21,12 +21,14 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.iita.akilimo.R;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityInvestmentAmountBinding;
+import com.iita.akilimo.entities.AdviceStatus;
 import com.iita.akilimo.entities.InvestmentAmount;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.CurrencyCode;
 import com.iita.akilimo.utils.MathHelper;
+import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.mynameismidori.currencypicker.ExtendedCurrency;
 
 ;import java.util.Objects;
@@ -184,6 +186,8 @@ public class InvestmentAmountActivity extends BaseActivity {
                 invAmount.setFieldSize(fieldSizeAcre);
 
                 database.investmentAmountDao().insert(invAmount);
+                database.adviceStatusDao().insert(new AdviceStatus(EnumAdviceTasks.INVESTMENT_AMOUNT.name(), true));
+
                 closeActivity(false);
             } catch (Exception ex) {
                 Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();

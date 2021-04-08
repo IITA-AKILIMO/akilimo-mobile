@@ -29,28 +29,29 @@
                 android:padding="@dimen/spacing_large">
 
                 <RelativeLayout
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:layout_marginTop="1dp">
 
                     <ImageView
+                        android:id="@+id/statusImageCircle"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
                         android:layout_marginBottom="0dp"
                         android:contentDescription="@string/app_name"
-                        android:tint="@color/grey_10"
-                        app:srcCompat="@drawable/shape_circle" />
+                        app:srcCompat="@drawable/shape_circle"
+                        app:tint="@color/grey_10" />
 
                     <ImageView
                         android:id="@+id/statusImage"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:contentDescription="@string/app_name"
-                        android:tint="@color/colorPrimary"
-                        app:srcCompat="@drawable/ic_left_arrow" />
+                        app:srcCompat="@drawable/ic_left_arrow"
+                        app:tint="@color/colorPrimary" />
 
                 </RelativeLayout>
 
@@ -69,7 +70,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto"
-                        android:text="@string/lbl_scheduled_planting_and_harvest"
+                        android:text="@string/lbl_typical_yield"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/grey_80" />
 

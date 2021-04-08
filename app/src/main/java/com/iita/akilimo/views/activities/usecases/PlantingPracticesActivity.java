@@ -11,7 +11,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
@@ -23,6 +22,7 @@ import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
+import com.iita.akilimo.utils.enums.EnumCountry;
 import com.iita.akilimo.utils.enums.EnumUseCase;
 import com.iita.akilimo.views.activities.CassavaMarketActivity;
 import com.iita.akilimo.views.activities.DatesActivity;
@@ -74,7 +74,7 @@ public class PlantingPracticesActivity extends BaseActivity {
         btnGetRec = binding.singleButton.btnGetRecommendation;
 
         useCases = database.useCaseDao().findOne();
-
+        mAdapter = new RecOptionsAdapter();
         initToolbar();
         initComponent();
     }
@@ -104,8 +104,9 @@ public class PlantingPracticesActivity extends BaseActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(mAdapter);
+
         btnGetRec.setOnClickListener(view -> {
-            //launch the recommendation view
             try {
                 if (useCases == null) {
                     useCases = new UseCases();
@@ -127,32 +128,11 @@ public class PlantingPracticesActivity extends BaseActivity {
             }
         });
 
-        setAdapter();
-    }
 
-    @Override
-    protected void validate(boolean backPressed) {
-        throw new UnsupportedOperationException();
-    }
-
-    private void setAdapter() {
-        //set data and list adapter
-        items = new ArrayList<>();
-
-//        items.add(new RecommendationOptions(plantingString, EnumAdviceTasks.PLANTING_AND_HARVEST, 0));
-        items.add(new RecommendationOptions(manualTillageCostsString, EnumAdviceTasks.MANUAL_TILLAGE_COST, 0));
-        items.add(new RecommendationOptions(tractorAccessString, EnumAdviceTasks.TRACTOR_ACCESS, 0));
-        items.add(new RecommendationOptions(weedControlCostString, EnumAdviceTasks.COST_OF_WEED_CONTROL, 0));
-        items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, 0));
-        items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
-        mAdapter = new RecOptionsAdapter(this, items, ItemAnimation.FADE_IN);
-        recyclerView.setAdapter(mAdapter);
-
-        // on item list clicked
         mAdapter.setOnItemClickListener((view, obj, position) -> {
             //let us process the data
             Intent intent = null;
-            EnumAdviceTasks advice = obj.getRecCode();
+            EnumAdviceTasks advice = obj.getAdviceName();
             switch (advice) {
                 case PLANTING_AND_HARVEST:
                     intent = new Intent(context, DatesActivity.class);
@@ -177,9 +157,37 @@ public class PlantingPracticesActivity extends BaseActivity {
                 startActivity(intent);
                 openActivity();
             } else {
-                Snackbar.make(view, "Item " + obj.getRecommendationName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(view, "Item " + obj.getRecName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
             }
         });
 
+        setAdapter();
+    }
+
+    @Override
+    protected void validate(boolean backPressed) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setAdapter();
+    }
+
+    private void setAdapter() {
+        items = getRecItems();
+        mAdapter.setData(items);
+    }
+
+    private List<RecommendationOptions> getRecItems() {
+        List<RecommendationOptions> myItems = new ArrayList<>();
+//        items.add(new RecommendationOptions(plantingString, EnumAdviceTasks.PLANTING_AND_HARVEST, 0));
+        myItems.add(new RecommendationOptions(manualTillageCostsString, EnumAdviceTasks.MANUAL_TILLAGE_COST, checkStatus(EnumAdviceTasks.MANUAL_TILLAGE_COST)));
+        myItems.add(new RecommendationOptions(tractorAccessString, EnumAdviceTasks.TRACTOR_ACCESS, checkStatus(EnumAdviceTasks.TRACTOR_ACCESS)));
+        myItems.add(new RecommendationOptions(weedControlCostString, EnumAdviceTasks.COST_OF_WEED_CONTROL, checkStatus(EnumAdviceTasks.COST_OF_WEED_CONTROL)));
+        myItems.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)));
+        myItems.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)));
+        return myItems;
     }
 }

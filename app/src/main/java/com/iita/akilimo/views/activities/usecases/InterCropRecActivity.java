@@ -18,6 +18,7 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityInterCropRecBinding;
+import com.iita.akilimo.entities.AdviceStatus;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.inherit.BaseActivity;
@@ -77,7 +78,7 @@ public class InterCropRecActivity extends BaseActivity {
 
         database = AppDatabase.getDatabase(context);
 
-
+        mAdapter = new RecOptionsAdapter();
         ProfileInfo profileInfo = database.profileInfoDao().findOne();
         if (profileInfo != null) {
             countryCode = profileInfo.getCountryCode();
@@ -124,6 +125,8 @@ public class InterCropRecActivity extends BaseActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(mAdapter);
+
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
             useCases = database.useCaseDao().findOne();
@@ -148,36 +151,11 @@ public class InterCropRecActivity extends BaseActivity {
             }
 
         });
-        setAdapter();
-    }
 
-    @Override
-    protected void validate(boolean backPressed) {
-        throw new UnsupportedOperationException();
-    }
-
-    private void setAdapter() {
-        //set data and list adapter
-        items = new ArrayList<>();
-        if (countryCode.equalsIgnoreCase(EnumCountry.Nigeria.countryCode())) {
-            icMaize = true;
-            items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM, 0));
-            items.add(new RecommendationOptions(maizeHeightString, EnumAdviceTasks.MAIZE_PERFORMANCE, 0));
-//            items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
-            items.add(new RecommendationOptions(marketOutletMaizeString, EnumAdviceTasks.MARKET_OUTLET_MAIZE, 0));
-        } else if (countryCode.equalsIgnoreCase(EnumCountry.Tanzania.countryCode())) {
-            icPotato = true;
-            items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS, 0));
-            items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
-            items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, 0));
-            items.add(new RecommendationOptions(sweetPotatoPricesString, EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO, 0));
-        }
-        mAdapter = new RecOptionsAdapter(this, items, ItemAnimation.FADE_IN);
-        recyclerView.setAdapter(mAdapter);
 
         mAdapter.setOnItemClickListener((view, obj, position) -> {
             Intent intent = null;
-            EnumAdviceTasks advice = obj.getRecCode();
+            EnumAdviceTasks advice = obj.getAdviceName();
             switch (advice) {
                 case PLANTING_AND_HARVEST:
                     intent = new Intent(context, DatesActivity.class);
@@ -208,9 +186,44 @@ public class InterCropRecActivity extends BaseActivity {
                 startActivity(intent);
                 openActivity();
             } else {
-                Snackbar.make(view, "Item " + obj.getRecommendationName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(view, "Item " + obj.getRecName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
             }
         });
 
+        setAdapter();
+    }
+
+    @Override
+    protected void validate(boolean backPressed) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setAdapter();
+    }
+
+    private void setAdapter() {
+        items = getRecItems();
+        mAdapter.setData(items);
+    }
+
+
+    private List<RecommendationOptions> getRecItems() {
+        List<RecommendationOptions> myItems = new ArrayList<>();
+        if (countryCode.equalsIgnoreCase(EnumCountry.Nigeria.countryCode())) {
+            icMaize = true;
+            myItems.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM, checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM)));
+            myItems.add(new RecommendationOptions(maizeHeightString, EnumAdviceTasks.MAIZE_PERFORMANCE, checkStatus(EnumAdviceTasks.MAIZE_PERFORMANCE)));
+            myItems.add(new RecommendationOptions(marketOutletMaizeString, EnumAdviceTasks.MARKET_OUTLET_MAIZE, checkStatus(EnumAdviceTasks.MARKET_OUTLET_MAIZE)));
+        } else if (countryCode.equalsIgnoreCase(EnumCountry.Tanzania.countryCode())) {
+            icPotato = true;
+            myItems.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS, checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS)));
+            myItems.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)));
+            myItems.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)));
+            myItems.add(new RecommendationOptions(sweetPotatoPricesString, EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO, checkStatus(EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO)));
+        }
+        return myItems;
     }
 }

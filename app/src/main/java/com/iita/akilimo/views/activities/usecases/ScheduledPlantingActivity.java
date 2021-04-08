@@ -60,6 +60,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
         database = AppDatabase.getDatabase(context);
 
 
+        mAdapter = new RecOptionsAdapter();
         toolbar = binding.toolbarLayout.toolbar;
         recyclerView = binding.recyclerView;
         btnGetRec = binding.singleButton.btnGetRecommendation;
@@ -88,6 +89,9 @@ public class ScheduledPlantingActivity extends BaseActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(mAdapter);
+
+        
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
             useCases = database.useCaseDao().findOne();
@@ -110,30 +114,12 @@ public class ScheduledPlantingActivity extends BaseActivity {
                 Crashlytics.logException(ex);
             }
         });
-        setAdapter();
-    }
-
-    @Override
-    protected void validate(boolean backPressed) {
-        throw new UnsupportedOperationException();
-    }
-
-    private void setAdapter() {
-        //set data and list adapter
-        items = new ArrayList<>();
-
-        items.add(new RecommendationOptions(plantingString, EnumAdviceTasks.PLANTING_AND_HARVEST, 0));
-        items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, 0));
-        items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
-
-        mAdapter = new RecOptionsAdapter(this, items, ItemAnimation.RIGHT_LEFT);
-        recyclerView.setAdapter(mAdapter);
 
         // on item list clicked
         mAdapter.setOnItemClickListener((view, obj, position) -> {
             //let us process the data
             Intent intent = null;
-            EnumAdviceTasks advice = obj.getRecCode();
+            EnumAdviceTasks advice = obj.getAdviceName();
             switch (advice) {
                 case PLANTING_AND_HARVEST:
                     intent = new Intent(context, DatesActivity.class);
@@ -149,8 +135,34 @@ public class ScheduledPlantingActivity extends BaseActivity {
                 startActivity(intent);
                 openActivity();
             } else {
-                Snackbar.make(view, "Item " + obj.getRecommendationName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(view, "Item " + obj.getRecName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
             }
         });
+        setAdapter();
+    }
+
+    @Override
+    protected void validate(boolean backPressed) {
+        throw new UnsupportedOperationException();
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setAdapter();
+    }
+
+    private void setAdapter() {
+        items = getRecItems();
+        mAdapter.setData(items);
+    }
+
+    private List<RecommendationOptions> getRecItems() {
+        List<RecommendationOptions> myItems = new ArrayList<>();
+        myItems.add(new RecommendationOptions(plantingString, EnumAdviceTasks.PLANTING_AND_HARVEST, checkStatus(EnumAdviceTasks.PLANTING_AND_HARVEST)));
+        myItems.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)));
+        myItems.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)));
+        return myItems;
     }
 }

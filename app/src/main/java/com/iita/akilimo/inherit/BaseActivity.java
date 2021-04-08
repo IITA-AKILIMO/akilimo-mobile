@@ -23,8 +23,10 @@ import com.google.android.gms.common.util.Strings;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.iita.akilimo.R;
 import com.iita.akilimo.dao.AppDatabase;
+import com.iita.akilimo.entities.AdviceStatus;
 import com.iita.akilimo.utils.FireBaseConfig;
 import com.iita.akilimo.utils.SessionManager;
+import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.enums.EnumCountry;
 import com.iita.akilimo.utils.enums.EnumUseCase;
 import com.iita.akilimo.views.activities.DstRecommendationActivity;
@@ -261,5 +263,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
 
         return desiredLocale;
+    }
+
+    protected AdviceStatus checkStatus(EnumAdviceTasks taskName) {
+        if (database != null) {
+            AdviceStatus adviceStatus = database.adviceStatusDao().findOne(taskName.name());
+            if (adviceStatus != null) {
+                return adviceStatus;
+            }
+        }
+        return new AdviceStatus(taskName.name(), false);
     }
 }
