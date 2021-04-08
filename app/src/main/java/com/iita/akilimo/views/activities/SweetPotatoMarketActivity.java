@@ -134,11 +134,14 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             potatoUnitOfSaleRadioIndex = potatoMarket.getPotatoUnitOfSaleRadioIndex();
             potatoUnitPriceRadioIndex = potatoMarket.getPotatoUnitPriceRadioIndex();
 
-            rdgPotatoProduceType.check(produceTypeRadioIndex);
-            rdgUnitOfSalePotato.check(potatoUnitOfSaleRadioIndex);
+
             unitPrice = potatoMarket.getUnitPrice();
             unitOfSale = potatoMarket.getUnitOfSale();
-            unitPrice = potatoMarket.getUnitPrice();
+            unitWeight = potatoMarket.getUnitWeight();
+            rdgPotatoProduceType.check(produceTypeRadioIndex);
+            if (unitWeight > 0) {
+                rdgUnitOfSalePotato.check(potatoUnitOfSaleRadioIndex);
+            }
         }
         rdgUnitOfSalePotato.setOnCheckedChangeListener((group, radioIndex) -> {
             switch (radioIndex) {
@@ -282,7 +285,11 @@ public class SweetPotatoMarketActivity extends BaseActivity {
         priceDialogFragment.setArguments(arguments);
 
         priceDialogFragment.setOnDismissListener((selectedPrice, isExactPrice) -> {
-            unitPrice = isExactPrice ? selectedPrice : mathHelper.convertToUnitWeightPrice(selectedPrice, unitWeight);
+            if (isExactPrice) {
+                unitPrice = selectedPrice;
+            } else {
+                unitPrice = mathHelper.convertToUnitWeightPrice(selectedPrice, unitWeight);
+            }
         });
 
         FragmentTransaction fragmentTransaction;
