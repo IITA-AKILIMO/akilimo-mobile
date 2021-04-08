@@ -44,7 +44,7 @@
             android:layout_below="@id/title"
             android:scrollbars="vertical"
             android:scrollingCache="true"
-            tools:listitem="@layout/item_card_recommendation_arrow" />
+            tools:listitem="@layout/item_card_recommendation_no_arrow" />
 
         <include
             android:id="@+id/single_button"
