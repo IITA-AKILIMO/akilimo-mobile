@@ -166,14 +166,6 @@ public class FertilizerRecActivity extends BaseActivity {
         return myItems;
     }
 
-    private AdviceStatus checkStatus(EnumAdviceTasks taskName) {
-        AdviceStatus adviceStatus = database.adviceStatusDao().findOne(taskName.name());
-        if (adviceStatus != null) {
-            return adviceStatus;
-        }
-        return new AdviceStatus(taskName.name(), false);
-    }
-
     @Override
     protected void validate(boolean backPressed) {
         throw new UnsupportedOperationException();
