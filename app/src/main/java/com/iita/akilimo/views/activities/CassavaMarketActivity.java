@@ -26,6 +26,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityCassavaMarketBinding;
+import com.iita.akilimo.entities.AdviceStatus;
 import com.iita.akilimo.entities.CassavaMarket;
 import com.iita.akilimo.entities.CassavaPrice;
 import com.iita.akilimo.entities.ProfileInfo;
@@ -36,6 +37,7 @@ import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.Tools;
+import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.enums.EnumCassavaProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 import com.iita.akilimo.utils.enums.EnumUseCase;
@@ -275,6 +277,8 @@ public class CassavaMarketActivity extends BaseActivity {
             return;
         }
 
+
+        database.adviceStatusDao().insert(new AdviceStatus(EnumAdviceTasks.PLANTING_AND_HARVEST.name(), dataIsValid));
 
         if (dataIsValid) {
             try {

@@ -18,10 +18,12 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.MaizePerformanceAdapter;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityMaizePerformanceActivityBinding;
+import com.iita.akilimo.entities.AdviceStatus;
 import com.iita.akilimo.entities.MaizePerformance;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.Tools;
+import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.views.fragments.dialog.MaizePerformanceDialogFragment;
 import com.iita.akilimo.views.fragments.dialog.RootYieldDialogFragment;
 import com.iita.akilimo.widget.SpacingItemDecoration;
@@ -189,6 +191,7 @@ public class MaizePerformanceActivity extends BaseActivity {
             showCustomWarningDialog(getString(R.string.lbl_invalid_selection), getString(R.string.lbl_maize_performance_prompt));
             return;
         }
+        database.adviceStatusDao().insert(new AdviceStatus(EnumAdviceTasks.MAIZE_PERFORMANCE.name(), true));
         closeActivity(backPressed);
     }
 

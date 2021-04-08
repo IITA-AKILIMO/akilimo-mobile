@@ -19,6 +19,7 @@ import com.crashlytics.android.Crashlytics;
 import com.iita.akilimo.R;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityTractorAccessBinding;
+import com.iita.akilimo.entities.AdviceStatus;
 import com.iita.akilimo.entities.Currency;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.FieldOperationCost;
@@ -27,6 +28,7 @@ import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.CostBaseActivity;
 import com.iita.akilimo.models.OperationCost;
 import com.iita.akilimo.utils.MathHelper;
+import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.enums.EnumOperation;
 import com.iita.akilimo.utils.enums.EnumOperationType;
 import com.iita.akilimo.views.fragments.dialog.OperationCostsDialogFragment;
@@ -197,6 +199,7 @@ public class TractorAccessActivity extends CostBaseActivity {
             fieldOperationCost.setExactTractorRidgePrice(exactRidgeCost);
 
             database.fieldOperationCostDao().insert(fieldOperationCost);
+            database.adviceStatusDao().insert(new AdviceStatus(EnumAdviceTasks.TRACTOR_ACCESS.name(), true));
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

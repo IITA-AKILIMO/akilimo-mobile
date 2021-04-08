@@ -25,6 +25,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityMaizeMarketBinding;
+import com.iita.akilimo.entities.AdviceStatus;
 import com.iita.akilimo.entities.Currency;
 import com.iita.akilimo.entities.MaizeMarket;
 import com.iita.akilimo.entities.MaizePrice;
@@ -35,6 +36,7 @@ import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.Tools;
+import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.enums.EnumMaizeProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 import com.iita.akilimo.views.fragments.dialog.MaizePriceDialogFragment;
@@ -266,6 +268,7 @@ public class MaizeMarketActivity extends BaseActivity {
         }
 
 
+        database.adviceStatusDao().insert(new AdviceStatus(EnumAdviceTasks.MARKET_OUTLET_MAIZE.name(), dataIsValid));
         if (dataIsValid) {
             try {
 

@@ -158,10 +158,10 @@ public class FertilizerRecActivity extends BaseActivity {
 
     private List<RecommendationOptions> getRecItems() {
         List<RecommendationOptions> myItems = new ArrayList<>();
-        myItems.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0, checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)));
-        myItems.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS, 0, checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS)));
-        myItems.add(new RecommendationOptions(investmentString, EnumAdviceTasks.INVESTMENT_AMOUNT, 0, checkStatus(EnumAdviceTasks.INVESTMENT_AMOUNT)));
-        myItems.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, 0, checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)));
+        myItems.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)));
+        myItems.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS, checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS)));
+        myItems.add(new RecommendationOptions(investmentString, EnumAdviceTasks.INVESTMENT_AMOUNT, checkStatus(EnumAdviceTasks.INVESTMENT_AMOUNT)));
+        myItems.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)));
 
         return myItems;
     }

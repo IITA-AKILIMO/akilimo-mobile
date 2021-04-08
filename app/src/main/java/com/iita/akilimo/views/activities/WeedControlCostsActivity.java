@@ -16,6 +16,7 @@ import com.google.android.gms.common.util.Strings;
 import com.iita.akilimo.R;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityWeedControlCostBinding;
+import com.iita.akilimo.entities.AdviceStatus;
 import com.iita.akilimo.entities.Currency;
 import com.iita.akilimo.entities.CurrentPractice;
 import com.iita.akilimo.entities.FieldOperationCost;
@@ -23,6 +24,7 @@ import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
+import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 
 ;
 
@@ -198,6 +200,7 @@ public class WeedControlCostsActivity extends BaseActivity {
             fieldOperationCost.setSecondWeedingOperationCost(secondOperationCost);
 
             database.fieldOperationCostDao().insert(fieldOperationCost);
+            database.adviceStatusDao().insert(new AdviceStatus(EnumAdviceTasks.COST_OF_WEED_CONTROL.name(), true));
 
             closeActivity(backPressed);
         } catch (Exception ex) {

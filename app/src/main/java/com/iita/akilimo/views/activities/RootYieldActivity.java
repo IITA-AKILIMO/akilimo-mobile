@@ -19,6 +19,7 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.FieldYieldAdapter;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityRootYieldBinding;
+import com.iita.akilimo.entities.AdviceStatus;
 import com.iita.akilimo.entities.FieldYield;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.ProfileInfo;
@@ -26,6 +27,7 @@ import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.Tools;
+import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.enums.EnumUseCase;
 import com.iita.akilimo.views.fragments.dialog.FertilizerPriceDialogFragment;
 import com.iita.akilimo.views.fragments.dialog.RootYieldDialogFragment;
@@ -193,6 +195,8 @@ public class RootYieldActivity extends BaseActivity {
             showCustomWarningDialog(getString(R.string.lbl_invalid_yield), getString(R.string.lbl_current_field_yield_prompt), getString(R.string.lbl_ok));
             return;
         }
+        database.adviceStatusDao().insert(new AdviceStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD.name(), true));
+
         closeActivity(backPressed);
     }
 

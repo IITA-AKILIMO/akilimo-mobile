@@ -18,6 +18,7 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityInterCropRecBinding;
+import com.iita.akilimo.entities.AdviceStatus;
 import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.inherit.BaseActivity;

@@ -11,6 +11,7 @@ class RecommendationOptions {
 
     constructor() {}
 
+    @Deprecated("Removed this no need to pass image id now")
     constructor(recName: String, adviceName: EnumAdviceTasks, statusImage: Int) {
         this.recName = recName
         this.adviceName = adviceName
@@ -20,7 +21,6 @@ class RecommendationOptions {
     constructor(
         recName: String,
         adviceName: EnumAdviceTasks,
-        statusImage: Int,
         adviceStatus: AdviceStatus
     ) {
         this.recName = recName
