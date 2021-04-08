@@ -195,7 +195,7 @@ pipeline {
           steps {
                 androidApkUpload filesPattern: '**/build/outputs/**/*-release.aab', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB', text: '''This update includes:
                 - New content
-                - New features
+                - New UI features
                 - Bug fixes
                 - Performance improvements''']], rolloutPercentage: '100', trackName: 'production'
           }
@@ -209,7 +209,7 @@ pipeline {
           steps {
                 androidApkUpload filesPattern: '**/build/outputs/**/*-release.apk', googleCredentialsId: 'akilimoservice-account', recentChangeList: [[language: 'en-GB', text: '''This update includes:
                 - New content
-                - New features
+                - New UI features
                 - Bug fixes
                 - Performance improvements''']], rolloutPercentage: '100', trackName: 'production'
           }
