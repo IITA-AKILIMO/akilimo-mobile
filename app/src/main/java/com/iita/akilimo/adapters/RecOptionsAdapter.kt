@@ -10,18 +10,18 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.iita.akilimo.R
 import com.iita.akilimo.databinding.ItemCardRecommendationArrowBinding
+import com.iita.akilimo.mappers.ComputedResponse
 import com.iita.akilimo.models.RecommendationOptions
 import com.iita.akilimo.utils.ItemAnimation
 import com.iita.akilimo.utils.VectorDrawableUtils
 
-class RecOptionsAdapter(
-    private val ctx: Context,
-    private val items: List<RecommendationOptions>,
-    private val animation_type: Int
-) : RecyclerView.Adapter<RecOptionsAdapter.OriginalViewHolder>() {
+class RecOptionsAdapter : RecyclerView.Adapter<RecOptionsAdapter.OriginalViewHolder>() {
     private var mOnItemClickListener: OnItemClickListener? = null
     private var lastPosition = -1
     private var on_attach = true
+
+    private var animation_type: Int = ItemAnimation.FADE_IN
+    private lateinit var items: List<RecommendationOptions>
     private lateinit var mLayoutInflater: LayoutInflater
 
     interface OnItemClickListener {
@@ -32,6 +32,16 @@ class RecOptionsAdapter(
         mOnItemClickListener = mItemClickListener
     }
 
+    fun setData(items: List<RecommendationOptions>) {
+        this.items = items
+        notifyDataSetChanged()
+    }
+
+    fun setData(items: List<RecommendationOptions>, animation_type: Int) {
+        this.items = items
+        this.animation_type = animation_type
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OriginalViewHolder {
         if (!::mLayoutInflater.isInitialized) {

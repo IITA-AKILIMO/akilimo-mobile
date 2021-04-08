@@ -68,6 +68,7 @@ public class FertilizerRecActivity extends BaseActivity {
 
 
         database = AppDatabase.getDatabase(context);
+        mAdapter = new RecOptionsAdapter();
         initToolbar();
         initComponent();
     }
@@ -96,7 +97,7 @@ public class FertilizerRecActivity extends BaseActivity {
         recyclerView.setHasFixedSize(true);
         //set data and list adapter
         items = getRecItems();
-        mAdapter = new RecOptionsAdapter(this, items, ItemAnimation.RIGHT_LEFT);
+        mAdapter.setData(items);
         recyclerView.setAdapter(mAdapter);
 
         btnGetRec.setOnClickListener(view -> {

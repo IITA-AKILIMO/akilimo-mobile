@@ -22,6 +22,7 @@ import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
 import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
+import com.iita.akilimo.utils.enums.EnumCountry;
 import com.iita.akilimo.utils.enums.EnumUseCase;
 import com.iita.akilimo.views.activities.CassavaMarketActivity;
 import com.iita.akilimo.views.activities.DatesActivity;
@@ -73,7 +74,7 @@ public class PlantingPracticesActivity extends BaseActivity {
         btnGetRec = binding.singleButton.btnGetRecommendation;
 
         useCases = database.useCaseDao().findOne();
-
+        mAdapter = new RecOptionsAdapter();
         initToolbar();
         initComponent();
     }
@@ -136,17 +137,9 @@ public class PlantingPracticesActivity extends BaseActivity {
 
     private void setAdapter() {
         //set data and list adapter
-        items = new ArrayList<>();
-
-//        items.add(new RecommendationOptions(plantingString, EnumAdviceTasks.PLANTING_AND_HARVEST, 0));
-        items.add(new RecommendationOptions(manualTillageCostsString, EnumAdviceTasks.MANUAL_TILLAGE_COST, checkStatus(EnumAdviceTasks.MANUAL_TILLAGE_COST)));
-        items.add(new RecommendationOptions(tractorAccessString, EnumAdviceTasks.TRACTOR_ACCESS, checkStatus(EnumAdviceTasks.TRACTOR_ACCESS)));
-        items.add(new RecommendationOptions(weedControlCostString, EnumAdviceTasks.COST_OF_WEED_CONTROL, checkStatus(EnumAdviceTasks.COST_OF_WEED_CONTROL)));
-        items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)));
-        items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)));
-        mAdapter = new RecOptionsAdapter(this, items, ItemAnimation.FADE_IN);
+        items = getRecItems();
+        mAdapter.setData(items);
         recyclerView.setAdapter(mAdapter);
-
         // on item list clicked
         mAdapter.setOnItemClickListener((view, obj, position) -> {
             //let us process the data
@@ -180,5 +173,16 @@ public class PlantingPracticesActivity extends BaseActivity {
             }
         });
 
+    }
+
+    private List<RecommendationOptions> getRecItems() {
+        List<RecommendationOptions> myItems = new ArrayList<>();
+//        items.add(new RecommendationOptions(plantingString, EnumAdviceTasks.PLANTING_AND_HARVEST, 0));
+        myItems.add(new RecommendationOptions(manualTillageCostsString, EnumAdviceTasks.MANUAL_TILLAGE_COST, checkStatus(EnumAdviceTasks.MANUAL_TILLAGE_COST)));
+        myItems.add(new RecommendationOptions(tractorAccessString, EnumAdviceTasks.TRACTOR_ACCESS, checkStatus(EnumAdviceTasks.TRACTOR_ACCESS)));
+        myItems.add(new RecommendationOptions(weedControlCostString, EnumAdviceTasks.COST_OF_WEED_CONTROL, checkStatus(EnumAdviceTasks.COST_OF_WEED_CONTROL)));
+        myItems.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)));
+        myItems.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)));
+        return myItems;
     }
 }
