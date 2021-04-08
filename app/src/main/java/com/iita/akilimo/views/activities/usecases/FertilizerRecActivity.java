@@ -17,6 +17,7 @@ import com.iita.akilimo.R;
 import com.iita.akilimo.adapters.RecOptionsAdapter;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivityFertilizerRecBinding;
+import com.iita.akilimo.entities.AdviceStatus;
 import com.iita.akilimo.entities.UseCases;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.models.RecommendationOptions;
@@ -67,6 +68,7 @@ public class FertilizerRecActivity extends BaseActivity {
 
 
         database = AppDatabase.getDatabase(context);
+        mAdapter = new RecOptionsAdapter();
         initToolbar();
         initComponent();
     }
@@ -93,7 +95,7 @@ public class FertilizerRecActivity extends BaseActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
-
+        recyclerView.setAdapter(mAdapter);
         btnGetRec.setOnClickListener(view -> {
             //launch the recommendation view
             useCases = database.useCaseDao().findOne();
@@ -118,30 +120,9 @@ public class FertilizerRecActivity extends BaseActivity {
                 Crashlytics.logException(ex);
             }
         });
-        setAdapter();
-    }
-
-    @Override
-    protected void validate(boolean backPressed) {
-        throw new UnsupportedOperationException();
-    }
-
-    private void setAdapter() {
-        //set data and list adapter
-        items = new ArrayList<>();
-
-        items.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, 0));
-        items.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS, 0));
-        items.add(new RecommendationOptions(investmentString, EnumAdviceTasks.INVESTMENT_AMOUNT, 0));
-        items.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, 0));
-
-        mAdapter = new RecOptionsAdapter(this, items, ItemAnimation.RIGHT_LEFT);
-        recyclerView.setAdapter(mAdapter);
-
-        // on item list clicked
         mAdapter.setOnItemClickListener((view, obj, position) -> {
             Intent intent = null;
-            EnumAdviceTasks advice = obj.getRecCode();
+            EnumAdviceTasks advice = obj.getAdviceName();
             if (advice == null) {
                 advice = EnumAdviceTasks.NOT_SELECTED;
             }
@@ -149,7 +130,7 @@ public class FertilizerRecActivity extends BaseActivity {
                 case PLANTING_AND_HARVEST:
                     intent = new Intent(context, DatesActivity.class);
                     break;
-                case AVAILABLE_FERTILIZERS_CIS:
+                case AVAILABLE_FERTILIZERS:
                     intent = new Intent(context, FertilizersActivity.class);
                     break;
                 case INVESTMENT_AMOUNT:
@@ -166,9 +147,39 @@ public class FertilizerRecActivity extends BaseActivity {
                 startActivity(intent);
                 openActivity();
             } else {
-                Snackbar.make(view, "Item " + obj.getRecommendationName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(view, "Item " + obj.getRecName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
             }
         });
 
+        setAdapter();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setAdapter();
+    }
+
+    private void setAdapter() {
+        //set data and list adapter
+        items = getRecItems();
+        mAdapter.setData(items);
+        recyclerView.setAdapter(mAdapter);
+    }
+
+    private List<RecommendationOptions> getRecItems() {
+        List<RecommendationOptions> myItems = new ArrayList<>();
+        myItems.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)));
+        myItems.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS, checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS)));
+        myItems.add(new RecommendationOptions(investmentString, EnumAdviceTasks.INVESTMENT_AMOUNT, checkStatus(EnumAdviceTasks.INVESTMENT_AMOUNT)));
+        myItems.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)));
+
+        return myItems;
+    }
+
+    @Override
+    protected void validate(boolean backPressed) {
+        throw new UnsupportedOperationException();
+    }
+
 }

@@ -23,6 +23,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.iita.akilimo.R;
 import com.iita.akilimo.dao.AppDatabase;
 import com.iita.akilimo.databinding.ActivitySweetPotatoMarketBinding;
+import com.iita.akilimo.entities.AdviceStatus;
 import com.iita.akilimo.entities.MandatoryInfo;
 import com.iita.akilimo.entities.PotatoMarket;
 import com.iita.akilimo.entities.PotatoPrice;
@@ -33,6 +34,7 @@ import com.iita.akilimo.rest.RestParameters;
 import com.iita.akilimo.rest.RestService;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.Tools;
+import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.enums.EnumPotatoProduceType;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 import com.iita.akilimo.views.fragments.dialog.SweetPotatoPriceDialogFragment;
@@ -132,11 +134,14 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             potatoUnitOfSaleRadioIndex = potatoMarket.getPotatoUnitOfSaleRadioIndex();
             potatoUnitPriceRadioIndex = potatoMarket.getPotatoUnitPriceRadioIndex();
 
-            rdgPotatoProduceType.check(produceTypeRadioIndex);
-            rdgUnitOfSalePotato.check(potatoUnitOfSaleRadioIndex);
+
             unitPrice = potatoMarket.getUnitPrice();
             unitOfSale = potatoMarket.getUnitOfSale();
-            unitPrice = potatoMarket.getUnitPrice();
+            unitWeight = potatoMarket.getUnitWeight();
+            rdgPotatoProduceType.check(produceTypeRadioIndex);
+            if (unitWeight > 0) {
+                rdgUnitOfSalePotato.check(potatoUnitOfSaleRadioIndex);
+            }
         }
         rdgUnitOfSalePotato.setOnCheckedChangeListener((group, radioIndex) -> {
             switch (radioIndex) {
@@ -201,6 +206,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             potatoMarket.setPotatoUnitOfSaleRadioIndex(potatoUnitOfSaleRadioIndex);
 
             database.potatoMarketDao().insert(potatoMarket);
+            database.adviceStatusDao().insert(new AdviceStatus(EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO.name(), true));
             closeActivity(backPressed);
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
@@ -279,7 +285,11 @@ public class SweetPotatoMarketActivity extends BaseActivity {
         priceDialogFragment.setArguments(arguments);
 
         priceDialogFragment.setOnDismissListener((selectedPrice, isExactPrice) -> {
-            unitPrice = isExactPrice ? selectedPrice : mathHelper.convertToUnitWeightPrice(selectedPrice, unitWeight);
+            if (isExactPrice) {
+                unitPrice = selectedPrice;
+            } else {
+                unitPrice = mathHelper.convertToUnitWeightPrice(selectedPrice, unitWeight);
+            }
         });
 
         FragmentTransaction fragmentTransaction;
