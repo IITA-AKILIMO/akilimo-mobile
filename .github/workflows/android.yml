@@ -105,7 +105,7 @@ jobs:
         with:
           serviceAccountJson: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           packageName: $PACKAGE_NAME
-          releaseFiles: a$GITHUB_WORKSPACE/release/signed/*.aab
+          releaseFiles: $GITHUB_WORKSPACE/release/signed/*.aab
           track: alpha
           inAppUpdatePriority: 0
           userFraction: 1
