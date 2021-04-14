@@ -89,6 +89,8 @@ jobs:
 
       - name: Reverse JKS file
         run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > $GITHUB_WORKSPACE/akilimo.jks
+
+      - name: Run Jarsigner
         run:  jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks 
           -storepass 'super_secret_keystore_pass' -keypass 'super_secret_alias_password' my-app-bundle.aab myKeyStoreAlias
 
