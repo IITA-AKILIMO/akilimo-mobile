@@ -43,6 +43,11 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v2
 
+      - name: set up JDK 1.8
+        uses: actions/setup-java@v1
+          with:
+            java-version: 1.8
+
       - name: Set up Python 3.9
         uses: actions/setup-python@v2
 
@@ -69,6 +74,24 @@ jobs:
 
       - name: Run Unit tests
         run: ./gradlew tasks
+
+  lint:
+    name: Lint Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Lint debug flavor
+        run: bash ./gradlew lintDebug --stacktrace
+      - name: Lint results
+        uses: actions/upload-artifact@v1
+        with:
+          name: app
+          path: app/build/reports/lint-results-debug.html
 
   build_artifacts:
     if: contains(github.ref, 'develop') || contains(github.ref, 'master')
