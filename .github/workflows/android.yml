@@ -79,18 +79,19 @@ jobs:
 
       - name: Make gradlew executable
         run:  chmod +x ./gradlew
-        
+
       - name: Generate android AAB
         run: ./gradlew assembleRelease
 
-      - uses: Tlaster/android-sign@v1
-        name: Sign app APK
+      - name: Sign app AAB
+        uses: r0adkll/sign-android-release@v1
         with:
-          releaseDirectory: |
-            app/build/outputs/apk/release
-            app/build/outputs/bundle/release
+          releaseDirectory: app/build/outputs/bundle/release
           signingKeyBase64: ${{ secrets.KEYSTORE_FILE }}
-          output: build/release/signed
+          signedReleaseFile: build/release/signed
           alias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
+
+      - name: List signed files
+        run: ls build/release/signed
