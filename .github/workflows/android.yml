@@ -105,7 +105,6 @@ jobs:
         with:
           serviceAccountJson: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           packageName: $PACKAGE_NAME
-          releaseFiles: $GITHUB_WORKSPACE/release/signed/*.aab
+          releaseFiles: release/signed/*.aab
           track: alpha
           whatsNewDirectory: distribution/whatsnew
-          mappingFile: app/build/outputs/mapping/release/mapping.txt
