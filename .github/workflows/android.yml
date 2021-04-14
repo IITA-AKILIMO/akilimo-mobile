@@ -83,8 +83,15 @@ jobs:
       - name: Make gradlew executable
         run:  chmod +x ./gradlew
 
-      - name: Generate android AAB
-        run: ./gradlew bundleRelease -x test
+      # - name: Generate android AAB
+        # run: ./gradlew bundleRelease -x test
+
+
+      - name: Reverse JKS file
+        run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > $GITHUB_WORKSPACE/akilimo.jks
+        run: |
+        jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks 
+        -storepass 'super_secret_keystore_pass' -keypass 'super_secret_alias_password' my-app-bundle.aab myKeyStoreAlias
 
       - uses: Tlaster/android-sign@v1.2.2
         name: Sign AAB
