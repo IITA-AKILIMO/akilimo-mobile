@@ -23,6 +23,7 @@ jobs:
 
 
   run_tests:
+    if: contains(github.ref, 'develop') || contains(github.ref, 'master')
     name: Unit tests
     runs-on: ubuntu-latest
     steps:
@@ -34,7 +35,7 @@ jobs:
         run: ./gradlew tasks
 
   build_artifacts:
-    # if: contains(github.ref, 'develop') || contains(github.ref, 'master')
+    if: contains(github.ref, 'develop') || contains(github.ref, 'master')
     needs: [run_tests]
     name: Build artifacts
     runs-on: ubuntu-latest
