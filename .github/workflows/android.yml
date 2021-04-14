@@ -39,6 +39,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Make gradlew executable
         run:  chmod +x ./gradlew
+      - name: Change Release version tag
+        run: echo $RELEASE_VERSION
       - name: Unit tests
         run: ./gradlew tasks
 
