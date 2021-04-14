@@ -1,13 +1,15 @@
-name: test
-on: [push]
+name: build
+on: 
+  push:
 
 jobs:
-  test:
+  build_artifact:
+    needs: [test]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
       - name: Make gradlew executable
         run: sudo chmod +x ./gradlew
-      - name: Run tests
-        run: ./gradlew test -x lint
+      - name: Generate Release APK
+        run: ./gradlew assembleRelease -x test
