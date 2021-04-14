@@ -6,6 +6,7 @@ jobs:
 
   get_latest_tag:
     name: Fetch latest tag
+    runs-on: ubuntu-latest
     steps:
       - name: Set up Python 3.9
         uses: actions/setup-python@v2
