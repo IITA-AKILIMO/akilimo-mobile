@@ -16,6 +16,7 @@ jobs:
 
   build_artifacts:
     # if: contains(github.ref, 'develop') || contains(github.ref, 'master')
+    needs: [run_tests]
     name: Build artifacts
     runs-on: ubuntu-latest
     steps:
