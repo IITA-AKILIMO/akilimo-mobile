@@ -1,4 +1,3 @@
-run-lint.yml
 name: Android Pull Request & Master CI
 
 on:
