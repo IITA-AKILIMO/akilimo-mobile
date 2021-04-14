@@ -7,6 +7,10 @@ jobs:
   get_latest_tag:
     name: Fetch latest tag
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO_NAME: ${{ secrets.REPO_NAME }}
+      LATEST_TAG_FILE: ${{ secrets.LATEST_TAG_FILE }}
     steps:
       - name: Set up Python 3.9
         uses: actions/setup-python@v2
