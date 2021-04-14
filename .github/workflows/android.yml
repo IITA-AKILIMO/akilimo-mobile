@@ -25,8 +25,10 @@ jobs:
         run: pip install -r requirements.txt;
       - name: Fetch latest tag
         run: python latest-tag.py
+      - name: Set env
+        run: echo "RELEASE_VERSION=$(cat $LATEST_TAG_FILE)"
       - name: Change Release version tag
-        run: RELEASE_VERSION=cat ${{ env.LATEST_TAG_FILE }}
+        run: echo $RELEASE_VERSION
 
 
   run_tests:
