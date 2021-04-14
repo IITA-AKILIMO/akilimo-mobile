@@ -7,9 +7,9 @@ jobs:
     needs: [test]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the code
-        uses: actions/checkout@v2
-      - name: Make gradlew executable
-        run: sudo chmod +x ./gradlew
+      # - name: Checkout the code
+      #   uses: actions/checkout@v2
+      # - name: Make gradlew executable
+      #   run: sudo chmod +x ./gradlew
       - name: Generate Release APK
         run: ./gradlew assembleRelease -x test
