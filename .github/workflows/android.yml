@@ -1,5 +1,6 @@
 name: Android CI
-on: 
+on:
+  pull_request:
   push:
 
 jobs:
@@ -26,7 +27,7 @@ jobs:
         run:  chmod +x ./gradlew
 
       - name: Run Unit tests
-        run: ./gradlew test
+        run: ./gradlew testDebug
         continue-on-error: true
       
       - name: Make Unit test report
