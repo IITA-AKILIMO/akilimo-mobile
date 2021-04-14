@@ -10,7 +10,7 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v2
       - name: Make gradlew executable
-        run: sudo chmod +x ./gradlew
+        run:  chmod +x ./gradlew
       - name: Unit tests
         run: ./gradlew tasks
 
@@ -20,5 +20,9 @@ jobs:
     name: Build artifacts
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+      - name: Make gradlew executable
+        run:  chmod +x ./gradlew
       - name: Generate android AAB
         run: ./gradlew assembleRelease
