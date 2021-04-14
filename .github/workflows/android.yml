@@ -8,7 +8,7 @@ on:
 jobs:
 
   run_tests:
-    # if: contains(github.ref, 'develop') || contains(github.ref, 'master')
+    if: contains(github.ref, 'develop') || contains(github.ref, 'master')
     name: Unit tests
     runs-on: ubuntu-latest
     env:
@@ -37,7 +37,7 @@ jobs:
         if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
 
   build_artifacts:
-    if: contains(github.ref, 'develop') || contains(github.ref, 'master')
+    # if: contains(github.ref, 'develop') || contains(github.ref, 'master')
     needs: [run_tests]
     name: Build artifacts
     runs-on: ubuntu-latest
@@ -73,3 +73,17 @@ jobs:
 
       - name: Generate android AAB
         run: ./gradlew assembleRelease
+
+        - uses: Tlaster/android-sign@v1
+        name: Sign app APK
+        with:
+          releaseDirectory: |
+            app/build/outputs/apk/release
+            app/build/outputs/bundle/release
+          signingKeyBase64: ${{ secrets.KEYSTORE_FILE }}
+          output: build/release/signed
+          alias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: "30.0.2"
