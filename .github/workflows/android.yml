@@ -1,0 +1,46 @@
+name: Android CI
+on: 
+  push:
+
+jobs:
+
+  get_latest_tag:
+    name: Fetch latest tag
+    steps:
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Download requirement file
+        run: curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/requirements.txt -o requirements.txt
+      - name: Download Tag fetching script
+        run: curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/get-tag-raw.py -o latest-tag.py
+      - name: Install dependencies
+        run: pip install -r requirements.txt;
+      - name: Fetch latest tag
+        run: python latest-tag.py
+
+
+  run_tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+      - name: Make gradlew executable
+        run:  chmod +x ./gradlew
+      - name: Unit tests
+        run: ./gradlew tasks
+
+  build_artifacts:
+    # if: contains(github.ref, 'develop') || contains(github.ref, 'master')
+    needs: [run_tests]
+    name: Build artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+      - name: Make gradlew executable
+        run:  chmod +x ./gradlew
+      - name: Generate android AAB
+        run: ./gradlew assembleRelease
