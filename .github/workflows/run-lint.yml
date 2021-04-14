@@ -14,6 +14,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+      - name: Make gradlew executable
+        run:  chmod +x ./gradlew
       - name: Run lint && parse lint-results.xml && send report to PR
         env:
           PR_NUMBER: ${{ github.event.number }}
