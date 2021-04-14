@@ -30,7 +30,8 @@ jobs:
 
 
   run_tests:
-    if: contains(github.ref, 'develop') || contains(github.ref, 'master')
+    # if: contains(github.ref, 'develop') || contains(github.ref, 'master')
+    needs: [get_latest_tag]
     name: Unit tests
     runs-on: ubuntu-latest
     steps:
