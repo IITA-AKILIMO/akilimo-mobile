@@ -11,6 +11,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       REPO_NAME: ${{ secrets.REPO_NAME }}
       LATEST_TAG_FILE: ${{ secrets.LATEST_TAG_FILE }}
+      RELEASE_VERSION: 1
     steps:
       - name: Set up Python 3.9
         uses: actions/setup-python@v2
@@ -24,6 +25,8 @@ jobs:
         run: pip install -r requirements.txt;
       - name: Fetch latest tag
         run: python latest-tag.py
+      - name: Change Release version tag
+        run: RELEASE_VERSION=cat ${{ env.LATEST_TAG_FILE }}
 
 
   run_tests:
