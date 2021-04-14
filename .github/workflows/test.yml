@@ -4,9 +4,10 @@ on:
 
 jobs:
   run_tests:
+    if: contains(github.ref, 'develop') || contains(github.ref, 'master')
+    name: Unit tests
     runs-on: ubuntu-latest
     steps:
-      if: contains(github.ref, 'develop') || contains(github.ref, 'master')
       - name: Checkout the code
         uses: actions/checkout@v2
       - name: Make gradlew executable
