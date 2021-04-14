@@ -46,7 +46,7 @@ jobs:
       REPO_NAME: ${{ secrets.REPO_NAME }}
       LATEST_TAG_FILE: ${{ secrets.LATEST_TAG_FILE }}
       RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
-      BUILD_TOOLS_VERSION: "30.0.2"
+      PACKAGE_NAME: "com.iita.akilimo"
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
@@ -99,3 +99,15 @@ jobs:
 
       - name: List signed files
         run: ls $GITHUB_WORKSPACE/release/signed
+
+      - name: Upload to playstore
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJson: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+          packageName: $PACKAGE_NAME
+          releaseFiles: a$GITHUB_WORKSPACE/release/signed/*.aab
+          track: alpha
+          inAppUpdatePriority: 1
+          userFraction: 0.33
+          whatsNewDirectory: distribution/whatsnew
+          mappingFile: app/build/outputs/mapping/release/mapping.txt
