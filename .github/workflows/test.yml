@@ -5,9 +5,8 @@ on:
 jobs:
   run_tests:
     runs-on: ubuntu-latest
-    branch:
-      - develop
     steps:
+        if: contains(github.ref, 'develop') || contains(github.ref, 'master')
       - name: Checkout the code
         uses: actions/checkout@v2
       - name: Make gradlew executable
