@@ -83,7 +83,7 @@ jobs:
       - name: Generate android AAB
         run: ./gradlew assembleRelease
 
-      - uses: r0adkll/sign-android-release@v1.2.2
+      - uses: Tlaster/android-sign@v1.2.2
         name: Sign app AAB
         with:
           releaseDirectory: app/build/outputs/bundle/release
