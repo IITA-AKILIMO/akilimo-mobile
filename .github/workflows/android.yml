@@ -81,7 +81,7 @@ jobs:
         run:  chmod +x ./gradlew
 
       - name: Generate android AAB
-        run: ./gradlew assembleRelease
+        run: ./gradlew bundleRelease -x test
 
       - uses: Tlaster/android-sign@v1.2.2
         name: Sign app AAB
