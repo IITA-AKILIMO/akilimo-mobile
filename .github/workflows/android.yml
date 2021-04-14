@@ -4,34 +4,8 @@ on:
 
 jobs:
 
-  get_latest_tag:
-    name: Fetch latest tag
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      REPO_NAME: ${{ secrets.REPO_NAME }}
-      LATEST_TAG_FILE: ${{ secrets.LATEST_TAG_FILE }}
-      RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
-    steps:
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v2
-      - name: Download requirement file
-        run: curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/requirements.txt -o requirements.txt
-      - name: Download Tag fetching script
-        run: curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/get-tag-raw.py -o latest-tag.py
-      - name: Install dependencies
-        run: pip install -r requirements.txt;
-      - name: Fetch latest tag
-        run: python latest-tag.py
-      - name: Update release version
-        run: echo "RELEASE_VERSION=$(cat $LATEST_TAG_FILE)" >> $GITHUB_ENV
-      - name: Change Release version tag
-        run: echo $RELEASE_VERSION
-
-
   run_tests:
     # if: contains(github.ref, 'develop') || contains(github.ref, 'master')
-    needs: [get_latest_tag]
     name: Unit tests
     runs-on: ubuntu-latest
     env:
@@ -76,6 +50,7 @@ jobs:
         run: ./gradlew tasks
 
   lint:
+    needs: [run_tests]
     name: Lint Check
     runs-on: ubuntu-latest
 

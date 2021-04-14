@@ -7,8 +7,9 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
-apply plugin: "com.vanniktech.android.junit.jacoco"
-
+apply plugin: 'com.vanniktech.android.junit.jacoco'
+apply plugin: 'com.vanniktech.android.junit.jacoco'
+apply plugin: 'com.worker8.android_lint_reporter'
 
 android {
     def releaseVersionName = computeBuildNumber()
@@ -46,18 +47,18 @@ android {
         debug {
             resValue("string", "PORT_NUMBER", "9085")
             versionNameSuffix ".debug"
-        //  pseudoLocalesEnabled true
+            //  pseudoLocalesEnabled true
         }
     }
     buildFeatures {
         viewBinding = true
-    //  dataBinding = false
+        //  dataBinding = false
     }
     lintOptions {
         checkReleaseBuilds false
-    //  fatal("MissingTranslation", "HardcodedText")
+        //  fatal("MissingTranslation", "HardcodedText")
         abortOnError false
-    //  disable 'UselessParent','InvalidPackage', 'UnusedResources', 'TrustAllX509TrustManager', 'LabelFor'
+        //  disable 'UselessParent','InvalidPackage', 'UnusedResources', 'TrustAllX509TrustManager', 'LabelFor'
     }
     dexOptions {
         javaMaxHeapSize "4g"
@@ -70,6 +71,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+}
+
+android_lint_reporter {
+    lintFilePath = "app/build/reports/lint-results.xml"
+    githubUsername = "masgeek"
+    githubRepositoryName = "akilimo-mobile"
 }
 
 static def computeVersionName() {
