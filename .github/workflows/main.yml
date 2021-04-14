@@ -1,10 +1,10 @@
 on: [push]
 
 jobs:
-build_android_job:
-  runs-on: ubuntu-latest
-  name: Android Build
-  steps:
-    uses: vgaidarji/android-github-actions-build@v1.0.1
-    with:
-      args: "./gradlew test"
+  build_android_job:
+    runs-on: ubuntu-latest
+    name: Android Build
+    steps:
+      uses: vgaidarji/android-github-actions-build@v1.0.1
+      with:
+        args: "./gradlew test"
