@@ -108,6 +108,6 @@ jobs:
           releaseFiles: $GITHUB_WORKSPACE/release/signed/*.aab
           track: alpha
           inAppUpdatePriority: 0
-          userFraction: 1
+          userFraction: 1.0
           whatsNewDirectory: distribution/whatsnew
           mappingFile: app/build/outputs/mapping/release/mapping.txt
