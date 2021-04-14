@@ -4,7 +4,7 @@ on:
 
 jobs:
   build_artifact:
-    needs: [test]
+    needs: [run_tests]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
