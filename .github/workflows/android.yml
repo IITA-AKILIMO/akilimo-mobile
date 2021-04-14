@@ -71,6 +71,9 @@ jobs:
       - name: Fetch latest tag
         run: python latest-tag.py
 
+      - name: Fetch latest tag
+        run: which jarsigner
+
       - name: Update release version
         run: echo "RELEASE_VERSION=$(cat $LATEST_TAG_FILE)" >> $GITHUB_ENV
 
