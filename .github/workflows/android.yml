@@ -74,7 +74,7 @@ jobs:
       - name: Generate android AAB
         run: ./gradlew assembleRelease
 
-        - uses: Tlaster/android-sign@v1
+      - uses: Tlaster/android-sign@v1
         name: Sign app APK
         with:
           releaseDirectory: |
