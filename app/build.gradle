@@ -9,7 +9,6 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
 apply plugin: 'com.vanniktech.android.junit.jacoco'
 apply plugin: 'com.vanniktech.android.junit.jacoco'
-apply plugin: 'com.worker8.android_lint_reporter'
 
 android {
     def releaseVersionName = computeBuildNumber()
@@ -71,12 +70,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-}
-
-android_lint_reporter {
-    lintFilePath = "app/build/reports/lint-results.xml"
-    githubUsername = "masgeek"
-    githubRepositoryName = "akilimo-mobile"
 }
 
 static def computeVersionName() {
