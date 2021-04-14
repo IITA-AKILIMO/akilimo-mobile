@@ -84,15 +84,13 @@ jobs:
         run: ./gradlew bundleRelease -x test
 
       - uses: Tlaster/android-sign@v1.2.2
-        name: Sign app AAB
+        name: Sign AAB
         with:
           signingKeyBase64: ${{ secrets.KEYSTORE_FILE }}
           alias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
-          releaseDirectory: |
-            app/build/outputs/apk/release
-            app/build/outputs/bundle/release
+          releaseDirectory: app/build/outputs/bundle/release
           output: build/release/signed
 
       - name: List signed files
