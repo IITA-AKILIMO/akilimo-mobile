@@ -1,8 +1,5 @@
-name: akilimo_build_bot
-on:
-  push:
-    branches:
-      - chore/cicd
+name: build
+on: [push]
 
 jobs:
   build:
@@ -13,4 +10,4 @@ jobs:
       - name: Make gradlew executable
         run: sudo chmod +x ./gradlew
       - name: Run tests
-        run: ./gradlew test
+        run: ./gradlew test -x lint
