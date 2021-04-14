@@ -41,6 +41,12 @@ jobs:
     # needs: [run_tests]
     name: Build artifacts
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO_NAME: ${{ secrets.REPO_NAME }}
+      LATEST_TAG_FILE: ${{ secrets.LATEST_TAG_FILE }}
+      RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
+      BUILD_TOOLS_VERSION: "30.0.2"
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
@@ -85,5 +91,3 @@ jobs:
           alias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
-        env:
-          BUILD_TOOLS_VERSION: "30.0.2"
