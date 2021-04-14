@@ -83,26 +83,19 @@ jobs:
       - name: Make gradlew executable
         run:  chmod +x ./gradlew
 
-      # - name: Generate android AAB
-        # run: ./gradlew bundleRelease -x test
+      - name: Generate android AAB
+        run: ./gradlew bundleRelease -x test
 
+      - name: Create release folder
+        run: .mkdir build/release/signed
 
       - name: Reverse JKS file
         run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > $GITHUB_WORKSPACE/akilimo.jks
 
-      - name: Run Jarsigner
+      - name: Sign AAB
         run:  jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks 
-          -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }} my-app-bundle.aab ${{ secrets.KEY_ALIAS }}
-
-      - uses: Tlaster/android-sign@v1.2.2
-        name: Sign AAB
-        with:
-          signingKeyBase64: ${{ secrets.KEYSTORE_FILE }}
-          alias: ${{ secrets.KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
-          releaseDirectory: app/build/outputs/bundle/release
-          output: build/release/signed
+          -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }} 
+          app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEY_ALIAS }} --signedjar build/release/signed/app-release-signed.aab
 
       - name: List signed files
         run: ls build/release/signed
