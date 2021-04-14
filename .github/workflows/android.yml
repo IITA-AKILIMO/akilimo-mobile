@@ -83,12 +83,17 @@ jobs:
       - name: Generate android AAB
         run: ./gradlew assembleRelease
 
+      - name: Make release folder
+        run: mkdir build/release/signed
+
       - uses: Tlaster/android-sign@v1.2.2
         name: Sign app AAB
         with:
           releaseDirectory: app/build/outputs/bundle/release
           signingKeyBase64: ${{ secrets.KEYSTORE_FILE }}
-          signedReleaseFile: build/release/signed
+          releaseDirectory: |
+            app/build/outputs/apk/release
+            app/build/outputs/bundle/release
           alias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
