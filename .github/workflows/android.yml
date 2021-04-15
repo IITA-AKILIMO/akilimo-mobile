@@ -94,14 +94,22 @@ jobs:
           -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }} 
           app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEY_ALIAS }} --signedjar $GITHUB_WORKSPACE/release/signed/app-release.aab
 
-      - name: List signed files
-        run: ls $GITHUB_WORKSPACE/release/signed
+      - uses: actions/upload-artifact@v2
+        name: Upload artifact
+        with:
+          name: app-release
+          path: $GITHUB_WORKSPACE/release/signed/app-release.aab
 
   upload_artifacts:
     needs: [build_artifacts]
     name: Upload to PlayStore
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/download-artifact@v2
+        name: Retreive artifacts
+        with:
+          name: app-release
+
       - name: Upload Beta Release
         # if: contains(github.ref, 'develop') || contains(github.ref, 'master')
         uses: r0adkll/upload-google-play@v1
