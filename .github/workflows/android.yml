@@ -68,9 +68,6 @@ jobs:
       - name: Fetch latest tag
         run: python latest-tag.py
 
-      - name: Fetch latest tag
-        run: which jarsigner
-
       - name: Update release version
         run: echo "RELEASE_VERSION=$(cat $LATEST_TAG_FILE)" >> $GITHUB_ENV
 
@@ -95,7 +92,7 @@ jobs:
           app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEY_ALIAS }} --signedjar $GITHUB_WORKSPACE/release/app-release.aab
 
       - name: Copy release notes
-        run: cp distribution/whatsnew release 
+        run: cp -r distribution/whatsnew release/distribution/whatsnew
       - uses: actions/upload-artifact@v2
         name: Upload artifact
         with:
@@ -123,4 +120,4 @@ jobs:
           packageName: "com.iita.akilimo"
           releaseFiles: release/*.aab
           track: alpha
-          whatsNewDirectory: distribution/whatsnew
+          whatsNewDirectory: release/distribution/whatsnew
