@@ -98,7 +98,8 @@ jobs:
         name: Upload artifact
         with:
           name: app-release
-          path: $GITHUB_WORKSPACE/release
+          if-no-files-found: fail
+          path: release
 
   upload_artifacts:
     needs: [build_artifacts]
