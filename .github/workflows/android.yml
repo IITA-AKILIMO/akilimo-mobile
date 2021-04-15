@@ -103,7 +103,8 @@ jobs:
       - name: Upload to playstore
         uses: r0adkll/upload-google-play@v1
         with:
-          serviceAccountJson: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+          # serviceAccountJson: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           packageName: $PACKAGE_NAME
           releaseFiles: app/build/outputs/bundle/release/*.aab
           track: alpha
