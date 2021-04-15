@@ -101,7 +101,7 @@ jobs:
         run: ls $GITHUB_WORKSPACE/release/signed
 
       - name: Upload to playstore
-      if: contains(github.ref, 'develop') || contains(github.ref, 'master')
+        if: contains(github.ref, 'develop') || contains(github.ref, 'master')
         uses: r0adkll/upload-google-play@v1
         with:
           # serviceAccountJson: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
