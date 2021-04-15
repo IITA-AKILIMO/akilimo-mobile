@@ -92,7 +92,7 @@ jobs:
           app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEY_ALIAS }} --signedjar $GITHUB_WORKSPACE/release/app-release.aab
 
       - name: Copy release notes
-        run: cp -r distribution/whatsnew release/distribution/whatsnew
+        run: cp -r distribution release
       - uses: actions/upload-artifact@v2
         name: Upload artifact
         with:
