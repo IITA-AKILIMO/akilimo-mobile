@@ -1,8 +1,5 @@
 name: Android CI
 on:
-  pull_request:
-    branches:
-      - master
   push:
 
 jobs:
@@ -100,8 +97,13 @@ jobs:
       - name: List signed files
         run: ls $GITHUB_WORKSPACE/release/signed
 
-      - name: Upload to playstore
-        if: contains(github.ref, 'develop') || contains(github.ref, 'master')
+  upload_artifacts:
+    needs: [build_artifacts]
+    name: Upload to PlayStore
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload Beta Release
+        # if: contains(github.ref, 'develop') || contains(github.ref, 'master')
         uses: r0adkll/upload-google-play@v1
         with:
           # serviceAccountJson: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
