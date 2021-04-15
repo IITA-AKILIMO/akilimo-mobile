@@ -98,7 +98,6 @@ jobs:
         name: Upload artifact
         with:
           name: app-release
-          if-no-files-found: fail
           path: release
 
   upload_artifacts:
