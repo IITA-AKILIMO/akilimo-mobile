@@ -92,13 +92,13 @@ jobs:
       - name: Sign AAB
         run:  jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks 
           -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }} 
-          app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEY_ALIAS }} --signedjar $GITHUB_WORKSPACE/release/signed/app-release.aab
+          app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEY_ALIAS }} --signedjar $GITHUB_WORKSPACE/release/app-release.aab
 
       - uses: actions/upload-artifact@v2
         name: Upload artifact
         with:
           name: app-release
-          path: $GITHUB_WORKSPACE/release/signed/app-release.aab
+          path: $GITHUB_WORKSPACE/release
 
   upload_artifacts:
     needs: [build_artifacts]
@@ -117,6 +117,6 @@ jobs:
           # serviceAccountJson: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           packageName: "com.iita.akilimo"
-          releaseFiles: release/signed/*.aab
+          releaseFiles: release/*.aab
           track: alpha
           whatsNewDirectory: distribution/whatsnew
