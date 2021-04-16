@@ -150,13 +150,11 @@ jobs:
         name: Retrieve artifacts
         with:
           name: app-release
-          path: release
-
-      - name: Flatten files    
-          run: |
-            cp release/distribution/whatsnew/* release
-            rm -rf release/distribution
-            ls release
+          path: release   
+      - run: |
+          cp release/distribution/whatsnew/* release
+          rm -rf release/distribution
+          ls release
 
       - name: Upload release artifacts
         uses: masgeek/github-action-ghr@v1.3.2
