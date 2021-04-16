@@ -89,10 +89,11 @@ jobs:
       - name: Sign AAB
         run:  jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks 
           -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }} 
-          app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEY_ALIAS }} --signedjar $GITHUB_WORKSPACE/release/app-release.aab
+          app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEY_ALIAS }} --signedjar $GITHUB_WORKSPACE/release/app-release-signed.aab
 
       - name: Copy release notes
         run: cp -r distribution release
+
       - uses: actions/upload-artifact@v2
         name: Upload artifact
         with:
@@ -100,7 +101,7 @@ jobs:
           if-no-files-found: error
           path: release
 
-  upload_artifacts:
+  publish_to_playstore:
     needs: [build_artifacts]
     name: Upload to PlayStore
     runs-on: ubuntu-latest
@@ -112,7 +113,7 @@ jobs:
           path: release
 
       - name: Upload Beta Release
-        # if: contains(github.ref, 'develop') || contains(github.ref, 'master')
+        if: contains(github.ref, 'develop')
         uses: r0adkll/upload-google-play@v1
         with:
           # serviceAccountJson: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
@@ -121,3 +122,34 @@ jobs:
           releaseFiles: release/*.aab
           track: alpha
           whatsNewDirectory: release/distribution/whatsnew
+
+      - name: Upload Production Release
+        if: contains(github.ref, 'master')
+        uses: r0adkll/upload-google-play@v1
+        with:
+          # serviceAccountJson: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+          packageName: "com.iita.akilimo"
+          releaseFiles: release/*.aab
+          track: production
+          whatsNewDirectory: release/distribution/whatsnew
+
+
+  upload_artifacts:
+    needs: [publish_to_playstore]
+    name: Upload to github release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v2
+        name: Retreive artifacts
+        with:
+          name: app-release
+          path: release
+
+      - name: Release
+        uses: fnkr/github-action-ghr@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GHR_COMPRESS: xz
+          GHR_PATH: release/
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
