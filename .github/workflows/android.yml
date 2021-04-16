@@ -143,7 +143,6 @@ jobs:
       GHR_TAG: "16.3.2"
       GHR_REPLACE: "1"
       GHR_PATH: release
-      GHR_BODY_FILE: release/whatsnew-en-GB
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     steps:
@@ -153,7 +152,8 @@ jobs:
           name: app-release
           path: release
       - run: |
-          mv release/distribution/whatsnew/* release
+          cp release/distribution/whatsnew/* release
+          rm -rf release/distribution
           ls release
 
       - name: Upload release artifacts
