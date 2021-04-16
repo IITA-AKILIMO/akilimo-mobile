@@ -78,6 +78,7 @@ jobs:
         run:  chmod +x ./gradlew
 
       - name: Generate android AAB
+        if: contains(github.ref, 'develop')
         run: ./gradlew bundleRelease -x test
 
       - name: Create release folder
@@ -87,6 +88,7 @@ jobs:
         run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > $GITHUB_WORKSPACE/akilimo.jks
 
       - name: Sign AAB
+        if: contains(github.ref, 'develop')
         run:  jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks 
           -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }} 
           app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEY_ALIAS }} --signedjar $GITHUB_WORKSPACE/release/app-release-signed.aab
@@ -116,7 +118,6 @@ jobs:
         if: contains(github.ref, 'develop')
         uses: r0adkll/upload-google-play@v1
         with:
-          # serviceAccountJson: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           packageName: "com.iita.akilimo"
           releaseFiles: release/*.aab
@@ -127,7 +128,6 @@ jobs:
         if: contains(github.ref, 'master')
         uses: r0adkll/upload-google-play@v1
         with:
-          # serviceAccountJson: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           packageName: "com.iita.akilimo"
           releaseFiles: release/*.aab
@@ -139,6 +139,8 @@ jobs:
     needs: [publish_to_playstore]
     name: Upload to github release
     runs-on: ubuntu-latest
+    env:
+      RELEASE_VERSION: 18.3.0
     steps:
       - uses: actions/download-artifact@v2
         name: Retreive artifacts
@@ -146,10 +148,20 @@ jobs:
           name: app-release
           path: release
 
+      - name: Run GoLang
+        uses: actions/setup-go@v1
+        with:
+          go-version: '1.9.3' # The Go version to download (if necessary) and use.
+        run: |
+          go get -u github.com/tcnksm/ghr
+          ghr -replace $RELEASE_VERSION release/
+
       - name: Release
-        uses: fnkr/github-action-ghr@v1
-        # if: startsWith(github.ref, 'refs/tags/')
+        uses: fnkr/github-action-ghr@v1.3
+        if: startsWith(github.ref, 'refs/tags/')
         env:
+          GITHUB_REF:
           GHR_COMPRESS: xz
+          GHR_REPLACE: true
           GHR_PATH: release/
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
