@@ -151,7 +151,7 @@ jobs:
         with:
           name: app-release
           path: release
-      -run: ls release
+      - run: ls release
 
       - name: Upload release artifacts
         uses: masgeek/github-action-ghr@v1.3.2
