@@ -140,16 +140,18 @@ jobs:
     name: Upload to github release
     runs-on: ubuntu-latest
     env:
-      GHR_TAG: "18.3.0"
+      GHR_TAG: "16.3.2"
       GHR_REPLACE: "1"
-      GHR_PATH: release/
+      GHR_PATH: release/distribution/whatsnew
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
     steps:
       - uses: actions/download-artifact@v2
         name: Retreive artifacts
         with:
           name: app-release
           path: release
+      -run: ls release
 
       - name: Upload release artifacts
         uses: masgeek/github-action-ghr@v1.3.2
