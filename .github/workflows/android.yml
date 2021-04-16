@@ -142,16 +142,18 @@ jobs:
     env:
       GHR_TAG: "16.3.2"
       GHR_REPLACE: "1"
-      GHR_PATH: release/distribution/whatsnew
+      GHR_PATH: release
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     steps:
       - uses: actions/download-artifact@v2
-        name: Retreive artifacts
+        name: Retrieve artifacts
         with:
           name: app-release
           path: release
-      - run: ls release
+      - run: |
+          mv release/distribution/whatsnew release
+          ls release
 
       - name: Upload release artifacts
         uses: masgeek/github-action-ghr@v1.3.2
