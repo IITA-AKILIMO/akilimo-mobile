@@ -143,6 +143,7 @@ jobs:
       GHR_TAG: "16.3.2"
       GHR_REPLACE: "1"
       GHR_PATH: release
+      GHR_BODY_FILE: release/whatsnew-en-GB
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     steps:
