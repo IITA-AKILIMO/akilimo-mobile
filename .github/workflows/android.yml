@@ -147,7 +147,7 @@ jobs:
     
     steps:
       - name: Create release notes
-      - uses: johnyherangi/create-release-notes@main
+        uses: johnyherangi/create-release-notes@main
         id: create-release-notes
 
       - name: Create new release
