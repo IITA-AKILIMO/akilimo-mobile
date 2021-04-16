@@ -152,7 +152,7 @@ jobs:
           name: app-release
           path: release
       - run: |
-          mv release/distribution/whatsnew release
+          mv release/distribution/whatsnew/* release
           ls release
 
       - name: Upload release artifacts
