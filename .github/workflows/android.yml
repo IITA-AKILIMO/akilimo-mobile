@@ -146,26 +146,17 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     steps:
-      - name: Create release notes
-        uses: johnyherangi/create-release-notes@main
-        id: create-release-notes
-
-      - name: Create new release
-        uses: actions/create-release@v1
-        with:
-            tag_name: '1.0.5'
-            release_name: 'My Release'
-            body: ${{ steps.create-release-notes.outputs.release-notes }}
-
       - uses: actions/download-artifact@v2
         name: Retrieve artifacts
         with:
           name: app-release
           path: release
-      - run: |
-          cp release/distribution/whatsnew/* release
-          rm -rf release/distribution
-          ls release
+
+      - name: Flatten files    
+          run: |
+            cp release/distribution/whatsnew/* release
+            rm -rf release/distribution
+            ls release
 
       - name: Upload release artifacts
         uses: masgeek/github-action-ghr@v1.3.2
