@@ -141,7 +141,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GHR_TAG: "18.3.0"
-      GHR_REPLACE: true
+      GHR_REPLACE: "1"
       GHR_PATH: release/
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
