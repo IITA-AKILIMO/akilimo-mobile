@@ -108,7 +108,7 @@ jobs:
 
   publish_to_playstore:
     needs: [build_artifacts]
-    name: Upload to PlayStore
+    name: Publish to Google PlayStore
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v2
@@ -143,6 +143,7 @@ jobs:
     name: Upload to github release
     runs-on: ubuntu-latest
     env:
+      LATEST_TAG_FILE: ${{ secrets.LATEST_TAG_FILE }}
       GHR_TAG: "16.3.2"
       GHR_REPLACE: "1"
       GHR_PATH: release
@@ -158,6 +159,9 @@ jobs:
           cp release/distribution/whatsnew/* release
           rm -rf release/distribution
           ls release
+
+      - name: Read latest tag from tag file
+        run: echo "GHR_TAG=$(cat $LATEST_TAG_FILE)" >> $GITHUB_ENV
 
       - name: Upload release artifacts
         uses: masgeek/github-action-ghr@v1.3.2
