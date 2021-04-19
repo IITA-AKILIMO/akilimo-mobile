@@ -7,8 +7,8 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
-apply plugin: "com.vanniktech.android.junit.jacoco"
-
+apply plugin: 'com.vanniktech.android.junit.jacoco'
+apply plugin: 'com.vanniktech.android.junit.jacoco'
 
 android {
     def releaseVersionName = computeBuildNumber()
@@ -16,7 +16,7 @@ android {
 
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
-    ndkVersion "21.1.6352462"
+    ndkVersion "22.1.7171670"
 
     defaultConfig {
         applicationId "com.iita.akilimo"
@@ -46,18 +46,18 @@ android {
         debug {
             resValue("string", "PORT_NUMBER", "9085")
             versionNameSuffix ".debug"
-        //  pseudoLocalesEnabled true
+            //  pseudoLocalesEnabled true
         }
     }
     buildFeatures {
         viewBinding = true
-    //  dataBinding = false
+        //  dataBinding = false
     }
     lintOptions {
         checkReleaseBuilds false
-    //  fatal("MissingTranslation", "HardcodedText")
+        //  fatal("MissingTranslation", "HardcodedText")
         abortOnError false
-    //  disable 'UselessParent','InvalidPackage', 'UnusedResources', 'TrustAllX509TrustManager', 'LabelFor'
+        //  disable 'UselessParent','InvalidPackage', 'UnusedResources', 'TrustAllX509TrustManager', 'LabelFor'
     }
     dexOptions {
         javaMaxHeapSize "4g"
