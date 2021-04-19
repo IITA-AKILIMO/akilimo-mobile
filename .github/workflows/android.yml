@@ -123,7 +123,7 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           packageName: "com.iita.akilimo"
           releaseFiles: release/*.aab
-          track: alpha
+          track: beta
           whatsNewDirectory: release/distribution/whatsnew
 
       - name: Upload Production Release
