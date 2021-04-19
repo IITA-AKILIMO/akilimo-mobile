@@ -90,7 +90,7 @@ static def computeBuildNumber() {
     def branch = System.env.BRANCH_NAME ?: "unknown"
     def buildNumber = System.env.BUILD_NUMBER ?: LocalDateTime.now().getDayOfMonth()
 
-    if (branch.conta == "develop") {
+    if (branch == "develop") {
         def splitMe = gitVersionTag.split('\\.')
         def versionMajor = splitMe[0]
         def versionMinor = splitMe[1]
