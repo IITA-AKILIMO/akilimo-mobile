@@ -138,6 +138,7 @@ jobs:
 
 
   upload_artifacts:
+    if: contains(github.ref, 'master')
     needs: [publish_to_playstore]
     name: Upload to github release
     runs-on: ubuntu-latest
