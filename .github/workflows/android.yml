@@ -164,6 +164,6 @@ jobs:
         run: echo "GHR_TAG=$(cat release/$LATEST_TAG_FILE)" >> $GITHUB_ENV
 
       - name: Read latest tag from tag file
-        run: ech $GHR_TAG
+        run: echo $GHR_TAG
       # - name: Upload release artifacts
         # uses: masgeek/github-action-ghr@v1.3.2
