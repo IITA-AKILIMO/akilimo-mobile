@@ -144,7 +144,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       LATEST_TAG_FILE: ${{ secrets.LATEST_TAG_FILE }}
-      GHR_TAG: "16.3.2"
+      GHR_TAG: "1.0.0"
       GHR_REPLACE: "1"
       GHR_PATH: release
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -161,7 +161,9 @@ jobs:
           ls release
 
       - name: Read latest tag from tag file
-        run: echo "GHR_TAG=$(cat $LATEST_TAG_FILE)" >> $GITHUB_ENV
+        run: echo "GHR_TAG=$(cat release/$LATEST_TAG_FILE)" >> $GITHUB_ENV
 
-      - name: Upload release artifacts
-        uses: masgeek/github-action-ghr@v1.3.2
+      - name: Read latest tag from tag file
+        run: ech GHR_TAG
+      # - name: Upload release artifacts
+        # uses: masgeek/github-action-ghr@v1.3.2
