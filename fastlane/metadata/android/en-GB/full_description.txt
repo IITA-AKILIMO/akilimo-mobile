@@ -1,1 +1,0 @@
-This app provides agronomic advice for cassava growers in Nigeria and Tanzania.

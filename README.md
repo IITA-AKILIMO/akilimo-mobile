@@ -1,21 +1,7 @@
-### Akilimo decision support tools mobile edition
-* UI changes
-* Improved UX
-* Better data processing
+### Akilimo mobile DST
 
-``bash 
-    adb shell am clear-debug-app
-``
+[![Android CI](https://github.com/masgeek/akilimo-mobile/actions/workflows/android.yml/badge.svg)](https://github.com/masgeek/akilimo-mobile/actions/workflows/android.yml)
 
-###### Project build status
-[![Build Status](https://ca82bb6c8801.ngrok.io/buildStatus/icon?job=akilimo-mobile%2Fmaster)](https://ca82bb6c8801.ngrok.io/job/akilimo-mobile/job/master/)
-
-###### Master branch
-[![Build Status](https://ca82bb6c8801.ngrok.io/buildStatus/icon?job=akilimo-mobile%2Fmaster)](https://ca82bb6c8801.ngrok.io/job/akilimo-mobile/job/master/)
-
-###### Develop branch
-[![Build Status](https://ca82bb6c8801.ngrok.io/buildStatus/icon?job=akilimo-mobile%2Fdevelop)](https://ca82bb6c8801.ngrok.io/job/akilimo-mobile/job/develop/)
-
-
+![akilimo-mobile Actions](https://api.meercode.io/badge/masgeek/akilimo-mobile?type=ci-score&token=7QwvPQUxRPTOd8fotZBAjCPXzBoFqm2R&lastDay=14) ![akilimo-mobile Actions](https://api.meercode.io/badge/masgeek/akilimo-mobile?type=ci-count&token=7QwvPQUxRPTOd8fotZBAjCPXzBoFqm2R&lastDay=14) ![akilimo-mobile Actions](https://api.meercode.io/badge/masgeek/akilimo-mobile?type=ci-success-rate&token=7QwvPQUxRPTOd8fotZBAjCPXzBoFqm2R&lastDay=14)
 
 https://appicon.co/#image-sets
