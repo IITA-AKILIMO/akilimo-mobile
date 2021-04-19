@@ -94,7 +94,7 @@ jobs:
           app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEY_ALIAS }} --signedjar $GITHUB_WORKSPACE/release/app-release-signed.aab
 
       - name: Copy release tag file
-        run: cp  $LATEST_TAG_FILE release/latest_tag.txt
+        run: cp  $LATEST_TAG_FILE release
 
       - name: Copy release notes
         run: cp -r distribution release
@@ -143,6 +143,7 @@ jobs:
     name: Upload to github release
     runs-on: ubuntu-latest
     env:
+      LATEST_TAG_FILE: ${{ secrets.LATEST_TAG_FILE }}
       GHR_TAG: "1.0.0"
       GHR_REPLACE: "1"
       GHR_PATH: release
@@ -160,7 +161,7 @@ jobs:
           ls release
 
       - name: Read latest tag from tag file
-        run: echo "GHR_TAG=$(cat release/latest_tag.txt )" >> $GITHUB_ENV
+        run: echo "GHR_TAG=$(cat release/$LATEST_TAG_FILE)" >> $GITHUB_ENV
 
       - name: Read latest tag from tag file
         run: echo $GHR_TAG
