@@ -40,6 +40,7 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       REPO_NAME: ${{ secrets.REPO_NAME }}
+      BRANCH_NAME: ${{ github.head_ref }}
       LATEST_TAG_FILE: ${{ secrets.LATEST_TAG_FILE }}
       RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
       PACKAGE_NAME: "com.iita.akilimo"
@@ -70,8 +71,11 @@ jobs:
       - name: Update release version
         run: echo "RELEASE_VERSION=$(cat $LATEST_TAG_FILE)" >> $GITHUB_ENV
 
-      - name: Show release tag
-        run: echo $RELEASE_VERSION
+      - name: Set branch name
+        run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
+
+      - name: Show branch name
+        run: echo $BRANCH_NAME
 
       - name: Make gradlew executable
         run:  chmod +x ./gradlew
@@ -123,7 +127,7 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           packageName: "com.iita.akilimo"
           releaseFiles: release/*.aab
-          track: alpha
+          track: beta
           whatsNewDirectory: release/distribution/whatsnew
 
       - name: Upload Production Release
