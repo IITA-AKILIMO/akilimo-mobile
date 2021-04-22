@@ -33,7 +33,7 @@ jobs:
         if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
 
   build_artifacts:
-    if: contains(github.ref, 'develop') || contains(github.ref, 'master')
+    if: contains(github.ref, 'develop') || contains(github.ref, 'main')
     needs: [run_tests]
     name: Build artifacts
     runs-on: ubuntu-latest
@@ -81,7 +81,6 @@ jobs:
         run:  chmod +x ./gradlew
 
       - name: Generate android AAB
-        if: contains(github.ref, 'develop')
         run: ./gradlew bundleRelease -x test
 
       - name: Create release folder
@@ -131,7 +130,7 @@ jobs:
           whatsNewDirectory: release/distribution/whatsnew
 
       - name: Upload Production Release
-        if: contains(github.ref, 'master')
+        if: contains(github.ref, 'main')
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
@@ -142,7 +141,7 @@ jobs:
 
 
   upload_artifacts:
-    if: contains(github.ref, 'master')
+    if: contains(github.ref, 'main')
     needs: [publish_to_playstore]
     name: Upload to github release
     runs-on: ubuntu-latest
