@@ -10,6 +10,7 @@ import com.iita.akilimo.dao.AppDatabase.Companion.getDatabase
 import com.iita.akilimo.inherit.BaseActivity
 import com.iita.akilimo.views.activities.usecases.FertilizerRecActivity
 import com.iita.akilimo.views.activities.usecases.RecommendationsActivity
+import com.iita.akilimo.views.activities.usecases.ScheduledPlantingActivity
 
 
 class SplashActivity : BaseActivity() {
@@ -49,8 +50,8 @@ class SplashActivity : BaseActivity() {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
             Crashlytics.logException(ex)
         }
-        val intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
-//        val intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
+//        val intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
+        val intent = Intent(this@SplashActivity, ScheduledPlantingActivity::class.java)
 //        val intent = Intent(this@SplashActivity, FertilizerRecActivity::class.java)
 //        val intent = Intent(this@SplashActivity, RootYieldActivity::class.java)
 //        val intent = Intent(this@SplashActivity, InvestmentAmountActivity::class.java)
