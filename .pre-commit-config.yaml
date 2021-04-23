@@ -16,3 +16,8 @@ repos:
 #      hooks:
 #        -   id: commit-msg-format
 #            language: script
+
+  -   repo: https://github.com/jorisroovers/gitlint
+      rev: bf0df47    # Fill in a tag / sha here
+      hooks:
+        -   id: gitlint
