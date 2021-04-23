@@ -1,5 +1,6 @@
 name: Android CICD
 on:
+  pull_request:
   push:
 
 jobs:
