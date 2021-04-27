@@ -17,7 +17,7 @@ repos:
       - id: commitizen
         stages:
           - commit-msg
-
+          
   - repo: 'https://github.com/jorisroovers/gitlint'
     rev: bf0df47
     hooks:

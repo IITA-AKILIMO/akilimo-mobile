@@ -51,3 +51,5 @@
 ## 16.3.3 (2020-07-07)
 
 ## 16.3.2 (2020-07-07)
+### Fixed Bugs
+- Feature/beta versioning [#177](https://masgeek/akilimo-mobile/issues/#177) ([@masgeek](https://github.com/@masgeek))
