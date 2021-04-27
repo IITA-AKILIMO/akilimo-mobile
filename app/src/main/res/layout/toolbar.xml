@@ -9,4 +9,3 @@
     app:contentInsetStartWithNavigation="0dp"
     app:layout_collapseMode="pin"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
