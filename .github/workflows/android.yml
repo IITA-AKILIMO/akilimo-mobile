@@ -27,7 +27,7 @@ jobs:
       - name: Run Unit tests
         run: ./gradlew testDebug
         continue-on-error: true
-      
+
       - name: Make Unit test report
         uses: doanpt/AndroidTestReportAction@v1.0
         if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
@@ -58,7 +58,7 @@ jobs:
 
       - name: Download requirement file
         run: curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/requirements.txt -o requirements.txt
-      
+
       - name: Download Tag fetching script
         run: curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/get-tag-raw.py -o latest-tag.py
 
@@ -90,8 +90,8 @@ jobs:
         run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > $GITHUB_WORKSPACE/akilimo.jks
 
       - name: Sign AAB
-        run:  jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks 
-          -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }} 
+        run:  jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks
+          -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }}
           app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEY_ALIAS }} --signedjar $GITHUB_WORKSPACE/release/app-release-signed.aab
 
       - name: Copy release tag file
@@ -150,13 +150,13 @@ jobs:
       GHR_REPLACE: "1"
       GHR_PATH: release
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
+
     steps:
       - uses: actions/download-artifact@v2
         name: Retrieve artifacts
         with:
           name: app-release
-          path: release   
+          path: release
       - run: |
           cp release/distribution/whatsnew/* release
           rm -rf release/distribution

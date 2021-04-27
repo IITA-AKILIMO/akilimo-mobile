@@ -11,4 +11,10 @@ https://pre-commit.com/
 
 https://commitizen-tools.github.io/commitizen/
 
+pre-commit install
+pre-commit uninstall
+
 pre-commit install --hook-type commit-msg
+pre-commit uninstall --hook-type commit-msg
+
+pre-commit run --all-files
