@@ -39,7 +39,7 @@ open class CassavaPrice {
 
     @JsonProperty("maxAllowedPrice")
     var maxAllowedPrice = 0.0
-    
+
     @JsonProperty("active")
     var active = false
 
