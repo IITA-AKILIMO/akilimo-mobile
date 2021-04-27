@@ -1,10 +1,18 @@
 name: Android CICD
 on:
+  pull_request:
   push:
 
 jobs:
+#  quality_checks:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: actions/setup-python@v2
+#      - uses: pre-commit/action@v2.0.2
 
   run_tests:
+#    needs: [quality_checks]
     name: Unit tests
     runs-on: ubuntu-latest
     env:
