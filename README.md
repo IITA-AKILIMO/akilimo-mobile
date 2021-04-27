@@ -5,3 +5,10 @@
 ![akilimo-mobile Actions](https://api.meercode.io/badge/masgeek/akilimo-mobile?type=ci-score&token=7QwvPQUxRPTOd8fotZBAjCPXzBoFqm2R&lastDay=14) ![akilimo-mobile Actions](https://api.meercode.io/badge/masgeek/akilimo-mobile?type=ci-count&token=7QwvPQUxRPTOd8fotZBAjCPXzBoFqm2R&lastDay=14) ![akilimo-mobile Actions](https://api.meercode.io/badge/masgeek/akilimo-mobile?type=ci-success-rate&token=7QwvPQUxRPTOd8fotZBAjCPXzBoFqm2R&lastDay=14)
 
 https://appicon.co/#image-sets
+
+
+https://pre-commit.com/
+
+https://commitizen-tools.github.io/commitizen/
+
+pre-commit install --hook-type commit-msg
