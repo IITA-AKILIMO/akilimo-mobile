@@ -374,7 +374,7 @@ public class RecommendationsActivity extends BaseActivity {
 
     private void updateCurrencyList() {
         final RestService restService = RestService.getInstance(queue, this);
-        final RestParameters restParameters = new RestParameters("/v3/currency", countryCode);
+        final RestParameters restParameters = new RestParameters("v3/currency", countryCode);
         restParameters.setInitialTimeout(5000);
         restService.setParameters(restParameters);
         restService.getJsonArrList(new IVolleyCallback() {

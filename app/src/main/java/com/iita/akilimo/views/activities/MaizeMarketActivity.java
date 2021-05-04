@@ -129,7 +129,9 @@ public class MaizeMarketActivity extends BaseActivity {
             currency = profileInfo.getCurrency();
 
             Currency myCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode);
-            currencyName = myCurrency.getCurrencyName();
+            if (myCurrency != null) {
+                currencyName = myCurrency.getCurrencyName();
+            }
         }
 
         initToolbar();
