@@ -1,4 +1,22 @@
 
+<a name="18.5.1"></a>
+## [18.5.1](https://github.com/masgeek/akilimo-mobile/compare/18.5.0...18.5.1)
+
+> 2021-04-27
+
+### Ci
+
+* added step for beta branch build
+
+### Docs
+
+* added changelog genration
+
+### Pull Requests
+
+* Merge pull request [#94](https://github.com/masgeek/akilimo-mobile/issues/94) from masgeek/feature/changelog
+
+
 <a name="18.5.0"></a>
 ## [18.5.0](https://github.com/masgeek/akilimo-mobile/compare/18.4.0...18.5.0)
 
@@ -247,7 +265,7 @@
 
 
 <a name="17.0.2"></a>
-## [17.0.2](https://github.com/masgeek/akilimo-mobile/compare/17.0.1...17.0.2)
+## [17.0.2](https://github.com/masgeek/akilimo-mobile/compare/17.0.beta2020201...17.0.2)
 
 > 2020-07-28
 
@@ -256,14 +274,14 @@
 * Merge pull request [#21](https://github.com/masgeek/akilimo-mobile/issues/21) from masgeek/dependabot/bundler/json-2.3.1
 
 
-<a name="17.0.1"></a>
-## [17.0.1](https://github.com/masgeek/akilimo-mobile/compare/17.0.beta2020201...17.0.1)
+<a name="17.0.beta2020201"></a>
+## [17.0.beta2020201](https://github.com/masgeek/akilimo-mobile/compare/17.0.1...17.0.beta2020201)
 
 > 2020-07-19
 
 
-<a name="17.0.beta2020201"></a>
-## [17.0.beta2020201](https://github.com/masgeek/akilimo-mobile/compare/16.3.beta2020201...17.0.beta2020201)
+<a name="17.0.1"></a>
+## [17.0.1](https://github.com/masgeek/akilimo-mobile/compare/16.3.beta2020201...17.0.1)
 
 > 2020-07-19
 
@@ -282,7 +300,7 @@
 
 
 <a name="17.0.0"></a>
-## [17.0.0](https://github.com/masgeek/akilimo-mobile/compare/16.3.beta3...17.0.0)
+## [17.0.0](https://github.com/masgeek/akilimo-mobile/compare/16.3.beta26...17.0.0)
 
 > 2020-07-19
 
@@ -292,14 +310,14 @@
 * Merge pull request [#14](https://github.com/masgeek/akilimo-mobile/issues/14) from masgeek/fix/user-feedback
 
 
-<a name="16.3.beta3"></a>
-## [16.3.beta3](https://github.com/masgeek/akilimo-mobile/compare/16.3.beta26...16.3.beta3)
+<a name="16.3.beta26"></a>
+## [16.3.beta26](https://github.com/masgeek/akilimo-mobile/compare/16.3.beta3...16.3.beta26)
 
 > 2020-07-15
 
 
-<a name="16.3.beta26"></a>
-## [16.3.beta26](https://github.com/masgeek/akilimo-mobile/compare/16.3.4...16.3.beta26)
+<a name="16.3.beta3"></a>
+## [16.3.beta3](https://github.com/masgeek/akilimo-mobile/compare/16.3.4...16.3.beta3)
 
 > 2020-07-15
 

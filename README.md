@@ -18,3 +18,7 @@ pre-commit install --hook-type commit-msg
 pre-commit uninstall --hook-type commit-msg
 
 pre-commit run --all-files
+
+# generate changelog
+
+`git-chglog -o CHANGELOG.md`
