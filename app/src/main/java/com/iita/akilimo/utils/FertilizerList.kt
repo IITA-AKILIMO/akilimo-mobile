@@ -4,6 +4,10 @@ import android.os.Build
 
 import com.iita.akilimo.entities.Fertilizer
 import com.iita.akilimo.entities.InterCropFertilizer
+import java.util.stream.Collectors
+
+
+
 
 object FertilizerList {
 
@@ -18,7 +22,11 @@ object FertilizerList {
             else -> {
                 val iterator = fertilizerTypeList.iterator()
                 while (iterator.hasNext()) {
-                    if (iterator.next().fertilizerType.equals(fertilizerTypeToRemove, ignoreCase = true)) {
+                    if (iterator.next().fertilizerType.equals(
+                            fertilizerTypeToRemove,
+                            ignoreCase = true
+                        )
+                    ) {
                         iterator.remove()
                     }
                 }
@@ -40,7 +48,11 @@ object FertilizerList {
             else -> {
                 val iterator = fertilizerTypeList.iterator()
                 while (iterator.hasNext()) {
-                    if (iterator.next().fertilizerType.equals(fertilizerTypeToRemove, ignoreCase = true)) {
+                    if (iterator.next().fertilizerType.equals(
+                            fertilizerTypeToRemove,
+                            ignoreCase = true
+                        )
+                    ) {
                         iterator.remove()
                     }
                 }
