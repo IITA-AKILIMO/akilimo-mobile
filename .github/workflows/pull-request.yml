@@ -19,6 +19,6 @@ jobs:
           pr_reviewer: "masgeek"                         # Comma-separated list (no spaces)
           pr_assignee: "masgeek"                         # Comma-separated list (no spaces)
           pr_label: "auto-pr,beta"                               # Comma-separated list (no spaces)
-          pr_draft: true                                    # Creates pull request as draft
+          pr_draft: false                                    # Creates pull request as draft
           pr_allow_empty: false                              # Creates pull request even if there are no changes
           github_token: ${{ secrets.GITHUB_TOKEN }}
