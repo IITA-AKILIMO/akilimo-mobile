@@ -199,6 +199,10 @@ public class CassavaMarketActivity extends BaseActivity {
                 produceType = EnumCassavaProduceType.ROOTS.produce();
                 unitOfSale = "NA";
                 unitPrice = 0.0;
+                unitPriceP1 = 0.0;
+                unitPriceP2 = 0.0;
+                unitPriceM1 = 0.0;
+                unitPriceM2 = 0.0;
             } else if (radioIndex == R.id.rdOtherMarket) {
                 produceType = EnumCassavaProduceType.ROOTS.produce();
                 selectedFactory = "NA";
@@ -206,8 +210,10 @@ public class CassavaMarketActivity extends BaseActivity {
                 hideAll(false);
                 unitOfSaleTitle.setVisibility(View.VISIBLE);
                 unitOfSaleCard.setVisibility(View.VISIBLE);
-                monthOneWindowCard.setVisibility(View.VISIBLE);
-                monthTwoWindowCard.setVisibility(View.VISIBLE);
+                if (harvestWindow > 0) {
+                    monthOneWindowCard.setVisibility(View.VISIBLE);
+                    monthTwoWindowCard.setVisibility(View.VISIBLE);
+                }
             }
         });
 
@@ -263,10 +269,8 @@ public class CassavaMarketActivity extends BaseActivity {
             selectionMade = true;
             marketOutLetTitle.setVisibility(View.GONE);
             marketOutletCard.setVisibility(View.GONE);
-            if (harvestWindow > 0) {
-                unitOfSaleTitle.setVisibility(View.VISIBLE);
-                unitOfSaleCard.setVisibility(View.VISIBLE);
-            }
+            unitOfSaleTitle.setVisibility(View.VISIBLE);
+            unitOfSaleCard.setVisibility(View.VISIBLE);
         }
 
         showCustomNotificationDialog();
