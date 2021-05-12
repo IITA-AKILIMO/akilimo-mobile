@@ -23,14 +23,11 @@ import com.iita.akilimo.utils.ItemAnimation;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.enums.EnumUseCase;
 import com.iita.akilimo.views.activities.CassavaMarketActivity;
-import com.iita.akilimo.views.activities.CassavaMarketWizardActivity;
 import com.iita.akilimo.views.activities.DatesActivity;
 import com.iita.akilimo.views.activities.RootYieldActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-
-;
 
 public class ScheduledPlantingActivity extends BaseActivity {
 
@@ -131,9 +128,6 @@ public class ScheduledPlantingActivity extends BaseActivity {
                 case CURRENT_CASSAVA_YIELD:
                     intent = new Intent(context, RootYieldActivity.class);
                     break;
-                case TEST_MARKET_WIZARD:
-                    intent = new Intent(context, CassavaMarketWizardActivity.class);
-                    break;
             }
             if (intent != null) {
                 startActivity(intent);
@@ -167,7 +161,6 @@ public class ScheduledPlantingActivity extends BaseActivity {
         myItems.add(new RecommendationOptions(plantingString, EnumAdviceTasks.PLANTING_AND_HARVEST, checkStatus(EnumAdviceTasks.PLANTING_AND_HARVEST)));
         myItems.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)));
         myItems.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)));
-        myItems.add(new RecommendationOptions("Market wizard", EnumAdviceTasks.TEST_MARKET_WIZARD, checkStatus(EnumAdviceTasks.TEST_MARKET_WIZARD)));
         return myItems;
     }
 }

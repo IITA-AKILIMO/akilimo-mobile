@@ -35,12 +35,7 @@
         android:checkable="true"
         android:clickable="true"
         android:focusable="true"
-        android:visibility="visible"
-        app:cardBackgroundColor="@color/grey_5"
-        app:cardCornerRadius="5dp"
-        app:cardElevation="2dp"
-        app:cardMaxElevation="6dp"
-        app:contentPadding="@dimen/spacing_small">
+        android:visibility="visible">
 
 
         <LinearLayout

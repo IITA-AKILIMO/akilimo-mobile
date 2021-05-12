@@ -42,7 +42,6 @@
             android:checkable="true"
             android:clickable="true"
             android:focusable="true"
-            android:visibility="visible"
             app:cardBackgroundColor="@color/grey_5"
             app:cardCornerRadius="5dp"
             app:cardElevation="2dp"
@@ -190,12 +189,95 @@
         </androidx.cardview.widget.CardView>
 
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/monthOneWindowCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/unitOfSaleCard"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/green_50"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="2dp"
+            app:cardMaxElevation="6dp"
+            app:contentPadding="@dimen/spacing_small">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_small">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnUpP1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu"
+                    android:text="@string/lbl_unit_price_p1"
+                    android:textAllCaps="false"
+                    android:theme="@style/Button.Brown" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnUpM1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu"
+                    android:text="@string/lbl_unit_price_m1"
+                    android:textAllCaps="false"
+                    android:theme="@style/Button.Brown" />
+
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/monthTwoWindowCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/monthOneWindowCard"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/purple_50"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="2dp"
+            app:cardMaxElevation="6dp"
+            app:contentPadding="@dimen/spacing_small">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_small">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnUpP2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu"
+                    android:text="@string/lbl_unit_price_p2"
+                    android:textAllCaps="false"
+                    android:theme="@style/Button.Brown" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnUpM2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu"
+                    android:text="@string/lbl_unit_price_m2"
+                    android:textAllCaps="false"
+                    android:theme="@style/Button.Brown" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
         <include
             android:id="@+id/two_buttons"
             layout="@layout/bottom_two_buttons_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/unitOfSaleCard"
+            android:layout_below="@id/monthTwoWindowCard"
             android:layout_marginTop="@dimen/spacing_large" />
 
     </RelativeLayout>

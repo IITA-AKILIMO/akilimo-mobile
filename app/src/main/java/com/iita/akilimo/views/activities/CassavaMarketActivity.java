@@ -30,6 +30,7 @@ import com.iita.akilimo.entities.AdviceStatus;
 import com.iita.akilimo.entities.CassavaMarket;
 import com.iita.akilimo.entities.CassavaPrice;
 import com.iita.akilimo.entities.ProfileInfo;
+import com.iita.akilimo.entities.ScheduledDate;
 import com.iita.akilimo.entities.StarchFactory;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.interfaces.IVolleyCallback;
@@ -39,6 +40,7 @@ import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.Tools;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
 import com.iita.akilimo.utils.enums.EnumCassavaProduceType;
+import com.iita.akilimo.utils.enums.EnumContext;
 import com.iita.akilimo.utils.enums.EnumUnitOfSale;
 import com.iita.akilimo.utils.enums.EnumUseCase;
 import com.iita.akilimo.views.fragments.dialog.CassavaPriceDialogFragment;
@@ -64,9 +66,13 @@ public class CassavaMarketActivity extends BaseActivity {
     RadioGroup rdgMarketOutlet;
     RadioGroup rdgStarchFactories;
     RadioGroup rdgUnitOfSale;
+
     CardView marketOutletCard;
     CardView starchFactoryCard;
     CardView unitOfSaleCard;
+    CardView monthOneWindowCard;
+    CardView monthTwoWindowCard;
+
     AppCompatButton btnFinish;
     AppCompatButton btnCancel;
 
@@ -76,12 +82,19 @@ public class CassavaMarketActivity extends BaseActivity {
 
     String produceType;
     private double unitPrice = 0.0;
+    private double unitPriceP1 = 0.0;
+    private double unitPriceP2 = 0.0;
+    private double unitPriceM1 = 0.0;
+    private double unitPriceM2 = 0.0;
+
     String priceText;
     String unitOfSale;
     int unitWeight;
+    private int harvestWindow = 0;
     EnumUnitOfSale unitOfSaleEnum = EnumUnitOfSale.ONE_KG;
 
     private CassavaMarket cassavaMarket;
+    private ScheduledDate scheduledDate;
     private List<CassavaPrice> cassavaPriceList = null;
 
     private boolean factoryRequired;
@@ -106,21 +119,38 @@ public class CassavaMarketActivity extends BaseActivity {
         rdgMarketOutlet = binding.contentCassavaMarket.rdgMarketOutlet;
         rdgStarchFactories = binding.contentCassavaMarket.rdgStarchFactories;
         rdgUnitOfSale = binding.contentCassavaMarket.rdgUnitOfSale;
+
         marketOutletCard = binding.contentCassavaMarket.marketOutletCard;
         starchFactoryCard = binding.contentCassavaMarket.starchFactoryCard;
         unitOfSaleCard = binding.contentCassavaMarket.unitOfSaleCard;
+        monthOneWindowCard = binding.contentCassavaMarket.monthOneWindowCard;
+        monthTwoWindowCard = binding.contentCassavaMarket.monthTwoWindowCard;
+
         btnFinish = binding.contentCassavaMarket.twoButtons.btnFinish;
         btnCancel = binding.contentCassavaMarket.twoButtons.btnCancel;
+
+        binding.contentCassavaMarket.btnUpP1.setOnClickListener(v -> showUnitPriceDialog(EnumContext.unit_price_p1));
+        binding.contentCassavaMarket.btnUpP2.setOnClickListener(v -> showUnitPriceDialog(EnumContext.unit_price_p2));
+        binding.contentCassavaMarket.btnUpM1.setOnClickListener(v -> showUnitPriceDialog(EnumContext.unit_price_m1));
+        binding.contentCassavaMarket.btnUpM2.setOnClickListener(v -> showUnitPriceDialog(EnumContext.unit_price_m2));
 
         database = AppDatabase.getDatabase(context);
         queue = Volley.newRequestQueue(context);
         mathHelper = new MathHelper(this);
 
         cassavaMarket = database.cassavaMarketDao().findOne();
+        scheduledDate = database.scheduleDateDao().findOne();
         if (cassavaMarket != null) {
             selectedFactory = cassavaMarket.getStarchFactory();
-            unitPrice = cassavaMarket.getUnitPrice();
             unitOfSale = cassavaMarket.getUnitOfSale();
+            unitPrice = cassavaMarket.getUnitPrice();
+            unitPriceM1 = cassavaMarket.getUnitPriceM1();
+            unitPriceM2 = cassavaMarket.getUnitPriceM2();
+            unitPriceP1 = cassavaMarket.getUnitPriceP1();
+            unitPriceP2 = cassavaMarket.getUnitPriceP2();
+        }
+        if (scheduledDate != null) {
+            harvestWindow = scheduledDate.getHarvestWindow();
         }
 
         ProfileInfo profileInfo = database.profileInfoDao().findOne();
@@ -161,24 +191,23 @@ public class CassavaMarketActivity extends BaseActivity {
             factoryRequired = false;
             otherMarketsRequired = false;
             selectionMade = true;
-            switch (radioIndex) {
-                case R.id.rdFactory:
-                    hideAll(true);
-                    factoryTitle.setVisibility(View.VISIBLE);
-                    starchFactoryCard.setVisibility(View.VISIBLE);
-                    factoryRequired = true;
-                    produceType = EnumCassavaProduceType.ROOTS.produce();
-                    unitOfSale = "NA";
-                    unitPrice = 0.0;
-                    break;
-                case R.id.rdOtherMarket:
-                    produceType = EnumCassavaProduceType.ROOTS.produce();
-                    selectedFactory = "NA";
-                    otherMarketsRequired = true;
-                    hideAll(false);
-                    unitOfSaleTitle.setVisibility(View.VISIBLE);
-                    unitOfSaleCard.setVisibility(View.VISIBLE);
-                    break;
+            if (radioIndex == R.id.rdFactory) {
+                hideAll(true);
+                factoryTitle.setVisibility(View.VISIBLE);
+                starchFactoryCard.setVisibility(View.VISIBLE);
+                factoryRequired = true;
+                produceType = EnumCassavaProduceType.ROOTS.produce();
+                unitOfSale = "NA";
+                unitPrice = 0.0;
+            } else if (radioIndex == R.id.rdOtherMarket) {
+                produceType = EnumCassavaProduceType.ROOTS.produce();
+                selectedFactory = "NA";
+                otherMarketsRequired = true;
+                hideAll(false);
+                unitOfSaleTitle.setVisibility(View.VISIBLE);
+                unitOfSaleCard.setVisibility(View.VISIBLE);
+                monthOneWindowCard.setVisibility(View.VISIBLE);
+                monthTwoWindowCard.setVisibility(View.VISIBLE);
             }
         });
 
@@ -234,8 +263,10 @@ public class CassavaMarketActivity extends BaseActivity {
             selectionMade = true;
             marketOutLetTitle.setVisibility(View.GONE);
             marketOutletCard.setVisibility(View.GONE);
-            unitOfSaleTitle.setVisibility(View.VISIBLE);
-            unitOfSaleCard.setVisibility(View.VISIBLE);
+            if (harvestWindow > 0) {
+                unitOfSaleTitle.setVisibility(View.VISIBLE);
+                unitOfSaleCard.setVisibility(View.VISIBLE);
+            }
         }
 
         showCustomNotificationDialog();
@@ -243,7 +274,7 @@ public class CassavaMarketActivity extends BaseActivity {
 
     public void onRadioButtonClicked(View radioButton) {
         if (radioButton != null && radioButton.isPressed()) {
-            showUnitPriceDialog();
+            showUnitPriceDialog(EnumContext.unit_price);
         }
     }
 
@@ -290,8 +321,11 @@ public class CassavaMarketActivity extends BaseActivity {
                 cassavaMarket.setProduceType(produceType);
                 cassavaMarket.setUnitOfSale(unitOfSale);
                 cassavaMarket.setUnitWeight(unitWeight);
-                cassavaMarket.setExactPrice(unitPrice);
                 cassavaMarket.setUnitPrice(unitPrice);
+                cassavaMarket.setUnitPriceM1(unitPriceM1);
+                cassavaMarket.setUnitPriceM2(unitPriceM2);
+                cassavaMarket.setUnitPriceP1(unitPriceP1);
+                cassavaMarket.setUnitPriceP2(unitPriceP2);
 
                 database.cassavaMarketDao().insert(cassavaMarket);
                 closeActivity(backPressed);
@@ -314,6 +348,9 @@ public class CassavaMarketActivity extends BaseActivity {
 
         unitOfSaleTitle.setVisibility(View.GONE);
         unitOfSaleCard.setVisibility(View.GONE);
+
+        monthOneWindowCard.setVisibility(View.GONE);
+        monthTwoWindowCard.setVisibility(View.GONE);
     }
 
 
@@ -415,7 +452,6 @@ public class CassavaMarketActivity extends BaseActivity {
 
         if (cassavaMarket != null) {
             boolean sfRequired = cassavaMarket.isStarchFactoryRequired();
-            priceText = String.valueOf(cassavaMarket.getExactPrice());
             rdgMarketOutlet.check(sfRequired ? R.id.rdFactory : R.id.rdOtherMarket);
             if (!sfRequired) {
                 produceType = cassavaMarket.getProduceType();
@@ -468,8 +504,7 @@ public class CassavaMarketActivity extends BaseActivity {
 
     }
 
-
-    private void showUnitPriceDialog() {
+    private void showUnitPriceDialog(EnumContext userContext) {
         Bundle arguments = new Bundle();
         arguments.putString(CassavaPriceDialogFragment.CURRENCY_CODE, currency);
         arguments.putString(CassavaPriceDialogFragment.COUNTRY_CODE, countryCode);
@@ -482,7 +517,24 @@ public class CassavaMarketActivity extends BaseActivity {
         priceDialogFragment.setArguments(arguments);
 
         priceDialogFragment.setOnDismissListener((selectedPrice, isExactPrice) -> {
-            unitPrice = isExactPrice ? selectedPrice : mathHelper.convertToUnitWeightPrice(selectedPrice, unitWeight);
+            double setPrice = isExactPrice ? selectedPrice : mathHelper.convertToUnitWeightPrice(selectedPrice, unitWeight);
+            switch (userContext) {
+                case unit_price:
+                    unitPrice = setPrice;
+                    break;
+                case unit_price_p1:
+                    unitPriceP1 = setPrice;
+                    break;
+                case unit_price_p2:
+                    unitPriceP2 = setPrice;
+                    break;
+                case unit_price_m1:
+                    unitPriceM1 = setPrice;
+                    break;
+                case unit_price_m2:
+                    unitPriceM2 = setPrice;
+                    break;
+            }
         });
 
         FragmentTransaction fragmentTransaction;

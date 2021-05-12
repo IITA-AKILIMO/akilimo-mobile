@@ -123,7 +123,7 @@
     <string name="lbl_maize_performance_poor">These are very poor soil conditions and not very common</string>
     <string name="lbl_maize_performance_rich">These are very rich soil conditions and not very common</string>
 
-    <string name="lbl_market_outlet">What price do you expect for your cassava at harvest?</string>
+    <string name="lbl_market_outlet">What price do you expect for your cassava?</string>
     <string name="lbl_market_outlet_maize">What price do you expect for your maize at harvest?</string>
     <string name="lbl_tillage_operations">Tillage operations and related cost</string>
     <string name="lbl_cost_of_manual_tillage">What is the cost of manual tillage?</string>
@@ -528,4 +528,9 @@
     <string name="lbl_other">Other</string>
     <string name="lbl_provide_feedback">Provide feedback</string>
     <string name="lbl_thank_feedback_you">Thank you for your feedback</string>
+
+    <string name="lbl_unit_price_p1">Price 1 month before harvest</string>
+    <string name="lbl_unit_price_m1">Price 1 month after harvest</string>
+    <string name="lbl_unit_price_p2">Price 2 months before harvest</string>
+    <string name="lbl_unit_price_m2">Price 2 months after harvest</string>
 </resources>

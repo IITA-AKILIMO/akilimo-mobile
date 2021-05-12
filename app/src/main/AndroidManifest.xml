@@ -84,7 +84,6 @@
         <activity android:name=".views.activities.MaizePerformanceActivity" />
         <activity android:name=".views.activities.usecases.InterCropRecActivity" />
         <activity android:name=".views.activities.MySurveyActivity" />
-        <activity android:name=".views.activities.CassavaMarketWizardActivity"/>
     </application>
 
 </manifest>
