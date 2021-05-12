@@ -1,0 +1,24 @@
+name: Beta release PR creator
+on:
+  push:
+    branches:
+      - "develop"  # Support wildcard matching
+
+jobs:
+  pull-request:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: pull-request
+        uses: repo-sync/pull-request@v2
+        with:
+          source_branch: ""                                 # If blank, default: triggered branch
+          destination_branch: "beta"                      # If blank, default: master
+          pr_title: "Pulling ${{ github.ref }} into beta" # Title of pull request
+          pr_body: ":crown: *An automated PR* for beta release"              # Full markdown support, requires pr_title to be set
+          pr_reviewer: "masgeek"                         # Comma-separated list (no spaces)
+          pr_assignee: "masgeek"                         # Comma-separated list (no spaces)
+          pr_label: "auto-pr,beta"                               # Comma-separated list (no spaces)
+          pr_draft: true                                    # Creates pull request as draft
+          pr_allow_empty: false                              # Creates pull request even if there are no changes
+          github_token: ${{ secrets.GITHUB_TOKEN }}
