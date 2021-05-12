@@ -1,6 +1,7 @@
 package com.iita.akilimo.dao
 
 import androidx.room.*
+import com.iita.akilimo.entities.Fertilizer
 import com.iita.akilimo.entities.InterCropFertilizer
 
 @Deprecated("To be removed when app is stable")
@@ -49,4 +50,10 @@ interface InterCropFertilizerDao {
         countryCode: String,
         useCase: String
     ): List<InterCropFertilizer>
+
+    @Query("select * from intercrop_fertilizer where fertilizerType=:fertilizerType")
+    fun findByType(fertilizerType: String?): InterCropFertilizer?
+
+    fun deleteFertilizerByList(deletionList: List<InterCropFertilizer>)
+
 }

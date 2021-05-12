@@ -31,7 +31,7 @@ import com.iita.akilimo.entities.*
         UseCases::class,
         Currency::class,
         AdviceStatus::class
-    ], version = 2, exportSchema = false
+    ], version = 1, exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -76,7 +76,7 @@ abstract class AppDatabase : RoomDatabase() {
                     if (database == null) {
                         database = Room.databaseBuilder(
                             context.applicationContext,
-                            AppDatabase::class.java, "AKILIMO_07_APR_2021"
+                            AppDatabase::class.java, "AKILIMO_12_MAY_2021"
                         )
                             .fallbackToDestructiveMigration()
                             .allowMainThreadQueries()

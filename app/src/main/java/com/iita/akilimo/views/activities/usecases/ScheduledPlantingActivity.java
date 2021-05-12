@@ -29,8 +29,6 @@ import com.iita.akilimo.views.activities.RootYieldActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-;
-
 public class ScheduledPlantingActivity extends BaseActivity {
 
 
