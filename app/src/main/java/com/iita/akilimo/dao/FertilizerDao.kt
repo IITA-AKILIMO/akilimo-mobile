@@ -2,6 +2,7 @@ package com.iita.akilimo.dao
 
 import androidx.room.*
 import com.iita.akilimo.entities.Fertilizer
+import com.iita.akilimo.entities.InterCropFertilizer
 
 @Dao
 interface FertilizerDao {
@@ -11,6 +12,9 @@ interface FertilizerDao {
 
     @Query("SELECT * FROM fertilizer LIMIT 1")
     fun findOne(): Fertilizer?
+
+    @Query("select * from fertilizer where fertilizerType=:fertilizerType")
+    fun findByType(fertilizerType: String?): Fertilizer?
 
     @Query("select * from fertilizer where fertilizerType=:fertilizerType and countryCode=:countryCode limit 1")
     fun findOneByTypeAndCountry(fertilizerType: String?, countryCode: String): Fertilizer?
@@ -33,4 +37,7 @@ interface FertilizerDao {
 
     @Delete
     fun delete(fieldYield: Fertilizer?)
+
+    @Delete
+    fun deleteFertilizerByList(userList: List<Fertilizer>)
 }

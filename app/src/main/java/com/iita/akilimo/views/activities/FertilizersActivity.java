@@ -230,13 +230,34 @@ public class FertilizersActivity extends BaseActivity {
             @Override
             public void onSuccessJsonArr(JSONArray jsonArray) {
                 ObjectMapper objectMapper = new ObjectMapper();
+                List<Fertilizer> deletionList = new ArrayList<>();
                 try {
                     availableFertilizersList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<Fertilizer>>() {
                     });
+                    List<Fertilizer> savedList = database.fertilizerDao().findAllByCountry(countryCode);
                     //save fertilizers here
                     if (availableFertilizersList.size() > 0) {
-                        database.fertilizerDao().insertAll(availableFertilizersList);
+                        for (Fertilizer savedFertilizer : savedList) {
+                            // Loop arrayList1 items
+                            boolean found = false;
+                            for (Fertilizer latestFertilizer : availableFertilizersList) {
+                                Fertilizer updateFertilizer = database.fertilizerDao().findByType(latestFertilizer.getFertilizerType());
+                                if (updateFertilizer != null) {
+                                    updateFertilizer.setAvailable(latestFertilizer.getAvailable());
+                                    database.fertilizerDao().update(updateFertilizer);
+                                } else {
+                                    database.fertilizerDao().insert(latestFertilizer);
+                                }
+                                if (latestFertilizer.getFertilizerType().equals(savedFertilizer.getFertilizerType())) {
+                                    found = true;
+                                }
+                            }
+                            if (!found) {
+                                deletionList.add(savedFertilizer);
+                            }
+                        }
                     }
+                    database.fertilizerDao().deleteFertilizerByList(deletionList);
                     initializeFertilizerPriceList();
                 } catch (Exception ex) {
                     lyt_progress.setVisibility(View.GONE);
