@@ -1,4 +1,49 @@
 
+<a name="18.6.0"></a>
+## [18.6.0](https://github.com/masgeek/akilimo-mobile/compare/18.5.1...18.6.0)
+
+> 2021-05-12
+
+### Ci
+
+* disble Pr draft flag in pr automater
+* added title to beta release workflow
+* added auto pr action to github CI
+* disabled on pull request build
+
+### Docs
+
+* updated whats new notes
+
+### Feat
+
+* added ui to handle harvest window prices for month 1&2
+* dependencies updates
+
+### Fix
+
+* fertilizer list clenup logic
+* added proper planting windows check
+* currency object processing
+
+### Refactor
+
+* enabled correct entry activity
+
+### Pull Requests
+
+* Merge pull request [#98](https://github.com/masgeek/akilimo-mobile/issues/98) from masgeek/ci/pr-flag
+* Merge pull request [#90](https://github.com/masgeek/akilimo-mobile/issues/90) from masgeek/feature/plant-harvest-prices
+* Merge pull request [#96](https://github.com/masgeek/akilimo-mobile/issues/96) from masgeek/fix/currency
+
+### BREAKING CHANGE
+
+
+
+
+
+
+
 <a name="18.5.1"></a>
 ## [18.5.1](https://github.com/masgeek/akilimo-mobile/compare/18.5.0...18.5.1)
 
@@ -265,7 +310,7 @@
 
 
 <a name="17.0.2"></a>
-## [17.0.2](https://github.com/masgeek/akilimo-mobile/compare/17.0.beta2020201...17.0.2)
+## [17.0.2](https://github.com/masgeek/akilimo-mobile/compare/17.0.1...17.0.2)
 
 > 2020-07-28
 
@@ -274,14 +319,14 @@
 * Merge pull request [#21](https://github.com/masgeek/akilimo-mobile/issues/21) from masgeek/dependabot/bundler/json-2.3.1
 
 
-<a name="17.0.beta2020201"></a>
-## [17.0.beta2020201](https://github.com/masgeek/akilimo-mobile/compare/17.0.1...17.0.beta2020201)
+<a name="17.0.1"></a>
+## [17.0.1](https://github.com/masgeek/akilimo-mobile/compare/17.0.beta2020201...17.0.1)
 
 > 2020-07-19
 
 
-<a name="17.0.1"></a>
-## [17.0.1](https://github.com/masgeek/akilimo-mobile/compare/16.3.beta2020201...17.0.1)
+<a name="17.0.beta2020201"></a>
+## [17.0.beta2020201](https://github.com/masgeek/akilimo-mobile/compare/17.0.0...17.0.beta2020201)
 
 > 2020-07-19
 
@@ -293,14 +338,14 @@
 * Merge pull request [#5](https://github.com/masgeek/akilimo-mobile/issues/5) from masgeek/develop
 
 
-<a name="16.3.beta2020201"></a>
-## [16.3.beta2020201](https://github.com/masgeek/akilimo-mobile/compare/17.0.0...16.3.beta2020201)
+<a name="17.0.0"></a>
+## [17.0.0](https://github.com/masgeek/akilimo-mobile/compare/16.3.beta2020201...17.0.0)
 
 > 2020-07-19
 
 
-<a name="17.0.0"></a>
-## [17.0.0](https://github.com/masgeek/akilimo-mobile/compare/16.3.beta26...17.0.0)
+<a name="16.3.beta2020201"></a>
+## [16.3.beta2020201](https://github.com/masgeek/akilimo-mobile/compare/16.3.beta3...16.3.beta2020201)
 
 > 2020-07-19
 
@@ -310,14 +355,14 @@
 * Merge pull request [#14](https://github.com/masgeek/akilimo-mobile/issues/14) from masgeek/fix/user-feedback
 
 
-<a name="16.3.beta26"></a>
-## [16.3.beta26](https://github.com/masgeek/akilimo-mobile/compare/16.3.beta3...16.3.beta26)
+<a name="16.3.beta3"></a>
+## [16.3.beta3](https://github.com/masgeek/akilimo-mobile/compare/16.3.beta26...16.3.beta3)
 
 > 2020-07-15
 
 
-<a name="16.3.beta3"></a>
-## [16.3.beta3](https://github.com/masgeek/akilimo-mobile/compare/16.3.4...16.3.beta3)
+<a name="16.3.beta26"></a>
+## [16.3.beta26](https://github.com/masgeek/akilimo-mobile/compare/16.3.beta2...16.3.beta26)
 
 > 2020-07-15
 
@@ -326,14 +371,14 @@
 * Merge pull request [#10](https://github.com/masgeek/akilimo-mobile/issues/10) from masgeek/fix/splash-activity-crash
 
 
-<a name="16.3.4"></a>
-## [16.3.4](https://github.com/masgeek/akilimo-mobile/compare/16.3.beta2...16.3.4)
+<a name="16.3.beta2"></a>
+## [16.3.beta2](https://github.com/masgeek/akilimo-mobile/compare/16.3.4...16.3.beta2)
 
 > 2020-07-08
 
 
-<a name="16.3.beta2"></a>
-## [16.3.beta2](https://github.com/masgeek/akilimo-mobile/compare/16.3.3...16.3.beta2)
+<a name="16.3.4"></a>
+## [16.3.4](https://github.com/masgeek/akilimo-mobile/compare/16.3.3...16.3.4)
 
 > 2020-07-08
 
