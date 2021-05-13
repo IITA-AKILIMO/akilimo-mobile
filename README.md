@@ -6,19 +6,21 @@
 
 https://appicon.co/#image-sets
 
+# github hooks
+* https://pre-commit.com/
+* https://commitizen-tools.github.io/commitizen/
 
-https://pre-commit.com/
+`pre-commit install`
 
-https://commitizen-tools.github.io/commitizen/
+`pre-commit uninstall`
 
-pre-commit install
-pre-commit uninstall
+`pre-commit install --hook-type commit-msg`
 
-pre-commit install --hook-type commit-msg
-pre-commit uninstall --hook-type commit-msg
+`pre-commit uninstall --hook-type commit-msg`
 
-pre-commit run --all-files
+`pre-commit run --all-files`
 
-# generate changelog
+# Generate changelog
+
 
 `git-chglog -o CHANGELOG.md`

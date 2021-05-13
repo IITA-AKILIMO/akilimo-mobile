@@ -53,7 +53,8 @@ interface InterCropFertilizerDao {
 
     @Query("select * from intercrop_fertilizer where fertilizerType=:fertilizerType")
     fun findByType(fertilizerType: String?): InterCropFertilizer?
-
+  
+    @Delete
     fun deleteFertilizerByList(deletionList: List<InterCropFertilizer>)
 
 }
