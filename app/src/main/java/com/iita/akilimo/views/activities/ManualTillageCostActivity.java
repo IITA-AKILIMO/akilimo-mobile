@@ -29,6 +29,7 @@ import com.iita.akilimo.utils.enums.EnumOperationType;
 import com.iita.akilimo.views.fragments.dialog.OperationCostsDialogFragment;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 ;
 
@@ -118,20 +119,32 @@ public class ManualTillageCostActivity extends CostBaseActivity {
 
     @Override
     protected void initComponent() {
-        String ploughTitle = context.getString(R.string.lbl_manual_tillage_cost, mathHelper.removeLeadingZero(fieldSize), areaUnit);
-        String ridgeTitle = context.getString(R.string.lbl_manual_ridge_cost, mathHelper.removeLeadingZero(fieldSize), areaUnit);
+        Locale myLocale = getCurrentLocale();
+        String translatedUnit = context.getString(R.string.lbl_acre);
+        if (areaUnit.equals("ha")) {
+            translatedUnit = context.getString(R.string.lbl_ha);
+        }
+        String finalTranslatedUnit = translatedUnit.toLowerCase(myLocale);
 
+        String ploughTitle = context.getString(R.string.lbl_manual_tillage_cost, mathHelper.removeLeadingZero(fieldSize), finalTranslatedUnit);
+        String ridgeTitle = context.getString(R.string.lbl_manual_ridge_cost, mathHelper.removeLeadingZero(fieldSize), finalTranslatedUnit);
+        if (myLocale.getLanguage().equals("sw")) {
+            ploughTitle = context.getString(R.string.lbl_manual_tillage_cost, finalTranslatedUnit, mathHelper.removeLeadingZero(fieldSize));
+            ridgeTitle = context.getString(R.string.lbl_manual_ridge_cost, finalTranslatedUnit, mathHelper.removeLeadingZero(fieldSize));
+        }
+        String finalPloughTitle = ploughTitle;
         btnPloughCost.setOnClickListener(view -> {
-            hintText = context.getString(R.string.lbl_manual_tillage_cost_hint, mathHelper.removeLeadingZero(fieldSize), areaUnit);
+            hintText = context.getString(R.string.lbl_manual_tillage_cost_hint, mathHelper.removeLeadingZero(fieldSize), finalTranslatedUnit);
             if (!dialogOpen) {
-                loadOperationCost(EnumOperation.TILLAGE.name(), EnumOperationType.MANUAL.name(), ploughTitle, hintText);
+                loadOperationCost(EnumOperation.TILLAGE.name(), EnumOperationType.MANUAL.name(), finalPloughTitle, hintText);
             }
         });
 
+        String finalRidgeTitle = ridgeTitle;
         btnRidgeCost.setOnClickListener(view -> {
-            hintText = context.getString(R.string.lbl_manual_ridge_cost_hint, mathHelper.removeLeadingZero(fieldSize), areaUnit);
+            hintText = context.getString(R.string.lbl_manual_ridge_cost_hint, mathHelper.removeLeadingZero(fieldSize), finalTranslatedUnit);
             if (!dialogOpen) {
-                loadOperationCost(EnumOperation.RIDGING.name(), EnumOperationType.MANUAL.name(), ridgeTitle, hintText);
+                loadOperationCost(EnumOperation.RIDGING.name(), EnumOperationType.MANUAL.name(), finalRidgeTitle, hintText);
             }
         });
 
@@ -185,6 +198,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
 
     }
 
+
     @Override
     protected void showDialogFullscreen(ArrayList<OperationCost> operationCostList, String operation, String countryCode, String dialogTitle, String hintText) {
         Bundle arguments = new Bundle();
@@ -192,6 +206,15 @@ public class ManualTillageCostActivity extends CostBaseActivity {
         if (dialogOpen) {
             return;
         }
+
+        Locale myLocale = getCurrentLocale();
+        String translatedUnit = context.getString(R.string.lbl_acre);
+        if (areaUnit.equals("ha")) {
+            translatedUnit = context.getString(R.string.lbl_ha);
+        }
+        String finalTranslatedUnit = translatedUnit.toLowerCase(myLocale);
+
+
         arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList);
         arguments.putString(OperationCostsDialogFragment.OPERATION_NAME, operation);
         arguments.putString(OperationCostsDialogFragment.DIALOG_TITLE, dialogTitle);
@@ -210,13 +233,23 @@ public class ManualTillageCostActivity extends CostBaseActivity {
                 switch (enumOperation) {
                     case "TILLAGE":
                         manualPloughCost = roundedCost;
-                        manualPloughCostText.setText(getString(R.string.lbl_ploughing_cost_text, mathHelper.removeLeadingZero(fieldSize),
-                                areaUnit, mathHelper.formatNumber(roundedCost, null), currencySymbol));
+                        String manualTillageText = getString(R.string.lbl_ploughing_cost_text, mathHelper.removeLeadingZero(fieldSize),
+                                finalTranslatedUnit, mathHelper.formatNumber(roundedCost, null), currencySymbol);
+                        if (myLocale.getLanguage().equals("sw")) {
+                            manualTillageText = getString(R.string.lbl_ploughing_cost_text,
+                                    finalTranslatedUnit, mathHelper.removeLeadingZero(fieldSize), mathHelper.formatNumber(roundedCost, null), currencySymbol);
+                        }
+                        manualPloughCostText.setText(manualTillageText);
                         break;
                     case "RIDGING":
                         manualRidgeCost = roundedCost;
-                        manualRidgingCostText.setText(getString(R.string.lbl_ridging_cost_text, mathHelper.removeLeadingZero(fieldSize),
-                                areaUnit, mathHelper.formatNumber(roundedCost, null), currencySymbol));
+                        String manualRidgeText = getString(R.string.lbl_ridging_cost_text, mathHelper.removeLeadingZero(fieldSize),
+                                finalTranslatedUnit, mathHelper.formatNumber(roundedCost, null), currencySymbol);
+                        if (myLocale.getLanguage().equals("sw")) {
+                            manualRidgeText = getString(R.string.lbl_ridging_cost_text,
+                                    finalTranslatedUnit, mathHelper.removeLeadingZero(fieldSize), mathHelper.formatNumber(roundedCost, null), currencySymbol);
+                        }
+                        manualRidgingCostText.setText(manualRidgeText);
                         break;
                 }
             }
@@ -238,4 +271,5 @@ public class ManualTillageCostActivity extends CostBaseActivity {
             dialogFragment.show(getSupportFragmentManager(), OperationCostsDialogFragment.ARG_ITEM_ID);
         }
     }
+
 }

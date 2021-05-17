@@ -1,7 +1,10 @@
 package com.iita.akilimo.utils.enums
 
+import android.content.Context
 import android.os.Parcelable
+import com.iita.akilimo.R
 import kotlinx.android.parcel.Parcelize
+import org.jetbrains.annotations.NotNull
 
 @Parcelize
 enum class EnumCountry : Parcelable {
@@ -18,8 +21,8 @@ enum class EnumCountry : Parcelable {
             return "NGN"
         }
 
-        override fun currencyName(): String {
-            return "Naira"
+        override fun currencyName(context: Context): String {
+            return context.getString(R.string.lbl_ngn_currency_name)
         }
     },
     Tanzania {
@@ -35,8 +38,8 @@ enum class EnumCountry : Parcelable {
             return "TZS"
         }
 
-        override fun currencyName(): String {
-            return "Tanzania shillings"
+        override fun currencyName(context: Context): String {
+            return context.getString(R.string.lbl_tzs_currency_name)
         }
     },
     Kenya {
@@ -52,7 +55,7 @@ enum class EnumCountry : Parcelable {
             return "KES"
         }
 
-        override fun currencyName(): String {
+        override fun currencyName(context: Context): String {
             return "Kenya shillings"
         }
     },
@@ -69,7 +72,7 @@ enum class EnumCountry : Parcelable {
             return "USD"
         }
 
-        override fun currencyName(): String {
+        override fun currencyName(context: Context): String {
             return "US Dollars"
         }
     };
@@ -77,5 +80,5 @@ enum class EnumCountry : Parcelable {
     abstract fun countryCode(): String
     abstract fun countryName(): String
     abstract fun currency(): String
-    abstract fun currencyName(): String
+    abstract fun currencyName(context: Context): @NotNull String
 }

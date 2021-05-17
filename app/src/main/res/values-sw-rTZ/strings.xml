@@ -176,8 +176,8 @@
     <string name="lbl_unit_price_per">Kizio cha bei  katika %s kwa %s</string>
     <string name="lbl_grain_unit_price_per">Kizio cha bei ya sehemu ya nafaka kavu katika %s kwa %s</string>
     <string name="lbl_sweet_potato_tuber_unit_price_per">Kizio cha bei ya viazi vitamu katika %s kwa %s</string>
-    <string name="lbl_manual_tillage_cost">Je! Ni gharama kiasi gani kulima kwa jembe la mkono %s %s?</string>
-    <string name="lbl_manual_ridge_cost">Je! Inagharimu kiasi gani kuweka matuta kwa jembe la mkono %s %s?</string>
+    <string name="lbl_manual_tillage_cost">Je! Ni gharama kiasi gani kulima kwa jembe la mkono kwa %s %s?</string>
+    <string name="lbl_manual_ridge_cost">Je! Inagharimu kiasi gani kuweka matuta kwa jembe la mkono kwa %s %s?</string>
     <string name="lbl_manual_ridge_cost_hint">Gharama ya kuweka matuta katika %s %s kwa mkono</string>
     <string name="lbl_manual_tillage_cost_hint">Gharama ya kulima %s %s kwa mikono</string>
     <string name="lbl_tractor_plough_cost">Je! Inagharimu kiasi gani kulima %s %s kwa trekta?</string>
@@ -190,10 +190,10 @@
     <string name="lbl_cost_of_first_weeding_operation">Gharama ya upalilizi wa kwanza kwa %s ya %s %s</string>
     <string name="lbl_cost_of_second_weeding_operation">Gharama ya upalilizi wa pili kwa %s ya %s %s</string>
     <string name="lbl_valid_bag_price">Tafadhali toa bei halisi</string>
-    <string name="lbl_ploughing_cost_text">Gharama ya kukatua %s %s %s %s</string>
-    <string name="lbl_ridging_cost_text">Gharama ya kuweka matuta %s %s %s %s</string>
-    <string name="lbl_harrowing_cost_text">Gharama ya kupiga harro %s %s %s %s</string>
-    <string name="lbl_weeding_cost_text">Gharama ya kupalilia %s %s %s %s</string>
+    <string name="lbl_ploughing_cost_text">Gharama ya kukatua %s %s ni %s %s</string>
+    <string name="lbl_ridging_cost_text">Gharama ya kuweka matuta %s %s ni %s %s</string>
+    <string name="lbl_harrowing_cost_text">Gharama ya kupiga harro %s %s ni %s %s</string>
+    <string name="lbl_weeding_cost_text">Gharama ya kupalilia %s %s ni %s %s</string>
     <string name="lbl_valid_email_req">Tafadhali toa barua pepe yako</string>
     <string name="lbl_first_name_req">Tafadhali toa jina lako la kwanza</string>
     <string name="lbl_last_name_req">Tafadhali toa jina lako la mwisho</string>
@@ -405,4 +405,11 @@
     <string name="lbl_thank_feedback_you">Asante kwa maoni yako</string>
     <string name="lbl_fresh_cob_price">Je! Unatarajia kuuza hindi moja mbichi kwa bei gani?</string>
     <string name="lbl_price_per_cob_in_currency_unit">Je! Unatarajia kuuza hindi moja mbichi kwa %s?</string>
+
+    <string name="lbl_unit_price_p1">Bei mwezi 1 kabla ya mavuno</string>
+    <string name="lbl_unit_price_m1">Bei mwezi 1 baada ya mavuno</string>
+    <string name="lbl_unit_price_p2">Bei miezi 2 kabla ya mavuno</string>
+    <string name="lbl_unit_price_m2">Bei miezi 2 baada ya mavuno</string>
+    <string name="lbl_tzs_currency_name">Shilingi ya Tanzania</string>
+    <string name="lbl_ngn_currency_name">Naira</string>
 </resources>

@@ -25,8 +25,9 @@ import com.iita.akilimo.entities.ProfileInfo;
 import com.iita.akilimo.inherit.BaseActivity;
 import com.iita.akilimo.utils.MathHelper;
 import com.iita.akilimo.utils.enums.EnumAdviceTasks;
+import com.iita.akilimo.utils.enums.EnumCountry;
 
-;
+;import java.util.Locale;
 
 
 public class WeedControlCostsActivity extends BaseActivity {
@@ -119,6 +120,21 @@ public class WeedControlCostsActivity extends BaseActivity {
     @Override
     protected void initComponent() {
 
+        Locale myLocale = getCurrentLocale();
+        String translatedUnit = context.getString(R.string.lbl_acre);
+        if (areaUnit.equals("ha")) {
+            translatedUnit = context.getString(R.string.lbl_ha);
+        }
+        String finalTranslatedUnit = translatedUnit.toLowerCase(myLocale);
+        switch (countryCode) {
+            case "TZ":
+                currencyName = EnumCountry.Tanzania.currencyName(context);
+                break;
+            case "NG":
+                currencyName = EnumCountry.Nigeria.currencyName(context);
+                break;
+        }
+
         if (currentPractice != null) {
             weedRadioIndex = currentPractice.getWeedRadioIndex();
             weedControlTechnique = currentPractice.getWeedControlTechnique();
@@ -135,8 +151,14 @@ public class WeedControlCostsActivity extends BaseActivity {
                 editSecondWeedingOpCost.setText(String.valueOf(secondOperationCost));
             }
         }
-        firstWeedingOpCostTitle.setText(getString(R.string.lbl_cost_of_first_weeding_operation, currencyName, mathHelper.removeLeadingZero(fieldSize), areaUnit));
-        secondWeedingOpCostTitle.setText(getString(R.string.lbl_cost_of_second_weeding_operation, currencyName, mathHelper.removeLeadingZero(fieldSize), areaUnit));
+        String firstWeedCostTitle = getString(R.string.lbl_cost_of_first_weeding_operation, currencyName, mathHelper.removeLeadingZero(fieldSize), finalTranslatedUnit);
+        String secondWeedCostTitle = getString(R.string.lbl_cost_of_second_weeding_operation, currencyName, mathHelper.removeLeadingZero(fieldSize), finalTranslatedUnit);
+        if (myLocale.getLanguage().equals("sw")) {
+            firstWeedCostTitle = getString(R.string.lbl_cost_of_first_weeding_operation, currencyName, finalTranslatedUnit, mathHelper.removeLeadingZero(fieldSize));
+            secondWeedCostTitle = getString(R.string.lbl_cost_of_second_weeding_operation, currencyName, finalTranslatedUnit, mathHelper.removeLeadingZero(fieldSize));
+        }
+        firstWeedingOpCostTitle.setText(firstWeedCostTitle);
+        secondWeedingOpCostTitle.setText(secondWeedCostTitle);
 
         rdgWeedControl.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
             switch (radioIndex) {
