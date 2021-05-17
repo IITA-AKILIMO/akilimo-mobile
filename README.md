@@ -22,4 +22,5 @@ https://appicon.co/#image-sets
 
 # Generate changelog
 
+
 `git-chglog -o CHANGELOG.md`

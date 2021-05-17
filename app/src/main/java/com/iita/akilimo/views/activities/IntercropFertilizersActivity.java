@@ -249,24 +249,28 @@ public class IntercropFertilizersActivity extends BaseActivity {
                     List<InterCropFertilizer> savedList = database.interCropFertilizerDao().findAllByCountry(countryCode);
                     //save fertilizers here
                     if (availableFertilizersList.size() > 0) {
-                        for (InterCropFertilizer savedFertilizer : savedList) {
-                            // Loop arrayList1 items
-                            boolean found = false;
-                            for (InterCropFertilizer latestFertilizer : availableFertilizersList) {
-                                InterCropFertilizer updateFertilizer = database.interCropFertilizerDao().findByType(latestFertilizer.getFertilizerType());
-                                if (updateFertilizer != null) {
-                                    updateFertilizer.setAvailable(latestFertilizer.getAvailable());
-                                    database.interCropFertilizerDao().update(updateFertilizer);
-                                } else {
-                                    database.interCropFertilizerDao().insert(latestFertilizer);
+                        if (savedList.size() > 0) {
+                            for (InterCropFertilizer savedFertilizer : savedList) {
+                                // Loop arrayList1 items
+                                boolean found = false;
+                                for (InterCropFertilizer latestFertilizer : availableFertilizersList) {
+                                    InterCropFertilizer updateFertilizer = database.interCropFertilizerDao().findByType(latestFertilizer.getFertilizerType());
+                                    if (updateFertilizer != null) {
+                                        updateFertilizer.setAvailable(latestFertilizer.getAvailable());
+                                        database.interCropFertilizerDao().update(updateFertilizer);
+                                    } else {
+                                        database.interCropFertilizerDao().insert(latestFertilizer);
+                                    }
+                                    if (latestFertilizer.getFertilizerType().equals(savedFertilizer.getFertilizerType())) {
+                                        found = true;
+                                    }
                                 }
-                                if (latestFertilizer.getFertilizerType().equals(savedFertilizer.getFertilizerType())) {
-                                    found = true;
+                                if (!found) {
+                                    deletionList.add(savedFertilizer);
                                 }
                             }
-                            if (!found) {
-                                deletionList.add(savedFertilizer);
-                            }
+                        } else {
+                            database.interCropFertilizerDao().insertAll(availableFertilizersList);
                         }
                     }
                     database.interCropFertilizerDao().deleteFertilizerByList(deletionList);

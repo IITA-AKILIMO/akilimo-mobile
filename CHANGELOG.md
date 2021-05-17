@@ -1,8 +1,8 @@
 
-<a name="18.6.0"></a>
-## [18.6.0](https://github.com/masgeek/akilimo-mobile/compare/18.5.1...18.6.0)
+<a name="18.5.2"></a>
+## [18.5.2](https://github.com/masgeek/akilimo-mobile/compare/18.5.1...18.5.2)
 
-> 2021-05-12
+> 2021-05-13
 
 ### Ci
 
@@ -13,6 +13,8 @@
 
 ### Docs
 
+* updated changelog file
+* updated changelog
 * updated whats new notes
 
 ### Feat
@@ -22,22 +24,59 @@
 
 ### Fix
 
+* added proper room database annotation
 * fertilizer list clenup logic
 * added proper planting windows check
 * currency object processing
 
 ### Refactor
 
+* downgraded kotlin versions
 * enabled correct entry activity
 
 ### Pull Requests
 
+* Merge pull request [#105](https://github.com/masgeek/akilimo-mobile/issues/105) from masgeek/doc/changelog
+* Merge pull request [#104](https://github.com/masgeek/akilimo-mobile/issues/104) from masgeek/fix/build-flags
 * Merge pull request [#98](https://github.com/masgeek/akilimo-mobile/issues/98) from masgeek/ci/pr-flag
 * Merge pull request [#90](https://github.com/masgeek/akilimo-mobile/issues/90) from masgeek/feature/plant-harvest-prices
+* Merge pull request [#95](https://github.com/masgeek/akilimo-mobile/issues/95) from masgeek/develop
 * Merge pull request [#96](https://github.com/masgeek/akilimo-mobile/issues/96) from masgeek/fix/currency
+* Merge pull request [#93](https://github.com/masgeek/akilimo-mobile/issues/93) from masgeek/develop
+* Merge pull request [#86](https://github.com/masgeek/akilimo-mobile/issues/86) from masgeek/develop
+* Merge pull request [#81](https://github.com/masgeek/akilimo-mobile/issues/81) from masgeek/develop
+* Merge pull request [#79](https://github.com/masgeek/akilimo-mobile/issues/79) from masgeek/develop
+* Merge pull request [#77](https://github.com/masgeek/akilimo-mobile/issues/77) from masgeek/develop
+* Merge pull request [#75](https://github.com/masgeek/akilimo-mobile/issues/75) from masgeek/develop
+* Merge pull request [#72](https://github.com/masgeek/akilimo-mobile/issues/72) from masgeek/develop
+* Merge pull request [#69](https://github.com/masgeek/akilimo-mobile/issues/69) from masgeek/develop
+* Merge pull request [#66](https://github.com/masgeek/akilimo-mobile/issues/66) from masgeek/develop
+* Merge pull request [#62](https://github.com/masgeek/akilimo-mobile/issues/62) from masgeek/develop
+* Merge pull request [#60](https://github.com/masgeek/akilimo-mobile/issues/60) from masgeek/develop
+* Merge pull request [#57](https://github.com/masgeek/akilimo-mobile/issues/57) from masgeek/develop
+* Merge pull request [#54](https://github.com/masgeek/akilimo-mobile/issues/54) from masgeek/develop
+* Merge pull request [#51](https://github.com/masgeek/akilimo-mobile/issues/51) from masgeek/hotfix/unit-price
 
 ### BREAKING CHANGE
 
+
+* fix: added proper planting windows check
+
+addeed price reseters if factory is selected
+
+* ci: added auto pr action to github CI
+
+* ci: added title to beta release workflow
+
+* fix: fertilizer list clenup logic
+
+cleanup inactive fertilizers from tables
+
+* refactor: enabled correct entry activity
+
+* ci: disble Pr draft flag in pr automater
+
+* docs: updated changelog
 
 
 
