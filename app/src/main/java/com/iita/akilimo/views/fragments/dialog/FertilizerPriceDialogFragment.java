@@ -28,6 +28,7 @@ import com.iita.akilimo.entities.FertilizerPrice;
 import com.iita.akilimo.inherit.BaseDialogFragment;
 import com.iita.akilimo.interfaces.IFertilizerDismissListener;
 import com.iita.akilimo.utils.CurrencyCode;
+import com.iita.akilimo.utils.enums.EnumCountry;
 import com.mynameismidori.currencypicker.ExtendedCurrency;
 
 import java.text.DecimalFormat;
@@ -116,6 +117,15 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
             if (extendedCurrency != null) {
                 currencySymbol = extendedCurrency.getSymbol();
                 currencyName = extendedCurrency.getName();
+            }
+
+            switch (countryCode) {
+                case "TZ":
+                    currencyName = EnumCountry.Tanzania.currencyName(context);
+                    break;
+                case "NG":
+                    currencyName = EnumCountry.Nigeria.currencyName(context);
+                    break;
             }
             String titleText = context.getString(R.string.price_per_bag, fertilizer.getName(), currencyName);
             lblPricePerBag.setText(titleText);

@@ -82,24 +82,22 @@ public class RiskAttFragment extends BaseStepFragment {
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle(context.getString(R.string.lbl_select_risk_att));
-            builder.setSingleChoiceItems(risks, selectedRiskIndex, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    selectedRiskIndex = i;
-                }
-            });
+            builder.setSingleChoiceItems(risks, selectedRiskIndex, (dialogInterface, i) -> selectedRiskIndex = i);
             builder.setPositiveButton(context.getString(R.string.lbl_ok), (dialogInterface, whichButton) -> {
                 if (selectedRiskIndex >= 0) {
                     riskName = risks[selectedRiskIndex];
                     switch (riskName.toLowerCase()) {
                         case "never":
+                        case "kamwe":
                         default:
                             riskAtt = 0;
                             break;
                         case "sometimes":
+                        case "mara chache":
                             riskAtt = 1;
                             break;
                         case "often":
+                        case "mara nyingi":
                             riskAtt = 2;
                             break;
                     }
