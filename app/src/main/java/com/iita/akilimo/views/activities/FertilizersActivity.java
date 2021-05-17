@@ -237,24 +237,28 @@ public class FertilizersActivity extends BaseActivity {
                     List<Fertilizer> savedList = database.fertilizerDao().findAllByCountry(countryCode);
                     //save fertilizers here
                     if (availableFertilizersList.size() > 0) {
-                        for (Fertilizer savedFertilizer : savedList) {
-                            // Loop arrayList1 items
-                            boolean found = false;
-                            for (Fertilizer latestFertilizer : availableFertilizersList) {
-                                Fertilizer updateFertilizer = database.fertilizerDao().findByType(latestFertilizer.getFertilizerType());
-                                if (updateFertilizer != null) {
-                                    updateFertilizer.setAvailable(latestFertilizer.getAvailable());
-                                    database.fertilizerDao().update(updateFertilizer);
-                                } else {
-                                    database.fertilizerDao().insert(latestFertilizer);
+                        if (savedList.size() > 0) {
+                            for (Fertilizer savedFertilizer : savedList) {
+                                // Loop arrayList1 items
+                                boolean found = false;
+                                for (Fertilizer latestFertilizer : availableFertilizersList) {
+                                    Fertilizer updateFertilizer = database.fertilizerDao().findByType(latestFertilizer.getFertilizerType());
+                                    if (updateFertilizer != null) {
+                                        updateFertilizer.setAvailable(latestFertilizer.getAvailable());
+                                        database.fertilizerDao().update(updateFertilizer);
+                                    } else {
+                                        database.fertilizerDao().insert(latestFertilizer);
+                                    }
+                                    if (latestFertilizer.getFertilizerType().equals(savedFertilizer.getFertilizerType())) {
+                                        found = true;
+                                    }
                                 }
-                                if (latestFertilizer.getFertilizerType().equals(savedFertilizer.getFertilizerType())) {
-                                    found = true;
+                                if (!found) {
+                                    deletionList.add(savedFertilizer);
                                 }
                             }
-                            if (!found) {
-                                deletionList.add(savedFertilizer);
-                            }
+                        } else {
+                            database.fertilizerDao().insertAll(availableFertilizersList);
                         }
                     }
                     database.fertilizerDao().deleteFertilizerByList(deletionList);

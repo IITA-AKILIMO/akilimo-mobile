@@ -50,11 +50,14 @@ class SplashActivity : BaseActivity() {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
             Crashlytics.logException(ex)
         }
-//        val intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
-        val intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
-//        val intent = Intent(this@SplashActivity, FertilizerRecActivity::class.java)
-//        val intent = Intent(this@SplashActivity, RootYieldActivity::class.java)
-//        val intent = Intent(this@SplashActivity, InvestmentAmountActivity::class.java)
+        var intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
+        if (BuildConfig.DEBUG) {
+//            intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
+            intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
+//            intent = Intent(this@SplashActivity, FertilizerRecActivity::class.java)
+//            intent = Intent(this@SplashActivity, RootYieldActivity::class.java)
+//            intent = Intent(this@SplashActivity, InvestmentAmountActivity::class.java)
+        }
         startActivity(intent)
         finish()
         Animatoo.animateSlideDown(this)

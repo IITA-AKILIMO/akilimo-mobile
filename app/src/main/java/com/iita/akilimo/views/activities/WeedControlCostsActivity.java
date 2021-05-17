@@ -154,8 +154,8 @@ public class WeedControlCostsActivity extends BaseActivity {
         String firstWeedCostTitle = getString(R.string.lbl_cost_of_first_weeding_operation, currencyName, mathHelper.removeLeadingZero(fieldSize), finalTranslatedUnit);
         String secondWeedCostTitle = getString(R.string.lbl_cost_of_second_weeding_operation, currencyName, mathHelper.removeLeadingZero(fieldSize), finalTranslatedUnit);
         if (myLocale.getLanguage().equals("sw")) {
-            firstWeedCostTitle = getString(R.string.lbl_cost_of_first_weeding_operation, currencyName, finalTranslatedUnit, mathHelper.removeLeadingZero(fieldSize));
-            secondWeedCostTitle = getString(R.string.lbl_cost_of_second_weeding_operation, currencyName, finalTranslatedUnit, mathHelper.removeLeadingZero(fieldSize));
+            firstWeedCostTitle = getString(R.string.lbl_cost_of_first_weeding_operation, currencyCode, finalTranslatedUnit, mathHelper.removeLeadingZero(fieldSize));
+            secondWeedCostTitle = getString(R.string.lbl_cost_of_second_weeding_operation, currencyCode, finalTranslatedUnit, mathHelper.removeLeadingZero(fieldSize));
         }
         firstWeedingOpCostTitle.setText(firstWeedCostTitle);
         secondWeedingOpCostTitle.setText(secondWeedCostTitle);
