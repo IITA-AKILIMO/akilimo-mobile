@@ -533,4 +533,6 @@
     <string name="lbl_unit_price_m1">Price 1 month after harvest</string>
     <string name="lbl_unit_price_p2">Price 2 months before harvest</string>
     <string name="lbl_unit_price_m2">Price 2 months after harvest</string>
+    <string name="lbl_tzs_currency_name">Tanzania shillings</string>
+    <string name="lbl_ngn_currency_name">Naira</string>
 </resources>

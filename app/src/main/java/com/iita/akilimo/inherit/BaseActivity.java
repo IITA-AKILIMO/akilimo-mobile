@@ -56,7 +56,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected String countryCode = EnumCountry.Nigeria.countryCode();
     protected String currency = EnumCountry.Nigeria.currency();
-    protected String currencyName = EnumCountry.Nigeria.currencyName();
+    protected String currencyName = "";
     protected String currencyCode = EnumCountry.Nigeria.currency();
     protected String currencySymbol = EnumCountry.Nigeria.currency();
     protected String baseCurrency = "USD";

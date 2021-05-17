@@ -34,6 +34,7 @@ import com.iita.akilimo.utils.enums.EnumOperationType;
 import com.iita.akilimo.views.fragments.dialog.OperationCostsDialogFragment;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 ;
 
@@ -148,19 +149,35 @@ public class TractorAccessActivity extends CostBaseActivity {
             }
         });
 
+        Locale myLocale = getCurrentLocale();
+        String translatedUnit = context.getString(R.string.lbl_acre);
+        if (areaUnit.equals("ha")) {
+            translatedUnit = context.getString(R.string.lbl_ha);
+        }
+        String finalTranslatedUnit = translatedUnit.toLowerCase(myLocale);
+
+
         chkPlough.setOnCheckedChangeListener((buttonView, isChecked) -> {
             hasPlough = isChecked;
             if (buttonView.isPressed() && isChecked && !dialogOpen) {
-                String title = (getString(R.string.lbl_tractor_plough_cost, mathHelper.removeLeadingZero(fieldSize), areaUnit));
-                String hintText = (getString(R.string.lbl_tractor_plough_cost_hint, mathHelper.removeLeadingZero(fieldSize), areaUnit));
+                String title = (getString(R.string.lbl_tractor_plough_cost, mathHelper.removeLeadingZero(fieldSize), finalTranslatedUnit));
+                String hintText = (getString(R.string.lbl_tractor_plough_cost_hint, mathHelper.removeLeadingZero(fieldSize), finalTranslatedUnit));
+                if (myLocale.getLanguage().equals("sw")) {
+                    title = (getString(R.string.lbl_tractor_plough_cost, finalTranslatedUnit, mathHelper.removeLeadingZero(fieldSize)));
+                    hintText = (getString(R.string.lbl_tractor_plough_cost_hint, finalTranslatedUnit, mathHelper.removeLeadingZero(fieldSize)));
+                }
                 loadOperationCost(EnumOperation.TILLAGE.name(), EnumOperationType.MECHANICAL.operationName(), title, hintText);
             }
         });
         chkRidger.setOnCheckedChangeListener((buttonView, isChecked) -> {
             hasRidger = isChecked;
             if (buttonView.isPressed() && isChecked && !dialogOpen) {
-                String title = (getString(R.string.lbl_tractor_ridge_cost, mathHelper.removeLeadingZero(fieldSize), areaUnit));
-                String hintText = (getString(R.string.lbl_tractor_ridge_cost_hint, mathHelper.removeLeadingZero(fieldSize), areaUnit));
+                String title = (getString(R.string.lbl_tractor_ridge_cost, mathHelper.removeLeadingZero(fieldSize), finalTranslatedUnit));
+                String hintText = (getString(R.string.lbl_tractor_ridge_cost_hint, mathHelper.removeLeadingZero(fieldSize), finalTranslatedUnit));
+                if (myLocale.getLanguage().equals("sw")) {
+                    title = (getString(R.string.lbl_tractor_ridge_cost, finalTranslatedUnit, mathHelper.removeLeadingZero(fieldSize)));
+                    hintText = (getString(R.string.lbl_tractor_ridge_cost_hint, finalTranslatedUnit, mathHelper.removeLeadingZero(fieldSize)));
+                }
                 loadOperationCost(EnumOperation.RIDGING.name(), EnumOperationType.MECHANICAL.operationName(), title, hintText);
             }
         });
