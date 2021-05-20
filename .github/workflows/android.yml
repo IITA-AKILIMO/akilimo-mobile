@@ -25,9 +25,6 @@ jobs:
       - name: Make gradlew executable
         run:  chmod +x ./gradlew
 
-      - name: Run Mock build
-        run: ./gradlew bundleRelease -x test
-
       - name: Run Unit tests
         run: ./gradlew testDebug
         continue-on-error: true
