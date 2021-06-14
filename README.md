@@ -1,4 +1,4 @@
-### Akilimo mobile DST
+### Akilimo mobile decision support tools
 
 [![Android CI](https://github.com/masgeek/akilimo-mobile/actions/workflows/android.yml/badge.svg)](https://github.com/masgeek/akilimo-mobile/actions/workflows/android.yml)
 
@@ -6,7 +6,7 @@
 
 https://appicon.co/#image-sets
 
-# github hooks
+# installing github hooks
 * https://pre-commit.com/
 * https://commitizen-tools.github.io/commitizen/
 
@@ -20,7 +20,6 @@ https://appicon.co/#image-sets
 
 `pre-commit run --all-files`
 
-# Generate changelog
-
+# Generating changelog
 
 `git-chglog -o CHANGELOG.md`
