@@ -8,7 +8,6 @@ apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
 apply plugin: 'com.vanniktech.android.junit.jacoco'
-apply plugin: 'com.vanniktech.android.junit.jacoco'
 
 android {
     def releaseVersionName = computeBuildNumber()
@@ -180,7 +179,7 @@ dependencies {
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.22'
     implementation 'com.github.midorikocak:currency-picker-android:1.2.1' //for handling currency
 
-    implementation 'com.github.giswangsj:AndRatingBar:1.0.5'
+//    implementation 'com.github.giswangsj:AndRatingBar:1.0.5'
     implementation 'com.github.ome450901:SimpleRatingBar:1.5.1'
 
     //https://stackoverflow.com/questions/44826452/highlight-new-feature-in-android
