@@ -1,12 +1,22 @@
-### Akilimo mobile DST
 
-[![Android CI](https://github.com/masgeek/akilimo-mobile/actions/workflows/android.yml/badge.svg)](https://github.com/masgeek/akilimo-mobile/actions/workflows/android.yml)
+### Akilimo mobile decision support tools
 
-![akilimo-mobile Actions](https://api.meercode.io/badge/masgeek/akilimo-mobile?type=ci-score&token=7QwvPQUxRPTOd8fotZBAjCPXzBoFqm2R&lastDay=14) ![akilimo-mobile Actions](https://api.meercode.io/badge/masgeek/akilimo-mobile?type=ci-count&token=7QwvPQUxRPTOd8fotZBAjCPXzBoFqm2R&lastDay=14) ![akilimo-mobile Actions](https://api.meercode.io/badge/masgeek/akilimo-mobile?type=ci-success-rate&token=7QwvPQUxRPTOd8fotZBAjCPXzBoFqm2R&lastDay=14)
+[![Android CI](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/android.yml/badge.svg)](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/android.yml)
+
+## Meercode insights
+
+![akilimo-mobile Actions](https://api.meercode.io/badge/IITA-AKILIMO/akilimo-mobile?type=ci-total-count&token=7QwvPQUxRPTOd8fotZBAjCPXzBoFqm2R&lastDay=14)
+
+![akilimo-mobile Actions](https://api.meercode.io/badge/IITA-AKILIMO/akilimo-mobile?type=ci-score&token=7QwvPQUxRPTOd8fotZBAjCPXzBoFqm2R&lastDay=14) ![akilimo-mobile Actions](https://api.meercode.io/badge/IITA-AKILIMO/akilimo-mobile?type=ci-success-rate&token=7QwvPQUxRPTOd8fotZBAjCPXzBoFqm2R&lastDay=14)
+
+![akilimo-mobile Actions](https://api.meercode.io/badge/IITA-AKILIMO/akilimo-mobile?type=ci-count&token=7QwvPQUxRPTOd8fotZBAjCPXzBoFqm2R&lastDay=14)
+
+
 
 https://appicon.co/#image-sets
 
-# github hooks
+# installing github hooks
+
 * https://pre-commit.com/
 * https://commitizen-tools.github.io/commitizen/
 
@@ -20,7 +30,6 @@ https://appicon.co/#image-sets
 
 `pre-commit run --all-files`
 
-# Generate changelog
-
+# Generating changelog
 
 `git-chglog -o CHANGELOG.md`

@@ -17,16 +17,19 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v2
 
-      - name: set up JDK 1.8
+      - name: set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 1.8
+          java-version: 11
 
       - name: Make gradlew executable
         run:  chmod +x ./gradlew
 
+      - name: Run Mock build
+        run: ./gradlew bundleRelease -x test
+
       - name: Run Unit tests
-        run: ./gradlew testDebug
+        run: ./gradlew testRelease
         continue-on-error: true
 
       - name: Make Unit test report
