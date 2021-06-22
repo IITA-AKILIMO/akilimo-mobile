@@ -258,9 +258,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected Locale getCurrentLocale() {
         SharedPrefsAppLocaleRepository prefs = new SharedPrefsAppLocaleRepository(this);
         Locale desiredLocale = prefs.getDesiredLocale();
-        if (desiredLocale != null) {
-            AppLocale.setDesiredLocale(desiredLocale);
+        if (desiredLocale == null) {
+            desiredLocale = new Locale("en", "NG");
         }
+        AppLocale.setDesiredLocale(desiredLocale);
+
 
         return desiredLocale;
     }
