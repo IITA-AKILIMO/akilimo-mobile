@@ -45,8 +45,6 @@ import retrofit2.Response;
 
 import static android.app.Activity.RESULT_OK;
 
-;
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link LocationFragment#newInstance} factory method to
