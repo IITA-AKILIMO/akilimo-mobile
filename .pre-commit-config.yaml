@@ -5,11 +5,7 @@ repos:
       - id: check-yaml
       - id: end-of-file-fixer
       - id: trailing-whitespace
-
-  - repo: 'https://github.com/psf/black'
-    rev: 21.4b0
-    hooks:
-      - id: black
+      - id: pretty-format-json
 
   - repo: 'https://github.com/commitizen-tools/commitizen'
     rev: v2.17.4
@@ -17,8 +13,17 @@ repos:
       - id: commitizen
         stages:
           - commit-msg
-          
+
   - repo: 'https://github.com/jorisroovers/gitlint'
     rev: bf0df47
     hooks:
       - id: gitlint
+
+  - repo: 'https://github.com/awslabs/git-secrets'
+    rev: b9e96b3
+    hooks:
+      - id: git-secrets
+        name: Git Secrets
+        description: git-secrets scans commits, commit messages, and --no-ff merges to prevent adding secrets into your git repositories.
+        entry: 'git-secrets --pre_commit_hook'
+        language: script

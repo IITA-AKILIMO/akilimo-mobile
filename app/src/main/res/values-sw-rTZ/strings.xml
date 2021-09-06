@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="welcome_title">Karibu</string>
-    <string name="welcome_instructions">AKILIMO inaweza kukupatia ushauri wa kuongeza mavuno ya muhogo katika shamba lako iwapo utatoa taarifa muhimu za kuwezesha AKILIMO kufanya hivyo.</string>
+    <string name="welcome_instructions">AKILIMO inaweza kukupatia ushauri binafsi wa kuongeza mavuno ya muhogo katika shamba lako iwapo utatoa taarifa muhimu za kuiwezesha kufanya hivyo.</string>
     <string name="important_instructions_title">TAARIFA MUHIMU</string>
     <string name="important_instructions">Mapendekezo AKILIMO itakupatia yanategemea usahihi wa taarifa utakazo zitoa yaani eneo lilipo shamba lako, ukubwa wa shamba, bei ya mazao, mbolea, n.k. Kwa mfano, ukubwa wa shamba ukitajwa kuwa mkubwa kuliko ulivyo, utaongeza gharama zisizo za lazima, yaani  kuongezeka uwekezaji na kusababisha hasara; na ikiwa ukubwa wa shamba unaotajwa utakuwa ni chini ya ukweli,  itapunguza fursa ya kupata faida kutoka kwenye shamba lako.</string>
     <string name="title_activity_fertilizer_choice">Mbolea zinazopatikana</string>
@@ -25,7 +25,7 @@
     <string name="lbl_proceed">Endelea</string>
     <string name="lbl_finish">Hifadhi</string>
     <string name="lbl_back">Rudi</string>
-    <string name="lbl_next">Inayofuata</string>
+    <string name="lbl_next">Endelea</string>
     <string name="lbl_country_location">Habari (%1$s).</string>
     <string name="lbl_country_location_sub">Shamba lako liko katika nchi gani?</string>
     <string name="lbl_area_unit">Je? shamba lako la muhogo lina ukubwa wa ekari ngapi?</string>
@@ -62,7 +62,7 @@
     <string name="lbl_manual_location">Chagua eneo nilipo</string>
     <string name="lbl_recommendations">Mapendekezo</string>
     <string name="lbl_fertilizer_recommendations">Mapendekezo ya matumizi ya mbolea</string>
-    <string name="lbl_intercropping">Kilimo mchanganyiko </string>
+    <string name="lbl_intercropping">Kilimo mchanganyiko</string>
     <string name="lbl_intercropping_maize">Kilimo mchanganyiko cha  muhogo na mahindi</string>
     <string name="lbl_intercropping_sweet_potato">Kilimo mchanganyiko cha  muhogo na viazi vitamu</string>
     <string name="lbl_scheduled_planting_and_harvest">Utofauti wa kupanda na kuvuna</string>
@@ -362,7 +362,7 @@
     <string name="lbl_accept_terms_prompt">Tafadhali kubali vigezo na masharti kabla ya kuendelea</string>
     <string name="lbl_restart_app_prompt">Anzisha tena programu ili kuwezesha tafsiri</string>
     <string name="lbl_optional">(Hiari)</string>
-    <string name="lbl_country_supported">AKILIMO kwa sasa inatoa ushauri kwa wakulima wa Nigeria na Tanzania tu</string>
+    <string name="lbl_country_supported">AKILIMO kwa sasa inatoa ushauri kwa wakulima wa Tanzania,Nigeria na Rwanda tu</string>
     <string name="lbl_acre_yield">tani 3–6 kwa ekari</string>
     <string name="lbl_ha_yield">tani 7.5–15 kwa hekta</string>
     <string name="fcy_lower">Chini</string>

@@ -1,4 +1,101 @@
 
+<a name="19.0.0"></a>
+## [19.0.0](https://github.com/masgeek/akilimo-mobile/compare/18.19.1...19.0.0)
+
+> 2021-06-22
+
+### Build
+
+* updated dependencies version
+* reoved jcenter and replaced with mavenCentral report
+* removed AndRatingBar
+
+### Ci
+
+* updated java version
+
+### Docs
+
+* README update
+
+### Fix
+
+* translations
+* updated repo names
+* merge conflict
+
+### Refactor
+
+* updated build steps in android.yml actions file
+
+### Pull Requests
+
+* Merge pull request [#122](https://github.com/masgeek/akilimo-mobile/issues/122) from IITA-AKILIMO/cicd/builds
+* Merge pull request [#118](https://github.com/masgeek/akilimo-mobile/issues/118) from IITA-AKILIMO/feature/translations
+* Merge pull request [#117](https://github.com/masgeek/akilimo-mobile/issues/117) from IITA-AKILIMO/masgeek-patch-1
+
+### BREAKING CHANGE
+
+
+
+
+
+<a name="18.19.1"></a>
+## [18.19.1](https://github.com/masgeek/akilimo-mobile/compare/18.19.0...18.19.1)
+
+> 2021-05-20
+
+### Ci
+
+* removed bundlerelease step in unit test step
+* reenable github actions by renaming
+
+### Docs
+
+* updated changelog
+
+### Fix
+
+* fixed null locate issue casuing interfaces to crash
+
+### Pull Requests
+
+* Merge pull request [#115](https://github.com/masgeek/akilimo-mobile/issues/115) from masgeek/doc/changelog-update
+* Merge pull request [#113](https://github.com/masgeek/akilimo-mobile/issues/113) from masgeek/fix/null-locale
+
+
+<a name="18.19.0"></a>
+## [18.19.0](https://github.com/masgeek/akilimo-mobile/compare/18.5.2...18.19.0)
+
+> 2021-05-17
+
+### Ci
+
+* enhanced build step to exclude tests
+
+### Docs
+
+* added release notes for swahili version
+* updated changelog file
+
+### Fix
+
+* fixed ui tranlation strings for kiswahili
+* added proper translation of swahili string and positioning
+* added proper case switching fo swahili words
+
+### Pull Requests
+
+* Merge pull request [#110](https://github.com/masgeek/akilimo-mobile/issues/110) from masgeek/feature/nextrelease
+* Merge pull request [#109](https://github.com/masgeek/akilimo-mobile/issues/109) from masgeek/fix/swahili-translations
+* Merge pull request [#108](https://github.com/masgeek/akilimo-mobile/issues/108) from masgeek/doc/changelog-update
+
+### BREAKING CHANGE
+
+
+
+
+
 <a name="18.5.2"></a>
 ## [18.5.2](https://github.com/masgeek/akilimo-mobile/compare/18.5.1...18.5.2)
 
@@ -349,7 +446,7 @@ cleanup inactive fertilizers from tables
 
 
 <a name="17.0.2"></a>
-## [17.0.2](https://github.com/masgeek/akilimo-mobile/compare/17.0.1...17.0.2)
+## [17.0.2](https://github.com/masgeek/akilimo-mobile/compare/17.0.beta2020201...17.0.2)
 
 > 2020-07-28
 
@@ -358,14 +455,14 @@ cleanup inactive fertilizers from tables
 * Merge pull request [#21](https://github.com/masgeek/akilimo-mobile/issues/21) from masgeek/dependabot/bundler/json-2.3.1
 
 
-<a name="17.0.1"></a>
-## [17.0.1](https://github.com/masgeek/akilimo-mobile/compare/17.0.beta2020201...17.0.1)
+<a name="17.0.beta2020201"></a>
+## [17.0.beta2020201](https://github.com/masgeek/akilimo-mobile/compare/17.0.1...17.0.beta2020201)
 
 > 2020-07-19
 
 
-<a name="17.0.beta2020201"></a>
-## [17.0.beta2020201](https://github.com/masgeek/akilimo-mobile/compare/17.0.0...17.0.beta2020201)
+<a name="17.0.1"></a>
+## [17.0.1](https://github.com/masgeek/akilimo-mobile/compare/16.3.beta2020201...17.0.1)
 
 > 2020-07-19
 
@@ -377,14 +474,14 @@ cleanup inactive fertilizers from tables
 * Merge pull request [#5](https://github.com/masgeek/akilimo-mobile/issues/5) from masgeek/develop
 
 
-<a name="17.0.0"></a>
-## [17.0.0](https://github.com/masgeek/akilimo-mobile/compare/16.3.beta2020201...17.0.0)
+<a name="16.3.beta2020201"></a>
+## [16.3.beta2020201](https://github.com/masgeek/akilimo-mobile/compare/17.0.0...16.3.beta2020201)
 
 > 2020-07-19
 
 
-<a name="16.3.beta2020201"></a>
-## [16.3.beta2020201](https://github.com/masgeek/akilimo-mobile/compare/16.3.beta3...16.3.beta2020201)
+<a name="17.0.0"></a>
+## [17.0.0](https://github.com/masgeek/akilimo-mobile/compare/16.3.beta26...17.0.0)
 
 > 2020-07-19
 
@@ -394,14 +491,14 @@ cleanup inactive fertilizers from tables
 * Merge pull request [#14](https://github.com/masgeek/akilimo-mobile/issues/14) from masgeek/fix/user-feedback
 
 
-<a name="16.3.beta3"></a>
-## [16.3.beta3](https://github.com/masgeek/akilimo-mobile/compare/16.3.beta26...16.3.beta3)
+<a name="16.3.beta26"></a>
+## [16.3.beta26](https://github.com/masgeek/akilimo-mobile/compare/16.3.beta3...16.3.beta26)
 
 > 2020-07-15
 
 
-<a name="16.3.beta26"></a>
-## [16.3.beta26](https://github.com/masgeek/akilimo-mobile/compare/16.3.beta2...16.3.beta26)
+<a name="16.3.beta3"></a>
+## [16.3.beta3](https://github.com/masgeek/akilimo-mobile/compare/16.3.4...16.3.beta3)
 
 > 2020-07-15
 
@@ -410,14 +507,14 @@ cleanup inactive fertilizers from tables
 * Merge pull request [#10](https://github.com/masgeek/akilimo-mobile/issues/10) from masgeek/fix/splash-activity-crash
 
 
-<a name="16.3.beta2"></a>
-## [16.3.beta2](https://github.com/masgeek/akilimo-mobile/compare/16.3.4...16.3.beta2)
+<a name="16.3.4"></a>
+## [16.3.4](https://github.com/masgeek/akilimo-mobile/compare/16.3.beta2...16.3.4)
 
 > 2020-07-08
 
 
-<a name="16.3.4"></a>
-## [16.3.4](https://github.com/masgeek/akilimo-mobile/compare/16.3.3...16.3.4)
+<a name="16.3.beta2"></a>
+## [16.3.beta2](https://github.com/masgeek/akilimo-mobile/compare/16.3.3...16.3.beta2)
 
 > 2020-07-08
 
