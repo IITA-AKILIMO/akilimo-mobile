@@ -1,45 +1,4 @@
 
-<a name="19.0.0"></a>
-## [19.0.0](https://github.com/masgeek/akilimo-mobile/compare/18.19.1...19.0.0)
-
-> 2021-06-22
-
-### Build
-
-* updated dependencies version
-* reoved jcenter and replaced with mavenCentral report
-* removed AndRatingBar
-
-### Ci
-
-* updated java version
-
-### Docs
-
-* README update
-
-### Fix
-
-* translations
-* updated repo names
-* merge conflict
-
-### Refactor
-
-* updated build steps in android.yml actions file
-
-### Pull Requests
-
-* Merge pull request [#122](https://github.com/masgeek/akilimo-mobile/issues/122) from IITA-AKILIMO/cicd/builds
-* Merge pull request [#118](https://github.com/masgeek/akilimo-mobile/issues/118) from IITA-AKILIMO/feature/translations
-* Merge pull request [#117](https://github.com/masgeek/akilimo-mobile/issues/117) from IITA-AKILIMO/masgeek-patch-1
-
-### BREAKING CHANGE
-
-
-
-
-
 <a name="18.19.1"></a>
 ## [18.19.1](https://github.com/masgeek/akilimo-mobile/compare/18.19.0...18.19.1)
 
@@ -65,7 +24,7 @@
 
 
 <a name="18.19.0"></a>
-## [18.19.0](https://github.com/masgeek/akilimo-mobile/compare/18.5.2...18.19.0)
+## [18.19.0](https://github.com/masgeek/akilimo-mobile/compare/v18.5.2...18.19.0)
 
 > 2021-05-17
 
@@ -94,6 +53,16 @@
 
 
 
+
+
+<a name="v18.5.2"></a>
+## [v18.5.2](https://github.com/masgeek/akilimo-mobile/compare/18.5.2...v18.5.2)
+
+> 2021-05-13
+
+### Pull Requests
+
+* Merge pull request [#106](https://github.com/masgeek/akilimo-mobile/issues/106) from masgeek/develop
 
 
 <a name="18.5.2"></a>

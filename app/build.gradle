@@ -14,7 +14,7 @@ android {
     def appVersionCode = computeVersionCode()
 
     compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    buildToolsVersion '30.0.3'
     ndkVersion "22.1.7171670"
 
     defaultConfig {
@@ -49,7 +49,7 @@ android {
         }
     }
     buildFeatures {
-        viewBinding = true
+        viewBinding true
         //  dataBinding = false
     }
     lintOptions {
@@ -72,7 +72,7 @@ android {
 }
 
 static def computeVersionName() {
-    def versionMajor = 18
+    def versionMajor = 19
     def versionMinor = LocalDateTime.now().getMonthValue()
     def buildNumber = LocalDateTime.now().getDayOfMonth()
 
@@ -118,7 +118,7 @@ def computeVersionCode() {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
 
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.5.0'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.5.21'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -137,13 +137,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-config:20.0.4'
     implementation 'com.google.firebase:firebase-analytics:18.0.3'
     implementation 'com.google.firebase:firebase-messaging:21.1.0' //for push notifications
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'                 // google flexible box
-
     implementation 'com.google.android.gms:play-services-ads:19.7.0' //Google ads
 
     //implementation "com.github.vicpinm:krealmextensions:2.5.0"
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.10'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.20'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
 
     implementation "com.j256.ormlite:ormlite-android:5.1"
@@ -153,13 +151,11 @@ dependencies {
 
 
     // mapbox implementation------------------------------------------------------------------------
-    // implementation 'com.mapbox.mapboxsdk:mapbox-android-navigation:0.41.0'
-    // implementation 'com.mapbox.mapboxsdk:mapbox-android-navigation-ui:0.41.0'
-    implementation('com.mapbox.mapboxsdk:mapbox-android-sdk:8.2.1') {
+    implementation('com.mapbox.mapboxsdk:mapbox-android-sdk:9.6.2') {
         // exclude group: 'group_name', module: 'module_name'
     }
-    implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-annotation-v8:0.7.0'
-    implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-places-v8:0.9.0'
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-annotation-v9:0.9.0'
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-places-v9:0.12.0'
 
     // third party dependencies -------------------------------------------------------------------
     implementation 'com.balysv:material-ripple:1.0.2'                   // ripple effect
@@ -168,12 +164,12 @@ dependencies {
 
     implementation 'net.danlew:android.joda:2.10.6'
     implementation 'com.github.mohammadatif:Animatoo:master'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1' //discontinued consider removal
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.2' //Feature discovery library
     implementation 'eu.the4thfloor.volley:com.android.volley:2015.05.28' //Volley library
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.12.2'
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.2'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.2'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.12.4'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.4'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.4'
     implementation 'com.nabinbhandari.android:permissions:3.8'
     implementation 'com.github.vipulasri:timelineview:1.1.1'
     implementation 'com.github.javiersantos:AppUpdater:2.7'
@@ -184,7 +180,7 @@ dependencies {
     implementation 'com.github.ome450901:SimpleRatingBar:1.5.1'
 
     //https://stackoverflow.com/questions/44826452/highlight-new-feature-in-android
-    implementation 'org.modelmapper:modelmapper:2.3.7'
+    implementation 'org.modelmapper:modelmapper:2.4.4'
     implementation 'com.hbb20:ccp:2.5.0'
 
     implementation 'dev.b3nedikt.applocale:applocale:1.2.4' //App language switcher
@@ -195,20 +191,24 @@ dependencies {
     implementation 'com.stepstone.stepper:material-stepper:4.3.1'
     implementation 'com.github.twinone:AndroidWizard:b4546bd712'
 
+    //https://stackoverflow.com/questions/63917431/expected-android-api-level-21-but-was-30
+    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
+
     //If you are using Kotlin, replace annotationProcessor with kapt.
     kapt 'androidx.room:room-compiler:2.3.0'
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
     kapt 'com.jakewharton:butterknife-compiler:10.2.1'
-    kapt 'com.fasterxml.jackson.core:jackson-annotations:2.12.2'
+    kapt 'com.fasterxml.jackson.core:jackson-annotations:2.12.4'
 
-    testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.12.2'
+    testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.12.4'
     testImplementation 'joda-time:joda-time:2.10.10'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test:runner:1.3.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     //debugImplementation because LeakCanary should only run in debug builds.
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
-    debugImplementation 'com.github.amitshekhariitbhu.Android-Debug-Database:debug-db:v1.0.6' //'com.amitshekhar.android:debug-db:1.0.6'
+    debugImplementation 'com.github.amitshekhariitbhu.Android-Debug-Database:debug-db:v1.0.6'
+    //'com.amitshekhar.android:debug-db:1.0.6'
 }
