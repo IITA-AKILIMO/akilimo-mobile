@@ -105,6 +105,11 @@ public class AreaUnitFragment extends BaseStepFragment {
                     areaUnitDisplay = context.getString(R.string.lbl_ha);
                     areaUnit = EnumAreaUnits.HA.name();
                     break;
+                case R.id.rdAre:
+                    areaUnitRadioIndex = R.id.rdHa;
+                    areaUnitDisplay = context.getString(R.string.lbl_are);
+                    areaUnit = EnumAreaUnits.ARE.name();
+                    break;
                 default:
                     areaUnitRadioIndex = -1;
                     areaUnit = null;
