@@ -51,6 +51,7 @@ import retrofit2.Response;
 
 import static android.app.Activity.RESULT_OK;
 
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link LocationFragment#newInstance} factory method to
@@ -260,9 +261,7 @@ public class LocationFragment extends BaseStepFragment {
     }
 
     private void isSupportedCountry(String countryLocation) {
-        countrySupported = countryLocation.equalsIgnoreCase(EnumCountry.Nigeria.countryCode())
-                ||countryLocation.equalsIgnoreCase(EnumCountry.Tanzania.countryCode())
-                ||countryLocation.equalsIgnoreCase(EnumCountry.Rwanda.countryCode());
+        countrySupported = countryLocation.equalsIgnoreCase(EnumCountry.Nigeria.countryCode()) || countryLocation.equalsIgnoreCase(EnumCountry.Tanzania.countryCode());
         errorMessage = getString(R.string.lbl_country_supported);
     }
 
