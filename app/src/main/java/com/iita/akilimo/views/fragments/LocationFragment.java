@@ -1,8 +1,10 @@
 package com.iita.akilimo.views.fragments;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +13,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
@@ -45,7 +51,6 @@ import retrofit2.Response;
 
 import static android.app.Activity.RESULT_OK;
 
-;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -108,13 +113,42 @@ public class LocationFragment extends BaseStepFragment {
             getCurrentLocation();
         });
 
+        ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                try {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            currentLat = data.getDoubleExtra(MapBoxActivity.LAT, 0.0);
+                            currentLon = data.getDoubleExtra(MapBoxActivity.LON, 0.0);
+                            currentAlt = data.getDoubleExtra(MapBoxActivity.ALT, 0.0);
+                            reverseGeoCode(currentLat, currentLon);
+                        } else {
+                            dataIsValid = false;
+                            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                } catch (Exception ex) {
+                    Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+                    //@TODO migrate crashlytics code to latest crash analytics platform
+                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
+                    Crashlytics.logException(ex);
+                }
+            }
+        });
+
         btnSelectLocation.setOnClickListener(v -> {
+//            Intent intent = new Intent(getActivity(), MapSelectionActivity.class);
             Intent intent = new Intent(getActivity(), MapBoxActivity.class);
             intent.putExtra(MapBoxActivity.LAT, currentLat);
             intent.putExtra(MapBoxActivity.LON, currentLon);
             intent.putExtra(MapBoxActivity.ALT, currentAlt);
-            this.startActivityForResult(intent, HomeStepperActivity.MAP_BOX_PLACE_PICKER_REQUEST_CODE);
+//            this.startActivityForResult(intent, HomeStepperActivity.MAP_BOX_PLACE_PICKER_REQUEST_CODE);
+            mStartForResult.launch(intent);
+
         });
+
         errorMessage = context.getString(R.string.lbl_location_error);
 
         MAP_BOX_ACCESS_TOKEN = sessionManager.getMapBoxApiKey();
@@ -229,30 +263,6 @@ public class LocationFragment extends BaseStepFragment {
     private void isSupportedCountry(String countryLocation) {
         countrySupported = countryLocation.equalsIgnoreCase(EnumCountry.Nigeria.countryCode()) || countryLocation.equalsIgnoreCase(EnumCountry.Tanzania.countryCode());
         errorMessage = getString(R.string.lbl_country_supported);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        try {
-            if (requestCode == HomeStepperActivity.MAP_BOX_PLACE_PICKER_REQUEST_CODE) {
-                if (resultCode == RESULT_OK) {
-                    if (data != null) {
-                        currentLat = data.getDoubleExtra(MapBoxActivity.LAT, 0.0);
-                        currentLon = data.getDoubleExtra(MapBoxActivity.LON, 0.0);
-                        currentAlt = data.getDoubleExtra(MapBoxActivity.ALT, 0.0);
-                        reverseGeoCode(currentLat, currentLon);
-                    } else {
-                        dataIsValid = false;
-                        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        } catch (Exception ex) {
-            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
-        }
     }
 
     @Nullable
