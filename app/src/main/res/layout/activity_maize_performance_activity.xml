@@ -8,7 +8,7 @@
     android:background="@color/grey_3"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context=".views.activities.MaizePerformanceActivity">
+    tools:context="com.akilimo.mobile.views.activities.MaizePerformanceActivity">
 
 
     <com.google.android.material.appbar.AppBarLayout

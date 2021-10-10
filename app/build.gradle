@@ -18,7 +18,7 @@ android {
     ndkVersion "22.1.7171670"
 
     defaultConfig {
-        applicationId "com.iita.akilimo"
+        applicationId "com.akilimo.mobile"
         minSdkVersion 19
         targetSdkVersion 30
         versionCode appVersionCode
@@ -72,7 +72,7 @@ android {
 }
 
 static def computeVersionName() {
-    def versionMajor = 19
+    def versionMajor = 20
     def versionMinor = LocalDateTime.now().getMonthValue()
     def buildNumber = LocalDateTime.now().getDayOfMonth()
 
