@@ -29,7 +29,7 @@ import com.akilimo.mobile.entities.ScheduledDate;
 import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.models.TimeLineModel;
 import com.akilimo.mobile.models.TimelineAttributes;
-import com.akilimo.mobile.utils.ItemAnimation;
+import com.akilimo.mobile.utils.TheItemAnimation;
 import com.akilimo.mobile.utils.enums.EnumRiskAtt;
 import com.akilimo.mobile.utils.enums.StepStatus;
 import com.stepstone.stepper.VerificationError;
@@ -246,7 +246,7 @@ public class SummaryFragment extends BaseStepFragment {
     }
 
     private void initAdapter() {
-        adapter = new MyTimeLineAdapter(mDataList, mAttributes, context, ItemAnimation.FADE_IN);
+        adapter = new MyTimeLineAdapter(mDataList, mAttributes, context, TheItemAnimation.FADE_IN);
         recyclerView.setAdapter(adapter);
     }
 

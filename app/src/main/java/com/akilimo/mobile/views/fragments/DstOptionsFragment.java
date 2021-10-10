@@ -21,7 +21,7 @@ import com.akilimo.mobile.adapters.AdapterListAnimation;
 import com.akilimo.mobile.databinding.FragmentDstOptionsBinding;
 import com.akilimo.mobile.inherit.BaseFragment;
 import com.akilimo.mobile.models.Recommendations;
-import com.akilimo.mobile.utils.ItemAnimation;
+import com.akilimo.mobile.utils.TheItemAnimation;
 import com.akilimo.mobile.utils.enums.EnumAdvice;
 import com.akilimo.mobile.views.activities.usecases.FertilizerRecActivity;
 import com.akilimo.mobile.views.activities.usecases.InterCropRecActivity;
@@ -118,7 +118,7 @@ public class DstOptionsFragment extends BaseFragment {
 
     private void initComponent() {
         //set data and list adapter
-        mAdapter.setItems(items, ItemAnimation.FADE_IN);
+        mAdapter.setItems(items, TheItemAnimation.FADE_IN);
         // on item list clicked
         mAdapter.setOnItemClickListener((view, obj, position) -> {
             //let us process the data

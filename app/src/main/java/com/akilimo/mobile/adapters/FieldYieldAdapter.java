@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.entities.FieldYield;
-import com.akilimo.mobile.utils.ItemAnimation;
+import com.akilimo.mobile.utils.TheItemAnimation;
 import com.akilimo.mobile.utils.Tools;
 
 import org.jetbrains.annotations.NotNull;
@@ -115,7 +115,7 @@ public class FieldYieldAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private void setAnimation(View view, int position) {
         if (position > lastPosition) {
-            ItemAnimation.animate(view, on_attach ? position : -1, animation_type);
+            TheItemAnimation.animate(view, on_attach ? position : -1, animation_type);
             lastPosition = position;
         }
     }

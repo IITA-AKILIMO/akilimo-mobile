@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ItemCardRecommendationArrowBinding
 import com.akilimo.mobile.models.RecommendationOptions
-import com.akilimo.mobile.utils.ItemAnimation
+import com.akilimo.mobile.utils.TheItemAnimation
 import com.akilimo.mobile.utils.VectorDrawableUtils
 
 class RecOptionsAdapter : RecyclerView.Adapter<RecOptionsAdapter.OriginalViewHolder>() {
@@ -18,7 +18,7 @@ class RecOptionsAdapter : RecyclerView.Adapter<RecOptionsAdapter.OriginalViewHol
     private var lastPosition = -1
     private var on_attach = true
 
-    private var animation_type: Int = ItemAnimation.FADE_IN
+    private var animation_type: Int = TheItemAnimation.FADE_IN
     private lateinit var items: List<RecommendationOptions>
     private lateinit var mLayoutInflater: LayoutInflater
 
@@ -72,7 +72,7 @@ class RecOptionsAdapter : RecyclerView.Adapter<RecOptionsAdapter.OriginalViewHol
 
     private fun setAnimation(view: View, position: Int) {
         if (position > lastPosition) {
-            ItemAnimation.animate(view, if (on_attach) position else -1, animation_type)
+            TheItemAnimation.animate(view, if (on_attach) position else -1, animation_type)
             lastPosition = position
         }
     }

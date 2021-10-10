@@ -44,7 +44,7 @@ import com.akilimo.mobile.interfaces.IVolleyCallback;
 import com.akilimo.mobile.models.Recommendations;
 import com.akilimo.mobile.rest.RestParameters;
 import com.akilimo.mobile.rest.RestService;
-import com.akilimo.mobile.utils.ItemAnimation;
+import com.akilimo.mobile.utils.TheItemAnimation;
 import com.akilimo.mobile.utils.SessionManager;
 import com.akilimo.mobile.utils.enums.EnumAdvice;
 import com.akilimo.mobile.utils.enums.EnumCountry;
@@ -185,7 +185,7 @@ public class RecommendationsActivity extends BaseActivity {
     }
 
     private void setAdapter() {
-        mAdapter.setItems(items, ItemAnimation.BOTTOM_UP);
+        mAdapter.setItems(items, TheItemAnimation.BOTTOM_UP);
         // on item list clicked
         mAdapter.setOnItemClickListener((view, obj, position) -> {
             //let us process the data

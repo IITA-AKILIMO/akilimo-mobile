@@ -1,34 +1,33 @@
 {
   "project_info": {
-    "project_number": "530681337655",
-    "firebase_url": "https://fertilizerestimate.firebaseio.com",
-    "project_id": "fertilizerestimate",
-    "storage_bucket": "fertilizerestimate.appspot.com"
+    "project_number": "601539044292",
+    "project_id": "pc-api-5772761958681713841-498",
+    "storage_bucket": "pc-api-5772761958681713841-498.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:530681337655:android:b04e0d05f961823d",
+        "mobilesdk_app_id": "1:601539044292:android:9ba5bf654c4c8ca9b9ba91",
         "android_client_info": {
-          "package_name": "com.iita.akilimo"
+          "package_name": "com.akilimo.mobile"
         }
       },
       "oauth_client": [
         {
-          "client_id": "530681337655-pe1gk5udvq0i5fd17jnikcvgc4qm5rb5.apps.googleusercontent.com",
+          "client_id": "601539044292-f71a4ahsbdlbdano31kp8asjj865e4r1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyATIhkk9dLG32sjcLgFQVcGtvIs0pnCF4k"
+          "current_key": "AIzaSyDqFyQV47MsD24_Yz02noQrIXoev0ho004"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "530681337655-pe1gk5udvq0i5fd17jnikcvgc4qm5rb5.apps.googleusercontent.com",
+              "client_id": "601539044292-f71a4ahsbdlbdano31kp8asjj865e4r1.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

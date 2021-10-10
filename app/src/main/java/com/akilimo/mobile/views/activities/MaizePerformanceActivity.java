@@ -21,7 +21,7 @@ import com.akilimo.mobile.databinding.ActivityMaizePerformanceActivityBinding;
 import com.akilimo.mobile.entities.AdviceStatus;
 import com.akilimo.mobile.entities.MaizePerformance;
 import com.akilimo.mobile.inherit.BaseActivity;
-import com.akilimo.mobile.utils.ItemAnimation;
+import com.akilimo.mobile.utils.TheItemAnimation;
 import com.akilimo.mobile.utils.Tools;
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks;
 import com.akilimo.mobile.views.fragments.dialog.MaizePerformanceDialogFragment;
@@ -123,7 +123,7 @@ public class MaizePerformanceActivity extends BaseActivity {
         items.add(createPerformanceObject(performanceImages[3], null, "4", "green", getString(R.string.lbl_green_leaves)));
         items.add(createPerformanceObject(performanceImages[4], richSoil, "5", "dark green", getString(R.string.lbl_dark_green_leaves)));
 
-        mAdapter = new MaizePerformanceAdapter(this, items, ItemAnimation.FADE_IN);
+        mAdapter = new MaizePerformanceAdapter(this, items, TheItemAnimation.FADE_IN);
         recyclerView.setAdapter(mAdapter);
         mAdapter.setItems(selectedPerformanceValue, items);
 

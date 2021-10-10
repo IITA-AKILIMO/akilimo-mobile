@@ -24,7 +24,7 @@ import com.akilimo.mobile.entities.MandatoryInfo;
 import com.akilimo.mobile.entities.ProfileInfo;
 import com.akilimo.mobile.entities.UseCases;
 import com.akilimo.mobile.inherit.BaseActivity;
-import com.akilimo.mobile.utils.ItemAnimation;
+import com.akilimo.mobile.utils.TheItemAnimation;
 import com.akilimo.mobile.utils.Tools;
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks;
 import com.akilimo.mobile.utils.enums.EnumUseCase;
@@ -129,7 +129,7 @@ public class RootYieldActivity extends BaseActivity {
 
         List<FieldYield> items = setYieldData(areaUnit);
         //set data and list adapter
-        mAdapter = new FieldYieldAdapter(this, items, ItemAnimation.FADE_IN);
+        mAdapter = new FieldYieldAdapter(this, items, TheItemAnimation.FADE_IN);
         recyclerView.setAdapter(mAdapter);
         mAdapter.setItems(selectedYieldAmount, items);
 

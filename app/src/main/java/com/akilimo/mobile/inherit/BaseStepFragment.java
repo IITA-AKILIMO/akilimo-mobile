@@ -16,7 +16,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
-import com.akilimo.mobile.utils.MyGlideApp;
+import com.akilimo.mobile.utils.MathHelper;
+import com.akilimo.mobile.utils.SessionManager;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
@@ -24,7 +25,6 @@ import com.google.android.gms.common.util.Strings;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.dao.AppDatabase;
 import com.akilimo.mobile.entities.LocationInfo;
-import com.akilimo.mobile.utils.SessionManager;
 import com.stepstone.stepper.Step;
 import com.stepstone.stepper.VerificationError;
 

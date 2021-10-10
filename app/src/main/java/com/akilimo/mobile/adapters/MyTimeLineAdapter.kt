@@ -14,7 +14,7 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ItemTimelineBinding
 import com.akilimo.mobile.models.TimeLineModel
 import com.akilimo.mobile.models.TimelineAttributes
-import com.akilimo.mobile.utils.ItemAnimation
+import com.akilimo.mobile.utils.TheItemAnimation
 import com.akilimo.mobile.utils.VectorDrawableUtils
 import com.akilimo.mobile.utils.enums.StepStatus
 
@@ -55,7 +55,7 @@ class MyTimeLineAdapter(
 
     private fun setAnimation(view: View, position: Int) {
         if (position > lastPosition) {
-            ItemAnimation.animate(view, if (onAttach) position else -1, animation_type)
+            TheItemAnimation.animate(view, if (onAttach) position else -1, animation_type)
             lastPosition = position
         }
     }
