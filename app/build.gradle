@@ -102,6 +102,7 @@ static def computeBuildNumber() {
                 Integer.valueOf(buildNumber))
 
     }
+
     println("This build tag is:" + gitVersionTag)
     newFile.write(gitVersionTag)
     return gitVersionTag
