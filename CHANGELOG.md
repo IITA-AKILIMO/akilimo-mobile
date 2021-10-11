@@ -1,4 +1,8 @@
-
+#### [Version 19.1.0](https://IITA-AKILIMO/akilimo-mobile/releases/tag/19.1.0) 
+### Implemented Enhancements 
+- build: library updates [#133](https://IITA-AKILIMO/akilimo-mobile/issues/#133) ([@masgeek](https://github.com/@masgeek))
+ 
+ 
 <a name="19.0.0"></a>
 ## [19.0.0](https://github.com/masgeek/akilimo-mobile/compare/18.19.1...19.0.0)
 

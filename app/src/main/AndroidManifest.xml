@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.iita.akilimo">
+    package="com.akilimo.mobile">
     <!-- let us add permissions here -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -14,7 +14,7 @@
 
     <application
         android:name=".Akilimo"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -26,26 +26,12 @@
         tools:replace="android:icon, android:theme, android:label, android:allowBackup"
         tools:targetApi="m">
 
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-7182284303548130~4184115109" />
-
         <service android:name=".services.GPSTracker" />
-        <service
-            android:name=".services.MyFirebaseMessagingService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
 
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="@string/default_notification_channel_id" />
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="ca1a8f3133ce2b7f055369923b3532240ee2202b" />
@@ -54,7 +40,6 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity android:name=".views.activities.HomeStepperActivity" />
-        <activity android:name=".views.activities.PusherActivity" />
         <activity
             android:name=".views.activities.SplashActivity"
             android:theme="@style/SplashTheme">

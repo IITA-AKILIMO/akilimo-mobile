@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/grey_3"
     android:orientation="vertical"
-    tools:context=".views.activities.usecases.ScheduledPlantingActivity">
+    tools:context="com.akilimo.mobile.views.activities.usecases.ScheduledPlantingActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"

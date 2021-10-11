@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.activities.DstRecommendationActivity">
+    tools:context="com.akilimo.mobile.views.activities.DstRecommendationActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -67,7 +67,7 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <com.iita.akilimo.widget.ViewLoadingDotsBounce
+                <com.akilimo.mobile.widget.ViewLoadingDotsBounce
                     android:layout_width="50dp"
                     android:layout_height="40dp"
                     android:background="@color/colorAccent" />

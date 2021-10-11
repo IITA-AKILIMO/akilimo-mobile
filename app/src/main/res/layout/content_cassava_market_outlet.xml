@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".views.activities.CassavaMarketActivity"
+    tools:context="com.akilimo.mobile.views.activities.CassavaMarketActivity"
     tools:showIn="@layout/activity_cassava_market">
 
 
