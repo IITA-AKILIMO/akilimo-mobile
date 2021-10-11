@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/grey_3"
     android:fitsSystemWindows="true"
-    tools:context=".views.activities.InvestmentAmountActivity">
+    tools:context="com.akilimo.mobile.views.activities.InvestmentAmountActivity">
 
 
     <com.google.android.material.appbar.AppBarLayout

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/grey_5"
     android:padding="@dimen/spacing_medium"
-    tools:context=".views.fragments.PlantingDateFragment">
+    tools:context="com.akilimo.mobile.views.fragments.PlantingDateFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
