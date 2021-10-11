@@ -131,7 +131,6 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         val rationale: String = getString(R.string.lbl_permission_rationale)
 
         checkAppPermissions(rationale)
-        fetchFireBaseConfig(activity)
     }
 
     override fun validate(backPressed: Boolean) {

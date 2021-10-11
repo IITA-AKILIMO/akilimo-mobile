@@ -24,7 +24,6 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.dao.AppDatabase;
 import com.akilimo.mobile.entities.AdviceStatus;
-import com.akilimo.mobile.utils.FireBaseConfig;
 import com.akilimo.mobile.utils.SessionManager;
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks;
 import com.akilimo.mobile.utils.enums.EnumCountry;
@@ -229,30 +228,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void processRecommendations(@NonNull Activity activity) {
         Intent intent = new Intent(activity, DstRecommendationActivity.class);
         activity.startActivity(intent);
-    }
-
-    protected void fetchFireBaseConfig(@NotNull Activity homeActivity) {
-        FireBaseConfig fireBaseConfig = new FireBaseConfig(homeActivity);
-        fireBaseConfig.fetchNewRemoteConfig();
-    }
-
-    /**
-     * register firebase instance
-     *
-     * @param appPref Pass application shared preferences
-     */
-    protected void initializePushNotification(@NonNull SessionManager appPref) {
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        //get the tokens
-                        if (task.getResult() != null) {
-                            String token = task.getResult().getToken();
-                            appPref.saveDeviceToken(token);
-                            Log.d(LOG_TAG, "FCM token is: " + token);
-                        }
-                    }
-                });
     }
 
     protected Locale getCurrentLocale() {

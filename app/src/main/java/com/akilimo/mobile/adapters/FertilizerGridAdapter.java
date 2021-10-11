@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.entities.Fertilizer;
-import com.akilimo.mobile.utils.CurrencyCode;
 import com.akilimo.mobile.utils.Tools;
 
 import java.util.ArrayList;

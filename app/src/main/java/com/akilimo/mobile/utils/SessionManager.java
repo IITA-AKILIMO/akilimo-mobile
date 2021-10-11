@@ -16,6 +16,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -23,7 +24,7 @@ import java.util.List;
  */
 
 public class SessionManager {
-    private static final String PREF_NAME = "akilimo_pref";
+    private static final String PREF_NAME = "akilimo-pref";
 
     private SharedPreferences.Editor editor;
     private Context context;
@@ -43,8 +44,7 @@ public class SessionManager {
     }
 
     public String getApiEndPoint() {
-        return pref.getString("apiResource", "https://google.com/");
-//        return "https://66d09ab21e03.ngrok.io/api/";
+        return pref.getString("apiResource", "http://157.245.26.55:8098/api/");
     }
 
     public void setApiToken(String apiToken) {
@@ -62,7 +62,7 @@ public class SessionManager {
     }
 
     public String getMapBoxApiKey() {
-        return pref.getString("mapBoxKey", "");
+        return pref.getString("mapBoxKey", "pk.eyJ1IjoibWFzZ2VlayIsImEiOiJjanp0bm43ZmwwNm9jM29udjJod3V6dzB1In0.MevkJtANWZ8Wl9abnLu1Uw");
     }
 
     public void setLocationIqToken(String locationIqToken) {
@@ -71,7 +71,7 @@ public class SessionManager {
     }
 
     public String getLocationIqToken() {
-        return pref.getString("locationIqToken", "");
+        return pref.getString("locationIqToken", "pk.2e825998b141366ea93c856dfc352010");
     }
 
     public void setNgnRate(String ngnRate) {
@@ -81,7 +81,7 @@ public class SessionManager {
 
 
     public double getNgnRate() {
-        String rate = pref.getString("ngnRate", "0");
+        String rate = pref.getString("ngnRate", "390.34");
         return Double.parseDouble(rate);
     }
 
@@ -91,7 +91,7 @@ public class SessionManager {
     }
 
     public double getTzsRate() {
-        String rate = pref.getString("tzsRate", "0");
+        String rate = pref.getString("tzsRate", "2312.03");
         return Double.parseDouble(rate);
     }
 
@@ -146,32 +146,14 @@ public class SessionManager {
     }
 
     public String getDeviceToken() {
-        return pref.getString("deviceToken", "");
+        String token = pref.getString("deviceToken", "");
+        if (token.isEmpty()) {
+            token = UUID.randomUUID().toString();
+            saveDeviceToken(token);
+        }
+        return token;
     }
 
-    public void setFireBaseTopics(String firebaseTopicString) {
-        editor.putString("firebaseTopics", firebaseTopicString);
-        editor.commit();
-    }
-
-    public List<FirebaseTopic> getFirebaseTopics() throws JsonProcessingException {
-
-        String topics = pref.getString("firebaseTopics", "[]");
-        ObjectMapper mapper = new ObjectMapper();
-
-        return mapper.readValue(topics, new TypeReference<List<FirebaseTopic>>() {
-        });
-    }
-
-
-    public void setAdToggle(boolean showAd) {
-        editor.putBoolean("showAd", showAd);
-        editor.commit();
-    }
-
-    public boolean showAd() {
-        return pref.getBoolean("showAd", false);
-    }
 
     public void setTermsAccepted(boolean termsAccepted) {
         editor.putBoolean("termsAccepted", termsAccepted);
@@ -180,11 +162,6 @@ public class SessionManager {
 
     public boolean termsAccepted() {
         return pref.getBoolean("termsAccepted", false);
-    }
-
-    public void setTermsLink(String termsAccepted) {
-        editor.putString("termsLink", termsAccepted);
-        editor.commit();
     }
 
     public String getTermsLink() {

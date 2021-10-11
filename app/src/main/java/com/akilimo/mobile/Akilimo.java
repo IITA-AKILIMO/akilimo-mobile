@@ -6,7 +6,6 @@ import androidx.multidex.MultiDexApplication;
 
 import com.blongho.country_data.World;
 import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.ads.MobileAds;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -46,8 +45,5 @@ public class Akilimo extends MultiDexApplication {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         JodaTimeAndroid.init(this);
         World.init(this);
-
-        MobileAds.initialize(this, initializationStatus -> {
-        });
     }
 }
