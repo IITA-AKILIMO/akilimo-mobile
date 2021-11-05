@@ -133,6 +133,9 @@ public class WeedControlCostsActivity extends BaseActivity {
             case "NG":
                 currencyName = EnumCountry.Nigeria.currencyName(context);
                 break;
+            case "GH":
+                currencyName = EnumCountry.Ghana.currencyName(context);
+                break;
         }
 
         if (currentPractice != null) {
