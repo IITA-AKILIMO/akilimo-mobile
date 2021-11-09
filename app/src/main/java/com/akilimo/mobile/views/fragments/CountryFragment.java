@@ -51,7 +51,8 @@ public class CountryFragment extends BaseStepFragment {
 
     private String[] countries = new String[]{
             EnumCountry.Nigeria.name(),
-            EnumCountry.Tanzania.name()
+            EnumCountry.Tanzania.name(),
+            EnumCountry.Ghana.name(),
     };
 
     public CountryFragment() {
@@ -147,6 +148,11 @@ public class CountryFragment extends BaseStepFragment {
                             countryName = EnumCountry.Nigeria.name();
                             currency = EnumCountry.Nigeria.currency();
                             countryCode = EnumCountry.Nigeria.countryCode();
+                            break;
+                        case "ghana":
+                            countryName = EnumCountry.Ghana.name();
+                            currency = EnumCountry.Ghana.currency();
+                            countryCode = EnumCountry.Ghana.countryCode();
                             break;
                         default:
                             countryName = EnumCountry.Other.name();

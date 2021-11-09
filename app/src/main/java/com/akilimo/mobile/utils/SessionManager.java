@@ -44,6 +44,9 @@ public class SessionManager {
     }
 
     public String getApiEndPoint() {
+        if (BuildConfig.DEBUG) {
+            return "http://f296-146-70-65-4.ngrok.io/api/";
+        }
         return pref.getString("apiResource", "http://157.245.26.55:8098/api/");
     }
 
@@ -91,7 +94,17 @@ public class SessionManager {
     }
 
     public double getTzsRate() {
-        String rate = pref.getString("tzsRate", "2312.03");
+        String rate = pref.getString("tzsRate", "6.11");
+        return Double.parseDouble(rate);
+    }
+
+    public void setGhsRate(String tzsRate) {
+        editor.putString("tzsRate", tzsRate);
+        editor.commit();
+    }
+
+    public double getGhsRate() {
+        String rate = pref.getString("tzsRate", "6.11");
         return Double.parseDouble(rate);
     }
 

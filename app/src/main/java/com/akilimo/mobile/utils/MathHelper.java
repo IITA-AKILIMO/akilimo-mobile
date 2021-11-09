@@ -16,6 +16,7 @@ public class MathHelper {
     private static String TAG = MathHelper.class.getSimpleName();
     private double ngnRate = 360;
     private double tzsRate = 2250;
+    private double ghsRate = 6.11;
 
     private double baseAcre = 2.471;
     private double baseSqm = 4046.86;
@@ -32,6 +33,7 @@ public class MathHelper {
         SessionManager sessionManager = new SessionManager(activity);
         this.ngnRate = sessionManager.getNgnRate();
         this.tzsRate = sessionManager.getTzsRate();
+        this.ghsRate = sessionManager.getGhsRate();
     }
 
     private String convertCurrency(String stringToSplit, String toCurrency) {
@@ -126,6 +128,9 @@ public class MathHelper {
                 case "TZS":
                     converted = amount * tzsRate;
                     break;
+                case "GHS":
+                    converted = amount * ghsRate;
+                    break;
             }
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
@@ -148,6 +153,9 @@ public class MathHelper {
                     break;
                 case "TZS":
                     converted = currencyToConvert / tzsRate;
+                    break;
+                case "GHS":
+                    converted = currencyToConvert / ghsRate;
                     break;
                 case "USD":
                     return currencyToConvert;
