@@ -125,7 +125,7 @@ jobs:
           path: release
 
       - name: Upload Beta Release
-        if: contains(github.ref, 'betas')
+        if: contains(github.ref, 'beta')
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
@@ -135,7 +135,7 @@ jobs:
           whatsNewDirectory: release/distribution/whatsnew
 
       - name: Upload Production Release
-        if: contains(github.ref, 'mains')
+        if: contains(github.ref, 'main')
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
