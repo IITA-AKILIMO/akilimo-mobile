@@ -18,6 +18,7 @@ https://appicon.co/#image-sets
 # installing github hooks
 
 * https://pre-commit.com/
+
 * https://commitizen-tools.github.io/commitizen/
 
 `pre-commit install`

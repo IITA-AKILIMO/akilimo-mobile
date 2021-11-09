@@ -49,7 +49,7 @@ jobs:
       LATEST_TAG_FILE: ${{ secrets.LATEST_TAG_FILE }}
       RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
-      PACKAGE_NAME: "com.akilimo.mobile"
+      PACKAGE_NAME: "com.iita.akilimo"
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
@@ -57,7 +57,7 @@ jobs:
       - name: set up JDK 11
         uses: actions/setup-java@v1
         with:
-          java-version: 11
+          java-version: 1.8
 
       - name: Set up Python 3.9
         uses: actions/setup-python@v2
@@ -125,21 +125,21 @@ jobs:
           path: release
 
       - name: Upload Beta Release
-        if: contains(github.ref, 'betas')
+        if: contains(github.ref, 'beta')
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-          packageName: "com.akilimo.mobile"
+          packageName: "com.iita.akilimo"
           releaseFiles: release/*.aab
           track: beta
           whatsNewDirectory: release/distribution/whatsnew
 
       - name: Upload Production Release
-        if: contains(github.ref, 'mains')
+        if: contains(github.ref, 'main')
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-          packageName: "com.akilimo.mobile"
+          packageName: "com.iita.akilimo"
           releaseFiles: release/*.aab
           track: production
           whatsNewDirectory: release/distribution/whatsnew

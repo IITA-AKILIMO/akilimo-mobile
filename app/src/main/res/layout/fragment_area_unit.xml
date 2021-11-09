@@ -58,6 +58,13 @@
                 android:text="@string/area_unit_ha" />
 
             <RadioButton
+                android:id="@+id/rdAre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu"
+                android:text="@string/area_unit_are" />
+
+            <RadioButton
                 android:id="@+id/rdSqm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
