@@ -52,10 +52,12 @@
     <string name="lbl_area_unit">What is your preferred unit for measuring the area of your field?</string>
     <string name="area_unit_acre">Acre (acre)</string>
     <string name="area_unit_ha">Hectare (ha)</string>
+    <string name="area_unit_are">Are (are)</string>
     <string name="area_unit_square_meter">in Square meter (m\u00B2)</string>
 
     <string name="lbl_acre">acre</string>
     <string name="lbl_ha">ha</string>
+    <string name="lbl_are">are</string>
 
     <string name="lbl_cassava_field_size_no_ph">What is the size of your cassava field?</string>
     <string name="lbl_cassava_field_size">What is the size of your cassava field in `%1$s`</string>
@@ -74,6 +76,7 @@
     <string name="one_acre_to_ha">About 0.4 ha</string>
     <string name="one_half_acre_to_ha">About 0.6 ha</string>
     <string name="two_half_acre_to_ha">About 1 ha</string>
+
     <!--  m2 -->
     <string name="quarter_acre_to_m2">About 1,000 m\u00B2</string>
     <string name="half_acre_to_m2">About 2,000 m\u00B2</string>

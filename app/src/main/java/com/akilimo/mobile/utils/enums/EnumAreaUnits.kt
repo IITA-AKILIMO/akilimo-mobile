@@ -15,6 +15,12 @@ enum class EnumAreaUnits {
             return context.getString(R.string.lbl_ha)
         }
 
+    },
+    ARE {
+        override fun unitName(context: Context): String {
+            return context.getString(R.string.lbl_are)
+        }
+
     };
 
     abstract fun unitName(context: Context): @NotNull String
