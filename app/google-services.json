@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "601539044292",
-    "project_id": "pc-api-5772761958681713841-498",
-    "storage_bucket": "pc-api-5772761958681713841-498.appspot.com"
+    "project_number": "749454353398",
+    "project_id": "akilimo-dst-c708b",
+    "storage_bucket": "akilimo-dst-c708b.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:601539044292:android:9ba5bf654c4c8ca9b9ba91",
+        "mobilesdk_app_id": "1:749454353398:android:a07b36f3670f81ff2fddd7",
         "android_client_info": {
           "package_name": "com.akilimo.mobile"
         }
       },
       "oauth_client": [
         {
-          "client_id": "601539044292-f71a4ahsbdlbdano31kp8asjj865e4r1.apps.googleusercontent.com",
+          "client_id": "749454353398-h53ck0kiem3obv999fif05tr4dja2ptb.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDqFyQV47MsD24_Yz02noQrIXoev0ho004"
+          "current_key": "AIzaSyCfDtqm17af13zZVzHB6XKXMnZXKXoywgs"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "601539044292-f71a4ahsbdlbdano31kp8asjj865e4r1.apps.googleusercontent.com",
+              "client_id": "749454353398-h53ck0kiem3obv999fif05tr4dja2ptb.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
