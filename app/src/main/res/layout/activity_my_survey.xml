@@ -8,7 +8,7 @@
     android:layout_centerVertical="true"
     android:orientation="vertical"
     android:padding="@dimen/spacing_medium"
-    tools:context=".views.activities.MySurveyActivity">
+    tools:context="com.akilimo.mobile.views.activities.MySurveyActivity">
 
 
     <TextView

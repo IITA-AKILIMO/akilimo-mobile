@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".views.activities.ManualTillageCostActivity"
+    tools:context="com.akilimo.mobile.views.activities.ManualTillageCostActivity"
     tools:showIn="@layout/activity_manual_tillage_cost">
 
 

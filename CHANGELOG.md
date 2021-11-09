@@ -1,4 +1,20 @@
-
+#### [Version 21.0.0](https://IITA-AKILIMO/akilimo-mobile/releases/tag/21.0.0) 
+### Breaking Changes 
+- feat: ghana support [#140](https://IITA-AKILIMO/akilimo-mobile/issues/#140) ([@masgeek](https://github.com/@masgeek))
+### Other Changes 
+- Update CHANGELOG.md for 20.0.0 [#139](https://IITA-AKILIMO/akilimo-mobile/issues/#139) ([@nextreleaseio[bot]](https://github.com/@nextreleaseio[bot]))
+ 
+ #### [Version 20.0.0](https://IITA-AKILIMO/akilimo-mobile/releases/tag/20.0.0) 
+### Breaking Changes 
+- Fix/new package [#137](https://IITA-AKILIMO/akilimo-mobile/issues/#137) ([@masgeek](https://github.com/@masgeek))
+### Other Changes 
+- Update CHANGELOG.md for 19.1.0 [#136](https://IITA-AKILIMO/akilimo-mobile/issues/#136) ([@nextreleaseio[bot]](https://github.com/@nextreleaseio[bot]))
+ 
+ #### [Version 19.1.0](https://IITA-AKILIMO/akilimo-mobile/releases/tag/19.1.0) 
+### Implemented Enhancements 
+- build: library updates [#133](https://IITA-AKILIMO/akilimo-mobile/issues/#133) ([@masgeek](https://github.com/@masgeek))
+ 
+ 
 <a name="19.0.0"></a>
 ## [19.0.0](https://github.com/masgeek/akilimo-mobile/compare/18.19.1...19.0.0)
 

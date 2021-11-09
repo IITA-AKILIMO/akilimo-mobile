@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.5.0'
+    ext.kotlin_version = '1.5.21'
     repositories {
         google()
         mavenCentral()
@@ -10,9 +10,9 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.0.2'
-        classpath 'com.google.gms:google-services:4.3.5'
+        classpath 'com.google.gms:google-services:4.3.10'
         classpath 'io.fabric.tools:gradle:1.31.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.21"
         classpath "com.vanniktech:gradle-android-junit-jacoco-plugin:0.16.0"
     }
 }
@@ -22,9 +22,22 @@ allprojects {
         google()
         mavenCentral()
         jcenter()
-        maven { url 'https://mapbox.bintray.com/mapbox' }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://jitpack.io" }
+        maven {
+            url 'https://api.mapbox.com/downloads/v2/releases/maven'
+            authentication {
+                basic(BasicAuthentication)
+            }
+            credentials {
+                // Do not change the username below.
+                // This should always be `mapbox` (not your username).
+                username = 'mapbox'
+                // Use the secret token you stored in gradle.properties as the password
+//                password = project.properties['MAPBOX_DOWNLOADS_TOKEN'] ?: ""
+                password = System.env.MAPBOX_DOWNLOADS_TOKEN
+            }
+        }
     }
 }
 
