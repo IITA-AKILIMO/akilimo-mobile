@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/grey_3"
     android:orientation="vertical"
-    tools:context=".views.activities.usecases.RecommendationsActivity">
+    tools:context="com.akilimo.mobile.views.activities.usecases.RecommendationsActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"

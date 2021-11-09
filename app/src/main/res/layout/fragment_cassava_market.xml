@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/spacing_medium"
-    tools:context=".views.fragments.CassavaMarketFragment">
+    tools:context="com.akilimo.mobile.views.fragments.CassavaMarketFragment">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/title"

@@ -18,4 +18,4 @@
     app:ms_showErrorStateEnabled="true"
     app:ms_stepperFeedbackType="tabs|disabled_bottom_navigation"
     app:ms_stepperType="tabs"
-    tools:context=".views.activities.CassavaMarketWizardActivity" />
+    tools:context="com.akilimo.mobile.views.activities.CassavaMarketWizardActivity" />

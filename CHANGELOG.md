@@ -1,3 +1,60 @@
+#### [Version 21.0.0](https://IITA-AKILIMO/akilimo-mobile/releases/tag/21.0.0) 
+### Breaking Changes 
+- feat: ghana support [#140](https://IITA-AKILIMO/akilimo-mobile/issues/#140) ([@masgeek](https://github.com/@masgeek))
+### Other Changes 
+- Update CHANGELOG.md for 20.0.0 [#139](https://IITA-AKILIMO/akilimo-mobile/issues/#139) ([@nextreleaseio[bot]](https://github.com/@nextreleaseio[bot]))
+ 
+ #### [Version 20.0.0](https://IITA-AKILIMO/akilimo-mobile/releases/tag/20.0.0) 
+### Breaking Changes 
+- Fix/new package [#137](https://IITA-AKILIMO/akilimo-mobile/issues/#137) ([@masgeek](https://github.com/@masgeek))
+### Other Changes 
+- Update CHANGELOG.md for 19.1.0 [#136](https://IITA-AKILIMO/akilimo-mobile/issues/#136) ([@nextreleaseio[bot]](https://github.com/@nextreleaseio[bot]))
+ 
+ #### [Version 19.1.0](https://IITA-AKILIMO/akilimo-mobile/releases/tag/19.1.0) 
+### Implemented Enhancements 
+- build: library updates [#133](https://IITA-AKILIMO/akilimo-mobile/issues/#133) ([@masgeek](https://github.com/@masgeek))
+ 
+ 
+<a name="19.0.0"></a>
+## [19.0.0](https://github.com/masgeek/akilimo-mobile/compare/18.19.1...19.0.0)
+
+> 2021-06-22
+
+### Build
+
+* updated dependencies version
+* reoved jcenter and replaced with mavenCentral report
+* removed AndRatingBar
+
+### Ci
+
+* updated java version
+
+### Docs
+
+* README update
+
+### Fix
+
+* translations
+* updated repo names
+* merge conflict
+
+### Refactor
+
+* updated build steps in android.yml actions file
+
+### Pull Requests
+
+* Merge pull request [#122](https://github.com/masgeek/akilimo-mobile/issues/122) from IITA-AKILIMO/cicd/builds
+* Merge pull request [#118](https://github.com/masgeek/akilimo-mobile/issues/118) from IITA-AKILIMO/feature/translations
+* Merge pull request [#117](https://github.com/masgeek/akilimo-mobile/issues/117) from IITA-AKILIMO/masgeek-patch-1
+
+### BREAKING CHANGE
+
+
+
+
 
 <a name="18.19.1"></a>
 ## [18.19.1](https://github.com/masgeek/akilimo-mobile/compare/18.19.0...18.19.1)
@@ -24,7 +81,7 @@
 
 
 <a name="18.19.0"></a>
-## [18.19.0](https://github.com/masgeek/akilimo-mobile/compare/v18.5.2...18.19.0)
+## [18.19.0](https://github.com/masgeek/akilimo-mobile/compare/18.5.2...18.19.0)
 
 > 2021-05-17
 
@@ -53,16 +110,6 @@
 
 
 
-
-
-<a name="v18.5.2"></a>
-## [v18.5.2](https://github.com/masgeek/akilimo-mobile/compare/18.5.2...v18.5.2)
-
-> 2021-05-13
-
-### Pull Requests
-
-* Merge pull request [#106](https://github.com/masgeek/akilimo-mobile/issues/106) from masgeek/develop
 
 
 <a name="18.5.2"></a>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.activities.MapBoxActivity"
+    tools:context="com.akilimo.mobile.views.activities.MapBoxActivity"
     android:id="@+id/mapBoxLyt"
     tools:showIn="@layout/activity_map_box">
 
