@@ -49,7 +49,7 @@ jobs:
       LATEST_TAG_FILE: ${{ secrets.LATEST_TAG_FILE }}
       RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
-      PACKAGE_NAME: "com.akilimo.mobile"
+      PACKAGE_NAME: "com.iita.akilimo"
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
@@ -129,7 +129,7 @@ jobs:
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-          packageName: "com.akilimo.mobile"
+          packageName: "com.iita.akilimo"
           releaseFiles: release/*.aab
           track: beta
           whatsNewDirectory: release/distribution/whatsnew
@@ -139,7 +139,7 @@ jobs:
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-          packageName: "com.akilimo.mobile"
+          packageName: "com.iita.akilimo"
           releaseFiles: release/*.aab
           track: production
           whatsNewDirectory: release/distribution/whatsnew
