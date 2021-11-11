@@ -1,5 +1,5 @@
 
-### Akilimo mobile decision support tools
+### AKILIMO mobile decision support tools
 
 [![Android CI](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/android.yml/badge.svg)](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/android.yml)
 
