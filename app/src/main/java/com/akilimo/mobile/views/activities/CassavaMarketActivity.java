@@ -67,6 +67,8 @@ public class CassavaMarketActivity extends BaseActivity {
     RadioGroup rdgStarchFactories;
     RadioGroup rdgUnitOfSale;
 
+    RadioButton rdStarchFactory;
+
     CardView marketOutletCard;
     CardView starchFactoryCard;
     CardView unitOfSaleCard;
@@ -119,6 +121,8 @@ public class CassavaMarketActivity extends BaseActivity {
         rdgMarketOutlet = binding.contentCassavaMarket.rdgMarketOutlet;
         rdgStarchFactories = binding.contentCassavaMarket.rdgStarchFactories;
         rdgUnitOfSale = binding.contentCassavaMarket.rdgUnitOfSale;
+
+        rdStarchFactory = binding.contentCassavaMarket.rdFactory;
 
         marketOutletCard = binding.contentCassavaMarket.marketOutletCard;
         starchFactoryCard = binding.contentCassavaMarket.starchFactoryCard;
@@ -381,6 +385,8 @@ public class CassavaMarketActivity extends BaseActivity {
                     if (starchFactoriesList.size() > 0) {
                         database.starchFactoryDao().insertAll(starchFactoriesList);
                         addFactoriesRadioButtons(starchFactoriesList);
+                    } else {
+                        rdStarchFactory.setVisibility(View.GONE);
                     }
                 } catch (Exception ex) {
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
@@ -489,6 +495,7 @@ public class CassavaMarketActivity extends BaseActivity {
             String radioLabel = factory.getFactoryLabel();
             String factoryNameCountry = factory.getFactoryNameCountry();
             if (!radioLabel.equalsIgnoreCase("NA")) {
+                rdgStarchFactories.setVisibility(View.VISIBLE);
                 RadioButton radioButton = new RadioButton(this);
                 radioButton.setId(View.generateViewId());
                 radioButton.setTag(factoryNameCountry);
@@ -503,6 +510,8 @@ public class CassavaMarketActivity extends BaseActivity {
                 if (factory.getFactoryName().equals(selectedFactory)) {
                     radioButton.setChecked(true);
                 }
+            } else {
+                rdStarchFactory.setVisibility(View.GONE);
             }
         }
 

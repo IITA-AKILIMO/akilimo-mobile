@@ -77,7 +77,7 @@ public class AreaUnitFragment extends BaseStepFragment {
             if (profileInfo != null) {
                 countryCode = profileInfo.getCountryCode();
                 if (countryCode != null) {
-                    if (countryCode.equals(EnumCountry.Ghana.countryCode())) {
+                    if (countryCode.equals(EnumCountry.Rwanda.countryCode())) {
                         //set the are unit radiobutton to visible
                         rdAre.setVisibility(View.VISIBLE);
                     }
