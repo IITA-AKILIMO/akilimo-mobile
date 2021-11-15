@@ -412,4 +412,5 @@
     <string name="lbl_unit_price_m2">Bei miezi 2 baada ya mavuno</string>
     <string name="lbl_tzs_currency_name">Shilingi ya Tanzania</string>
     <string name="lbl_ngn_currency_name">Naira</string>
+    <string name="lbl_ghs_currency_name">Cedi ya Ghana</string>
 </resources>
