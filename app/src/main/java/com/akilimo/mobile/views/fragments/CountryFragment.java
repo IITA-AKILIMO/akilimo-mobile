@@ -119,6 +119,10 @@ public class CountryFragment extends BaseStepFragment {
                 countries = new String[]{
                         EnumCountry.Tanzania.name()
                 };
+            } else if (selectedLanguage.equalsIgnoreCase("rw")) {
+                countries = new String[]{
+                        EnumCountry.Rwanda.name()
+                };
             }
 
 
@@ -153,6 +157,11 @@ public class CountryFragment extends BaseStepFragment {
                             countryName = EnumCountry.Ghana.name();
                             currency = EnumCountry.Ghana.currency();
                             countryCode = EnumCountry.Ghana.countryCode();
+                            break;
+                        case "rwanda":
+                            countryName = EnumCountry.Rwanda.name();
+                            currency = EnumCountry.Rwanda.currency();
+                            countryCode = EnumCountry.Rwanda.countryCode();
                             break;
                         default:
                             countryName = EnumCountry.Other.name();
