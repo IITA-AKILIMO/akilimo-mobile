@@ -26,16 +26,16 @@
     <string name="lbl_finish">Kurangiza</string>
     <string name="lbl_back">Inyuma</string>
     <string name="lbl_next">Ibikurikira</string>
-    <string name="lbl_country_location">Nishimiye guhura nawe \" %1$s\".</string>
+    <string name="lbl_country_location">Nishimiye guhura nawe "%1$s".</string>
     <string name="lbl_country_location_sub">NI hehe umurima wawe w\'imyumbati uherereye?</string>
     <string name="lbl_area_unit">Ni uruhe rugero ukoresha upima ubuso bw\'umurima wawe?</string>
     <string name="area_unit_acre">Are (are)</string>
     <string name="area_unit_ha">Hegitare (ha)</string>
-    <string name="area_unit_square_meter">muri metero kare (m \u00B2)</string>
+    <string name="area_unit_square_meter">muri metero kare (m\u00B2)</string>
     <string name="lbl_acre">are</string>
     <string name="lbl_ha">ha</string>
     <string name="lbl_cassava_field_size_no_ph">Ubuso bw\'umurima wawe w\'imyumbati bungana iki?</string>
-    <string name="lbl_cassava_field_size">Ni ubuhe buso bw\'umurima wawe w\'imyumbati muri ` %1$s`</string>
+    <string name="lbl_cassava_field_size">Ni ubuhe buso bw\'umurima wawe w\'imyumbati muri `%1$s`</string>
     <!--  acres  -->
     <string name="quarter_acre">Hafi ya are 0,25</string>
     <string name="half_acre">Hafi ya are 0.5</string>
@@ -57,7 +57,7 @@
     <string name="one_half_acre_to_m2">Hafi ya metero kare 6.000 \u00B2</string>
     <string name="two_half_acre_to_m2">Hafi ya metero kare 10,000 \u00B2</string>
     <string name="lbl_salutation">Muraho, nishimiye guhura nawe!</string>
-    <string name="lbl_farm_location">NI hehe murima wawe w\'imyumbati ` %1$s` uherereye?</string>
+    <string name="lbl_farm_location">NI hehe murima wawe w\'imyumbati `%1$s`uherereye?</string>
     <string name="lbl_current_location">Koresha ahantu uri</string>
     <string name="lbl_manual_location">Hitamo ahantu uherereye</string>
     <string name="lbl_recommendations">Inama </string>
@@ -140,7 +140,7 @@
     <string name="per_pick_up_load_sale_unit">Ku ikamyoneti (toni 2)</string>
     <string name="exact_sale_unit">Ndashaka kwerekana neza uburemere nyabwo bw\'igipimo cyanjye ngurishirizaho</string>
     <string name="exact_sale_unit_hint">Injira ingano y\'igipimo cyawe cyo kugurisha ni ukuvuga x kg</string>
-    <string name="lbl_price_per_bag">Igiciro ( %1$s k\'umufuka wa kg 50) kuri %2$s</string>
+    <string name="lbl_price_per_bag">Igiciro (%1$s k\'umufuka wa kg 50) kuri %2$s</string>
     <string name="up_20_30_usd_per_tonne">20–30 USD kuri toni</string>
     <string name="up_30_50_usd_per_tonne">30–50 USD kuri toni</string>
     <string name="up_50_100_usd_per_tonne">50–100 USD kuri toni</string>
@@ -165,7 +165,7 @@
     <string name="unit_price_label_single">Hafi ya %1$.0f %2$s kuri %3$s</string>
     <string name="title_activity_dst_recommendation">Inama</string>
     <string name="lbl_get_recommendations">Shaka inama</string>
-    <string name="lbl_rec_header">Twiteguye ku kugira inama. Niba ushaka izindi nama zihariye subiza ibibazo bikurikira ubundi ukande buto \"Kubona inama\" buto iri hepfo</string>
+    <string name="lbl_rec_header">Twiteguye ku kugira inama. Niba ushaka izindi nama zihariye subiza ibibazo bikurikira ubundi ukande buto "Kubona inama" buto iri hepfo</string>
     <string name="lbl_compute_error">Ntushoboye kubona inama, nyamuneka gerageza</string>
     <string name="lbl_compute_timeout_error">Ntushoboye kubona inama, nyamuneka gerageza</string>
     <string name="lbl_rec_sample">Turakugira inama yo kudashyiramo ifumbire iyo ari yo yose. Ntabwo dutegereje ko ifumbire mvaruganda izatanga umusaruro ngo wunguke ugereranije n\'umurima wawe.</string>
@@ -206,7 +206,7 @@
     <string name="lbl_save">Bika</string>
     <string name="lbl_confirm">Emeza</string>
     <string name="lbl_remove">Kuraho</string>
-    <string name="lbl_field_info">Niba uzi ingano y\'umurima wawe muri ha cyangwa are, komeza ku rupapuro rukurikira. \n\nNiba atari byo, turakugira inama yo gushaka porogaramu yo gupima ubuso muri Play store. urugero nnka `GPS Fields Area Measure` \n\n Ibi bizagufasha gupima ubuso uzenguruka umurima wawe.</string>
+    <string name="lbl_field_info">Niba uzi ingano y\'umurima wawe muri ha cyangwa are, komeza ku rupapuro rukurikira. \n\nNiba atari byo, turakugira inama yo gushaka porogaramu yo gupima ubuso muri Play store. urugero nnka `GPS Fields Area Measure`\n\n Ibi bizagufasha gupima ubuso uzenguruka umurima wawe.</string>
     <string name="lbl_location_sub_text">Niba uri mu murima wawe m ugihe ukoresha porogaramu, urasabwa cyane guhitamo \"Koresha aho uri ubu.\" Niba utari mu murima wawe, uragirwa inama yo guhitamo aho umurima wawe uherereye ukoresheje ikarita, witegereza neza imirima izwi, ituranye naho.</string>
     <string name="title_your_field_size">INGANO Y\'UMURIMA WAWE</string>
     <string name="lbl_ok">Nibyo</string>
@@ -364,9 +364,9 @@
     <string name="lbl_accept_terms_prompt">Emera amategeko n\'amabwiriza mbere yo gukomeza</string>
     <string name="lbl_restart_app_prompt">Ongera utangire porogaramu kugirango ukoreshe ibisobanuro kuri buto ikoreshwa?</string>
     <string name="lbl_optional">(N\'ubushake bwawe)</string>
-    <string name="lbl_country_supported">Kugeza ubu AKILIMO itanga inama ku mirima iherereye mu Rwanda, Nijeriya na Tanzaniya. Agace kawe kari hirya y\'ahantu AKILIMO itanga inama.</string>
-    <string name="lbl_acre_yield">3–6 t hegitari</string>
-    <string name="lbl_ha_yield">7.5–15 t hegitare</string>
+    <string name="lbl_country_supported">Kugeza ubu AKILIMO itanga inama ku mirima iherereye mu Rwanda, Nijeriya, Ghana na Tanzaniya. Agace kawe kari hirya y\'ahantu AKILIMO itanga inama.</string>
+    <string name="lbl_acre_yield">3–6 t/hegitari</string>
+    <string name="lbl_ha_yield">7.5–15 t/hegitare</string>
     <string name="fcy_lower">Hasi</string>
     <string name="fcy_about_the_same">Kimwe</string>
     <string name="fcy_somewhat_higher">Birenzeho</string>
@@ -399,7 +399,7 @@
     <string name="lbl_describe_tool_use">Ni gute wasobanura neza imikoreshereze yawe ya AKILIMO?</string>
     <string name="lbl_advice_usefulness_scale">Ku gipimo cya 1 kugeza 5,  ni gute wabonye AKILIMO ikugira inama?</string>
     <string name="lbl_recommendation_scale">Ku gipimo cya 1 kugeza 5, ni gute wasaba abandi gukoresha AKILIMO?</string>
-    <string name="lbl_grower">Ndi umuhinzi w\' imyumbati nkoresha porogaramu mu buhinzi bwanjye</string>
+    <string name="lbl_grower">Ndi umuhinzi w\'imyumbati nkoresha porogaramu mu buhinzi bwanjye</string>
     <string name="lbl_farmer">Ndi umuhinzi cyangwa umuturage usanzwe nkoresha porogaramu kugirango mfashe umuhinzi mugenzi wanjye</string>
     <string name="lbl_ext_worker">Ndi umukozi ufasha abandi batanga serivisi nkoresha porogaramu mu kugira inama umuhinzi</string>
     <string name="lbl_other">Ibindi</string>

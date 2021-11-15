@@ -128,6 +128,9 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
                 case "GH":
                     currencyName = EnumCountry.Ghana.currencyName(context);
                     break;
+                case "RW":
+                    currencyName = EnumCountry.Rwanda.currencyName(context);
+                    break;
             }
             String titleText = context.getString(R.string.price_per_bag, fertilizer.getName(), currencyName);
             lblPricePerBag.setText(titleText);
