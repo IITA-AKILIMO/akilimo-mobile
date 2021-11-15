@@ -2,26 +2,14 @@ package com.akilimo.mobile.views.activities.usecases;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RatingBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.android.material.snackbar.Snackbar;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.adapters.AdapterListAnimation;
 import com.akilimo.mobile.dao.AppDatabase;
@@ -35,10 +23,15 @@ import com.akilimo.mobile.interfaces.IVolleyCallback;
 import com.akilimo.mobile.models.Recommendations;
 import com.akilimo.mobile.rest.RestParameters;
 import com.akilimo.mobile.rest.RestService;
-import com.akilimo.mobile.utils.TheItemAnimation;
 import com.akilimo.mobile.utils.SessionManager;
+import com.akilimo.mobile.utils.TheItemAnimation;
 import com.akilimo.mobile.utils.enums.EnumAdvice;
 import com.akilimo.mobile.utils.enums.EnumCountry;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -127,6 +120,20 @@ public class RecommendationsActivity extends BaseActivity {
         FR.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft));
         items.add(FR);
 
+        Recommendations SPH = new Recommendations();
+        SPH.setRecCode(EnumAdvice.SPH);
+        SPH.setRecommendationName(sphString);
+        SPH.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft));
+        items.add(SPH);
+
+        if (!countryCode.equals(EnumCountry.Ghana.countryCode())) {
+            Recommendations BPP = new Recommendations();
+            BPP.setRecCode(EnumAdvice.BPP);
+            BPP.setRecommendationName(bppString);
+            BPP.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft));
+            items.add(BPP);
+        }
+
         if (countryCode.equals(EnumCountry.Nigeria.countryCode())) {
             Recommendations IC_MAIZE = new Recommendations();
             IC_MAIZE.setRecCode(EnumAdvice.IC_MAIZE);
@@ -140,18 +147,6 @@ public class RecommendationsActivity extends BaseActivity {
             IC_SWEET_POTATO.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft));
             items.add(IC_SWEET_POTATO);
         }
-
-        Recommendations SPH = new Recommendations();
-        SPH.setRecCode(EnumAdvice.SPH);
-        SPH.setRecommendationName(sphString);
-        SPH.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft));
-        items.add(SPH);
-
-        Recommendations BPP = new Recommendations();
-        BPP.setRecCode(EnumAdvice.BPP);
-        BPP.setRecommendationName(bppString);
-        BPP.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft));
-        items.add(BPP);
 
 
         setAdapter();
@@ -239,17 +234,16 @@ public class RecommendationsActivity extends BaseActivity {
                     }
                 } catch (Exception ex) {
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                    Crashlytics.logException(ex);
+                    //@TODO add crash logs detection library
                 }
             }
 
             @Override
-            public void onSuccessJsonObject(JSONObject jsonObject) {
+            public void onSuccessJsonObject(@NonNull JSONObject jsonObject) {
             }
 
             @Override
-            public void onError(VolleyError volleyError) {
+            public void onError(@NonNull VolleyError volleyError) {
             }
         });
     }

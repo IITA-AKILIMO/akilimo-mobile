@@ -86,7 +86,7 @@ static def computeBuildNumber() {
     newFile.createNewFile()
 
     def gitVersionTag = System.env.RELEASE_VERSION ?: computeVersionName()
-    def branch = System.env.BRANCH_NAME ?: "unknown"
+    def branch = System.env.BRANCH_NAME ?: "beta"
     def buildNumber = System.env.BUILD_NUMBER ?: LocalDateTime.now().getDayOfMonth()
 
     if (branch == "beta") {
