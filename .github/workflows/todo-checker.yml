@@ -18,5 +18,5 @@ jobs:
           LABELS_PATTERN: "(?<=\\[).+?(?=\\])"
           LABELS_REPLACE_PATTERN: "\\[(.+?)\\]"
           IGNORED_LINES_LENGTH: 255
-          FILE_PATTERN: ".*cs"
+          #FILE_PATTERN: ".*cs"
         id: "todo"
