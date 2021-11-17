@@ -74,16 +74,6 @@ public class AreaUnitFragment extends BaseStepFragment {
             mandatoryInfo = database.mandatoryInfoDao().findOne();
             RadioButton rdAre = binding.rdAre;
             ProfileInfo profileInfo = database.profileInfoDao().findOne();
-            if (profileInfo != null) {
-                countryCode = profileInfo.getCountryCode();
-                if (countryCode != null) {
-                    if (countryCode.equals(EnumCountry.Ghana.countryCode())) {
-                        //set the are unit radiobutton to visible
-                        rdAre.setVisibility(View.VISIBLE);
-                    }
-                }
-            }
-
             if (mandatoryInfo != null) {
                 areaUnit = mandatoryInfo.getAreaUnit();
                 oldAreaUnit = mandatoryInfo.getOldAreaUnit();
@@ -91,9 +81,25 @@ public class AreaUnitFragment extends BaseStepFragment {
                 rdgAreaUnit.check(areaUnitRadioIndex);
                 dataIsValid = !Strings.isEmptyOrWhitespace(areaUnit);
             } else {
+                rdgAreaUnit.check(areaUnitRadioIndex);
                 areaUnitRadioIndex = -1;
                 areaUnit = null;
             }
+
+            if (profileInfo != null) {
+                countryCode = profileInfo.getCountryCode();
+                if (countryCode != null) {
+                    if (countryCode.equals(EnumCountry.Rwanda.countryCode())) {
+                        //set the are unit radiobutton to visible
+                        rdAre.setVisibility(View.VISIBLE);
+                        if (oldAreaUnit.equals(EnumAreaUnits.ARE.unitName(context))) {
+                            rdAre.setChecked(true);
+                        }
+                    }
+                }
+            }
+
+
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
@@ -143,6 +149,7 @@ public class AreaUnitFragment extends BaseStepFragment {
                 }
                 mandatoryInfo.setAreaUnitRadioIndex(areaUnitRadioIndex);
                 mandatoryInfo.setAreaUnit(areaUnit.toLowerCase());
+//                mandatoryInfo.setOldAreaUnit(areaUnit.toLowerCase());
                 mandatoryInfo.setDisplayAreaUnit(areaUnitDisplay);
                 if (mandatoryInfo.getId() != null) {
                     database.mandatoryInfoDao().update(mandatoryInfo);

@@ -39,9 +39,6 @@ public abstract class BaseStepFragment extends Fragment implements Step {
 
     protected String LOG_TAG = BaseStepFragment.class.getSimpleName();
 
-    protected double baseAcre = 2.471;
-    protected double baseSqm = 4046.86;
-
     protected String currency;
     protected String countryCode;
     protected String countryName;
@@ -76,7 +73,7 @@ public abstract class BaseStepFragment extends Fragment implements Step {
         queue = Volley.newRequestQueue(context.getApplicationContext());
         appVersion = sessionManager.getAppVersion();
         database = AppDatabase.getDatabase(context);
-        mathHelper = new MathHelper(baseAcre, baseSqm);
+        mathHelper = new MathHelper();
     }
 
     @Nullable
