@@ -27,9 +27,11 @@ jobs:
         run:  chmod +x ./gradlew
 
       - name: Run Mock build
+        uses: vgaidarji/android-github-actions-build@v1.0.1
         run: ./gradlew bundleRelease -x test
 
       - name: Run Unit tests
+        uses: vgaidarji/android-github-actions-build@v1.0.1
         run: ./gradlew testRelease
         continue-on-error: true
 
