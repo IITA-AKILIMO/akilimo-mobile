@@ -76,6 +76,23 @@ enum class EnumCountry : Parcelable {
             return context.getString(R.string.lbl_ghs_currency_name)
         }
     },
+    Rwanda {
+        override fun countryName(): String {
+            return "Rwanda"
+        }
+
+        override fun countryCode(): String {
+            return "RW"
+        }
+
+        override fun currency(): String {
+            return "RWF"
+        }
+
+        override fun currencyName(context: Context): String {
+            return context.getString(R.string.lbl_rwf_currency_name)
+        }
+    },
     Other {
         override fun countryName(): String {
             return "U.S.A"

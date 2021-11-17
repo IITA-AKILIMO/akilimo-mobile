@@ -36,8 +36,6 @@ public abstract class BaseFragment extends Fragment {
 
     protected int nextTab = 0;
     protected int prevTab = 0;
-    protected double baseAcre = 2.471;
-    protected double baseSqm = 4046.86;
 
     protected String currency;
     protected String currencySymbol;
@@ -77,7 +75,7 @@ public abstract class BaseFragment extends Fragment {
         queue = Volley.newRequestQueue(context.getApplicationContext());
         appVersion = sessionManager.getAppVersion();
         database = AppDatabase.getDatabase(context);
-        mathHelper = new MathHelper(baseAcre, baseSqm);
+        mathHelper = new MathHelper();
     }
 
     @Nullable

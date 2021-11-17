@@ -77,6 +77,14 @@
     <string name="one_half_acre_to_ha">About 0.6 ha</string>
     <string name="two_half_acre_to_ha">About 1 ha</string>
 
+    <!-- are -->
+    <string name="quarter_acre_to_are">About 10 are</string>
+    <string name="half_acre_to_are">About 20 are</string>
+    <string name="one_acre_to_are">About 16 are</string>
+    <string name="one_half_acre_to_are">About 20 are</string>
+    <string name="two_half_acre_to_are">About 40 are</string>
+
+
     <!--  m2 -->
     <string name="quarter_acre_to_m2">About 1,000 m\u00B2</string>
     <string name="half_acre_to_m2">About 2,000 m\u00B2</string>
@@ -482,7 +490,7 @@
     <string name="lbl_accept_terms_prompt">Accept the terms and conditions before proceeding</string>
     <string name="lbl_restart_app_prompt">Restart the app in order to apply translations to the navigation buttons?</string>
     <string name="lbl_optional">(Optional)</string>
-    <string name="lbl_country_supported">Currently AKILIMO gives advice for farms located in Nigeria, Tanzania and Ghana. Your area is outside the area covered by AKILIMO</string>
+    <string name="lbl_country_supported">Currently AKILIMO gives advice for farms located in Nigeria, Tanzania, Rwanda and Ghana. Your area is outside the area covered by AKILIMO</string>
     <string name="lbl_acre_yield">3–6 t/acre</string>
     <string name="lbl_ha_yield">7.5–15 t/ha</string>
 
@@ -538,5 +546,8 @@
     <string name="lbl_unit_price_m2">Price 2 months after harvest</string>
     <string name="lbl_tzs_currency_name">Tanzania shillings</string>
     <string name="lbl_ghs_currency_name">Ghanaian cedi</string>
+    <string name="lbl_rwf_currency_name">Rwandan franc</string>
     <string name="lbl_ngn_currency_name">Naira</string>
+    <string name="lbl_no_factories">Starch factories are not available</string>
+    <string name="lbl_no_factories_text">Starch factories are not available for %1s</string>
 </resources>

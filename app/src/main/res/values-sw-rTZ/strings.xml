@@ -50,12 +50,20 @@
     <string name="one_acre_to_ha">Kama hekta 0.4</string>
     <string name="one_half_acre_to_ha">Kama hekta 0.6</string>
     <string name="two_half_acre_to_ha">Kama hekta 1</string>
+
+    <string name="quarter_acre_to_are">Kama are 10</string>
+    <string name="half_acre_to_are">Kama are 20</string>
+    <string name="one_acre_to_are">Kama are 16</string>
+    <string name="one_half_acre_to_are">Kama are 20</string>
+    <string name="two_half_acre_to_are">Kama are 40</string>
+
     <!--   m2  -->
     <string name="quarter_acre_to_m2">Kama 1,000 m\u00B2</string>
     <string name="half_acre_to_m2">Kama 2000 m\u00B2</string>
     <string name="one_acre_to_m2">Kama 4,000 m\u00B2</string>
     <string name="one_half_acre_to_m2">Kama 6,000 m\u00B2</string>
     <string name="two_half_acre_to_m2">Kama 10,000 m\u00B2</string>
+
     <string name="lbl_salutation">Halo, ni vizuri kukutana nawe!</string>
     <string name="lbl_farm_location">Shamba lako la muhogo (%1$s) lipo eneo gani?</string>
     <string name="lbl_current_location">Tumia eneo la sasa</string>
@@ -362,7 +370,7 @@
     <string name="lbl_accept_terms_prompt">Tafadhali kubali vigezo na masharti kabla ya kuendelea</string>
     <string name="lbl_restart_app_prompt">Anzisha tena programu ili kuwezesha tafsiri</string>
     <string name="lbl_optional">(Hiari)</string>
-    <string name="lbl_country_supported">AKILIMO kwa sasa inatoa ushauri kwa wakulima wa Nigeria,Tanzania ana Ghana tu</string>
+    <string name="lbl_country_supported">AKILIMO kwa sasa inatoa ushauri kwa wakulima wa Nigeria,Tanzania,RWanda na Ghana tu</string>
     <string name="lbl_acre_yield">tani 3–6 kwa ekari</string>
     <string name="lbl_ha_yield">tani 7.5–15 kwa hekta</string>
     <string name="fcy_lower">Chini</string>
@@ -412,4 +420,5 @@
     <string name="lbl_unit_price_m2">Bei miezi 2 baada ya mavuno</string>
     <string name="lbl_tzs_currency_name">Shilingi ya Tanzania</string>
     <string name="lbl_ngn_currency_name">Naira</string>
+    <string name="lbl_ghs_currency_name">Cedi ya Ghana</string>
 </resources>
