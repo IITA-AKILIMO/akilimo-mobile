@@ -132,6 +132,7 @@ jobs:
           packageName: ${{ secrets.APP_PACKAGE }}
           releaseFiles: release/*.aab
           track: beta
+          status: complete
           whatsNewDirectory: release/distribution/whatsnew
 
       - name: Upload Production Release
@@ -142,6 +143,7 @@ jobs:
           packageName: ${{ secrets.APP_PACKAGE }}
           releaseFiles: release/*.aab
           track: production
+          status: complete
           whatsNewDirectory: release/distribution/whatsnew
 
 
