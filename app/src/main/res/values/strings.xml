@@ -77,6 +77,14 @@
     <string name="one_half_acre_to_ha">About 0.6 ha</string>
     <string name="two_half_acre_to_ha">About 1 ha</string>
 
+    <!-- are -->
+    <string name="quarter_acre_to_are">About 10 are</string>
+    <string name="half_acre_to_are">About 20 are</string>
+    <string name="one_acre_to_are">About 16 are</string>
+    <string name="one_half_acre_to_are">About 20 are</string>
+    <string name="two_half_acre_to_are">About 40 are</string>
+
+
     <!--  m2 -->
     <string name="quarter_acre_to_m2">About 1,000 m\u00B2</string>
     <string name="half_acre_to_m2">About 2,000 m\u00B2</string>

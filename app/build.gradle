@@ -207,6 +207,7 @@ dependencies {
     testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.12.4'
     testImplementation 'joda-time:joda-time:2.10.12'
 
+    testImplementation project(path: ':app')
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test:runner:1.4.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'

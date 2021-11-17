@@ -20,13 +20,34 @@ public class MathHelper {
 
     private double baseAcre = 2.471;
     private double baseSqm = 4046.86;
+    private double baseAre = 40.469;
+
 
     public MathHelper() {
     }
 
+    /**
+     * @param baseAcre
+     * @param baseSqm
+     *
+     * @deprecated
+     */
     public MathHelper(double baseAcre, double baseSqm) {
         this.baseAcre = baseAcre;
         this.baseSqm = baseSqm;
+    }
+
+    /**
+     * @param baseAcre
+     * @param baseSqm
+     * @param baseAre
+     *
+     * @deprecated
+     */
+    public MathHelper(double baseAcre, double baseSqm, double baseAre) {
+        this.baseAcre = baseAcre;
+        this.baseSqm = baseSqm;
+        this.baseAre = baseAre;
     }
 
     public MathHelper(Activity activity) {
@@ -227,6 +248,9 @@ public class MathHelper {
                 return areaSizeAcre;
             case "ha":
                 convertedAreaSize = areaSizeAcre / baseAcre;
+                break;
+            case "are":
+                convertedAreaSize = areaSizeAcre * baseAre;
                 break;
             case "sqm":
                 convertedAreaSize = areaSizeAcre * baseSqm;
