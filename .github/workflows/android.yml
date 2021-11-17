@@ -18,7 +18,7 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v2
 
-      - name: set up JDK 11
+      - name: set up JDK
         uses: actions/setup-java@v1
         with:
           java-version: 11
@@ -54,10 +54,10 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v2
 
-      - name: set up JDK 11
+      - name: set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 1.8
+          java-version: 11
 
       - name: Set up Python 3.9
         uses: actions/setup-python@v2

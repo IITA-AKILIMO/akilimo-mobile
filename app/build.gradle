@@ -6,21 +6,22 @@ apply plugin: 'kotlin-kapt'
 //apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.google.gms.google-services'
-apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.vanniktech.android.junit.jacoco'
 
 android {
     def releaseVersionName = computeBuildNumber()
     def appVersionCode = computeVersionCode()
 
-    compileSdkVersion 30
-    buildToolsVersion '30.0.3'
-    ndkVersion "22.1.7171670"
+    compileSdkVersion 31
+    buildToolsVersion '32.0.0-rc1'
+//    ndkVersion "22.1.7171670"
 
+    namespace 'com.akilimo.mobile'
     defaultConfig {
         applicationId "com.akilimo.mobile"
         minSdkVersion 19
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode appVersionCode
         versionName releaseVersionName
         multiDexEnabled true
@@ -65,8 +66,8 @@ android {
 //        experimental = true
 //    }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
 }
@@ -168,7 +169,7 @@ dependencies {
 
     implementation 'net.danlew:android.joda:2.10.6'
     implementation 'com.github.mohammadatif:Animatoo:master'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1' //discontinued consider removal
+    //discontinued consider removal
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.2' //Feature discovery library
     implementation 'eu.the4thfloor.volley:com.android.volley:2015.05.28' //Volley library
     implementation 'com.fasterxml.jackson.core:jackson-core:2.12.4'
@@ -197,6 +198,8 @@ dependencies {
 
     //https://stackoverflow.com/questions/63917431/expected-android-api-level-21-but-was-30
     implementation 'com.squareup.okhttp3:okhttp:4.9.1'
+    implementation 'com.google.firebase:firebase-crashlytics:17.2.1'
+    implementation 'com.google.firebase:firebase-analytics:17.5.0'
 
     //If you are using Kotlin, replace annotationProcessor with kapt.
     kapt 'androidx.room:room-compiler:2.3.0'
