@@ -34,4 +34,17 @@
     <dimen name="img_height">250dp</dimen>
     <dimen name="zero">0dp</dimen>
 
+    <!--dimens for font size-->
+    <dimen name="font_size_16">16sp</dimen>
+    <dimen name="font_size_24">24sp</dimen>
+
+    <!--dimens for margins/other dimensions-->
+    <dimen name="dimen_12">12dp</dimen>
+    <dimen name="dimen_16">16dp</dimen>
+    <dimen name="dimen_48">48dp</dimen>
+    <dimen name="dimen_100">100dp</dimen>
+
+    <!--others-->
+    <dimen name="wrap_constraints">0dp</dimen>
+
 </resources>
