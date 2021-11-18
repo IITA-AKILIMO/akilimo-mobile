@@ -5,10 +5,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,9 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.akilimo.mobile.views.fragments.dialog.SingleSelectDialogFragment;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
-import com.akilimo.mobile.R;
 import com.akilimo.mobile.databinding.FragmentRiskAttBinding;
 import com.akilimo.mobile.entities.ProfileInfo;
 import com.akilimo.mobile.inherit.BaseStepFragment;
@@ -40,7 +40,7 @@ public class RiskAttFragment extends BaseStepFragment {
 
     String riskName;
     private int riskAtt = 0;
-    private int selectedRiskIndex = -1;
+    private int riskIndex = -1;
 
     private String[] risks = null;
 
@@ -77,44 +77,33 @@ public class RiskAttFragment extends BaseStepFragment {
         txtRiskText = binding.riskAttText;
         btnPickRisk = binding.btnPickRiskAtt;
 
-        btnPickRisk.setOnClickListener(pickerDialog -> {
+        Bundle arguments = new Bundle();
+        final FragmentManager fm = getChildFragmentManager();
 
-            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle(context.getString(R.string.lbl_select_risk_att));
-            builder.setSingleChoiceItems(risks, selectedRiskIndex, (dialogInterface, i) -> selectedRiskIndex = i);
-            builder.setPositiveButton(context.getString(R.string.lbl_ok), (dialogInterface, whichButton) -> {
-                if (selectedRiskIndex >= 0) {
-                    riskName = risks[selectedRiskIndex];
-                    switch (riskName.toLowerCase()) {
-                        case "never":
-                        case "kamwe":
-                        default:
-                            riskAtt = 0;
-                            break;
-                        case "sometimes":
-                        case "mara chache":
-                            riskAtt = 1;
-                            break;
-                        case "often":
-                        case "mara nyingi":
-                            riskAtt = 2;
-                            break;
+        btnPickRisk.setOnClickListener(pickerDialog -> {
+            SingleSelectDialogFragment dialogFragment = new SingleSelectDialogFragment(context);
+
+            arguments.putStringArray(SingleSelectDialogFragment.RISK_LIST, risks);
+            arguments.putInt(SingleSelectDialogFragment.RISK_INDEX, riskIndex);
+            dialogFragment.setArguments(arguments);
+
+            dialogFragment.setOnDismissListener(new SingleSelectDialogFragment.IDismissDialog() {
+                @Override
+                public void onDismiss(String selectedRiskName, int selectedRiskAtt, int selectedRiskIndex, boolean cancelled) {
+                    if (!cancelled) {
+                        riskAtt = selectedRiskAtt;
+                        riskIndex = selectedRiskIndex;
+                        txtRiskText.setText(selectedRiskName);
+                        updatedRiskAttitude();
                     }
-                    txtRiskText.setText(riskName);
-                    dialogInterface.dismiss();
-                    updatedRiskAttitude();
                 }
             });
-            builder.setNegativeButton(context.getString(R.string.lbl_cancel), ((dialogInterface, i) -> {
-                dialogInterface.dismiss();
-            }));
 
-            AlertDialog dialog = builder.create();
-            dialog.setCancelable(false);
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.show();
+            dialogFragment.show(fm, SingleSelectDialogFragment.ARG_ITEM_ID);
+
         });
     }
+
 
     private void updatedRiskAttitude() {
         try {
@@ -122,7 +111,7 @@ public class RiskAttFragment extends BaseStepFragment {
                 profileInfo = new ProfileInfo();
             }
 
-            profileInfo.setSelectedRiskIndex(selectedRiskIndex);
+            profileInfo.setSelectedRiskIndex(riskIndex);
             profileInfo.setRiskAtt(riskAtt);
 
             dataIsValid = !Strings.isEmptyOrWhitespace(riskName);
@@ -164,7 +153,7 @@ public class RiskAttFragment extends BaseStepFragment {
             profileInfo = database.profileInfoDao().findOne();
             if (profileInfo != null) {
                 riskAtt = profileInfo.getRiskAtt();
-                selectedRiskIndex = profileInfo.getSelectedRiskIndex();
+                riskIndex = profileInfo.getSelectedRiskIndex();
                 dataIsValid = true;
             }
 
