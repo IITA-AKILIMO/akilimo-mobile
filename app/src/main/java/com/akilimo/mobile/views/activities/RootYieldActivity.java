@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.akilimo.mobile.utils.enums.EnumAreaUnits;
 import com.crashlytics.android.Crashlytics;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.adapters.FieldYieldAdapter;
@@ -117,6 +118,8 @@ public class RootYieldActivity extends BaseActivity {
         String tonnage = getString(R.string.lbl_acre_yield);
         if (areaUnit.equalsIgnoreCase("ha") || areaUnit.equalsIgnoreCase("hekta")) {
             tonnage = getString(R.string.lbl_ha_yield);
+        } else if (areaUnit.equals("are")) {
+            tonnage = getString(R.string.lbl_are_yield);
         }
 
         String title = getString(R.string.lbl_typical_yield_question, tonnage);
@@ -204,7 +207,7 @@ public class RootYieldActivity extends BaseActivity {
         String rd_9_tonnes;
         String rd_12_tonnes;
         String rd_more;
-        switch (areaUnit) {
+        switch (areaUnit.toLowerCase()) {
             default:
             case "acre":
                 rd_3_tonnes = getString(R.string.yield_less_than_3_tonnes_per_acre);
@@ -219,6 +222,13 @@ public class RootYieldActivity extends BaseActivity {
                 rd_9_tonnes = getString(R.string.yield_6_to_9_tonnes_per_hectare);
                 rd_12_tonnes = getString(R.string.yield_9_to_12_tonnes_per_hectare);
                 rd_more = getString(R.string.yield_more_than_12_tonnes_per_hectare);
+                break;
+            case "are":
+                rd_3_tonnes = getString(R.string.yield_less_than_3_tonnes_per_are);
+                rd_6_tonnes = getString(R.string.yield_3_to_6_tonnes_per_are);
+                rd_9_tonnes = getString(R.string.yield_6_to_9_tonnes_per_are);
+                rd_12_tonnes = getString(R.string.yield_9_to_12_tonnes_per_are);
+                rd_more = getString(R.string.yield_more_than_12_tonnes_per_are);
                 break;
             case "m2":
                 rd_3_tonnes = getString(R.string.yield_less_than_3_tonnes_per_meter);
