@@ -125,21 +125,31 @@
     <string name="inv_100_usd_per_acre">100 USD kuri</string>
     <string name="inv_50_usd_per_acre">50 USD kuri</string>
     <string name="inv_25_usd_per_acre">25 USD kuri</string>
+
     <string name="yield_less_than_3_tonnes_per_acre">Hafi ya toni 3 kuri hegitari</string>
     <string name="yield_3_to_6_tonnes_per_acre">Toni 3 kugeza kuri 6 kuri hegitari</string>
     <string name="yield_6_to_9_tonnes_per_acre">Toni 6 kugeza kuri 9 kuri hegitari</string>
     <string name="yield_9_to_12_tonnes_per_acre">Toni 9 kugeza kuri 12 kuri hegitari</string>
     <string name="yield_more_than_12_tonnes_per_acre">Toni zirenga 12 kuri hegitari</string>
+
     <string name="yield_less_than_3_tonnes_per_hectare">Munsi ya toni 7.5 kuri hegitari</string>
     <string name="yield_3_to_6_tonnes_per_hectare">Toni 7.5 kugeza kuri 15 kuri hegitari</string>
     <string name="yield_6_to_9_tonnes_per_hectare">Toni 15 kugeza kuri 22.5 kuri hegitari</string>
     <string name="yield_9_to_12_tonnes_per_hectare">Toni 22.5 kugeza 30 kuri hegitari</string>
     <string name="yield_more_than_12_tonnes_per_hectare">Toni zirenga 30 kuri hegitari</string>
+
+    <string name="yield_less_than_3_tonnes_per_are">Hafi ya toni 3 kuri are</string>
+    <string name="yield_3_to_6_tonnes_per_are">Toni 3 kugeza kuri 6 kuri are</string>
+    <string name="yield_6_to_9_tonnes_per_are">Toni 6 kugeza kuri 9 kuri are</string>
+    <string name="yield_9_to_12_tonnes_per_are">Toni 9 kugeza kuri 12 kuri are</string>
+    <string name="yield_more_than_12_tonnes_per_are">Toni zirenga 12 kuri are</string>
+
     <string name="yield_less_than_3_tonnes_per_meter">Toni ziri munsi ya 7.5 kuri 4000 m \u00B2</string>
     <string name="yield_3_to_6_tonnes_per_meter">Toni 7.5 kugeza kuri 15 kuri 4000 m \u00B2</string>
     <string name="yield_6_to_9_tonnes_per_meter">Toni 15 kugeza kuri 22.5 kuri 4000 m \u00B2</string>
     <string name="yield_9_to_12_tonnes_per_meter">Toni 22.5 kugeza 30 kuri 4000 m \u00B2</string>
     <string name="yield_more_than_12_tonnes_per_meter">Toni zirenga 30 kuri 4000 m \u00B2</string>
+
     <string name="action_settings">Igenamiterere</string>
     <string name="per_tonne_sale_unit">Kuri toni</string>
     <string name="per_kg_sale_unit">Kuri kg</string>
@@ -375,6 +385,8 @@
     <string name="lbl_country_supported">Kugeza ubu AKILIMO itanga inama ku mirima iherereye mu Rwanda, Nijeriya, Ghana na Tanzaniya. Agace kawe kari hirya y\'ahantu AKILIMO itanga inama.</string>
     <string name="lbl_acre_yield">3–6 t/hegitari</string>
     <string name="lbl_ha_yield">7.5–15 t/hegitare</string>
+    <string name="lbl_are_yield">3–6 t/are</string>
+
     <string name="fcy_lower">Hasi</string>
     <string name="fcy_about_the_same">Kimwe</string>
     <string name="fcy_somewhat_higher">Birenzeho</string>
