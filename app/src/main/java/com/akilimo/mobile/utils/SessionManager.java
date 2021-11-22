@@ -45,7 +45,7 @@ public class SessionManager {
 
     public String getApiEndPoint() {
         if (BuildConfig.DEBUG) {
-            return "http://f296-146-70-65-4.ngrok.io/api/";
+            return "http://157.245.26.55:8099/api/";
         }
         return pref.getString("apiResource", "http://157.245.26.55:8098/api/");
     }
