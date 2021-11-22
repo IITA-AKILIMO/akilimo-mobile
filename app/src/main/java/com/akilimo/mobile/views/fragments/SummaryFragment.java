@@ -265,4 +265,5 @@ public class SummaryFragment extends BaseStepFragment {
     public void onError(@NonNull VerificationError error) {
 
     }
+
 }

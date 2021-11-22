@@ -197,6 +197,7 @@ public class CountryFragment extends BaseStepFragment {
             } else {
                 database.profileInfoDao().insert(profileInfo);
             }
+            sessionManager.setCountry(countryCode);
         } catch (Exception ex) {
             dataIsValid = false;
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

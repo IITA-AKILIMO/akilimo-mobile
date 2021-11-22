@@ -177,7 +177,25 @@ public class SessionManager {
         return pref.getBoolean("termsAccepted", false);
     }
 
+    public void setCountry(String country) {
+        editor.putString("country", country);
+        editor.commit();
+    }
+
+    public String getCountry() {
+        return pref.getString("country", "NA");
+    }
+
     public String getTermsLink() {
         return pref.getString("termsLink", "https://www.akilimo.org/privacy-policy");
+    }
+
+    public void setForward(boolean goFoward) {
+        editor.putBoolean("goF", goFoward);
+        editor.commit();
+    }
+
+    public boolean goForward() {
+        return pref.getBoolean("goF", true);
     }
 }
