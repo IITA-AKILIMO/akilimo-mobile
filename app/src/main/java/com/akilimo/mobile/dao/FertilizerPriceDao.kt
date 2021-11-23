@@ -27,7 +27,7 @@ interface FertilizerPriceDao {
     @Query("SELECT * FROM fertilizer_price where country=:countryCode")
     fun findAllByCountry(countryCode: String): List<FertilizerPrice>
 
-    @Query("SELECT * FROM fertilizer_price where fertilizerKey=:fertKey")
+    @Query("SELECT * FROM fertilizer_price where fertilizerKey=:fertKey ORDER BY sortOrder ASC")
     fun findAllByFertilizerKey(fertKey: String): List<FertilizerPrice>
 
     @Query("SELECT * FROM fertilizer_price where priceId=:itemTagIndex LIMIT 1")

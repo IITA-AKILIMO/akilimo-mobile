@@ -53,7 +53,7 @@ public class CountryFragment extends BaseStepFragment {
             EnumCountry.Nigeria.name(),
             EnumCountry.Tanzania.name(),
             EnumCountry.Ghana.name(),
-            EnumCountry.Rwanda.name(),
+//            EnumCountry.Rwanda.name(),
     };
 
     public CountryFragment() {
