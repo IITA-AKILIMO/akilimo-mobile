@@ -84,66 +84,15 @@
                 android:padding="@dimen/spacing_large">
 
                 <RadioGroup
-                    android:id="@+id/radioInvestmentGroup"
+                    android:id="@+id/rdgInvestmentAmount"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <RadioButton
-                        android:id="@+id/rd_exact_investment"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_medium"
-                        android:layout_marginBottom="@dimen/spacing_medium"
-                        android:text="@string/exact_investment_x_per_field_area" />
-
-                    <RadioButton
-                        android:id="@+id/rd_25_per_acre"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_medium"
-                        android:layout_marginBottom="@dimen/spacing_medium"
-                        android:text="@string/inv_25_usd_per_acre" />
-
-                    <RadioButton
-                        android:id="@+id/rd_50_per_acre"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_medium"
-                        android:layout_marginBottom="@dimen/spacing_medium"
-                        android:text="@string/inv_50_usd_per_acre" />
-
-                    <RadioButton
-                        android:id="@+id/rd_100_per_acre"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_medium"
-                        android:layout_marginBottom="@dimen/spacing_medium"
-                        android:text="@string/inv_100_usd_per_acre" />
-
-                    <RadioButton
-                        android:id="@+id/rd_150_per_acre"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_medium"
-                        android:layout_marginBottom="@dimen/spacing_medium"
-                        android:text="@string/inv_150_usd_per_acre" />
-
-                    <RadioButton
-                        android:id="@+id/rd_200_per_acre"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_medium"
-                        android:layout_marginBottom="@dimen/spacing_medium"
-                        android:text="@string/inv_200_usd_per_acre" />
-
-
-                </RadioGroup>
+                    android:layout_height="wrap_content" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/editInvestmentAmountLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/radioInvestmentGroup"
+                    android:layout_below="@+id/rdgInvestmentAmount"
                     android:layout_marginTop="@dimen/spacing_medium"
                     android:hint="@string/exact_investment_x_per_field_area_hint"
                     android:visibility="gone">

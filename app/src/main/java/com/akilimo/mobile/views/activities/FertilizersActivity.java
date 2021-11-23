@@ -262,7 +262,11 @@ public class FertilizersActivity extends BaseActivity {
                         }
                     }
                     database.fertilizerDao().deleteFertilizerByList(deletionList);
-                    initializeFertilizerPriceList();
+                    for (Fertilizer fertilizer : availableFertilizersList) {
+                        loadFertilizerPrices(fertilizer.getFertilizerKey());
+                    }
+                    validate(false);
+                    recyclerView.setVisibility(View.VISIBLE);
                 } catch (Exception ex) {
                     lyt_progress.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.GONE);
@@ -288,16 +292,14 @@ public class FertilizersActivity extends BaseActivity {
                 btnRetry.setVisibility(View.VISIBLE);
 
                 Toast.makeText(context, getString(R.string.lbl_fertilizer_load_error), Toast.LENGTH_LONG).show();
-                Crashlytics.log(Log.ERROR, LOG_TAG, "Fertilizer list not able to load");
-                Crashlytics.logException(volleyError);
             }
         });
     }
 
-    private void initializeFertilizerPriceList() {
+    private void loadFertilizerPrices(String fertilizerKey) {
         final RestService restService = RestService.getInstance(queue, this);
         final RestParameters restParameters = new RestParameters(
-                "v2/fertilizer-prices", countryCode
+                String.format("v2/fertilizer-prices/%s", fertilizerKey), countryCode
         );
         restParameters.setInitialTimeout(5000);
         restService.setParameters(restParameters);
@@ -312,15 +314,12 @@ public class FertilizersActivity extends BaseActivity {
                 ObjectMapper objectMapper = new ObjectMapper();
                 try {
 
-                    fertilizerPricesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<FertilizerPrice>>() {
+                    List<FertilizerPrice> myPrices = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<FertilizerPrice>>() {
                     });
 
-                    if (fertilizerPricesList.size() > 0) {
-                        database.fertilizerPriceDao().insertAll(fertilizerPricesList);
+                    if (myPrices.size() > 0) {
+                        database.fertilizerPriceDao().insertAll(myPrices);
                     }
-
-                    validate(false);
-                    recyclerView.setVisibility(View.VISIBLE);
                 } catch (Exception ex) {
                     lyt_progress.setVisibility(View.GONE);
                     errorImage.setVisibility(View.VISIBLE);
@@ -328,8 +327,6 @@ public class FertilizersActivity extends BaseActivity {
                     btnRetry.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                    Crashlytics.logException(ex);
                 }
 
             }

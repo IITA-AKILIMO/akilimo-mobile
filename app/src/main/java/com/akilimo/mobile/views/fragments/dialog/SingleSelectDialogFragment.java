@@ -7,25 +7,18 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.inherit.BaseDialogFragment;
-import com.akilimo.mobile.models.OperationCost;
-import com.akilimo.mobile.utils.enums.EnumCountry;
-import com.crashlytics.android.Crashlytics;
-
-import java.util.ArrayList;
 
 
 /**
@@ -48,9 +41,9 @@ public class SingleSelectDialogFragment extends BaseDialogFragment {
     private boolean cancelled;
 
 
-    private int selectedRiskIndex = -1;
-    private int riskAtt = 0;
-    private String selectedRisk;
+    private int selectedIndex = -1;
+    private int rabioButtonValueInt = 0;
+    private String selectedLabel;
 
     private IDismissDialog onDismissListener;
     private String[] risks;
@@ -66,7 +59,7 @@ public class SingleSelectDialogFragment extends BaseDialogFragment {
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             risks = bundle.getStringArray(RISK_LIST);
-            selectedRiskIndex = bundle.getInt(RISK_INDEX, -1);
+            selectedIndex = bundle.getInt(RISK_INDEX, -1);
         }
 
         dialog = new Dialog(context);
@@ -108,17 +101,17 @@ public class SingleSelectDialogFragment extends BaseDialogFragment {
         RadioButton radioButton = dialog.findViewById(radioButtonId);
         int itemTagIndex = (int) radioButton.getTag();
 
-        selectedRisk = risks[itemTagIndex];
+        selectedLabel = risks[itemTagIndex];
         switch (itemTagIndex) {
             default:
             case 0:
-                riskAtt = 0;
+                rabioButtonValueInt = 0;
                 break;
             case 1:
-                riskAtt = 1;
+                rabioButtonValueInt = 1;
                 break;
             case 2:
-                riskAtt = 2;
+                rabioButtonValueInt = 2;
                 break;
         }
     }
@@ -131,7 +124,7 @@ public class SingleSelectDialogFragment extends BaseDialogFragment {
             radioButton.setTag(listIndex);
             String radioLabel = risks[listIndex];
 
-            selectedRisk = radioLabel;
+            selectedLabel = radioLabel;
             radioButton.setText(radioLabel);
             radioGroup.addView(radioButton);
         }
@@ -141,7 +134,7 @@ public class SingleSelectDialogFragment extends BaseDialogFragment {
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
         if (onDismissListener != null) {
-            onDismissListener.onDismiss(selectedRisk, riskAtt, selectedRiskIndex, cancelled);
+            onDismissListener.onDismiss(selectedLabel, rabioButtonValueInt, selectedIndex, cancelled);
         }
     }
 
@@ -151,6 +144,6 @@ public class SingleSelectDialogFragment extends BaseDialogFragment {
 
     /* callback interface for pricing specification*/
     public interface IDismissDialog {
-        void onDismiss(String selectedRiskName, int selectedRiskAtt, int selectedRiskIndex, boolean cancelled);
+        void onDismiss(String selectedLabel, int rabioButtonValueInt, int selectedIndex, boolean cancelled);
     }
 }

@@ -19,6 +19,7 @@ import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.IFragmentCallBack
 import com.akilimo.mobile.utils.AppUpdateHelper
 import com.akilimo.mobile.utils.SessionManager
+import com.akilimo.mobile.utils.enums.EnumCountry
 import com.akilimo.mobile.views.activities.usecases.RecommendationsActivity
 import com.akilimo.mobile.views.fragments.*
 import com.stepstone.stepper.StepperLayout
@@ -78,6 +79,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
     private fun createFragmentArray() {
 
+
         fragmentArray.add(WelcomeFragment.newInstance())
         fragmentArray.add(InfoFragment.newInstance())
         if (!sessionManager.termsAccepted()) {
@@ -91,7 +93,10 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         fragmentArray.add(AreaUnitFragment.newInstance())
         fragmentArray.add(FieldSizeFragment.newInstance())
         fragmentArray.add(PlantingDateFragment.newInstance())
+
+//        if (!sessionManager.country.equals(EnumCountry.Ghana.countryCode())) {
         fragmentArray.add(TillageOperationFragment.newInstance())
+//        }
         fragmentArray.add(SummaryFragment.newInstance())
     }
 
@@ -115,8 +120,19 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
             }
 
             override fun onStepSelected(newStepPosition: Int) {
+
                 if (newStepPosition == 0) {
                     appUpdater.start()
+                } else if (newStepPosition == 10) {
+                    if (sessionManager.country.equals(EnumCountry.Ghana.countryCode())) {
+                        if (sessionManager.goForward()) {
+                            mStepperLayout.currentStepPosition = 11
+                            sessionManager.setForward(false)
+                        } else {
+                            mStepperLayout.currentStepPosition = 9
+                            sessionManager.setForward(true)
+                        }
+                    }
                 } else {
                     appUpdater.stop()
                 }

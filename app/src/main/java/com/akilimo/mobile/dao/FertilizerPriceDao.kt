@@ -16,7 +16,7 @@ interface FertilizerPriceDao {
     fun insert(vararg fieldYield: FertilizerPrice)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(fertilizerPricesList: List<FertilizerPrice>):LongArray?
+    fun insertAll(fertilizerPricesList: List<FertilizerPrice>): LongArray?
 
     @Update
     fun update(vararg fieldYield: FertilizerPrice?)
@@ -26,4 +26,10 @@ interface FertilizerPriceDao {
 
     @Query("SELECT * FROM fertilizer_price where country=:countryCode")
     fun findAllByCountry(countryCode: String): List<FertilizerPrice>
+
+    @Query("SELECT * FROM fertilizer_price where fertilizerKey=:fertKey")
+    fun findAllByFertilizerKey(fertKey: String): List<FertilizerPrice>
+
+    @Query("SELECT * FROM fertilizer_price where priceId=:itemTagIndex LIMIT 1")
+    fun findOneByPriceId(itemTagIndex: Long): FertilizerPrice
 }

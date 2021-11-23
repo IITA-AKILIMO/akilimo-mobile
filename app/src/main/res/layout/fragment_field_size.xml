@@ -72,6 +72,14 @@
                     android:text="@string/one_acre" />
 
                 <RadioButton
+                    android:id="@+id/rd_two_half_acre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu"
+                    android:text="@string/two_half_acres"
+                    android:visibility="gone" />
+
+                <RadioButton
                     android:id="@+id/rd_specify_acre"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -45,9 +45,9 @@ public class SessionManager {
 
     public String getApiEndPoint() {
         if (BuildConfig.DEBUG) {
-            return "http://f296-146-70-65-4.ngrok.io/api/";
+            return "http://192.168.100.3:8098/api/";
         }
-        return pref.getString("apiResource", "http://157.245.26.55:8098/api/");
+        return pref.getString("apiResource", "http://157.245.26.55:8099/api/");
     }
 
     public void setApiToken(String apiToken) {
@@ -99,12 +99,12 @@ public class SessionManager {
     }
 
     public void setGhsRate(String tzsRate) {
-        editor.putString("tzsRate", tzsRate);
+        editor.putString("ghsRate", tzsRate);
         editor.commit();
     }
 
     public double getGhsRate() {
-        String rate = pref.getString("tzsRate", "6.11");
+        String rate = pref.getString("ghsRate", "6.11");
         return Double.parseDouble(rate);
     }
 
@@ -177,7 +177,44 @@ public class SessionManager {
         return pref.getBoolean("termsAccepted", false);
     }
 
+    public void setCountry(String country) {
+        editor.putString("country", country);
+        editor.commit();
+    }
+
+    public String getCountry() {
+        return pref.getString("country", "NA");
+    }
+
     public String getTermsLink() {
         return pref.getString("termsLink", "https://www.akilimo.org/privacy-policy");
+    }
+
+    public void setForward(boolean goFoward) {
+        editor.putBoolean("goF", goFoward);
+        editor.commit();
+    }
+
+    public boolean goForward() {
+        return pref.getBoolean("goF", true);
+    }
+
+    public void setApiUser(String user) {
+        editor.putString("apiUser", user);
+        editor.commit();
+    }
+
+    public String getApiUser() {
+        return pref.getString("apiUser", "masgeek");
+    }
+
+
+    public void setApiPass(String pass) {
+        editor.putString("apiPass", pass);
+        editor.commit();
+    }
+
+    public String getApiPass() {
+        return pref.getString("apiPass", "andalite6");
     }
 }
