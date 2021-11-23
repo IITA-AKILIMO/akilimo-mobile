@@ -180,6 +180,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
                 } catch (Exception ex) {
                     Crashlytics.log(Log.ERROR, LOG_TAG, "The number appears not be valid");
                     Crashlytics.logException(ex);
+                    bagPrice = 0.0;
                 }
                 if (bagPrice <= 0 || bagPrice < minPrice || bagPrice > maxPrice) {
                     editExactFertilizerPrice.setError(String.format(getString(R.string.lbl_min_fert_price), mathHelper.removeLeadingZero(minPrice), mathHelper.removeLeadingZero(maxPrice)));
@@ -227,7 +228,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
         }
 
         try {
-            FertilizerPrice pricesResp = fertilizerPricesList.get((int) itemTagIndex);
+            FertilizerPrice pricesResp = database.fertilizerPriceDao().findOneByPriceId(itemTagIndex);
             isExactPriceRequired = false;
             isPriceValid = true;
             savedPricePerBag = pricesResp.getPricePerBag();
@@ -277,7 +278,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
         for (FertilizerPrice pricesResp : fertilizerPricesList) {
             minPrice = pricesResp.getMinAllowedPrice();
             maxPrice = pricesResp.getMaxAllowedPrice();
-            long listIndex = pricesResp.getPriceId() - 1;//reduce by one so as to match the index in the list
+            long listIndex = pricesResp.getPriceId();
 
             RadioButton radioButton = new RadioButton(getActivity());
             radioButton.setId(View.generateViewId());

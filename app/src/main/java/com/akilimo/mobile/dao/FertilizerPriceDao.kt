@@ -29,4 +29,7 @@ interface FertilizerPriceDao {
 
     @Query("SELECT * FROM fertilizer_price where fertilizerKey=:fertKey")
     fun findAllByFertilizerKey(fertKey: String): List<FertilizerPrice>
+
+    @Query("SELECT * FROM fertilizer_price where priceId=:itemTagIndex LIMIT 1")
+    fun findOneByPriceId(itemTagIndex: Long): FertilizerPrice
 }
