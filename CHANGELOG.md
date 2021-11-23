@@ -1,4 +1,21 @@
-#### [Version 21.0.0](https://IITA-AKILIMO/akilimo-mobile/releases/tag/21.0.0) 
+#### [Version 21.1.0](https://IITA-AKILIMO/akilimo-mobile/releases/tag/21.1.0) 
+### Implemented Enhancements 
+- feat: added kinyarwanda translations [#149](https://IITA-AKILIMO/akilimo-mobile/issues/#149) ([@masgeek](https://github.com/@masgeek))
+- Fix/ghana [#163](https://IITA-AKILIMO/akilimo-mobile/issues/#163) ([@masgeek](https://github.com/@masgeek))
+### Fixed Bugs 
+- feat: added checks for country to determine use case and area units [#147](https://IITA-AKILIMO/akilimo-mobile/issues/#147) ([@masgeek](https://github.com/@masgeek))
+- refactor: added checker for starch factory count [#151](https://IITA-AKILIMO/akilimo-mobile/issues/#151) ([@masgeek](https://github.com/@masgeek))
+- refactor: updated in app database name [#156](https://IITA-AKILIMO/akilimo-mobile/issues/#156) ([@masgeek](https://github.com/@masgeek))
+- Main [#157](https://IITA-AKILIMO/akilimo-mobile/issues/#157) ([@masgeek](https://github.com/@masgeek))
+- fix: added evaluation for ARE area units [#159](https://IITA-AKILIMO/akilimo-mobile/issues/#159) ([@masgeek](https://github.com/@masgeek))
+### Other Changes 
+- Update CHANGELOG.md for 21.0.0 [#142](https://IITA-AKILIMO/akilimo-mobile/issues/#142) ([@nextreleaseio[bot]](https://github.com/@nextreleaseio[bot]))
+- Update google-services.json [#144](https://IITA-AKILIMO/akilimo-mobile/issues/#144) ([@masgeek](https://github.com/@masgeek))
+- ci: added env variable [#150](https://IITA-AKILIMO/akilimo-mobile/issues/#150) ([@masgeek](https://github.com/@masgeek))
+- ci: added release status in google uploader [#153](https://IITA-AKILIMO/akilimo-mobile/issues/#153) ([@masgeek](https://github.com/@masgeek))
+- docs: updated whats new release notes [#160](https://IITA-AKILIMO/akilimo-mobile/issues/#160) ([@masgeek](https://github.com/@masgeek))
+ 
+ #### [Version 21.0.0](https://IITA-AKILIMO/akilimo-mobile/releases/tag/21.0.0) 
 ### Breaking Changes 
 - feat: ghana support [#140](https://IITA-AKILIMO/akilimo-mobile/issues/#140) ([@masgeek](https://github.com/@masgeek))
 ### Other Changes 
