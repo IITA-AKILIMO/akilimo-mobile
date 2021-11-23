@@ -45,9 +45,9 @@ public class SessionManager {
 
     public String getApiEndPoint() {
         if (BuildConfig.DEBUG) {
-            return "http://157.245.26.55:8099/api/";
+            return "http://192.168.100.3:8098/api/";
         }
-        return pref.getString("apiResource", "http://157.245.26.55:8098/api/");
+        return pref.getString("apiResource", "http://157.245.26.55:8099/api/");
     }
 
     public void setApiToken(String apiToken) {

@@ -56,6 +56,9 @@ open class FertilizerPrice {
     @JsonProperty("fertilizerCountry")
     var fertilizerCountry: String? = null
 
+    @JsonProperty("fertilizerKey")
+    var fertilizerKey: String? = null
+
     @JsonProperty("description")
     var description: String? = null
 }

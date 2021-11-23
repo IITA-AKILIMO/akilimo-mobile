@@ -16,11 +16,19 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.akilimo.mobile.interfaces.IVolleyCallback;
+import com.akilimo.mobile.rest.RestParameters;
+import com.akilimo.mobile.rest.RestService;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
 import com.crashlytics.android.Crashlytics;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.textfield.TextInputLayout;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.entities.Fertilizer;
@@ -31,6 +39,11 @@ import com.akilimo.mobile.utils.CurrencyCode;
 import com.akilimo.mobile.utils.enums.EnumCountry;
 import com.mynameismidori.currencypicker.ExtendedCurrency;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
 ;
@@ -68,15 +81,22 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
     private double minPrice = 0.0;
     private String countryCode;
     private String currencyCode;
+    private String fertilizerKey;
     private String currencyName;
     private Double bagPrice;
     private String bagPriceRange = "NA";
     private Double exactPrice = 0.0;
+    private RequestQueue queue;
 
     private IFertilizerDismissListener onDismissListener;
 
     public FertilizerPriceDialogFragment(Context context) {
         this.context = context;
+    }
+
+    public FertilizerPriceDialogFragment(Context context, RequestQueue requestQueue) {
+        this.context = context;
+        this.queue = requestQueue;
     }
 
 
@@ -111,6 +131,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
         if (fertilizer != null) {
             countryCode = fertilizer.getCountryCode();
             currencyCode = fertilizer.getCurrency();
+            fertilizerKey = fertilizer.getFertilizerKey();
             currencySymbol = currencyCode;
             ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
             if (extendedCurrency != null) {
@@ -188,7 +209,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
 
         radioGroup.setOnCheckedChangeListener((radioGroup, i) -> radioSelected(radioGroup));
         if (database != null) {
-            fertilizerPricesList = database.fertilizerPriceDao().findAllByCountry(countryCode);
+            fertilizerPricesList = database.fertilizerPriceDao().findAllByFertilizerKey(fertilizerKey);
             addPriceRadioButtons(fertilizerPricesList, fertilizer);
         }
         return dialog;
