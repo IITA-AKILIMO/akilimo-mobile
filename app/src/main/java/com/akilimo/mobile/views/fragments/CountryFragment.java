@@ -121,9 +121,9 @@ public class CountryFragment extends BaseStepFragment {
                         EnumCountry.Tanzania.name()
                 };
             } else if (selectedLanguage.equalsIgnoreCase("rw")) {
-                countries = new String[]{
-                        EnumCountry.Rwanda.name()
-                };
+//                countries = new String[]{
+//                        EnumCountry.Rwanda.name()
+//                };
             }
 
 
