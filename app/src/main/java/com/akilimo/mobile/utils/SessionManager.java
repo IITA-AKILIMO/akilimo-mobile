@@ -99,12 +99,12 @@ public class SessionManager {
     }
 
     public void setGhsRate(String tzsRate) {
-        editor.putString("tzsRate", tzsRate);
+        editor.putString("ghsRate", tzsRate);
         editor.commit();
     }
 
     public double getGhsRate() {
-        String rate = pref.getString("tzsRate", "6.11");
+        String rate = pref.getString("ghsRate", "6.11");
         return Double.parseDouble(rate);
     }
 
