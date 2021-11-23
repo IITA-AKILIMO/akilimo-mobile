@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -14,7 +15,15 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.akilimo.mobile.entities.InvestmentAmount;
+import com.akilimo.mobile.interfaces.IVolleyCallback;
+import com.akilimo.mobile.entities.InvestmentAmountDto;
+import com.akilimo.mobile.rest.RestParameters;
+import com.akilimo.mobile.rest.RestService;
+import com.android.volley.VolleyError;
 import com.crashlytics.android.Crashlytics;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
@@ -22,7 +31,6 @@ import com.akilimo.mobile.R;
 import com.akilimo.mobile.dao.AppDatabase;
 import com.akilimo.mobile.databinding.ActivityInvestmentAmountBinding;
 import com.akilimo.mobile.entities.AdviceStatus;
-import com.akilimo.mobile.entities.InvestmentAmount;
 import com.akilimo.mobile.entities.MandatoryInfo;
 import com.akilimo.mobile.entities.ProfileInfo;
 import com.akilimo.mobile.inherit.BaseActivity;
@@ -31,21 +39,21 @@ import com.akilimo.mobile.utils.MathHelper;
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks;
 import com.mynameismidori.currencypicker.ExtendedCurrency;
 
-;import java.util.Objects;
+;import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 
 public class InvestmentAmountActivity extends BaseActivity {
 
     private String LOG_TAG = InvestmentAmountActivity.class.getSimpleName();
 
-
     Toolbar toolbar;
-    RadioGroup radioGroup;
-    RadioButton rd_25_per_acre;
-    RadioButton rd_50_per_acre;
-    RadioButton rd_100_per_acre;
-    RadioButton rd_150_per_acre;
-    RadioButton rd_200_per_acre;
+    RadioGroup rdgInvestmentAmount;
     RadioButton rd_exact_investment;
     EditText txtEditInvestmentAmount;
     TextInputLayout txtEditInvestmentAmountLayout;
@@ -70,8 +78,10 @@ public class InvestmentAmountActivity extends BaseActivity {
     private double minimumAmountUSD;
     private double minimumAmountLocal;
     private double maxAmountLocal;
+    private double selectedPrice = -1.0;
     private String selectedFieldArea;
 
+    private List<InvestmentAmountDto> investmentAmountList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,19 +94,12 @@ public class InvestmentAmountActivity extends BaseActivity {
         mathHelper = new MathHelper();
 
         toolbar = binding.toolbar;
-        radioGroup = binding.radioInvestmentGroup;
-        rd_25_per_acre = binding.rd25PerAcre;
-        rd_50_per_acre = binding.rd50PerAcre;
-        rd_100_per_acre = binding.rd100PerAcre;
-        rd_150_per_acre = binding.rd150PerAcre;
-        rd_200_per_acre = binding.rd200PerAcre;
-        rd_exact_investment = binding.rdExactInvestment;
+        rdgInvestmentAmount = binding.rdgInvestmentAmount;
         txtEditInvestmentAmount = binding.editInvestmentAmount;
         txtEditInvestmentAmountLayout = binding.editInvestmentAmountLayout;
         btnFinish = binding.btnFinish;
 
         invAmount = database.investmentAmountDao().findOne();
-
 
         initToolbar();
         initComponent();
@@ -122,35 +125,24 @@ public class InvestmentAmountActivity extends BaseActivity {
     @Override
     protected void initComponent() {
         investmentAmountError = getString(R.string.lbl_investment_amount_prompt);
-        radioGroup.setOnCheckedChangeListener((radioGroup1, radioChecked) -> {
-            double amountToInvest = 0;
-            isExactAmount = false;
-            txtEditInvestmentAmountLayout.setVisibility(View.GONE);
-            switch (radioChecked) {
-                case R.id.rd_25_per_acre:
-                    amountToInvest = 25;
-                    break;
-                case R.id.rd_50_per_acre:
-                    amountToInvest = 50;
-                    break;
-                case R.id.rd_100_per_acre:
-                    amountToInvest = 100;
-                    break;
-                case R.id.rd_150_per_acre:
-                    amountToInvest = 150;
-                    break;
-                case R.id.rd_200_per_acre:
-                    amountToInvest = 200;
-                    break;
-                case R.id.rd_exact_investment:
+
+        rdgInvestmentAmount.setOnCheckedChangeListener((group, checkedId) -> {
+            int radioButtonId = group.getCheckedRadioButtonId();
+            RadioButton radioButton = findViewById(radioButtonId);
+            long itemTagIndex = (long) radioButton.getTag();
+
+            InvestmentAmountDto inv = database.investmentAmountDtoDao().findOneByInvestmentId(itemTagIndex);
+            if (inv != null) {
+                investmentAmountLocal = inv.getInvestmentAmount();
+                if (inv.getSortOrder() != 0) {
+                    isExactAmount = false;
+                    txtEditInvestmentAmountLayout.setVisibility(View.GONE);
+                } else {
                     isExactAmount = true;
                     txtEditInvestmentAmountLayout.setVisibility(View.VISIBLE);
                     txtEditInvestmentAmountLayout.requestFocus();
-                    return;
+                }
             }
-            investmentAmountUSD = mathHelper.computeInvestmentAmount(amountToInvest, fieldSizeAcre, baseCurrency);
-            investmentAmountLocal = mathHelper.convertToLocalCurrency(investmentAmountUSD, currency);
-
         });
         txtEditInvestmentAmount.addTextChangedListener(new TextWatcher() {
             @Override
@@ -195,6 +187,7 @@ public class InvestmentAmountActivity extends BaseActivity {
                 Crashlytics.logException(ex);
             }
         });
+
         updateLabels();
         showCustomNotificationDialog();
     }
@@ -214,16 +207,12 @@ public class InvestmentAmountActivity extends BaseActivity {
                 currency = _currency;
             }
         }
-
         currencyCode = currency;
-        String currencySymbol = currency;
-        String currencyName = currency;
-        extendedCurrency = CurrencyCode.getCurrencySymbol(currency);
-        if (extendedCurrency != null) {
-            currencySymbol = extendedCurrency.getSymbol();
-            currencyName = extendedCurrency.getName();
-        }
 
+        InvestmentAmount investmentAmount = database.investmentAmountDao().findOne();
+        if (investmentAmount != null) {
+            selectedPrice = investmentAmount.getInvestmentAmountLocal();
+        }
         MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
         if (mandatoryInfo != null) {
             fieldSize = mandatoryInfo.getAreaSize();
@@ -235,31 +224,7 @@ public class InvestmentAmountActivity extends BaseActivity {
         }
         selectedFieldArea = String.format("%s %s", fieldSize, areaUnitText);
 
-
-        if (Strings.isEmptyOrWhitespace(selectedFieldArea)) {
-            return;
-        }
-        String band_25 = getString(R.string.inv_25_usd_per_acre);
-        String band_50 = getString(R.string.inv_50_usd_per_acre);
-        String band_100 = getString(R.string.inv_100_usd_per_acre);
-        String band_150 = getString(R.string.inv_150_usd_per_acre);
-        String band_200 = getString(R.string.inv_200_usd_per_acre);
-
-        String exactText = getString(R.string.exact_investment_x_per_field_area);
-        String exactTextHint = getString(R.string.exact_investment_x_per_field_area_hint, currencyName, String.valueOf(fieldSize), areaUnit);
-        String separator = getString(R.string.lbl_per_separator);
-
-        //convert the currencies
-        //@TODO move this data functionality to the API
-        rd_25_per_acre.setText(mathHelper.convertCurrency(band_25, currencyCode, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
-        rd_50_per_acre.setText(mathHelper.convertCurrency(band_50, currencyCode, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
-        rd_100_per_acre.setText(mathHelper.convertCurrency(band_100, currencyCode, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
-        rd_150_per_acre.setText(mathHelper.convertCurrency(band_150, currencyCode, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
-        rd_200_per_acre.setText(mathHelper.convertCurrency(band_200, currencyCode, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator));
-
-        rd_exact_investment.setText(exactText);
-        txtEditInvestmentAmountLayout.setHint(exactTextHint);
-        txtEditInvestmentAmount.setHint(exactTextHint);
+        loadInvestmentAmount(); //load amount from API
     }
 
     private void validateEditText(Editable editable) {
@@ -283,5 +248,104 @@ public class InvestmentAmountActivity extends BaseActivity {
         hasErrors = investmentAmountLocal < minimumAmountLocal;
         return investmentAmountError = getString(R.string.lbl_investment_validation_msg, minimumAmountLocal, currencyCode);
 
+    }
+
+    private void loadInvestmentAmount() {
+
+        final RestParameters restParameters = new RestParameters(
+                String.format("v1/investment-amount/%s/country", countryCode),
+                countryCode);
+
+        final RestService restService = RestService.getInstance(queue, this);
+        restService.setParameters(restParameters);
+
+        restService.getJsonArrList(new IVolleyCallback() {
+            @Override
+            public void onSuccessJsonString(String jsonStringResult) {
+
+            }
+
+            @Override
+            public void onSuccessJsonArr(JSONArray jsonArray) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                try {
+                    investmentAmountList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<InvestmentAmountDto>>() {
+                    });
+                    if (investmentAmountList.size() > 0) {
+                        database.investmentAmountDtoDao().insertAll(investmentAmountList);
+                        addInvestmentRadioButtons(investmentAmountList);
+                    } else {
+                        Toast.makeText(context, getString(R.string.lbl_investment_amount_load_error), Toast.LENGTH_LONG).show();
+                    }
+
+                } catch (Exception ex) {
+                    String error = ex.getMessage();
+                    Toast.makeText(context, getString(R.string.lbl_investment_amount_load_error), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, error, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onSuccessJsonObject(JSONObject jsonObject) {
+            }
+
+            @Override
+            public void onError(@NotNull VolleyError volleyError) {
+                Toast.makeText(context, getString(R.string.lbl_investment_amount_load_error), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void addInvestmentRadioButtons(List<InvestmentAmountDto> investmentAmountList) {
+        rdgInvestmentAmount.removeAllViews();
+        currencySymbol = currencyCode;
+        ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
+        if (extendedCurrency != null) {
+            currencySymbol = extendedCurrency.getSymbol();
+        }
+
+        RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        int mediumSpacing = 30;
+        params.setMargins(0, mediumSpacing, 0, mediumSpacing);
+
+        String exactTextHint = getString(R.string.exact_investment_x_per_field_area_hint, currencyName, String.valueOf(fieldSize), areaUnit);
+        String separator = getString(R.string.lbl_per_separator);
+
+        txtEditInvestmentAmountLayout.setHint(exactTextHint);
+        txtEditInvestmentAmount.setHint(exactTextHint);
+
+        for (InvestmentAmountDto pricesResp : investmentAmountList) {
+            minimumAmountLocal = pricesResp.getMinInvestmentAmount();
+            maxAmountLocal = pricesResp.getMaxInvestmentAmount();
+            long listIndex = pricesResp.getInvestmentId();
+
+            RadioButton radioButton = new RadioButton(context);
+            radioButton.setId(View.generateViewId());
+            radioButton.setTag(listIndex);
+
+            double price = pricesResp.getInvestmentAmount();
+            Double amountToInvest = mathHelper.convertToAreaUnit(price, fieldSize, areaUnit);
+            String radioLabel = setLabel(amountToInvest, currencyCode, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator);
+            if (price == 0) {
+                radioLabel = context.getString(R.string.exact_investment_x_per_field_area);
+            }
+
+            radioButton.setText(radioLabel);
+            radioButton.setLayoutParams(params);
+
+            rdgInvestmentAmount.addView(radioButton);
+            //set relevant radio button as selected based on the price range
+            if (price == selectedPrice) {
+                radioButton.setChecked(true);
+            }
+        }
+    }
+
+    private String setLabel(Double amountToInvest, String currencyCode, String currencySymbol,
+                            String areaUnit, String fieldAreaAcre, String selectedFieldArea, String separator) {
+
+        String formattedNumber = mathHelper.formatNumber(amountToInvest, currencySymbol);
+
+        return String.format("%s %s %s", formattedNumber, separator, selectedFieldArea);
     }
 }

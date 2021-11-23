@@ -18,6 +18,7 @@ import com.akilimo.mobile.entities.*
         FieldOperationCost::class,
         InterCropFertilizer::class,
         InvestmentAmount::class,
+        InvestmentAmountDto::class,
         LocationInfo::class,
         MaizeMarket::class,
         MaizePerformance::class,
@@ -31,7 +32,7 @@ import com.akilimo.mobile.entities.*
         UseCases::class,
         Currency::class,
         AdviceStatus::class
-    ], version = 1, exportSchema = false
+    ], version = 3, exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -47,6 +48,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun interCropFertilizerDao(): InterCropFertilizerDao
 
     abstract fun investmentAmountDao(): InvestmentAmountDao
+    abstract fun investmentAmountDtoDao(): InvestmentAmountDtoDao
     abstract fun locationInfoDao(): LocationInfoDao
     abstract fun maizeMarketDao(): MaizeMarketDao
     abstract fun maizePerformanceDao(): MaizePerformanceDao

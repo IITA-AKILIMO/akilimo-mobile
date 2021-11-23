@@ -198,4 +198,23 @@ public class SessionManager {
     public boolean goForward() {
         return pref.getBoolean("goF", true);
     }
+
+    public void setApiUser(String user) {
+        editor.putString("apiUser", user);
+        editor.commit();
+    }
+
+    public String getApiUser() {
+        return pref.getString("apiUser", "masgeek");
+    }
+
+
+    public void setApiPass(String pass) {
+        editor.putString("apiPass", pass);
+        editor.commit();
+    }
+
+    public String getApiPass() {
+        return pref.getString("apiPass", "andalite6");
+    }
 }

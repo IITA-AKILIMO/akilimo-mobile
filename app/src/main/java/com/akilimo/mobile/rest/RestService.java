@@ -2,6 +2,7 @@ package com.akilimo.mobile.rest;
 
 
 import android.app.Activity;
+import android.util.Base64;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -167,9 +168,15 @@ public class RestService {
         params.put("op-name", restParameters.getOperationName());
         params.put("context", restParameters.getContext());
 
+
+
         if (sessionManager != null) {
             params.put("api-token", sessionManager.getDeviceToken());
             params.put("build-date", sessionManager.getAppBuildDate());
+
+            String creds = String.format("%s:%s",sessionManager.getApiUser(),sessionManager.getApiPass());
+            String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.DEFAULT);
+            params.put("Authorization", auth);
         }
         return params;
     }
