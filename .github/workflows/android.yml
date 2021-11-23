@@ -1,11 +1,15 @@
 name: Android CICD
 on:
-  #pull_request:
+  pull_request:
+    branches:
+      - "!main"
+      - "!develop"
+      - "!beta"
   push:
     branches:
-       - main
-       - develop
-       - beta
+      - main
+      - develop
+      - beta
 
 jobs:
 
@@ -28,7 +32,7 @@ jobs:
           java-version: 11
 
       - name: Make gradlew executable
-        run:  chmod +x ./gradlew
+        run: chmod +x ./gradlew
 
       - name: Run Mock build
         run: ./gradlew bundleRelease -x test
@@ -43,7 +47,7 @@ jobs:
 
   build_artifacts:
     if: contains(github.ref, 'beta') || contains(github.ref, 'main')
-    needs: [run_tests]
+    needs: [ run_tests ]
     name: Build artifacts
     runs-on: ubuntu-latest
     env:
@@ -88,7 +92,7 @@ jobs:
         run: echo $BRANCH_NAME
 
       - name: Make gradlew executable
-        run:  chmod +x ./gradlew
+        run: chmod +x ./gradlew
 
       - name: Generate android AAB
         run: ./gradlew bundleRelease -x test
@@ -100,7 +104,7 @@ jobs:
         run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > $GITHUB_WORKSPACE/akilimo.jks
 
       - name: Sign AAB
-        run:  jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks
+        run: jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks
           -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }}
           app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEY_ALIAS }} --signedjar $GITHUB_WORKSPACE/release/app-release-signed.aab
 
@@ -118,7 +122,7 @@ jobs:
           path: release
 
   publish_to_playstore:
-    needs: [build_artifacts]
+    needs: [ build_artifacts ]
     name: Publish to Google PlayStore
     runs-on: ubuntu-latest
     steps:
@@ -153,7 +157,7 @@ jobs:
 
   upload_artifacts:
     if: contains(github.ref, 'main')
-    needs: [publish_to_playstore]
+    needs: [ publish_to_playstore ]
     name: Upload to github release
     runs-on: ubuntu-latest
     env:
