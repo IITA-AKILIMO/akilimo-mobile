@@ -1,5 +1,5 @@
 
-### Akilimo mobile decision support tools
+### AKILIMO mobile decision support tools
 
 [![Android CI](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/android.yml/badge.svg)](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/android.yml)
 
@@ -18,6 +18,7 @@ https://appicon.co/#image-sets
 # installing github hooks
 
 * https://pre-commit.com/
+
 * https://commitizen-tools.github.io/commitizen/
 
 `pre-commit install`

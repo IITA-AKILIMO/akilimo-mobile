@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -15,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.akilimo.mobile.entities.ProfileInfo;
+import com.akilimo.mobile.utils.enums.EnumCountry;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.akilimo.mobile.R;
@@ -69,6 +72,8 @@ public class AreaUnitFragment extends BaseStepFragment {
     public void refreshData() {
         try {
             mandatoryInfo = database.mandatoryInfoDao().findOne();
+            RadioButton rdAre = binding.rdAre;
+            ProfileInfo profileInfo = database.profileInfoDao().findOne();
             if (mandatoryInfo != null) {
                 areaUnit = mandatoryInfo.getAreaUnit();
                 oldAreaUnit = mandatoryInfo.getOldAreaUnit();
@@ -76,9 +81,25 @@ public class AreaUnitFragment extends BaseStepFragment {
                 rdgAreaUnit.check(areaUnitRadioIndex);
                 dataIsValid = !Strings.isEmptyOrWhitespace(areaUnit);
             } else {
+                rdgAreaUnit.check(areaUnitRadioIndex);
                 areaUnitRadioIndex = -1;
                 areaUnit = null;
             }
+
+            if (profileInfo != null) {
+                countryCode = profileInfo.getCountryCode();
+                if (countryCode != null) {
+                    if (countryCode.equals(EnumCountry.Rwanda.countryCode())) {
+                        //set the are unit radiobutton to visible
+                        rdAre.setVisibility(View.VISIBLE);
+                        if (oldAreaUnit.equals(EnumAreaUnits.ARE.unitName(context))) {
+                            rdAre.setChecked(true);
+                        }
+                    }
+                }
+            }
+
+
         } catch (Exception ex) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
             Crashlytics.logException(ex);
@@ -105,6 +126,11 @@ public class AreaUnitFragment extends BaseStepFragment {
                     areaUnitDisplay = context.getString(R.string.lbl_ha);
                     areaUnit = EnumAreaUnits.HA.name();
                     break;
+                case R.id.rdAre:
+                    areaUnitRadioIndex = R.id.rdHa;
+                    areaUnitDisplay = context.getString(R.string.lbl_are);
+                    areaUnit = EnumAreaUnits.ARE.name();
+                    break;
                 default:
                     areaUnitRadioIndex = -1;
                     areaUnit = null;
@@ -115,6 +141,7 @@ public class AreaUnitFragment extends BaseStepFragment {
             if (!dataIsValid) {
                 return;
             }
+
             try {
                 mandatoryInfo = database.mandatoryInfoDao().findOne();
                 if (mandatoryInfo == null) {
@@ -122,6 +149,7 @@ public class AreaUnitFragment extends BaseStepFragment {
                 }
                 mandatoryInfo.setAreaUnitRadioIndex(areaUnitRadioIndex);
                 mandatoryInfo.setAreaUnit(areaUnit.toLowerCase());
+//                mandatoryInfo.setOldAreaUnit(areaUnit.toLowerCase());
                 mandatoryInfo.setDisplayAreaUnit(areaUnitDisplay);
                 if (mandatoryInfo.getId() != null) {
                     database.mandatoryInfoDao().update(mandatoryInfo);

@@ -52,10 +52,12 @@
     <string name="lbl_area_unit">What is your preferred unit for measuring the area of your field?</string>
     <string name="area_unit_acre">Acre (acre)</string>
     <string name="area_unit_ha">Hectare (ha)</string>
+    <string name="area_unit_are">Are (are)</string>
     <string name="area_unit_square_meter">in Square meter (m\u00B2)</string>
 
     <string name="lbl_acre">acre</string>
     <string name="lbl_ha">ha</string>
+    <string name="lbl_are">are</string>
 
     <string name="lbl_cassava_field_size_no_ph">What is the size of your cassava field?</string>
     <string name="lbl_cassava_field_size">What is the size of your cassava field in `%1$s`</string>
@@ -74,6 +76,15 @@
     <string name="one_acre_to_ha">About 0.4 ha</string>
     <string name="one_half_acre_to_ha">About 0.6 ha</string>
     <string name="two_half_acre_to_ha">About 1 ha</string>
+
+    <!-- are -->
+    <string name="quarter_acre_to_are">About 10 are</string>
+    <string name="half_acre_to_are">About 20 are</string>
+    <string name="one_acre_to_are">About 16 are</string>
+    <string name="one_half_acre_to_are">About 20 are</string>
+    <string name="two_half_acre_to_are">About 40 are</string>
+
+
     <!--  m2 -->
     <string name="quarter_acre_to_m2">About 1,000 m\u00B2</string>
     <string name="half_acre_to_m2">About 2,000 m\u00B2</string>
@@ -186,6 +197,12 @@
     <string name="yield_6_to_9_tonnes_per_hectare">15 to 22.5 tonnes per hectare</string>
     <string name="yield_9_to_12_tonnes_per_hectare">22.5 to 30 tonnes per hectare</string>
     <string name="yield_more_than_12_tonnes_per_hectare">More than 30 tonnes per hectare</string>
+
+    <string name="yield_less_than_3_tonnes_per_are">Less than 3 tonnes per are</string>
+    <string name="yield_3_to_6_tonnes_per_are">3 to 6 tonnes per are</string>
+    <string name="yield_6_to_9_tonnes_per_are">6 to 9 tonnes per are</string>
+    <string name="yield_9_to_12_tonnes_per_are">9 to 12 tonnes per are</string>
+    <string name="yield_more_than_12_tonnes_per_are">More than 12 tonnes per are</string>
 
     <string name="yield_less_than_3_tonnes_per_meter">Less than 7.5 tonnes per  4,000 m\u00B2</string>
     <string name="yield_3_to_6_tonnes_per_meter">7.5 to 15 tonnes per  4,000 m\u00B2</string>
@@ -480,9 +497,10 @@
     <string name="lbl_accept_terms_prompt">Accept the terms and conditions before proceeding</string>
     <string name="lbl_restart_app_prompt">Restart the app in order to apply translations to the navigation buttons?</string>
     <string name="lbl_optional">(Optional)</string>
-    <string name="lbl_country_supported">Currently AKILIMO gives advice for farms located in Nigeria, Tanzania and Ghana. Your area is outside the area covered by AKILIMO</string>
+    <string name="lbl_country_supported">Currently AKILIMO gives advice for farms located in Nigeria, Tanzania, Rwanda and Ghana. Your area is outside the area covered by AKILIMO</string>
     <string name="lbl_acre_yield">3–6 t/acre</string>
     <string name="lbl_ha_yield">7.5–15 t/ha</string>
+    <string name="lbl_are_yield">3–6 t/are</string>
 
     <string name="fcy_lower">Lower</string>
     <string name="fcy_about_the_same">About the same</string>
@@ -536,5 +554,8 @@
     <string name="lbl_unit_price_m2">Price 2 months after harvest</string>
     <string name="lbl_tzs_currency_name">Tanzania shillings</string>
     <string name="lbl_ghs_currency_name">Ghanaian cedi</string>
+    <string name="lbl_rwf_currency_name">Rwandan franc</string>
     <string name="lbl_ngn_currency_name">Naira</string>
+    <string name="lbl_no_factories">Starch factories are not available</string>
+    <string name="lbl_no_factories_text">Starch factories are not available for %1s</string>
 </resources>

@@ -135,7 +135,7 @@ class GPSTracker : Service, LocationListener {
             val alertDialog = AlertDialog.Builder(mContext!!)
             alertDialog.setTitle(getString(R.string.lbl_gps_settings))
             alertDialog.setMessage(getString(R.string.lbl_gps_not_enabled))
-            alertDialog.setPositiveButton(getString(R.string.action_settings)) { dialog, which ->
+            alertDialog.setPositiveButton(getString(R.string.action_settings)) { dialog, _ ->
                 val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                 mContext?.startActivity(intent)
                 dialog.cancel()

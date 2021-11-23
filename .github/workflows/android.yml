@@ -151,7 +151,37 @@ jobs:
           whatsNewDirectory: release/distribution/whatsnew
 
 
-  upload_artifacts:
+  upload_beta_artifacts:
+    if: contains(github.ref, 'beta')
+    needs: [publish_to_playstore]
+    name: Upload to github beta
+    runs-on: ubuntu-latest
+    env:
+      LATEST_TAG_FILE: ${{ secrets.LATEST_TAG_FILE }}
+      GHR_TAG: "1.0.0"
+      GHR_REPLACE: "1"
+      GHR_PATH: release
+      GHR_PRERELEASE: "1"
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/download-artifact@v2
+        name: Retrieve artifacts
+        with:
+          name: app-release
+          path: release
+      - run: |
+          cp release/distribution/whatsnew/* release
+          rm -rf release/distribution
+          ls release
+
+      - name: Read latest tag from tag file
+        run: echo "GHR_TAG=$(cat release/$LATEST_TAG_FILE)-beta" >> $GITHUB_ENV
+
+      - name: Upload release artifacts
+        uses: masgeek/github-action-ghr@v1.3.2
+
+  upload_production_artifacts:
     if: contains(github.ref, 'main')
     needs: [ publish_to_playstore ]
     name: Upload to github release

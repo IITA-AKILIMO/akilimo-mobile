@@ -86,7 +86,7 @@ static def computeBuildNumber() {
     newFile.createNewFile()
 
     def gitVersionTag = System.env.RELEASE_VERSION ?: computeVersionName()
-    def branch = System.env.BRANCH_NAME ?: "unknown"
+    def branch = System.env.BRANCH_NAME ?: "beta"
     def buildNumber = System.env.BUILD_NUMBER ?: LocalDateTime.now().getDayOfMonth()
 
     if (branch == "beta") {
@@ -205,8 +205,9 @@ dependencies {
     kapt 'com.fasterxml.jackson.core:jackson-annotations:2.12.4'
 
     testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.12.4'
-    testImplementation 'joda-time:joda-time:2.10.10'
+    testImplementation 'joda-time:joda-time:2.10.12'
 
+    testImplementation project(path: ':app')
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test:runner:1.4.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
