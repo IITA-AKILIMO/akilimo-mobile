@@ -1,10 +1,6 @@
 name: Android CICD
 on:
   pull_request:
-    branches:
-      - "!main"
-      - "!develop"
-      - "!beta"
   push:
     branches:
       - main
