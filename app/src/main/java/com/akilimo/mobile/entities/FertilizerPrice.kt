@@ -23,6 +23,10 @@ open class FertilizerPrice {
     @JsonProperty("priceId")
     var priceId = 0
 
+    @JsonProperty("sortOrder")
+    var sortOrder = 0
+
+
     @JsonProperty("minLocalPrice")
     var minLocalPrice = 0.0
 
@@ -55,6 +59,9 @@ open class FertilizerPrice {
 
     @JsonProperty("fertilizerCountry")
     var fertilizerCountry: String? = null
+
+    @JsonProperty("fertilizerKey")
+    var fertilizerKey: String? = null
 
     @JsonProperty("description")
     var description: String? = null

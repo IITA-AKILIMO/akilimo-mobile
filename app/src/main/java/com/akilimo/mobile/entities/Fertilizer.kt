@@ -17,6 +17,9 @@ open class Fertilizer : Parcelable {
 
     var imageId = 0
 
+    @JsonProperty("fertilizerKey")
+    var fertilizerKey: String? = null
+
     @JsonProperty("fertilizerId")
     var fertilizerId = 0
 

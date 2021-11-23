@@ -18,6 +18,7 @@ import com.akilimo.mobile.entities.*
         FieldOperationCost::class,
         InterCropFertilizer::class,
         InvestmentAmount::class,
+        InvestmentAmountDto::class,
         LocationInfo::class,
         MaizeMarket::class,
         MaizePerformance::class,
@@ -47,6 +48,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun interCropFertilizerDao(): InterCropFertilizerDao
 
     abstract fun investmentAmountDao(): InvestmentAmountDao
+    abstract fun investmentAmountDtoDao(): InvestmentAmountDtoDao
     abstract fun locationInfoDao(): LocationInfoDao
     abstract fun maizeMarketDao(): MaizeMarketDao
     abstract fun maizePerformanceDao(): MaizePerformanceDao
@@ -76,7 +78,7 @@ abstract class AppDatabase : RoomDatabase() {
                     if (database == null) {
                         database = Room.databaseBuilder(
                             context.applicationContext,
-                            AppDatabase::class.java, "AKILIMO_18_NOV_2021"
+                            AppDatabase::class.java, "AKILIMO_23_NOV_2021_B"
                         )
                             .fallbackToDestructiveMigration()
                             .allowMainThreadQueries()

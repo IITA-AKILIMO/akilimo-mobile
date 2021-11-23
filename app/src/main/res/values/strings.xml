@@ -322,6 +322,7 @@
     <string name="lbl_plough_op_type">How do you perform your ploughing operations?</string>
     <string name="lbl_ridge_op_type">How do you perform your ridging operations?</string>
     <string name="lbl_fertilizer_load_error">Unable to load list of fertilizers, please try again</string>
+    <string name="lbl_investment_amount_load_error">Unable to load list of investment amount, please try again</string>
     <string name="lbl_loading_fertilizers">Loading available fertilizers</string>
 
     <!-- maize info section -->

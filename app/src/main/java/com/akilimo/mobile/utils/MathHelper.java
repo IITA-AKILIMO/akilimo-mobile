@@ -284,4 +284,21 @@ public class MathHelper {
         return format.format(numberValue);
     }
 
+    public double convertToAreaUnit(double acreInvestmentAmount, double areaSizeAcre, String areaUnit) {
+        double areaSizeInvestment = 0.0;
+        switch (areaUnit) {
+            default:
+            case "acre":
+                areaSizeInvestment = acreInvestmentAmount / areaSizeAcre;
+                break;
+            case "ha":
+                areaSizeInvestment = (acreInvestmentAmount * baseAcre) / areaSizeAcre;
+                break;
+            case "sqm":
+                areaSizeInvestment = areaSizeAcre * baseSqm;
+                break;
+        }
+        return areaSizeInvestment;
+    }
+
 }

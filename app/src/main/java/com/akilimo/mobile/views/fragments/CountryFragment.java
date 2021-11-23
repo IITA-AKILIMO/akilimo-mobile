@@ -53,7 +53,7 @@ public class CountryFragment extends BaseStepFragment {
             EnumCountry.Nigeria.name(),
             EnumCountry.Tanzania.name(),
             EnumCountry.Ghana.name(),
-            EnumCountry.Rwanda.name(),
+//            EnumCountry.Rwanda.name(),
     };
 
     public CountryFragment() {
@@ -121,9 +121,9 @@ public class CountryFragment extends BaseStepFragment {
                         EnumCountry.Tanzania.name()
                 };
             } else if (selectedLanguage.equalsIgnoreCase("rw")) {
-                countries = new String[]{
-                        EnumCountry.Rwanda.name()
-                };
+//                countries = new String[]{
+//                        EnumCountry.Rwanda.name()
+//                };
             }
 
 
@@ -207,6 +207,7 @@ public class CountryFragment extends BaseStepFragment {
             } else {
                 database.profileInfoDao().insert(profileInfo);
             }
+            sessionManager.setCountry(countryCode);
         } catch (Exception ex) {
             dataIsValid = false;
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());

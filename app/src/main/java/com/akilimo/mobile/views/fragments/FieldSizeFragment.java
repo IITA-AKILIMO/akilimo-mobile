@@ -49,6 +49,7 @@ public class FieldSizeFragment extends BaseStepFragment {
     RadioButton rd_quarter_acre;
     RadioButton rd_half_acre;
     RadioButton rd_one_acre;
+    RadioButton rd_two_half_acre;
 
     private ProfileInfo profileInfo;
     private MandatoryInfo mandatoryInfo;
@@ -96,6 +97,7 @@ public class FieldSizeFragment extends BaseStepFragment {
         rd_quarter_acre = binding.rdQuarterAcre;
         rd_half_acre = binding.rdHalfAcre;
         rd_one_acre = binding.rdOneAcre;
+        rd_two_half_acre = binding.rdTwoHalfAcre;
 
 
         rdgFieldArea.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
@@ -179,6 +181,9 @@ public class FieldSizeFragment extends BaseStepFragment {
             case R.id.rd_one_acre:
                 areaSize = EnumFieldArea.ONE_ACRE.areaValue();
                 break;
+            case R.id.rd_two_half_acre:
+                areaSize = EnumFieldArea.TWO_HALF_ACRE.areaValue();
+                break;
             case R.id.rd_specify_acre:
                 isExactArea = true;
                 areaSize = EnumFieldArea.EXACT_AREA.areaValue();
@@ -195,34 +200,43 @@ public class FieldSizeFragment extends BaseStepFragment {
         String quarterAcre;
         String halfAcre;
         String oneAcre;
+        String twoHalfAcre;
+        rd_two_half_acre.setVisibility(View.GONE);
         switch (areaUnit) {
             default:
             case "acre":
                 quarterAcre = getString(R.string.quarter_acre);
                 halfAcre = getString(R.string.half_acre);
                 oneAcre = getString(R.string.one_acre);
+                twoHalfAcre = getString(R.string.two_half_acres);
                 break;
             case "ha":
                 quarterAcre = getString(R.string.quarter_acre_to_ha);
                 halfAcre = getString(R.string.half_acre_to_ha);
                 oneAcre = getString(R.string.one_acre_to_ha);
+                twoHalfAcre = getString(R.string.two_half_acre_to_ha);
+                rd_two_half_acre.setVisibility(View.VISIBLE);
                 break;
             case "are":
                 quarterAcre = getString(R.string.quarter_acre_to_are);
                 halfAcre = getString(R.string.half_acre_to_are);
                 oneAcre = getString(R.string.one_acre_to_are);
+                twoHalfAcre = getString(R.string.two_half_acre_to_are);
                 break;
             case "sqm":
                 quarterAcre = getString(R.string.quarter_acre_to_m2);
                 halfAcre = getString(R.string.half_acre_to_m2);
                 oneAcre = getString(R.string.one_acre_to_m2);
+                twoHalfAcre = getString(R.string.two_half_acre_to_m2);
                 break;
         }
+
 
         String exactArea = context.getString(R.string.exact_field_area);
         rd_quarter_acre.setText(quarterAcre);
         rd_half_acre.setText(halfAcre);
         rd_one_acre.setText(oneAcre);
+        rd_two_half_acre.setText(twoHalfAcre);
         rdSpecifyArea.setText(exactArea);
         titleMessage = context.getString(R.string.lbl_cassava_field_size, displayAreaUnit);
         title.setText(titleMessage);
