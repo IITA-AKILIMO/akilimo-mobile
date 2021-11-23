@@ -12,7 +12,7 @@ public class Locales {
 
     public static final List<Locale> APP_LOCALES = Arrays.asList(
             Locale.ENGLISH,
-            Locales.LOCAL_TZ_SWA,
-            Locales.LOCAL_RW_KINYARWANDA);
+            Locales.LOCAL_TZ_SWA);
+
     public static final List<Locale> LOCALE_COUNTRIES = Arrays.asList(Locales.LOCAL_TZ_SWA, LOCAL_NG_ENGLISH, Locales.LOCAL_RW_KINYARWANDA);
 }

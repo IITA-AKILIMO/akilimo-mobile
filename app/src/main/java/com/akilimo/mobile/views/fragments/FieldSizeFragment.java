@@ -221,6 +221,7 @@ public class FieldSizeFragment extends BaseStepFragment {
                 quarterAcre = getString(R.string.quarter_acre_to_are);
                 halfAcre = getString(R.string.half_acre_to_are);
                 oneAcre = getString(R.string.one_acre_to_are);
+                twoHalfAcre = getString(R.string.two_half_acre_to_are);
                 break;
             case "sqm":
                 quarterAcre = getString(R.string.quarter_acre_to_m2);
