@@ -8,11 +8,15 @@ jobs:
 
   run_build:
     runs-on: ubuntu-latest
+    env:
+      BRANCH_NAME: ${{ github.head_ref }}
     steps:
       - name: Git checkout
         uses: actions/checkout@v1
       - name: Branch name
         run: echo running on branch ${GITHUB_REF##*/}
+      - name: Read latest tag from tag file
+        run: echo "BRANCH_NAME=MAS" >> $GITHUB_ENV
 
   run_tests:
     if: contains(github.ref, 'beta') || contains(github.ref, 'main')
