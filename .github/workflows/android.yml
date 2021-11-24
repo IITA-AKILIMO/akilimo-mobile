@@ -3,15 +3,14 @@ on:
   #  pull_request:
   push:
 
-concurrency:
-  group: 'akilimo-mobile'
-  cancel-in-progress: true
-
 jobs:
 
   run_tests:
     name: Unit tests
     runs-on: ubuntu-latest
+    concurrency:
+      group: 'akilimo-mobile'
+      cancel-in-progress: true
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
