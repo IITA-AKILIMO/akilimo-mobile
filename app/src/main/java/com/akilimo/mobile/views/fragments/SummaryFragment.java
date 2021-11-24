@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.akilimo.mobile.utils.enums.EnumCountry;
 import com.crashlytics.android.Crashlytics;
 import com.github.vipulasri.timelineview.TimelineView;
 import com.google.android.gms.common.util.Strings;
@@ -155,6 +156,7 @@ public class SummaryFragment extends BaseStepFragment {
         profileInfo = database.profileInfoDao().findOne();
         if (profileInfo != null) {
             countryName = profileInfo.getCountryName();
+            countryCode = profileInfo.getCountryCode();
             countrySelected = !Strings.isEmptyOrWhitespace(countryName);
             riskAttitude = profileInfo.getRiskAtt();
         }
@@ -222,19 +224,21 @@ public class SummaryFragment extends BaseStepFragment {
             }
         }
 
+        String location = mathHelper.removeLeadingZero(lat, "#.####") + "," + mathHelper.removeLeadingZero(lon, "#.####");
 
         mDataList = new ArrayList<>();
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_country), countryName, countrySelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_risk_attitude), riskAttitudeName, StepStatus.COMPLETED));
-//        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_location), pickedLocation, locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_lat), mathHelper.removeLeadingZero(lat, "#.####"), locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_lon), mathHelper.removeLeadingZero(lon, "#.####"), locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_farm_place), location, locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_farm_size), fieldInfo, fieldSizeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
 
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_planting_date), plantingDate, plantingDateProvided ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_harvesting_date), harvestDate, harvestDateProvided ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_ploughing), ploughStr.toString(), currentPracticeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_ridging), ridgeStr.toString(), currentPracticeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+
+        if (!countryCode.equals(EnumCountry.Ghana.countryCode())) {
+            mDataList.add(new TimeLineModel(context.getString(R.string.lbl_ploughing), ploughStr.toString(), currentPracticeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+            mDataList.add(new TimeLineModel(context.getString(R.string.lbl_ridging), ridgeStr.toString(), currentPracticeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
+        }
 
         initAdapter();
     }
