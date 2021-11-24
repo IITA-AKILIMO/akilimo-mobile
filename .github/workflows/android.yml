@@ -6,29 +6,14 @@ on:
 
 jobs:
 
-  run_build:
-    runs-on: ubuntu-latest
-    env:
-      BRANCH_NAME: ${{ github.head_ref }}
-    steps:
-      - name: Git checkout
-        uses: actions/checkout@v1
-      - name: Branch name
-        run: echo running on branch ${GITHUB_REF##*/}
-      - name: Read latest tag from tag file
-        run: echo "BRANCH_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
-      - name: The results
-        run:  echo ${BRANCH_NAME}
-
   run_tests:
-    if: contains(github.ref, 'beta') || contains(github.ref, 'main')
     name: Unit tests
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       REPO_NAME: ${{ secrets.REPO_NAME }}
       LATEST_TAG_FILE: ${{ secrets.LATEST_TAG_FILE }}
-      RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
+      RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
     steps:
       - name: Checkout the code
@@ -74,6 +59,12 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+
+      - name: Get and set name of current branch
+        run: echo "BRANCH_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
+      - name: Display current branch name
+        run:  echo ${BRANCH_NAME}
 
       - name: Set up Python 3.9
         uses: actions/setup-python@v2

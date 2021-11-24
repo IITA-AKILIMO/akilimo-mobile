@@ -95,7 +95,7 @@ static def computeBuildNumber() {
         def versionMinor = splitMe[1]
         def versionPatchRaw = splitMe[2].split('-')
         def versionPatch = versionPatchRaw[0].toInteger()
-        gitVersionTag = String.format('%d.%d.%d-beta+%d',
+        gitVersionTag = String.format('%d.%d.%d_beta_%d',
                 Integer.valueOf(versionMajor),
                 Integer.valueOf(versionMinor),
                 Integer.valueOf(versionPatch),
@@ -111,7 +111,6 @@ static def computeBuildNumber() {
 def computeVersionCode() {
     long unixTimestamp = Instant.now().getEpochSecond()
     def versionCode = System.env.RELEASE_VERSION ? unixTimestamp.intValue() : 1613040938
-    // def versionCode = unixTimestamp.intValue()
     return versionCode
 }
 
