@@ -6,7 +6,7 @@ on:
   push:
 
 concurrency:
-  group: ${{ github.head_ref }}
+  group: 'akilimo-mobile'
   cancel-in-progress: true
 
 jobs:
