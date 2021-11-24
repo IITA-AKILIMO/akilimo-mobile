@@ -1,8 +1,5 @@
 name: Android CICD
 
-concurrency:
-  group: ${{ github.head_ref }}
-  cancel-in-progress: true
 
 on:
   #  pull_request:
@@ -14,6 +11,9 @@ jobs:
   run_tests:
     name: Unit tests
     runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.head_ref }}
+      cancel-in-progress: true
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       REPO_NAME: ${{ secrets.REPO_NAME }}
@@ -69,7 +69,7 @@ jobs:
         run: echo "BRANCH_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
       - name: Display current branch name
-        run:  echo ${BRANCH_NAME}
+        run: echo ${BRANCH_NAME}
 
       - name: Set up Python 3.9
         uses: actions/setup-python@v2
