@@ -45,7 +45,7 @@ jobs:
 
   build_artifacts:
     if: contains(github.ref, 'beta') || contains(github.ref, 'main')
-    needs: [ run_tests ]
+    needs: run_tests
     name: Build artifacts
     runs-on: ubuntu-latest
     env:
@@ -126,7 +126,7 @@ jobs:
           path: release
 
   publish_to_playstore:
-    needs: [ build_artifacts ]
+    needs: build_artifacts
     name: Publish to Google PlayStore
     runs-on: ubuntu-latest
     steps:
@@ -161,7 +161,7 @@ jobs:
 
   upload_beta_artifacts:
     if: contains(github.ref, 'beta')
-    needs: [ publish_to_playstore ]
+    needs: publish_to_playstore
     name: Upload to github beta
     runs-on: ubuntu-latest
     env:
@@ -191,7 +191,7 @@ jobs:
 
   upload_production_artifacts:
     if: contains(github.ref, 'main')
-    needs: [ publish_to_playstore ]
+    needs: publish_to_playstore
     name: Upload to github release
     runs-on: ubuntu-latest
     env:
