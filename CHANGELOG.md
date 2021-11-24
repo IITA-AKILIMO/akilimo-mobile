@@ -1,4 +1,14 @@
-#### [Version 21.1.0](https://IITA-AKILIMO/akilimo-mobile/releases/tag/21.1.0) 
+#### [Version 21.2.0](https://IITA-AKILIMO/akilimo-mobile/releases/tag/21.2.0) 
+### Implemented Enhancements 
+- Main [#164](https://IITA-AKILIMO/akilimo-mobile/issues/#164) ([@masgeek](https://github.com/@masgeek))
+### Fixed Bugs 
+- fix: disbaled rwanda data points [#166](https://IITA-AKILIMO/akilimo-mobile/issues/#166) ([@masgeek](https://github.com/@masgeek))
+- Fix/summary [#170](https://IITA-AKILIMO/akilimo-mobile/issues/#170) ([@masgeek](https://github.com/@masgeek))
+### Other Changes 
+- Update CHANGELOG.md for 21.1.0 [#165](https://IITA-AKILIMO/akilimo-mobile/issues/#165) ([@nextreleaseio[bot]](https://github.com/@nextreleaseio[bot]))
+- Update android.yml [#167](https://IITA-AKILIMO/akilimo-mobile/issues/#167) ([@masgeek](https://github.com/@masgeek))
+ 
+ #### [Version 21.1.0](https://IITA-AKILIMO/akilimo-mobile/releases/tag/21.1.0) 
 ### Implemented Enhancements 
 - feat: added kinyarwanda translations [#149](https://IITA-AKILIMO/akilimo-mobile/issues/#149) ([@masgeek](https://github.com/@masgeek))
 - Fix/ghana [#163](https://IITA-AKILIMO/akilimo-mobile/issues/#163) ([@masgeek](https://github.com/@masgeek))
