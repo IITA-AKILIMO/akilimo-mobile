@@ -1,4 +1,9 @@
 name: Android CICD
+
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
 on:
   #  pull_request:
   push:
