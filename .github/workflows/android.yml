@@ -16,7 +16,7 @@ jobs:
       - name: Branch name
         run: echo running on branch ${GITHUB_REF##*/}
       - name: Read latest tag from tag file
-        run: echo "BRANCH_NAME=MAS" >> $GITHUB_ENV
+        run: echo "BRANCH_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
       - name: The results
         run:  echo ${BRANCH_NAME}
 
