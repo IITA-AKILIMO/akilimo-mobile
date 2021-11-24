@@ -3,12 +3,15 @@ on:
   #  pull_request:
   push:
 
-
 jobs:
 
   run_tests:
     name: Unit tests
     runs-on: ubuntu-latest
+    concurrency:
+      group: 'akilimo-mobile'
+      cancel-in-progress: true
+
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       REPO_NAME: ${{ secrets.REPO_NAME }}
@@ -27,8 +30,8 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Run Mock build
-        run: ./gradlew bundleRelease -x test
+      #- name: Run Mock build
+      #  run: ./gradlew bundleRelease -x test
 
       - name: Run Unit tests
         run: ./gradlew testRelease
@@ -40,7 +43,7 @@ jobs:
 
   build_artifacts:
     if: contains(github.ref, 'beta') || contains(github.ref, 'main')
-    needs: [ run_tests ]
+    needs: run_tests
     name: Build artifacts
     runs-on: ubuntu-latest
     env:
@@ -59,6 +62,12 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+
+      - name: Get and set name of current branch
+        run: echo "BRANCH_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
+      - name: Display current branch name
+        run: echo ${BRANCH_NAME}
 
       - name: Set up Python 3.9
         uses: actions/setup-python@v2
@@ -115,7 +124,7 @@ jobs:
           path: release
 
   publish_to_playstore:
-    needs: [ build_artifacts ]
+    needs: build_artifacts
     name: Publish to Google PlayStore
     runs-on: ubuntu-latest
     steps:
@@ -150,7 +159,7 @@ jobs:
 
   upload_beta_artifacts:
     if: contains(github.ref, 'beta')
-    needs: [ publish_to_playstore ]
+    needs: publish_to_playstore
     name: Upload to github beta
     runs-on: ubuntu-latest
     env:
@@ -180,7 +189,7 @@ jobs:
 
   upload_production_artifacts:
     if: contains(github.ref, 'main')
-    needs: [ publish_to_playstore ]
+    needs: publish_to_playstore
     name: Upload to github release
     runs-on: ubuntu-latest
     env:

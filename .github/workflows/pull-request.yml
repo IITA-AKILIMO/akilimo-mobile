@@ -2,7 +2,7 @@ name: Beta release PR creator
 on:
   push:
     branches:
-      - "develop"  # Support wildcard matching
+      - "develop"
 
 jobs:
   pull-request:
