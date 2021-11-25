@@ -171,9 +171,11 @@ public class InvestmentAmountActivity extends BaseActivity {
                 if (invAmount == null) {
                     invAmount = new InvestmentAmount();
                 }
+                double amountToInvestRaw = mathHelper.convertToAreaUnit(investmentAmountLocal, fieldSize, areaUnit);
+                double amountToInvest = mathHelper.roundToNDecimalPlaces(amountToInvestRaw, 2);
                 invAmount.setInvestmentAmountUSD(investmentAmountUSD);
                 invAmount.setMinInvestmentAmountUSD(minimumAmountUSD);
-                invAmount.setInvestmentAmountLocal(investmentAmountLocal);
+                invAmount.setInvestmentAmountLocal(amountToInvest);
                 invAmount.setMinInvestmentAmountLocal(minimumAmountLocal);
                 invAmount.setFieldSize(fieldSizeAcre);
 
@@ -324,7 +326,7 @@ public class InvestmentAmountActivity extends BaseActivity {
             radioButton.setTag(listIndex);
 
             double price = pricesResp.getInvestmentAmount();
-            Double amountToInvest = mathHelper.convertToAreaUnit(price, fieldSize, areaUnit);
+            double amountToInvest = mathHelper.convertToAreaUnit(price, fieldSize, areaUnit);
             String radioLabel = setLabel(amountToInvest, currencyCode, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator);
             if (price == 0) {
                 radioLabel = context.getString(R.string.exact_investment_x_per_field_area);
@@ -335,7 +337,8 @@ public class InvestmentAmountActivity extends BaseActivity {
 
             rdgInvestmentAmount.addView(radioButton);
             //set relevant radio button as selected based on the price range
-            if (price == selectedPrice) {
+            double refAmount = mathHelper.roundToNDecimalPlaces(amountToInvest, 2);
+            if (refAmount == selectedPrice) {
                 radioButton.setChecked(true);
             }
         }
