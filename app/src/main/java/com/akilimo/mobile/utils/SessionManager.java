@@ -190,8 +190,8 @@ public class SessionManager {
         return pref.getString("termsLink", "https://www.akilimo.org/privacy-policy");
     }
 
-    public void setForward(boolean goFoward) {
-        editor.putBoolean("goF", goFoward);
+    public void setForward(boolean goForward) {
+        editor.putBoolean("goF", goForward);
         editor.commit();
     }
 
