@@ -9,7 +9,7 @@ jobs:
     name: Unit tests
     runs-on: ubuntu-latest
     concurrency:
-      group: 'akilimo-mobile'
+      group: ci-${{ github.ref }}
       cancel-in-progress: true
 
     env:
