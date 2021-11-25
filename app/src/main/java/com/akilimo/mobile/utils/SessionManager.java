@@ -45,7 +45,7 @@ public class SessionManager {
 
     public String getApiEndPoint() {
         if (BuildConfig.DEBUG) {
-            return "http://192.168.100.3:8098/api/";
+//            return "http://192.168.100.3:8098/api/";
         }
         return pref.getString("apiResource", "http://157.245.26.55:8099/api/");
     }
@@ -190,8 +190,8 @@ public class SessionManager {
         return pref.getString("termsLink", "https://www.akilimo.org/privacy-policy");
     }
 
-    public void setForward(boolean goFoward) {
-        editor.putBoolean("goF", goFoward);
+    public void setForward(boolean goForward) {
+        editor.putBoolean("goF", goForward);
         editor.commit();
     }
 

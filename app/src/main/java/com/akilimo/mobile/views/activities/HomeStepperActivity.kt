@@ -122,6 +122,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
             override fun onStepSelected(newStepPosition: Int) {
 
                 if (newStepPosition == 0) {
+                    sessionManager.setForward(true)
                     appUpdater.start()
                 } else if (newStepPosition == 10) {
                     if (sessionManager.country.equals(EnumCountry.Ghana.countryCode())) {
