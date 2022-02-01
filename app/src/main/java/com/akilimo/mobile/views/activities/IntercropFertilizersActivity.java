@@ -273,8 +273,10 @@ public class IntercropFertilizersActivity extends BaseActivity {
                         }
                     }
                     database.interCropFertilizerDao().deleteFertilizerByList(deletionList);
+                    for (InterCropFertilizer fertilizer : availableFertilizersList) {
+                        loadFertilizerPrices(fertilizer.getFertilizerKey());
+                    }
 
-                    initializeFertilizerPriceList();
                 } catch (Exception ex) {
                     lyt_progress.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.GONE);
@@ -307,10 +309,9 @@ public class IntercropFertilizersActivity extends BaseActivity {
         });
     }
 
-    private void initializeFertilizerPriceList() {
+    private void loadFertilizerPrices(String fertilizerKey) {
         final RestParameters restParameters = new RestParameters(
-                "v2/fertilizer-prices",
-                countryCode
+                String.format("v2/fertilizer-prices/%s", fertilizerKey), countryCode
         );
         final RestService restService = RestService.getInstance(queue, this);
         restParameters.setInitialTimeout(5000);
