@@ -1,4 +1,8 @@
-
+#### [Version 21.2.2](https://IITA-AKILIMO/akilimo-mobile/releases/tag/21.2.2) 
+### Other Changes 
+- Update CHANGELOG.md for 21.2.1 [#176](https://IITA-AKILIMO/akilimo-mobile/issues/#176) ([@nextreleaseio[bot]](https://github.com/@nextreleaseio[bot]))
+ 
+ 
 #### [Version 21.2.1](https://IITA-AKILIMO/akilimo-mobile/releases/tag/21.2.1) 
 ### Fixed Bugs 
 - Fix/max investment [#173](https://IITA-AKILIMO/akilimo-mobile/issues/#173) ([@masgeek](https://github.com/@masgeek))
