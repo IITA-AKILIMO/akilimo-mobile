@@ -21,6 +21,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.akilimo.mobile.utils.enums.EnumCountry;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.material.textfield.TextInputLayout;
 import com.akilimo.mobile.R;
@@ -68,6 +69,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
     private double maxPrice = 0.0;
     private double minPrice = 0.0;
     private String countryCode;
+    private String fertilizerKey;
     private String currencyCode;
     private String currencyName;
     private Double bagPrice;
@@ -112,12 +114,29 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
         if (fertilizer != null) {
             countryCode = fertilizer.getCountryCode();
             currencyCode = fertilizer.getCurrency();
+            fertilizerKey = fertilizer.getFertilizerKey();
             currencySymbol = currencyCode;
             ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
             if (extendedCurrency != null) {
                 currencySymbol = extendedCurrency.getSymbol();
                 currencyName = extendedCurrency.getName();
             }
+
+            switch (countryCode) {
+                case "TZ":
+                    currencyName = EnumCountry.Tanzania.currencyName(context);
+                    break;
+                case "NG":
+                    currencyName = EnumCountry.Nigeria.currencyName(context);
+                    break;
+                case "GH":
+                    currencyName = EnumCountry.Ghana.currencyName(context);
+                    break;
+                case "RW":
+                    currencyName = EnumCountry.Rwanda.currencyName(context);
+                    break;
+            }
+
             String titleText = context.getString(R.string.price_per_bag, currencySymbol, fertilizer.getName());
             lblPricePerBag.setText(titleText);
         }
@@ -179,7 +198,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
 
         radioGroup.setOnCheckedChangeListener((radioGroup, i) -> radioSelected(radioGroup));
         if (database != null) {
-            fertilizerPricesList = database.fertilizerPriceDao().findAllByCountry(countryCode);
+            fertilizerPricesList = database.fertilizerPriceDao().findAllByFertilizerKey(fertilizerKey);
             addPriceRadioButtons(fertilizerPricesList, fertilizer);
         }
         return dialog;
@@ -190,9 +209,14 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
         int radioButtonId = radioGroup.getCheckedRadioButtonId();
         RadioButton radioButton = dialog.findViewById(radioButtonId);
         long itemTagIndex = (long) radioButton.getTag();
+        currencySymbol = currencyCode;
+        ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
+        if (extendedCurrency != null) {
+            currencySymbol = extendedCurrency.getSymbol();
+        }
 
         try {
-            FertilizerPrice pricesResp = fertilizerPricesList.get((int) itemTagIndex);
+            FertilizerPrice pricesResp = database.fertilizerPriceDao().findOneByPriceId(itemTagIndex);
             isExactPriceRequired = false;
             isPriceValid = true;
             savedPricePerBag = pricesResp.getPricePerBag();
@@ -218,7 +242,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
     private void addPriceRadioButtons(List<FertilizerPrice> fertilizerPricesList, InterCropFertilizer fertilizer) {
         radioGroup.removeAllViews();
         double selectedPrice = 0.0;
-        String currencySymbol = currencyCode;
+        currencySymbol = currencyCode;
         ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
         if (extendedCurrency != null) {
             currencySymbol = extendedCurrency.getSymbol();
@@ -240,8 +264,9 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
             }
         }
         for (FertilizerPrice pricesResp : fertilizerPricesList) {
-
-            long listIndex = pricesResp.getPriceId() - 1;//reduce by one so as to match the index in the list
+            minPrice = pricesResp.getMinAllowedPrice();
+            maxPrice = pricesResp.getMaxAllowedPrice();
+            long listIndex = pricesResp.getPriceId();
 
             RadioButton radioButton = new RadioButton(getActivity());
             radioButton.setId(View.generateViewId());
@@ -250,8 +275,6 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
 
             double price = pricesResp.getPricePerBag();
             String radioLabel = context.getString(R.string.lbl_about, pricesResp.getPriceRange());
-            minPrice = pricesResp.getMinAllowedPrice();
-            maxPrice = pricesResp.getMaxAllowedPrice();
             if (price == 0) {
                 radioLabel = context.getString(R.string.lbl_do_not_know);
             } else if (price < 0) {
