@@ -209,9 +209,14 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
         int radioButtonId = radioGroup.getCheckedRadioButtonId();
         RadioButton radioButton = dialog.findViewById(radioButtonId);
         long itemTagIndex = (long) radioButton.getTag();
+        currencySymbol = currencyCode;
+        ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
+        if (extendedCurrency != null) {
+            currencySymbol = extendedCurrency.getSymbol();
+        }
 
         try {
-            FertilizerPrice pricesResp = fertilizerPricesList.get((int) itemTagIndex);
+            FertilizerPrice pricesResp = database.fertilizerPriceDao().findOneByPriceId(itemTagIndex);
             isExactPriceRequired = false;
             isPriceValid = true;
             savedPricePerBag = pricesResp.getPricePerBag();
@@ -237,7 +242,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
     private void addPriceRadioButtons(List<FertilizerPrice> fertilizerPricesList, InterCropFertilizer fertilizer) {
         radioGroup.removeAllViews();
         double selectedPrice = 0.0;
-        String currencySymbol = currencyCode;
+        currencySymbol = currencyCode;
         ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
         if (extendedCurrency != null) {
             currencySymbol = extendedCurrency.getSymbol();
@@ -259,8 +264,9 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
             }
         }
         for (FertilizerPrice pricesResp : fertilizerPricesList) {
-
-            long listIndex = pricesResp.getPriceId() - 1;//reduce by one so as to match the index in the list
+            minPrice = pricesResp.getMinAllowedPrice();
+            maxPrice = pricesResp.getMaxAllowedPrice();
+            long listIndex = pricesResp.getPriceId();
 
             RadioButton radioButton = new RadioButton(getActivity());
             radioButton.setId(View.generateViewId());
@@ -269,8 +275,6 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
 
             double price = pricesResp.getPricePerBag();
             String radioLabel = context.getString(R.string.lbl_about, pricesResp.getPriceRange());
-            minPrice = pricesResp.getMinAllowedPrice();
-            maxPrice = pricesResp.getMaxAllowedPrice();
             if (price == 0) {
                 radioLabel = context.getString(R.string.lbl_do_not_know);
             } else if (price < 0) {
