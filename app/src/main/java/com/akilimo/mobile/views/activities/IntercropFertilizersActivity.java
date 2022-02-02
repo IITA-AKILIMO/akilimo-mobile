@@ -223,11 +223,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
         errorImage.setVisibility(View.GONE);
         btnRetry.setVisibility(View.GONE);
 
-        final RestParameters restParameters = new RestParameters(
-                "v2/fertilizers",
-                countryCode
-        );
-
+        final RestParameters restParameters = new RestParameters("v2/fertilizers",countryCode );
         final RestService restService = RestService.getInstance(queue, this);
         restService.setParameters(restParameters);
 
@@ -276,13 +272,15 @@ public class IntercropFertilizersActivity extends BaseActivity {
                     for (InterCropFertilizer fertilizer : availableFertilizersList) {
                         loadFertilizerPrices(fertilizer.getFertilizerKey());
                     }
-
+                    validate(false);
+                    recyclerView.setVisibility(View.VISIBLE);
                 } catch (Exception ex) {
                     lyt_progress.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.GONE);
                     errorLabel.setVisibility(View.VISIBLE);
                     errorImage.setVisibility(View.VISIBLE);
                     btnRetry.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
 
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
                     Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
