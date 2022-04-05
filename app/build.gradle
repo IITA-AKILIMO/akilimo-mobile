@@ -13,14 +13,14 @@ android {
     def releaseVersionName = computeBuildNumber()
     def appVersionCode = computeVersionCode()
 
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion '30.0.3'
     ndkVersion "22.1.7171670"
 
     defaultConfig {
         applicationId "com.akilimo.mobile"
         minSdkVersion 19
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode appVersionCode
         versionName releaseVersionName
         multiDexEnabled true
@@ -120,21 +120,21 @@ dependencies {
 
 //    implementation platform('com.google.firebase:firebase-bom:28.4.2')
 
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.5.21'
-    implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.6.10'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.preference:preference-ktx:1.1.1'
+    implementation 'androidx.preference:preference-ktx:1.2.0'
 
     implementation 'androidx.multidex:multidex:2.0.1'
 
 
     // google library ------------------------------------------------------------------------
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'com.google.android.gms:play-services-maps:17.0.1'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
     implementation 'com.google.android.gms:play-services-places:17.0.0'
 
 
@@ -150,7 +150,7 @@ dependencies {
     implementation "com.j256.ormlite:ormlite-android:5.1"
     implementation 'com.j256.ormlite:ormlite-core:5.1'
 
-    implementation "androidx.room:room-runtime:2.3.0"
+    implementation "androidx.room:room-runtime:2.4.2"
 
 
     // mapbox implementation------------------------------------------------------------------------
@@ -169,7 +169,11 @@ dependencies {
     implementation 'com.github.mohammadatif:Animatoo:master'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1' //discontinued consider removal
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.2' //Feature discovery library
+
     implementation 'eu.the4thfloor.volley:com.android.volley:2015.05.28' //Volley library
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0' //Will replace Volley eventually
+    implementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
+
     implementation 'com.fasterxml.jackson.core:jackson-core:2.12.5'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.5'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.5'
@@ -190,7 +194,7 @@ dependencies {
     implementation 'dev.b3nedikt.reword:reword:1.0.0'
     implementation 'io.github.inflationx:viewpump:2.0.3'
     implementation 'com.github.blongho:worldCountryData:1.5'
-    implementation 'com.jakewharton:process-phoenix:2.0.0'
+    implementation 'com.jakewharton:process-phoenix:2.0.0' //restart the app from code
     implementation 'com.stepstone.stepper:material-stepper:4.3.1'
     implementation 'com.github.twinone:AndroidWizard:b4546bd712'
 
@@ -198,7 +202,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.9.1'
 
     //If you are using Kotlin, replace annotationProcessor with kapt.
-    kapt 'androidx.room:room-compiler:2.3.0'
+    kapt 'androidx.room:room-compiler:2.4.2'
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
     kapt 'com.jakewharton:butterknife-compiler:10.2.1'
     kapt 'com.fasterxml.jackson.core:jackson-annotations:2.12.5'
