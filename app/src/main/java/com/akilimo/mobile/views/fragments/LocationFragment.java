@@ -260,7 +260,8 @@ public class LocationFragment extends BaseStepFragment {
         countrySupported = countryLocation.equalsIgnoreCase(EnumCountry.Nigeria.countryCode())
                 || countryLocation.equalsIgnoreCase(EnumCountry.Tanzania.countryCode())
                 || countryLocation.equalsIgnoreCase(EnumCountry.Rwanda.countryCode())
-                || countryLocation.equalsIgnoreCase(EnumCountry.Ghana.countryCode());
+                || countryLocation.equalsIgnoreCase(EnumCountry.Ghana.countryCode())
+                || countryLocation.equalsIgnoreCase(EnumCountry.Burundi.countryCode());
         errorMessage = getString(R.string.lbl_country_supported);
     }
 

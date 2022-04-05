@@ -202,9 +202,11 @@ public class SummaryFragment extends BaseStepFragment {
             performPloughing = currentPractice.getPerformPloughing();
             performRidging = currentPractice.getPerformRidging();
 
-            if (performPloughing) {
+            String _ridgeMethod = currentPractice.getPloughingMethod();
+            String _ploughMethod = currentPractice.getRidgingMethod();
+            if (performPloughing && _ploughMethod != null) {
                 String ploughMethod = context.getString(R.string.lbl_manual);
-                if (currentPractice.getPloughingMethod().equals("tractor")) {
+                if (_ploughMethod.equals("tractor")) {
                     ploughMethod = context.getString(R.string.lbl_tractor);
                 }
                 ploughStr.append(ploughMethod);
@@ -213,9 +215,9 @@ public class SummaryFragment extends BaseStepFragment {
             }
 
 
-            if (performRidging) {
+            if (performRidging && _ridgeMethod != null) {
                 String ridgeMethod = context.getString(R.string.lbl_manual);
-                if (currentPractice.getRidgingMethod().equals("tractor")) {
+                if (_ridgeMethod.equals("tractor")) {
                     ridgeMethod = context.getString(R.string.lbl_tractor);
                 }
                 ridgeStr.append(ridgeMethod);

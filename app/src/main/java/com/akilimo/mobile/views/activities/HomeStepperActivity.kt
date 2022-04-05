@@ -14,8 +14,10 @@ import com.github.javiersantos.appupdater.enums.Display
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.MyStepperAdapter
 import com.akilimo.mobile.dao.AppDatabase
+import com.akilimo.mobile.data.RemoteConfig
 import com.akilimo.mobile.databinding.ActivityHomeStepperBinding
 import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.interfaces.FuelrodApiInterface
 import com.akilimo.mobile.interfaces.IFragmentCallBack
 import com.akilimo.mobile.utils.AppUpdateHelper
 import com.akilimo.mobile.utils.SessionManager
@@ -25,6 +27,9 @@ import com.akilimo.mobile.views.fragments.*
 import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.StepperLayout.StepperListener
 import com.stepstone.stepper.VerificationError
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import kotlin.system.exitProcess
 
 
@@ -35,6 +40,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
     private lateinit var activity: Activity
     private lateinit var binding: ActivityHomeStepperBinding
+    private lateinit var fuelrodApiInterface: FuelrodApiInterface
 
     private lateinit var stepperAdapter: MyStepperAdapter
 
@@ -58,6 +64,8 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeStepperBinding.inflate(layoutInflater)
+        fuelrodApiInterface = FuelrodApiInterface.create()
+
         setContentView(binding.root)
 
         activity = this
@@ -73,8 +81,37 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
         appUpdater.start()
 
+        loadConfig()
         createFragmentArray()
         initComponent()
+    }
+
+    private fun loadConfig() {
+        val configReader = fuelrodApiInterface.readConfig("akilimo")
+
+
+        configReader.enqueue(object : Callback<List<RemoteConfig>> {
+            override fun onResponse(
+                call: Call<List<RemoteConfig>>,
+                response: Response<List<RemoteConfig>>
+            ) {
+                val configList = response.body()
+                if (configList != null) {
+                    if (configList.isNotEmpty()) {
+                        val remoteConfig = configList[0]
+                        sessionManager.apiEndPoint = remoteConfig.configValue
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<List<RemoteConfig>>, t: Throwable) {
+                Toast.makeText(
+                    applicationContext,
+                    "Unable to load remote configurations, using default config",
+                    Toast.LENGTH_SHORT
+                ).show();
+            }
+        })
     }
 
     private fun createFragmentArray() {
