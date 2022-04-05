@@ -135,6 +135,9 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
                 case "RW":
                     currencyName = EnumCountry.Rwanda.currencyName(context);
                     break;
+                case "BI":
+                    currencyName = EnumCountry.Burundi.currencyName(context);
+                    break;
             }
 
             String titleText = context.getString(R.string.price_per_bag, currencySymbol, fertilizer.getName());
