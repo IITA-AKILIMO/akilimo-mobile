@@ -188,11 +188,11 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
                     Crashlytics.logException(ex);
                     bagPrice = 0.0;
                 }
-                if (bagPrice <= 0 || bagPrice < minPrice || bagPrice > maxPrice) {
-                    editExactFertilizerPrice.setError(String.format(getString(R.string.lbl_min_fert_price), mathHelper.removeLeadingZero(minPrice), mathHelper.removeLeadingZero(maxPrice)));
-                    isPriceValid = false;
-                    return;
-                }
+//                if (bagPrice <= 0 || bagPrice < minPrice || bagPrice > maxPrice) {
+//                    editExactFertilizerPrice.setError(String.format(getString(R.string.lbl_min_fert_price), mathHelper.removeLeadingZero(minPrice), mathHelper.removeLeadingZero(maxPrice)));
+//                    isPriceValid = false;
+//                    return;
+//                }
                 savedPricePerBag = bagPrice;
                 bagPriceRange = mathHelper.formatNumber(savedPricePerBag, currencyCode);
                 isPriceValid = true;

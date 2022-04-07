@@ -1,4 +1,10 @@
-#### [Version 21.2.4](https://IITA-AKILIMO/akilimo-mobile/releases/tag/21.2.4) 
+#### [Version 21.3.0](https://IITA-AKILIMO/akilimo-mobile/releases/tag/21.3.0) 
+### Implemented Enhancements 
+- feat: added burundi [#186](https://IITA-AKILIMO/akilimo-mobile/issues/#186) ([@masgeek](https://github.com/@masgeek))
+### Other Changes 
+- Update CHANGELOG.md for 21.2.4 [#185](https://IITA-AKILIMO/akilimo-mobile/issues/#185) ([@nextreleaseio[bot]](https://github.com/@nextreleaseio[bot]))
+ 
+ #### [Version 21.2.4](https://IITA-AKILIMO/akilimo-mobile/releases/tag/21.2.4) 
 ### Fixed Bugs 
 - fix: fixed intercrop fertilizer prices [#183](https://IITA-AKILIMO/akilimo-mobile/issues/#183) ([@masgeek](https://github.com/@masgeek))
 ### Other Changes 
