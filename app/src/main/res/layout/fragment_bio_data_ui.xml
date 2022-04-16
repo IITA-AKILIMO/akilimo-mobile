@@ -107,6 +107,48 @@
             app:layout_constraintTop_toBottomOf="@+id/genderLabel"
             tools:listitem="@android:layout/simple_dropdown_item_1line" />
 
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_mxlarge"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/genderSpinner">
+
+            <TextView
+                android:id="@+id/emailLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="3"
+                android:text="@string/lbl_email_address"
+                android:textColor="@color/grey_40"
+                app:fontFamily="@font/ubuntu" />
+
+            <TextView
+                android:id="@+id/email_optional"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_small"
+                android:text="@string/lbl_optional"
+                android:textColor="@color/akilimoDarkGreen"
+                app:fontFamily="@font/roboto_mono_thin" />
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:fontFamily="@font/ubuntu"
+            android:hint="@string/lbl_email_address"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColorHint="@android:color/transparent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
