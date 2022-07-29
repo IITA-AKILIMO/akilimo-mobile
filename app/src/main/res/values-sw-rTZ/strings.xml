@@ -80,6 +80,7 @@
     <string name="lbl_fertilizer_costs">Gharama za mbolea</string>
     <string name="lbl_planting_harvest">Je? Unataka kuzingatia upandaji mbadala na tarehe za mavuno?</string>
     <string name="lbl_investment_amount">Je? Uko tayari kuwekeza kiasi gani kwenye mbolea?</string>
+    <string name="lbl_investment_amount_label">%2$s %1$s</string>
     <string name="lbl_typical_yield">Je? Kwa kawaida shamba lako hutoa mavuno kiasi gani?</string>
     <string name="lbl_typical_yield_question">Mavuno ya kawaida ya mizizi ya mihogo ni %1$s. Je? Unatarajia mavuno kiasi gani kutoka kwenye shamba lako bila kutumia mbolea?</string>
     <string name="lbl_typical_yield_question_fr">Mavuno ya kawaida ya mizizi ya mihogo ni %1$s. Je? Unatarajia mavuno kiasi gani kutoka kwenye shamba lako bila kutumia mbolea?</string>
@@ -421,4 +422,10 @@
     <string name="lbl_tzs_currency_name">Shilingi ya Tanzania</string>
     <string name="lbl_ngn_currency_name">Naira</string>
     <string name="lbl_ghs_currency_name">Cedi ya Ghana</string>
+    <string name="lbl_are">are</string>
+    <string name="area_unit_are">Are (are)</string>
+    <string name="lbl_rwf_currency_name">Faranga ya Rwanda</string>
+    <string name="lbl_bif_currency_name">Faranga ya Burundi</string>
+    <string name="lbl_no_factories">Viwanda vya wanga havipatikani</string>
+    <string name="lbl_no_factories_text">Viwanda vya wanga havipatikani kwa %1s</string>
 </resources>

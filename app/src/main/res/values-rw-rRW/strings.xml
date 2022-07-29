@@ -81,6 +81,7 @@
     <string name="lbl_fertilizer_costs">Igiciro cy\'ifumbire</string>
     <string name="lbl_planting_harvest">Urashaka kumenya ayandi matariki yo gutera no gusarura?</string>
     <string name="lbl_investment_amount">Ni amafaranga angahe witeguye gushora mu ifumbire?</string>
+    <string name="lbl_investment_amount_label">%1$s %2$s</string>
     <string name="lbl_typical_yield">Ni uwuhe musaruro w\'imyumbati usanzwe ubona mu murima wawe?</string>
     <string name="lbl_typical_yield_question">Umusaruro w\'imyumbati usanzwe ubona ni %1$s. Ni uwuhe se musaruro wumva wabona mu murima wawe?</string>
     <string name="lbl_typical_yield_question_fr">Umusaruro w\'imyumbati ubona ni %1$s. Ni uwuhe se musaruro wumva wabona mu murima wawe udakoresheje ifumbire?</string>
@@ -431,4 +432,6 @@
     <string name="lbl_unit_price_m2">Igiciro amezi 2 nyuma yo gusarura</string>
     <string name="lbl_tzs_currency_name">Amashiringi ya Tanzaniya</string>
     <string name="lbl_ngn_currency_name">Nayira</string>
+    <string name="lbl_are">are</string>
+    <string name="area_unit_are">Are (are)</string>
 </resources>

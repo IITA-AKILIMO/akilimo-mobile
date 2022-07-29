@@ -224,7 +224,7 @@ public class InvestmentAmountActivity extends BaseActivity {
             areaUnit = mandatoryInfo.getAreaUnit();
             areaUnitText = mandatoryInfo.getDisplayAreaUnit();
         }
-        selectedFieldArea = String.format("%s %s", fieldSize, areaUnitText);
+        selectedFieldArea = String.format(getString(R.string.lbl_investment_amount_label), fieldArea, areaUnitText);
 
         loadInvestmentAmount(); //load amount from API
     }
@@ -348,7 +348,6 @@ public class InvestmentAmountActivity extends BaseActivity {
                             String areaUnit, String fieldAreaAcre, String selectedFieldArea, String separator) {
 
         String formattedNumber = mathHelper.formatNumber(amountToInvest, currencySymbol);
-
         return String.format("%s %s %s", formattedNumber, separator, selectedFieldArea);
     }
 }
