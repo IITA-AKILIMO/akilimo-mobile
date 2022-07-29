@@ -432,4 +432,6 @@
     <string name="lbl_unit_price_m2">Igiciro amezi 2 nyuma yo gusarura</string>
     <string name="lbl_tzs_currency_name">Amashiringi ya Tanzaniya</string>
     <string name="lbl_ngn_currency_name">Nayira</string>
+    <string name="lbl_are">are</string>
+    <string name="area_unit_are">Are (are)</string>
 </resources>
