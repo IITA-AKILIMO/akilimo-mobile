@@ -52,7 +52,7 @@ class SplashActivity : BaseActivity() {
         var intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
         if (BuildConfig.DEBUG) {
 //            intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
-            intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
+//            intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
 //            intent = Intent(this@SplashActivity, FertilizerRecActivity::class.java)
 //            intent = Intent(this@SplashActivity, RootYieldActivity::class.java)
 //            intent = Intent(this@SplashActivity, InvestmentAmountActivity::class.java)
