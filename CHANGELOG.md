@@ -1,4 +1,10 @@
-#### [Version 21.3.0](https://IITA-AKILIMO/akilimo-mobile/releases/tag/21.3.0) 
+#### [Version 21.4.0](https://IITA-AKILIMO/akilimo-mobile/releases/tag/21.4.0) 
+### Implemented Enhancements 
+- Feat/UI update [#192](https://IITA-AKILIMO/akilimo-mobile/issues/#192) ([@masgeek](https://github.com/@masgeek))
+### Fixed Bugs 
+- Fix/translations [#193](https://IITA-AKILIMO/akilimo-mobile/issues/#193) ([@masgeek](https://github.com/@masgeek))
+ 
+ #### [Version 21.3.0](https://IITA-AKILIMO/akilimo-mobile/releases/tag/21.3.0) 
 ### Implemented Enhancements 
 - feat: added burundi [#186](https://IITA-AKILIMO/akilimo-mobile/issues/#186) ([@masgeek](https://github.com/@masgeek))
 ### Other Changes 
