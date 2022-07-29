@@ -80,6 +80,7 @@
     <string name="lbl_fertilizer_costs">Gharama za mbolea</string>
     <string name="lbl_planting_harvest">Je? Unataka kuzingatia upandaji mbadala na tarehe za mavuno?</string>
     <string name="lbl_investment_amount">Je? Uko tayari kuwekeza kiasi gani kwenye mbolea?</string>
+    <string name="lbl_investment_amount_label">%2$s %1$s</string>
     <string name="lbl_typical_yield">Je? Kwa kawaida shamba lako hutoa mavuno kiasi gani?</string>
     <string name="lbl_typical_yield_question">Mavuno ya kawaida ya mizizi ya mihogo ni %1$s. Je? Unatarajia mavuno kiasi gani kutoka kwenye shamba lako bila kutumia mbolea?</string>
     <string name="lbl_typical_yield_question_fr">Mavuno ya kawaida ya mizizi ya mihogo ni %1$s. Je? Unatarajia mavuno kiasi gani kutoka kwenye shamba lako bila kutumia mbolea?</string>

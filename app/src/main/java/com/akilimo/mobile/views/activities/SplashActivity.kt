@@ -8,6 +8,7 @@ import com.crashlytics.android.Crashlytics
 import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.views.activities.usecases.FertilizerRecActivity
 import com.akilimo.mobile.views.activities.usecases.RecommendationsActivity
 
 
@@ -51,7 +52,7 @@ class SplashActivity : BaseActivity() {
         var intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
         if (BuildConfig.DEBUG) {
 //            intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
-//            intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
+            intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
 //            intent = Intent(this@SplashActivity, FertilizerRecActivity::class.java)
 //            intent = Intent(this@SplashActivity, RootYieldActivity::class.java)
 //            intent = Intent(this@SplashActivity, InvestmentAmountActivity::class.java)
