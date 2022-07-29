@@ -39,6 +39,7 @@
     <dimen name="font_size_24">24sp</dimen>
 
     <!--dimens for margins/other dimensions-->
+    <dimen name="dimen_5">5dp</dimen>
     <dimen name="dimen_12">12dp</dimen>
     <dimen name="dimen_16">16dp</dimen>
     <dimen name="dimen_48">48dp</dimen>
