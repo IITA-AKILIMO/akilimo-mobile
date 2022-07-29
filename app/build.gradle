@@ -15,7 +15,7 @@ android {
 
     compileSdkVersion 31
     buildToolsVersion '30.0.3'
-    // ndkVersion "23.2.8568313"
+    ndkVersion "23.2.8568313"
 
     defaultConfig {
         applicationId "com.akilimo.mobile"
