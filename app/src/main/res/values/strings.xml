@@ -124,6 +124,7 @@
 
     <string name="lbl_planting_harvest">Do you want to consider alternative planting and harvest dates?</string>
     <string name="lbl_investment_amount">How much are you willing to invest in fertilizers?</string>
+    <string name="lbl_investment_amount_label">%1$s %2$s</string>
     <string name="lbl_typical_yield">What is the typical cassava yield of your field?</string>
     <string name="lbl_typical_yield_question">A typical cassava root yield is %1$s. How much yield do you expect from your field?</string>
     <string name="lbl_typical_yield_question_fr">A typical cassava root yield is %1$s. How much yield do you expect from your field without fertilizer application?</string>

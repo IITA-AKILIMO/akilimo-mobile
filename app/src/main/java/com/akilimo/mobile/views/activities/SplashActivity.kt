@@ -8,6 +8,7 @@ import com.crashlytics.android.Crashlytics
 import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.views.activities.usecases.FertilizerRecActivity
 import com.akilimo.mobile.views.activities.usecases.RecommendationsActivity
 
 
