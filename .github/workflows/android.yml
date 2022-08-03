@@ -15,7 +15,7 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       REPO_NAME: ${{ secrets.REPO_NAME }}
-      LATEST_TAG_FILE: ${{ secrets.LATEST_TAG_FILE }}
+      LATEST_TAG_FILE: "latest_tag.txt"
       RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
     steps:
@@ -51,7 +51,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       REPO_NAME: ${{ secrets.REPO_NAME }}
       BRANCH_NAME: ${{ github.head_ref }}
-      LATEST_TAG_FILE: ${{ secrets.LATEST_TAG_FILE }}
+      LATEST_TAG_FILE: "latest_tag.txt"
       RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
       PACKAGE_NAME: ${{ secrets.APP_PACKAGE }}
@@ -164,7 +164,7 @@ jobs:
     name: Upload to github beta
     runs-on: ubuntu-latest
     env:
-      LATEST_TAG_FILE: ${{ secrets.LATEST_TAG_FILE }}
+      LATEST_TAG_FILE: "latest_tag.txt"
       GHR_TAG: "1.0.0"
       GHR_REPLACE: "1"
       GHR_PATH: release
@@ -194,7 +194,7 @@ jobs:
     name: Upload to github release
     runs-on: ubuntu-latest
     env:
-      LATEST_TAG_FILE: ${{ secrets.LATEST_TAG_FILE }}
+      LATEST_TAG_FILE: "latest_tag.txt"
       GHR_TAG: "1.0.0"
       GHR_REPLACE: "1"
       GHR_PATH: release
