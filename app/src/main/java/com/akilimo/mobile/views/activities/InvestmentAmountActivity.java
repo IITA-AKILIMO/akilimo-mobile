@@ -171,7 +171,7 @@ public class InvestmentAmountActivity extends BaseActivity {
                 if (invAmount == null) {
                     invAmount = new InvestmentAmount();
                 }
-                double amountToInvestRaw = mathHelper.convertToAreaUnit(investmentAmountLocal, fieldSize, areaUnit);
+                double amountToInvestRaw = mathHelper.computeInvestmentForSpecifiedAreaUnit(investmentAmountLocal, fieldSize, areaUnit);
                 double amountToInvest = mathHelper.roundToNDecimalPlaces(amountToInvestRaw, 2);
                 invAmount.setInvestmentAmountUSD(investmentAmountUSD);
                 invAmount.setMinInvestmentAmountUSD(minimumAmountUSD);
@@ -326,7 +326,7 @@ public class InvestmentAmountActivity extends BaseActivity {
             radioButton.setTag(listIndex);
 
             double price = pricesResp.getInvestmentAmount();
-            double amountToInvest = mathHelper.convertToAreaUnit(price, fieldSize, areaUnit);
+            double amountToInvest = mathHelper.computeInvestmentForSpecifiedAreaUnit(price, fieldSize, areaUnit);
             String radioLabel = setLabel(amountToInvest, currencyCode, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator);
             if (price == 0) {
                 radioLabel = context.getString(R.string.exact_investment_x_per_field_area);
