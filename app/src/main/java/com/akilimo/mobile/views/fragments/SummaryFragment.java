@@ -258,7 +258,7 @@ public class SummaryFragment extends BaseStepFragment {
 
     @Nullable
     @Override
-fix: corrected state where variables values were swapped for summary view    public VerificationError verifyStep() {
+ public VerificationError verifyStep() {
         return null;
     }
 
