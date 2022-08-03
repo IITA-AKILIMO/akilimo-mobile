@@ -107,4 +107,35 @@ internal class MathHelperTest {
         val result = mathHelper.convertToUnitWeightPrice(166000.00, unitWeight)
         Assert.assertEquals(expected, result, 0.0)
     }
+
+    @Test
+    fun computeInvestmentForSpecifiedAreaUnit_one_acre() {
+        val expected: Double = 230200.0 * 1
+        val areaUnit: String = "acre"
+        val areaSizeAcre: Double = 1.0
+        val acreInvestmentAmount: Double = 230200.00
+        val result = mathHelper.computeInvestmentForSpecifiedAreaUnit(
+            acreInvestmentAmount,
+            areaSizeAcre,
+            areaUnit
+        )
+
+        Assert.assertEquals(expected, result, 0.0)
+    }
+
+    @Test
+    fun computeInvestmentForSpecifiedAreaUnit() {
+        val expected: Double = 230200.0 * 10.0
+        val areaUnit: String = "acre"
+        val areaSizeAcre: Double = 10.0
+        val acreInvestmentAmount: Double = 230200.00
+
+        val result = mathHelper.computeInvestmentForSpecifiedAreaUnit(
+            acreInvestmentAmount,
+            areaSizeAcre,
+            areaUnit
+        )
+
+        Assert.assertEquals(expected, result, 0.0)
+    }
 }

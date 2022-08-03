@@ -29,7 +29,6 @@ public class MathHelper {
     /**
      * @param baseAcre
      * @param baseSqm
-     *
      * @deprecated
      */
     public MathHelper(double baseAcre, double baseSqm) {
@@ -41,7 +40,6 @@ public class MathHelper {
      * @param baseAcre
      * @param baseSqm
      * @param baseAre
-     *
      * @deprecated
      */
     public MathHelper(double baseAcre, double baseSqm, double baseAre) {
@@ -284,18 +282,18 @@ public class MathHelper {
         return format.format(numberValue);
     }
 
-    public double convertToAreaUnit(double acreInvestmentAmount, double areaSizeAcre, String areaUnit) {
-        double areaSizeInvestment = 0.0;
+    public double computeInvestmentForSpecifiedAreaUnit(double acreInvestmentAmount, double areaSizeAcre, String areaUnit) {
+        double areaSizeInvestment;
         switch (areaUnit) {
             default:
             case "acre":
-                areaSizeInvestment = acreInvestmentAmount / areaSizeAcre;
+                areaSizeInvestment = acreInvestmentAmount * areaSizeAcre;
                 break;
             case "ha":
-                areaSizeInvestment = (acreInvestmentAmount * baseAcre) / areaSizeAcre;
+                areaSizeInvestment = (acreInvestmentAmount * baseAcre) * areaSizeAcre;
                 break;
             case "sqm":
-                areaSizeInvestment = areaSizeAcre * baseSqm;
+                areaSizeInvestment = (areaSizeAcre * baseSqm) * acreInvestmentAmount;
                 break;
         }
         return areaSizeInvestment;
