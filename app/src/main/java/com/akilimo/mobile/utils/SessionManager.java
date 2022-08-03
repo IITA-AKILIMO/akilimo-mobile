@@ -50,6 +50,17 @@ public class SessionManager {
         return pref.getString("apiResource", "http://157.245.26.55:8099/api/");
     }
 
+    public void setApiRefreshToken(String apiToken) {
+        editor.putString("apiRefreshToken", apiToken);
+        editor.commit();
+    }
+
+    public String getApiRefreshToken() {
+        return pref.getString("apiRefreshToken", "");
+    }
+
+
+
     public void setApiToken(String apiToken) {
         editor.putString("apiToken", apiToken);
         editor.commit();
@@ -172,10 +183,8 @@ public class SessionManager {
         editor.putBoolean("termsAccepted", termsAccepted);
         editor.commit();
     }
-
     public boolean termsAccepted() {
-        return false;
-        //return pref.getBoolean("termsAccepted", false);
+        return pref.getBoolean("termsAccepted", false);
     }
 
     public void setCountry(String country) {
@@ -193,7 +202,7 @@ public class SessionManager {
     }
 
     public String getTermsLink() {
-        return pref.getString("termsLink", "https://akilimo.org/index.php/akilimo-privacy-policy/");
+        return pref.getString("termsLink", "https://akilimo.org/index.php/akilimo-privacy-policy");
     }
 
     public void setForward(boolean goForward) {
@@ -211,7 +220,7 @@ public class SessionManager {
     }
 
     public String getApiUser() {
-        return pref.getString("apiUser", "masgeek");
+        return pref.getString("apiUser", "");
     }
 
 
@@ -221,6 +230,6 @@ public class SessionManager {
     }
 
     public String getApiPass() {
-        return pref.getString("apiPass", "andalite6");
+        return pref.getString("apiPass", "");
     }
 }

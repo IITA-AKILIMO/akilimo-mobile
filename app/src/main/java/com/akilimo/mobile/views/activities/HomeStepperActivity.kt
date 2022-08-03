@@ -50,6 +50,8 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
     private val fragmentArray: MutableList<Fragment> = arrayListOf()
 
+    private val configListDict = HashMap<String, String>()
+
     private var exit: Boolean = false
 
     override fun onAttachFragment(fragment: Fragment) {
@@ -98,8 +100,43 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
                 val configList = response.body()
                 if (configList != null) {
                     if (configList.isNotEmpty()) {
-                        val remoteConfig = configList[0]
-                        sessionManager.apiEndPoint = remoteConfig.configValue
+                        configList.forEach { config ->
+                            configListDict[config.configName] = config.configValue
+                        }
+                    }
+                }
+
+                if (configListDict.isNotEmpty()) {
+                    if (configListDict.containsKey("api_endpoint")) {
+                        sessionManager.apiEndPoint = configListDict["api_endpoint"]
+                    }
+
+                    if (configListDict.containsKey("location_iq")) {
+                        sessionManager.locationIqToken = configListDict["location_iq"]
+                    }
+
+                    if (configListDict.containsKey("mapbox")) {
+                        sessionManager.mapBoxApiKey = configListDict["mapbox"]
+                    }
+
+                    if (configListDict.containsKey("privacy")) {
+                        sessionManager.termsLink = configListDict["privacy"]
+                    }
+
+                    if (configListDict.containsKey("api_user")) {
+                        sessionManager.apiUser = configListDict["api_user"]
+                    }
+
+                    if (configListDict.containsKey("api_pass")) {
+                        sessionManager.apiPass = configListDict["api_pass"]
+                    }
+
+                    if (configListDict.containsKey("api_refresh_key")) {
+                        sessionManager.apiRefreshToken = configListDict["api_refresh_token"]
+                    }
+
+                    if (configListDict.containsKey("api_token")) {
+                        sessionManager.apiToken = configListDict["api_token"]
                     }
                 }
             }

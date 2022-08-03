@@ -1,14 +1,15 @@
 package com.akilimo.mobile.views.fragments;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -55,6 +56,7 @@ public class PrivacyStatementFragment extends BaseStepFragment {
     }
 
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -67,25 +69,33 @@ public class PrivacyStatementFragment extends BaseStepFragment {
         webView.setWebChromeClient(new WebChromeClient());
         webView.setScrollContainer(true);
         webView.setVerticalScrollBarEnabled(false);
+        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         webView.setHorizontalScrollBarEnabled(false);
-        webView.getSettings().setBuiltInZoomControls(true);
-        webView.getSettings().setSupportZoom(true);
-        webView.getSettings().setDisplayZoomControls(false);
-        webView.getSettings().setLoadWithOverviewMode(true);
-        webView.getSettings().setUseWideViewPort(true);
-        webView.getSettings().setGeolocationEnabled(true);
+        webView.setWebChromeClient(new WebChromeClient());
+
+        WebSettings webSettings = webView.getSettings();
+
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setBuiltInZoomControls(true);
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setSupportZoom(true);
+        webSettings.setDisplayZoomControls(false);
+        webSettings.setLoadWithOverviewMode(true);
+        webSettings.setUseWideViewPort(true);
+        webSettings.setGeolocationEnabled(true);
 
 
-        String termsLink = sessionManager.getTermsLink();
         chkAgreeToTerms = binding.chkAgreeToTerms;
-        webView.loadUrl(termsLink);
-        chkAgreeToTerms.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                policyAccepted = checked;
-            }
-        });
+        chkAgreeToTerms.setOnCheckedChangeListener((compoundButton, checked) -> policyAccepted = checked);
     }
+
+    @Override
+    public void onSelected() {
+        String termsLink = sessionManager.getTermsLink();
+        webView.loadUrl(termsLink);
+    }
+
 
     @Nullable
     @Override
@@ -98,10 +108,6 @@ public class PrivacyStatementFragment extends BaseStepFragment {
         return new VerificationError(getString(R.string.lbl_accept_terms_prompt));
     }
 
-    @Override
-    public void onSelected() {
-
-    }
 
     @Override
     public void onError(@NonNull VerificationError error) {
