@@ -34,11 +34,12 @@ jobs:
       #  run: ./gradlew bundleRelease -x test
 
       - name: Run Unit tests
-        run: ./gradlew testRelease
+        run: ./gradlew testDebugUnitTest
         continue-on-error: true
 
       - name: Make Unit test report
-        uses: doanpt/AndroidTestReportAction@v1.0
+#        uses: doanpt/AndroidTestReportAction@v1.0
+        uses: asadmansr/android-test-report-action@v1.2.0
         if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
 
   build_artifacts:
