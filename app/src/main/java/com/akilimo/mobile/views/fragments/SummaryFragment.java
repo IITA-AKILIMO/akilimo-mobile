@@ -202,8 +202,8 @@ public class SummaryFragment extends BaseStepFragment {
             performPloughing = currentPractice.getPerformPloughing();
             performRidging = currentPractice.getPerformRidging();
 
-            String _ridgeMethod = currentPractice.getPloughingMethod();
-            String _ploughMethod = currentPractice.getRidgingMethod();
+            String _ploughMethod = currentPractice.getPloughingMethod();
+            String _ridgeMethod = currentPractice.getRidgingMethod();
             if (performPloughing && _ploughMethod != null) {
                 String ploughMethod = context.getString(R.string.lbl_manual);
                 if (_ploughMethod.equals("tractor")) {
@@ -258,7 +258,7 @@ public class SummaryFragment extends BaseStepFragment {
 
     @Nullable
     @Override
-    public VerificationError verifyStep() {
+fix: corrected state where variables values were swapped for summary view    public VerificationError verifyStep() {
         return null;
     }
 
