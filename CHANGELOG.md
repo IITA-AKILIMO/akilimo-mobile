@@ -1,4 +1,10 @@
-#### [Version 21.4.0](https://IITA-AKILIMO/akilimo-mobile/releases/tag/21.4.0) 
+#### [Version 21.4.1](https://IITA-AKILIMO/akilimo-mobile/releases/tag/21.4.1) 
+### Fixed Bugs 
+- Fix/computation [#198](https://IITA-AKILIMO/akilimo-mobile/issues/#198) ([@masgeek](https://github.com/@masgeek))
+### Other Changes 
+- Update CHANGELOG.md for 21.4.0 [#196](https://IITA-AKILIMO/akilimo-mobile/issues/#196) ([@nextreleaseio[bot]](https://github.com/@nextreleaseio[bot]))
+ 
+ #### [Version 21.4.0](https://IITA-AKILIMO/akilimo-mobile/releases/tag/21.4.0) 
 ### Implemented Enhancements 
 - Feat/UI update [#192](https://IITA-AKILIMO/akilimo-mobile/issues/#192) ([@masgeek](https://github.com/@masgeek))
 ### Fixed Bugs 
