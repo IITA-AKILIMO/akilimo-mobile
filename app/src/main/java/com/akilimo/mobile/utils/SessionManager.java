@@ -174,7 +174,8 @@ public class SessionManager {
     }
 
     public boolean termsAccepted() {
-        return pref.getBoolean("termsAccepted", false);
+        return false;
+        //return pref.getBoolean("termsAccepted", false);
     }
 
     public void setCountry(String country) {
@@ -186,8 +187,13 @@ public class SessionManager {
         return pref.getString("country", "NA");
     }
 
+    public void setTermsLink(String termsLink) {
+        editor.putString("termsLink", termsLink);
+        editor.commit();
+    }
+
     public String getTermsLink() {
-        return pref.getString("termsLink", "https://www.akilimo.org/privacy-policy");
+        return pref.getString("termsLink", "https://akilimo.org/index.php/akilimo-privacy-policy/");
     }
 
     public void setForward(boolean goForward) {
