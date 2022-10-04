@@ -7,7 +7,7 @@
     <string name="ad_attribution" translatable="false">Ad</string>
 
     <string name="welcome_title">Welcome</string>
-    <string name="welcome_instructions">AKILIMO helps you make the best decisions in you cassava farm so that you obtain a high crop yield and turn a high profit</string>
+    <string name="welcome_instructions">AKILIMO helps you make the best decisions in your cassava farm so that you obtain a high crop yield and turn a high profit</string>
     <string name="important_instructions_title">IMPORTANT INFORMATION</string>
     <string name="important_instructions">All AKILIMO recommendations are based on the <b>correctness</b> of your location, the size of your field and your prices.\nFor example, overly optimistic field size results in unnecessary cost and loss because the required investment will be overestimated. On the other hand if your estimated field size is much less than in reality this leads to an underestimation of your yield and you may lose an opportunity to make profit from your field.</string>
 
