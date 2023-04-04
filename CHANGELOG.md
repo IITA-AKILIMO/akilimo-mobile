@@ -1,4 +1,10 @@
-#### [Version 21.4.2](https://IITA-AKILIMO/akilimo-mobile/releases/tag/21.4.2) 
+#### [Version 21.4.3](https://IITA-AKILIMO/akilimo-mobile/releases/tag/21.4.3) 
+### Fixed Bugs 
+- Typo correction [#205](https://IITA-AKILIMO/akilimo-mobile/issues/#205) ([@masgeek](https://github.com/@masgeek))
+### Other Changes 
+- Update CHANGELOG.md for 21.4.2 [#204](https://IITA-AKILIMO/akilimo-mobile/issues/#204) ([@nextreleaseio[bot]](https://github.com/@nextreleaseio[bot]))
+ 
+ #### [Version 21.4.2](https://IITA-AKILIMO/akilimo-mobile/releases/tag/21.4.2) 
 ### Fixed Bugs 
 - Feat/remote config [#201](https://IITA-AKILIMO/akilimo-mobile/issues/#201) ([@masgeek](https://github.com/@masgeek))
 ### Other Changes 

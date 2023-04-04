@@ -54,6 +54,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
     private var exit: Boolean = false
 
+    @Deprecated("Deprecated in Java")
     override fun onAttachFragment(fragment: Fragment) {
         when (fragment) {
             is WelcomeFragment -> {
