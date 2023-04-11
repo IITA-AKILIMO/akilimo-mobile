@@ -38,9 +38,6 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class BioDataFragment extends BaseStepFragment {
-
-    private String LOG_TAG = BioDataFragment.class.getSimpleName();
-    private IFragmentCallBack fragmentCallBack;
     private ProfileInfo profileInfo;
     private ValidationHelper validationHelper;
     private boolean phoneIsValid = true;
