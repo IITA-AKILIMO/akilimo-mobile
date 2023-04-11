@@ -19,10 +19,10 @@ interface MaizePriceDao {
     fun insertAll(maizePriceList: List<MaizePrice>)
 
     @Update
-    fun update(location: MaizePrice)
+    fun update(maizePrice: MaizePrice)
 
     @Delete
-    fun delete(location: MaizePrice?)
+    fun delete(maizePrice: MaizePrice?)
 
     @Query("SELECT * FROM maize_price where country=:countryCode")
     fun findAllByCountry(countryCode: String): MutableList<MaizePrice>
@@ -35,4 +35,7 @@ interface MaizePriceDao {
 
     @Query("SELECT * FROM maize_price where priceIndex=:itemTagIndex")
     fun findPriceByPriceIndex(itemTagIndex: Int): MaizePrice
+
+    @Query("DELETE FROM maize_price")
+    fun deleteAll()
 }

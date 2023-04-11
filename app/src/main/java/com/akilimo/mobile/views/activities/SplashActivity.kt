@@ -13,7 +13,7 @@ import com.akilimo.mobile.views.activities.usecases.RecommendationsActivity
 
 
 class SplashActivity : BaseActivity() {
-    val LOG_TAG: String = SplashActivity::class.java.simpleName
+    val LOG_TAG: String = this::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +43,32 @@ class SplashActivity : BaseActivity() {
         try {
             if (!BuildConfig.DEBUG) {
                 //For developers sanity no data is cleared in debug mode
-                getDatabase(this)?.clearAllTables()
+                val db = getDatabase(this)
+                if (db != null) {
+                    with(db) {
+                        clearAllTables()
+                        adviceStatusDao().deleteAll()
+                        cassavaMarketDao().deleteAll()
+                        cassavaPriceDao().deleteAll()
+                        currencyDao().deleteAll()
+                        currentPracticeDao().deleteAll()
+                        fertilizerDao().deleteAll()
+                        fertilizerPriceDao().deleteAll()
+                        fieldOperationCostDao().deleteAll()
+                        fieldYieldDao().deleteAll()
+                        investmentAmountDao().deleteAll()
+                        investmentAmountDtoDao().deleteAll()
+                        locationInfoDao().deleteAll()
+                        maizeMarketDao().deleteAll()
+                        maizePerformanceDao().deleteAll()
+                        maizePriceDao().deleteAll()
+                        mandatoryInfoDao().deleteAll()
+                        potatoMarketDao().deleteAll()
+                        profileInfoDao().deleteAll()
+                        scheduleDateDao().deleteAll()
+                        starchFactoryDao().deleteAll()
+                    }
+                }
             }
         } catch (ex: Exception) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)

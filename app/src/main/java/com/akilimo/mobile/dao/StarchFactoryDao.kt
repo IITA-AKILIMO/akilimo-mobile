@@ -24,18 +24,20 @@ interface StarchFactoryDao {
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg users: StarchFactory)
+    fun insert(vararg starchFactories: StarchFactory)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(starchFactoriesList: List<StarchFactory>)
 
     @Update
-    fun update(vararg users: StarchFactory)
+    fun update(vararg starchFactories: StarchFactory)
 
     @Delete
-    fun delete(user: StarchFactory?)
+    fun delete(starchFactory: StarchFactory?)
 
     @Query("select * from starch_factory where countryCode=:countryCode")
     fun findStarchFactoriesByCountry(countryCode: String): List<StarchFactory>
+    @Query("DELETE FROM starch_factory")
+    fun deleteAll()
 
 }

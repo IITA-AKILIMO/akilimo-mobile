@@ -16,8 +16,10 @@ interface CurrentPracticeDao {
     fun insert(location: CurrentPractice)
 
     @Update
-    fun update(location: CurrentPractice)
+    fun update(currentPractice: CurrentPractice)
 
     @Delete
-    fun delete(location: CurrentPractice?)
+    fun delete(currentPractice: CurrentPractice?)
+    @Query("DELETE FROM current_practice")
+    fun deleteAll()
 }

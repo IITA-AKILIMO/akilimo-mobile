@@ -13,11 +13,13 @@ interface MaizeMarketDao {
     fun findOne(): MaizeMarket?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(location: MaizeMarket)
+    fun insert(maizeMarket: MaizeMarket)
 
     @Update
-    fun update(location: MaizeMarket)
+    fun update(maizeMarket: MaizeMarket)
 
     @Delete
-    fun delete(location: MaizeMarket?)
+    fun delete(maizeMarket: MaizeMarket?)
+    @Query("DELETE FROM maize_market")
+    fun deleteAll()
 }

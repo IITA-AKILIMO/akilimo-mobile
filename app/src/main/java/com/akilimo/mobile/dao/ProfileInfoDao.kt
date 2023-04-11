@@ -13,11 +13,14 @@ interface ProfileInfoDao {
     fun findOne(): ProfileInfo?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg users: ProfileInfo)
+    fun insert(vararg arrayOfProfileInfos: ProfileInfo)
 
     @Update
-    fun update(vararg users: ProfileInfo)
+    fun update(vararg arrayOfProfileInfos: ProfileInfo)
 
     @Delete
-    fun delete(user: ProfileInfo?)
+    fun delete(profileInfo: ProfileInfo?)
+
+    @Query("DELETE FROM profile_info")
+    fun deleteAll()
 }

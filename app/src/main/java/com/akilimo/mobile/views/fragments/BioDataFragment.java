@@ -32,8 +32,6 @@ import com.stepstone.stepper.VerificationError;
 import java.util.ArrayList;
 import java.util.List;
 
-;
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -43,10 +41,10 @@ public class BioDataFragment extends BaseStepFragment {
     private boolean phoneIsValid = true;
 
     FragmentBioDataBinding binding;
-    Spinner genderSpinner;
+    Spinner genderSpinner, interestSpinner;
     TextInputEditText edtFirstName;
     TextInputEditText edtLastName;
-    TextInputEditText edtFamName;
+    //    TextInputEditText edtFamName;
     TextInputEditText edtEmail;
     TextInputEditText edtPhone;
     CountryCodePicker ccp;
@@ -58,8 +56,11 @@ public class BioDataFragment extends BaseStepFragment {
     private String mobileCode;
     private String fullMobileNumber;
     private String userEnteredNumber;
-    private String gender;
+    private String gender, akilimoInterest;
     private int selectedGenderIndex = -1;
+    private int selectedInterestIndex = -1;
+
+    private boolean rememberUserInfo = false;
 
     public BioDataFragment() {
         // Required empty public constructor
@@ -89,10 +90,12 @@ public class BioDataFragment extends BaseStepFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         genderSpinner = binding.genderSpinner;
+        interestSpinner = binding.interestSpinner;
         edtFirstName = binding.edtFirstName;
         edtLastName = binding.edtLastName;
-        edtFamName = binding.edtFarmName;
+//        edtFamName = binding.edtFarmName;
         edtEmail = binding.edtEmail;
         edtPhone = binding.edtPhone;
         ccp = binding.ccp;
@@ -102,14 +105,35 @@ public class BioDataFragment extends BaseStepFragment {
         genderStrings.add(this.getString(R.string.lbl_male));
         genderStrings.add(this.getString(R.string.lbl_prefer_not_to_say));
 
-        final SpinnerAdapter adapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, genderStrings);
-        genderSpinner.setAdapter(adapter);
+        final SpinnerAdapter genderAdapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, genderStrings);
+        genderSpinner.setAdapter(genderAdapter);
+
+        final List<String> interestStrings = new ArrayList<>();
+        interestStrings.add(this.getString(R.string.lbl_interest_farmer));
+        interestStrings.add(this.getString(R.string.lbl_interest_extension_agent));
+        interestStrings.add(this.getString(R.string.lbl_interest_agronomist));
+        interestStrings.add(this.getString(R.string.lbl_interest_curious));
+        final SpinnerAdapter interestAdapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, interestStrings);
+        interestSpinner.setAdapter(interestAdapter);
+
 
         genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 gender = genderStrings.get(position);
                 selectedGenderIndex = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        interestSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                akilimoInterest = interestStrings.get(position);
+                selectedInterestIndex = position;
             }
 
             @Override
@@ -124,12 +148,17 @@ public class BioDataFragment extends BaseStepFragment {
         ccp.setOnCountryChangeListener(() -> mobileCode = ccp.getSelectedCountryCodeWithPlus());
         ccp.registerCarrierNumberEditText(edtPhone);
 
+        binding.chkRememberDetails.setOnCheckedChangeListener((compoundButton, rememberInfo) -> {
+            rememberUserInfo = rememberInfo;
+        });
+
     }
 
     public void refreshData() {
         try {
 
             profileInfo = database.profileInfoDao().findOne();
+            rememberUserInfo = sessionManager.userInfoRemembered();
             if (profileInfo != null) {
                 firstName = profileInfo.getFirstName();
                 lastName = profileInfo.getLastName();
@@ -138,17 +167,20 @@ public class BioDataFragment extends BaseStepFragment {
                 mobileCode = profileInfo.getMobileCode();
                 fullMobileNumber = profileInfo.getFullMobileNumber();
                 gender = profileInfo.getGender();
+                akilimoInterest = profileInfo.getAkilimoInterest();
                 selectedGenderIndex = profileInfo.getSelectedGenderIndex();
+                selectedInterestIndex = profileInfo.getSelectedInterestIndex();
 
                 edtFirstName.setText(firstName);
                 edtLastName.setText(lastName);
-                edtFamName.setText(farmName);
+//                edtFamName.setText(farmName);
                 edtEmail.setText(email);
                 if (!Strings.isEmptyOrWhitespace(fullMobileNumber)) {
                     ccp.setFullNumber(fullMobileNumber);
                 }
 
                 genderSpinner.setSelection(selectedGenderIndex);
+                binding.chkRememberDetails.setChecked(rememberUserInfo);
             }
 
         } catch (Exception ex) {
@@ -160,13 +192,13 @@ public class BioDataFragment extends BaseStepFragment {
     private void saveBioData() {
         edtFirstName.setError(null);
         edtLastName.setError(null);
-        edtFamName.setError(null);
+//        edtFamName.setError(null);
         edtEmail.setError(null);
         dataIsValid = true;
 
         firstName = edtFirstName.getText().toString();
         lastName = edtLastName.getText().toString();
-        farmName = edtFamName.getText().toString();
+//        farmName = edtFamName.getText().toString();
         email = edtEmail.getText().toString().trim();
         userEnteredNumber = edtPhone.getText().toString();
         fullMobileNumber = ccp.getFullNumber();
@@ -186,7 +218,6 @@ public class BioDataFragment extends BaseStepFragment {
 
         if (Strings.isEmptyOrWhitespace(farmName)) {
             farmName = String.format("%s%s", firstName, lastName);
-            edtFamName.setText(farmName);
         }
 
         if (!Strings.isEmptyOrWhitespace(fullMobileNumber) && !Strings.isEmptyOrWhitespace(userEnteredNumber)) {
@@ -216,12 +247,14 @@ public class BioDataFragment extends BaseStepFragment {
             profileInfo.setFirstName(firstName);
             profileInfo.setLastName(lastName);
             profileInfo.setGender(gender);
+            profileInfo.setAkilimoInterest(akilimoInterest);
             profileInfo.setEmail(email);
             profileInfo.setFarmName(farmName);
             profileInfo.setFieldDescription(farmName);
             profileInfo.setMobileCode(mobileCode);
             profileInfo.setFullMobileNumber(fullMobileNumber);
             profileInfo.setSelectedGenderIndex(selectedGenderIndex);
+            profileInfo.setSelectedInterestIndex(selectedInterestIndex);
             if (sessionManager != null) {
                 profileInfo.setDeviceToken(sessionManager.getDeviceToken());
             }
