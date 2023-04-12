@@ -167,7 +167,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         fragmentArray.add(AreaUnitFragment.newInstance())
         fragmentArray.add(FieldSizeFragment.newInstance())
         fragmentArray.add(PlantingDateFragment.newInstance())
-        
+
         fragmentArray.add(TillageOperationFragment.newInstance())
         fragmentArray.add(RiskAttFragment.newInstance())
         fragmentArray.add(SummaryFragment.newInstance())

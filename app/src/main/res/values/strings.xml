@@ -43,7 +43,7 @@
     <string name="lbl_next">Next</string>
 
     <string name="lbl_country_location">Nice to meet you "%1$s".</string>
-    <string name="lbl_country_location_sub">Where is your cassava farm located?</string>
+    <string name="lbl_country_location_sub">In which country is your farm located?</string>
 
 
     <string name="lbl_nigeria" translatable="false">Nigeria</string>
