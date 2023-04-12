@@ -1,0 +1,26 @@
+{
+  "name": "akilimo-mobile",
+  "version": "21.4.4",
+  "description": "AKILIMO recommendations app for android",
+  "main": "index.js",
+  "repository": "git@github.com:IITA-AKILIMO/akilimo-mobile.git",
+  "author": "Sammy M <barsamms@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "changelog": "fast-git-changelog",
+    "history": "auto-changelog -p",
+    "notes": "release-notes 21.4.1..HEAD changelog --branch main -o > NOTES.md"
+  },
+  "devDependencies": {
+    "@invisible/changelog-update": "^1.2.2",
+    "auto-changelog": "^2.4.0",
+    "fast-git-changelog": "^1.0.3",
+    "release-notes-cli": "^0.0.6"
+  },
+  "auto-changelog": {
+    "output": "HISTORY.md",
+    "template": "keepachangelog",
+    "unreleased": true,
+    "commitLimit": false
+  }
+}
