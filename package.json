@@ -15,7 +15,6 @@
     "notes:custom": "sh -c 'someprogram --env=$0'"
   },
   "devDependencies": {
-    "@invisible/changelog-update": "^1.2.2",
     "auto-changelog": "^2.4.0",
     "release-notes-cli": "^0.0.6"
   },
