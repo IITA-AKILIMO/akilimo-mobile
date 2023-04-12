@@ -26,4 +26,7 @@ interface CassavaPriceDao {
 
     @Query("SELECT * FROM cassava_price where country=:countryCode")
     fun findAllByCountry(countryCode: String): List<CassavaPrice>
+
+    @Query("DELETE FROM cassava_price")
+    fun deleteAll()
 }

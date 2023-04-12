@@ -28,4 +28,7 @@ interface InvestmentAmountDtoDao {
 
     @Delete
     fun delete(investmentAmount: InvestmentAmountDto?)
+
+    @Query("DELETE FROM investment_amount_dto")
+    fun deleteAll()
 }

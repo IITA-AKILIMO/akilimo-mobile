@@ -44,9 +44,6 @@ public class SessionManager {
     }
 
     public String getApiEndPoint() {
-        if (BuildConfig.DEBUG) {
-//            return "http://192.168.100.3:8098/api/";
-        }
         return pref.getString("apiResource", "http://157.245.26.55:8099/api/");
     }
 
@@ -58,7 +55,6 @@ public class SessionManager {
     public String getApiRefreshToken() {
         return pref.getString("apiRefreshToken", "");
     }
-
 
 
     public void setApiToken(String apiToken) {
@@ -183,6 +179,7 @@ public class SessionManager {
         editor.putBoolean("termsAccepted", termsAccepted);
         editor.commit();
     }
+
     public boolean termsAccepted() {
         return pref.getBoolean("termsAccepted", false);
     }
@@ -190,6 +187,15 @@ public class SessionManager {
     public void setCountry(String country) {
         editor.putString("country", country);
         editor.commit();
+    }
+
+    public void setRememberUserInfo(boolean rememberUserInfo) {
+        editor.putBoolean("rememberUserInfo", rememberUserInfo);
+        editor.commit();
+    }
+
+    public boolean userInfoRemembered() {
+        return pref.getBoolean("rememberUserInfo", false);
     }
 
     public String getCountry() {

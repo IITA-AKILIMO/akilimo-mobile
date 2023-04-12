@@ -20,4 +20,7 @@ interface MandatoryInfoDao {
 
     @Delete
     fun delete(mandatoryInfo: MandatoryInfo?)
+
+    @Query("DELETE FROM mandatory_info")
+    fun deleteAll()
 }

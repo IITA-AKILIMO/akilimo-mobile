@@ -1,5 +1,6 @@
 package com.akilimo.mobile.views.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,12 +9,14 @@ import com.crashlytics.android.Crashlytics
 import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.utils.SessionManager
 import com.akilimo.mobile.views.activities.usecases.FertilizerRecActivity
 import com.akilimo.mobile.views.activities.usecases.RecommendationsActivity
 
 
+@SuppressLint("CustomSplashScreen")
 class SplashActivity : BaseActivity() {
-    val LOG_TAG: String = SplashActivity::class.java.simpleName
+    val LOG_TAG: String = this::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,18 +43,48 @@ class SplashActivity : BaseActivity() {
     override fun initToolbar() {}
 
     private fun launchActivity() {
+        val isInDevMode = BuildConfig.DEBUG
         try {
-            if (!BuildConfig.DEBUG) {
-                //For developers sanity no data is cleared in debug mode
-                getDatabase(this)?.clearAllTables()
+            val sessionManager = SessionManager(this@SplashActivity)
+            if (!isInDevMode) {
+                val db = getDatabase(this)
+                if (db != null) {
+                    with(db) {
+                        if (sessionManager.userInfoRemembered()) {
+                            adviceStatusDao().deleteAll()
+                            cassavaMarketDao().deleteAll()
+                            cassavaPriceDao().deleteAll()
+                            currencyDao().deleteAll()
+                            currentPracticeDao().deleteAll()
+                            fertilizerDao().deleteAll()
+                            fertilizerPriceDao().deleteAll()
+                            fieldOperationCostDao().deleteAll()
+                            fieldYieldDao().deleteAll()
+                            investmentAmountDao().deleteAll()
+                            investmentAmountDtoDao().deleteAll()
+                            locationInfoDao().deleteAll()
+                            maizeMarketDao().deleteAll()
+                            maizePerformanceDao().deleteAll()
+                            maizePriceDao().deleteAll()
+                            mandatoryInfoDao().deleteAll()
+                            potatoMarketDao().deleteAll()
+//                        profileInfoDao().deleteAll()
+                            scheduleDateDao().deleteAll()
+                            starchFactoryDao().deleteAll()
+                        } else {
+                            clearAllTables()
+                        }
+                    }
+                }
             }
+
         } catch (ex: Exception) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
             Crashlytics.logException(ex)
         }
         var intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
-        if (BuildConfig.DEBUG) {
-//            intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
+        if (isInDevMode) {
+            intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
 //            intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
 //            intent = Intent(this@SplashActivity, FertilizerRecActivity::class.java)
 //            intent = Intent(this@SplashActivity, RootYieldActivity::class.java)

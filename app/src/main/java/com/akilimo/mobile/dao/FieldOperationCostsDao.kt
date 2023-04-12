@@ -20,4 +20,6 @@ interface FieldOperationCostsDao {
 
     @Delete
     fun delete(fieldYield: FieldOperationCost?)
+    @Query("DELETE FROM field_operation_cost")
+    fun deleteAll()
 }

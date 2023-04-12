@@ -13,11 +13,14 @@ interface MaizePerformanceDao {
     fun findOne(): MaizePerformance?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(location: MaizePerformance)
+    fun insert(maizePerformance: MaizePerformance)
 
     @Update
-    fun update(location: MaizePerformance)
+    fun update(maizePerformance: MaizePerformance)
 
     @Delete
-    fun delete(location: MaizePerformance?)
+    fun delete(maizePerformance: MaizePerformance?)
+
+    @Query("DELETE FROM maize_performance")
+    fun deleteAll()
 }

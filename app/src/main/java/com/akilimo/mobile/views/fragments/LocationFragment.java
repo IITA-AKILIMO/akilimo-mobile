@@ -182,7 +182,7 @@ public class LocationFragment extends BaseStepFragment {
                     List<CarmenFeature> features = response.body().features();
                     placeName = "Unknown";
                     countryLocation = "Unknown";
-                    if (features.size() > 0) {
+                    if (!features.isEmpty()) {
                         CarmenFeature carmenFeature = response.body().features().get(0);
                         countryLocation = carmenFeature.properties().get("short_code").getAsString();
                         placeName = carmenFeature.placeName();

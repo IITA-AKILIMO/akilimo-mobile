@@ -43,7 +43,7 @@
     <string name="lbl_next">Next</string>
 
     <string name="lbl_country_location">Nice to meet you "%1$s".</string>
-    <string name="lbl_country_location_sub">Where is your cassava farm located?</string>
+    <string name="lbl_country_location_sub">In which country is your farm located?</string>
 
 
     <string name="lbl_nigeria" translatable="false">Nigeria</string>
@@ -302,6 +302,8 @@
 
     <string name="lbl_gender_prompt">Select gender</string>
     <string name="lbl_gender">Choose gender</string>
+    <string name="lbl_akilimo_interest_prompt">Select main interest in AKILIMO</string>
+    <string name="lbl_akilimo_interest">Main interest in AKILIMO</string>
     <string name="lbl_prefer_not_to_say">Prefer not to answer</string>
     <string name="lbl_male">Male</string>
     <string name="lbl_female">Female</string>
@@ -309,6 +311,12 @@
     <string name="lbl_confirm">Confirm</string>
     <string name="lbl_remove">Remove</string>
     <string name="lbl_field_info">If you know the size of your field in ha or acre, proceed to the next page.\n\nIf not, we advise you download from a measuring app from Play Store e.g. `GPS Fields Area Measure` \n\nThis will help you to measure your area by walking around your field.</string>
+
+    <!-- AKILIMO interest strings -->
+    <string name="lbl_interest_curious">Just curious</string>
+    <string name="lbl_interest_farmer">I\'m a farmer</string>
+    <string name="lbl_interest_agronomist">I\'m an agronomist</string>
+    <string name="lbl_interest_extension_agent">I\'m an extension agent</string>
 
     <string name="lbl_location_sub_text">If you are in your field while running the app, you are strongly advised to choose the option `Use current location`.\n\nIf you are not in your field, use `Select location manually` option and zoom in the map to find known places in your field neighborhood.</string>
 

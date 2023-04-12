@@ -20,4 +20,6 @@ interface PotatoMarketDao {
 
     @Delete
     fun delete(location: PotatoMarket?)
+    @Query("DELETE FROM potato_market")
+    fun deleteAll()
 }
