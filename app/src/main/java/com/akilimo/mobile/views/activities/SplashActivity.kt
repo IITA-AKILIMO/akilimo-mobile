@@ -43,37 +43,37 @@ class SplashActivity : BaseActivity() {
     override fun initToolbar() {}
 
     private fun launchActivity() {
+        val isInDevMode = BuildConfig.DEBUG
         try {
             val sessionManager = SessionManager(this@SplashActivity)
-            if (!BuildConfig.DEBUG) {
-                //For developers sanity no data should be cleared in debug mode
-            }
-            val db = getDatabase(this)
-            if (db != null) {
-                with(db) {
-                    if (sessionManager.userInfoRemembered()) {
-                        adviceStatusDao().deleteAll()
-                        cassavaMarketDao().deleteAll()
-                        cassavaPriceDao().deleteAll()
-                        currencyDao().deleteAll()
-                        currentPracticeDao().deleteAll()
-                        fertilizerDao().deleteAll()
-                        fertilizerPriceDao().deleteAll()
-                        fieldOperationCostDao().deleteAll()
-                        fieldYieldDao().deleteAll()
-                        investmentAmountDao().deleteAll()
-                        investmentAmountDtoDao().deleteAll()
-                        locationInfoDao().deleteAll()
-                        maizeMarketDao().deleteAll()
-                        maizePerformanceDao().deleteAll()
-                        maizePriceDao().deleteAll()
-                        mandatoryInfoDao().deleteAll()
-                        potatoMarketDao().deleteAll()
+            if (!isInDevMode) {
+                val db = getDatabase(this)
+                if (db != null) {
+                    with(db) {
+                        if (sessionManager.userInfoRemembered()) {
+                            adviceStatusDao().deleteAll()
+                            cassavaMarketDao().deleteAll()
+                            cassavaPriceDao().deleteAll()
+                            currencyDao().deleteAll()
+                            currentPracticeDao().deleteAll()
+                            fertilizerDao().deleteAll()
+                            fertilizerPriceDao().deleteAll()
+                            fieldOperationCostDao().deleteAll()
+                            fieldYieldDao().deleteAll()
+                            investmentAmountDao().deleteAll()
+                            investmentAmountDtoDao().deleteAll()
+                            locationInfoDao().deleteAll()
+                            maizeMarketDao().deleteAll()
+                            maizePerformanceDao().deleteAll()
+                            maizePriceDao().deleteAll()
+                            mandatoryInfoDao().deleteAll()
+                            potatoMarketDao().deleteAll()
 //                        profileInfoDao().deleteAll()
-                        scheduleDateDao().deleteAll()
-                        starchFactoryDao().deleteAll()
-                    } else {
-                        clearAllTables()
+                            scheduleDateDao().deleteAll()
+                            starchFactoryDao().deleteAll()
+                        } else {
+                            clearAllTables()
+                        }
                     }
                 }
             }
@@ -83,8 +83,8 @@ class SplashActivity : BaseActivity() {
             Crashlytics.logException(ex)
         }
         var intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
-        if (BuildConfig.DEBUG) {
-//            intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
+        if (isInDevMode) {
+            intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
 //            intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
 //            intent = Intent(this@SplashActivity, FertilizerRecActivity::class.java)
 //            intent = Intent(this@SplashActivity, RootYieldActivity::class.java)
