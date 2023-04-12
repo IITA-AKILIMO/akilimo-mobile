@@ -20,4 +20,7 @@ interface FieldYieldDao {
 
     @Delete
     fun delete(fieldYield: FieldYield?)
+
+    @Query("DELETE FROM field_yield")
+    fun deleteAll()
 }

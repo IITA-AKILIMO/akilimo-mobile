@@ -20,4 +20,7 @@ interface LocationInfoDao {
 
     @Delete
     fun delete(location: LocationInfo?)
+
+    @Query("DELETE FROM location_info")
+    fun deleteAll()
 }

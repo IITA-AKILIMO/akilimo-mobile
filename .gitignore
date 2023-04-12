@@ -16,4 +16,4 @@ langtool.jar
 *.xls
 *.xlsx
 out/*
-node_modeuls
+node_modules

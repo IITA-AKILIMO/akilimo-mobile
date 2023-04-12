@@ -25,18 +25,20 @@ interface FertilizerDao {
     fun findAllByCountry(countryCode: String): List<Fertilizer>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(fieldYield: Fertilizer)
+    fun insert(fertilizer: Fertilizer)
 
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAll(availableFertilizersList: List<Fertilizer>)
 
     @Update
-    fun update(fieldYield: Fertilizer?)
+    fun update(fertilizer: Fertilizer?)
 
     @Delete
-    fun delete(fieldYield: Fertilizer?)
+    fun delete(fertilizer: Fertilizer?)
 
     @Delete
-    fun deleteFertilizerByList(userList: List<Fertilizer>)
+    fun deleteFertilizerByList(fertilizerList: List<Fertilizer>)
+    @Query("DELETE FROM fertilizer")
+    fun deleteAll()
 }

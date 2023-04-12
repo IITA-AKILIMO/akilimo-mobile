@@ -32,4 +32,7 @@ interface FertilizerPriceDao {
 
     @Query("SELECT * FROM fertilizer_price where priceId=:itemTagIndex LIMIT 1")
     fun findOneByPriceId(itemTagIndex: Long): FertilizerPrice
+
+    @Query("DELETE FROM fertilizer_price")
+    fun deleteAll()
 }

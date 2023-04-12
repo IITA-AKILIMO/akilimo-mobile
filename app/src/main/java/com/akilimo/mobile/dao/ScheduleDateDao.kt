@@ -13,11 +13,14 @@ interface ScheduleDateDao {
     fun findOne(): ScheduledDate?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg users: ScheduledDate)
+    fun insert(vararg scheduledDates: ScheduledDate)
 
     @Update
-    fun update(vararg users: ScheduledDate)
+    fun update(vararg scheduledDates: ScheduledDate)
 
     @Delete
-    fun delete(user: ScheduledDate?)
+    fun delete(scheduledDate: ScheduledDate?)
+
+    @Query("DELETE FROM scheduled_date")
+    fun deleteAll()
 }

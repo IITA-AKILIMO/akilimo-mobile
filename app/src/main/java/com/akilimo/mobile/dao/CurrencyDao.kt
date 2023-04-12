@@ -27,4 +27,6 @@ interface CurrencyDao {
 
     @Delete
     fun delete(currency: Currency?)
+    @Query("DELETE FROM currency")
+    fun deleteAll()
 }

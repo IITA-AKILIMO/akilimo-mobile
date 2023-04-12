@@ -20,4 +20,7 @@ interface CassavaMarketDao {
 
     @Delete
     fun delete(market: CassavaMarket?)
+
+    @Query("DELETE FROM cassava_market")
+    fun deleteAll()
 }

@@ -111,7 +111,7 @@ public class MapBoxActivity extends BaseLocationPicker {
     public void onMapReady(@NonNull final MapboxMap mapboxMap) {
         this.mapboxMap = mapboxMap;
 
-        mapboxMap.setStyle(Style.MAPBOX_STREETS, style -> {
+        mapboxMap.setStyle(Style.SATELLITE_STREETS, style -> {
             enableLocationComponent(style);
             Toast.makeText(context, getString(R.string.move_map_instruction), Toast.LENGTH_LONG).show();
             initDroppedMarker(style);

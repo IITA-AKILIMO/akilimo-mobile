@@ -20,4 +20,7 @@ interface InvestmentAmountDao {
 
     @Delete
     fun delete(investmentAmount: InvestmentAmount?)
+
+    @Query("DELETE FROM investment_amount")
+    fun deleteAll()
 }
