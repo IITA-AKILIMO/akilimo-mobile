@@ -3,6 +3,7 @@ package com.akilimo.mobile.views.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -150,6 +151,7 @@ public class BioDataFragment extends BaseStepFragment {
 
         binding.chkRememberDetails.setOnCheckedChangeListener((compoundButton, rememberInfo) -> {
             rememberUserInfo = rememberInfo;
+            sessionManager.setRememberUserInfo(rememberUserInfo);
         });
 
     }
@@ -175,7 +177,7 @@ public class BioDataFragment extends BaseStepFragment {
                 edtLastName.setText(lastName);
 //                edtFamName.setText(farmName);
                 edtEmail.setText(email);
-                if (!Strings.isEmptyOrWhitespace(fullMobileNumber)) {
+                if (!TextUtils.isEmpty(fullMobileNumber)) {
                     ccp.setFullNumber(fullMobileNumber);
                 }
 
@@ -204,23 +206,23 @@ public class BioDataFragment extends BaseStepFragment {
         fullMobileNumber = ccp.getFullNumber();
         mobileCode = ccp.getSelectedCountryCodeWithPlus();
 
-        if (Strings.isEmptyOrWhitespace(firstName)) {
+        if (TextUtils.isEmpty(firstName)) {
             dataIsValid = false;
             errorMessage = this.getString(R.string.lbl_first_name_req);
             edtFirstName.setError(errorMessage);
         }
 
-        if (Strings.isEmptyOrWhitespace(lastName)) {
+        if (TextUtils.isEmpty(lastName)) {
             dataIsValid = false;
             errorMessage = this.getString(R.string.lbl_last_name_req);
             edtLastName.setError(errorMessage);
         }
 
-        if (Strings.isEmptyOrWhitespace(farmName)) {
+        if (TextUtils.isEmpty(farmName)) {
             farmName = String.format("%s%s", firstName, lastName);
         }
 
-        if (!Strings.isEmptyOrWhitespace(fullMobileNumber) && !Strings.isEmptyOrWhitespace(userEnteredNumber)) {
+        if (!TextUtils.isEmpty(fullMobileNumber) && !TextUtils.isEmpty(userEnteredNumber)) {
             if (!phoneIsValid) {
                 dataIsValid = false;
                 errorMessage = this.getString(R.string.lbl_valid_number_req);
@@ -230,7 +232,7 @@ public class BioDataFragment extends BaseStepFragment {
             }
         }
 
-        if (!validationHelper.isValidEmail(email) && !Strings.isEmptyOrWhitespace(email)) {
+        if (!validationHelper.isValidEmail(email) && !TextUtils.isEmpty(email)) {
             dataIsValid = false;
             errorMessage = this.getString(R.string.lbl_valid_email_req);
             edtEmail.setError(errorMessage);

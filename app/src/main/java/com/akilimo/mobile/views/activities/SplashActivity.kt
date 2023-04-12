@@ -1,5 +1,6 @@
 package com.akilimo.mobile.views.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,10 +9,12 @@ import com.crashlytics.android.Crashlytics
 import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.utils.SessionManager
 import com.akilimo.mobile.views.activities.usecases.FertilizerRecActivity
 import com.akilimo.mobile.views.activities.usecases.RecommendationsActivity
 
 
+@SuppressLint("CustomSplashScreen")
 class SplashActivity : BaseActivity() {
     val LOG_TAG: String = this::class.java.simpleName
 
@@ -41,12 +44,14 @@ class SplashActivity : BaseActivity() {
 
     private fun launchActivity() {
         try {
+            val sessionManager = SessionManager(this@SplashActivity)
             if (!BuildConfig.DEBUG) {
-                //For developers sanity no data is cleared in debug mode
-                val db = getDatabase(this)
-                if (db != null) {
-                    with(db) {
-                        clearAllTables()
+                //For developers sanity no data should be cleared in debug mode
+            }
+            val db = getDatabase(this)
+            if (db != null) {
+                with(db) {
+                    if (sessionManager.userInfoRemembered()) {
                         adviceStatusDao().deleteAll()
                         cassavaMarketDao().deleteAll()
                         cassavaPriceDao().deleteAll()
@@ -64,12 +69,15 @@ class SplashActivity : BaseActivity() {
                         maizePriceDao().deleteAll()
                         mandatoryInfoDao().deleteAll()
                         potatoMarketDao().deleteAll()
-                        profileInfoDao().deleteAll()
+//                        profileInfoDao().deleteAll()
                         scheduleDateDao().deleteAll()
                         starchFactoryDao().deleteAll()
+                    } else {
+                        clearAllTables()
                     }
                 }
             }
+
         } catch (ex: Exception) {
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
             Crashlytics.logException(ex)
