@@ -1,0 +1,26 @@
+name: BUmp and Tag for release
+on:
+  push:
+    branches:
+      - main
+jobs:
+
+  bump-tag-version:
+    name: Bump and Tag Version
+    runs-on: ubuntu-latest
+    concurrency:
+      cancel-in-progress: true
+      group: ci-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jefflinse/pr-semver-bump@v1
+        name: Bump and Tag Version
+        with:
+          mode: bump
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          major-label: breaking
+          minor-label: enhancement
+          patch-label: bug
+          require-release-notes: false
+          with-v: false
+          base-branch: false
