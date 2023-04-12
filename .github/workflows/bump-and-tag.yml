@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     concurrency:
       cancel-in-progress: true
-      group: ci-${{ github.ref }}
+      group: tag-${{ github.ref }}
     steps:
       - uses: actions/checkout@v2
       - uses: jefflinse/pr-semver-bump@v1
