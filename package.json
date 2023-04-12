@@ -17,7 +17,6 @@
   "devDependencies": {
     "@invisible/changelog-update": "^1.2.2",
     "auto-changelog": "^2.4.0",
-    "fast-git-changelog": "^1.0.3",
     "release-notes-cli": "^0.0.6"
   },
   "auto-changelog": {
