@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         mapbox:mapbox_cameraTargetLat="-1.2240615"
         mapbox:mapbox_cameraTargetLng="36.9003409"
-        mapbox:mapbox_cameraZoom="5"
+        mapbox:mapbox_cameraZoom="17"
         mapbox:mapbox_uiRotateGestures="false" />
 
 </RelativeLayout>
