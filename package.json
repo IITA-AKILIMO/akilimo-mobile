@@ -7,9 +7,12 @@
   "author": "Sammy M <barsamms@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "changelog": "fast-git-changelog",
+    "changelog": "git-chglog -o CHANGELOG.md",
     "history": "auto-changelog -p",
-    "notes": "release-notes 21.4.4..HEAD changelog --branch main -o > NOTES.md"
+    "notes": "release-notes 21.4.4..HEAD changelog --branch main -o > NOTES.md",
+    "appnotes": "release-notes 21.4.4..HEAD appstore --branch main > distribution/whatsnew/whatsnew-en-GB",
+    "notes:customs": "set TAG=22.0.0 && echo ${TAG}&& release-notes $TAG..HEAD changelog --branch main -o > NOTESB.md",
+    "notes:custom": "sh -c 'someprogram --env=$0'"
   },
   "devDependencies": {
     "@invisible/changelog-update": "^1.2.2",
