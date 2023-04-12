@@ -9,7 +9,7 @@
   "scripts": {
     "changelog": "fast-git-changelog",
     "history": "auto-changelog -p",
-    "notes": "release-notes 21.4.1..HEAD changelog --branch main -o > NOTES.md"
+    "notes": "release-notes 21.4.4..HEAD changelog --branch main -o > NOTES.md"
   },
   "devDependencies": {
     "@invisible/changelog-update": "^1.2.2",
