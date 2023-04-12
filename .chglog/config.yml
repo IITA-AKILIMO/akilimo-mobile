@@ -1,22 +1,30 @@
 style: github
 template: CHANGELOG.tpl.md
 info:
-  title: CHANGELOG
-  repository_url: https://github.com/masgeek/akilimo-mobile
+  title: AKILIMO CHANGELOG
+  repository_url: https://github.com/IITA-AKILIMO/akilimo-mobile
 options:
   commits:
-    # filters:
-    #   Type:
-    #     - feat
-    #     - fix
-    #     - perf
-    #     - refactor
+    filters:
+      Type:
+        - feat
+        - fix
+        - perf
+        - docs
+        - refactor
+        - ci
   commit_groups:
-    # title_maps:
-    #   feat: Features
-    #   fix: Bug Fixes
-    #   perf: Performance Improvements
-    #   refactor: Code Refactoring
+    group_by: Type
+    sort_by: Title
+    title_order:
+      - feat
+    title_maps:
+      feat: Features
+      fix: Bug Fixes
+      perf: Performance Improvements
+      refactor: Code Refactoring
+      doc: Documentation changes
+      ci: Continuous integration changes
   header:
     pattern: "^(\\w*)\\:\\s(.*)$"
     pattern_maps:
