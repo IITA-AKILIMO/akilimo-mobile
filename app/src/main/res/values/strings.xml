@@ -313,7 +313,7 @@
     <string name="lbl_field_info">If you know the size of your field in ha or acre, proceed to the next page.\n\nIf not, we advise you download from a measuring app from Play Store e.g. `GPS Fields Area Measure` \n\nThis will help you to measure your area by walking around your field.</string>
 
     <!-- AKILIMO interest strings -->
-    <string name="lbl_interest_curious">Just curious</string>
+    <string name="lbl_interest_curious">I\'m  just curious</string>
     <string name="lbl_interest_farmer">I\'m a farmer</string>
     <string name="lbl_interest_agronomist">I\'m an agronomist</string>
     <string name="lbl_interest_extension_agent">I\'m an extension agent</string>
@@ -400,7 +400,7 @@
     <string name="lbl_email_address_hint">Email address (used to send recommendations)</string>
     <string name="lbl_email_address">Email address</string>
     <string name="lbl_phone_number">Phone number</string>
-    <string name="lbl_self_intro">Please tell us who you are</string>
+    <string name="lbl_self_intro">We want to know you better!</string>
     <string name="lbl_exact_price">Exact price</string>
     <string name="lbl_fertilizer_price">Fertilizer price</string>
     <string name="lbl_operation_costs">Operation costs</string>
