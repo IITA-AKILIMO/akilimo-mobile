@@ -10,7 +10,8 @@ import com.google.i18n.phonenumbers.Phonenumber
 
 class ValidationHelper {
     private val phoneUtil: PhoneNumberUtil = PhoneNumberUtil.getInstance()
-    private val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
+    private val emailPattern =
+        "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9]+\\.([a-zA-Z]{3,5}|[a-zA-z]{2,5}\\.[a-zA-Z]{2,5})"
 
     companion object {
         private val LOG_TAG = ValidationHelper::class.java.simpleName
@@ -46,10 +47,9 @@ class ValidationHelper {
     }
 
     fun isValidEmail(email: String): Boolean {
-        return !TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches()
-//        if (email.matches(emailPattern.toRegex())) {
-//            return true
-//        }
-//        return false
+        if (email.matches(emailPattern.toRegex())) {
+            return true
+        }
+        return false
     }
 }
