@@ -1,6 +1,8 @@
 package com.akilimo.mobile.utils
 
+import android.text.TextUtils
 import android.util.Log
+import android.util.Patterns
 import com.crashlytics.android.Crashlytics
 import com.google.i18n.phonenumbers.NumberParseException
 import com.google.i18n.phonenumbers.PhoneNumberUtil
@@ -44,10 +46,10 @@ class ValidationHelper {
     }
 
     fun isValidEmail(email: String): Boolean {
-//        return !TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches()
-        if (email.matches(emailPattern.toRegex())) {
-            return true
-        }
-        return false
+        return !TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches()
+//        if (email.matches(emailPattern.toRegex())) {
+//            return true
+//        }
+//        return false
     }
 }
