@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-    <string name="welcome_title">Karibu</string>
+    <string name="welcome_title">Je, unalima muhogo? Na unatafuta kuwa mtaalamu? AKILIMO inaweza kukusaidia!</string>
     <string name="welcome_instructions">AKILIMO inaweza kukupatia ushauri binafsi wa kuongeza mavuno ya muhogo katika shamba lako iwapo utatoa taarifa muhimu za kuiwezesha kufanya hivyo.</string>
     <string name="important_instructions_title">TAARIFA MUHIMU</string>
     <string name="important_instructions">Mapendekezo AKILIMO itakupatia yanategemea usahihi wa taarifa utakazo zitoa yaani eneo lilipo shamba lako, ukubwa wa shamba, bei ya mazao, mbolea, n.k. Kwa mfano, ukubwa wa shamba ukitajwa kuwa mkubwa kuliko ulivyo, utaongeza gharama zisizo za lazima, yaani  kuongezeka uwekezaji na kusababisha hasara; na ikiwa ukubwa wa shamba unaotajwa utakuwa ni chini ya ukweli,  itapunguza fursa ya kupata faida kutoka kwenye shamba lako.</string>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-    <string name="welcome_title">Murakaza neza</string>
+    <string name="welcome_title">Wibagiwe icyihuse n\'ubwoba bwo gufata inama mu gihugu cyacu, AKILIMO ikubisobanura!</string>
     <string name="welcome_instructions">AKILIMO igufasha gufata ibyemezo byiza mu murima w\'imyumbati kugirango ubone umusaruro mwinshi kandi ugire inyungu nyinshi</string>
     <string name="important_instructions_title">AMAKURU Y\'INGENZI</string>
     <string name="important_instructions">Inama ugirwa na AKILIMO zose zishingiye ku hantu uherereye, ingano y\'umurima wawe n\'ibiciro. Urugero, iyo ubuso bw\'umurima wawe wibeshye ukabugira bunini, bituma utanga igishoro kinini bityo ugahomba.  Ku rundi ruhande, niba ubuso bw\'umurima wawe ugereranije ari butoya ugereranije nukuri, ibi biganisha ku kudaha agaciro umusaruro wawe kandi ukaba watakaza amahirwe yo kubona inyungu mu murima wawe.</string>
