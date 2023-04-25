@@ -54,6 +54,8 @@ public abstract class BaseStepFragment extends Fragment implements Step {
 
     protected SessionManager sessionManager;
     protected MathHelper mathHelper;
+
+    @Deprecated()
     protected boolean dataIsValid;
 
     public BaseStepFragment() {

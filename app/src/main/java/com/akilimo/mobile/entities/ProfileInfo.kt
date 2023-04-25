@@ -26,8 +26,8 @@ open class ProfileInfo {
     var gender: String? = null
     var akilimoInterest: String? = null
 
-    var selectedGenderIndex: Int = 0
-    var selectedInterestIndex: Int = 0
+    var selectedGenderIndex: Int = -1
+    var selectedInterestIndex: Int = -1
     var sendEmail: Boolean = false
     var sendSms: Boolean = false
 
