@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.hbb20.CountryCodePicker;
 import com.akilimo.mobile.R;
@@ -53,7 +54,6 @@ public class BioDataFragment extends BaseStepFragment {
     private String firstName;
     private String lastName;
     private String email;
-    private String farmName;
     private String mobileCode;
     private String fullMobileNumber;
     private String userEnteredNumber;
@@ -102,6 +102,7 @@ public class BioDataFragment extends BaseStepFragment {
         ccp = binding.ccp;
 
         final List<String> genderStrings = new ArrayList<>();
+        genderStrings.add(0, this.getString(R.string.lbl_gender_prompt));
         genderStrings.add(this.getString(R.string.lbl_female));
         genderStrings.add(this.getString(R.string.lbl_male));
         genderStrings.add(this.getString(R.string.lbl_prefer_not_to_say));
@@ -110,6 +111,7 @@ public class BioDataFragment extends BaseStepFragment {
         genderSpinner.setAdapter(genderAdapter);
 
         final List<String> interestStrings = new ArrayList<>();
+        interestStrings.add(0, this.getString(R.string.lbl_akilimo_interest_prompt));
         interestStrings.add(this.getString(R.string.lbl_interest_farmer));
         interestStrings.add(this.getString(R.string.lbl_interest_extension_agent));
         interestStrings.add(this.getString(R.string.lbl_interest_agronomist));
@@ -121,8 +123,11 @@ public class BioDataFragment extends BaseStepFragment {
         genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                gender = genderStrings.get(position);
                 selectedGenderIndex = position;
+                gender = null;
+                if (position > 0) {
+                    gender = genderStrings.get(position);
+                }
             }
 
             @Override
@@ -133,8 +138,11 @@ public class BioDataFragment extends BaseStepFragment {
         interestSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                akilimoInterest = interestStrings.get(position);
                 selectedInterestIndex = position;
+                akilimoInterest = null;
+                if (position > 0) {
+                    akilimoInterest = interestStrings.get(position);
+                }
             }
 
             @Override
@@ -164,18 +172,17 @@ public class BioDataFragment extends BaseStepFragment {
             if (profileInfo != null) {
                 firstName = profileInfo.getFirstName();
                 lastName = profileInfo.getLastName();
-                farmName = profileInfo.getFarmName();
                 email = profileInfo.getEmail();
                 mobileCode = profileInfo.getMobileCode();
                 fullMobileNumber = profileInfo.getFullMobileNumber();
                 gender = profileInfo.getGender();
                 akilimoInterest = profileInfo.getAkilimoInterest();
+
                 selectedGenderIndex = profileInfo.getSelectedGenderIndex();
                 selectedInterestIndex = profileInfo.getSelectedInterestIndex();
 
                 edtFirstName.setText(firstName);
                 edtLastName.setText(lastName);
-//                edtFamName.setText(farmName);
                 edtEmail.setText(email);
                 if (!TextUtils.isEmpty(fullMobileNumber)) {
                     ccp.setFullNumber(fullMobileNumber);
@@ -194,53 +201,56 @@ public class BioDataFragment extends BaseStepFragment {
     private void saveBioData() {
         edtFirstName.setError(null);
         edtLastName.setError(null);
-//        edtFamName.setError(null);
         edtEmail.setError(null);
-        dataIsValid = true;
+        errorMessage = null;
 
         firstName = edtFirstName.getText().toString();
         lastName = edtLastName.getText().toString();
-//        farmName = edtFamName.getText().toString();
         email = edtEmail.getText().toString().trim();
         userEnteredNumber = edtPhone.getText().toString();
         fullMobileNumber = ccp.getFullNumber();
         mobileCode = ccp.getSelectedCountryCodeWithPlus();
 
         if (TextUtils.isEmpty(firstName)) {
-            dataIsValid = false;
             errorMessage = this.getString(R.string.lbl_first_name_req);
             edtFirstName.setError(errorMessage);
+            return;
         }
 
         if (TextUtils.isEmpty(lastName)) {
-            dataIsValid = false;
             errorMessage = this.getString(R.string.lbl_last_name_req);
             edtLastName.setError(errorMessage);
+            return;
         }
 
-        if (TextUtils.isEmpty(farmName)) {
-            farmName = String.format("%s%s", firstName, lastName);
-        }
 
         if (!TextUtils.isEmpty(fullMobileNumber) && !TextUtils.isEmpty(userEnteredNumber)) {
             if (!phoneIsValid) {
-                dataIsValid = false;
                 errorMessage = this.getString(R.string.lbl_valid_number_req);
                 edtPhone.setError(errorMessage);
+                return;
             } else {
                 edtPhone.setError(null);
             }
         }
 
         if (!validationHelper.isValidEmail(email) && !TextUtils.isEmpty(email)) {
-            dataIsValid = false;
             errorMessage = this.getString(R.string.lbl_valid_email_req);
             edtEmail.setError(errorMessage);
-        }
-
-        if (!dataIsValid) {
             return;
         }
+
+        if (TextUtils.isEmpty(gender)) {
+            errorMessage = this.getString(R.string.lbl_gender_prompt);
+            return;
+        }
+
+
+        if (TextUtils.isEmpty(akilimoInterest)) {
+            errorMessage = this.getString(R.string.lbl_akilimo_interest_prompt);
+            return;
+        }
+
 
         try {
             if (profileInfo == null) {
@@ -251,8 +261,6 @@ public class BioDataFragment extends BaseStepFragment {
             profileInfo.setGender(gender);
             profileInfo.setAkilimoInterest(akilimoInterest);
             profileInfo.setEmail(email);
-            profileInfo.setFarmName(farmName);
-            profileInfo.setFieldDescription(farmName);
             profileInfo.setMobileCode(mobileCode);
             profileInfo.setFullMobileNumber(fullMobileNumber);
             profileInfo.setSelectedGenderIndex(selectedGenderIndex);
@@ -281,7 +289,7 @@ public class BioDataFragment extends BaseStepFragment {
     @Override
     public VerificationError verifyStep() {
         saveBioData();
-        if (!dataIsValid) {
+        if (!TextUtils.isEmpty(errorMessage)) {
             return new VerificationError(errorMessage);
         }
         return null;

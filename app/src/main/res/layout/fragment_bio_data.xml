@@ -165,9 +165,10 @@
             app:ccp_countryPreference="NG,TZ"
             app:ccp_hintExampleNumber="true"
             app:ccp_rememberLastSelection="true"
+            app:ccp_showFlag="true"
             app:ccp_showFullName="false"
             app:ccp_showNameCode="true"
-            app:ccp_showPhoneCode="true"
+            app:ccp_showPhoneCode="false"
             app:ccp_textGravity="LEFT" />
 
         <com.google.android.material.textfield.TextInputEditText
