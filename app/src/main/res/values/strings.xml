@@ -422,7 +422,7 @@
     <string name="lbl_ploughing">Ploughing</string>
     <string name="lbl_ridging">Ridging</string>
     <string name="lbl_country">Country</string>
-    <string name="lbl_risk_attitude">Investment in technology</string>
+    <string name="lbl_risk_attitude">Investment preference</string>
     <string name="lbl_field">Field</string>
     <string name="lbl_farm_size">Field size</string>
     <string name="lbl_location">Location</string>
