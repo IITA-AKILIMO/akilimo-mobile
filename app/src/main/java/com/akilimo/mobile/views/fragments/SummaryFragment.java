@@ -118,6 +118,7 @@ public class SummaryFragment extends BaseStepFragment {
         String harvestDate = "";
         String fieldInfo = "";
         String fieldName = "";
+        String summaryTitle = context.getString(R.string.lbl_summary_title);
         int riskAttitude = 0;
         String riskAttitudeName = "";
         double lat = 0.0;
@@ -146,9 +147,12 @@ public class SummaryFragment extends BaseStepFragment {
         if (mandatoryInfo != null) {
             areaUnit = mandatoryInfo.getDisplayAreaUnit();
             areaUnitSelected = areaUnit != null && !areaUnit.isEmpty();
+
+            summaryTitle = String.format(getString(R.string.lbl_summary_text), profileInfo.getNames(), profileInfo.getFieldDescription());
             if (areaUnitSelected) {
                 fieldSize = mandatoryInfo.getAreaSize();
                 fieldSizeSelected = fieldSize > 0.0;
+                fieldInfo = String.format("%s %s", fieldSize, areaUnit);
                 try {
                     Locale locale = getCurrentLocale();
                     if (locale.getLanguage().equalsIgnoreCase("sw")) {
@@ -156,14 +160,13 @@ public class SummaryFragment extends BaseStepFragment {
                     } else {
                         fieldInfo = String.format("%s %s", fieldSize, areaUnit);
                     }
-                } catch (Exception ex) {
-                    fieldInfo = String.format("%s %s", fieldSize, areaUnit);
-                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                    Crashlytics.logException(ex);
+                } catch (Exception ignored) {
+
                 }
             }
         }
 
+        binding.txtSummaryTitle.setText(summaryTitle);
         if (location != null) {
             pickedLocation = loadLocationInfo(location).toString();
             lat = location.getLatitude();
