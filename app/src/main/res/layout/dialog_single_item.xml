@@ -45,7 +45,7 @@
             style="@style/Button.Accent.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/ubuntu"
+
             android:gravity="center"
             android:text="@string/lbl_cancel" />
 

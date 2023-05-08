@@ -51,7 +51,7 @@
                 android:layout_below="@id/errorImage"
                 android:layout_centerInParent="true"
                 android:layout_margin="@dimen/spacing_large"
-                android:fontFamily="@font/ubuntu"
+
                 android:text="@string/lbl_fertilizer_load_error"
                 android:textColor="@color/red_500"
                 android:visibility="gone" />
@@ -64,7 +64,7 @@
                 android:layout_below="@id/errorLabel"
                 android:layout_centerInParent="true"
                 android:background="@drawable/btn_rounded_accent"
-                android:fontFamily="@font/ubuntu"
+
                 android:paddingLeft="@dimen/spacing_xlarge"
                 android:paddingRight="@dimen/spacing_xlarge"
                 android:visibility="gone"
@@ -84,7 +84,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_large"
-                    android:fontFamily="@font/ubuntu"
+
                     android:text="@string/lbl_loading_fertilizers"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/grey_80" />

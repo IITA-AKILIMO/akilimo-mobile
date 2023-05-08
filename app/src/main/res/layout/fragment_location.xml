@@ -72,7 +72,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:fontFamily="@font/ubuntu"
+
                 android:gravity="center"
                 android:text="@string/lbl_current_location"
                 android:textAllCaps="false"
@@ -84,7 +84,7 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="@dimen/spacing_small"
                 android:layout_weight="1"
-                android:fontFamily="@font/ubuntu"
+
                 android:text="@string/lbl_manual_location"
                 android:textAllCaps="false"
                 android:theme="@style/Button.Accent"

@@ -29,7 +29,7 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/ubuntu"
+
             android:text="@string/lbl_cassava_field_size_no_ph"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
@@ -52,7 +52,7 @@
                     android:id="@+id/rd_quarter_acre"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/ubuntu"
+
                     android:text="@string/quarter_acre" />
 
 
@@ -60,7 +60,7 @@
                     android:id="@+id/rd_half_acre"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/ubuntu"
+
                     android:text="@string/half_acre" />
 
 
@@ -68,14 +68,14 @@
                     android:id="@+id/rd_one_acre"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/ubuntu"
+
                     android:text="@string/one_acre" />
 
                 <RadioButton
                     android:id="@+id/rd_two_half_acre"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/ubuntu"
+
                     android:text="@string/two_half_acres"
                     android:visibility="gone" />
 
@@ -83,7 +83,7 @@
                     android:id="@+id/rd_specify_acre"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/ubuntu"
+
                     android:text="@string/exact_field_area" />
 
             </RadioGroup>
@@ -93,7 +93,7 @@
             android:id="@+id/specifiedArea"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/ubuntu"
+
             android:text="@string/empty_text"
             android:textAlignment="center"
             android:textColor="@color/grey_80"

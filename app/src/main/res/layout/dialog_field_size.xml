@@ -44,7 +44,7 @@
             android:id="@+id/bt_submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/ubuntu"
+
             android:text="@string/lbl_save"
             android:textAllCaps="false"
             android:theme="@style/Button.Green"
@@ -59,7 +59,7 @@
             android:id="@+id/bt_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/ubuntu"
+
             android:text="@string/lbl_cancel"
             android:textAllCaps="false"
             android:theme="@style/Button.Accent"

@@ -30,7 +30,7 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/ubuntu"
+
             android:text="@string/lbl_area_unit"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@color/akilimoDarkGreen"
@@ -47,21 +47,21 @@
                 android:id="@+id/rdAcre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
+
                 android:text="@string/area_unit_acre" />
 
             <RadioButton
                 android:id="@+id/rdHa"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
+
                 android:text="@string/area_unit_ha" />
 
             <RadioButton
                 android:id="@+id/rdAre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
+
                 android:text="@string/area_unit_are"
                 android:visibility="gone" />
 
@@ -69,7 +69,7 @@
                 android:id="@+id/rdSqm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
+
                 android:text="@string/area_unit_square_meter"
                 android:visibility="gone" />
         </RadioGroup>

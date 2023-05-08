@@ -21,7 +21,7 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/ubuntu"
+
             android:text="@string/lbl_self_intro"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
@@ -43,7 +43,7 @@
             android:id="@+id/edtFirstName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/ubuntu"
+
             android:hint="@string/lbl_first_name"
             android:inputType="text"
             android:maxLines="1"
@@ -67,7 +67,7 @@
             android:id="@+id/edtLastName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/ubuntu"
+
             android:hint="@string/lbl_last_name"
             android:inputType="text"
             android:maxLines="1"
@@ -124,7 +124,7 @@
             android:id="@+id/edtEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/ubuntu"
+
             android:hint="@string/lbl_email_address"
             android:inputType="textEmailAddress"
             android:maxLines="1"
@@ -175,7 +175,7 @@
             android:id="@+id/edtPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/ubuntu"
+
             android:hint="@string/lbl_phone_number"
             android:inputType="phone"
             android:maxLines="1"
@@ -213,7 +213,7 @@
         <!--            android:id="@+id/edtFarmName"-->
         <!--            android:layout_width="match_parent"-->
         <!--            android:layout_height="wrap_content"-->
-        <!--            android:fontFamily="@font/ubuntu"-->
+        <!--            -->
         <!--            android:hint="@string/lbl_farm_name"-->
         <!--            android:inputType="text"-->
         <!--            android:maxLines="1"-->

@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/title"
         android:layout_marginTop="@dimen/spacing_large"
-        android:fontFamily="@font/ubuntu"
+
         android:text="@string/lbl_cassava_sales_outlet"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
