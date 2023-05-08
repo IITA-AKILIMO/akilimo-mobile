@@ -64,7 +64,7 @@
             android:layout_marginTop="@dimen/spacing_medium"
             android:layout_marginRight="@dimen/spacing_medium"
             android:layout_marginBottom="@dimen/spacing_medium"
-            android:fontFamily="@font/ubuntu_bold"
+
             android:gravity="center"
             android:text="@string/lbl_height_of_maize_at_tasseling"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
@@ -86,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:fontFamily="@font/ubuntu_bold"
+
             android:text="@string/lbl_height_of_maize_at_tasseling"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"

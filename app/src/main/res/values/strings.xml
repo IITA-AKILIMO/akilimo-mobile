@@ -319,7 +319,7 @@
     <string name="lbl_interest_agronomist">I\'m an agronomist</string>
     <string name="lbl_interest_extension_agent">I\'m an extension agent</string>
 
-    <string name="lbl_location_sub_text">“If you are currently in your cassava field, please choose ‘Use current location’.\n\nOtherwise, choose ‘Select location manually’ to open a map and indicate where your cassava field is located.</string>
+    <string name="lbl_location_sub_text">If you are currently in your cassava field, please choose ‘Use current location’.\n\nOtherwise, choose ‘Select location manually’ to open a map and indicate where your cassava field is located.</string>
 
     <string name="title_your_field_size">YOUR FIELD SIZE</string>
     <string name="lbl_ok">OK</string>
@@ -507,7 +507,7 @@
     <string name="lbl_accept_terms_prompt">Accept the terms and conditions before proceeding</string>
     <string name="lbl_restart_app_prompt">Restart the app in order to apply translations to the navigation buttons?</string>
     <string name="lbl_optional">(Optional)</string>
-    <string name="lbl_country_supported">Currently AKILIMO gives advice for farms located in Nigeria, Tanzania, Rwanda, Burundi and Ghana. Your area is outside the area covered by AKILIMO</string>
+    <string name="lbl_country_supported">Currently AKILIMO gives advice for farms located in Nigeria, Tanzania, Rwanda, Burundi and Ghana. Your selected area does not match your country selection</string>
     <string name="lbl_acre_yield">3–6 t/acre</string>
     <string name="lbl_ha_yield">7.5–15 t/ha</string>
     <string name="lbl_are_yield">3–6 t/are</string>
