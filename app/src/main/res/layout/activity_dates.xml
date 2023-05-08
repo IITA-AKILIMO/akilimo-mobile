@@ -72,7 +72,7 @@
                 android:layout_marginLeft="@dimen/spacing_large"
                 android:layout_marginTop="@dimen/spacing_large"
                 android:layout_marginRight="@dimen/spacing_large"
-                android:fontFamily="@font/ubuntu"
+
                 android:text="@string/lbl_planting_harvest"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:textColor="@color/grey_90" />
@@ -91,7 +91,7 @@
                     android:id="@+id/rdYes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/ubuntu"
+
                     android:text="@string/lbl_yes"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
@@ -103,7 +103,7 @@
                     android:id="@+id/rdNo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/ubuntu"
+
                     android:text="@string/lbl_no"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
@@ -135,7 +135,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/ubuntu"
+
                             android:text="@string/lbl_selected_planting_date"
                             android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
@@ -144,7 +144,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/spacing_small"
-                            android:fontFamily="@font/ubuntu"
+
                             android:text="@string/app_name"
                             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                             android:textColor="@color/colorAccent" />
@@ -154,7 +154,7 @@
                             android:id="@+id/btnPickPlantingDate"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/ubuntu"
+
                             android:text="@string/lbl_change_planting_date"
                             android:textAllCaps="false"
                             android:theme="@style/Button.Accent" />
@@ -174,7 +174,7 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:fontFamily="@font/ubuntu"
+
                                 android:text="@string/lbl_planting_flexible"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
                         </LinearLayout>
@@ -228,7 +228,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/ubuntu"
+
                             android:text="@string/lbl_selected_harvest_date"
                             android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
@@ -237,7 +237,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/spacing_small"
-                            android:fontFamily="@font/ubuntu"
+
                             android:text="@string/app_name"
                             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                             android:textColor="@color/colorAccent" />
@@ -247,7 +247,7 @@
                             android:id="@+id/btnPickHarvestDate"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/ubuntu"
+
                             android:text="@string/lbl_change_harvest_date"
                             android:textAllCaps="false"
                             android:theme="@style/Button.Primary" />
@@ -268,7 +268,7 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:fontFamily="@font/ubuntu"
+
                                 android:text="@string/lbl_harvest_flexible"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
                         </LinearLayout>

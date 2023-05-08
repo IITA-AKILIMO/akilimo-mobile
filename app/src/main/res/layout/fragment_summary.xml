@@ -26,8 +26,7 @@
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             android:textColor="@color/akilimoDarkGreen"
-            android:textStyle="bold"
-            app:fontFamily="@font/ubuntu" />
+            android:textStyle="bold" />
     </LinearLayout>
 
     <RelativeLayout

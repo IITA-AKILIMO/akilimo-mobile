@@ -169,7 +169,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_small"
                     android:layout_marginTop="@dimen/spacing_medium"
-                    android:fontFamily="@font/ubuntu"
+
                     android:text="@string/lbl_price_per_cob_in_currency_unit"
                     android:visibility="gone" />
 
@@ -178,7 +178,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_medium"
-                    android:fontFamily="@font/ubuntu"
+
                     android:text="@string/lbl_price_per_cob"
                     android:textAllCaps="false"
                     android:theme="@style/Button.Brown" />

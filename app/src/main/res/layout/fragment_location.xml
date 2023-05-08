@@ -31,7 +31,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:fontFamily="@font/ubuntu"
             android:text="@string/lbl_farm_location"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
@@ -43,23 +42,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:fontFamily="@font/ubuntu"
             android:padding="@dimen/spacing_medium"
             android:text="@string/lbl_location_sub_text"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="@color/grey_80" />
 
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/locationInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:fontFamily="@font/ubuntu"
             android:text="@string/empty_text"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/grey_80" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/akilimoDarkGreen" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -75,7 +72,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:fontFamily="@font/ubuntu"
+
                 android:gravity="center"
                 android:text="@string/lbl_current_location"
                 android:textAllCaps="false"
@@ -87,7 +84,7 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="@dimen/spacing_small"
                 android:layout_weight="1"
-                android:fontFamily="@font/ubuntu"
+
                 android:text="@string/lbl_manual_location"
                 android:textAllCaps="false"
                 android:theme="@style/Button.Accent"

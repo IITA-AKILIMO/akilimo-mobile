@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_large"
-            android:fontFamily="@font/ubuntu"
+
             android:text="@string/lbl_which_of_these_tillage_operations_do_you_perform"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"

@@ -29,7 +29,7 @@
         android:id="@+id/btnUpdateLanguage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/ubuntu"
+
         android:text="@string/lbl_save"
         android:textAllCaps="false"
         android:theme="@style/Button.Green"
@@ -40,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_small"
-        android:fontFamily="@font/ubuntu"
+
         android:text="@string/app_name"
         android:textAlignment="center"
         android:textColor="@color/deep_purple_A100" />
