@@ -85,11 +85,7 @@ public class SummaryFragment extends BaseStepFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
-        risks = new String[]{
-                EnumRiskAtt.Never.riskName(context),
-                EnumRiskAtt.Sometimes.riskName(context),
-                EnumRiskAtt.Often.riskName(context)
-        };
+        risks = new String[]{EnumRiskAtt.Never.riskName(context), EnumRiskAtt.Sometimes.riskName(context), EnumRiskAtt.Often.riskName(context)};
     }
 
     public static SummaryFragment newInstance() {
@@ -99,23 +95,7 @@ public class SummaryFragment extends BaseStepFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAttributes = new TimelineAttributes(
-                48,
-                ContextCompat.getColor(context, R.color.akilimoLightGreen),
-                ContextCompat.getColor(context, R.color.red_A400),
-                true,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                ContextCompat.getColor(context, R.color.colorAccent),
-                ContextCompat.getColor(context, R.color.colorAccent),
-                TimelineView.LineStyle.DASHED,
-                4,
-                2
-        );
+        mAttributes = new TimelineAttributes(48, ContextCompat.getColor(context, R.color.akilimoLightGreen), ContextCompat.getColor(context, R.color.red_A400), true, 0, 0, 0, 0, 0, 0, ContextCompat.getColor(context, R.color.colorAccent), ContextCompat.getColor(context, R.color.colorAccent), TimelineView.LineStyle.DASHED, 4, 2);
     }
 
     @Override
@@ -230,7 +210,6 @@ public class SummaryFragment extends BaseStepFragment {
 
         mDataList = new ArrayList<>();
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_country), countryName, countrySelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_risk_attitude), riskAttitudeName, StepStatus.COMPLETED));
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_farm_place), location, locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_farm_size), fieldInfo, fieldSizeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
 
@@ -242,6 +221,7 @@ public class SummaryFragment extends BaseStepFragment {
             mDataList.add(new TimeLineModel(context.getString(R.string.lbl_ridging), ridgeStr.toString(), currentPracticeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         }
 
+        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_risk_attitude), riskAttitudeName, StepStatus.COMPLETED));
         initAdapter();
     }
 
@@ -258,7 +238,7 @@ public class SummaryFragment extends BaseStepFragment {
 
     @Nullable
     @Override
- public VerificationError verifyStep() {
+    public VerificationError verifyStep() {
         return null;
     }
 
