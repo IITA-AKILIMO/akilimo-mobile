@@ -67,6 +67,7 @@ public class LocationFragment extends BaseStepFragment {
     private double currentLon;
     private double currentAlt;
     private String countryLocation;
+    private String userSelectedCountryCode;
     private String placeName;
     private boolean countrySupported;
 
@@ -128,8 +129,6 @@ public class LocationFragment extends BaseStepFragment {
                 } catch (Exception ex) {
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
                     //@TODO migrate crashlytics code to latest crash analytics platform
-                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                    Crashlytics.logException(ex);
                 }
             }
         });
@@ -169,11 +168,7 @@ public class LocationFragment extends BaseStepFragment {
     }
 
     private void reverseGeoCode(double lat, double lon) {
-        MapboxGeocoding reverseGeocode = MapboxGeocoding.builder()
-                .accessToken(MAP_BOX_ACCESS_TOKEN)
-                .query(Point.fromLngLat(lon, lat))
-                .geocodingTypes(GeocodingCriteria.TYPE_COUNTRY)
-                .build();
+        MapboxGeocoding reverseGeocode = MapboxGeocoding.builder().accessToken(MAP_BOX_ACCESS_TOKEN).query(Point.fromLngLat(lon, lat)).geocodingTypes(GeocodingCriteria.TYPE_COUNTRY).build();
 
         reverseGeocode.enqueueCall(new Callback<GeocodingResponse>() {
             @Override
@@ -215,8 +210,6 @@ public class LocationFragment extends BaseStepFragment {
             } else {
                 database.locationInfoDao().insert(locationInformation);
             }
-
-            dataIsValid = currentLat != 0 || currentLon != 0;
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
             Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
@@ -232,6 +225,7 @@ public class LocationFragment extends BaseStepFragment {
 
             if (profileInfo != null) {
                 farmName = profileInfo.getFarmName();
+                userSelectedCountryCode = profileInfo.getCountryCode();
             }
             if (locationInformation != null) {
                 StringBuilder locInfo = loadLocationInfo(locationInformation);
@@ -239,29 +233,21 @@ public class LocationFragment extends BaseStepFragment {
                 currentLat = locationInformation.getLatitude();
                 currentAlt = locationInformation.getAltitude();
                 countryLocation = locationInformation.getLocationCountry();
+                locationInfo.setText(locInfo.toString());
                 isSupportedCountry(countryLocation);
-                dataIsValid = currentLat != 0 || currentLon != 0;
-                if (dataIsValid) {
-                    locationInfo.setText(locInfo.toString());
-                }
             }
-
-            String message = context.getString(R.string.lbl_farm_location, farmName);
-            title.setText(message);
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
         }
 
     }
 
     private void isSupportedCountry(String countryLocation) {
-        countrySupported = countryLocation.equalsIgnoreCase(EnumCountry.Nigeria.countryCode())
-                || countryLocation.equalsIgnoreCase(EnumCountry.Tanzania.countryCode())
-                || countryLocation.equalsIgnoreCase(EnumCountry.Rwanda.countryCode())
-                || countryLocation.equalsIgnoreCase(EnumCountry.Ghana.countryCode())
-                || countryLocation.equalsIgnoreCase(EnumCountry.Burundi.countryCode());
+        if (countryLocation == null && userSelectedCountryCode == null) {
+            countrySupported = false;
+            return;
+        }
+        countrySupported = countryLocation.equals(userSelectedCountryCode);
         errorMessage = getString(R.string.lbl_country_supported);
     }
 
@@ -269,7 +255,7 @@ public class LocationFragment extends BaseStepFragment {
     @Override
     public VerificationError verifyStep() {
         reverseGeoCode(currentLat, currentLon);
-        if (dataIsValid && countrySupported) {
+        if (countrySupported) {
             return null;
         }
         return new VerificationError(errorMessage);
