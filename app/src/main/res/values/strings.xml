@@ -319,7 +319,7 @@
     <string name="lbl_interest_agronomist">I\'m an agronomist</string>
     <string name="lbl_interest_extension_agent">I\'m an extension agent</string>
 
-    <string name="lbl_location_sub_text">If you are in your field while running the app, you are strongly advised to choose the option `Use current location`.\n\nIf you are not in your field, use `Select location manually` option and zoom in the map to find known places in your field neighborhood.</string>
+    <string name="lbl_location_sub_text">“If you are currently in your cassava field, please choose ‘Use current location’.\n\nOtherwise, choose ‘Select location manually’ to open a map and indicate where your cassava field is located.</string>
 
     <string name="title_your_field_size">YOUR FIELD SIZE</string>
     <string name="lbl_ok">OK</string>
