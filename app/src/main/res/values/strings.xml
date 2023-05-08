@@ -9,7 +9,7 @@
     <string name="welcome_title">Are you growing cassava? And looking to become a pro? AKILIMO can help you!</string>
     <string name="welcome_instructions">Whether you need fertilizer recommendations, planting schemes, or advice on tillage, weeding and intercropping,we’ve got you covered.\n\nAKILIMO will help you increase yield and maximise profit in your cassava farm. Let’s get started!</string>
     <string name="important_instructions_title">IMPORTANT INFORMATION</string>
-    <string name="important_instructions">All AKILIMO recommendations are based on the <b>correctness</b> of your location, the size of your field and your prices.\nFor example, overly optimistic field size results in unnecessary cost and loss because the required investment will be overestimated. On the other hand if your estimated field size is much less than in reality this leads to an underestimation of your yield and you may lose an opportunity to make profit from your field.</string>
+    <string name="important_instructions">All AKILIMO recommendations are based on the <b>correctness</b> of your location, the size of your field and your prices.\n\nFor example, overly optimistic field size results in unnecessary cost and loss because the required investment will be overestimated.\n\nOn the other hand if your estimated field size is much less than in reality this leads to an underestimation of your yield and you may lose an opportunity to make profit from your field.</string>
 
     <string name="title_activity_fertilizer_choice">Available fertilizers</string>
     <string name="title_activity_fertilizer_rec">Fertilizer recommendations</string>
