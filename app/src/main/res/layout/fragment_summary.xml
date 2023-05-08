@@ -16,6 +16,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/txtSummaryTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_large"
@@ -24,7 +25,7 @@
             android:layout_marginBottom="@dimen/spacing_large"
             android:text="@string/lbl_summary_title"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@color/akilimoDarkGreen"
             android:textStyle="bold" />
     </LinearLayout>
