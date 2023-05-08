@@ -34,7 +34,7 @@
             android:maxLines="3"
             android:text="@string/lbl_first_name"
             android:textColor="@color/grey_40"
-            app:fontFamily="@font/ubuntu"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title" />
@@ -62,7 +62,7 @@
             android:maxLines="3"
             android:text="@string/lbl_last_name"
             android:textColor="@color/grey_40"
-            app:fontFamily="@font/ubuntu"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edtFirstName" />
@@ -90,7 +90,7 @@
             android:layout_marginTop="@dimen/spacing_mlarge"
             android:text="@string/lbl_gender"
             android:textColor="@color/grey_40"
-            app:fontFamily="@font/ubuntu"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edtLastName" />
@@ -121,8 +121,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="3"
                 android:text="@string/lbl_email_address"
-                android:textColor="@color/grey_40"
-                app:fontFamily="@font/ubuntu" />
+                android:textColor="@color/grey_40" />
 
             <TextView
                 android:id="@+id/email_optional"

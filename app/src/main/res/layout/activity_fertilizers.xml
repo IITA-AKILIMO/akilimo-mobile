@@ -67,9 +67,9 @@
 
                 android:paddingLeft="@dimen/spacing_xlarge"
                 android:paddingRight="@dimen/spacing_xlarge"
-                android:visibility="gone"
                 android:text="@string/lbl_retry"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:visibility="gone" />
 
             <LinearLayout
                 android:id="@+id/lyt_progress"

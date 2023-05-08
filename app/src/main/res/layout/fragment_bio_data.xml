@@ -36,8 +36,7 @@
             android:layout_marginTop="@dimen/spacing_large"
             android:maxLines="3"
             android:text="@string/lbl_first_name"
-            android:textColor="@color/grey_40"
-            app:fontFamily="@font/ubuntu" />
+            android:textColor="@color/grey_40" />
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edtFirstName"
@@ -60,8 +59,7 @@
             android:layout_marginTop="@dimen/spacing_large"
             android:maxLines="3"
             android:text="@string/lbl_last_name"
-            android:textColor="@color/grey_40"
-            app:fontFamily="@font/ubuntu" />
+            android:textColor="@color/grey_40" />
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edtLastName"
@@ -82,8 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_large"
             android:text="@string/lbl_gender"
-            android:textColor="@color/grey_40"
-            app:fontFamily="@font/ubuntu" />
+            android:textColor="@color/grey_40" />
 
         <Spinner
             android:id="@+id/genderSpinner"
@@ -106,8 +103,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="3"
                 android:text="@string/lbl_email_address"
-                android:textColor="@color/grey_40"
-                app:fontFamily="@font/ubuntu" />
+                android:textColor="@color/grey_40" />
 
             <TextView
                 android:id="@+id/email_optional"
@@ -143,8 +139,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="3"
                 android:text="@string/lbl_phone_number"
-                android:textColor="@color/grey_40"
-                app:fontFamily="@font/ubuntu" />
+                android:textColor="@color/grey_40" />
 
             <TextView
                 android:id="@+id/phone_optional"
@@ -196,7 +191,7 @@
         <!--                android:maxLines="3"-->
         <!--                android:text="@string/lbl_farm_name_title"-->
         <!--                android:textColor="@color/grey_40"-->
-        <!--                app:fontFamily="@font/ubuntu" />-->
+        <!--                 />-->
 
         <!--            <TextView-->
         <!--                android:id="@+id/field_optional"-->
@@ -229,8 +224,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_large"
             android:text="@string/lbl_akilimo_interest"
-            android:textColor="@color/grey_40"
-            app:fontFamily="@font/ubuntu" />
+            android:textColor="@color/grey_40" />
 
         <Spinner
             android:id="@+id/interestSpinner"
