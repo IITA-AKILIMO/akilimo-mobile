@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.akilimo.mobile.utils.Tools;
 import com.akilimo.mobile.utils.enums.EnumCountry;
 import com.crashlytics.android.Crashlytics;
 import com.github.vipulasri.timelineview.TimelineView;
@@ -116,7 +117,7 @@ public class SummaryFragment extends BaseStepFragment {
         String plantingDate = "";
         String harvestDate = "";
         String fieldInfo = "";
-        String placeName = "";
+        String fieldName = "";
         int riskAttitude = 0;
         String riskAttitudeName = "";
         double lat = 0.0;
@@ -137,14 +138,14 @@ public class SummaryFragment extends BaseStepFragment {
         if (profileInfo != null) {
             countryName = profileInfo.getCountryName();
             countryCode = profileInfo.getCountryCode();
-            countrySelected = !Strings.isEmptyOrWhitespace(countryName);
+            countrySelected = !countryName.isEmpty();
             riskAttitude = profileInfo.getRiskAtt();
         }
         riskAttitudeName = risks[riskAttitude];
 
         if (mandatoryInfo != null) {
             areaUnit = mandatoryInfo.getDisplayAreaUnit();
-            areaUnitSelected = !Strings.isEmptyOrWhitespace(areaUnit);
+            areaUnitSelected = areaUnit != null && !areaUnit.isEmpty();
             if (areaUnitSelected) {
                 fieldSize = mandatoryInfo.getAreaSize();
                 fieldSizeSelected = fieldSize > 0.0;
@@ -173,8 +174,8 @@ public class SummaryFragment extends BaseStepFragment {
         if (scheduledDate != null) {
             plantingDate = scheduledDate.getPlantingDate();
             harvestDate = scheduledDate.getHarvestDate();
-            plantingDateProvided = !Strings.isEmptyOrWhitespace(plantingDate);
-            harvestDateProvided = !Strings.isEmptyOrWhitespace(plantingDate);
+            plantingDateProvided = (plantingDate != null && !plantingDate.isEmpty());
+            harvestDateProvided = (harvestDate != null && !harvestDate.isEmpty());
         }
 
         if (currentPractice != null) {
