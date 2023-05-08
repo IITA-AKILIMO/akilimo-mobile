@@ -247,7 +247,7 @@ public class LocationFragment extends BaseStepFragment {
             countrySupported = false;
             return;
         }
-        countrySupported = countryLocation.equals(userSelectedCountryCode);
+        countrySupported = countryLocation.equalsIgnoreCase(userSelectedCountryCode);
         errorMessage = getString(R.string.lbl_country_supported);
     }
 
