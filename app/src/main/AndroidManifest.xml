@@ -23,7 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
-        tools:replace="android:icon, android:theme, android:label, android:allowBackup"
+        tools:replace="android:icon, android:theme, android:label"
         tools:targetApi="s">
 
         <service android:name=".services.GPSTracker" />
