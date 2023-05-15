@@ -397,7 +397,7 @@
     <string name="lbl_first_name">First name</string>
     <string name="lbl_last_name">Last name</string>
     <string name="lbl_farm_name">Field name</string>
-    <string name="lbl_farm_name_title">Give your field a name</string>
+    <string name="lbl_farm_name_title">Provide a name for your field (optional)</string>
     <string name="lbl_email_address_hint">Email address (used to send recommendations)</string>
     <string name="lbl_email_address">Email address</string>
     <string name="lbl_phone_number">Phone number</string>
