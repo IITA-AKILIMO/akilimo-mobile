@@ -35,7 +35,7 @@ import com.akilimo.mobile.interfaces.IVolleyCallback;
 import com.akilimo.mobile.mappers.ComputedResponse;
 import com.akilimo.mobile.rest.RestParameters;
 import com.akilimo.mobile.rest.RestService;
-import com.akilimo.mobile.rest.recommendation.RecommendationResponse;
+import com.akilimo.mobile.rest.response.Recommendation;
 import com.akilimo.mobile.rest.request.RecommendationRequest;
 import com.akilimo.mobile.utils.BuildComputeData;
 import com.akilimo.mobile.utils.Tools;
@@ -220,8 +220,8 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
                 lyt_progress.setVisibility(View.GONE);
                 try {
                     ObjectMapper objectMapper = new ObjectMapper();
-                    RecommendationResponse recommendationResponse = objectMapper.readValue(jsonObject.toString(), RecommendationResponse.class);
-                    recList = initializeData(recommendationResponse);
+                    Recommendation recommendation = objectMapper.readValue(jsonObject.toString(), Recommendation.class);
+                    recList = initializeData(recommendation);
                     recAdapter.setData(recList);
                     recyclerView.setAdapter(recAdapter);
                     recyclerView.setVisibility(View.VISIBLE);
@@ -247,13 +247,13 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         });
     }
 
-    private List<ComputedResponse> initializeData(@NonNull RecommendationResponse recommendationResponse) {
+    private List<ComputedResponse> initializeData(@NonNull Recommendation recommendation) {
         List<ComputedResponse> recList = new ArrayList<>();
 
-        String FR = recommendationResponse.getFertilizerRecText();
-        String IC = recommendationResponse.getInterCroppingRecText();
-        String PP = recommendationResponse.getPlantingPracticeRecText();
-        String SP = recommendationResponse.getScheduledPlantingRect();
+        String FR = recommendation.getFertilizerRecText();
+        String IC = recommendation.getInterCroppingRecText();
+        String PP = recommendation.getPlantingPracticeRecText();
+        String SP = recommendation.getScheduledPlantingRect();
 
         ComputedResponse computedResponse;
 

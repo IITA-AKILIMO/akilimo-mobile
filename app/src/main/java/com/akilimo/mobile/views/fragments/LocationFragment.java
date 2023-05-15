@@ -1,6 +1,7 @@
 package com.akilimo.mobile.views.fragments;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +22,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
+import com.akilimo.mobile.rest.MapBoxApi;
+import com.akilimo.mobile.rest.MapBoxApiInterface;
+import com.akilimo.mobile.rest.response.ReverseGeoCode;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -106,6 +110,7 @@ public class LocationFragment extends BaseStepFragment {
         btnSelectLocation = binding.btnSelectLocation;
         locationInfo = binding.locationInfo;
 
+
         btnCurrentLocation.setOnClickListener(view1 -> {
             getCurrentLocation();
         });
@@ -122,7 +127,6 @@ public class LocationFragment extends BaseStepFragment {
                             currentAlt = data.getDoubleExtra(MapBoxActivity.ALT, 0.0);
                             reverseGeoCode(currentLat, currentLon);
                         } else {
-                            dataIsValid = false;
                             Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -167,23 +171,54 @@ public class LocationFragment extends BaseStepFragment {
         }
     }
 
-    private void reverseGeoCode(double lat, double lon) {
-        MapboxGeocoding reverseGeocode = MapboxGeocoding.builder().accessToken(MAP_BOX_ACCESS_TOKEN).query(Point.fromLngLat(lon, lat)).geocodingTypes(GeocodingCriteria.TYPE_COUNTRY).build();
+    @SuppressLint("LogNotTimber")
+    private void reverseGeoCodeNew(double lat, double lon) {
 
+
+        MapBoxApiInterface mapBoxApiInterface = MapBoxApi.create();
+
+        Call<ReverseGeoCode> result = mapBoxApiInterface.reverseGeoCode(lon, lat, "place", MAP_BOX_ACCESS_TOKEN);
+        result.enqueue(new Callback<ReverseGeoCode>() {
+            @Override
+            public void onResponse(@NonNull Call<ReverseGeoCode> call, @NonNull Response<ReverseGeoCode> response) {
+                Log.d("TAG", response.code() + "");
+                ReverseGeoCode data = response.body();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ReverseGeoCode> call, @NonNull Throwable t) {
+                errorMessage = t.getMessage();
+            }
+        });
+    }
+
+    private void reverseGeoCode(double lat, double lon) {
+        MapboxGeocoding reverseGeocode = MapboxGeocoding
+                .builder().accessToken(MAP_BOX_ACCESS_TOKEN)
+                .query(Point.fromLngLat(lon, lat))
+                .fuzzyMatch(true)
+//                .geocodingTypes(GeocodingCriteria.TYPE_PLACE)
+                .build();
+
+        //https://api.mapbox.com/geocoding/v5/{endpoint}/{longitude},{latitude}.json
+        //https://api.mapbox.com/geocoding/v5/mapbox.places/39.326888,-3.384999.json?access_token=pk.eyJ1IjoibWFzZ2VlayIsImEiOiJjanp0bm43ZmwwNm9jM29udjJod3V6dzB1In0.MevkJtANWZ8Wl9abnLu1Uw
         reverseGeocode.enqueueCall(new Callback<GeocodingResponse>() {
             @Override
             public void onResponse(@NotNull Call<GeocodingResponse> call, @NotNull Response<GeocodingResponse> response) {
                 if (response.body() != null) {
                     List<CarmenFeature> features = response.body().features();
-                    placeName = "Unknown";
-                    countryLocation = "Unknown";
+                    placeName = "NA";
+                    countryLocation = "NA";
                     if (!features.isEmpty()) {
-                        CarmenFeature carmenFeature = response.body().features().get(0);
+                        int featureSize = features.size();
+                        CarmenFeature carmenFeature = features.get(featureSize - 1);
                         countryLocation = carmenFeature.properties().get("short_code").getAsString();
                         placeName = carmenFeature.placeName();
+                        saveLocation();
+                    } else {
+                        showCustomWarningDialog("Unable to save location please pick a different location");
                     }
                 }
-                saveLocation();
             }
 
             @Override
@@ -237,7 +272,7 @@ public class LocationFragment extends BaseStepFragment {
                 isSupportedCountry(countryLocation);
             }
         } catch (Exception ex) {
-            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+            errorMessage = ex.getMessage();
         }
 
     }
@@ -258,6 +293,9 @@ public class LocationFragment extends BaseStepFragment {
         if (countrySupported) {
             return null;
         }
+
+        //check if country location matches the specified country
+        showCustomWarningDialog(String.format(getString(R.string.lbl_unsupported_country), placeName), errorMessage);
         return new VerificationError(errorMessage);
     }
 

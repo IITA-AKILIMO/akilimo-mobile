@@ -569,4 +569,5 @@
     <string name="lbl_ngn_currency_name">Naira</string>
     <string name="lbl_no_factories">Starch factories are not available</string>
     <string name="lbl_no_factories_text">Starch factories are not available for %1s</string>
+    <string name="lbl_unsupported_country">Unsupported country: %s</string>
 </resources>
