@@ -4,6 +4,7 @@ package com.akilimo.mobile.views.fragments;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +20,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
@@ -36,6 +38,7 @@ import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.services.GPSTracker;
 import com.akilimo.mobile.utils.enums.EnumCountry;
 import com.akilimo.mobile.views.activities.MapBoxActivity;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.mapbox.api.geocoding.v5.GeocodingCriteria;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
@@ -45,7 +48,10 @@ import com.stepstone.stepper.VerificationError;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -70,7 +76,6 @@ public class LocationFragment extends BaseStepFragment {
     private double currentLat;
     private double currentLon;
     private double currentAlt;
-    private String countryLocation;
     private String userSelectedCountryCode;
     private String placeName;
     private boolean countrySupported;
@@ -115,6 +120,17 @@ public class LocationFragment extends BaseStepFragment {
             getCurrentLocation();
         });
 
+        binding.btnFieldName.setOnClickListener(theView -> {
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
+                    .setTitle(getString(R.string.lbl_farm_name_title))
+                    .setMessage(getString(R.string.lbl_farm_name))
+                    .setPositiveButton(getString(R.string.lbl_ok), (dialogInterface, i) -> {
+
+                    })
+                    .setNegativeButton(getString(R.string.lbl_cancel), null);
+
+            builder.create().show();
+        });
         ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
@@ -164,7 +180,7 @@ public class LocationFragment extends BaseStepFragment {
                 gps.stopUsingGPS();
                 reverseGeoCode(currentLat, currentLon);
             } else {
-                showCustomWarningDialog("Google play services not available on your phone", "Google Play unavailable");
+                showCustomWarningDialog("Google play services not available on your phone", "Google Play services unavailable");
             }
         } else {
             gps.showSettingsAlert();
@@ -208,11 +224,10 @@ public class LocationFragment extends BaseStepFragment {
                 if (response.body() != null) {
                     List<CarmenFeature> features = response.body().features();
                     placeName = "NA";
-                    countryLocation = "NA";
                     if (!features.isEmpty()) {
                         int featureSize = features.size();
                         CarmenFeature carmenFeature = features.get(featureSize - 1);
-                        countryLocation = carmenFeature.properties().get("short_code").getAsString();
+                        countryCode = carmenFeature.properties().get("short_code").getAsString().toUpperCase();
                         placeName = carmenFeature.placeName();
                         saveLocation();
                     } else {
@@ -235,7 +250,7 @@ public class LocationFragment extends BaseStepFragment {
             if (locationInformation == null) {
                 locationInformation = new LocationInfo();
             }
-            locationInformation.setLocationCountry(countryLocation);
+            locationInformation.setLocationCountry(countryCode);
             locationInformation.setPlaceName(placeName);
             locationInformation.setLatitude(currentLat);
             locationInformation.setLongitude(currentLon);
@@ -267,9 +282,9 @@ public class LocationFragment extends BaseStepFragment {
                 currentLon = locationInformation.getLongitude();
                 currentLat = locationInformation.getLatitude();
                 currentAlt = locationInformation.getAltitude();
-                countryLocation = locationInformation.getLocationCountry();
+                countryCode = locationInformation.getLocationCountry();
                 locationInfo.setText(locInfo.toString());
-                isSupportedCountry(countryLocation);
+                isSupportedCountry(countryCode);
             }
         } catch (Exception ex) {
             errorMessage = ex.getMessage();
@@ -278,12 +293,17 @@ public class LocationFragment extends BaseStepFragment {
     }
 
     private void isSupportedCountry(String countryLocation) {
-        if (countryLocation == null && userSelectedCountryCode == null) {
-            countrySupported = false;
-            return;
+        Set<String> supportedCountryCodes = new HashSet<>(Arrays.asList(
+                EnumCountry.Nigeria.countryCode(),
+                EnumCountry.Tanzania.countryCode(),
+                EnumCountry.Rwanda.countryCode(),
+                EnumCountry.Ghana.countryCode(),
+                EnumCountry.Burundi.countryCode()
+        ));
+        countrySupported = supportedCountryCodes.contains(countryLocation.toUpperCase());
+        if (!countrySupported) {
+            errorMessage = getString(R.string.lbl_country_supported);
         }
-        countrySupported = countryLocation.equalsIgnoreCase(userSelectedCountryCode);
-        errorMessage = getString(R.string.lbl_country_supported);
     }
 
     @Nullable
@@ -291,11 +311,16 @@ public class LocationFragment extends BaseStepFragment {
     public VerificationError verifyStep() {
         reverseGeoCode(currentLat, currentLon);
         if (countrySupported) {
-            return null;
+            //verify the selected country matches the one specified earlier
+            if (userSelectedCountryCode.equalsIgnoreCase(countryCode)) {
+                return null;
+            }
+            return new VerificationError(
+                    String.format("The selected country: %s does not match the expected country: %s",
+                            countryCode, userSelectedCountryCode)
+            );
         }
-
-        //check if country location matches the specified country
-        showCustomWarningDialog(String.format(getString(R.string.lbl_unsupported_country), placeName), errorMessage);
+//        showCustomWarningDialog(String.format(getString(R.string.lbl_unsupported_country), placeName), errorMessage);
         return new VerificationError(errorMessage);
     }
 
