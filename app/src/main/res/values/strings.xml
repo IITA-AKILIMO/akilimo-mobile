@@ -508,6 +508,8 @@
     <string name="lbl_restart_app_prompt">Restart the app in order to apply translations to the navigation buttons?</string>
     <string name="lbl_optional">(Optional)</string>
     <string name="lbl_country_supported">Currently AKILIMO gives advice for farms located in Nigeria, Tanzania, Rwanda, Burundi and Ghana. Your selected area does not match your country selection</string>
+    <string name="lbl_unsupported_country">Unsupported country: %s</string>
+    <string name="lbl_unsupported_location">The selected location is not in %s. Please provide the location of your farm in %s</string>
     <string name="lbl_acre_yield">3–6 t/acre</string>
     <string name="lbl_ha_yield">7.5–15 t/ha</string>
     <string name="lbl_are_yield">3–6 t/are</string>
@@ -569,5 +571,4 @@
     <string name="lbl_ngn_currency_name">Naira</string>
     <string name="lbl_no_factories">Starch factories are not available</string>
     <string name="lbl_no_factories_text">Starch factories are not available for %1s</string>
-    <string name="lbl_unsupported_country">Unsupported country: %s</string>
 </resources>

@@ -4,13 +4,13 @@ package com.akilimo.mobile.views.fragments;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +27,6 @@ import androidx.fragment.app.Fragment;
 import com.akilimo.mobile.rest.MapBoxApi;
 import com.akilimo.mobile.rest.MapBoxApiInterface;
 import com.akilimo.mobile.rest.response.ReverseGeoCode;
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.akilimo.mobile.R;
@@ -39,7 +38,6 @@ import com.akilimo.mobile.services.GPSTracker;
 import com.akilimo.mobile.utils.enums.EnumCountry;
 import com.akilimo.mobile.views.activities.MapBoxActivity;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.mapbox.api.geocoding.v5.GeocodingCriteria;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
@@ -77,12 +75,12 @@ public class LocationFragment extends BaseStepFragment {
     private double currentLon;
     private double currentAlt;
     private String userSelectedCountryCode;
-    private String placeName;
-    private boolean countrySupported;
+    private String userSelectedCountryName;
 
     private ProfileInfo profileInfo;
     private LocationInfo locationInformation;
     private String farmName = "";
+    private String fullNames;
     private String MAP_BOX_ACCESS_TOKEN = "";
 
     @Override
@@ -120,16 +118,30 @@ public class LocationFragment extends BaseStepFragment {
             getCurrentLocation();
         });
 
+
+        final EditText editTextFarmName = new EditText(context);
+        editTextFarmName.setHint(getString(R.string.lbl_farm_name));
+
+        if (editTextFarmName.getParent() != null) {
+            ((ViewGroup) editTextFarmName.getParent()).removeView(editTextFarmName);
+        }
+        AlertDialog builder = new MaterialAlertDialogBuilder(context)
+                .setTitle(getString(R.string.lbl_farm_name_title))
+//                .setMessage(getString(R.string.lbl_farm_name))
+                .setView(editTextFarmName)
+                .setPositiveButton(getString(R.string.lbl_ok), (dialogInterface, i) -> {
+                    farmName = editTextFarmName.getText().toString();
+                    if (!farmName.isEmpty() && !fullNames.isEmpty()) {
+                        binding.txtFarmInfo.setText(farmName);
+                    }
+                })
+                .setNegativeButton(getString(R.string.lbl_cancel), null).create();
+//        LinearLayout layoutName = new LinearLayout(context);
+//        layoutName.setOrientation(LinearLayout.VERTICAL);
+//        layoutName.addView(editTextFarmName);
+
         binding.btnFieldName.setOnClickListener(theView -> {
-            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
-                    .setTitle(getString(R.string.lbl_farm_name_title))
-                    .setMessage(getString(R.string.lbl_farm_name))
-                    .setPositiveButton(getString(R.string.lbl_ok), (dialogInterface, i) -> {
-
-                    })
-                    .setNegativeButton(getString(R.string.lbl_cancel), null);
-
-            builder.create().show();
+            builder.show();
         });
         ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
@@ -223,12 +235,11 @@ public class LocationFragment extends BaseStepFragment {
             public void onResponse(@NotNull Call<GeocodingResponse> call, @NotNull Response<GeocodingResponse> response) {
                 if (response.body() != null) {
                     List<CarmenFeature> features = response.body().features();
-                    placeName = "NA";
                     if (!features.isEmpty()) {
                         int featureSize = features.size();
                         CarmenFeature carmenFeature = features.get(featureSize - 1);
                         countryCode = carmenFeature.properties().get("short_code").getAsString().toUpperCase();
-                        placeName = carmenFeature.placeName();
+                        countryName = carmenFeature.placeName();
                         saveLocation();
                     } else {
                         showCustomWarningDialog("Unable to save location please pick a different location");
@@ -239,8 +250,7 @@ public class LocationFragment extends BaseStepFragment {
             @Override
             public void onFailure(@NotNull Call<GeocodingResponse> call, @NotNull Throwable throwable) {
                 saveLocation();
-                Crashlytics.log(Log.ERROR, LOG_TAG, throwable.getMessage());
-                Crashlytics.logException(throwable);
+                Toast.makeText(context, throwable.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -250,8 +260,8 @@ public class LocationFragment extends BaseStepFragment {
             if (locationInformation == null) {
                 locationInformation = new LocationInfo();
             }
-            locationInformation.setLocationCountry(countryCode);
-            locationInformation.setPlaceName(placeName);
+            locationInformation.setLocationCountryCode(countryCode);
+            locationInformation.setLocationCountryName(countryName);
             locationInformation.setLatitude(currentLat);
             locationInformation.setLongitude(currentLon);
 
@@ -262,8 +272,6 @@ public class LocationFragment extends BaseStepFragment {
             }
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
         }
         reloadLocationInfo();
     }
@@ -275,16 +283,18 @@ public class LocationFragment extends BaseStepFragment {
 
             if (profileInfo != null) {
                 farmName = profileInfo.getFarmName();
+                fullNames = profileInfo.getNames();
                 userSelectedCountryCode = profileInfo.getCountryCode();
+                userSelectedCountryName = profileInfo.getCountryName();
             }
             if (locationInformation != null) {
                 StringBuilder locInfo = loadLocationInfo(locationInformation);
                 currentLon = locationInformation.getLongitude();
                 currentLat = locationInformation.getLatitude();
                 currentAlt = locationInformation.getAltitude();
-                countryCode = locationInformation.getLocationCountry();
+                countryCode = locationInformation.getLocationCountryCode();
+                countryName = locationInformation.getLocationCountryName();
                 locationInfo.setText(locInfo.toString());
-                isSupportedCountry(countryCode);
             }
         } catch (Exception ex) {
             errorMessage = ex.getMessage();
@@ -292,7 +302,8 @@ public class LocationFragment extends BaseStepFragment {
 
     }
 
-    private void isSupportedCountry(String countryLocation) {
+    @Deprecated
+    private boolean isSupportedCountry(String countryCode) {
         Set<String> supportedCountryCodes = new HashSet<>(Arrays.asList(
                 EnumCountry.Nigeria.countryCode(),
                 EnumCountry.Tanzania.countryCode(),
@@ -300,28 +311,20 @@ public class LocationFragment extends BaseStepFragment {
                 EnumCountry.Ghana.countryCode(),
                 EnumCountry.Burundi.countryCode()
         ));
-        countrySupported = supportedCountryCodes.contains(countryLocation.toUpperCase());
-        if (!countrySupported) {
-            errorMessage = getString(R.string.lbl_country_supported);
-        }
+        return supportedCountryCodes.contains(countryCode.toUpperCase());
     }
 
     @Nullable
     @Override
     public VerificationError verifyStep() {
         reverseGeoCode(currentLat, currentLon);
-        if (countrySupported) {
-            //verify the selected country matches the one specified earlier
-            if (userSelectedCountryCode.equalsIgnoreCase(countryCode)) {
-                return null;
-            }
+        //verify the selected country matches the one specified earlier
+        if (!userSelectedCountryCode.equalsIgnoreCase(countryCode)) {
             return new VerificationError(
-                    String.format("The selected country: %s does not match the expected country: %s",
-                            countryCode, userSelectedCountryCode)
+                    String.format(getString(R.string.lbl_unsupported_location), countryName, userSelectedCountryName)
             );
         }
-//        showCustomWarningDialog(String.format(getString(R.string.lbl_unsupported_country), placeName), errorMessage);
-        return new VerificationError(errorMessage);
+        return null;
     }
 
     @Override

@@ -183,8 +183,10 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
             }
 
             override fun onError(verificationError: VerificationError) {
-                Snackbar.make(binding.root, verificationError.errorMessage, Snackbar.LENGTH_LONG)
-                    .show()
+                showCustomWarningDialog(
+                    getString(R.string.empty_text),
+                    verificationError.errorMessage
+                );
             }
 
             override fun onStepSelected(newStepPosition: Int) {
