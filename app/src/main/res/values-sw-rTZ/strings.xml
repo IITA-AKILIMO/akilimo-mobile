@@ -430,4 +430,5 @@
     <string name="lbl_bif_currency_name">Faranga ya Burundi</string>
     <string name="lbl_no_factories">Viwanda vya wanga havipatikani</string>
     <string name="lbl_no_factories_text">Viwanda vya wanga havipatikani kwa %1s</string>
+    <string name="lbl_risk_att_subtitle">Ili kukupa ushauri unaofaa kulingana na mapendekezo yako ya uwekezaji, tunauliza mara ngapi unawekeza katika bidhaa mpya za kilimo au teknolojia. Ikiwa unawekeza mara kwa mara, tutakupa mapendekezo ya hatari kubwa na faida kubwa. Ikiwa unapendelea chaguo salama zaidi, tafadhali eleza kwamba unawekeza mara chache tu.</string>
 </resources>
