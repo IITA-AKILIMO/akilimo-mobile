@@ -65,7 +65,7 @@
     <string name="one_half_acre_to_m2">Hafi ya metero kare 6.000 \u00B2</string>
     <string name="two_half_acre_to_m2">Hafi ya metero kare 10,000 \u00B2</string>
     <string name="lbl_salutation">Muraho, nishimiye guhura nawe!</string>
-    <string name="lbl_farm_location">NI hehe murima wawe w\'imyumbati `%1$s`uherereye?</string>
+    <string name="lbl_farm_location">NI hehe murima wawe w\'imyumbati uherereye?</string>
     <string name="lbl_current_location">Koresha ahantu uri</string>
     <string name="lbl_manual_location">Hitamo ahantu uherereye</string>
     <string name="lbl_recommendations">Inama </string>

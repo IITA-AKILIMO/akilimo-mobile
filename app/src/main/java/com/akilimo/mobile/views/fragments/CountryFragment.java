@@ -89,11 +89,11 @@ public class CountryFragment extends BaseStepFragment {
                 currency = profileInfo.getCurrency();
                 selectedLanguage = profileInfo.getLanguage();
 
-                if (!Strings.isEmptyOrWhitespace(countryCode)) {
+                if (countryCode != null && !countryCode.isEmpty()) {
                     selectedCountryIndex = profileInfo.getSelectedCountryIndex();
                     countryImage.setImageResource(World.getFlagOf(countryCode));
                 }
-                if (!Strings.isEmptyOrWhitespace(countryName)) {
+                if (countryName != null && !countryName.isEmpty()) {
                     txtCountryName.setText(countryName);
                 }
             }

@@ -93,7 +93,7 @@
     <string name="two_half_acre_to_m2">About 10,000 m\u00B2</string>
 
     <string name="lbl_salutation">Hi, nice to meet you!</string>
-    <string name="lbl_farm_location">Where is your cassava field `%1$s` located?</string>
+    <string name="lbl_farm_location">Where is your cassava field located?</string>
     <string name="lbl_current_location">Use current location</string>
     <string name="lbl_manual_location">Select location manually</string>
 
@@ -319,7 +319,7 @@
     <string name="lbl_interest_agronomist">I\'m an agronomist</string>
     <string name="lbl_interest_extension_agent">I\'m an extension agent</string>
 
-    <string name="lbl_location_sub_text">If you are in your field while running the app, you are strongly advised to choose the option `Use current location`.\n\nIf you are not in your field, use `Select location manually` option and zoom in the map to find known places in your field neighborhood.</string>
+    <string name="lbl_location_sub_text">If you are currently in your cassava field, please choose ‘Use current location’.\n\nOtherwise, choose ‘Select location manually’ to open a map and indicate where your cassava field is located.</string>
 
     <string name="title_your_field_size">YOUR FIELD SIZE</string>
     <string name="lbl_ok">OK</string>
@@ -397,7 +397,7 @@
     <string name="lbl_first_name">First name</string>
     <string name="lbl_last_name">Last name</string>
     <string name="lbl_farm_name">Field name</string>
-    <string name="lbl_farm_name_title">Give your field a name</string>
+    <string name="lbl_farm_name_title">Provide a name for your field (optional)</string>
     <string name="lbl_email_address_hint">Email address (used to send recommendations)</string>
     <string name="lbl_email_address">Email address</string>
     <string name="lbl_phone_number">Phone number</string>
@@ -507,7 +507,9 @@
     <string name="lbl_accept_terms_prompt">Accept the terms and conditions before proceeding</string>
     <string name="lbl_restart_app_prompt">Restart the app in order to apply translations to the navigation buttons?</string>
     <string name="lbl_optional">(Optional)</string>
-    <string name="lbl_country_supported">Currently AKILIMO gives advice for farms located in Nigeria, Tanzania, Rwanda, Burundi and Ghana. Your area is outside the area covered by AKILIMO</string>
+    <string name="lbl_country_supported">Currently AKILIMO gives advice for farms located in Nigeria, Tanzania, Rwanda, Burundi and Ghana. Your selected area does not match your country selection</string>
+    <string name="lbl_unsupported_country">Unsupported country: %s</string>
+    <string name="lbl_unsupported_location">The selected location is not in %s. Please provide the location of your farm in %s</string>
     <string name="lbl_acre_yield">3–6 t/acre</string>
     <string name="lbl_ha_yield">7.5–15 t/ha</string>
     <string name="lbl_are_yield">3–6 t/are</string>

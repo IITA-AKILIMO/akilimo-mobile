@@ -1,4 +1,4 @@
-package com.akilimo.mobile.rest.recommendation;
+package com.akilimo.mobile.rest.response;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RecommendationResponse implements Parcelable {
+public class Recommendation implements Parcelable {
     @JsonProperty("FR")
     private String fertilizerRecText;
 
@@ -27,22 +27,22 @@ public class RecommendationResponse implements Parcelable {
     private String errorMessage;
 
     @SuppressWarnings("unused")
-    public RecommendationResponse() {
+    public Recommendation() {
         //required by jackson do not remove
     }
 
-    public final static Creator<RecommendationResponse> CREATOR = new Creator<RecommendationResponse>() {
-        public RecommendationResponse createFromParcel(Parcel in) {
-            return new RecommendationResponse(in);
+    public final static Creator<Recommendation> CREATOR = new Creator<Recommendation>() {
+        public Recommendation createFromParcel(Parcel in) {
+            return new Recommendation(in);
         }
 
-        public RecommendationResponse[] newArray(int size) {
-            return (new RecommendationResponse[size]);
+        public Recommendation[] newArray(int size) {
+            return (new Recommendation[size]);
         }
 
     };
 
-    private RecommendationResponse(@NotNull Parcel in) {
+    private Recommendation(@NotNull Parcel in) {
         this.fertilizerRecText = ((String) in.readValue((String.class.getClassLoader())));
         this.interCroppingRecText = ((String) in.readValue((String.class.getClassLoader())));
         this.plantingPracticeRecText = ((String) in.readValue((String.class.getClassLoader())));
