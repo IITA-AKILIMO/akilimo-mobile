@@ -16,10 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.akilimo.mobile.databinding.FragmentInvestmentPrefBinding;
 import com.akilimo.mobile.views.fragments.dialog.SingleSelectDialogFragment;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
-import com.akilimo.mobile.databinding.FragmentRiskAttBinding;
 import com.akilimo.mobile.entities.ProfileInfo;
 import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.utils.enums.EnumRiskAtt;
@@ -27,12 +27,12 @@ import com.stepstone.stepper.VerificationError;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link RiskAttFragment#newInstance} factory method to
+ * Use the {@link InvestmentPrefFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RiskAttFragment extends BaseStepFragment {
+public class InvestmentPrefFragment extends BaseStepFragment {
 
-    private FragmentRiskAttBinding binding;
+    private FragmentInvestmentPrefBinding binding;
     private ProfileInfo profileInfo;
 
     AppCompatButton btnPickRisk;
@@ -44,12 +44,12 @@ public class RiskAttFragment extends BaseStepFragment {
 
     private String[] risks = null;
 
-    public RiskAttFragment() {
+    public InvestmentPrefFragment() {
         // Required empty public constructor
     }
 
-    public static RiskAttFragment newInstance() {
-        return new RiskAttFragment();
+    public static InvestmentPrefFragment newInstance() {
+        return new InvestmentPrefFragment();
     }
 
     @Override
@@ -66,7 +66,7 @@ public class RiskAttFragment extends BaseStepFragment {
 
     @Override
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentRiskAttBinding.inflate(inflater, container, false);
+        binding = FragmentInvestmentPrefBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
