@@ -406,7 +406,7 @@
     <string name="lbl_select_risk_att">Hitamo inzira</string>
     <string name="lbl_no_factories">Amashini yo guterura ikigembe ntiragira ikizamini</string>
     <string name="lbl_no_factories_text">Amashini yo guterura ikigembe ntiragira ikizamini kwa %1s</string>
-    <string name="lbl_risk_att">Ni kangahe ushora imari mu ikoranabuhanga rishya?</string>
+    <string name="lbl_investment_pref">Ni kangahe ushora imari mu ikoranabuhanga rishya?</string>
     <string name="lbl_often">Akenshi</string>
     <string name="lbl_sometimes">Rimwe na rimwe</string>
     <string name="lbl_rarely">Ubuhamya</string>
@@ -441,5 +441,5 @@
     <string name="lbl_ngn_currency_name">Nayira</string>
     <string name="lbl_are">are</string>
     <string name="area_unit_are">Are (are)</string>
-    <string name="lbl_risk_att_subtitle">Kugira ngo tugufashe neza nk\'uko umurimo wawe wo mu buzima bwawe ukora, turabaza niba wakora byinshi mu gufasha uruganda rw\'amazi cyangwa ibikorwa bya teknoloji byo mu nshingano za nyuma za serivisi zacu. Niba wakora byinshi, tutabaha ibisobanuro byihariye, ariko biraburamo amakimbirane akomeye akomeye. Niba wifuza ibibazo bifite umutungo wo kurinda, ndangiza ko wakora mu buzima bwawe ku buryo bukorwa.</string>
+    <string name="lbl_investment_pref_sub">Kugira ngo tugufashe neza nk\'uko umurimo wawe wo mu buzima bwawe ukora, turabaza niba wakora byinshi mu gufasha uruganda rw\'amazi cyangwa ibikorwa bya teknoloji byo mu nshingano za nyuma za serivisi zacu. Niba wakora byinshi, tutabaha ibisobanuro byihariye, ariko biraburamo amakimbirane akomeye akomeye. Niba wifuza ibibazo bifite umutungo wo kurinda, ndangiza ko wakora mu buzima bwawe ku buryo bukorwa.</string>
 </resources>
