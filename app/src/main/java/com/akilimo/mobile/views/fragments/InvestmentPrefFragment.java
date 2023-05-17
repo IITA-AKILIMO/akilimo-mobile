@@ -57,7 +57,7 @@ public class InvestmentPrefFragment extends BaseStepFragment {
         super.onAttach(context);
         this.context = context;
         risks = new String[]{
-                EnumRiskAtt.Never.riskName(context),
+                EnumRiskAtt.Rarely.riskName(context),
                 EnumRiskAtt.Sometimes.riskName(context),
                 EnumRiskAtt.Often.riskName(context)
         };

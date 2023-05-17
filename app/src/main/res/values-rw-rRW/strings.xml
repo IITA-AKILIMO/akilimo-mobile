@@ -409,7 +409,7 @@
     <string name="lbl_risk_att">Ni kangahe ushora imari mu ikoranabuhanga rishya?</string>
     <string name="lbl_often">Akenshi</string>
     <string name="lbl_sometimes">Rimwe na rimwe</string>
-    <string name="lbl_never">Nta na rimwe</string>
+    <string name="lbl_rarely">Ubuhamya</string>
     <string name="lbl_about">Hafi ya %1$s</string>
     <string name="lbl_min_fert_price">Nyamuneka tanga igiciro cyemewe cy\'umufuka hagati ya %s na %s</string>
     <string name="lbl_one_kg_bag_unit">umufuka wa kg 1</string>

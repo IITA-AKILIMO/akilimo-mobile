@@ -3,7 +3,6 @@ package com.akilimo.mobile.views.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +14,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.akilimo.mobile.utils.Tools;
 import com.akilimo.mobile.utils.enums.EnumCountry;
-import com.crashlytics.android.Crashlytics;
 import com.github.vipulasri.timelineview.TimelineView;
-import com.google.android.gms.common.util.Strings;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.adapters.MyTimeLineAdapter;
 import com.akilimo.mobile.databinding.FragmentSummaryBinding;
@@ -86,7 +82,7 @@ public class SummaryFragment extends BaseStepFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
-        risks = new String[]{EnumRiskAtt.Never.riskName(context), EnumRiskAtt.Sometimes.riskName(context), EnumRiskAtt.Often.riskName(context)};
+        risks = new String[]{EnumRiskAtt.Rarely.riskName(context), EnumRiskAtt.Sometimes.riskName(context), EnumRiskAtt.Often.riskName(context)};
     }
 
     public static SummaryFragment newInstance() {

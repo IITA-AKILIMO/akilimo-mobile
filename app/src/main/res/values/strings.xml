@@ -534,7 +534,7 @@
 
     <string name="lbl_often">Often</string>
     <string name="lbl_sometimes">Sometimes</string>
-    <string name="lbl_never">Never</string>
+    <string name="lbl_rarely">Rarely</string>
 
     <string name="lbl_about">About %1$s</string>
     <string name="lbl_min_fert_price">Please provide a valid bag price between %s and %s</string>

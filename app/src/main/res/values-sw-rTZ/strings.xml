@@ -393,7 +393,7 @@
     <string name="lbl_risk_att">Je? Unawekeza mara ngapi katika teknolojia mpya?</string>
     <string name="lbl_often">Mara nyingi</string>
     <string name="lbl_sometimes">Mara chache</string>
-    <string name="lbl_never">Kamwe</string>
+    <string name="lbl_rarely">Nadra</string>
     <string name="lbl_about">Karibu %1$s</string>
     <string name="lbl_min_fert_price">Tafadhali taja bei halisi ya kiroba kati ya %s na %s</string>
     <string name="lbl_one_kg_bag_unit">kiroba ya kilo 1</string>

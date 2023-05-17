@@ -5,9 +5,9 @@ import com.akilimo.mobile.R
 import org.jetbrains.annotations.NotNull
 
 enum class EnumRiskAtt {
-    Never {
+    Rarely {
         override fun riskName(context: Context): String {
-            return context.getString(R.string.lbl_never)
+            return context.getString(R.string.lbl_rarely)
         }
     },
     Sometimes {
