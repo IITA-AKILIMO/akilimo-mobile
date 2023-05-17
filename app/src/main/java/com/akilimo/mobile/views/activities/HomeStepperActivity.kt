@@ -24,7 +24,6 @@ import com.akilimo.mobile.views.fragments.*
 import com.crashlytics.android.Crashlytics
 import com.github.javiersantos.appupdater.AppUpdater
 import com.github.javiersantos.appupdater.enums.Display
-import com.google.android.material.snackbar.Snackbar
 import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.StepperLayout.StepperListener
 import com.stepstone.stepper.VerificationError
@@ -167,7 +166,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         fragmentArray.add(PlantingDateFragment.newInstance())
 
         fragmentArray.add(TillageOperationFragment.newInstance())
-        fragmentArray.add(RiskAttFragment.newInstance())
+        fragmentArray.add(InvestmentPrefFragment.newInstance())
         fragmentArray.add(SummaryFragment.newInstance())
     }
 

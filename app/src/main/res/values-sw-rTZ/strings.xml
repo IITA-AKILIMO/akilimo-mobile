@@ -390,10 +390,10 @@
     <string name="lbl_you_selected">Umechagua</string>
     <string name="lbl_you_expect_yield">Unatarajia mavuno ya %1$s. %2$s</string>
     <string name="lbl_select_risk_att">Chagua</string>
-    <string name="lbl_risk_att">Je? Unawekeza mara ngapi katika teknolojia mpya?</string>
+    <string name="lbl_investment_pref">Je? Unawekeza mara ngapi katika teknolojia mpya?</string>
     <string name="lbl_often">Mara nyingi</string>
     <string name="lbl_sometimes">Mara chache</string>
-    <string name="lbl_never">Kamwe</string>
+    <string name="lbl_rarely">Nadra</string>
     <string name="lbl_about">Karibu %1$s</string>
     <string name="lbl_min_fert_price">Tafadhali taja bei halisi ya kiroba kati ya %s na %s</string>
     <string name="lbl_one_kg_bag_unit">kiroba ya kilo 1</string>
@@ -430,4 +430,5 @@
     <string name="lbl_bif_currency_name">Faranga ya Burundi</string>
     <string name="lbl_no_factories">Viwanda vya wanga havipatikani</string>
     <string name="lbl_no_factories_text">Viwanda vya wanga havipatikani kwa %1s</string>
+    <string name="lbl_investment_pref_sub">Ili kukupa ushauri unaofaa kulingana na mapendekezo yako ya uwekezaji, tunauliza mara ngapi unawekeza katika bidhaa mpya za kilimo au teknolojia. Ikiwa unawekeza mara kwa mara, tutakupa mapendekezo ya hatari kubwa na faida kubwa. Ikiwa unapendelea chaguo salama zaidi, tafadhali eleza kwamba unawekeza mara chache tu.</string>
 </resources>
