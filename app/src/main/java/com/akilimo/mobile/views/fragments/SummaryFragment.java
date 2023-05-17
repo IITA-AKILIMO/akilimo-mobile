@@ -148,7 +148,7 @@ public class SummaryFragment extends BaseStepFragment {
             areaUnit = mandatoryInfo.getDisplayAreaUnit();
             areaUnitSelected = areaUnit != null && !areaUnit.isEmpty();
 
-            summaryTitle = String.format(context.getString(R.string.lbl_summary_text), profileInfo.getNames(), profileInfo.getFieldDescription());
+            summaryTitle = String.format(context.getString(R.string.lbl_summary_text), profileInfo.getNames(), profileInfo.getFarmName());
             if (areaUnitSelected) {
                 fieldSize = mandatoryInfo.getAreaSize();
                 fieldSizeSelected = fieldSize > 0.0;
