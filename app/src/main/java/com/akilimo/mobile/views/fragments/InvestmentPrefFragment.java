@@ -5,24 +5,18 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.akilimo.mobile.databinding.FragmentInvestmentPrefBinding;
-import com.akilimo.mobile.views.fragments.dialog.SingleSelectDialogFragment;
-import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.common.util.Strings;
 import com.akilimo.mobile.entities.ProfileInfo;
 import com.akilimo.mobile.inherit.BaseStepFragment;
-import com.akilimo.mobile.utils.enums.EnumRiskAtt;
+import com.akilimo.mobile.utils.enums.EnumInvestmentPref;
 import com.stepstone.stepper.VerificationError;
 
 /**
@@ -35,14 +29,12 @@ public class InvestmentPrefFragment extends BaseStepFragment {
     private FragmentInvestmentPrefBinding binding;
     private ProfileInfo profileInfo;
 
-    AppCompatButton btnPickRisk;
-    AppCompatTextView txtRiskText;
 
     String riskName;
     private int riskAtt = 0;
-    private int riskIndex = -1;
+    private int riskRadioIndex = -1;
 
-    private String[] risks = null;
+    private String[] investmentPreference = null;
 
     public InvestmentPrefFragment() {
         // Required empty public constructor
@@ -56,10 +48,10 @@ public class InvestmentPrefFragment extends BaseStepFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
-        risks = new String[]{
-                EnumRiskAtt.Rarely.riskName(context),
-                EnumRiskAtt.Sometimes.riskName(context),
-                EnumRiskAtt.Often.riskName(context)
+        investmentPreference = new String[]{
+                EnumInvestmentPref.Rarely.prefName(context),
+                EnumInvestmentPref.Sometimes.prefName(context),
+                EnumInvestmentPref.Often.prefName(context)
         };
     }
 
@@ -74,66 +66,63 @@ public class InvestmentPrefFragment extends BaseStepFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        txtRiskText = binding.riskAttText;
-        btnPickRisk = binding.btnPickRiskAtt;
-
-        Bundle arguments = new Bundle();
-        final FragmentManager fm = getChildFragmentManager();
-
-        btnPickRisk.setOnClickListener(pickerDialog -> {
-            SingleSelectDialogFragment dialogFragment = new SingleSelectDialogFragment(context);
-
-            arguments.putStringArray(SingleSelectDialogFragment.RISK_LIST, risks);
-            arguments.putInt(SingleSelectDialogFragment.RISK_INDEX, riskIndex);
-            dialogFragment.setArguments(arguments);
-
-            dialogFragment.setOnDismissListener(new SingleSelectDialogFragment.IDismissDialog() {
-                @Override
-                public void onDismiss(String selectedRiskName, int selectedRiskAtt, int selectedRiskIndex, boolean cancelled) {
-                    if (!cancelled) {
-                        riskAtt = selectedRiskAtt;
-                        riskIndex = selectedRiskIndex;
-                        txtRiskText.setText(selectedRiskName);
-                        updatedRiskAttitude();
-                    }
-                }
-            });
-
-            dialogFragment.show(fm, SingleSelectDialogFragment.ARG_ITEM_ID);
-
+        addRiskRadioButtons(investmentPreference);
+        binding.rdgRiskGroup.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
+            int radioButtonId = radioGroup.getCheckedRadioButtonId();
+            RadioButton radioButton = binding.getRoot().findViewById(radioButtonId);
+            if (radioButton == null) {
+                return;
+            }
+            int itemTagIndex = (int) radioButton.getTag();
+            switch (itemTagIndex) {
+                default:
+                case 0:
+                    riskAtt = 0;
+                    break;
+                case 1:
+                    riskAtt = 1;
+                    break;
+                case 2:
+                    riskAtt = 2;
+                    break;
+            }
+            riskName = investmentPreference[riskAtt];
+            updateInvestmentPref(riskAtt, itemTagIndex);
         });
     }
 
+    private void addRiskRadioButtons(@NonNull String[] risks) {
+        binding.rdgRiskGroup.removeAllViews();
+        for (int listIndex = 0; listIndex <= risks.length - 1; listIndex++) {
+            RadioButton radioButton = new RadioButton(getActivity());
+            radioButton.setId(View.generateViewId());
+            radioButton.setTag(listIndex);
+            String radioLabel = risks[listIndex];
+            radioButton.setText(radioLabel);
+            binding.rdgRiskGroup.addView(radioButton);
+        }
+    }
 
-    private void updatedRiskAttitude() {
+    private void updateInvestmentPref(int investmentPref, int investmentRadioIndex) {
         try {
-            if (profileInfo == null) {
-                profileInfo = new ProfileInfo();
-            }
+            if (profileInfo != null) {
+                profileInfo.setSelectedRiskIndex(investmentRadioIndex);
+                profileInfo.setRiskAtt(investmentPref);
 
-            profileInfo.setSelectedRiskIndex(riskIndex);
-            profileInfo.setRiskAtt(riskAtt);
-
-            dataIsValid = !Strings.isEmptyOrWhitespace(riskName);
-            if (profileInfo.getProfileId() != null) {
-                int id = profileInfo.getProfileId();
-                if (id > 0) {
+                if (profileInfo.getProfileId() != null) {
                     database.profileInfoDao().update(profileInfo);
                 }
-            } else {
-                database.profileInfoDao().insert(profileInfo);
             }
         } catch (Exception ex) {
-            dataIsValid = false;
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO add crash logging
+            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
     @Nullable
     @Override
     public VerificationError verifyStep() {
-        if (!dataIsValid) {
+        if (riskName.isEmpty()) {
             return new VerificationError("Please select an option");
         }
         return null;
@@ -153,16 +142,12 @@ public class InvestmentPrefFragment extends BaseStepFragment {
             profileInfo = database.profileInfoDao().findOne();
             if (profileInfo != null) {
                 riskAtt = profileInfo.getRiskAtt();
-                riskIndex = profileInfo.getSelectedRiskIndex();
-                dataIsValid = true;
+                riskRadioIndex = profileInfo.getSelectedRiskIndex();
+                binding.rdgRiskGroup.check(riskRadioIndex);
             }
-
-            riskName = risks[riskAtt];
-            txtRiskText.setText(riskName);
+            riskName = investmentPreference[riskAtt];
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
         }
     }
 }

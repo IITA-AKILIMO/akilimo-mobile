@@ -4,22 +4,22 @@ import android.content.Context
 import com.akilimo.mobile.R
 import org.jetbrains.annotations.NotNull
 
-enum class EnumRiskAtt {
+enum class EnumInvestmentPref {
     Rarely {
-        override fun riskName(context: Context): String {
+        override fun prefName(context: Context): String {
             return context.getString(R.string.lbl_rarely)
         }
     },
     Sometimes {
-        override fun riskName(context: Context): String {
+        override fun prefName(context: Context): String {
             return context.getString(R.string.lbl_sometimes)
         }
     },
     Often {
-        override fun riskName(context: Context): String {
+        override fun prefName(context: Context): String {
             return context.getString(R.string.lbl_often)
         }
     };
 
-    abstract fun riskName(context: Context): @NotNull String
+    abstract fun prefName(context: Context): @NotNull String
 }

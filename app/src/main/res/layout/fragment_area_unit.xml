@@ -5,9 +5,8 @@
     android:id="@+id/lyt_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey_5"
     android:padding="@dimen/spacing_medium"
-    tools:context="com.akilimo.mobile.views.fragments.AreaUnitFragment">
+    tools:context=".views.fragments.AreaUnitFragment">
 
 
     <LinearLayout
@@ -30,7 +29,6 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:text="@string/lbl_area_unit"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@color/akilimoDarkGreen"
@@ -38,7 +36,7 @@
 
         <RadioGroup
             android:id="@+id/rdgAreaUnit"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_small"
             android:padding="@dimen/spacing_medium">
@@ -47,21 +45,18 @@
                 android:id="@+id/rdAcre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:text="@string/area_unit_acre" />
 
             <RadioButton
                 android:id="@+id/rdHa"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:text="@string/area_unit_ha" />
 
             <RadioButton
                 android:id="@+id/rdAre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:text="@string/area_unit_are"
                 android:visibility="gone" />
 
@@ -69,7 +64,6 @@
                 android:id="@+id/rdSqm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:text="@string/area_unit_square_meter"
                 android:visibility="gone" />
         </RadioGroup>

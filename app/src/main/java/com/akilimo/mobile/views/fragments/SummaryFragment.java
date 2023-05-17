@@ -28,7 +28,7 @@ import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.models.TimeLineModel;
 import com.akilimo.mobile.models.TimelineAttributes;
 import com.akilimo.mobile.utils.TheItemAnimation;
-import com.akilimo.mobile.utils.enums.EnumRiskAtt;
+import com.akilimo.mobile.utils.enums.EnumInvestmentPref;
 import com.akilimo.mobile.utils.enums.StepStatus;
 import com.stepstone.stepper.VerificationError;
 
@@ -82,7 +82,7 @@ public class SummaryFragment extends BaseStepFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
-        risks = new String[]{EnumRiskAtt.Rarely.riskName(context), EnumRiskAtt.Sometimes.riskName(context), EnumRiskAtt.Often.riskName(context)};
+        risks = new String[]{EnumInvestmentPref.Rarely.prefName(context), EnumInvestmentPref.Sometimes.prefName(context), EnumInvestmentPref.Often.prefName(context)};
     }
 
     public static SummaryFragment newInstance() {

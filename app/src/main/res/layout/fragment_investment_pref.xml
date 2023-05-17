@@ -46,28 +46,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_subtext" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/riskAttText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_mxlarge"
-        android:text="@string/empty_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/riskAttSubtitle" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnPickRiskAtt"
+    <RadioGroup
+        android:id="@+id/rdgRiskGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/lbl_select_risk_att"
-        android:textAllCaps="false"
-        app:cornerRadius="@dimen/spacing_small"
+        android:layout_marginTop="@dimen/spacing_large"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/riskAttText"
-        app:layout_constraintVertical_bias="0.25" />
+        app:layout_constraintTop_toBottomOf="@+id/riskAttSubtitle"
+        app:layout_constraintVertical_bias="0.25">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lbl_rarely" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lbl_sometimes" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lbl_often" />
+    </RadioGroup>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
