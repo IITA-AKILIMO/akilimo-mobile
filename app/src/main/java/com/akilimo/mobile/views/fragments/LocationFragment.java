@@ -4,12 +4,14 @@ package com.akilimo.mobile.views.fragments;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -121,28 +123,25 @@ public class LocationFragment extends BaseStepFragment {
 
         final EditText editTextFarmName = new EditText(context);
         editTextFarmName.setHint(getString(R.string.lbl_farm_name));
+        editTextFarmName.setSingleLine(true);
+        editTextFarmName.setMaxLines(1);
 
         if (editTextFarmName.getParent() != null) {
             ((ViewGroup) editTextFarmName.getParent()).removeView(editTextFarmName);
         }
-        AlertDialog builder = new MaterialAlertDialogBuilder(context)
+        AlertDialog fieldNameDialog = new MaterialAlertDialogBuilder(context)
                 .setTitle(getString(R.string.lbl_farm_name_title))
 //                .setMessage(getString(R.string.lbl_farm_name))
                 .setView(editTextFarmName)
+                .setCancelable(false)
                 .setPositiveButton(getString(R.string.lbl_ok), (dialogInterface, i) -> {
                     farmName = editTextFarmName.getText().toString();
-                    if (!farmName.isEmpty() && !fullNames.isEmpty()) {
-                        binding.txtFarmInfo.setText(farmName);
-                    }
+                    setFarmNameInfo(fullNames, farmName);
+                    editTextFarmName.setText(farmName);
                 })
                 .setNegativeButton(getString(R.string.lbl_cancel), null).create();
-//        LinearLayout layoutName = new LinearLayout(context);
-//        layoutName.setOrientation(LinearLayout.VERTICAL);
-//        layoutName.addView(editTextFarmName);
 
-        binding.btnFieldName.setOnClickListener(theView -> {
-            builder.show();
-        });
+        binding.btnFieldName.setOnClickListener(theView -> fieldNameDialog.show());
         ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
@@ -179,6 +178,13 @@ public class LocationFragment extends BaseStepFragment {
         errorMessage = context.getString(R.string.lbl_location_error);
 
         MAP_BOX_ACCESS_TOKEN = sessionManager.getMapBoxApiKey();
+    }
+
+    private void setFarmNameInfo(String fullNames, String farmName) {
+        String farmInfo = (farmName.isEmpty() || fullNames.isEmpty())
+                ? null
+                : String.format("%s’s cassava farm: %s", fullNames, farmName);
+        binding.txtFarmInfo.setText(farmInfo);
     }
 
     private void getCurrentLocation() {
@@ -257,6 +263,10 @@ public class LocationFragment extends BaseStepFragment {
 
     private void saveLocation() {
         try {
+            if (profileInfo != null) {
+                profileInfo.setFarmName(farmName);
+                database.profileInfoDao().update(profileInfo);
+            }
             if (locationInformation == null) {
                 locationInformation = new LocationInfo();
             }
@@ -286,6 +296,7 @@ public class LocationFragment extends BaseStepFragment {
                 fullNames = profileInfo.getNames();
                 userSelectedCountryCode = profileInfo.getCountryCode();
                 userSelectedCountryName = profileInfo.getCountryName();
+                setFarmNameInfo(fullNames, farmName);
             }
             if (locationInformation != null) {
                 StringBuilder locInfo = loadLocationInfo(locationInformation);
