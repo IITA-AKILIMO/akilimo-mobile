@@ -52,7 +52,6 @@ public class WelcomeFragment extends BaseStepFragment {
     String selectedLanguage = "en";
     private boolean languagePicked = false;
 
-    LinearLayout layout;
 
     public WelcomeFragment() {
         // Required empty public constructor
@@ -81,7 +80,6 @@ public class WelcomeFragment extends BaseStepFragment {
         super.onViewCreated(view, savedInstanceState);
 
         languagePicker = binding.languagePicker;
-        layout = binding.welcomeLayout;
         prefs = new SharedPrefsAppLocaleRepository(context);
         profileInfo = database.profileInfoDao().findOne();
 
@@ -102,16 +100,15 @@ public class WelcomeFragment extends BaseStepFragment {
                     AppLocale.setDesiredLocale(selectedLocale);
                     SharedPrefsAppLocaleRepository prefs = new SharedPrefsAppLocaleRepository(context);
                     prefs.setDesiredLocale(selectedLocale);
-                    AppLocale.setAppLocaleRepository(prefs); //persist changes
+                    AppLocale.setAppLocaleRepository(prefs);
 
                     AppLocale.setDesiredLocale(selectedLocale);
 
                     final View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
                     Reword.reword(rootView);
-
                     Intent intent = new Intent(context, HomeStepperActivity.class);
                     Snackbar snackBar = Snackbar
-                            .make(layout, getString(R.string.lbl_restart_app_prompt), Snackbar.LENGTH_INDEFINITE)
+                            .make(binding.lytParent, getString(R.string.lbl_restart_app_prompt), Snackbar.LENGTH_INDEFINITE)
                             .setAction(context.getString(R.string.lbl_ok), snackView -> ProcessPhoenix.triggerRebirth(context, intent));
                     snackBar.show();
                     initSpinnerItems();
