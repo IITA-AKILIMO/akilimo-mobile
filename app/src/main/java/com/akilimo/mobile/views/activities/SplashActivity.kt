@@ -10,8 +10,6 @@ import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.utils.SessionManager
-import com.akilimo.mobile.views.activities.usecases.FertilizerRecActivity
-import com.akilimo.mobile.views.activities.usecases.RecommendationsActivity
 
 
 @SuppressLint("CustomSplashScreen")
@@ -50,7 +48,7 @@ class SplashActivity : BaseActivity() {
                 val db = getDatabase(this)
                 if (db != null) {
                     with(db) {
-                        if (sessionManager.userInfoRemembered()) {
+                        if (sessionManager.getRememberUserInfo()) {
                             adviceStatusDao().deleteAll()
                             cassavaMarketDao().deleteAll()
                             cassavaPriceDao().deleteAll()

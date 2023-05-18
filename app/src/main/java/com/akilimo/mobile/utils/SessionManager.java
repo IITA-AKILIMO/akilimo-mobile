@@ -6,16 +6,11 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.akilimo.mobile.BuildConfig;
-import com.akilimo.mobile.models.FirebaseTopic;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import java.util.List;
 import java.util.UUID;
 
 
@@ -189,14 +184,6 @@ public class SessionManager {
         editor.commit();
     }
 
-    public void setRememberUserInfo(boolean rememberUserInfo) {
-        editor.putBoolean("rememberUserInfo", rememberUserInfo);
-        editor.commit();
-    }
-
-    public boolean userInfoRemembered() {
-        return pref.getBoolean("rememberUserInfo", false);
-    }
 
     public String getCountry() {
         return pref.getString("country", "NA");
@@ -238,4 +225,24 @@ public class SessionManager {
     public String getApiPass() {
         return pref.getString("apiPass", "");
     }
+
+    public void setRememberUserInfo(boolean rememberUserInfo) {
+        editor.putBoolean("rememberUserInfo", rememberUserInfo);
+        editor.commit();
+    }
+
+    public boolean getRememberUserInfo() {
+        return pref.getBoolean("rememberUserInfo", false);
+    }
+
+    public void setRememberAreUnit(boolean rememberAreUnit) {
+        editor.putBoolean("rememberAreUnit", rememberAreUnit);
+        editor.commit();
+    }
+
+    public boolean getRememberAreUnit() {
+        return pref.getBoolean("rememberAreUnit", false);
+    }
+
+
 }

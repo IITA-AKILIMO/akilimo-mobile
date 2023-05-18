@@ -442,4 +442,6 @@
     <string name="lbl_ngn_currency_name">Nayira</string>
     <string name="lbl_are">are</string>
     <string name="area_unit_are">Are (are)</string>
-    <string name="lbl_investment_pref_sub">Kugira ngo tugufashe neza nk\'uko umurimo wawe wo mu buzima bwawe ukora, turabaza niba wakora byinshi mu gufasha uruganda rw\'amazi cyangwa ibikorwa bya teknoloji byo mu nshingano za nyuma za serivisi zacu. Niba wakora byinshi, tutabaha ibisobanuro byihariye, ariko biraburamo amakimbirane akomeye akomeye. Niba wifuza ibibazo bifite umutungo wo kurinda, ndangiza ko wakora mu buzima bwawe ku buryo bukorwa.</string></resources>
+    <string name="lbl_investment_pref_sub">Kugira ngo tugufashe neza nk\'uko umurimo wawe wo mu buzima bwawe ukora, turabaza niba wakora byinshi mu gufasha uruganda rw\'amazi cyangwa ibikorwa bya teknoloji byo mu nshingano za nyuma za serivisi zacu. Niba wakora byinshi, tutabaha ibisobanuro byihariye, ariko biraburamo amakimbirane akomeye akomeye. Niba wifuza ibibazo bifite umutungo wo kurinda, ndangiza ko wakora mu buzima bwawe ku buryo bukorwa.</string>
+    <string name="lbl_area_unit_subtitle">Umwihariko mwiza, nkomeza igisubizo kigomba ku isi ya kibondo cy\'urwego rwa shamba ryawe. Iki wakoranye n\'ubuhamya ntikivomo, wabandikire inyandiko muri iyi nkuru \'GPS Fields Area Measure.\' Iyi ndirimbo izakuboneza ukuboko bw\'ishamba ryawe kugira ngo utembe ukimishe amakaza ye cyangwa ukubandakize iyo mikino ye.</string>
+</resources>

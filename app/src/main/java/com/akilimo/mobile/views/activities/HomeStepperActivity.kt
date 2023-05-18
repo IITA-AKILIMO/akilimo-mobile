@@ -160,7 +160,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         fragmentArray.add(BioDataFragment.newInstance())
         fragmentArray.add(CountryFragment.newInstance())
         fragmentArray.add(LocationFragment.newInstance())
-        fragmentArray.add(FieldInfoFragment.newInstance())
+//        fragmentArray.add(FieldInfoFragment.newInstance()) //Todo redundant
         fragmentArray.add(AreaUnitFragment.newInstance())
         fragmentArray.add(FieldSizeFragment.newInstance())
         fragmentArray.add(PlantingDateFragment.newInstance())

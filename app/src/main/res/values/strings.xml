@@ -50,7 +50,8 @@
     <string name="lbl_nigeria" translatable="false">Nigeria</string>
     <string name="lbl_tanzania" translatable="false">Tanzania</string>
 
-    <string name="lbl_area_unit">What is your preferred unit for measuring the area of your field?</string>
+    <string name="lbl_area_unit">What is your preferred field area unit?</string>
+    <string name="lbl_area_unit_subtitle">To get the best results, please provide an accurate measurement of your field’s size. If you\'re unsure of the exact size, you can download an app from the Play Store, for example "GPS Fields Area Measure." This app can help you determine the size of your field by walking along its boundaries or manually marking these.</string>
     <string name="area_unit_acre">Acre (acre)</string>
     <string name="area_unit_ha">Hectare (ha)</string>
     <string name="area_unit_are">Are (are)</string>
