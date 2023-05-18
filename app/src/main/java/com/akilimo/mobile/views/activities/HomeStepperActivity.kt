@@ -161,7 +161,9 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         fragmentArray.add(CountryFragment.newInstance())
         fragmentArray.add(LocationFragment.newInstance())
 //        fragmentArray.add(FieldInfoFragment.newInstance()) //Todo redundant
-        fragmentArray.add(AreaUnitFragment.newInstance())
+        if (!sessionManager.rememberAreaUnit) {
+            fragmentArray.add(AreaUnitFragment.newInstance())
+        }
         fragmentArray.add(FieldSizeFragment.newInstance())
         fragmentArray.add(PlantingDateFragment.newInstance())
 
