@@ -52,7 +52,7 @@
                 android:layout_below="@id/errorImage"
                 android:layout_centerInParent="true"
                 android:layout_margin="@dimen/spacing_medium"
-                android:fontFamily="@font/ubuntu_bold"
+
                 android:text="@string/lbl_compute_error"
                 android:textAlignment="center"
                 android:textColor="@color/red_A400"

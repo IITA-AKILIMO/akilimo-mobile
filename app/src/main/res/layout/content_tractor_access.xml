@@ -18,7 +18,7 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/ubuntu"
+
             android:text="@string/lbl_access_to_tractor"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
@@ -51,7 +51,7 @@
                         android:id="@+id/rdYesTractor"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/ubuntu"
+
                         android:text="@string/lbl_yes" />
 
 
@@ -59,7 +59,7 @@
                         android:id="@+id/rdNoTractor"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/ubuntu"
+
                         android:text="@string/lbl_no" />
 
                 </RadioGroup>
@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tractorCard"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:fontFamily="@font/ubuntu"
+
             android:text="@string/lbl_which_implements_do_you_have_access_to"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:visibility="gone" />
@@ -104,14 +104,14 @@
                     android:id="@+id/chkPlough"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/ubuntu"
+
                     android:text="@string/lbl_plough" />
 
                 <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/chkRidger"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/ubuntu"
+
                     android:text="@string/lbl_ridger" />
 
             </LinearLayout>

@@ -30,10 +30,8 @@ object Tools {
     @JvmStatic
     fun displayImageOriginal(ctx: Context?, img: ImageView?, @DrawableRes drawable: Int) {
         try {
-            Glide.with(ctx!!).load(drawable)
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .into(img!!)
+            Glide.with(ctx!!).load(drawable).transition(DrawableTransitionOptions.withCrossFade())
+                .diskCacheStrategy(DiskCacheStrategy.NONE).into(img!!)
         } catch (e: Exception) {
         }
     }
@@ -54,9 +52,7 @@ object Tools {
     fun dpToPx(c: Context, dp: Int): Int {
         val r = c.resources
         return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            dp.toFloat(),
-            r.displayMetrics
+            TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), r.displayMetrics
         ).roundToInt()
     }
 

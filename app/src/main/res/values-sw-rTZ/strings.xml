@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-    <string name="welcome_title">Karibu</string>
+    <string name="welcome_title">Je, unalima muhogo? Na unatafuta kuwa mtaalamu? AKILIMO inaweza kukusaidia!</string>
     <string name="welcome_instructions">AKILIMO inaweza kukupatia ushauri binafsi wa kuongeza mavuno ya muhogo katika shamba lako iwapo utatoa taarifa muhimu za kuiwezesha kufanya hivyo.</string>
     <string name="important_instructions_title">TAARIFA MUHIMU</string>
     <string name="important_instructions">Mapendekezo AKILIMO itakupatia yanategemea usahihi wa taarifa utakazo zitoa yaani eneo lilipo shamba lako, ukubwa wa shamba, bei ya mazao, mbolea, n.k. Kwa mfano, ukubwa wa shamba ukitajwa kuwa mkubwa kuliko ulivyo, utaongeza gharama zisizo za lazima, yaani  kuongezeka uwekezaji na kusababisha hasara; na ikiwa ukubwa wa shamba unaotajwa utakuwa ni chini ya ukweli,  itapunguza fursa ya kupata faida kutoka kwenye shamba lako.</string>
@@ -15,6 +15,7 @@
     <string name="title_activity_farm_location">Eneo shamba lilipo</string>
     <string name="title_tillage_operations">Shughuli muhimu za usimamizi wa shamba</string>
     <string name="title_planting_harvest">Tarehe za kupanda na kuvuna</string>
+    <string name="title_planting_harvest_subtitle">Tafadhali tuambie wakati umepanda (au utapanda) na wakati unakusudia kuvuna. Tunatumia hii ili kukupa ushauri unaofikiria hali ya hewa ya kawaida wakati mazao yako yanakua.</string>
     <string name="title_manual_tillage_cost">Gharama za kulima kwa mkono</string>
     <string name="title_weed_control">Palizi</string>
     <string name="title_maize_intercropping">Mchanganyiko na mahindi</string>
@@ -35,7 +36,7 @@
     <string name="lbl_acre">ekari</string>
     <string name="lbl_ha">hekta</string>
     <string name="lbl_cassava_field_size_no_ph">Je? Shamba lako la muhogo lina ukubwa gani?</string>
-    <string name="lbl_cassava_field_size">Je? Shamba lako la muhogo lina ukubwa gani katika `%1$s`</string>
+    <string name="lbl_cassava_field_size">Je? Shamba lako la muhogo lina ukubwa gani (katika `%1$s`)?</string>
     <!--  acres  -->
     <string name="quarter_acre">Kama ekari 0.25</string>
     <string name="half_acre">Kama ekari 0.5</string>
@@ -43,7 +44,7 @@
     <string name="one_half_acre">Kama ekari 1.5</string>
     <string name="two_half_acres">Kama ekari 2.5</string>
     <string name="five_acres">Kama ekari 5</string>
-    <string name="exact_field_area">Taja eneo halisi la shamba langu</string>
+    <string name="exact_field_area">Taja eneo halisi la shamba lako</string>
     <!--  ha  -->
     <string name="quarter_acre_to_ha">Kama hekta 0.1</string>
     <string name="half_acre_to_ha">Kama hekta 0.2</string>
@@ -65,7 +66,7 @@
     <string name="two_half_acre_to_m2">Kama 10,000 m\u00B2</string>
 
     <string name="lbl_salutation">Halo, ni vizuri kukutana nawe!</string>
-    <string name="lbl_farm_location">Shamba lako la muhogo (%1$s) lipo eneo gani?</string>
+    <string name="lbl_farm_location">Shamba lako la muhogo lipo eneo gani?</string>
     <string name="lbl_current_location">Tumia eneo la sasa</string>
     <string name="lbl_manual_location">Chagua eneo nilipo</string>
     <string name="lbl_recommendations">Mapendekezo</string>
@@ -169,6 +170,8 @@
     <string name="move_map_instruction">Sogeza ramani kuweka alama katika eneo unalolitaka</string>
     <string name="lbl_not_provided">Haijatolewa</string>
     <string name="lbl_summary_title">Haya ndiyo maelezo uliyoipa AKILIMO</string>
+    <string name="lbl_summary_text">Muhtasari wa shamba la mhudumu %s la muhogo: %s</string>
+
     <string name="unit_price_label">%1$,.0f - %2$,.0f %3$s kwa %4$s</string>
     <string name="unit_price_label_single">Karibu %1$,.0f %2$s kwa %3$s</string>
     <string name="title_activity_dst_recommendation">Mapendekezo</string>
@@ -300,7 +303,7 @@
     <string name="lbl_ploughing">Kukatua</string>
     <string name="lbl_ridging">Kuweka matuta</string>
     <string name="lbl_country">Nchi</string>
-    <string name="lbl_risk_attitude">Uwekezaji katika teknolojia</string>
+    <string name="lbl_risk_attitude">Mapendeleo ya uwekezaji</string>
     <string name="lbl_field">Shamba</string>
     <string name="lbl_farm_size">Ukubwa wa shamba</string>
     <string name="lbl_location">Mahali</string>
@@ -371,7 +374,7 @@
     <string name="lbl_accept_terms_prompt">Tafadhali kubali vigezo na masharti kabla ya kuendelea</string>
     <string name="lbl_restart_app_prompt">Anzisha tena programu ili kuwezesha tafsiri</string>
     <string name="lbl_optional">(Hiari)</string>
-    <string name="lbl_country_supported">AKILIMO kwa sasa inatoa ushauri kwa wakulima wa Nigeria,Tanzania,RWanda na Ghana tu</string>
+    <string name="lbl_country_supported">AKILIMO kwa sasa inatoa ushauri kwa wakulima wa Nigeria,Tanzania,Rwanda na Ghana tu. Eneo ulilochagua halilingani na uchaguzi wako wa nchi. </string>
     <string name="lbl_acre_yield">tani 3–6 kwa ekari</string>
     <string name="lbl_ha_yield">tani 7.5–15 kwa hekta</string>
     <string name="fcy_lower">Chini</string>
@@ -388,10 +391,10 @@
     <string name="lbl_you_selected">Umechagua</string>
     <string name="lbl_you_expect_yield">Unatarajia mavuno ya %1$s. %2$s</string>
     <string name="lbl_select_risk_att">Chagua</string>
-    <string name="lbl_risk_att">Je? Unawekeza mara ngapi katika teknolojia mpya?</string>
+    <string name="lbl_investment_pref">Je? Unawekeza mara ngapi katika teknolojia mpya?</string>
     <string name="lbl_often">Mara nyingi</string>
     <string name="lbl_sometimes">Mara chache</string>
-    <string name="lbl_never">Kamwe</string>
+    <string name="lbl_rarely">Nadra</string>
     <string name="lbl_about">Karibu %1$s</string>
     <string name="lbl_min_fert_price">Tafadhali taja bei halisi ya kiroba kati ya %s na %s</string>
     <string name="lbl_one_kg_bag_unit">kiroba ya kilo 1</string>
@@ -428,4 +431,6 @@
     <string name="lbl_bif_currency_name">Faranga ya Burundi</string>
     <string name="lbl_no_factories">Viwanda vya wanga havipatikani</string>
     <string name="lbl_no_factories_text">Viwanda vya wanga havipatikani kwa %1s</string>
+    <string name="lbl_investment_pref_sub">Ili kukupa ushauri unaofaa kulingana na mapendekezo yako ya uwekezaji, tunauliza mara ngapi unawekeza katika bidhaa mpya za kilimo au teknolojia. Ikiwa unawekeza mara kwa mara, tutakupa mapendekezo ya hatari kubwa na faida kubwa. Ikiwa unapendelea chaguo salama zaidi, tafadhali eleza kwamba unawekeza mara chache tu.</string>
+    <string name="lbl_area_unit_subtitle">Ili kupata matokeo bora, tafadhali toa kipimo sahihi cha ukubwa wa shamba lako. Ikiwa hauko uhakika na kipimo halisi, unaweza kupakua programu kutoka Goole PlayStore, kwa mfano \"GPS Fields Area Measure.\" Programu hii inaweza kukusaidia kujua ukubwa wa shamba lako kwa kutembea kwenye mipaka yake au kwa kuweka alama kutimia mikono.</string>
 </resources>

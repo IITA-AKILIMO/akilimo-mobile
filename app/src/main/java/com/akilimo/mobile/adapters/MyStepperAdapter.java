@@ -17,9 +17,8 @@ import java.util.List;
 
 public class MyStepperAdapter extends AbstractFragmentStepAdapter {
 
-    private final String CURRENT_STEP_POSITION_KEY = "CURRENT_STEP_POSITION_KEY";
-    private Context ctx;
-    private List<Fragment> fragmentArray;
+    private final Context ctx;
+    private final List<Fragment> fragmentArray;
 
 
     public MyStepperAdapter(FragmentManager supportFragmentManager, Context context, List<Fragment> fragmentArray) {
@@ -30,6 +29,7 @@ public class MyStepperAdapter extends AbstractFragmentStepAdapter {
 
     @Override
     public Step createStep(int position) {
+        String CURRENT_STEP_POSITION_KEY = "CURRENT_STEP_POSITION_KEY";
         final Fragment step = fragmentArray.get(position);
         Bundle bundleParams = new Bundle();
         bundleParams.putInt(CURRENT_STEP_POSITION_KEY, position);

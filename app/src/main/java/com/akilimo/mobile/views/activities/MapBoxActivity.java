@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
+import com.akilimo.mobile.BuildConfig;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -155,9 +156,13 @@ public class MapBoxActivity extends BaseLocationPicker {
     }
 
     private void animateMapCameraChange(LatLng latLng) {
+
         CameraPosition newCameraPosition = new CameraPosition.Builder()
                 .target(latLng)
+                .zoom(BuildConfig.DEBUG ? 5 : 17)
                 .build();
+
+
         if (mapboxMap != null) {
             mapboxMap.easeCamera(CameraUpdateFactory.newCameraPosition(newCameraPosition));
         }

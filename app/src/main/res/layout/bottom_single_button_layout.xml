@@ -15,7 +15,7 @@
         android:id="@+id/btnGetRecommendation"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
-        android:fontFamily="@font/ubuntu"
+
         android:text="@string/lbl_get_recommendations"
         android:textAllCaps="false"
         android:theme="@style/Button.Green"

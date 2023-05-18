@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/lyt_parent"
@@ -7,93 +7,130 @@
     android:layout_height="match_parent"
     android:background="@color/grey_5"
     android:padding="@dimen/spacing_medium"
-    tools:context="com.akilimo.mobile.views.fragments.LocationFragment">
+    tools:context=".views.fragments.LocationFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="200dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:contentDescription="@string/app_name"
+        android:padding="@dimen/spacing_xlarge"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_gps_marker" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:paddingBottom="?attr/actionBarSize">
+        android:layout_marginTop="@dimen/spacing_small"
+        android:text="@string/lbl_farm_location"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/akilimoDarkGreen"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image" />
 
 
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="250dp"
-            android:layout_height="200dp"
-            android:contentDescription="@string/app_name"
-            android:padding="@dimen/spacing_xlarge"
-            app:srcCompat="@drawable/ic_gps_marker" />
+    <TextView
+        android:id="@+id/subTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:padding="@dimen/spacing_medium"
+        android:text="@string/lbl_location_sub_text"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="@color/grey_80"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:fontFamily="@font/ubuntu"
-            android:text="@string/lbl_farm_location"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/akilimoDarkGreen"
-            android:textStyle="bold" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/locationInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_large"
+        android:text="@string/empty_text"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="@color/akilimoDarkGreen"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/subTitle" />
 
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:fontFamily="@font/ubuntu"
-            android:padding="@dimen/spacing_medium"
-            android:text="@string/lbl_location_sub_text"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/grey_80" />
-
-
-        <TextView
-            android:id="@+id/locationInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:fontFamily="@font/ubuntu"
-            android:text="@string/empty_text"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/grey_80" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:paddingStart="@dimen/spacing_xlarge"
-            android:paddingEnd="@dimen/spacing_xlarge">
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnCurrentLocation"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/ubuntu"
-                android:gravity="center"
-                android:text="@string/lbl_current_location"
-                android:textAllCaps="false"
-                android:theme="@style/Button.Primary" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnSelectLocation"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="@dimen/spacing_small"
-                android:layout_weight="1"
-                android:fontFamily="@font/ubuntu"
-                android:text="@string/lbl_manual_location"
-                android:textAllCaps="false"
-                android:theme="@style/Button.Accent"
-                app:cornerRadius="5dp" />
-        </LinearLayout>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCurrentLocation"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/spacing_mxlarge"
+        android:backgroundTint="@color/akilimoDarkGreen"
+        android:text="@string/lbl_current_location"
+        android:textAllCaps="false"
+        app:icon="@drawable/ic_gps_fixed"
+        app:iconTint="@color/purple_200"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/locationInfo" />
 
 
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSelectLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:text="@string/lbl_manual_location"
+        android:textAllCaps="false"
+        app:cornerRadius="5dp"
+        app:icon="@drawable/ic_location_on"
+        app:iconTint="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnCurrentLocation" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/fieldNameLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_large"
+        android:text="@string/lbl_farm_name_title"
+        android:textAlignment="center"
+        android:textColor="@color/akilimoDarkGreen"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnSelectLocation" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnFieldName"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:text="@string/lbl_farm_name"
+        android:textAllCaps="false"
+        app:cornerRadius="3dp"
+        app:icon="@drawable/ic_info"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fieldNameLabel" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtFarmInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:text="@string/empty_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnFieldName" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

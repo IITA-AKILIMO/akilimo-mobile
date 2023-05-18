@@ -2,7 +2,7 @@ name: Beta release PR creator
 on:
   push:
     branches:
-      - "develop"
+      - "develop-disabled"
 
 jobs:
   pull-request:

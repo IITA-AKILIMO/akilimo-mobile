@@ -1,10 +1,14 @@
 package com.akilimo.mobile.inherit;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 
 import com.crashlytics.android.Crashlytics;
 import com.akilimo.mobile.R;
@@ -125,6 +129,7 @@ public abstract class BaseLocationPicker extends BaseActivity implements OnMapRe
         }
     }
 
+    @SuppressLint("MissingPermission")
     protected void enableLocationComponent(@NonNull Style loadedMapStyle) {
         // Check if permissions are enabled and if not request
         if (PermissionsManager.areLocationPermissionsGranted(this)) {
@@ -135,8 +140,7 @@ public abstract class BaseLocationPicker extends BaseActivity implements OnMapRe
             locationComponent.setCameraMode(CameraMode.TRACKING);
             locationComponent.setRenderMode(RenderMode.NORMAL);
         } else {
-            Toast.makeText(context, "Im unable to enable the location component", Toast.LENGTH_LONG).show();
-            Crashlytics.log("Mapbox geocoding failure");
+            Toast.makeText(context, "I am unable to enable the location component", Toast.LENGTH_LONG).show();
         }
     }
 

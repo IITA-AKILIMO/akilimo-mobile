@@ -10,8 +10,6 @@ import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.utils.SessionManager
-import com.akilimo.mobile.views.activities.usecases.FertilizerRecActivity
-import com.akilimo.mobile.views.activities.usecases.RecommendationsActivity
 
 
 @SuppressLint("CustomSplashScreen")
@@ -50,30 +48,34 @@ class SplashActivity : BaseActivity() {
                 val db = getDatabase(this)
                 if (db != null) {
                     with(db) {
-                        if (sessionManager.userInfoRemembered()) {
-                            adviceStatusDao().deleteAll()
-                            cassavaMarketDao().deleteAll()
-                            cassavaPriceDao().deleteAll()
-                            currencyDao().deleteAll()
-                            currentPracticeDao().deleteAll()
-                            fertilizerDao().deleteAll()
-                            fertilizerPriceDao().deleteAll()
-                            fieldOperationCostDao().deleteAll()
-                            fieldYieldDao().deleteAll()
-                            investmentAmountDao().deleteAll()
-                            investmentAmountDtoDao().deleteAll()
-                            locationInfoDao().deleteAll()
-                            maizeMarketDao().deleteAll()
-                            maizePerformanceDao().deleteAll()
-                            maizePriceDao().deleteAll()
-                            mandatoryInfoDao().deleteAll()
-                            potatoMarketDao().deleteAll()
-//                        profileInfoDao().deleteAll()
-                            scheduleDateDao().deleteAll()
-                            starchFactoryDao().deleteAll()
-                        } else {
-                            clearAllTables()
+
+                        if (!sessionManager.rememberUserInfo) {
+                            profileInfoDao().deleteAll()
                         }
+
+                        if (!sessionManager.rememberAreaUnit) {
+                            mandatoryInfoDao().deleteAll()
+                        }
+
+                        adviceStatusDao().deleteAll()
+                        cassavaMarketDao().deleteAll()
+                        cassavaPriceDao().deleteAll()
+                        currencyDao().deleteAll()
+                        currentPracticeDao().deleteAll()
+                        fertilizerDao().deleteAll()
+                        fertilizerPriceDao().deleteAll()
+                        fieldOperationCostDao().deleteAll()
+                        fieldYieldDao().deleteAll()
+                        investmentAmountDao().deleteAll()
+                        investmentAmountDtoDao().deleteAll()
+                        locationInfoDao().deleteAll()
+                        maizeMarketDao().deleteAll()
+                        maizePerformanceDao().deleteAll()
+                        maizePriceDao().deleteAll()
+                        potatoMarketDao().deleteAll()
+                        scheduleDateDao().deleteAll()
+                        starchFactoryDao().deleteAll()
+
                     }
                 }
             }

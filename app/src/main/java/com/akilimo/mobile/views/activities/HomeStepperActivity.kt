@@ -8,9 +8,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.crashlytics.android.Crashlytics
-import com.github.javiersantos.appupdater.AppUpdater
-import com.github.javiersantos.appupdater.enums.Display
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.MyStepperAdapter
 import com.akilimo.mobile.dao.AppDatabase
@@ -24,6 +21,9 @@ import com.akilimo.mobile.utils.SessionManager
 import com.akilimo.mobile.utils.enums.EnumCountry
 import com.akilimo.mobile.views.activities.usecases.RecommendationsActivity
 import com.akilimo.mobile.views.fragments.*
+import com.crashlytics.android.Crashlytics
+import com.github.javiersantos.appupdater.AppUpdater
+import com.github.javiersantos.appupdater.enums.Display
 import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.StepperLayout.StepperListener
 import com.stepstone.stepper.VerificationError
@@ -78,9 +78,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         mStepperLayout = binding.stepperLayout
 
         appUpdateHelper = AppUpdateHelper(this)
-        appUpdater = appUpdateHelper
-            .showUpdateMessage(Display.DIALOG)
-            .setButtonDoNotShowAgain("")
+        appUpdater = appUpdateHelper.showUpdateMessage(Display.DIALOG).setButtonDoNotShowAgain("")
 
         appUpdater.start()
 
@@ -95,8 +93,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
         configReader.enqueue(object : Callback<List<RemoteConfig>> {
             override fun onResponse(
-                call: Call<List<RemoteConfig>>,
-                response: Response<List<RemoteConfig>>
+                call: Call<List<RemoteConfig>>, response: Response<List<RemoteConfig>>
             ) {
                 val configList = response.body()
                 if (configList != null) {
@@ -163,13 +160,17 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         fragmentArray.add(BioDataFragment.newInstance())
         fragmentArray.add(CountryFragment.newInstance())
         fragmentArray.add(LocationFragment.newInstance())
-        fragmentArray.add(FieldInfoFragment.newInstance())
-        fragmentArray.add(AreaUnitFragment.newInstance())
+//        fragmentArray.add(FieldInfoFragment.newInstance()) //Todo redundant
+        if (!sessionManager.rememberAreaUnit) {
+            fragmentArray.add(AreaUnitFragment.newInstance())
+        }
         fragmentArray.add(FieldSizeFragment.newInstance())
         fragmentArray.add(PlantingDateFragment.newInstance())
 
         fragmentArray.add(TillageOperationFragment.newInstance())
-        fragmentArray.add(RiskAttFragment.newInstance())
+        if(!sessionManager.getRememberInvestmentPref()) {
+            fragmentArray.add(InvestmentPrefFragment.newInstance())
+        }
         fragmentArray.add(SummaryFragment.newInstance())
     }
 
@@ -185,11 +186,10 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
             }
 
             override fun onError(verificationError: VerificationError) {
-                Toast.makeText(
-                    context,
-                    verificationError.errorMessage,
-                    Toast.LENGTH_SHORT
-                ).show();
+                showCustomWarningDialog(
+                    getString(R.string.empty_text),
+                    verificationError.errorMessage
+                );
             }
 
             override fun onStepSelected(newStepPosition: Int) {
@@ -244,9 +244,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
                 exitProcess(0) //exit the system
             } else {
                 Toast.makeText(
-                    this,
-                    getString(R.string.lbl_exit_tip),
-                    Toast.LENGTH_SHORT
+                    this, getString(R.string.lbl_exit_tip), Toast.LENGTH_SHORT
                 ).show()
                 exit = true
                 Handler().postDelayed({ exit = false }, (3 * 1000).toLong())
@@ -254,9 +252,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         } catch (ex: Exception) {
             Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
             Crashlytics.log(
-                Log.ERROR,
-                LOG_TAG,
-                ex.message
+                Log.ERROR, LOG_TAG, ex.message
             )
             Crashlytics.logException(ex)
         }

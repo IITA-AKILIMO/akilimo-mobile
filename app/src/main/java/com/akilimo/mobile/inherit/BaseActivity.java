@@ -185,7 +185,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             title.setText(titleText);
             content.setText(contentText);
 
-            if (!Strings.isEmptyOrWhitespace(buttonTitle)) {
+            if (buttonTitle != null && !buttonTitle.isEmpty()) {
                 btnClose.setText(buttonTitle);
             }
             btnClose.setOnClickListener(view -> {
@@ -195,8 +195,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             dialog.show();
             dialog.getWindow().setAttributes(lp);
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //@TODO add latest crash logger for google
         }
     }
 

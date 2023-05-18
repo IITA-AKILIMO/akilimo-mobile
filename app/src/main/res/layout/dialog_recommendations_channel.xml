@@ -34,7 +34,7 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
+
                 android:text="@string/lbl_do_you_want_to_receive_recommendations_via_email_and_sms"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/colorAccent" />
@@ -43,7 +43,7 @@
                 android:id="@+id/chkEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
+
                 android:text="@string/lbl_receive_email" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -59,7 +59,7 @@
                     android:id="@+id/edtEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/ubuntu"
+
                     android:hint="@string/lbl_email_address"
                     android:inputType="textEmailAddress"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
@@ -71,7 +71,7 @@
                 android:id="@+id/chkSms"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
+
                 android:text="@string/lbl_receive_sms" />
 
             <com.hbb20.CountryCodePicker
@@ -100,7 +100,7 @@
                     android:id="@+id/edtPhone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/ubuntu"
+
                     android:hint="@string/lbl_phone_number"
                     android:inputType="phone" />
 
@@ -110,7 +110,7 @@
                 android:id="@+id/finalTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu"
+
                 android:text="@string/lbl_finalize"
                 android:textAlignment="center"
                 android:textColor="@color/colorPrimaryDark" />

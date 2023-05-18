@@ -3,7 +3,6 @@ package com.akilimo.mobile.views.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.akilimo.mobile.utils.enums.EnumCountry;
-import com.crashlytics.android.Crashlytics;
 import com.github.vipulasri.timelineview.TimelineView;
-import com.google.android.gms.common.util.Strings;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.adapters.MyTimeLineAdapter;
 import com.akilimo.mobile.databinding.FragmentSummaryBinding;
@@ -31,7 +28,7 @@ import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.models.TimeLineModel;
 import com.akilimo.mobile.models.TimelineAttributes;
 import com.akilimo.mobile.utils.TheItemAnimation;
-import com.akilimo.mobile.utils.enums.EnumRiskAtt;
+import com.akilimo.mobile.utils.enums.EnumInvestmentPref;
 import com.akilimo.mobile.utils.enums.StepStatus;
 import com.stepstone.stepper.VerificationError;
 
@@ -85,11 +82,7 @@ public class SummaryFragment extends BaseStepFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
-        risks = new String[]{
-                EnumRiskAtt.Never.riskName(context),
-                EnumRiskAtt.Sometimes.riskName(context),
-                EnumRiskAtt.Often.riskName(context)
-        };
+        risks = new String[]{EnumInvestmentPref.Rarely.prefName(context), EnumInvestmentPref.Sometimes.prefName(context), EnumInvestmentPref.Often.prefName(context)};
     }
 
     public static SummaryFragment newInstance() {
@@ -99,23 +92,7 @@ public class SummaryFragment extends BaseStepFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAttributes = new TimelineAttributes(
-                48,
-                ContextCompat.getColor(context, R.color.akilimoLightGreen),
-                ContextCompat.getColor(context, R.color.red_A400),
-                true,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                ContextCompat.getColor(context, R.color.colorAccent),
-                ContextCompat.getColor(context, R.color.colorAccent),
-                TimelineView.LineStyle.DASHED,
-                4,
-                2
-        );
+        mAttributes = new TimelineAttributes(48, ContextCompat.getColor(context, R.color.akilimoLightGreen), ContextCompat.getColor(context, R.color.red_A400), true, 0, 0, 0, 0, 0, 0, ContextCompat.getColor(context, R.color.colorAccent), ContextCompat.getColor(context, R.color.colorAccent), TimelineView.LineStyle.DASHED, 4, 2);
     }
 
     @Override
@@ -136,7 +113,8 @@ public class SummaryFragment extends BaseStepFragment {
         String plantingDate = "";
         String harvestDate = "";
         String fieldInfo = "";
-        String placeName = "";
+        String fieldName = "";
+        String summaryTitle = context.getString(R.string.lbl_summary_title);
         int riskAttitude = 0;
         String riskAttitudeName = "";
         double lat = 0.0;
@@ -157,17 +135,20 @@ public class SummaryFragment extends BaseStepFragment {
         if (profileInfo != null) {
             countryName = profileInfo.getCountryName();
             countryCode = profileInfo.getCountryCode();
-            countrySelected = !Strings.isEmptyOrWhitespace(countryName);
+            countrySelected = !countryName.isEmpty();
             riskAttitude = profileInfo.getRiskAtt();
         }
         riskAttitudeName = risks[riskAttitude];
 
         if (mandatoryInfo != null) {
             areaUnit = mandatoryInfo.getDisplayAreaUnit();
-            areaUnitSelected = !Strings.isEmptyOrWhitespace(areaUnit);
+            areaUnitSelected = areaUnit != null && !areaUnit.isEmpty();
+
+            summaryTitle = String.format(context.getString(R.string.lbl_summary_text), profileInfo.getNames(), profileInfo.getFarmName());
             if (areaUnitSelected) {
                 fieldSize = mandatoryInfo.getAreaSize();
                 fieldSizeSelected = fieldSize > 0.0;
+                fieldInfo = String.format("%s %s", fieldSize, areaUnit);
                 try {
                     Locale locale = getCurrentLocale();
                     if (locale.getLanguage().equalsIgnoreCase("sw")) {
@@ -175,14 +156,13 @@ public class SummaryFragment extends BaseStepFragment {
                     } else {
                         fieldInfo = String.format("%s %s", fieldSize, areaUnit);
                     }
-                } catch (Exception ex) {
-                    fieldInfo = String.format("%s %s", fieldSize, areaUnit);
-                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                    Crashlytics.logException(ex);
+                } catch (Exception ignored) {
+
                 }
             }
         }
 
+        binding.txtSummaryTitle.setText(summaryTitle);
         if (location != null) {
             pickedLocation = loadLocationInfo(location).toString();
             lat = location.getLatitude();
@@ -193,8 +173,8 @@ public class SummaryFragment extends BaseStepFragment {
         if (scheduledDate != null) {
             plantingDate = scheduledDate.getPlantingDate();
             harvestDate = scheduledDate.getHarvestDate();
-            plantingDateProvided = !Strings.isEmptyOrWhitespace(plantingDate);
-            harvestDateProvided = !Strings.isEmptyOrWhitespace(plantingDate);
+            plantingDateProvided = (plantingDate != null && !plantingDate.isEmpty());
+            harvestDateProvided = (harvestDate != null && !harvestDate.isEmpty());
         }
 
         if (currentPractice != null) {
@@ -230,7 +210,6 @@ public class SummaryFragment extends BaseStepFragment {
 
         mDataList = new ArrayList<>();
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_country), countryName, countrySelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
-        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_risk_attitude), riskAttitudeName, StepStatus.COMPLETED));
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_farm_place), location, locationPicked ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         mDataList.add(new TimeLineModel(context.getString(R.string.lbl_farm_size), fieldInfo, fieldSizeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
 
@@ -242,6 +221,7 @@ public class SummaryFragment extends BaseStepFragment {
             mDataList.add(new TimeLineModel(context.getString(R.string.lbl_ridging), ridgeStr.toString(), currentPracticeSelected ? StepStatus.COMPLETED : StepStatus.INCOMPLETE));
         }
 
+        mDataList.add(new TimeLineModel(context.getString(R.string.lbl_risk_attitude), riskAttitudeName, StepStatus.COMPLETED));
         initAdapter();
     }
 
@@ -258,7 +238,7 @@ public class SummaryFragment extends BaseStepFragment {
 
     @Nullable
     @Override
- public VerificationError verifyStep() {
+    public VerificationError verifyStep() {
         return null;
     }
 

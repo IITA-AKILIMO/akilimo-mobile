@@ -22,12 +22,13 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/spacing_small"
         android:orientation="horizontal">
+
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/chkAgreeToTerms"
             android:layout_width="wrap_content"
-            android:textSize="12sp"
             android:layout_height="wrap_content"
-            android:text="@string/lbl_agree_to_terms" />
+            android:text="@string/lbl_agree_to_terms"
+            android:textSize="12sp" />
 
     </RelativeLayout>
 

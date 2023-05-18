@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     android:ellipsize="marquee"
-    android:fontFamily="@font/ubuntu"
+
     android:gravity="center_vertical"
     android:paddingStart="@dimen/spacing_large"
     android:paddingEnd="@dimen/spacing_small"

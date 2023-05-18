@@ -54,6 +54,8 @@ public abstract class BaseStepFragment extends Fragment implements Step {
 
     protected SessionManager sessionManager;
     protected MathHelper mathHelper;
+
+    @Deprecated()
     protected boolean dataIsValid;
 
     public BaseStepFragment() {
@@ -135,10 +137,8 @@ public abstract class BaseStepFragment extends Fragment implements Step {
             String lat = mathHelper.removeLeadingZero(locationInfo.getLatitude(), "#.####");
             String lon = mathHelper.removeLeadingZero(locationInfo.getLongitude(), "#.####");
 
-            String place = locationInfo.getPlaceName();
-            stBuilder.append(String.format("Lat:%s", lat));
-            stBuilder.append(" ");
-            stBuilder.append(String.format("Lon:%s", lon));
+            String place = locationInfo.getLocationCountryName();
+            stBuilder.append(String.format("%s \n%s,%s", place, lat, lon));
         }
 
         return stBuilder;
