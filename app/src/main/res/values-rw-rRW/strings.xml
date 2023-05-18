@@ -15,6 +15,7 @@
     <string name="title_activity_farm_location">Aho umurima uherereye</string>
     <string name="title_tillage_operations">Ibikorwa by\'ibanze</string>
     <string name="title_planting_harvest">Amatariki yo gutera no gusarura</string>
+    <string name="title_planting_harvest_subtitle">Mwongereho kubanza utugirire uko wapande (cyangwa uzapande) n\'uko wumva kuvuna. Dufite icyo dukora kugufasha kugirango twibuke ibyagenewe amahoro y\'umwaka w\'urutoki.</string>
     <string name="title_manual_tillage_cost">Ikiguzi cyo guhinga</string>
     <string name="title_weed_control">Kubagara</string>
     <string name="title_maize_intercropping">Kuvanga ibindi bihingwa n\'ibigori</string>
@@ -441,5 +442,4 @@
     <string name="lbl_ngn_currency_name">Nayira</string>
     <string name="lbl_are">are</string>
     <string name="area_unit_are">Are (are)</string>
-    <string name="lbl_investment_pref_sub">Kugira ngo tugufashe neza nk\'uko umurimo wawe wo mu buzima bwawe ukora, turabaza niba wakora byinshi mu gufasha uruganda rw\'amazi cyangwa ibikorwa bya teknoloji byo mu nshingano za nyuma za serivisi zacu. Niba wakora byinshi, tutabaha ibisobanuro byihariye, ariko biraburamo amakimbirane akomeye akomeye. Niba wifuza ibibazo bifite umutungo wo kurinda, ndangiza ko wakora mu buzima bwawe ku buryo bukorwa.</string>
-</resources>
+    <string name="lbl_investment_pref_sub">Kugira ngo tugufashe neza nk\'uko umurimo wawe wo mu buzima bwawe ukora, turabaza niba wakora byinshi mu gufasha uruganda rw\'amazi cyangwa ibikorwa bya teknoloji byo mu nshingano za nyuma za serivisi zacu. Niba wakora byinshi, tutabaha ibisobanuro byihariye, ariko biraburamo amakimbirane akomeye akomeye. Niba wifuza ibibazo bifite umutungo wo kurinda, ndangiza ko wakora mu buzima bwawe ku buryo bukorwa.</string></resources>
