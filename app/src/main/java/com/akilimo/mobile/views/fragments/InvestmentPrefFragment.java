@@ -87,18 +87,17 @@ public class InvestmentPrefFragment extends BaseStepFragment {
                     break;
             }
             riskName = investmentPreference[riskAtt];
-            updateInvestmentPref(riskAtt, itemTagIndex);
+            updateInvestmentPref(riskAtt, radioButton.getId());
         });
     }
 
     private void addRiskRadioButtons(@NonNull String[] risks) {
         binding.rdgRiskGroup.removeAllViews();
-        for (int listIndex = 0; listIndex <= risks.length - 1; listIndex++) {
+        for (int listIndex = 0; listIndex < risks.length; listIndex++) {
             RadioButton radioButton = new RadioButton(getActivity());
-            radioButton.setId(View.generateViewId());
+            radioButton.setId(listIndex);
             radioButton.setTag(listIndex);
-            String radioLabel = risks[listIndex];
-            radioButton.setText(radioLabel);
+            radioButton.setText(risks[listIndex]);
             binding.rdgRiskGroup.addView(radioButton);
         }
     }
