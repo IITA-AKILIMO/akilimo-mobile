@@ -236,12 +236,12 @@ public class SessionManager {
     }
 
     public void setRememberAreaUnit(boolean rememberAreUnit) {
-        editor.putBoolean("rememberAreUnit", rememberAreUnit);
+        editor.putBoolean("rememberAreaUnit", rememberAreUnit);
         editor.commit();
     }
 
     public boolean getRememberAreaUnit() {
-        return pref.getBoolean("rememberAreUnit", false);
+        return pref.getBoolean("rememberAreaUnit", false);
     }
 
 
