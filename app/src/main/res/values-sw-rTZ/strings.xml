@@ -36,7 +36,7 @@
     <string name="lbl_acre">ekari</string>
     <string name="lbl_ha">hekta</string>
     <string name="lbl_cassava_field_size_no_ph">Je? Shamba lako la muhogo lina ukubwa gani?</string>
-    <string name="lbl_cassava_field_size">Je? Shamba lako la muhogo lina ukubwa gani katika `%1$s`</string>
+    <string name="lbl_cassava_field_size">Je? Shamba lako la muhogo lina ukubwa gani (katika `%1$s`)?</string>
     <!--  acres  -->
     <string name="quarter_acre">Kama ekari 0.25</string>
     <string name="half_acre">Kama ekari 0.5</string>
@@ -44,7 +44,7 @@
     <string name="one_half_acre">Kama ekari 1.5</string>
     <string name="two_half_acres">Kama ekari 2.5</string>
     <string name="five_acres">Kama ekari 5</string>
-    <string name="exact_field_area">Taja eneo halisi la shamba langu</string>
+    <string name="exact_field_area">Taja eneo halisi la shamba lako</string>
     <!--  ha  -->
     <string name="quarter_acre_to_ha">Kama hekta 0.1</string>
     <string name="half_acre_to_ha">Kama hekta 0.2</string>

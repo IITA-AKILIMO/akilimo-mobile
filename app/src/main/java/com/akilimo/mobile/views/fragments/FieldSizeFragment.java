@@ -132,7 +132,6 @@ public class FieldSizeFragment extends BaseStepFragment {
                 areaSize = mandatoryInfo.getAreaSize();
                 fieldSizeRadioIndex = mandatoryInfo.getFieldSizeRadioIndex();
                 myFieldSize = String.valueOf(areaSize);
-                dataIsValid = areaSize > 0;
                 areaUnitChanged = !areaUnit.equalsIgnoreCase(oldAreaUnit);
 
                 setFieldLabels(areaUnit);
@@ -140,7 +139,6 @@ public class FieldSizeFragment extends BaseStepFragment {
                     areaSize = 0;
                     myFieldSize = null;
                     rdgFieldArea.clearCheck();
-                    dataIsValid = false;
                 } else {
                     rdgFieldArea.check(fieldSizeRadioIndex);
                 }
@@ -153,8 +151,7 @@ public class FieldSizeFragment extends BaseStepFragment {
 
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO send crash logs to third party service
         }
     }
 
@@ -187,7 +184,7 @@ public class FieldSizeFragment extends BaseStepFragment {
             case R.id.rd_specify_acre:
                 isExactArea = true;
                 areaSize = EnumFieldArea.EXACT_AREA.areaValue();
-                specifiedArea.setVisibility(View.VISIBLE);
+                myFieldSize = null;
                 return;
         }
 
@@ -258,14 +255,21 @@ public class FieldSizeFragment extends BaseStepFragment {
         final TextView dialogTitle = dialog.findViewById(R.id.dialogTitle);
         final EditText et_post = dialog.findViewById(R.id.et_post);
 
-        et_post.setText(myFieldSize);
+        if (isExactArea && myFieldSize != null) {
+            et_post.setText(myFieldSize);
+        }
         dialogTitle.setText(titleMessage);
 
-        dialog.findViewById(R.id.bt_cancel).setOnClickListener(v -> dialog.dismiss());
+        dialog.findViewById(R.id.bt_cancel).setOnClickListener(v -> {
+            dialog.dismiss();
+            rdgFieldArea.clearCheck();
+            areaSize = -1;
+            isExactArea = false;
+        });
 
         dialog.findViewById(R.id.bt_submit).setOnClickListener(v -> {
             myFieldSize = et_post.getText().toString().trim();
-            if (Strings.isEmptyOrWhitespace(myFieldSize)) {
+            if (myFieldSize.isEmpty()) {
                 String prompt = context.getString(R.string.lbl_field_size_prompt, displayAreaUnit);
                 Toast.makeText(context, prompt, Toast.LENGTH_SHORT).show();
             } else {
@@ -273,6 +277,7 @@ public class FieldSizeFragment extends BaseStepFragment {
                 dialog.dismiss();
                 setExactAreaText(areaSize, displayAreaUnit);
                 saveFieldSize(areaSize);
+                specifiedArea.setVisibility(View.VISIBLE);
             }
         });
 
@@ -282,8 +287,7 @@ public class FieldSizeFragment extends BaseStepFragment {
 
     private void saveFieldSize(double convertedAreaSize) {
         fieldSizeRadioIndex = rdgFieldArea.getCheckedRadioButtonId();
-        dataIsValid = convertedAreaSize > 0;
-        if (!dataIsValid) {
+        if (convertedAreaSize <= 0) {
             showCustomWarningDialog(context.getString(R.string.lbl_field_size_prompt, displayAreaUnit), context.getString(R.string.lbl_field_size_prompt, displayAreaUnit));
             return;
         }
@@ -305,19 +309,17 @@ public class FieldSizeFragment extends BaseStepFragment {
             mandatoryInfo = database.mandatoryInfoDao().findOne();
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
         }
     }
 
     @Nullable
     @Override
     public VerificationError verifyStep() {
-        if (!dataIsValid) {
-            errorMessage = context.getString(R.string.lbl_field_size_prompt, displayAreaUnit);
-            return new VerificationError(errorMessage);
+        if (!(areaSize <= 0)) {
+            return null;
         }
-        return null;
+        errorMessage = context.getString(R.string.lbl_field_size_prompt, displayAreaUnit);
+        return new VerificationError(errorMessage);
     }
 
     @Override

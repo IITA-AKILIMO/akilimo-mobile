@@ -36,7 +36,7 @@
     <string name="lbl_acre">are</string>
     <string name="lbl_ha">ha</string>
     <string name="lbl_cassava_field_size_no_ph">Ubuso bw\'umurima wawe w\'imyumbati bungana iki?</string>
-    <string name="lbl_cassava_field_size">Ni ubuhe buso bw\'umurima wawe w\'imyumbati muri `%1$s`</string>
+    <string name="lbl_cassava_field_size">Ni ubuhe buso bw\'umurima wawe w\'imyumbati (muri %1$s)?</string>
     <!--  acres  -->
     <string name="quarter_acre">Hafi ya are 0,25</string>
     <string name="half_acre">Hafi ya are 0.5</string>

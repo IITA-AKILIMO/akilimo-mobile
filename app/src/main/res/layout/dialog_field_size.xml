@@ -15,11 +15,10 @@
 
         <TextView
             android:id="@+id/dialogTitle"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/lbl_cassava_field_size"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/grey_90"
             android:textStyle="bold" />
 
 
@@ -27,7 +26,7 @@
             android:id="@+id/et_post"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/grey_3"
+            android:layout_marginTop="@dimen/spacing_medium"
             android:hint="@string/lbl_enter_your_field_size"
             android:inputType="numberDecimal"
             android:padding="@dimen/spacing_middle" />
