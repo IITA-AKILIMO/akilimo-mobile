@@ -2,6 +2,75 @@
 ## [Unreleased]
 
 
+<a name="22.0.0"></a>
+## [22.0.0] - 2023-05-18
+### Bug Fixes
+- revised reference to removed layout element
+- renamed invalid preference key
+- added fix for selecting radiobutton for investment preference
+- fixed ivalid export declaration
+- added proper context for getting string resource
+- updated email validation logic
+
+### Code Refactoring
+- removed the image tint color
+- revised layout of first two view in wizard
+- renamed fragment to match view name
+- refactore layout container for checkboxes
+- revised field size fragment
+- removed bckground color in root layout
+- added translations for tz and rwanda
+- renamed text for investment preference fragment
+- renamed prefernece Never to rarely
+- renamed RiskAttFragment to InvestmentPrefFragment
+- switched famr name summary
+- revised stepper adapter
+- revised english instruction text for location selection
+- revised field location heading title
+- optimized conditions for string checks in order to assign boolean flags
+- re-ordered sumary page items
+- updated string translations
+- removed all instances of fontfamily declaration
+- revised font styling and padding
+- removed extraneous padding for text views and layout
+- updated wording
+- revised country selection picker
+- revised data validation and default selection
+- changed wording to revised version
+
+### Continuous integration changes
+- disabled pr createor for beta releases
+
+### Features
+- redesigned layout for tillage operations
+- added option to skipp investment preference
+- added skip logic for areaunit fragment in the step wizard
+- added data deletion condition for profile info and mandatory infor tables
+- revised areunit fragment
+- revised planting date fragment layout
+- refactore logic for investment preference
+- added new translations
+- revised ui layout for investment preferences fragment
+- added info on farm name
+- added verification of country location
+- revised country location verification and validation
+- redesigned fam location screen
+- added reverse geocode logic
+- updated location evaluation
+- updated country validation
+- revised texts and layouts
+- updated summary text processing
+- updated string translations
+
+### BREAKING CHANGE
+
+
+
+investment profile refactoring
+
+
+
+
 <a name="21.5.0"></a>
 ## [21.5.0] - 2023-04-12
 ### Code Refactoring
@@ -67,11 +136,11 @@
 - added new layout
 
 
-<a name="21.3.1"></a>
-## [21.3.1] - 2022-04-07
-
 <a name="21.3.1-beta"></a>
 ## [21.3.1-beta] - 2022-04-07
+
+<a name="21.3.1"></a>
+## [21.3.1] - 2022-04-07
 ### Bug Fixes
 - invalid min and maximum price
 
@@ -604,15 +673,16 @@ T
 <a name="v4.1.2"></a>
 ## v4.1.2 - 2019-10-15
 
-[Unreleased]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/21.5.0...HEAD
+[Unreleased]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/22.0.0...HEAD
+[22.0.0]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/21.5.0...22.0.0
 [21.5.0]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/21.4.4...21.5.0
 [21.4.4]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/21.4.3...21.4.4
 [21.4.3]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/21.4.2...21.4.3
 [21.4.2]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/21.4.1...21.4.2
 [21.4.1]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/21.4.0...21.4.1
-[21.4.0]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/21.3.1...21.4.0
-[21.3.1]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/21.3.1-beta...21.3.1
-[21.3.1-beta]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/21.3.0...21.3.1-beta
+[21.4.0]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/21.3.1-beta...21.4.0
+[21.3.1-beta]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/21.3.1...21.3.1-beta
+[21.3.1]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/21.3.0...21.3.1
 [21.3.0]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/21.2.4...21.3.0
 [21.2.4]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/21.2.3...21.2.4
 [21.2.3]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/21.2.2...21.2.3
