@@ -48,30 +48,34 @@ class SplashActivity : BaseActivity() {
                 val db = getDatabase(this)
                 if (db != null) {
                     with(db) {
-                        if (sessionManager.getRememberUserInfo()) {
-                            adviceStatusDao().deleteAll()
-                            cassavaMarketDao().deleteAll()
-                            cassavaPriceDao().deleteAll()
-                            currencyDao().deleteAll()
-                            currentPracticeDao().deleteAll()
-                            fertilizerDao().deleteAll()
-                            fertilizerPriceDao().deleteAll()
-                            fieldOperationCostDao().deleteAll()
-                            fieldYieldDao().deleteAll()
-                            investmentAmountDao().deleteAll()
-                            investmentAmountDtoDao().deleteAll()
-                            locationInfoDao().deleteAll()
-                            maizeMarketDao().deleteAll()
-                            maizePerformanceDao().deleteAll()
-                            maizePriceDao().deleteAll()
-                            mandatoryInfoDao().deleteAll()
-                            potatoMarketDao().deleteAll()
-//                        profileInfoDao().deleteAll()
-                            scheduleDateDao().deleteAll()
-                            starchFactoryDao().deleteAll()
-                        } else {
-                            clearAllTables()
+
+                        if (!sessionManager.rememberUserInfo) {
+                            profileInfoDao().deleteAll()
                         }
+
+                        if (!sessionManager.rememberAreaUnit) {
+                            mandatoryInfoDao().deleteAll()
+                        }
+
+                        adviceStatusDao().deleteAll()
+                        cassavaMarketDao().deleteAll()
+                        cassavaPriceDao().deleteAll()
+                        currencyDao().deleteAll()
+                        currentPracticeDao().deleteAll()
+                        fertilizerDao().deleteAll()
+                        fertilizerPriceDao().deleteAll()
+                        fieldOperationCostDao().deleteAll()
+                        fieldYieldDao().deleteAll()
+                        investmentAmountDao().deleteAll()
+                        investmentAmountDtoDao().deleteAll()
+                        locationInfoDao().deleteAll()
+                        maizeMarketDao().deleteAll()
+                        maizePerformanceDao().deleteAll()
+                        maizePriceDao().deleteAll()
+                        potatoMarketDao().deleteAll()
+                        scheduleDateDao().deleteAll()
+                        starchFactoryDao().deleteAll()
+
                     }
                 }
             }

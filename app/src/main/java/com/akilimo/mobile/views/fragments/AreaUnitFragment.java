@@ -4,7 +4,6 @@ package com.akilimo.mobile.views.fragments;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import androidx.fragment.app.Fragment;
 
 import com.akilimo.mobile.entities.ProfileInfo;
 import com.akilimo.mobile.utils.enums.EnumCountry;
-import com.crashlytics.android.Crashlytics;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.databinding.FragmentAreaUnitBinding;
 import com.akilimo.mobile.entities.MandatoryInfo;
@@ -116,13 +114,13 @@ public class AreaUnitFragment extends BaseStepFragment {
 
         binding.chkRememberDetails.setOnCheckedChangeListener((compoundButton, rememberInfo) -> {
             rememberPreference = rememberInfo;
-            sessionManager.setRememberAreUnit(rememberInfo);
+            sessionManager.setRememberAreaUnit(rememberInfo);
         });
     }
 
     public void refreshData() {
         try {
-            rememberPreference = sessionManager.getRememberAreUnit();
+            rememberPreference = sessionManager.getRememberAreaUnit();
             mandatoryInfo = database.mandatoryInfoDao().findOne();
             RadioButton rdAre = binding.rdAre;
             ProfileInfo profileInfo = database.profileInfoDao().findOne();
