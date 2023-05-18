@@ -43,7 +43,6 @@
         android:layout_marginTop="@dimen/spacing_large"
         android:text="@string/welcome_instructions"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textColor="@color/grey_60"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title" />
