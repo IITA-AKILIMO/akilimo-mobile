@@ -1,71 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/lyt_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey_5"
     android:padding="@dimen/spacing_medium"
     tools:context="com.akilimo.mobile.views.fragments.TillageOperationFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="wrap_content"
+        android:layout_height="250dp"
+        android:layout_marginTop="@dimen/spacing_xxxlarge"
+        android:contentDescription="@string/app_name"
+        android:padding="@dimen/spacing_xlarge"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_land_practices" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center_horizontal"
+        android:layout_marginTop="@dimen/spacing_large"
+        android:text="@string/lbl_which_of_these_tillage_operations_do_you_perform"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/akilimoDarkGreen"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image" />
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_xxxlarge"
         android:orientation="vertical"
-        android:paddingBottom="?attr/actionBarSize">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title">
 
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="wrap_content"
-            android:layout_height="210dp"
-            android:contentDescription="@string/app_name"
-            android:padding="@dimen/spacing_xlarge"
-            app:srcCompat="@drawable/ic_land_practices" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/title"
+        <CheckBox
+            android:id="@+id/chkPloughing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_large"
+            android:text="@string/lbl_ploughing" />
 
-            android:text="@string/lbl_which_of_these_tillage_operations_do_you_perform"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textColor="@color/akilimoDarkGreen"
-            android:textStyle="bold" />
-
-        <!-- ploughing cards -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/ploughingCard"
-            android:layout_width="match_parent"
+        <CheckBox
+            android:id="@+id/chkRidging"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="3dp"
-            app:cardElevation="2dp">
+            android:text="@string/lbl_ridging" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <CheckBox
-                    android:id="@+id/chkPloughing"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_medium"
-                    android:text="@string/lbl_ploughing" />
-
-                <CheckBox
-                    android:id="@+id/chkRidging"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_medium"
-                    android:text="@string/lbl_ridging" />
-            </LinearLayout>
-
-
-        </androidx.cardview.widget.CardView>
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

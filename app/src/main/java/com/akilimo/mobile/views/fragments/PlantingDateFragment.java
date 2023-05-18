@@ -18,10 +18,10 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.FragmentManager;
 
+import com.akilimo.mobile.databinding.FragmentPlantingHarvestDateBinding;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.util.Strings;
 import com.akilimo.mobile.R;
-import com.akilimo.mobile.databinding.FragmentCurrentPracticeBinding;
 import com.akilimo.mobile.entities.ScheduledDate;
 import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.utils.DateHelper;
@@ -41,7 +41,7 @@ public class PlantingDateFragment extends BaseStepFragment {
     AppCompatButton btnPickPlantingDate;
     AppCompatButton btnPickHarvestDate;
 
-    FragmentCurrentPracticeBinding binding;
+    FragmentPlantingHarvestDateBinding binding;
 
 
     private String selectedPlantingDate;
@@ -72,7 +72,7 @@ public class PlantingDateFragment extends BaseStepFragment {
 
     @Override
     protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentCurrentPracticeBinding.inflate(inflater, container, false);
+        binding = FragmentPlantingHarvestDateBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -126,7 +126,6 @@ public class PlantingDateFragment extends BaseStepFragment {
             Crashlytics.logException(ex);
         }
     }
-
 
 
     @Override
