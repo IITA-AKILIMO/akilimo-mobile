@@ -21,7 +21,8 @@
     <string name="title_activity_maize_performance">Maize performance</string>
     <string name="title_activity_farm_location">Field location</string>
     <string name="title_tillage_operations">Basic management operations</string>
-    <string name="title_planting_harvest">Planting and harvest dates</string>
+    <string name="title_planting_harvest">When do you plant and harvest?</string>
+    <string name="title_planting_harvest_subtitle">Please let us know when you have planted (or will plant) and when you intend to harvest. We use this to provide advice that considers the typical weather during the growth of your crop</string>
     <string name="title_manual_tillage_cost">Manual tillage costs</string>
     <string name="title_weed_control">Weed operations</string>
     <string name="title_maize_intercropping">Intercropping with maize</string>
