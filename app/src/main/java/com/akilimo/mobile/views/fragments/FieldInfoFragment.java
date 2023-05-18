@@ -17,6 +17,7 @@ import com.stepstone.stepper.VerificationError;
 /**
  * A simple {@link Fragment} subclass.
  */
+@Deprecated
 public class FieldInfoFragment extends BaseStepFragment {
 
     FragmentFieldInfoBinding binding;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/lyt_parent"
@@ -9,64 +9,87 @@
     tools:context=".views.fragments.AreaUnitFragment">
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="wrap_content"
+        android:layout_height="250dp"
+        android:layout_marginTop="@dimen/spacing_mxlarge"
+        android:contentDescription="@string/app_name"
+        android:padding="@dimen/spacing_small"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_young_cassava" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:paddingBottom="?attr/actionBarSize">
+        android:layout_marginTop="@dimen/spacing_large"
+        android:text="@string/lbl_area_unit"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/akilimoDarkGreen"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image" />
 
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="wrap_content"
-            android:layout_height="250dp"
-            android:contentDescription="@string/app_name"
-            android:padding="@dimen/spacing_xlarge"
-            app:srcCompat="@drawable/ic_young_cassava" />
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_large"
+        android:lineSpacingExtra="@dimen/dimen_5"
+        android:text="@string/lbl_area_unit_subtitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 
-        <TextView
-            android:id="@+id/title"
+    <RadioGroup
+        android:id="@+id/rdgAreaUnit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_xlarge"
+        android:padding="@dimen/spacing_medium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/subtitle">
+
+        <RadioButton
+            android:id="@+id/rdAcre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/lbl_area_unit"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/akilimoDarkGreen"
-            android:textStyle="bold" />
+            android:text="@string/area_unit_acre" />
 
-        <RadioGroup
-            android:id="@+id/rdgAreaUnit"
+        <RadioButton
+            android:id="@+id/rdHa"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_small"
-            android:padding="@dimen/spacing_medium">
+            android:text="@string/area_unit_ha" />
 
-            <RadioButton
-                android:id="@+id/rdAcre"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/area_unit_acre" />
+        <RadioButton
+            android:id="@+id/rdAre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/area_unit_are"
+            android:visibility="gone" />
 
-            <RadioButton
-                android:id="@+id/rdHa"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/area_unit_ha" />
+        <RadioButton
+            android:id="@+id/rdSqm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/area_unit_square_meter"
+            android:visibility="gone" />
+    </RadioGroup>
 
-            <RadioButton
-                android:id="@+id/rdAre"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/area_unit_are"
-                android:visibility="gone" />
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/chkRememberDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Remember my preference and skip next time"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rdgAreaUnit" />
 
-            <RadioButton
-                android:id="@+id/rdSqm"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/area_unit_square_meter"
-                android:visibility="gone" />
-        </RadioGroup>
-
-    </LinearLayout>
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

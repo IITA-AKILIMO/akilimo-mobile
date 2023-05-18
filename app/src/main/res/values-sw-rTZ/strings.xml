@@ -432,4 +432,5 @@
     <string name="lbl_no_factories">Viwanda vya wanga havipatikani</string>
     <string name="lbl_no_factories_text">Viwanda vya wanga havipatikani kwa %1s</string>
     <string name="lbl_investment_pref_sub">Ili kukupa ushauri unaofaa kulingana na mapendekezo yako ya uwekezaji, tunauliza mara ngapi unawekeza katika bidhaa mpya za kilimo au teknolojia. Ikiwa unawekeza mara kwa mara, tutakupa mapendekezo ya hatari kubwa na faida kubwa. Ikiwa unapendelea chaguo salama zaidi, tafadhali eleza kwamba unawekeza mara chache tu.</string>
+    <string name="lbl_area_unit_subtitle">Ili kupata matokeo bora, tafadhali toa kipimo sahihi cha ukubwa wa shamba lako. Ikiwa hauko uhakika na kipimo halisi, unaweza kupakua programu kutoka Goole PlayStore, kwa mfano \"GPS Fields Area Measure.\" Programu hii inaweza kukusaidia kujua ukubwa wa shamba lako kwa kutembea kwenye mipaka yake au kwa kuweka alama kutimia mikono.</string>
 </resources>

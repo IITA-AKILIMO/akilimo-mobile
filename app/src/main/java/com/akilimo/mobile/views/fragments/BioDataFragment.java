@@ -19,15 +19,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.common.util.Strings;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.hbb20.CountryCodePicker;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.databinding.FragmentBioDataBinding;
 import com.akilimo.mobile.entities.ProfileInfo;
 import com.akilimo.mobile.inherit.BaseStepFragment;
-import com.akilimo.mobile.interfaces.IFragmentCallBack;
 import com.akilimo.mobile.utils.ValidationHelper;
 import com.stepstone.stepper.VerificationError;
 
@@ -168,7 +165,7 @@ public class BioDataFragment extends BaseStepFragment {
         try {
 
             profileInfo = database.profileInfoDao().findOne();
-            rememberUserInfo = sessionManager.userInfoRemembered();
+            rememberUserInfo = sessionManager.getRememberUserInfo();
             if (profileInfo != null) {
                 firstName = profileInfo.getFirstName();
                 lastName = profileInfo.getLastName();
