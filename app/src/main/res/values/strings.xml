@@ -60,8 +60,8 @@
     <string name="lbl_ha">ha</string>
     <string name="lbl_are">are</string>
 
-    <string name="lbl_cassava_field_size_no_ph">What is the size of your cassava field?</string>
-    <string name="lbl_cassava_field_size">What is the size of your cassava field in `%1$s`</string>
+    <string name="lbl_cassava_field_size_no_ph">What is the size of your field?</string>
+    <string name="lbl_cassava_field_size">What is the size of your field (in %1$s)?</string>
     <!-- acres -->
     <string name="quarter_acre">About 0.25 acre</string>
     <string name="half_acre">About 0.5 acre</string>
@@ -69,7 +69,7 @@
     <string name="one_half_acre">About 1.5 acre</string>
     <string name="two_half_acres">About 2.5 acre</string>
     <string name="five_acres">About 5 acre</string>
-    <string name="exact_field_area">Specify the exact area of my field.</string>
+    <string name="exact_field_area">Specify the exact area of your field.</string>
 
     <!-- ha -->
     <string name="quarter_acre_to_ha">About 0.1 ha</string>
