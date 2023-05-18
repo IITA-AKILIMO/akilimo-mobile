@@ -86,7 +86,7 @@
         android:id="@+id/chkRememberDetails"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Remember my preference and skip next time"
+        android:text="@string/lbl_remember_pref"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

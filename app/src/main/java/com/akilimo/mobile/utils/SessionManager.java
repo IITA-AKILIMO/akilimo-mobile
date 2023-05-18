@@ -245,4 +245,12 @@ public class SessionManager {
     }
 
 
+    public void setRememberInvestmentPref(boolean rememberInvestmentPref) {
+        editor.putBoolean("rememberInvestmentPref", rememberInvestmentPref);
+        editor.commit();
+    }
+
+    public boolean getRememberInvestmentPref() {
+        return pref.getBoolean("rememberInvestmentPref", false);
+    }
 }

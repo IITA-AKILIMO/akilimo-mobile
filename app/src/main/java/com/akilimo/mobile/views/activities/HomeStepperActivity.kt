@@ -168,7 +168,9 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         fragmentArray.add(PlantingDateFragment.newInstance())
 
         fragmentArray.add(TillageOperationFragment.newInstance())
-        fragmentArray.add(InvestmentPrefFragment.newInstance())
+        if(!sessionManager.getRememberInvestmentPref()) {
+            fragmentArray.add(InvestmentPrefFragment.newInstance())
+        }
         fragmentArray.add(SummaryFragment.newInstance())
     }
 

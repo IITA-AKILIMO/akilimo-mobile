@@ -35,6 +35,7 @@ public class InvestmentPrefFragment extends BaseStepFragment {
     private int riskRadioIndex = -1;
 
     private String[] investmentPreference = null;
+    private boolean rememberInvestmentPref = false;
 
     public InvestmentPrefFragment() {
         // Required empty public constructor
@@ -88,6 +89,11 @@ public class InvestmentPrefFragment extends BaseStepFragment {
             }
             riskName = investmentPreference[riskAtt];
             updateInvestmentPref(riskAtt, radioButton.getId());
+        });
+
+        binding.chkRememberDetails.setOnCheckedChangeListener((compoundButton, rememberInfo) -> {
+            rememberInvestmentPref = rememberInfo;
+            sessionManager.setRememberInvestmentPref(rememberInvestmentPref);
         });
     }
 
