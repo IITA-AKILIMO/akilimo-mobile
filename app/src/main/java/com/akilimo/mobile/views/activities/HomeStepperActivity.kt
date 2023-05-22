@@ -154,7 +154,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
         fragmentArray.add(WelcomeFragment.newInstance())
         fragmentArray.add(InfoFragment.newInstance())
-        if (!sessionManager.termsAccepted()) {
+        if (!sessionManager.getTermsAccepted()) {
             fragmentArray.add(PrivacyStatementFragment.newInstance())
         }
         fragmentArray.add(BioDataFragment.newInstance())

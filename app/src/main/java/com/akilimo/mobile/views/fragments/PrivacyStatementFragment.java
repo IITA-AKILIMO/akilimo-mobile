@@ -24,12 +24,11 @@ import com.stepstone.stepper.VerificationError;
 
 /**
  * A simple {@link Fragment} subclass.
- * https://app-privacy-policy-generator.firebaseapp.com/#
+ * <a href="https://app-privacy-policy-generator.firebaseapp.com/#">...</a>
  */
 public class PrivacyStatementFragment extends BaseStepFragment {
 
     FragmentPrivacyStatementBinding binding;
-    private boolean policyAccepted;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -83,7 +82,9 @@ public class PrivacyStatementFragment extends BaseStepFragment {
         webSettings.setGeolocationEnabled(true);
 
 
-        binding.chkAgreeToTerms.setOnCheckedChangeListener((compoundButton, checked) -> policyAccepted = checked);
+        binding.chkAgreeToTerms.setOnCheckedChangeListener((compoundButton, checked) -> {
+            sessionManager.setTermsAccepted(checked);
+        });
     }
 
     @Override
@@ -96,8 +97,7 @@ public class PrivacyStatementFragment extends BaseStepFragment {
     @Nullable
     @Override
     public VerificationError verifyStep() {
-        sessionManager.setTermsAccepted(policyAccepted);
-        if (policyAccepted) {
+        if (sessionManager.getTermsAccepted()) {
             //save to session and skip in future startup
             return null;
         }

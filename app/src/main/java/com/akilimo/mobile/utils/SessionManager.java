@@ -175,7 +175,7 @@ public class SessionManager {
         editor.commit();
     }
 
-    public boolean termsAccepted() {
+    public boolean getTermsAccepted() {
         return pref.getBoolean("termsAccepted", false);
     }
 
