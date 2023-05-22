@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.akilimo.mobile.R;
 import com.akilimo.mobile.databinding.FragmentInfoBinding;
 import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.stepstone.stepper.VerificationError;
@@ -42,9 +43,22 @@ public class InfoFragment extends BaseStepFragment {
     }
 
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        binding.chkAgreeToDisclaimer.setOnCheckedChangeListener((compoundButton, checked) -> {
+            sessionManager.setDisclaimerRead(checked);
+        });
+
+    }
+
     @Nullable
     @Override
     public VerificationError verifyStep() {
+        if (!sessionManager.getDisclaimerRead()) {
+            return new VerificationError(getString(R.string.lbl_agree_to_disclaimer));
+        }
         return null;
     }
 

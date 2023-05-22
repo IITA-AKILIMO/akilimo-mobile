@@ -253,4 +253,13 @@ public class SessionManager {
     public boolean getRememberInvestmentPref() {
         return pref.getBoolean("rememberInvestmentPref", false);
     }
+
+    public void setDisclaimerRead(boolean disclaimerRead) {
+        editor.putBoolean("disclaimerRead", disclaimerRead);
+        editor.commit();
+    }
+
+    public boolean getDisclaimerRead() {
+        return pref.getBoolean("disclaimerRead", false);
+    }
 }
