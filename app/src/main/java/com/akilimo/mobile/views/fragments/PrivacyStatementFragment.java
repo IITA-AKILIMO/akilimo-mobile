@@ -28,9 +28,6 @@ import com.stepstone.stepper.VerificationError;
  */
 public class PrivacyStatementFragment extends BaseStepFragment {
 
-
-    WebView webView;
-    AppCompatCheckBox chkAgreeToTerms;
     FragmentPrivacyStatementBinding binding;
     private boolean policyAccepted;
 
@@ -60,20 +57,20 @@ public class PrivacyStatementFragment extends BaseStepFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        webView = binding.webView;
+
         if (sessionManager != null) {
             sessionManager = new SessionManager(context);
         }
 
         WebView.setWebContentsDebuggingEnabled(false);
-        webView.setWebChromeClient(new WebChromeClient());
-        webView.setScrollContainer(true);
-        webView.setVerticalScrollBarEnabled(false);
-        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        webView.setHorizontalScrollBarEnabled(false);
-        webView.setWebChromeClient(new WebChromeClient());
+        binding.webView.setWebChromeClient(new WebChromeClient());
+        binding.webView.setScrollContainer(true);
+        binding.webView.setVerticalScrollBarEnabled(false);
+        binding.webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+        binding.webView.setHorizontalScrollBarEnabled(false);
+        binding.webView.setWebChromeClient(new WebChromeClient());
 
-        WebSettings webSettings = webView.getSettings();
+        WebSettings webSettings = binding.webView.getSettings();
 
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
@@ -86,14 +83,13 @@ public class PrivacyStatementFragment extends BaseStepFragment {
         webSettings.setGeolocationEnabled(true);
 
 
-        chkAgreeToTerms = binding.chkAgreeToTerms;
-        chkAgreeToTerms.setOnCheckedChangeListener((compoundButton, checked) -> policyAccepted = checked);
+        binding.chkAgreeToTerms.setOnCheckedChangeListener((compoundButton, checked) -> policyAccepted = checked);
     }
 
     @Override
     public void onSelected() {
         String termsLink = sessionManager.getTermsLink();
-        webView.loadUrl(termsLink);
+        binding.webView.loadUrl(termsLink);
     }
 
 
