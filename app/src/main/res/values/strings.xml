@@ -9,7 +9,8 @@
     <string name="welcome_title">Are you growing cassava? And looking to become a pro? AKILIMO can help you!</string>
     <string name="welcome_instructions">Whether you need fertilizer recommendations, planting schemes, or advice on tillage, weeding and intercropping,we’ve got you covered.\n\nAKILIMO will help you increase yield and maximise profit in your cassava farm. Let’s get started!</string>
     <string name="important_instructions_title">IMPORTANT INFORMATION</string>
-    <string name="important_instructions">All AKILIMO recommendations are based on the <b>correctness</b> of your location, the size of your field and your prices.\n\nFor example, overly optimistic field size results in unnecessary cost and loss because the required investment will be overestimated.\n\nOn the other hand if your estimated field size is much less than in reality this leads to an underestimation of your yield and you may lose an opportunity to make profit from your field.</string>
+    <string name="important_instructions">Please note that the advice provided by AKILIMO is intended to provide helpful guidance only, and does not offer any guarantees. Success in any endeavour depends on a range of factors outside of our control, including user behaviour, how the advice is implemented and external circumstances. Therefore, we encourage you to use our app as a tool to inform your decisions, but always to exercise your best judgment and seek additional advice as needed.</string>
+    <string name="important_instructions_b">The AKILIMO app collects essential information such as your location, field size and planting date to provide customised recommendations. To ensure the best results, please enter accurate and complete information. Properly measuring your field size is crucial to avoid underestimating the resources required to achieve optimal yields and maximize profits. Inaccurate measurements may result in unnecessary expenses and will impact your returns.</string>
 
     <string name="title_activity_fertilizer_choice">Available fertilizers</string>
     <string name="title_activity_fertilizer_rec">Fertilizer recommendations</string>
@@ -506,6 +507,7 @@
     <string name="lbl_already_planted_title">Already planted</string>
     <string name="lbl_already_planted_text">It appears you have already planted, so you cannot set the flexibility</string>
     <string name="lbl_agree_to_terms">I accept the terms and conditions of the application</string>
+    <string name="lbl_agree_to_disclaimer">Please confirm you have read and understood this disclaimer.</string>
     <string name="lbl_accept_terms_prompt">Accept the terms and conditions before proceeding</string>
     <string name="lbl_restart_app_prompt">Restart the app in order to apply translations to the navigation buttons?</string>
     <string name="lbl_optional">(Optional)</string>

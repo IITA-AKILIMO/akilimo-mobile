@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/lbl_agree_to_terms"
-            android:textSize="12sp" />
+            android:textSize="@dimen/font_size_12" />
 
     </RelativeLayout>
 

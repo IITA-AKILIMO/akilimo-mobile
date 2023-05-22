@@ -175,7 +175,7 @@ public class SessionManager {
         editor.commit();
     }
 
-    public boolean termsAccepted() {
+    public boolean getTermsAccepted() {
         return pref.getBoolean("termsAccepted", false);
     }
 
@@ -252,5 +252,14 @@ public class SessionManager {
 
     public boolean getRememberInvestmentPref() {
         return pref.getBoolean("rememberInvestmentPref", false);
+    }
+
+    public void setDisclaimerRead(boolean disclaimerRead) {
+        editor.putBoolean("disclaimerRead", disclaimerRead);
+        editor.commit();
+    }
+
+    public boolean getDisclaimerRead() {
+        return pref.getBoolean("disclaimerRead", false);
     }
 }
