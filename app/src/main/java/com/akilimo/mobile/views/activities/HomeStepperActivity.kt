@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -53,6 +54,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
     private val configListDict = HashMap<String, String>()
 
     private var exit: Boolean = false
+    private var stepperReduction = 0;
 
     @Deprecated("Deprecated in Java")
     override fun onAttachFragment(fragment: Fragment) {
@@ -153,23 +155,28 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
 
         fragmentArray.add(WelcomeFragment.newInstance())
-        fragmentArray.add(InfoFragment.newInstance())
-        if (!sessionManager.getTermsAccepted()) {
+        if (!sessionManager.disclaimerRead) {
+            fragmentArray.add(InfoFragment.newInstance())
+            stepperReduction++
+        }
+        if (!sessionManager.termsAccepted) {
             fragmentArray.add(PrivacyStatementFragment.newInstance())
+            stepperReduction++
         }
         fragmentArray.add(BioDataFragment.newInstance())
         fragmentArray.add(CountryFragment.newInstance())
         fragmentArray.add(LocationFragment.newInstance())
-//        fragmentArray.add(FieldInfoFragment.newInstance()) //Todo redundant
         if (!sessionManager.rememberAreaUnit) {
             fragmentArray.add(AreaUnitFragment.newInstance())
+            stepperReduction++
         }
         fragmentArray.add(FieldSizeFragment.newInstance())
         fragmentArray.add(PlantingDateFragment.newInstance())
 
         fragmentArray.add(TillageOperationFragment.newInstance())
-        if(!sessionManager.getRememberInvestmentPref()) {
+        if (!sessionManager.rememberInvestmentPref) {
             fragmentArray.add(InvestmentPrefFragment.newInstance())
+            stepperReduction++
         }
         fragmentArray.add(SummaryFragment.newInstance())
     }
@@ -197,16 +204,6 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
                 if (newStepPosition == 0) {
                     sessionManager.setForward(true)
                     appUpdater.start()
-                } else if (newStepPosition == 10) {
-                    if (sessionManager.country.equals(EnumCountry.Ghana.countryCode())) {
-                        if (sessionManager.goForward()) {
-                            mStepperLayout.currentStepPosition = 11
-                            sessionManager.setForward(false)
-                        } else {
-                            mStepperLayout.currentStepPosition = 9
-                            sessionManager.setForward(true)
-                        }
-                    }
                 } else {
                     appUpdater.stop()
                 }
@@ -231,11 +228,6 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         throw UnsupportedOperationException()
     }
 
-    @Suppress("RedundantOverride")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
     override fun onBackPressed() {
         try {
             if (exit) {
@@ -247,18 +239,17 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
                     this, getString(R.string.lbl_exit_tip), Toast.LENGTH_SHORT
                 ).show()
                 exit = true
-                Handler().postDelayed({ exit = false }, (3 * 1000).toLong())
+                Thread(Runnable {
+                    Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                        exit = false
+                    }, 3 * 1000)
+                }).start()
             }
         } catch (ex: Exception) {
             Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
-            Crashlytics.log(
-                Log.ERROR, LOG_TAG, ex.message
-            )
-            Crashlytics.logException(ex)
         }
     }
 
     override fun reloadView() {
-
     }
 }
