@@ -117,7 +117,7 @@ class MySurveyActivity : BaseActivity() {
             override fun onSuccessJsonObject(jsonObject: JSONObject) {
             }
 
-            override fun onError(volleyError: VolleyError) {
+            override fun onError( ex: VolleyError) {
             }
         })
     }

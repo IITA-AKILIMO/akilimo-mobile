@@ -36,6 +36,8 @@ import com.akilimo.mobile.views.activities.SweetPotatoMarketActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.sentry.Sentry;
+
 public class InterCropRecActivity extends BaseActivity {
 
     RecyclerView recyclerView;
@@ -144,7 +146,7 @@ public class InterCropRecActivity extends BaseActivity {
                 processRecommendations(activity);
             } catch (Exception ex) {
                 Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                //TODO  send this to third party logs tracker
+                Sentry.captureException(ex);
             }
 
         });

@@ -35,7 +35,7 @@ import com.akilimo.mobile.widget.SpacingItemDecoration;
 import java.util.ArrayList;
 import java.util.List;
 
-;
+;import io.sentry.Sentry;
 
 public class RootYieldActivity extends BaseActivity {
 
@@ -173,9 +173,8 @@ public class RootYieldActivity extends BaseActivity {
                     rootYieldDialogFragment.show(getSupportFragmentManager(), RootYieldDialogFragment.ARG_ITEM_ID);
                 }
 
-//                Toast.makeText(context, yieldAmountLabel, Toast.LENGTH_SHORT).show();
             } catch (Exception ex) {
-                //TODO  send this to third party logs tracker
+                Sentry.captureException(ex);
             }
 
         });

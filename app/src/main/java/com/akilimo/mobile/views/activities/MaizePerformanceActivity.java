@@ -31,6 +31,8 @@ import com.akilimo.mobile.widget.SpacingItemDecoration;
 ;import java.util.ArrayList;
 import java.util.List;
 
+import io.sentry.Sentry;
+
 
 public class MaizePerformanceActivity extends BaseActivity {
     String activityTitle;
@@ -167,7 +169,7 @@ public class MaizePerformanceActivity extends BaseActivity {
                 }
 
             } catch (Exception ex) {
-                //TODO  send this to third party logs tracker
+                Sentry.captureException(ex);
             }
 
         });

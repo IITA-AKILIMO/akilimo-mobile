@@ -33,6 +33,7 @@ import java.util.Locale;
 import dev.b3nedikt.app_locale.AppLocale;
 import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
 import dev.b3nedikt.reword.Reword;
+import io.sentry.Sentry;
 
 @SuppressWarnings("WeakerAccess")
 public abstract class BaseStepFragment extends Fragment implements Step {
@@ -126,7 +127,7 @@ public abstract class BaseStepFragment extends Fragment implements Step {
             dialog.show();
             dialog.getWindow().setAttributes(layoutParams);
         } catch (Exception ex) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
     }
 

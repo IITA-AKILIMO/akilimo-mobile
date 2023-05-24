@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.mynameismidori.currencypicker.ExtendedCurrency;
 
+import io.sentry.Sentry;
+
 public class CurrencyCode {
 
     private static String LOG_TAG = CurrencyCode.class.getSimpleName();
@@ -14,7 +16,7 @@ public class CurrencyCode {
         try {
             return currency;
         } catch (Exception ex) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
         return null;
     }

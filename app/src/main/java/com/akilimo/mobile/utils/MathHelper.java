@@ -12,6 +12,8 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Locale;
 
+import io.sentry.Sentry;
+
 public class MathHelper {
     private static String TAG = MathHelper.class.getSimpleName();
     private double ngnRate = 360;
@@ -93,7 +95,7 @@ public class MathHelper {
                 joined = formatNumber(rate1, toCurrency);
             }
         } catch (Exception ex) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
         return joined;
     }
@@ -114,7 +116,7 @@ public class MathHelper {
                 data = String.format("%s %s %s %s", formattedNumber, currencySymbol, separator, selectedField);
             }
         } catch (Exception ex) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
         return data;
 
@@ -150,7 +152,7 @@ public class MathHelper {
                     break;
             }
         } catch (Exception ex) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
 
         return nearestSpecifiedValue > 0 ? roundToNearestSpecifiedValue(converted, nearestSpecifiedValue) : converted;
@@ -177,7 +179,7 @@ public class MathHelper {
                     return currencyToConvert;
             }
         } catch (Exception ex) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
 
         double convertedTemp = roundToNearestSpecifiedValue(converted, nearestSpecifiedValue);
@@ -216,7 +218,7 @@ public class MathHelper {
         try {
             fieldYieldAmount = convertToLocalCurrency(fieldYield, currency);
         } catch (Exception ex) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
         return fieldYieldAmount;
     }
@@ -226,7 +228,7 @@ public class MathHelper {
             try {
                 return Double.parseDouble(numberText.trim());
             } catch (Exception ex) {
-                //TODO  send this to third party logs tracker
+                Sentry.captureException(ex);
             }
         }
         return 0.0;

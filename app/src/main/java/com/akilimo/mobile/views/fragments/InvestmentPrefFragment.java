@@ -19,6 +19,8 @@ import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.utils.enums.EnumInvestmentPref;
 import com.stepstone.stepper.VerificationError;
 
+import io.sentry.Sentry;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link InvestmentPrefFragment#newInstance} factory method to
@@ -119,8 +121,8 @@ public class InvestmentPrefFragment extends BaseStepFragment {
                 }
             }
         } catch (Exception ex) {
-            //TODO add crash logging
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+            Sentry.captureException(ex);
         }
     }
 

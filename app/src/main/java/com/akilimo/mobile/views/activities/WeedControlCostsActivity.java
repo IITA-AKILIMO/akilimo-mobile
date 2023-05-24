@@ -29,6 +29,8 @@ import com.akilimo.mobile.utils.enums.EnumCountry;
 
 ;import java.util.Locale;
 
+import io.sentry.Sentry;
+
 
 public class WeedControlCostsActivity extends BaseActivity {
 
@@ -236,7 +238,7 @@ public class WeedControlCostsActivity extends BaseActivity {
             closeActivity(backPressed);
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
 
     }

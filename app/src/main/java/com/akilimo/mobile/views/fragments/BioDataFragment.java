@@ -31,6 +31,8 @@ import com.stepstone.stepper.VerificationError;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.sentry.Sentry;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -190,7 +192,7 @@ public class BioDataFragment extends BaseStepFragment {
             }
 
         } catch (Exception ex) {
-            //TODO  send this to third party logs tracker
+           Sentry.captureException(ex);
         }
     }
 
@@ -274,7 +276,7 @@ public class BioDataFragment extends BaseStepFragment {
             }
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            //TODO  send this to third party logs tracker
+           Sentry.captureException(ex);
         }
 
     }

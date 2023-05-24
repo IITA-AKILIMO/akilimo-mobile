@@ -31,7 +31,7 @@ import com.akilimo.mobile.views.activities.RootYieldActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-;
+;import io.sentry.Sentry;
 
 public class FertilizerRecActivity extends BaseActivity {
 
@@ -114,7 +114,7 @@ public class FertilizerRecActivity extends BaseActivity {
 
             } catch (Exception ex) {
                 Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                //TODO  send this to third party logs tracker
+                Sentry.captureException(ex);
             }
         });
         mAdapter.setOnItemClickListener((view, obj, position) -> {

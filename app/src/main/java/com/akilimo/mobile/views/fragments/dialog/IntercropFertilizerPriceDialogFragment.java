@@ -34,7 +34,7 @@ import com.mynameismidori.currencypicker.ExtendedCurrency;
 
 import java.util.List;
 
-;
+;import io.sentry.Sentry;
 
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
@@ -169,7 +169,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
                     bagPrice = Double.valueOf(editExactFertilizerPrice.getText().toString());
                 } catch (Exception ex) {
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    //TODO  send this to third party logs tracker
+                    Sentry.captureException(ex);
                 }
 
                 if (bagPrice <= 0 || bagPrice < minPrice || bagPrice > maxPrice) {
@@ -236,7 +236,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
                 exactPriceWrapper.setVisibility(View.VISIBLE);
             }
         } catch (Exception ex) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
     }
 

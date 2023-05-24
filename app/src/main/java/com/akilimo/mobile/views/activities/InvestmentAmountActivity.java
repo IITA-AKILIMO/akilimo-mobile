@@ -47,6 +47,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import io.sentry.Sentry;
+
 
 public class InvestmentAmountActivity extends BaseActivity {
 
@@ -185,7 +187,7 @@ public class InvestmentAmountActivity extends BaseActivity {
                 closeActivity(false);
             } catch (Exception ex) {
                 Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                //TODO  send this to third party logs tracker
+                Sentry.captureException(ex);
             }
         });
 
@@ -291,7 +293,7 @@ public class InvestmentAmountActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(@NotNull VolleyError volleyError) {
+            public void onError(@NotNull VolleyError ex) {
                 Toast.makeText(context, getString(R.string.lbl_investment_amount_load_error), Toast.LENGTH_LONG).show();
             }
         });

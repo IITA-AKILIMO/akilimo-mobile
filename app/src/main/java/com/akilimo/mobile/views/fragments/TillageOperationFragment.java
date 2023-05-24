@@ -24,6 +24,8 @@ import com.akilimo.mobile.utils.enums.EnumOperationType;
 import com.akilimo.mobile.views.fragments.dialog.OperationTypeDialogFragment;
 import com.stepstone.stepper.VerificationError;
 
+import io.sentry.Sentry;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link TillageOperationFragment#newInstance} factory method to
@@ -114,7 +116,7 @@ public class TillageOperationFragment extends BaseStepFragment {
             }
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
     }
 
@@ -195,7 +197,7 @@ public class TillageOperationFragment extends BaseStepFragment {
         } catch (Exception ex) {
             dataIsValid = false;
             errorMessage = ex.getMessage();
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
     }
 

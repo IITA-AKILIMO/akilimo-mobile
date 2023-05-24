@@ -23,7 +23,7 @@ import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.utils.enums.EnumAreaUnits;
 import com.stepstone.stepper.VerificationError;
 
-;
+;import io.sentry.Sentry;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -150,7 +150,7 @@ public class AreaUnitFragment extends BaseStepFragment {
 
 
         } catch (Exception ex) {
-            //TODO log crashes to third party service
+            Sentry.captureException(ex);
         }
     }
 

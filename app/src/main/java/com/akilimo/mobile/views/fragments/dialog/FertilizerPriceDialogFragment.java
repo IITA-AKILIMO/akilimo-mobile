@@ -46,7 +46,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-;
+;import io.sentry.Sentry;
 
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
@@ -184,7 +184,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
                 try {
                     bagPrice = Double.valueOf(editExactFertilizerPrice.getText().toString());
                 } catch (Exception ex) {
-                    //TODO  send this to third party logs tracker
+                    Sentry.captureException(ex);
                     bagPrice = 0.0;
                 }
 //                if (bagPrice <= 0 || bagPrice < minPrice || bagPrice > maxPrice) {
@@ -251,7 +251,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
                 exactPriceWrapper.setVisibility(View.VISIBLE);
             }
         } catch (Exception ex) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
     }
 

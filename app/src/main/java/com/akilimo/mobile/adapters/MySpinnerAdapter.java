@@ -14,6 +14,8 @@ import com.akilimo.mobile.R;
 
 import java.util.List;
 
+import io.sentry.Sentry;
+
 public class MySpinnerAdapter extends BaseAdapter {
     private Context context;
     private List<String> spinnerItems;
@@ -57,7 +59,7 @@ public class MySpinnerAdapter extends BaseAdapter {
         try {
             names.setText(spinnerItems.get(position));
         } catch (Exception ex) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
         return view;
     }

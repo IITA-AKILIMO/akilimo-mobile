@@ -51,6 +51,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import io.sentry.Sentry;
+
 public class IntercropFertilizersActivity extends BaseActivity {
 
     public static String useCaseTag = "useCase";
@@ -283,7 +285,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
                     recyclerView.setVisibility(View.GONE);
 
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    //TODO  send this to third party logs tracker
+                    Sentry.captureException(ex);
                 }
             }
 
@@ -292,7 +294,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(@NotNull VolleyError volleyError) {
+            public void onError(@NotNull VolleyError ex) {
                 lyt_progress.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.GONE);
                 errorLabel.setVisibility(View.VISIBLE);
@@ -300,7 +302,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
                 btnRetry.setVisibility(View.VISIBLE);
 
                 Toast.makeText(context, getString(R.string.lbl_fertilizer_load_error), Toast.LENGTH_LONG).show();
-                //TODO  send this to third party logs tracker
+                Sentry.captureException(ex);
             }
         });
     }
@@ -339,7 +341,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
                     recyclerView.setVisibility(View.GONE);
 
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    //TODO  send this to third party logs tracker
+                    Sentry.captureException(ex);
                 }
 
             }
@@ -349,7 +351,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(VolleyError volleyError) {
+            public void onError(VolleyError ex) {
                 lyt_progress.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.GONE);
                 errorLabel.setVisibility(View.VISIBLE);

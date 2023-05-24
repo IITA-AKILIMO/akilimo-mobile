@@ -19,6 +19,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import io.sentry.Sentry;
+
 public class DateHelper {
 
     private static String LOG_TAG = DateHelper.class.getSimpleName();
@@ -44,7 +46,7 @@ public class DateHelper {
             cal.setTime(date);
             weekNumber = cal.get(Calendar.WEEK_OF_YEAR);
         } catch (ParseException ex) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
         return weekNumber;
     }
@@ -57,7 +59,7 @@ public class DateHelper {
             cal.setTime(date);
             weekNumber = cal.get(Calendar.DAY_OF_YEAR);
         } catch (ParseException ex) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
         return weekNumber;
     }
@@ -68,7 +70,7 @@ public class DateHelper {
         try {
             refDate = getSimpleDateFormatter().parse(fromDate);
         } catch (ParseException ex) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
 
         DateTime dt = new DateTime(refDate);
@@ -82,7 +84,7 @@ public class DateHelper {
         try {
             refDate = getSimpleDateFormatter().parse(fromDate);
         } catch (ParseException ex) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
 
         DateTime dt = new DateTime(refDate);
@@ -160,7 +162,7 @@ public class DateHelper {
                 cal.add(Calendar.MONTH, maxMonth);
             }
         } catch (ParseException ex) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
         return cal;
     }
@@ -181,7 +183,7 @@ public class DateHelper {
             String dateString = zoneTime.toString();
             parse = DateTime.parse(dateString);
         } catch (Exception ex) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
         return parse;
     }

@@ -33,6 +33,8 @@ import com.mynameismidori.currencypicker.ExtendedCurrency;
 
 import java.util.List;
 
+import io.sentry.Sentry;
+
 
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
@@ -144,7 +146,7 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
                 try {
                     unitPrice = Double.parseDouble(editExactFertilizerPrice.getText().toString());
                 } catch (Exception ex) {
-                    //TODO  send this to third party logs tracker
+                   Sentry.captureException(ex);
                 }
                 if (unitPrice <= 0) {
                     editExactFertilizerPrice.setError(getString(R.string.lbl_provide_valid_unit_price));
@@ -190,7 +192,7 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
             }
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            //TODO  send this to third party logs tracker
+           Sentry.captureException(ex);
         }
     }
 

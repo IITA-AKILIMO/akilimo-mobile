@@ -28,7 +28,7 @@ import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.utils.enums.EnumCountry;
 import com.stepstone.stepper.VerificationError;
 
-;
+;import io.sentry.Sentry;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -102,7 +102,7 @@ public class CountryFragment extends BaseStepFragment {
             title.setText(message);
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
     }
 
@@ -215,7 +215,7 @@ public class CountryFragment extends BaseStepFragment {
             sessionManager.setCountry(countryCode);
         } catch (Exception ex) {
             dataIsValid = false;
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
     }
 
