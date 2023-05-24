@@ -9,7 +9,6 @@ import com.android.volley.VolleyError
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.crashlytics.android.Crashlytics
 import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.PropertyAccessor
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -100,8 +99,7 @@ object Tools {
             jsonString = mapper.writeValueAsString(objectClass)
             jsonObject = JSONObject(jsonString)
         } catch (ex: Exception) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
-            Crashlytics.logException(ex)
+            //TODO  send this to third party logs tracker
         }
         return jsonObject
     }
@@ -117,8 +115,7 @@ object Tools {
             jsonString = mapper.writeValueAsString(objectClass)
             jsonObject = JSONObject(jsonString)
         } catch (ex: Exception) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
-            Crashlytics.logException(ex)
+            //TODO  send this to third party logs tracker
         }
         return jsonObject
     }

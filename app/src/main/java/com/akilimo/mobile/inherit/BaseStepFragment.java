@@ -20,7 +20,7 @@ import com.akilimo.mobile.utils.MathHelper;
 import com.akilimo.mobile.utils.SessionManager;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.common.util.Strings;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.dao.AppDatabase;
@@ -126,8 +126,7 @@ public abstract class BaseStepFragment extends Fragment implements Step {
             dialog.show();
             dialog.getWindow().setAttributes(layoutParams);
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
     }
 

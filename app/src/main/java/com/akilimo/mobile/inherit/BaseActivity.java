@@ -19,7 +19,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import com.akilimo.mobile.utils.enums.EnumAreaUnits;
 import com.android.volley.RequestQueue;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.common.util.Strings;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.akilimo.mobile.R;

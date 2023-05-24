@@ -3,7 +3,6 @@ package com.akilimo.mobile.utils
 import android.text.TextUtils
 import android.util.Log
 import android.util.Patterns
-import com.crashlytics.android.Crashlytics
 import com.google.i18n.phonenumbers.NumberParseException
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.google.i18n.phonenumbers.Phonenumber
@@ -23,12 +22,7 @@ class ValidationHelper {
             val phoneNumber = phoneUtil.parse(userPhoneNumber, country)
             return phoneUtil.isValidNumber(phoneNumber)
         } catch (ex: NumberParseException) {
-            Crashlytics.log(
-                Log.ERROR,
-                LOG_TAG,
-                ex.message
-            )
-            Crashlytics.logException(ex)
+            //TODO  send this to third party logs tracker
         }
 
         return false
@@ -39,8 +33,7 @@ class ValidationHelper {
         try {
             phoneNumber = phoneUtil.parse(userPhoneNumber, country)
         } catch (ex: NumberParseException) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
-            Crashlytics.logException(ex)
+            //TODO  send this to third party logs tracker
         }
 
         return phoneNumber

@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.akilimo.mobile.databinding.FragmentTillageOperationBinding;
 import com.akilimo.mobile.entities.CurrentPractice;
 import com.akilimo.mobile.inherit.BaseStepFragment;
@@ -114,8 +114,7 @@ public class TillageOperationFragment extends BaseStepFragment {
             }
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
     }
 
@@ -196,8 +195,7 @@ public class TillageOperationFragment extends BaseStepFragment {
         } catch (Exception ex) {
             dataIsValid = false;
             errorMessage = ex.getMessage();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
     }
 

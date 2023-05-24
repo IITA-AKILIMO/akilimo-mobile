@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
+
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.dao.AppDatabase;
 import com.akilimo.mobile.databinding.ActivityManualTillageCostBinding;
@@ -192,8 +192,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
 
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
 
     }

@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -232,8 +232,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
                     errorLabel.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    Crashlytics.log(Log.ERROR, REC_TAG, ex.getMessage());
-                    Crashlytics.logException(ex);
+                    //TODO  send this to third party logs tracker
                 }
             }
 

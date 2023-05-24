@@ -20,7 +20,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.textfield.TextInputLayout;
 import com.akilimo.mobile.R;
@@ -190,8 +190,7 @@ public class OperationCostsDialogFragment extends BaseDialogFragment {
                 exactPriceWrapper.getEditText().setText(null);
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "Radio selection issues");
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
     }
 

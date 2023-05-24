@@ -11,7 +11,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.common.util.Strings;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.dao.AppDatabase;
@@ -236,8 +236,7 @@ public class WeedControlCostsActivity extends BaseActivity {
             closeActivity(backPressed);
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
 
     }

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.akilimo.mobile.R;
 
 import java.util.List;
@@ -57,8 +57,7 @@ public class MySpinnerAdapter extends BaseAdapter {
         try {
             names.setText(spinnerItems.get(position));
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, "SPINNER_ADAPTER", ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
         return view;
     }

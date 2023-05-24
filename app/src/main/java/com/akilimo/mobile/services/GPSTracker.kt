@@ -14,7 +14,6 @@ import android.util.Log
 import android.widget.Toast
 
 import androidx.appcompat.app.AlertDialog
-import com.crashlytics.android.Crashlytics
 import com.akilimo.mobile.R
 
 
@@ -100,8 +99,7 @@ class GPSTracker : Service, LocationListener {
             // no network provider is enabled
         } catch (ex: Exception) {
             Toast.makeText(mContext, ex.message, Toast.LENGTH_SHORT).show()
-            Crashlytics.log(Log.ERROR, "GPS_TRACKER", ex.message)
-            Crashlytics.logException(ex)
+            //TODO  send this to third party logs tracker
         }
 
         return location
@@ -144,8 +142,7 @@ class GPSTracker : Service, LocationListener {
             alertDialog.setCancelable(false)
             alertDialog.show()
         } catch (ex: Exception) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
-            Crashlytics.logException(ex)
+            //TODO  send this to third party logs tracker
         }
     }
 
