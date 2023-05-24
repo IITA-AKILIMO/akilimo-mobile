@@ -19,7 +19,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.FragmentManager;
 
 import com.akilimo.mobile.databinding.FragmentPlantingHarvestDateBinding;
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.common.util.Strings;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.entities.ScheduledDate;
@@ -122,8 +122,7 @@ public class PlantingDateFragment extends BaseStepFragment {
 
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
     }
 
@@ -178,8 +177,7 @@ public class PlantingDateFragment extends BaseStepFragment {
         } catch (Exception ex) {
             dataIsValid = false;
             errorMessage = ex.getMessage();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
     }
 

@@ -3,7 +3,7 @@ package com.akilimo.mobile.utils;
 import android.app.Activity;
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.common.util.Strings;
 
 import org.jetbrains.annotations.NotNull;
@@ -93,8 +93,7 @@ public class MathHelper {
                 joined = formatNumber(rate1, toCurrency);
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
         return joined;
     }
@@ -115,8 +114,7 @@ public class MathHelper {
                 data = String.format("%s %s %s %s", formattedNumber, currencySymbol, separator, selectedField);
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
         return data;
 
@@ -152,8 +150,7 @@ public class MathHelper {
                     break;
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
 
         return nearestSpecifiedValue > 0 ? roundToNearestSpecifiedValue(converted, nearestSpecifiedValue) : converted;
@@ -180,8 +177,7 @@ public class MathHelper {
                     return currencyToConvert;
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
 
         double convertedTemp = roundToNearestSpecifiedValue(converted, nearestSpecifiedValue);
@@ -220,8 +216,7 @@ public class MathHelper {
         try {
             fieldYieldAmount = convertToLocalCurrency(fieldYield, currency);
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
         return fieldYieldAmount;
     }
@@ -231,8 +226,7 @@ public class MathHelper {
             try {
                 return Double.parseDouble(numberText.trim());
             } catch (Exception ex) {
-                Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
-                Crashlytics.logException(ex);
+                //TODO  send this to third party logs tracker
             }
         }
         return 0.0;

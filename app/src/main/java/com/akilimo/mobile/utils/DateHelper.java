@@ -4,7 +4,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.crashlytics.android.Crashlytics;
+
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -44,8 +44,7 @@ public class DateHelper {
             cal.setTime(date);
             weekNumber = cal.get(Calendar.WEEK_OF_YEAR);
         } catch (ParseException ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
         return weekNumber;
     }
@@ -58,8 +57,7 @@ public class DateHelper {
             cal.setTime(date);
             weekNumber = cal.get(Calendar.DAY_OF_YEAR);
         } catch (ParseException ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
         return weekNumber;
     }
@@ -70,8 +68,7 @@ public class DateHelper {
         try {
             refDate = getSimpleDateFormatter().parse(fromDate);
         } catch (ParseException ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
 
         DateTime dt = new DateTime(refDate);
@@ -85,8 +82,7 @@ public class DateHelper {
         try {
             refDate = getSimpleDateFormatter().parse(fromDate);
         } catch (ParseException ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
 
         DateTime dt = new DateTime(refDate);
@@ -164,8 +160,7 @@ public class DateHelper {
                 cal.add(Calendar.MONTH, maxMonth);
             }
         } catch (ParseException ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
         return cal;
     }
@@ -186,8 +181,7 @@ public class DateHelper {
             String dateString = zoneTime.toString();
             parse = DateTime.parse(dateString);
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
         return parse;
     }

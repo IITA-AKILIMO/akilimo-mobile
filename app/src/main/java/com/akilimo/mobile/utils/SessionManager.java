@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.akilimo.mobile.BuildConfig;
 
 import org.joda.time.DateTime;
@@ -138,8 +138,7 @@ public class SessionManager {
             DateTime parsedDateTime = DateHelper.unixTimeStampToDate(unixTimestamp, DateTimeZone.UTC);
             appBuildDate = parsedDateTime.toDate().toString();
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, "PREFS", ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
 
         return appBuildDate;

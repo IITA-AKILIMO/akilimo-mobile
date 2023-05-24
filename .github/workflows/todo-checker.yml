@@ -17,3 +17,4 @@ jobs:
           SHA: ${{ github.sha }}
           REF: ${{ github.ref }}
           INCLUDE_PATTERN: "\\.(kt|java)$"
+          CLOSE_ON_SAME_BRANCH: true

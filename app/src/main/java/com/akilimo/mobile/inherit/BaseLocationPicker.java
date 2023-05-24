@@ -10,7 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.akilimo.mobile.R;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.api.geocoding.v5.GeocodingCriteria;
@@ -119,13 +119,11 @@ public abstract class BaseLocationPicker extends BaseActivity implements OnMapRe
 
                 @Override
                 public void onFailure(Call<GeocodingResponse> call, Throwable throwable) {
-                    Crashlytics.log("Mapbox geocoding failure");
-                    Crashlytics.logException(throwable);
+                    //TODO  send this to third party logs tracker
                 }
             });
         } catch (ServicesException servicesException) {
-            Crashlytics.log("Mapbox issue happening");
-            Crashlytics.logException(servicesException);
+            //TODO  send this to third party logs tracker
         }
     }
 

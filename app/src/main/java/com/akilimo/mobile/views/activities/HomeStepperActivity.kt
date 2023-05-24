@@ -22,7 +22,6 @@ import com.akilimo.mobile.utils.SessionManager
 import com.akilimo.mobile.utils.enums.EnumCountry
 import com.akilimo.mobile.views.activities.usecases.RecommendationsActivity
 import com.akilimo.mobile.views.fragments.*
-import com.crashlytics.android.Crashlytics
 import com.github.javiersantos.appupdater.AppUpdater
 import com.github.javiersantos.appupdater.enums.Display
 import com.stepstone.stepper.StepperLayout

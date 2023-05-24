@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.akilimo.mobile.utils.enums.EnumAreaUnits;
-import com.crashlytics.android.Crashlytics;
+
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.adapters.FieldYieldAdapter;
 import com.akilimo.mobile.dao.AppDatabase;
@@ -175,8 +175,7 @@ public class RootYieldActivity extends BaseActivity {
 
 //                Toast.makeText(context, yieldAmountLabel, Toast.LENGTH_SHORT).show();
             } catch (Exception ex) {
-                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                Crashlytics.logException(ex);
+                //TODO  send this to third party logs tracker
             }
 
         });

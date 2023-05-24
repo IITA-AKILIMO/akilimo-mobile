@@ -20,7 +20,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.material.textfield.TextInputLayout;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.entities.PotatoPrice;
@@ -137,8 +137,7 @@ public class SweetPotatoPriceDialogFragment extends BaseDialogFragment {
                 try {
                     potatoPrice = Double.parseDouble(editExactFertilizerPrice.getText().toString());
                 } catch (Exception ex) {
-                    Crashlytics.log(Log.ERROR, LOG_TAG, "The price appears not be valid");
-                    Crashlytics.logException(ex);
+                    //TODO  send this to third party logs tracker
                 }
                 if (potatoPrice <= 0) {
                     editExactFertilizerPrice.setError(getString(R.string.lbl_provide_valid_unit_price));
@@ -183,8 +182,7 @@ public class SweetPotatoPriceDialogFragment extends BaseDialogFragment {
                 potatoPrice = pricesResp.getAveragePrice();
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "Radio selection issues");
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
     }
 

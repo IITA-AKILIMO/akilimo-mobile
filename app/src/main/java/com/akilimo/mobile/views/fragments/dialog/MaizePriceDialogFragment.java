@@ -21,7 +21,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.material.textfield.TextInputLayout;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.entities.MaizePrice;
@@ -133,8 +133,7 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
                 try {
                     maizePrice = Double.parseDouble(editExactFertilizerPrice.getText().toString());
                 } catch (Exception ex) {
-                    Crashlytics.log(Log.ERROR, LOG_TAG, "The price appears not be valid");
-                    Crashlytics.logException(ex);
+                    //TODO  send this to third party logs tracker
                 }
                 if (maizePrice <= 0) {
                     editExactFertilizerPrice.setError(getString(R.string.lbl_provide_valid_unit_price));
@@ -180,8 +179,7 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
             }
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
     }
 

@@ -22,7 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.akilimo.mobile.utils.enums.EnumCountry;
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.material.textfield.TextInputLayout;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.entities.FertilizerPrice;
@@ -169,8 +169,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
                     bagPrice = Double.valueOf(editExactFertilizerPrice.getText().toString());
                 } catch (Exception ex) {
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                    Crashlytics.logException(ex);
+                    //TODO  send this to third party logs tracker
                 }
 
                 if (bagPrice <= 0 || bagPrice < minPrice || bagPrice > maxPrice) {
@@ -237,8 +236,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
                 exactPriceWrapper.setVisibility(View.VISIBLE);
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "Radio selection issues");
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
     }
 

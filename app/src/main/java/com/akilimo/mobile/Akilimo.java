@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.multidex.MultiDexApplication;
 
 import com.blongho.country_data.World;
-import com.crashlytics.android.Crashlytics;
+
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -24,9 +24,6 @@ public class Akilimo extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        //@TODO Replace crashlytics with new firebase before November 1st
-        Fabric.with(this, new Crashlytics());
 
         AppLocale.setSupportedLocales(Locales.APP_LOCALES);
         SharedPrefsAppLocaleRepository prefs = new SharedPrefsAppLocaleRepository(this);

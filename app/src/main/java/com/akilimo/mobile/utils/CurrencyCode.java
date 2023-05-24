@@ -2,7 +2,7 @@ package com.akilimo.mobile.utils;
 
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.mynameismidori.currencypicker.ExtendedCurrency;
 
 public class CurrencyCode {
@@ -14,8 +14,7 @@ public class CurrencyCode {
         try {
             return currency;
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            //TODO  send this to third party logs tracker
         }
         return null;
     }
