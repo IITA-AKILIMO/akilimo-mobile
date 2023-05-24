@@ -19,6 +19,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import io.sentry.Sentry;
+
 public abstract class CostBaseActivity extends BaseActivity {
 
     protected ArrayList<OperationCost> operationCostList;
@@ -50,7 +52,7 @@ public abstract class CostBaseActivity extends BaseActivity {
 
                     showDialogFullscreen(operationCostList, operationName, countryCode, dialogTitle, hintText);
                 } catch (Exception ex) {
-                    //TODO  send this to third party logs tracker
+                    Sentry.captureException(ex);
                 }
             }
 
@@ -59,9 +61,9 @@ public abstract class CostBaseActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(@NotNull VolleyError volleyError) {
+            public void onError(@NotNull VolleyError ex) {
                 Toast.makeText(context, "Unable to load OperationCost list", Toast.LENGTH_LONG).show();
-                //TODO  send this to third party logs tracker
+                Sentry.captureException( ex);
             }
         });
     }

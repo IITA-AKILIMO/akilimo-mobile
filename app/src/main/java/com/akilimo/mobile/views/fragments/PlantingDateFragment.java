@@ -28,7 +28,7 @@ import com.akilimo.mobile.utils.DateHelper;
 import com.akilimo.mobile.views.fragments.dialog.DateDialogPickerFragment;
 import com.stepstone.stepper.VerificationError;
 
-;
+;import io.sentry.Sentry;
 
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
@@ -122,7 +122,7 @@ public class PlantingDateFragment extends BaseStepFragment {
 
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
     }
 
@@ -177,7 +177,7 @@ public class PlantingDateFragment extends BaseStepFragment {
         } catch (Exception ex) {
             dataIsValid = false;
             errorMessage = ex.getMessage();
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
     }
 

@@ -33,6 +33,8 @@ import com.mynameismidori.currencypicker.ExtendedCurrency;
 
 import java.util.List;
 
+import io.sentry.Sentry;
+
 
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
@@ -137,7 +139,7 @@ public class SweetPotatoPriceDialogFragment extends BaseDialogFragment {
                 try {
                     potatoPrice = Double.parseDouble(editExactFertilizerPrice.getText().toString());
                 } catch (Exception ex) {
-                    //TODO  send this to third party logs tracker
+                    Sentry.captureException(ex);
                 }
                 if (potatoPrice <= 0) {
                     editExactFertilizerPrice.setError(getString(R.string.lbl_provide_valid_unit_price));
@@ -182,7 +184,7 @@ public class SweetPotatoPriceDialogFragment extends BaseDialogFragment {
                 potatoPrice = pricesResp.getAveragePrice();
             }
         } catch (Exception ex) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
     }
 

@@ -31,7 +31,7 @@ import com.akilimo.mobile.views.fragments.dialog.OperationCostsDialogFragment;
 import java.util.ArrayList;
 import java.util.Locale;
 
-;
+;import io.sentry.Sentry;
 
 
 public class ManualTillageCostActivity extends CostBaseActivity {
@@ -192,7 +192,7 @@ public class ManualTillageCostActivity extends CostBaseActivity {
 
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
 
     }

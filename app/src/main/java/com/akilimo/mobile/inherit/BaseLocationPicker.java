@@ -34,6 +34,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import io.sentry.Sentry;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -119,11 +120,11 @@ public abstract class BaseLocationPicker extends BaseActivity implements OnMapRe
 
                 @Override
                 public void onFailure(Call<GeocodingResponse> call, Throwable throwable) {
-                    //TODO  send this to third party logs tracker
+                    Sentry.captureException(throwable);
                 }
             });
         } catch (ServicesException servicesException) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(servicesException);
         }
     }
 

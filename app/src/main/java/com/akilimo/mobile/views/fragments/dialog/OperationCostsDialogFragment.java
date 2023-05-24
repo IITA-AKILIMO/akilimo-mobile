@@ -30,6 +30,8 @@ import com.akilimo.mobile.utils.enums.EnumCountry;
 
 import java.util.ArrayList;
 
+import io.sentry.Sentry;
+
 
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
@@ -190,7 +192,7 @@ public class OperationCostsDialogFragment extends BaseDialogFragment {
                 exactPriceWrapper.getEditText().setText(null);
             }
         } catch (Exception ex) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
     }
 

@@ -44,6 +44,8 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import io.sentry.Sentry;
+
 public class SweetPotatoMarketActivity extends BaseActivity {
 
 
@@ -209,7 +211,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             closeActivity(backPressed);
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
 
 
@@ -249,7 +251,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
                 } catch (Exception ex) {
                     Snackbar.make(unitOfSalePotatoCard, ex.getMessage(), Snackbar.LENGTH_LONG).show();
-                    //TODO  send this to third party logs tracker
+                    Sentry.captureException(ex);
                 }
             }
 
@@ -259,11 +261,11 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(@NotNull VolleyError volleyError) {
-                String error = Tools.parseNetworkError(volleyError).getMessage();
+            public void onError(@NotNull VolleyError ex) {
+                String error = Tools.parseNetworkError( ex).getMessage();
                 if (error != null) {
                     Snackbar.make(unitOfSalePotatoCard, error, Snackbar.LENGTH_LONG).show();
-                    //TODO  send this to third party logs tracker
+                    Sentry.captureException(ex);
                 }
             }
         });

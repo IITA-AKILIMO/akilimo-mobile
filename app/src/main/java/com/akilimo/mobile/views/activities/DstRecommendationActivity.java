@@ -48,6 +48,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.sentry.Sentry;
+
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
@@ -232,12 +234,12 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
                     errorLabel.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    //TODO  send this to third party logs tracker
+                    Sentry.captureException(ex);
                 }
             }
 
             @Override
-            public void onError(@NonNull VolleyError volleyError) {
+            public void onError(@NonNull VolleyError ex) {
                 lyt_progress.setVisibility(View.GONE);
                 errorImage.setVisibility(View.VISIBLE);
                 errorLabel.setVisibility(View.VISIBLE);

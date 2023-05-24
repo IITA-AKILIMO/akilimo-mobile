@@ -1,10 +1,11 @@
 package com.akilimo.mobile.utils
 
-import android.content.*
-import android.util.Log
+import android.content.Context
 import android.util.TypedValue
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
+import com.akilimo.mobile.rest.request.RecommendationRequest
+import com.akilimo.mobile.rest.request.SurveyRequest
 import com.android.volley.VolleyError
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -13,13 +14,14 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.PropertyAccessor
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
-import com.akilimo.mobile.rest.request.RecommendationRequest
-import com.akilimo.mobile.rest.request.SurveyRequest
+import io.sentry.Sentry
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
+import java.util.UUID
 import kotlin.math.roundToInt
 
 object Tools {
@@ -80,8 +82,8 @@ object Tools {
     }
 
     @JvmStatic
-    fun parseNetworkError(volleyError: VolleyError): VolleyError {
-        return volleyError
+    fun parseNetworkError( ex: VolleyError): VolleyError {
+        return  ex
     }
 
     /**
@@ -99,7 +101,7 @@ object Tools {
             jsonString = mapper.writeValueAsString(objectClass)
             jsonObject = JSONObject(jsonString)
         } catch (ex: Exception) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex)
         }
         return jsonObject
     }
@@ -115,7 +117,7 @@ object Tools {
             jsonString = mapper.writeValueAsString(objectClass)
             jsonObject = JSONObject(jsonString)
         } catch (ex: Exception) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex)
         }
         return jsonObject
     }
@@ -126,17 +128,24 @@ object Tools {
         try {
             while (keys.hasNext()) {
                 val key = keys.next() as String
-                if (jObject[key] is JSONObject) {
-                    message = jObject.getString(key)
-                    break
-                } else if (jObject[key] is JSONArray) {
-                    val J = jObject[key] as JSONArray
-                    message = J[0].toString()
-                    break
-                } else if (jObject[key] is String) {
-                    //it is a string
-                    message = jObject.getString(key)
-                    break
+                val jsonObject = jObject[key]
+                when {
+                    jsonObject is JSONObject -> {
+                        message = jObject.getString(key)
+                        break
+                    }
+
+                    jsonObject is JSONArray -> {
+                        val J = jObject[key] as JSONArray
+                        message = J[0].toString()
+                        break
+                    }
+
+                    jsonObject is String -> {
+                        //it is a string
+                        message = jObject.getString(key)
+                        break
+                    }
                 }
             }
         } catch (e: JSONException) {

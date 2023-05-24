@@ -36,7 +36,7 @@ import com.akilimo.mobile.views.fragments.dialog.OperationCostsDialogFragment;
 import java.util.ArrayList;
 import java.util.Locale;
 
-;
+;import io.sentry.Sentry;
 
 public class TractorAccessActivity extends CostBaseActivity {
 
@@ -219,7 +219,7 @@ public class TractorAccessActivity extends CostBaseActivity {
             database.adviceStatusDao().insert(new AdviceStatus(EnumAdviceTasks.TRACTOR_ACCESS.name(), true));
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
     }
 

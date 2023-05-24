@@ -13,6 +13,8 @@ import org.joda.time.DateTimeZone;
 
 import java.util.UUID;
 
+import io.sentry.Sentry;
+
 
 /**
  * AppSession manager for logged in users
@@ -138,7 +140,7 @@ public class SessionManager {
             DateTime parsedDateTime = DateHelper.unixTimeStampToDate(unixTimestamp, DateTimeZone.UTC);
             appBuildDate = parsedDateTime.toDate().toString();
         } catch (Exception ex) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
 
         return appBuildDate;

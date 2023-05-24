@@ -41,6 +41,7 @@ import java.util.Locale;
 import dev.b3nedikt.app_locale.AppLocale;
 import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
+import io.sentry.Sentry;
 
 @SuppressLint("LogNotTimber")
 public abstract class BaseActivity extends AppCompatActivity {
@@ -195,7 +196,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             dialog.show();
             dialog.getWindow().setAttributes(lp);
         } catch (Exception ex) {
-            //@TODO add latest crash logger for google
+            Sentry.captureException(ex);
         }
     }
 

@@ -32,6 +32,8 @@ import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.utils.enums.EnumFieldArea;
 import com.stepstone.stepper.VerificationError;
 
+import io.sentry.Sentry;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FieldSizeFragment#newInstance} factory method to
@@ -151,7 +153,7 @@ public class FieldSizeFragment extends BaseStepFragment {
 
             }
         } catch (Exception ex) {
-            //TODO send crash logs to third party service
+            Sentry.captureException(ex);
         }
     }
 

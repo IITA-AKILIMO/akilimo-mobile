@@ -28,6 +28,8 @@ import com.akilimo.mobile.views.fragments.dialog.DateDialogPickerFragment;
 
 import org.joda.time.LocalDate;
 
+import io.sentry.Sentry;
+
 public class DatesActivity extends BaseActivity {
     Toolbar toolbar;
 
@@ -246,7 +248,7 @@ public class DatesActivity extends BaseActivity {
 
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
     }
 

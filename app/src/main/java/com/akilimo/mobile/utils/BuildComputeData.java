@@ -36,6 +36,8 @@ import org.modelmapper.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import io.sentry.Sentry;
+
 @SuppressWarnings("FieldCanBeLocal")
 public class BuildComputeData {
 
@@ -223,7 +225,7 @@ public class BuildComputeData {
                 userInfo.setSendEmail(emailRequired);
             }
         } catch (Exception ex) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
         return userInfo;
     }
@@ -305,7 +307,7 @@ public class BuildComputeData {
                 computeRequest.setHarvestDateWindow(harvestDateWindow);
             }
         } catch (Exception ex) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
 
         return computeRequest;

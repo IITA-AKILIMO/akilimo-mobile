@@ -28,6 +28,8 @@ import com.akilimo.mobile.views.activities.RootYieldActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.sentry.Sentry;
+
 public class ScheduledPlantingActivity extends BaseActivity {
 
 
@@ -107,7 +109,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
                 database.useCaseDao().insert(useCases);
                 processRecommendations(activity);
             } catch (Exception ex) {
-                //TODO  send this to third party logs tracker
+                Sentry.captureException(ex);
             }
         });
 

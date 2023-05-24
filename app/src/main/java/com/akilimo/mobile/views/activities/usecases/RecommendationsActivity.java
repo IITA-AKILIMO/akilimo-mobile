@@ -40,6 +40,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.sentry.Sentry;
+
 public class RecommendationsActivity extends BaseActivity {
 
     Toolbar toolbar;
@@ -226,14 +228,15 @@ public class RecommendationsActivity extends BaseActivity {
                 ObjectMapper objectMapper = new ObjectMapper();
                 try {
 
-                    List<Currency> currencyList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<Currency>>() {});
+                    List<Currency> currencyList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<Currency>>() {
+                    });
 
                     if (currencyList.size() > 0) {
                         database.currencyDao().insertAll(currencyList);
                     }
                 } catch (Exception ex) {
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    //@TODO add crash logs detection library
+                    Sentry.captureException(ex);
                 }
             }
 
@@ -242,7 +245,7 @@ public class RecommendationsActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(@NonNull VolleyError volleyError) {
+            public void onError(@NonNull VolleyError ex) {
             }
         });
     }

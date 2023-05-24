@@ -10,11 +10,10 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.Settings
-import android.util.Log
 import android.widget.Toast
-
 import androidx.appcompat.app.AlertDialog
 import com.akilimo.mobile.R
+import io.sentry.Sentry
 
 
 class GPSTracker : Service, LocationListener {
@@ -99,7 +98,7 @@ class GPSTracker : Service, LocationListener {
             // no network provider is enabled
         } catch (ex: Exception) {
             Toast.makeText(mContext, ex.message, Toast.LENGTH_SHORT).show()
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex)
         }
 
         return location
@@ -142,7 +141,7 @@ class GPSTracker : Service, LocationListener {
             alertDialog.setCancelable(false)
             alertDialog.show()
         } catch (ex: Exception) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex)
         }
     }
 

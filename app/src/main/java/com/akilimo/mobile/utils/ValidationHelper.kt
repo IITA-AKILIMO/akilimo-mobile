@@ -6,6 +6,7 @@ import android.util.Patterns
 import com.google.i18n.phonenumbers.NumberParseException
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.google.i18n.phonenumbers.Phonenumber
+import io.sentry.Sentry
 
 class ValidationHelper {
     private val phoneUtil: PhoneNumberUtil = PhoneNumberUtil.getInstance()
@@ -22,7 +23,7 @@ class ValidationHelper {
             val phoneNumber = phoneUtil.parse(userPhoneNumber, country)
             return phoneUtil.isValidNumber(phoneNumber)
         } catch (ex: NumberParseException) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
 
         return false
@@ -33,7 +34,7 @@ class ValidationHelper {
         try {
             phoneNumber = phoneUtil.parse(userPhoneNumber, country)
         } catch (ex: NumberParseException) {
-            //TODO  send this to third party logs tracker
+            Sentry.captureException(ex);
         }
 
         return phoneNumber

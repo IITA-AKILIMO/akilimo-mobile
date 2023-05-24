@@ -28,7 +28,7 @@ interface IVolleyCallback {
 
 
     /**
-     * @param volleyError
+     * @param  ex
      */
-    fun onError(volleyError: VolleyError)
+    fun onError( ex: VolleyError)
 }

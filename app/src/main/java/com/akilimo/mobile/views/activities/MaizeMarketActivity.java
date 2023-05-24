@@ -47,6 +47,8 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import io.sentry.Sentry;
+
 public class MaizeMarketActivity extends BaseActivity {
 
     Toolbar toolbar;
@@ -292,7 +294,7 @@ public class MaizeMarketActivity extends BaseActivity {
                 closeActivity(backPressed);
             } catch (Exception ex) {
                 Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                //TODO  send this to third party logs tracker
+                Sentry.captureException(ex);
             }
 
         }
@@ -362,7 +364,7 @@ public class MaizeMarketActivity extends BaseActivity {
                     }
                 } catch (JsonProcessingException ex) {
                     Snackbar.make(maizeCobPriceCard, ex.getMessage(), Snackbar.LENGTH_SHORT).show();
-                    //TODO  send this to third party logs tracker
+                    Sentry.captureException(ex);
                 }
             }
 
@@ -372,8 +374,8 @@ public class MaizeMarketActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(@NotNull VolleyError volleyError) {
-                String error = Tools.parseNetworkError(volleyError).getMessage();
+            public void onError(@NotNull VolleyError ex) {
+                String error = Tools.parseNetworkError( ex).getMessage();
                 if (!Strings.isEmptyOrWhitespace(error)) {
                     Snackbar.make(maizeCobPriceCard, error, Snackbar.LENGTH_LONG).show();
                 }
