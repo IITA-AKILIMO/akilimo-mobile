@@ -9,6 +9,7 @@ import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.utils.SessionManager
+import io.sentry.Sentry
 
 
 @SuppressLint("CustomSplashScreen")

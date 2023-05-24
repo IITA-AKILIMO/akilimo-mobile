@@ -14,7 +14,6 @@ import java.util.Locale;
 import dev.b3nedikt.app_locale.AppLocale;
 import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
 import dev.b3nedikt.reword.RewordInterceptor;
-import io.fabric.sdk.android.Fabric;
 import io.github.inflationx.viewpump.ViewPump;
 
 public class Akilimo extends MultiDexApplication {
