@@ -5,7 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.common.util.Strings;
 import com.akilimo.mobile.dao.AppDatabase;
 import com.akilimo.mobile.entities.CassavaMarket;
@@ -35,6 +35,8 @@ import org.modelmapper.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.List;
+
+import io.sentry.Sentry;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class BuildComputeData {
@@ -223,8 +225,7 @@ public class BuildComputeData {
                 userInfo.setSendEmail(emailRequired);
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            Sentry.captureException(ex);
         }
         return userInfo;
     }
@@ -306,8 +307,7 @@ public class BuildComputeData {
                 computeRequest.setHarvestDateWindow(harvestDateWindow);
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            Sentry.captureException(ex);
         }
 
         return computeRequest;

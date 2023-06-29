@@ -53,6 +53,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.sentry.Sentry;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -159,7 +160,7 @@ public class LocationFragment extends BaseStepFragment {
                     }
                 } catch (Exception ex) {
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    //@TODO migrate crashlytics code to latest crash analytics platform
+                    Sentry.captureException(ex);
                 }
             }
         });

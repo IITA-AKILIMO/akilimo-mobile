@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.snackbar.Snackbar;
@@ -50,6 +50,8 @@ import org.modelmapper.ModelMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import io.sentry.Sentry;
 
 public class IntercropFertilizersActivity extends BaseActivity {
 
@@ -283,8 +285,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
                     recyclerView.setVisibility(View.GONE);
 
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
-                    Crashlytics.logException(ex);
+                    Sentry.captureException(ex);
                 }
             }
 
@@ -293,7 +294,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(@NotNull VolleyError volleyError) {
+            public void onError(@NotNull VolleyError ex) {
                 lyt_progress.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.GONE);
                 errorLabel.setVisibility(View.VISIBLE);
@@ -301,8 +302,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
                 btnRetry.setVisibility(View.VISIBLE);
 
                 Toast.makeText(context, getString(R.string.lbl_fertilizer_load_error), Toast.LENGTH_LONG).show();
-                Crashlytics.log(Log.ERROR, TAG, volleyError.networkResponse.toString());
-                Crashlytics.logException(volleyError);
+                Sentry.captureException(ex);
             }
         });
     }
@@ -341,8 +341,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
                     recyclerView.setVisibility(View.GONE);
 
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    Crashlytics.log(Log.ERROR, TAG, ex.getMessage());
-                    Crashlytics.logException(ex);
+                    Sentry.captureException(ex);
                 }
 
             }
@@ -352,7 +351,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(VolleyError volleyError) {
+            public void onError(VolleyError ex) {
                 lyt_progress.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.GONE);
                 errorLabel.setVisibility(View.VISIBLE);

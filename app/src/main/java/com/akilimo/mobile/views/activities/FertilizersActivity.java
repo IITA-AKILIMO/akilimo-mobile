@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.snackbar.Snackbar;
@@ -48,6 +48,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import io.sentry.Sentry;
 
 
 public class FertilizersActivity extends BaseActivity {
@@ -195,9 +197,6 @@ public class FertilizersActivity extends BaseActivity {
             }
         });
         btnCancel.setOnClickListener(view -> closeActivity(false));
-
-        //@TODO Consider activating this again?
-//        showCustomNotificationDialog();
     }
 
     @Override
@@ -273,9 +272,7 @@ public class FertilizersActivity extends BaseActivity {
                     errorLabel.setVisibility(View.VISIBLE);
                     errorImage.setVisibility(View.VISIBLE);
                     btnRetry.setVisibility(View.VISIBLE);
-
-                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                    Crashlytics.logException(ex);
+                    Sentry.captureException(ex);
                 }
             }
 
@@ -284,7 +281,7 @@ public class FertilizersActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(@NotNull VolleyError volleyError) {
+            public void onError(@NotNull VolleyError ex) {
                 lyt_progress.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.GONE);
                 errorLabel.setVisibility(View.VISIBLE);
@@ -336,7 +333,7 @@ public class FertilizersActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(VolleyError volleyError) {
+            public void onError(VolleyError ex) {
                 lyt_progress.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.GONE);
                 errorLabel.setVisibility(View.VISIBLE);

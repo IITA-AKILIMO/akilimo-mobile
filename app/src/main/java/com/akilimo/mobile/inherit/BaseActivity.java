@@ -19,7 +19,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import com.akilimo.mobile.utils.enums.EnumAreaUnits;
 import com.android.volley.RequestQueue;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.common.util.Strings;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.akilimo.mobile.R;
@@ -41,6 +41,7 @@ import java.util.Locale;
 import dev.b3nedikt.app_locale.AppLocale;
 import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
+import io.sentry.Sentry;
 
 @SuppressLint("LogNotTimber")
 public abstract class BaseActivity extends AppCompatActivity {
@@ -195,7 +196,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             dialog.show();
             dialog.getWindow().setAttributes(lp);
         } catch (Exception ex) {
-            //@TODO add latest crash logger for google
+            Sentry.captureException(ex);
         }
     }
 

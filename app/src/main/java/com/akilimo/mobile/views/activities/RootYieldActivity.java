@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.akilimo.mobile.utils.enums.EnumAreaUnits;
-import com.crashlytics.android.Crashlytics;
+
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.adapters.FieldYieldAdapter;
 import com.akilimo.mobile.dao.AppDatabase;
@@ -35,7 +35,7 @@ import com.akilimo.mobile.widget.SpacingItemDecoration;
 import java.util.ArrayList;
 import java.util.List;
 
-;
+;import io.sentry.Sentry;
 
 public class RootYieldActivity extends BaseActivity {
 
@@ -173,10 +173,8 @@ public class RootYieldActivity extends BaseActivity {
                     rootYieldDialogFragment.show(getSupportFragmentManager(), RootYieldDialogFragment.ARG_ITEM_ID);
                 }
 
-//                Toast.makeText(context, yieldAmountLabel, Toast.LENGTH_SHORT).show();
             } catch (Exception ex) {
-                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                Crashlytics.logException(ex);
+                Sentry.captureException(ex);
             }
 
         });

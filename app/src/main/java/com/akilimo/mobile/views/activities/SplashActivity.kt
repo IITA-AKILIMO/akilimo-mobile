@@ -3,13 +3,12 @@ package com.akilimo.mobile.views.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import com.blogspot.atifsoftwares.animatoolib.Animatoo
-import com.crashlytics.android.Crashlytics
 import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.utils.SessionManager
+import com.blogspot.atifsoftwares.animatoolib.Animatoo
+import io.sentry.Sentry
 
 
 @SuppressLint("CustomSplashScreen")
@@ -30,15 +29,16 @@ class SplashActivity : BaseActivity() {
             }
             background.start()
         } catch (ex: Exception) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
-            Crashlytics.logException(ex)
             launchActivity()
+            Sentry.captureException(ex)
         }
     }
 
     override fun validate(backPressed: Boolean) {}
 
-    override fun initToolbar() {}
+    override fun initToolbar() {
+        Sentry.captureMessage("Empty toolbar initialization")
+    }
 
     private fun launchActivity() {
         val isInDevMode = BuildConfig.DEBUG
@@ -81,8 +81,7 @@ class SplashActivity : BaseActivity() {
             }
 
         } catch (ex: Exception) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.message)
-            Crashlytics.logException(ex)
+            Sentry.captureException(ex)
         }
         var intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
         if (isInDevMode) {

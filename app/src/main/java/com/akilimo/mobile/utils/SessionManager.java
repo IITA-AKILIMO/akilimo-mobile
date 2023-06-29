@@ -5,13 +5,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.akilimo.mobile.BuildConfig;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import java.util.UUID;
+
+import io.sentry.Sentry;
 
 
 /**
@@ -138,8 +140,7 @@ public class SessionManager {
             DateTime parsedDateTime = DateHelper.unixTimeStampToDate(unixTimestamp, DateTimeZone.UTC);
             appBuildDate = parsedDateTime.toDate().toString();
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, "PREFS", ex.getMessage());
-            Crashlytics.logException(ex);
+            Sentry.captureException(ex);
         }
 
         return appBuildDate;
@@ -175,7 +176,7 @@ public class SessionManager {
         editor.commit();
     }
 
-    public boolean termsAccepted() {
+    public boolean getTermsAccepted() {
         return pref.getBoolean("termsAccepted", false);
     }
 
@@ -252,5 +253,14 @@ public class SessionManager {
 
     public boolean getRememberInvestmentPref() {
         return pref.getBoolean("rememberInvestmentPref", false);
+    }
+
+    public void setDisclaimerRead(boolean disclaimerRead) {
+        editor.putBoolean("disclaimerRead", disclaimerRead);
+        editor.commit();
+    }
+
+    public boolean getDisclaimerRead() {
+        return pref.getBoolean("disclaimerRead", false);
     }
 }

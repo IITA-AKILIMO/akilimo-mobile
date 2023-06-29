@@ -19,7 +19,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
 import com.blongho.country_data.World;
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.common.util.Strings;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.databinding.FragmentCountryBinding;
@@ -28,7 +28,7 @@ import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.utils.enums.EnumCountry;
 import com.stepstone.stepper.VerificationError;
 
-;
+;import io.sentry.Sentry;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -102,8 +102,7 @@ public class CountryFragment extends BaseStepFragment {
             title.setText(message);
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            Sentry.captureException(ex);
         }
     }
 
@@ -216,8 +215,7 @@ public class CountryFragment extends BaseStepFragment {
             sessionManager.setCountry(countryCode);
         } catch (Exception ex) {
             dataIsValid = false;
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            Sentry.captureException(ex);
         }
     }
 

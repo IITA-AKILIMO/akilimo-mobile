@@ -18,7 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.material.textfield.TextInputEditText;
 import com.hbb20.CountryCodePicker;
 import com.akilimo.mobile.R;
@@ -30,6 +30,8 @@ import com.stepstone.stepper.VerificationError;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.sentry.Sentry;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -190,8 +192,7 @@ public class BioDataFragment extends BaseStepFragment {
             }
 
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+           Sentry.captureException(ex);
         }
     }
 
@@ -275,8 +276,7 @@ public class BioDataFragment extends BaseStepFragment {
             }
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+           Sentry.captureException(ex);
         }
 
     }

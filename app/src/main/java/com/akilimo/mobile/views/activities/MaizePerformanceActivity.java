@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.common.util.Strings;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.adapters.MaizePerformanceAdapter;
@@ -30,6 +30,8 @@ import com.akilimo.mobile.widget.SpacingItemDecoration;
 
 ;import java.util.ArrayList;
 import java.util.List;
+
+import io.sentry.Sentry;
 
 
 public class MaizePerformanceActivity extends BaseActivity {
@@ -167,8 +169,7 @@ public class MaizePerformanceActivity extends BaseActivity {
                 }
 
             } catch (Exception ex) {
-                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                Crashlytics.logException(ex);
+                Sentry.captureException(ex);
             }
 
         });

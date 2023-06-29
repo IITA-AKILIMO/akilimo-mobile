@@ -10,7 +10,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.adapters.RecOptionsAdapter;
@@ -27,6 +27,8 @@ import com.akilimo.mobile.views.activities.RootYieldActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.sentry.Sentry;
 
 public class ScheduledPlantingActivity extends BaseActivity {
 
@@ -107,8 +109,7 @@ public class ScheduledPlantingActivity extends BaseActivity {
                 database.useCaseDao().insert(useCases);
                 processRecommendations(activity);
             } catch (Exception ex) {
-                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                Crashlytics.logException(ex);
+                Sentry.captureException(ex);
             }
         });
 

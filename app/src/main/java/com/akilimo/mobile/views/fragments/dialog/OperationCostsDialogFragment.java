@@ -20,7 +20,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.textfield.TextInputLayout;
 import com.akilimo.mobile.R;
@@ -29,6 +29,8 @@ import com.akilimo.mobile.models.OperationCost;
 import com.akilimo.mobile.utils.enums.EnumCountry;
 
 import java.util.ArrayList;
+
+import io.sentry.Sentry;
 
 
 /**
@@ -190,8 +192,7 @@ public class OperationCostsDialogFragment extends BaseDialogFragment {
                 exactPriceWrapper.getEditText().setText(null);
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "Radio selection issues");
-            Crashlytics.logException(ex);
+            Sentry.captureException(ex);
         }
     }
 

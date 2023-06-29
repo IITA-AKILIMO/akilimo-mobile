@@ -15,7 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
@@ -43,6 +43,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
+
+import io.sentry.Sentry;
 
 public class SweetPotatoMarketActivity extends BaseActivity {
 
@@ -209,8 +211,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             closeActivity(backPressed);
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            Sentry.captureException(ex);
         }
 
 
@@ -250,8 +251,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
 
                 } catch (Exception ex) {
                     Snackbar.make(unitOfSalePotatoCard, ex.getMessage(), Snackbar.LENGTH_LONG).show();
-                    Crashlytics.logException(ex);
-                    Crashlytics.log(ex.getMessage());
+                    Sentry.captureException(ex);
                 }
             }
 
@@ -261,11 +261,11 @@ public class SweetPotatoMarketActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(@NotNull VolleyError volleyError) {
-                String error = Tools.parseNetworkError(volleyError).getMessage();
+            public void onError(@NotNull VolleyError ex) {
+                String error = Tools.parseNetworkError( ex).getMessage();
                 if (error != null) {
-                    Crashlytics.log(error);
                     Snackbar.make(unitOfSalePotatoCard, error, Snackbar.LENGTH_LONG).show();
+                    Sentry.captureException(ex);
                 }
             }
         });

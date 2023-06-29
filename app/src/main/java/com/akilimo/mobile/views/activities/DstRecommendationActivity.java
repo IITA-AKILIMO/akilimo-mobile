@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -47,6 +47,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.sentry.Sentry;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -232,13 +234,12 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
                     errorLabel.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    Crashlytics.log(Log.ERROR, REC_TAG, ex.getMessage());
-                    Crashlytics.logException(ex);
+                    Sentry.captureException(ex);
                 }
             }
 
             @Override
-            public void onError(@NonNull VolleyError volleyError) {
+            public void onError(@NonNull VolleyError ex) {
                 lyt_progress.setVisibility(View.GONE);
                 errorImage.setVisibility(View.VISIBLE);
                 errorLabel.setVisibility(View.VISIBLE);

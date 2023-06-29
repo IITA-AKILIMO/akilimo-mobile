@@ -21,7 +21,7 @@ import com.akilimo.mobile.entities.InvestmentAmountDto;
 import com.akilimo.mobile.rest.RestParameters;
 import com.akilimo.mobile.rest.RestService;
 import com.android.volley.VolleyError;
-import com.crashlytics.android.Crashlytics;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
@@ -46,6 +46,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import io.sentry.Sentry;
 
 
 public class InvestmentAmountActivity extends BaseActivity {
@@ -185,8 +187,7 @@ public class InvestmentAmountActivity extends BaseActivity {
                 closeActivity(false);
             } catch (Exception ex) {
                 Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                Crashlytics.logException(ex);
+                Sentry.captureException(ex);
             }
         });
 
@@ -292,7 +293,7 @@ public class InvestmentAmountActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(@NotNull VolleyError volleyError) {
+            public void onError(@NotNull VolleyError ex) {
                 Toast.makeText(context, getString(R.string.lbl_investment_amount_load_error), Toast.LENGTH_LONG).show();
             }
         });

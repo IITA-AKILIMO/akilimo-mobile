@@ -4,7 +4,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.crashlytics.android.Crashlytics;
+
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -18,6 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import io.sentry.Sentry;
 
 public class DateHelper {
 
@@ -44,8 +46,7 @@ public class DateHelper {
             cal.setTime(date);
             weekNumber = cal.get(Calendar.WEEK_OF_YEAR);
         } catch (ParseException ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            Sentry.captureException(ex);
         }
         return weekNumber;
     }
@@ -58,8 +59,7 @@ public class DateHelper {
             cal.setTime(date);
             weekNumber = cal.get(Calendar.DAY_OF_YEAR);
         } catch (ParseException ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            Sentry.captureException(ex);
         }
         return weekNumber;
     }
@@ -70,8 +70,7 @@ public class DateHelper {
         try {
             refDate = getSimpleDateFormatter().parse(fromDate);
         } catch (ParseException ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            Sentry.captureException(ex);
         }
 
         DateTime dt = new DateTime(refDate);
@@ -85,8 +84,7 @@ public class DateHelper {
         try {
             refDate = getSimpleDateFormatter().parse(fromDate);
         } catch (ParseException ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            Sentry.captureException(ex);
         }
 
         DateTime dt = new DateTime(refDate);
@@ -164,8 +162,7 @@ public class DateHelper {
                 cal.add(Calendar.MONTH, maxMonth);
             }
         } catch (ParseException ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            Sentry.captureException(ex);
         }
         return cal;
     }
@@ -186,8 +183,7 @@ public class DateHelper {
             String dateString = zoneTime.toString();
             parse = DateTime.parse(dateString);
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            Sentry.captureException(ex);
         }
         return parse;
     }

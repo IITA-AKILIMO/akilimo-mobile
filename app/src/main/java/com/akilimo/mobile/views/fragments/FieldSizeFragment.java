@@ -22,7 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.common.util.Strings;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.databinding.FragmentFieldSizeBinding;
@@ -31,6 +31,8 @@ import com.akilimo.mobile.entities.ProfileInfo;
 import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.utils.enums.EnumFieldArea;
 import com.stepstone.stepper.VerificationError;
+
+import io.sentry.Sentry;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -151,7 +153,7 @@ public class FieldSizeFragment extends BaseStepFragment {
 
             }
         } catch (Exception ex) {
-            //TODO send crash logs to third party service
+            Sentry.captureException(ex);
         }
     }
 

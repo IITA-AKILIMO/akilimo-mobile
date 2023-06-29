@@ -2,8 +2,10 @@ package com.akilimo.mobile.utils;
 
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.mynameismidori.currencypicker.ExtendedCurrency;
+
+import io.sentry.Sentry;
 
 public class CurrencyCode {
 
@@ -14,8 +16,7 @@ public class CurrencyCode {
         try {
             return currency;
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-            Crashlytics.logException(ex);
+            Sentry.captureException(ex);
         }
         return null;
     }

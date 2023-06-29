@@ -26,7 +26,7 @@ import com.akilimo.mobile.rest.RestParameters;
 import com.akilimo.mobile.rest.RestService;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
-import com.crashlytics.android.Crashlytics;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.textfield.TextInputLayout;
@@ -46,7 +46,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-;
+;import io.sentry.Sentry;
 
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
@@ -184,8 +184,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
                 try {
                     bagPrice = Double.valueOf(editExactFertilizerPrice.getText().toString());
                 } catch (Exception ex) {
-                    Crashlytics.log(Log.ERROR, LOG_TAG, "The number appears not be valid");
-                    Crashlytics.logException(ex);
+                    Sentry.captureException(ex);
                     bagPrice = 0.0;
                 }
 //                if (bagPrice <= 0 || bagPrice < minPrice || bagPrice > maxPrice) {
@@ -252,8 +251,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
                 exactPriceWrapper.setVisibility(View.VISIBLE);
             }
         } catch (Exception ex) {
-            Crashlytics.log(Log.ERROR, LOG_TAG, "Radio selection issues");
-            Crashlytics.logException(ex);
+            Sentry.captureException(ex);
         }
     }
 

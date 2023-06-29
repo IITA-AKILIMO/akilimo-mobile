@@ -11,7 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.adapters.RecOptionsAdapter;
@@ -31,6 +31,8 @@ import com.akilimo.mobile.views.activities.WeedControlCostsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.sentry.Sentry;
 
 public class PlantingPracticesActivity extends BaseActivity {
 
@@ -121,8 +123,7 @@ public class PlantingPracticesActivity extends BaseActivity {
                 processRecommendations(activity);
             } catch (Exception ex) {
                 Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                Crashlytics.logException(ex);
+                Sentry.captureException(ex);
             }
         });
 

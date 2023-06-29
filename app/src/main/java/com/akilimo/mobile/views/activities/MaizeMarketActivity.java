@@ -16,7 +16,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,6 +46,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
+
+import io.sentry.Sentry;
 
 public class MaizeMarketActivity extends BaseActivity {
 
@@ -292,8 +294,7 @@ public class MaizeMarketActivity extends BaseActivity {
                 closeActivity(backPressed);
             } catch (Exception ex) {
                 Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                Crashlytics.logException(ex);
+                Sentry.captureException(ex);
             }
 
         }
@@ -362,9 +363,8 @@ public class MaizeMarketActivity extends BaseActivity {
                         database.maizePriceDao().insertAll(maizePriceList);
                     }
                 } catch (JsonProcessingException ex) {
-                    Crashlytics.log(Log.ERROR, LOG_TAG, ex.getMessage());
-                    Crashlytics.logException(ex);
                     Snackbar.make(maizeCobPriceCard, ex.getMessage(), Snackbar.LENGTH_SHORT).show();
+                    Sentry.captureException(ex);
                 }
             }
 
@@ -374,8 +374,8 @@ public class MaizeMarketActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(@NotNull VolleyError volleyError) {
-                String error = Tools.parseNetworkError(volleyError).getMessage();
+            public void onError(@NotNull VolleyError ex) {
+                String error = Tools.parseNetworkError( ex).getMessage();
                 if (!Strings.isEmptyOrWhitespace(error)) {
                     Snackbar.make(maizeCobPriceCard, error, Snackbar.LENGTH_LONG).show();
                 }
