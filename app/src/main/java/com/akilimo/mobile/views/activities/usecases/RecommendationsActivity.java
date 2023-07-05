@@ -246,6 +246,7 @@ public class RecommendationsActivity extends BaseActivity {
 
             @Override
             public void onError(@NonNull VolleyError ex) {
+                Sentry.captureException(ex);
             }
         });
     }
