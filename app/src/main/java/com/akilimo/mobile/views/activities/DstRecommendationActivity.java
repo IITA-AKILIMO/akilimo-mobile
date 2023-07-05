@@ -188,7 +188,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         final RequestQueue queue = Volley.newRequestQueue(context.getApplicationContext());
         final RestService restService = RestService.getInstance(queue, activity);
         final RestParameters restParameters = new RestParameters(
-                "v2/recommendations",
+                "v1/recommendations",
                 countryCode
         );
         restParameters.setInitialTimeout(120000);
