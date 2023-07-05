@@ -29,6 +29,11 @@ class MySurveyActivity : BaseActivity() {
     private var akilimoRecRating: Int = 0
     private var akilimoUsefulRating: Int = 0
 
+    companion object {
+        @JvmField
+        var REQUEST_CODE: Int = 2
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMySurveyBinding.inflate(layoutInflater)
@@ -39,7 +44,7 @@ class MySurveyActivity : BaseActivity() {
         initComponent()
     }
 
-    override fun initToolbar() {
+    override fun initToolbar() {/*No processing*/
     }
 
     override fun initComponent() {
@@ -103,8 +108,7 @@ class MySurveyActivity : BaseActivity() {
         val queue = Volley.newRequestQueue(this)
         val restService = RestService.getInstance(queue, this)
         val restParameters = RestParameters(
-            "v1/user-feedback/survey",
-            countryCode
+            "v1/user-feedback/survey", countryCode
         )
         restService.setParameters(restParameters)
 
@@ -112,12 +116,16 @@ class MySurveyActivity : BaseActivity() {
         //print recommendation data here
         val data = Tools.prepareJsonObject(surveyRequest)
         restService.postJsonObject(data, object : IVolleyCallback {
-            override fun onSuccessJsonString(jsonStringResult: String) {}
-            override fun onSuccessJsonArr(jsonArray: JSONArray) {}
-            override fun onSuccessJsonObject(jsonObject: JSONObject) {
+            override fun onSuccessJsonString(jsonStringResult: String) {/*No processing*/
             }
 
-            override fun onError( ex: VolleyError) {
+            override fun onSuccessJsonArr(jsonArray: JSONArray) {/*No processing*/
+            }
+
+            override fun onSuccessJsonObject(jsonObject: JSONObject) {/*No processing*/
+            }
+
+            override fun onError(ex: VolleyError) {/*No processing*/
             }
         })
     }

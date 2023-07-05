@@ -3,6 +3,7 @@ package com.akilimo.mobile.entities
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 
 
@@ -10,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
     tableName = "currency",
     indices = [Index(value = ["currencyCode"], unique = true)]
 )
+@JsonIgnoreProperties(ignoreUnknown = true)
 open class Currency {
 
     @PrimaryKey(autoGenerate = true)
