@@ -132,20 +132,13 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
 
         btnFeedback.setOnClickListener(view -> {
             //launch the feedback dialog
-            Intent intent = new Intent(this, MySurveyActivity.class);
-            startActivityForResult(intent, 2);// Activity is started with requestCode 2
+            Intent surveyIntent = new Intent(this, MySurveyActivity.class);
+            startActivityForResult(surveyIntent, MySurveyActivity.REQUEST_CODE);
         });
 
         displayDialog(profileInfo);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 2) {
-            String message = data.getStringExtra("MESSAGE");
-        }
-    }
 
     private void buildRecommendationData() {
         BuildComputeData buildComputeData = new BuildComputeData(activity);
@@ -195,7 +188,7 @@ public class DstRecommendationActivity extends BaseActivity implements IRecommen
         final RequestQueue queue = Volley.newRequestQueue(context.getApplicationContext());
         final RestService restService = RestService.getInstance(queue, activity);
         final RestParameters restParameters = new RestParameters(
-                "v2/recommendations",
+                "v1/recommendations",
                 countryCode
         );
         restParameters.setInitialTimeout(120000);
