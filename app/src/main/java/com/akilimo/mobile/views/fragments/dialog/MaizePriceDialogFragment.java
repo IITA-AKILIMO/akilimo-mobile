@@ -136,6 +136,7 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
                     maizePrice = Double.parseDouble(editExactFertilizerPrice.getText().toString());
                 } catch (Exception ex) {
                     Sentry.captureException(ex);
+                    maizePrice = 0.0;
                 }
                 if (maizePrice <= 0) {
                     editExactFertilizerPrice.setError(getString(R.string.lbl_provide_valid_unit_price));
