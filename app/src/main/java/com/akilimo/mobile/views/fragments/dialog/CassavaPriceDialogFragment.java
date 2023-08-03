@@ -147,6 +147,7 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
                     unitPrice = Double.parseDouble(editExactFertilizerPrice.getText().toString());
                 } catch (Exception ex) {
                    Sentry.captureException(ex);
+                    unitPrice = 0.0;
                 }
                 if (unitPrice <= 0) {
                     editExactFertilizerPrice.setError(getString(R.string.lbl_provide_valid_unit_price));
