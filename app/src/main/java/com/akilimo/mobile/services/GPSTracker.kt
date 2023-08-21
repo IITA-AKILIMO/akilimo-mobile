@@ -151,6 +151,7 @@ class GPSTracker : Service, LocationListener {
 
     override fun onProviderEnabled(provider: String) {}
 
+    @Deprecated("Deprecated in Java")
     override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
 
     override fun onBind(arg0: Intent): IBinder? {
