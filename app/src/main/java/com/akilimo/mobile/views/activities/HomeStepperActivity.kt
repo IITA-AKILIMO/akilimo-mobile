@@ -227,6 +227,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         throw UnsupportedOperationException()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         try {
             if (exit) {
