@@ -12,14 +12,16 @@ android {
     def releaseVersionName = computeBuildNumber()
     def appVersionCode = computeVersionCode()
 
-    compileSdkVersion 34
-    buildToolsVersion '30.0.3'
-    //ndkVersion "25.2.9519653"
 
     defaultConfig {
         applicationId "com.akilimo.mobile"
+
+        compileSdk 33
+        buildToolsVersion = '30.0.3'
+        //ndkVersion "25.2.9519653"
+
         minSdkVersion 19
-        targetSdkVersion 34
+        targetSdkVersion 33
         versionCode appVersionCode
         versionName releaseVersionName
         multiDexEnabled true
