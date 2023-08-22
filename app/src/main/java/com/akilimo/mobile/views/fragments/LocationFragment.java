@@ -331,7 +331,7 @@ public class LocationFragment extends BaseStepFragment {
     public VerificationError verifyStep() {
         reverseGeoCode(currentLat, currentLon);
         //verify the selected country matches the one specified earlier
-        if (!userSelectedCountryCode.equalsIgnoreCase(countryCode)) {
+        if (countryCode != null && !userSelectedCountryCode.equalsIgnoreCase(countryCode)) {
             return new VerificationError(
                     String.format(getString(R.string.lbl_unsupported_location), countryName, userSelectedCountryName)
             );
