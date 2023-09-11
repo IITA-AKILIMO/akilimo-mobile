@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -17,13 +16,10 @@ import com.akilimo.mobile.databinding.ActivityHomeStepperBinding
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.FuelrodApiInterface
 import com.akilimo.mobile.interfaces.IFragmentCallBack
-import com.akilimo.mobile.utils.AppUpdateHelper
+import com.akilimo.mobile.updates.InAppUpdate
 import com.akilimo.mobile.utils.SessionManager
-import com.akilimo.mobile.utils.enums.EnumCountry
 import com.akilimo.mobile.views.activities.usecases.RecommendationsActivity
 import com.akilimo.mobile.views.fragments.*
-import com.github.javiersantos.appupdater.AppUpdater
-import com.github.javiersantos.appupdater.enums.Display
 import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.StepperLayout.StepperListener
 import com.stepstone.stepper.VerificationError
@@ -41,12 +37,12 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
     private lateinit var activity: Activity
     private lateinit var binding: ActivityHomeStepperBinding
     private lateinit var fuelrodApiInterface: FuelrodApiInterface
+    private lateinit var inAppUpdate: InAppUpdate
 
     private lateinit var stepperAdapter: MyStepperAdapter
 
     private lateinit var mStepperLayout: StepperLayout
     private lateinit var appUpdateHelper: AppUpdateHelper
-    private lateinit var appUpdater: AppUpdater
 
     private val fragmentArray: MutableList<Fragment> = arrayListOf()
 
@@ -69,6 +65,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeStepperBinding.inflate(layoutInflater)
         fuelrodApiInterface = FuelrodApiInterface.create()
+        inAppUpdate = InAppUpdate(this@HomeStepperActivity)
 
         setContentView(binding.root)
 
@@ -79,10 +76,8 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         mStepperLayout = binding.stepperLayout
 
         appUpdateHelper = AppUpdateHelper(this)
-        appUpdater = appUpdateHelper.showUpdateMessage(Display.DIALOG).setButtonDoNotShowAgain("")
 
-        appUpdater.start()
-
+        inAppUpdate.checkForUpdates()
         loadConfig()
         createFragmentArray()
         initComponent()
@@ -193,23 +188,15 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
             override fun onError(verificationError: VerificationError) {
                 showCustomWarningDialog(
-                    getString(R.string.empty_text),
-                    verificationError.errorMessage
+                    getString(R.string.empty_text), verificationError.errorMessage
                 );
             }
 
             override fun onStepSelected(newStepPosition: Int) {
-
-                if (newStepPosition == 0) {
-                    sessionManager.setForward(true)
-                    appUpdater.start()
-                } else {
-                    appUpdater.stop()
-                }
+                //not implemented
             }
 
             override fun onReturn() {
-//                appUpdater.start()
                 finish()
             }
         })
@@ -225,6 +212,21 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
     override fun initToolbar() {
         throw UnsupportedOperationException()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        inAppUpdate.onActivityResult(requestCode, resultCode)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        inAppUpdate.onResume();
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        inAppUpdate.onDestroy()
     }
 
     @Deprecated("Deprecated in Java")
