@@ -18,6 +18,7 @@ import com.akilimo.mobile.databinding.ActivityMapBoxBinding;
 import com.akilimo.mobile.inherit.BaseLocationPicker;
 import com.akilimo.mobile.services.GPSTracker;
 import com.akilimo.mobile.utils.SessionManager;
+import com.google.android.material.snackbar.Snackbar;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
@@ -37,8 +38,8 @@ public class MapBoxActivity extends BaseLocationPicker {
     public static final String ALT = "ALT";
     public static final String PLACE_NAME = "PLACE_NAME";
 
-    FloatingActionButton btnSelectLocation;
     Toolbar toolbar;
+    Snackbar snackbar;
     ActivityMapBoxBinding binding;
 
 
@@ -60,7 +61,6 @@ public class MapBoxActivity extends BaseLocationPicker {
 
 
         toolbar = binding.toolbarLayout.toolbar;
-        btnSelectLocation = binding.btnGetLocation;
         mapView = binding.mapBox.mapView;
 
         mapView.onCreate(savedInstanceState);
@@ -83,7 +83,6 @@ public class MapBoxActivity extends BaseLocationPicker {
 
     @Override
     protected void initComponent() {
-        //check if activity has extra values
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             currentLat = extras.getDouble(LAT);
@@ -96,6 +95,13 @@ public class MapBoxActivity extends BaseLocationPicker {
         } else {
             initCurrentLocation();
         }
+
+        snackbar = Snackbar.make(binding.coordinatorLayout, "Location has been selected. press OK to save and exit", Snackbar.LENGTH_INDEFINITE);
+
+        snackbar.setAction("OK", view -> {
+            processActivityResult();
+        });
+
     }
 
     @Override
@@ -117,10 +123,6 @@ public class MapBoxActivity extends BaseLocationPicker {
             Toast.makeText(context, getString(R.string.move_map_instruction), Toast.LENGTH_LONG).show();
             initDroppedMarker(style);
 
-            btnSelectLocation.setOnClickListener(view -> {
-                processActivityResult();
-            });
-
             mapboxMap.addOnMapClickListener(latLng -> {
                 this.currentCoordinates = latLng;
                 animateMapCameraChange(currentCoordinates);
@@ -130,14 +132,13 @@ public class MapBoxActivity extends BaseLocationPicker {
                     if (source != null) {
                         source.setGeoJson(Point.fromLngLat(currentCoordinates.getLongitude(), currentCoordinates.getLatitude()));
                         String coordinates = String.format("Lat:%s Lon:%s", currentCoordinates.getLatitude(), currentCoordinates.getLongitude());
-                        Toast.makeText(context, coordinates, Toast.LENGTH_LONG).show();
+                        if (snackbar != null) {
+//                            snackbar.setText(coordinates);
+                            snackbar.show();
+                        }
                     }
                     style.getLayer(DROPPED_MARKER_LAYER_ID).setProperties(visibility(VISIBLE));
                 }
-
-                // Use the map camera target's coordinates to make a reverse geocoding search
-//                reverseGeocode(style, Point.fromLngLat(currentCoordinates.getLongitude(), currentCoordinates.getLatitude()));
-
                 return true;
             });
 
@@ -157,10 +158,7 @@ public class MapBoxActivity extends BaseLocationPicker {
 
     private void animateMapCameraChange(LatLng latLng) {
 
-        CameraPosition newCameraPosition = new CameraPosition.Builder()
-                .target(latLng)
-                .zoom(BuildConfig.DEBUG ? 5 : 17)
-                .build();
+        CameraPosition newCameraPosition = new CameraPosition.Builder().target(latLng).zoom(BuildConfig.DEBUG ? 5 : 17).build();
 
 
         if (mapboxMap != null) {

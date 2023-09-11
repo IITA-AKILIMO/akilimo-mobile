@@ -377,6 +377,7 @@
     <string name="lbl_country_supported">AKILIMO kwa sasa inatoa ushauri kwa wakulima wa Nigeria,Tanzania,Rwanda na Ghana tu. Eneo ulilochagua halilingani na uchaguzi wako wa nchi. </string>
     <string name="lbl_acre_yield">tani 3–6 kwa ekari</string>
     <string name="lbl_ha_yield">tani 7.5–15 kwa hekta</string>
+    <string name="lbl_are_yield">3–6 t/are</string>
     <string name="fcy_lower">Chini</string>
     <string name="fcy_about_the_same">Karibu sawa</string>
     <string name="fcy_somewhat_higher">Kiwango cha juu kiasi</string>
@@ -433,4 +434,6 @@
     <string name="lbl_no_factories_text">Viwanda vya wanga havipatikani kwa %1s</string>
     <string name="lbl_investment_pref_sub">Ili kukupa ushauri unaofaa kulingana na mapendekezo yako ya uwekezaji, tunauliza mara ngapi unawekeza katika bidhaa mpya za kilimo au teknolojia. Ikiwa unawekeza mara kwa mara, tutakupa mapendekezo ya hatari kubwa na faida kubwa. Ikiwa unapendelea chaguo salama zaidi, tafadhali eleza kwamba unawekeza mara chache tu.</string>
     <string name="lbl_area_unit_subtitle">Ili kupata matokeo bora, tafadhali toa kipimo sahihi cha ukubwa wa shamba lako. Ikiwa hauko uhakika na kipimo halisi, unaweza kupakua programu kutoka Goole PlayStore, kwa mfano \"GPS Fields Area Measure.\" Programu hii inaweza kukusaidia kujua ukubwa wa shamba lako kwa kutembea kwenye mipaka yake au kwa kuweka alama kutimia mikono.</string>
+    <string name="lbl_remember_pref">Kumbuka mapendeleo yangu na ruka wakati ujao</string>
+    <string name="location_info">Nchi: %1$s, Latitudo: %2$.2f, Longitudo: %3$.2f</string>
 </resources>
