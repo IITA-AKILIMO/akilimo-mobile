@@ -2,9 +2,10 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.akilimo.mobile.views.activities.MapBoxActivity">
+    tools:context=".views.activities.MapBoxActivity">
 
 
     <include
@@ -14,42 +15,5 @@
     <include
         android:id="@+id/map_box"
         layout="@layout/content_map_box" />
-
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btnGetLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        android:tint="@color/colorAccentDark"
-        app:backgroundTint="@color/green_200"
-        app:fabSize="auto"
-        app:layout_anchor="@id/map_box"
-        app:layout_anchorGravity="bottom|end"
-        app:rippleColor="@color/purple_A100"
-        app:srcCompat="@drawable/ic_save" />
-
-    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-    <!--        android:id="@+id/fab_style_toggle"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_margin="16dp"-->
-    <!--        app:layout_anchor="@id/map_box"-->
-    <!--        app:layout_anchorGravity="center|end"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:srcCompat="@drawable/ic_map_layers"-->
-    <!--        tools:backgroundTint="@color/purple_50" />-->
-
-    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-    <!--        android:id="@+id/fab_refresh"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_margin="16dp"-->
-    <!--        app:layout_anchor="@id/btnGetLocation"-->
-    <!--        app:layout_constraintBottom_toTopOf="@+id/fab_style_toggle"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:srcCompat="@drawable/ic_refresh"-->
-    <!--        tools:backgroundTint="@color/green_50" />-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -44,12 +44,10 @@ public abstract class BaseStepFragment extends Fragment implements Step {
     protected String countryCode;
     protected String countryName;
     protected String errorMessage = "";
-    protected boolean isTouched;
 
     protected AppDatabase database;
     protected VerificationError verificationError = null;
 
-    private String appVersion;
     protected Context context;
     protected RequestQueue queue;
 
@@ -59,7 +57,7 @@ public abstract class BaseStepFragment extends Fragment implements Step {
     @Deprecated()
     protected boolean dataIsValid;
 
-    public BaseStepFragment() {
+    protected BaseStepFragment() {
     }
 
     @Override
@@ -74,7 +72,6 @@ public abstract class BaseStepFragment extends Fragment implements Step {
         setHasOptionsMenu(false);
         sessionManager = new SessionManager(context);
         queue = Volley.newRequestQueue(context.getApplicationContext());
-        appVersion = sessionManager.getAppVersion();
         database = AppDatabase.getDatabase(context);
         mathHelper = new MathHelper();
     }
@@ -106,8 +103,8 @@ public abstract class BaseStepFragment extends Fragment implements Step {
 
             WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
             layoutParams.copyFrom(dialog.getWindow().getAttributes());
-            layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
-            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
 
             final TextView title = dialog.findViewById(R.id.title);
@@ -116,12 +113,10 @@ public abstract class BaseStepFragment extends Fragment implements Step {
             title.setText(titleText);
             content.setText(contentText);
 
-            if (!Strings.isEmptyOrWhitespace(buttonTitle)) {
+            if (!buttonTitle.isEmpty()) {
                 btnClose.setText(buttonTitle);
             }
-            btnClose.setOnClickListener(view -> {
-                dialog.dismiss();
-            });
+            btnClose.setOnClickListener(view -> dialog.dismiss());
             dialog.setCancelable(false);
             dialog.setCanceledOnTouchOutside(false);
             dialog.show();
@@ -138,7 +133,7 @@ public abstract class BaseStepFragment extends Fragment implements Step {
             String lon = mathHelper.removeLeadingZero(locationInfo.getLongitude(), "#.####");
 
             String place = locationInfo.getLocationCountryName();
-            stBuilder.append(String.format("%s \n%s,%s", place, lat, lon));
+            stBuilder.append(String.format("%s %n%s,%s", place, lat, lon));
         }
 
         return stBuilder;
@@ -152,6 +147,11 @@ public abstract class BaseStepFragment extends Fragment implements Step {
             AppLocale.setDesiredLocale(desiredLocale);
         }
         return desiredLocale;
+    }
+
+    @Override
+    public void onError(@NonNull VerificationError error) {
+        //not implemented
     }
 
 }
