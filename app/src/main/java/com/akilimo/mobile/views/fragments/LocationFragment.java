@@ -130,48 +130,39 @@ public class LocationFragment extends BaseStepFragment {
         if (editTextFarmName.getParent() != null) {
             ((ViewGroup) editTextFarmName.getParent()).removeView(editTextFarmName);
         }
-        AlertDialog fieldNameDialog = new MaterialAlertDialogBuilder(context)
-                .setTitle(getString(R.string.lbl_farm_name_title))
+        AlertDialog fieldNameDialog = new MaterialAlertDialogBuilder(context).setTitle(getString(R.string.lbl_farm_name_title))
 //                .setMessage(getString(R.string.lbl_farm_name))
-                .setView(editTextFarmName)
-                .setCancelable(false)
-                .setPositiveButton(getString(R.string.lbl_ok), (dialogInterface, i) -> {
+                .setView(editTextFarmName).setCancelable(false).setPositiveButton(getString(R.string.lbl_ok), (dialogInterface, i) -> {
                     farmName = editTextFarmName.getText().toString();
                     setFarmNameInfo(fullNames, farmName);
                     editTextFarmName.setText(farmName);
-                })
-                .setNegativeButton(getString(R.string.lbl_cancel), null).create();
+                }).setNegativeButton(getString(R.string.lbl_cancel), null).create();
 
         binding.btnFieldName.setOnClickListener(theView -> fieldNameDialog.show());
-        ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-            @Override
-            public void onActivityResult(ActivityResult result) {
-                try {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            currentLat = data.getDoubleExtra(MapBoxActivity.LAT, 0.0);
-                            currentLon = data.getDoubleExtra(MapBoxActivity.LON, 0.0);
-                            currentAlt = data.getDoubleExtra(MapBoxActivity.ALT, 0.0);
-                            reverseGeoCode(currentLat, currentLon);
-                        } else {
-                            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
-                        }
+        ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            try {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null) {
+                        currentLat = data.getDoubleExtra(MapBoxActivity.LAT, 0.0);
+                        currentLon = data.getDoubleExtra(MapBoxActivity.LON, 0.0);
+                        currentAlt = data.getDoubleExtra(MapBoxActivity.ALT, 0.0);
+                        reverseGeoCode(currentLat, currentLon);
+                    } else {
+                        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
                     }
-                } catch (Exception ex) {
-                    Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    Sentry.captureException(ex);
                 }
+            } catch (Exception ex) {
+                Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+                Sentry.captureException(ex);
             }
         });
 
         btnSelectLocation.setOnClickListener(v -> {
-//            Intent intent = new Intent(getActivity(), MapSelectionActivity.class);
             Intent intent = new Intent(getActivity(), MapBoxActivity.class);
             intent.putExtra(MapBoxActivity.LAT, currentLat);
             intent.putExtra(MapBoxActivity.LON, currentLon);
             intent.putExtra(MapBoxActivity.ALT, currentAlt);
-//            this.startActivityForResult(intent, HomeStepperActivity.MAP_BOX_PLACE_PICKER_REQUEST_CODE);
             mStartForResult.launch(intent);
 
         });
@@ -182,9 +173,7 @@ public class LocationFragment extends BaseStepFragment {
     }
 
     private void setFarmNameInfo(String fullNames, String farmName) {
-        String farmInfo = (farmName.isEmpty() || fullNames.isEmpty())
-                ? null
-                : String.format("%s’s cassava farm: %s", fullNames, farmName);
+        String farmInfo = (farmName.isEmpty() || fullNames.isEmpty()) ? null : String.format("%s’s cassava farm: %s", fullNames, farmName);
         binding.txtFarmInfo.setText(farmInfo);
     }
 
@@ -208,10 +197,7 @@ public class LocationFragment extends BaseStepFragment {
 
 
     private void reverseGeoCode(double lat, double lon) {
-        MapboxGeocoding reverseGeocode = MapboxGeocoding
-                .builder().accessToken(MAP_BOX_ACCESS_TOKEN)
-                .query(Point.fromLngLat(lon, lat))
-                .fuzzyMatch(true)
+        MapboxGeocoding reverseGeocode = MapboxGeocoding.builder().accessToken(MAP_BOX_ACCESS_TOKEN).query(Point.fromLngLat(lon, lat)).fuzzyMatch(true)
 //                .geocodingTypes(GeocodingCriteria.TYPE_PLACE)
                 .build();
 
@@ -227,6 +213,9 @@ public class LocationFragment extends BaseStepFragment {
                         CarmenFeature carmenFeature = features.get(featureSize - 1);
                         countryCode = carmenFeature.properties().get("short_code").getAsString().toUpperCase();
                         countryName = carmenFeature.placeName();
+
+                        String welcomeMessage = getString(R.string.location_info, countryName, lat, lon);
+                        binding.locationInfo.setText(welcomeMessage);
                         saveLocation();
                     } else {
                         showCustomWarningDialog("Unable to save location please pick a different location");
@@ -300,9 +289,7 @@ public class LocationFragment extends BaseStepFragment {
         reverseGeoCode(currentLat, currentLon);
         //verify the selected country matches the one specified earlier
         if (countryCode != null && !userSelectedCountryCode.equalsIgnoreCase(countryCode)) {
-            return new VerificationError(
-                    String.format(getString(R.string.lbl_unsupported_location), countryName, userSelectedCountryName)
-            );
+            return new VerificationError(String.format(getString(R.string.lbl_unsupported_location), countryName, userSelectedCountryName));
         }
         return null;
     }

@@ -577,4 +577,5 @@
     <string name="lbl_no_factories">Starch factories are not available</string>
     <string name="lbl_no_factories_text">Starch factories are not available for %1s</string>
     <string name="lbl_remember_pref">Remember my preference and skip next time</string>
+    <string name="location_info">Country: %1$s, Latitude: %2$.2f, Longitude: %3$.2f</string>
 </resources>
