@@ -206,26 +206,6 @@ public class LocationFragment extends BaseStepFragment {
         }
     }
 
-    @SuppressLint("LogNotTimber")
-    private void reverseGeoCodeNew(double lat, double lon) {
-
-
-        MapBoxApiInterface mapBoxApiInterface = MapBoxApi.create();
-
-        Call<ReverseGeoCode> result = mapBoxApiInterface.reverseGeoCode(lon, lat, "place", MAP_BOX_ACCESS_TOKEN);
-        result.enqueue(new Callback<ReverseGeoCode>() {
-            @Override
-            public void onResponse(@NonNull Call<ReverseGeoCode> call, @NonNull Response<ReverseGeoCode> response) {
-                Log.d("TAG", response.code() + "");
-                ReverseGeoCode data = response.body();
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ReverseGeoCode> call, @NonNull Throwable t) {
-                errorMessage = t.getMessage();
-            }
-        });
-    }
 
     private void reverseGeoCode(double lat, double lon) {
         MapboxGeocoding reverseGeocode = MapboxGeocoding
@@ -314,18 +294,6 @@ public class LocationFragment extends BaseStepFragment {
 
     }
 
-    @Deprecated
-    private boolean isSupportedCountry(String countryCode) {
-        Set<String> supportedCountryCodes = new HashSet<>(Arrays.asList(
-                EnumCountry.Nigeria.countryCode(),
-                EnumCountry.Tanzania.countryCode(),
-                EnumCountry.Rwanda.countryCode(),
-                EnumCountry.Ghana.countryCode(),
-                EnumCountry.Burundi.countryCode()
-        ));
-        return supportedCountryCodes.contains(countryCode.toUpperCase());
-    }
-
     @Nullable
     @Override
     public VerificationError verifyStep() {
@@ -342,10 +310,5 @@ public class LocationFragment extends BaseStepFragment {
     @Override
     public void onSelected() {
         reloadLocationInfo();
-    }
-
-    @Override
-    public void onError(@NonNull VerificationError error) {
-
     }
 }
