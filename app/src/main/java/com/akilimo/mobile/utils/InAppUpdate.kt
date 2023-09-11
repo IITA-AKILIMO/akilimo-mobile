@@ -10,6 +10,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.InstallState
 import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
@@ -34,17 +35,22 @@ class InAppUpdate(private val parentActivity: Activity) {
     }
 
     fun checkForUpdates() {
-        appUpdateManager!!.appUpdateInfo.addOnSuccessListener { info: AppUpdateInfo ->
-            val isUpdateAvailable = info.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-            val updateAllowed = info.isUpdateTypeAllowed(updateType)
+        appUpdateManager!!.appUpdateInfo.addOnSuccessListener { updateInfo: AppUpdateInfo ->
+            val isUpdateAvailable =
+                updateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+            val updateAllowed = updateInfo.isUpdateTypeAllowed(updateType)
             if (isUpdateAvailable && updateAllowed) {
+                val updateOptions = AppUpdateOptions
+                    .newBuilder(updateType)
+                    .build()
                 try {
                     appUpdateManager.startUpdateFlowForResult(
-                        info,
-                        updateType,
+                        updateInfo,
                         parentActivity,
+                        updateOptions,
                         UPDATE_REQUEST_CODE
                     )
+
                 } catch (ex: SendIntentException) {
                     throw RuntimeException(ex)
                 }
@@ -69,8 +75,7 @@ class InAppUpdate(private val parentActivity: Activity) {
             parentActivity.findViewById(R.id.content),
             "Update completed",
             Snackbar.LENGTH_INDEFINITE
-        )
-            .setAction("RESTART") { view: View? -> appUpdateManager?.completeUpdate() }.show()
+        ).setAction("RESTART") { view: View? -> appUpdateManager?.completeUpdate() }.show()
     }
 
     fun onResume() {
