@@ -20,7 +20,7 @@ class InAppUpdate(private val parentActivity: Activity) {
     private val appUpdateManager: AppUpdateManager?
     private var updateType = AppUpdateType.FLEXIBLE
     private val UPDATE_REQUEST_CODE = 500
-    private val RESULT_CANCELLED = 501
+    private val RESULT_CANCELLED = 0
 
     init {
         appUpdateManager = AppUpdateManagerFactory.create(parentActivity)
