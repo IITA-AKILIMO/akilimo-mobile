@@ -1,4 +1,4 @@
-package com.akilimo.mobile.updates
+package com.akilimo.mobile.utils
 
 import android.R
 import android.app.Activity

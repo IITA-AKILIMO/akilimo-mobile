@@ -16,7 +16,7 @@ import com.akilimo.mobile.databinding.ActivityHomeStepperBinding
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.FuelrodApiInterface
 import com.akilimo.mobile.interfaces.IFragmentCallBack
-import com.akilimo.mobile.updates.InAppUpdate
+import com.akilimo.mobile.utils.InAppUpdate
 import com.akilimo.mobile.utils.SessionManager
 import com.akilimo.mobile.views.activities.usecases.RecommendationsActivity
 import com.akilimo.mobile.views.fragments.*
