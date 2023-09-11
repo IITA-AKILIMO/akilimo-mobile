@@ -95,6 +95,7 @@ class MyTimeLineAdapter(
                         mAttributes.markerIncompleteColor
                     )
                 }
+
                 StepStatus.COMPLETED -> {
                     timelineView.marker = VectorDrawableUtils.getDrawable(
                         itemView.context,
@@ -102,6 +103,7 @@ class MyTimeLineAdapter(
                         mAttributes.markerCompleteColor
                     )
                 }
+
                 StepStatus.WARNING -> {
                     timelineView.marker = VectorDrawableUtils.getDrawable(
                         itemView.context,
@@ -109,10 +111,11 @@ class MyTimeLineAdapter(
                         ResourcesCompat.getColor(context.resources, R.color.yellow_900, null)
                     )
                 }
+
                 StepStatus.CANCELLED -> {
                     timelineView.marker = VectorDrawableUtils.getDrawable(
                         itemView.context,
-                        R.drawable.ic_clear_all_white_24dp,
+                        R.drawable.ic_clear,
                         mAttributes.markerCompleteColor
                     )
                 }
