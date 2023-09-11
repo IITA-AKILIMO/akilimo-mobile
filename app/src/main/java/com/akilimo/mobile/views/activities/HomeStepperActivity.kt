@@ -42,7 +42,6 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
     private lateinit var stepperAdapter: MyStepperAdapter
 
     private lateinit var mStepperLayout: StepperLayout
-    private lateinit var appUpdateHelper: AppUpdateHelper
 
     private val fragmentArray: MutableList<Fragment> = arrayListOf()
 
@@ -74,8 +73,6 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         database = AppDatabase.getDatabase(context)
         sessionManager = SessionManager(this)
         mStepperLayout = binding.stepperLayout
-
-        appUpdateHelper = AppUpdateHelper(this)
 
         inAppUpdate.checkForUpdates()
         loadConfig()
