@@ -250,5 +250,6 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
     }
 
     override fun reloadView() {
+        // Not imlemented
     }
 }
