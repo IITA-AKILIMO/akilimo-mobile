@@ -444,4 +444,6 @@
     <string name="area_unit_are">Are (are)</string>
     <string name="lbl_investment_pref_sub">Kugira ngo tugufashe neza nk\'uko umurimo wawe wo mu buzima bwawe ukora, turabaza niba wakora byinshi mu gufasha uruganda rw\'amazi cyangwa ibikorwa bya teknoloji byo mu nshingano za nyuma za serivisi zacu. Niba wakora byinshi, tutabaha ibisobanuro byihariye, ariko biraburamo amakimbirane akomeye akomeye. Niba wifuza ibibazo bifite umutungo wo kurinda, ndangiza ko wakora mu buzima bwawe ku buryo bukorwa.</string>
     <string name="lbl_area_unit_subtitle">Umwihariko mwiza, nkomeza igisubizo kigomba ku isi ya kibondo cy\'urwego rwa shamba ryawe. Iki wakoranye n\'ubuhamya ntikivomo, wabandikire inyandiko muri iyi nkuru \'GPS Fields Area Measure.\' Iyi ndirimbo izakuboneza ukuboko bw\'ishamba ryawe kugira ngo utembe ukimishe amakaza ye cyangwa ukubandakize iyo mikino ye.</string>
+    <string name="lbl_remember_pref">Kubona ibyifuzo byanjye na jya itariki inyuma</string>
+    <string name="location_info">Isi: %1$s, Latitudo: %2$.2f, Longitudo: %3$.2f</string>
 </resources>
