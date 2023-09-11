@@ -89,11 +89,9 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
                 call: Call<List<RemoteConfig>>, response: Response<List<RemoteConfig>>
             ) {
                 val configList = response.body()
-                if (configList != null) {
-                    if (configList.isNotEmpty()) {
-                        configList.forEach { config ->
-                            configListDict[config.configName] = config.configValue
-                        }
+                if (!configList.isNullOrEmpty()) {
+                    configList.forEach { config ->
+                        configListDict[config.configName] = config.configValue
                     }
                 }
 
