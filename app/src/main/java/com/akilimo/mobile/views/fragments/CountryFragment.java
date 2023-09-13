@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,20 +18,20 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
-import com.blongho.country_data.World;
-
-import com.google.android.gms.common.util.Strings;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.databinding.FragmentCountryBinding;
 import com.akilimo.mobile.entities.ProfileInfo;
 import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.utils.enums.EnumCountry;
+import com.blongho.country_data.World;
 import com.stepstone.stepper.VerificationError;
 
-;import java.util.HashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 import io.sentry.Sentry;
+
+;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -118,10 +117,6 @@ public class CountryFragment extends BaseStepFragment {
         btnPickCountry.setOnClickListener(pickerDialog -> {
             if (selectedLanguage.equalsIgnoreCase("sw")) {
                 countries = new String[]{EnumCountry.Tanzania.name()};
-            } else if (selectedLanguage.equalsIgnoreCase("rw")) {
-//                countries = new String[]{
-//                        EnumCountry.Rwanda.name()
-//                };
             }
 
 
