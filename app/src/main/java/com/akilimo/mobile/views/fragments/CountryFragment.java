@@ -4,6 +4,7 @@ package com.akilimo.mobile.views.fragments;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -181,7 +182,7 @@ public class CountryFragment extends BaseStepFragment {
             profileInfo.setCountryName(countryName);
             profileInfo.setCurrency(currency);
 
-            dataIsValid = !Strings.isEmptyOrWhitespace(countryCode);
+            dataIsValid = !TextUtils.isEmpty(countryCode);
             if (profileInfo.getProfileId() != null) {
                 int id = profileInfo.getProfileId();
                 if (id > 0) {
