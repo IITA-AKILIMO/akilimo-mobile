@@ -41,7 +41,7 @@ public abstract class BaseStepFragment extends Fragment implements Step {
     protected String LOG_TAG = BaseStepFragment.class.getSimpleName();
 
     protected String currency;
-    protected String countryCode;
+    protected String countryCode = "";
     protected String countryName;
     protected String errorMessage = "";
 
@@ -113,7 +113,7 @@ public abstract class BaseStepFragment extends Fragment implements Step {
             title.setText(titleText);
             content.setText(contentText);
 
-            if (!buttonTitle.isEmpty()) {
+            if (!buttonTitle.isEmpty() && buttonTitle.length() > 1) {
                 btnClose.setText(buttonTitle);
             }
             btnClose.setOnClickListener(view -> dialog.dismiss());
