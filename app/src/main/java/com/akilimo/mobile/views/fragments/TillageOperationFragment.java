@@ -2,20 +2,16 @@ package com.akilimo.mobile.views.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.akilimo.mobile.databinding.FragmentTillageOperationBinding;
 import com.akilimo.mobile.entities.CurrentPractice;
@@ -75,8 +71,6 @@ public class TillageOperationFragment extends BaseStepFragment {
 
         chkPloughing = binding.chkPloughing;
         chkRidging = binding.chkRidging;
-
-        final FragmentManager fm = getActivity().getSupportFragmentManager();
 
         chkPloughing.setOnCheckedChangeListener((buttonView, checked) -> {
             operation = checked ? "Plough" : "NA";
@@ -142,8 +136,8 @@ public class TillageOperationFragment extends BaseStepFragment {
         operationTypeDialogFragment.show(getParentFragmentManager(), OperationTypeDialogFragment.ARG_ITEM_ID);
 
 
-        operationTypeDialogFragment.setOnDismissListener((operation, enumOperationType, cancelled) -> {
-            switch (operation) {
+        operationTypeDialogFragment.setOnDismissListener((dialogOperation, enumOperationType, cancelled) -> {
+            switch (dialogOperation) {
                 case "Plough":
                     performPloughing = !cancelled;
                     chkPloughing.setChecked(!cancelled);
@@ -156,8 +150,7 @@ public class TillageOperationFragment extends BaseStepFragment {
                     break;
                 default:
                     ridgingMethod = EnumOperationType.NONE.operationName();
-                    performPloughing = false;
-                    performRidging = false;
+                    performPloughing = performRidging = false;
                     break;
             }
             saveEntities();
@@ -219,6 +212,6 @@ public class TillageOperationFragment extends BaseStepFragment {
 
     @Override
     public void onError(@NonNull VerificationError error) {
-
+        //Not implemented
     }
 }
