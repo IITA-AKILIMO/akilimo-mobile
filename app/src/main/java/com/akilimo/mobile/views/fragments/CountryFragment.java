@@ -4,7 +4,7 @@ package com.akilimo.mobile.views.fragments;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,17 +18,20 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
-import com.blongho.country_data.World;
-
-import com.google.android.gms.common.util.Strings;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.databinding.FragmentCountryBinding;
 import com.akilimo.mobile.entities.ProfileInfo;
 import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.utils.enums.EnumCountry;
+import com.blongho.country_data.World;
 import com.stepstone.stepper.VerificationError;
 
-;import io.sentry.Sentry;
+import java.util.HashMap;
+import java.util.Map;
+
+import io.sentry.Sentry;
+
+;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,11 +52,7 @@ public class CountryFragment extends BaseStepFragment {
     private String selectedLanguage = "";
     private int selectedCountryIndex = -1;
 
-    private String[] countries = new String[]{
-            EnumCountry.Burundi.name(),
-            EnumCountry.Ghana.name(),
-            EnumCountry.Nigeria.name(),
-            EnumCountry.Tanzania.name(),
+    private String[] countries = new String[]{EnumCountry.Burundi.name(), EnumCountry.Ghana.name(), EnumCountry.Nigeria.name(), EnumCountry.Tanzania.name(),
 //            EnumCountry.Rwanda.name(),
     };
 
@@ -117,13 +116,7 @@ public class CountryFragment extends BaseStepFragment {
 
         btnPickCountry.setOnClickListener(pickerDialog -> {
             if (selectedLanguage.equalsIgnoreCase("sw")) {
-                countries = new String[]{
-                        EnumCountry.Tanzania.name()
-                };
-            } else if (selectedLanguage.equalsIgnoreCase("rw")) {
-//                countries = new String[]{
-//                        EnumCountry.Rwanda.name()
-//                };
+                countries = new String[]{EnumCountry.Tanzania.name()};
             }
 
 
@@ -135,46 +128,27 @@ public class CountryFragment extends BaseStepFragment {
                     selectedCountryIndex = i;
                 }
             });
+
+            Map<String, EnumCountry> countryMap = new HashMap<>();
+            countryMap.put("kenya", EnumCountry.Kenya);
+            countryMap.put("tanzania", EnumCountry.Tanzania);
+            countryMap.put("nigeria", EnumCountry.Nigeria);
+            countryMap.put("ghana", EnumCountry.Ghana);
+            countryMap.put("rwanda", EnumCountry.Rwanda);
+            countryMap.put("burundi", EnumCountry.Burundi);
+
+
             builder.setPositiveButton(context.getString(R.string.lbl_ok), (dialogInterface, whichButton) -> {
-                if (selectedCountryIndex >= 0) {
+                if (selectedCountryIndex >= 0 && countries.length > 0) {
                     countryName = countries[selectedCountryIndex];
-                    switch (countryName.toLowerCase()) {
-                        case "kenya":
-                            countryName = EnumCountry.Kenya.name();
-                            currency = EnumCountry.Kenya.currency();
-                            countryCode = EnumCountry.Kenya.countryCode();
-                            break;
-                        case "tanzania":
-                            countryName = EnumCountry.Tanzania.name();
-                            currency = EnumCountry.Tanzania.currency();
-                            countryCode = EnumCountry.Tanzania.countryCode();
-                            break;
-                        case "nigeria":
-                            countryName = EnumCountry.Nigeria.name();
-                            currency = EnumCountry.Nigeria.currency();
-                            countryCode = EnumCountry.Nigeria.countryCode();
-                            break;
-                        case "ghana":
-                            countryName = EnumCountry.Ghana.name();
-                            currency = EnumCountry.Ghana.currency();
-                            countryCode = EnumCountry.Ghana.countryCode();
-                            break;
-                        case "rwanda":
-                            countryName = EnumCountry.Rwanda.name();
-                            currency = EnumCountry.Rwanda.currency();
-                            countryCode = EnumCountry.Rwanda.countryCode();
-                            break;
-                        case "burundi":
-                            countryName = EnumCountry.Burundi.name();
-                            currency = EnumCountry.Burundi.currency();
-                            countryCode = EnumCountry.Burundi.countryCode();
-                            break;
-                        default:
-                            countryName = EnumCountry.Other.name();
-                            currency = EnumCountry.Other.currency();
-                            countryCode = EnumCountry.Other.countryCode();
-                            break;
+                    EnumCountry selectedCountry = countryMap.get(countryName.toLowerCase());
+                    if (selectedCountry == null) {
+                        selectedCountry = EnumCountry.Other;
                     }
+
+                    countryName = selectedCountry.name();
+                    currency = selectedCountry.currency();
+                    countryCode = selectedCountry.countryCode();
                     countryImage.setImageResource(World.getFlagOf(countryCode));
                     txtCountryName.setText(countryName);
                     dialogInterface.dismiss();
@@ -203,7 +177,7 @@ public class CountryFragment extends BaseStepFragment {
             profileInfo.setCountryName(countryName);
             profileInfo.setCurrency(currency);
 
-            dataIsValid = !Strings.isEmptyOrWhitespace(countryCode);
+            dataIsValid = !TextUtils.isEmpty(countryCode);
             if (profileInfo.getProfileId() != null) {
                 int id = profileInfo.getProfileId();
                 if (id > 0) {

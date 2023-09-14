@@ -5,18 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.akilimo.mobile.Locales;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.adapters.MySpinnerAdapter;
@@ -26,6 +23,8 @@ import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.interfaces.IFragmentCallBack;
 import com.akilimo.mobile.utils.enums.EnumCountry;
 import com.akilimo.mobile.views.activities.HomeStepperActivity;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.jakewharton.processphoenix.ProcessPhoenix;
 import com.stepstone.stepper.VerificationError;
 
@@ -83,12 +82,10 @@ public class WelcomeFragment extends BaseStepFragment {
         prefs = new SharedPrefsAppLocaleRepository(context);
         profileInfo = database.profileInfoDao().findOne();
 
-        languagePicker.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                languagePicked = true;
-                return false;
-            }
+        languagePicker.setOnTouchListener((touchView, motionEvent) -> {
+            languagePicked = true;
+            touchView.performClick();
+            return touchView.onTouchEvent(motionEvent);
         });
         languagePicker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -98,17 +95,18 @@ public class WelcomeFragment extends BaseStepFragment {
                     selectedLocale = AppLocale.getSupportedLocales().get(selectedLanguageIndex);
 
                     AppLocale.setDesiredLocale(selectedLocale);
-                    SharedPrefsAppLocaleRepository prefs = new SharedPrefsAppLocaleRepository(context);
+                    prefs = new SharedPrefsAppLocaleRepository(context);
                     prefs.setDesiredLocale(selectedLocale);
                     AppLocale.setAppLocaleRepository(prefs);
 
                     AppLocale.setDesiredLocale(selectedLocale);
 
+                    //noinspection DataFlowIssue
                     final View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
                     Reword.reword(rootView);
                     Intent intent = new Intent(context, HomeStepperActivity.class);
                     Snackbar snackBar = Snackbar
-                            .make(binding.lytParent, getString(R.string.lbl_restart_app_prompt), Snackbar.LENGTH_INDEFINITE)
+                            .make(binding.lytParent, getString(R.string.lbl_restart_app_prompt), BaseTransientBottomBar.LENGTH_INDEFINITE)
                             .setAction(context.getString(R.string.lbl_ok), snackView -> ProcessPhoenix.triggerRebirth(context, intent));
                     snackBar.show();
                     initSpinnerItems();
@@ -118,6 +116,7 @@ public class WelcomeFragment extends BaseStepFragment {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+                //not implemented
             }
         });
 
@@ -173,19 +172,15 @@ public class WelcomeFragment extends BaseStepFragment {
 
     @Override
     public void onSelected() {
+        //not implemented
     }
 
     @Override
     public void onError(@NonNull VerificationError error) {
+        //not implemented
     }
 
     public void setOnFragmentCloseListener(IFragmentCallBack callBack) {
         this.fragmentCallBack = callBack;
-    }
-
-    private void reloadView() {
-        if (fragmentCallBack != null) {
-            fragmentCallBack.reloadView();
-        }
     }
 }
