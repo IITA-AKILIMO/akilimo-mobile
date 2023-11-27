@@ -2,6 +2,118 @@
 ## [Unreleased]
 
 
+<a name="24.2.0"></a>
+## [24.2.0] - 2023-09-14
+### Code Refactoring
+- rewrote code to be more readable
+- optimized fragment view class
+- deleted deprecated fieldinfo fragment class
+- removed dead code
+- switched to TextUtils
+
+### Features
+- reducd code complexity for the switch case
+
+
+<a name="24.1.0"></a>
+## [24.1.0] - 2023-09-11
+### Code Refactoring
+- code cleanup
+- reduced code smell for null checks
+- revised updateflow to use non deprecated method
+- moved inAppUpdate class to utils package
+- revised result code for cancelled updates
+- added replacment vector icon
+
+### Continuous integration changes
+- added next release github action
+- added pull request automation
+
+### Features
+- updated translations
+- added country information text on selection
+- added google updated checker
+
+
+<a name="24.0.1"></a>
+## [24.0.1] - 2023-08-22
+### Bug Fixes
+- added null check for country code
+
+
+<a name="24.0.0"></a>
+## [24.0.0] - 2023-08-21
+### Code Refactoring
+- removed eprecatd configuration in gradle build script
+- removed accidental comment
+
+### Continuous integration changes
+- downgraded build tools
+- disabled android setup step
+- testing android build
+- added android sdk setup step
+- revised revision tools and github actions sequence
+
+### Features
+- updated gradle and kotlin version
+
+### BREAKING CHANGE
+
+Updated gralde and kotlin versions
+
+
+<a name="23.0.2"></a>
+## [23.0.2] - 2023-08-21
+
+<a name="23.0.1"></a>
+## [23.0.1] - 2023-08-03
+### Bug Fixes
+- added default maize price on number error
+- added default value for unit price on error
+
+
+<a name="23.0.0"></a>
+## [23.0.0] - 2023-07-05
+### Bug Fixes
+- added jackson ignore property
+- corrected incorrect currency endpoint
+
+### Code Refactoring
+- switched to v1 for recommendations
+- removed uneeded code block that was causing exceptions
+- updated database name
+
+### Continuous integration changes
+- added new github rlease action
+
+### Docs
+- updated release notes
+
+
+<a name="22.1.0"></a>
+## [22.1.0] - 2023-06-29
+### Bug Fixes
+- correted incorrect function name
+
+### Code Refactoring
+- removed step index check
+- removed uneeded variables
+- removed uncessesary variables
+- revised wording for important information page
+
+### Docs
+- updated relaase notes
+
+### Features
+- replaced TODO comments for crash logging
+- added sntry logging libraries
+- removed obsolete crashlytics logging
+
+### BREAKING CHANGE
+
+replaced with sentry or new firebase logging
+
+
 <a name="22.0.0"></a>
 ## [22.0.0] - 2023-05-18
 ### Bug Fixes
@@ -490,11 +602,11 @@ T
 <a name="17.0.beta2020201"></a>
 ## [17.0.beta2020201] - 2020-07-19
 
-<a name="16.3.beta2020201"></a>
-## [16.3.beta2020201] - 2020-07-19
-
 <a name="17.0.0"></a>
 ## [17.0.0] - 2020-07-19
+
+<a name="16.3.beta2020201"></a>
+## [16.3.beta2020201] - 2020-07-19
 
 <a name="16.3.beta26"></a>
 ## [16.3.beta26] - 2020-07-15
@@ -673,7 +785,15 @@ T
 <a name="v4.1.2"></a>
 ## v4.1.2 - 2019-10-15
 
-[Unreleased]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/22.0.0...HEAD
+[Unreleased]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/24.2.0...HEAD
+[24.2.0]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/24.1.0...24.2.0
+[24.1.0]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/24.0.1...24.1.0
+[24.0.1]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/24.0.0...24.0.1
+[24.0.0]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/23.0.2...24.0.0
+[23.0.2]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/23.0.1...23.0.2
+[23.0.1]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/23.0.0...23.0.1
+[23.0.0]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/22.1.0...23.0.0
+[22.1.0]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/22.0.0...22.1.0
 [22.0.0]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/21.5.0...22.0.0
 [21.5.0]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/21.4.4...21.5.0
 [21.4.4]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/21.4.3...21.4.4
@@ -723,9 +843,9 @@ T
 [17.0.3]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/17.0.2...17.0.3
 [17.0.2]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/17.0.1...17.0.2
 [17.0.1]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/17.0.beta2020201...17.0.1
-[17.0.beta2020201]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/16.3.beta2020201...17.0.beta2020201
-[16.3.beta2020201]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/17.0.0...16.3.beta2020201
-[17.0.0]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/16.3.beta26...17.0.0
+[17.0.beta2020201]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/17.0.0...17.0.beta2020201
+[17.0.0]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/16.3.beta2020201...17.0.0
+[16.3.beta2020201]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/16.3.beta26...16.3.beta2020201
 [16.3.beta26]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/16.3.beta3...16.3.beta26
 [16.3.beta3]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/16.3.4...16.3.beta3
 [16.3.4]: https://github.com/IITA-AKILIMO/akilimo-mobile/compare/16.3.beta2...16.3.4
