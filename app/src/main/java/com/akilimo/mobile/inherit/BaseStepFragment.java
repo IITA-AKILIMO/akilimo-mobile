@@ -113,7 +113,7 @@ public abstract class BaseStepFragment extends Fragment implements Step {
             title.setText(titleText);
             content.setText(contentText);
 
-            if (buttonTitle!=null&&!buttonTitle.isEmpty() && buttonTitle.length() > 1) {
+            if (buttonTitle!=null && buttonTitle.length() > 1) {
                 btnClose.setText(buttonTitle);
             }
             btnClose.setOnClickListener(view -> dialog.dismiss());
