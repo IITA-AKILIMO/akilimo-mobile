@@ -21,7 +21,7 @@ import io.sentry.Sentry;
  */
 
 public class SessionManager {
-    private static final String PREF_NAME = "akilimo-pref";
+    private static final String PREF_NAME = "akilimo-config";
 
     private SharedPreferences.Editor editor;
     private Context context;
@@ -41,7 +41,7 @@ public class SessionManager {
     }
 
     public String getApiEndPoint() {
-        return pref.getString("apiResource", "http://157.245.26.55:8099/api/");
+        return pref.getString("apiResource", "http://akilimo.org:8099/api/");
     }
 
     public void setApiRefreshToken(String apiToken) {

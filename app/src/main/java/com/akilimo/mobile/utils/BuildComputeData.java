@@ -181,10 +181,10 @@ public class BuildComputeData {
         }.getType();
 
         if (computeRequest.getInterCroppingPotatoRec() || computeRequest.getInterCroppingMaizeRec()) {
-            List<InterCropFertilizer> interCropFertilizers = database.interCropFertilizerDao().findAllByCountry(countryCode);
+            List<InterCropFertilizer> interCropFertilizers = database.interCropFertilizerDao().findAllSelectedByCountry(countryCode);
             fertilizerList = modelMapper.map(interCropFertilizers, listType);
         } else {
-            fertilizerList = database.fertilizerDao().findAllByCountry(countryCode);
+            fertilizerList = database.fertilizerDao().findAllSelectedByCountry(countryCode);
         }
 
 
