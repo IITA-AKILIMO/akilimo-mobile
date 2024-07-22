@@ -6,7 +6,7 @@ on:
 
 jobs:
   build_artifacts:
-    name: Build artifacts
+    name: Process tags
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
