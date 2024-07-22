@@ -10,15 +10,15 @@ apply plugin: 'jacoco'
 android {
     def releaseVersionName = computeBuildNumber()
     def appVersionCode = computeVersionCode()
-
+    namespace 'com.akilimo.mobile'
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.akilimo.mobile"
 
-        //TODO to be updated
-        compileSdkVersion  35
+        compileSdk 34
         minSdkVersion 19
-        targetSdkVersion 35
+        targetSdkVersion 34
 
         versionCode appVersionCode
         versionName releaseVersionName
@@ -54,10 +54,6 @@ android {
         buildConfig true
         //  dataBinding = false
     }
-    dexOptions {
-        //TODO remove this in future release
-        javaMaxHeapSize "4g"
-    }
 //    androidExtensions {
 //        experimental = true
 //    }
@@ -65,7 +61,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-    namespace 'com.akilimo.mobile'
+
     lint {
         abortOnError false
         checkReleaseBuilds false
