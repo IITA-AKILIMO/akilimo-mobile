@@ -16,7 +16,7 @@ jobs:
       REPO_NAME: ${{ secrets.REPO_NAME }}
       LATEST_TAG_FILE: "latest_tag.txt"
       RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
-      BUILD_NUMBER: ${{ github.run_id }}
+#      BUILD_NUMBER: ${{ github.run_id }}
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
     steps:
       - name: Checkout the code
