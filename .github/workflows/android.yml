@@ -1,6 +1,5 @@
 name: Android CICD
 on:
-  #  pull_request:
   push:
 
 jobs:
@@ -17,24 +16,20 @@ jobs:
       REPO_NAME: ${{ secrets.REPO_NAME }}
       LATEST_TAG_FILE: "latest_tag.txt"
       RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
+#      BUILD_NUMBER: ${{ github.run_id }}
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: set up JDK 11
-        uses: actions/setup-java@v1
+      - name: set up JDK
+        uses: actions/setup-java@v4
         with:
-          java-version: 11
-
-#      - name: Setup Android SDK
-#        uses: android-actions/setup-android@v2
+          distribution: 'temurin'
+          java-version: 21
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
-
-      #- name: Run Mock build
-      #  run: ./gradlew bundleRelease -x test
 
       - name: Run Unit tests
         run: ./gradlew testDebugUnitTest
@@ -61,10 +56,11 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v2
 
-      - name: set up JDK 11
-        uses: actions/setup-java@v1
+      - name: set up JDK
+        uses: actions/setup-java@v4
         with:
-          java-version: 11
+          distribution: 'temurin'
+          java-version: 21
 
       - name: Get and set name of current branch
         run: echo "BRANCH_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
@@ -75,17 +71,21 @@ jobs:
       - name: Set up Python 3.9
         uses: actions/setup-python@v2
 
-      - name: Download requirement file
-        run: curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/requirements.txt -o requirements.txt
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+
+      - name: Download pyproject.toml
+        run: curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/pyproject.toml -o pyproject.toml
 
       - name: Download Tag fetching script
-        run: curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/get-tag-raw.py -o latest-tag.py
+        run: curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/fetch-tags.py -o latest-tag.py
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt;
+      - name: Install dependencies with Poetry
+        run: poetry install --no-root
 
       - name: Fetch latest tag
-        run: python latest-tag.py
+        run: poetry run python latest-tag.py
 
       - name: Update release version
         run: echo "RELEASE_VERSION=$(cat $LATEST_TAG_FILE)" >> $GITHUB_ENV

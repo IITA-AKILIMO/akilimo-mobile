@@ -3,25 +3,23 @@ import java.time.LocalDateTime
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-//apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.vanniktech.android.junit.jacoco'
+apply plugin: 'jacoco'
 
 android {
     def releaseVersionName = computeBuildNumber()
     def appVersionCode = computeVersionCode()
-
+    namespace 'com.akilimo.mobile'
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.akilimo.mobile"
 
-        compileSdk 33
-        buildToolsVersion = '30.0.3'
-        //ndkVersion "25.2.9519653"
-
+        compileSdk 34
         minSdkVersion 19
-        targetSdkVersion 33
+        targetSdkVersion 34
+
         versionCode appVersionCode
         versionName releaseVersionName
         multiDexEnabled true
@@ -46,30 +44,36 @@ android {
         debug {
             resValue("string", "PORT_NUMBER", "9085")
             versionNameSuffix ".dev"
-            testCoverageEnabled true
+            enableUnitTestCoverage true
+            enableAndroidTestCoverage true
             //  pseudoLocalesEnabled true
         }
     }
     buildFeatures {
         viewBinding true
+        buildConfig true
         //  dataBinding = false
-    }
-    lintOptions {
-        checkReleaseBuilds false
-        //  fatal("MissingTranslation", "HardcodedText")
-        abortOnError false
-        //  disable 'UselessParent','InvalidPackage', 'UnusedResources', 'TrustAllX509TrustManager', 'LabelFor'
-    }
-    dexOptions {
-        //TODO remove this in future release
-        javaMaxHeapSize "4g"
     }
 //    androidExtensions {
 //        experimental = true
 //    }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17
+    }
+
+    kotlin {
+        jvmToolchain(17)
+    }
+
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
     }
 
 }
@@ -121,11 +125,8 @@ def computeVersionCode() {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
 
-//    implementation platform('com.google.firebase:firebase-bom:28.4.2')
-
-//    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.7.22'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-//    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.10'
+
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
@@ -145,7 +146,6 @@ dependencies {
     implementation 'com.google.android.gms:play-services-places:17.0.0'
     implementation 'com.google.android.play:app-update:2.1.0'
     implementation 'com.google.android.play:app-update-ktx:2.1.0'
-
 
 
     implementation 'com.google.firebase:firebase-config:20.0.4'
@@ -181,18 +181,18 @@ dependencies {
 
     implementation 'eu.the4thfloor.volley:com.android.volley:2015.05.28' //Volley library
     //https://stackoverflow.com/questions/63917431/expected-android-api-level-21-but-was-30
-    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
+    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0' //TODO Will replace Volley eventually
     implementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.7'
 
 
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.13.4'
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.4'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
-    implementation 'com.nabinbhandari.android:permissions:3.8'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.17.1'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.17.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.1'
+    implementation 'com.github.Redman1037:Android-Permissions:3.8'
     implementation 'com.github.vipulasri:timelineview:1.1.1'
-    implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.35'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:8.13.38'
     implementation 'com.github.midorikocak:currency-picker-android:1.2.1' //for handling currency
 
 //    implementation 'com.github.giswangsj:AndRatingBar:1.0.5'
@@ -215,18 +215,15 @@ dependencies {
     kapt 'androidx.room:room-compiler:2.4.2'
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
     kapt 'com.jakewharton:butterknife-compiler:10.2.1'
-    kapt 'com.fasterxml.jackson.core:jackson-annotations:2.12.5'
+    kapt 'com.fasterxml.jackson.core:jackson-annotations:2.17.1'
 
-    testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.12.5'
-    testImplementation 'joda-time:joda-time:2.10.12'
+    testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.17.1'
+    testImplementation 'joda-time:joda-time:2.12.2'
 
     testImplementation project(path: ':app')
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test:runner:1.4.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test:runner:1.6.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 
-    //debugImplementation because LeakCanary should only run in debug builds.
-    //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
     debugImplementation 'com.github.amitshekhariitbhu.Android-Debug-Database:debug-db:v1.0.6'
-    //'com.amitshekhar.android:debug-db:1.0.6'
 }
