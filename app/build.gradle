@@ -15,8 +15,8 @@ android {
     defaultConfig {
         applicationId "com.akilimo.mobile"
 
-        compileSdk 35
-//        buildToolsVersion = '30.0.3'
+        //TODO to be updated
+        compileSdkVersion  35
         minSdkVersion 19
         targetSdkVersion 35
 
