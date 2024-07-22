@@ -66,9 +66,9 @@ android {
         jvmTarget = JavaVersion.VERSION_17
     }
 
-    kotlin {
-        jvmToolchain(17)
-    }
+//    kotlin {
+//        jvmToolchain(17)
+//    }
 
 
     lint {
