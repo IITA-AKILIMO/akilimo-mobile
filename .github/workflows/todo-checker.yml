@@ -1,12 +1,15 @@
-name: TODO workflow
+name: TODO
 on:
   push:
-      branches:
-        - develop
-
+    branches:
+      - develop
+  workflow_dispatch:
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    concurrency:
+      cancel-in-progress: true
+      group: todo-${{ github.ref }}
     steps:
       - uses: actions/checkout@master
       - name: Run tdg-github-action
@@ -16,5 +19,4 @@ jobs:
           REPO: ${{ github.repository }}
           SHA: ${{ github.sha }}
           REF: ${{ github.ref }}
-          INCLUDE_PATTERN: "\\.(kt|java)$"
-          CLOSE_ON_SAME_BRANCH: true
+          LABEL: "todo-tasks"
