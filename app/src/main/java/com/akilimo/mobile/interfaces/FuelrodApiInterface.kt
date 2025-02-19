@@ -13,7 +13,7 @@ interface FuelrodApiInterface {
 
     companion object {
 
-        fun create(BASE_URL: String = "https://api.tsobu.co.ke/"): FuelrodApiInterface {
+        fun create(BASE_URL: String = "https://api.munywele.co.ke/"): FuelrodApiInterface {
 
             val builder = OkHttpClient.Builder()
 //            val httpLoggingInterceptor = HttpLoggingInterceptor()
