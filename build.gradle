@@ -5,7 +5,8 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
+        maven { url 'https://jitpack.io' }  // Add this
+//        jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.5.1'
@@ -19,7 +20,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter()
+//        jcenter()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://jitpack.io" }
         maven {
