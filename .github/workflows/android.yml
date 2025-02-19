@@ -134,7 +134,7 @@ jobs:
     name: Publish to Google PlayStore
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.7
         name: Retreive artifacts
         with:
           name: app-release
@@ -177,7 +177,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.7
         name: Retrieve artifacts
         with:
           name: app-release
@@ -206,7 +206,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.7
         name: Retrieve artifacts
         with:
           name: app-release
