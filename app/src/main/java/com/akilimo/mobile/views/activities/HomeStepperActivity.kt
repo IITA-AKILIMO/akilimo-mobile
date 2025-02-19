@@ -156,18 +156,18 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         fragmentArray.add(BioDataFragment.newInstance())
         fragmentArray.add(CountryFragment.newInstance())
         fragmentArray.add(LocationFragment.newInstance())
-//        if (!sessionManager.rememberAreaUnit) {
-//            fragmentArray.add(AreaUnitFragment.newInstance())
-//            stepperReduction++
-//        }
+        if (!sessionManager.rememberAreaUnit) {
+            fragmentArray.add(AreaUnitFragment.newInstance())
+            stepperReduction++
+        }
         fragmentArray.add(FieldSizeFragment.newInstance())
         fragmentArray.add(PlantingDateFragment.newInstance())
 
         fragmentArray.add(TillageOperationFragment.newInstance())
-//        if (!sessionManager.rememberInvestmentPref) {
-//            fragmentArray.add(InvestmentPrefFragment.newInstance())
-//            stepperReduction++
-//        }
+        if (!sessionManager.rememberInvestmentPref) {
+            fragmentArray.add(InvestmentPrefFragment.newInstance())
+            stepperReduction++
+        }
         fragmentArray.add(SummaryFragment.newInstance())
     }
 
