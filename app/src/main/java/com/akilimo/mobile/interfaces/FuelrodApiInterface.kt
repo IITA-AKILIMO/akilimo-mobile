@@ -2,6 +2,7 @@ package com.akilimo.mobile.interfaces
 
 import com.akilimo.mobile.data.RemoteConfig
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
@@ -13,18 +14,18 @@ interface FuelrodApiInterface {
 
     companion object {
 
-        fun create(BASE_URL: String = "https://api.munywele.co.ke/"): FuelrodApiInterface {
+        fun create(apiBaseUrl: String = "https://api.munywele.co.ke/"): FuelrodApiInterface {
 
             val builder = OkHttpClient.Builder()
 //            val httpLoggingInterceptor = HttpLoggingInterceptor()
-//            httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY;
-//            builder.networkInterceptors().add(httpLoggingInterceptor);
+//            httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+//            builder.networkInterceptors().add(httpLoggingInterceptor)
             val client = builder.build()
 
             val retrofit = Retrofit.Builder()
                 .client(client)
                 .addConverterFactory(JacksonConverterFactory.create())
-                .baseUrl(BASE_URL)
+                .baseUrl(apiBaseUrl)
                 .build()
 
             return retrofit.create(FuelrodApiInterface::class.java)
