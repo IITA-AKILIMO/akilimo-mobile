@@ -1,6 +1,7 @@
 name: Android CICD
 on:
   push:
+  workflow_dispatch:
 
 jobs:
 
@@ -16,7 +17,6 @@ jobs:
       REPO_NAME: ${{ secrets.REPO_NAME }}
       LATEST_TAG_FILE: "latest_tag.txt"
       RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
-#      BUILD_NUMBER: ${{ github.run_id }}
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
     steps:
       - name: Checkout the code
@@ -122,7 +122,7 @@ jobs:
       - name: Copy release notes
         run: cp -r distribution release
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4.6.0
         name: Upload artifact
         with:
           name: app-release
