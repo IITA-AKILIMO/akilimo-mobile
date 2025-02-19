@@ -17,3 +17,5 @@ langtool.jar
 *.xlsx
 out/*
 node_modules
+fastlane/google-services.json
+fastlane/GoogleService-Info.plist
