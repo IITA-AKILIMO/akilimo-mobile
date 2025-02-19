@@ -23,6 +23,7 @@ import com.akilimo.mobile.views.fragments.*
 import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.StepperLayout.StepperListener
 import com.stepstone.stepper.VerificationError
+import io.sentry.Sentry
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -131,10 +132,12 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
             }
 
             override fun onFailure(call: Call<List<RemoteConfig>>, t: Throwable) {
+                Sentry.captureException(t)
+                val errorMessage = t.message.toString()
                 Toast.makeText(
                     applicationContext,
-                    "Unable to load remote configurations, using default config",
-                    Toast.LENGTH_SHORT
+                    "Unable to load remote configurations, using default config: $errorMessage",
+                    Toast.LENGTH_LONG
                 ).show();
             }
         })

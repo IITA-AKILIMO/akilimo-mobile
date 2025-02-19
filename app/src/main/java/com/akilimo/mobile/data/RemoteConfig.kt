@@ -5,10 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class RemoteConfig(
-    @JsonProperty("appName")
+    @JsonProperty("app_name")
     val appName: String,
-    @JsonProperty("configName")
+    @JsonProperty("config_name")
     val configName: String,
-    @JsonProperty("configValue")
+    @JsonProperty("config_value")
     val configValue: String
 )

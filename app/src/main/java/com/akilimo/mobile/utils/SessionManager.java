@@ -41,7 +41,7 @@ public class SessionManager {
     }
 
     public String getApiEndPoint() {
-        return pref.getString("apiResource", "http://akilimo.org:8099/api/");
+        return pref.getString("apiResource", "https://api.akilimo.org/");
     }
 
     public void setApiRefreshToken(String apiToken) {
@@ -69,7 +69,7 @@ public class SessionManager {
     }
 
     public String getMapBoxApiKey() {
-        return pref.getString("mapBoxKey", "pk.eyJ1IjoibWFzZ2VlayIsImEiOiJjanp0bm43ZmwwNm9jM29udjJod3V6dzB1In0.MevkJtANWZ8Wl9abnLu1Uw");
+        return pref.getString("mapBoxKey", "");
     }
 
     public void setLocationIqToken(String locationIqToken) {
@@ -78,7 +78,7 @@ public class SessionManager {
     }
 
     public String getLocationIqToken() {
-        return pref.getString("locationIqToken", "pk.2e825998b141366ea93c856dfc352010");
+        return pref.getString("locationIqToken", "");
     }
 
     public void setNgnRate(String ngnRate) {
