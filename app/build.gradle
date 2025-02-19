@@ -54,9 +54,6 @@ android {
         buildConfig true
         //  dataBinding = false
     }
-//    androidExtensions {
-//        experimental = true
-//    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
