@@ -30,9 +30,9 @@ import com.akilimo.mobile.entities.*
         ScheduledDate::class,
         StarchFactory::class,
         UseCases::class,
-        Currency::class,
+        AkilimoCurrency::class,
         AdviceStatus::class
-    ], version = 1, exportSchema = false
+    ], version = 2, exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
