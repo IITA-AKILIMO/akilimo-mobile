@@ -1,32 +1,32 @@
 package com.akilimo.mobile.dao
 
 import androidx.room.*
-import com.akilimo.mobile.entities.Currency
+import com.akilimo.mobile.entities.AkilimoCurrency
 
 @Dao
 interface CurrencyDao {
 
-    @Query("SELECT * FROM currency")
-    fun listAll(): List<Currency>
+    @Query("SELECT * FROM currencies")
+    fun listAll(): List<AkilimoCurrency>
 
-    @Query("SELECT * FROM currency LIMIT 1")
-    fun findOne(): Currency?
+    @Query("SELECT * FROM currencies LIMIT 1")
+    fun findOne(): AkilimoCurrency?
 
-    @Query("SELECT * FROM currency where currencyCode=:currencyCode LIMIT 1")
-    fun findOneByCurrencyCode(currencyCode: String): Currency
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(currencyList: List<Currency>):LongArray?
-
+    @Query("SELECT * FROM currencies where currency_code=:currencyCode LIMIT 1")
+    fun findOneByCurrencyCode(currencyCode: String): AkilimoCurrency
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg currencies: Currency)
+    fun insertAll(currencyList: List<AkilimoCurrency>):LongArray?
+
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(vararg currencies: AkilimoCurrency)
 
     @Update
-    fun update(vararg currency: Currency)
+    fun update(vararg currency: AkilimoCurrency)
 
     @Delete
-    fun delete(currency: Currency?)
-    @Query("DELETE FROM currency")
+    fun delete(currency: AkilimoCurrency?)
+    @Query("DELETE FROM currencies")
     fun deleteAll()
 }
