@@ -4,6 +4,9 @@ package com.akilimo.mobile.rest;
 import android.app.Activity;
 import android.util.Base64;
 
+import com.akilimo.mobile.interfaces.IVolleyCallback;
+import com.akilimo.mobile.interfaces.IVolleyDeleteCallback;
+import com.akilimo.mobile.utils.SessionManager;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -12,9 +15,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.akilimo.mobile.interfaces.IVolleyCallback;
-import com.akilimo.mobile.interfaces.IVolleyDeleteCallback;
-import com.akilimo.mobile.utils.SessionManager;
 
 import org.json.JSONObject;
 
@@ -22,13 +22,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+@Deprecated
 public class RestService {
     private static final String LOG_TAG = RestService.class.getSimpleName();
 
     private static RestService restServiceObj;
     private String url;
-    private RequestQueue queue;
-    private SessionManager sessionManager;
+    private final RequestQueue queue;
+    private final SessionManager sessionManager;
     private RestParameters restParameters;
 
     private RestService(RequestQueue requestQueue, Activity activity) {
@@ -44,7 +45,7 @@ public class RestService {
     }
 
     public void setParameters(RestParameters restParameters) {
-        String baseUrl = sessionManager.getApiEndPoint();
+        String baseUrl = sessionManager.getAkilimoEndpoint();
 
         this.restParameters = restParameters;
         this.url = String.format("%s%s", baseUrl, restParameters.getUrl());
