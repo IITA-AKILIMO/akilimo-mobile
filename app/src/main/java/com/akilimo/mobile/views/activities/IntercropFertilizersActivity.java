@@ -2,7 +2,6 @@ package com.akilimo.mobile.views.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,12 +16,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.android.material.snackbar.Snackbar;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.adapters.IntercropFertilizerGridAdapter;
 import com.akilimo.mobile.dao.AppDatabase;
@@ -34,13 +27,17 @@ import com.akilimo.mobile.entities.ProfileInfo;
 import com.akilimo.mobile.inherit.BaseActivity;
 import com.akilimo.mobile.interfaces.IVolleyCallback;
 import com.akilimo.mobile.rest.RestParameters;
-import com.akilimo.mobile.rest.RestService;
 import com.akilimo.mobile.utils.FertilizerList;
 import com.akilimo.mobile.utils.Tools;
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks;
 import com.akilimo.mobile.views.fragments.dialog.FertilizerPriceDialogFragment;
 import com.akilimo.mobile.views.fragments.dialog.IntercropFertilizerPriceDialogFragment;
 import com.akilimo.mobile.widget.SpacingItemDecoration;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -57,7 +54,7 @@ public class IntercropFertilizersActivity extends BaseActivity {
 
     public static String useCaseTag = "useCase";
     public static String interCropTag = "interCrop";
-    private String TAG = BaseActivity.class.getSimpleName();
+    private final String TAG = BaseActivity.class.getSimpleName();
 
 
     Toolbar toolbar;
@@ -75,11 +72,11 @@ public class IntercropFertilizersActivity extends BaseActivity {
 
     private List<InterCropFertilizer> availableFertilizersList = new ArrayList<>();
     private List<InterCropFertilizer> selectedFertilizers = new ArrayList<>();
-    private List<InterCropFertilizer> fertilizerTypesList = new ArrayList<>();
+    private final List<InterCropFertilizer> fertilizerTypesList = new ArrayList<>();
     private List<FertilizerPrice> fertilizerPricesList = new ArrayList<>();
 
     private IntercropFertilizerGridAdapter mAdapter;
-    private int minSelection = 1;
+    private final int minSelection = 1;
     private ModelMapper modelMapper;
 
     @Override
