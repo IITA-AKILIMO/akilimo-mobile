@@ -4,7 +4,6 @@ package com.akilimo.mobile.views.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,14 +17,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-
-import com.google.android.material.textfield.TextInputEditText;
-import com.hbb20.CountryCodePicker;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.databinding.FragmentBioDataBinding;
 import com.akilimo.mobile.entities.ProfileInfo;
 import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.utils.ValidationHelper;
+import com.google.android.material.textfield.TextInputEditText;
+import com.hbb20.CountryCodePicker;
 import com.stepstone.stepper.VerificationError;
 
 import java.util.ArrayList;
@@ -267,7 +265,7 @@ public class BioDataFragment extends BaseStepFragment {
                 profileInfo.setDeviceToken(sessionManager.getDeviceToken());
             }
 
-            profileInfo.setUserName(profileInfo.getNames());
+            profileInfo.setUserName(profileInfo.names());
 
             if (profileInfo.getProfileId() != null) {
                 database.profileInfoDao().update(profileInfo);
