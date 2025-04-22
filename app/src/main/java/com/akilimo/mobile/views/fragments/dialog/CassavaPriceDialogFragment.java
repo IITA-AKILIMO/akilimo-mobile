@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -21,14 +20,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-
-import com.google.android.material.textfield.TextInputLayout;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.entities.CassavaPrice;
 import com.akilimo.mobile.inherit.BaseDialogFragment;
 import com.akilimo.mobile.interfaces.IPriceDialogDismissListener;
 import com.akilimo.mobile.utils.CurrencyCode;
 import com.akilimo.mobile.utils.enums.EnumUnitOfSale;
+import com.google.android.material.textfield.TextInputLayout;
 import com.mynameismidori.currencypicker.ExtendedCurrency;
 
 import java.util.List;
@@ -56,8 +54,8 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
 
     private boolean isExactPriceRequired = false;
     private boolean isPriceValid = false;
-    private boolean priceSpecified = false;
-    private boolean removeSelected = false;
+    private final boolean priceSpecified = false;
+    private final boolean removeSelected = false;
 
     private Dialog dialog;
     private RadioGroup radioGroup;
@@ -82,7 +80,7 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
     double unitPriceUSD = 0.0;
     double unitPriceLocal = 0.0;
     private double minAmountUSD = 5.00;
-    private double maxAmountUSD = 500.00;
+    private final double maxAmountUSD = 500.00;
 
     private IPriceDialogDismissListener onDismissListener;
 
@@ -165,7 +163,7 @@ public class CassavaPriceDialogFragment extends BaseDialogFragment {
 
         radioGroup.setOnCheckedChangeListener((radioGroup, i) -> radioSelected(radioGroup));
         if (database != null) {
-            cassavaPriceList = database.cassavaPriceDao().findAllByCountry(countryCode);
+            cassavaPriceList = database.cassavaPriceDao().findAllByCountryCode(countryCode);
             addPriceRadioButtons(cassavaPriceList, averagePrice);
         }
         return dialog;
