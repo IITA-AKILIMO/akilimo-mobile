@@ -14,8 +14,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.akilimo.mobile.utils.enums.EnumCountry;
-import com.github.vipulasri.timelineview.TimelineView;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.adapters.MyTimeLineAdapter;
 import com.akilimo.mobile.databinding.FragmentSummaryBinding;
@@ -28,8 +26,10 @@ import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.models.TimeLineModel;
 import com.akilimo.mobile.models.TimelineAttributes;
 import com.akilimo.mobile.utils.TheItemAnimation;
+import com.akilimo.mobile.utils.enums.EnumCountry;
 import com.akilimo.mobile.utils.enums.EnumInvestmentPref;
 import com.akilimo.mobile.utils.enums.StepStatus;
+import com.github.vipulasri.timelineview.TimelineView;
 import com.stepstone.stepper.VerificationError;
 
 import org.jetbrains.annotations.NotNull;
@@ -144,7 +144,7 @@ public class SummaryFragment extends BaseStepFragment {
             areaUnit = mandatoryInfo.getDisplayAreaUnit();
             areaUnitSelected = areaUnit != null && !areaUnit.isEmpty();
 
-            summaryTitle = String.format(context.getString(R.string.lbl_summary_text), profileInfo.getNames(), profileInfo.getFarmName());
+            summaryTitle = String.format(context.getString(R.string.lbl_summary_text), profileInfo.names(), profileInfo.getFarmName());
             if (areaUnitSelected) {
                 fieldSize = mandatoryInfo.getAreaSize();
                 fieldSizeSelected = fieldSize > 0.0;
