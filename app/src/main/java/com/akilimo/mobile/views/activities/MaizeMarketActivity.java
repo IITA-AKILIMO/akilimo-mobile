@@ -24,7 +24,6 @@ import com.akilimo.mobile.entities.ProfileInfo;
 import com.akilimo.mobile.inherit.BaseActivity;
 import com.akilimo.mobile.interfaces.IVolleyCallback;
 import com.akilimo.mobile.rest.RestParameters;
-import com.akilimo.mobile.rest.RestService;
 import com.akilimo.mobile.utils.MathHelper;
 import com.akilimo.mobile.utils.Tools;
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks;
