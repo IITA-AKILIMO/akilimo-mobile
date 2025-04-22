@@ -1,7 +1,6 @@
 package com.akilimo.mobile.views.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -10,13 +9,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.android.volley.toolbox.Volley;
-
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.dao.AppDatabase;
 import com.akilimo.mobile.databinding.ActivityManualTillageCostBinding;
 import com.akilimo.mobile.entities.AdviceStatus;
-import com.akilimo.mobile.entities.Currency;
+import com.akilimo.mobile.entities.AkilimoCurrency;
 import com.akilimo.mobile.entities.FieldOperationCost;
 import com.akilimo.mobile.entities.MandatoryInfo;
 import com.akilimo.mobile.entities.ProfileInfo;
@@ -27,11 +24,12 @@ import com.akilimo.mobile.utils.enums.EnumAdviceTasks;
 import com.akilimo.mobile.utils.enums.EnumOperation;
 import com.akilimo.mobile.utils.enums.EnumOperationType;
 import com.akilimo.mobile.views.fragments.dialog.OperationCostsDialogFragment;
+import com.android.volley.toolbox.Volley;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
-;import io.sentry.Sentry;
+import io.sentry.Sentry;
 
 
 public class ManualTillageCostActivity extends CostBaseActivity {
@@ -90,8 +88,8 @@ public class ManualTillageCostActivity extends CostBaseActivity {
             countryCode = profileInfo.getCountryCode();
             currency = profileInfo.getCurrency();
             currencyCode = profileInfo.getCurrency();
-            Currency myCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode);
-            currencySymbol = myCurrency.getCurrencySymbol();
+            AkilimoCurrency myAkilimoCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode);
+            currencySymbol = myAkilimoCurrency.getCurrencySymbol();
         }
 
         initToolbar();

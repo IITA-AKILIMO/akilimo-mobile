@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -15,31 +14,30 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.akilimo.mobile.R;
+import com.akilimo.mobile.dao.AppDatabase;
+import com.akilimo.mobile.databinding.ActivityInvestmentAmountBinding;
+import com.akilimo.mobile.entities.AdviceStatus;
 import com.akilimo.mobile.entities.InvestmentAmount;
-import com.akilimo.mobile.interfaces.IVolleyCallback;
 import com.akilimo.mobile.entities.InvestmentAmountDto;
+import com.akilimo.mobile.entities.MandatoryInfo;
+import com.akilimo.mobile.entities.ProfileInfo;
+import com.akilimo.mobile.inherit.BaseActivity;
+import com.akilimo.mobile.interfaces.IVolleyCallback;
 import com.akilimo.mobile.rest.RestParameters;
 import com.akilimo.mobile.rest.RestService;
+import com.akilimo.mobile.utils.CurrencyCode;
+import com.akilimo.mobile.utils.MathHelper;
+import com.akilimo.mobile.utils.enums.EnumAdviceTasks;
 import com.android.volley.VolleyError;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.dao.AppDatabase;
-import com.akilimo.mobile.databinding.ActivityInvestmentAmountBinding;
-import com.akilimo.mobile.entities.AdviceStatus;
-import com.akilimo.mobile.entities.MandatoryInfo;
-import com.akilimo.mobile.entities.ProfileInfo;
-import com.akilimo.mobile.inherit.BaseActivity;
-import com.akilimo.mobile.utils.CurrencyCode;
-import com.akilimo.mobile.utils.MathHelper;
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks;
 import com.mynameismidori.currencypicker.ExtendedCurrency;
 
-;import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -52,7 +50,7 @@ import io.sentry.Sentry;
 
 public class InvestmentAmountActivity extends BaseActivity {
 
-    private String LOG_TAG = InvestmentAmountActivity.class.getSimpleName();
+    private final String LOG_TAG = InvestmentAmountActivity.class.getSimpleName();
 
     Toolbar toolbar;
     RadioGroup rdgInvestmentAmount;
@@ -75,8 +73,8 @@ public class InvestmentAmountActivity extends BaseActivity {
 
     private double investmentAmountUSD;
     private double investmentAmountLocal;
-    private double minInvestmentUSD = 1;
-    private double maxInvestmentUSD = 1;
+    private final double minInvestmentUSD = 1;
+    private final double maxInvestmentUSD = 1;
     private double minimumAmountUSD;
     private double minimumAmountLocal;
     private double maxAmountLocal;

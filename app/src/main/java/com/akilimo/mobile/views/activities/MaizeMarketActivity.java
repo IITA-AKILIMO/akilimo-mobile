@@ -1,7 +1,6 @@
 package com.akilimo.mobile.views.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -14,19 +13,11 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.android.gms.common.util.Strings;
-import com.google.android.material.snackbar.Snackbar;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.dao.AppDatabase;
 import com.akilimo.mobile.databinding.ActivityMaizeMarketBinding;
 import com.akilimo.mobile.entities.AdviceStatus;
-import com.akilimo.mobile.entities.Currency;
+import com.akilimo.mobile.entities.AkilimoCurrency;
 import com.akilimo.mobile.entities.MaizeMarket;
 import com.akilimo.mobile.entities.MaizePrice;
 import com.akilimo.mobile.entities.ProfileInfo;
@@ -40,6 +31,13 @@ import com.akilimo.mobile.utils.enums.EnumAdviceTasks;
 import com.akilimo.mobile.utils.enums.EnumMaizeProduceType;
 import com.akilimo.mobile.utils.enums.EnumUnitOfSale;
 import com.akilimo.mobile.views.fragments.dialog.MaizePriceDialogFragment;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.gms.common.util.Strings;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -75,7 +73,7 @@ public class MaizeMarketActivity extends BaseActivity {
     private String produceType;
     private Double unitPrice;
     private List<MaizePrice> maizePriceList = null;
-    private boolean selectionMade = false;
+    private final boolean selectionMade = false;
 
     private int produceRadioIndex;
     private int grainUnitRadioIndex;
@@ -90,13 +88,13 @@ public class MaizeMarketActivity extends BaseActivity {
     private boolean grainPriceRequired;
     private boolean cobPriceRequired;
 
-    private double unitPriceUSD = 0.0;
+    private final double unitPriceUSD = 0.0;
     private int unitWeight;
-    private double exactPrice = 0.0;
-    private double averagePrice = 0.0;
+    private final double exactPrice = 0.0;
+    private final double averagePrice = 0.0;
 
-    private double minAmountUSD = 5.00;
-    private double maxAmountUSD = 500.00;
+    private final double minAmountUSD = 5.00;
+    private final double maxAmountUSD = 500.00;
 
 
     @Override
@@ -130,9 +128,9 @@ public class MaizeMarketActivity extends BaseActivity {
             countryCode = profileInfo.getCountryCode();
             currency = profileInfo.getCurrency();
 
-            Currency myCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode);
-            if (myCurrency != null) {
-                currencyName = myCurrency.getCurrencyName();
+            AkilimoCurrency myAkilimoCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode);
+            if (myAkilimoCurrency != null) {
+                currencyName = myAkilimoCurrency.getCurrencyName();
             }
         }
 
