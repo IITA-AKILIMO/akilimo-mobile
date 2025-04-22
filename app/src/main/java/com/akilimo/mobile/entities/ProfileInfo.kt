@@ -40,7 +40,7 @@ open class ProfileInfo {
     var riskAtt: Int = 0
     var selectedRiskIndex: Int = 0
 
-    fun getNames(): String {
+    fun names(): String {
         return String.format("%s %s", firstName, lastName)
     }
 }
