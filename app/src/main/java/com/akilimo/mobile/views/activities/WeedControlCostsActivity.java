@@ -1,7 +1,6 @@
 package com.akilimo.mobile.views.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -11,13 +10,11 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 
-
-import com.google.android.gms.common.util.Strings;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.dao.AppDatabase;
 import com.akilimo.mobile.databinding.ActivityWeedControlCostBinding;
 import com.akilimo.mobile.entities.AdviceStatus;
-import com.akilimo.mobile.entities.Currency;
+import com.akilimo.mobile.entities.AkilimoCurrency;
 import com.akilimo.mobile.entities.CurrentPractice;
 import com.akilimo.mobile.entities.FieldOperationCost;
 import com.akilimo.mobile.entities.MandatoryInfo;
@@ -26,8 +23,9 @@ import com.akilimo.mobile.inherit.BaseActivity;
 import com.akilimo.mobile.utils.MathHelper;
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks;
 import com.akilimo.mobile.utils.enums.EnumCountry;
+import com.google.android.gms.common.util.Strings;
 
-;import java.util.Locale;
+import java.util.Locale;
 
 import io.sentry.Sentry;
 
@@ -57,7 +55,7 @@ public class WeedControlCostsActivity extends BaseActivity {
     private double secondOperationCost;
     private int weedRadioIndex;
 
-    private double minCost = 1.0;
+    private final double minCost = 1.0;
     private double maxCost;
 
     @Override
@@ -81,9 +79,9 @@ public class WeedControlCostsActivity extends BaseActivity {
             countryCode = profileInfo.getCountryCode();
             currency = profileInfo.getCurrency();
             currencyCode = profileInfo.getCurrency();
-            Currency myCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode);
-            currencySymbol = myCurrency.getCurrencySymbol();
-            currencyName = myCurrency.getCurrencyName();
+            AkilimoCurrency myAkilimoCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode);
+            currencySymbol = myAkilimoCurrency.getCurrencySymbol();
+            currencyName = myAkilimoCurrency.getCurrencyName();
         }
 
         fieldOperationCost = database.fieldOperationCostDao().findOne();
