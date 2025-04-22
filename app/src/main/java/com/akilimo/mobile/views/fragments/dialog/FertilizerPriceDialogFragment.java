@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -16,20 +15,10 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.akilimo.mobile.interfaces.IVolleyCallback;
-import com.akilimo.mobile.rest.RestParameters;
-import com.akilimo.mobile.rest.RestService;
-import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.android.material.textfield.TextInputLayout;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.entities.Fertilizer;
 import com.akilimo.mobile.entities.FertilizerPrice;
@@ -37,16 +26,13 @@ import com.akilimo.mobile.inherit.BaseDialogFragment;
 import com.akilimo.mobile.interfaces.IFertilizerDismissListener;
 import com.akilimo.mobile.utils.CurrencyCode;
 import com.akilimo.mobile.utils.enums.EnumCountry;
+import com.android.volley.RequestQueue;
+import com.google.android.material.textfield.TextInputLayout;
 import com.mynameismidori.currencypicker.ExtendedCurrency;
 
-import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
 
-;import io.sentry.Sentry;
+import io.sentry.Sentry;
 
 /**
  * A simple {@link androidx.fragment.app.Fragment} subclass.
@@ -130,7 +116,7 @@ public class FertilizerPriceDialogFragment extends BaseDialogFragment {
 
         if (fertilizer != null) {
             countryCode = fertilizer.getCountryCode();
-            currencyCode = fertilizer.getCurrency();
+            currencyCode = fertilizer.getCurrencyCode();
             fertilizerKey = fertilizer.getFertilizerKey();
             currencySymbol = currencyCode;
             ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
