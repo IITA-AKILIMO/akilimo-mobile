@@ -1,23 +1,17 @@
 package com.akilimo.mobile.views.fragments;
 
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -26,19 +20,15 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
-import com.akilimo.mobile.rest.MapBoxApi;
-import com.akilimo.mobile.rest.MapBoxApiInterface;
-import com.akilimo.mobile.rest.response.ReverseGeoCode;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.databinding.FragmentLocationBinding;
 import com.akilimo.mobile.entities.LocationInfo;
 import com.akilimo.mobile.entities.ProfileInfo;
 import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.services.GPSTracker;
-import com.akilimo.mobile.utils.enums.EnumCountry;
 import com.akilimo.mobile.views.activities.MapBoxActivity;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
@@ -48,10 +38,7 @@ import com.stepstone.stepper.VerificationError;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import io.sentry.Sentry;
 import retrofit2.Call;
@@ -263,7 +250,7 @@ public class LocationFragment extends BaseStepFragment {
 
             if (profileInfo != null) {
                 farmName = profileInfo.getFarmName();
-                fullNames = profileInfo.getNames();
+                fullNames = profileInfo.names();
                 userSelectedCountryCode = profileInfo.getCountryCode();
                 userSelectedCountryName = profileInfo.getCountryName();
                 setFarmNameInfo(fullNames, farmName);
