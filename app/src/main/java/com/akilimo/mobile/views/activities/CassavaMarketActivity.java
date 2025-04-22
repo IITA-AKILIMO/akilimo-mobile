@@ -2,7 +2,6 @@ package com.akilimo.mobile.views.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
@@ -16,13 +15,6 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.android.gms.common.util.Strings;
-import com.google.android.material.snackbar.Snackbar;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.dao.AppDatabase;
 import com.akilimo.mobile.databinding.ActivityCassavaMarketBinding;
@@ -35,7 +27,6 @@ import com.akilimo.mobile.entities.StarchFactory;
 import com.akilimo.mobile.inherit.BaseActivity;
 import com.akilimo.mobile.interfaces.IVolleyCallback;
 import com.akilimo.mobile.rest.RestParameters;
-import com.akilimo.mobile.rest.RestService;
 import com.akilimo.mobile.utils.MathHelper;
 import com.akilimo.mobile.utils.Tools;
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks;
@@ -44,6 +35,12 @@ import com.akilimo.mobile.utils.enums.EnumContext;
 import com.akilimo.mobile.utils.enums.EnumUnitOfSale;
 import com.akilimo.mobile.utils.enums.EnumUseCase;
 import com.akilimo.mobile.views.fragments.dialog.CassavaPriceDialogFragment;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.gms.common.util.Strings;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -56,7 +53,7 @@ import io.sentry.Sentry;
 
 public class CassavaMarketActivity extends BaseActivity {
 
-    private String LOG_TAG = CassavaMarketActivity.class.getSimpleName();
+    private final String LOG_TAG = CassavaMarketActivity.class.getSimpleName();
 
     public static String useCaseTag = "useCase";
 
