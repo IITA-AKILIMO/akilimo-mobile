@@ -6,7 +6,9 @@ import android.os.Bundle
 import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.rest.retrofit.RetrofitManager
 import com.akilimo.mobile.utils.SessionManager
+import com.akilimo.mobile.views.activities.usecases.RecommendationsActivity
 import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import io.sentry.Sentry
 
@@ -44,6 +46,11 @@ class SplashActivity : BaseActivity() {
         val isInDevMode = BuildConfig.DEBUG
         try {
             val sessionManager = SessionManager(this@SplashActivity)
+            val akilimoEndpoint = sessionManager.akilimoEndpoint
+            val fuelrodEndpoint = sessionManager.fuelrodEndpoint
+
+            RetrofitManager.init(akilimoEndpoint, fuelrodEndpoint)
+
             if (!isInDevMode) {
                 val db = getDatabase(this)
                 if (db != null) {
@@ -85,8 +92,9 @@ class SplashActivity : BaseActivity() {
         }
         var intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
         if (isInDevMode) {
-            intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
-//            intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
+//            intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
+//            intent = Intent(this@SplashActivity, ApiTestActivity::class.java)
+            intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
 //            intent = Intent(this@SplashActivity, FertilizerRecActivity::class.java)
 //            intent = Intent(this@SplashActivity, RootYieldActivity::class.java)
 //            intent = Intent(this@SplashActivity, InvestmentAmountActivity::class.java)
