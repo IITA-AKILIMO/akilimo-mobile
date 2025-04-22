@@ -1,24 +1,17 @@
 package com.akilimo.mobile.views.activities
 
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.RadioButton
-import androidx.annotation.StringRes
-import com.android.volley.VolleyError
-import com.android.volley.toolbox.Volley
+import android.widget.Toast
 import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityMySurveyBinding
 import com.akilimo.mobile.inherit.BaseActivity
-import com.akilimo.mobile.interfaces.IVolleyCallback
-import com.akilimo.mobile.rest.RestParameters
-import com.akilimo.mobile.rest.RestService
+import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.rest.request.SurveyRequest
-import com.akilimo.mobile.utils.Tools
-import org.json.JSONArray
-import org.json.JSONObject
-import java.util.*
+import io.sentry.Sentry
+import okhttp3.ResponseBody
 
 
 class MySurveyActivity : BaseActivity() {
@@ -56,17 +49,17 @@ class MySurveyActivity : BaseActivity() {
         val profileInfo = database.profileInfoDao().findOne()
 
         rdgAkilimoUser.setOnCheckedChangeListener { _, checkedId ->
-            val radioButton = rdgAkilimoUser.findViewById(checkedId) as RadioButton
+            val radioButton: RadioButton = rdgAkilimoUser.findViewById(checkedId)
             akilimoUsage = radioButton.text.toString()
         }
 
         rdgRecommend.setOnCheckedChangeListener { _, checkedId ->
-            val radioButton = rdgRecommend.findViewById(checkedId) as RadioButton
+            val radioButton: RadioButton = rdgRecommend.findViewById(checkedId)
             val idx = rdgRecommend.indexOfChild(radioButton)
             akilimoRecRating = idx + 1
         }
         rdgUseful.setOnCheckedChangeListener { _, checkedId ->
-            val radioButton = rdgUseful.findViewById(checkedId) as RadioButton
+            val radioButton: RadioButton = rdgUseful.findViewById(checkedId)
             val idx = rdgUseful.indexOfChild(radioButton)
             akilimoUsefulRating = idx + 1
         }
@@ -84,7 +77,7 @@ class MySurveyActivity : BaseActivity() {
 
             submitUserReview(surveyRequest = surveyRequest)
             val intent = Intent()
-            intent.putExtra("MESSAGE", getString(R.string.lbl_thank_feedback_you));
+            intent.putExtra("MESSAGE", getString(R.string.lbl_thank_feedback_you))
             setResult(2, intent)
             closeActivity(false)
         }
@@ -94,39 +87,25 @@ class MySurveyActivity : BaseActivity() {
         closeActivity(backPressed)
     }
 
-    fun getStringByLocale(
-        @StringRes stringRes: Int,
-        locale: Locale,
-        vararg formatArgs: Any,
-    ): String {
-        val configuration = Configuration(resources.configuration)
-        configuration.setLocale(locale)
-        return createConfigurationContext(configuration).resources.getString(stringRes, *formatArgs)
-    }
-
     private fun submitUserReview(surveyRequest: SurveyRequest) {
-        val queue = Volley.newRequestQueue(this)
-        val restService = RestService.getInstance(queue, this)
-        val restParameters = RestParameters(
-            "v1/user-feedback/survey", countryCode
-        )
-        restService.setParameters(restParameters)
-
-
-        //print recommendation data here
-        val data = Tools.prepareJsonObject(surveyRequest)
-        restService.postJsonObject(data, object : IVolleyCallback {
-            override fun onSuccessJsonString(jsonStringResult: String) {/*No processing*/
+        val call = AkilimoApi.apiService.submitUserReview(surveyRequest)
+        call.enqueue(object : retrofit2.Callback<ResponseBody> {
+            override fun onResponse(
+                call: retrofit2.Call<ResponseBody>,
+                response: retrofit2.Response<ResponseBody>
+            ) {
+                if (response.isSuccessful) {
+                    Toast.makeText(context, "Feedback submitted successfully", Toast.LENGTH_SHORT)
+                        .show()
+                }
             }
 
-            override fun onSuccessJsonArr(jsonArray: JSONArray) {/*No processing*/
+            override fun onFailure(call: retrofit2.Call<ResponseBody>, t: Throwable) {
+                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                Sentry.captureException(t)
             }
 
-            override fun onSuccessJsonObject(jsonObject: JSONObject) {/*No processing*/
-            }
-
-            override fun onError(ex: VolleyError) {/*No processing*/
-            }
         })
+
     }
 }
