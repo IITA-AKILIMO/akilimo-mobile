@@ -1,352 +1,340 @@
-package com.akilimo.mobile.views.activities;
+package com.akilimo.mobile.views.activities
+
+import android.os.Bundle
+import android.text.Editable
+import android.text.TextUtils
+import android.text.TextWatcher
+import android.view.View
+import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
+import com.akilimo.mobile.R
+import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
+import com.akilimo.mobile.databinding.ActivityInvestmentAmountBinding
+import com.akilimo.mobile.entities.AdviceStatus
+import com.akilimo.mobile.entities.InvestmentAmount
+import com.akilimo.mobile.entities.InvestmentAmountResponse
+import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.interfaces.AkilimoApi
+import com.akilimo.mobile.utils.CurrencyCode
+import com.akilimo.mobile.utils.MathHelper
+import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.google.android.gms.common.util.Strings
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputLayout
+import com.mynameismidori.currencypicker.ExtendedCurrency
+import io.sentry.Sentry
 
 
-import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Toast;
+class InvestmentAmountActivity : BaseActivity() {
+    private val LOG_TAG: String = InvestmentAmountActivity::class.java.simpleName
 
-import androidx.appcompat.widget.Toolbar;
+    var toolbar: Toolbar? = null
+    var rdgInvestmentAmount: RadioGroup? = null
+    var rd_exact_investment: RadioButton? = null
+    var txtEditInvestmentAmount: EditText? = null
+    var txtEditInvestmentAmountLayout: TextInputLayout? = null
+    var btnFinish: MaterialButton? = null
+    var binding: ActivityInvestmentAmountBinding? = null
+    var extendedCurrency: ExtendedCurrency? = null
 
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.dao.AppDatabase;
-import com.akilimo.mobile.databinding.ActivityInvestmentAmountBinding;
-import com.akilimo.mobile.entities.AdviceStatus;
-import com.akilimo.mobile.entities.InvestmentAmount;
-import com.akilimo.mobile.entities.InvestmentAmountDto;
-import com.akilimo.mobile.entities.MandatoryInfo;
-import com.akilimo.mobile.entities.ProfileInfo;
-import com.akilimo.mobile.inherit.BaseActivity;
-import com.akilimo.mobile.interfaces.IVolleyCallback;
-import com.akilimo.mobile.rest.RestParameters;
-import com.akilimo.mobile.rest.RestService;
-import com.akilimo.mobile.utils.CurrencyCode;
-import com.akilimo.mobile.utils.MathHelper;
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks;
-import com.android.volley.VolleyError;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.android.gms.common.util.Strings;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputLayout;
-import com.mynameismidori.currencypicker.ExtendedCurrency;
+    var investmentAmountError: String? = null
 
-import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONObject;
+    var mathHelper: MathHelper? = null
+    private var invAmount: InvestmentAmount? = null
+    private var isExactAmount = false
+    private var hasErrors = false
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+    private var fieldAreaAcre: String? = null
+    private var fieldArea: String? = null
 
-import io.sentry.Sentry;
+    private var investmentAmountUSD = 0.0
+    private var investmentAmountLocal = 0.0
+    private val minInvestmentUSD = 1.0
+    private val maxInvestmentUSD = 1.0
+    private var minimumAmountUSD = 0.0
+    private var minimumAmountLocal = 0.0
+    private var maxAmountLocal = 0.0
+    private var selectedPrice = -1.0
+    private var selectedFieldArea: String? = null
 
+    private var investmentAmountList: List<InvestmentAmount> = ArrayList()
 
-public class InvestmentAmountActivity extends BaseActivity {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityInvestmentAmountBinding.inflate(
+            layoutInflater
+        )
+        setContentView(binding!!.root)
 
-    private final String LOG_TAG = InvestmentAmountActivity.class.getSimpleName();
+        context = this
+        database = getDatabase(context)
+        mathHelper = MathHelper()
 
-    Toolbar toolbar;
-    RadioGroup rdgInvestmentAmount;
-    RadioButton rd_exact_investment;
-    EditText txtEditInvestmentAmount;
-    TextInputLayout txtEditInvestmentAmountLayout;
-    MaterialButton btnFinish;
-    ActivityInvestmentAmountBinding binding;
-    ExtendedCurrency extendedCurrency;
+        toolbar = binding!!.toolbar
+        rdgInvestmentAmount = binding!!.rdgInvestmentAmount
+        txtEditInvestmentAmount = binding!!.editInvestmentAmount
+        txtEditInvestmentAmountLayout = binding!!.editInvestmentAmountLayout
+        btnFinish = binding!!.btnFinish
 
-    String investmentAmountError;
+        invAmount = database.investmentAmountDao().findOne()
 
-    MathHelper mathHelper;
-    private InvestmentAmount invAmount;
-    private boolean isExactAmount;
-    private boolean hasErrors;
-
-    private String fieldAreaAcre;
-    private String fieldArea;
-
-    private double investmentAmountUSD;
-    private double investmentAmountLocal;
-    private final double minInvestmentUSD = 1;
-    private final double maxInvestmentUSD = 1;
-    private double minimumAmountUSD;
-    private double minimumAmountLocal;
-    private double maxAmountLocal;
-    private double selectedPrice = -1.0;
-    private String selectedFieldArea;
-
-    private List<InvestmentAmountDto> investmentAmountList = new ArrayList<>();
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityInvestmentAmountBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        context = this;
-        database = AppDatabase.getDatabase(context);
-        mathHelper = new MathHelper();
-
-        toolbar = binding.toolbar;
-        rdgInvestmentAmount = binding.rdgInvestmentAmount;
-        txtEditInvestmentAmount = binding.editInvestmentAmount;
-        txtEditInvestmentAmountLayout = binding.editInvestmentAmountLayout;
-        btnFinish = binding.btnFinish;
-
-        invAmount = database.investmentAmountDao().findOne();
-
-        initToolbar();
-        initComponent();
+        initToolbar()
+        initComponent()
     }
 
-    @Override
-    protected void initToolbar() {
-        toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(getString(R.string.title_activity_investment_amount));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    override fun initToolbar() {
+        toolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.title = getString(R.string.title_activity_investment_amount)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        toolbar.setNavigationOnClickListener(v -> {
-            validateInvestmentAmount();
+        toolbar!!.setNavigationOnClickListener { v: View? ->
+            validateInvestmentAmount()
             if (!hasErrors) {
-                closeActivity(false);
+                closeActivity(false)
             } else {
-                showCustomWarningDialog(getString(R.string.lbl_invalid_investment_amount), investmentAmountError);
+                showCustomWarningDialog(
+                    getString(R.string.lbl_invalid_investment_amount), investmentAmountError
+                )
             }
-        });
+        }
     }
 
-    @Override
-    protected void initComponent() {
-        investmentAmountError = getString(R.string.lbl_investment_amount_prompt);
+    override fun initComponent() {
+        investmentAmountError = getString(R.string.lbl_investment_amount_prompt)
 
-        rdgInvestmentAmount.setOnCheckedChangeListener((group, checkedId) -> {
-            int radioButtonId = group.getCheckedRadioButtonId();
-            RadioButton radioButton = findViewById(radioButtonId);
-            long itemTagIndex = (long) radioButton.getTag();
+        rdgInvestmentAmount!!.setOnCheckedChangeListener { group: RadioGroup, checkedId: Int ->
+            val radioButtonId = group.checkedRadioButtonId
+            val radioButton = findViewById<RadioButton>(radioButtonId)
+            val itemTagIndex = radioButton.tag as Long
 
-            InvestmentAmountDto inv = database.investmentAmountDtoDao().findOneByInvestmentId(itemTagIndex);
+            val inv = database.investmentAmountDao().findOneByInvestmentId(itemTagIndex)
             if (inv != null) {
-                investmentAmountLocal = inv.getInvestmentAmount();
-                if (inv.getSortOrder() != 0) {
-                    isExactAmount = false;
-                    txtEditInvestmentAmountLayout.setVisibility(View.GONE);
+                investmentAmountLocal = inv.investmentAmount
+                if (inv.sortOrder != 0L) {
+                    isExactAmount = false
+                    txtEditInvestmentAmountLayout!!.visibility = View.GONE
                 } else {
-                    isExactAmount = true;
-                    txtEditInvestmentAmountLayout.setVisibility(View.VISIBLE);
-                    txtEditInvestmentAmountLayout.requestFocus();
+                    isExactAmount = true
+                    txtEditInvestmentAmountLayout!!.visibility = View.VISIBLE
+                    txtEditInvestmentAmountLayout!!.requestFocus()
                 }
             }
-        });
-        txtEditInvestmentAmount.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+        txtEditInvestmentAmount!!.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
             }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             }
 
-            @Override
-            public void afterTextChanged(Editable editable) {
-                validateEditText(editable);
+            override fun afterTextChanged(editable: Editable) {
+                validateEditText(editable)
             }
-        });
-        btnFinish.setOnClickListener(view -> {
-            validateInvestmentAmount();
+        })
+        btnFinish!!.setOnClickListener { view: View? ->
+            validateInvestmentAmount()
             if (hasErrors) {
-                showCustomWarningDialog(getString(R.string.lbl_invalid_investment_amount), investmentAmountError);
-                return;
+                showCustomWarningDialog(
+                    getString(R.string.lbl_invalid_investment_amount), investmentAmountError
+                )
+                return@setOnClickListener
             }
 
-            invAmount = database.investmentAmountDao().findOne();
-
+            invAmount = database.investmentAmountDao().findOne()
             try {
                 if (invAmount == null) {
-                    invAmount = new InvestmentAmount();
+                    invAmount = InvestmentAmount()
                 }
-                double amountToInvestRaw = mathHelper.computeInvestmentForSpecifiedAreaUnit(investmentAmountLocal, fieldSize, areaUnit);
-                double amountToInvest = mathHelper.roundToNDecimalPlaces(amountToInvestRaw, 2);
-                invAmount.setInvestmentAmountUSD(investmentAmountUSD);
-                invAmount.setMinInvestmentAmountUSD(minimumAmountUSD);
-                invAmount.setInvestmentAmountLocal(amountToInvest);
-                invAmount.setMinInvestmentAmountLocal(minimumAmountLocal);
-                invAmount.setFieldSize(fieldSizeAcre);
+                val amountToInvestRaw = mathHelper!!.computeInvestmentForSpecifiedAreaUnit(
+                    investmentAmountLocal, fieldSize, areaUnit
+                )
+                val amountToInvest = mathHelper!!.roundToNDecimalPlaces(amountToInvestRaw, 2.0)
+                invAmount!!.investmentAmount = amountToInvest
+                invAmount!!.minInvestmentAmount = minimumAmountLocal
+                invAmount!!.fieldSize = fieldSizeAcre
 
-                database.investmentAmountDao().insert(invAmount);
-                database.adviceStatusDao().insert(new AdviceStatus(EnumAdviceTasks.INVESTMENT_AMOUNT.name(), true));
+                database.investmentAmountDao().insert(invAmount!!)
+                database.adviceStatusDao()
+                    .insert(AdviceStatus(EnumAdviceTasks.INVESTMENT_AMOUNT.name, true))
 
-                closeActivity(false);
-            } catch (Exception ex) {
-                Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                Sentry.captureException(ex);
+                closeActivity(false)
+            } catch (ex: Exception) {
+                Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+                Sentry.captureException(ex)
             }
-        });
+        }
 
-        updateLabels();
-        showCustomNotificationDialog();
+        updateLabels()
+        showCustomNotificationDialog()
     }
 
-    @Override
-    protected void validate(boolean backPressed) {
-        throw new UnsupportedOperationException();
+    override fun validate(backPressed: Boolean) {
+        throw UnsupportedOperationException()
     }
 
-    private void updateLabels() {
-
-        ProfileInfo profileInfo = database.profileInfoDao().findOne();
+    private fun updateLabels() {
+        val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.getCountryCode();
-            String _currency = profileInfo.getCurrency();
+            countryCode = profileInfo.countryCode
+            val _currency = profileInfo.currency
             if (!Strings.isEmptyOrWhitespace(_currency)) {
-                currency = _currency;
+                currency = _currency
             }
         }
-        currencyCode = currency;
+        currencyCode = currency
 
-        InvestmentAmount investmentAmount = database.investmentAmountDao().findOne();
+        val investmentAmount = database.investmentAmountDao().findOne()
         if (investmentAmount != null) {
-            selectedPrice = investmentAmount.getInvestmentAmountLocal();
+            selectedPrice = investmentAmount.investmentAmount
         }
-        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
+        val mandatoryInfo = database.mandatoryInfoDao().findOne()
         if (mandatoryInfo != null) {
-            fieldSize = mandatoryInfo.getAreaSize();
-            fieldSizeAcre = mandatoryInfo.getAreaSize();
-            fieldArea = String.valueOf(fieldSize);
-            fieldAreaAcre = String.valueOf(fieldSizeAcre);
-            areaUnit = mandatoryInfo.getAreaUnit();
-            areaUnitText = mandatoryInfo.getDisplayAreaUnit();
+            fieldSize = mandatoryInfo.areaSize
+            fieldSizeAcre = mandatoryInfo.areaSize
+            fieldArea = fieldSize.toString()
+            fieldAreaAcre = fieldSizeAcre.toString()
+            areaUnit = mandatoryInfo.areaUnit
+            areaUnitText = mandatoryInfo.displayAreaUnit
         }
-        selectedFieldArea = String.format(getString(R.string.lbl_investment_amount_label), fieldArea, areaUnitText);
+        selectedFieldArea =
+            String.format(getString(R.string.lbl_investment_amount_label), fieldArea, areaUnitText)
 
-        loadInvestmentAmount(); //load amount from API
+        loadInvestmentAmount() //load amount from API
     }
 
-    private void validateEditText(Editable editable) {
-        investmentAmountError = validateInvestmentAmount();
+    private fun validateEditText(editable: Editable) {
+        investmentAmountError = validateInvestmentAmount()
         if (TextUtils.isEmpty(editable) || hasErrors) {
-            txtEditInvestmentAmountLayout.setError(investmentAmountError);
+            txtEditInvestmentAmountLayout!!.error = investmentAmountError
         } else {
-            txtEditInvestmentAmountLayout.setError(null);
+            txtEditInvestmentAmountLayout!!.error = null
         }
     }
 
-    private String validateInvestmentAmount() {
-        String amount = Objects.requireNonNull(txtEditInvestmentAmountLayout.getEditText()).getText().toString();
+    private fun validateInvestmentAmount(): String {
+        val amount = txtEditInvestmentAmountLayout!!.editText?.text.toString()
+
         if (!Strings.isEmptyOrWhitespace(amount)) {
-            investmentAmountLocal = Double.parseDouble(amount);
-            investmentAmountUSD = mathHelper.convertToUSD(investmentAmountLocal, currency);
+            investmentAmountLocal = amount.toDouble()
+            investmentAmountUSD = mathHelper!!.convertToUSD(investmentAmountLocal, currency)
         }
 
-        minimumAmountUSD = mathHelper.computeInvestmentAmount(minInvestmentUSD, fieldSizeAcre, baseCurrency);
-        minimumAmountLocal = mathHelper.convertToLocalCurrency(minimumAmountUSD, currency);
-        hasErrors = investmentAmountLocal < minimumAmountLocal;
-        return investmentAmountError = getString(R.string.lbl_investment_validation_msg, minimumAmountLocal, currencyCode);
-
+        minimumAmountUSD =
+            mathHelper!!.computeInvestmentAmount(minInvestmentUSD, fieldSizeAcre, baseCurrency)
+        minimumAmountLocal = mathHelper!!.convertToLocalCurrency(minimumAmountUSD, currency)
+        hasErrors = investmentAmountLocal < minimumAmountLocal
+        return getString(
+            R.string.lbl_investment_validation_msg, minimumAmountLocal, currencyCode
+        ).also { investmentAmountError = it }
     }
 
-    private void loadInvestmentAmount() {
-
-        final RestParameters restParameters = new RestParameters(
-                String.format("v1/investment-amount/%s/country", countryCode),
-                countryCode);
-
-        final RestService restService = RestService.getInstance(queue, this);
-        restService.setParameters(restParameters);
-
-        restService.getJsonArrList(new IVolleyCallback() {
-            @Override
-            public void onSuccessJsonString(String jsonStringResult) {
-
-            }
-
-            @Override
-            public void onSuccessJsonArr(JSONArray jsonArray) {
-                ObjectMapper objectMapper = new ObjectMapper();
-                try {
-                    investmentAmountList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<InvestmentAmountDto>>() {
-                    });
-                    if (investmentAmountList.size() > 0) {
-                        database.investmentAmountDtoDao().insertAll(investmentAmountList);
-                        addInvestmentRadioButtons(investmentAmountList);
+    private fun loadInvestmentAmount() {
+        val call = AkilimoApi.apiService.getInvestmentAmounts(countryCode = countryCode)
+        call.enqueue(object : retrofit2.Callback<InvestmentAmountResponse> {
+            override fun onResponse(
+                call: retrofit2.Call<InvestmentAmountResponse>,
+                response: retrofit2.Response<InvestmentAmountResponse>
+            ) {
+                if (response.isSuccessful) {
+                    investmentAmountList = response.body()!!.data
+                    if (investmentAmountList.isNotEmpty()) {
+                        database.investmentAmountDao().insertAll(investmentAmountList)
+                        addInvestmentRadioButtons(investmentAmountList)
                     } else {
-                        Toast.makeText(context, getString(R.string.lbl_investment_amount_load_error), Toast.LENGTH_LONG).show();
+                        Toast.makeText(
+                            context,
+                            getString(R.string.lbl_investment_amount_load_error),
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
-
-                } catch (Exception ex) {
-                    String error = ex.getMessage();
-                    Toast.makeText(context, getString(R.string.lbl_investment_amount_load_error), Toast.LENGTH_SHORT).show();
-                    Toast.makeText(context, error, Toast.LENGTH_LONG).show();
                 }
             }
 
-            @Override
-            public void onSuccessJsonObject(JSONObject jsonObject) {
+            override fun onFailure(call: retrofit2.Call<InvestmentAmountResponse>, t: Throwable) {
+                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                Sentry.captureException(t)
             }
-
-            @Override
-            public void onError(@NotNull VolleyError ex) {
-                Toast.makeText(context, getString(R.string.lbl_investment_amount_load_error), Toast.LENGTH_LONG).show();
-            }
-        });
+        })
     }
 
-    private void addInvestmentRadioButtons(List<InvestmentAmountDto> investmentAmountList) {
-        rdgInvestmentAmount.removeAllViews();
-        currencySymbol = currencyCode;
-        ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
+    private fun addInvestmentRadioButtons(investmentAmountList: List<InvestmentAmount>) {
+        rdgInvestmentAmount!!.removeAllViews()
+        currencySymbol = currencyCode
+        val extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode)
         if (extendedCurrency != null) {
-            currencySymbol = extendedCurrency.getSymbol();
+            currencySymbol = extendedCurrency.symbol
+            currencyName = extendedCurrency.name
         }
 
-        RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        int mediumSpacing = 30;
-        params.setMargins(0, mediumSpacing, 0, mediumSpacing);
+        val params = RadioGroup.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        val mediumSpacing = 30
+        params.setMargins(0, mediumSpacing, 0, mediumSpacing)
 
-        String exactTextHint = getString(R.string.exact_investment_x_per_field_area_hint, currencyName, String.valueOf(fieldSize), areaUnit);
-        String separator = getString(R.string.lbl_per_separator);
+        val exactTextHint = getString(
+            R.string.exact_investment_x_per_field_area_hint,
+            currencyName,
+            fieldSize.toString(),
+            areaUnit
+        )
+        val separator = getString(R.string.lbl_per_separator)
 
-        txtEditInvestmentAmountLayout.setHint(exactTextHint);
-        txtEditInvestmentAmount.setHint(exactTextHint);
+        txtEditInvestmentAmountLayout!!.hint = exactTextHint
+        txtEditInvestmentAmount!!.hint = exactTextHint
 
-        for (InvestmentAmountDto pricesResp : investmentAmountList) {
-            minimumAmountLocal = pricesResp.getMinInvestmentAmount();
-            maxAmountLocal = pricesResp.getMaxInvestmentAmount();
-            long listIndex = pricesResp.getInvestmentId();
+        for (pricesResp in investmentAmountList) {
+            minimumAmountLocal = pricesResp.minInvestmentAmount
+            maxAmountLocal = pricesResp.maxInvestmentAmount
+            val listIndex = pricesResp.id!!.toLong()
 
-            RadioButton radioButton = new RadioButton(context);
-            radioButton.setId(View.generateViewId());
-            radioButton.setTag(listIndex);
+            val radioButton = RadioButton(context)
+            radioButton.id = View.generateViewId()
+            radioButton.tag = listIndex
 
-            double price = pricesResp.getInvestmentAmount();
-            double amountToInvest = mathHelper.computeInvestmentForSpecifiedAreaUnit(price, fieldSize, areaUnit);
-            String radioLabel = setLabel(amountToInvest, currencyCode, currencySymbol, areaUnit, fieldAreaAcre, selectedFieldArea, separator);
-            if (price == 0) {
-                radioLabel = context.getString(R.string.exact_investment_x_per_field_area);
+            val price = pricesResp.investmentAmount
+            val amountToInvest =
+                mathHelper!!.computeInvestmentForSpecifiedAreaUnit(price, fieldSize, areaUnit)
+            var radioLabel = setLabel(
+                amountToInvest,
+                currencyCode,
+                currencySymbol,
+                areaUnit,
+                fieldAreaAcre,
+                selectedFieldArea,
+                separator
+            )
+            if (price == 0.0) {
+                radioLabel = context.getString(R.string.exact_investment_x_per_field_area)
             }
 
-            radioButton.setText(radioLabel);
-            radioButton.setLayoutParams(params);
+            radioButton.text = radioLabel
+            radioButton.layoutParams = params
 
-            rdgInvestmentAmount.addView(radioButton);
+            rdgInvestmentAmount!!.addView(radioButton)
             //set relevant radio button as selected based on the price range
-            double refAmount = mathHelper.roundToNDecimalPlaces(amountToInvest, 2);
+            val refAmount = mathHelper!!.roundToNDecimalPlaces(amountToInvest, 2.0)
             if (refAmount == selectedPrice) {
-                radioButton.setChecked(true);
+                radioButton.isChecked = true
             }
         }
     }
 
-    private String setLabel(Double amountToInvest, String currencyCode, String currencySymbol,
-                            String areaUnit, String fieldAreaAcre, String selectedFieldArea, String separator) {
-
-        String formattedNumber = mathHelper.formatNumber(amountToInvest, currencySymbol);
-        return String.format("%s %s %s", formattedNumber, separator, selectedFieldArea);
+    private fun setLabel(
+        amountToInvest: Double,
+        currencyCode: String,
+        currencySymbol: String,
+        areaUnit: String,
+        fieldAreaAcre: String?,
+        selectedFieldArea: String?,
+        separator: String
+    ): String {
+        val formattedNumber = mathHelper!!.formatNumber(amountToInvest, currencySymbol)
+        return String.format("%s %s %s", formattedNumber, separator, selectedFieldArea)
     }
 }
