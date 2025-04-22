@@ -3,8 +3,6 @@ package com.akilimo.mobile.utils;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
-
 
 import com.akilimo.mobile.BuildConfig;
 
@@ -23,9 +21,9 @@ import io.sentry.Sentry;
 public class SessionManager {
     private static final String PREF_NAME = "akilimo-config";
 
-    private SharedPreferences.Editor editor;
-    private Context context;
-    private SharedPreferences pref;
+    private final SharedPreferences.Editor editor;
+    private final Context context;
+    private final SharedPreferences pref;
 
 
     @SuppressLint("CommitPrefEdits")
@@ -35,13 +33,23 @@ public class SessionManager {
         editor = pref.edit();
     }
 
-    public void setApiEndPoint(String apiResource) {
+    public String getAkilimoEndpoint() {
+        return "https://stag-emerging-dodo.ngrok-free.app/api/";
+//        return pref.getString("apiResource", "https://api.akilimo.org/");
+    }
+
+    public void setAkilimoEndpoint(String apiResource) {
         editor.putString("apiResource", apiResource);
         editor.commit();
     }
 
-    public String getApiEndPoint() {
-        return pref.getString("apiResource", "https://api.akilimo.org/");
+    public String getFuelrodEndpoint() {
+        return pref.getString("fuelrodResource", "https://api.munywele.co.ke/");
+    }
+
+    public void setFuelrodEndpoint(String apiResource) {
+        editor.putString("apiResource", apiResource);
+        editor.commit();
     }
 
     public void setApiRefreshToken(String apiToken) {
