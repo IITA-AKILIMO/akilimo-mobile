@@ -74,7 +74,6 @@ class SplashActivity : BaseActivity() {
                         fieldOperationCostDao().deleteAll()
                         fieldYieldDao().deleteAll()
                         investmentAmountDao().deleteAll()
-                        investmentAmountDtoDao().deleteAll()
                         locationInfoDao().deleteAll()
                         maizeMarketDao().deleteAll()
                         maizePerformanceDao().deleteAll()
