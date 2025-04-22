@@ -3,7 +3,6 @@ package com.akilimo.mobile.views.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -11,19 +10,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.android.gms.common.util.Strings;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.adapters.RecommendationAdapter;
 import com.akilimo.mobile.dao.AppDatabase;
@@ -34,12 +25,17 @@ import com.akilimo.mobile.interfaces.IRecommendationCallBack;
 import com.akilimo.mobile.interfaces.IVolleyCallback;
 import com.akilimo.mobile.mappers.ComputedResponse;
 import com.akilimo.mobile.rest.RestParameters;
-import com.akilimo.mobile.rest.RestService;
-import com.akilimo.mobile.rest.response.Recommendation;
 import com.akilimo.mobile.rest.request.RecommendationRequest;
+import com.akilimo.mobile.rest.response.Recommendation;
 import com.akilimo.mobile.utils.BuildComputeData;
 import com.akilimo.mobile.utils.Tools;
 import com.akilimo.mobile.views.fragments.dialog.RecommendationChannelDialog;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.gms.common.util.Strings;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
