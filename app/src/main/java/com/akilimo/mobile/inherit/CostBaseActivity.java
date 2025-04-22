@@ -1,17 +1,14 @@
 package com.akilimo.mobile.inherit;
 
 
-import android.util.Log;
 import android.widget.Toast;
 
-import com.android.volley.VolleyError;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.akilimo.mobile.interfaces.IVolleyCallback;
 import com.akilimo.mobile.models.OperationCost;
 import com.akilimo.mobile.rest.RestParameters;
-import com.akilimo.mobile.rest.RestService;
+import com.android.volley.VolleyError;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
