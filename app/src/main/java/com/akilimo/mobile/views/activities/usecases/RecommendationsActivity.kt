@@ -17,23 +17,15 @@ import com.akilimo.mobile.entities.AkilimoCurrencyResponse
 import com.akilimo.mobile.entities.MandatoryInfo
 import com.akilimo.mobile.entities.UseCases
 import com.akilimo.mobile.inherit.BaseActivity
-import com.akilimo.mobile.interfaces.AkilimoApiInterface
-import com.akilimo.mobile.interfaces.IVolleyCallback
+import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.models.Recommendations
-import com.akilimo.mobile.rest.RestParameters
-import com.akilimo.mobile.rest.RestService
 import com.akilimo.mobile.utils.SessionManager
 import com.akilimo.mobile.utils.TheItemAnimation
 import com.akilimo.mobile.utils.enums.EnumAdvice
 import com.akilimo.mobile.utils.enums.EnumCountry
-import com.android.volley.VolleyError
 import com.android.volley.toolbox.Volley
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.android.material.snackbar.Snackbar
 import io.sentry.Sentry
-import org.json.JSONArray
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -43,7 +35,6 @@ class RecommendationsActivity : BaseActivity() {
     var recyclerView: RecyclerView? = null
 
     var binding: ActivityRecommendationsActivityBinding? = null
-    private lateinit var akilimoApiInterface: AkilimoApiInterface
 
 
     private var frString: String? = null
@@ -62,7 +53,6 @@ class RecommendationsActivity : BaseActivity() {
         binding = ActivityRecommendationsActivityBinding.inflate(
             layoutInflater
         )
-        akilimoApiInterface = AkilimoApiInterface.create()
 
         setContentView(binding!!.root)
 
@@ -215,7 +205,7 @@ class RecommendationsActivity : BaseActivity() {
 
 
     private fun updateCurrencyList() {
-        val currencyCall = akilimoApiInterface.listCurrencies()
+        val currencyCall = AkilimoApi.apiService.listCurrencies()
         currencyCall.enqueue(object : Callback<AkilimoCurrencyResponse> {
             override fun onResponse(
                 call: Call<AkilimoCurrencyResponse>,
