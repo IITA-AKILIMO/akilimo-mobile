@@ -1,7 +1,6 @@
 package com.akilimo.mobile.views.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -13,13 +12,6 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.android.gms.common.util.Strings;
-import com.google.android.material.snackbar.Snackbar;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.dao.AppDatabase;
 import com.akilimo.mobile.databinding.ActivitySweetPotatoMarketBinding;
@@ -30,13 +22,18 @@ import com.akilimo.mobile.entities.ProfileInfo;
 import com.akilimo.mobile.inherit.BaseActivity;
 import com.akilimo.mobile.interfaces.IVolleyCallback;
 import com.akilimo.mobile.rest.RestParameters;
-import com.akilimo.mobile.rest.RestService;
 import com.akilimo.mobile.utils.MathHelper;
 import com.akilimo.mobile.utils.Tools;
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks;
 import com.akilimo.mobile.utils.enums.EnumPotatoProduceType;
 import com.akilimo.mobile.utils.enums.EnumUnitOfSale;
 import com.akilimo.mobile.views.fragments.dialog.SweetPotatoPriceDialogFragment;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.gms.common.util.Strings;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -64,7 +61,7 @@ public class SweetPotatoMarketActivity extends BaseActivity {
     private PotatoMarket potatoMarket;
     private String enumPotatoProduceType;
     private List<PotatoPrice> potatoPriceList = null;
-    private boolean selectionMade = false;
+    private final boolean selectionMade = false;
 
     private String unitOfSale;
     private EnumUnitOfSale unitOfSaleEnum = EnumUnitOfSale.FIFTY_KG;
@@ -79,8 +76,8 @@ public class SweetPotatoMarketActivity extends BaseActivity {
     private double unitPrice = 0.0;
     private int unitWeight;
 
-    private double minAmountUSD = 5.00;
-    private double maxAmountUSD = 500.00;
+    private final double minAmountUSD = 5.00;
+    private final double maxAmountUSD = 500.00;
 
     private boolean dialogOpen;
 
