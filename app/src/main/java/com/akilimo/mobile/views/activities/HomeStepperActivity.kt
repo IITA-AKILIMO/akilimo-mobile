@@ -14,12 +14,23 @@ import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.data.RemoteConfig
 import com.akilimo.mobile.databinding.ActivityHomeStepperBinding
 import com.akilimo.mobile.inherit.BaseActivity
-import com.akilimo.mobile.interfaces.FuelrodApiInterface
+import com.akilimo.mobile.interfaces.FuelrodApi
 import com.akilimo.mobile.interfaces.IFragmentCallBack
 import com.akilimo.mobile.utils.InAppUpdate
 import com.akilimo.mobile.utils.SessionManager
 import com.akilimo.mobile.views.activities.usecases.RecommendationsActivity
-import com.akilimo.mobile.views.fragments.*
+import com.akilimo.mobile.views.fragments.AreaUnitFragment
+import com.akilimo.mobile.views.fragments.BioDataFragment
+import com.akilimo.mobile.views.fragments.CountryFragment
+import com.akilimo.mobile.views.fragments.FieldSizeFragment
+import com.akilimo.mobile.views.fragments.InfoFragment
+import com.akilimo.mobile.views.fragments.InvestmentPrefFragment
+import com.akilimo.mobile.views.fragments.LocationFragment
+import com.akilimo.mobile.views.fragments.PlantingDateFragment
+import com.akilimo.mobile.views.fragments.PrivacyStatementFragment
+import com.akilimo.mobile.views.fragments.SummaryFragment
+import com.akilimo.mobile.views.fragments.TillageOperationFragment
+import com.akilimo.mobile.views.fragments.WelcomeFragment
 import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.StepperLayout.StepperListener
 import com.stepstone.stepper.VerificationError
@@ -37,7 +48,6 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
     private lateinit var activity: Activity
     private lateinit var binding: ActivityHomeStepperBinding
-    private lateinit var fuelrodApiInterface: FuelrodApiInterface
     private lateinit var inAppUpdate: InAppUpdate
 
     private lateinit var stepperAdapter: MyStepperAdapter
@@ -49,7 +59,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
     private val configListDict = HashMap<String, String>()
 
     private var exit: Boolean = false
-    private var stepperReduction = 0;
+    private var stepperReduction = 0
 
     @Deprecated("Deprecated in Java")
     override fun onAttachFragment(fragment: Fragment) {
@@ -64,7 +74,6 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeStepperBinding.inflate(layoutInflater)
-        fuelrodApiInterface = FuelrodApiInterface.create()
         inAppUpdate = InAppUpdate(this@HomeStepperActivity)
 
         setContentView(binding.root)
@@ -82,7 +91,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
     }
 
     private fun loadConfig() {
-        val configReader = fuelrodApiInterface.readConfig("akilimo")
+        val configReader = FuelrodApi.apiService.readConfig("akilimo")
 
 
         configReader.enqueue(object : Callback<List<RemoteConfig>> {
@@ -98,7 +107,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
                 if (configListDict.isNotEmpty()) {
                     if (configListDict.containsKey("api_endpoint")) {
-                        sessionManager.apiEndPoint = configListDict["api_endpoint"]
+                        sessionManager.akilimoEndpoint = configListDict["api_endpoint"]
                     }
 
                     if (configListDict.containsKey("location_iq")) {
@@ -138,7 +147,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
                     applicationContext,
                     "Unable to load remote configurations, using default config: $errorMessage",
                     Toast.LENGTH_LONG
-                ).show();
+                ).show()
             }
         })
     }
@@ -187,7 +196,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
             override fun onError(verificationError: VerificationError) {
                 showCustomWarningDialog(
                     getString(R.string.empty_text), verificationError.errorMessage
-                );
+                )
             }
 
             override fun onStepSelected(newStepPosition: Int) {
@@ -219,7 +228,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
     override fun onResume() {
         super.onResume()
-        inAppUpdate.onResume();
+        inAppUpdate.onResume()
     }
 
     override fun onDestroy() {
