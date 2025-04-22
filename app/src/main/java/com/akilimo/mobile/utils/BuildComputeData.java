@@ -1,12 +1,9 @@
 package com.akilimo.mobile.utils;
 
 import android.app.Activity;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-
-import com.google.android.gms.common.util.Strings;
 import com.akilimo.mobile.dao.AppDatabase;
 import com.akilimo.mobile.entities.CassavaMarket;
 import com.akilimo.mobile.entities.CurrentPractice;
@@ -26,6 +23,7 @@ import com.akilimo.mobile.entities.UseCases;
 import com.akilimo.mobile.rest.request.ComputeRequest;
 import com.akilimo.mobile.rest.request.RecommendationRequest;
 import com.akilimo.mobile.rest.request.UserInfo;
+import com.google.android.gms.common.util.Strings;
 
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
@@ -78,12 +76,12 @@ public class BuildComputeData {
     private String areaUnits = DEFAULT_UNAVAILABLE;
     private double fieldArea = 0.0;
 
-    private String interCroppingType = DEFAULT_UNAVAILABLE;
-    private boolean interCroppingRec = false;
-    private boolean fertilizerRec = false;
-    private boolean plantingPracticesRec = false;
-    private boolean scheduledPlantingRec = false;
-    private boolean scheduledHarvestRec = false;
+    private final String interCroppingType = DEFAULT_UNAVAILABLE;
+    private final boolean interCroppingRec = false;
+    private final boolean fertilizerRec = false;
+    private final boolean plantingPracticesRec = false;
+    private final boolean scheduledPlantingRec = false;
+    private final boolean scheduledHarvestRec = false;
 
     private String harvestDate = DEFAULT_UNAVAILABLE;
     private String plantingDate = DEFAULT_UNAVAILABLE;
@@ -92,13 +90,13 @@ public class BuildComputeData {
     private int harvestDateWindow = 0;
     private int currentFieldYield = DEFAULT_FIELD_YIELD;
 
-    private String fallowType = DEFAULT_FALLOW_TYPE;
-    private boolean fallowGreen = false;
-    private int fallowHeight = 100;
-    private boolean problemWeeds = false;
+    private final String fallowType = DEFAULT_FALLOW_TYPE;
+    private final boolean fallowGreen = false;
+    private final int fallowHeight = 100;
+    private final boolean problemWeeds = false;
 
 
-    private String costLmoAreaBasis = DEFAULT_LMNO_BASIS;
+    private final String costLmoAreaBasis = DEFAULT_LMNO_BASIS;
     private double costTractorPlough;
     private double costTractorHarrow;
 
@@ -132,9 +130,9 @@ public class BuildComputeData {
     private String deviceToken = DEFAULT_USERNAME;
     private String fullNames = DEFAULT_USERNAME;
     private String gender = DEFAULT_UNAVAILABLE;
-    private String secondName = DEFAULT_USERNAME;
+    private final String secondName = DEFAULT_USERNAME;
     private String farmName = DEFAULT_FIELD_DESC;
-    private int riskAtt = DEFAULT_UNAVAILABLE_INT;
+    private final int riskAtt = DEFAULT_UNAVAILABLE_INT;
 
     private double cassavaUpmOne;
     private double cassavaUpmTwo;
@@ -145,10 +143,10 @@ public class BuildComputeData {
     private String starchFactoryName = DEFAULT_UNAVAILABLE;
 
 
-    private MathHelper mathHelper;
-    private ModelMapper modelMapper;
-    private SessionManager sessionManager;
-    private AppDatabase database;
+    private final MathHelper mathHelper;
+    private final ModelMapper modelMapper;
+    private final SessionManager sessionManager;
+    private final AppDatabase database;
 
     public BuildComputeData(@NonNull Activity activity) {
         database = AppDatabase.getDatabase(activity);
@@ -199,7 +197,7 @@ public class BuildComputeData {
             if (profileInfo != null) {
                 String firstName = Strings.isEmptyOrWhitespace(profileInfo.getFirstName()) ? DEFAULT_USERNAME : profileInfo.getFirstName();
                 String lastName = Strings.isEmptyOrWhitespace(profileInfo.getLastName()) ? DEFAULT_USERNAME : profileInfo.getLastName();
-                fullNames = Strings.isEmptyOrWhitespace(profileInfo.getNames()) ? DEFAULT_USERNAME : profileInfo.getNames();
+                fullNames = Strings.isEmptyOrWhitespace(profileInfo.names()) ? DEFAULT_USERNAME : profileInfo.names();
                 gender = Strings.isEmptyOrWhitespace(profileInfo.getGender()) ? DEFAULT_UNAVAILABLE : profileInfo.getGender();
                 farmName = Strings.isEmptyOrWhitespace(profileInfo.getFarmName()) ? DEFAULT_UNAVAILABLE : profileInfo.getFarmName();
                 mobileNumber = Strings.isEmptyOrWhitespace(profileInfo.getFullMobileNumber()) ? DEFAULT_UNAVAILABLE : profileInfo.getFullMobileNumber();
@@ -316,7 +314,7 @@ public class BuildComputeData {
     private ComputeRequest buildInvestmentAmount(@NonNull ComputeRequest computeRequest) {
         InvestmentAmount investmentAmount = database.investmentAmountDao().findOne();
         if (investmentAmount != null) {
-            maxInvestmentAmountLocal = investmentAmount.getInvestmentAmountLocal();
+            maxInvestmentAmountLocal = investmentAmount.getMaxInvestmentAmount();
         }
         computeRequest.setMaxInvestment(maxInvestmentAmountLocal);
         return computeRequest;
