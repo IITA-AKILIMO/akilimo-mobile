@@ -5,7 +5,28 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.akilimo.mobile.entities.*
+import com.akilimo.mobile.entities.AdviceStatus
+import com.akilimo.mobile.entities.AkilimoCurrency
+import com.akilimo.mobile.entities.CassavaMarket
+import com.akilimo.mobile.entities.CassavaPrice
+import com.akilimo.mobile.entities.CurrentPractice
+import com.akilimo.mobile.entities.Fertilizer
+import com.akilimo.mobile.entities.FertilizerPrice
+import com.akilimo.mobile.entities.FieldOperationCost
+import com.akilimo.mobile.entities.FieldYield
+import com.akilimo.mobile.entities.InterCropFertilizer
+import com.akilimo.mobile.entities.InvestmentAmount
+import com.akilimo.mobile.entities.LocationInfo
+import com.akilimo.mobile.entities.MaizeMarket
+import com.akilimo.mobile.entities.MaizePerformance
+import com.akilimo.mobile.entities.MaizePrice
+import com.akilimo.mobile.entities.MandatoryInfo
+import com.akilimo.mobile.entities.PotatoMarket
+import com.akilimo.mobile.entities.PotatoPrice
+import com.akilimo.mobile.entities.ProfileInfo
+import com.akilimo.mobile.entities.ScheduledDate
+import com.akilimo.mobile.entities.StarchFactory
+import com.akilimo.mobile.entities.UseCases
 
 @Database(
     entities = [
@@ -18,7 +39,6 @@ import com.akilimo.mobile.entities.*
         FieldOperationCost::class,
         InterCropFertilizer::class,
         InvestmentAmount::class,
-        InvestmentAmountDto::class,
         LocationInfo::class,
         MaizeMarket::class,
         MaizePerformance::class,
@@ -48,7 +68,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun interCropFertilizerDao(): InterCropFertilizerDao
 
     abstract fun investmentAmountDao(): InvestmentAmountDao
-    abstract fun investmentAmountDtoDao(): InvestmentAmountDtoDao
     abstract fun locationInfoDao(): LocationInfoDao
     abstract fun maizeMarketDao(): MaizeMarketDao
     abstract fun maizePerformanceDao(): MaizePerformanceDao
