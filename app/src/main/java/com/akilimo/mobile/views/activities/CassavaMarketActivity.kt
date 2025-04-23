@@ -12,7 +12,6 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
-import androidx.fragment.app.FragmentTransaction
 import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityCassavaMarketBinding
@@ -33,7 +32,6 @@ import com.akilimo.mobile.utils.enums.EnumUnitOfSale
 import com.akilimo.mobile.utils.enums.EnumUseCase
 import com.akilimo.mobile.views.fragments.dialog.CassavaPriceDialogFragment
 import com.android.volley.toolbox.Volley
-import com.google.android.gms.common.util.Strings
 import io.sentry.Sentry
 import retrofit2.Call
 import retrofit2.Response
@@ -494,7 +492,7 @@ class CassavaMarketActivity : BaseActivity() {
         arguments.putString(CassavaPriceDialogFragment.UNIT_OF_SALE, unitOfSale)
         arguments.putParcelable(CassavaPriceDialogFragment.ENUM_UNIT_OF_SALE, unitOfSaleEnum)
 
-        val priceDialogFragment = CassavaPriceDialogFragment(context)
+        val priceDialogFragment = CassavaPriceDialogFragment()
         priceDialogFragment.arguments = arguments
 
         priceDialogFragment.setOnDismissListener { selectedPrice: Double, isExactPrice: Boolean ->
