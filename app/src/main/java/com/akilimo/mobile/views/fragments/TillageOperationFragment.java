@@ -122,7 +122,7 @@ public class TillageOperationFragment extends BaseStepFragment {
         Bundle arguments = new Bundle();
         arguments.putString(OperationTypeDialogFragment.OPERATION_TYPE, operation);
 
-        OperationTypeDialogFragment operationTypeDialogFragment = new OperationTypeDialogFragment(context);
+        OperationTypeDialogFragment operationTypeDialogFragment = new OperationTypeDialogFragment();
         operationTypeDialogFragment.setArguments(arguments);
         FragmentTransaction fragmentTransaction;
 

@@ -8,7 +8,6 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
-import androidx.fragment.app.FragmentTransaction
 import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityMaizeMarketBinding
@@ -16,26 +15,15 @@ import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.MaizeMarket
 import com.akilimo.mobile.entities.MaizePrice
 import com.akilimo.mobile.entities.MaizePriceResponse
-import com.akilimo.mobile.entities.PotatoPriceResponse
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
-import com.akilimo.mobile.rest.RestParameters
 import com.akilimo.mobile.utils.MathHelper
-import com.akilimo.mobile.utils.Tools.parseNetworkError
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumMaizeProduceType
 import com.akilimo.mobile.utils.enums.EnumUnitOfSale
 import com.akilimo.mobile.views.fragments.dialog.MaizePriceDialogFragment
-import com.android.volley.VolleyError
 import com.android.volley.toolbox.Volley
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.android.gms.common.util.Strings
-import com.google.android.material.snackbar.Snackbar
 import io.sentry.Sentry
-import org.json.JSONArray
-import org.json.JSONObject
 
 class MaizeMarketActivity : BaseActivity() {
     var toolbar: Toolbar? = null
@@ -309,7 +297,7 @@ class MaizeMarketActivity : BaseActivity() {
         arguments.putString(MaizePriceDialogFragment.PRODUCE_TYPE, produceType)
         arguments.putParcelable(MaizePriceDialogFragment.ENUM_UNIT_OF_SALE, unitOfSaleEnum)
 
-        val priceDialogFragment = MaizePriceDialogFragment(context)
+        val priceDialogFragment = MaizePriceDialogFragment()
         priceDialogFragment.arguments = arguments
 
         priceDialogFragment.setOnDismissListener { selectedPrice: Double, isExactPrice: Boolean ->

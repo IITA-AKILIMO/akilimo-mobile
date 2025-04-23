@@ -327,7 +327,7 @@ class FertilizersActivity : BaseActivity() {
             val count =
                 database.fertilizerDao().findAllSelectedByCountry(countryCode).size
             if (count < minSelection) {
-                val snackbar = Snackbar.make(
+                val snackBar = Snackbar.make(
                     lyt_progress!!,
                     String.format(
                         Locale.US,
@@ -336,7 +336,7 @@ class FertilizersActivity : BaseActivity() {
                     ),
                     Snackbar.LENGTH_SHORT
                 )
-                snackbar.show()
+                snackBar.show()
             }
             return count >= minSelection
         }
