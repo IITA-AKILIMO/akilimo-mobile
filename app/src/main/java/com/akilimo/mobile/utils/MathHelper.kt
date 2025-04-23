@@ -157,7 +157,7 @@ class MathHelper() {
             else -> sizeInAcre
         }
 
-        return roundToNDecimalPlaces(converted, 10.0)
+        return roundToNDecimalPlaces(converted, 100.0)
     }
 
     fun convertToUnitWeightPrice(price: Double, weight: Int): Double {
