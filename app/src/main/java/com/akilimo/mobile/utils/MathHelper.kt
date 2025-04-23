@@ -378,12 +378,14 @@ class MathHelper {
         areaSize: Double,
         areaUnit: String
     ): Double {
-        return when (areaUnit) {
+        val amount = when (areaUnit) {
             AREA_ACRE -> acreInvestment * areaSize
             AREA_HECTARE -> (acreInvestment / ACRE_TO_HECTARE) * areaSize
             AREA_SQM -> (areaSize / ACRE_TO_SQM) * acreInvestment
             AREA_ARE -> (areaSize / ACRE_TO_ARE) * acreInvestment
             else -> acreInvestment * areaSize
         }
+
+        return amount
     }
 }
