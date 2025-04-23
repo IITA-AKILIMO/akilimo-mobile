@@ -60,19 +60,19 @@ internal class MathHelperTest {
     @Test
     fun convertAcreToHa() {
         val result = mathHelper.convertFromAcreToSpecifiedArea(2.5, "ha")
-        Assert.assertEquals(1.0, result, 0.0)
+        Assert.assertEquals(1.01, result, 0.0)
     }
 
     @Test
     fun convertAcreToSQM() {
         val result = mathHelper.convertFromAcreToSpecifiedArea(1.0, "sqm")
-        Assert.assertEquals(4046.9, result, 0.0)
+        Assert.assertEquals(4046.86, result, 0.0)
     }
 
     @Test
     fun convertAcreToAre() {
         val result = mathHelper.convertFromAcreToSpecifiedArea(1.0, "are")
-        Assert.assertEquals(40.5, result, 0.0)
+        Assert.assertEquals(40.47, result, 0.0)
     }
 
     @Test
