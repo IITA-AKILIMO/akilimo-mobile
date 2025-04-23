@@ -7,6 +7,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
@@ -238,7 +239,27 @@ public class TractorAccessActivity extends CostBaseActivity {
         arguments.putString(OperationCostsDialogFragment.DIALOG_TITLE, dialogTitle);
         arguments.putString(OperationCostsDialogFragment.EXACT_PRICE_HINT, hintText);
 
-        OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment(context);
+        OperationCostsDialogFragment dialogFragment = getOperationCostsDialogFragment(arguments);
+
+
+        FragmentTransaction fragmentTransaction;
+        if (getFragmentManager() != null) {
+            fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            fragmentTransaction.setCustomAnimations(R.anim.animate_slide_in_left, R.anim.animate_slide_out_right);
+            Fragment prev = getSupportFragmentManager().findFragmentByTag(OperationCostsDialogFragment.ARG_ITEM_ID);
+            if (prev != null) {
+                fragmentTransaction.remove(prev);
+            }
+            fragmentTransaction.addToBackStack(null);
+            dialogOpen = true;
+            dialogFragment.show(getSupportFragmentManager(), OperationCostsDialogFragment.ARG_ITEM_ID);
+        }
+    }
+
+    @NonNull
+    private OperationCostsDialogFragment getOperationCostsDialogFragment(Bundle arguments) {
+        OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment();
         dialogFragment.setArguments(arguments);
 
         dialogFragment.setOnDismissListener((operationCost, enumOperation, selectedCost, cancelled, isExactCost) -> {
@@ -257,20 +278,6 @@ public class TractorAccessActivity extends CostBaseActivity {
             }
             dialogOpen = false;
         });
-
-
-        FragmentTransaction fragmentTransaction;
-        if (getFragmentManager() != null) {
-            fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            fragmentTransaction.setCustomAnimations(R.anim.animate_slide_in_left, R.anim.animate_slide_out_right);
-            Fragment prev = getSupportFragmentManager().findFragmentByTag(OperationCostsDialogFragment.ARG_ITEM_ID);
-            if (prev != null) {
-                fragmentTransaction.remove(prev);
-            }
-            fragmentTransaction.addToBackStack(null);
-            dialogOpen = true;
-            dialogFragment.show(getSupportFragmentManager(), OperationCostsDialogFragment.ARG_ITEM_ID);
-        }
+        return dialogFragment;
     }
 }

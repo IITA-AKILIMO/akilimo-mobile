@@ -1,10 +1,8 @@
 package com.akilimo.mobile.views.fragments.dialog
 
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import android.view.Window
@@ -14,6 +12,7 @@ import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
+import androidx.core.graphics.drawable.toDrawable
 import com.akilimo.mobile.R
 import com.akilimo.mobile.inherit.BaseDialogFragment
 import com.akilimo.mobile.models.OperationCost
@@ -25,7 +24,7 @@ import io.sentry.Sentry
 /**
  * A simple [androidx.fragment.app.Fragment] subclass.
  */
-class OperationCostsDialogFragment(context: Context?) : BaseDialogFragment() {
+class OperationCostsDialogFragment : BaseDialogFragment() {
     private var isExactCostRequired = false
     private var isPriceValid = false
     private var priceSpecified = false
@@ -40,7 +39,6 @@ class OperationCostsDialogFragment(context: Context?) : BaseDialogFragment() {
     private var selectedCost = 0.0
     private var translatedSuffix: String? = null
     private var currencyCode: String? = null
-    private var currencySymbol: String? = null
     private var operationName: String? = null
     private var bagPrice: String? = null
     private var bagPriceRange = "NA"
@@ -52,10 +50,6 @@ class OperationCostsDialogFragment(context: Context?) : BaseDialogFragment() {
     private var onDismissListener: IDismissDialog? = null
     private var operationCosts: ArrayList<OperationCost>? = null
     private var operationCost: OperationCost? = null
-
-    init {
-        this.context = context
-    }
 
 
     companion object {
@@ -75,6 +69,7 @@ class OperationCostsDialogFragment(context: Context?) : BaseDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val bundle = this.arguments
+        val context = requireContext()
         if (bundle != null) {
             operationCosts = bundle.getParcelableArrayList(COST_LIST)
             countryCode = bundle.getString(COUNTRY_CODE)
@@ -96,7 +91,7 @@ class OperationCostsDialogFragment(context: Context?) : BaseDialogFragment() {
 
 
         dialog!!.setCancelable(true)
-        dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog!!.window!!.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
         dialog!!.window!!.attributes.windowAnimations = R.style.DialogSlideAnimation
 
 
@@ -136,7 +131,7 @@ class OperationCostsDialogFragment(context: Context?) : BaseDialogFragment() {
                     return@setOnClickListener
                 }
                 selectedCost = bagPrice!!.toDouble()
-                bagPriceRange = mathHelper.formatNumber(selectedCost, currencySymbol)
+                bagPriceRange = mathHelper!!.formatNumber(selectedCost, currencySymbol)
                 isPriceValid = true
                 cancelled = false
                 editExactCost!!.error = null
@@ -154,7 +149,7 @@ class OperationCostsDialogFragment(context: Context?) : BaseDialogFragment() {
             )
         })
         addCostRadioButtons(operationCosts!!)
-        exactPriceWrapper!!.setHint(exactPriceHint)
+        exactPriceWrapper!!.hint = exactPriceHint
         return dialog!!
     }
 
@@ -187,6 +182,7 @@ class OperationCostsDialogFragment(context: Context?) : BaseDialogFragment() {
 
     private fun addCostRadioButtons(operationCosts: ArrayList<OperationCost>) {
         radioGroup!!.removeAllViews()
+        val context = requireContext()
 
         for ((id, _, _, _, minPrice, maxPrice, price) in operationCosts) {
             val listIndex = id.toLong()
@@ -198,7 +194,7 @@ class OperationCostsDialogFragment(context: Context?) : BaseDialogFragment() {
 
             val defaultLabel = String.format(
                 getString(R.string.lbl_operation_cost_label),
-                mathHelper.formatNumber(maxPrice, null),
+                mathHelper!!.formatNumber(maxPrice, null),
                 currencySymbol
             )
 

@@ -257,7 +257,7 @@ class ManualTillageCostActivity : CostBaseActivity() {
         arguments.putString(OperationCostsDialogFragment.CURRENCY_SYMBOL, currencySymbol)
         arguments.putString(OperationCostsDialogFragment.COUNTRY_CODE, countryCode)
 
-        val dialogFragment = OperationCostsDialogFragment(context)
+        val dialogFragment = OperationCostsDialogFragment()
         dialogFragment.arguments = arguments
 
         dialogFragment.setOnDismissListener(object : OperationCostsDialogFragment.IDismissDialog {

@@ -153,7 +153,7 @@ class IntercropFertilizersActivity : BaseActivity() {
             val arguments = Bundle()
             arguments.putParcelable(FertilizerPriceDialogFragment.FERTILIZER_TYPE, selectedType)
 
-            val priceDialogFragment = FertilizerPriceDialogFragment(context)
+            val priceDialogFragment = FertilizerPriceDialogFragment()
             priceDialogFragment.arguments = arguments
 
             priceDialogFragment.setOnDismissListener(object : IFertilizerDismissListener {
