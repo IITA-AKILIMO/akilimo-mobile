@@ -1,7 +1,6 @@
 package com.akilimo.mobile.views.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,8 +11,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
-import com.google.android.gms.common.util.Strings;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.adapters.MaizePerformanceAdapter;
 import com.akilimo.mobile.dao.AppDatabase;
@@ -27,8 +24,9 @@ import com.akilimo.mobile.utils.enums.EnumAdviceTasks;
 import com.akilimo.mobile.views.fragments.dialog.MaizePerformanceDialogFragment;
 import com.akilimo.mobile.views.fragments.dialog.RootYieldDialogFragment;
 import com.akilimo.mobile.widget.SpacingItemDecoration;
+import com.google.android.gms.common.util.Strings;
 
-;import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.sentry.Sentry;
@@ -136,7 +134,7 @@ public class MaizePerformanceActivity extends BaseActivity {
                 Bundle arguments = new Bundle();
                 arguments.putParcelable(MaizePerformanceDialogFragment.PERFORMANCE_DATA, clickedMaizePerformance);
 
-                MaizePerformanceDialogFragment rootYieldDialogFragment = new MaizePerformanceDialogFragment(context);
+                MaizePerformanceDialogFragment rootYieldDialogFragment = new MaizePerformanceDialogFragment();
                 rootYieldDialogFragment.setArguments(arguments);
 
                 rootYieldDialogFragment.setOnDismissListener((yield, yieldConfirmed) -> {
