@@ -3,7 +3,6 @@ package com.akilimo.mobile.views.activities.usecases;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatButton;
@@ -11,8 +10,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
-import com.google.android.material.snackbar.Snackbar;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.adapters.RecOptionsAdapter;
 import com.akilimo.mobile.dao.AppDatabase;
@@ -27,11 +24,12 @@ import com.akilimo.mobile.views.activities.DatesActivity;
 import com.akilimo.mobile.views.activities.FertilizersActivity;
 import com.akilimo.mobile.views.activities.InvestmentAmountActivity;
 import com.akilimo.mobile.views.activities.RootYieldActivity;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
 
-;import io.sentry.Sentry;
+import io.sentry.Sentry;
 
 public class FertilizerRecActivity extends BaseActivity {
 
