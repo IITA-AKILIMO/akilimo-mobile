@@ -1,274 +1,225 @@
-package com.akilimo.mobile.utils;
+package com.akilimo.mobile.utils
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Context
+import android.content.SharedPreferences
+import com.akilimo.mobile.BuildConfig
+import io.sentry.Sentry
+import org.joda.time.DateTimeZone
+import java.util.UUID
 
-import com.akilimo.mobile.BuildConfig;
+class SessionManager(context: Context) {
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-
-import java.util.UUID;
-
-import io.sentry.Sentry;
-
-
-/**
- * AppSession manager for logged in users
- */
-
-public class SessionManager {
-    private static final String PREF_NAME = "akilimo-config";
-
-    private final SharedPreferences.Editor editor;
-    private final Context context;
-    private final SharedPreferences pref;
-
-
-    @SuppressLint("CommitPrefEdits")
-    public SessionManager(Context context) {
-        this.context = context;
-        pref = this.context.getSharedPreferences(PREF_NAME, 0);
-        editor = pref.edit();
+    companion object {
+        private const val PREF_NAME = "akilimo-config"
     }
 
-    public String getAkilimoEndpoint() {
-        return "https://stag-emerging-dodo.ngrok-free.app/api/";
-//        return pref.getString("apiResource", "https://api.akilimo.org/");
+    private val pref: SharedPreferences = context.getSharedPreferences(PREF_NAME, 0)
+    private val editor: SharedPreferences.Editor = pref.edit()
+
+    fun getAkilimoEndpoint(): String {
+        return "https://stag-emerging-dodo.ngrok-free.app/api/"
+        // return pref.getString("apiResource", "https://api.akilimo.org/") ?: ""
     }
 
-    public void setAkilimoEndpoint(String apiResource) {
-        editor.putString("apiResource", apiResource);
-        editor.commit();
+    fun setAkilimoEndpoint(apiResource: String) {
+        editor.putString("apiResource", apiResource).apply()
     }
 
-    public String getFuelrodEndpoint() {
-        return pref.getString("fuelrodResource", "https://api.munywele.co.ke/");
+    fun getFuelrodEndpoint(): String {
+        return pref.getString("fuelrodResource", "https://api.munywele.co.ke/") ?: ""
     }
 
-    public void setFuelrodEndpoint(String apiResource) {
-        editor.putString("apiResource", apiResource);
-        editor.commit();
+    fun setFuelrodEndpoint(apiResource: String) {
+        editor.putString("apiResource", apiResource).apply()
     }
 
-    public void setApiRefreshToken(String apiToken) {
-        editor.putString("apiRefreshToken", apiToken);
-        editor.commit();
+    fun setApiRefreshToken(apiToken: String) {
+        editor.putString("apiRefreshToken", apiToken).apply()
     }
 
-    public String getApiRefreshToken() {
-        return pref.getString("apiRefreshToken", "");
+    fun getApiRefreshToken(): String {
+        return pref.getString("apiRefreshToken", "") ?: ""
     }
 
-
-    public void setApiToken(String apiToken) {
-        editor.putString("apiToken", apiToken);
-        editor.commit();
+    fun setApiToken(apiToken: String) {
+        editor.putString("apiToken", apiToken).apply()
     }
 
-    public String getApiToken() {
-        return pref.getString("apiToken", "");
+    fun getApiToken(): String {
+        return pref.getString("apiToken", "") ?: ""
     }
 
-    public void setMapBoxApiKey(String mapBoxKey) {
-        editor.putString("mapBoxKey", mapBoxKey);
-        editor.commit();
+    fun setMapBoxApiKey(mapBoxKey: String) {
+        editor.putString("mapBoxKey", mapBoxKey).apply()
     }
 
-    public String getMapBoxApiKey() {
-        return pref.getString("mapBoxKey", "");
+    fun getMapBoxApiKey(): String {
+        return pref.getString("mapBoxKey", "") ?: ""
     }
 
-    public void setLocationIqToken(String locationIqToken) {
-        editor.putString("locationIqToken", locationIqToken);
-        editor.commit();
+    fun setLocationIqToken(locationIqToken: String) {
+        editor.putString("locationIqToken", locationIqToken).apply()
     }
 
-    public String getLocationIqToken() {
-        return pref.getString("locationIqToken", "");
+    fun getLocationIqToken(): String {
+        return pref.getString("locationIqToken", "") ?: ""
     }
 
-    public void setNgnRate(String ngnRate) {
-        editor.putString("ngnRate", ngnRate);
-        editor.commit();
+    fun setNgnRate(ngnRate: String) {
+        editor.putString("ngnRate", ngnRate).apply()
     }
 
-
-    public double getNgnRate() {
-        String rate = pref.getString("ngnRate", "390.34");
-        return Double.parseDouble(rate);
+    fun getNgnRate(): Double {
+        val rate = pref.getString("ngnRate", "390.34") ?: "390.34"
+        return rate.toDoubleOrNull() ?: 390.34
     }
 
-    public void setTzsRate(String tzsRate) {
-        editor.putString("tzsRate", tzsRate);
-        editor.commit();
+    fun setTzsRate(tzsRate: String) {
+        editor.putString("tzsRate", tzsRate).apply()
     }
 
-    public double getTzsRate() {
-        String rate = pref.getString("tzsRate", "6.11");
-        return Double.parseDouble(rate);
+    fun getTzsRate(): Double {
+        val rate = pref.getString("tzsRate", "6.11") ?: "6.11"
+        return rate.toDoubleOrNull() ?: 6.11
     }
 
-    public void setGhsRate(String tzsRate) {
-        editor.putString("ghsRate", tzsRate);
-        editor.commit();
+    fun setGhsRate(ghsRate: String) {
+        editor.putString("ghsRate", ghsRate).apply()
     }
 
-    public double getGhsRate() {
-        String rate = pref.getString("ghsRate", "6.11");
-        return Double.parseDouble(rate);
+    fun getGhsRate(): Double {
+        val rate = pref.getString("ghsRate", "6.11") ?: "6.11"
+        return rate.toDoubleOrNull() ?: 6.11
     }
 
-    public void setFirstRun(boolean firstRun) {
-        editor.putBoolean("firstRun", firstRun);
-        editor.commit();
+    fun setFirstRun(firstRun: Boolean) {
+        editor.putBoolean("firstRun", firstRun).apply()
     }
 
-    public boolean getFirstRun() {
-        return pref.getBoolean("firstRun", true);
+    fun getFirstRun(): Boolean {
+        return pref.getBoolean("firstRun", true)
     }
 
-    @SuppressWarnings("StringBufferReplaceableByString")
-    public String getAppVersion() {
-        StringBuilder strVersion = new StringBuilder();
-        strVersion.append("Version: ");
-        strVersion.append(BuildConfig.VERSION_NAME);
-        strVersion.append("\n");
-        strVersion.append("Release date: ");
-        strVersion.append(getAppBuildDate());
-
-        return strVersion.toString();
-    }
-
-    public String getAppBuildDate() {
-        String appBuildDate = "";
-        try {
-            long unixTimestamp = BuildConfig.VERSION_CODE * 1000L;
-            DateTime parsedDateTime = DateHelper.unixTimeStampToDate(unixTimestamp, DateTimeZone.UTC);
-            appBuildDate = parsedDateTime.toDate().toString();
-        } catch (Exception ex) {
-            Sentry.captureException(ex);
+    fun getAppVersion(): String {
+        return buildString {
+            append("Version: ")
+            append(BuildConfig.VERSION_NAME)
+            append("\n")
+            append("Release date: ")
+            append(getAppBuildDate())
         }
-
-        return appBuildDate;
     }
 
-    public int getNotificationCount() {
-        return pref.getInt("notificationCount", 3);
+    fun getAppBuildDate(): String {
+        return try {
+            val unixTimestamp = BuildConfig.VERSION_CODE * 1000L
+            val parsedDateTime = DateHelper.unixTimeStampToDate(unixTimestamp, DateTimeZone.UTC)
+            parsedDateTime.toDate().toString()
+        } catch (ex: Exception) {
+            Sentry.captureException(ex)
+            ""
+        }
     }
 
-    public void updateNotificationCount(int notificationCount) {
-        notificationCount--;
-        editor.putInt("notificationCount", notificationCount);
-        editor.commit();
+    fun getNotificationCount(): Int {
+        return pref.getInt("notificationCount", 3)
     }
 
-    public void saveDeviceToken(String token) {
-        editor.putString("deviceToken", token);
-        editor.commit();
+    fun updateNotificationCount(notificationCount: Int) {
+        editor.putInt("notificationCount", notificationCount - 1).apply()
     }
 
-    public String getDeviceToken() {
-        String token = pref.getString("deviceToken", "");
+    fun saveDeviceToken(token: String) {
+        editor.putString("deviceToken", token).apply()
+    }
+
+    fun getDeviceToken(): String {
+        var token = pref.getString("deviceToken", "") ?: ""
         if (token.isEmpty()) {
-            token = UUID.randomUUID().toString();
-            saveDeviceToken(token);
+            token = UUID.randomUUID().toString()
+            saveDeviceToken(token)
         }
-        return token;
+        return token
     }
 
-
-    public void setTermsAccepted(boolean termsAccepted) {
-        editor.putBoolean("termsAccepted", termsAccepted);
-        editor.commit();
+    fun setTermsAccepted(termsAccepted: Boolean) {
+        editor.putBoolean("termsAccepted", termsAccepted).apply()
     }
 
-    public boolean getTermsAccepted() {
-        return pref.getBoolean("termsAccepted", false);
+    fun getTermsAccepted(): Boolean {
+        return pref.getBoolean("termsAccepted", false)
     }
 
-    public void setCountry(String country) {
-        editor.putString("country", country);
-        editor.commit();
+    fun setCountry(country: String) {
+        editor.putString("country", country).apply()
     }
 
-
-    public String getCountry() {
-        return pref.getString("country", "NA");
+    fun getCountry(): String {
+        return pref.getString("country", "NA") ?: "NA"
     }
 
-    public void setTermsLink(String termsLink) {
-        editor.putString("termsLink", termsLink);
-        editor.commit();
+    fun setTermsLink(termsLink: String) {
+        editor.putString("termsLink", termsLink).apply()
     }
 
-    public String getTermsLink() {
-        return pref.getString("termsLink", "https://akilimo.org/index.php/akilimo-privacy-policy");
+    fun getTermsLink(): String {
+        return pref.getString("termsLink", "https://akilimo.org/index.php/akilimo-privacy-policy")
+            ?: ""
     }
 
-    public void setForward(boolean goForward) {
-        editor.putBoolean("goF", goForward);
-        editor.commit();
+    fun setForward(goForward: Boolean) {
+        editor.putBoolean("goF", goForward).apply()
     }
 
-    public boolean goForward() {
-        return pref.getBoolean("goF", true);
+    fun goForward(): Boolean {
+        return pref.getBoolean("goF", true)
     }
 
-    public void setApiUser(String user) {
-        editor.putString("apiUser", user);
-        editor.commit();
+    fun setApiUser(user: String) {
+        editor.putString("apiUser", user).apply()
     }
 
-    public String getApiUser() {
-        return pref.getString("apiUser", "");
+    fun getApiUser(): String {
+        return pref.getString("apiUser", "") ?: ""
     }
 
-
-    public void setApiPass(String pass) {
-        editor.putString("apiPass", pass);
-        editor.commit();
+    fun setApiPass(pass: String) {
+        editor.putString("apiPass", pass).apply()
     }
 
-    public String getApiPass() {
-        return pref.getString("apiPass", "");
+    fun getApiPass(): String {
+        return pref.getString("apiPass", "") ?: ""
     }
 
-    public void setRememberUserInfo(boolean rememberUserInfo) {
-        editor.putBoolean("rememberUserInfo", rememberUserInfo);
-        editor.commit();
+    fun setRememberUserInfo(rememberUserInfo: Boolean) {
+        editor.putBoolean("rememberUserInfo", rememberUserInfo).apply()
     }
 
-    public boolean getRememberUserInfo() {
-        return pref.getBoolean("rememberUserInfo", false);
+    fun getRememberUserInfo(): Boolean {
+        return pref.getBoolean("rememberUserInfo", false)
     }
 
-    public void setRememberAreaUnit(boolean rememberAreUnit) {
-        editor.putBoolean("rememberAreaUnit", rememberAreUnit);
-        editor.commit();
+    fun setRememberAreaUnit(rememberAreaUnit: Boolean) {
+        editor.putBoolean("rememberAreaUnit", rememberAreaUnit).apply()
     }
 
-    public boolean getRememberAreaUnit() {
-        return pref.getBoolean("rememberAreaUnit", false);
+    fun getRememberAreaUnit(): Boolean {
+        return pref.getBoolean("rememberAreaUnit", false)
     }
 
-
-    public void setRememberInvestmentPref(boolean rememberInvestmentPref) {
-        editor.putBoolean("rememberInvestmentPref", rememberInvestmentPref);
-        editor.commit();
+    fun setRememberInvestmentPref(rememberInvestmentPref: Boolean) {
+        editor.putBoolean("rememberInvestmentPref", rememberInvestmentPref).apply()
     }
 
-    public boolean getRememberInvestmentPref() {
-        return pref.getBoolean("rememberInvestmentPref", false);
+    fun getRememberInvestmentPref(): Boolean {
+        return pref.getBoolean("rememberInvestmentPref", false)
     }
 
-    public void setDisclaimerRead(boolean disclaimerRead) {
-        editor.putBoolean("disclaimerRead", disclaimerRead);
-        editor.commit();
+    fun setDisclaimerRead(disclaimerRead: Boolean) {
+        editor.putBoolean("disclaimerRead", disclaimerRead).apply()
     }
 
-    public boolean getDisclaimerRead() {
-        return pref.getBoolean("disclaimerRead", false);
+    fun getDisclaimerRead(): Boolean {
+        return pref.getBoolean("disclaimerRead", false)
     }
 }
