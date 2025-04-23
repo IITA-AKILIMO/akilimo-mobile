@@ -1,126 +1,106 @@
-package com.akilimo.mobile.views.fragments.dialog;
+package com.akilimo.mobile.views.fragments.dialog
 
+import android.app.Dialog
+import android.content.Context
+import android.content.DialogInterface
+import android.graphics.Color
+import android.os.Bundle
+import android.view.View
+import android.view.Window
+import android.view.WindowManager
+import androidx.core.graphics.drawable.toDrawable
+import com.akilimo.mobile.R
+import com.akilimo.mobile.databinding.FragmentMaizePerfDialogBinding
+import com.akilimo.mobile.entities.MaizePerformance
+import com.akilimo.mobile.inherit.BaseDialogFragment
+import com.akilimo.mobile.interfaces.IMaizePerformanceDismissListener
+import com.akilimo.mobile.utils.Tools.displayImageOriginal
 
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.entities.MaizePerformance;
-import com.akilimo.mobile.inherit.BaseDialogFragment;
-import com.akilimo.mobile.interfaces.IMaizePerformanceDismissListener;
-import com.akilimo.mobile.utils.Tools;
-
-;
 
 /**
- * A simple {@link androidx.fragment.app.Fragment} subclass.
+ * A simple [androidx.fragment.app.Fragment] subclass.
  */
-public class MaizePerformanceDialogFragment extends BaseDialogFragment {
+class MaizePerformanceDialogFragment(context: Context?) : BaseDialogFragment() {
+    private var performanceConfirmed = false
 
 
-    private static final String LOG_TAG = MaizePerformanceDialogFragment.class.getSimpleName();
+    private var maizePerformance: MaizePerformance? = null
 
-    public static final String PERFORMANCE_DATA = "performance_data";
-    public static final String ARG_ITEM_ID = "maize_performance_dialog_fragment";
+    private var onDismissListener: IMaizePerformanceDismissListener? = null
+    private var _binding: FragmentMaizePerfDialogBinding? = null
 
+    private val binding get() = _binding!!
 
-    private boolean performanceConfirmed = false;
-
-    private Dialog dialog;
-    private Button btnClose;
-    private Button btnConfirm;
-    private TextView lblFragmentTitle;
-    private TextView perfDescription;
-    private ImageView performanceImage;
-    private Button btnRemove;
-
-
-    private MaizePerformance maizePerformance;
-
-    private IMaizePerformanceDismissListener onDismissListener;
-
-    public MaizePerformanceDialogFragment(Context context) {
-        this.context = context;
+    companion object {
+        const val PERFORMANCE_DATA: String = "performance_data"
+        const val ARG_ITEM_ID: String = "maize_performance_dialog_fragment"
     }
 
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-
-        Bundle bundle = this.getArguments();
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val bundle = this.arguments
+        val context = requireContext()
         if (bundle != null) {
-            maizePerformance = bundle.getParcelable(PERFORMANCE_DATA);
+            maizePerformance = bundle.getParcelable(PERFORMANCE_DATA)
         }
-        dialog = new Dialog(context);
-
-        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-//        dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
-        dialog.setContentView(R.layout.fragment_maize_perf_dialog);
-
-        dialog.setCancelable(true);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogSlideAnimation;
+        _binding = FragmentMaizePerfDialogBinding.inflate(layoutInflater)
 
 
-        btnClose = dialog.findViewById(R.id.close_button);
-        btnConfirm = dialog.findViewById(R.id.confirm_button);
-        btnRemove = dialog.findViewById(R.id.cancel_button);
+        val dialog = Dialog(context)
+        dialog.setContentView(binding.root)
 
-        lblFragmentTitle = dialog.findViewById(R.id.lblFragmentTitle);
-        perfDescription = dialog.findViewById(R.id.perfDescription);
-        performanceImage = dialog.findViewById(R.id.rootYieldImage);
+        dialog.window!!.apply {
+            requestFeature(Window.FEATURE_NO_TITLE)
+            setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+            )
+            setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+            attributes.windowAnimations = R.style.DialogSlideAnimation
+        }
+
+
+
 
         if (maizePerformance != null) {
-            String yieldAmountLabel = maizePerformance.getMaizePerformanceLabel();
-            String yieldDesc = maizePerformance.getMaizePerformanceDesc();
+            val yieldAmountLabel = maizePerformance!!.maizePerformanceLabel
+            val yieldDesc = maizePerformance!!.maizePerformanceDesc
 
-            lblFragmentTitle.setText(yieldAmountLabel);
-            perfDescription.setText(yieldDesc);
+            binding.lblFragmentTitle.text = yieldAmountLabel
+            binding.perfDescription.text = yieldDesc
 
-            Tools.displayImageOriginal(this.context, performanceImage, maizePerformance.getImageId());
+            displayImageOriginal(this.context, binding.rootYieldImage, maizePerformance!!.imageId)
         }
 
 
-        btnClose.setOnClickListener(view -> {
-            performanceConfirmed = false;
-            dismiss();
-        });
+        binding.closeButton.setOnClickListener { view: View? ->
+            performanceConfirmed = false
+            dismiss()
+        }
 
-        btnRemove.setOnClickListener(view -> {
-            performanceConfirmed = false;
-            dismiss();
-        });
-        //save the data
-        btnConfirm.setOnClickListener(v -> {
-            performanceConfirmed = true;
-            dismiss();
-        });
+        binding.cancelButton.setOnClickListener { view: View? ->
+            performanceConfirmed = false
+            dismiss()
+        }
 
-        return dialog;
+        binding.confirmButton.setOnClickListener { v: View? ->
+            performanceConfirmed = true
+            dismiss()
+        }
+
+        return dialog
     }
 
 
-    @Override
-    public void onDismiss(@NonNull DialogInterface dialog) {
-        super.onDismiss(dialog);
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
         if (onDismissListener != null) {
-            onDismissListener.onDismiss(this.maizePerformance, performanceConfirmed);
+            onDismissListener!!.onDismiss(maizePerformance!!, performanceConfirmed)
         }
     }
 
-    public void setOnDismissListener(IMaizePerformanceDismissListener dismissListener) {
-        this.onDismissListener = dismissListener;
+    fun setOnDismissListener(dismissListener: IMaizePerformanceDismissListener?) {
+        this.onDismissListener = dismissListener
     }
+
+
 }
