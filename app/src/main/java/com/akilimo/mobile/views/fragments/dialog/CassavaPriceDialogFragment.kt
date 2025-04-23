@@ -19,22 +19,16 @@ import com.akilimo.mobile.utils.enums.EnumUnitOfSale
 import io.sentry.Sentry
 
 class CassavaPriceDialogFragment : BaseDialogFragment() {
-
-
-    private var maxPrice = 0.0
-    private var minPrice = 0.0
     private var isExactPriceRequired = false
     private var isPriceValid = false
-    private var dialog: Dialog? = null
     private var cassavaPriceList: List<CassavaPrice>? = null
     private var countryCode: String? = null
-    private var currencyName: String? = null
+    private var currencyName: String = "USD"
     private var currencyCode: String? = null
     private var unitOfSale: String? = null
     private var unitOfSaleEnum: EnumUnitOfSale? = null
     private var averagePrice: Double = 0.0
     private var unitPrice: Double = 0.0
-    private var minAmountUSD = 5.00
     private var onDismissListener: IPriceDialogDismissListener? = null
 
     private var _binding: FragmentCassavaPriceDialogBinding? = null
@@ -54,12 +48,14 @@ class CassavaPriceDialogFragment : BaseDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val bundle = this.arguments
         if (bundle != null) {
-            averagePrice = bundle.getDouble(AVERAGE_PRICE)
-            unitPrice = bundle.getDouble(SELECTED_PRICE)
-            currencyCode = bundle.getString(CURRENCY_CODE)
-            unitOfSale = bundle.getString(UNIT_OF_SALE)
-            countryCode = bundle.getString(COUNTRY_CODE)
-            unitOfSaleEnum = bundle.getParcelable(ENUM_UNIT_OF_SALE)
+            bundle.apply {
+                averagePrice = getDouble(AVERAGE_PRICE)
+                unitPrice = getDouble(SELECTED_PRICE)
+                currencyCode = getString(CURRENCY_CODE)
+                unitOfSale = getString(UNIT_OF_SALE)
+                countryCode = getString(COUNTRY_CODE)
+                unitOfSaleEnum = getParcelable(ENUM_UNIT_OF_SALE)
+            }
 
             val extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode)
             if (extendedCurrency != null) {
@@ -97,11 +93,10 @@ class CassavaPriceDialogFragment : BaseDialogFragment() {
 
             updateButton.setOnClickListener {
                 if (isExactPriceRequired) {
-                    try {
-                        unitPrice = editExactFertilizerPrice.text.toString().toDouble()
+                    unitPrice = try {
+                        editExactFertilizerPrice.text.toString().toDouble()
                     } catch (ex: Exception) {
-                        Sentry.captureException(ex)
-                        unitPrice = 0.0
+                        0.0
                     }
                     if (unitPrice <= 0) {
                         editExactFertilizerPrice.error =
@@ -140,13 +135,13 @@ class CassavaPriceDialogFragment : BaseDialogFragment() {
             isExactPriceRequired = false
             isPriceValid = true
             averagePrice = pricesResp.averagePrice
-            binding.exactPriceWrapper?.visibility = View.GONE
-            binding.editExactFertilizerPrice?.text = null
+            binding.exactPriceWrapper.visibility = View.GONE
+            binding.editExactFertilizerPrice.text = null
 
             if (averagePrice < 0) {
                 isExactPriceRequired = true
                 isPriceValid = false
-                binding.exactPriceWrapper?.visibility = View.VISIBLE
+                binding.exactPriceWrapper.visibility = View.VISIBLE
             } else {
                 unitPrice = pricesResp.averagePrice
             }
@@ -157,45 +152,44 @@ class CassavaPriceDialogFragment : BaseDialogFragment() {
     }
 
     private fun addPriceRadioButtons(cassavaPriceList: List<CassavaPrice>, avgPrice: Double) {
-        binding.radioGroup?.removeAllViews()
+        binding.radioGroup.removeAllViews()
         val selectedPrice = 0.0
 
         if (avgPrice < 0) {
-            binding.updateButton?.setText(R.string.lbl_update)
-            binding.removeButton?.visibility = View.VISIBLE
+            binding.updateButton.setText(R.string.lbl_update)
+            binding.removeButton.visibility = View.VISIBLE
         }
 
-        for ((id, _, minLocalPrice, maxLocalPrice, minAllowedPrice, maxAllowedPrice, _, price) in cassavaPriceList) {
-            minPrice = minAllowedPrice
-            maxPrice = maxAllowedPrice
+        for (priceList in cassavaPriceList) {
+            val averagePrice = priceList.averagePrice
 
-            val listIndex = (id - 1).toLong() //reduce by one so as to match the index in the list
+            val listIndex = id.toLong()
 
             val radioButton = RadioButton(activity)
             radioButton.id = View.generateViewId()
             radioButton.tag = listIndex
 
-            var radioLabel = labelText(minLocalPrice, maxLocalPrice, currencyCode, unitOfSale)
-            if (price < 0) {
+            var radioLabel = labelText(averagePrice, currencyCode, unitOfSale)
+            if (averagePrice < 0.0) {
                 radioLabel = requireContext().getString(R.string.lbl_exact_price_x_per_unit_of_sale)
                 val exactTextHint =
                     getString(R.string.exact_fertilizer_price_currency, currencyName)
-                binding.exactPriceWrapper?.hint = exactTextHint
-            } else if (price == 0.0) {
+                binding.exactPriceWrapper.hint = exactTextHint
+            } else if (averagePrice == 0.0) {
                 radioLabel = requireContext().getString(R.string.lbl_do_not_know)
             }
             radioButton.text = radioLabel
-            binding.radioGroup?.addView(radioButton)
+            binding.radioGroup.addView(radioButton)
 
-            if (avgPrice < 0) {
+            if (averagePrice < 0) {
                 radioButton.isChecked = true
                 isPriceValid = true
                 isExactPriceRequired = true
-                binding.exactPriceWrapper?.visibility = View.VISIBLE
-                binding.editExactFertilizerPrice?.setText(unitPrice.toString())
+                binding.exactPriceWrapper.visibility = View.VISIBLE
+                binding.editExactFertilizerPrice.setText(unitPrice.toString())
             }
 
-            if (price == selectedPrice) {
+            if (averagePrice == selectedPrice) {
                 radioButton.isChecked = true
             }
         }
@@ -211,13 +205,11 @@ class CassavaPriceDialogFragment : BaseDialogFragment() {
     }
 
     private fun labelText(
-        unitPriceLower: Double,
-        unitPriceUpper: Double,
+        avgPrice: Double,
         currencyCode: String?,
         uos: String?
     ): String {
-        var priceLower = unitPriceLower
-        var priceHigher = unitPriceUpper
+        var computedAveragePrice = avgPrice
         var currencySymbol = currencyCode
         val extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode)
         if (extendedCurrency != null) {
@@ -225,30 +217,34 @@ class CassavaPriceDialogFragment : BaseDialogFragment() {
         }
         when (unitOfSaleEnum) {
             EnumUnitOfSale.ONE_KG -> {
-                priceLower = (unitPriceLower * EnumUnitOfSale.ONE_KG.unitWeight()) / 1000
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.ONE_KG.unitWeight()) / 1000
+                computedAveragePrice =
+                    (this.averagePrice * EnumUnitOfSale.ONE_KG.unitWeight()) / 1000
             }
 
             EnumUnitOfSale.FIFTY_KG -> {
-                priceLower = (unitPriceLower * EnumUnitOfSale.FIFTY_KG.unitWeight()) / 1000
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.FIFTY_KG.unitWeight()) / 1000
+                computedAveragePrice =
+                    (this.averagePrice * EnumUnitOfSale.FIFTY_KG.unitWeight()) / 1000
             }
 
             EnumUnitOfSale.HUNDRED_KG -> {
-                priceLower = (unitPriceLower * EnumUnitOfSale.HUNDRED_KG.unitWeight()) / 1000
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.HUNDRED_KG.unitWeight()) / 1000
+                computedAveragePrice =
+                    (this.averagePrice * EnumUnitOfSale.HUNDRED_KG.unitWeight()) / 1000
             }
 
-            EnumUnitOfSale.NA -> TODO()
-            EnumUnitOfSale.FRESH_COB -> TODO()
-            EnumUnitOfSale.THOUSAND_KG -> TODO()
-            null -> TODO()
-        }
+            EnumUnitOfSale.THOUSAND_KG -> {
+                computedAveragePrice =
+                    (this.averagePrice * EnumUnitOfSale.THOUSAND_KG.unitWeight()) / 1000
+            }
 
-        minAmountUSD = priceLower
+            null,
+            EnumUnitOfSale.NA,
+            EnumUnitOfSale.FRESH_COB -> {
+                computedAveragePrice = 0.0
+            }
+        }
         return requireContext().getString(
             R.string.unit_price_label_single,
-            priceLower,
+            computedAveragePrice,
             currencySymbol,
             uos
         )
