@@ -1,298 +1,185 @@
-package com.akilimo.mobile.utils;
+package com.akilimo.mobile.utils
 
-import android.app.Activity;
-import android.util.Log;
+import android.app.Activity
+import com.akilimo.mobile.utils.Tools.replaceCharacters
+import com.akilimo.mobile.utils.Tools.replaceNonNumbers
+import io.sentry.Sentry
+import java.math.RoundingMode
+import java.text.DecimalFormat
+import java.util.Locale
 
+class MathHelper() {
 
-import com.google.android.gms.common.util.Strings;
+    private var ngnRate = 360.0
+    private var tzsRate = 2250.0
+    private var ghsRate = 6.11
 
-import org.jetbrains.annotations.NotNull;
+    private val baseAcre = 2.471
+    private val baseSqm = 4046.86
+    private val baseAre = 40.469
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.util.Locale;
-
-import io.sentry.Sentry;
-
-public class MathHelper {
-    private static String TAG = MathHelper.class.getSimpleName();
-    private double ngnRate = 360;
-    private double tzsRate = 2250;
-    private double ghsRate = 6.11;
-
-    private double baseAcre = 2.471;
-    private double baseSqm = 4046.86;
-    private double baseAre = 40.469;
-
-
-    public MathHelper() {
-    }
-
-    /**
-     * @param baseAcre
-     * @param baseSqm
-     * @deprecated
-     */
-    public MathHelper(double baseAcre, double baseSqm) {
-        this.baseAcre = baseAcre;
-        this.baseSqm = baseSqm;
-    }
-
-    /**
-     * @param baseAcre
-     * @param baseSqm
-     * @param baseAre
-     * @deprecated
-     */
-    public MathHelper(double baseAcre, double baseSqm, double baseAre) {
-        this.baseAcre = baseAcre;
-        this.baseSqm = baseSqm;
-        this.baseAre = baseAre;
-    }
-
-    public MathHelper(Activity activity) {
-        SessionManager sessionManager = new SessionManager(activity);
-        this.ngnRate = sessionManager.getNgnRate();
-        this.tzsRate = sessionManager.getTzsRate();
-        this.ghsRate = sessionManager.getGhsRate();
-    }
-
-    private String convertCurrency(String stringToSplit, String toCurrency) {
-        String joined = "";
-        String splitRegex = "TO";
-        String[] bands;
-
-        stringToSplit = Tools.replaceCharacters(stringToSplit, "Dola", joined);
-        try {
-            if (stringToSplit.contains(toCurrency)) {
-                return stringToSplit;
-            }
-
-            double rate1, rate2;
-            double band1 = 0;
-            double band2 = 0;
-
-            String str = Tools.replaceNonNumbers(stringToSplit, splitRegex);
-
-            bands = str.contains("TO") ? str.split(splitRegex) : new String[]{str, "0"};
-
-            String textBand1 = bands[0];
-            if (!Strings.isEmptyOrWhitespace(textBand1)) {
-                band1 = Double.parseDouble(bands[0]);
-            }
-            if (bands.length == 2) {
-                String textBand2 = bands[1];
-                if (!Strings.isEmptyOrWhitespace(textBand2)) {
-                    band2 = Double.parseDouble(bands[1]);
-                }
-            }
-            if (band1 > 0 && band2 > 0) {
-                rate1 = convertToLocalCurrency(band1, toCurrency);
-                rate2 = convertToLocalCurrency(band2, toCurrency);
-                joined = formatNumber(rate1, null) + " - " + formatNumber(rate2, toCurrency);
-            } else {
-                rate1 = convertToLocalCurrency(band1, toCurrency);
-                joined = formatNumber(rate1, toCurrency);
-            }
-        } catch (Exception ex) {
-            Sentry.captureException(ex);
+    constructor(activity: Activity?) : this() {
+        activity?.let {
+            val sessionManager = SessionManager(it)
+            ngnRate = sessionManager.ngnRate
+            tzsRate = sessionManager.tzsRate
+            ghsRate = sessionManager.ghsRate
         }
-        return joined;
     }
 
-    public String convertCurrency(String stringToSplit, String toCurrency, String currencySymbol, String unitType, String fieldSize, String selectedField, String separator) {
-        String data = convertCurrency(stringToSplit, toCurrency);
-        try {
-            if (unitType != null) {
-                if (data.contains(unitType) || data.contains(separator)) {
-                    return data;
+    private fun convertCurrency(input: String, toCurrency: String): String {
+        var value = replaceCharacters(input, "Dola", "")
+        if (value.contains(toCurrency)) return value
+
+        return try {
+            val cleanValue = replaceNonNumbers(value, "TO")
+            val parts = cleanValue.split("TO", ignoreCase = true)
+            val band1 = parts.getOrNull(0)?.toDoubleOrNull() ?: 0.0
+            val band2 = parts.getOrNull(1)?.toDoubleOrNull()
+
+            when {
+                band1 > 0 && band2 != null && band2 > 0 -> {
+                    val rate1 = convertToLocalCurrency(band1, toCurrency)
+                    val rate2 = convertToLocalCurrency(band2, toCurrency)
+                    "${formatNumber(rate1)} - ${formatNumber(rate2, toCurrency)}"
                 }
 
-                String cleaned = Tools.replaceNonNumbers(data, "");
-                double amount = Double.parseDouble(cleaned);
-                double myFieldSize = Double.parseDouble(fieldSize);
-                double investmentAmount = amount * myFieldSize;
-                String formattedNumber = formatNumber(roundToNearestSpecifiedValue(investmentAmount, 1000), null);
-                data = String.format("%s %s %s %s", formattedNumber, currencySymbol, separator, selectedField);
+                band1 > 0 -> {
+                    val rate = convertToLocalCurrency(band1, toCurrency)
+                    formatNumber(rate, toCurrency)
+                }
+
+                else -> ""
             }
-        } catch (Exception ex) {
-            Sentry.captureException(ex);
-        }
-        return data;
-
-    }
-
-    public String formatNumber(double number, String toCurrency) {
-        return toCurrency == null ? String.format(Locale.US, "%,.0f", number) : String.format("%,.0f " + toCurrency, number);
-    }
-
-    /**
-     * @param amount          Amount to convert
-     * @param toCurrency      From which currency we are converting
-     * @param nearestRounding round to the nearest numbers
-     * @return Double
-     */
-    public double convertToLocalCurrency(double amount, String toCurrency, int... nearestRounding) {
-        double converted = amount;
-        int nearestSpecifiedValue = 100;
-        if (nearestRounding.length > 0) {
-            nearestSpecifiedValue = nearestRounding[0];
-        }
-
-        try {
-            switch (toCurrency) {
-                case "NGN":
-                    converted = amount * ngnRate;
-                    break;
-                case "TZS":
-                    converted = amount * tzsRate;
-                    break;
-                case "GHS":
-                    converted = amount * ghsRate;
-                    break;
-            }
-        } catch (Exception ex) {
-            Sentry.captureException(ex);
-        }
-
-        return nearestSpecifiedValue > 0 ? roundToNearestSpecifiedValue(converted, nearestSpecifiedValue) : converted;
-    }
-
-    public double convertToUSD(double currencyToConvert, String fromCurrency, int... nearestRounding) {
-        int nearestSpecifiedValue = 100;
-        if (nearestRounding.length > 0) {
-            nearestSpecifiedValue = nearestRounding[0];
-        }
-        double converted = currencyToConvert;
-        try {
-            switch (fromCurrency) {
-                case "NGN":
-                    converted = currencyToConvert / ngnRate;
-                    break;
-                case "TZS":
-                    converted = currencyToConvert / tzsRate;
-                    break;
-                case "GHS":
-                    converted = currencyToConvert / ghsRate;
-                    break;
-                case "USD":
-                    return currencyToConvert;
-            }
-        } catch (Exception ex) {
-            Sentry.captureException(ex);
-        }
-
-        double convertedTemp = roundToNearestSpecifiedValue(converted, nearestSpecifiedValue);
-
-        return convertedTemp < 1 ? convertedTemp : Math.round(convertedTemp);
-    }
-
-    public double roundToNearestSpecifiedValue(double numberToRound, double roundToNearest) {
-        double rounded = Math.round(numberToRound / roundToNearest) * roundToNearest;
-        if (rounded < 1 || roundToNearest < 1) {
-            return roundToNDecimalPlaces(numberToRound, 10.0);
-        } else {
-            return rounded;
+        } catch (ex: Exception) {
+            Sentry.captureException(ex)
+            ""
         }
     }
 
-    public double roundToNDecimalPlaces(double numberToRound, double decimalPlaces) {
-        return Math.round(numberToRound * decimalPlaces) / decimalPlaces;
-    }
+    fun convertCurrency(
+        input: String,
+        toCurrency: String,
+        currencySymbol: String?,
+        unitType: String?,
+        fieldSize: String,
+        selectedField: String?,
+        separator: String
+    ): String {
+        var result = convertCurrency(input, toCurrency)
 
-    public double computeInvestmentAmount(double localCurrencyAmount, double fieldSize, String fromCurrency) {
-
-        double amountToInvest = localCurrencyAmount * fieldSize;
-        double convertedToUsd = convertToUSD(amountToInvest, fromCurrency);
-
-        return roundToNearestSpecifiedValue(convertedToUsd, 1000);
-    }
-
-    /**
-     * @param fieldYield The amount from the field without fertilizer
-     * @param currency   The currency to display the amount in
-     * @return fieldYieldAmount
-     */
-    public double computeFieldYield(double fieldYield, String currency) {
-        double fieldYieldAmount = 0;
-        try {
-            fieldYieldAmount = convertToLocalCurrency(fieldYield, currency);
-        } catch (Exception ex) {
-            Sentry.captureException(ex);
-        }
-        return fieldYieldAmount;
-    }
-
-    public double convertToDouble(String numberText) {
-        if (!Strings.isEmptyOrWhitespace(numberText)) {
+        if (!unitType.isNullOrEmpty() && !result.contains(unitType) && !result.contains(separator)) {
             try {
-                return Double.parseDouble(numberText.trim());
-            } catch (Exception ex) {
-                Sentry.captureException(ex);
+                val amount = replaceNonNumbers(result, "").toDouble()
+                val size = fieldSize.toDouble()
+                val investment = amount * size
+                val rounded = roundToNearestSpecifiedValue(investment, 1000.0)
+                result = "${
+                    formatNumber(rounded)
+                } $currencySymbol $separator $selectedField"
+            } catch (ex: Exception) {
+                Sentry.captureException(ex)
             }
         }
-        return 0.0;
+
+        return result
     }
 
-    public double convertFromAcreToSpecifiedArea(double areaSizeAcre, @NotNull String toAreaUnit) {
-        double convertedAreaSize = 0.0;
-        switch (toAreaUnit) {
-            default:
-            case "acre":
-                return areaSizeAcre;
-            case "ha":
-                convertedAreaSize = areaSizeAcre / baseAcre;
-                break;
-            case "are":
-                convertedAreaSize = areaSizeAcre * baseAre;
-                break;
-            case "sqm":
-                convertedAreaSize = areaSizeAcre * baseSqm;
-                break;
+    fun formatNumber(number: Double, currency: String? = null): String {
+        val formatted = String.format(Locale.US, "%,.0f", number)
+        return if (currency != null) "$formatted $currency" else formatted
+    }
+
+    fun convertToLocalCurrency(
+        amount: Double,
+        toCurrency: String,
+        nearestRounding: Int = 100
+    ): Double {
+        val rate = when (toCurrency.uppercase()) {
+            "NGN" -> ngnRate
+            "TZS" -> tzsRate
+            "GHS" -> ghsRate
+            else -> 1.0
+        }
+        val converted = amount * rate
+        return roundToNearestSpecifiedValue(converted, nearestRounding.toDouble())
+    }
+
+    fun convertToUSD(amount: Double, fromCurrency: String, nearestRounding: Int = 100): Double {
+        val converted = try {
+            when (fromCurrency.uppercase()) {
+                "NGN" -> amount / ngnRate
+                "TZS" -> amount / tzsRate
+                "GHS" -> amount / ghsRate
+                "USD" -> amount
+                else -> amount
+            }
+        } catch (ex: Exception) {
+            Sentry.captureException(ex)
+            return 0.0
         }
 
-        return roundToNDecimalPlaces(convertedAreaSize, 10);
+        val rounded = roundToNearestSpecifiedValue(converted, nearestRounding.toDouble())
+        return if (rounded < 1) rounded else rounded.toLong().toDouble()
     }
 
-    public double convertToUnitWeightPrice(double selectedPrice, int unitWeight) {
-        return (selectedPrice * unitWeight) / 1000;
+    fun roundToNearestSpecifiedValue(number: Double, nearest: Double): Double {
+        return if (nearest < 1 || number < 1)
+            roundToNDecimalPlaces(number, 10.0)
+        else
+            Math.round(number / nearest) * nearest
     }
 
-    /**
-     * @param numberValue 0.0
-     * @return String
-     */
-    public String removeLeadingZero(double numberValue) {
-        DecimalFormat format = new DecimalFormat("0.#");
-        return format.format(numberValue);
+    fun roundToNDecimalPlaces(number: Double, decimalPlaces: Double): Double {
+        return Math.round(number * decimalPlaces) / decimalPlaces
     }
 
-    /**
-     * @param numberValue 0.000
-     * @param pattern     #.#####
-     * @return String
-     */
-    public String removeLeadingZero(double numberValue, String pattern) {
-        DecimalFormat format = new DecimalFormat(pattern);
-        format.setRoundingMode(RoundingMode.CEILING);
-        return format.format(numberValue);
+    fun convertToDouble(text: String): Double {
+        return text.trim().toDoubleOrNull() ?: 0.0
     }
 
-    public double computeInvestmentForSpecifiedAreaUnit(double acreInvestmentAmount, double areaSizeAcre, String areaUnit) {
-        double areaSizeInvestment;
-        switch (areaUnit) {
-            default:
-            case "acre":
-                areaSizeInvestment = acreInvestmentAmount * areaSizeAcre;
-                break;
-            case "ha":
-                areaSizeInvestment = (acreInvestmentAmount * baseAcre) * areaSizeAcre;
-                break;
-            case "sqm":
-                areaSizeInvestment = (areaSizeAcre * baseSqm) * acreInvestmentAmount;
-                break;
+    fun computeInvestmentAmount(
+        localAmount: Double,
+        fieldSize: Double,
+        fromCurrency: String
+    ): Double {
+        val total = localAmount * fieldSize
+        val usdAmount = convertToUSD(total, fromCurrency)
+        return roundToNearestSpecifiedValue(usdAmount, 1000.0)
+    }
+
+    fun convertFromAcreToSpecifiedArea(sizeInAcre: Double, unit: String): Double {
+        val converted = when (unit.lowercase()) {
+            "acre" -> sizeInAcre
+            "ha" -> sizeInAcre / baseAcre
+            "are" -> sizeInAcre * baseAre
+            "sqm" -> sizeInAcre * baseSqm
+            else -> sizeInAcre
         }
-        return areaSizeInvestment;
+
+        return roundToNDecimalPlaces(converted, 10.0)
     }
 
+    fun convertToUnitWeightPrice(price: Double, weight: Int): Double {
+        return (price * weight) / 1000
+    }
+
+    fun removeLeadingZero(value: Double, pattern: String = "0.#"): String {
+        val format = DecimalFormat(pattern)
+        format.roundingMode = RoundingMode.CEILING
+        return format.format(value)
+    }
+
+    fun computeInvestmentForSpecifiedAreaUnit(
+        acreInvestmentAmount: Double,
+        areaSizeInAcre: Double,
+        areaUnit: String
+    ): Double {
+        return when (areaUnit.lowercase()) {
+            "acre" -> acreInvestmentAmount * areaSizeInAcre
+            "ha" -> acreInvestmentAmount * baseAcre * areaSizeInAcre
+            "sqm" -> areaSizeInAcre * baseSqm * acreInvestmentAmount
+            else -> acreInvestmentAmount * areaSizeInAcre
+        }
+    }
 }
