@@ -1,299 +1,255 @@
-package com.akilimo.mobile.views.fragments.dialog;
+package com.akilimo.mobile.views.fragments.dialog
 
+import android.app.Dialog
+import android.content.DialogInterface
+import android.os.Bundle
+import android.view.View
+import android.view.Window
+import android.view.WindowManager
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.Toast
+import com.akilimo.mobile.R
+import com.akilimo.mobile.databinding.FragmentCassavaPriceDialogBinding
+import com.akilimo.mobile.entities.CassavaPrice
+import com.akilimo.mobile.inherit.BaseDialogFragment
+import com.akilimo.mobile.interfaces.IPriceDialogDismissListener
+import com.akilimo.mobile.utils.CurrencyCode
+import com.akilimo.mobile.utils.enums.EnumUnitOfSale
+import io.sentry.Sentry
 
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
-import android.widget.Toast;
+class CassavaPriceDialogFragment : BaseDialogFragment() {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+    private var binding: FragmentCassavaPriceDialogBinding? = null
+    private var maxPrice = 0.0
+    private var minPrice = 0.0
+    private var isExactPriceRequired = false
+    private var isPriceValid = false
+    private var dialog: Dialog? = null
+    private var cassavaPriceList: List<CassavaPrice>? = null
+    private var countryCode: String? = null
+    private var currencyName: String? = null
+    private var currencyCode: String? = null
+    private var unitOfSale: String? = null
+    private var unitOfSaleEnum: EnumUnitOfSale? = null
+    private var averagePrice: Double = 0.0
+    private var unitPrice: Double = 0.0
+    private var minAmountUSD = 5.00
+    private var onDismissListener: IPriceDialogDismissListener? = null
 
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.entities.CassavaPrice;
-import com.akilimo.mobile.inherit.BaseDialogFragment;
-import com.akilimo.mobile.interfaces.IPriceDialogDismissListener;
-import com.akilimo.mobile.utils.CurrencyCode;
-import com.akilimo.mobile.utils.enums.EnumUnitOfSale;
-import com.google.android.material.textfield.TextInputLayout;
-import com.mynameismidori.currencypicker.ExtendedCurrency;
-
-import java.util.List;
-
-import io.sentry.Sentry;
-
-
-/**
- * A simple {@link androidx.fragment.app.Fragment} subclass.
- */
-public class CassavaPriceDialogFragment extends BaseDialogFragment {
-
-    private static final String LOG_TAG = CassavaPriceDialogFragment.class.getSimpleName();
-
-    public static final String ARG_ITEM_ID = "cassava_price_dialog_fragment";
-    public static final String AVERAGE_PRICE = "average_price";
-    public static final String SELECTED_PRICE = "selected_price";
-    public static final String UNIT_OF_SALE = "unit_of_sale";
-    public static final String ENUM_UNIT_OF_SALE = "enum_unit_of_sale";
-    public static final String CURRENCY_CODE = "currency_code";
-    public static final String COUNTRY_CODE = "country_code";
-
-    private double maxPrice = 0.0;
-    private double minPrice = 0.0;
-
-    private boolean isExactPriceRequired = false;
-    private boolean isPriceValid = false;
-    private final boolean priceSpecified = false;
-    private final boolean removeSelected = false;
-
-    private Dialog dialog;
-    private RadioGroup radioGroup;
-    private TextInputLayout exactPriceWrapper;
-    private EditText editExactFertilizerPrice;
-
-    private Button btnClose;
-    private Button btnUpdate;
-    private Button btnRemove;
-
-
-    private double averagePrice;
-    private double unitPrice;
-    private List<CassavaPrice> cassavaPriceList;
-
-    private String countryCode;
-    private String currencyName;
-    private String currencyCode;
-    private String unitOfSale;
-    private EnumUnitOfSale unitOfSaleEnum;
-
-    double unitPriceUSD = 0.0;
-    double unitPriceLocal = 0.0;
-    private double minAmountUSD = 5.00;
-    private final double maxAmountUSD = 500.00;
-
-    private IPriceDialogDismissListener onDismissListener;
-
-    public CassavaPriceDialogFragment(Context context) {
-        this.context = context;
+    companion object {
+        private val LOG_TAG: String = CassavaPriceDialogFragment::class.java.simpleName
+        const val ARG_ITEM_ID: String = "cassava_price_dialog_fragment"
+        const val AVERAGE_PRICE: String = "average_price"
+        const val SELECTED_PRICE: String = "selected_price"
+        const val UNIT_OF_SALE: String = "unit_of_sale"
+        const val ENUM_UNIT_OF_SALE: String = "enum_unit_of_sale"
+        const val CURRENCY_CODE: String = "currency_code"
+        const val COUNTRY_CODE: String = "country_code"
     }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    init {
+        this.context = requireContext()
+    }
 
-        Bundle bundle = this.getArguments();
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val bundle = this.arguments
         if (bundle != null) {
-            averagePrice = bundle.getDouble(AVERAGE_PRICE);
-            unitPrice = bundle.getDouble(SELECTED_PRICE);
-            currencyCode = bundle.getString(CURRENCY_CODE);
-            unitOfSale = bundle.getString(UNIT_OF_SALE);
-            unitOfSale = bundle.getString(UNIT_OF_SALE);
-            countryCode = bundle.getString(COUNTRY_CODE);
-            unitOfSaleEnum = bundle.getParcelable(ENUM_UNIT_OF_SALE);
+            averagePrice = bundle.getDouble(AVERAGE_PRICE)
+            unitPrice = bundle.getDouble(SELECTED_PRICE)
+            currencyCode = bundle.getString(CURRENCY_CODE)
+            unitOfSale = bundle.getString(UNIT_OF_SALE)
+            countryCode = bundle.getString(COUNTRY_CODE)
+            unitOfSaleEnum = bundle.getParcelable(ENUM_UNIT_OF_SALE)
 
-            ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
+            val extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode)
             if (extendedCurrency != null) {
-                currencySymbol = extendedCurrency.getSymbol();
-                currencyName = extendedCurrency.getName();
+                currencyName = extendedCurrency.name
             }
         }
-        dialog = new Dialog(context);
 
-        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
-        dialog.setContentView(R.layout.fragment_cassava_price_dialog);
+        // Initialize View Binding
+        binding = FragmentCassavaPriceDialogBinding.inflate(layoutInflater)
+        dialog = Dialog(requireContext()).apply {
+            window!!.requestFeature(Window.FEATURE_NO_TITLE)
+            window!!.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+            )
 
+            setContentView(binding!!.root)
 
-        dialog.setCancelable(true);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogSlideAnimation;
+            setCancelable(true)
+            window!!.setBackgroundDrawableResource(android.R.color.transparent)
+            window!!.attributes.windowAnimations = R.style.DialogSlideAnimation
+        }
 
-
-        btnClose = dialog.findViewById(R.id.close_button);
-        btnUpdate = dialog.findViewById(R.id.update_button);
-        btnRemove = dialog.findViewById(R.id.remove_button);
-
-        radioGroup = dialog.findViewById(R.id.radioGroup);
-        exactPriceWrapper = dialog.findViewById(R.id.exactPriceWrapper);
-        editExactFertilizerPrice = dialog.findViewById(R.id.editExactFertilizerPrice);
-        TextView lblPricePerBag = dialog.findViewById(R.id.lblFragmentTitle);
-
-        btnClose.setOnClickListener(view -> {
-            dismiss();
-        });
-
-        btnRemove.setOnClickListener(view -> {
-            averagePrice = 0;
-            dismiss();
-        });
-        //save the data
-        btnUpdate.setOnClickListener(v -> {
-
-            if (isExactPriceRequired) {
-                try {
-                    unitPrice = Double.parseDouble(editExactFertilizerPrice.getText().toString());
-                } catch (Exception ex) {
-                   Sentry.captureException(ex);
-                    unitPrice = 0.0;
-                }
-                if (unitPrice <= 0) {
-                    editExactFertilizerPrice.setError(getString(R.string.lbl_provide_valid_unit_price));
-                    isPriceValid = false;
-                    return;
-                }
-                isPriceValid = true;
-                editExactFertilizerPrice.setError(null);
-            }
-            if (isPriceValid) {
-                dismiss();
+        binding?.apply {
+            closeButton.setOnClickListener {
+                dismiss()
             }
 
-        });
+            removeButton.setOnClickListener {
+                averagePrice = 0.0
+                dismiss()
+            }
 
-        radioGroup.setOnCheckedChangeListener((radioGroup, i) -> radioSelected(radioGroup));
+            updateButton.setOnClickListener {
+                if (isExactPriceRequired) {
+                    try {
+                        unitPrice = editExactFertilizerPrice.text.toString().toDouble()
+                    } catch (ex: Exception) {
+                        Sentry.captureException(ex)
+                        unitPrice = 0.0
+                    }
+                    if (unitPrice <= 0) {
+                        editExactFertilizerPrice.error =
+                            getString(R.string.lbl_provide_valid_unit_price)
+                        isPriceValid = false
+                        return@setOnClickListener
+                    }
+                    isPriceValid = true
+                    editExactFertilizerPrice.error = null
+                }
+                if (isPriceValid) {
+                    dismiss()
+                }
+            }
+
+            radioGroup.setOnCheckedChangeListener { group, _ ->
+                radioSelected(group)
+            }
+        }
+
         if (database != null) {
-            cassavaPriceList = database.cassavaPriceDao().findAllByCountryCode(countryCode);
-            addPriceRadioButtons(cassavaPriceList, averagePrice);
+            cassavaPriceList = database!!.cassavaPriceDao().findAllByCountryCode(countryCode!!)
+            addPriceRadioButtons(cassavaPriceList!!, averagePrice)
         }
-        return dialog;
+
+        return dialog!!
     }
 
-    private void radioSelected(RadioGroup radioGroup) {
-        int radioButtonId = radioGroup.getCheckedRadioButtonId();
-        RadioButton radioButton = dialog.findViewById(radioButtonId);
-        long itemTagIndex = (long) radioButton.getTag();
+    private fun radioSelected(radioGroup: RadioGroup) {
+        val radioButtonId = radioGroup.checkedRadioButtonId
+        val radioButton = binding!!.root.findViewById<RadioButton>(radioButtonId)
+        val itemTagIndex = radioButton.tag as Long
 
         try {
-            CassavaPrice pricesResp = cassavaPriceList.get((int) itemTagIndex);
-            isExactPriceRequired = false;
-            isPriceValid = true;
-            averagePrice = pricesResp.getAveragePrice();
-            exactPriceWrapper.setVisibility(View.GONE);
-            exactPriceWrapper.getEditText().setText(null);
+            val pricesResp = cassavaPriceList!![itemTagIndex.toInt()]
+            isExactPriceRequired = false
+            isPriceValid = true
+            averagePrice = pricesResp.averagePrice
+            binding?.exactPriceWrapper?.visibility = View.GONE
+            binding?.editExactFertilizerPrice?.text = null
 
             if (averagePrice < 0) {
-                isExactPriceRequired = true;
-                isPriceValid = false;
-                exactPriceWrapper.setVisibility(View.VISIBLE);
+                isExactPriceRequired = true
+                isPriceValid = false
+                binding?.exactPriceWrapper?.visibility = View.VISIBLE
             } else {
-                unitPrice = pricesResp.getAveragePrice();
+                unitPrice = pricesResp.averagePrice
             }
-        } catch (Exception ex) {
-            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-           Sentry.captureException(ex);
+        } catch (ex: Exception) {
+            Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+            Sentry.captureException(ex)
         }
     }
 
-    private void addPriceRadioButtons(List<CassavaPrice> cassavaPriceList, double avgPrice) {
-        radioGroup.removeAllViews();
-        double selectedPrice = 0.0;
+    private fun addPriceRadioButtons(cassavaPriceList: List<CassavaPrice>, avgPrice: Double) {
+        binding?.radioGroup?.removeAllViews()
+        val selectedPrice = 0.0
 
         if (avgPrice < 0) {
-            btnUpdate.setText(R.string.lbl_update);
-            btnRemove.setVisibility(View.VISIBLE);
+            binding?.updateButton?.setText(R.string.lbl_update)
+            binding?.removeButton?.visibility = View.VISIBLE
         }
-//@TODO move the about to the API for easier computations
-        for (CassavaPrice pricesResp : cassavaPriceList) {
-            double price = pricesResp.getAveragePrice();
-            minPrice = pricesResp.getMinAllowedPrice();
-            maxPrice = pricesResp.getMaxAllowedPrice();
 
-            long listIndex = pricesResp.getPriceIndex() - 1;//reduce by one so as to match the index in the list
+        for ((id, _, minLocalPrice, maxLocalPrice, minAllowedPrice, maxAllowedPrice, _, price) in cassavaPriceList) {
+            minPrice = minAllowedPrice
+            maxPrice = maxAllowedPrice
 
-            RadioButton radioButton = new RadioButton(getActivity());
-            radioButton.setId(View.generateViewId());
-            radioButton.setTag(listIndex);
+            val listIndex = (id - 1).toLong() //reduce by one so as to match the index in the list
 
+            val radioButton = RadioButton(activity)
+            radioButton.id = View.generateViewId()
+            radioButton.tag = listIndex
 
-            String radioLabel = labelText(pricesResp.getMinLocalPrice(), pricesResp.getMaxLocalPrice(), currencyCode, unitOfSale, false);
+            var radioLabel = labelText(minLocalPrice, maxLocalPrice, currencyCode, unitOfSale)
             if (price < 0) {
-                radioLabel = context.getString(R.string.lbl_exact_price_x_per_unit_of_sale);
-                String exactTextHint = getString(R.string.exact_fertilizer_price_currency, currencyName);
-                exactPriceWrapper.setHint(exactTextHint);
-            } else if (price == 0) {
-                radioLabel = context.getString(R.string.lbl_do_not_know);
+                radioLabel = requireContext().getString(R.string.lbl_exact_price_x_per_unit_of_sale)
+                val exactTextHint =
+                    getString(R.string.exact_fertilizer_price_currency, currencyName)
+                binding?.exactPriceWrapper?.hint = exactTextHint
+            } else if (price == 0.0) {
+                radioLabel = requireContext().getString(R.string.lbl_do_not_know)
             }
-            radioButton.setText(radioLabel);
-            radioGroup.addView(radioButton);
+            radioButton.text = radioLabel
+            binding?.radioGroup?.addView(radioButton)
 
-            //set relevant radio button as selected based on the price range
             if (avgPrice < 0) {
-                radioButton.setChecked(true);
-                isPriceValid = true;
-                isExactPriceRequired = true;
-                exactPriceWrapper.setVisibility(View.VISIBLE);
-                editExactFertilizerPrice.setText(String.valueOf(unitPrice));
+                radioButton.isChecked = true
+                isPriceValid = true
+                isExactPriceRequired = true
+                binding?.exactPriceWrapper?.visibility = View.VISIBLE
+                binding?.editExactFertilizerPrice?.setText(unitPrice.toString())
             }
 
-            if (pricesResp.getAveragePrice() == selectedPrice) {
-                radioButton.setChecked(true);
+            if (price == selectedPrice) {
+                radioButton.isChecked = true
             }
         }
     }
 
-    @Override
-    public void onDismiss(@NonNull DialogInterface dialog) {
-        super.onDismiss(dialog);
-        if (onDismissListener != null) {
-            onDismissListener.onDismiss(unitPrice, isExactPriceRequired);
-        }
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        onDismissListener?.onDismiss(unitPrice, isExactPriceRequired)
     }
 
-    public void setOnDismissListener(IPriceDialogDismissListener dismissListener) {
-        this.onDismissListener = dismissListener;
+    fun setOnDismissListener(dismissListener: IPriceDialogDismissListener?) {
+        this.onDismissListener = dismissListener
     }
 
-    private String labelText(double unitPriceLower, double unitPriceUpper, String currencyCode, String uos, boolean... doConversions) {
-        //@TODO cross convert according to weight
-        boolean convertCurrency = true;
-        if (doConversions.length > 0) {
-            convertCurrency = doConversions[0];
-        }
-        double priceLower = unitPriceLower;
-        double priceHigher = unitPriceUpper;
-        String currencySymbol = currencyCode;
-        ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
+    private fun labelText(
+        unitPriceLower: Double,
+        unitPriceUpper: Double,
+        currencyCode: String?,
+        uos: String?
+    ): String {
+        var priceLower = unitPriceLower
+        var priceHigher = unitPriceUpper
+        var currencySymbol = currencyCode
+        val extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode)
         if (extendedCurrency != null) {
-            currencySymbol = extendedCurrency.getSymbol();
+            currencySymbol = extendedCurrency.symbol
         }
-        switch (unitOfSaleEnum) {
-            case ONE_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.ONE_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.ONE_KG.unitWeight()) / 1000;
-                break;
-            case FIFTY_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.FIFTY_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.FIFTY_KG.unitWeight()) / 1000;
-                break;
-            case HUNDRED_KG:
-                priceLower = (unitPriceLower * EnumUnitOfSale.HUNDRED_KG.unitWeight()) / 1000;
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.HUNDRED_KG.unitWeight()) / 1000;
-                break;
-        }
+        when (unitOfSaleEnum) {
+            EnumUnitOfSale.ONE_KG -> {
+                priceLower = (unitPriceLower * EnumUnitOfSale.ONE_KG.unitWeight()) / 1000
+                priceHigher = (unitPriceUpper * EnumUnitOfSale.ONE_KG.unitWeight()) / 1000
+            }
 
-        minAmountUSD = priceLower; //minimum amount will be dynamic based on weight being sold, max amount will be constant
-        double localLower = mathHelper.convertToLocalCurrency(priceLower, currencyCode, 100);
-        double localHigher = mathHelper.convertToLocalCurrency(priceHigher, currencyCode, 100);
+            EnumUnitOfSale.FIFTY_KG -> {
+                priceLower = (unitPriceLower * EnumUnitOfSale.FIFTY_KG.unitWeight()) / 1000
+                priceHigher = (unitPriceUpper * EnumUnitOfSale.FIFTY_KG.unitWeight()) / 1000
+            }
 
-        if (!convertCurrency) {
-            localLower = priceLower;
-            localHigher = priceHigher;
+            EnumUnitOfSale.HUNDRED_KG -> {
+                priceLower = (unitPriceLower * EnumUnitOfSale.HUNDRED_KG.unitWeight()) / 1000
+                priceHigher = (unitPriceUpper * EnumUnitOfSale.HUNDRED_KG.unitWeight()) / 1000
+            }
+
+            EnumUnitOfSale.NA -> TODO()
+            EnumUnitOfSale.FRESH_COB -> TODO()
+            EnumUnitOfSale.THOUSAND_KG -> TODO()
+            null -> TODO()
         }
 
-        String data = context.getString(R.string.unit_price_label_single, priceLower, currencySymbol, uos);
-
-        return data;
+        minAmountUSD = priceLower
+        return requireContext().getString(
+            R.string.unit_price_label_single,
+            priceLower,
+            currencySymbol,
+            uos
+        )
     }
-
 }
