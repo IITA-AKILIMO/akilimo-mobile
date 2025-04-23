@@ -1,370 +1,346 @@
-package com.akilimo.mobile.views.activities;
+package com.akilimo.mobile.views.activities
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.os.Bundle
+import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.akilimo.mobile.R
+import com.akilimo.mobile.adapters.IntercropFertilizerGridAdapter
+import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
+import com.akilimo.mobile.databinding.ActivityFertilizersBinding
+import com.akilimo.mobile.entities.AdviceStatus
+import com.akilimo.mobile.entities.Fertilizer
+import com.akilimo.mobile.entities.FertilizerPrice
+import com.akilimo.mobile.entities.FertilizerPriceResponse
+import com.akilimo.mobile.entities.FertilizerResponse
+import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.interfaces.AkilimoApi
+import com.akilimo.mobile.interfaces.IFertilizerDismissListener
+import com.akilimo.mobile.utils.FertilizerList.removeFertilizerByType
+import com.akilimo.mobile.utils.Tools.dpToPx
+import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.views.fragments.dialog.FertilizerPriceDialogFragment
+import com.akilimo.mobile.widget.SpacingItemDecoration
+import com.android.volley.toolbox.Volley
+import com.google.android.material.snackbar.Snackbar
+import io.sentry.Sentry
+import org.modelmapper.ModelMapper
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.util.Locale
 
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.Toolbar;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.adapters.IntercropFertilizerGridAdapter;
-import com.akilimo.mobile.dao.AppDatabase;
-import com.akilimo.mobile.databinding.ActivityFertilizersBinding;
-import com.akilimo.mobile.entities.AdviceStatus;
-import com.akilimo.mobile.entities.FertilizerPrice;
-import com.akilimo.mobile.entities.InterCropFertilizer;
-import com.akilimo.mobile.entities.ProfileInfo;
-import com.akilimo.mobile.inherit.BaseActivity;
-import com.akilimo.mobile.interfaces.IVolleyCallback;
-import com.akilimo.mobile.rest.RestParameters;
-import com.akilimo.mobile.utils.FertilizerList;
-import com.akilimo.mobile.utils.Tools;
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks;
-import com.akilimo.mobile.views.fragments.dialog.FertilizerPriceDialogFragment;
-import com.akilimo.mobile.views.fragments.dialog.IntercropFertilizerPriceDialogFragment;
-import com.akilimo.mobile.widget.SpacingItemDecoration;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.android.material.snackbar.Snackbar;
-
-import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.modelmapper.ModelMapper;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import io.sentry.Sentry;
-
-public class IntercropFertilizersActivity extends BaseActivity {
-
-    public static String useCaseTag = "useCase";
-    public static String interCropTag = "interCrop";
-    private final String TAG = BaseActivity.class.getSimpleName();
+class IntercropFertilizersActivity : BaseActivity() {
+    private val TAG: String = BaseActivity::class.java.simpleName
 
 
-    Toolbar toolbar;
-    RecyclerView recyclerView;
-    LinearLayout lyt_progress;
-    CoordinatorLayout coordinatorLayout;
-    AppCompatButton btnSave;
-    AppCompatButton btnCancel;
-    AppCompatButton btnRetry;
-    ImageView errorImage;
-    TextView errorLabel;
+    var toolbar: Toolbar? = null
+    var recyclerView: RecyclerView? = null
+    var lyt_progress: LinearLayout? = null
+    var coordinatorLayout: CoordinatorLayout? = null
+    var btnSave: AppCompatButton? = null
+    var btnCancel: AppCompatButton? = null
+    var btnRetry: AppCompatButton? = null
+    var errorImage: ImageView? = null
+    var errorLabel: TextView? = null
 
-    ActivityFertilizersBinding binding;
+    var binding: ActivityFertilizersBinding? = null
 
 
-    private List<InterCropFertilizer> availableFertilizersList = new ArrayList<>();
-    private List<InterCropFertilizer> selectedFertilizers = new ArrayList<>();
-    private final List<InterCropFertilizer> fertilizerTypesList = new ArrayList<>();
-    private List<FertilizerPrice> fertilizerPricesList = new ArrayList<>();
+    private var availableFertilizersList: List<Fertilizer> = ArrayList()
+    private var selectedFertilizers: MutableList<Fertilizer> = ArrayList()
+    private val fertilizerTypesList: List<Fertilizer> = ArrayList()
+    private var fertilizerPricesList: List<FertilizerPrice> = ArrayList()
 
-    private IntercropFertilizerGridAdapter mAdapter;
-    private final int minSelection = 1;
-    private ModelMapper modelMapper;
+    private var mAdapter: IntercropFertilizerGridAdapter? = null
+    private val minSelection = 1
+    private var modelMapper: ModelMapper? = null
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityFertilizersBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        context = this;
+    companion object {
+        @JvmField
+        var useCaseTag: String = "useCase"
+        var interCropTag: String = "interCrop"
+    }
 
-        toolbar = binding.toolbarLayout.toolbar;
-        recyclerView = binding.availableFertilizers;
-        lyt_progress = binding.lytProgress;
-        coordinatorLayout = binding.coordinatorLayout;
-        btnSave = binding.twoButtons.btnFinish;
-        btnCancel = binding.twoButtons.btnCancel;
-        btnRetry = binding.btnRetry;
-        errorImage = binding.errorImage;
-        errorLabel = binding.errorLabel;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityFertilizersBinding.inflate(layoutInflater)
+        setContentView(binding!!.root)
+        context = this
 
-        database = AppDatabase.getDatabase(context);
-        queue = Volley.newRequestQueue(context);
-        modelMapper = new ModelMapper();
+        toolbar = binding!!.toolbarLayout.toolbar
+        recyclerView = binding!!.availableFertilizers
+        lyt_progress = binding!!.lytProgress
+        coordinatorLayout = binding!!.coordinatorLayout
+        btnSave = binding!!.twoButtons.btnFinish
+        btnCancel = binding!!.twoButtons.btnCancel
+        btnRetry = binding!!.btnRetry
+        errorImage = binding!!.errorImage
+        errorLabel = binding!!.errorLabel
 
-        Intent intent = getIntent();
+        database = getDatabase(context)
+        queue = Volley.newRequestQueue(context)
+        modelMapper = ModelMapper()
+
+        val intent = intent
         if (intent != null) {
-            enumUseCase = intent.getParcelableExtra(useCaseTag);
+            enumUseCase = intent.getParcelableExtra(useCaseTag)
         }
 
-        ProfileInfo profileInfo = database.profileInfoDao().findOne();
+        val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.getCountryCode();
-            currency = profileInfo.getCurrency();
+            countryCode = profileInfo.countryCode
+            currency = profileInfo.currency
         }
 
-        initToolbar();
-        initComponent();
+        initToolbar()
+        initComponent()
     }
 
-    @Override
-    protected void initToolbar() {
-        toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(getString(R.string.title_activity_fertilizer_choice));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    override fun initToolbar() {
+        toolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.title = getString(R.string.title_activity_fertilizer_choice)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        toolbar.setNavigationOnClickListener(v -> validateInput(false));
+        toolbar!!.setNavigationOnClickListener { v: View? -> validateInput(false) }
     }
 
-    @Override
-    public void onBackPressed() {
-        validateInput(true);
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        super.onBackPressed()
+        validateInput(true)
     }
 
-    private void validateInput(boolean backPressed) {
-        if (isMinSelected()) {
-            closeActivity(backPressed);
+    private fun validateInput(backPressed: Boolean) {
+        if (isMinSelected) {
+            closeActivity(backPressed)
         }
     }
 
 
-    @Override
-    protected void initComponent() {
-        btnSave.setText(context.getString(R.string.lbl_finish));
-        recyclerView.setVisibility(View.GONE);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        recyclerView.addItemDecoration(new SpacingItemDecoration(2, Tools.dpToPx(this, 3), true));
-        recyclerView.setHasFixedSize(true);
-        mAdapter = new IntercropFertilizerGridAdapter(context);
-        recyclerView.setAdapter(mAdapter);
+    override fun initComponent() {
+        btnSave!!.text = context.getString(R.string.lbl_finish)
+        recyclerView!!.visibility = View.GONE
+        recyclerView!!.layoutManager = GridLayoutManager(this, 2)
+        recyclerView!!.addItemDecoration(SpacingItemDecoration(2, dpToPx(this, 3), true))
+        recyclerView!!.setHasFixedSize(true)
+        mAdapter = IntercropFertilizerGridAdapter(context)
+        recyclerView!!.adapter = mAdapter
 
 
-        mAdapter.setOnItemClickListener((view, clickedFertilizer, position) -> {
-            mAdapter.setActiveRowIndex(position);
-            InterCropFertilizer selectedType = database.interCropFertilizerDao().findByTypeCountryAndUseCase(clickedFertilizer.getFertilizerType(), countryCode, enumUseCase.name());
+        mAdapter!!.setOnItemClickListener { view: View?, clickedFertilizer: Fertilizer, position: Int ->
+            mAdapter!!.setActiveRowIndex(position)
+            var selectedType = database.fertilizerDao().findByTypeCountryAndUseCase(
+                clickedFertilizer.fertilizerType!!, countryCode, enumUseCase.name
+            )
             if (selectedType == null) {
-                selectedType = clickedFertilizer;
+                selectedType = clickedFertilizer
             }
             //let us open the price dialog now
-            List<InterCropFertilizer> cleanedFertilizers = selectedFertilizers;
+            val cleanedFertilizers: MutableList<Fertilizer> = selectedFertilizers
 
-            selectedType.setCountryCode(countryCode);
+            selectedType.countryCode = countryCode
 
-            Bundle arguments = new Bundle();
-            arguments.putParcelable(FertilizerPriceDialogFragment.FERTILIZER_TYPE, selectedType);
+            val arguments = Bundle()
+            arguments.putParcelable(FertilizerPriceDialogFragment.FERTILIZER_TYPE, selectedType)
 
-            IntercropFertilizerPriceDialogFragment priceDialogFragment = new IntercropFertilizerPriceDialogFragment(context);
-            priceDialogFragment.setArguments(arguments);
+            val priceDialogFragment = FertilizerPriceDialogFragment(context)
+            priceDialogFragment.arguments = arguments
 
-            priceDialogFragment.setOnDismissListener((priceSpecified, fertilizer, removeSelected) -> {
-                InterCropFertilizer interCropFertilizer = modelMapper.map(fertilizer, InterCropFertilizer.class);
-                database.interCropFertilizerDao().update(fertilizer);
-                if ((priceSpecified || removeSelected)) {
+            priceDialogFragment.setOnDismissListener(object : IFertilizerDismissListener {
+                override fun onDismiss(
+                    priceSpecified: Boolean,
+                    fertilizer: Fertilizer,
+                    removeSelected: Boolean
+                ) {
+                    val shouldUpdate = priceSpecified || removeSelected
+                    if (!shouldUpdate) return
+                    database.fertilizerDao().update(fertilizer)
                     if (removeSelected) {
-                        selectedFertilizers = FertilizerList.INSTANCE.removeIntercropFertilizerByType(cleanedFertilizers, fertilizer.getFertilizerType());
+                        selectedFertilizers = removeFertilizerByType(
+                            cleanedFertilizers,
+                            fertilizer.fertilizerType!!
+                        )
                     } else {
-                        selectedFertilizers.add(interCropFertilizer);
+                        selectedFertilizers.add(fertilizer)
                     }
-                    //refresh the adapter and data set
-                    validate(false);
+                    validate(false)
                 }
-            });
+            })
 
 
-            FragmentTransaction fragmentTransaction;
-            if (getFragmentManager() != null) {
-                fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                Fragment prev = getSupportFragmentManager().findFragmentByTag(FertilizerPriceDialogFragment.ARG_ITEM_ID);
+            val fragmentTransaction: FragmentTransaction
+            if (fragmentManager != null) {
+                fragmentTransaction = supportFragmentManager.beginTransaction()
+                val prev =
+                    supportFragmentManager.findFragmentByTag(FertilizerPriceDialogFragment.ARG_ITEM_ID)
                 if (prev != null) {
-                    fragmentTransaction.remove(prev);
+                    fragmentTransaction.remove(prev)
                 }
-                fragmentTransaction.addToBackStack(null);
-                priceDialogFragment.show(getSupportFragmentManager(), FertilizerPriceDialogFragment.ARG_ITEM_ID);
+                fragmentTransaction.addToBackStack(null)
+                priceDialogFragment.show(
+                    supportFragmentManager,
+                    FertilizerPriceDialogFragment.ARG_ITEM_ID
+                )
             }
-        });
+        }
 
-        initializeFertilizers();
+        initializeFertilizers()
 
-        btnRetry.setOnClickListener(view -> initializeFertilizers());
-        btnSave.setOnClickListener(view -> {
-            database.adviceStatusDao().insert(new AdviceStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM.name(), isMinSelected()));
-            database.adviceStatusDao().insert(new AdviceStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS.name(), isMinSelected()));
-            if (isMinSelected()) {
-                closeActivity(false);
+        btnRetry!!.setOnClickListener { view: View? -> initializeFertilizers() }
+        btnSave!!.setOnClickListener { view: View? ->
+            database.adviceStatusDao().insert(
+                AdviceStatus(
+                    EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM.name,
+                    isMinSelected
+                )
+            )
+            database.adviceStatusDao().insert(
+                AdviceStatus(
+                    EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS.name,
+                    isMinSelected
+                )
+            )
+            if (isMinSelected) {
+                closeActivity(false)
             }
-        });
-        btnCancel.setOnClickListener(view -> closeActivity(false));
+        }
+        btnCancel!!.setOnClickListener { view: View? -> closeActivity(false) }
     }
 
-    @Override
-    protected void validate(boolean backPressed) {
+    override fun validate(backPressed: Boolean) {
         if (mAdapter != null) {
-            availableFertilizersList = database.interCropFertilizerDao().findAllByCountryAndUseCase(countryCode, enumUseCase.name());
-            mAdapter.setItems(availableFertilizersList);
+            availableFertilizersList = database.fertilizerDao()
+                .findAllByCountryAndUseCase(countryCode, enumUseCase.name)
+            mAdapter!!.setItems(availableFertilizersList)
         }
     }
 
-    private void initializeFertilizers() {
+    private fun initializeFertilizers() {
+        lyt_progress!!.visibility = View.VISIBLE
+        lyt_progress!!.alpha = 1.0f
+        recyclerView!!.visibility = View.GONE
+        errorLabel!!.visibility = View.GONE
+        errorImage!!.visibility = View.GONE
+        btnRetry!!.visibility = View.GONE
 
-        lyt_progress.setVisibility(View.VISIBLE);
-        lyt_progress.setAlpha(1.0f);
-        recyclerView.setVisibility(View.GONE);
-        errorLabel.setVisibility(View.GONE);
-        errorImage.setVisibility(View.GONE);
-        btnRetry.setVisibility(View.GONE);
-
-        final RestParameters restParameters = new RestParameters("v2/fertilizers",countryCode );
-        final RestService restService = RestService.getInstance(queue, this);
-        restService.setParameters(restParameters);
-
-        restService.getJsonArrList(new IVolleyCallback() {
-            @Override
-            public void onSuccessJsonString(@NotNull String jsonStringResult) {
-
-            }
-
-            @Override
-            public void onSuccessJsonArr(@NotNull JSONArray jsonArray) {
-                ObjectMapper objectMapper = new ObjectMapper();
-                List<InterCropFertilizer> deletionList = new ArrayList<>();
-                try {
-                    availableFertilizersList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<InterCropFertilizer>>() {
-                    });
-
-                    List<InterCropFertilizer> savedList = database.interCropFertilizerDao().findAllByCountry(countryCode);
-                    //save fertilizers here
-                    if (availableFertilizersList.size() > 0) {
-                        if (savedList.size() > 0) {
-                            for (InterCropFertilizer savedFertilizer : savedList) {
-                                // Loop arrayList1 items
-                                boolean found = false;
-                                for (InterCropFertilizer latestFertilizer : availableFertilizersList) {
-                                    InterCropFertilizer updateFertilizer = database.interCropFertilizerDao().findByType(latestFertilizer.getFertilizerType());
-                                    if (updateFertilizer != null) {
-                                        updateFertilizer.setAvailable(latestFertilizer.getAvailable());
-                                        database.interCropFertilizerDao().update(updateFertilizer);
-                                    } else {
-                                        database.interCropFertilizerDao().insert(latestFertilizer);
-                                    }
-                                    if (latestFertilizer.getFertilizerType().equals(savedFertilizer.getFertilizerType())) {
-                                        found = true;
-                                    }
+        val call = AkilimoApi.apiService.getFertilizers(countryCode = countryCode)
+        call.enqueue(object : Callback<FertilizerResponse> {
+            override fun onResponse(
+                call: Call<FertilizerResponse>,
+                response: Response<FertilizerResponse>
+            ) {
+                if (response.isSuccessful) {
+                    val deletionList: MutableList<Fertilizer> = ArrayList()
+                    availableFertilizersList = response.body()!!.data
+                    val savedList = database.fertilizerDao().findAllByCountry(countryCode)
+                    if (savedList.size > 0) {
+                        for (savedFertilizer in savedList) {
+                            var found = false
+                            for (latestFertilizer in availableFertilizersList) {
+                                val updateFertilizer = database.fertilizerDao()
+                                    .findByType(latestFertilizer.fertilizerType)
+                                if (updateFertilizer != null) {
+                                    updateFertilizer.available = latestFertilizer.available
+                                    database.fertilizerDao().update(updateFertilizer)
+                                } else {
+                                    database.fertilizerDao().insert(latestFertilizer)
                                 }
-                                if (!found) {
-                                    deletionList.add(savedFertilizer);
+                                if (latestFertilizer.fertilizerType == savedFertilizer.fertilizerType) {
+                                    found = true
                                 }
                             }
-                        } else {
-                            database.interCropFertilizerDao().insertAll(availableFertilizersList);
+                            if (!found) {
+                                deletionList.add(savedFertilizer)
+                            }
                         }
+                    } else {
+                        database.fertilizerDao().insertAll(availableFertilizersList)
                     }
-                    database.interCropFertilizerDao().deleteFertilizerByList(deletionList);
-                    for (InterCropFertilizer fertilizer : availableFertilizersList) {
-                        loadFertilizerPrices(fertilizer.getFertilizerKey());
-                    }
-                    validate(false);
-                    recyclerView.setVisibility(View.VISIBLE);
-                } catch (Exception ex) {
-                    lyt_progress.setVisibility(View.GONE);
-                    recyclerView.setVisibility(View.GONE);
-                    errorLabel.setVisibility(View.VISIBLE);
-                    errorImage.setVisibility(View.VISIBLE);
-                    btnRetry.setVisibility(View.VISIBLE);
-                    recyclerView.setVisibility(View.GONE);
 
-                    Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    Sentry.captureException(ex);
+                    database.fertilizerDao().deleteFertilizerByList(deletionList)
+                    for (fertilizer in availableFertilizersList) {
+                        loadFertilizerPrices(fertilizer.fertilizerKey!!)
+                    }
+                    validate(false)
+                    lyt_progress!!.visibility = View.GONE
+                    recyclerView!!.visibility = View.VISIBLE
+
                 }
             }
 
-            @Override
-            public void onSuccessJsonObject(@NotNull JSONObject jsonObject) {
+            override fun onFailure(call: Call<FertilizerResponse>, t: Throwable) {
+                lyt_progress!!.visibility = View.GONE
+                recyclerView!!.visibility = View.GONE
+                errorLabel!!.visibility = View.VISIBLE
+                errorImage!!.visibility = View.VISIBLE
+                btnRetry!!.visibility = View.VISIBLE
+                Sentry.captureException(t)
+                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
             }
 
-            @Override
-            public void onError(@NotNull VolleyError ex) {
-                lyt_progress.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.GONE);
-                errorLabel.setVisibility(View.VISIBLE);
-                errorImage.setVisibility(View.VISIBLE);
-                btnRetry.setVisibility(View.VISIBLE);
-
-                Toast.makeText(context, getString(R.string.lbl_fertilizer_load_error), Toast.LENGTH_LONG).show();
-                Sentry.captureException(ex);
-            }
-        });
+        })
     }
 
-    private void loadFertilizerPrices(String fertilizerKey) {
-        final RestParameters restParameters = new RestParameters(
-                String.format("v2/fertilizer-prices/%s", fertilizerKey), countryCode
-        );
-        final RestService restService = RestService.getInstance(queue, this);
-        restParameters.setInitialTimeout(5000);
-        restService.setParameters(restParameters);
-        restService.getJsonArrList(new IVolleyCallback() {
-            @Override
-            public void onSuccessJsonString(String jsonStringResult) {
-            }
-
-            @Override
-            public void onSuccessJsonArr(JSONArray jsonArray) {
-                lyt_progress.setVisibility(View.GONE);
-                ObjectMapper objectMapper = new ObjectMapper();
-                try {
-                    //check if fertilizer price list is already populated
-                    fertilizerPricesList = objectMapper.readValue(jsonArray.toString(), new TypeReference<List<FertilizerPrice>>() {
-                    });
-
-                    if (fertilizerPricesList.size() > 0) {
-                        database.fertilizerPriceDao().insertAll(fertilizerPricesList);
-                    }
-                    validate(false);
-                    recyclerView.setVisibility(View.VISIBLE);
-                } catch (Exception ex) {
-                    lyt_progress.setVisibility(View.GONE);
-                    errorImage.setVisibility(View.VISIBLE);
-                    errorLabel.setVisibility(View.VISIBLE);
-                    btnRetry.setVisibility(View.VISIBLE);
-                    recyclerView.setVisibility(View.GONE);
-
-                    Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    Sentry.captureException(ex);
+    private fun loadFertilizerPrices(fertilizerKey: String) {
+        val call = AkilimoApi.apiService.getFertilizerPrices(fertilizerKey = fertilizerKey)
+        call.enqueue(object : Callback<FertilizerPriceResponse> {
+            override fun onResponse(
+                call: Call<FertilizerPriceResponse>,
+                response: Response<FertilizerPriceResponse>
+            ) {
+                if (response.isSuccessful) {
+                    lyt_progress!!.visibility = View.GONE
+                    val fertilizerPricesList = response.body()!!.data
+                    database.fertilizerPriceDao().insertAll(fertilizerPricesList)
+                } else {
+                    lyt_progress!!.visibility = View.GONE
+                    recyclerView!!.visibility = View.GONE
+                    errorLabel!!.visibility = View.VISIBLE
+                    errorImage!!.visibility = View.VISIBLE
+                    btnRetry!!.visibility = View.VISIBLE
                 }
-
             }
 
-            @Override
-            public void onSuccessJsonObject(JSONObject jsonObject) {
+            override fun onFailure(call: Call<FertilizerPriceResponse>, t: Throwable) {
+                lyt_progress!!.visibility = View.GONE
+                recyclerView!!.visibility = View.GONE
+                errorLabel!!.visibility = View.VISIBLE
+                errorImage!!.visibility = View.VISIBLE
+                btnRetry!!.visibility = View.VISIBLE
+                Sentry.captureException(t)
+                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
             }
 
-            @Override
-            public void onError(VolleyError ex) {
-                lyt_progress.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.GONE);
-                errorLabel.setVisibility(View.VISIBLE);
-                errorImage.setVisibility(View.VISIBLE);
-                btnRetry.setVisibility(View.VISIBLE);
-            }
-        });
+        })
     }
 
-    private boolean isMinSelected() {
-        int count = database.interCropFertilizerDao().findAllSelectedByCountryAndUseCase(countryCode, enumUseCase.name()).size();
-        if (count < minSelection) {
-            Snackbar snackbar = Snackbar
-                    .make(coordinatorLayout, String.format(Locale.US, context.getString(R.string.lbl_min_selection), minSelection), Snackbar.LENGTH_LONG);
-            snackbar.show();
+    private val isMinSelected: Boolean
+        get() {
+            val count = database.interCropFertilizerDao()
+                .findAllSelectedByCountryAndUseCase(countryCode, enumUseCase.name).size
+            if (count < minSelection) {
+                val snackBar = Snackbar
+                    .make(
+                        coordinatorLayout!!,
+                        String.format(
+                            Locale.US,
+                            context.getString(R.string.lbl_min_selection),
+                            minSelection
+                        ),
+                        Snackbar.LENGTH_LONG
+                    )
+                snackBar.show()
+            }
+            return count >= minSelection
         }
-        return count >= minSelection;
-    }
 }
