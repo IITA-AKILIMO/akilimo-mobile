@@ -1,283 +1,333 @@
-package com.akilimo.mobile.views.activities;
+package com.akilimo.mobile.views.activities
 
-import android.os.Bundle;
-import android.view.View;
-import android.widget.CheckBox;
-import android.widget.RadioGroup;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.os.Bundle
+import android.view.View
+import android.widget.CheckBox
+import android.widget.CompoundButton
+import android.widget.RadioGroup
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.Toolbar
+import androidx.cardview.widget.CardView
+import androidx.fragment.app.FragmentTransaction
+import com.akilimo.mobile.R
+import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
+import com.akilimo.mobile.databinding.ActivityTractorAccessBinding
+import com.akilimo.mobile.entities.AdviceStatus
+import com.akilimo.mobile.entities.CurrentPractice
+import com.akilimo.mobile.entities.FieldOperationCost
+import com.akilimo.mobile.inherit.CostBaseActivity
+import com.akilimo.mobile.models.OperationCost
+import com.akilimo.mobile.utils.MathHelper
+import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.utils.enums.EnumOperation
+import com.akilimo.mobile.utils.enums.EnumOperationType
+import com.akilimo.mobile.views.fragments.dialog.OperationCostsDialogFragment
+import com.android.volley.toolbox.Volley
+import io.sentry.Sentry
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+class TractorAccessActivity : CostBaseActivity() {
+    var toolbar: Toolbar? = null
+    var implementTitle: TextView? = null
+    var rdgTractor: RadioGroup? = null
+    var implementCard: CardView? = null
+    var chkPlough: CheckBox? = null
+    var chkRidger: CheckBox? = null
 
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.dao.AppDatabase;
-import com.akilimo.mobile.databinding.ActivityTractorAccessBinding;
-import com.akilimo.mobile.entities.AdviceStatus;
-import com.akilimo.mobile.entities.AkilimoCurrency;
-import com.akilimo.mobile.entities.CurrentPractice;
-import com.akilimo.mobile.entities.FieldOperationCost;
-import com.akilimo.mobile.entities.MandatoryInfo;
-import com.akilimo.mobile.entities.ProfileInfo;
-import com.akilimo.mobile.inherit.CostBaseActivity;
-import com.akilimo.mobile.models.OperationCost;
-import com.akilimo.mobile.utils.MathHelper;
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks;
-import com.akilimo.mobile.utils.enums.EnumOperation;
-import com.akilimo.mobile.utils.enums.EnumOperationType;
-import com.akilimo.mobile.views.fragments.dialog.OperationCostsDialogFragment;
-import com.android.volley.toolbox.Volley;
+    var btnFinish: AppCompatButton? = null
+    var btnCancel: AppCompatButton? = null
 
-import java.util.ArrayList;
-import java.util.Locale;
-
-import io.sentry.Sentry;
-
-public class TractorAccessActivity extends CostBaseActivity {
-
-
-    Toolbar toolbar;
-    TextView implementTitle;
-    RadioGroup rdgTractor;
-    CardView implementCard;
-    CheckBox chkPlough;
-    CheckBox chkRidger;
-
-    AppCompatButton btnFinish;
-    AppCompatButton btnCancel;
-
-    ActivityTractorAccessBinding binding;
-    MathHelper mathHelper;
-    FieldOperationCost fieldOperationCost;
-    CurrentPractice currentPractice;
+    var binding: ActivityTractorAccessBinding? = null
+    var mathHelper: MathHelper? = null
+    var fieldOperationCost: FieldOperationCost? = null
+    var currentPractice: CurrentPractice? = null
 
 
-    private boolean hasTractor;
-    private boolean hasPlough;
-    private boolean hasRidger;
-    private boolean hasHarrow;
-    private boolean isDialogOpen;
+    private var hasTractor = false
+    private var hasPlough = false
+    private var hasRidger = false
+    private val hasHarrow = false
+    private val isDialogOpen = false
 
-    private boolean exactPloughCost;
-    private boolean exactRidgeCost;
+    private var exactPloughCost = false
+    private var exactRidgeCost = false
 
-    private String ploughCostText;
-    private String ridgingCostText;
+    private val ploughCostText: String? = null
+    private val ridgingCostText: String? = null
 
-    private boolean dataValid;
-    private double tractorPloughCost;
-    private double tractorRidgeCost;
-    private boolean dialogOpen;
+    private var dataValid = false
+    private var tractorPloughCost = 0.0
+    private var tractorRidgeCost = 0.0
+    private var dialogOpen = false
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityTractorAccessBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityTractorAccessBinding.inflate(layoutInflater)
+        setContentView(binding!!.root)
 
-        context = this;
-        database = AppDatabase.getDatabase(context);
+        context = this
+        database = getDatabase(context)
 
-        queue = Volley.newRequestQueue(this);
-        mathHelper = new MathHelper();
+        queue = Volley.newRequestQueue(this)
+        mathHelper = MathHelper()
 
-        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
+        val mandatoryInfo = database.mandatoryInfoDao().findOne()
         if (mandatoryInfo != null) {
-            areaUnit = mandatoryInfo.getAreaUnit();
-            fieldSize = mandatoryInfo.getAreaSize();
+            areaUnit = mandatoryInfo.areaUnit
+            fieldSize = mandatoryInfo.areaSize
         }
 
-        ProfileInfo profileInfo = database.profileInfoDao().findOne();
+        val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.getCountryCode();
-            currency = profileInfo.getCurrency();
-            currencyCode = profileInfo.getCurrency();
-            AkilimoCurrency myAkilimoCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode);
-            currencySymbol = myAkilimoCurrency.getCurrencySymbol();
+            countryCode = profileInfo.countryCode
+            currency = profileInfo.currency
+            currencyCode = profileInfo.currency
+            val myAkilimoCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode)
+            currencySymbol = myAkilimoCurrency.currencySymbol
         }
 
-        toolbar = binding.toolbar;
-        implementTitle = binding.tractorAccess.implementTitle;
-        rdgTractor = binding.tractorAccess.rdgTractor;
-        implementCard = binding.tractorAccess.implementCard;
-        chkPlough = binding.tractorAccess.chkPlough;
-        chkRidger = binding.tractorAccess.chkRidger;
-        btnFinish = binding.twoButtons.btnFinish;
-        btnCancel = binding.twoButtons.btnCancel;
+        toolbar = binding!!.toolbar
+        implementTitle = binding!!.tractorAccess.implementTitle
+        rdgTractor = binding!!.tractorAccess.rdgTractor
+        implementCard = binding!!.tractorAccess.implementCard
+        chkPlough = binding!!.tractorAccess.chkPlough
+        chkRidger = binding!!.tractorAccess.chkRidger
+        btnFinish = binding!!.twoButtons.btnFinish
+        btnCancel = binding!!.twoButtons.btnCancel
 
-        initToolbar();
-        initComponent();
-        fieldOperationCost = database.fieldOperationCostDao().findOne();
-        currentPractice = database.currentPracticeDao().findOne();
+        initToolbar()
+        initComponent()
+        fieldOperationCost = database.fieldOperationCostDao().findOne()
+        currentPractice = database.currentPracticeDao().findOne()
         if (fieldOperationCost != null) {
-            tractorPloughCost = fieldOperationCost.getTractorPloughCost();
-            tractorRidgeCost = fieldOperationCost.getTractorRidgeCost();
+            tractorPloughCost = fieldOperationCost!!.tractorPloughCost
+            tractorRidgeCost = fieldOperationCost!!.tractorRidgeCost
         }
     }
 
-    @Override
-    protected void initToolbar() {
-        toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(getString(R.string.title_tillage_operations));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(v -> validate(false));
+    override fun initToolbar() {
+        toolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.title = getString(R.string.title_tillage_operations)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        toolbar!!.setNavigationOnClickListener { v: View? -> validate(false) }
     }
 
-    @Override
-    protected void initComponent() {
-        rdgTractor.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
-            switch (radioIndex) {
-                case R.id.rdYesTractor:
-                    hasTractor = true;
-                    implementTitle.setVisibility(View.VISIBLE);
-                    implementCard.setVisibility(View.VISIBLE);
-                    break;
-                default:
-                case R.id.rdNoTractor:
-                    hasTractor = false;
-                    implementTitle.setVisibility(View.GONE);
-                    implementCard.setVisibility(View.GONE);
-                    chkRidger.setChecked(false);
-                    chkPlough.setChecked(false);
-                    break;
-            }
-        });
+    override fun initComponent() {
+        rdgTractor!!.setOnCheckedChangeListener { radioGroup: RadioGroup?, radioIndex: Int ->
+            when (radioIndex) {
+                R.id.rdYesTractor -> {
+                    hasTractor = true
+                    implementTitle!!.visibility = View.VISIBLE
+                    implementCard!!.visibility = View.VISIBLE
+                }
 
-        Locale myLocale = getCurrentLocale();
-        String translatedUnit = context.getString(R.string.lbl_acre);
-        if (areaUnit.equals("ha")) {
-            translatedUnit = context.getString(R.string.lbl_ha);
+                R.id.rdNoTractor -> {
+                    hasTractor = false
+                    implementTitle!!.visibility = View.GONE
+                    implementCard!!.visibility = View.GONE
+                    chkRidger!!.isChecked = false
+                    chkPlough!!.isChecked = false
+                }
+
+                else -> {
+                    hasTractor = false
+                    implementTitle!!.visibility = View.GONE
+                    implementCard!!.visibility = View.GONE
+                    chkRidger!!.isChecked = false
+                    chkPlough!!.isChecked = false
+                }
+            }
         }
-        String finalTranslatedUnit = translatedUnit.toLowerCase(myLocale);
+
+        val myLocale = currentLocale
+        var translatedUnit = context.getString(R.string.lbl_acre)
+        if (areaUnit == "ha") {
+            translatedUnit = context.getString(R.string.lbl_ha)
+        }
+        val finalTranslatedUnit = translatedUnit.lowercase(myLocale)
 
 
-        chkPlough.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            hasPlough = isChecked;
-            if (buttonView.isPressed() && isChecked && !dialogOpen) {
-                String title = (getString(R.string.lbl_tractor_plough_cost, mathHelper.removeLeadingZero(fieldSize), finalTranslatedUnit));
-                String hintText = (getString(R.string.lbl_tractor_plough_cost_hint, mathHelper.removeLeadingZero(fieldSize), finalTranslatedUnit));
-                if (myLocale.getLanguage().equals("sw")) {
-                    title = (getString(R.string.lbl_tractor_plough_cost, finalTranslatedUnit, mathHelper.removeLeadingZero(fieldSize)));
-                    hintText = (getString(R.string.lbl_tractor_plough_cost_hint, finalTranslatedUnit, mathHelper.removeLeadingZero(fieldSize)));
+        chkPlough!!.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean ->
+            hasPlough = isChecked
+            if (buttonView.isPressed && isChecked && !dialogOpen) {
+                var title = (getString(
+                    R.string.lbl_tractor_plough_cost,
+                    mathHelper!!.removeLeadingZero(fieldSize),
+                    finalTranslatedUnit
+                ))
+                var hintText = (getString(
+                    R.string.lbl_tractor_plough_cost_hint,
+                    mathHelper!!.removeLeadingZero(fieldSize),
+                    finalTranslatedUnit
+                ))
+                if (myLocale.language == "sw") {
+                    title = (getString(
+                        R.string.lbl_tractor_plough_cost,
+                        finalTranslatedUnit,
+                        mathHelper!!.removeLeadingZero(fieldSize)
+                    ))
+                    hintText = (getString(
+                        R.string.lbl_tractor_plough_cost_hint,
+                        finalTranslatedUnit,
+                        mathHelper!!.removeLeadingZero(fieldSize)
+                    ))
                 }
-                loadOperationCost(EnumOperation.TILLAGE.name(), EnumOperationType.MECHANICAL.operationName(), title, hintText);
+                loadOperationCost(
+                    EnumOperation.TILLAGE.name, EnumOperationType.MECHANICAL.operationName(),
+                    title, hintText
+                )
             }
-        });
-        chkRidger.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            hasRidger = isChecked;
-            if (buttonView.isPressed() && isChecked && !dialogOpen) {
-                String title = (getString(R.string.lbl_tractor_ridge_cost, mathHelper.removeLeadingZero(fieldSize), finalTranslatedUnit));
-                String hintText = (getString(R.string.lbl_tractor_ridge_cost_hint, mathHelper.removeLeadingZero(fieldSize), finalTranslatedUnit));
-                if (myLocale.getLanguage().equals("sw")) {
-                    title = (getString(R.string.lbl_tractor_ridge_cost, finalTranslatedUnit, mathHelper.removeLeadingZero(fieldSize)));
-                    hintText = (getString(R.string.lbl_tractor_ridge_cost_hint, finalTranslatedUnit, mathHelper.removeLeadingZero(fieldSize)));
+        }
+        chkRidger!!.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean ->
+            hasRidger = isChecked
+            if (buttonView.isPressed && isChecked && !dialogOpen) {
+                var title = (getString(
+                    R.string.lbl_tractor_ridge_cost,
+                    mathHelper!!.removeLeadingZero(fieldSize),
+                    finalTranslatedUnit
+                ))
+                var hintText = (getString(
+                    R.string.lbl_tractor_ridge_cost_hint,
+                    mathHelper!!.removeLeadingZero(fieldSize),
+                    finalTranslatedUnit
+                ))
+                if (myLocale.language == "sw") {
+                    title = (getString(
+                        R.string.lbl_tractor_ridge_cost,
+                        finalTranslatedUnit,
+                        mathHelper!!.removeLeadingZero(fieldSize)
+                    ))
+                    hintText = (getString(
+                        R.string.lbl_tractor_ridge_cost_hint,
+                        finalTranslatedUnit,
+                        mathHelper!!.removeLeadingZero(fieldSize)
+                    ))
                 }
-                loadOperationCost(EnumOperation.RIDGING.name(), EnumOperationType.MECHANICAL.operationName(), title, hintText);
+                loadOperationCost(
+                    EnumOperation.RIDGING.name, EnumOperationType.MECHANICAL.operationName(),
+                    title, hintText
+                )
             }
-        });
-        btnFinish.setOnClickListener(view -> validate(false));
-        btnCancel.setOnClickListener(view -> closeActivity(false));
+        }
+        btnFinish!!.setOnClickListener { view: View? -> validate(false) }
+        btnCancel!!.setOnClickListener { view: View? -> closeActivity(false) }
     }
 
-    @Override
-    protected void validate(boolean backPressed) {
-        setData();
+    override fun validate(backPressed: Boolean) {
+        setData()
         if (dataValid) {
-            closeActivity(backPressed);
+            closeActivity(backPressed)
         }
     }
 
-    private void setData() {
+    private fun setData() {
         try {
             if (fieldOperationCost == null) {
-                fieldOperationCost = new FieldOperationCost();
+                fieldOperationCost = FieldOperationCost()
             }
             if (currentPractice == null) {
-                currentPractice = new CurrentPractice();
+                currentPractice = CurrentPractice()
             }
 
-            dataValid = true;
-            currentPractice.setTractorAvailable(hasTractor);
-            currentPractice.setTractorPlough(hasPlough);
-            currentPractice.setTractorHarrow(hasHarrow);
-            currentPractice.setTractorRidger(hasRidger);
+            dataValid = true
+            currentPractice!!.tractorAvailable = hasTractor
+            currentPractice!!.tractorPlough = hasPlough
+            currentPractice!!.tractorHarrow = hasHarrow
+            currentPractice!!.tractorRidger = hasRidger
 
-            database.currentPracticeDao().insert(currentPractice);
+            database.currentPracticeDao().insert(currentPractice!!)
 
-            fieldOperationCost.setTractorPloughCost(tractorPloughCost);
-            fieldOperationCost.setTractorRidgeCost(tractorRidgeCost);
-            fieldOperationCost.setExactTractorPloughPrice(exactPloughCost);
-            fieldOperationCost.setExactTractorRidgePrice(exactRidgeCost);
+            fieldOperationCost!!.tractorPloughCost = tractorPloughCost
+            fieldOperationCost!!.tractorRidgeCost = tractorRidgeCost
+            fieldOperationCost!!.exactTractorPloughPrice = exactPloughCost
+            fieldOperationCost!!.exactTractorRidgePrice = exactRidgeCost
 
-            database.fieldOperationCostDao().insert(fieldOperationCost);
-            database.adviceStatusDao().insert(new AdviceStatus(EnumAdviceTasks.TRACTOR_ACCESS.name(), true));
-        } catch (Exception ex) {
-            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Sentry.captureException(ex);
+            database.fieldOperationCostDao().insert(fieldOperationCost!!)
+            database.adviceStatusDao()
+                .insert(AdviceStatus(EnumAdviceTasks.TRACTOR_ACCESS.name, true))
+        } catch (ex: Exception) {
+            Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+            Sentry.captureException(ex)
         }
     }
 
-    @Override
-    protected void showDialogFullscreen(ArrayList<OperationCost> operationCostList, String operation, String countrycode, String dialogTitle, String hintText) {
-        Bundle arguments = new Bundle();
+    override fun showDialogFullscreen(
+        operationCostList: ArrayList<OperationCost>?,
+        operation: String?,
+        countrycode: String?,
+        dialogTitle: String?,
+        hintText: String?
+    ) {
+        val arguments = Bundle()
 
         if (dialogOpen) {
-            return;
+            return
         }
 
-        showCustomNotificationDialog();
-        arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList);
-        arguments.putString(OperationCostsDialogFragment.OPERATION_NAME, operation);
-        arguments.putString(OperationCostsDialogFragment.CURRENCY_CODE, currency);
-        arguments.putString(OperationCostsDialogFragment.CURRENCY_SYMBOL, currencySymbol);
-        arguments.putString(OperationCostsDialogFragment.COUNTRY_CODE, countrycode);
-        arguments.putString(OperationCostsDialogFragment.DIALOG_TITLE, dialogTitle);
-        arguments.putString(OperationCostsDialogFragment.EXACT_PRICE_HINT, hintText);
+        showCustomNotificationDialog()
+        arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList)
+        arguments.putString(OperationCostsDialogFragment.OPERATION_NAME, operation)
+        arguments.putString(OperationCostsDialogFragment.CURRENCY_CODE, currency)
+        arguments.putString(OperationCostsDialogFragment.CURRENCY_SYMBOL, currencySymbol)
+        arguments.putString(OperationCostsDialogFragment.COUNTRY_CODE, countrycode)
+        arguments.putString(OperationCostsDialogFragment.DIALOG_TITLE, dialogTitle)
+        arguments.putString(OperationCostsDialogFragment.EXACT_PRICE_HINT, hintText)
 
-        OperationCostsDialogFragment dialogFragment = getOperationCostsDialogFragment(arguments);
+        val dialogFragment = getOperationCostsDialogFragment(arguments)
 
 
-        FragmentTransaction fragmentTransaction;
-        if (getFragmentManager() != null) {
-            fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            fragmentTransaction.setCustomAnimations(R.anim.animate_slide_in_left, R.anim.animate_slide_out_right);
-            Fragment prev = getSupportFragmentManager().findFragmentByTag(OperationCostsDialogFragment.ARG_ITEM_ID);
+        val fragmentTransaction: FragmentTransaction
+        if (fragmentManager != null) {
+            fragmentTransaction = supportFragmentManager.beginTransaction()
+            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            fragmentTransaction.setCustomAnimations(
+                R.anim.animate_slide_in_left,
+                R.anim.animate_slide_out_right
+            )
+            val prev =
+                supportFragmentManager.findFragmentByTag(OperationCostsDialogFragment.ARG_ITEM_ID)
             if (prev != null) {
-                fragmentTransaction.remove(prev);
+                fragmentTransaction.remove(prev)
             }
-            fragmentTransaction.addToBackStack(null);
-            dialogOpen = true;
-            dialogFragment.show(getSupportFragmentManager(), OperationCostsDialogFragment.ARG_ITEM_ID);
+            fragmentTransaction.addToBackStack(null)
+            dialogOpen = true
+            dialogFragment.show(supportFragmentManager, OperationCostsDialogFragment.ARG_ITEM_ID)
         }
     }
 
-    @NonNull
-    private OperationCostsDialogFragment getOperationCostsDialogFragment(Bundle arguments) {
-        OperationCostsDialogFragment dialogFragment = new OperationCostsDialogFragment();
-        dialogFragment.setArguments(arguments);
+    private fun getOperationCostsDialogFragment(arguments: Bundle): OperationCostsDialogFragment {
+        val dialogFragment = OperationCostsDialogFragment()
+        dialogFragment.arguments = arguments
 
-        dialogFragment.setOnDismissListener((operationCost, enumOperation, selectedCost, cancelled, isExactCost) -> {
-            if (!cancelled && enumOperation != null) {
-                double roundedCost = mathHelper.roundToNearestSpecifiedValue(selectedCost, 1000);
-                switch (enumOperation) {
-                    case "TILLAGE":
-                        tractorPloughCost = roundedCost;
-                        exactPloughCost = isExactCost;
-                        break;
-                    case "RIDGING":
-                        tractorRidgeCost = roundedCost;
-                        exactRidgeCost = isExactCost;
-                        break;
+        dialogFragment.setOnDismissListener(object : OperationCostsDialogFragment.IDismissDialog {
+            override fun onDismiss(
+                operationCost: OperationCost?,
+                operationName: String?,
+                selectedCost: Double,
+                cancelled: Boolean,
+                isExactCost: Boolean
+            ) {
+                if (!cancelled && operationName != null) {
+                    val roundedCost =
+                        mathHelper!!.roundToNearestSpecifiedValue(selectedCost, 1000.0)
+                    when (operationName) {
+                        "TILLAGE" -> {
+                            tractorPloughCost = roundedCost
+                            exactPloughCost = isExactCost
+                        }
+
+                        "RIDGING" -> {
+                            tractorRidgeCost = roundedCost
+                            exactRidgeCost = isExactCost
+                        }
+                    }
                 }
+                dialogOpen = false
             }
-            dialogOpen = false;
-        });
-        return dialogFragment;
+        })
+
+        return dialogFragment
     }
 }
