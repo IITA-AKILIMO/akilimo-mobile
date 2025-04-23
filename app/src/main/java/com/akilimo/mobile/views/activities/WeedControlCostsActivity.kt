@@ -1,7 +1,6 @@
 package com.akilimo.mobile.views.activities
 
 import android.os.Bundle
-import android.view.View
 import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.Toast
@@ -19,22 +18,20 @@ import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumCountry
-import com.google.android.gms.common.util.Strings
 import io.sentry.Sentry
 
 class WeedControlCostsActivity : BaseActivity() {
     var toolbar: Toolbar? = null
-    var firstWeedingOpCostTitle: AppCompatTextView? = null
-    var secondWeedingOpCostTitle: AppCompatTextView? = null
-    var herbicideUseTitle: AppCompatTextView? = null
-    var herbicideUseCard: CardView? = null
-    var btnFinish: AppCompatButton? = null
-    var btnCancel: AppCompatButton? = null
-    var rdgWeedControl: RadioGroup? = null
-    var editFirstWeedingOpCost: EditText? = null
-    var editSecondWeedingOpCost: EditText? = null
+    private var firstWeedingOpCostTitle: AppCompatTextView? = null
+    private var secondWeedingOpCostTitle: AppCompatTextView? = null
+    private var herbicideUseTitle: AppCompatTextView? = null
+    private var herbicideUseCard: CardView? = null
+    private var btnFinish: AppCompatButton? = null
+    private var btnCancel: AppCompatButton? = null
+    private var rdgWeedControl: RadioGroup? = null
+    private var editFirstWeedingOpCost: EditText? = null
+    private var editSecondWeedingOpCost: EditText? = null
 
-    var binding: ActivityWeedControlCostBinding? = null
 
     private var mathHelper: MathHelper? = null
     private var currentPractice: CurrentPractice? = null
@@ -46,16 +43,18 @@ class WeedControlCostsActivity : BaseActivity() {
     private var weedRadioIndex = 0
 
     private val minCost = 1.0
-    private val maxCost = 0.0
+
+    private var _binding: ActivityWeedControlCostBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityWeedControlCostBinding.inflate(
+        _binding = ActivityWeedControlCostBinding.inflate(
             layoutInflater
         )
-        setContentView(binding!!.root)
+        setContentView(binding.root)
 
-        context = this
+        val context = this@WeedControlCostsActivity
         database = getDatabase(context)
         mathHelper = MathHelper()
 
@@ -78,23 +77,25 @@ class WeedControlCostsActivity : BaseActivity() {
         fieldOperationCost = database.fieldOperationCostDao().findOne()
         currentPractice = database.currentPracticeDao().findOne()
 
-        toolbar = binding!!.toolbar
-        firstWeedingOpCostTitle = binding!!.weedControlCosts.firstWeedingOpCostTitle
-        secondWeedingOpCostTitle = binding!!.weedControlCosts.secondWeedingOpCostTitle
-        herbicideUseTitle = binding!!.weedControlCosts.herbicideUseTitle
-        herbicideUseCard = binding!!.weedControlCosts.herbicideUseCard
-        btnFinish = binding!!.twoButtons.btnFinish
-        btnCancel = binding!!.twoButtons.btnCancel
-        rdgWeedControl = binding!!.weedControlCosts.rdgWeedControl
-        editFirstWeedingOpCost = binding!!.weedControlCosts.editFirstWeedingOpCost
-        editSecondWeedingOpCost = binding!!.weedControlCosts.editSecondWeedingOpCost
+        toolbar = binding.toolbar
+        firstWeedingOpCostTitle = binding.weedControlCosts.firstWeedingOpCostTitle
+        secondWeedingOpCostTitle = binding.weedControlCosts.secondWeedingOpCostTitle
+        herbicideUseTitle = binding.weedControlCosts.herbicideUseTitle
+        herbicideUseCard = binding.weedControlCosts.herbicideUseCard
+        btnFinish = binding.twoButtons.btnFinish
+        btnCancel = binding.twoButtons.btnCancel
+        rdgWeedControl = binding.weedControlCosts.rdgWeedControl
+        editFirstWeedingOpCost = binding.weedControlCosts.editFirstWeedingOpCost
+        editSecondWeedingOpCost = binding.weedControlCosts.editSecondWeedingOpCost
 
 
         initToolbar()
         initComponent()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
+        super.onBackPressed()
         validate(true)
     }
 
@@ -103,10 +104,11 @@ class WeedControlCostsActivity : BaseActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.title = getString(R.string.title_weed_control)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        toolbar!!.setNavigationOnClickListener { v: View? -> closeActivity(false) }
+        toolbar!!.setNavigationOnClickListener { closeActivity(false) }
     }
 
     override fun initComponent() {
+        val context = this@WeedControlCostsActivity
         val myLocale = currentLocale
         var translatedUnit = context.getString(R.string.lbl_acre)
         if (areaUnit == "ha") {
@@ -166,7 +168,7 @@ class WeedControlCostsActivity : BaseActivity() {
         firstWeedingOpCostTitle!!.text = firstWeedCostTitle
         secondWeedingOpCostTitle!!.text = secondWeedCostTitle
 
-        rdgWeedControl!!.setOnCheckedChangeListener { radioGroup: RadioGroup?, radioIndex: Int ->
+        rdgWeedControl!!.setOnCheckedChangeListener { _: RadioGroup?, radioIndex: Int ->
             when (radioIndex) {
                 R.id.rdManualOnlyControl -> {
                     usesHerbicide = false
@@ -186,13 +188,13 @@ class WeedControlCostsActivity : BaseActivity() {
         }
 
 
-        btnFinish!!.setOnClickListener { view: View? -> validate(false) }
-        btnCancel!!.setOnClickListener { view: View? -> closeActivity(false) }
+        btnFinish!!.setOnClickListener { validate(false) }
+        btnCancel!!.setOnClickListener { closeActivity(false) }
         showCustomNotificationDialog()
     }
 
     override fun validate(backPressed: Boolean) {
-        if (Strings.isEmptyOrWhitespace(weedControlTechnique)) {
+        if (weedControlTechnique.isNullOrEmpty()) {
             showCustomWarningDialog(
                 getString(R.string.lbl_invalid_selection),
                 getString(R.string.lbl_weed_control_prompt)
@@ -244,7 +246,7 @@ class WeedControlCostsActivity : BaseActivity() {
 
             closeActivity(backPressed)
         } catch (ex: Exception) {
-            Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@WeedControlCostsActivity, ex.message, Toast.LENGTH_SHORT).show()
             Sentry.captureException(ex)
         }
     }
