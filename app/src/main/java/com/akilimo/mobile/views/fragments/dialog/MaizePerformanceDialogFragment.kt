@@ -1,7 +1,6 @@
 package com.akilimo.mobile.views.fragments.dialog
 
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
@@ -20,7 +19,7 @@ import com.akilimo.mobile.utils.Tools.displayImageOriginal
 /**
  * A simple [androidx.fragment.app.Fragment] subclass.
  */
-class MaizePerformanceDialogFragment(context: Context?) : BaseDialogFragment() {
+class MaizePerformanceDialogFragment : BaseDialogFragment() {
     private var performanceConfirmed = false
 
 
