@@ -26,7 +26,6 @@ class FertilizerPriceDialogFragment : BaseDialogFragment() {
     private var priceSpecified = false
     private var removeSelected = false
 
-    private var dialog: Dialog? = null
     private var fertilizer: Fertilizer? = null
     private var fertilizerPricesList: List<FertilizerPrice>? = null
 
@@ -57,11 +56,10 @@ class FertilizerPriceDialogFragment : BaseDialogFragment() {
         if (bundle != null) {
             fertilizer = bundle.getParcelable(FERTILIZER_TYPE)
         }
-        dialog = Dialog(context)
+        val dialog = Dialog(context)
         _binding = FragmentFertilizerPriceDialogBinding.inflate(layoutInflater)
-        dialog!!.setContentView(binding.root)
 
-        dialog!!.window!!.apply {
+        dialog.window!!.apply {
             requestFeature(Window.FEATURE_NO_TITLE)
             setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -70,6 +68,7 @@ class FertilizerPriceDialogFragment : BaseDialogFragment() {
             setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
             attributes.windowAnimations = R.style.DialogSlideAnimation
         }
+        dialog.setContentView(binding.root)
 
         if (fertilizer != null) {
             countryCode = fertilizer!!.countryCode
@@ -141,7 +140,7 @@ class FertilizerPriceDialogFragment : BaseDialogFragment() {
         }
 
         binding.radioGroup.setOnCheckedChangeListener { group, _ ->
-            radioSelected(group)
+            radioSelected(group, dialog)
         }
 
         if (database != null) {
@@ -150,12 +149,12 @@ class FertilizerPriceDialogFragment : BaseDialogFragment() {
             addPriceRadioButtons(fertilizerPricesList!!, fertilizer)
         }
 
-        return dialog!!
+        return dialog
     }
 
-    private fun radioSelected(radioGroup: RadioGroup) {
+    private fun radioSelected(radioGroup: RadioGroup, dialog: Dialog) {
         val radioButtonId = radioGroup.checkedRadioButtonId
-        val radioButton = dialog!!.findViewById<RadioButton>(radioButtonId)
+        val radioButton = dialog.findViewById<RadioButton>(radioButtonId)
         val itemTagIndex = radioButton.tag as Long
 
         currencySymbol = currencyCode
