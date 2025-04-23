@@ -1,157 +1,152 @@
-package com.akilimo.mobile.inherit;
+package com.akilimo.mobile.inherit
 
-import android.app.Dialog;
-import android.content.Context;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.TextView;
+import android.app.Dialog
+import android.content.Context
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
+import android.widget.TextView
+import androidx.appcompat.widget.AppCompatButton
+import androidx.fragment.app.Fragment
+import com.akilimo.mobile.R
+import com.akilimo.mobile.dao.AppDatabase
+import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
+import com.akilimo.mobile.entities.LocationInfo
+import com.akilimo.mobile.utils.MathHelper
+import com.akilimo.mobile.utils.SessionManager
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.Volley
+import com.stepstone.stepper.Step
+import com.stepstone.stepper.VerificationError
+import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository
+import dev.b3nedikt.reword.Reword.reword
+import io.sentry.Sentry
+import java.util.Locale
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.fragment.app.Fragment;
+abstract class BaseStepFragment protected constructor() : Fragment(), Step {
+    protected var LOG_TAG: String = BaseStepFragment::class.java.simpleName
 
-import com.akilimo.mobile.utils.MathHelper;
-import com.akilimo.mobile.utils.SessionManager;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
+    @JvmField
+    protected var currency: String? = null
 
-import com.google.android.gms.common.util.Strings;
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.dao.AppDatabase;
-import com.akilimo.mobile.entities.LocationInfo;
-import com.stepstone.stepper.Step;
-import com.stepstone.stepper.VerificationError;
+    @JvmField
+    protected var countryCode: String = ""
 
-import java.util.Locale;
+    @JvmField
+    protected var countryName: String? = null
 
-import dev.b3nedikt.app_locale.AppLocale;
-import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
-import dev.b3nedikt.reword.Reword;
-import io.sentry.Sentry;
+    @JvmField
+    protected var errorMessage: String = ""
 
-@SuppressWarnings("WeakerAccess")
-public abstract class BaseStepFragment extends Fragment implements Step {
+    @JvmField
+    protected var database: AppDatabase? = null
 
-    protected String LOG_TAG = BaseStepFragment.class.getSimpleName();
+    @JvmField
+    protected var verificationError: VerificationError? = null
 
-    protected String currency;
-    protected String countryCode = "";
-    protected String countryName;
-    protected String errorMessage = "";
+    protected var queue: RequestQueue? = null
 
-    protected AppDatabase database;
-    protected VerificationError verificationError = null;
+    @JvmField
+    protected var sessionManager: SessionManager? = null
 
-    protected Context context;
-    protected RequestQueue queue;
+    @JvmField
+    protected var mathHelper: MathHelper? = null
 
-    protected SessionManager sessionManager;
-    protected MathHelper mathHelper;
+    @JvmField
+    @Deprecated("")
+    protected var dataIsValid: Boolean = false
 
-    @Deprecated()
-    protected boolean dataIsValid;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(false)
 
-    protected BaseStepFragment() {
+        val context = requireContext()
+        sessionManager = SessionManager(context)
+        queue = Volley.newRequestQueue(context.applicationContext)
+        database = getDatabase(context)
+        mathHelper = MathHelper()
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.context = context;
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = loadFragmentLayout(inflater, container, savedInstanceState)
+        reword(view)
+        return view
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(false);
-        sessionManager = new SessionManager(context);
-        queue = Volley.newRequestQueue(context.getApplicationContext());
-        database = AppDatabase.getDatabase(context);
-        mathHelper = new MathHelper();
-    }
+    protected abstract fun loadFragmentLayout(
+        inflater: LayoutInflater?,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = loadFragmentLayout(inflater, container, savedInstanceState);
-        Reword.reword(view);
-        return view;
-    }
-
-    protected abstract View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
-
-    protected void showCustomWarningDialog(String titleText) {
-        showCustomWarningDialog(titleText, titleText, null);
-    }
-
-    protected void showCustomWarningDialog(String titleText, String contentText) {
-        showCustomWarningDialog(titleText, contentText, null);
-    }
-
-    protected void showCustomWarningDialog(String titleText, String contentText, String buttonTitle) {
+    protected fun showCustomWarningDialog(
+        titleText: String?,
+        contentText: String? = titleText,
+        buttonTitle: String? = null
+    ) {
+        val context = requireContext()
         try {
-            final Dialog dialog = new Dialog(context);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
-            dialog.setContentView(R.layout.dialog_warning);
-            dialog.setCancelable(true);
+            val dialog = Dialog(context)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE) // before
+            dialog.setContentView(R.layout.dialog_warning)
+            dialog.setCancelable(true)
 
-            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-            layoutParams.copyFrom(dialog.getWindow().getAttributes());
-            layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            val layoutParams = WindowManager.LayoutParams()
+            layoutParams.copyFrom(dialog.window!!.attributes)
+            layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
 
 
-            final TextView title = dialog.findViewById(R.id.title);
-            final TextView content = dialog.findViewById(R.id.content);
-            final AppCompatButton btnClose = dialog.findViewById(R.id.bt_close);
-            title.setText(titleText);
-            content.setText(contentText);
+            val title = dialog.findViewById<TextView>(R.id.title)
+            val content = dialog.findViewById<TextView>(R.id.content)
+            val btnClose = dialog.findViewById<AppCompatButton>(R.id.bt_close)
+            title.text = titleText
+            content.text = contentText
 
-            if (buttonTitle != null && btnClose != null && !buttonTitle.isEmpty() && buttonTitle.length() > 1) {
-                btnClose.setText(buttonTitle);
+            if (buttonTitle != null && btnClose != null && buttonTitle.isNotEmpty() && buttonTitle.length > 1) {
+                btnClose.text = buttonTitle
             }
-            btnClose.setOnClickListener(view -> dialog.dismiss());
-            dialog.setCancelable(false);
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.show();
-            dialog.getWindow().setAttributes(layoutParams);
-        } catch (Exception ex) {
-            Sentry.captureException(ex);
+            btnClose!!.setOnClickListener { dialog.dismiss() }
+            dialog.setCancelable(false)
+            dialog.setCanceledOnTouchOutside(false)
+            dialog.show()
+            dialog.window!!.attributes = layoutParams
+        } catch (ex: Exception) {
+            Sentry.captureException(ex)
         }
     }
 
-    protected StringBuilder loadLocationInfo(LocationInfo locationInfo) {
-        StringBuilder stBuilder = new StringBuilder();
+    protected fun loadLocationInfo(locationInfo: LocationInfo?): StringBuilder {
+        val stBuilder = StringBuilder()
         if (locationInfo != null) {
-            String lat = mathHelper.removeLeadingZero(locationInfo.getLatitude(), "#.####");
-            String lon = mathHelper.removeLeadingZero(locationInfo.getLongitude(), "#.####");
+            val lat = mathHelper!!.removeLeadingZero(locationInfo.latitude, "#.####")
+            val lon = mathHelper!!.removeLeadingZero(locationInfo.longitude, "#.####")
 
-            String place = locationInfo.getLocationCountryName();
-            stBuilder.append(String.format("%s %n%s,%s", place, lat, lon));
+            val place = locationInfo.locationCountryName
+            stBuilder.append(String.format("%s %n%s,%s", place, lat, lon))
         }
 
-        return stBuilder;
+        return stBuilder
     }
 
 
-    protected Locale getCurrentLocale() {
-        SharedPrefsAppLocaleRepository prefs = new SharedPrefsAppLocaleRepository(context);
-        Locale desiredLocale = prefs.getDesiredLocale();
-        if (desiredLocale != null) {
-            AppLocale.setDesiredLocale(desiredLocale);
+    protected val currentLocale: Locale?
+        get() {
+            val prefs = SharedPrefsAppLocaleRepository(requireContext())
+            var desiredLocale = prefs.desiredLocale
+            if (desiredLocale != null) {
+            }
+            return desiredLocale
         }
-        return desiredLocale;
-    }
 
-    @Override
-    public void onError(@NonNull VerificationError error) {
+    override fun onError(error: VerificationError) {
         //not implemented
     }
-
 }
