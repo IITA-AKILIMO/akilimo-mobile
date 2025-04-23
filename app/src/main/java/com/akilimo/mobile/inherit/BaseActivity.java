@@ -7,7 +7,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -16,12 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
-import com.akilimo.mobile.utils.enums.EnumAreaUnits;
-import com.android.volley.RequestQueue;
-import com.blogspot.atifsoftwares.animatoolib.Animatoo;
-
-import com.google.android.gms.common.util.Strings;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.dao.AppDatabase;
 import com.akilimo.mobile.entities.AdviceStatus;
@@ -30,10 +23,11 @@ import com.akilimo.mobile.utils.enums.EnumAdviceTasks;
 import com.akilimo.mobile.utils.enums.EnumCountry;
 import com.akilimo.mobile.utils.enums.EnumUseCase;
 import com.akilimo.mobile.views.activities.DstRecommendationActivity;
+import com.android.volley.RequestQueue;
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
+import com.google.android.gms.common.util.Strings;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -48,11 +42,13 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected String LOG_TAG = BaseActivity.class.getSimpleName();
 
+    @Deprecated
     protected Context context;
     protected SessionManager sessionManager;
     protected AppDatabase database;
 
 
+    @Deprecated
     protected RequestQueue queue;
 
     protected String countryCode = EnumCountry.Nigeria.countryCode();
