@@ -1,124 +1,109 @@
-package com.akilimo.mobile.views.fragments.dialog;
+package com.akilimo.mobile.views.fragments.dialog
 
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.RadioGroup;
-import android.widget.TextView;
+import android.app.Dialog
+import android.content.DialogInterface
+import android.graphics.Color
+import android.os.Bundle
+import android.view.View
+import android.view.Window
+import android.view.WindowManager
+import android.widget.RadioGroup
+import android.widget.TextView
+import androidx.core.graphics.drawable.toDrawable
+import com.akilimo.mobile.R
+import com.akilimo.mobile.databinding.FragmentOperationTypeDialogBinding
+import com.akilimo.mobile.inherit.BaseDialogFragment
+import com.akilimo.mobile.interfaces.IDismissOperationsDialogListener
+import com.akilimo.mobile.utils.enums.EnumOperationType
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+class OperationTypeDialogFragment : BaseDialogFragment() {
 
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.inherit.BaseDialogFragment;
-import com.akilimo.mobile.interfaces.IDismissOperationsDialogListener;
-import com.akilimo.mobile.utils.enums.EnumOperationType;
+    private var onDismissListener: IDismissOperationsDialogListener? = null
+    private var enumOperationType: EnumOperationType? = null
+    private var operation: String? = null
+    private var cancelled = false
 
-
-public class OperationTypeDialogFragment extends BaseDialogFragment {
-    public static final String ARG_ITEM_ID = "OperationTypeDialogFragment";
-    public static final String OPERATION_TYPE = "operation_type";
-    private static final String LOG_TAG = OperationTypeDialogFragment.class.getSimpleName();
+    private var _binding: FragmentOperationTypeDialogBinding? = null
+    private val binding get() = _binding!!
 
 
-    private Button btnClose;
-    private Button btnUpdate;
-    private Button btnRemove;
-    private RadioGroup radioGroup;
-    private TextView lblSelectionError;
-
-    private Dialog dialog;
-    private IDismissOperationsDialogListener onDismissListener;
-    private EnumOperationType enumOperationType;
-    private String operation;
-    private boolean cancelled;
-
-    public OperationTypeDialogFragment(Context context) {
-        this.context = context;
+    companion object {
+        const val ARG_ITEM_ID: String = "OperationTypeDialogFragment"
+        const val OPERATION_TYPE: String = "operation_type"
+        private val LOG_TAG: String = OperationTypeDialogFragment::class.java.simpleName
     }
 
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-
-        Bundle bundle = this.getArguments();
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val bundle = this.arguments
+        val context = requireContext()
         if (bundle != null) {
-            operation = bundle.getString(OPERATION_TYPE);
-        }
-        dialog = new Dialog(context);
-
-        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
-        dialog.setContentView(R.layout.fragment_operation_type_dialog);
-
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogSlideAnimation;
-
-        btnClose = dialog.findViewById(R.id.close_button);
-        btnUpdate = dialog.findViewById(R.id.update_button);
-        btnRemove = dialog.findViewById(R.id.remove_button);
-        radioGroup = dialog.findViewById(R.id.rdgOperationType);
-        lblSelectionError = dialog.findViewById(R.id.lblError);
-
-        TextView lblFragmentTitle = dialog.findViewById(R.id.lblFragmentTitle);
-        if (operation.equals("Plough")) {
-            lblFragmentTitle.setText(R.string.lbl_plough_op_type);
-        } else if (operation.equals("Ridge")) {
-            lblFragmentTitle.setText(R.string.lbl_ridge_op_type);
+            operation = bundle.getString(OPERATION_TYPE)
         }
 
-        btnUpdate.setOnClickListener(view -> {
+        _binding = FragmentOperationTypeDialogBinding.inflate(layoutInflater)
+        val dialog = Dialog(context)
+
+        dialog.setContentView(binding.root)
+
+        dialog.window!!.apply {
+            requestFeature(Window.FEATURE_NO_TITLE)
+            setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+            )
+            setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+            attributes.windowAnimations = R.style.DialogSlideAnimation
+            isCancelable = true
+        }
+        dialog.setCanceledOnTouchOutside(false)
+
+
+        val lblFragmentTitle = dialog.findViewById<TextView>(R.id.lblFragmentTitle)
+        if (operation == "Plough") {
+            lblFragmentTitle.setText(R.string.lbl_plough_op_type)
+        } else if (operation == "Ridge") {
+            lblFragmentTitle.setText(R.string.lbl_ridge_op_type)
+        }
+
+        binding.updateButton.setOnClickListener(View.OnClickListener { view: View? ->
             if (enumOperationType != null) {
-                cancelled = false;
-                dismiss();
+                cancelled = false
+                dismiss()
             }
-            lblSelectionError.setVisibility(View.VISIBLE);
-        });
+            binding.lblError.visibility = View.VISIBLE
+        })
 
-        btnClose.setOnClickListener(view -> {
-            cancelled = true;
-            enumOperationType = EnumOperationType.NONE;
-            dismiss();
-        });
+        binding.closeButton.setOnClickListener(View.OnClickListener { view: View? ->
+            cancelled = true
+            enumOperationType = EnumOperationType.NONE
+            dismiss()
+        })
 
-        radioGroup.setOnCheckedChangeListener((radioGroup, radioIndex) -> radioSelected(radioIndex));
-        return dialog;
+        binding.rdgOperationType.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener { radioGroup: RadioGroup?, radioIndex: Int ->
+            radioSelected(
+                radioIndex
+            )
+        })
+        return dialog
     }
 
-    private void radioSelected(int radioIndex) {
-        lblSelectionError.setVisibility(View.GONE);
-        switch (radioIndex) {
-            case R.id.rdMechanical:
-                enumOperationType = EnumOperationType.MECHANICAL;
-                break;
-            case R.id.rdManual:
-                enumOperationType = EnumOperationType.MANUAL;
-                break;
-            default:
-                enumOperationType = EnumOperationType.NONE;
-                break;
+    private fun radioSelected(radioIndex: Int) {
+        binding.lblError.visibility = View.GONE
+        enumOperationType = when (radioIndex) {
+            R.id.rdMechanical -> EnumOperationType.MECHANICAL
+            R.id.rdManual -> EnumOperationType.MANUAL
+            else -> EnumOperationType.NONE
         }
     }
 
-    @Override
-    public void onDismiss(@NonNull DialogInterface dialog) {
-        super.onDismiss(dialog);
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
         if (onDismissListener != null && enumOperationType != null) {
-            onDismissListener.onDismiss(operation, enumOperationType, cancelled);
+            onDismissListener!!.onDismiss(operation!!, enumOperationType!!, cancelled)
         }
     }
 
-    public void setOnDismissListener(IDismissOperationsDialogListener dismissListener) {
-        this.onDismissListener = dismissListener;
+    fun setOnDismissListener(dismissListener: IDismissOperationsDialogListener?) {
+        this.onDismissListener = dismissListener
     }
 }
