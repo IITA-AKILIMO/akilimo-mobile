@@ -1,109 +1,107 @@
-package com.akilimo.mobile.views.fragments.dialog;
+package com.akilimo.mobile.views.fragments.dialog
 
-import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
-import android.widget.DatePicker;
+import android.app.Activity
+import android.app.DatePickerDialog
+import android.app.DatePickerDialog.OnDateSetListener
+import android.app.Dialog
+import android.content.DialogInterface
+import android.content.Intent
+import android.os.Bundle
+import android.widget.DatePicker
+import androidx.appcompat.app.AppCompatDialogFragment
+import com.akilimo.mobile.interfaces.IDatePickerDismissListener
+import com.akilimo.mobile.utils.DateHelper
+import java.util.Calendar
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatDialogFragment;
-import androidx.fragment.app.Fragment;
+class DateDialogPickerFragment : AppCompatDialogFragment, OnDateSetListener {
+    private val myCalendar: Calendar = Calendar.getInstance()
+    private var pickPlantingDate = false
+    private var pickHarvestDate = false
+    private var selectedPlantingDate: String? = null
+    private var selectedDate: String? = null
 
-import com.google.android.gms.common.util.Strings;
-import com.akilimo.mobile.interfaces.IDatePickerDismissListener;
-import com.akilimo.mobile.utils.DateHelper;
+    private var onDismissListener: IDatePickerDismissListener? = null
 
-import java.util.Calendar;
-
-public class DateDialogPickerFragment extends AppCompatDialogFragment implements DatePickerDialog.OnDateSetListener {
-    public static final int PLANTING_REQUEST_CODE = 11; // Used to identify the result
-    public static final int HARVEST_REQUEST_CODE = 12; // Used to identify the result
-    public static final String TAG = "DatePickerFragment";
-
-    private final Calendar myCalendar = Calendar.getInstance();
-    private boolean pickPlantingDate;
-    private boolean pickHarvestDate;
-    private String selectedPlantingDate;
-    private String selectedDate;
-
-    private IDatePickerDismissListener onDismissListener;
+    companion object {
+        const val PLANTING_REQUEST_CODE: Int = 11 // Used to identify the result
+        const val HARVEST_REQUEST_CODE: Int = 12 // Used to identify the result
+        const val TAG: String = "DatePickerFragment"
+    }
 
 
-    public DateDialogPickerFragment(boolean pickPlantingDate) {
-        this.pickPlantingDate = pickPlantingDate;
+    constructor(pickPlantingDate: Boolean) {
+        this.pickPlantingDate = pickPlantingDate
     }
 
     /**
      * @param pickHarvestDate      Indicate if harvest date is being picked
      * @param selectedPlantingDate pass the planting date parameter
      */
-    public DateDialogPickerFragment(boolean pickHarvestDate, @NonNull String selectedPlantingDate) {
-        this.pickHarvestDate = pickHarvestDate;
-        this.selectedPlantingDate = selectedPlantingDate;
+    constructor(pickHarvestDate: Boolean, selectedPlantingDate: String) {
+        this.pickHarvestDate = pickHarvestDate
+        this.selectedPlantingDate = selectedPlantingDate
     }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Set the current date as the default date
-        final Calendar c = Calendar.getInstance();
-        int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH);
-        int day = c.get(Calendar.DAY_OF_MONTH);
+        val c = Calendar.getInstance()
+        val year = c[Calendar.YEAR]
+        val month = c[Calendar.MONTH]
+        val day = c[Calendar.DAY_OF_MONTH]
 
         // Return a new instance of DatePickerDialog
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), DateDialogPickerFragment.this, year, month, day);
+        val datePickerDialog = DatePickerDialog(
+            requireActivity(),
+            this@DateDialogPickerFragment, year, month, day
+        )
 
-        DatePicker datePicker = datePickerDialog.getDatePicker();
+        val datePicker = datePickerDialog.datePicker
 
         if (pickPlantingDate) {
-            Calendar minDate = DateHelper.getMinDate(-16);
-            Calendar maxDate = DateHelper.getMinDate(12);
-            datePicker.setMinDate(minDate.getTimeInMillis());
-            datePicker.setMaxDate(maxDate.getTimeInMillis());
-        } else if (pickHarvestDate && !Strings.isEmptyOrWhitespace(selectedPlantingDate)) {
-            Calendar minDate = DateHelper.getFutureOrPastMonth(selectedPlantingDate, 8);
-            Calendar maxDate = DateHelper.getFutureOrPastMonth(selectedPlantingDate, 16);
-            datePicker.setMinDate(minDate.getTimeInMillis());
-            datePicker.setMaxDate(maxDate.getTimeInMillis());
+            val minDate = DateHelper.getMinDate(-16)
+            val maxDate = DateHelper.getMinDate(12)
+            datePicker.minDate = minDate.timeInMillis
+            datePicker.maxDate = maxDate.timeInMillis
+        } else if (pickHarvestDate && !selectedPlantingDate.isNullOrEmpty()) {
+            val minDate = DateHelper.getFutureOrPastMonth(selectedPlantingDate, 8)
+            val maxDate = DateHelper.getFutureOrPastMonth(selectedPlantingDate, 16)
+            datePicker.minDate = minDate.timeInMillis
+            datePicker.maxDate = maxDate.timeInMillis
         }
-        return datePickerDialog;
+        return datePickerDialog
     }
 
-    @Override
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        myCalendar.set(Calendar.YEAR, year);
-        myCalendar.set(Calendar.MONTH, month);
-        myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        selectedDate = DateHelper.getSimpleDateFormatter().format(myCalendar.getTime());
+    override fun onDateSet(view: DatePicker, year: Int, month: Int, dayOfMonth: Int) {
+        myCalendar[Calendar.YEAR] = year
+        myCalendar[Calendar.MONTH] = month
+        myCalendar[Calendar.DAY_OF_MONTH] = dayOfMonth
+        selectedDate = DateHelper.getSimpleDateFormatter().format(myCalendar.time)
 
-        // send date back to the target fragment
-        Fragment target = getTargetFragment();
+        //TODO use the Fragment Result API, which is cleaner and lifecycle-aware.
+        val target = targetFragment
         if (target != null) {
-            Intent intent = new Intent();
-            intent.putExtra("selectedDate", selectedDate);
-            intent.putExtra("selectedDateObject", myCalendar.getTime());
+            val intent = Intent()
+            intent.putExtra("selectedDate", selectedDate)
+            intent.putExtra("selectedDateObject", myCalendar.time)
             target.onActivityResult(
-                    getTargetRequestCode(),
-                    Activity.RESULT_OK,
-                    intent
-            );
+                targetRequestCode,
+                Activity.RESULT_OK,
+                intent
+            )
         }
     }
 
-    @Override
-    public void onDismiss(@NonNull DialogInterface dialog) {
-        super.onDismiss(dialog);
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
         if (onDismissListener != null) {
-            onDismissListener.onDismiss(myCalendar, selectedDate, pickPlantingDate, pickHarvestDate);
+            onDismissListener!!.onDismiss(
+                myCalendar,
+                selectedDate!!, pickPlantingDate, pickHarvestDate
+            )
         }
     }
 
-    public void setOnDismissListener(IDatePickerDismissListener dismissListener) {
-        this.onDismissListener = dismissListener;
+    fun setOnDismissListener(dismissListener: IDatePickerDismissListener?) {
+        this.onDismissListener = dismissListener
     }
 }
