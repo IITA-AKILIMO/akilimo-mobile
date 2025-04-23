@@ -14,8 +14,6 @@ abstract class BaseDialogFragment : DialogFragment() {
     @JvmField
     protected var mathHelper: MathHelper? = null
     @JvmField
-    protected var context: Context? = null
-    @JvmField
     protected var database: AppDatabase? = null
     protected var sessionManager: SessionManager? = null
     @JvmField
