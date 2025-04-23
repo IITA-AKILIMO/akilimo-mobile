@@ -31,7 +31,8 @@ import io.sentry.Sentry
  * create an instance of this fragment.
  */
 class FieldSizeFragment : BaseStepFragment() {
-    var binding: FragmentFieldSizeBinding? = null
+    private var _binding: FragmentFieldSizeBinding? = null
+    private val binding get() = _binding!!
 
     var title: AppCompatTextView? = null
     var specifiedArea: AppCompatTextView? = null
@@ -66,22 +67,22 @@ class FieldSizeFragment : BaseStepFragment() {
         container: ViewGroup,
         savedInstanceState: Bundle
     ): View {
-        binding = FragmentFieldSizeBinding.inflate(inflater, container, false)
-        return binding!!.root
+        _binding = FragmentFieldSizeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        title = binding!!.title
-        specifiedArea = binding!!.specifiedArea
-        rdgFieldArea = binding!!.rdgFieldArea
-        rdSpecifyArea = binding!!.rdSpecifyAcre
-        rd_quarter_acre = binding!!.rdQuarterAcre
-        rd_half_acre = binding!!.rdHalfAcre
-        rd_one_acre = binding!!.rdOneAcre
-        rd_two_half_acre = binding!!.rdTwoHalfAcre
+        title = binding.title
+        specifiedArea = binding.specifiedArea
+        rdgFieldArea = binding.rdgFieldArea
+        rdSpecifyArea = binding.rdSpecifyAcre
+        rd_quarter_acre = binding.rdQuarterAcre
+        rd_half_acre = binding.rdHalfAcre
+        rd_one_acre = binding.rdOneAcre
+        rd_two_half_acre = binding.rdTwoHalfAcre
 
 
         rdgFieldArea!!.setOnCheckedChangeListener { radioGroup: RadioGroup?, radioIndex: Int ->
@@ -100,7 +101,7 @@ class FieldSizeFragment : BaseStepFragment() {
         }
     }
 
-    fun refreshData() {
+    private fun refreshData() {
         try {
             profileInfo = database.profileInfoDao().findOne()
             if (profileInfo != null) {
