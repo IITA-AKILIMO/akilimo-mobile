@@ -11,6 +11,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(tableName = "intercrop_fertilizer", indices = [Index(value = ["fertilizerCountry"], unique = true)])
+@Deprecated("Replace with Fertilizer class")
 open class InterCropFertilizer : Parcelable {
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null

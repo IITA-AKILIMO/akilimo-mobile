@@ -52,7 +52,8 @@ import com.akilimo.mobile.entities.UseCases
         UseCases::class,
         AkilimoCurrency::class,
         AdviceStatus::class
-    ], version = 3, exportSchema = false
+    ], version = 4,
+    exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {

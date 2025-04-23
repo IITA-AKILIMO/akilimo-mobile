@@ -26,10 +26,12 @@ data class FertilizerPrice(
 
     @ColumnInfo(name = "record_id")
     @JsonProperty("record_id")
+    @Deprecated("Remove")
     var recordId: Int = 0,
 
     @ColumnInfo(name = "price_id")
     @JsonProperty("price_id")
+    @Deprecated("Remove")
     var priceId: Int = 0,
 
     @ColumnInfo(name = "sort_order")
@@ -40,6 +42,11 @@ data class FertilizerPrice(
     @JsonProperty("min_local_price")
     var minLocalPrice: Double = 0.0,
 
+
+    @ColumnInfo(name = "max_local_price")
+    @JsonProperty("max_local_price")
+    var maxLocalPrice: Double = 0.0,
+
     @ColumnInfo(name = "min_allowed_price")
     @JsonProperty("min_allowed_price")
     var minAllowedPrice: Double = 0.0,
@@ -47,12 +54,6 @@ data class FertilizerPrice(
     @ColumnInfo(name = "max_allowed_price")
     @JsonProperty("max_allowed_price")
     var maxAllowedPrice: Double = 0.0,
-
-
-    @ColumnInfo(name = "max_local_price")
-    @JsonProperty("max_local_price")
-    var maxLocalPrice: Double = 0.0,
-
 
     @ColumnInfo(name = "price_per_bag")
     @JsonProperty("price_per_bag")

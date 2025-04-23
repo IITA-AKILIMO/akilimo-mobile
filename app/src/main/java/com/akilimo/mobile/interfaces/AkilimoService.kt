@@ -2,10 +2,17 @@ package com.akilimo.mobile.interfaces
 
 
 import com.akilimo.mobile.entities.AkilimoCurrencyResponse
+import com.akilimo.mobile.entities.CassavaPricePriceResponse
 import com.akilimo.mobile.entities.FertilizerPriceResponse
 import com.akilimo.mobile.entities.FertilizerResponse
 import com.akilimo.mobile.entities.InvestmentAmountResponse
+import com.akilimo.mobile.entities.MaizePriceResponse
+import com.akilimo.mobile.entities.PotatoPriceResponse
+import com.akilimo.mobile.entities.StarchFactoryResponse
+import com.akilimo.mobile.models.OperationCostResponse
+import com.akilimo.mobile.rest.request.RecommendationRequest
 import com.akilimo.mobile.rest.request.SurveyRequest
+import com.akilimo.mobile.rest.response.RecommendationResp
 import com.akilimo.mobile.rest.retrofit.RetrofitManager
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -14,6 +21,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 
 object AkilimoApi {
@@ -27,7 +35,7 @@ interface AkilimoService {
     @GET("v1/currencies")
     fun listCurrencies(): Call<AkilimoCurrencyResponse>
 
-    @GET("v1/fertilizers")
+    @GET("v1/fertilizers/country/{country_code}")
     fun getFertilizers(@Query("country_code") countryCode: String): Call<FertilizerResponse>
 
     @GET("v1/fertilizer-prices/{fertilizer_key}")
@@ -38,4 +46,25 @@ interface AkilimoService {
 
     @POST("v1/user-reviews")
     fun submitUserReview(@Body surveyRequest: SurveyRequest): Call<ResponseBody>
+
+    @POST("v1/recommendations")
+    fun computeRecommendations(@Body recommendationRequest: RecommendationRequest?): Call<RecommendationResp>
+
+    @GET("v1/operation-costs/currency/{currency_code}")
+    fun getOperationCosts(
+        @Path("currency_code") currencyCode: String,
+        @QueryMap queryParams: Map<String, String>
+    ): Call<OperationCostResponse>
+
+    @GET("v1/starch-factories/country/{country_code}")
+    fun getStarchFactories(@Path("country_code") countryCode: String): Call<StarchFactoryResponse>
+
+    @GET("v1/cassava-prices/country/{country_code}")
+    fun getCassavaPrices(@Path("country_code") countryCode: String): Call<CassavaPricePriceResponse>
+
+    @GET("v1/potato-prices/country/{country_code}")
+    fun getPotatoPrices(countryCode: String?): Call<PotatoPriceResponse>
+
+    @GET("v1/maize-prices/country/{country_code}")
+    fun getMaizePrices(countryCode: String): Call<MaizePriceResponse>
 }

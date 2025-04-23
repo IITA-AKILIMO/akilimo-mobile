@@ -61,6 +61,11 @@ class FertilizersActivity : BaseActivity() {
     private var mAdapter: FertilizerGridAdapter? = null
     private var minSelection: Int = 2
 
+
+    companion object {
+        var useCaseTag: String = "useCase"
+    }
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFertilizersBinding.inflate(layoutInflater)
@@ -335,8 +340,4 @@ class FertilizersActivity : BaseActivity() {
             }
             return count >= minSelection
         }
-
-    companion object {
-        var useCaseTag: String = "useCase"
-    }
 }
