@@ -53,8 +53,8 @@ class OperationTypeDialogFragment : BaseDialogFragment() {
             )
             setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
             attributes.windowAnimations = R.style.DialogSlideAnimation
-            isCancelable = true
         }
+        dialog.setCancelable(true)
         dialog.setCanceledOnTouchOutside(false)
 
 
