@@ -20,7 +20,7 @@ import io.sentry.Sentry
 
 class CassavaPriceDialogFragment : BaseDialogFragment() {
 
-    private var binding: FragmentCassavaPriceDialogBinding? = null
+
     private var maxPrice = 0.0
     private var minPrice = 0.0
     private var isExactPriceRequired = false
@@ -36,6 +36,9 @@ class CassavaPriceDialogFragment : BaseDialogFragment() {
     private var unitPrice: Double = 0.0
     private var minAmountUSD = 5.00
     private var onDismissListener: IPriceDialogDismissListener? = null
+
+    private var _binding: FragmentCassavaPriceDialogBinding? = null
+    private val binding get() = _binding!!
 
     companion object {
         private val LOG_TAG: String = CassavaPriceDialogFragment::class.java.simpleName
@@ -64,23 +67,25 @@ class CassavaPriceDialogFragment : BaseDialogFragment() {
             }
         }
 
-        // Initialize View Binding
-        binding = FragmentCassavaPriceDialogBinding.inflate(layoutInflater)
-        dialog = Dialog(requireContext()).apply {
+        _binding = FragmentCassavaPriceDialogBinding.inflate(layoutInflater)
+
+        val dialog = Dialog(requireContext())
+
+        dialog.apply {
             window!!.requestFeature(Window.FEATURE_NO_TITLE)
             window!!.setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
             )
 
-            setContentView(binding!!.root)
-
             setCancelable(true)
             window!!.setBackgroundDrawableResource(android.R.color.transparent)
             window!!.attributes.windowAnimations = R.style.DialogSlideAnimation
+
+            setContentView(binding.root)
         }
 
-        binding?.apply {
+        binding.apply {
             closeButton.setOnClickListener {
                 dismiss()
             }
@@ -113,7 +118,7 @@ class CassavaPriceDialogFragment : BaseDialogFragment() {
             }
 
             radioGroup.setOnCheckedChangeListener { group, _ ->
-                radioSelected(group)
+                radioSelected(group, dialog)
             }
         }
 
@@ -122,12 +127,12 @@ class CassavaPriceDialogFragment : BaseDialogFragment() {
             addPriceRadioButtons(cassavaPriceList!!, averagePrice)
         }
 
-        return dialog!!
+        return dialog
     }
 
-    private fun radioSelected(radioGroup: RadioGroup) {
+    private fun radioSelected(radioGroup: RadioGroup, dialog: Dialog) {
         val radioButtonId = radioGroup.checkedRadioButtonId
-        val radioButton = binding!!.root.findViewById<RadioButton>(radioButtonId)
+        val radioButton = dialog.findViewById<RadioButton>(radioButtonId)
         val itemTagIndex = radioButton.tag as Long
 
         try {
@@ -135,13 +140,13 @@ class CassavaPriceDialogFragment : BaseDialogFragment() {
             isExactPriceRequired = false
             isPriceValid = true
             averagePrice = pricesResp.averagePrice
-            binding?.exactPriceWrapper?.visibility = View.GONE
-            binding?.editExactFertilizerPrice?.text = null
+            binding.exactPriceWrapper?.visibility = View.GONE
+            binding.editExactFertilizerPrice?.text = null
 
             if (averagePrice < 0) {
                 isExactPriceRequired = true
                 isPriceValid = false
-                binding?.exactPriceWrapper?.visibility = View.VISIBLE
+                binding.exactPriceWrapper?.visibility = View.VISIBLE
             } else {
                 unitPrice = pricesResp.averagePrice
             }
@@ -152,12 +157,12 @@ class CassavaPriceDialogFragment : BaseDialogFragment() {
     }
 
     private fun addPriceRadioButtons(cassavaPriceList: List<CassavaPrice>, avgPrice: Double) {
-        binding?.radioGroup?.removeAllViews()
+        binding.radioGroup?.removeAllViews()
         val selectedPrice = 0.0
 
         if (avgPrice < 0) {
-            binding?.updateButton?.setText(R.string.lbl_update)
-            binding?.removeButton?.visibility = View.VISIBLE
+            binding.updateButton?.setText(R.string.lbl_update)
+            binding.removeButton?.visibility = View.VISIBLE
         }
 
         for ((id, _, minLocalPrice, maxLocalPrice, minAllowedPrice, maxAllowedPrice, _, price) in cassavaPriceList) {
@@ -175,19 +180,19 @@ class CassavaPriceDialogFragment : BaseDialogFragment() {
                 radioLabel = requireContext().getString(R.string.lbl_exact_price_x_per_unit_of_sale)
                 val exactTextHint =
                     getString(R.string.exact_fertilizer_price_currency, currencyName)
-                binding?.exactPriceWrapper?.hint = exactTextHint
+                binding.exactPriceWrapper?.hint = exactTextHint
             } else if (price == 0.0) {
                 radioLabel = requireContext().getString(R.string.lbl_do_not_know)
             }
             radioButton.text = radioLabel
-            binding?.radioGroup?.addView(radioButton)
+            binding.radioGroup?.addView(radioButton)
 
             if (avgPrice < 0) {
                 radioButton.isChecked = true
                 isPriceValid = true
                 isExactPriceRequired = true
-                binding?.exactPriceWrapper?.visibility = View.VISIBLE
-                binding?.editExactFertilizerPrice?.setText(unitPrice.toString())
+                binding.exactPriceWrapper?.visibility = View.VISIBLE
+                binding.editExactFertilizerPrice?.setText(unitPrice.toString())
             }
 
             if (price == selectedPrice) {

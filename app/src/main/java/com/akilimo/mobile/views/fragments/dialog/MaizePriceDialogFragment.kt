@@ -75,16 +75,18 @@ class MaizePriceDialogFragment : BaseDialogFragment() {
 
         val dialog = Dialog(context)
 
-        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.window!!.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-        )
-        dialog.setContentView(R.layout.fragment_cassava_price_dialog)
+        dialog.apply {
+            window!!.requestFeature(Window.FEATURE_NO_TITLE)
+            window!!.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+            )
+            window!!.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+            window!!.attributes.windowAnimations = R.style.DialogSlideAnimation
 
-        dialog.setCancelable(true)
-        dialog.window!!.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-        dialog.window!!.attributes.windowAnimations = R.style.DialogSlideAnimation
+            setCancelable(true)
+            setContentView(binding.root)
+        }
 
         binding.closeButton.setOnClickListener(View.OnClickListener { view: View? ->
             dismiss()

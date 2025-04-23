@@ -46,19 +46,19 @@ class RootYieldDialogFragment : BaseDialogFragment() {
         val dialog = Dialog(context)
 
         _binding = FragmentRootYieldDialogBinding.inflate(layoutInflater)
-        dialog.setContentView(binding.root)
-
-        dialog.window!!.apply {
-            requestFeature(Window.FEATURE_NO_TITLE)
-            setFlags(
+        dialog.apply {
+            window!!.requestFeature(Window.FEATURE_NO_TITLE)
+            window!!.setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
             )
-            setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-            attributes.windowAnimations = R.style.DialogSlideAnimation
-        }
+            window!!.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+            window!!.attributes.windowAnimations = R.style.DialogSlideAnimation
 
-        dialog.setCancelable(true)
+            setContentView(binding.root)
+
+            setCancelable(true)
+        }
 
         if (fieldYield != null) {
             val yieldLabel = fieldYield!!.fieldYieldLabel

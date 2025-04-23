@@ -1,14 +1,15 @@
 package com.akilimo.mobile.views.fragments.dialog
 
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.DialogFragment
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentCassavaPriceDialogBinding
@@ -25,8 +26,8 @@ class SweetPotatoPriceDialogFragment : DialogFragment() {
     private val priceSpecified = false
     private val removeSelected = false
 
-    private var dialog: Dialog? = null
-    private lateinit var binding: FragmentCassavaPriceDialogBinding
+    private lateinit var _binding: FragmentCassavaPriceDialogBinding
+    private val binding get() = _binding
 
     private val mathHelper: MathHelper? = null
     private var averagePrice = 0.0
@@ -68,19 +69,21 @@ class SweetPotatoPriceDialogFragment : DialogFragment() {
             enumUnitOfSale = bundle.getParcelable(ENUM_UNIT_OF_SALE)
         }
 
-        dialog = Dialog(requireContext())
-        binding = FragmentCassavaPriceDialogBinding.inflate(layoutInflater)
+        val dialog = Dialog(requireContext())
+        _binding = FragmentCassavaPriceDialogBinding.inflate(layoutInflater)
 
-        dialog!!.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog!!.window!!.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-        )
-        dialog!!.setContentView(binding.root)
+        dialog.apply {
+            window!!.requestFeature(Window.FEATURE_NO_TITLE)
+            window!!.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+            )
+            window!!.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+            window!!.attributes.windowAnimations = R.style.DialogSlideAnimation
 
-        dialog!!.setCancelable(true)
-        dialog!!.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog!!.window!!.attributes.windowAnimations = R.style.DialogSlideAnimation
+            setContentView(binding.root)
+            setCancelable(true)
+        }
 
         binding.closeButton.setOnClickListener {
             dismiss()
@@ -114,19 +117,19 @@ class SweetPotatoPriceDialogFragment : DialogFragment() {
         }
 
         binding.radioGroup.setOnCheckedChangeListener { radioGroup, i ->
-            radioSelected(radioGroup)
+            radioSelected(radioGroup, dialog)
         }
 
         potatoPriceList?.let {
             addPriceRadioButtons(it, averagePrice)
         }
 
-        return dialog!!
+        return dialog
     }
 
-    private fun radioSelected(radioGroup: RadioGroup) {
+    private fun radioSelected(radioGroup: RadioGroup, dialog: Dialog) {
         val radioButtonId = radioGroup.checkedRadioButtonId
-        val radioButton = dialog!!.findViewById<RadioButton>(radioButtonId)
+        val radioButton = dialog.findViewById<RadioButton>(radioButtonId)
         val itemTagIndex = radioButton.tag as Long
 
         try {

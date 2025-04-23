@@ -7,17 +7,13 @@ import android.os.Bundle
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
-import android.widget.TextView
 import androidx.core.graphics.drawable.toDrawable
 import com.akilimo.mobile.R
+import com.akilimo.mobile.databinding.FragmentOperationCostDialogBinding
 import com.akilimo.mobile.inherit.BaseDialogFragment
 import com.akilimo.mobile.models.OperationCost
-import com.google.android.gms.common.util.Strings
-import com.google.android.material.textfield.TextInputLayout
 import io.sentry.Sentry
 
 
@@ -30,11 +26,6 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
     private var priceSpecified = false
     private var removeSelected = false
     private var cancelled = false
-
-    private var dialog: Dialog? = null
-    private var radioGroup: RadioGroup? = null
-    private var exactPriceWrapper: TextInputLayout? = null
-    private var editExactCost: EditText? = null
 
     private var selectedCost = 0.0
     private var translatedSuffix: String? = null
@@ -51,6 +42,8 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
     private var operationCosts: ArrayList<OperationCost>? = null
     private var operationCost: OperationCost? = null
 
+    private var _binding: FragmentOperationCostDialogBinding? = null
+    private val binding get() = _binding!!
 
     companion object {
         const val OPERATION_NAME: String = "operation_type"
@@ -80,41 +73,43 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
             exactPriceHint = bundle.getString(EXACT_PRICE_HINT)
         }
 
-        dialog = Dialog(context)
+        _binding = FragmentOperationCostDialogBinding.inflate(layoutInflater)
 
-        dialog!!.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog!!.window!!.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-        )
-        dialog!!.setContentView(R.layout.fragment_operation_cost_dialog)
+        val dialog = Dialog(context)
+
+        dialog.apply {
+            window!!.requestFeature(Window.FEATURE_NO_TITLE)
+            window!!.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+            )
+            window!!.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+            window!!.attributes.windowAnimations = R.style.DialogSlideAnimation
+            setCancelable(true)
+
+            setContentView(binding.root)
+        }
 
 
-        dialog!!.setCancelable(true)
-        dialog!!.window!!.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-        dialog!!.window!!.attributes.windowAnimations = R.style.DialogSlideAnimation
-
-
-        val btnClose = dialog!!.findViewById<Button>(R.id.close_button)
-        val btnSave = dialog!!.findViewById<Button>(R.id.save_button)
-        val lblPricePerBag = dialog!!.findViewById<TextView>(R.id.lblFragmentTitle)
-
-        radioGroup = dialog!!.findViewById(R.id.radioGroup)
-        exactPriceWrapper = dialog!!.findViewById(R.id.exactPriceWrapper)
-        editExactCost = dialog!!.findViewById(R.id.editExactCost)
+//        val btnClose = dialog.findViewById<Button>(R.id.close_button)
+//        val btnSave = dialog.findViewById<Button>(R.id.save_button)
+//        val lblPricePerBag = dialog.findViewById<TextView>(R.id.lblFragmentTitle)
+//
+//        radioGroup = dialog.findViewById(R.id.radioGroup)
+//        exactPriceWrapper = dialog.findViewById(R.id.exactPriceWrapper)
+//        editExactCost = dialog.findViewById(R.id.editExactCost)
 
 
         translatedSuffix = context.getString(R.string.lbl_to)
 
-
         var titleText = context.getString(R.string.lbl_operation_cost)
-        if (!Strings.isEmptyOrWhitespace(dialogTitle)) {
+        if (!dialogTitle.isNullOrEmpty()) {
             titleText = dialogTitle!!
         }
-        lblPricePerBag.text = titleText
+        binding.lblFragmentTitle.text = titleText
 
 
-        btnClose.setOnClickListener { view: View? ->
+        binding.closeButton.setOnClickListener { view: View? ->
             priceSpecified = false
             removeSelected = false
             cancelled = true
@@ -122,11 +117,11 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
         }
 
         //save the data
-        btnSave.setOnClickListener { v: View? ->
+        binding.saveButton.setOnClickListener { v: View? ->
             if (isExactCostRequired) {
-                bagPrice = editExactCost!!.getText().toString()
+                bagPrice = binding.editExactCost.getText().toString()
                 if (bagPrice.isNullOrEmpty()) {
-                    editExactCost!!.error = "Please provide a valid cost value"
+                    binding.editExactCost.error = "Please provide a valid cost value"
                     isPriceValid = false
                     return@setOnClickListener
                 }
@@ -134,7 +129,7 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
                 bagPriceRange = mathHelper!!.formatNumber(selectedCost, currencySymbol)
                 isPriceValid = true
                 cancelled = false
-                editExactCost!!.error = null
+                binding.editExactCost.error = null
             }
             if (isPriceValid) {
                 priceSpecified = true
@@ -143,19 +138,19 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
             }
         }
 
-        radioGroup!!.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener { radioGroup: RadioGroup, i: Int ->
+        binding.radioGroup.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener { radioGroup: RadioGroup, i: Int ->
             radioSelected(
-                radioGroup
+                radioGroup, dialog
             )
         })
         addCostRadioButtons(operationCosts!!)
-        exactPriceWrapper!!.hint = exactPriceHint
-        return dialog!!
+        binding.exactPriceWrapper.hint = exactPriceHint
+        return dialog
     }
 
-    private fun radioSelected(radioGroup: RadioGroup) {
+    private fun radioSelected(radioGroup: RadioGroup, dialog: Dialog) {
         val radioButtonId = radioGroup.checkedRadioButtonId
-        val radioButton = dialog!!.findViewById<RadioButton>(radioButtonId)
+        val radioButton = dialog.findViewById<RadioButton>(radioButtonId)
         val itemTagIndex = radioButton.tag as Long
 
         try {
@@ -170,10 +165,10 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
             if (selectedCost < 0) {
                 isExactCostRequired = true
                 isPriceValid = false
-                exactPriceWrapper!!.visibility = View.VISIBLE
+                binding.exactPriceWrapper.visibility = View.VISIBLE
             } else {
-                exactPriceWrapper!!.visibility = View.GONE
-                exactPriceWrapper!!.editText?.text = null
+                binding.exactPriceWrapper.visibility = View.GONE
+                binding.exactPriceWrapper.editText?.text = null
             }
         } catch (ex: Exception) {
             Sentry.captureException(ex)
@@ -181,7 +176,7 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
     }
 
     private fun addCostRadioButtons(operationCosts: ArrayList<OperationCost>) {
-        radioGroup!!.removeAllViews()
+        binding.radioGroup.removeAllViews()
         val context = requireContext()
 
         for ((id, _, _, _, minPrice, maxPrice, price) in operationCosts) {
@@ -205,7 +200,7 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
             }
             radioButton.text = radioLabel
 
-            radioGroup!!.addView(radioButton)
+            binding.radioGroup.addView(radioButton)
         }
     }
 

@@ -59,16 +59,18 @@ class FertilizerPriceDialogFragment : BaseDialogFragment() {
         val dialog = Dialog(context)
         _binding = FragmentFertilizerPriceDialogBinding.inflate(layoutInflater)
 
-        dialog.window!!.apply {
-            requestFeature(Window.FEATURE_NO_TITLE)
-            setFlags(
+        dialog.apply {
+            window!!.requestFeature(Window.FEATURE_NO_TITLE)
+            window!!.setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
             )
-            setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-            attributes.windowAnimations = R.style.DialogSlideAnimation
+            window!!.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+            window!!.attributes.windowAnimations = R.style.DialogSlideAnimation
+
+            setContentView(binding.root)
         }
-        dialog.setContentView(binding.root)
+
 
         if (fertilizer != null) {
             countryCode = fertilizer!!.countryCode
