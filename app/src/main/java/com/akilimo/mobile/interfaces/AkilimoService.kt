@@ -20,7 +20,6 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
-import retrofit2.http.Query
 import retrofit2.http.QueryMap
 
 
@@ -36,7 +35,7 @@ interface AkilimoService {
     fun listCurrencies(): Call<AkilimoCurrencyResponse>
 
     @GET("v1/fertilizers/country/{country_code}")
-    fun getFertilizers(@Query("country_code") countryCode: String): Call<FertilizerResponse>
+    fun getFertilizers(@Path("country_code") countryCode: String): Call<FertilizerResponse>
 
     @GET("v1/fertilizer-prices/{fertilizer_key}")
     fun getFertilizerPrices(@Path("fertilizer_key") fertilizerKey: String): Call<FertilizerPriceResponse>
