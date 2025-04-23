@@ -1,124 +1,104 @@
-package com.akilimo.mobile.views.fragments.dialog;
+package com.akilimo.mobile.views.fragments.dialog
 
+import android.app.Dialog
+import android.content.DialogInterface
+import android.graphics.Color
+import android.os.Bundle
+import android.view.View
+import android.view.Window
+import android.view.WindowManager
+import androidx.core.graphics.drawable.toDrawable
+import com.akilimo.mobile.R
+import com.akilimo.mobile.databinding.FragmentRootYieldDialogBinding
+import com.akilimo.mobile.entities.FieldYield
+import com.akilimo.mobile.inherit.BaseDialogFragment
+import com.akilimo.mobile.interfaces.IFieldYieldDismissListener
+import com.akilimo.mobile.utils.Tools.displayImageOriginal
 
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.entities.FieldYield;
-import com.akilimo.mobile.inherit.BaseDialogFragment;
-import com.akilimo.mobile.interfaces.IFieldYieldDismissListener;
-import com.akilimo.mobile.utils.Tools;
-
-;import java.util.Locale;
 
 /**
- * A simple {@link androidx.fragment.app.Fragment} subclass.
+ * A simple [androidx.fragment.app.Fragment] subclass.
  */
-public class RootYieldDialogFragment extends BaseDialogFragment {
+class RootYieldDialogFragment : BaseDialogFragment() {
+    private var yieldConfirmed = false
 
+    private var fieldYield: FieldYield? = null
 
-    private static final String LOG_TAG = RootYieldDialogFragment.class.getSimpleName();
+    private var onDismissListener: IFieldYieldDismissListener? = null
 
-    public static final String YIELD_DATA = "yield_data";
-    public static final String ARG_ITEM_ID = "root_yield_dialog_fragment";
+    private var _binding: FragmentRootYieldDialogBinding? = null
+    private val binding get() = _binding!!
 
+    companion object {
+        private val LOG_TAG: String = RootYieldDialogFragment::class.java.simpleName
 
-    private boolean yieldConfirmed = false;
-
-    private Dialog dialog;
-    private Button btnClose;
-    private Button btnConfirm;
-    private TextView lblFragmentTitle;
-    private ImageView rootYieldImage;
-    private Button btnRemove;
-
-
-    private FieldYield fieldYield;
-
-    private IFieldYieldDismissListener onDismissListener;
-
-    public RootYieldDialogFragment(Context context) {
-        this.context = context;
+        const val YIELD_DATA: String = "yield_data"
+        const val ARG_ITEM_ID: String = "root_yield_dialog_fragment"
     }
 
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-
-        Bundle bundle = this.getArguments();
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val bundle = this.arguments
+        val context = requireContext()
         if (bundle != null) {
-            fieldYield = bundle.getParcelable(YIELD_DATA);
+            fieldYield = bundle.getParcelable(YIELD_DATA)
         }
-        dialog = new Dialog(context);
+        val dialog = Dialog(context)
 
-        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-//        dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
-        dialog.setContentView(R.layout.fragment_root_yield_dialog);
+        _binding = FragmentRootYieldDialogBinding.inflate(layoutInflater)
+        dialog.setContentView(binding.root)
 
-        dialog.setCancelable(true);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogSlideAnimation;
+        dialog.window!!.apply {
+            requestFeature(Window.FEATURE_NO_TITLE)
+            setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+            )
+            setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+            attributes.windowAnimations = R.style.DialogSlideAnimation
+        }
 
-
-        btnClose = dialog.findViewById(R.id.close_button);
-        btnConfirm = dialog.findViewById(R.id.confirm_button);
-        btnRemove = dialog.findViewById(R.id.cancel_button);
-
-        lblFragmentTitle = dialog.findViewById(R.id.lblFragmentTitle);
-        rootYieldImage = dialog.findViewById(R.id.rootYieldImage);
+        dialog.setCancelable(true)
 
         if (fieldYield != null) {
-            String yieldLabel = fieldYield.getFieldYieldLabel();
-            String yieldAmountLabel = fieldYield.getFieldYieldAmountLabel();
-            String yieldDesc = fieldYield.getFieldYieldDesc();
-            String selectedTitle = getString(R.string.lbl_you_expect_yield, yieldAmountLabel.toLowerCase(Locale.ENGLISH), yieldDesc);
+            val yieldLabel = fieldYield!!.fieldYieldLabel
+            val yieldAmountLabel = fieldYield!!.fieldYieldAmountLabel
+            val yieldDesc = fieldYield!!.fieldYieldDesc
+            val selectedTitle =
+                getString(R.string.lbl_you_expect_yield, yieldAmountLabel!!.lowercase(), yieldDesc)
 
-            Tools.displayImageOriginal(this.context, rootYieldImage, fieldYield.getImageId());
-            lblFragmentTitle.setText(selectedTitle);
+            displayImageOriginal(this.context, binding.rootYieldImage, fieldYield!!.imageId)
+            binding.lblFragmentTitle.text = selectedTitle
         }
 
 
-        btnClose.setOnClickListener(view -> {
-            yieldConfirmed = false;
-            dismiss();
-        });
+        binding.closeButton.setOnClickListener(View.OnClickListener { view: View? ->
+            yieldConfirmed = false
+            dismiss()
+        })
 
-        btnRemove.setOnClickListener(view -> {
-            yieldConfirmed = false;
-            dismiss();
-        });
+        binding.cancelButton.setOnClickListener(View.OnClickListener { view: View? ->
+            yieldConfirmed = false
+            dismiss()
+        })
         //save the data
-        btnConfirm.setOnClickListener(v -> {
-            yieldConfirmed = true;
-            dismiss();
-        });
+        binding.confirmButton.setOnClickListener(View.OnClickListener { v: View? ->
+            yieldConfirmed = true
+            dismiss()
+        })
 
-        return dialog;
+        return dialog
     }
 
 
-    @Override
-    public void onDismiss(@NonNull DialogInterface dialog) {
-        super.onDismiss(dialog);
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
         if (onDismissListener != null) {
-            onDismissListener.onDismiss(this.fieldYield, yieldConfirmed);
+            onDismissListener!!.onDismiss(fieldYield!!, yieldConfirmed)
         }
     }
 
-    public void setOnDismissListener(IFieldYieldDismissListener dismissListener) {
-        this.onDismissListener = dismissListener;
+    fun setOnDismissListener(dismissListener: IFieldYieldDismissListener?) {
+        this.onDismissListener = dismissListener
     }
 }
