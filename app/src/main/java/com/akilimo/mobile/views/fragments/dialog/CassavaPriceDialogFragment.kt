@@ -48,10 +48,6 @@ class CassavaPriceDialogFragment : BaseDialogFragment() {
         const val COUNTRY_CODE: String = "country_code"
     }
 
-    init {
-        this.context = requireContext()
-    }
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val bundle = this.arguments
         if (bundle != null) {
