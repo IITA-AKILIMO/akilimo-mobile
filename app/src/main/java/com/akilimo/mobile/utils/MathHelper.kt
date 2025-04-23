@@ -1,185 +1,389 @@
 package com.akilimo.mobile.utils
 
 import android.app.Activity
-import com.akilimo.mobile.utils.Tools.replaceCharacters
-import com.akilimo.mobile.utils.Tools.replaceNonNumbers
 import io.sentry.Sentry
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.util.Locale
 
-class MathHelper() {
+/**
+ * Utility class that handles mathematical operations including:
+ * - Currency conversions between USD and other currencies (NGN, TZS, GHS)
+ * - Number formatting and rounding
+ * - Area unit conversions (acre, ha, sqm, are)
+ * - Investment amount calculations
+ */
+class MathHelper {
+    companion object {
+        // Area conversion constants
+        private const val ACRE_TO_HECTARE = 0.404686  // 1 acre = 0.404686 hectares
+        private const val ACRE_TO_SQM = 4046.86      // 1 acre = 4046.86 square meters
+        private const val ACRE_TO_ARE = 40.469       // 1 acre = 40.469 ares
 
-    private var ngnRate = 360.0
-    private var tzsRate = 2250.0
-    private var ghsRate = 6.11
+        // Common rounding values
+        private const val DEFAULT_ROUNDING = 100.0
+        private const val INVESTMENT_ROUNDING = 1000.0
+        private const val DECIMAL_PRECISION = 100.0
 
-    private val baseAcre = 2.471
-    private val baseSqm = 4046.86
-    private val baseAre = 40.469
+        // Currency codes
+        const val CURRENCY_NGN = "NGN"
+        const val CURRENCY_TZS = "TZS"
+        const val CURRENCY_GHS = "GHS"
+        const val CURRENCY_USD = "USD"
 
-    constructor(activity: Activity?) : this() {
+        // Area unit types
+        const val AREA_ACRE = "acre"
+        const val AREA_HECTARE = "ha"
+        const val AREA_SQM = "sqm"
+        const val AREA_ARE = "are"
+    }
+
+    // Currency exchange rates (1 USD = X local currency)
+    private var exchangeRates = mapOf(
+        CURRENCY_NGN to 360.0,
+        CURRENCY_TZS to 2250.0,
+        CURRENCY_GHS to 6.11
+    ).toMutableMap()
+
+    /**
+     * Default constructor using hardcoded exchange rates
+     */
+    constructor()
+
+    /**
+     * Constructor that loads exchange rates from session
+     *
+     * @param activity The activity context to get session data
+     */
+    constructor(activity: Activity?) {
         activity?.let {
             val sessionManager = SessionManager(it)
-            ngnRate = sessionManager.ngnRate
-            tzsRate = sessionManager.tzsRate
-            ghsRate = sessionManager.ghsRate
+            updateExchangeRates(
+                ngnRate = sessionManager.ngnRate,
+                tzsRate = sessionManager.tzsRate,
+                ghsRate = sessionManager.ghsRate
+            )
         }
     }
 
-    private fun convertCurrency(input: String, toCurrency: String): String {
-        var value = replaceCharacters(input, "Dola", "")
-        if (value.contains(toCurrency)) return value
+    /**
+     * Updates the exchange rates used for conversions
+     */
+    private fun updateExchangeRates(ngnRate: Double, tzsRate: Double, ghsRate: Double) {
+        exchangeRates[CURRENCY_NGN] = ngnRate
+        exchangeRates[CURRENCY_TZS] = tzsRate
+        exchangeRates[CURRENCY_GHS] = ghsRate
+    }
 
-        return try {
-            val cleanValue = replaceNonNumbers(value, "TO")
-            val parts = cleanValue.split("TO", ignoreCase = true)
-            val band1 = parts.getOrNull(0)?.toDoubleOrNull() ?: 0.0
-            val band2 = parts.getOrNull(1)?.toDoubleOrNull()
+    /**
+     * Converts a currency range string to another currency
+     *
+     * @param input The string containing currency value(s) to convert
+     * @param targetCurrency The currency code to convert to
+     * @return The converted currency string
+     */
+    fun convertCurrency(input: String, targetCurrency: String): String {
+        // If already in target currency, return as is
+        if (input.contains(targetCurrency)) {
+            return input
+        }
 
-            when {
-                band1 > 0 && band2 != null && band2 > 0 -> {
-                    val rate1 = convertToLocalCurrency(band1, toCurrency)
-                    val rate2 = convertToLocalCurrency(band2, toCurrency)
-                    "${formatNumber(rate1)} - ${formatNumber(rate2, toCurrency)}"
-                }
+        try {
+            val cleanInput = Tools.replaceCharacters(input, "Dola", "")
+            val numbersString = Tools.replaceNonNumbers(cleanInput, "TO")
 
-                band1 > 0 -> {
-                    val rate = convertToLocalCurrency(band1, toCurrency)
-                    formatNumber(rate, toCurrency)
-                }
+            // Parse input into one or two values (for range)
+            val values = numbersString.split("TO").filter { it.isNotEmpty() }
+                .map { it.toDoubleOrNull() ?: 0.0 }
 
-                else -> ""
+            if (values.isEmpty()) {
+                return input
+            }
+
+            // Convert first value
+            val firstConverted = convertToLocalCurrency(values[0], targetCurrency)
+
+            // If we have a range, convert second value and return range
+            return if (values.size > 1) {
+                val secondConverted = convertToLocalCurrency(values[1], targetCurrency)
+                "${formatNumber(firstConverted, null)} - ${
+                    formatNumber(
+                        secondConverted,
+                        targetCurrency
+                    )
+                }"
+            } else {
+                formatNumber(firstConverted, targetCurrency)
             }
         } catch (ex: Exception) {
             Sentry.captureException(ex)
-            ""
+            return input // Return original input in case of error
         }
     }
 
+    /**
+     * Extended version of convertCurrency that also handles unit conversion
+     *
+     * @param input The input string to convert
+     * @param targetCurrency The target currency code
+     * @param currencySymbol The currency symbol to use in output
+     * @param unitType The unit type (if any)
+     * @param fieldSize The field size as string
+     * @param selectedField The selected field description
+     * @param separator The separator to use between amount and field
+     * @return The converted and formatted string
+     */
     fun convertCurrency(
         input: String,
-        toCurrency: String,
+        targetCurrency: String,
         currencySymbol: String?,
         unitType: String?,
         fieldSize: String,
         selectedField: String?,
         separator: String
     ): String {
-        var result = convertCurrency(input, toCurrency)
+        var result = convertCurrency(input, targetCurrency)
 
-        if (!unitType.isNullOrEmpty() && !result.contains(unitType) && !result.contains(separator)) {
-            try {
-                val amount = replaceNonNumbers(result, "").toDouble()
-                val size = fieldSize.toDouble()
-                val investment = amount * size
-                val rounded = roundToNearestSpecifiedValue(investment, 1000.0)
-                result = "${
-                    formatNumber(rounded)
-                } $currencySymbol $separator $selectedField"
-            } catch (ex: Exception) {
-                Sentry.captureException(ex)
+        try {
+            // If unitType is provided and not already in the result
+            if (unitType != null && !result.contains(unitType) && !result.contains(separator)) {
+                val cleanedNumber = Tools.replaceNonNumbers(result, "").toDoubleOrNull() ?: 0.0
+                val fieldSizeValue = fieldSize.toDoubleOrNull() ?: 0.0
+
+                val investmentAmount = cleanedNumber * fieldSizeValue
+                val roundedAmount =
+                    roundToNearestSpecifiedValue(investmentAmount, INVESTMENT_ROUNDING)
+                val formattedNumber = formatNumber(roundedAmount, null)
+
+                result = "$formattedNumber $currencySymbol $separator $selectedField"
             }
+        } catch (ex: Exception) {
+            Sentry.captureException(ex)
         }
 
         return result
     }
 
-    fun formatNumber(number: Double, currency: String? = null): String {
-        val formatted = String.format(Locale.US, "%,.0f", number)
-        return if (currency != null) "$formatted $currency" else formatted
+    /**
+     * Formats a number according to the specified currency
+     *
+     * @param number The number to format
+     * @param currency The currency code (if any)
+     * @return The formatted number string
+     */
+    fun formatNumber(number: Double, currency: String?): String {
+        return if (currency == null) {
+            String.format(Locale.US, "%,.0f", number)
+        } else {
+            String.format("%,.0f $currency", number)
+        }
     }
 
+    /**
+     * Converts an amount in USD to a local currency
+     *
+     * @param amount The USD amount to convert
+     * @param targetCurrency The target currency code
+     * @param nearestRounding Optional rounding precision
+     * @return The converted amount
+     */
     fun convertToLocalCurrency(
         amount: Double,
-        toCurrency: String,
-        nearestRounding: Int = 100
+        targetCurrency: String,
+        vararg nearestRounding: Int
     ): Double {
-        val rate = when (toCurrency.uppercase()) {
-            "NGN" -> ngnRate
-            "TZS" -> tzsRate
-            "GHS" -> ghsRate
-            else -> 1.0
-        }
-        val converted = amount * rate
-        return roundToNearestSpecifiedValue(converted, nearestRounding.toDouble())
-    }
+        val rounding = nearestRounding.firstOrNull()?.toDouble() ?: DEFAULT_ROUNDING
 
-    fun convertToUSD(amount: Double, fromCurrency: String, nearestRounding: Int = 100): Double {
-        val converted = try {
-            when (fromCurrency.uppercase()) {
-                "NGN" -> amount / ngnRate
-                "TZS" -> amount / tzsRate
-                "GHS" -> amount / ghsRate
-                "USD" -> amount
-                else -> amount
+        try {
+            // Get exchange rate or return original amount if currency not supported
+            val rate = exchangeRates[targetCurrency] ?: return amount
+            val converted = amount * rate
+
+            return if (rounding > 0) {
+                roundToNearestSpecifiedValue(converted, rounding)
+            } else {
+                converted
             }
         } catch (ex: Exception) {
             Sentry.captureException(ex)
-            return 0.0
+            return amount
+        }
+    }
+
+    /**
+     * Converts a local currency amount to USD
+     *
+     * @param amount The amount to convert
+     * @param sourceCurrency The source currency code
+     * @param nearestRounding Optional rounding precision
+     * @return The converted amount in USD
+     */
+    fun convertToUSD(
+        amount: Double,
+        sourceCurrency: String,
+        vararg nearestRounding: Int
+    ): Double {
+        if (sourceCurrency == CURRENCY_USD) {
+            return amount
         }
 
-        val rounded = roundToNearestSpecifiedValue(converted, nearestRounding.toDouble())
-        return if (rounded < 1) rounded else rounded.toLong().toDouble()
+        val rounding = nearestRounding.firstOrNull()?.toDouble() ?: DEFAULT_ROUNDING
+
+        try {
+            // Get exchange rate or return original amount if currency not supported
+            val rate = exchangeRates[sourceCurrency] ?: return amount
+            val converted = amount / rate
+
+            val roundedValue = roundToNearestSpecifiedValue(converted, rounding)
+
+            // For small values, keep decimals; for larger values, round to integer
+            return if (roundedValue < 1) {
+                roundedValue
+            } else {
+                Math.round(roundedValue).toDouble()
+            }
+        } catch (ex: Exception) {
+            Sentry.captureException(ex)
+            return amount
+        }
     }
 
-    fun roundToNearestSpecifiedValue(number: Double, nearest: Double): Double {
-        return if (nearest < 1 || number < 1)
-            roundToNDecimalPlaces(number, 10.0)
-        else
-            Math.round(number / nearest) * nearest
+    /**
+     * Rounds a number to the nearest specified value
+     *
+     * @param value The value to round
+     * @param nearest Round to nearest multiple of this value
+     * @return The rounded value
+     */
+    fun roundToNearestSpecifiedValue(value: Double, nearest: Double): Double {
+        if (value < 1 || nearest < 1) {
+            return roundToNDecimalPlaces(value, DECIMAL_PRECISION)
+        }
+
+        return Math.round(value / nearest) * nearest
     }
 
-    fun roundToNDecimalPlaces(number: Double, decimalPlaces: Double): Double {
-        return Math.round(number * decimalPlaces) / decimalPlaces
+    /**
+     * Rounds a number to N decimal places
+     *
+     * @param value The value to round
+     * @param decimalPlaces The number of decimal places to round to
+     * @return The rounded value
+     */
+    fun roundToNDecimalPlaces(value: Double, decimalPlaces: Double): Double {
+        return Math.round(value * decimalPlaces) / decimalPlaces
     }
 
-    fun convertToDouble(text: String): Double {
-        return text.trim().toDoubleOrNull() ?: 0.0
-    }
-
+    /**
+     * Computes the investment amount based on local currency, field size and currency
+     *
+     * @param localAmount The amount in local currency
+     * @param fieldSize The field size
+     * @param sourceCurrency The source currency code
+     * @return The computed investment amount in USD
+     */
     fun computeInvestmentAmount(
         localAmount: Double,
         fieldSize: Double,
-        fromCurrency: String
+        sourceCurrency: String
     ): Double {
-        val total = localAmount * fieldSize
-        val usdAmount = convertToUSD(total, fromCurrency)
-        return roundToNearestSpecifiedValue(usdAmount, 1000.0)
+        val totalAmount = localAmount * fieldSize
+        val usdAmount = convertToUSD(totalAmount, sourceCurrency)
+
+        return roundToNearestSpecifiedValue(usdAmount, INVESTMENT_ROUNDING)
     }
 
-    fun convertFromAcreToSpecifiedArea(sizeInAcre: Double, unit: String): Double {
-        val converted = when (unit.lowercase()) {
-            "acre" -> sizeInAcre
-            "ha" -> sizeInAcre / baseAcre
-            "are" -> sizeInAcre * baseAre
-            "sqm" -> sizeInAcre * baseSqm
-            else -> sizeInAcre
+    /**
+     * Safely converts a string to double
+     *
+     * @param text The text to convert
+     * @return The double value or 0.0 if conversion fails
+     */
+    fun convertToDouble(text: String): Double {
+        if (text.isEmpty()) {
+            return 0.0
         }
 
-        return roundToNDecimalPlaces(converted, 100.0)
+        return try {
+            text.trim().toDouble()
+        } catch (ex: Exception) {
+            Sentry.captureException(ex)
+            0.0
+        }
     }
 
-    fun convertToUnitWeightPrice(price: Double, weight: Int): Double {
-        return (price * weight) / 1000
+    /**
+     * Converts an area from acres to another unit
+     *
+     * @param acres The area in acres
+     * @param targetUnit The target unit to convert to
+     * @return The converted area
+     */
+    fun convertFromAcreToSpecifiedArea(acres: Double, targetUnit: String): Double {
+        val convertedArea = when (targetUnit) {
+            AREA_ACRE -> acres
+            AREA_HECTARE -> acres * ACRE_TO_HECTARE
+            AREA_ARE -> acres * ACRE_TO_ARE
+            AREA_SQM -> acres * ACRE_TO_SQM
+            else -> acres
+        }
+
+        return roundToNDecimalPlaces(convertedArea, DECIMAL_PRECISION)
     }
 
-    fun removeLeadingZero(value: Double, pattern: String = "0.#"): String {
-        val format = DecimalFormat(pattern)
+    /**
+     * Converts price to unit weight price
+     *
+     * @param price The price
+     * @param unitWeight The unit weight in g
+     * @return The price per kg
+     */
+    fun convertToUnitWeightPrice(price: Double, unitWeight: Int): Double {
+        return (price * unitWeight) / 1000
+    }
+
+    /**
+     * Removes leading/trailing zeros from a number
+     *
+     * @param value The value to format
+     * @return Formatted string without unnecessary zeros
+     */
+    fun removeLeadingZero(value: Double): String {
+        return removeLeadingZero(value, "0.#")
+    }
+
+    /**
+     * Removes leading/trailing zeros from a number with custom pattern
+     *
+     * @param value The value to format
+     * @param pattern The decimal format pattern
+     * @return Formatted string according to pattern
+     */
+    fun removeLeadingZero(value: Double, pattern: String?): String {
+        val format = DecimalFormat(pattern ?: "0.#")
         format.roundingMode = RoundingMode.CEILING
         return format.format(value)
     }
 
+    /**
+     * Computes investment based on area size and unit
+     *
+     * @param acreInvestment The investment amount per acre
+     * @param areaSize The area size
+     * @param areaUnit The area unit
+     * @return The total investment for the specified area
+     */
     fun computeInvestmentForSpecifiedAreaUnit(
-        acreInvestmentAmount: Double,
-        areaSizeInAcre: Double,
+        acreInvestment: Double,
+        areaSize: Double,
         areaUnit: String
     ): Double {
-        return when (areaUnit.lowercase()) {
-            "acre" -> acreInvestmentAmount * areaSizeInAcre
-            "ha" -> acreInvestmentAmount * baseAcre * areaSizeInAcre
-            "sqm" -> areaSizeInAcre * baseSqm * acreInvestmentAmount
-            else -> acreInvestmentAmount * areaSizeInAcre
+        return when (areaUnit) {
+            AREA_ACRE -> acreInvestment * areaSize
+            AREA_HECTARE -> (acreInvestment / ACRE_TO_HECTARE) * areaSize
+            AREA_SQM -> (areaSize / ACRE_TO_SQM) * acreInvestment
+            AREA_ARE -> (areaSize / ACRE_TO_ARE) * acreInvestment
+            else -> acreInvestment * areaSize
         }
     }
 }
