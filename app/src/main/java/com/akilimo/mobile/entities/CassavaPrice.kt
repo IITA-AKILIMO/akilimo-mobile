@@ -3,7 +3,6 @@ package com.akilimo.mobile.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.akilimo.mobile.entities.FertilizerPrice
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -22,15 +21,6 @@ data class CassavaPrice(
     @ColumnInfo(name = "id")
     @JsonProperty("id") val id: Int,
 
-    @ColumnInfo(name = "price_index")
-    @JsonProperty("price_index")
-    val priceIndex: Long? = null,
-
-    
-    @ColumnInfo(name = "price_id")
-    @JsonProperty("price_id")
-    val priceId: Long = 0,
-
     @ColumnInfo(name = "country_code")
     @JsonProperty("country_code")
     val countryCode: String? = null,
@@ -43,13 +33,6 @@ data class CassavaPrice(
     @JsonProperty("max_local_price")
     val maxLocalPrice: Double = 0.0,
 
-    @ColumnInfo(name = "min_usd")
-    @JsonProperty("min_usd")
-    val minUsd: Double = 0.0,
-
-    @ColumnInfo(name = "max_usd")
-    @JsonProperty("max_usd")
-    val maxUsd: Double = 0.0,
 
     @ColumnInfo(name = "min_allowed_price")
     @JsonProperty("min_allowed_price")

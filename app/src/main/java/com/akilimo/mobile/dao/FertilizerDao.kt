@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.akilimo.mobile.entities.Fertilizer
+import com.akilimo.mobile.entities.InterCropFertilizer
 
 @Dao
 interface FertilizerDao {
@@ -29,9 +30,28 @@ interface FertilizerDao {
     @Query("SELECT * FROM fertilizers where country_code=:countryCode")
     fun findAllByCountry(countryCode: String): MutableList<Fertilizer>
 
+
+    @Query("SELECT * FROM fertilizers where country_code=:countryCode and use_case=:useCase")
+    fun findAllByCountryAndUseCase(
+        countryCode: String,
+        useCase: String
+    ): List<Fertilizer>
+
+    @Query("SELECT * FROM fertilizers where country_code=:countryCode and use_case=:useCase and selected=1")
+    fun findAllSelectedByCountryAndUseCase(
+        countryCode: String,
+        useCase: String
+    ): List<Fertilizer>
+
+    @Query("SELECT * FROM fertilizers where type=:fertilizerType and country_code=:countryCode and use_case=:useCase")
+    fun findByTypeCountryAndUseCase(
+        fertilizerType: String,
+        countryCode: String,
+        useCase: String
+    ): Fertilizer?
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(fertilizer: Fertilizer)
-
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAll(availableFertilizersList: List<Fertilizer>)

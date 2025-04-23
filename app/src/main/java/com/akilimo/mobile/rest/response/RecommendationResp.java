@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Recommendation implements Parcelable {
+public class RecommendationResp implements Parcelable {
     @JsonProperty("FR")
     private String fertilizerRecText;
 
@@ -27,22 +27,22 @@ public class Recommendation implements Parcelable {
     private String errorMessage;
 
     @SuppressWarnings("unused")
-    public Recommendation() {
+    public RecommendationResp() {
         //required by jackson do not remove
     }
 
-    public final static Creator<Recommendation> CREATOR = new Creator<Recommendation>() {
-        public Recommendation createFromParcel(Parcel in) {
-            return new Recommendation(in);
+    public final static Creator<RecommendationResp> CREATOR = new Creator<RecommendationResp>() {
+        public RecommendationResp createFromParcel(Parcel in) {
+            return new RecommendationResp(in);
         }
 
-        public Recommendation[] newArray(int size) {
-            return (new Recommendation[size]);
+        public RecommendationResp[] newArray(int size) {
+            return (new RecommendationResp[size]);
         }
 
     };
 
-    private Recommendation(@NotNull Parcel in) {
+    private RecommendationResp(@NotNull Parcel in) {
         this.fertilizerRecText = ((String) in.readValue((String.class.getClassLoader())));
         this.interCroppingRecText = ((String) in.readValue((String.class.getClassLoader())));
         this.plantingPracticeRecText = ((String) in.readValue((String.class.getClassLoader())));

@@ -6,10 +6,10 @@ import com.akilimo.mobile.entities.PotatoPrice
 @Dao
 interface PotatoPriceDao {
 
-    @Query("SELECT * FROM potato_price")
-    fun listAll(): List<PotatoPrice>
+    @Query("SELECT * FROM potato_prices")
+    fun findAll(): List<PotatoPrice>
 
-    @Query("SELECT * FROM potato_price LIMIT 1")
+    @Query("SELECT * FROM potato_prices LIMIT 1")
     fun findOne(): PotatoPrice?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -24,6 +24,6 @@ interface PotatoPriceDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(priceList: List<PotatoPrice>)
 
-    @Query("SELECT * FROM potato_price where country=:countryCode")
+    @Query("SELECT * FROM potato_prices where country_code=:countryCode")
     fun findAllByCountry(countryCode: String): MutableList<PotatoPrice>
 }

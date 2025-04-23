@@ -12,15 +12,19 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.akilimo.mobile.R;
+import com.akilimo.mobile.entities.Fertilizer;
 import com.akilimo.mobile.entities.InterCropFertilizer;
 import com.akilimo.mobile.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import kotlin.Deprecated;
+
+@Deprecated(message = "Replace with FertilizerAdapter")
 public class IntercropFertilizerGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<InterCropFertilizer> items = new ArrayList<>();
+    private List<Fertilizer> items = new ArrayList<>();
 
     private OnLoadMoreListener onLoadMoreListener;
 
@@ -29,7 +33,7 @@ public class IntercropFertilizerGridAdapter extends RecyclerView.Adapter<Recycle
     private int rowIndex = -1;
 
     public interface OnItemClickListener {
-        void onItemClick(View view, InterCropFertilizer obj, int position);
+        void onItemClick(View view, Fertilizer obj, int position);
     }
 
     public IntercropFertilizerGridAdapter(@NonNull Context context) {
@@ -41,7 +45,7 @@ public class IntercropFertilizerGridAdapter extends RecyclerView.Adapter<Recycle
     }
 
 
-    public void setItems(@NonNull List<InterCropFertilizer> fertilizerList) {
+    public void setItems(@NonNull List<Fertilizer> fertilizerList) {
         this.items = fertilizerList;
         notifyDataSetChanged();
     }
@@ -57,7 +61,7 @@ public class IntercropFertilizerGridAdapter extends RecyclerView.Adapter<Recycle
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        InterCropFertilizer obj = items.get(position);
+        Fertilizer obj = items.get(position);
         String fertilizerName = obj.getName();
         String bagPrice = obj.getPriceRange();
         boolean isSelected = obj.getSelected();
@@ -95,12 +99,12 @@ public class IntercropFertilizerGridAdapter extends RecyclerView.Adapter<Recycle
         this.onLoadMoreListener = onLoadMoreListener;
     }
 
-    public List<InterCropFertilizer> getAll() {
+    public List<Fertilizer> getAll() {
         return items;
     }
 
-    public List<InterCropFertilizer> getSelected() {
-        List<InterCropFertilizer> selected = new ArrayList<>();
+    public List<Fertilizer> getSelected() {
+        List<Fertilizer> selected = new ArrayList<>();
         for (int i = 0; i < items.size(); i++) {
             if (items.get(i).getSelected()) {
                 selected.add(items.get(i));

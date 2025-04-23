@@ -6,10 +6,10 @@ import com.akilimo.mobile.entities.PotatoMarket
 @Dao
 interface PotatoMarketDao {
 
-    @Query("SELECT * FROM potato_market")
+    @Query("SELECT * FROM potato_markets")
     fun listAll(): List<PotatoMarket>
 
-    @Query("SELECT * FROM potato_market LIMIT 1")
+    @Query("SELECT * FROM potato_markets LIMIT 1")
     fun findOne(): PotatoMarket?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -20,6 +20,7 @@ interface PotatoMarketDao {
 
     @Delete
     fun delete(location: PotatoMarket?)
-    @Query("DELETE FROM potato_market")
+
+    @Query("DELETE FROM potato_markets")
     fun deleteAll()
 }

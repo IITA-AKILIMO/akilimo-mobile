@@ -1,51 +1,54 @@
 package com.akilimo.mobile.models
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class OperationCostResponse(
+    @JsonProperty("data")
+    val data: List<OperationCost>
+)
 
 @Parcelize
+@Entity(tableName = "operation_costs")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-open class OperationCost : Parcelable {
+data class OperationCost(
 
-    var id: Int = 0
+    @PrimaryKey(autoGenerate = false)
+    @ColumnInfo(name = "id")
+    val id: Int,
 
-    @JsonProperty("listIndex")
-    var listIndex: Long = 0
+    @JsonProperty("operation_name")
+    @ColumnInfo(name = "operation_name")
+    val operationName: String? = null,
 
-    @JsonProperty("operationName")
-    var operationName: String? = null
+    @JsonProperty("operation_type")
+    @ColumnInfo(name = "operation_type")
+    val operationType: String? = null,
 
-    @JsonProperty("operationType")
-    var operationType: String? = null
 
-    @JsonProperty("minUsd")
-    var minUsd = 0.0
+    @JsonProperty("currency_code")
+    @ColumnInfo(name = "currency_code")
+    val currencyCode: String? = null,
 
-    @JsonProperty("maxUsd")
-    var maxUsd = 0.0
+    @JsonProperty("min_cost")
+    @ColumnInfo(name = "min_cost")
+    val minCost: Double = 0.0,
 
-    @JsonProperty("minTzs")
-    var minTzs = 0.0
+    @JsonProperty("max_cost")
+    @ColumnInfo(name = "max_cost")
+    val maxCost: Double = 0.0,
 
-    @JsonProperty("maxTzs")
-    var maxTzs = 0.0
+    @JsonProperty("average_cost")
+    @ColumnInfo(name = "average_cost")
+    val averageCost: Double = 0.0,
 
-    @JsonProperty("minNgn")
-    var minNgn = 0.0
 
-    @JsonProperty("maxNgn")
-    var maxNgn = 0.0
-
-    @JsonProperty("averageNgnPrice")
-    var averageNgnPrice = 0.0
-
-    @JsonProperty("averageTzsPrice")
-    var averageTzsPrice = 0.0
-
-    @JsonProperty("averageUsdPrice")
-    var averageUsdPrice = 0.0
-}
+    ) : Parcelable

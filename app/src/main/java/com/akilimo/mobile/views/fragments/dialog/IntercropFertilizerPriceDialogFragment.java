@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -21,14 +20,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.akilimo.mobile.entities.Fertilizer;
+import com.akilimo.mobile.interfaces.IFertilizerDismissListener;
 import com.akilimo.mobile.utils.enums.EnumCountry;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.entities.FertilizerPrice;
-import com.akilimo.mobile.entities.InterCropFertilizer;
 import com.akilimo.mobile.inherit.BaseDialogFragment;
-import com.akilimo.mobile.interfaces.IDismissIntercropListener;
 import com.akilimo.mobile.utils.CurrencyCode;
 import com.mynameismidori.currencypicker.ExtendedCurrency;
 
@@ -62,7 +61,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
     private Button btnRemove;
 
 
-    private InterCropFertilizer fertilizer;
+    private Fertilizer fertilizer;
     private List<FertilizerPrice> fertilizerPricesList;
 
     private double savedPricePerBag = 0.0;
@@ -76,7 +75,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
     private String bagPriceRange = "NA";
     private Double exactPrice = 0.0;
 
-    private IDismissIntercropListener onDismissListener;
+    private IFertilizerDismissListener onDismissListener;
 
     public IntercropFertilizerPriceDialogFragment(Context context) {
         this.context = context;
@@ -113,7 +112,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
 
         if (fertilizer != null) {
             countryCode = fertilizer.getCountryCode();
-            currencyCode = fertilizer.getCurrency();
+            currencyCode = fertilizer.getCurrencyCode();
             fertilizerKey = fertilizer.getFertilizerKey();
             currencySymbol = currencyCode;
             ExtendedCurrency extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode);
@@ -240,7 +239,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
         }
     }
 
-    private void addPriceRadioButtons(List<FertilizerPrice> fertilizerPricesList, InterCropFertilizer fertilizer) {
+    private void addPriceRadioButtons(List<FertilizerPrice> fertilizerPricesList, Fertilizer fertilizer) {
         radioGroup.removeAllViews();
         double selectedPrice = 0.0;
         currencySymbol = currencyCode;
@@ -307,7 +306,7 @@ public class IntercropFertilizerPriceDialogFragment extends BaseDialogFragment {
         }
     }
 
-    public void setOnDismissListener(IDismissIntercropListener dismissListener) {
+    public void setOnDismissListener(IFertilizerDismissListener dismissListener) {
         this.onDismissListener = dismissListener;
     }
 }

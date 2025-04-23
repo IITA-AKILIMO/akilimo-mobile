@@ -6,14 +6,14 @@ object RetrofitManager {
     private var akilimoRetrofit: Retrofit? = null
     private var fuelrodRetroFit: Retrofit? = null
 
-    fun init(akilimoUrl: String, otherUrl: String) {
-        akilimoRetrofit = RetroFitFactory.create(akilimoUrl)
-        fuelrodRetroFit = RetroFitFactory.create(otherUrl)
+    fun init(akilimoUrl: String, fuelrodUrl: String) {
+        akilimoRetrofit = RetroFitFactory.create(akilimoUrl, 130)
+        fuelrodRetroFit = RetroFitFactory.create(fuelrodUrl)
     }
 
     fun akilimo(): Retrofit =
         akilimoRetrofit ?: throw IllegalStateException("Akilimo Retrofit not initialized")
 
     fun fuelrod(): Retrofit =
-        fuelrodRetroFit ?: throw IllegalStateException("Other Retrofit not initialized")
+        fuelrodRetroFit ?: throw IllegalStateException("Fuelrod Retrofit not initialized")
 }

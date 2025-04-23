@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -166,7 +165,7 @@ public class MaizePriceDialogFragment extends BaseDialogFragment {
         long itemTagIndex = (long) radioButton.getTag();
 
         try {
-            MaizePrice pricesResp = database.maizePriceDao().findPriceByPriceIndex((int) itemTagIndex);
+            MaizePrice pricesResp = database.maizePriceDao().findById((int) itemTagIndex);
             isExactPriceRequired = false;
             isPriceValid = true;
             averagePrice = pricesResp.getAveragePrice();
