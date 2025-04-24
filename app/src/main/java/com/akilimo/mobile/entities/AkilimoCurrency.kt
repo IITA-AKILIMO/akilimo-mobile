@@ -6,7 +6,6 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.google.gson.annotations.SerializedName
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -35,19 +34,19 @@ data class AkilimoCurrency(
 
     @ColumnInfo(name = "name")
     @JsonProperty("name")
-    val currencyName: String? = null,
+    val currencyName: String = "",
 
     @ColumnInfo(name = "currency_code")
     @JsonProperty("currency_code")
-    val currencyCode: String? = null,
+    val currencyCode: String = "",
 
     @ColumnInfo(name = "currency_symbol")
     @JsonProperty("currency_symbol")
-    val currencySymbol: String? = null,
+    val currencySymbol: String = "",
 
     @ColumnInfo(name = "currency_native_symbol")
     @JsonProperty("currency_native_symbol")
-    val currencyNativeSymbol: String? = null,
+    val currencyNativeSymbol: String = "",
 
     @ColumnInfo(name = "currency_name_plural")
     @JsonProperty("currency_name_plural")
