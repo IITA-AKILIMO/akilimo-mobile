@@ -222,7 +222,7 @@ class MaizePerformanceActivity : BaseActivity() {
     }
 
     override fun validate(backPressed: Boolean) {
-        if (selectedPerformanceValue.isNullOrEmpty()) {
+        if (selectedPerformanceValue.isEmpty()) {
             showCustomWarningDialog(
                 getString(R.string.lbl_invalid_selection),
                 getString(R.string.lbl_maize_performance_prompt)
