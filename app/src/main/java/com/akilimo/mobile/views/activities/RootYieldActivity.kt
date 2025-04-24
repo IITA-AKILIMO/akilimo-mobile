@@ -15,9 +15,9 @@ import com.akilimo.mobile.utils.TheItemAnimation
 import com.akilimo.mobile.utils.Tools.dpToPx
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumUseCase
+import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.RootYieldDialogFragment
 import com.akilimo.mobile.widget.SpacingItemDecoration
-import io.sentry.Sentry
 import java.util.Locale
 
 class RootYieldActivity : BaseActivity() {
@@ -48,12 +48,12 @@ class RootYieldActivity : BaseActivity() {
         val mandatoryInfo = database.mandatoryInfoDao().findOne()
         useCase = database.useCaseDao().findOne()
         if (mandatoryInfo != null) {
-            areaUnit = mandatoryInfo.areaUnit!!
+            areaUnit = mandatoryInfo.areaUnit
         }
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.countryCode!!
-            currency = profileInfo.currencyCode!!
+            countryCode = profileInfo.countryCode
+            currency = profileInfo.currencyCode
         }
 
         savedYield = database.fieldYieldDao().findOne()
@@ -104,15 +104,15 @@ class RootYieldActivity : BaseActivity() {
 
         val items = setYieldData(areaUnit)
         //set data and list adapter
-        mAdapter = FieldYieldAdapter(this, items, TheItemAnimation.FADE_IN)
+        mAdapter = FieldYieldAdapter(this@RootYieldActivity, items, TheItemAnimation.FADE_IN)
         recyclerView.adapter = mAdapter
         mAdapter!!.setItems(selectedYieldAmount, items)
 
-        mAdapter!!.setOnItemClickListener { view: View?, fieldYield: FieldYield?, position: Int ->
-            try {
-                //show a popup dialog here
-                val arguments = Bundle()
-                arguments.putParcelable(RootYieldDialogFragment.YIELD_DATA, fieldYield)
+        mAdapter!!.setOnItemClickListener(object : FieldYieldAdapter.OnItemClickListener {
+            override fun onItemClick(view: View?, fieldYield: FieldYield?, position: Int) {
+                val arguments = Bundle().apply {
+                    putParcelable(RootYieldDialogFragment.YIELD_DATA, fieldYield)
+                }
 
                 val rootYieldDialogFragment = RootYieldDialogFragment()
                 rootYieldDialogFragment.arguments = arguments
@@ -138,24 +138,14 @@ class RootYieldActivity : BaseActivity() {
 
                 })
 
-
-                supportFragmentManager.beginTransaction().apply {
-                    supportFragmentManager.findFragmentByTag(RootYieldDialogFragment.ARG_ITEM_ID)
-                        ?.let {
-                            remove(it)
-                        }
-                    addToBackStack(null)
-                }.commit()  // Commit the transaction
-
-                rootYieldDialogFragment.show(
+                showDialogFragmentSafely(
                     supportFragmentManager,
+                    rootYieldDialogFragment,
                     RootYieldDialogFragment.ARG_ITEM_ID
                 )
-
-            } catch (ex: Exception) {
-                Sentry.captureException(ex)
             }
-        }
+
+        })
 
         binding.twoButtons.apply {
             btnFinish.setOnClickListener { view: View? -> validate(true) }
