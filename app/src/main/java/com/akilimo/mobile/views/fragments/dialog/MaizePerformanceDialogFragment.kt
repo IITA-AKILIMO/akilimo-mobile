@@ -10,9 +10,9 @@ import android.view.WindowManager
 import androidx.core.graphics.drawable.toDrawable
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentMaizePerfDialogBinding
-import com.akilimo.mobile.entities.MaizePerformance
+import com.akilimo.mobile.entities.CropPerformance
 import com.akilimo.mobile.inherit.BaseDialogFragment
-import com.akilimo.mobile.interfaces.IMaizePerformanceDismissListener
+import com.akilimo.mobile.interfaces.ICropPerformanceListener
 import com.akilimo.mobile.utils.Tools.displayImageOriginal
 
 
@@ -23,9 +23,9 @@ class MaizePerformanceDialogFragment : BaseDialogFragment() {
     private var performanceConfirmed = false
 
 
-    private var maizePerformance: MaizePerformance? = null
+    private var cropPerformance: CropPerformance? = null
 
-    private var onDismissListener: IMaizePerformanceDismissListener? = null
+    private var onDismissListener: ICropPerformanceListener? = null
     private var _binding: FragmentMaizePerfDialogBinding? = null
 
     private val binding get() = _binding!!
@@ -39,7 +39,7 @@ class MaizePerformanceDialogFragment : BaseDialogFragment() {
         val bundle = this.arguments
         val context = requireContext()
         if (bundle != null) {
-            maizePerformance = bundle.getParcelable(PERFORMANCE_DATA)
+            cropPerformance = bundle.getParcelable(PERFORMANCE_DATA)
         }
         _binding = FragmentMaizePerfDialogBinding.inflate(layoutInflater)
 
@@ -57,14 +57,14 @@ class MaizePerformanceDialogFragment : BaseDialogFragment() {
             setContentView(binding.root)
         }
 
-        if (maizePerformance != null) {
-            val yieldAmountLabel = maizePerformance!!.maizePerformanceLabel
-            val yieldDesc = maizePerformance!!.maizePerformanceDesc
+        if (cropPerformance != null) {
+            val yieldAmountLabel = cropPerformance!!.maizePerformanceLabel
+            val yieldDesc = cropPerformance!!.maizePerformanceDesc
 
             binding.lblFragmentTitle.text = yieldAmountLabel
             binding.perfDescription.text = yieldDesc
 
-            displayImageOriginal(this.context, binding.rootYieldImage, maizePerformance!!.imageId)
+            displayImageOriginal(this.context, binding.rootYieldImage, cropPerformance!!.imageId)
         }
 
 
@@ -90,11 +90,11 @@ class MaizePerformanceDialogFragment : BaseDialogFragment() {
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         if (onDismissListener != null) {
-            onDismissListener!!.onDismiss(maizePerformance!!, performanceConfirmed)
+            onDismissListener!!.onDismiss(cropPerformance!!, performanceConfirmed)
         }
     }
 
-    fun setOnDismissListener(dismissListener: IMaizePerformanceDismissListener?) {
+    fun setOnDismissListener(dismissListener: ICropPerformanceListener?) {
         this.onDismissListener = dismissListener
     }
 
