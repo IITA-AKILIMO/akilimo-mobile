@@ -42,10 +42,10 @@ data class UserProfile(
     var fieldDescription: String = "AKILIMO Field",
 
     @ColumnInfo(name = "gender")
-    var gender: String = "NA",
+    var gender: String? = null,
 
     @ColumnInfo(name = "akilimo_interest")
-    var akilimoInterest: String = "",
+    var akilimoInterest: String? = null,
 
     @ColumnInfo(name = "selected_gender_index")
     var selectedGenderIndex: Int = -1,
