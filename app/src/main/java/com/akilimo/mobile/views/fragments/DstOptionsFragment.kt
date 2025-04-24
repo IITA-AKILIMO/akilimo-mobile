@@ -70,7 +70,7 @@ class DstOptionsFragment : BaseFragment() {
 
         recyclerView!!.layoutManager = LinearLayoutManager(context)
         recyclerView!!.setHasFixedSize(true)
-        mAdapter = AdapterListAnimation(context)
+        mAdapter = AdapterListAnimation()
         recyclerView!!.adapter = mAdapter
 
         items = ArrayList()
@@ -100,7 +100,8 @@ class DstOptionsFragment : BaseFragment() {
 
     private fun initComponent() {
         //set data and list adapter
-        mAdapter!!.setItems(items, TheItemAnimation.FADE_IN)
+        mAdapter!!.setAnimationType(TheItemAnimation.FADE_IN)
+        mAdapter!!.submitList(items)
         // on item list clicked
         mAdapter!!.setOnItemClickListener { view: View?, obj: Recommendations, position: Int ->
             //let us process the data
