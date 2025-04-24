@@ -10,9 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
-import androidx.fragment.app.FragmentTransaction
 import com.akilimo.mobile.R
-import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityTractorAccessBinding
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.CurrentPractice
@@ -23,8 +21,8 @@ import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumOperation
 import com.akilimo.mobile.utils.enums.EnumOperationType
+import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.OperationCostsDialogFragment
-import com.android.volley.toolbox.Volley
 import io.sentry.Sentry
 
 class TractorAccessActivity : CostBaseActivity() {
@@ -38,7 +36,9 @@ class TractorAccessActivity : CostBaseActivity() {
     var btnFinish: AppCompatButton? = null
     var btnCancel: AppCompatButton? = null
 
-    var binding: ActivityTractorAccessBinding? = null
+    private var _binding: ActivityTractorAccessBinding? = null
+    private val binding get() = _binding!!
+
     var mathHelper: MathHelper? = null
     var fieldOperationCost: FieldOperationCost? = null
     var currentPractice: CurrentPractice? = null
@@ -63,38 +63,34 @@ class TractorAccessActivity : CostBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityTractorAccessBinding.inflate(layoutInflater)
-        setContentView(binding!!.root)
+        _binding = ActivityTractorAccessBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        context = this
-        database = getDatabase(context)
-
-        queue = Volley.newRequestQueue(this)
         mathHelper = MathHelper()
 
         val mandatoryInfo = database.mandatoryInfoDao().findOne()
         if (mandatoryInfo != null) {
-            areaUnit = mandatoryInfo.areaUnit
+            areaUnit = mandatoryInfo.areaUnit!!
             fieldSize = mandatoryInfo.areaSize
         }
 
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.countryCode
-            currency = profileInfo.currencyCode
-            currencyCode = profileInfo.currencyCode
+            countryCode = profileInfo.countryCode!!
+            currency = profileInfo.currencyCode!!
+            currencyCode = profileInfo.currencyCode!!
             val myAkilimoCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode)
-            currencySymbol = myAkilimoCurrency.currencySymbol
+            currencySymbol = myAkilimoCurrency.currencySymbol!!
         }
 
-        toolbar = binding!!.toolbar
-        implementTitle = binding!!.tractorAccess.implementTitle
-        rdgTractor = binding!!.tractorAccess.rdgTractor
-        implementCard = binding!!.tractorAccess.implementCard
-        chkPlough = binding!!.tractorAccess.chkPlough
-        chkRidger = binding!!.tractorAccess.chkRidger
-        btnFinish = binding!!.twoButtons.btnFinish
-        btnCancel = binding!!.twoButtons.btnCancel
+        toolbar = binding.toolbar
+        implementTitle = binding.tractorAccess.implementTitle
+        rdgTractor = binding.tractorAccess.rdgTractor
+        implementCard = binding.tractorAccess.implementCard
+        chkPlough = binding.tractorAccess.chkPlough
+        chkRidger = binding.tractorAccess.chkRidger
+        btnFinish = binding.twoButtons.btnFinish
+        btnCancel = binding.twoButtons.btnCancel
 
         initToolbar()
         initComponent()
@@ -142,9 +138,9 @@ class TractorAccessActivity : CostBaseActivity() {
         }
 
         val myLocale = getCurrentLocale()
-        var translatedUnit = context.getString(R.string.lbl_acre)
+        var translatedUnit = this@TractorAccessActivity.getString(R.string.lbl_acre)
         if (areaUnit == "ha") {
-            translatedUnit = context.getString(R.string.lbl_ha)
+            translatedUnit = this@TractorAccessActivity.getString(R.string.lbl_ha)
         }
         val finalTranslatedUnit = translatedUnit.lowercase(myLocale)
 
@@ -248,15 +244,15 @@ class TractorAccessActivity : CostBaseActivity() {
             database.adviceStatusDao()
                 .insert(AdviceStatus(EnumAdviceTasks.TRACTOR_ACCESS.name, true))
         } catch (ex: Exception) {
-            Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@TractorAccessActivity, ex.message, Toast.LENGTH_SHORT).show()
             Sentry.captureException(ex)
         }
     }
 
     override fun showDialogFullscreen(
         operationCostList: ArrayList<OperationCost>?,
-        operation: String?,
-        countrycode: String?,
+        operationName: String?,
+        countryCode: String?,
         dialogTitle: String?,
         hintText: String?
     ) {
@@ -268,33 +264,22 @@ class TractorAccessActivity : CostBaseActivity() {
 
         showCustomNotificationDialog()
         arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList)
-        arguments.putString(OperationCostsDialogFragment.OPERATION_NAME, operation)
+        arguments.putString(OperationCostsDialogFragment.OPERATION_NAME, operationName)
         arguments.putString(OperationCostsDialogFragment.CURRENCY_CODE, currency)
         arguments.putString(OperationCostsDialogFragment.CURRENCY_SYMBOL, currencySymbol)
-        arguments.putString(OperationCostsDialogFragment.COUNTRY_CODE, countrycode)
+        arguments.putString(OperationCostsDialogFragment.COUNTRY_CODE, countryCode)
         arguments.putString(OperationCostsDialogFragment.DIALOG_TITLE, dialogTitle)
         arguments.putString(OperationCostsDialogFragment.EXACT_PRICE_HINT, hintText)
 
         val dialogFragment = getOperationCostsDialogFragment(arguments)
 
 
-        val fragmentTransaction: FragmentTransaction
-        if (fragmentManager != null) {
-            fragmentTransaction = supportFragmentManager.beginTransaction()
-            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            fragmentTransaction.setCustomAnimations(
-                R.anim.animate_slide_in_left,
-                R.anim.animate_slide_out_right
-            )
-            val prev =
-                supportFragmentManager.findFragmentByTag(OperationCostsDialogFragment.ARG_ITEM_ID)
-            if (prev != null) {
-                fragmentTransaction.remove(prev)
-            }
-            fragmentTransaction.addToBackStack(null)
-            dialogOpen = true
-            dialogFragment.show(supportFragmentManager, OperationCostsDialogFragment.ARG_ITEM_ID)
-        }
+        showDialogFragmentSafely(
+            supportFragmentManager,
+            dialogFragment,
+            OperationCostsDialogFragment.ARG_ITEM_ID
+        )
+        dialogOpen = true
     }
 
     private fun getOperationCostsDialogFragment(arguments: Bundle): OperationCostsDialogFragment {
