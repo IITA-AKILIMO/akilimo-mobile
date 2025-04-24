@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.widget.RadioButton
 import android.widget.Toast
 import com.akilimo.mobile.R
-import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityMySurveyBinding
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
@@ -23,16 +22,13 @@ class MySurveyActivity : BaseActivity() {
     private var akilimoUsefulRating: Int = 0
 
     companion object {
-        @JvmField
-        var REQUEST_CODE: Int = 2
+        const val REQUEST_CODE: Int = 2
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMySurveyBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        database = getDatabase(this)
 
         initComponent()
     }
@@ -95,13 +91,17 @@ class MySurveyActivity : BaseActivity() {
                 response: retrofit2.Response<ResponseBody>
             ) {
                 if (response.isSuccessful) {
-                    Toast.makeText(context, "Feedback submitted successfully", Toast.LENGTH_SHORT)
+                    Toast.makeText(
+                        this@MySurveyActivity,
+                        "Feedback submitted successfully",
+                        Toast.LENGTH_SHORT
+                    )
                         .show()
                 }
             }
 
             override fun onFailure(call: retrofit2.Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MySurveyActivity, t.message, Toast.LENGTH_SHORT).show()
                 Sentry.captureException(t)
             }
 
