@@ -9,7 +9,6 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import com.akilimo.mobile.R
-import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityWeedControlCostBinding
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.CurrentPractice
@@ -54,8 +53,6 @@ class WeedControlCostsActivity : BaseActivity() {
         )
         setContentView(binding.root)
 
-        val context = this@WeedControlCostsActivity
-        database = getDatabase(context)
         mathHelper = MathHelper()
 
         val mandatoryInfo = database.mandatoryInfoDao().findOne()
