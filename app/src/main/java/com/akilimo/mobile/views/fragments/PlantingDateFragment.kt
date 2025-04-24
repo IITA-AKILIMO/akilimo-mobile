@@ -1,204 +1,169 @@
-package com.akilimo.mobile.views.fragments;
+package com.akilimo.mobile.views.fragments
 
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatDialogFragment
+import com.akilimo.mobile.R
+import com.akilimo.mobile.databinding.FragmentPlantingHarvestDateBinding
+import com.akilimo.mobile.entities.ScheduledDate
+import com.akilimo.mobile.inherit.BaseStepFragment
+import com.akilimo.mobile.utils.DateHelper
+import com.akilimo.mobile.utils.DateHelper.olderThanCurrent
+import com.akilimo.mobile.views.fragments.dialog.DateDialogPickerFragment
+import com.stepstone.stepper.VerificationError
+import io.sentry.Sentry
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatDialogFragment;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.fragment.app.FragmentManager;
-
-import com.akilimo.mobile.databinding.FragmentPlantingHarvestDateBinding;
-
-import com.google.android.gms.common.util.Strings;
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.entities.ScheduledDate;
-import com.akilimo.mobile.inherit.BaseStepFragment;
-import com.akilimo.mobile.utils.DateHelper;
-import com.akilimo.mobile.views.fragments.dialog.DateDialogPickerFragment;
-import com.stepstone.stepper.VerificationError;
-
-;import io.sentry.Sentry;
 
 /**
- * A simple {@link androidx.fragment.app.Fragment} subclass.
+ * A simple [androidx.fragment.app.Fragment] subclass.
  */
-public class PlantingDateFragment extends BaseStepFragment {
+class PlantingDateFragment : BaseStepFragment() {
+
+    private val fm by lazy { requireActivity().supportFragmentManager }
+
+    private var _binding: FragmentPlantingHarvestDateBinding? = null
+    private val binding get() = _binding!!
 
 
-    TextView lblSelectedPlantingDate;
-    TextView lblSelectedHarvestDate;
-    AppCompatButton btnPickPlantingDate;
-    AppCompatButton btnPickHarvestDate;
+    private var selectedPlantingDate: String? = null
+    private var selectedHarvestDate: String? = null
 
-    FragmentPlantingHarvestDateBinding binding;
+    private var scheduledDate: ScheduledDate? = null
+    private var alreadyPlanted = false
 
-
-    private String selectedPlantingDate;
-    private String selectedHarvestDate;
-    private int plantingWindow = 0;
-    private int harvestWindow = 0;
-
-
-    private ScheduledDate scheduledDate;
-
-    private boolean alreadyPlanted = false;
-
-    public PlantingDateFragment() {
-        // Required empty public constructor
+    companion object {
+        fun newInstance(): PlantingDateFragment {
+            return PlantingDateFragment()
+        }
+    }
+    
+    override fun loadFragmentLayout(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentPlantingHarvestDateBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    public static PlantingDateFragment newInstance() {
-        return new PlantingDateFragment();
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.context = context;
-    }
-
-
-    @Override
-    protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentPlantingHarvestDateBinding.inflate(inflater, container, false);
-        return binding.getRoot();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        lblSelectedPlantingDate = binding.lblSelectedPlantingDate;
-        lblSelectedHarvestDate = binding.lblSelectedHarvestDate;
-        btnPickPlantingDate = binding.btnPickPlantingDate;
-        btnPickHarvestDate = binding.btnPickHarvestDate;
-
-        final FragmentManager fm = getActivity().getSupportFragmentManager();
-
-        btnPickPlantingDate.setOnClickListener(v -> {
+        binding.btnPickPlantingDate.setOnClickListener { v: View? ->
             // create the datePickerFragment
-            AppCompatDialogFragment newFragment = new DateDialogPickerFragment(true);
+            val newFragment: AppCompatDialogFragment = DateDialogPickerFragment(true)
             // set the targetFragment to receive the results, specifying the request code
-            newFragment.setTargetFragment(PlantingDateFragment.this, DateDialogPickerFragment.PLANTING_REQUEST_CODE);
+            newFragment.setTargetFragment(
+                this@PlantingDateFragment,
+                DateDialogPickerFragment.PLANTING_REQUEST_CODE
+            )
             // show the datePicker
-            newFragment.show(fm, "PlantingDatePicker");
-        });
+            newFragment.show(fm, "PlantingDatePicker")
+        }
 
-        btnPickHarvestDate.setOnClickListener(v -> {
+        binding.btnPickHarvestDate.setOnClickListener { v: View? ->
             // create the datePickerFragment
-            AppCompatDialogFragment newFragment = new DateDialogPickerFragment(true, selectedPlantingDate);
+            val newFragment: AppCompatDialogFragment = DateDialogPickerFragment(
+                true,
+                selectedPlantingDate!!
+            )
             // set the targetFragment to receive the results, specifying the request code
-            newFragment.setTargetFragment(PlantingDateFragment.this, DateDialogPickerFragment.HARVEST_REQUEST_CODE);
+            newFragment.setTargetFragment(
+                this@PlantingDateFragment,
+                DateDialogPickerFragment.HARVEST_REQUEST_CODE
+            )
             // show the datePicker
-            newFragment.show(fm, "HarvestDatePicker");
-        });
-
-
+            newFragment.show(fm, "HarvestDatePicker")
+        }
     }
 
-    public void refreshData() {
+    fun refreshData() {
         try {
-
-            scheduledDate = database.scheduleDateDao().findOne();
+            scheduledDate = database.scheduleDateDao().findOne()
 
             if (scheduledDate != null) {
-                selectedPlantingDate = scheduledDate.getPlantingDate();
-                selectedHarvestDate = scheduledDate.getHarvestDate();
-                lblSelectedPlantingDate.setText(selectedPlantingDate);
-                lblSelectedHarvestDate.setText(selectedHarvestDate);
+                selectedPlantingDate = scheduledDate!!.plantingDate
+                selectedHarvestDate = scheduledDate!!.harvestDate
+                binding.lblSelectedPlantingDate.text = selectedPlantingDate
+                binding.lblSelectedHarvestDate.text = selectedHarvestDate
             }
-
-        } catch (Exception ex) {
-            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Sentry.captureException(ex);
+        } catch (ex: Exception) {
+            Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+            Sentry.captureException(ex)
         }
     }
 
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         // check for the results
-        if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
             if (requestCode == DateDialogPickerFragment.PLANTING_REQUEST_CODE) {
-                selectedPlantingDate = data.getStringExtra("selectedDate");
-                selectedHarvestDate = null;
+                selectedPlantingDate = data.getStringExtra("selectedDate")
+                selectedHarvestDate = null
             } else if (requestCode == DateDialogPickerFragment.HARVEST_REQUEST_CODE) {
-                selectedHarvestDate = data.getStringExtra("selectedDate");
+                selectedHarvestDate = data.getStringExtra("selectedDate")
             }
         }
-        lblSelectedPlantingDate.setText(selectedPlantingDate);
-        lblSelectedHarvestDate.setText(selectedHarvestDate);
+        binding.lblSelectedPlantingDate.text = selectedPlantingDate
+        binding.lblSelectedHarvestDate.text = selectedHarvestDate
     }
 
-    private void saveEntities() {
-
-        dataIsValid = !Strings.isEmptyOrWhitespace(selectedPlantingDate);
+    private fun saveEntities() {
+        dataIsValid = !selectedPlantingDate.isNullOrEmpty()
         if (!dataIsValid) {
-            errorMessage = context.getString(R.string.lbl_planting_date_prompt);
-            return;
+            errorMessage = requireContext().getString(R.string.lbl_planting_date_prompt)
+            return
         }
-        dataIsValid = !Strings.isEmptyOrWhitespace(selectedHarvestDate);
+        dataIsValid = !selectedHarvestDate.isNullOrEmpty()
         if (!dataIsValid) {
-            errorMessage = context.getString(R.string.lbl_harvest_date_prompt);
-            return;
+            errorMessage = requireContext().getString(R.string.lbl_harvest_date_prompt)
+            return
         }
         try {
-
-
             if (scheduledDate == null) {
-                scheduledDate = new ScheduledDate();
+                scheduledDate = ScheduledDate()
             }
-            DateHelper.dateTimeFormat = "dd/MM/yyyy";
-            alreadyPlanted = DateHelper.olderThanCurrent(selectedPlantingDate);
+            DateHelper.dateTimeFormat = "dd/MM/yyyy"
+            alreadyPlanted = olderThanCurrent(selectedPlantingDate)
 
-            scheduledDate.setPlantingDate(selectedPlantingDate);
-            scheduledDate.setHarvestDate(selectedHarvestDate);
-            scheduledDate.setAlreadyPlanted(alreadyPlanted);
+            scheduledDate!!.plantingDate = selectedPlantingDate
+            scheduledDate!!.harvestDate = selectedHarvestDate
+            scheduledDate!!.alreadyPlanted = alreadyPlanted
 
-            if (scheduledDate.getId() != null) {
-                database.scheduleDateDao().update(scheduledDate);
+            if (scheduledDate!!.id != null) {
+                database.scheduleDateDao().update(scheduledDate!!)
             } else {
-                database.scheduleDateDao().insert(scheduledDate);
+                database.scheduleDateDao().insert(scheduledDate!!)
             }
-            scheduledDate = database.scheduleDateDao().findOne();
-            dataIsValid = true;
-        } catch (Exception ex) {
-            dataIsValid = false;
-            errorMessage = ex.getMessage();
-            Sentry.captureException(ex);
+            scheduledDate = database.scheduleDateDao().findOne()
+            dataIsValid = true
+        } catch (ex: Exception) {
+            dataIsValid = false
+            errorMessage = ex.message!!
+            Sentry.captureException(ex)
         }
     }
 
-    @Nullable
-    @Override
-    public VerificationError verifyStep() {
-        saveEntities();
+    override fun verifyStep(): VerificationError? {
+        saveEntities()
         if (!dataIsValid) {
-            showCustomWarningDialog(errorMessage);
-            return new VerificationError(errorMessage);
+            showCustomWarningDialog(errorMessage)
+            return VerificationError(errorMessage)
         }
-        return null;
+        return null
     }
 
-    @Override
-    public void onSelected() {
-        refreshData();
+    override fun onSelected() {
+        refreshData()
     }
 
-    @Override
-    public void onError(@NonNull VerificationError error) {
-
+    override fun onError(error: VerificationError) {
     }
 }
