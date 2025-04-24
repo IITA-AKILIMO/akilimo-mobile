@@ -8,12 +8,12 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.R
-import com.akilimo.mobile.adapters.MaizePerformanceAdapter
+import com.akilimo.mobile.adapters.CropPerformanceAdapter
 import com.akilimo.mobile.databinding.ActivityMaizePerformanceActivityBinding
 import com.akilimo.mobile.entities.AdviceStatus
-import com.akilimo.mobile.entities.MaizePerformance
+import com.akilimo.mobile.entities.CropPerformance
 import com.akilimo.mobile.inherit.BaseActivity
-import com.akilimo.mobile.interfaces.IMaizePerformanceDismissListener
+import com.akilimo.mobile.interfaces.ICropPerformanceListener
 import com.akilimo.mobile.utils.TheItemAnimation
 import com.akilimo.mobile.utils.Tools.dpToPx
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
@@ -21,7 +21,6 @@ import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.MaizePerformanceDialogFragment
 import com.akilimo.mobile.views.fragments.dialog.RootYieldDialogFragment
 import com.akilimo.mobile.widget.SpacingItemDecoration
-import io.sentry.Sentry
 
 class MaizePerformanceActivity : BaseActivity() {
     var activityTitle: String? = null
@@ -36,17 +35,16 @@ class MaizePerformanceActivity : BaseActivity() {
     var btnCancel: AppCompatButton? = null
     var exceptionTitle: TextView? = null
 
-    private var mAdapter: MaizePerformanceAdapter? = null
+    private var mAdapter: CropPerformanceAdapter? = null
 
     private var _binding: ActivityMaizePerformanceActivityBinding? = null
     private val binding get() = _binding!!
 
 
-    private var savedMaizePerformance: MaizePerformance? = null
+    private var savedCropPerformance: CropPerformance? = null
 
-    private var selectedPerformanceValue: String? = null
-    private var maizePerformanceValue: String? = null
-    private val performanceRadioIndex = 0
+    private var selectedPerformanceValue: String = ""
+    private var maizePerformanceValue: String = ""
 
     private val performanceImages = arrayOf(
         R.drawable.ic_maize_1,
@@ -71,9 +69,9 @@ class MaizePerformanceActivity : BaseActivity() {
         btnFinish = binding.twoButtons.btnFinish
         btnCancel = binding.twoButtons.btnCancel
 
-        savedMaizePerformance = database.maizePerformanceDao().findOne()
-        if (savedMaizePerformance != null) {
-            selectedPerformanceValue = savedMaizePerformance!!.maizePerformance
+        savedCropPerformance = database.maizePerformanceDao().findOne()
+        if (savedCropPerformance != null) {
+            selectedPerformanceValue = savedCropPerformance!!.maizePerformance
         }
         initToolbar()
         initComponent()
@@ -104,7 +102,7 @@ class MaizePerformanceActivity : BaseActivity() {
         recyclerView!!.addItemDecoration(SpacingItemDecoration(1, dpToPx(this, 3), true))
         recyclerView!!.setHasFixedSize(true)
 
-        val items: MutableList<MaizePerformance> = ArrayList()
+        val items: MutableList<CropPerformance> = ArrayList()
 
         items.add(
             createPerformanceObject(
@@ -152,38 +150,41 @@ class MaizePerformanceActivity : BaseActivity() {
             )
         )
 
-        mAdapter = MaizePerformanceAdapter(this, items, TheItemAnimation.FADE_IN)
+        mAdapter =
+            CropPerformanceAdapter(this@MaizePerformanceActivity, items, TheItemAnimation.FADE_IN)
         recyclerView!!.adapter = mAdapter
         mAdapter!!.setItems(selectedPerformanceValue, items)
 
-
-        mAdapter!!.setOnItemClickListener { view: View?, clickedMaizePerformance: MaizePerformance?, position: Int ->
-            try {
-                //show a popup dialog here
+        mAdapter!!.setOnItemClickListener(object : CropPerformanceAdapter.OnItemClickListener {
+            override fun onItemClick(
+                view: View?,
+                clickedCropPerformance: CropPerformance?,
+                position: Int
+            ) {
                 val arguments = Bundle()
                 arguments.putParcelable(
                     MaizePerformanceDialogFragment.PERFORMANCE_DATA,
-                    clickedMaizePerformance
+                    clickedCropPerformance
                 )
 
                 val rootYieldDialogFragment = MaizePerformanceDialogFragment()
                 rootYieldDialogFragment.arguments = arguments
                 rootYieldDialogFragment.setOnDismissListener(object :
-                    IMaizePerformanceDismissListener {
+                    ICropPerformanceListener {
                     override fun onDismiss(
-                        performance: MaizePerformance,
+                        performance: CropPerformance,
                         performanceConfirmed: Boolean
                     ) {
                         if (performanceConfirmed) {
-                            if (savedMaizePerformance == null) {
-                                savedMaizePerformance = MaizePerformance()
+                            if (savedCropPerformance == null) {
+                                savedCropPerformance = CropPerformance()
                             }
                             val maizePerformance = performance.maizePerformance
-                            selectedPerformanceValue = performance.performanceValue
-                            savedMaizePerformance!!.maizePerformance = maizePerformance
-                            savedMaizePerformance!!.performanceValue = selectedPerformanceValue
+                            selectedPerformanceValue = performance.performanceValue!!
+                            savedCropPerformance!!.maizePerformance = maizePerformance
+                            savedCropPerformance!!.performanceValue = selectedPerformanceValue
 
-                            database.maizePerformanceDao().insert(savedMaizePerformance!!)
+                            database.maizePerformanceDao().insert(savedCropPerformance!!)
 
                             mAdapter!!.setActiveRowIndex(position)
                             maizePerformanceValue = selectedPerformanceValue
@@ -199,10 +200,9 @@ class MaizePerformanceActivity : BaseActivity() {
                     dialogFragment = rootYieldDialogFragment,
                     tag = RootYieldDialogFragment.ARG_ITEM_ID
                 )
-            } catch (ex: Exception) {
-                Sentry.captureException(ex)
             }
-        }
+
+        })
     }
 
     private fun createPerformanceObject(
@@ -211,8 +211,8 @@ class MaizePerformanceActivity : BaseActivity() {
         performanceValue: String,
         maizePerformance: String,
         maizePerformanceLabel: String
-    ): MaizePerformance {
-        val performance = MaizePerformance()
+    ): CropPerformance {
+        val performance = CropPerformance()
         performance.imageId = yieldImage
         performance.maizePerformanceDesc = performanceDesc
         performance.performanceValue = performanceValue
