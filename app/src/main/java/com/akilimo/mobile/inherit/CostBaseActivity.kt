@@ -4,13 +4,7 @@ import android.widget.Toast
 import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.models.OperationCost
 import com.akilimo.mobile.models.OperationCostResponse
-import com.akilimo.mobile.rest.RestParameters
-import com.android.volley.VolleyError
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.sentry.Sentry
-import org.json.JSONArray
-import org.json.JSONObject
 
 
 abstract class CostBaseActivity : BaseActivity() {
@@ -49,7 +43,7 @@ abstract class CostBaseActivity : BaseActivity() {
             }
 
             override fun onFailure(call: retrofit2.Call<OperationCostResponse>, t: Throwable) {
-                Toast.makeText(context, t.message, Toast.LENGTH_LONG)
+                Toast.makeText(this@CostBaseActivity, t.message, Toast.LENGTH_LONG)
                     .show()
                 Sentry.captureException(t)
             }
