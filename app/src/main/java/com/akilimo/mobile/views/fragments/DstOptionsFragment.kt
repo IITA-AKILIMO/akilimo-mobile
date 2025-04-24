@@ -1,156 +1,122 @@
-package com.akilimo.mobile.views.fragments;
+package com.akilimo.mobile.views.fragments
 
+import android.content.Intent
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.akilimo.mobile.R
+import com.akilimo.mobile.adapters.AdapterListAnimation
+import com.akilimo.mobile.databinding.FragmentDstOptionsBinding
+import com.akilimo.mobile.inherit.BaseFragment
+import com.akilimo.mobile.models.Recommendations
+import com.akilimo.mobile.utils.TheItemAnimation
+import com.akilimo.mobile.utils.enums.EnumAdvice
+import com.akilimo.mobile.views.activities.usecases.FertilizerRecActivity
+import com.akilimo.mobile.views.activities.usecases.InterCropRecActivity
+import com.akilimo.mobile.views.activities.usecases.PlantingPracticesActivity
+import com.akilimo.mobile.views.activities.usecases.ScheduledPlantingActivity
+import com.blogspot.atifsoftwares.animatoolib.Animatoo
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.blogspot.atifsoftwares.animatoolib.Animatoo;
-import com.google.android.material.snackbar.Snackbar;
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.adapters.AdapterListAnimation;
-import com.akilimo.mobile.databinding.FragmentDstOptionsBinding;
-import com.akilimo.mobile.inherit.BaseFragment;
-import com.akilimo.mobile.models.Recommendations;
-import com.akilimo.mobile.utils.TheItemAnimation;
-import com.akilimo.mobile.utils.enums.EnumAdvice;
-import com.akilimo.mobile.views.activities.usecases.FertilizerRecActivity;
-import com.akilimo.mobile.views.activities.usecases.InterCropRecActivity;
-import com.akilimo.mobile.views.activities.usecases.PlantingPracticesActivity;
-import com.akilimo.mobile.views.activities.usecases.ScheduledPlantingActivity;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple [Fragment] subclass.
  */
-public class DstOptionsFragment extends BaseFragment {
+class DstOptionsFragment : BaseFragment() {
+    var recyclerView: RecyclerView? = null
+    private var _binding: FragmentDstOptionsBinding? = null
+    private val binding get() = _binding!!
 
+    var frString: String? = null
+    var icString: String? = null
+    var sphString: String? = null
+    var bppString: String? = null
 
-    RecyclerView recyclerView;
-    FragmentDstOptionsBinding binding;
+    private var mAdapter: AdapterListAnimation? = null
+    private var items: MutableList<Recommendations> = ArrayList()
 
-
-    String frString;
-    String icString;
-    String sphString;
-    String bppString;
-
-    private AdapterListAnimation mAdapter;
-    private List<Recommendations> items = new ArrayList<>();
-
-    public DstOptionsFragment() {
-        // Required empty public constructor
+    companion object {
+        fun newInstance(): DstOptionsFragment {
+            return DstOptionsFragment()
+        }
     }
 
-    public static DstOptionsFragment newInstance() {
-        return new DstOptionsFragment();
+    override fun loadFragmentLayout(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentDstOptionsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.context = context;
+    override fun refreshData() {
+        throw UnsupportedOperationException()
     }
 
-    @Override
-    protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentDstOptionsBinding.inflate(inflater, container, false);
-        return binding.getRoot();
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val context = requireContext()
 
-    @Override
-    public void refreshData() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        frString = context.getString(R.string.lbl_fertilizer_recommendations);
-        icString = context.getString(R.string.lbl_intercropping);
-        sphString = context.getString(R.string.lbl_scheduled_planting_and_harvest);
-        bppString = context.getString(R.string.lbl_best_planting_practices);
+        frString = context.getString(R.string.lbl_fertilizer_recommendations)
+        icString = context.getString(R.string.lbl_intercropping)
+        sphString = context.getString(R.string.lbl_scheduled_planting_and_harvest)
+        bppString = context.getString(R.string.lbl_best_planting_practices)
 
 
-        recyclerView = binding.recyclerView;
+        recyclerView = binding.recyclerView
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.setHasFixedSize(true);
-        mAdapter = new AdapterListAnimation(context);
-        recyclerView.setAdapter(mAdapter);
+        recyclerView!!.layoutManager = LinearLayoutManager(context)
+        recyclerView!!.setHasFixedSize(true)
+        mAdapter = AdapterListAnimation(context)
+        recyclerView!!.adapter = mAdapter
 
-        items = new ArrayList<>();
-        Recommendations FR = new Recommendations();
-        FR.setRecCode(EnumAdvice.FR);
-        FR.setRecommendationName(frString);
-        items.add(FR);
+        items = ArrayList()
+        val FR = Recommendations()
+        FR.recCode = EnumAdvice.FR
+        FR.recommendationName = frString
+        items.add(FR)
 
-        Recommendations IC = new Recommendations();
-        IC.setRecCode(EnumAdvice.IC_MAIZE);
-        IC.setRecommendationName(icString);
-        items.add(IC);
+        val IC = Recommendations()
+        IC.recCode = EnumAdvice.IC_MAIZE
+        IC.recommendationName = icString
+        items.add(IC)
 
-        Recommendations SPH = new Recommendations();
-        SPH.setRecCode(EnumAdvice.SPH);
-        SPH.setRecommendationName(sphString);
-        items.add(SPH);
+        val SPH = Recommendations()
+        SPH.recCode = EnumAdvice.SPH
+        SPH.recommendationName = sphString
+        items.add(SPH)
 
-        Recommendations BPP = new Recommendations();
-        BPP.setRecCode(EnumAdvice.BPP);
-        BPP.setRecommendationName(bppString);
-        items.add(BPP);
+        val BPP = Recommendations()
+        BPP.recCode = EnumAdvice.BPP
+        BPP.recommendationName = bppString
+        items.add(BPP)
 
-        initComponent();
+        initComponent()
     }
 
 
-    private void initComponent() {
+    private fun initComponent() {
         //set data and list adapter
-        mAdapter.setItems(items, TheItemAnimation.FADE_IN);
+        mAdapter!!.setItems(items, TheItemAnimation.FADE_IN)
         // on item list clicked
-        mAdapter.setOnItemClickListener((view, obj, position) -> {
+        mAdapter!!.setOnItemClickListener { view: View?, obj: Recommendations, position: Int ->
             //let us process the data
-            Intent intent = null;
-            EnumAdvice advice = obj.getRecCode();
-            if (advice == null) {
-                return;
-            }
-            switch (advice) {
-                case FR:
-                    intent = new Intent(context, FertilizerRecActivity.class);
-                    break;
-                case BPP:
-                    intent = new Intent(context, PlantingPracticesActivity.class);
-                    break;
-                case IC_MAIZE:
-                    intent = new Intent(context, InterCropRecActivity.class);
-                    break;
-                case SPH:
-                    intent = new Intent(context, ScheduledPlantingActivity.class);
-                    break;
-                case WM:
-                    break;
+            var intent: Intent? = null
+            val advice = obj.recCode ?: return@setOnItemClickListener
+            when (advice) {
+                EnumAdvice.FR -> intent = Intent(context, FertilizerRecActivity::class.java)
+                EnumAdvice.BPP -> intent = Intent(context, PlantingPracticesActivity::class.java)
+                EnumAdvice.IC_MAIZE -> intent = Intent(context, InterCropRecActivity::class.java)
+                EnumAdvice.SPH -> intent = Intent(context, ScheduledPlantingActivity::class.java)
+                else -> {}
             }
             if (intent != null) {
-                startActivity(intent);
-                Animatoo.animateSlideRight(context);
-            } else {
-                Snackbar.make(view, "Item " + obj.getRecommendationName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
+                startActivity(intent)
+                Animatoo.animateSlideRight(context)
             }
-        });
-
+        }
     }
-
 }
