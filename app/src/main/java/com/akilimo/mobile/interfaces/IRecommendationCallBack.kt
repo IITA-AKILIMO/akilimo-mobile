@@ -1,8 +1,8 @@
 package com.akilimo.mobile.interfaces
 
-import com.akilimo.mobile.entities.ProfileInfo
+import com.akilimo.mobile.entities.UserProfile
 
 interface IRecommendationCallBack {
-    fun onDataReceived(profileInfo: ProfileInfo)
+    fun onDataReceived(userProfile: UserProfile)
     fun onDismiss()
 }
