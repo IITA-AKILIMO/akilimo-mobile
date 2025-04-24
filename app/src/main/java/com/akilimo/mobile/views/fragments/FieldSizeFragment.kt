@@ -2,7 +2,6 @@ package com.akilimo.mobile.views.fragments
 
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -57,15 +56,11 @@ class FieldSizeFragment : BaseStepFragment() {
     private var oldAreaUnit: String? = ""
     private var fieldSizeRadioIndex = 0
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        this.context = context
-    }
 
     override fun loadFragmentLayout(
         inflater: LayoutInflater,
-        container: ViewGroup,
-        savedInstanceState: Bundle
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFieldSizeBinding.inflate(inflater, container, false)
         return binding.root
@@ -217,18 +212,18 @@ class FieldSizeFragment : BaseStepFragment() {
         }
 
 
-        val exactArea = context.getString(R.string.exact_field_area)
+        val exactArea = requireContext().getString(R.string.exact_field_area)
         rd_quarter_acre!!.text = quarterAcre
         rd_half_acre!!.text = halfAcre
         rd_one_acre!!.text = oneAcre
         rd_two_half_acre!!.text = twoHalfAcre
         rdSpecifyArea!!.text = exactArea
-        titleMessage = context.getString(R.string.lbl_cassava_field_size, displayAreaUnit)
+        titleMessage = requireContext().getString(R.string.lbl_cassava_field_size, displayAreaUnit)
         title!!.text = titleMessage
     }
 
     private fun showCustomDialog() {
-        val dialog = Dialog(context)
+        val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE) // before
         dialog.setContentView(R.layout.dialog_field_size)
         dialog.setCancelable(true)
@@ -238,7 +233,7 @@ class FieldSizeFragment : BaseStepFragment() {
         lp.width = WindowManager.LayoutParams.WRAP_CONTENT
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT
 
-        titleMessage = context.getString(R.string.lbl_cassava_field_size, displayAreaUnit)
+        titleMessage = requireContext().getString(R.string.lbl_cassava_field_size, displayAreaUnit)
 
         val dialogTitle = dialog.findViewById<TextView>(R.id.dialogTitle)
         val et_post = dialog.findViewById<EditText>(R.id.et_post)
@@ -259,7 +254,7 @@ class FieldSizeFragment : BaseStepFragment() {
             myFieldSize = et_post.text.toString().trim { it <= ' ' }
             if (myFieldSize!!.isEmpty()) {
                 val prompt =
-                    context.getString(R.string.lbl_field_size_prompt, displayAreaUnit)
+                    requireContext().getString(R.string.lbl_field_size_prompt, displayAreaUnit)
                 Toast.makeText(context, prompt, Toast.LENGTH_SHORT).show()
             } else {
                 areaSize = myFieldSize!!.toDouble()
@@ -278,10 +273,10 @@ class FieldSizeFragment : BaseStepFragment() {
         fieldSizeRadioIndex = rdgFieldArea!!.checkedRadioButtonId
         if (convertedAreaSize <= 0) {
             showCustomWarningDialog(
-                context.getString(
+                requireContext().getString(
                     R.string.lbl_field_size_prompt,
                     displayAreaUnit
-                ), context.getString(R.string.lbl_field_size_prompt, displayAreaUnit)
+                ), requireContext().getString(R.string.lbl_field_size_prompt, displayAreaUnit)
             )
             return
         }
@@ -310,7 +305,7 @@ class FieldSizeFragment : BaseStepFragment() {
         if (!(areaSize <= 0)) {
             return null
         }
-        errorMessage = context.getString(R.string.lbl_field_size_prompt, displayAreaUnit)
+        errorMessage = requireContext().getString(R.string.lbl_field_size_prompt, displayAreaUnit)
         return VerificationError(errorMessage)
     }
 
