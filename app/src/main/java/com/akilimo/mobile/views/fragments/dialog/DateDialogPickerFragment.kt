@@ -75,7 +75,7 @@ class DateDialogPickerFragment : AppCompatDialogFragment, OnDateSetListener {
         myCalendar[Calendar.YEAR] = year
         myCalendar[Calendar.MONTH] = month
         myCalendar[Calendar.DAY_OF_MONTH] = dayOfMonth
-        selectedDate = DateHelper.getSimpleDateFormatter().format(myCalendar.time)
+        selectedDate = DateHelper.simpleDateFormatter.format(myCalendar.time)
 
         //TODO use the Fragment Result API, which is cleaner and lifecycle-aware.
         val target = targetFragment
