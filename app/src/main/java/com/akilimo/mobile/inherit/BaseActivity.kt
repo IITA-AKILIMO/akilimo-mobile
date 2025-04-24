@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import com.akilimo.mobile.R
+import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.utils.SessionManager
@@ -35,7 +36,8 @@ import java.util.Locale
 abstract class BaseActivity : AppCompatActivity() {
     protected val LOG_TAG: String = this::class.java.simpleName
 
-    protected var sessionManager: SessionManager? = null
+    protected val sessionManager: SessionManager by lazy { SessionManager(this@BaseActivity) }
+    protected val database: AppDatabase by lazy { getDatabase(this@BaseActivity) }
 
 
     @Deprecated("")
@@ -94,14 +96,11 @@ abstract class BaseActivity : AppCompatActivity() {
         buttonTitle: String? = null
     ) {
 
-        if (sessionManager == null) {
-            sessionManager = SessionManager(this@BaseActivity)
-        }
-        val notificationCount = sessionManager!!.getNotificationCount()
+        val notificationCount = sessionManager.getNotificationCount()
         if (notificationCount <= 0) {
             return
         }
-        sessionManager!!.updateNotificationCount(notificationCount)
+        sessionManager.updateNotificationCount(notificationCount)
 
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE) // before
