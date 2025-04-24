@@ -22,9 +22,6 @@ import com.stepstone.stepper.VerificationError
 import io.sentry.Sentry
 
 
-/**
- * A simple [Fragment] subclass.
- */
 class BioDataFragment : BaseStepFragment() {
     private var userProfile: UserProfile? = null
 
@@ -58,7 +55,12 @@ class BioDataFragment : BaseStepFragment() {
 
     private var rememberUserInfo = false
 
-
+    companion object {
+        fun newInstance(): BioDataFragment {
+            return BioDataFragment()
+        }
+    }
+    
     override fun loadFragmentLayout(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -151,7 +153,7 @@ class BioDataFragment : BaseStepFragment() {
         }
     }
 
-    fun refreshData() {
+    private fun refreshData() {
         try {
             userProfile = database.profileInfoDao().findOne()
             rememberUserInfo = sessionManager.getRememberUserInfo()
@@ -279,11 +281,5 @@ class BioDataFragment : BaseStepFragment() {
     }
 
     override fun onError(error: VerificationError) {
-    }
-
-    companion object {
-        fun newInstance(): BioDataFragment {
-            return BioDataFragment()
-        }
     }
 }
