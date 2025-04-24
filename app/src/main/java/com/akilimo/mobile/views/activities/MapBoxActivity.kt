@@ -10,7 +10,6 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ActivityMapBoxBinding
 import com.akilimo.mobile.inherit.BaseLocationPicker
 import com.akilimo.mobile.services.GPSTracker
-import com.akilimo.mobile.utils.SessionManager
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.snackbar.Snackbar
@@ -46,9 +45,8 @@ class MapBoxActivity : BaseLocationPicker() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sessionManager = SessionManager(this)
         accessToken = sessionManager.getMapBoxApiKey()
-        Mapbox.getInstance(this, accessToken)
+        Mapbox.getInstance(this@MapBoxActivity, accessToken)
 
         _binding = ActivityMapBoxBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -200,11 +198,12 @@ class MapBoxActivity : BaseLocationPicker() {
 
     private fun processActivityResult() {
         if (currentCoordinates != null) {
-            val intent = Intent()
-            intent.putExtra(LAT, currentCoordinates!!.latitude)
-            intent.putExtra(LON, currentCoordinates!!.longitude)
-            intent.putExtra(ALT, currentCoordinates!!.altitude)
-            intent.putExtra(PLACE_NAME, placeName)
+            val intent = Intent().apply {
+                putExtra(LAT, currentCoordinates!!.latitude)
+                putExtra(LON, currentCoordinates!!.longitude)
+                putExtra(ALT, currentCoordinates!!.altitude)
+                putExtra(PLACE_NAME, placeName)
+            }
             setResult(RESULT_OK, intent)
             closeActivity(false)
         }
