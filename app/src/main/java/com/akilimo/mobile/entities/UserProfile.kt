@@ -36,16 +36,16 @@ data class UserProfile(
     var fullMobileNumber: String? = null,
 
     @ColumnInfo(name = "farm_name")
-    var farmName: String? = null,
+    var farmName: String = "",
 
     @ColumnInfo(name = "field_description")
-    var fieldDescription: String? = null,
+    var fieldDescription: String = "AKILIMO Field",
 
     @ColumnInfo(name = "gender")
-    var gender: String? = null,
+    var gender: String = "NA",
 
     @ColumnInfo(name = "akilimo_interest")
-    var akilimoInterest: String? = null,
+    var akilimoInterest: String = "",
 
     @ColumnInfo(name = "selected_gender_index")
     var selectedGenderIndex: Int = -1,
@@ -60,19 +60,19 @@ data class UserProfile(
     var sendSms: Boolean = false,
 
     @ColumnInfo(name = "language")
-    var language: String? = null,
+    var language: String = "en",
 
     @ColumnInfo(name = "country_code")
-    var countryCode: String? = null,
+    var countryCode: String = "",
 
     @ColumnInfo(name = "country_name")
-    var countryName: String? = null,
+    var countryName: String = "",
 
     @ColumnInfo(name = "selected_country_index")
     var selectedCountryIndex: Int = 0,
 
     @ColumnInfo(name = "currency_code")
-    var currencyCode: String? = null,
+    var currencyCode: String = "",
 
     @ColumnInfo(name = "risk_att")
     var riskAtt: Int = 0,
