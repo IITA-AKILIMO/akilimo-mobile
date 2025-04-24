@@ -9,6 +9,7 @@ import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.AkilimoCurrency
 import com.akilimo.mobile.entities.CassavaMarket
 import com.akilimo.mobile.entities.CassavaPrice
+import com.akilimo.mobile.entities.CropPerformance
 import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.entities.Fertilizer
 import com.akilimo.mobile.entities.FertilizerPrice
@@ -17,7 +18,6 @@ import com.akilimo.mobile.entities.FieldYield
 import com.akilimo.mobile.entities.InterCropFertilizer
 import com.akilimo.mobile.entities.InvestmentAmount
 import com.akilimo.mobile.entities.MaizeMarket
-import com.akilimo.mobile.entities.MaizePerformance
 import com.akilimo.mobile.entities.MaizePrice
 import com.akilimo.mobile.entities.MandatoryInfo
 import com.akilimo.mobile.entities.PotatoMarket
@@ -41,7 +41,7 @@ import com.akilimo.mobile.entities.UserProfile
         InvestmentAmount::class,
         UserLocation::class,
         MaizeMarket::class,
-        MaizePerformance::class,
+        CropPerformance::class,
         MaizePrice::class,
         MandatoryInfo::class,
         PotatoMarket::class,
@@ -71,7 +71,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun investmentAmountDao(): InvestmentAmountDao
     abstract fun locationInfoDao(): UserLocationDao
     abstract fun maizeMarketDao(): MaizeMarketDao
-    abstract fun maizePerformanceDao(): MaizePerformanceDao
+    abstract fun maizePerformanceDao(): CropPerformanceDao
     abstract fun maizePriceDao(): MaizePriceDao
     abstract fun mandatoryInfoDao(): MandatoryInfoDao
     abstract fun potatoMarketDao(): PotatoMarketDao
