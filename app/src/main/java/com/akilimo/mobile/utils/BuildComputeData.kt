@@ -186,7 +186,7 @@ class BuildComputeData(context: Context) {
 
         if (profileInfo != null) {
             countryCode = profileInfo.countryCode
-            computeRequest.currency = profileInfo.currency
+            computeRequest.currency = profileInfo.currencyCode
             computeRequest.country = countryCode
             computeRequest.riskAttitude = profileInfo.riskAtt
         }

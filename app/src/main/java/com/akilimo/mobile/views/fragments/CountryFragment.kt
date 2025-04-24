@@ -71,9 +71,9 @@ class CountryFragment : BaseStepFragment() {
             if (userProfile != null) {
                 name = userProfile!!.firstName
                 countryCode = userProfile!!.countryCode!!
-                currency = userProfile!!.currency
+                currency = userProfile!!.currencyCode
                 countryName = userProfile!!.countryName
-                currency = userProfile!!.currency
+                currency = userProfile!!.currencyCode
                 selectedLanguage = userProfile!!.language
 
                 if (countryCode.isNotEmpty()) {
@@ -166,7 +166,7 @@ class CountryFragment : BaseStepFragment() {
             userProfile!!.selectedCountryIndex = selectedCountryIndex
             userProfile!!.countryCode = countryCode
             userProfile!!.countryName = countryName
-            userProfile!!.currency = currency
+            userProfile!!.currencyCode = currency
 
             dataIsValid = !TextUtils.isEmpty(countryCode)
             if (userProfile!!.profileId != null) {

@@ -100,7 +100,7 @@ class RecommendationsActivity : BaseActivity() {
         useCase = database.useCaseDao().findOne()
         if (profileInfo != null) {
             countryCode = profileInfo.countryCode!!
-            currency = profileInfo.currency!!
+            currency = profileInfo.currencyCode!!
         }
 
         val FR = Recommendations()

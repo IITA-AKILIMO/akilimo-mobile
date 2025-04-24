@@ -71,8 +71,8 @@ data class UserProfile(
     @ColumnInfo(name = "selected_country_index")
     var selectedCountryIndex: Int = 0,
 
-    @ColumnInfo(name = "currency")
-    var currency: String? = null,
+    @ColumnInfo(name = "currency_code")
+    var currencyCode: String? = null,
 
     @ColumnInfo(name = "risk_att")
     var riskAtt: Int = 0,

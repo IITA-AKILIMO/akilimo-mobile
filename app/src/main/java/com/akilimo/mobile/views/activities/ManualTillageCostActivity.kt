@@ -8,7 +8,6 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentTransaction
 import com.akilimo.mobile.R
-import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityManualTillageCostBinding
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.FieldOperationCost
@@ -34,7 +33,9 @@ class ManualTillageCostActivity : CostBaseActivity() {
     var btnFinish: AppCompatButton? = null
     var btnCancel: AppCompatButton? = null
 
-    var binding: ActivityManualTillageCostBinding? = null
+    private var _binding: ActivityManualTillageCostBinding? = null
+    private val binding get() = _binding!!
+
     var mathHelper: MathHelper? = null
     var fieldOperationCost: FieldOperationCost? = null
 
@@ -48,36 +49,34 @@ class ManualTillageCostActivity : CostBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityManualTillageCostBinding.inflate(
+        _binding = ActivityManualTillageCostBinding.inflate(
             layoutInflater
         )
-        setContentView(binding!!.root)
-        context = this
-        database = getDatabase(context)
+        setContentView(binding.root)
+
         queue = Volley.newRequestQueue(this)
         mathHelper = MathHelper()
 
-        toolbar = binding!!.toolbar
-        manualPloughCostTitle = binding!!.manualTillage.manualPloughCostTitle
-        manualRidgeCostTitle = binding!!.manualTillage.manualRidgeCostTitle
-        manualPloughCostText = binding!!.manualTillage.manualPloughCostText
-        manualRidgingCostText = binding!!.manualTillage.manualRidgingCostText
-        btnPloughCost = binding!!.manualTillage.btnPloughCost
-        btnRidgeCost = binding!!.manualTillage.btnRidgeCost
-        btnFinish = binding!!.twoButtons.btnFinish
-        btnCancel = binding!!.twoButtons.btnCancel
+        toolbar = binding.toolbar
+        manualPloughCostTitle = binding.manualTillage.manualPloughCostTitle
+        manualRidgeCostTitle = binding.manualTillage.manualRidgeCostTitle
+        manualPloughCostText = binding.manualTillage.manualPloughCostText
+        manualRidgingCostText = binding.manualTillage.manualRidgingCostText
+        btnPloughCost = binding.manualTillage.btnPloughCost
+        btnRidgeCost = binding.manualTillage.btnRidgeCost
+        btnFinish = binding.twoButtons.btnFinish
+        btnCancel = binding.twoButtons.btnCancel
 
         val mandatoryInfo = database.mandatoryInfoDao().findOne()
         if (mandatoryInfo != null) {
-            areaUnit = mandatoryInfo.areaUnit
+            areaUnit = mandatoryInfo.areaUnit!!
             fieldSize = mandatoryInfo.areaSize
         }
 
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.countryCode
-            currency = profileInfo.currency
-            currencyCode = profileInfo.currency
+            countryCode = profileInfo.countryCode!!
+            currencyCode = profileInfo.currencyCode!!
             val myAkilimoCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode)
             currencySymbol = myAkilimoCurrency.currencySymbol
         }

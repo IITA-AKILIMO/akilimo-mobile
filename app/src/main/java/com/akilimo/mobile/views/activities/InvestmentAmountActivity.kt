@@ -176,8 +176,8 @@ class InvestmentAmountActivity : BaseActivity() {
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
             countryCode = profileInfo.countryCode!!
-            if (!profileInfo.currency.isNullOrEmpty()) {
-                currency = profileInfo.currency!!
+            if (!profileInfo.currencyCode.isNullOrEmpty()) {
+                currency = profileInfo.currencyCode!!
             }
         }
         currencyCode = currency

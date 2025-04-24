@@ -94,7 +94,7 @@ class FertilizersActivity : BaseActivity() {
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
             countryCode = profileInfo.countryCode!!
-            currency = profileInfo.currency!!
+            currency = profileInfo.currencyCode!!
         }
 
         initToolbar()
