@@ -85,7 +85,9 @@ class RecommendationsActivity : BaseActivity() {
         recyclerView!!.layoutManager = LinearLayoutManager(this)
         recyclerView!!.setHasFixedSize(true)
         //set data and list adapter
-        mAdapter = AdapterListAnimation(this, R.layout.item_card_recommendation_no_arrow)
+        mAdapter = AdapterListAnimation()
+
+
         recyclerView!!.adapter = mAdapter
         items = ArrayList()
 
@@ -93,8 +95,8 @@ class RecommendationsActivity : BaseActivity() {
         val profileInfo = database.profileInfoDao().findOne()
         useCase = database.useCaseDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.countryCode!!
-            currency = profileInfo.currencyCode!!
+            countryCode = profileInfo.countryCode
+            currency = profileInfo.currencyCode
         }
 
         val FR = Recommendations()
@@ -171,9 +173,8 @@ class RecommendationsActivity : BaseActivity() {
     }
 
     private fun setAdapter() {
-        val database = getDatabase(this@RecommendationsActivity)
-        mAdapter!!.setItems(items, TheItemAnimation.BOTTOM_UP)
-        // on item list clicked
+        mAdapter!!.setAnimationType(TheItemAnimation.BOTTOM_UP)
+        mAdapter!!.submitList(items)
         mAdapter!!.setOnItemClickListener { view: View?, obj: Recommendations, position: Int ->
             //let us process the data
             var intent: Intent? = null
@@ -199,6 +200,7 @@ class RecommendationsActivity : BaseActivity() {
 
                 else -> {}
             }
+
             if (intent != null) {
                 if (useCase == null) {
                     useCase = UseCases()
@@ -213,7 +215,6 @@ class RecommendationsActivity : BaseActivity() {
 
 
     private fun updateCurrencyList() {
-        val database = getDatabase(this@RecommendationsActivity)
         val currencyCall = AkilimoApi.apiService.listCurrencies()
         currencyCall.enqueue(object : Callback<AkilimoCurrencyResponse> {
             override fun onResponse(
