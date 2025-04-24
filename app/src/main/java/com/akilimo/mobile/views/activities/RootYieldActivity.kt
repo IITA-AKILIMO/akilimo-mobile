@@ -5,7 +5,6 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.FieldYieldAdapter
-import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityRootYieldBinding
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.FieldYield
@@ -22,19 +21,9 @@ import io.sentry.Sentry
 import java.util.Locale
 
 class RootYieldActivity : BaseActivity() {
-    var cassavaRootYield: String? = null
-
-
-//    var toolbar: Toolbar? = null
-//    var recyclerView: RecyclerView? = null
-//    var viewPos: View? = null
-//    var btnFinish: AppCompatButton? = null
-//    var btnCancel: AppCompatButton? = null
-//    var rootYieldTitle: TextView? = null
 
     private var _binding: ActivityRootYieldBinding? = null
     private val binding get() = _binding!!
-
 
     private var savedYield: FieldYield? = null
     private var useCase: UseCases? = null
@@ -55,17 +44,16 @@ class RootYieldActivity : BaseActivity() {
 
         setContentView(binding.root)
 
-        val context = this
-        database = getDatabase(context)
+
         val mandatoryInfo = database.mandatoryInfoDao().findOne()
         useCase = database.useCaseDao().findOne()
         if (mandatoryInfo != null) {
-            areaUnit = mandatoryInfo.areaUnit
+            areaUnit = mandatoryInfo.areaUnit!!
         }
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.countryCode
-            currency = profileInfo.currencyCode
+            countryCode = profileInfo.countryCode!!
+            currency = profileInfo.currencyCode!!
         }
 
         savedYield = database.fieldYieldDao().findOne()
