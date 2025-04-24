@@ -14,12 +14,10 @@ import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityRecommendationsActivityBinding
 import com.akilimo.mobile.entities.AkilimoCurrency
 import com.akilimo.mobile.entities.AkilimoCurrencyResponse
-import com.akilimo.mobile.entities.MandatoryInfo
 import com.akilimo.mobile.entities.UseCases
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.models.Recommendations
-import com.akilimo.mobile.utils.SessionManager
 import com.akilimo.mobile.utils.TheItemAnimation
 import com.akilimo.mobile.utils.enums.EnumAdvice
 import com.akilimo.mobile.utils.enums.EnumCountry
@@ -36,7 +34,8 @@ class RecommendationsActivity : BaseActivity() {
     var toolbar: Toolbar? = null
     var recyclerView: RecyclerView? = null
 
-    var binding: ActivityRecommendationsActivityBinding? = null
+    private var _binding: ActivityRecommendationsActivityBinding? = null
+    private val binding get() = _binding!!
 
 
     private var frString: String? = null
@@ -45,25 +44,20 @@ class RecommendationsActivity : BaseActivity() {
     private var sphString: String? = null
     private var bppString: String? = null
 
-    private val mandatoryInfo: MandatoryInfo? = null
     private var useCase: UseCases? = null
     private var mAdapter: AdapterListAnimation? = null
     private var items: MutableList<Recommendations> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityRecommendationsActivityBinding.inflate(
+        _binding = ActivityRecommendationsActivityBinding.inflate(
             layoutInflater
         )
 
-        setContentView(binding!!.root)
+        setContentView(binding.root)
 
-
-        if (sessionManager == null) {
-            sessionManager = SessionManager(this@RecommendationsActivity)
-        }
-        toolbar = binding!!.toolbar
-        recyclerView = binding!!.recyclerView
+        toolbar = binding.toolbar
+        recyclerView = binding.recyclerView
         initToolbar()
         initComponent()
 
