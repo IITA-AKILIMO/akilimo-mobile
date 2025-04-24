@@ -9,7 +9,6 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import com.akilimo.mobile.R
-import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivitySweetPotatoMarketBinding
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.PotatoMarket
@@ -21,8 +20,8 @@ import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumPotatoProduceType
 import com.akilimo.mobile.utils.enums.EnumUnitOfSale
+import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.SweetPotatoPriceDialogFragment
-import com.android.volley.toolbox.Volley
 import io.sentry.Sentry
 
 class SweetPotatoMarketActivity : BaseActivity() {
@@ -35,7 +34,8 @@ class SweetPotatoMarketActivity : BaseActivity() {
     var btnFinish: AppCompatButton? = null
     var btnCancel: AppCompatButton? = null
 
-    var binding: ActivitySweetPotatoMarketBinding? = null
+    private var _binding: ActivitySweetPotatoMarketBinding? = null
+    private val binding get() = _binding!!
 
     private var mathHelper: MathHelper? = null
     private var potatoMarket: PotatoMarket? = null
@@ -64,30 +64,27 @@ class SweetPotatoMarketActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySweetPotatoMarketBinding.inflate(
+        _binding = ActivitySweetPotatoMarketBinding.inflate(
             layoutInflater
         )
-        setContentView(binding!!.root)
+        setContentView(binding.root)
 
-        context = this
-        database = getDatabase(context)
 
-        queue = Volley.newRequestQueue(context)
-        mathHelper = MathHelper(this)
+        mathHelper = MathHelper()
 
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.countryCode
-            currency = profileInfo.currencyCode
+            countryCode = profileInfo.countryCode!!
+            currency = profileInfo.currencyCode!!
         }
 
-        toolbar = binding!!.toolbar
-        unitOfSalePotatoTitle = binding!!.potatoMarket.unitOfSalePotatoTitle
-        unitOfSalePotatoCard = binding!!.potatoMarket.unitOfSalePotatoCard
-        rdgPotatoProduceType = binding!!.potatoMarket.rdgPotatoProduceType
-        rdgUnitOfSalePotato = binding!!.potatoMarket.rdgUnitOfSalePotato
-        btnFinish = binding!!.potatoMarket.twoButtons.btnFinish
-        btnCancel = binding!!.potatoMarket.twoButtons.btnCancel
+        toolbar = binding.toolbar
+        unitOfSalePotatoTitle = binding.potatoMarket.unitOfSalePotatoTitle
+        unitOfSalePotatoCard = binding.potatoMarket.unitOfSalePotatoCard
+        rdgPotatoProduceType = binding.potatoMarket.rdgPotatoProduceType
+        rdgUnitOfSalePotato = binding.potatoMarket.rdgUnitOfSalePotato
+        btnFinish = binding.potatoMarket.twoButtons.btnFinish
+        btnCancel = binding.potatoMarket.twoButtons.btnCancel
 
         initToolbar()
         initComponent()
@@ -120,6 +117,7 @@ class SweetPotatoMarketActivity : BaseActivity() {
         }
 
         rdgUnitOfSalePotato!!.setOnCheckedChangeListener { group: RadioGroup?, radioIndex: Int ->
+            val context = this@SweetPotatoMarketActivity
             when (radioIndex) {
                 R.id.rd_per_kg -> {
                     unitOfSale = EnumUnitOfSale.ONE_KG.unitOfSale(context)
@@ -196,7 +194,7 @@ class SweetPotatoMarketActivity : BaseActivity() {
                 .insert(AdviceStatus(EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO.name, true))
             closeActivity(backPressed)
         } catch (ex: Exception) {
-            Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@SweetPotatoMarketActivity, ex.message, Toast.LENGTH_SHORT).show()
             Sentry.captureException(ex)
         }
     }
@@ -229,19 +227,22 @@ class SweetPotatoMarketActivity : BaseActivity() {
 
             override fun onFailure(call: retrofit2.Call<PotatoPriceResponse>, t: Throwable) {
                 Sentry.captureException(t)
-                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@SweetPotatoMarketActivity, t.message, Toast.LENGTH_SHORT).show()
             }
         })
     }
 
     private fun showPotatoUnitPriceDialog() {
-        val arguments = Bundle()
-
-        arguments.putString(SweetPotatoPriceDialogFragment.CURRENCY_CODE, currency)
-        arguments.putString(SweetPotatoPriceDialogFragment.COUNTRY_CODE, countryCode)
-        arguments.putDouble(SweetPotatoPriceDialogFragment.SELECTED_PRICE, unitPrice)
-        arguments.putString(SweetPotatoPriceDialogFragment.UNIT_OF_SALE, unitOfSale)
-        arguments.putParcelable(SweetPotatoPriceDialogFragment.ENUM_UNIT_OF_SALE, unitOfSaleEnum)
+        val arguments = Bundle().apply {
+            putString(SweetPotatoPriceDialogFragment.CURRENCY_CODE, currency)
+            putString(SweetPotatoPriceDialogFragment.COUNTRY_CODE, countryCode)
+            putDouble(SweetPotatoPriceDialogFragment.SELECTED_PRICE, unitPrice)
+            putString(SweetPotatoPriceDialogFragment.UNIT_OF_SALE, unitOfSale)
+            putParcelable(
+                SweetPotatoPriceDialogFragment.ENUM_UNIT_OF_SALE,
+                unitOfSaleEnum
+            )
+        }
 
         val priceDialogFragment = SweetPotatoPriceDialogFragment()
         priceDialogFragment.arguments = arguments
@@ -255,14 +256,10 @@ class SweetPotatoMarketActivity : BaseActivity() {
         }
 
 
-        supportFragmentManager.beginTransaction().apply {
-            supportFragmentManager.findFragmentByTag(SweetPotatoPriceDialogFragment.ARG_ITEM_ID)
-                ?.let {
-                    remove(it)
-                }
-            addToBackStack(null)
-        }.commit()  // Commit the transaction
-
-        priceDialogFragment.show(supportFragmentManager, SweetPotatoPriceDialogFragment.ARG_ITEM_ID)
+        showDialogFragmentSafely(
+            supportFragmentManager,
+            priceDialogFragment,
+            SweetPotatoPriceDialogFragment.ARG_ITEM_ID
+        )
     }
 }
