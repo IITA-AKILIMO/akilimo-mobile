@@ -88,25 +88,19 @@ abstract class AppDatabase : RoomDatabase() {
         // For Singleton instantiation
         @Volatile
         private var database: AppDatabase? = null
-        private const val NUMBER_OF_THREADS = 4
+        private const val DATABASE_NAME = "AKILIMO_22_APR_2025"
 
         @JvmStatic
-        @Synchronized
-        fun getDatabase(context: Context): AppDatabase? {
-            if (database == null) {
-                synchronized(AppDatabase::class.java) {
-                    if (database == null) {
-                        database = Room.databaseBuilder(
-                            context.applicationContext,
-                            AppDatabase::class.java, "AKILIMO_22_APR_2025"
-                        )
-                            .fallbackToDestructiveMigration()
-                            .allowMainThreadQueries()
-                            .build()
-                    }
-                }
+        fun getDatabase(context: Context): AppDatabase {
+            return database ?: synchronized(this) {
+                database ?: Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java, DATABASE_NAME
+                )
+                    .fallbackToDestructiveMigration()
+                    .build().also { database = it }
             }
-            return database
         }
     }
+
 }

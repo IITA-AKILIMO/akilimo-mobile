@@ -1,166 +1,171 @@
-package com.akilimo.mobile.views.activities.usecases;
+package com.akilimo.mobile.views.activities.usecases
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.akilimo.mobile.R
+import com.akilimo.mobile.adapters.RecOptionsAdapter
+import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
+import com.akilimo.mobile.databinding.ActivityScheduledPlantingBinding
+import com.akilimo.mobile.entities.UseCases
+import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.models.RecommendationOptions
+import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.utils.enums.EnumUseCase
+import com.akilimo.mobile.views.activities.CassavaMarketActivity
+import com.akilimo.mobile.views.activities.DatesActivity
+import com.akilimo.mobile.views.activities.RootYieldActivity
+import io.sentry.Sentry
 
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+class ScheduledPlantingActivity : BaseActivity() {
+    var toolbar: Toolbar? = null
+    var recyclerView: RecyclerView? = null
+    var btnGetRec: AppCompatButton? = null
 
-
-import com.google.android.material.snackbar.Snackbar;
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.adapters.RecOptionsAdapter;
-import com.akilimo.mobile.dao.AppDatabase;
-import com.akilimo.mobile.databinding.ActivityScheduledPlantingBinding;
-import com.akilimo.mobile.entities.UseCases;
-import com.akilimo.mobile.inherit.BaseActivity;
-import com.akilimo.mobile.models.RecommendationOptions;
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks;
-import com.akilimo.mobile.utils.enums.EnumUseCase;
-import com.akilimo.mobile.views.activities.CassavaMarketActivity;
-import com.akilimo.mobile.views.activities.DatesActivity;
-import com.akilimo.mobile.views.activities.RootYieldActivity;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import io.sentry.Sentry;
-
-public class ScheduledPlantingActivity extends BaseActivity {
+    private var _binding: ActivityScheduledPlantingBinding? = null
+    private val binding get() = _binding!!
 
 
-    Toolbar toolbar;
-    RecyclerView recyclerView;
-    AppCompatButton btnGetRec;
+    var plantingString: String? = null
+    var marketOutletString: String? = null
+    var rootYieldString: String? = null
 
-    ActivityScheduledPlantingBinding binding;
+    private var mAdapter: RecOptionsAdapter? = null
+    private var items: List<RecommendationOptions> = ArrayList()
+//    private var useCases: UseCases? = null
 
-
-    String plantingString;
-    String marketOutletString;
-    String rootYieldString;
-
-    private Activity activity;
-    private RecOptionsAdapter mAdapter;
-    private List<RecommendationOptions> items = new ArrayList<>();
-    private UseCases useCases;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityScheduledPlantingBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        context = this;
-        activity = this;
-        database = AppDatabase.getDatabase(context);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        _binding = ActivityScheduledPlantingBinding.inflate(
+            layoutInflater
+        )
+        setContentView(binding.root)
 
 
-        mAdapter = new RecOptionsAdapter();
-        toolbar = binding.toolbarLayout.toolbar;
-        recyclerView = binding.recyclerView;
-        btnGetRec = binding.singleButton.btnGetRecommendation;
+        mAdapter = RecOptionsAdapter()
+        toolbar = binding.toolbarLayout.toolbar
+        recyclerView = binding.recyclerView
+        btnGetRec = binding.singleButton.btnGetRecommendation
 
-        initToolbar();
-        initComponent();
+        initToolbar()
+        initComponent()
     }
 
-    @Override
-    protected void initToolbar() {
-        toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(getString(R.string.lbl_scheduled_planting_and_harvest));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    override fun initToolbar() {
+        toolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.title = getString(R.string.lbl_scheduled_planting_and_harvest)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setDisplayShowHomeEnabled(true)
 
-        toolbar.setNavigationOnClickListener(v -> closeActivity(false));
+        toolbar!!.setNavigationOnClickListener { v: View? -> closeActivity(false) }
     }
 
-    @Override
-    protected void initComponent() {
-        plantingString = getString(R.string.lbl_planting_harvest);
-        marketOutletString = getString(R.string.lbl_market_outlet);
-        rootYieldString = getString(R.string.lbl_typical_yield);
+    override fun initComponent() {
+        plantingString = getString(R.string.lbl_planting_harvest)
+        marketOutletString = getString(R.string.lbl_market_outlet)
+        rootYieldString = getString(R.string.lbl_typical_yield)
 
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(mAdapter);
+        recyclerView!!.layoutManager = LinearLayoutManager(this)
+        recyclerView!!.setHasFixedSize(true)
+        recyclerView!!.adapter = mAdapter
 
-
-        btnGetRec.setOnClickListener(view -> {
+        val database = getDatabase(this@ScheduledPlantingActivity)
+        btnGetRec!!.setOnClickListener { view: View? ->
             //launch the recommendation view
-            useCases = database.useCaseDao().findOne();
+            var useCases = database.useCaseDao().findOne()
             try {
                 if (useCases == null) {
-                    useCases = new UseCases();
+                    useCases = UseCases()
                 }
-                useCases.setFR(false);
-                useCases.setCIM(false);
-                useCases.setCIS(false);
-                useCases.setSPH(true);
-                useCases.setSPP(true);
-                useCases.setBPP(false);
-                useCases.setName(EnumUseCase.SP.name());
+                useCases.apply {
+                    useCases.FR = false
+                    useCases.CIM = false
+                    useCases.CIS = false
+                    useCases.SPH = true
+                    useCases.SPP = true
+                    useCases.BPP = false
+                    useCases.name = EnumUseCase.SP.name
+                }
 
-                database.useCaseDao().insert(useCases);
-                processRecommendations(activity);
-            } catch (Exception ex) {
-                Sentry.captureException(ex);
+                database.useCaseDao().insert(useCases)
+                processRecommendations(this@ScheduledPlantingActivity)
+            } catch (ex: Exception) {
+                Sentry.captureException(ex)
             }
-        });
+        }
 
         // on item list clicked
-        mAdapter.setOnItemClickListener((view, obj, position) -> {
-            //let us process the data
-            Intent intent = null;
-            EnumAdviceTasks advice = obj.getAdviceName();
-            switch (advice) {
-                case PLANTING_AND_HARVEST:
-                    intent = new Intent(context, DatesActivity.class);
-                    break;
-                case MARKET_OUTLET_CASSAVA:
-                    intent = new Intent(context, CassavaMarketActivity.class);
-                    break;
-                case CURRENT_CASSAVA_YIELD:
-                    intent = new Intent(context, RootYieldActivity.class);
-                    break;
+        mAdapter!!.setOnItemClickListener(object : RecOptionsAdapter.OnItemClickListener {
+            override fun onItemClick(view: View?, obj: RecommendationOptions?, position: Int) {
+                var intent: Intent? = null
+                val advice = obj?.adviceName
+                when (advice) {
+                    EnumAdviceTasks.PLANTING_AND_HARVEST -> intent =
+                        Intent(this@ScheduledPlantingActivity, DatesActivity::class.java)
+
+                    EnumAdviceTasks.MARKET_OUTLET_CASSAVA -> intent =
+                        Intent(this@ScheduledPlantingActivity, CassavaMarketActivity::class.java)
+
+                    EnumAdviceTasks.CURRENT_CASSAVA_YIELD -> intent =
+                        Intent(this@ScheduledPlantingActivity, RootYieldActivity::class.java)
+
+                    else -> {}
+                }
+                if (intent != null) {
+                    startActivity(intent)
+                    openActivity()
+                }
             }
-            if (intent != null) {
-                startActivity(intent);
-                openActivity();
-            } else {
-                Snackbar.make(view, "Item " + obj.getRecName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
-            }
-        });
-        setAdapter();
+        })
+        setAdapter()
     }
 
-    @Override
-    protected void validate(boolean backPressed) {
-        throw new UnsupportedOperationException();
+    override fun validate(backPressed: Boolean) {
+        throw UnsupportedOperationException()
     }
 
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setAdapter();
+    override fun onResume() {
+        super.onResume()
+        setAdapter()
     }
 
-    private void setAdapter() {
-        items = getRecItems();
-        mAdapter.setData(items);
+    private fun setAdapter() {
+        items = recItems
+        mAdapter!!.setData(items)
     }
 
-    private List<RecommendationOptions> getRecItems() {
-        List<RecommendationOptions> myItems = new ArrayList<>();
-        myItems.add(new RecommendationOptions(plantingString, EnumAdviceTasks.PLANTING_AND_HARVEST, checkStatus(EnumAdviceTasks.PLANTING_AND_HARVEST)));
-        myItems.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)));
-        myItems.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)));
-        return myItems;
-    }
+    private val recItems: List<RecommendationOptions>
+        get() {
+            val myItems: MutableList<RecommendationOptions> =
+                ArrayList()
+            myItems.add(
+                RecommendationOptions(
+                    plantingString!!,
+                    EnumAdviceTasks.PLANTING_AND_HARVEST,
+                    checkStatus(EnumAdviceTasks.PLANTING_AND_HARVEST)
+                )
+            )
+            myItems.add(
+                RecommendationOptions(
+                    rootYieldString!!,
+                    EnumAdviceTasks.CURRENT_CASSAVA_YIELD,
+                    checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)
+                )
+            )
+            myItems.add(
+                RecommendationOptions(
+                    marketOutletString!!,
+                    EnumAdviceTasks.MARKET_OUTLET_CASSAVA,
+                    checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)
+                )
+            )
+            return myItems
+        }
 }

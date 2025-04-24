@@ -25,7 +25,6 @@ import com.akilimo.mobile.rest.request.RecommendationRequest
 import com.akilimo.mobile.rest.response.RecommendationResp
 import com.akilimo.mobile.utils.BuildComputeData
 import com.akilimo.mobile.views.fragments.dialog.RecommendationChannelDialog
-import com.google.android.gms.common.util.Strings
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.sentry.Sentry
 
@@ -42,7 +41,9 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
     var errorLabel: TextView? = null
     var lyt_progress: LinearLayout? = null
 
-    var binding: ActivityDstRecomendationBinding? = null
+    private var _binding: ActivityDstRecomendationBinding? = null
+    private val binding get() = _binding!!
+
     var activity: Activity? = null
     var recData: RecommendationRequest? = null
     var recAdapter: RecommendationAdapter? = null
@@ -52,22 +53,18 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityDstRecomendationBinding.inflate(
+        _binding = ActivityDstRecomendationBinding.inflate(
             layoutInflater
         )
-        setContentView(binding!!.root)
+        setContentView(binding.root)
 
-        context = this
-        activity = this
-        database = getDatabase(context)
-
-        toolbar = binding!!.toolbarLayout.toolbar
-        recyclerView = binding!!.recyclerView
-        fabRetry = binding!!.fabRetry
-        btnFeedback = binding!!.feedbackButton.btnGetRecommendation
-        errorImage = binding!!.errorImage
-        errorLabel = binding!!.errorLabel
-        lyt_progress = binding!!.lytProgress
+        toolbar = binding.toolbarLayout.toolbar
+        recyclerView = binding.recyclerView
+        fabRetry = binding.fabRetry
+        btnFeedback = binding.feedbackButton.btnGetRecommendation
+        errorImage = binding.errorImage
+        errorLabel = binding.errorLabel
+        lyt_progress = binding.lytProgress
 
         btnFeedback!!.setText(R.string.lbl_provide_feedback)
         initToolbar()
@@ -85,8 +82,9 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
     }
 
     override fun initComponent() {
+        val database = getDatabase(this@DstRecommendationActivity)
         recyclerView!!.visibility = View.GONE
-        recyclerView!!.layoutManager = LinearLayoutManager(this)
+        recyclerView!!.layoutManager = LinearLayoutManager(this@DstRecommendationActivity)
         recyclerView!!.setHasFixedSize(true)
 
         recAdapter = RecommendationAdapter()
@@ -116,10 +114,11 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
 
 
     private fun buildRecommendationData() {
-        val buildComputeData = BuildComputeData(activity!!)
+        val buildComputeData = BuildComputeData(this@DstRecommendationActivity)
         recData = buildComputeData.buildRecommendationReq()
         loadingAndDisplayContent()
     }
+
 
     override fun validate(backPressed: Boolean) {
         throw UnsupportedOperationException()
@@ -144,7 +143,7 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
     }
 
     override fun onDataReceived(profileInfo: ProfileInfo) {
-        //update the profile info
+        val database = getDatabase(this@DstRecommendationActivity)
         database.profileInfoDao().update(profileInfo)
         buildRecommendationData()
     }
@@ -183,7 +182,8 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
                 errorLabel!!.visibility = View.VISIBLE
                 recyclerView!!.visibility = View.GONE
 
-                Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@DstRecommendationActivity, ex.message, Toast.LENGTH_SHORT)
+                    .show()
                 Sentry.captureException(ex)
             }
 
@@ -200,17 +200,17 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
 
         var computedResponse: ComputedResponse
 
-        if (!Strings.isEmptyOrWhitespace(FR)) {
+        if (FR.isNotEmpty()) {
             computedResponse = ComputedResponse()
             recList.add(computedResponse.createObject(getString(R.string.lbl_fertilizer_rec), FR))
         }
 
-        if (!Strings.isEmptyOrWhitespace(IC)) {
+        if (IC.isNotEmpty()) {
             computedResponse = ComputedResponse()
             recList.add(computedResponse.createObject(getString(R.string.lbl_intercrop_rec), IC))
         }
 
-        if (!Strings.isEmptyOrWhitespace(PP)) {
+        if (PP.isNotEmpty()) {
             computedResponse = ComputedResponse()
             recList.add(
                 computedResponse.createObject(
@@ -220,7 +220,7 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
             )
         }
 
-        if (!Strings.isEmptyOrWhitespace(SP)) {
+        if (SP.isNotEmpty()) {
             computedResponse = ComputedResponse()
             recList.add(
                 computedResponse.createObject(

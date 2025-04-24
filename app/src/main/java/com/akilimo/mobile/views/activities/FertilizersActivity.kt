@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.R
@@ -28,9 +27,9 @@ import com.akilimo.mobile.interfaces.IFertilizerDismissListener
 import com.akilimo.mobile.utils.FertilizerList.removeFertilizerByType
 import com.akilimo.mobile.utils.Tools.dpToPx
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.FertilizerPriceDialogFragment
 import com.akilimo.mobile.widget.SpacingItemDecoration
-import com.android.volley.toolbox.Volley
 import com.google.android.material.snackbar.Snackbar
 import io.sentry.Sentry
 import retrofit2.Call
@@ -39,7 +38,7 @@ import retrofit2.Response
 import java.util.Locale
 
 class FertilizersActivity : BaseActivity() {
-    var toolbar: Toolbar? = null
+    var myToolbar: Toolbar? = null
     var recyclerView: RecyclerView? = null
     private var lyt_progress: LinearLayout? = null
     private var coordinatorLayout: CoordinatorLayout? = null
@@ -49,7 +48,9 @@ class FertilizersActivity : BaseActivity() {
     var errorImage: ImageView? = null
     var errorLabel: TextView? = null
 
-    var binding: ActivityFertilizersBinding? = null
+    private var _binding: ActivityFertilizersBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var akilimoService: AkilimoService
 
 
@@ -65,27 +66,25 @@ class FertilizersActivity : BaseActivity() {
     companion object {
         var useCaseTag: String = "useCase"
     }
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityFertilizersBinding.inflate(layoutInflater)
+        _binding = ActivityFertilizersBinding.inflate(layoutInflater)
         akilimoService = AkilimoApi.apiService
 
-        setContentView(binding!!.root)
-        context = this
+        setContentView(binding.root)
 
-        toolbar = binding!!.toolbarLayout.toolbar
-        recyclerView = binding!!.availableFertilizers
-        lyt_progress = binding!!.lytProgress
-        coordinatorLayout = binding!!.coordinatorLayout
-        btnSave = binding!!.twoButtons.btnFinish
-        btnCancel = binding!!.twoButtons.btnCancel
-        btnRetry = binding!!.btnRetry
-        errorImage = binding!!.errorImage
-        errorLabel = binding!!.errorLabel
+        myToolbar = binding.toolbarLayout.toolbar
+        recyclerView = binding.availableFertilizers
+        lyt_progress = binding.lytProgress
+        coordinatorLayout = binding.coordinatorLayout
+        btnSave = binding.twoButtons.btnFinish
+        btnCancel = binding.twoButtons.btnCancel
+        btnRetry = binding.btnRetry
+        errorImage = binding.errorImage
+        errorLabel = binding.errorLabel
 
-        database = getDatabase(context)
-        queue = Volley.newRequestQueue(context)
+        val database = getDatabase(this@FertilizersActivity)
 
         val intent = intent
         if (intent != null) {
@@ -94,8 +93,8 @@ class FertilizersActivity : BaseActivity() {
 
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.countryCode
-            currency = profileInfo.currency
+            countryCode = profileInfo.countryCode!!
+            currency = profileInfo.currency!!
         }
 
         initToolbar()
@@ -103,12 +102,12 @@ class FertilizersActivity : BaseActivity() {
     }
 
     override fun initToolbar() {
-        toolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
-        setSupportActionBar(toolbar)
+        myToolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
+        setSupportActionBar(myToolbar)
         supportActionBar!!.title = getString(R.string.title_activity_fertilizer_choice)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        toolbar!!.setNavigationOnClickListener { v: View? -> validateInput(false) }
+        myToolbar!!.setNavigationOnClickListener { v: View? -> validateInput(false) }
     }
 
     @Deprecated("Deprecated in Java")
@@ -129,11 +128,12 @@ class FertilizersActivity : BaseActivity() {
         recyclerView!!.layoutManager = GridLayoutManager(this, 2)
         recyclerView!!.addItemDecoration(SpacingItemDecoration(2, dpToPx(this, 3), true))
         recyclerView!!.setHasFixedSize(true)
-        mAdapter = FertilizerGridAdapter(context)
+        mAdapter = FertilizerGridAdapter(this@FertilizersActivity)
         recyclerView!!.adapter = mAdapter
 
-        btnSave!!.text = context.getString(R.string.lbl_finish)
+        btnSave!!.text = this@FertilizersActivity.getString(R.string.lbl_finish)
 
+        val database = getDatabase(this@FertilizersActivity)
 
         mAdapter!!.setOnItemClickListener { view: View?, clickedFertilizer: Fertilizer, position: Int ->
             mAdapter!!.setActiveRowIndex(position)
@@ -176,20 +176,12 @@ class FertilizersActivity : BaseActivity() {
                 }
             })
 
-            val fragmentTransaction: FragmentTransaction
-            if (fragmentManager != null) {
-                fragmentTransaction = supportFragmentManager.beginTransaction()
-                val prev =
-                    supportFragmentManager.findFragmentByTag(FertilizerPriceDialogFragment.ARG_ITEM_ID)
-                if (prev != null) {
-                    fragmentTransaction.remove(prev)
-                }
-                fragmentTransaction.addToBackStack(null)
-                priceDialogFragment.show(
-                    supportFragmentManager,
-                    FertilizerPriceDialogFragment.ARG_ITEM_ID
-                )
-            }
+            showDialogFragmentSafely(
+                fragmentManager = supportFragmentManager,
+                dialogFragment = priceDialogFragment,
+                FertilizerPriceDialogFragment.ARG_ITEM_ID
+            )
+
         }
 
         initializeFertilizers()
@@ -210,6 +202,7 @@ class FertilizersActivity : BaseActivity() {
     }
 
     override fun validate(backPressed: Boolean) {
+        val database = getDatabase(this@FertilizersActivity)
         availableFertilizersList = database.fertilizerDao().findAllByCountry(countryCode)
         if (mAdapter != null) {
             mAdapter!!.setItems(availableFertilizersList)
@@ -224,6 +217,7 @@ class FertilizersActivity : BaseActivity() {
         errorImage!!.visibility = View.GONE
         btnRetry!!.visibility = View.GONE
 
+        val database = getDatabase(this@FertilizersActivity)
         val call = akilimoService.getFertilizers(countryCode = countryCode)
         call.enqueue(object : Callback<FertilizerResponse> {
             override fun onResponse(
@@ -283,13 +277,14 @@ class FertilizersActivity : BaseActivity() {
                 errorImage!!.visibility = View.VISIBLE
                 btnRetry!!.visibility = View.VISIBLE
                 Sentry.captureException(t)
-                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@FertilizersActivity, t.message, Toast.LENGTH_SHORT).show()
             }
 
         })
     }
 
     private fun loadFertilizerPrices(fertilizerKey: String) {
+        val database = getDatabase(this@FertilizersActivity)
         val call = akilimoService.getFertilizerPrices(fertilizerKey = fertilizerKey)
         call.enqueue(object : Callback<FertilizerPriceResponse> {
             override fun onResponse(
@@ -324,6 +319,7 @@ class FertilizersActivity : BaseActivity() {
 
     private val isMinSelected: Boolean
         get() {
+            val database = getDatabase(this@FertilizersActivity)
             val count =
                 database.fertilizerDao().findAllSelectedByCountry(countryCode).size
             if (count < minSelection) {
@@ -331,7 +327,7 @@ class FertilizersActivity : BaseActivity() {
                     lyt_progress!!,
                     String.format(
                         Locale.US,
-                        context.getString(R.string.lbl_min_selection),
+                        this@FertilizersActivity.getString(R.string.lbl_min_selection),
                         minSelection
                     ),
                     Snackbar.LENGTH_SHORT

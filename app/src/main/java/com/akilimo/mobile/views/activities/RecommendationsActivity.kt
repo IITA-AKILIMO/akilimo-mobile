@@ -1,4 +1,4 @@
-package com.akilimo.mobile.views.activities.usecases
+package com.akilimo.mobile.views.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -23,8 +23,10 @@ import com.akilimo.mobile.utils.SessionManager
 import com.akilimo.mobile.utils.TheItemAnimation
 import com.akilimo.mobile.utils.enums.EnumAdvice
 import com.akilimo.mobile.utils.enums.EnumCountry
-import com.android.volley.toolbox.Volley
-import com.google.android.material.snackbar.Snackbar
+import com.akilimo.mobile.views.activities.usecases.FertilizerRecActivity
+import com.akilimo.mobile.views.activities.usecases.InterCropRecActivity
+import com.akilimo.mobile.views.activities.usecases.PlantingPracticesActivity
+import com.akilimo.mobile.views.activities.usecases.ScheduledPlantingActivity
 import io.sentry.Sentry
 import retrofit2.Call
 import retrofit2.Callback
@@ -56,20 +58,10 @@ class RecommendationsActivity : BaseActivity() {
 
         setContentView(binding!!.root)
 
-        context = this
-        database = getDatabase(context)
-        queue = Volley.newRequestQueue(context)
 
         if (sessionManager == null) {
-            sessionManager = SessionManager(context)
+            sessionManager = SessionManager(this@RecommendationsActivity)
         }
-        val profileInfo = database.profileInfoDao().findOne()
-        useCase = database.useCaseDao().findOne()
-        if (profileInfo != null) {
-            countryCode = profileInfo.countryCode
-            currency = profileInfo.currency
-        }
-
         toolbar = binding!!.toolbar
         recyclerView = binding!!.recyclerView
         initToolbar()
@@ -103,23 +95,40 @@ class RecommendationsActivity : BaseActivity() {
         recyclerView!!.adapter = mAdapter
         items = ArrayList()
 
+        val database = getDatabase(this@RecommendationsActivity)
+        val profileInfo = database.profileInfoDao().findOne()
+        useCase = database.useCaseDao().findOne()
+        if (profileInfo != null) {
+            countryCode = profileInfo.countryCode!!
+            currency = profileInfo.currency!!
+        }
+
         val FR = Recommendations()
         FR.recCode = EnumAdvice.FR
         FR.recommendationName = frString
-        FR.background = ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft)
+        FR.background = ContextCompat.getDrawable(
+            this@RecommendationsActivity,
+            R.drawable.bg_gradient_very_soft
+        )
         items.add(FR)
 
         val SPH = Recommendations()
         SPH.recCode = EnumAdvice.SPH
         SPH.recommendationName = sphString
-        SPH.background = ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft)
+        SPH.background = ContextCompat.getDrawable(
+            this@RecommendationsActivity,
+            R.drawable.bg_gradient_very_soft
+        )
         items.add(SPH)
 
         if (countryCode != EnumCountry.Ghana.countryCode()) {
             val BPP = Recommendations()
             BPP.recCode = EnumAdvice.BPP
             BPP.recommendationName = bppString
-            BPP.background = ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft)
+            BPP.background = ContextCompat.getDrawable(
+                this@RecommendationsActivity,
+                R.drawable.bg_gradient_very_soft
+            )
             items.add(BPP)
         }
 
@@ -128,14 +137,20 @@ class RecommendationsActivity : BaseActivity() {
             IC_MAIZE.recCode = EnumAdvice.IC_MAIZE
             IC_MAIZE.recommendationName = icMaizeString
             IC_MAIZE.background =
-                ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft)
+                ContextCompat.getDrawable(
+                    this@RecommendationsActivity,
+                    R.drawable.bg_gradient_very_soft
+                )
             items.add(IC_MAIZE)
         } else if (countryCode == EnumCountry.Tanzania.countryCode()) {
             val IC_SWEET_POTATO = Recommendations()
             IC_SWEET_POTATO.recCode = EnumAdvice.IC_SWEET_POTATO
             IC_SWEET_POTATO.recommendationName = icSweetPotatoString
             IC_SWEET_POTATO.background =
-                ContextCompat.getDrawable(context, R.drawable.bg_gradient_very_soft)
+                ContextCompat.getDrawable(
+                    this@RecommendationsActivity,
+                    R.drawable.bg_gradient_very_soft
+                )
             items.add(IC_SWEET_POTATO)
         }
 
@@ -151,13 +166,18 @@ class RecommendationsActivity : BaseActivity() {
         return true
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         super.onBackPressed()
-        Toast.makeText(context, R.string.lbl_back_instructions, Toast.LENGTH_SHORT)
-            .show()
+        Toast.makeText(
+            this@RecommendationsActivity,
+            R.string.lbl_back_instructions,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     private fun setAdapter() {
+        val database = getDatabase(this@RecommendationsActivity)
         mAdapter!!.setItems(items, TheItemAnimation.BOTTOM_UP)
         // on item list clicked
         mAdapter!!.setOnItemClickListener { view: View?, obj: Recommendations, position: Int ->
@@ -183,7 +203,7 @@ class RecommendationsActivity : BaseActivity() {
                 EnumAdvice.SPH -> intent =
                     Intent(this, ScheduledPlantingActivity::class.java)
 
-                EnumAdvice.WM -> {}
+                else -> {}
             }
             if (intent != null) {
                 if (useCase == null) {
@@ -193,18 +213,13 @@ class RecommendationsActivity : BaseActivity() {
                 database.useCaseDao().insert(useCase!!)
                 startActivity(intent)
                 openActivity()
-            } else {
-                Snackbar.make(
-                    view!!,
-                    "Item " + obj.recommendationName + " clicked but not launched",
-                    Snackbar.LENGTH_SHORT
-                ).show()
             }
         }
     }
 
 
     private fun updateCurrencyList() {
+        val database = getDatabase(this@RecommendationsActivity)
         val currencyCall = AkilimoApi.apiService.listCurrencies()
         currencyCall.enqueue(object : Callback<AkilimoCurrencyResponse> {
             override fun onResponse(
@@ -218,7 +233,7 @@ class RecommendationsActivity : BaseActivity() {
             }
 
             override fun onFailure(call: Call<AkilimoCurrencyResponse>, t: Throwable) {
-                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@RecommendationsActivity, t.message, Toast.LENGTH_SHORT).show()
                 Sentry.captureException(t)
             }
         })

@@ -141,7 +141,7 @@ class TractorAccessActivity : CostBaseActivity() {
             }
         }
 
-        val myLocale = currentLocale
+        val myLocale = getCurrentLocale()
         var translatedUnit = context.getString(R.string.lbl_acre)
         if (areaUnit == "ha") {
             translatedUnit = context.getString(R.string.lbl_ha)

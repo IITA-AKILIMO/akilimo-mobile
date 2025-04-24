@@ -31,15 +31,13 @@ import com.akilimo.mobile.utils.enums.EnumContext
 import com.akilimo.mobile.utils.enums.EnumUnitOfSale
 import com.akilimo.mobile.utils.enums.EnumUseCase
 import com.akilimo.mobile.views.fragments.dialog.CassavaPriceDialogFragment
-import com.android.volley.toolbox.Volley
 import io.sentry.Sentry
 import retrofit2.Call
 import retrofit2.Response
 
 class CassavaMarketActivity : BaseActivity() {
-    private val LOG_TAG: String = CassavaMarketActivity::class.java.simpleName
 
-    var toolbar: Toolbar? = null
+    var myToolbar: Toolbar? = null
     var marketOutLetTitle: AppCompatTextView? = null
     var factoryTitle: AppCompatTextView? = null
     var unitOfSaleTitle: AppCompatTextView? = null
@@ -58,7 +56,9 @@ class CassavaMarketActivity : BaseActivity() {
     var btnFinish: AppCompatButton? = null
     var btnCancel: AppCompatButton? = null
 
-    var binding: ActivityCassavaMarketBinding? = null
+    private var _binding: ActivityCassavaMarketBinding? = null
+    private val binding get() = _binding!!
+
     var mathHelper: MathHelper? = null
     private var selectedFactory: String? = "NA"
 
@@ -92,54 +92,54 @@ class CassavaMarketActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //        setContentView(R.layout.activity_cassava_market);
-        binding = ActivityCassavaMarketBinding.inflate(layoutInflater)
-        setContentView(binding!!.root)
-        context = this
+        _binding = ActivityCassavaMarketBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         //Set ui elements
-        toolbar = binding!!.toolbar
-        marketOutLetTitle = binding!!.contentCassavaMarket.marketOutLetTitle
-        factoryTitle = binding!!.contentCassavaMarket.factoryTitle
-        unitOfSaleTitle = binding!!.contentCassavaMarket.unitOfSaleTitle
-        rdgMarketOutlet = binding!!.contentCassavaMarket.rdgMarketOutlet
-        rdgStarchFactories = binding!!.contentCassavaMarket.rdgStarchFactories
-        rdgUnitOfSale = binding!!.contentCassavaMarket.rdgUnitOfSale
+        binding.apply {
+            myToolbar = toolbar
+            marketOutLetTitle = contentCassavaMarket.marketOutLetTitle
+            factoryTitle = contentCassavaMarket.factoryTitle
+            unitOfSaleTitle = contentCassavaMarket.unitOfSaleTitle
+            rdgMarketOutlet = contentCassavaMarket.rdgMarketOutlet
+            rdgStarchFactories = contentCassavaMarket.rdgStarchFactories
+            rdgUnitOfSale = contentCassavaMarket.rdgUnitOfSale
 
-        rdStarchFactory = binding!!.contentCassavaMarket.rdFactory
+            rdStarchFactory = contentCassavaMarket.rdFactory
 
-        marketOutletCard = binding!!.contentCassavaMarket.marketOutletCard
-        starchFactoryCard = binding!!.contentCassavaMarket.starchFactoryCard
-        unitOfSaleCard = binding!!.contentCassavaMarket.unitOfSaleCard
-        monthOneWindowCard = binding!!.contentCassavaMarket.monthOneWindowCard
-        monthTwoWindowCard = binding!!.contentCassavaMarket.monthTwoWindowCard
+            marketOutletCard = contentCassavaMarket.marketOutletCard
+            starchFactoryCard = contentCassavaMarket.starchFactoryCard
+            unitOfSaleCard = contentCassavaMarket.unitOfSaleCard
+            monthOneWindowCard = contentCassavaMarket.monthOneWindowCard
+            monthTwoWindowCard = contentCassavaMarket.monthTwoWindowCard
 
-        btnFinish = binding!!.contentCassavaMarket.twoButtons.btnFinish
-        btnCancel = binding!!.contentCassavaMarket.twoButtons.btnCancel
+            btnFinish = contentCassavaMarket.twoButtons.btnFinish
+            btnCancel = contentCassavaMarket.twoButtons.btnCancel
 
-        binding!!.contentCassavaMarket.btnUpP1.setOnClickListener { v: View? ->
-            showUnitPriceDialog(
-                EnumContext.unit_price_p1
-            )
+            contentCassavaMarket.btnUpP1.setOnClickListener { v: View? ->
+                showUnitPriceDialog(
+                    EnumContext.unit_price_p1
+                )
+            }
+            contentCassavaMarket.btnUpP2.setOnClickListener { v: View? ->
+                showUnitPriceDialog(
+                    EnumContext.unit_price_p2
+                )
+            }
+            contentCassavaMarket.btnUpM1.setOnClickListener { v: View? ->
+                showUnitPriceDialog(
+                    EnumContext.unit_price_m1
+                )
+            }
+            contentCassavaMarket.btnUpM2.setOnClickListener { v: View? ->
+                showUnitPriceDialog(
+                    EnumContext.unit_price_m2
+                )
+            }
         }
-        binding!!.contentCassavaMarket.btnUpP2.setOnClickListener { v: View? ->
-            showUnitPriceDialog(
-                EnumContext.unit_price_p2
-            )
-        }
-        binding!!.contentCassavaMarket.btnUpM1.setOnClickListener { v: View? ->
-            showUnitPriceDialog(
-                EnumContext.unit_price_m1
-            )
-        }
-        binding!!.contentCassavaMarket.btnUpM2.setOnClickListener { v: View? ->
-            showUnitPriceDialog(
-                EnumContext.unit_price_m2
-            )
-        }
 
-        database = getDatabase(context)
-        queue = Volley.newRequestQueue(context)
-        mathHelper = MathHelper(this)
+        val database = getDatabase(this@CassavaMarketActivity)
+        mathHelper = MathHelper()
 
         cassavaMarket = database.cassavaMarketDao().findOne()
         scheduledDate = database.scheduleDateDao().findOne()
@@ -158,8 +158,8 @@ class CassavaMarketActivity : BaseActivity() {
 
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.countryCode
-            currency = profileInfo.currency
+            countryCode = profileInfo.countryCode!!
+            currency = profileInfo.currency!!
         }
         val intent = intent
         if (intent != null) {
@@ -179,11 +179,11 @@ class CassavaMarketActivity : BaseActivity() {
 
 
     override fun initToolbar() {
-        toolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
-        setSupportActionBar(toolbar)
+        myToolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
+        setSupportActionBar(myToolbar)
         supportActionBar!!.title = getString(R.string.title_activity_cassava_market_outlet)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        toolbar!!.setNavigationOnClickListener { v: View? -> validate(false) }
+        myToolbar!!.setNavigationOnClickListener { v: View? -> validate(false) }
     }
 
     override fun initComponent() {
@@ -219,6 +219,7 @@ class CassavaMarketActivity : BaseActivity() {
 
         rdgStarchFactories!!.setOnCheckedChangeListener { radioGroup: RadioGroup, radioIndex: Int ->
             val radioButtonId = radioGroup.checkedRadioButtonId
+            val database = getDatabase(this@CassavaMarketActivity)
             dataIsValid = false
             if (radioButtonId > -1) {
                 val radioButton = findViewById<RadioButton>(radioButtonId)
@@ -235,25 +236,25 @@ class CassavaMarketActivity : BaseActivity() {
         rdgUnitOfSale!!.setOnCheckedChangeListener { radioGroup: RadioGroup?, radioIndex: Int ->
             when (radioIndex) {
                 R.id.rd_per_kg -> {
-                    unitOfSale = EnumUnitOfSale.ONE_KG.unitOfSale(context)
+                    unitOfSale = EnumUnitOfSale.ONE_KG.unitOfSale(this@CassavaMarketActivity)
                     unitOfSaleEnum = EnumUnitOfSale.ONE_KG
                     unitWeight = EnumUnitOfSale.ONE_KG.unitWeight()
                 }
 
                 R.id.rd_50_kg_bag -> {
-                    unitOfSale = EnumUnitOfSale.FIFTY_KG.unitOfSale(context)
+                    unitOfSale = EnumUnitOfSale.FIFTY_KG.unitOfSale(this@CassavaMarketActivity)
                     unitOfSaleEnum = EnumUnitOfSale.FIFTY_KG
                     unitWeight = EnumUnitOfSale.FIFTY_KG.unitWeight()
                 }
 
                 R.id.rd_100_kg_bag -> {
-                    unitOfSale = EnumUnitOfSale.HUNDRED_KG.unitOfSale(context)
+                    unitOfSale = EnumUnitOfSale.HUNDRED_KG.unitOfSale(this@CassavaMarketActivity)
                     unitOfSaleEnum = EnumUnitOfSale.HUNDRED_KG
                     unitWeight = EnumUnitOfSale.HUNDRED_KG.unitWeight()
                 }
 
                 R.id.rd_per_tonne -> {
-                    unitOfSale = EnumUnitOfSale.THOUSAND_KG.unitOfSale(context)
+                    unitOfSale = EnumUnitOfSale.THOUSAND_KG.unitOfSale(this@CassavaMarketActivity)
                     unitOfSaleEnum = EnumUnitOfSale.THOUSAND_KG
                     unitWeight = EnumUnitOfSale.THOUSAND_KG.unitWeight()
                 }
@@ -285,6 +286,7 @@ class CassavaMarketActivity : BaseActivity() {
     }
 
     override fun validate(backPressed: Boolean) {
+        val database = getDatabase(this@CassavaMarketActivity)
         if (factoryRequired) {
             if (selectedFactory.isNullOrEmpty() || selectedFactory.equals(
                     "NA",
@@ -342,7 +344,8 @@ class CassavaMarketActivity : BaseActivity() {
                 cassavaMarket = market.apply {
                     starchFactory = selectedFactory
                     isStarchFactoryRequired = factoryRequired
-                    produceType = this@CassavaMarketActivity.produceType ?: EnumCassavaProduceType.ROOTS.produce()
+                    produceType = this@CassavaMarketActivity.produceType
+                        ?: EnumCassavaProduceType.ROOTS.produce()
                     unitOfSale = this@CassavaMarketActivity.unitOfSale
                     unitWeight = this@CassavaMarketActivity.unitWeight
                     unitPrice = this@CassavaMarketActivity.unitPrice
@@ -380,6 +383,7 @@ class CassavaMarketActivity : BaseActivity() {
 
 
     private fun processStarchFactories() {
+        val database = getDatabase(this@CassavaMarketActivity)
         val call = AkilimoApi.apiService.getStarchFactories(countryCode)
         call.enqueue(object : retrofit2.Callback<StarchFactoryResponse> {
             override fun onResponse(
@@ -397,13 +401,14 @@ class CassavaMarketActivity : BaseActivity() {
             }
 
             override fun onFailure(call: Call<StarchFactoryResponse>, t: Throwable) {
-                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@CassavaMarketActivity, t.message, Toast.LENGTH_SHORT).show()
                 Sentry.captureException(t)
             }
         })
     }
 
     private fun processCassavaPrices() {
+        val database = getDatabase(this@CassavaMarketActivity)
         val call = AkilimoApi.apiService.getCassavaPrices(countryCode)
         call.enqueue(object : retrofit2.Callback<CassavaPricePriceResponse> {
             override fun onResponse(
@@ -417,7 +422,7 @@ class CassavaMarketActivity : BaseActivity() {
             }
 
             override fun onFailure(call: Call<CassavaPricePriceResponse>, t: Throwable) {
-                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@CassavaMarketActivity, t.message, Toast.LENGTH_SHORT).show()
                 Sentry.captureException(t)
             }
 
@@ -426,6 +431,7 @@ class CassavaMarketActivity : BaseActivity() {
 
 
     protected fun processData() {
+        val database = getDatabase(this@CassavaMarketActivity)
         val starchFactoriesList =
             database.starchFactoryDao().findStarchFactoriesByCountry(countryCode)
         addFactoriesRadioButtons(starchFactoriesList)

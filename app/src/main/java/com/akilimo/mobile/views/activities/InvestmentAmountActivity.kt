@@ -219,7 +219,7 @@ class InvestmentAmountActivity : BaseActivity() {
     private fun validateInvestmentAmount(): String {
         val amount = txtEditInvestmentAmountLayout!!.editText?.text.toString()
 
-        if (!Strings.isEmptyOrWhitespace(amount)) {
+        if (amount.isNotEmpty()) {
             investmentAmountLocal = amount.toDouble()
             investmentAmountUSD = mathHelper!!.convertToUSD(investmentAmountLocal, currency)
         }
@@ -263,6 +263,7 @@ class InvestmentAmountActivity : BaseActivity() {
     }
 
     private fun addInvestmentRadioButtons(investmentAmountList: List<InvestmentAmount>) {
+        val context = this@InvestmentAmountActivity
         rdgInvestmentAmount!!.removeAllViews()
         currencySymbol = currencyCode
         val extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode)

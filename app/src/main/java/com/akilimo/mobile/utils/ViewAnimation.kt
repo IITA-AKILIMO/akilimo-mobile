@@ -1,288 +1,268 @@
-package com.akilimo.mobile.utils;
+package com.akilimo.mobile.utils
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.view.View;
-import android.view.ViewGroup.LayoutParams;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.view.View
+import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.Transformation
 
-public class ViewAnimation {
 
-    public static void expand(final View v, final AnimListener animListener) {
-        Animation a = expandAction(v);
-        a.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
+object ViewAnimation {
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                animListener.onFinish();
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        v.startAnimation(a);
+    interface AnimListener {
+        fun onFinish()
     }
 
-    public static void expand(final View v) {
-        Animation a = expandAction(v);
-        v.startAnimation(a);
-    }
-
-    private static Animation expandAction(final View v) {
-        v.measure(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        final int targtetHeight = v.getMeasuredHeight();
-
-        v.getLayoutParams().height = 0;
-        v.setVisibility(View.VISIBLE);
-        Animation a = new Animation() {
-            @Override
-            protected void applyTransformation(float interpolatedTime, Transformation t) {
-                v.getLayoutParams().height = interpolatedTime == 1
-                        ? LayoutParams.WRAP_CONTENT
-                        : (int) (targtetHeight * interpolatedTime);
-                v.requestLayout();
+    fun expand(v: View, animListener: AnimListener) {
+        val a = expandAction(v)
+        a.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation) {
             }
 
-            @Override
-            public boolean willChangeBounds() {
-                return true;
+            override fun onAnimationEnd(animation: Animation) {
+                animListener.onFinish()
             }
-        };
 
-        a.setDuration((int) (targtetHeight / v.getContext().getResources().getDisplayMetrics().density));
-        v.startAnimation(a);
-        return a;
+            override fun onAnimationRepeat(animation: Animation) {
+            }
+        })
+        v.startAnimation(a)
     }
 
-    public static void collapse(final View v) {
-        final int initialHeight = v.getMeasuredHeight();
+    fun expand(v: View) {
+        val a = expandAction(v)
+        v.startAnimation(a)
+    }
 
-        Animation a = new Animation() {
-            @Override
-            protected void applyTransformation(float interpolatedTime, Transformation t) {
-                if (interpolatedTime == 1) {
-                    v.setVisibility(View.GONE);
+    private fun expandAction(v: View): Animation {
+        v.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        val targetHeight = v.measuredHeight
+
+        v.layoutParams.height = 0
+        v.visibility = View.VISIBLE
+        val a: Animation = object : Animation() {
+            override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
+                v.layoutParams.height = if (interpolatedTime == 1f)
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                else (targetHeight * interpolatedTime).toInt()
+                v.requestLayout()
+            }
+
+            override fun willChangeBounds(): Boolean {
+                return true
+            }
+        }
+
+        a.duration = (targetHeight / v.context.resources.displayMetrics.density).toInt().toLong()
+        v.startAnimation(a)
+        return a
+    }
+
+    fun collapse(v: View) {
+        val initialHeight = v.measuredHeight
+
+        val a: Animation = object : Animation() {
+            override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
+                if (interpolatedTime == 1f) {
+                    v.visibility = View.GONE
                 } else {
-                    v.getLayoutParams().height = initialHeight - (int) (initialHeight * interpolatedTime);
-                    v.requestLayout();
+                    v.layoutParams.height =
+                        initialHeight - (initialHeight * interpolatedTime).toInt()
+                    v.requestLayout()
                 }
             }
 
-            @Override
-            public boolean willChangeBounds() {
-                return true;
+            override fun willChangeBounds(): Boolean {
+                return true
             }
-        };
+        }
 
-        a.setDuration((int) (initialHeight / v.getContext().getResources().getDisplayMetrics().density));
-        v.startAnimation(a);
+        a.duration = (initialHeight / v.context.resources.displayMetrics.density).toInt().toLong()
+        v.startAnimation(a)
     }
 
-    public static void flyInDown(final View v, final AnimListener animListener) {
-        v.setVisibility(View.VISIBLE);
-        v.setAlpha(0.0f);
-        v.setTranslationY(0);
-        v.setTranslationY(-v.getHeight());
+    fun flyInDown(v: View, animListener: AnimListener?) {
+        v.visibility = View.VISIBLE
+        v.alpha = 0.0f
+        v.translationY = 0f
+        v.translationY = -v.height.toFloat()
         // Prepare the View for the animation
         v.animate()
-                .setDuration(200)
-                .translationY(0)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        if (animListener != null) animListener.onFinish();
-                        super.onAnimationEnd(animation);
-                    }
-                })
-                .alpha(1.0f)
-                .start();
+            .setDuration(200)
+            .translationY(0f)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    animListener?.onFinish()
+                    super.onAnimationEnd(animation)
+                }
+            })
+            .alpha(1.0f)
+            .start()
     }
 
-    public static void flyOutDown(final View v, final AnimListener animListener) {
-        v.setVisibility(View.VISIBLE);
-        v.setAlpha(1.0f);
-        v.setTranslationY(0);
+    fun flyOutDown(v: View, animListener: AnimListener?) {
+        v.visibility = View.VISIBLE
+        v.alpha = 1.0f
+        v.translationY = 0f
         // Prepare the View for the animation
         v.animate()
-                .setDuration(200)
-                .translationY(v.getHeight())
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        if (animListener != null) animListener.onFinish();
-                        super.onAnimationEnd(animation);
-                    }
-                })
-                .alpha(0.0f)
-                .start();
+            .setDuration(200)
+            .translationY(v.height.toFloat())
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    animListener?.onFinish()
+                    super.onAnimationEnd(animation)
+                }
+            })
+            .alpha(0.0f)
+            .start()
     }
 
-    public static void fadeIn(final View v) {
-        ViewAnimation.fadeIn(v, null);
+    fun fadeIn(v: View) {
+        fadeIn(v, null)
     }
 
-    public static void fadeIn(final View v, final AnimListener animListener) {
-        v.setVisibility(View.GONE);
-        v.setAlpha(0.0f);
+    fun fadeOut(v: View) {
+        fadeOut(v, null)
+    }
+
+    fun fadeIn(v: View, animListener: AnimListener?) {
+        v.visibility = View.GONE
+        v.alpha = 0.0f
         // Prepare the View for the animation
         v.animate()
-                .setDuration(200)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        v.setVisibility(View.VISIBLE);
-                        if (animListener != null) animListener.onFinish();
-                        super.onAnimationEnd(animation);
-                    }
-                })
-                .alpha(1.0f);
+            .setDuration(200)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    v.visibility = View.VISIBLE
+                    animListener?.onFinish()
+                    super.onAnimationEnd(animation)
+                }
+            })
+            .alpha(1.0f)
     }
 
-    public static void fadeOut(final View v) {
-        ViewAnimation.fadeOut(v, null);
-    }
 
-    public static void fadeOut(final View v, final AnimListener animListener) {
-        v.setAlpha(1.0f);
+    fun fadeOut(v: View, animListener: AnimListener?) {
+        v.alpha = 1.0f
         // Prepare the View for the animation
         v.animate()
-                .setDuration(500)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        if (animListener != null) animListener.onFinish();
-                        super.onAnimationEnd(animation);
-                    }
-                })
-                .alpha(0.0f);
+            .setDuration(500)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    animListener?.onFinish()
+                    super.onAnimationEnd(animation)
+                }
+            })
+            .alpha(0.0f)
     }
 
-    public static void showIn(final View v) {
-        v.setVisibility(View.VISIBLE);
-        v.setAlpha(0f);
-        v.setTranslationY(v.getHeight());
+    fun showIn(v: View) {
+        v.visibility = View.VISIBLE
+        v.alpha = 0f
+        v.translationY = v.height.toFloat()
         v.animate()
-                .setDuration(200)
-                .translationY(0)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                    }
-                })
-                .alpha(1f)
-                .start();
+            .setDuration(200)
+            .translationY(0f)
+            .setListener(object : AnimatorListenerAdapter() {
+            })
+            .alpha(1f)
+            .start()
     }
 
-    public static void initShowOut(final View v) {
-        v.setVisibility(View.GONE);
-        v.setTranslationY(v.getHeight());
-        v.setAlpha(0f);
+    fun initShowOut(v: View) {
+        v.visibility = View.GONE
+        v.translationY = v.height.toFloat()
+        v.alpha = 0f
     }
 
-    public static void showOut(final View v) {
-        v.setVisibility(View.VISIBLE);
-        v.setAlpha(1f);
-        v.setTranslationY(0);
+    fun showOut(v: View) {
+        v.visibility = View.VISIBLE
+        v.alpha = 1f
+        v.translationY = 0f
         v.animate()
-                .setDuration(200)
-                .translationY(v.getHeight())
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        v.setVisibility(View.GONE);
-                        super.onAnimationEnd(animation);
-                    }
-                }).alpha(0f)
-                .start();
+            .setDuration(200)
+            .translationY(v.height.toFloat())
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    v.visibility = View.GONE
+                    super.onAnimationEnd(animation)
+                }
+            }).alpha(0f)
+            .start()
     }
 
-    public static boolean rotateFab(final View v, boolean rotate) {
+    fun rotateFab(v: View, rotate: Boolean): Boolean {
         v.animate().setDuration(200)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                    }
-                })
-                .rotation(rotate ? 135f : 0f);
-        return rotate;
+            .setListener(object : AnimatorListenerAdapter() {
+            })
+            .rotation(if (rotate) 135f else 0f)
+        return rotate
     }
 
 
-    public interface AnimListener {
-        void onFinish();
-    }
-
-    public static void fadeOutIn(View view) {
-        view.setAlpha(0.f);
-        AnimatorSet animatorSet = new AnimatorSet();
-        ObjectAnimator animatorAlpha = ObjectAnimator.ofFloat(view, "alpha", 0.f, 0.5f, 1.f);
-        ObjectAnimator.ofFloat(view, "alpha", 0.f).start();
-        animatorAlpha.setDuration(500);
-        animatorSet.play(animatorAlpha);
-        animatorSet.start();
+    fun fadeOutIn(view: View) {
+        view.alpha = 0f
+        val animatorSet = AnimatorSet()
+        val animatorAlpha = ObjectAnimator.ofFloat(view, "alpha", 0f, 0.5f, 1f)
+        ObjectAnimator.ofFloat(view, "alpha", 0f).start()
+        animatorAlpha.setDuration(500)
+        animatorSet.play(animatorAlpha)
+        animatorSet.start()
     }
 
 
-    public static void showScale(final View v) {
-        ViewAnimation.showScale(v, null);
+    fun showScale(v: View) {
+        showScale(v, null)
     }
 
-    public static void showScale(final View v, final AnimListener animListener) {
+    fun showScale(v: View, animListener: AnimListener?) {
         v.animate()
-                .scaleY(1)
-                .scaleX(1)
-                .setDuration(200)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        if (animListener != null) animListener.onFinish();
-                        super.onAnimationEnd(animation);
-                    }
-                })
-                .start();
+            .scaleY(1f)
+            .scaleX(1f)
+            .setDuration(200)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    animListener?.onFinish()
+                    super.onAnimationEnd(animation)
+                }
+            })
+            .start()
     }
 
-    public static void hideScale(final View v) {
-        ViewAnimation.fadeOut(v, null);
+    fun hideScale(v: View) {
+        fadeOut(v, null)
     }
 
-    public static void hideScale(final View v, final AnimListener animListener) {
+    fun hideScale(v: View, animListener: AnimListener?) {
         v.animate()
-                .scaleY(0)
-                .scaleX(0)
-                .setDuration(200)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        if (animListener != null) animListener.onFinish();
-                        super.onAnimationEnd(animation);
-                    }
-                })
-                .start();
+            .scaleY(0f)
+            .scaleX(0f)
+            .setDuration(200)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    animListener?.onFinish()
+                    super.onAnimationEnd(animation)
+                }
+            })
+            .start()
     }
 
-    public static void hideFab(View fab) {
-        int moveY = 2 * fab.getHeight();
+    fun hideFab(fab: View) {
+        val moveY = 2 * fab.height
         fab.animate()
-                .translationY(moveY)
-                .setDuration(300)
-                .start();
+            .translationY(moveY.toFloat())
+            .setDuration(300)
+            .start()
     }
 
-    public static void showFab(View fab) {
+    fun showFab(fab: View) {
         fab.animate()
-                .translationY(0)
-                .setDuration(300)
-                .start();
+            .translationY(0f)
+            .setDuration(300)
+            .start()
     }
 }

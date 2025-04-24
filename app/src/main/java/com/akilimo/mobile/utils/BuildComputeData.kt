@@ -1,476 +1,435 @@
-package com.akilimo.mobile.utils;
+package com.akilimo.mobile.utils
 
-import android.app.Activity;
+import android.content.Context
+import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
+import com.akilimo.mobile.entities.Fertilizer
+import com.akilimo.mobile.rest.request.ComputeRequest
+import com.akilimo.mobile.rest.request.RecommendationRequest
+import com.akilimo.mobile.rest.request.UserInfo
+import com.google.android.gms.common.util.Strings
+import io.sentry.Sentry
+import org.joda.time.format.DateTimeFormat
+import org.modelmapper.ModelMapper
+import org.modelmapper.TypeToken
 
-import androidx.annotation.NonNull;
-
-import com.akilimo.mobile.dao.AppDatabase;
-import com.akilimo.mobile.entities.CassavaMarket;
-import com.akilimo.mobile.entities.CurrentPractice;
-import com.akilimo.mobile.entities.Fertilizer;
-import com.akilimo.mobile.entities.FieldOperationCost;
-import com.akilimo.mobile.entities.FieldYield;
-import com.akilimo.mobile.entities.InterCropFertilizer;
-import com.akilimo.mobile.entities.InvestmentAmount;
-import com.akilimo.mobile.entities.LocationInfo;
-import com.akilimo.mobile.entities.MaizeMarket;
-import com.akilimo.mobile.entities.MaizePerformance;
-import com.akilimo.mobile.entities.MandatoryInfo;
-import com.akilimo.mobile.entities.PotatoMarket;
-import com.akilimo.mobile.entities.ProfileInfo;
-import com.akilimo.mobile.entities.ScheduledDate;
-import com.akilimo.mobile.entities.UseCases;
-import com.akilimo.mobile.rest.request.ComputeRequest;
-import com.akilimo.mobile.rest.request.RecommendationRequest;
-import com.akilimo.mobile.rest.request.UserInfo;
-import com.google.android.gms.common.util.Strings;
-
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
-
-import java.lang.reflect.Type;
-import java.util.List;
-
-import io.sentry.Sentry;
-
-@SuppressWarnings("FieldCanBeLocal")
-public class BuildComputeData {
-
-    private static final String LOG_TAG = BuildComputeData.class.getSimpleName();
-
-    private static final String DEFAULT_CASSAVA_PD = "roots";
-    private static final String DEFAULT_MAIZE_PD = "fresh_cob";
-    private static final String DEFAULT_SWEET_POTATO_PD = "tubers";
-    private static final String DEFAULT_UNAVAILABLE = "NA";
-    private static final String DEFAULT_FALLOW_TYPE = "none";
-    private static final String DEFAULT_MAIZE_PERFORMANCE_VALUE = "3";
-    private static final String DEFAULT_PRACTICE_METHOD = "NA";
-
-    private static final int DEFAULT_FIELD_YIELD = 11;
-    private static final int DEFAULT_UNAVAILABLE_INT = 0;
-    private static final int DEFAULT_UNIT_WEIGHT = 50;
-    private static final String DEFAULT_LMNO_BASIS = "areaUnit";
-    private static final String DEFAULT_USERNAME = "Akilimo Farmer";
-    private static final String DEFAULT_FIELD_DESC = "Akilimo field";
+class BuildComputeData(context: Context) {
+    private var smsRequired = false
+    private var emailRequired = false
+    private var countryCode: String? = DEFAULT_UNAVAILABLE
+    private var emailAddress: String? = DEFAULT_UNAVAILABLE
+    private var mobileNumber: String? = DEFAULT_UNAVAILABLE
+    private var fullPhoneNumber: String? = DEFAULT_UNAVAILABLE
+    private var mobileCountryCode: String? = DEFAULT_UNAVAILABLE
 
 
-    private boolean smsRequired = false;
-    private boolean emailRequired = false;
-    private String countryCode = DEFAULT_UNAVAILABLE;
-    private String emailAddress = DEFAULT_UNAVAILABLE;
-    private String mobileNumber = DEFAULT_UNAVAILABLE;
-    private String fullPhoneNumber = DEFAULT_UNAVAILABLE;
-    private String mobileCountryCode = DEFAULT_UNAVAILABLE;
+    private var cassavaUnitWeight = DEFAULT_UNIT_WEIGHT
+    private val cassavaUnitPriceLocal = 0.0
+    private val maizeUnitPriceLocal = 0.0
+    private val potatoUnitPriceLocal = 0.0
+
+    private var maxInvestmentAmountLocal = 0.0
+    private val unitOfSale: String? = null
+    private var areaUnits: String? = DEFAULT_UNAVAILABLE
+    private var fieldArea = 0.0
+
+    private val interCroppingType = DEFAULT_UNAVAILABLE
+    private val interCroppingRec = false
+    private val fertilizerRec = false
+    private val plantingPracticesRec = false
+    private val scheduledPlantingRec = false
+    private val scheduledHarvestRec = false
+
+    private var harvestDate: String? = DEFAULT_UNAVAILABLE
+    private var plantingDate: String? = DEFAULT_UNAVAILABLE
+
+    private var plantingDateWindow = 0
+    private var harvestDateWindow = 0
+    private var currentFieldYield = DEFAULT_FIELD_YIELD
+
+    private val fallowType = DEFAULT_FALLOW_TYPE
+    private val fallowGreen = false
+    private val fallowHeight = 100
+    private val problemWeeds = false
 
 
-    private int cassavaUnitWeight = DEFAULT_UNIT_WEIGHT;
-    private double cassavaUnitPriceLocal;
-    private double maizeUnitPriceLocal;
-    private double potatoUnitPriceLocal;
+    private val costLmoAreaBasis = DEFAULT_LMNO_BASIS
+    private var costTractorPlough = 0.0
+    private var costTractorHarrow = 0.0
 
-    private double maxInvestmentAmountLocal = 0.0;
-    private String unitOfSale;
-    private String areaUnits = DEFAULT_UNAVAILABLE;
-    private double fieldArea = 0.0;
+    private var costTractorRidging = 0.0
+    private var costManualPloughing = 0.0
+    private var costManualHarrowing = 0.0
+    private var costManualRidging = 0.0
 
-    private final String interCroppingType = DEFAULT_UNAVAILABLE;
-    private final boolean interCroppingRec = false;
-    private final boolean fertilizerRec = false;
-    private final boolean plantingPracticesRec = false;
-    private final boolean scheduledPlantingRec = false;
-    private final boolean scheduledHarvestRec = false;
+    private var costWeedingOne = 0.0
+    private var costWeedingTwo = 0.0
 
-    private String harvestDate = DEFAULT_UNAVAILABLE;
-    private String plantingDate = DEFAULT_UNAVAILABLE;
+    private var performsPloughing = false
+    private var performsHarrowing = false
+    private var performsRidging = false
+    private var sellToStarchFactory = false
 
-    private int plantingDateWindow = 0;
-    private int harvestDateWindow = 0;
-    private int currentFieldYield = DEFAULT_FIELD_YIELD;
+    private var methodHarrowing: String? = DEFAULT_PRACTICE_METHOD
+    private var methodPloughing: String? = DEFAULT_PRACTICE_METHOD
+    private var methodRidging: String? = DEFAULT_PRACTICE_METHOD
+    private var methodWeeding: String? = DEFAULT_PRACTICE_METHOD
 
-    private final String fallowType = DEFAULT_FALLOW_TYPE;
-    private final boolean fallowGreen = false;
-    private final int fallowHeight = 100;
-    private final boolean problemWeeds = false;
+    private var maizeProdType = DEFAULT_MAIZE_PD
+    private var maizeUnitWeight = DEFAULT_UNIT_WEIGHT
+    private var maizeUnitPrice = 0.0
+    private var currentMaizePerformance: String? = DEFAULT_MAIZE_PERFORMANCE_VALUE
 
+    private var sweetPotatoProdType = DEFAULT_SWEET_POTATO_PD
+    private var sweetPotatoUnitWeight = DEFAULT_UNIT_WEIGHT
+    private var sweetPotatoUnitPrice = 0.0
 
-    private final String costLmoAreaBasis = DEFAULT_LMNO_BASIS;
-    private double costTractorPlough;
-    private double costTractorHarrow;
+    private var deviceToken: String? = DEFAULT_USERNAME
+    private var fullNames = DEFAULT_USERNAME
+    private var gender: String? = DEFAULT_UNAVAILABLE
+    private val secondName = DEFAULT_USERNAME
+    private var farmName: String? = DEFAULT_FIELD_DESC
+    private val riskAtt = DEFAULT_UNAVAILABLE_INT
 
-    private double costTractorRidging;
-    private double costManualPloughing;
-    private double costManualHarrowing;
-    private double costManualRidging;
-
-    private double costWeedingOne;
-    private double costWeedingTwo;
-
-    private boolean performsPloughing;
-    private boolean performsHarrowing;
-    private boolean performsRidging;
-    private boolean sellToStarchFactory;
-
-    private String methodHarrowing = DEFAULT_PRACTICE_METHOD;
-    private String methodPloughing = DEFAULT_PRACTICE_METHOD;
-    private String methodRidging = DEFAULT_PRACTICE_METHOD;
-    private String methodWeeding = DEFAULT_PRACTICE_METHOD;
-
-    private String maizeProdType = DEFAULT_MAIZE_PD;
-    private int maizeUnitWeight = DEFAULT_UNIT_WEIGHT;
-    private double maizeUnitPrice;
-    private String currentMaizePerformance = DEFAULT_MAIZE_PERFORMANCE_VALUE;
-
-    private String sweetPotatoProdType = DEFAULT_SWEET_POTATO_PD;
-    private int sweetPotatoUnitWeight = DEFAULT_UNIT_WEIGHT;
-    private double sweetPotatoUnitPrice;
-
-    private String deviceToken = DEFAULT_USERNAME;
-    private String fullNames = DEFAULT_USERNAME;
-    private String gender = DEFAULT_UNAVAILABLE;
-    private final String secondName = DEFAULT_USERNAME;
-    private String farmName = DEFAULT_FIELD_DESC;
-    private final int riskAtt = DEFAULT_UNAVAILABLE_INT;
-
-    private double cassavaUpmOne;
-    private double cassavaUpmTwo;
-    private double cassavaUppOne;
-    private double cassavaUppTwo;
-    private double cassavaUnitPrice = 0.0;
-    private String cassavaProduceType = DEFAULT_CASSAVA_PD;
-    private String starchFactoryName = DEFAULT_UNAVAILABLE;
+    private val cassavaUpmOne = 0.0
+    private val cassavaUpmTwo = 0.0
+    private val cassavaUppOne = 0.0
+    private val cassavaUppTwo = 0.0
+    private var cassavaUnitPrice = 0.0
+    private var cassavaProduceType = DEFAULT_CASSAVA_PD
+    private var starchFactoryName: String? = DEFAULT_UNAVAILABLE
 
 
-    private final MathHelper mathHelper;
-    private final ModelMapper modelMapper;
-    private final SessionManager sessionManager;
-    private final AppDatabase database;
+    private val modelMapper = ModelMapper()
+    private val database = getDatabase(context)
 
-    public BuildComputeData(@NonNull Activity activity) {
-        database = AppDatabase.getDatabase(activity);
-        mathHelper = new MathHelper(activity);
-        modelMapper = new ModelMapper();
-        sessionManager = new SessionManager(activity);
-    }
+    fun buildRecommendationReq(): RecommendationRequest {
+        val userInfo = buildProfileInfo()
 
-    public RecommendationRequest buildRecommendationReq() {
-        UserInfo userInfo = buildProfileInfo();
-
-        ComputeRequest computeRequest = buildMandatoryInfo();
+        val computeRequest = buildMandatoryInfo()
 
 
-        buildRequestedRec(computeRequest);
-        buildPlantingDates(computeRequest);
-        buildInvestmentAmount(computeRequest);
-        buildCurrentFieldYield(computeRequest);
-        buildCurrentPractice(computeRequest);
+        buildRequestedRec(computeRequest)
+        buildPlantingDates(computeRequest)
+        buildInvestmentAmount(computeRequest)
+        buildCurrentFieldYield(computeRequest)
+        buildCurrentPractice(computeRequest)
 
-        buildOperationCosts(computeRequest);
-        buildWeedManagement(computeRequest);
-        buildMaizePerformance(computeRequest);
-        buildCassavaMarketOutlet(computeRequest);
-        buildMaizeMarketOutlet(computeRequest);
-        buildSweetPotatoMarketOutlet(computeRequest);
+        buildOperationCosts(computeRequest)
+        buildWeedManagement(computeRequest)
+        buildMaizePerformance(computeRequest)
+        buildCassavaMarketOutlet(computeRequest)
+        buildMaizeMarketOutlet(computeRequest)
+        buildSweetPotatoMarketOutlet(computeRequest)
 
-        List<Fertilizer> fertilizerList;
-        Type listType = new TypeToken<List<Fertilizer>>() {
-        }.getType();
+        val fertilizerList: List<Fertilizer>
+        val listType = object : TypeToken<List<Fertilizer?>?>() {
+        }.type
 
-        if (computeRequest.getInterCroppingPotatoRec() || computeRequest.getInterCroppingMaizeRec()) {
-            List<InterCropFertilizer> interCropFertilizers = database.interCropFertilizerDao().findAllSelectedByCountry(countryCode);
-            fertilizerList = modelMapper.map(interCropFertilizers, listType);
+        if (computeRequest.interCroppingPotatoRec || computeRequest.interCroppingMaizeRec) {
+            val interCropFertilizers = database.fertilizerDao().findAllSelectedByCountry(
+                countryCode!!
+            )
+            fertilizerList = modelMapper.map(interCropFertilizers, listType)
         } else {
-            fertilizerList = database.fertilizerDao().findAllSelectedByCountry(countryCode);
+            fertilizerList = database.fertilizerDao().findAllSelectedByCountry(countryCode!!)
         }
 
 
-        return new RecommendationRequest(userInfo, computeRequest, fertilizerList);
+        return RecommendationRequest(userInfo, computeRequest, fertilizerList)
     }
 
-    private UserInfo buildProfileInfo() {
-        UserInfo userInfo = new UserInfo();
-        try {
-            ProfileInfo profileInfo = database.profileInfoDao().findOne();
+    private fun buildProfileInfo(): UserInfo {
+        return try {
+            val profileInfo = database.profileInfoDao().findOne() ?: return UserInfo()
 
-            if (profileInfo != null) {
-                String firstName = Strings.isEmptyOrWhitespace(profileInfo.getFirstName()) ? DEFAULT_USERNAME : profileInfo.getFirstName();
-                String lastName = Strings.isEmptyOrWhitespace(profileInfo.getLastName()) ? DEFAULT_USERNAME : profileInfo.getLastName();
-                fullNames = Strings.isEmptyOrWhitespace(profileInfo.names()) ? DEFAULT_USERNAME : profileInfo.names();
-                gender = Strings.isEmptyOrWhitespace(profileInfo.getGender()) ? DEFAULT_UNAVAILABLE : profileInfo.getGender();
-                farmName = Strings.isEmptyOrWhitespace(profileInfo.getFarmName()) ? DEFAULT_UNAVAILABLE : profileInfo.getFarmName();
-                mobileNumber = Strings.isEmptyOrWhitespace(profileInfo.getFullMobileNumber()) ? DEFAULT_UNAVAILABLE : profileInfo.getFullMobileNumber();
-                fullPhoneNumber = Strings.isEmptyOrWhitespace(profileInfo.getFullMobileNumber()) ? DEFAULT_UNAVAILABLE : profileInfo.getFullMobileNumber();
-                mobileCountryCode = Strings.isEmptyOrWhitespace(profileInfo.getMobileCode()) ? DEFAULT_UNAVAILABLE : profileInfo.getMobileCode();
-                emailAddress = Strings.isEmptyOrWhitespace(profileInfo.getEmail()) ? DEFAULT_UNAVAILABLE : profileInfo.getEmail();
-                deviceToken = profileInfo.getDeviceToken();
+            UserInfo().apply {
+                val firstName = profileInfo.firstName.orIfBlank(DEFAULT_USERNAME)
+                val lastName = profileInfo.lastName.orIfBlank(DEFAULT_USERNAME)
 
-                smsRequired = profileInfo.getSendSms();
-                emailRequired = profileInfo.getSendEmail();
-
-                userInfo.setDeviceToken(deviceToken);
-                userInfo.setFirstName(firstName);
-                userInfo.setLastName(lastName);
-                userInfo.setUserName(fullNames);
-                userInfo.setGender(gender);
-                userInfo.setMobileCountryCode(mobileCountryCode);
-                userInfo.setMobileNumber(mobileNumber);
-                userInfo.setFullPhoneNumber(fullPhoneNumber);
-                userInfo.setEmailAddress(emailAddress);
-                userInfo.setFieldDescription(farmName);
-                userInfo.setSendSms(smsRequired);
-                userInfo.setSendEmail(emailRequired);
+                this.firstName = firstName
+                this.lastName = lastName
+                this.userName = profileInfo.names().orIfBlank(DEFAULT_USERNAME)
+                this.gender = profileInfo.gender.orIfBlank(DEFAULT_UNAVAILABLE)
+                this.fieldDescription = profileInfo.farmName.orIfBlank(DEFAULT_UNAVAILABLE)
+                this.mobileNumber = profileInfo.fullMobileNumber.orIfBlank(DEFAULT_UNAVAILABLE)
+                this.fullPhoneNumber = profileInfo.fullMobileNumber.orIfBlank(DEFAULT_UNAVAILABLE)
+                this.mobileCountryCode = profileInfo.mobileCode.orIfBlank(DEFAULT_UNAVAILABLE)
+                this.emailAddress = profileInfo.email.orIfBlank(DEFAULT_UNAVAILABLE)
+                this.deviceToken = profileInfo.deviceToken.orEmpty()
+                this.sendSms = profileInfo.sendSms
+                this.sendEmail = profileInfo.sendEmail
             }
-        } catch (Exception ex) {
-            Sentry.captureException(ex);
+        } catch (ex: Exception) {
+            Sentry.captureException(ex)
+            UserInfo()
         }
-        return userInfo;
     }
 
-    private ComputeRequest buildMandatoryInfo() {
-        ComputeRequest computeRequest = new ComputeRequest();
-        MandatoryInfo mandatoryInfo = database.mandatoryInfoDao().findOne();
-        LocationInfo locationInfo = database.locationInfoDao().findOne();
-        ProfileInfo profileInfo = database.profileInfoDao().findOne();
+
+    private fun buildMandatoryInfo(): ComputeRequest {
+        val computeRequest = ComputeRequest()
+        val mandatoryInfo = database.mandatoryInfoDao().findOne()
+        val locationInfo = database.locationInfoDao().findOne()
+        val profileInfo = database.profileInfoDao().findOne()
         if (locationInfo != null) {
-            computeRequest.setMapLat(locationInfo.getLatitude());
-            computeRequest.setMapLong(locationInfo.getLongitude());
+            computeRequest.mapLat = locationInfo.latitude
+            computeRequest.mapLong = locationInfo.longitude
         }
         if (mandatoryInfo != null) {
-            fieldArea = mandatoryInfo.getAreaSize();
-            areaUnits = mandatoryInfo.getAreaUnit();
-            computeRequest.setRiskAttitude(riskAtt);
+            fieldArea = mandatoryInfo.areaSize
+            areaUnits = mandatoryInfo.areaUnit
+            computeRequest.riskAttitude = riskAtt
 
-            computeRequest.setFieldArea(fieldArea);
-            computeRequest.setAreaUnits(areaUnits);
+            computeRequest.fieldArea = fieldArea
+            computeRequest.areaUnits = areaUnits
         }
 
         if (profileInfo != null) {
-            countryCode = profileInfo.getCountryCode();
-            computeRequest.setCurrency(profileInfo.getCurrency());
-            computeRequest.setCountry(countryCode);
-            computeRequest.setRiskAttitude(profileInfo.getRiskAtt());
+            countryCode = profileInfo.countryCode
+            computeRequest.currency = profileInfo.currency
+            computeRequest.country = countryCode
+            computeRequest.riskAttitude = profileInfo.riskAtt
         }
-        return computeRequest;
+        return computeRequest
     }
 
-    private ComputeRequest buildRequestedRec(@NonNull ComputeRequest computeRequest) {
+    private fun buildRequestedRec(computeRequest: ComputeRequest): ComputeRequest {
         //check for values we have to give recommendations for
-        UseCases useCases = database.useCaseDao().findOne();
+        val useCases = database.useCaseDao().findOne()
         if (useCases != null) {
-            computeRequest.setInterCroppingMaizeRec(useCases.getCIM());
-            computeRequest.setInterCroppingPotatoRec(useCases.getCIS());
-            computeRequest.setUseCase(useCases.getName());
+            computeRequest.interCroppingMaizeRec = useCases.CIM
+            computeRequest.interCroppingPotatoRec = useCases.CIS
+            computeRequest.useCase = useCases.name
 
-            computeRequest.setFertilizerRec(useCases.getFR());
-            computeRequest.setPlantingPracticesRec(useCases.getBPP());
-            computeRequest.setScheduledPlantingRec(useCases.getSPP());
-            computeRequest.setScheduledHarvestRec(useCases.getSPH());
+            computeRequest.fertilizerRec = useCases.FR
+            computeRequest.plantingPracticesRec = useCases.BPP
+            computeRequest.scheduledPlantingRec = useCases.SPP
+            computeRequest.scheduledHarvestRec = useCases.SPH
         }
-        return computeRequest;
+        return computeRequest
     }
 
-    private ComputeRequest buildCurrentFieldYield(@NonNull ComputeRequest computeRequest) {
+    private fun buildCurrentFieldYield(computeRequest: ComputeRequest): ComputeRequest {
         //check for values we have to give recommendations for
-        FieldYield fieldYield = database.fieldYieldDao().findOne();
+        val fieldYield = database.fieldYieldDao().findOne()
         if (fieldYield != null) {
-            currentFieldYield = (int) fieldYield.getYieldAmount();
+            currentFieldYield = fieldYield.yieldAmount.toInt()
         }
-        computeRequest.setCurrentFieldYield(currentFieldYield);
+        computeRequest.currentFieldYield = currentFieldYield
 
-        return computeRequest;
+        return computeRequest
     }
 
-    private ComputeRequest buildPlantingDates(@NonNull ComputeRequest computeRequest) {
+    private fun buildPlantingDates(computeRequest: ComputeRequest): ComputeRequest {
         try {
-            ScheduledDate sph = database.scheduleDateDao().findOne();
-            DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy");
+            val sph = database.scheduleDateDao().findOne()
+            val formatter = DateTimeFormat.forPattern("dd/MM/yyyy")
 
             if (sph != null) {
+                plantingDate = sph.plantingDate
+                plantingDateWindow = sph.plantingWindow
+                harvestDate = sph.harvestDate
+                harvestDateWindow = sph.harvestWindow
 
-                plantingDate = sph.getPlantingDate();
-                plantingDateWindow = sph.getPlantingWindow();
-                harvestDate = sph.getHarvestDate();
-                harvestDateWindow = sph.getHarvestWindow();
 
+                val PD = formatter.parseLocalDate(plantingDate)
+                val HD = formatter.parseLocalDate(harvestDate)
 
-                LocalDate PD = formatter.parseLocalDate(plantingDate);
-                LocalDate HD = formatter.parseLocalDate(harvestDate);
+                computeRequest.plantingDate = PD.toString("yyyy-MM-dd")
+                computeRequest.plantingDateWindow = plantingDateWindow
 
-                computeRequest.setPlantingDate(PD.toString("yyyy-MM-dd"));
-                computeRequest.setPlantingDateWindow(plantingDateWindow);
-
-                computeRequest.setHarvestDate(HD.toString("yyyy-MM-dd"));
-                computeRequest.setHarvestDateWindow(harvestDateWindow);
+                computeRequest.harvestDate = HD.toString("yyyy-MM-dd")
+                computeRequest.harvestDateWindow = harvestDateWindow
             }
-        } catch (Exception ex) {
-            Sentry.captureException(ex);
+        } catch (ex: Exception) {
+            Sentry.captureException(ex)
         }
 
-        return computeRequest;
+        return computeRequest
     }
 
-    private ComputeRequest buildInvestmentAmount(@NonNull ComputeRequest computeRequest) {
-        InvestmentAmount investmentAmount = database.investmentAmountDao().findOne();
+    private fun buildInvestmentAmount(computeRequest: ComputeRequest): ComputeRequest {
+        val investmentAmount = database.investmentAmountDao().findOne()
         if (investmentAmount != null) {
-            maxInvestmentAmountLocal = investmentAmount.getMaxInvestmentAmount();
+            maxInvestmentAmountLocal = investmentAmount.maxInvestmentAmount
         }
-        computeRequest.setMaxInvestment(maxInvestmentAmountLocal);
-        return computeRequest;
+        computeRequest.maxInvestment = maxInvestmentAmountLocal
+        return computeRequest
     }
 
-    private ComputeRequest buildCurrentPractice(@NonNull ComputeRequest computeRequest) {
-
-        CurrentPractice currentPractice = database.currentPracticeDao().findOne();
+    private fun buildCurrentPractice(computeRequest: ComputeRequest): ComputeRequest {
+        val currentPractice = database.currentPracticeDao().findOne()
 
         if (currentPractice != null) {
-            performsPloughing = currentPractice.getPerformPloughing();
-            performsHarrowing = currentPractice.getPerformHarrowing();
-            performsRidging = currentPractice.getPerformRidging();
+            performsPloughing = currentPractice.performPloughing
+            performsHarrowing = currentPractice.performHarrowing
+            performsRidging = currentPractice.performRidging
 
-            methodHarrowing = Strings.isEmptyOrWhitespace(currentPractice.getHarrowingMethod()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getHarrowingMethod();
-            methodPloughing = Strings.isEmptyOrWhitespace(currentPractice.getPloughingMethod()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getPloughingMethod();
-            methodRidging = Strings.isEmptyOrWhitespace(currentPractice.getRidgingMethod()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getRidgingMethod();
-            methodWeeding = Strings.isEmptyOrWhitespace(currentPractice.getWeedControlTechnique()) ? DEFAULT_PRACTICE_METHOD : currentPractice.getWeedControlTechnique();
+            methodHarrowing =
+                if (Strings.isEmptyOrWhitespace(currentPractice.harrowingMethod)) DEFAULT_PRACTICE_METHOD else currentPractice.harrowingMethod
+            methodPloughing =
+                if (Strings.isEmptyOrWhitespace(currentPractice.ploughingMethod)) DEFAULT_PRACTICE_METHOD else currentPractice.ploughingMethod
+            methodRidging =
+                if (Strings.isEmptyOrWhitespace(currentPractice.ridgingMethod)) DEFAULT_PRACTICE_METHOD else currentPractice.ridgingMethod
+            methodWeeding =
+                if (Strings.isEmptyOrWhitespace(currentPractice.weedControlTechnique)) DEFAULT_PRACTICE_METHOD else currentPractice.weedControlTechnique
         }
 
-        computeRequest.setPloughingDone(performsPloughing);
-        computeRequest.setHarrowingDone(performsHarrowing);
-        computeRequest.setRidgingDone(performsRidging);
-        if (methodPloughing.equalsIgnoreCase("tractor")) {
-            computeRequest.setTractorPlough(true);
+        computeRequest.ploughingDone = performsPloughing
+        computeRequest.harrowingDone = performsHarrowing
+        computeRequest.ridgingDone = performsRidging
+        if (methodPloughing.equals("tractor", ignoreCase = true)) {
+            computeRequest.tractorPlough = true
         }
-        if (methodHarrowing.equalsIgnoreCase("tractor")) {
-            computeRequest.setTractorHarrow(true);
+        if (methodHarrowing.equals("tractor", ignoreCase = true)) {
+            computeRequest.tractorHarrow = true
         }
-        if (methodRidging.equalsIgnoreCase("tractor")) {
-            computeRequest.setTractorRidger(true);
+        if (methodRidging.equals("tractor", ignoreCase = true)) {
+            computeRequest.tractorRidger = true
         }
 
-        computeRequest.setMethodHarrowing(methodHarrowing);
-        computeRequest.setMethodPloughing(methodPloughing);
-        computeRequest.setMethodRidging(methodRidging);
-        computeRequest.setMethodWeeding(methodWeeding);
+        computeRequest.methodHarrowing = methodHarrowing
+        computeRequest.methodPloughing = methodPloughing
+        computeRequest.methodRidging = methodRidging
+        computeRequest.methodWeeding = methodWeeding
 
 
-        return computeRequest;
+        return computeRequest
     }
 
-    private ComputeRequest buildOperationCosts(@NonNull ComputeRequest computeRequest) {
-        FieldOperationCost fieldOperationCost = database.fieldOperationCostDao().findOne();
+    private fun buildOperationCosts(computeRequest: ComputeRequest): ComputeRequest {
+        val fieldOperationCost = database.fieldOperationCostDao().findOne()
 
         if (fieldOperationCost != null) {
-            costTractorPlough = fieldOperationCost.getTractorPloughCost();
-            costTractorHarrow = fieldOperationCost.getTractorHarrowCost();
-            costTractorRidging = fieldOperationCost.getTractorRidgeCost();
+            costTractorPlough = fieldOperationCost.tractorPloughCost
+            costTractorHarrow = fieldOperationCost.tractorHarrowCost
+            costTractorRidging = fieldOperationCost.tractorRidgeCost
 
-            costManualPloughing = fieldOperationCost.getManualPloughCost();
-            costManualHarrowing = fieldOperationCost.getManualHarrowCost();
-            costManualRidging = fieldOperationCost.getManualRidgeCost();
+            costManualPloughing = fieldOperationCost.manualPloughCost
+            costManualHarrowing = fieldOperationCost.manualHarrowCost
+            costManualRidging = fieldOperationCost.manualRidgeCost
 
-            costWeedingOne = fieldOperationCost.getFirstWeedingOperationCost();
-            costWeedingTwo = fieldOperationCost.getSecondWeedingOperationCost();
+            costWeedingOne = fieldOperationCost.firstWeedingOperationCost
+            costWeedingTwo = fieldOperationCost.secondWeedingOperationCost
         }
 
-        computeRequest.setCostLmoAreaBasis(costLmoAreaBasis);
+        computeRequest.costLmoAreaBasis = costLmoAreaBasis
 
-        computeRequest.setCostTractorPloughing(costTractorPlough);
-        computeRequest.setCostTractorHarrowing(costTractorHarrow);
-        computeRequest.setCostTractorRidging(costTractorRidging);
+        computeRequest.costTractorPloughing = costTractorPlough
+        computeRequest.costTractorHarrowing = costTractorHarrow
+        computeRequest.costTractorRidging = costTractorRidging
 
-        computeRequest.setCostManualPloughing(costManualPloughing);
-        computeRequest.setCostManualHarrowing(costManualHarrowing);
-        computeRequest.setCostManualRidging(costManualRidging);
+        computeRequest.costManualPloughing = costManualPloughing
+        computeRequest.costManualHarrowing = costManualHarrowing
+        computeRequest.costManualRidging = costManualRidging
 
-        computeRequest.setCostWeedingOne(costWeedingOne);
-        computeRequest.setCostWeedingTwo(costWeedingTwo);
+        computeRequest.costWeedingOne = costWeedingOne
+        computeRequest.costWeedingTwo = costWeedingTwo
 
-        return computeRequest;
+        return computeRequest
     }
 
-    private ComputeRequest buildWeedManagement(@NonNull ComputeRequest computeRequest) {
-        computeRequest.setFallowType(fallowType);
-        computeRequest.setFallowGreen(fallowGreen);
-        computeRequest.setFallowHeight(fallowHeight);
-        computeRequest.setProblemWeeds(problemWeeds);
+    private fun buildWeedManagement(computeRequest: ComputeRequest): ComputeRequest {
+        computeRequest.fallowType = fallowType
+        computeRequest.fallowGreen = fallowGreen
+        computeRequest.fallowHeight = fallowHeight
+        computeRequest.problemWeeds = problemWeeds
 
-        return computeRequest;
+        return computeRequest
     }
 
-    private ComputeRequest buildMaizePerformance(@NonNull ComputeRequest computeRequest) {
-        MaizePerformance maizePerformance = database.maizePerformanceDao().findOne();
+    private fun buildMaizePerformance(computeRequest: ComputeRequest): ComputeRequest {
+        val maizePerformance = database.maizePerformanceDao().findOne()
         if (maizePerformance != null) {
-            currentMaizePerformance = Strings.isEmptyOrWhitespace(maizePerformance.getPerformanceValue()) ? DEFAULT_MAIZE_PERFORMANCE_VALUE : maizePerformance.getPerformanceValue();
+            currentMaizePerformance =
+                if (Strings.isEmptyOrWhitespace(maizePerformance.performanceValue)) DEFAULT_MAIZE_PERFORMANCE_VALUE else maizePerformance.performanceValue
         }
-        computeRequest.setCurrentMaizePerformance(currentMaizePerformance);
+        computeRequest.currentMaizePerformance = currentMaizePerformance
 
-        return computeRequest;
+        return computeRequest
     }
 
-    private ComputeRequest buildCassavaMarketOutlet(@NonNull ComputeRequest computeRequest) {
-        CassavaMarket cassavaMarket = database.cassavaMarketDao().findOne();
+    private fun buildCassavaMarketOutlet(computeRequest: ComputeRequest): ComputeRequest {
+        val cassavaMarket = database.cassavaMarketDao().findOne()
 
         if (cassavaMarket != null) {
-            sellToStarchFactory = cassavaMarket.isStarchFactoryRequired();
+            sellToStarchFactory = cassavaMarket.isStarchFactoryRequired
             if (sellToStarchFactory) {
-                starchFactoryName = cassavaMarket.getStarchFactory();
+                starchFactoryName = cassavaMarket.starchFactory
             }
 
-            cassavaProduceType = cassavaMarket.getProduceType();
-            int uw = cassavaMarket.getUnitWeight();
-            cassavaUnitWeight = uw <= 0 ? DEFAULT_UNIT_WEIGHT : uw;
+            cassavaProduceType = cassavaMarket.produceType
+            val uw = cassavaMarket.unitWeight
+            cassavaUnitWeight = if (uw <= 0) DEFAULT_UNIT_WEIGHT else uw
 
-            cassavaUnitPrice = cassavaMarket.getUnitPrice();
+            cassavaUnitPrice = cassavaMarket.unitPrice
         }
-        computeRequest.setStarchFactoryName(starchFactoryName);
-        computeRequest.setSellToStarchFactory(sellToStarchFactory);
+        computeRequest.starchFactoryName = starchFactoryName
+        computeRequest.sellToStarchFactory = sellToStarchFactory
 
-        computeRequest.setCassavaProduceType(cassavaProduceType);
-        computeRequest.setCassavaUnitPrice(cassavaUnitPrice);
-        computeRequest.setCassavaUnitWeight(cassavaUnitWeight);
+        computeRequest.cassavaProduceType = cassavaProduceType
+        computeRequest.cassavaUnitPrice = cassavaUnitPrice
+        computeRequest.cassavaUnitWeight = cassavaUnitWeight
 
-        computeRequest.setCassUPM1(cassavaUpmOne);
-        computeRequest.setCassUPM2(cassavaUpmTwo);
-        computeRequest.setCassUPP1(cassavaUppOne);
-        computeRequest.setCassUPP2(cassavaUppTwo);
+        computeRequest.cassUPM1 = cassavaUpmOne
+        computeRequest.cassUPM2 = cassavaUpmTwo
+        computeRequest.cassUPP1 = cassavaUppOne
+        computeRequest.cassUPP2 = cassavaUppTwo
 
 
-        return computeRequest;
+        return computeRequest
     }
 
-    private ComputeRequest buildMaizeMarketOutlet(ComputeRequest computeRequest) {
-        MaizeMarket maizeMarket = database.maizeMarketDao().findOne();
+    private fun buildMaizeMarketOutlet(computeRequest: ComputeRequest): ComputeRequest {
+        val maizeMarket = database.maizeMarketDao().findOne()
         if (maizeMarket != null) {
-            maizeProdType = maizeMarket.getProduceType();
-            maizeUnitWeight = maizeMarket.getUnitWeight();
-            maizeUnitPrice = maizeMarket.getExactPrice();
+            maizeProdType = maizeMarket.produceType
+            maizeUnitWeight = maizeMarket.unitWeight
+            maizeUnitPrice = maizeMarket.exactPrice
 
-            int uw = maizeMarket.getUnitWeight();
-            maizeUnitWeight = uw <= 0 ? DEFAULT_UNIT_WEIGHT : uw;
-
+            val uw = maizeMarket.unitWeight
+            maizeUnitWeight = if (uw <= 0) DEFAULT_UNIT_WEIGHT else uw
         }
-        computeRequest.setMaizeProduceType(maizeProdType);
-        computeRequest.setMaizeUnitWeight(maizeUnitWeight);
-        computeRequest.setMaizeUnitPrice(maizeUnitPrice);
+        computeRequest.maizeProduceType = maizeProdType
+        computeRequest.maizeUnitWeight = maizeUnitWeight
+        computeRequest.maizeUnitPrice = maizeUnitPrice
 
-        return computeRequest;
+        return computeRequest
     }
 
-    private ComputeRequest buildSweetPotatoMarketOutlet(ComputeRequest computeRequest) {
-        PotatoMarket potatoMarket = database.potatoMarketDao().findOne();
+    private fun buildSweetPotatoMarketOutlet(computeRequest: ComputeRequest): ComputeRequest {
+        val potatoMarket = database.potatoMarketDao().findOne()
         if (potatoMarket != null) {
-            sweetPotatoProdType = potatoMarket.getProduceType();
-            sweetPotatoUnitWeight = potatoMarket.getUnitWeight();
-            sweetPotatoUnitPrice = potatoMarket.getUnitPrice();
+            sweetPotatoProdType = potatoMarket.produceType
+            sweetPotatoUnitWeight = potatoMarket.unitWeight
+            sweetPotatoUnitPrice = potatoMarket.unitPrice
 
-            int uw = potatoMarket.getUnitWeight();
-            sweetPotatoUnitWeight = uw <= 0 ? DEFAULT_UNIT_WEIGHT : uw;
+            val uw = potatoMarket.unitWeight
+            sweetPotatoUnitWeight = if (uw <= 0) DEFAULT_UNIT_WEIGHT else uw
         }
 
-        computeRequest.setSweetPotatoProduceType(sweetPotatoProdType);
-        computeRequest.setSweetPotatoUnitWeight(sweetPotatoUnitWeight);
-        computeRequest.setSweetPotatoUnitPrice(sweetPotatoUnitPrice);
-        return computeRequest;
+        computeRequest.sweetPotatoProduceType = sweetPotatoProdType
+        computeRequest.sweetPotatoUnitWeight = sweetPotatoUnitWeight
+        computeRequest.sweetPotatoUnitPrice = sweetPotatoUnitPrice
+        return computeRequest
+    }
+
+    companion object {
+        private val LOG_TAG: String = BuildComputeData::class.java.simpleName
+
+        private const val DEFAULT_CASSAVA_PD = "roots"
+        private const val DEFAULT_MAIZE_PD = "fresh_cob"
+        private const val DEFAULT_SWEET_POTATO_PD = "tubers"
+        private const val DEFAULT_UNAVAILABLE = "NA"
+        private const val DEFAULT_FALLOW_TYPE = "none"
+        private const val DEFAULT_MAIZE_PERFORMANCE_VALUE = "3"
+        private const val DEFAULT_PRACTICE_METHOD = "NA"
+
+        private const val DEFAULT_FIELD_YIELD = 11
+        private const val DEFAULT_UNAVAILABLE_INT = 0
+        private const val DEFAULT_UNIT_WEIGHT = 50
+        private const val DEFAULT_LMNO_BASIS = "areaUnit"
+        private const val DEFAULT_USERNAME = "Akilimo Farmer"
+        private const val DEFAULT_FIELD_DESC = "Akilimo field"
     }
 }

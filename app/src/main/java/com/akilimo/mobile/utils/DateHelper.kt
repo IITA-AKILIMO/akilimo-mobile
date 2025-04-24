@@ -1,205 +1,204 @@
-package com.akilimo.mobile.utils;
+package com.akilimo.mobile.utils
 
-import android.util.Log;
+import io.sentry.Sentry
+import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
+import org.joda.time.LocalDate
+import org.joda.time.LocalDateTime
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
-import androidx.annotation.NonNull;
+@Deprecated("Find better ways to  implement the functions listed")
+object DateHelper {
+    private val LOG_TAG: String = DateHelper::class.java.simpleName
+    var format: String = "dd/MM/yyyy"
 
+    @JvmField
+    var dateTimeFormat: String = "yyyy-MM-dd"
+    private var simpleDateFormat: SimpleDateFormat? = null
 
+    @JvmStatic
+    val simpleDateFormatter: SimpleDateFormat
+        get() = SimpleDateFormat(format, Locale.UK)
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+    val dateTimeFormatter: DateTimeFormatter
+        get() = DateTimeFormat.forPattern(format)
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-
-import io.sentry.Sentry;
-
-public class DateHelper {
-
-    private static String LOG_TAG = DateHelper.class.getSimpleName();
-    public static String format = "dd/MM/yyyy";
-    public static String dateTimeFormat = "yyyy-MM-dd";
-    private static SimpleDateFormat simpleDateFormat;
-
-    @NonNull
-    public static SimpleDateFormat getSimpleDateFormatter() {
-        return new SimpleDateFormat(format, Locale.UK);
-    }
-
-    public static DateTimeFormatter getDateTimeFormatter() {
-        return DateTimeFormat.forPattern(format);
-    }
-
-    @Deprecated
-    public static int getWeekNumber(String dateString) {
-        int weekNumber = 0;
+    @Deprecated("To be removed ASAP")
+    fun getWeekNumber(dateString: String): Int {
+        var weekNumber = 0
         try {
-            Date date = getSimpleDateFormatter().parse(dateString);
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(date);
-            weekNumber = cal.get(Calendar.WEEK_OF_YEAR);
-        } catch (ParseException ex) {
-            Sentry.captureException(ex);
+            val date = simpleDateFormatter.parse(dateString)
+            val cal = Calendar.getInstance()
+            cal.time = date
+            weekNumber = cal[Calendar.WEEK_OF_YEAR]
+        } catch (ex: ParseException) {
+            Sentry.captureException(ex)
         }
-        return weekNumber;
+        return weekNumber
     }
 
-    public static int getDayNumber(String dateString) {
-        int weekNumber = 0;
+    fun getDayNumber(dateString: String): Int {
+        var weekNumber = 0
         try {
-            Date date = getSimpleDateFormatter().parse(dateString);
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(date);
-            weekNumber = cal.get(Calendar.DAY_OF_YEAR);
-        } catch (ParseException ex) {
-            Sentry.captureException(ex);
+            val date = simpleDateFormatter.parse(dateString)
+            val cal = Calendar.getInstance()
+            cal.time = date
+            weekNumber = cal[Calendar.DAY_OF_YEAR]
+        } catch (ex: ParseException) {
+            Sentry.captureException(ex)
         }
-        return weekNumber;
+        return weekNumber
     }
 
-    @Deprecated
-    public static String getDateFromWeeks(int weekNumber, String fromDate) {
-        Date refDate = null;
+    @Deprecated("To be removed ASAP")
+    fun getDateFromWeeks(weekNumber: Int, fromDate: String): String {
+        var refDate: Date? = null
         try {
-            refDate = getSimpleDateFormatter().parse(fromDate);
-        } catch (ParseException ex) {
-            Sentry.captureException(ex);
+            refDate = simpleDateFormatter.parse(fromDate)
+        } catch (ex: ParseException) {
+            Sentry.captureException(ex)
         }
 
-        DateTime dt = new DateTime(refDate);
-        DateTime computedDate = dt.plusWeeks(weekNumber); //dt.minusWeeks(weekNumber);
+        val dt = DateTime(refDate)
+        val computedDate = dt.plusWeeks(weekNumber) //dt.minusWeeks(weekNumber);
 
-        return getDateTimeFormatter().print(computedDate);//.format(computedDate);
+        return dateTimeFormatter.print(computedDate) //.format(computedDate);
     }
 
-    public static String getDateFromDays(int dayNumber, String fromDate) {
-        Date refDate = null;
+    fun getDateFromDays(dayNumber: Int, fromDate: String): String {
+        var refDate: Date? = null
         try {
-            refDate = getSimpleDateFormatter().parse(fromDate);
-        } catch (ParseException ex) {
-            Sentry.captureException(ex);
+            refDate = simpleDateFormatter.parse(fromDate)
+        } catch (ex: ParseException) {
+            Sentry.captureException(ex)
         }
 
-        DateTime dt = new DateTime(refDate);
-        DateTime computedDate = dt.plusDays(dayNumber);
+        val dt = DateTime(refDate)
+        val computedDate = dt.plusDays(dayNumber)
 
-        return getDateTimeFormatter().print(computedDate);
+        return dateTimeFormatter.print(computedDate)
     }
 
-    @Deprecated
-    public static String getDateFromWeekOfYear(int weekNumber) {
-        simpleDateFormat = getSimpleDateFormatter();
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.WEEK_OF_YEAR, weekNumber);
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+    @Deprecated("")
+    fun getDateFromWeekOfYear(weekNumber: Int): String {
+        simpleDateFormat = simpleDateFormatter
+        val cal = Calendar.getInstance()
+        cal[Calendar.WEEK_OF_YEAR] = weekNumber
+        cal[Calendar.DAY_OF_WEEK] = Calendar.SUNDAY
 
-        return simpleDateFormat.format(cal.getTime());
+        return simpleDateFormat!!.format(cal.time)
     }
 
-    public static String getDateFromDayOfYear(int dayOfYear) {
-        simpleDateFormat = getSimpleDateFormatter();
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DAY_OF_YEAR, dayOfYear);
-        return simpleDateFormat.format(cal.getTime());
+    fun getDateFromDayOfYear(dayOfYear: Int): String {
+        simpleDateFormat = simpleDateFormatter
+        val cal = Calendar.getInstance()
+        cal[Calendar.DAY_OF_YEAR] = dayOfYear
+        return simpleDateFormat!!.format(cal.time)
     }
 
 
-    public static int currentDayNumber() {
-        Date today = new Date();
-        simpleDateFormat = getSimpleDateFormatter();
-        String currDate = simpleDateFormat.format(today.getTime());
+    fun currentDayNumber(): Int {
+        val today = Date()
+        simpleDateFormat = simpleDateFormatter
+        val currDate = simpleDateFormat!!.format(today.time)
 
-        return getDayNumber(currDate);
+        return getDayNumber(currDate)
     }
 
-    public static int getCurrentYear() {
-        return getCalendarNumber(Calendar.YEAR);
+    val currentYear: Int
+        get() = getCalendarNumber(Calendar.YEAR)
+
+    val currentMonth: Int
+        get() = getCalendarNumber(Calendar.MONTH)
+
+    val currentDay: Int
+        get() = getCalendarNumber(Calendar.DAY_OF_MONTH)
+
+    private fun getCalendarNumber(calendarValueType: Int): Int {
+        val c = Calendar.getInstance()
+        return c[calendarValueType]
     }
 
-    public static int getCurrentMonth() {
-        return getCalendarNumber(Calendar.MONTH);
+    fun getMaxDate(maxMonths: Int): Calendar {
+        return getFutureOrPastMonth(maxMonths)
     }
 
-    public static int getCurrentDay() {
-        return getCalendarNumber(Calendar.DAY_OF_MONTH);
+    fun getMinDate(minMonths: Int): Calendar {
+        return getFutureOrPastMonth(minMonths)
     }
 
-    private static int getCalendarNumber(int calendarValueType) {
-        final Calendar c = Calendar.getInstance();
-        return c.get(calendarValueType);
+    private fun getFutureOrPastMonth(maxMonth: Int): Calendar {
+        simpleDateFormat = simpleDateFormatter
+        val cal = Calendar.getInstance()
+        cal.add(Calendar.MONTH, maxMonth)
+        return cal
     }
 
-    public static Calendar getMaxDate(int maxMonths) {
-        return getFutureOrPastMonth(maxMonths);
-    }
-
-    public static Calendar getMinDate(int minMonths) {
-        return getFutureOrPastMonth(minMonths);
-    }
-
-    private static Calendar getFutureOrPastMonth(int maxMonth) {
-        simpleDateFormat = getSimpleDateFormatter();
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.MONTH, maxMonth);
-        return cal;
-    }
-
-    public static Calendar getFutureOrPastMonth(String referenceDate, int maxMonth) {
-        Calendar cal = Calendar.getInstance();
+    fun getFutureOrPastMonth(referenceDate: String?, maxMonth: Int): Calendar {
+        val cal = Calendar.getInstance()
         try {
             if (referenceDate != null) {
-                Date refDate = getSimpleDateFormatter().parse(referenceDate);
+                val refDate = simpleDateFormatter.parse(referenceDate)
                 if (refDate != null) {
-                    cal.setTime(refDate);// all done
+                    cal.time = refDate // all done
                 }
-                cal.add(Calendar.MONTH, maxMonth);
+                cal.add(Calendar.MONTH, maxMonth)
             }
-        } catch (ParseException ex) {
-            Sentry.captureException(ex);
+        } catch (ex: ParseException) {
+            Sentry.captureException(ex)
         }
-        return cal;
+        return cal
     }
 
-    public static LocalDateTime formatToLocalDateTime(String dateString) {
-        return LocalDateTime.parse(dateString, DateTimeFormat.forPattern(dateTimeFormat));
+    fun formatToLocalDateTime(dateString: String?): LocalDateTime {
+        return LocalDateTime.parse(
+            dateString, DateTimeFormat.forPattern(
+                dateTimeFormat
+            )
+        )
     }
 
-    public static LocalDate formatToLocalDate(String dateString) {
-        return LocalDate.parse(dateString, DateTimeFormat.forPattern(dateTimeFormat));
+    @JvmStatic
+    fun formatToLocalDate(dateString: String?): LocalDate {
+        return LocalDate.parse(
+            dateString, DateTimeFormat.forPattern(
+                dateTimeFormat
+            )
+        )
     }
 
-    public static DateTime unixTimeStampToDate(long unixTimestamp, DateTimeZone timeZone) {
-        DateTime parse = new DateTime();
+    fun unixTimeStampToDate(unixTimestamp: Long, timeZone: DateTimeZone?): DateTime {
+        var parse = DateTime()
         try {
-            DateTime dateTime = new DateTime(unixTimestamp);
-            DateTime zoneTime = dateTime.withZone(timeZone);
-            String dateString = zoneTime.toString();
-            parse = DateTime.parse(dateString);
-        } catch (Exception ex) {
-            Sentry.captureException(ex);
+            val dateTime = DateTime(unixTimestamp)
+            val zoneTime = dateTime.withZone(timeZone)
+            val dateString = zoneTime.toString()
+            parse = DateTime.parse(dateString)
+        } catch (ex: Exception) {
+            Sentry.captureException(ex)
         }
-        return parse;
+        return parse
     }
 
-    public static boolean olderThanCurrent(String dateOne) {
-        LocalDate d1 = formatToLocalDate(dateOne);
-        LocalDate currentDate = LocalDate.now();
+    @JvmStatic
+    fun olderThanCurrent(dateOne: String?): Boolean {
+        val d1 = formatToLocalDate(dateOne)
+        val currentDate = LocalDate.now()
 
-        boolean dateOlderThanCurrent = false;
+        var dateOlderThanCurrent = false
         if (d1.compareTo(currentDate) > 0) {
-            dateOlderThanCurrent = false;
+            dateOlderThanCurrent = false
         } else if (d1.compareTo(currentDate) < 0) {
-            dateOlderThanCurrent = true;
+            dateOlderThanCurrent = true
         } else if (d1.compareTo(currentDate) == 0) {
-            dateOlderThanCurrent = false;
+            dateOlderThanCurrent = false
         }
-        return dateOlderThanCurrent;
+        return dateOlderThanCurrent
     }
 }

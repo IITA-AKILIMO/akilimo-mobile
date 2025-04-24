@@ -18,7 +18,6 @@ import com.akilimo.mobile.interfaces.FuelrodApi
 import com.akilimo.mobile.interfaces.IFragmentCallBack
 import com.akilimo.mobile.utils.InAppUpdate
 import com.akilimo.mobile.utils.SessionManager
-import com.akilimo.mobile.views.activities.usecases.RecommendationsActivity
 import com.akilimo.mobile.views.fragments.AreaUnitFragment
 import com.akilimo.mobile.views.fragments.BioDataFragment
 import com.akilimo.mobile.views.fragments.CountryFragment
@@ -80,7 +79,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
         activity = this
         context = this
-        database = AppDatabase.getDatabase(context)
+        database = AppDatabase.getDatabase(this@HomeStepperActivity)
         sessionManager = SessionManager(this)
         mStepperLayout = binding.stepperLayout
 
@@ -104,40 +103,20 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
                         configListDict[config.configName] = config.configValue
                     }
                 }
-
                 if (configListDict.isNotEmpty()) {
-                    if (configListDict.containsKey("api_endpoint")) {
-                        sessionManager.akilimoEndpoint = configListDict["api_endpoint"]
-                    }
-
-                    if (configListDict.containsKey("location_iq")) {
-                        sessionManager.locationIqToken = configListDict["location_iq"]
-                    }
-
-                    if (configListDict.containsKey("mapbox")) {
-                        sessionManager.mapBoxApiKey = configListDict["mapbox"]
-                    }
-
-                    if (configListDict.containsKey("privacy")) {
-                        sessionManager.termsLink = configListDict["privacy"]
-                    }
-
-                    if (configListDict.containsKey("api_user")) {
-                        sessionManager.apiUser = configListDict["api_user"]
-                    }
-
-                    if (configListDict.containsKey("api_pass")) {
-                        sessionManager.apiPass = configListDict["api_pass"]
-                    }
-
-                    if (configListDict.containsKey("api_refresh_key")) {
-                        sessionManager.apiRefreshToken = configListDict["api_refresh_token"]
-                    }
-
-                    if (configListDict.containsKey("api_token")) {
-                        sessionManager.apiToken = configListDict["api_token"]
+                    sessionManager?.apply {
+                        configListDict["api_endpoint"]?.let { setAkilimoEndpoint(it) }
+                        configListDict["location_iq"]?.let { setLocationIqToken(it) }
+                        configListDict["mapbox"]?.let { setMapBoxApiKey(it) }
+                        configListDict["privacy"]?.let { setTermsLink(it) }
+                        configListDict["api_user"]?.let { setApiUser(it) }
+                        configListDict["api_pass"]?.let { setApiPass(it) }
+                        configListDict["api_refresh_key"]?.let { setApiRefreshToken(it) }
+                        configListDict["api_token"]?.let { setApiToken(it) }
                     }
                 }
+
+
             }
 
             override fun onFailure(call: Call<List<RemoteConfig>>, t: Throwable) {
@@ -156,18 +135,18 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
 
         fragmentArray.add(WelcomeFragment.newInstance())
-        if (!sessionManager.disclaimerRead) {
+        if (!sessionManager!!.getDisclaimerRead()) {
             fragmentArray.add(InfoFragment.newInstance())
             stepperReduction++
         }
-        if (!sessionManager.termsAccepted) {
+        if (!sessionManager!!.getTermsAccepted()) {
             fragmentArray.add(PrivacyStatementFragment.newInstance())
             stepperReduction++
         }
         fragmentArray.add(BioDataFragment.newInstance())
         fragmentArray.add(CountryFragment.newInstance())
         fragmentArray.add(LocationFragment.newInstance())
-        if (!sessionManager.rememberAreaUnit) {
+        if (!sessionManager!!.getRememberAreaUnit()) {
             fragmentArray.add(AreaUnitFragment.newInstance())
             stepperReduction++
         }
@@ -175,7 +154,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         fragmentArray.add(PlantingDateFragment.newInstance())
 
         fragmentArray.add(TillageOperationFragment.newInstance())
-        if (!sessionManager.rememberInvestmentPref) {
+        if (!sessionManager!!.getRememberInvestmentPref()) {
             fragmentArray.add(InvestmentPrefFragment.newInstance())
             stepperReduction++
         }
@@ -183,12 +162,13 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
     }
 
     override fun initComponent() {
-        stepperAdapter = MyStepperAdapter(supportFragmentManager, context, fragmentArray)
+        stepperAdapter =
+            MyStepperAdapter(supportFragmentManager, this@HomeStepperActivity, fragmentArray)
         mStepperLayout.adapter = stepperAdapter
 
         mStepperLayout.setListener(object : StepperListener {
             override fun onCompleted(completeButton: View?) {
-                val intent = Intent(context, RecommendationsActivity::class.java)
+                val intent = Intent(this@HomeStepperActivity, RecommendationsActivity::class.java)
                 startActivity(intent)
                 openActivity()
             }
@@ -221,6 +201,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         throw UnsupportedOperationException()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         inAppUpdate.onActivityResult(requestCode, resultCode)
@@ -238,6 +219,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
+        super.onBackPressed()
         try {
             if (exit) {
                 finish() // finish activity
@@ -255,11 +237,11 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
                 }).start()
             }
         } catch (ex: Exception) {
-            Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@HomeStepperActivity, ex.message, Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun reloadView() {
-        // Not imlemented
+        // Not implemented
     }
 }

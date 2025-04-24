@@ -1,282 +1,289 @@
-package com.akilimo.mobile.views.activities;
+package com.akilimo.mobile.views.activities
 
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.os.Bundle
+import android.view.View
+import android.widget.CompoundButton
+import android.widget.RadioGroup
+import android.widget.RelativeLayout
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.SwitchCompat
+import androidx.appcompat.widget.Toolbar
+import com.akilimo.mobile.R
+import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
+import com.akilimo.mobile.databinding.ActivityDatesBinding
+import com.akilimo.mobile.entities.AdviceStatus
+import com.akilimo.mobile.entities.ScheduledDate
+import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.interfaces.IDatePickerDismissListener
+import com.akilimo.mobile.utils.DateHelper
+import com.akilimo.mobile.utils.DateHelper.formatToLocalDate
+import com.akilimo.mobile.utils.DateHelper.olderThanCurrent
+import com.akilimo.mobile.utils.DateHelper.simpleDateFormatter
+import com.akilimo.mobile.utils.Tools.formatLongToDateString
+import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.views.fragments.dialog.DateDialogPickerFragment
+import io.sentry.Sentry
+import java.util.Calendar
 
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentManager;
+class DatesActivity : BaseActivity() {
+    var myToolbar: Toolbar? = null
 
+    var lytPlantingHarvest: RelativeLayout? = null
 
-import com.google.android.gms.common.util.Strings;
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.dao.AppDatabase;
-import com.akilimo.mobile.databinding.ActivityDatesBinding;
-import com.akilimo.mobile.entities.AdviceStatus;
-import com.akilimo.mobile.entities.ScheduledDate;
-import com.akilimo.mobile.inherit.BaseActivity;
-import com.akilimo.mobile.utils.DateHelper;
-import com.akilimo.mobile.utils.Tools;
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks;
-import com.akilimo.mobile.views.fragments.dialog.DateDialogPickerFragment;
+    var btnPickPlantingDate: AppCompatButton? = null
+    var btnPickHarvestDate: AppCompatButton? = null
+    var btnCancel: AppCompatButton? = null
+    var btnFinish: AppCompatButton? = null
 
-import org.joda.time.LocalDate;
+    var lblSelectedPlantingDate: TextView? = null
 
-import io.sentry.Sentry;
-
-public class DatesActivity extends BaseActivity {
-    Toolbar toolbar;
-
-    RelativeLayout lytPlantingHarvest;
-
-    AppCompatButton btnPickPlantingDate;
-    AppCompatButton btnPickHarvestDate;
-    AppCompatButton btnCancel;
-    AppCompatButton btnFinish;
-
-    TextView lblSelectedPlantingDate;
-
-    TextView lblSelectedHarvestDate;
+    var lblSelectedHarvestDate: TextView? = null
 
 
-    RadioGroup rdgAlternativeDate;
+    var rdgAlternativeDate: RadioGroup? = null
 
-    RadioGroup rdgPlantingWindow;
+    var rdgPlantingWindow: RadioGroup? = null
 
-    RadioGroup rdgHarvestWindow;
+    var rdgHarvestWindow: RadioGroup? = null
 
-    SwitchCompat flexiblePlanting;
-    SwitchCompat flexibleHarvest;
+    var flexiblePlanting: SwitchCompat? = null
+    var flexibleHarvest: SwitchCompat? = null
 
-    ActivityDatesBinding binding;
-
-    String selectedPlantingDate;
-    String selectedHarvestDate;
-    int plantingWindow = 0;
-    int harvestWindow = 0;
-    boolean alternativeDate;
-    boolean alreadyPlanted;
-
-    ScheduledDate scheduledDate;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityDatesBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+    private var _binding: ActivityDatesBinding? = null
+    private val binding get() = _binding!!
 
 
-        context = this;
-        database = AppDatabase.getDatabase(context);
+    var selectedPlantingDate: String? = null
+    var selectedHarvestDate: String? = null
+    var plantingWindow: Int = 0
+    var harvestWindow: Int = 0
+    var alternativeDate: Boolean = false
+    var alreadyPlanted: Boolean = false
 
-        //set widgets
-        toolbar = binding.toolbar;
-        lytPlantingHarvest = binding.lytPlantingHarvest;
-        btnPickPlantingDate = binding.btnPickPlantingDate;
-        btnPickHarvestDate = binding.btnPickHarvestDate;
-        btnCancel = binding.twoButtons.btnCancel;
-        btnFinish = binding.twoButtons.btnFinish;
-        lblSelectedPlantingDate = binding.lblSelectedPlantingDate;
-        lblSelectedHarvestDate = binding.lblSelectedHarvestDate;
-        rdgAlternativeDate = binding.rdgAlternativeDate;
-        rdgPlantingWindow = binding.rdgPlantingWindow;
-        rdgHarvestWindow = binding.rdgHarvestWindow;
-        flexiblePlanting = binding.flexiblePlanting;
-        flexibleHarvest = binding.flexibleHarvest;
+    var scheduledDate: ScheduledDate? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        _binding = ActivityDatesBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        myToolbar = binding.toolbar
+        lytPlantingHarvest = binding.lytPlantingHarvest
+        btnPickPlantingDate = binding.btnPickPlantingDate
+        btnPickHarvestDate = binding.btnPickHarvestDate
+        btnCancel = binding.twoButtons.btnCancel
+        btnFinish = binding.twoButtons.btnFinish
+        lblSelectedPlantingDate = binding.lblSelectedPlantingDate
+        lblSelectedHarvestDate = binding.lblSelectedHarvestDate
+        rdgAlternativeDate = binding.rdgAlternativeDate
+        rdgPlantingWindow = binding.rdgPlantingWindow
+        rdgHarvestWindow = binding.rdgHarvestWindow
+        flexiblePlanting = binding.flexiblePlanting
+        flexibleHarvest = binding.flexibleHarvest
 
 
-        initToolbar();
-        initComponent();
+        initToolbar()
+        initComponent()
     }
 
-    @Override
-    protected void initToolbar() {
-        toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(getString(R.string.lbl_planting_harvest_dates));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    override fun initToolbar() {
+        myToolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
+        setSupportActionBar(myToolbar)
+        supportActionBar!!.title = getString(R.string.lbl_planting_harvest_dates)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        toolbar.setNavigationOnClickListener(v -> validate(true));
+        myToolbar!!.setNavigationOnClickListener { v: View? -> validate(true) }
     }
 
-    @Override
-    protected void initComponent() {
+    override fun initComponent() {
         //now for title pickers
-        btnPickPlantingDate.setOnClickListener(view -> dialogDatePickerLight(true, false));
-        btnPickHarvestDate.setOnClickListener(view -> dialogDatePickerLight(false, true));
-        btnFinish.setOnClickListener(view -> validate(false));
-        btnCancel.setOnClickListener(view -> closeActivity(false));
+        btnPickPlantingDate!!.setOnClickListener { view: View? ->
+            dialogDatePickerLight(
+                pickPlantingDate = true,
+                pickHarvestDate = false
+            )
+        }
+        btnPickHarvestDate!!.setOnClickListener { view: View? ->
+            dialogDatePickerLight(
+                pickPlantingDate = false,
+                pickHarvestDate = true
+            )
+        }
+        btnFinish!!.setOnClickListener { view: View? -> validate(false) }
+        btnCancel!!.setOnClickListener { view: View? -> closeActivity(false) }
 
-        flexiblePlanting.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            rdgPlantingWindow.clearCheck();
-            plantingWindow = 0;
+        flexiblePlanting!!.setOnCheckedChangeListener { compoundButton: CompoundButton?, isChecked: Boolean ->
+            rdgPlantingWindow!!.clearCheck()
+            plantingWindow = 0
             if (isChecked) {
                 if (alreadyPlanted) {
-                    showCustomWarningDialog(getString(R.string.lbl_already_planted_title), getString(R.string.lbl_already_planted_text));
-                    flexiblePlanting.setChecked(false);
+                    showCustomWarningDialog(
+                        getString(R.string.lbl_already_planted_title),
+                        getString(R.string.lbl_already_planted_text)
+                    )
+                    flexiblePlanting!!.isChecked = false
                 } else {
-                    rdgPlantingWindow.setVisibility(View.VISIBLE);
+                    rdgPlantingWindow!!.visibility = View.VISIBLE
                 }
             } else {
-                rdgPlantingWindow.setVisibility(View.GONE);
+                rdgPlantingWindow!!.visibility = View.GONE
             }
-        });
+        }
 
-        flexibleHarvest.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            rdgHarvestWindow.setVisibility(View.GONE);
-            rdgHarvestWindow.clearCheck();
-            harvestWindow = 0;
+        flexibleHarvest!!.setOnCheckedChangeListener { compoundButton: CompoundButton?, isChecked: Boolean ->
+            rdgHarvestWindow!!.visibility =
+                View.GONE
+            rdgHarvestWindow!!.clearCheck()
+            harvestWindow = 0
             if (isChecked) {
-                rdgHarvestWindow.setVisibility(View.VISIBLE);
+                rdgHarvestWindow!!.visibility = View.VISIBLE
             } else {
-                rdgHarvestWindow.setVisibility(View.GONE);
+                rdgHarvestWindow!!.visibility = View.GONE
             }
-        });
+        }
 
-        rdgPlantingWindow.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
-            switch (radioIndex) {
-                case R.id.rdPlantingOneMonth:
-                    plantingWindow = 1;
-                    break;
-                case R.id.rdPlantingTwoMonths:
-                    plantingWindow = 2;
-                    break;
-                default:
-                    plantingWindow = 0;
-                    break;
+        rdgPlantingWindow!!.setOnCheckedChangeListener { radioGroup: RadioGroup?, radioIndex: Int ->
+            plantingWindow = when (radioIndex) {
+                R.id.rdPlantingOneMonth -> 1
+                R.id.rdPlantingTwoMonths -> 2
+                else -> 0
             }
-        });
-        rdgHarvestWindow.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
-            switch (radioIndex) {
-                case R.id.rdHarvestOneMonth:
-                    harvestWindow = 1;
-                    break;
-                case R.id.rdHarvestTwoMonths:
-                    harvestWindow = 2;
-                    break;
-                default:
-                    harvestWindow = 0;
-                    break;
+        }
+        rdgHarvestWindow!!.setOnCheckedChangeListener { radioGroup: RadioGroup?, radioIndex: Int ->
+            harvestWindow = when (radioIndex) {
+                R.id.rdHarvestOneMonth -> 1
+                R.id.rdHarvestTwoMonths -> 2
+                else -> 0
             }
-        });
+        }
 
-        rdgAlternativeDate.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
-            switch (radioIndex) {
-                case R.id.rdYes:
-                    lytPlantingHarvest.setVisibility(View.VISIBLE);
-                    alternativeDate = true;
-                    break;
-                case R.id.rdNo:
-                    lytPlantingHarvest.setVisibility(View.GONE);
-                    alternativeDate = false;
-                    break;
+        rdgAlternativeDate!!.setOnCheckedChangeListener { radioGroup: RadioGroup?, radioIndex: Int ->
+            when (radioIndex) {
+                R.id.rdYes -> {
+                    lytPlantingHarvest!!.visibility = View.VISIBLE
+                    alternativeDate = true
+                }
+
+                R.id.rdNo -> {
+                    lytPlantingHarvest!!.visibility = View.GONE
+                    alternativeDate = false
+                }
             }
-        });
+        }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        scheduledDate = database.scheduleDateDao().findOne();
+    override fun onResume() {
+        super.onResume()
+        val database = getDatabase(this@DatesActivity)
+        scheduledDate = database.scheduleDateDao().findOne()
 
         if (scheduledDate != null) {
-            alternativeDate = scheduledDate.getAlternativeDate();
-            String pd = scheduledDate.getPlantingDate();
-            String hd = scheduledDate.getHarvestDate();
-            int pw = scheduledDate.getPlantingWindow();
-            int hw = scheduledDate.getHarvestWindow();
+            alternativeDate = scheduledDate!!.alternativeDate
+            val pd = scheduledDate!!.plantingDate
+            val hd = scheduledDate!!.harvestDate
+            val pw = scheduledDate!!.plantingWindow
+            val hw = scheduledDate!!.harvestWindow
 
-            alreadyPlanted = scheduledDate.getAlreadyPlanted();
+            alreadyPlanted = scheduledDate!!.alreadyPlanted
 
-            DateHelper.dateTimeFormat = "dd/MM/yyyy";
-            LocalDate pDate = DateHelper.formatToLocalDate(pd);
-            LocalDate hDate = DateHelper.formatToLocalDate(hd);
-            lblSelectedPlantingDate.setText(pDate.toString());
-            lblSelectedHarvestDate.setText(hDate.toString());
-            rdgAlternativeDate.check(alternativeDate ? R.id.rdYes : R.id.rdNo);
+            DateHelper.dateTimeFormat = "dd/MM/yyyy"
+            val pDate = formatToLocalDate(pd)
+            val hDate = formatToLocalDate(hd)
+            lblSelectedPlantingDate!!.text = pDate.toString()
+            lblSelectedHarvestDate!!.text = hDate.toString()
+            rdgAlternativeDate!!.check(if (alternativeDate) R.id.rdYes else R.id.rdNo)
 
             if (pw > 0) {
-                flexiblePlanting.setChecked(true);
-                rdgPlantingWindow.check(pw == 1 ? R.id.rdPlantingOneMonth : R.id.rdPlantingTwoMonths);
+                flexiblePlanting!!.isChecked = true
+                rdgPlantingWindow!!.check(if (pw == 1) R.id.rdPlantingOneMonth else R.id.rdPlantingTwoMonths)
             }
             if (hw > 0) {
-                flexibleHarvest.setChecked(true);
-                rdgHarvestWindow.check(hw == 1 ? R.id.rdHarvestOneMonth : R.id.rdHarvestTwoMonths);
+                flexibleHarvest!!.isChecked = true
+                rdgHarvestWindow!!.check(if (hw == 1) R.id.rdHarvestOneMonth else R.id.rdHarvestTwoMonths)
             }
             //assign these values to the global parameters
-            selectedHarvestDate = hd;
-            selectedPlantingDate = pd;
+            selectedHarvestDate = hd
+            selectedPlantingDate = pd
         }
     }
 
-    @Override
-    protected void validate(boolean backPressed) {
-        if (Strings.isEmptyOrWhitespace(selectedPlantingDate)) {
-            showCustomWarningDialog(getString(R.string.lbl_invalid_planting_date), getString(R.string.lbl_planting_date_prompt));
-            return;
+    override fun validate(backPressed: Boolean) {
+        if (selectedPlantingDate.isNullOrEmpty()) {
+            showCustomWarningDialog(
+                getString(R.string.lbl_invalid_planting_date),
+                getString(R.string.lbl_planting_date_prompt)
+            )
+            return
         }
 
-        if (Strings.isEmptyOrWhitespace(selectedHarvestDate)) {
-            showCustomWarningDialog(getString(R.string.lbl_invalid_harvest_date), getString(R.string.lbl_harvest_date_prompt));
-            return;
+        if (selectedHarvestDate.isNullOrEmpty()) {
+            showCustomWarningDialog(
+                getString(R.string.lbl_invalid_harvest_date),
+                getString(R.string.lbl_harvest_date_prompt)
+            )
+            return
         }
 
         try {
+
             if (scheduledDate == null) {
-                scheduledDate = new ScheduledDate();
+                scheduledDate = ScheduledDate()
             }
 
-            alreadyPlanted = DateHelper.olderThanCurrent(selectedPlantingDate);
-            scheduledDate.setHarvestDate(selectedHarvestDate);
-            scheduledDate.setHarvestWindow(harvestWindow);
-            scheduledDate.setPlantingDate(selectedPlantingDate);
-            scheduledDate.setPlantingWindow(plantingWindow);
-            scheduledDate.setAlternativeDate(alternativeDate);
-            scheduledDate.setAlreadyPlanted(alreadyPlanted);
+            alreadyPlanted = olderThanCurrent(selectedPlantingDate)
+            scheduledDate!!.harvestDate = selectedHarvestDate
+            scheduledDate!!.harvestWindow = harvestWindow
+            scheduledDate!!.plantingDate = selectedPlantingDate
+            scheduledDate!!.plantingWindow = plantingWindow
+            scheduledDate!!.alternativeDate = alternativeDate
+            scheduledDate!!.alreadyPlanted = alreadyPlanted
 
-            database.scheduleDateDao().insert(scheduledDate);
+            val database = getDatabase(this@DatesActivity)
+            database.scheduleDateDao().insert(scheduledDate!!)
+            database.adviceStatusDao()
+                .insert(AdviceStatus(EnumAdviceTasks.PLANTING_AND_HARVEST.name, true))
 
-            database.adviceStatusDao().insert(new AdviceStatus(EnumAdviceTasks.PLANTING_AND_HARVEST.name(), true));
-
-            closeActivity(backPressed);
-
-        } catch (Exception ex) {
-            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Sentry.captureException(ex);
+            closeActivity(backPressed)
+        } catch (ex: Exception) {
+            Toast.makeText(this@DatesActivity, ex.message, Toast.LENGTH_SHORT).show()
+            Sentry.captureException(ex)
         }
     }
 
-    private void dialogDatePickerLight(boolean pickPlantingDate, boolean pickHarvestDate) {
-        final FragmentManager fm = getSupportFragmentManager();
+    private fun dialogDatePickerLight(pickPlantingDate: Boolean, pickHarvestDate: Boolean) {
+        val fm = supportFragmentManager
 
-        DateDialogPickerFragment pickerFragment = new DateDialogPickerFragment(true);
+        var pickerFragment = DateDialogPickerFragment(true)
         if (pickHarvestDate) {
-            pickerFragment = new DateDialogPickerFragment(true, selectedPlantingDate);
+            pickerFragment = DateDialogPickerFragment(true, selectedPlantingDate!!)
         }
-        pickerFragment.show(fm, DateDialogPickerFragment.TAG);
+        pickerFragment.show(fm, DateDialogPickerFragment.TAG)
 
-        pickerFragment.setOnDismissListener((myCalendar, selectedDate, plantingDateSelected, harvestDateSelected) -> {
-            long date_ship_millis = myCalendar.getTimeInMillis();
-            if (pickPlantingDate) {
-                selectedPlantingDate = DateHelper.getSimpleDateFormatter().format(myCalendar.getTime());
-                lblSelectedPlantingDate.setText(Tools.formatLongToDateString(date_ship_millis));
-                selectedHarvestDate = null;
-                lblSelectedHarvestDate.setText(null);
-                alreadyPlanted = DateHelper.olderThanCurrent(selectedPlantingDate);
-                if (alreadyPlanted) {
-                    flexiblePlanting.setChecked(false);
+        pickerFragment.setOnDismissListener(object : IDatePickerDismissListener {
+            override fun onDismiss(
+                myCalendar: Calendar,
+                selectedDate: String,
+                plantingDateSelected: Boolean,
+                harvestDateSelected: Boolean
+            ) {
+                val dateMs = myCalendar.timeInMillis
+                if (pickPlantingDate) {
+                    selectedPlantingDate = simpleDateFormatter.format(myCalendar.time)
+                    lblSelectedPlantingDate!!.text = formatLongToDateString(dateMs)
+                    selectedHarvestDate = null
+                    lblSelectedHarvestDate?.text = null
+                    alreadyPlanted = olderThanCurrent(selectedPlantingDate)
+                    if (alreadyPlanted) {
+                        flexiblePlanting!!.isChecked = false
+                    }
+                } else if (pickHarvestDate) {
+                    selectedHarvestDate = simpleDateFormatter.format(myCalendar.time)
+                    lblSelectedHarvestDate!!.text = formatLongToDateString(dateMs)
                 }
-            } else if (pickHarvestDate) {
-                selectedHarvestDate = DateHelper.getSimpleDateFormatter().format(myCalendar.getTime());
-                lblSelectedHarvestDate.setText(Tools.formatLongToDateString(date_ship_millis));
             }
-        });
 
+        })
     }
 }

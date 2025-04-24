@@ -14,7 +14,6 @@ import io.sentry.Sentry
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : BaseActivity() {
-    val LOG_TAG: String = this::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,8 +44,8 @@ class SplashActivity : BaseActivity() {
         val isInDevMode = BuildConfig.DEBUG
         try {
             val sessionManager = SessionManager(this@SplashActivity)
-            val akilimoEndpoint = sessionManager.akilimoEndpoint
-            val fuelrodEndpoint = sessionManager.fuelrodEndpoint
+            val akilimoEndpoint = sessionManager.getAkilimoEndpoint()
+            val fuelrodEndpoint = sessionManager.getFuelrodEndpoint()
 
             RetrofitManager.init(akilimoEndpoint, fuelrodEndpoint)
 
@@ -55,11 +54,11 @@ class SplashActivity : BaseActivity() {
                 if (db != null) {
                     with(db) {
 
-                        if (!sessionManager.rememberUserInfo) {
+                        if (!sessionManager.getRememberUserInfo()) {
                             profileInfoDao().deleteAll()
                         }
 
-                        if (!sessionManager.rememberAreaUnit) {
+                        if (!sessionManager.getRememberAreaUnit()) {
                             mandatoryInfoDao().deleteAll()
                         }
 

@@ -21,7 +21,7 @@ class SessionManager(context: Context) {
         // return pref.getString("apiResource", "https://api.akilimo.org/") ?: ""
     }
 
-    fun setAkilimoEndpoint(apiResource: String) {
+    fun setAkilimoEndpoint(apiResource: String?) {
         editor.putString("apiResource", apiResource).apply()
     }
 

@@ -109,7 +109,7 @@ class WeedControlCostsActivity : BaseActivity() {
 
     override fun initComponent() {
         val context = this@WeedControlCostsActivity
-        val myLocale = currentLocale
+        val myLocale = getCurrentLocale()
         var translatedUnit = context.getString(R.string.lbl_acre)
         if (areaUnit == "ha") {
             translatedUnit = context.getString(R.string.lbl_ha)

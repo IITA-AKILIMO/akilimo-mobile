@@ -1,180 +1,190 @@
-package com.akilimo.mobile.views.activities.usecases;
+package com.akilimo.mobile.views.activities.usecases
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.widget.Toast;
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.akilimo.mobile.R
+import com.akilimo.mobile.adapters.RecOptionsAdapter
+import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
+import com.akilimo.mobile.databinding.ActivityFertilizerRecBinding
+import com.akilimo.mobile.entities.UseCases
+import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.models.RecommendationOptions
+import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.utils.enums.EnumUseCase
+import com.akilimo.mobile.views.activities.CassavaMarketActivity
+import com.akilimo.mobile.views.activities.DatesActivity
+import com.akilimo.mobile.views.activities.FertilizersActivity
+import com.akilimo.mobile.views.activities.InvestmentAmountActivity
+import com.akilimo.mobile.views.activities.RootYieldActivity
+import io.sentry.Sentry
 
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+class FertilizerRecActivity : BaseActivity() {
+    var recyclerView: RecyclerView? = null
+    var myToolbar: Toolbar? = null
+    var btnGetRec: AppCompatButton? = null
 
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.adapters.RecOptionsAdapter;
-import com.akilimo.mobile.dao.AppDatabase;
-import com.akilimo.mobile.databinding.ActivityFertilizerRecBinding;
-import com.akilimo.mobile.entities.UseCases;
-import com.akilimo.mobile.inherit.BaseActivity;
-import com.akilimo.mobile.models.RecommendationOptions;
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks;
-import com.akilimo.mobile.utils.enums.EnumUseCase;
-import com.akilimo.mobile.views.activities.CassavaMarketActivity;
-import com.akilimo.mobile.views.activities.DatesActivity;
-import com.akilimo.mobile.views.activities.FertilizersActivity;
-import com.akilimo.mobile.views.activities.InvestmentAmountActivity;
-import com.akilimo.mobile.views.activities.RootYieldActivity;
-import com.google.android.material.snackbar.Snackbar;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import io.sentry.Sentry;
-
-public class FertilizerRecActivity extends BaseActivity {
-
-    RecyclerView recyclerView;
-    Toolbar toolbar;
-    AppCompatButton btnGetRec;
-
-    ActivityFertilizerRecBinding binding;
+    private var _binding: ActivityFertilizerRecBinding? = null
+    private val binding get() = _binding!!
 
 
-    String plantingString;
-    String fertilizerString;
-    String investmentString;
-    String rootYieldString;
-    String marketOutletString;
+    var plantingString: String? = null
+    var fertilizerString: String? = null
+    var investmentString: String? = null
+    var rootYieldString: String? = null
+    var marketOutletString: String? = null
 
-    private Activity activity;
-    private RecOptionsAdapter mAdapter;
-    private List<RecommendationOptions> items = new ArrayList<>();
-    private UseCases useCases;
+    private var activity: Activity? = null
+    private var mAdapter: RecOptionsAdapter? = null
+    private var items: List<RecommendationOptions> = ArrayList()
+    private var useCases: UseCases? = null
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityFertilizerRecBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        context = this;
-        activity = this;
-        recyclerView = binding.recyclerView;
-        toolbar = binding.toolbarLayout.toolbar;
-        btnGetRec = binding.singleButton.btnGetRecommendation;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        _binding = ActivityFertilizerRecBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
+        recyclerView = binding.recyclerView
+        myToolbar = binding.toolbarLayout.toolbar
+        btnGetRec = binding.singleButton.btnGetRecommendation
 
-        database = AppDatabase.getDatabase(context);
-        mAdapter = new RecOptionsAdapter();
-        initToolbar();
-        initComponent();
+        mAdapter = RecOptionsAdapter()
+        initToolbar()
+        initComponent()
     }
 
-    @SuppressWarnings("ConstantConditions")
-    @Override
-    protected void initToolbar() {
-        toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(getString(R.string.lbl_fertilizer_recommendations));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    override fun initToolbar() {
+        myToolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
+        setSupportActionBar(myToolbar)
+        supportActionBar!!.title = getString(R.string.lbl_fertilizer_recommendations)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setDisplayShowHomeEnabled(true)
 
-        toolbar.setNavigationOnClickListener(v -> closeActivity(false));
+        myToolbar!!.setNavigationOnClickListener { v: View? -> closeActivity(false) }
     }
 
-    @Override
-    protected void initComponent() {
-        plantingString = getString(R.string.lbl_planting_harvest);
-        fertilizerString = getString(R.string.lbl_available_fertilizers);
-        investmentString = getString(R.string.lbl_investment_amount);
-        rootYieldString = getString(R.string.lbl_typical_yield);
-        marketOutletString = getString(R.string.lbl_market_outlet);
+    override fun initComponent() {
+        plantingString = getString(R.string.lbl_planting_harvest)
+        fertilizerString = getString(R.string.lbl_available_fertilizers)
+        investmentString = getString(R.string.lbl_investment_amount)
+        rootYieldString = getString(R.string.lbl_typical_yield)
+        marketOutletString = getString(R.string.lbl_market_outlet)
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(mAdapter);
-        btnGetRec.setOnClickListener(view -> {
+        recyclerView!!.layoutManager = LinearLayoutManager(this)
+        recyclerView!!.setHasFixedSize(true)
+        recyclerView!!.adapter = mAdapter
+        val database = getDatabase(this@FertilizerRecActivity)
+        btnGetRec!!.setOnClickListener { view: View? ->
             //launch the recommendation view
-            useCases = database.useCaseDao().findOne();
+            useCases = database.useCaseDao().findOne()
             try {
                 if (useCases == null) {
-                    useCases = new UseCases();
+                    useCases = UseCases()
                 }
-                useCases.setFR(true);
-                useCases.setCIM(false);
-                useCases.setCIS(false);
-                useCases.setSPH(false);
-                useCases.setSPP(false);
-                useCases.setBPP(false);
-                useCases.setName(EnumUseCase.FR.name());
+                useCases!!.FR = true
+                useCases!!.CIM = false
+                useCases!!.CIS = false
+                useCases!!.SPH = false
+                useCases!!.SPP = false
+                useCases!!.BPP = false
+                useCases!!.name = EnumUseCase.FR.name
 
-                database.useCaseDao().insert(useCases);
-                processRecommendations(activity);
+                database.useCaseDao().insert(useCases!!)
+                processRecommendations(activity!!)
+            } catch (ex: Exception) {
+                Toast.makeText(this@FertilizerRecActivity, ex.message, Toast.LENGTH_SHORT).show()
+                Sentry.captureException(ex)
+            }
+        }
+        mAdapter!!.setOnItemClickListener(object : RecOptionsAdapter.OnItemClickListener {
+            override fun onItemClick(view: View?, obj: RecommendationOptions?, position: Int) {
+                var intent: Intent? = null
+                val advice = obj?.adviceName
+                when (advice) {
+                    EnumAdviceTasks.PLANTING_AND_HARVEST -> intent =
+                        Intent(this@FertilizerRecActivity, DatesActivity::class.java)
 
-            } catch (Exception ex) {
-                Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                Sentry.captureException(ex);
-            }
-        });
-        mAdapter.setOnItemClickListener((view, obj, position) -> {
-            Intent intent = null;
-            EnumAdviceTasks advice = obj.getAdviceName();
-            if (advice == null) {
-                advice = EnumAdviceTasks.NOT_SELECTED;
-            }
-            switch (advice) {
-                case PLANTING_AND_HARVEST:
-                    intent = new Intent(context, DatesActivity.class);
-                    break;
-                case AVAILABLE_FERTILIZERS:
-                    intent = new Intent(context, FertilizersActivity.class);
-                    break;
-                case INVESTMENT_AMOUNT:
-                    intent = new Intent(context, InvestmentAmountActivity.class);
-                    break;
-                case CURRENT_CASSAVA_YIELD:
-                    intent = new Intent(context, RootYieldActivity.class);
-                    break;
-                case MARKET_OUTLET_CASSAVA:
-                    intent = new Intent(context, CassavaMarketActivity.class);
-                    break;
-            }
-            if (intent != null) {
-                startActivity(intent);
-                openActivity();
-            } else {
-                Snackbar.make(view, "Item " + obj.getRecName() + " clicked but not launched", Snackbar.LENGTH_SHORT).show();
-            }
-        });
+                    EnumAdviceTasks.AVAILABLE_FERTILIZERS -> intent =
+                        Intent(this@FertilizerRecActivity, FertilizersActivity::class.java)
 
-        setAdapter();
+                    EnumAdviceTasks.INVESTMENT_AMOUNT -> intent =
+                        Intent(this@FertilizerRecActivity, InvestmentAmountActivity::class.java)
+
+                    EnumAdviceTasks.CURRENT_CASSAVA_YIELD -> intent =
+                        Intent(this@FertilizerRecActivity, RootYieldActivity::class.java)
+
+                    EnumAdviceTasks.MARKET_OUTLET_CASSAVA -> intent =
+                        Intent(this@FertilizerRecActivity, CassavaMarketActivity::class.java)
+
+                    else -> EnumAdviceTasks.NOT_SELECTED
+                }
+
+                if (intent != null) {
+                    startActivity(intent)
+                    openActivity()
+                }
+            }
+
+        })
+
+        setAdapter()
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setAdapter();
+    override fun onResume() {
+        super.onResume()
+        setAdapter()
     }
 
-    private void setAdapter() {
+    private fun setAdapter() {
         //set data and list adapter
-        items = getRecItems();
-        mAdapter.setData(items);
-        recyclerView.setAdapter(mAdapter);
+        items = recItems
+        mAdapter!!.setData(items)
+        recyclerView!!.adapter = mAdapter
     }
 
-    private List<RecommendationOptions> getRecItems() {
-        List<RecommendationOptions> myItems = new ArrayList<>();
-        myItems.add(new RecommendationOptions(marketOutletString, EnumAdviceTasks.MARKET_OUTLET_CASSAVA, checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)));
-        myItems.add(new RecommendationOptions(fertilizerString, EnumAdviceTasks.AVAILABLE_FERTILIZERS, checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS)));
-        myItems.add(new RecommendationOptions(investmentString, EnumAdviceTasks.INVESTMENT_AMOUNT, checkStatus(EnumAdviceTasks.INVESTMENT_AMOUNT)));
-        myItems.add(new RecommendationOptions(rootYieldString, EnumAdviceTasks.CURRENT_CASSAVA_YIELD, checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)));
+    private val recItems: List<RecommendationOptions>
+        get() {
+            val myItems: MutableList<RecommendationOptions> =
+                ArrayList()
+            myItems.add(
+                RecommendationOptions(
+                    marketOutletString!!,
+                    EnumAdviceTasks.MARKET_OUTLET_CASSAVA,
+                    checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)
+                )
+            )
+            myItems.add(
+                RecommendationOptions(
+                    fertilizerString!!,
+                    EnumAdviceTasks.AVAILABLE_FERTILIZERS,
+                    checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS)
+                )
+            )
+            myItems.add(
+                RecommendationOptions(
+                    investmentString!!,
+                    EnumAdviceTasks.INVESTMENT_AMOUNT,
+                    checkStatus(EnumAdviceTasks.INVESTMENT_AMOUNT)
+                )
+            )
+            myItems.add(
+                RecommendationOptions(
+                    rootYieldString!!,
+                    EnumAdviceTasks.CURRENT_CASSAVA_YIELD,
+                    checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)
+                )
+            )
 
-        return myItems;
+            return myItems
+        }
+
+    override fun validate(backPressed: Boolean) {
+        throw UnsupportedOperationException()
     }
-
-    @Override
-    protected void validate(boolean backPressed) {
-        throw new UnsupportedOperationException();
-    }
-
 }
