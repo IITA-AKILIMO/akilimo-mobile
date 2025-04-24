@@ -122,13 +122,14 @@ abstract class BaseStepFragment : Fragment(), Step {
      * @return Formatted location string
      */
     protected fun formatLocationInfo(locationInfo: LocationInfo?): String {
-        return locationInfo?.let {
-            val lat = mathHelper.removeLeadingZero(it.latitude, "#.####")
-            val lon = mathHelper.removeLeadingZero(it.longitude, "#.####")
-            val place = it.locationCountryName
+        if (locationInfo == null) {
+            return ""
+        }
+        val lat = mathHelper.removeLeadingZero(locationInfo.latitude, "#.####")
+        val lon = mathHelper.removeLeadingZero(locationInfo.longitude, "#.####")
+        val place = locationInfo.locationCountryName
 
-            "${place}\n${lat},${lon}"
-        } ?: ""
+        return "${place}\n${lat},${lon}"
     }
 
     /**
