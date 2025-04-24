@@ -36,7 +36,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.Locale
 
-class IntercropFertilizersActivity : BaseActivity() {
+class InterCropFertilizersActivity : BaseActivity() {
     private val TAG: String = BaseActivity::class.java.simpleName
 
 
@@ -125,12 +125,12 @@ class IntercropFertilizersActivity : BaseActivity() {
 
 
     override fun initComponent() {
-        btnSave!!.text = this@IntercropFertilizersActivity.getString(R.string.lbl_finish)
+        btnSave!!.text = this@InterCropFertilizersActivity.getString(R.string.lbl_finish)
         recyclerView!!.visibility = View.GONE
         recyclerView!!.layoutManager = GridLayoutManager(this, 2)
         recyclerView!!.addItemDecoration(SpacingItemDecoration(2, dpToPx(this, 3), true))
         recyclerView!!.setHasFixedSize(true)
-        mAdapter = FertilizerGridAdapter(this@IntercropFertilizersActivity)
+        mAdapter = FertilizerGridAdapter(this@InterCropFertilizersActivity)
         recyclerView!!.adapter = mAdapter
 
 
@@ -282,7 +282,7 @@ class IntercropFertilizersActivity : BaseActivity() {
                 errorImage!!.visibility = View.VISIBLE
                 btnRetry!!.visibility = View.VISIBLE
                 Sentry.captureException(t)
-                Toast.makeText(this@IntercropFertilizersActivity, t.message, Toast.LENGTH_SHORT)
+                Toast.makeText(this@InterCropFertilizersActivity, t.message, Toast.LENGTH_SHORT)
                     .show()
             }
 
@@ -316,7 +316,7 @@ class IntercropFertilizersActivity : BaseActivity() {
                 errorImage!!.visibility = View.VISIBLE
                 btnRetry!!.visibility = View.VISIBLE
                 Sentry.captureException(t)
-                Toast.makeText(this@IntercropFertilizersActivity, t.message, Toast.LENGTH_SHORT)
+                Toast.makeText(this@InterCropFertilizersActivity, t.message, Toast.LENGTH_SHORT)
                     .show()
             }
 
@@ -333,7 +333,7 @@ class IntercropFertilizersActivity : BaseActivity() {
                         coordinatorLayout!!,
                         String.format(
                             Locale.US,
-                            this@IntercropFertilizersActivity.getString(R.string.lbl_min_selection),
+                            this@InterCropFertilizersActivity.getString(R.string.lbl_min_selection),
                             minSelection
                         ),
                         Snackbar.LENGTH_LONG
