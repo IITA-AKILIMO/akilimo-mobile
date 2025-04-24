@@ -136,7 +136,7 @@ class WelcomeFragment : BaseStepFragment() {
         if (selectedLocale != null) {
             selectedLanguageIndex = localeDisplayName.indexOf(selectedLocale!!.displayLanguage)
         }
-        val spinnerAdapter = MySpinnerAdapter(context, localeStrings)
+        val spinnerAdapter = MySpinnerAdapter(requireContext(), localeStrings)
         binding.apply {
             languagePicker.adapter = spinnerAdapter
             languagePicker.setSelection(selectedLanguageIndex)
