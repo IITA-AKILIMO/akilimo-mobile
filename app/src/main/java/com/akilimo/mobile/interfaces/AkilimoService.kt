@@ -12,7 +12,7 @@ import com.akilimo.mobile.entities.StarchFactoryResponse
 import com.akilimo.mobile.models.OperationCostResponse
 import com.akilimo.mobile.rest.request.RecommendationRequest
 import com.akilimo.mobile.rest.request.SurveyRequest
-import com.akilimo.mobile.rest.response.RecommendationResp
+import com.akilimo.mobile.rest.response.RecommendationResponse
 import com.akilimo.mobile.rest.retrofit.RetrofitManager
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -47,7 +47,7 @@ interface AkilimoService {
     fun submitUserReview(@Body surveyRequest: SurveyRequest): Call<ResponseBody>
 
     @POST("v1/recommendations")
-    fun computeRecommendations(@Body recommendationRequest: RecommendationRequest?): Call<RecommendationResp>
+    fun computeRecommendations(@Body recommendationRequest: RecommendationRequest?): Call<RecommendationResponse>
 
     @GET("v1/operation-costs/currency/{currency_code}")
     fun getOperationCosts(
