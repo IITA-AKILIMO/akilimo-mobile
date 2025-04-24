@@ -1,301 +1,289 @@
-package com.akilimo.mobile.views.fragments;
+package com.akilimo.mobile.views.fragments
 
+import android.os.Bundle
+import android.text.TextUtils
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.CompoundButton
+import android.widget.Spinner
+import android.widget.SpinnerAdapter
+import android.widget.Toast
+import com.akilimo.mobile.R
+import com.akilimo.mobile.databinding.FragmentBioDataBinding
+import com.akilimo.mobile.entities.UserProfile
+import com.akilimo.mobile.inherit.BaseStepFragment
+import com.akilimo.mobile.utils.ValidationHelper
+import com.google.android.material.textfield.TextInputEditText
+import com.hbb20.CountryCodePicker
+import com.stepstone.stepper.VerificationError
+import io.sentry.Sentry
 
-import android.content.Context;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.databinding.FragmentBioDataBinding;
-import com.akilimo.mobile.entities.ProfileInfo;
-import com.akilimo.mobile.inherit.BaseStepFragment;
-import com.akilimo.mobile.utils.ValidationHelper;
-import com.google.android.material.textfield.TextInputEditText;
-import com.hbb20.CountryCodePicker;
-import com.stepstone.stepper.VerificationError;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import io.sentry.Sentry;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple [Fragment] subclass.
  */
-public class BioDataFragment extends BaseStepFragment {
-    private ProfileInfo profileInfo;
-    private ValidationHelper validationHelper;
-    private boolean phoneIsValid = true;
+class BioDataFragment : BaseStepFragment() {
+    private var userProfile: UserProfile? = null
 
-    FragmentBioDataBinding binding;
-    Spinner genderSpinner, interestSpinner;
-    TextInputEditText edtFirstName;
-    TextInputEditText edtLastName;
+    private val validationHelper: ValidationHelper by lazy { ValidationHelper() }
+
+    private var phoneIsValid = true
+
+    private var _binding: FragmentBioDataBinding? = null
+    private val binding get() = _binding!!
+
+    var genderSpinner: Spinner? = null
+    var interestSpinner: Spinner? = null
+    var edtFirstName: TextInputEditText? = null
+    var edtLastName: TextInputEditText? = null
+
     //    TextInputEditText edtFamName;
-    TextInputEditText edtEmail;
-    TextInputEditText edtPhone;
-    CountryCodePicker ccp;
+    var edtEmail: TextInputEditText? = null
+    var edtPhone: TextInputEditText? = null
+    var ccp: CountryCodePicker? = null
 
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String mobileCode;
-    private String fullMobileNumber;
-    private String userEnteredNumber;
-    private String gender, akilimoInterest;
-    private int selectedGenderIndex = -1;
-    private int selectedInterestIndex = -1;
+    private var firstName: String? = null
+    private var lastName: String? = null
+    private var email: String? = null
+    private var mobileCode: String? = null
+    private var fullMobileNumber: String? = null
+    private var userEnteredNumber: String? = null
+    private var gender: String? = null
+    private var akilimoInterest: String? = null
+    private var selectedGenderIndex = -1
+    private var selectedInterestIndex = -1
 
-    private boolean rememberUserInfo = false;
-
-    public BioDataFragment() {
-        // Required empty public constructor
-    }
-
-    public static BioDataFragment newInstance() {
-        return new BioDataFragment();
-    }
+    private var rememberUserInfo = false
 
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.context = context;
-        validationHelper = new ValidationHelper();
+    override fun loadFragmentLayout(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentBioDataBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
 
-    @Override
-    protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentBioDataBinding.inflate(inflater, container, false);
-        return binding.getRoot();
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val context = requireContext()
+        genderSpinner = binding.genderSpinner
+        interestSpinner = binding.interestSpinner
+        edtFirstName = binding.edtFirstName
+        edtLastName = binding.edtLastName
+        edtEmail = binding.edtEmail
+        edtPhone = binding.edtPhone
+        ccp = binding.ccp
+
+        val genderStrings: MutableList<String> = ArrayList()
+        genderStrings.add(0, this.getString(R.string.lbl_gender_prompt))
+        genderStrings.add(this.getString(R.string.lbl_female))
+        genderStrings.add(this.getString(R.string.lbl_male))
+        genderStrings.add(this.getString(R.string.lbl_prefer_not_to_say))
+
+        val genderAdapter: SpinnerAdapter =
+            ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, genderStrings)
+        genderSpinner!!.adapter = genderAdapter
+
+        val interestStrings: MutableList<String> = ArrayList()
+        interestStrings.add(0, this.getString(R.string.lbl_akilimo_interest_prompt))
+        interestStrings.add(this.getString(R.string.lbl_interest_farmer))
+        interestStrings.add(this.getString(R.string.lbl_interest_extension_agent))
+        interestStrings.add(this.getString(R.string.lbl_interest_agronomist))
+        interestStrings.add(this.getString(R.string.lbl_interest_curious))
+        val interestAdapter: SpinnerAdapter =
+            ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, interestStrings)
+        interestSpinner!!.adapter = interestAdapter
 
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-
-        genderSpinner = binding.genderSpinner;
-        interestSpinner = binding.interestSpinner;
-        edtFirstName = binding.edtFirstName;
-        edtLastName = binding.edtLastName;
-//        edtFamName = binding.edtFarmName;
-        edtEmail = binding.edtEmail;
-        edtPhone = binding.edtPhone;
-        ccp = binding.ccp;
-
-        final List<String> genderStrings = new ArrayList<>();
-        genderStrings.add(0, this.getString(R.string.lbl_gender_prompt));
-        genderStrings.add(this.getString(R.string.lbl_female));
-        genderStrings.add(this.getString(R.string.lbl_male));
-        genderStrings.add(this.getString(R.string.lbl_prefer_not_to_say));
-
-        final SpinnerAdapter genderAdapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, genderStrings);
-        genderSpinner.setAdapter(genderAdapter);
-
-        final List<String> interestStrings = new ArrayList<>();
-        interestStrings.add(0, this.getString(R.string.lbl_akilimo_interest_prompt));
-        interestStrings.add(this.getString(R.string.lbl_interest_farmer));
-        interestStrings.add(this.getString(R.string.lbl_interest_extension_agent));
-        interestStrings.add(this.getString(R.string.lbl_interest_agronomist));
-        interestStrings.add(this.getString(R.string.lbl_interest_curious));
-        final SpinnerAdapter interestAdapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, interestStrings);
-        interestSpinner.setAdapter(interestAdapter);
-
-
-        genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedGenderIndex = position;
-                gender = null;
+        genderSpinner!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View,
+                position: Int,
+                id: Long
+            ) {
+                selectedGenderIndex = position
+                gender = null
                 if (position > 0) {
-                    gender = genderStrings.get(position);
+                    gender = genderStrings[position]
                 }
             }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
             }
-        });
+        }
 
-        interestSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedInterestIndex = position;
-                akilimoInterest = null;
+        interestSpinner!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View,
+                position: Int,
+                id: Long
+            ) {
+                selectedInterestIndex = position
+                akilimoInterest = null
                 if (position > 0) {
-                    akilimoInterest = interestStrings.get(position);
+                    akilimoInterest = interestStrings[position]
                 }
             }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
             }
-        });
+        }
 
-        ccp.setPhoneNumberValidityChangeListener(isValidNumber -> {
-            phoneIsValid = isValidNumber;
-        });
+        ccp!!.setPhoneNumberValidityChangeListener { isValidNumber: Boolean ->
+            phoneIsValid = isValidNumber
+        }
 
-        ccp.setOnCountryChangeListener(() -> mobileCode = ccp.getSelectedCountryCodeWithPlus());
-        ccp.registerCarrierNumberEditText(edtPhone);
+        ccp!!.setOnCountryChangeListener { mobileCode = ccp!!.selectedCountryCodeWithPlus }
+        ccp!!.registerCarrierNumberEditText(edtPhone)
 
-        binding.chkRememberDetails.setOnCheckedChangeListener((compoundButton, rememberInfo) -> {
-            rememberUserInfo = rememberInfo;
-            sessionManager.setRememberUserInfo(rememberUserInfo);
-        });
-
-    }
-
-    public void refreshData() {
-        try {
-
-            profileInfo = database.profileInfoDao().findOne();
-            rememberUserInfo = sessionManager.getRememberUserInfo();
-            if (profileInfo != null) {
-                firstName = profileInfo.getFirstName();
-                lastName = profileInfo.getLastName();
-                email = profileInfo.getEmail();
-                mobileCode = profileInfo.getMobileCode();
-                fullMobileNumber = profileInfo.getFullMobileNumber();
-                gender = profileInfo.getGender();
-                akilimoInterest = profileInfo.getAkilimoInterest();
-
-                selectedGenderIndex = profileInfo.getSelectedGenderIndex();
-                selectedInterestIndex = profileInfo.getSelectedInterestIndex();
-
-                edtFirstName.setText(firstName);
-                edtLastName.setText(lastName);
-                edtEmail.setText(email);
-                if (!TextUtils.isEmpty(fullMobileNumber)) {
-                    ccp.setFullNumber(fullMobileNumber);
-                }
-
-                genderSpinner.setSelection(selectedGenderIndex);
-                binding.chkRememberDetails.setChecked(rememberUserInfo);
-            }
-
-        } catch (Exception ex) {
-           Sentry.captureException(ex);
+        binding.chkRememberDetails.setOnCheckedChangeListener { _: CompoundButton?, rememberInfo: Boolean ->
+            rememberUserInfo = rememberInfo
+            sessionManager.setRememberUserInfo(rememberUserInfo)
         }
     }
 
-    private void saveBioData() {
-        edtFirstName.setError(null);
-        edtLastName.setError(null);
-        edtEmail.setError(null);
-        errorMessage = null;
+    fun refreshData() {
+        try {
+            userProfile = database.profileInfoDao().findOne()
+            rememberUserInfo = sessionManager.getRememberUserInfo()
+            if (userProfile != null) {
+                firstName = userProfile!!.firstName
+                lastName = userProfile!!.lastName
+                email = userProfile!!.email
+                mobileCode = userProfile!!.mobileCode
+                fullMobileNumber = userProfile!!.fullMobileNumber
+                gender = userProfile!!.gender
+                akilimoInterest = userProfile!!.akilimoInterest
 
-        firstName = edtFirstName.getText().toString();
-        lastName = edtLastName.getText().toString();
-        email = edtEmail.getText().toString().trim();
-        userEnteredNumber = edtPhone.getText().toString();
-        fullMobileNumber = ccp.getFullNumber();
-        mobileCode = ccp.getSelectedCountryCodeWithPlus();
+                selectedGenderIndex = userProfile!!.selectedGenderIndex
+                selectedInterestIndex = userProfile!!.selectedInterestIndex
+
+                edtFirstName!!.setText(firstName)
+                edtLastName!!.setText(lastName)
+                edtEmail!!.setText(email)
+                if (!TextUtils.isEmpty(fullMobileNumber)) {
+                    ccp!!.fullNumber = fullMobileNumber
+                }
+
+                genderSpinner!!.setSelection(selectedGenderIndex)
+                binding.chkRememberDetails.isChecked = rememberUserInfo
+            }
+        } catch (ex: Exception) {
+            Sentry.captureException(ex)
+        }
+    }
+
+    private fun saveBioData() {
+        edtFirstName!!.error = null
+        edtLastName!!.error = null
+        edtEmail!!.error = null
+        errorMessage = ""
+
+        firstName = edtFirstName!!.text.toString()
+        lastName = edtLastName!!.text.toString()
+        email = edtEmail!!.text.toString().trim { it <= ' ' }
+        userEnteredNumber = edtPhone!!.text.toString()
+        fullMobileNumber = ccp!!.fullNumber
+        mobileCode = ccp!!.selectedCountryCodeWithPlus
 
         if (TextUtils.isEmpty(firstName)) {
-            errorMessage = this.getString(R.string.lbl_first_name_req);
-            edtFirstName.setError(errorMessage);
-            return;
+            errorMessage = this.getString(R.string.lbl_first_name_req)
+            edtFirstName!!.error = errorMessage
+            return
         }
 
         if (TextUtils.isEmpty(lastName)) {
-            errorMessage = this.getString(R.string.lbl_last_name_req);
-            edtLastName.setError(errorMessage);
-            return;
+            errorMessage = this.getString(R.string.lbl_last_name_req)
+            edtLastName!!.error = errorMessage
+            return
         }
 
 
         if (!TextUtils.isEmpty(fullMobileNumber) && !TextUtils.isEmpty(userEnteredNumber)) {
             if (!phoneIsValid) {
-                errorMessage = this.getString(R.string.lbl_valid_number_req);
-                edtPhone.setError(errorMessage);
-                return;
+                errorMessage = this.getString(R.string.lbl_valid_number_req)
+                edtPhone!!.error = errorMessage
+                return
             } else {
-                edtPhone.setError(null);
+                edtPhone!!.error = null
             }
         }
 
-        if (!validationHelper.isValidEmail(email) && !TextUtils.isEmpty(email)) {
-            errorMessage = this.getString(R.string.lbl_valid_email_req);
-            edtEmail.setError(errorMessage);
-            return;
+        if (!validationHelper.isValidEmail(email!!) && !TextUtils.isEmpty(email)) {
+            errorMessage = this.getString(R.string.lbl_valid_email_req)
+            edtEmail!!.error = errorMessage
+            return
         }
 
         if (TextUtils.isEmpty(gender)) {
-            errorMessage = this.getString(R.string.lbl_gender_prompt);
-            return;
+            errorMessage = this.getString(R.string.lbl_gender_prompt)
+            return
         }
 
 
         if (TextUtils.isEmpty(akilimoInterest)) {
-            errorMessage = this.getString(R.string.lbl_akilimo_interest_prompt);
-            return;
+            errorMessage = this.getString(R.string.lbl_akilimo_interest_prompt)
+            return
         }
 
 
         try {
-            if (profileInfo == null) {
-                profileInfo = new ProfileInfo();
+            if (userProfile == null) {
+                userProfile = UserProfile()
             }
-            profileInfo.setFirstName(firstName);
-            profileInfo.setLastName(lastName);
-            profileInfo.setGender(gender);
-            profileInfo.setAkilimoInterest(akilimoInterest);
-            profileInfo.setEmail(email);
-            profileInfo.setMobileCode(mobileCode);
-            profileInfo.setFullMobileNumber(fullMobileNumber);
-            profileInfo.setSelectedGenderIndex(selectedGenderIndex);
-            profileInfo.setSelectedInterestIndex(selectedInterestIndex);
-            if (sessionManager != null) {
-                profileInfo.setDeviceToken(sessionManager.getDeviceToken());
-            }
+            userProfile!!.firstName = firstName
+            userProfile!!.lastName = lastName
+            userProfile!!.gender = gender
+            userProfile!!.akilimoInterest = akilimoInterest
+            userProfile!!.email = email
+            userProfile!!.mobileCode = mobileCode
+            userProfile!!.fullMobileNumber = fullMobileNumber
+            userProfile!!.selectedGenderIndex = selectedGenderIndex
+            userProfile!!.selectedInterestIndex = selectedInterestIndex
 
-            profileInfo.setUserName(profileInfo.names());
+            userProfile!!.deviceToken = sessionManager.getDeviceToken()
 
-            if (profileInfo.getProfileId() != null) {
-                database.profileInfoDao().update(profileInfo);
+            userProfile!!.userName = userProfile!!.names()
+
+            if (userProfile!!.profileId != null) {
+                database.profileInfoDao().update(userProfile!!)
             } else {
-                database.profileInfoDao().insert(profileInfo);
+                database.profileInfoDao().insert(userProfile!!)
             }
-        } catch (Exception ex) {
-            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-           Sentry.captureException(ex);
+        } catch (ex: Exception) {
+            Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+            Sentry.captureException(ex)
         }
-
     }
 
 
-    @Nullable
-    @Override
-    public VerificationError verifyStep() {
-        saveBioData();
+    override fun verifyStep(): VerificationError? {
+        saveBioData()
         if (!TextUtils.isEmpty(errorMessage)) {
-            return new VerificationError(errorMessage);
+            return VerificationError(errorMessage)
         }
-        return null;
+        return null
     }
 
-    @Override
-    public void onSelected() {
-        refreshData();
+    override fun onSelected() {
+        refreshData()
     }
 
-    @Override
-    public void onError(@NonNull VerificationError error) {
+    override fun onError(error: VerificationError) {
+    }
+
+    companion object {
+        fun newInstance(): BioDataFragment {
+            return BioDataFragment()
+        }
     }
 }
