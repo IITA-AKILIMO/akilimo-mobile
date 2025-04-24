@@ -93,8 +93,8 @@ class FertilizersActivity : BaseActivity() {
 
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.countryCode!!
-            currency = profileInfo.currencyCode!!
+            countryCode = profileInfo.countryCode
+            currency = profileInfo.currencyCode
         }
 
         initToolbar()
@@ -135,54 +135,52 @@ class FertilizersActivity : BaseActivity() {
 
         val database = getDatabase(this@FertilizersActivity)
 
-        mAdapter!!.setOnItemClickListener { view: View?, clickedFertilizer: Fertilizer, position: Int ->
-            mAdapter!!.setActiveRowIndex(position)
-            var selectedType = database.fertilizerDao()
-                .findOneByTypeAndCountry(clickedFertilizer.fertilizerType, countryCode)
-            if (selectedType == null) {
-                selectedType = clickedFertilizer
-            }
-            //let us open the price dialog now
-            val cleanedFertilizers = selectedFertilizers
-            selectedType.countryCode = countryCode
-
-            val arguments = Bundle()
-            arguments.putParcelable(FertilizerPriceDialogFragment.FERTILIZER_TYPE, selectedType)
-
-            val priceDialogFragment = FertilizerPriceDialogFragment()
-            priceDialogFragment.arguments = arguments
-
-            priceDialogFragment.setOnDismissListener(object : IFertilizerDismissListener {
-                override fun onDismiss(
-                    priceSpecified: Boolean,
-                    fertilizer: Fertilizer,
-                    removeSelected: Boolean
-                ) {
-                    val shouldUpdate = priceSpecified || removeSelected
-                    if (!shouldUpdate) return
-                    database.fertilizerDao().update(fertilizer)
-
-                    if (removeSelected) {
-                        selectedFertilizers = removeFertilizerByType(
-                            cleanedFertilizers,
-                            fertilizer.fertilizerType!!
-                        )
-                    } else {
-                        selectedFertilizers.add(fertilizer)
-                    }
-
-                    validate(false)
-
+        mAdapter!!.setOnItemClickListener(object : FertilizerGridAdapter.OnItemClickListener {
+            override fun onItemClick(view: View, clickedFertilizer: Fertilizer, position: Int) {
+                mAdapter!!.setActiveRowIndex(position)
+                var selectedType = database.fertilizerDao()
+                    .findOneByTypeAndCountry(clickedFertilizer.fertilizerType, countryCode)
+                if (selectedType == null) {
+                    selectedType = clickedFertilizer
                 }
-            })
+                //let us open the price dialog now
+                val cleanedFertilizers = selectedFertilizers
+                selectedType.countryCode = countryCode
 
-            showDialogFragmentSafely(
-                fragmentManager = supportFragmentManager,
-                dialogFragment = priceDialogFragment,
-                FertilizerPriceDialogFragment.ARG_ITEM_ID
-            )
+                val arguments = Bundle()
+                arguments.putParcelable(FertilizerPriceDialogFragment.FERTILIZER_TYPE, selectedType)
 
-        }
+                val priceDialogFragment = FertilizerPriceDialogFragment()
+                priceDialogFragment.arguments = arguments
+
+                priceDialogFragment.setOnDismissListener(object : IFertilizerDismissListener {
+                    override fun onDismiss(
+                        priceSpecified: Boolean, fertilizer: Fertilizer, removeSelected: Boolean
+                    ) {
+                        val shouldUpdate = priceSpecified || removeSelected
+                        if (!shouldUpdate) return
+                        database.fertilizerDao().update(fertilizer)
+
+                        if (removeSelected) {
+                            selectedFertilizers = removeFertilizerByType(
+                                cleanedFertilizers, fertilizer.fertilizerType!!
+                            )
+                        } else {
+                            selectedFertilizers.add(fertilizer)
+                        }
+
+                        validate(false)
+
+                    }
+                })
+
+                showDialogFragmentSafely(
+                    fragmentManager = supportFragmentManager,
+                    dialogFragment = priceDialogFragment,
+                    FertilizerPriceDialogFragment.ARG_ITEM_ID
+                )
+            }
+        })
 
         initializeFertilizers()
 
@@ -190,8 +188,7 @@ class FertilizersActivity : BaseActivity() {
         btnSave!!.setOnClickListener { view: View? ->
             database.adviceStatusDao().insert(
                 AdviceStatus(
-                    EnumAdviceTasks.AVAILABLE_FERTILIZERS.name,
-                    isMinSelected
+                    EnumAdviceTasks.AVAILABLE_FERTILIZERS.name, isMinSelected
                 )
             )
             if (isMinSelected) {
@@ -221,8 +218,7 @@ class FertilizersActivity : BaseActivity() {
         val call = akilimoService.getFertilizers(countryCode = countryCode)
         call.enqueue(object : Callback<FertilizerResponse> {
             override fun onResponse(
-                call: Call<FertilizerResponse>,
-                response: Response<FertilizerResponse>
+                call: Call<FertilizerResponse>, response: Response<FertilizerResponse>
             ) {
                 val deletionList: MutableList<Fertilizer> = ArrayList()
                 if (response.isSuccessful) {
@@ -288,8 +284,7 @@ class FertilizersActivity : BaseActivity() {
         val call = akilimoService.getFertilizerPrices(fertilizerKey = fertilizerKey)
         call.enqueue(object : Callback<FertilizerPriceResponse> {
             override fun onResponse(
-                call: Call<FertilizerPriceResponse>,
-                response: Response<FertilizerPriceResponse>
+                call: Call<FertilizerPriceResponse>, response: Response<FertilizerPriceResponse>
             ) {
                 if (response.isSuccessful) {
                     lyt_progress!!.visibility = View.GONE
@@ -320,17 +315,14 @@ class FertilizersActivity : BaseActivity() {
     private val isMinSelected: Boolean
         get() {
             val database = getDatabase(this@FertilizersActivity)
-            val count =
-                database.fertilizerDao().findAllSelectedByCountry(countryCode).size
+            val count = database.fertilizerDao().findAllSelectedByCountry(countryCode).size
             if (count < minSelection) {
                 val snackBar = Snackbar.make(
-                    lyt_progress!!,
-                    String.format(
+                    lyt_progress!!, String.format(
                         Locale.US,
                         this@FertilizersActivity.getString(R.string.lbl_min_selection),
                         minSelection
-                    ),
-                    Snackbar.LENGTH_SHORT
+                    ), Snackbar.LENGTH_SHORT
                 )
                 snackBar.show()
             }
