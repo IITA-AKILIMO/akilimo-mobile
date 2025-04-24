@@ -22,7 +22,7 @@ import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.interfaces.IRecommendationCallBack
 import com.akilimo.mobile.mappers.ComputedResponse
 import com.akilimo.mobile.rest.request.RecommendationRequest
-import com.akilimo.mobile.rest.response.RecommendationResp
+import com.akilimo.mobile.rest.response.RecommendationResponse
 import com.akilimo.mobile.utils.BuildComputeData
 import com.akilimo.mobile.views.fragments.dialog.RecommendationChannelDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -161,10 +161,10 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
         errorImage!!.visibility = View.GONE
 
         val call = AkilimoApi.apiService.computeRecommendations(recData)
-        call.enqueue(object : retrofit2.Callback<RecommendationResp> {
+        call.enqueue(object : retrofit2.Callback<RecommendationResponse> {
             override fun onResponse(
-                call: retrofit2.Call<RecommendationResp>,
-                response: retrofit2.Response<RecommendationResp>
+                call: retrofit2.Call<RecommendationResponse>,
+                response: retrofit2.Response<RecommendationResponse>
             ) {
                 if (response.isSuccessful) {
                     val recommendationResp = response.body()!!
@@ -176,7 +176,7 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
                 }
             }
 
-            override fun onFailure(call: retrofit2.Call<RecommendationResp>, ex: Throwable) {
+            override fun onFailure(call: retrofit2.Call<RecommendationResponse>, ex: Throwable) {
                 lyt_progress!!.visibility = View.GONE
                 errorImage!!.visibility = View.VISIBLE
                 errorLabel!!.visibility = View.VISIBLE
@@ -190,13 +190,13 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
         })
     }
 
-    private fun initializeData(recommendationResp: RecommendationResp): List<ComputedResponse> {
+    private fun initializeData(recommendationResponse: RecommendationResponse): List<ComputedResponse> {
         val recList: MutableList<ComputedResponse> = ArrayList()
 
-        val FR = recommendationResp.fertilizerRecText
-        val IC = recommendationResp.interCroppingRecText
-        val PP = recommendationResp.plantingPracticeRecText
-        val SP = recommendationResp.scheduledPlantingRect
+        val FR = recommendationResponse.fertilizerRecText
+        val IC = recommendationResponse.interCroppingRecText
+        val PP = recommendationResponse.plantingPracticeRecText
+        val SP = recommendationResponse.scheduledPlantingRecText
 
         var computedResponse: ComputedResponse
 
