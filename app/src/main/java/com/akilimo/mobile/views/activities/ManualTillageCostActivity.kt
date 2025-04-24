@@ -78,7 +78,7 @@ class ManualTillageCostActivity : CostBaseActivity() {
             countryCode = profileInfo.countryCode!!
             currencyCode = profileInfo.currencyCode!!
             val myAkilimoCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode)
-            currencySymbol = myAkilimoCurrency.currencySymbol
+            currencySymbol = myAkilimoCurrency.currencySymbol!!
         }
 
         initToolbar()
@@ -115,6 +115,7 @@ class ManualTillageCostActivity : CostBaseActivity() {
     }
 
     override fun initComponent() {
+        val context = this@ManualTillageCostActivity
         val myLocale = getCurrentLocale()
         var translatedUnit = context.getString(R.string.lbl_acre)
         if (areaUnit == "ha") {
@@ -221,7 +222,7 @@ class ManualTillageCostActivity : CostBaseActivity() {
             fieldOperationCost!!.manualRidgeCost = manualRidgeCost
             database.fieldOperationCostDao().insert(fieldOperationCost!!)
         } catch (ex: Exception) {
-            Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@ManualTillageCostActivity, ex.message, Toast.LENGTH_SHORT).show()
             Sentry.captureException(ex)
         }
     }
@@ -241,9 +242,9 @@ class ManualTillageCostActivity : CostBaseActivity() {
         }
 
         val myLocale = getCurrentLocale()
-        var translatedUnit = context.getString(R.string.lbl_acre)
+        var translatedUnit = this@ManualTillageCostActivity.getString(R.string.lbl_acre)
         if (areaUnit == "ha") {
-            translatedUnit = context.getString(R.string.lbl_ha)
+            translatedUnit = this@ManualTillageCostActivity.getString(R.string.lbl_ha)
         }
         val finalTranslatedUnit = translatedUnit.lowercase(myLocale)
 
