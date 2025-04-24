@@ -16,7 +16,6 @@ import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.entities.FieldYield
 import com.akilimo.mobile.entities.InterCropFertilizer
 import com.akilimo.mobile.entities.InvestmentAmount
-import com.akilimo.mobile.entities.LocationInfo
 import com.akilimo.mobile.entities.MaizeMarket
 import com.akilimo.mobile.entities.MaizePerformance
 import com.akilimo.mobile.entities.MaizePrice
@@ -26,6 +25,7 @@ import com.akilimo.mobile.entities.PotatoPrice
 import com.akilimo.mobile.entities.ScheduledDate
 import com.akilimo.mobile.entities.StarchFactory
 import com.akilimo.mobile.entities.UseCases
+import com.akilimo.mobile.entities.UserLocation
 import com.akilimo.mobile.entities.UserProfile
 
 @Database(
@@ -39,7 +39,7 @@ import com.akilimo.mobile.entities.UserProfile
         FieldOperationCost::class,
         InterCropFertilizer::class,
         InvestmentAmount::class,
-        LocationInfo::class,
+        UserLocation::class,
         MaizeMarket::class,
         MaizePerformance::class,
         MaizePrice::class,

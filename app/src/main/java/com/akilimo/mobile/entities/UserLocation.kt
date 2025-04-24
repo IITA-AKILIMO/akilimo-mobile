@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "location_info")
-open class LocationInfo {
+open class UserLocation {
 
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null

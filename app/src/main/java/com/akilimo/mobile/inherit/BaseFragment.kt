@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment
 import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
-import com.akilimo.mobile.entities.LocationInfo
+import com.akilimo.mobile.entities.UserLocation
 import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.SessionManager
 import dev.b3nedikt.reword.Reword.reword
@@ -58,11 +58,11 @@ abstract class BaseFragment : Fragment() {
     ): View
 
 
-    protected fun loadLocationInfo(locationInfo: LocationInfo?): StringBuilder {
+    protected fun loadLocationInfo(userLocation: UserLocation?): StringBuilder {
         val stBuilder = StringBuilder()
-        if (locationInfo != null) {
-            val latitude = locationInfo.latitude.toString()
-            val longitude = locationInfo.longitude.toString()
+        if (userLocation != null) {
+            val latitude = userLocation.latitude.toString()
+            val longitude = userLocation.longitude.toString()
             stBuilder.append("Lat:")
             stBuilder.append(latitude)
             stBuilder.append(" ")

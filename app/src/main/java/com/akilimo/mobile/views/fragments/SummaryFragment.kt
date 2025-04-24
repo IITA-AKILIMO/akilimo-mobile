@@ -11,9 +11,9 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.MyTimeLineAdapter
 import com.akilimo.mobile.databinding.FragmentSummaryBinding
 import com.akilimo.mobile.entities.CurrentPractice
-import com.akilimo.mobile.entities.LocationInfo
 import com.akilimo.mobile.entities.MandatoryInfo
 import com.akilimo.mobile.entities.ScheduledDate
+import com.akilimo.mobile.entities.UserLocation
 import com.akilimo.mobile.entities.UserProfile
 import com.akilimo.mobile.inherit.BaseStepFragment
 import com.akilimo.mobile.models.TimeLineModel
@@ -37,7 +37,7 @@ class SummaryFragment : BaseStepFragment() {
 
     private var mDataList: MutableList<TimeLineModel> = ArrayList()
     private var mAttributes: TimelineAttributes? = null
-    private var location: LocationInfo? = null
+    private var location: UserLocation? = null
     private var mandatoryInfo: MandatoryInfo? = null
     private var currentPractice: CurrentPractice? = null
     private var scheduledDate: ScheduledDate? = null
@@ -137,8 +137,8 @@ class SummaryFragment : BaseStepFragment() {
         userProfile = database.profileInfoDao().findOne()
         if (userProfile != null) {
             countryName = userProfile!!.countryName
-            countryCode = userProfile!!.countryCode!!
-            countrySelected = countryName!!.isNotEmpty()
+            countryCode = userProfile!!.countryCode
+            countrySelected = countryName.isNotEmpty()
             riskAttitude = userProfile!!.riskAtt
         }
         riskAttitudeName = risks!![riskAttitude]

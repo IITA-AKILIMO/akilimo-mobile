@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase
-import com.akilimo.mobile.entities.LocationInfo
+import com.akilimo.mobile.entities.UserLocation
 import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.SessionManager
 import com.stepstone.stepper.Step
@@ -118,16 +118,16 @@ abstract class BaseStepFragment : Fragment(), Step {
     /**
      * Creates a formatted string with location information
      *
-     * @param locationInfo Location data to format
+     * @param userLocation Location data to format
      * @return Formatted location string
      */
-    protected fun formatLocationInfo(locationInfo: LocationInfo?): String {
-        if (locationInfo == null) {
+    protected fun formatLocationInfo(userLocation: UserLocation?): String {
+        if (userLocation == null) {
             return ""
         }
-        val lat = mathHelper.removeLeadingZero(locationInfo.latitude, "#.####")
-        val lon = mathHelper.removeLeadingZero(locationInfo.longitude, "#.####")
-        val place = locationInfo.locationCountryName
+        val lat = mathHelper.removeLeadingZero(userLocation.latitude, "#.####")
+        val lon = mathHelper.removeLeadingZero(userLocation.longitude, "#.####")
+        val place = userLocation.locationCountryName
 
         return "${place}\n${lat},${lon}"
     }
