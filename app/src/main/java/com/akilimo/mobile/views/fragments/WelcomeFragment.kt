@@ -7,13 +7,13 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import com.akilimo.mobile.Locales
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.MySpinnerAdapter
 import com.akilimo.mobile.databinding.FragmentWelcomeBinding
 import com.akilimo.mobile.entities.UserProfile
 import com.akilimo.mobile.inherit.BaseStepFragment
 import com.akilimo.mobile.interfaces.IFragmentCallBack
+import com.akilimo.mobile.utils.Locales
 import com.akilimo.mobile.utils.enums.EnumCountry
 import com.akilimo.mobile.views.activities.HomeStepperActivity
 import com.google.android.material.snackbar.BaseTransientBottomBar
@@ -49,7 +49,7 @@ class WelcomeFragment : BaseStepFragment() {
             return WelcomeFragment()
         }
     }
-    
+
     override fun loadFragmentLayout(
         inflater: LayoutInflater,
         container: ViewGroup?,
