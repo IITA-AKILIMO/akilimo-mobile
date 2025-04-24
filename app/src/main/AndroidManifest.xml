@@ -79,7 +79,7 @@
         <activity android:name=".views.activities.CassavaMarketActivity" />
         <activity android:name=".views.activities.MaizeMarketActivity" />
         <activity android:name=".views.activities.FertilizersActivity" />
-        <activity android:name=".views.activities.IntercropFertilizersActivity" />
+        <activity android:name=".views.activities.InterCropFertilizersActivity" />
         <activity android:name=".views.activities.DatesActivity" />
         <activity android:name=".views.activities.RecommendationsActivity" />
         <activity android:name=".views.activities.usecases.FertilizerRecActivity" />
