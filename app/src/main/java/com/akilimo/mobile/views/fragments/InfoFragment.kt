@@ -1,74 +1,53 @@
-package com.akilimo.mobile.views.fragments;
+package com.akilimo.mobile.views.fragments
 
-import android.content.Context;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.CompoundButton
+import com.akilimo.mobile.R
+import com.akilimo.mobile.databinding.FragmentInfoBinding
+import com.akilimo.mobile.inherit.BaseStepFragment
+import com.stepstone.stepper.VerificationError
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+class InfoFragment : BaseStepFragment() {
+    private var _binding: FragmentInfoBinding? = null
+    private val binding get() = _binding!!
 
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.databinding.FragmentInfoBinding;
-import com.akilimo.mobile.inherit.BaseStepFragment;
-import com.stepstone.stepper.VerificationError;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class InfoFragment extends BaseStepFragment {
-
-    FragmentInfoBinding binding;
-
-    public InfoFragment() {
-        // Required empty public constructor
-    }
-
-    public static InfoFragment newInstance() {
-        return new InfoFragment();
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.context = context;
-    }
-
-    @Override
-    protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentInfoBinding.inflate(inflater, container, false);
-        return binding.getRoot();
+    override fun loadFragmentLayout(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentInfoBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        binding.chkAgreeToDisclaimer.setOnCheckedChangeListener((compoundButton, checked) -> {
-            sessionManager.setDisclaimerRead(checked);
-        });
-
-    }
-
-    @Nullable
-    @Override
-    public VerificationError verifyStep() {
-        if (!sessionManager.getDisclaimerRead()) {
-            return new VerificationError(getString(R.string.lbl_agree_to_disclaimer));
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.chkAgreeToDisclaimer.setOnCheckedChangeListener { compoundButton: CompoundButton?, checked: Boolean ->
+            sessionManager.setDisclaimerRead(checked)
         }
-        return null;
     }
 
-    @Override
-    public void onSelected() {
-
+    override fun verifyStep(): VerificationError? {
+        if (!sessionManager.getDisclaimerRead()) {
+            return VerificationError(getString(R.string.lbl_agree_to_disclaimer))
+        }
+        return null
     }
 
-    @Override
-    public void onError(@NonNull VerificationError error) {
+    override fun onSelected() {
+    }
 
+    override fun onError(error: VerificationError) {
+    }
+
+    companion object {
+        fun newInstance(): InfoFragment {
+            return InfoFragment()
+        }
     }
 }
