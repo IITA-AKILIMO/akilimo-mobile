@@ -35,6 +35,7 @@ abstract class BaseStepFragment : Fragment(), Step {
     protected var countryCode: String = ""
     protected var countryName: String? = null
     protected var errorMessage: String = ""
+    protected var dataIsValid = false
 
     // Lazy initialization for dependencies
     protected val database: AppDatabase by lazy { AppDatabase.getDatabase(requireContext()) }
