@@ -14,7 +14,6 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentLocationBinding
 import com.akilimo.mobile.entities.UserLocation
-import com.akilimo.mobile.entities.UserProfile
 import com.akilimo.mobile.inherit.BaseStepFragment
 import com.akilimo.mobile.services.GPSTracker
 import com.akilimo.mobile.views.activities.MapBoxActivity
@@ -48,8 +47,6 @@ class LocationFragment : BaseStepFragment() {
     private var userSelectedCountryCode: String? = null
     private var userSelectedCountryName: String? = null
 
-    private var userProfile: UserProfile? = null
-    private var userLocationInformation: UserLocation? = null
     private var farmName: String? = ""
     private var fullNames: String? = null
     private var MAP_BOX_ACCESS_TOKEN = ""
@@ -73,9 +70,9 @@ class LocationFragment : BaseStepFragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        binding.btnCurrentLocation.setOnClickListener(View.OnClickListener { view1: View? ->
+        binding.btnCurrentLocation.setOnClickListener { view1: View? ->
             currentLocation
-        })
+        }
 
 
         val editTextFarmName = EditText(context)
@@ -208,22 +205,25 @@ class LocationFragment : BaseStepFragment() {
 
     private fun saveLocation() {
         try {
+            val userProfile = database.profileInfoDao().findOne()
             if (userProfile != null) {
-                userProfile!!.farmName = farmName.orEmpty()
-                database.profileInfoDao().update(userProfile!!)
+                userProfile.farmName = farmName.orEmpty()
+                database.profileInfoDao().update(userProfile)
             }
+
+            var userLocationInformation = database.locationInfoDao().findOne()
             if (userLocationInformation == null) {
                 userLocationInformation = UserLocation()
             }
-            userLocationInformation!!.locationCountryCode = countryCode
-            userLocationInformation!!.locationCountryName = countryName
-            userLocationInformation!!.latitude = currentLat
-            userLocationInformation!!.longitude = currentLon
+            userLocationInformation.locationCountryCode = countryCode
+            userLocationInformation.locationCountryName = countryName
+            userLocationInformation.latitude = currentLat
+            userLocationInformation.longitude = currentLon
 
-            if (userLocationInformation!!.id != null) {
-                database.locationInfoDao().update(userLocationInformation!!)
+            if (userLocationInformation.id != null) {
+                database.locationInfoDao().update(userLocationInformation)
             } else {
-                database.locationInfoDao().insert(userLocationInformation!!)
+                database.locationInfoDao().insert(userLocationInformation)
             }
         } catch (ex: Exception) {
             Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
@@ -233,23 +233,23 @@ class LocationFragment : BaseStepFragment() {
 
     private fun reloadLocationInfo() {
         try {
-            userProfile = database.profileInfoDao().findOne()
-            userLocationInformation = database.locationInfoDao().findOne()
+            val userProfile = database.profileInfoDao().findOne()
+            val userLocationInformation = database.locationInfoDao().findOne()
 
             if (userProfile != null) {
-                farmName = userProfile!!.farmName
-                fullNames = userProfile!!.names()
-                userSelectedCountryCode = userProfile!!.countryCode
-                userSelectedCountryName = userProfile!!.countryName
+                farmName = userProfile.farmName
+                fullNames = userProfile.names()
+                userSelectedCountryCode = userProfile.countryCode
+                userSelectedCountryName = userProfile.countryName
                 setFarmNameInfo(fullNames!!, farmName!!)
             }
             if (userLocationInformation != null) {
                 val locInfo = formatLocationInfo(userLocationInformation)
-                currentLon = userLocationInformation!!.longitude
-                currentLat = userLocationInformation!!.latitude
-                currentAlt = userLocationInformation!!.altitude
-                countryCode = userLocationInformation!!.locationCountryCode.orEmpty()
-                countryName = userLocationInformation!!.locationCountryName.orEmpty()
+                currentLon = userLocationInformation.longitude
+                currentLat = userLocationInformation.latitude
+                currentAlt = userLocationInformation.altitude
+                countryCode = userLocationInformation.locationCountryCode.orEmpty()
+                countryName = userLocationInformation.locationCountryName.orEmpty()
                 binding.locationInfo.text = locInfo
             }
         } catch (ex: Exception) {
