@@ -200,17 +200,17 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
 
         var computedResponse: ComputedResponse
 
-        if (FR.isNotEmpty()) {
+        if (!FR.isNullOrEmpty()) {
             computedResponse = ComputedResponse()
             recList.add(computedResponse.createObject(getString(R.string.lbl_fertilizer_rec), FR))
         }
 
-        if (IC.isNotEmpty()) {
+        if (!IC.isNullOrEmpty()) {
             computedResponse = ComputedResponse()
             recList.add(computedResponse.createObject(getString(R.string.lbl_intercrop_rec), IC))
         }
 
-        if (PP.isNotEmpty()) {
+        if (!PP.isNullOrEmpty()) {
             computedResponse = ComputedResponse()
             recList.add(
                 computedResponse.createObject(
@@ -220,7 +220,7 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
             )
         }
 
-        if (SP.isNotEmpty()) {
+        if (!SP.isNullOrEmpty()) {
             computedResponse = ComputedResponse()
             recList.add(
                 computedResponse.createObject(
