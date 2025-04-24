@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.MaizePerformanceAdapter
-import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityMaizePerformanceActivityBinding
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.MaizePerformance
@@ -39,7 +38,8 @@ class MaizePerformanceActivity : BaseActivity() {
 
     private var mAdapter: MaizePerformanceAdapter? = null
 
-    var binding: ActivityMaizePerformanceActivityBinding? = null
+    private var _binding: ActivityMaizePerformanceActivityBinding? = null
+    private val binding get() = _binding!!
 
 
     private var savedMaizePerformance: MaizePerformance? = null
@@ -58,21 +58,20 @@ class MaizePerformanceActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMaizePerformanceActivityBinding.inflate(
+        _binding = ActivityMaizePerformanceActivityBinding.inflate(
             layoutInflater
         )
-        setContentView(binding!!.root)
-        database = getDatabase(this@MaizePerformanceActivity)
+        setContentView(binding.root)
 
-        toolbar = binding!!.toolbar
-        recyclerView = binding!!.rootYieldRecycler
-        viewPos = binding!!.coordinatorLayout
+        toolbar = binding.toolbar
+        recyclerView = binding.rootYieldRecycler
+        viewPos = binding.coordinatorLayout
 
-        exceptionTitle = binding!!.exceptionTitle
-        btnFinish = binding!!.twoButtons.btnFinish
-        btnCancel = binding!!.twoButtons.btnCancel
+        exceptionTitle = binding.exceptionTitle
+        btnFinish = binding.twoButtons.btnFinish
+        btnCancel = binding.twoButtons.btnCancel
 
-        savedMaizePerformance = database!!.maizePerformanceDao().findOne()
+        savedMaizePerformance = database.maizePerformanceDao().findOne()
         if (savedMaizePerformance != null) {
             selectedPerformanceValue = savedMaizePerformance!!.maizePerformance
         }
@@ -183,7 +182,8 @@ class MaizePerformanceActivity : BaseActivity() {
                             selectedPerformanceValue = performance.performanceValue
                             savedMaizePerformance!!.maizePerformance = maizePerformance
                             savedMaizePerformance!!.performanceValue = selectedPerformanceValue
-                            database!!.maizePerformanceDao().insert(savedMaizePerformance!!)
+
+                            database.maizePerformanceDao().insert(savedMaizePerformance!!)
 
                             mAdapter!!.setActiveRowIndex(position)
                             maizePerformanceValue = selectedPerformanceValue
@@ -229,7 +229,7 @@ class MaizePerformanceActivity : BaseActivity() {
             )
             return
         }
-        database!!.adviceStatusDao()
+        database.adviceStatusDao()
             .insert(AdviceStatus(EnumAdviceTasks.MAIZE_PERFORMANCE.name, true))
         closeActivity(backPressed)
     }
