@@ -22,7 +22,7 @@ import com.akilimo.mobile.utils.enums.EnumCountry
 import com.akilimo.mobile.utils.enums.EnumUseCase
 import com.akilimo.mobile.views.activities.CassavaMarketActivity
 import com.akilimo.mobile.views.activities.DatesActivity
-import com.akilimo.mobile.views.activities.IntercropFertilizersActivity
+import com.akilimo.mobile.views.activities.InterCropFertilizersActivity
 import com.akilimo.mobile.views.activities.MaizeMarketActivity
 import com.akilimo.mobile.views.activities.MaizePerformanceActivity
 import com.akilimo.mobile.views.activities.RootYieldActivity
@@ -167,10 +167,10 @@ class InterCropRecActivity : BaseActivity() {
                         intent =
                             Intent(
                                 this@InterCropRecActivity,
-                                IntercropFertilizersActivity::class.java
+                                InterCropFertilizersActivity::class.java
                             )
                         intent.putExtra(
-                            IntercropFertilizersActivity.useCaseTag,
+                            InterCropFertilizersActivity.useCaseTag,
                             useCase as Parcelable?
                         )
                     }
