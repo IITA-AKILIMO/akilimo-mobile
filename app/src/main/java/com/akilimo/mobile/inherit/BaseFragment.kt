@@ -1,147 +1,116 @@
-package com.akilimo.mobile.inherit;
+package com.akilimo.mobile.inherit
 
-import android.app.Dialog;
-import android.content.Context;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.TextView;
+import android.app.Dialog
+import android.content.Context
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
+import android.widget.TextView
+import androidx.appcompat.widget.AppCompatButton
+import androidx.fragment.app.Fragment
+import com.akilimo.mobile.R
+import com.akilimo.mobile.dao.AppDatabase
+import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
+import com.akilimo.mobile.entities.LocationInfo
+import com.akilimo.mobile.utils.MathHelper
+import com.akilimo.mobile.utils.SessionManager
+import dev.b3nedikt.reword.Reword.reword
+import io.sentry.Sentry
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.fragment.app.Fragment;
+abstract class BaseFragment : Fragment() {
+    protected var LOG_TAG: String = BaseFragment::class.java.simpleName
 
-import com.akilimo.mobile.utils.SessionManager;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
+    protected var currency: String? = null
+    protected var currencySymbol: String? = null
+    protected var countryCode: String? = null
+    protected var countryName: String? = null
 
-import com.google.android.gms.common.util.Strings;
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.dao.AppDatabase;
-import com.akilimo.mobile.entities.LocationInfo;
-import com.akilimo.mobile.utils.MathHelper;
-import com.stepstone.stepper.VerificationError;
+    private var appVersion: String? = null
+    protected var context: Context? = null
 
-import dev.b3nedikt.reword.Reword;
-import io.sentry.Sentry;
+    protected val sessionManager: SessionManager by lazy { SessionManager(requireContext()) }
+    protected val mathHelper: MathHelper by lazy { MathHelper() }
+    protected val database: AppDatabase by lazy { getDatabase(requireContext()) }
 
-@SuppressWarnings("WeakerAccess")
-public abstract class BaseFragment extends Fragment {
-
-    protected String LOG_TAG = BaseFragment.class.getSimpleName();
-
-    protected int nextTab = 0;
-    protected int prevTab = 0;
-
-    protected String currency;
-    protected String currencySymbol;
-    protected String countryCode;
-    protected String countryName;
-
-    protected AppDatabase database;
-    protected VerificationError verificationError = null;
-
-
-    String emptyText = "";
-
-    private String appVersion;
-    protected Context context;
-    protected RequestQueue queue;
-
-    protected SessionManager sessionManager;
-    protected MathHelper mathHelper;
-
-//
-
-    public BaseFragment() {
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(false)
+        appVersion = sessionManager.getAppVersion()
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.context = context;
+    abstract fun refreshData()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = loadFragmentLayout(inflater, container, savedInstanceState)
+        reword(view)
+        return view
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(false);
-        sessionManager = new SessionManager(context);
-        queue = Volley.newRequestQueue(context.getApplicationContext());
-        appVersion = sessionManager.getAppVersion();
-        database = AppDatabase.getDatabase(context);
-        mathHelper = new MathHelper();
-    }
+    protected abstract fun loadFragmentLayout(
+        inflater: LayoutInflater?,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = loadFragmentLayout(inflater, container, savedInstanceState);
-        Reword.reword(view);
-        return view;
-    }
 
-    protected abstract View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
-
-    public abstract void refreshData();
-
-    protected StringBuilder loadLocationInfo(LocationInfo locationInfo) {
-        StringBuilder stBuilder = new StringBuilder();
+    protected fun loadLocationInfo(locationInfo: LocationInfo?): StringBuilder {
+        val stBuilder = StringBuilder()
         if (locationInfo != null) {
-            String latitude = String.valueOf(locationInfo.getLatitude());
-            String longitude = String.valueOf(locationInfo.getLongitude());
-            stBuilder.append("Lat:");
-            stBuilder.append(latitude);
-            stBuilder.append(" ");
-            stBuilder.append("Lon:");
-            stBuilder.append(longitude);
+            val latitude = locationInfo.latitude.toString()
+            val longitude = locationInfo.longitude.toString()
+            stBuilder.append("Lat:")
+            stBuilder.append(latitude)
+            stBuilder.append(" ")
+            stBuilder.append("Lon:")
+            stBuilder.append(longitude)
         }
 
-        return stBuilder;
+        return stBuilder
     }
 
 
-    protected void showCustomWarningDialog(String titleText, String contentText) {
-        showCustomWarningDialog(titleText, contentText, null);
-    }
-
-    protected void showCustomWarningDialog(String titleText, String contentText, String buttonTitle) {
+    protected fun showCustomWarningDialog(
+        titleText: String?,
+        contentText: String?,
+        buttonTitle: String? = null
+    ) {
         try {
-            final Dialog dialog = new Dialog(context);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
-            dialog.setContentView(R.layout.dialog_warning);
-            dialog.setCancelable(true);
+            val dialog = Dialog(requireContext())
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE) // before
+            dialog.setContentView(R.layout.dialog_warning)
+            dialog.setCancelable(true)
 
-            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-            layoutParams.copyFrom(dialog.getWindow().getAttributes());
-            layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
-            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            val layoutParams = WindowManager.LayoutParams()
+            layoutParams.copyFrom(dialog.window!!.attributes)
+            layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT
+            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT
 
 
-            final TextView title = dialog.findViewById(R.id.title);
-            final TextView content = dialog.findViewById(R.id.content);
-            final AppCompatButton btnClose = dialog.findViewById(R.id.bt_close);
-            title.setText(titleText);
-            content.setText(contentText);
+            val title = dialog.findViewById<TextView>(R.id.title)
+            val content = dialog.findViewById<TextView>(R.id.content)
+            val btnClose = dialog.findViewById<AppCompatButton>(R.id.bt_close)
+            title.text = titleText
+            content.text = contentText
 
-            if (!Strings.isEmptyOrWhitespace(buttonTitle)) {
-                btnClose.setText(buttonTitle);
+            if (!buttonTitle.isNullOrEmpty()) {
+                btnClose.text = buttonTitle
             }
-            btnClose.setOnClickListener(view -> {
-                dialog.dismiss();
-            });
-            dialog.setCancelable(false);
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.show();
-            dialog.getWindow().setAttributes(layoutParams);
-        } catch (Exception ex) {
-            Sentry.captureException(ex);
+            btnClose.setOnClickListener { view: View? ->
+                dialog.dismiss()
+            }
+            dialog.setCancelable(false)
+            dialog.setCanceledOnTouchOutside(false)
+            dialog.show()
+            dialog.window!!.attributes = layoutParams
+        } catch (ex: Exception) {
+            Sentry.captureException(ex)
         }
     }
 }
