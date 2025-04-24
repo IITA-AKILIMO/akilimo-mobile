@@ -1,186 +1,178 @@
-package com.akilimo.mobile.views.fragments;
+package com.akilimo.mobile.views.fragments
 
+import android.content.Intent
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
+import android.widget.AdapterView
+import com.akilimo.mobile.Locales
+import com.akilimo.mobile.R
+import com.akilimo.mobile.adapters.MySpinnerAdapter
+import com.akilimo.mobile.databinding.FragmentWelcomeBinding
+import com.akilimo.mobile.entities.UserProfile
+import com.akilimo.mobile.inherit.BaseStepFragment
+import com.akilimo.mobile.interfaces.IFragmentCallBack
+import com.akilimo.mobile.utils.enums.EnumCountry
+import com.akilimo.mobile.views.activities.HomeStepperActivity
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
+import com.jakewharton.processphoenix.ProcessPhoenix
+import com.stepstone.stepper.VerificationError
+import dev.b3nedikt.app_locale.AppLocale.appLocaleRepository
+import dev.b3nedikt.app_locale.AppLocale.desiredLocale
+import dev.b3nedikt.app_locale.AppLocale.supportedLocales
+import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository
+import dev.b3nedikt.reword.Reword.reword
+import java.util.Locale
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Spinner;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import com.akilimo.mobile.Locales;
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.adapters.MySpinnerAdapter;
-import com.akilimo.mobile.databinding.FragmentWelcomeBinding;
-import com.akilimo.mobile.entities.UserProfile;
-import com.akilimo.mobile.inherit.BaseStepFragment;
-import com.akilimo.mobile.interfaces.IFragmentCallBack;
-import com.akilimo.mobile.utils.enums.EnumCountry;
-import com.akilimo.mobile.views.activities.HomeStepperActivity;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
-import com.jakewharton.processphoenix.ProcessPhoenix;
-import com.stepstone.stepper.VerificationError;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import dev.b3nedikt.app_locale.AppLocale;
-import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository;
-import dev.b3nedikt.reword.Reword;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple [Fragment] subclass.
  */
-public class WelcomeFragment extends BaseStepFragment {
+class WelcomeFragment : BaseStepFragment() {
+    private var _binding: FragmentWelcomeBinding? = null
+    private val binding get() = _binding!!
 
-    private FragmentWelcomeBinding binding;
-    private IFragmentCallBack fragmentCallBack;
-    private Spinner languagePicker;
-    private SharedPrefsAppLocaleRepository prefs;
-    private UserProfile userProfile;
-    private int selectedLanguageIndex = -1;
-    private Locale selectedLocale;
-    String selectedLanguage = "en";
-    private boolean languagePicked = false;
+    private var fragmentCallBack: IFragmentCallBack? = null
 
+    private var prefs: SharedPrefsAppLocaleRepository? = null
+    private var userProfile: UserProfile? = null
+    private var selectedLanguageIndex = -1
+    private var selectedLocale: Locale? = null
+    private var selectedLanguage: String = "en"
+    private var languagePicked = false
 
-    public WelcomeFragment() {
-        // Required empty public constructor
+    companion object {
+        fun newInstance(): WelcomeFragment {
+            return WelcomeFragment()
+        }
+    }
+    
+    override fun loadFragmentLayout(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentWelcomeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.context = context;
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        userProfile = database.profileInfoDao().findOne()
 
-    public static WelcomeFragment newInstance() {
-        return new WelcomeFragment();
-    }
+        prefs = SharedPrefsAppLocaleRepository(requireContext())
 
+        binding.apply {
+            languagePicker.setOnTouchListener { touchView: View, motionEvent: MotionEvent? ->
+                languagePicked = true
+                touchView.performClick()
+                touchView.onTouchEvent(motionEvent)
+            }
+            languagePicker.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View,
+                    position: Int,
+                    id: Long
+                ) {
+                    if (languagePicked) {
+                        selectedLanguageIndex = position
+                        selectedLocale = supportedLocales[selectedLanguageIndex]
 
-    @Override
-    protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentWelcomeBinding.inflate(inflater, container, false);
-        return binding.getRoot();
-    }
+                        desiredLocale = selectedLocale!!
+                        prefs = SharedPrefsAppLocaleRepository(context!!)
+                        prefs!!.desiredLocale = selectedLocale
+                        appLocaleRepository = prefs
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        languagePicker = binding.languagePicker;
-        prefs = new SharedPrefsAppLocaleRepository(context);
-        userProfile = database.profileInfoDao().findOne();
-
-        languagePicker.setOnTouchListener((touchView, motionEvent) -> {
-            languagePicked = true;
-            touchView.performClick();
-            return touchView.onTouchEvent(motionEvent);
-        });
-        languagePicker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (languagePicked) {
-                    selectedLanguageIndex = position;
-                    selectedLocale = AppLocale.getSupportedLocales().get(selectedLanguageIndex);
-
-                    AppLocale.setDesiredLocale(selectedLocale);
-                    prefs = new SharedPrefsAppLocaleRepository(context);
-                    prefs.setDesiredLocale(selectedLocale);
-                    AppLocale.setAppLocaleRepository(prefs);
-
-                    AppLocale.setDesiredLocale(selectedLocale);
-
-                    //noinspection DataFlowIssue
-                    final View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
-                    Reword.reword(rootView);
-                    Intent intent = new Intent(context, HomeStepperActivity.class);
-                    Snackbar snackBar = Snackbar
-                            .make(binding.lytParent, getString(R.string.lbl_restart_app_prompt), BaseTransientBottomBar.LENGTH_INDEFINITE)
-                            .setAction(context.getString(R.string.lbl_ok), snackView -> ProcessPhoenix.triggerRebirth(context, intent));
-                    snackBar.show();
-                    initSpinnerItems();
+                        val rootView =
+                            activity!!.window.decorView.findViewById<View>(android.R.id.content)
+                        reword(rootView)
+                        val intent = Intent(requireContext(), HomeStepperActivity::class.java)
+                        val snackBar = Snackbar
+                            .make(
+                                lytParent,
+                                getString(R.string.lbl_restart_app_prompt),
+                                BaseTransientBottomBar.LENGTH_INDEFINITE
+                            )
+                            .setAction(context!!.getString(R.string.lbl_ok)) { snackView ->
+                                ProcessPhoenix.triggerRebirth(
+                                    requireContext(),
+                                    intent
+                                )
+                            }
+                        snackBar.show()
+                        initSpinnerItems()
+                    }
+                    languagePicked = false
                 }
-                languagePicked = false;
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                //not implemented
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    //not implemented
+                }
             }
-        });
+        }
 
-        initSpinnerItems();
+        initSpinnerItems()
     }
 
-    private void initSpinnerItems() {
-        selectedLocale = prefs.getDesiredLocale();
+    private fun initSpinnerItems() {
+        selectedLocale = prefs!!.desiredLocale
 
-        final List<String> localeStrings = new ArrayList<>();
-        final List<String> localeDisplayName = new ArrayList<>();
-        for (Locale locale : Locales.APP_LOCALES) {
-            String languageCountry = locale.getCountry();
-            localeDisplayName.add(locale.getDisplayLanguage());
-            if (languageCountry.equalsIgnoreCase(EnumCountry.Tanzania.countryCode())) {
-                localeStrings.add(getString(R.string.lbl_kiswahili));
+        val localeStrings: MutableList<String> = ArrayList()
+        val localeDisplayName: MutableList<String> = ArrayList()
+        for (locale in Locales.APP_LOCALES) {
+            val languageCountry = locale.country
+            localeDisplayName.add(locale.displayLanguage)
+            if (languageCountry.equals(EnumCountry.Tanzania.countryCode(), ignoreCase = true)) {
+                localeStrings.add(getString(R.string.lbl_kiswahili))
             } else {
-                localeStrings.add(locale.getDisplayLanguage());
+                localeStrings.add(locale.displayLanguage)
             }
         }
-        final MySpinnerAdapter spinnerAdapter = new MySpinnerAdapter(context, localeStrings);
-        languagePicker.setAdapter(spinnerAdapter);
-
         if (selectedLocale != null) {
-            selectedLanguageIndex = localeDisplayName.indexOf(selectedLocale.getDisplayLanguage());
+            selectedLanguageIndex = localeDisplayName.indexOf(selectedLocale!!.displayLanguage)
         }
-        languagePicker.setSelection(selectedLanguageIndex);
-
+        val spinnerAdapter = MySpinnerAdapter(context, localeStrings)
+        binding.apply {
+            languagePicker.adapter = spinnerAdapter
+            languagePicker.setSelection(selectedLanguageIndex)
+        }
     }
 
-    @Nullable
-    @Override
-    public VerificationError verifyStep() {
-        userProfile = database.profileInfoDao().findOne();
+    override fun verifyStep(): VerificationError? {
+        userProfile = database.profileInfoDao().findOne()
         if (userProfile == null) {
-            userProfile = new UserProfile();
+            userProfile = UserProfile()
         }
         if (selectedLocale != null) {
-            selectedLanguage = selectedLocale.getLanguage();
+            selectedLanguage = selectedLocale!!.language
         }
-        userProfile.setLanguage(selectedLanguage);
-        if (userProfile.getProfileId() != null) {
-            int id = userProfile.getProfileId();
+        userProfile!!.language = selectedLanguage
+        if (userProfile!!.profileId != null) {
+            val id = userProfile!!.profileId!!
             if (id > 0) {
-                database.profileInfoDao().update(userProfile);
+                database.profileInfoDao().update(userProfile!!)
             }
         } else {
-            database.profileInfoDao().insert(userProfile);
+            database.profileInfoDao().insert(userProfile!!)
         }
 
-        return verificationError;
+        return verificationError
     }
 
-    @Override
-    public void onSelected() {
+    override fun onSelected() {
         //not implemented
     }
 
-    @Override
-    public void onError(@NonNull VerificationError error) {
+    override fun onError(error: VerificationError) {
         //not implemented
     }
 
-    public void setOnFragmentCloseListener(IFragmentCallBack callBack) {
-        this.fragmentCallBack = callBack;
+    fun setOnFragmentCloseListener(callBack: IFragmentCallBack?) {
+        this.fragmentCallBack = callBack
     }
 }
