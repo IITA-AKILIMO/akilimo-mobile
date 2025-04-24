@@ -1,102 +1,44 @@
-package com.akilimo.mobile.rest.response;
+package com.akilimo.mobile.rest.response
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import org.jetbrains.annotations.NotNull;
-
+import android.os.Parcel
+import android.os.Parcelable
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RecommendationResp implements Parcelable {
-    @JsonProperty("FR")
-    private String fertilizerRecText;
+data class RecommendationResponse(
+    @JsonProperty("FR") var fertilizerRecText: String? = null,
+    @JsonProperty("IC") var interCroppingRecText: String? = null,
+    @JsonProperty("PP") var plantingPracticeRecText: String? = null,
+    @JsonProperty("SP") var scheduledPlantingRecText: String? = null,
+    @JsonProperty("ERR") var errorMessage: String? = null
+) : Parcelable {
 
-    @JsonProperty("IC")
-    private String interCroppingRecText;
+    constructor(parcel: Parcel) : this(
+        fertilizerRecText = parcel.readString(),
+        interCroppingRecText = parcel.readString(),
+        plantingPracticeRecText = parcel.readString(),
+        scheduledPlantingRecText = parcel.readString(),
+        errorMessage = parcel.readString()
+    )
 
-    @JsonProperty("PP")
-    private String plantingPracticeRecText;
-
-    @JsonProperty("SP")
-    private String scheduledPlantingRect;
-
-    @JsonProperty("ERR")
-    private String errorMessage;
-
-    @SuppressWarnings("unused")
-    public RecommendationResp() {
-        //required by jackson do not remove
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeString(fertilizerRecText)
+        dest.writeString(interCroppingRecText)
+        dest.writeString(plantingPracticeRecText)
+        dest.writeString(scheduledPlantingRecText)
+        dest.writeString(errorMessage)
     }
 
-    public final static Creator<RecommendationResp> CREATOR = new Creator<RecommendationResp>() {
-        public RecommendationResp createFromParcel(Parcel in) {
-            return new RecommendationResp(in);
+    override fun describeContents(): Int = 0
+
+    companion object CREATOR : Parcelable.Creator<RecommendationResponse> {
+        override fun createFromParcel(parcel: Parcel): RecommendationResponse {
+            return RecommendationResponse(parcel)
         }
 
-        public RecommendationResp[] newArray(int size) {
-            return (new RecommendationResp[size]);
+        override fun newArray(size: Int): Array<RecommendationResponse?> {
+            return arrayOfNulls(size)
         }
-
-    };
-
-    private RecommendationResp(@NotNull Parcel in) {
-        this.fertilizerRecText = ((String) in.readValue((String.class.getClassLoader())));
-        this.interCroppingRecText = ((String) in.readValue((String.class.getClassLoader())));
-        this.plantingPracticeRecText = ((String) in.readValue((String.class.getClassLoader())));
-        this.scheduledPlantingRect = ((String) in.readValue((String.class.getClassLoader())));
-    }
-
-    public void writeToParcel(@NotNull Parcel dest, int flags) {
-        dest.writeValue(fertilizerRecText);
-        dest.writeValue(interCroppingRecText);
-        dest.writeValue(plantingPracticeRecText);
-        dest.writeValue(scheduledPlantingRect);
-    }
-
-    public int describeContents() {
-        return 0;
-    }
-
-    public String getFertilizerRecText() {
-        return fertilizerRecText;
-    }
-
-    public void setFertilizerRecText(String fertilizerRecText) {
-        this.fertilizerRecText = fertilizerRecText;
-    }
-
-    public String getInterCroppingRecText() {
-        return interCroppingRecText;
-    }
-
-    public void setInterCroppingRecText(String interCroppingRecText) {
-        this.interCroppingRecText = interCroppingRecText;
-    }
-
-    public String getPlantingPracticeRecText() {
-        return plantingPracticeRecText;
-    }
-
-    public void setPlantingPracticeRecText(String plantingPracticeRecText) {
-        this.plantingPracticeRecText = plantingPracticeRecText;
-    }
-
-    public String getScheduledPlantingRect() {
-        return scheduledPlantingRect;
-    }
-
-    public void setScheduledPlantingRect(String scheduledPlantingRect) {
-        this.scheduledPlantingRect = scheduledPlantingRect;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
     }
 }
