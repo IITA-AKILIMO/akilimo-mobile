@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.R
@@ -26,6 +25,7 @@ import com.akilimo.mobile.interfaces.IFertilizerDismissListener
 import com.akilimo.mobile.utils.FertilizerList.removeFertilizerByType
 import com.akilimo.mobile.utils.Tools.dpToPx
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.FertilizerPriceDialogFragment
 import com.akilimo.mobile.widget.SpacingItemDecoration
 import com.google.android.material.snackbar.Snackbar
@@ -94,8 +94,8 @@ class InterCropFertilizersActivity : BaseActivity() {
 
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.countryCode!!
-            currency = profileInfo.currencyCode!!
+            countryCode = profileInfo.countryCode
+            currency = profileInfo.currencyCode
         }
 
         initToolbar()
@@ -134,62 +134,55 @@ class InterCropFertilizersActivity : BaseActivity() {
         recyclerView!!.adapter = mAdapter
 
 
-        mAdapter!!.setOnItemClickListener { view: View?, clickedFertilizer: Fertilizer, position: Int ->
-            mAdapter!!.setActiveRowIndex(position)
-            var selectedType = database.fertilizerDao().findByTypeCountryAndUseCase(
-                clickedFertilizer.fertilizerType!!, countryCode, enumUseCase!!.name
-            )
-            if (selectedType == null) {
-                selectedType = clickedFertilizer
-            }
-            //let us open the price dialog now
-            val cleanedFertilizers: MutableList<Fertilizer> = selectedFertilizers
+        mAdapter!!.setOnItemClickListener(object : FertilizerGridAdapter.OnItemClickListener {
+            override fun onItemClick(view: View, clickedFertilizer: Fertilizer, position: Int) {
+                mAdapter!!.setActiveRowIndex(position)
+                var selectedType = database.fertilizerDao().findByTypeCountryAndUseCase(
+                    clickedFertilizer.fertilizerType!!, countryCode, enumUseCase!!.name
+                )
+                if (selectedType == null) {
+                    selectedType = clickedFertilizer
+                }
+                val cleanedFertilizers: MutableList<Fertilizer> = selectedFertilizers
 
-            selectedType.countryCode = countryCode
+                selectedType.countryCode = countryCode
 
-            val arguments = Bundle()
-            arguments.putParcelable(FertilizerPriceDialogFragment.FERTILIZER_TYPE, selectedType)
+                val arguments = Bundle()
+                arguments.putParcelable(FertilizerPriceDialogFragment.FERTILIZER_TYPE, selectedType)
 
-            val priceDialogFragment = FertilizerPriceDialogFragment()
-            priceDialogFragment.arguments = arguments
+                val priceDialogFragment = FertilizerPriceDialogFragment()
+                priceDialogFragment.arguments = arguments
 
-            priceDialogFragment.setOnDismissListener(object : IFertilizerDismissListener {
-                override fun onDismiss(
-                    priceSpecified: Boolean,
-                    fertilizer: Fertilizer,
-                    removeSelected: Boolean
-                ) {
-                    val shouldUpdate = priceSpecified || removeSelected
-                    if (!shouldUpdate) return
-                    database.fertilizerDao().update(fertilizer)
-                    if (removeSelected) {
-                        selectedFertilizers = removeFertilizerByType(
-                            cleanedFertilizers,
-                            fertilizer.fertilizerType!!
-                        )
-                    } else {
-                        selectedFertilizers.add(fertilizer)
+                priceDialogFragment.setOnDismissListener(object : IFertilizerDismissListener {
+                    override fun onDismiss(
+                        priceSpecified: Boolean,
+                        fertilizer: Fertilizer,
+                        removeSelected: Boolean
+                    ) {
+                        val shouldUpdate = priceSpecified || removeSelected
+                        if (!shouldUpdate) return
+                        database.fertilizerDao().update(fertilizer)
+                        if (removeSelected) {
+                            selectedFertilizers = removeFertilizerByType(
+                                cleanedFertilizers,
+                                fertilizer.fertilizerType!!
+                            )
+                        } else {
+                            selectedFertilizers.add(fertilizer)
+                        }
+                        validate(false)
                     }
-                    validate(false)
-                }
-            })
+                })
 
 
-            val fragmentTransaction: FragmentTransaction
-            if (fragmentManager != null) {
-                fragmentTransaction = supportFragmentManager.beginTransaction()
-                val prev =
-                    supportFragmentManager.findFragmentByTag(FertilizerPriceDialogFragment.ARG_ITEM_ID)
-                if (prev != null) {
-                    fragmentTransaction.remove(prev)
-                }
-                fragmentTransaction.addToBackStack(null)
-                priceDialogFragment.show(
+                showDialogFragmentSafely(
                     supportFragmentManager,
+                    priceDialogFragment,
                     FertilizerPriceDialogFragment.ARG_ITEM_ID
                 )
             }
-        }
+
+        })
 
         initializeFertilizers()
 
