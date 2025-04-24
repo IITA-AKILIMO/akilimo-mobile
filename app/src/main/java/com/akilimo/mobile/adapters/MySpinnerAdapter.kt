@@ -1,66 +1,41 @@
-package com.akilimo.mobile.adapters;
+package com.akilimo.mobile.adapters
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.TextView;
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
+import android.widget.TextView
+import com.akilimo.mobile.R
+import io.sentry.Sentry
 
+class MySpinnerAdapter(applicationContext: Context, localeStrings: List<String>) : BaseAdapter() {
+    private val context: Context = applicationContext
+    private val spinnerItems: List<String> = localeStrings
+    private var spinnerImages: List<Int>? = null
+    private val layoutInflater: LayoutInflater = (LayoutInflater.from(applicationContext))
 
-import com.akilimo.mobile.R;
-
-import java.util.List;
-
-import io.sentry.Sentry;
-
-public class MySpinnerAdapter extends BaseAdapter {
-    private Context context;
-    private List<String> spinnerItems;
-    private List<Integer> spinnerImages;
-    private LayoutInflater layoutInflater;
-
-    @Deprecated
-    public MySpinnerAdapter(Context applicationContext, List<String> localeStrings, List<Integer> countryStrings) {
-        this.context = applicationContext;
-        this.spinnerItems = localeStrings;
-        this.spinnerImages = countryStrings;
-        layoutInflater = (LayoutInflater.from(applicationContext));
+    override fun getCount(): Int {
+        return spinnerItems.size
     }
 
-    public MySpinnerAdapter(Context applicationContext, List<String> localeStrings) {
-        this.context = applicationContext;
-        this.spinnerItems = localeStrings;
-        layoutInflater = (LayoutInflater.from(applicationContext));
+    override fun getItem(position: Int): String {
+        return spinnerItems[position]
     }
 
-    @Override
-    public int getCount() {
-        return spinnerItems.size();
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
     }
 
-    @Override
-    public Object getItem(int position) {
-        return null;
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return 0;
-    }
-
-    @SuppressLint("ViewHolder")
-    @Override
-    public View getView(int position, View view, ViewGroup parent) {
-        view = layoutInflater.inflate(R.layout.custom_spinner, null);
-        TextView names = (TextView) view.findViewById(R.id.spinnerText);
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val spinnerView =
+            convertView ?: layoutInflater.inflate(R.layout.custom_spinner, parent, false)
+        val names = spinnerView.findViewById<TextView>(R.id.spinnerText)
         try {
-            names.setText(spinnerItems.get(position));
-        } catch (Exception ex) {
-            Sentry.captureException(ex);
+            names.text = spinnerItems[position]
+        } catch (ex: Exception) {
+            Sentry.captureException(ex)
         }
-        return view;
+        return spinnerView
     }
 }

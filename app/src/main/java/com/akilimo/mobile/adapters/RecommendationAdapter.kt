@@ -1,68 +1,43 @@
-package com.akilimo.mobile.adapters;
+package com.akilimo.mobile.adapters
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.RecyclerView
+import com.akilimo.mobile.R
+import com.akilimo.mobile.adapters.RecommendationAdapter.RecViewHolder
+import com.akilimo.mobile.mappers.ComputedResponse
 
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
+class RecommendationAdapter : RecyclerView.Adapter<RecViewHolder>() {
+    private var computedResponseList: List<ComputedResponse>? = null
 
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.mappers.ComputedResponse;
-
-import java.util.List;
-
-public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAdapter.RecViewHolder> {
-
-    private List<ComputedResponse> computedResponseList;
-
-    public RecommendationAdapter() {
-
+    fun setData(computedResponseList: List<ComputedResponse>) {
+        this.computedResponseList = computedResponseList
+        notifyDataSetChanged()
     }
 
-    public void setData(@NonNull List<ComputedResponse> computedResponseList) {
-        this.computedResponseList = computedResponseList;
-        notifyDataSetChanged();
+    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): RecViewHolder {
+        val v = LayoutInflater.from(viewGroup.context)
+            .inflate(R.layout.content_compute_card, viewGroup, false)
+        val pvh = RecViewHolder(v)
+        return pvh
     }
 
-    @NonNull
-    @Override
-    public RecViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.content_compute_card, viewGroup, false);
-        RecViewHolder pvh = new RecViewHolder(v);
-        return pvh;
+    override fun onBindViewHolder(recViewHolder: RecViewHolder, i: Int) {
+        val cr = computedResponseList!![i]
+        recViewHolder.computedTitle.text = cr.computedTitle
+        recViewHolder.computedBody.text = cr.computedRecommendation
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull RecViewHolder recViewHolder, int i) {
-        ComputedResponse cr = computedResponseList.get(i);
-        recViewHolder.computedTitle.setText(cr.getComputedTitle());
-        recViewHolder.computedBody.setText(cr.getComputedRecommendation());
+    override fun getItemCount(): Int {
+        return computedResponseList!!.size
     }
 
-    @Override
-    public int getItemCount() {
-        return computedResponseList.size();
-    }
-
-    @Override
-    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public static class RecViewHolder extends RecyclerView.ViewHolder {
-        CardView cardView;
-        TextView computedTitle;
-        TextView computedBody;
-
-        RecViewHolder(View itemView) {
-            super(itemView);
-            cardView = itemView.findViewById(R.id.cv);
-            computedTitle = itemView.findViewById(R.id.recLabel);
-            computedBody = itemView.findViewById(R.id.recSubLabel);
-        }
+    class RecViewHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var cardView: CardView = itemView.findViewById(R.id.cv)
+        var computedTitle: TextView = itemView.findViewById(R.id.recLabel)
+        var computedBody: TextView = itemView.findViewById(R.id.recSubLabel)
     }
 }

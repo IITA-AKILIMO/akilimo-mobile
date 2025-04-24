@@ -1,135 +1,94 @@
-package com.akilimo.mobile.adapters;
+package com.akilimo.mobile.adapters
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.RecyclerView
+import com.akilimo.mobile.R
+import com.akilimo.mobile.entities.Fertilizer
+import com.akilimo.mobile.utils.Tools
 
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
+class FertilizerGridAdapter(
+    private val context: Context
+) : RecyclerView.Adapter<FertilizerGridAdapter.OriginalViewHolder>() {
 
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.entities.Fertilizer;
-import com.akilimo.mobile.utils.Tools;
+    private var items: List<Fertilizer> = ArrayList()
+    private var onLoadMoreListener: OnLoadMoreListener? = null
+    private var mOnItemClickListener: OnItemClickListener? = null
+    private var rowIndex = -1
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class FertilizerGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-    private List<Fertilizer> items = new ArrayList<>();
-
-    private OnLoadMoreListener onLoadMoreListener;
-
-    private Context ctx;
-    private OnItemClickListener mOnItemClickListener;
-    private int rowIndex = -1;
-
-    public interface OnItemClickListener {
-        void onItemClick(View view, Fertilizer obj, int position);
+    interface OnItemClickListener {
+        fun onItemClick(view: View, obj: Fertilizer, position: Int)
     }
 
-    public FertilizerGridAdapter(@NonNull Context context) {
-        ctx = context;
+    interface OnLoadMoreListener {
+        fun onLoadMore(currentPage: Int)
     }
 
-    public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
-        this.mOnItemClickListener = mItemClickListener;
+    fun setOnItemClickListener(listener: OnItemClickListener?) {
+        this.mOnItemClickListener = listener
     }
 
-
-    public void setItems(@NonNull List<Fertilizer> fertilizerList) {
-        this.items = fertilizerList;
-        notifyDataSetChanged();
+    fun setItems(fertilizerList: List<Fertilizer>) {
+        this.items = fertilizerList
+        notifyDataSetChanged()
     }
 
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder vh;
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_fertilizer_grid_row, parent, false);
-        vh = new OriginalViewHolder(v);
-        return vh;
+    fun setActiveRowIndex(position: Int) {
+        rowIndex = position
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        Fertilizer obj = items.get(position);
-        String fertilizerName = obj.getName();
-        String bagPrice = obj.getPriceRange();
+    fun setOnLoadMoreListener(listener: OnLoadMoreListener?) {
+        this.onLoadMoreListener = listener
+    }
 
-        boolean isSelected = obj.getSelected();
+    fun getAll(): List<Fertilizer> = items
 
-        if (holder instanceof OriginalViewHolder) {
-            OriginalViewHolder view = (OriginalViewHolder) holder;
-            view.fertilizerName.setText(fertilizerName);
-            view.bagPrice.setText(isSelected ? bagPrice : null);
+    fun getSelected(): List<Fertilizer> {
+        return items.filter { it.selected }
+    }
 
-            view.lyt_parent.setOnClickListener(v -> clickListener(v, obj, position));
-            Tools.displayImageOriginal(ctx, view.image, R.drawable.ic_fertilizer_bag);
-            if (isSelected) {
-                view.lyt_parent.setCardBackgroundColor(ctx.getResources().getColor(R.color.green_200));
-            } else {
-                view.lyt_parent.setCardBackgroundColor(ctx.getResources().getColor(R.color.grey_5));
-            }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OriginalViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.list_fertilizer_grid_row, parent, false)
+        return OriginalViewHolder(view)
+    }
 
+    override fun onBindViewHolder(holder: OriginalViewHolder, position: Int) {
+        val fertilizer = items[position]
+        val fertilizerName = fertilizer.name
+        val bagPrice = fertilizer.priceRange
+        val isSelected = fertilizer.selected
+
+        holder.fertilizerName.text = fertilizerName
+        holder.bagPrice.text = if (isSelected) bagPrice else null
+
+        holder.lytParent.setOnClickListener { clickListener(it, fertilizer, position) }
+        Tools.displayImageOriginal(context, holder.image, R.drawable.ic_fertilizer_bag)
+
+        val backgroundColor = if (isSelected) {
+            context.resources.getColor(R.color.green_200)
+        } else {
+            context.resources.getColor(R.color.grey_5)
         }
+
+        holder.lytParent.setCardBackgroundColor(backgroundColor)
     }
 
-    private void clickListener(View view, Fertilizer fertilizer, int position) {
-        if (mOnItemClickListener != null) {
-            mOnItemClickListener.onItemClick(view, fertilizer, position);
-        }
+    private fun clickListener(view: View, fertilizer: Fertilizer, position: Int) {
+        mOnItemClickListener?.onItemClick(view, fertilizer, position)
     }
 
-    @Override
-    public int getItemCount() {
-        return items.size();
+    override fun getItemCount(): Int = items.size
+
+    inner class OriginalViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val image: ImageView = view.findViewById(R.id.fertilizerImage)
+        val fertilizerName: TextView = view.findViewById(R.id.fertilizerName)
+        val bagPrice: TextView = view.findViewById(R.id.bagPrice)
+        val lytParent: CardView = view.findViewById(R.id.lyt_parent)
     }
-
-    public void setActiveRowIndex(int position) {
-        rowIndex = position;
-    }
-
-
-    public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
-        this.onLoadMoreListener = onLoadMoreListener;
-    }
-
-    public List<Fertilizer> getAll() {
-        return items;
-    }
-
-    public List<Fertilizer> getSelected() {
-        List<Fertilizer> selected = new ArrayList<>();
-        for (int i = 0; i < items.size(); i++) {
-            if (items.get(i).getSelected()) {
-                selected.add(items.get(i));
-            }
-        }
-        return selected;
-    }
-
-    public class OriginalViewHolder extends RecyclerView.ViewHolder {
-        public ImageView image;
-        public TextView fertilizerName;
-        public TextView bagPrice;
-        public CardView lyt_parent;
-
-        public OriginalViewHolder(View view) {
-            super(view);
-            image = view.findViewById(R.id.fertilizerImage);
-            fertilizerName = view.findViewById(R.id.fertilizerName);
-            bagPrice = view.findViewById(R.id.bagPrice);
-            lyt_parent = view.findViewById(R.id.lyt_parent);
-        }
-    }
-
-    public interface OnLoadMoreListener {
-        void onLoadMore(int current_page);
-    }
-
 }

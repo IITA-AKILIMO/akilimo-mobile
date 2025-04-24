@@ -1,123 +1,98 @@
-package com.akilimo.mobile.adapters;
+package com.akilimo.mobile.adapters
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.RecyclerView
+import com.akilimo.mobile.R
+import com.akilimo.mobile.entities.FieldYield
+import com.akilimo.mobile.utils.TheItemAnimation.animate
+import com.akilimo.mobile.utils.Tools.displayImageOriginal
 
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.entities.FieldYield;
-import com.akilimo.mobile.utils.TheItemAnimation;
-import com.akilimo.mobile.utils.Tools;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-
-public class FieldYieldAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-    private List<FieldYield> items;
-
-    private Context ctx;
-    private OnItemClickListener mOnItemClickListener;
-    private int animation_type;
-    private int lastPosition = -1;
-    private int rowIndex = -1;
-    private boolean on_attach = true;
-    private double selectedYieldAmount = 0.0;
+class FieldYieldAdapter(
+    private val ctx: Context,
+    private var items: List<FieldYield>,
+    private val animationType: Int
+) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private var mOnItemClickListener: OnItemClickListener? = null
+    private var lastPosition = -1
+    private var rowIndex = -1
+    private val onAttach = true
+    private var selectedYieldAmount = 0.0
 
 
-    public interface OnItemClickListener {
-        void onItemClick(View view, FieldYield fieldYield, int position);
+    interface OnItemClickListener {
+        fun onItemClick(view: View?, fieldYield: FieldYield?, position: Int)
     }
 
-    public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
-        this.mOnItemClickListener = mItemClickListener;
+    fun setOnItemClickListener(mItemClickListener: OnItemClickListener?) {
+        this.mOnItemClickListener = mItemClickListener
     }
 
-    public FieldYieldAdapter(Context context, List<FieldYield> items, int animation_type) {
-        this.items = items;
-        ctx = context;
-        this.animation_type = animation_type;
+    fun setItems(selectedYieldAmount: Double, items: List<FieldYield>) {
+        this.items = items
+        this.selectedYieldAmount = selectedYieldAmount
+        notifyDataSetChanged()
     }
 
-    public void setItems(double selectedYieldAmount, @NonNull List<FieldYield> items) {
-        this.items = items;
-        this.selectedYieldAmount = selectedYieldAmount;
-        notifyDataSetChanged();
+    inner class OriginalViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+        var rootYieldImage: ImageView =
+            v.findViewById(R.id.rootYieldImage)
+        var name: TextView = v.findViewById(R.id.name)
+        var layoutView: View = v.findViewById(R.id.lyt_parent)
+        var mainCard: CardView = v.findViewById(R.id.mainCard)
     }
 
-    public class OriginalViewHolder extends RecyclerView.ViewHolder {
-        public ImageView rootYieldImage;
-        public TextView name;
-        public View layoutView;
-        public CardView mainCard;
-
-        public OriginalViewHolder(View v) {
-            super(v);
-            name = v.findViewById(R.id.name);
-            rootYieldImage = v.findViewById(R.id.rootYieldImage);
-            mainCard = v.findViewById(R.id.mainCard);
-            layoutView = v.findViewById(R.id.lyt_parent);
-        }
-    }
-
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder viewHolder;
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card_recommendation_image, parent, false);
-        viewHolder = new OriginalViewHolder(view);
-        return viewHolder;
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val viewHolder: RecyclerView.ViewHolder
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_card_recommendation_image, parent, false)
+        viewHolder = OriginalViewHolder(view)
+        return viewHolder
     }
 
     // Replace the contents of a view (invoked by the layout manager)
-    @Override
-    public void onBindViewHolder(@NotNull RecyclerView.ViewHolder holder, final int position) {
-        if (holder instanceof OriginalViewHolder) {
-            OriginalViewHolder view = (OriginalViewHolder) holder;
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is OriginalViewHolder) {
 
-            FieldYield fieldYield = items.get(position);
-            double currentYieldAmount = fieldYield.getYieldAmount();
-            view.name.setText(fieldYield.getFieldYieldLabel());
-            Tools.displayImageOriginal(ctx, view.rootYieldImage, fieldYield.getImageId());
+            val fieldYield = items[position]
+            val currentYieldAmount = fieldYield.yieldAmount
+            holder.name.text = fieldYield.fieldYieldLabel
+            displayImageOriginal(ctx, holder.rootYieldImage, fieldYield.imageId)
 
-            view.layoutView.setOnClickListener(view1 -> {
+            holder.layoutView.setOnClickListener { view1: View? ->
                 if (mOnItemClickListener != null) {
-                    mOnItemClickListener.onItemClick(view1, items.get(position), position);
+                    mOnItemClickListener!!.onItemClick(view1, items[position], position)
                 }
-            });
-
-            if ((rowIndex == position) || (currentYieldAmount == selectedYieldAmount)) {
-                view.mainCard.setCardBackgroundColor(ctx.getResources().getColor(R.color.green_100));
-            } else {
-                view.mainCard.setCardBackgroundColor(ctx.getResources().getColor(R.color.grey_3));
             }
 
-            setAnimation(view.itemView, position);
+            if ((rowIndex == position) || (currentYieldAmount == selectedYieldAmount)) {
+                holder.mainCard.setCardBackgroundColor(ctx.resources.getColor(R.color.green_100))
+            } else {
+                holder.mainCard.setCardBackgroundColor(ctx.resources.getColor(R.color.grey_3))
+            }
+
+            setAnimation(holder.itemView, position)
         }
     }
 
-    public void setActiveRowIndex(int position) {
-        rowIndex = position;
+    fun setActiveRowIndex(position: Int) {
+        rowIndex = position
     }
 
-    @Override
-    public int getItemCount() {
-        return items.size();
+    override fun getItemCount(): Int {
+        return items.size
     }
 
-
-    private void setAnimation(View view, int position) {
+    private fun setAnimation(view: View, position: Int) {
         if (position > lastPosition) {
-            TheItemAnimation.animate(view, on_attach ? position : -1, animation_type);
-            lastPosition = position;
+            animate(view, if (onAttach) position else -1, animationType)
+            lastPosition = position
         }
     }
-
 }
