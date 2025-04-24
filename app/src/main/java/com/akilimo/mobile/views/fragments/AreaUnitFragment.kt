@@ -20,7 +20,9 @@ import java.util.Locale
 
 
 class AreaUnitFragment : BaseStepFragment() {
-    var binding: FragmentAreaUnitBinding? = null
+    private var _binding: FragmentAreaUnitBinding? = null
+    private val binding get() = _binding!!
+
     private var mandatoryInfo: MandatoryInfo? = null
     private var areaUnit: String? = "acre"
     private var oldAreaUnit: String? = ""
@@ -33,8 +35,8 @@ class AreaUnitFragment : BaseStepFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentAreaUnitBinding.inflate(inflater, container, false)
-        return binding!!.root
+        _binding = FragmentAreaUnitBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -44,7 +46,7 @@ class AreaUnitFragment : BaseStepFragment() {
         val context = requireContext()
 
         errorMessage = context.getString(R.string.lbl_area_unit_prompt)
-        binding!!.rdgAreaUnit.setOnCheckedChangeListener { _: RadioGroup?, radioIndex: Int ->
+        binding.rdgAreaUnit.setOnCheckedChangeListener { _: RadioGroup?, radioIndex: Int ->
             when (radioIndex) {
                 R.id.rdAcre -> {
                     areaUnitRadioIndex = R.id.rdAcre
@@ -90,7 +92,7 @@ class AreaUnitFragment : BaseStepFragment() {
             }
         }
 
-        binding!!.chkRememberDetails.setOnCheckedChangeListener { _: CompoundButton?, rememberInfo: Boolean ->
+        binding.chkRememberDetails.setOnCheckedChangeListener { _: CompoundButton?, rememberInfo: Boolean ->
             rememberPreference = rememberInfo
             sessionManager.setRememberAreaUnit(rememberInfo)
         }
@@ -100,15 +102,15 @@ class AreaUnitFragment : BaseStepFragment() {
         try {
             rememberPreference = sessionManager.getRememberAreaUnit()
             mandatoryInfo = database.mandatoryInfoDao().findOne()
-            val rdAre = binding!!.rdAre
+            val rdAre = binding.rdAre
             val profileInfo = database.profileInfoDao().findOne()
             if (mandatoryInfo != null) {
                 areaUnit = mandatoryInfo!!.areaUnit
                 oldAreaUnit = mandatoryInfo!!.oldAreaUnit
                 areaUnitRadioIndex = mandatoryInfo!!.areaUnitRadioIndex
-                binding!!.rdgAreaUnit.check(areaUnitRadioIndex)
+                binding.rdgAreaUnit.check(areaUnitRadioIndex)
             } else {
-                binding!!.rdgAreaUnit.check(areaUnitRadioIndex)
+                binding.rdgAreaUnit.check(areaUnitRadioIndex)
                 areaUnitRadioIndex = -1
                 areaUnit = null
             }
