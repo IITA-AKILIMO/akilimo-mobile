@@ -22,7 +22,7 @@ class FertilizerGridAdapter(
     private var rowIndex = -1
 
     interface OnItemClickListener {
-        fun onItemClick(view: View, obj: Fertilizer, position: Int)
+        fun onItemClick(view: View, clickedFertilizer: Fertilizer, position: Int)
     }
 
     interface OnLoadMoreListener {
