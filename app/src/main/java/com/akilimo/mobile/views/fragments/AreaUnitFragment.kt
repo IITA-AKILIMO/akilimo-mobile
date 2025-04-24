@@ -1,175 +1,151 @@
-package com.akilimo.mobile.views.fragments;
+package com.akilimo.mobile.views.fragments
+
+import android.annotation.SuppressLint
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.CompoundButton
+import android.widget.RadioGroup
+import android.widget.Toast
+import com.akilimo.mobile.R
+import com.akilimo.mobile.databinding.FragmentAreaUnitBinding
+import com.akilimo.mobile.entities.MandatoryInfo
+import com.akilimo.mobile.inherit.BaseStepFragment
+import com.akilimo.mobile.utils.enums.EnumAreaUnits
+import com.akilimo.mobile.utils.enums.EnumCountry
+import com.stepstone.stepper.VerificationError
+import io.sentry.Sentry
+import java.util.Locale
 
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RadioButton;
-import android.widget.Toast;
+class AreaUnitFragment : BaseStepFragment() {
+    var binding: FragmentAreaUnitBinding? = null
+    private var mandatoryInfo: MandatoryInfo? = null
+    private var areaUnit: String? = "acre"
+    private var oldAreaUnit: String? = ""
+    private var areaUnitDisplay = "acre"
+    private var areaUnitRadioIndex = 0
+    private var rememberPreference = false
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import com.akilimo.mobile.entities.ProfileInfo;
-import com.akilimo.mobile.utils.enums.EnumCountry;
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.databinding.FragmentAreaUnitBinding;
-import com.akilimo.mobile.entities.MandatoryInfo;
-import com.akilimo.mobile.inherit.BaseStepFragment;
-import com.akilimo.mobile.utils.enums.EnumAreaUnits;
-import com.stepstone.stepper.VerificationError;
-
-;import io.sentry.Sentry;
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AreaUnitFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class AreaUnitFragment extends BaseStepFragment {
-
-    FragmentAreaUnitBinding binding;
-    private MandatoryInfo mandatoryInfo;
-    private String areaUnit = "acre";
-    private String oldAreaUnit = "";
-    private String areaUnitDisplay = "acre";
-    private int areaUnitRadioIndex = 0;
-    private boolean rememberPreference = false;
-
-    public AreaUnitFragment() {
-        // Required empty public constructor
-    }
-
-    public static AreaUnitFragment newInstance() {
-        return new AreaUnitFragment();
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.context = context;
-    }
-
-    @Override
-    protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentAreaUnitBinding.inflate(inflater, container, false);
-        return binding.getRoot();
+    override fun loadFragmentLayout(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentAreaUnitBinding.inflate(inflater, container, false)
+        return binding!!.root
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        errorMessage = context.getString(R.string.lbl_area_unit_prompt);
-        binding.rdgAreaUnit.setOnCheckedChangeListener((radioGroup, radioIndex) -> {
-            switch (radioIndex) {
-                case R.id.rdAcre:
-                    areaUnitRadioIndex = R.id.rdAcre;
-                    areaUnitDisplay = context.getString(R.string.lbl_acre);
-                    areaUnit = EnumAreaUnits.ACRE.name();
-                    break;
-                case R.id.rdHa:
-                    areaUnitRadioIndex = R.id.rdHa;
-                    areaUnitDisplay = context.getString(R.string.lbl_ha);
-                    areaUnit = EnumAreaUnits.HA.name();
-                    break;
-                case R.id.rdAre:
-                    areaUnitRadioIndex = R.id.rdHa;
-                    areaUnitDisplay = context.getString(R.string.lbl_are);
-                    areaUnit = EnumAreaUnits.ARE.name();
-                    break;
-                default:
-                    areaUnitRadioIndex = -1;
-                    areaUnit = null;
-                    break;
+        val context = requireContext()
+
+        errorMessage = context.getString(R.string.lbl_area_unit_prompt)
+        binding!!.rdgAreaUnit.setOnCheckedChangeListener { _: RadioGroup?, radioIndex: Int ->
+            when (radioIndex) {
+                R.id.rdAcre -> {
+                    areaUnitRadioIndex = R.id.rdAcre
+                    areaUnitDisplay = context.getString(R.string.lbl_acre)
+                    areaUnit = EnumAreaUnits.ACRE.name
+                }
+
+                R.id.rdHa -> {
+                    areaUnitRadioIndex = R.id.rdHa
+                    areaUnitDisplay = context.getString(R.string.lbl_ha)
+                    areaUnit = EnumAreaUnits.HA.name
+                }
+
+                R.id.rdAre -> {
+                    areaUnitRadioIndex = R.id.rdHa
+                    areaUnitDisplay = context.getString(R.string.lbl_are)
+                    areaUnit = EnumAreaUnits.ARE.name
+                }
+
+                else -> {
+                    areaUnitRadioIndex = -1
+                    areaUnit = null
+                }
             }
-
             if (areaUnit == null) {
-                return;
+                return@setOnCheckedChangeListener
             }
-
             try {
-                mandatoryInfo = database.mandatoryInfoDao().findOne();
+                mandatoryInfo = database.mandatoryInfoDao().findOne()
                 if (mandatoryInfo == null) {
-                    mandatoryInfo = new MandatoryInfo();
+                    mandatoryInfo = MandatoryInfo()
                 }
-                mandatoryInfo.setAreaUnitRadioIndex(areaUnitRadioIndex);
-                mandatoryInfo.setAreaUnit(areaUnit.toLowerCase());
-                mandatoryInfo.setDisplayAreaUnit(areaUnitDisplay);
-                if (mandatoryInfo.getId() != null) {
-                    database.mandatoryInfoDao().update(mandatoryInfo);
+                mandatoryInfo!!.areaUnitRadioIndex = areaUnitRadioIndex
+                mandatoryInfo!!.areaUnit = areaUnit!!.lowercase(Locale.getDefault())
+                mandatoryInfo!!.displayAreaUnit = areaUnitDisplay
+                if (mandatoryInfo!!.id != null) {
+                    database.mandatoryInfoDao().update(mandatoryInfo!!)
                 } else {
-                    database.mandatoryInfoDao().insert(mandatoryInfo);
+                    database.mandatoryInfoDao().insert(mandatoryInfo!!)
                 }
-
-            } catch (Exception ex) {
-                Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+            } catch (ex: Exception) {
+                Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
             }
-        });
+        }
 
-        binding.chkRememberDetails.setOnCheckedChangeListener((compoundButton, rememberInfo) -> {
-            rememberPreference = rememberInfo;
-            sessionManager.setRememberAreaUnit(rememberInfo);
-        });
+        binding!!.chkRememberDetails.setOnCheckedChangeListener { _: CompoundButton?, rememberInfo: Boolean ->
+            rememberPreference = rememberInfo
+            sessionManager.setRememberAreaUnit(rememberInfo)
+        }
     }
 
-    public void refreshData() {
+    private fun refreshData() {
         try {
-            rememberPreference = sessionManager.getRememberAreaUnit();
-            mandatoryInfo = database.mandatoryInfoDao().findOne();
-            RadioButton rdAre = binding.rdAre;
-            ProfileInfo profileInfo = database.profileInfoDao().findOne();
+            rememberPreference = sessionManager.getRememberAreaUnit()
+            mandatoryInfo = database.mandatoryInfoDao().findOne()
+            val rdAre = binding!!.rdAre
+            val profileInfo = database.profileInfoDao().findOne()
             if (mandatoryInfo != null) {
-                areaUnit = mandatoryInfo.getAreaUnit();
-                oldAreaUnit = mandatoryInfo.getOldAreaUnit();
-                areaUnitRadioIndex = mandatoryInfo.getAreaUnitRadioIndex();
-                binding.rdgAreaUnit.check(areaUnitRadioIndex);
+                areaUnit = mandatoryInfo!!.areaUnit
+                oldAreaUnit = mandatoryInfo!!.oldAreaUnit
+                areaUnitRadioIndex = mandatoryInfo!!.areaUnitRadioIndex
+                binding!!.rdgAreaUnit.check(areaUnitRadioIndex)
             } else {
-                binding.rdgAreaUnit.check(areaUnitRadioIndex);
-                areaUnitRadioIndex = -1;
-                areaUnit = null;
+                binding!!.rdgAreaUnit.check(areaUnitRadioIndex)
+                areaUnitRadioIndex = -1
+                areaUnit = null
             }
 
             if (profileInfo != null) {
-                countryCode = profileInfo.getCountryCode();
-                if (countryCode != null) {
-                    if (countryCode.equals(EnumCountry.Rwanda.countryCode())) {
-                        //set the are unit radiobutton to visible
-                        rdAre.setVisibility(View.VISIBLE);
-                        if (oldAreaUnit.equals(EnumAreaUnits.ARE.unitName(context))) {
-                            rdAre.setChecked(true);
-                        }
+                countryCode = profileInfo.countryCode!!
+                if (countryCode == EnumCountry.Rwanda.countryCode()) {
+                    //set the are unit radiobutton to visible
+                    rdAre.visibility = View.VISIBLE
+                    if (oldAreaUnit == EnumAreaUnits.ARE.unitName(requireContext())) {
+                        rdAre.isChecked = true
                     }
                 }
             }
-
-
-        } catch (Exception ex) {
-            Sentry.captureException(ex);
+        } catch (ex: Exception) {
+            Sentry.captureException(ex)
         }
     }
 
-    @Nullable
-    @Override
-    public VerificationError verifyStep() {
-        if (areaUnit == null || areaUnit.isEmpty()) {
-            return new VerificationError(errorMessage);
+    override fun verifyStep(): VerificationError? {
+        if (areaUnit == null || areaUnit!!.isEmpty()) {
+            return VerificationError(errorMessage)
         }
-        return null;
+        return null
     }
 
-    @Override
-    public void onSelected() {
-        refreshData();
+    override fun onSelected() {
+        refreshData()
     }
 
-    @Override
-    public void onError(@NonNull VerificationError error) {
 
+    override fun onError(error: VerificationError) {
+    }
+
+    companion object {
+        fun newInstance(): AreaUnitFragment {
+            return AreaUnitFragment()
+        }
     }
 }
