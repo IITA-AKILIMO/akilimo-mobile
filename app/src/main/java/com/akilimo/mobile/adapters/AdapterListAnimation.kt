@@ -1,119 +1,86 @@
-package com.akilimo.mobile.adapters;
+package com.akilimo.mobile.adapters
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.akilimo.mobile.R
+import com.akilimo.mobile.models.Recommendations
+import com.akilimo.mobile.utils.TheItemAnimation.animate
 
-import androidx.recyclerview.widget.RecyclerView;
+class AdapterListAnimation(
+    private val layoutId: Int = R.layout.item_card_recommendation_arrow,
+) : ListAdapter<Recommendations, AdapterListAnimation.OriginalViewHolder>(RecommendationDiffCallback()) {
 
-import com.akilimo.mobile.R;
-import com.akilimo.mobile.models.Recommendations;
-import com.akilimo.mobile.utils.TheItemAnimation;
+    private var lastPosition = -1
+    private var onAttach = true
+    private var animationType: Int = 0
+    private var onItemClickListener: ((View, Recommendations, Int) -> Unit)? = null
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-
-public class AdapterListAnimation extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-    private List<Recommendations> items;
-
-    private Context context;
-    private OnItemClickListener mOnItemClickListener;
-    private int animation_type;
-    private int lastPosition = -1;
-    private int layoutId;
-    private boolean on_attach = true;
-
-    public interface OnItemClickListener {
-        void onItemClick(View view, Recommendations obj, int position);
+    fun setAnimationType(type: Int) {
+        this.animationType = type
     }
 
-    public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
-        this.mOnItemClickListener = mItemClickListener;
+    inner class OriginalViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val image: ImageView? = view.findViewById(R.id.image)
+        val name: TextView = view.findViewById(R.id.name)
+        val cardView: View = view.findViewById(R.id.lyt_parent)
+        val contentLayout: View = view.findViewById(R.id.contentLayout)
     }
 
-    public AdapterListAnimation(Context context) {
-        this.context = context;
-        this.layoutId = R.layout.item_card_recommendation_arrow;
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OriginalViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(layoutId, parent, false)
+        return OriginalViewHolder(view)
     }
 
-    public AdapterListAnimation(Context context, int layoutId) {
-        this.context = context;
-        this.layoutId = layoutId;
-    }
+    override fun onBindViewHolder(holder: OriginalViewHolder, position: Int) {
+        val recommendation = getItem(position)
+        holder.name.text = recommendation.recommendationName
 
-    public void setItems(List<Recommendations> items, int animation_type) {
-        this.items = items;
-        this.animation_type = animation_type;
-        notifyDataSetChanged();
-    }
-
-    public class OriginalViewHolder extends RecyclerView.ViewHolder {
-        public ImageView image;
-        public TextView name;
-        public View cardView;
-        public View contentLayout;
-
-        public OriginalViewHolder(View view) {
-            super(view);
-            name = view.findViewById(R.id.name);
-            cardView = view.findViewById(R.id.lyt_parent);
-            contentLayout = view.findViewById(R.id.contentLayout);
+        holder.cardView.setOnClickListener { view ->
+            onItemClickListener?.invoke(view, recommendation, position)
         }
+
+        setAnimation(holder.itemView, position)
     }
 
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder viewHolder;
-        View view = LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false);
-        viewHolder = new OriginalViewHolder(view);
-        return viewHolder;
-    }
-
-    // Replace the contents of a view (invoked by the layout manager)
-    @Override
-    public void onBindViewHolder(@NotNull RecyclerView.ViewHolder holder, final int position) {
-        if (holder instanceof OriginalViewHolder) {
-            OriginalViewHolder view = (OriginalViewHolder) holder;
-            Recommendations rec = items.get(position);
-            view.name.setText(rec.getRecommendationName());
-
-            view.cardView.setOnClickListener(view1 -> {
-                if (mOnItemClickListener != null) {
-                    mOnItemClickListener.onItemClick(view1, items.get(position), position);
-                }
-            });
-            setAnimation(view.itemView, position);
-        }
-    }
-
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                on_attach = false;
-                super.onScrollStateChanged(recyclerView, newState);
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                onAttach = false
+                super.onScrollStateChanged(recyclerView, newState)
             }
-        });
-        super.onAttachedToRecyclerView(recyclerView);
+        })
     }
 
-    @Override
-    public int getItemCount() {
-        return items.size();
-    }
-
-
-    private void setAnimation(View view, int position) {
+    private fun setAnimation(view: View, position: Int) {
         if (position > lastPosition) {
-            TheItemAnimation.animate(view, on_attach ? position : -1, animation_type);
-            lastPosition = position;
+            animate(view, if (onAttach) position else -1, animationType)
+            lastPosition = position
         }
     }
 
+
+    fun setOnItemClickListener(listener: (View, Recommendations, Int) -> Unit) {
+        this.onItemClickListener = listener
+    }
+
+    class RecommendationDiffCallback : DiffUtil.ItemCallback<Recommendations>() {
+        override fun areItemsTheSame(oldItem: Recommendations, newItem: Recommendations): Boolean {
+            return oldItem.recommendationName == newItem.recommendationName
+        }
+
+        override fun areContentsTheSame(
+            oldItem: Recommendations,
+            newItem: Recommendations
+        ): Boolean {
+            return oldItem.recommendationName == newItem.recommendationName
+        }
+    }
 }
+
