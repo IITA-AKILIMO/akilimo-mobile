@@ -23,10 +23,10 @@ import com.akilimo.mobile.entities.MaizePrice
 import com.akilimo.mobile.entities.MandatoryInfo
 import com.akilimo.mobile.entities.PotatoMarket
 import com.akilimo.mobile.entities.PotatoPrice
-import com.akilimo.mobile.entities.ProfileInfo
 import com.akilimo.mobile.entities.ScheduledDate
 import com.akilimo.mobile.entities.StarchFactory
 import com.akilimo.mobile.entities.UseCases
+import com.akilimo.mobile.entities.UserProfile
 
 @Database(
     entities = [
@@ -46,7 +46,7 @@ import com.akilimo.mobile.entities.UseCases
         MandatoryInfo::class,
         PotatoMarket::class,
         PotatoPrice::class,
-        ProfileInfo::class,
+        UserProfile::class,
         ScheduledDate::class,
         StarchFactory::class,
         UseCases::class,
@@ -76,7 +76,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun mandatoryInfoDao(): MandatoryInfoDao
     abstract fun potatoMarketDao(): PotatoMarketDao
     abstract fun potatoPriceDao(): PotatoPriceDao
-    abstract fun profileInfoDao(): ProfileInfoDao
+    abstract fun profileInfoDao(): UserProfileDao
     abstract fun scheduleDateDao(): ScheduleDateDao
     abstract fun starchFactoryDao(): StarchFactoryDao
     abstract fun useCaseDao(): UseCaseDao
