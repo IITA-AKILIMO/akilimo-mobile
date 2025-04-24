@@ -1,7 +1,6 @@
 package com.akilimo.mobile.inherit
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -29,7 +28,6 @@ abstract class BaseFragment : Fragment() {
     protected var countryName: String? = null
 
     private var appVersion: String? = null
-    protected var context: Context? = null
 
     protected val sessionManager: SessionManager by lazy { SessionManager(requireContext()) }
     protected val mathHelper: MathHelper by lazy { MathHelper() }
@@ -54,7 +52,7 @@ abstract class BaseFragment : Fragment() {
     }
 
     protected abstract fun loadFragmentLayout(
-        inflater: LayoutInflater?,
+        inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View
