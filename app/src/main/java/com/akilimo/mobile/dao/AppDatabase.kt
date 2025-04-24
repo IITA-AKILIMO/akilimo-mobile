@@ -88,7 +88,7 @@ abstract class AppDatabase : RoomDatabase() {
         // For Singleton instantiation
         @Volatile
         private var database: AppDatabase? = null
-        private const val DATABASE_NAME = "AKILIMO_25_APR_2025"
+        private const val DATABASE_NAME = "AKILIMO_APR_2025"
 
         @JvmStatic
         fun getDatabase(context: Context): AppDatabase {
