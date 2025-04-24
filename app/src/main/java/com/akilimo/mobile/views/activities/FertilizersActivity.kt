@@ -311,7 +311,7 @@ class FertilizersActivity : BaseActivity() {
                 errorImage!!.visibility = View.VISIBLE
                 btnRetry!!.visibility = View.VISIBLE
                 Sentry.captureException(t)
-                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@FertilizersActivity, t.message, Toast.LENGTH_SHORT).show()
             }
 
         })
