@@ -12,7 +12,6 @@ import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.akilimo.mobile.R
-import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityInvestmentAmountBinding
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.InvestmentAmount
@@ -22,7 +21,6 @@ import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.utils.CurrencyCode
 import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
-import com.google.android.gms.common.util.Strings
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputLayout
 import com.mynameismidori.currencypicker.ExtendedCurrency
@@ -30,7 +28,6 @@ import io.sentry.Sentry
 
 
 class InvestmentAmountActivity : BaseActivity() {
-    private val LOG_TAG: String = InvestmentAmountActivity::class.java.simpleName
 
     var toolbar: Toolbar? = null
     var rdgInvestmentAmount: RadioGroup? = null
@@ -70,8 +67,6 @@ class InvestmentAmountActivity : BaseActivity() {
         )
         setContentView(binding!!.root)
 
-        context = this
-        database = getDatabase(context)
         mathHelper = MathHelper()
 
         toolbar = binding!!.toolbar
@@ -164,7 +159,7 @@ class InvestmentAmountActivity : BaseActivity() {
 
                 closeActivity(false)
             } catch (ex: Exception) {
-                Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@InvestmentAmountActivity, ex.message, Toast.LENGTH_SHORT).show()
                 Sentry.captureException(ex)
             }
         }
@@ -180,10 +175,9 @@ class InvestmentAmountActivity : BaseActivity() {
     private fun updateLabels() {
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.countryCode
-            val _currency = profileInfo.currency
-            if (!Strings.isEmptyOrWhitespace(_currency)) {
-                currency = _currency
+            countryCode = profileInfo.countryCode!!
+            if (!profileInfo.currency.isNullOrEmpty()) {
+                currency = profileInfo.currency!!
             }
         }
         currencyCode = currency
@@ -198,8 +192,8 @@ class InvestmentAmountActivity : BaseActivity() {
             fieldSizeAcre = mandatoryInfo.areaSize
             fieldArea = fieldSize.toString()
             fieldAreaAcre = fieldSizeAcre.toString()
-            areaUnit = mandatoryInfo.areaUnit
-            areaUnitText = mandatoryInfo.displayAreaUnit
+            areaUnit = mandatoryInfo.areaUnit!!
+            areaUnitText = mandatoryInfo.displayAreaUnit!!
         }
         selectedFieldArea =
             String.format(getString(R.string.lbl_investment_amount_label), fieldArea, areaUnitText)
@@ -247,7 +241,7 @@ class InvestmentAmountActivity : BaseActivity() {
                         addInvestmentRadioButtons(investmentAmountList)
                     } else {
                         Toast.makeText(
-                            context,
+                            this@InvestmentAmountActivity,
                             getString(R.string.lbl_investment_amount_load_error),
                             Toast.LENGTH_LONG
                         ).show()
@@ -256,7 +250,7 @@ class InvestmentAmountActivity : BaseActivity() {
             }
 
             override fun onFailure(call: retrofit2.Call<InvestmentAmountResponse>, t: Throwable) {
-                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@InvestmentAmountActivity, t.message, Toast.LENGTH_SHORT).show()
                 Sentry.captureException(t)
             }
         })
