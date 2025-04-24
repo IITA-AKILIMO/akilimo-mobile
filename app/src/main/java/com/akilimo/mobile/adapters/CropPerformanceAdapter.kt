@@ -9,13 +9,13 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.R
-import com.akilimo.mobile.entities.MaizePerformance
+import com.akilimo.mobile.entities.CropPerformance
 import com.akilimo.mobile.utils.TheItemAnimation.animate
 import com.akilimo.mobile.utils.Tools.displayImageOriginal
 
-class MaizePerformanceAdapter(
+class CropPerformanceAdapter(
     private val ctx: Context,
-    private var items: List<MaizePerformance>,
+    private var items: List<CropPerformance>,
     private val animationType: Int
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -27,14 +27,14 @@ class MaizePerformanceAdapter(
 
 
     interface OnItemClickListener {
-        fun onItemClick(view: View?, fieldYield: MaizePerformance?, position: Int)
+        fun onItemClick(view: View?, clickedCropPerformance: CropPerformance?, position: Int)
     }
 
     fun setOnItemClickListener(mItemClickListener: OnItemClickListener?) {
         this.mOnItemClickListener = mItemClickListener
     }
 
-    fun setItems(performanceValue: String, items: List<MaizePerformance>) {
+    fun setItems(performanceValue: String, items: List<CropPerformance>) {
         this.items = items
         this.performanceValue = performanceValue
         notifyDataSetChanged()
