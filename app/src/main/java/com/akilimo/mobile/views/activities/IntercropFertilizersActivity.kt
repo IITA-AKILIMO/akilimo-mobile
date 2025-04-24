@@ -13,8 +13,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.R
-import com.akilimo.mobile.adapters.IntercropFertilizerGridAdapter
-import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
+import com.akilimo.mobile.adapters.FertilizerGridAdapter
 import com.akilimo.mobile.databinding.ActivityFertilizersBinding
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.Fertilizer
@@ -29,7 +28,6 @@ import com.akilimo.mobile.utils.Tools.dpToPx
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.views.fragments.dialog.FertilizerPriceDialogFragment
 import com.akilimo.mobile.widget.SpacingItemDecoration
-import com.android.volley.toolbox.Volley
 import com.google.android.material.snackbar.Snackbar
 import io.sentry.Sentry
 import org.modelmapper.ModelMapper
@@ -52,7 +50,8 @@ class IntercropFertilizersActivity : BaseActivity() {
     var errorImage: ImageView? = null
     var errorLabel: TextView? = null
 
-    var binding: ActivityFertilizersBinding? = null
+    private var _binding: ActivityFertilizersBinding? = null
+    private val binding get() = _binding!!
 
 
     private var availableFertilizersList: List<Fertilizer> = ArrayList()
@@ -60,7 +59,7 @@ class IntercropFertilizersActivity : BaseActivity() {
     private val fertilizerTypesList: List<Fertilizer> = ArrayList()
     private var fertilizerPricesList: List<FertilizerPrice> = ArrayList()
 
-    private var mAdapter: IntercropFertilizerGridAdapter? = null
+    private var mAdapter: FertilizerGridAdapter? = null
     private val minSelection = 1
     private var modelMapper: ModelMapper? = null
 
@@ -72,22 +71,20 @@ class IntercropFertilizersActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityFertilizersBinding.inflate(layoutInflater)
-        setContentView(binding!!.root)
-        context = this
+        _binding = ActivityFertilizersBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        toolbar = binding!!.toolbarLayout.toolbar
-        recyclerView = binding!!.availableFertilizers
-        lyt_progress = binding!!.lytProgress
-        coordinatorLayout = binding!!.coordinatorLayout
-        btnSave = binding!!.twoButtons.btnFinish
-        btnCancel = binding!!.twoButtons.btnCancel
-        btnRetry = binding!!.btnRetry
-        errorImage = binding!!.errorImage
-        errorLabel = binding!!.errorLabel
 
-        database = getDatabase(context)
-        queue = Volley.newRequestQueue(context)
+        toolbar = binding.toolbarLayout.toolbar
+        recyclerView = binding.availableFertilizers
+        lyt_progress = binding.lytProgress
+        coordinatorLayout = binding.coordinatorLayout
+        btnSave = binding.twoButtons.btnFinish
+        btnCancel = binding.twoButtons.btnCancel
+        btnRetry = binding.btnRetry
+        errorImage = binding.errorImage
+        errorLabel = binding.errorLabel
+
         modelMapper = ModelMapper()
 
         val intent = intent
@@ -97,8 +94,8 @@ class IntercropFertilizersActivity : BaseActivity() {
 
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.countryCode
-            currency = profileInfo.currency
+            countryCode = profileInfo.countryCode!!
+            currency = profileInfo.currency!!
         }
 
         initToolbar()
@@ -128,19 +125,19 @@ class IntercropFertilizersActivity : BaseActivity() {
 
 
     override fun initComponent() {
-        btnSave!!.text = context.getString(R.string.lbl_finish)
+        btnSave!!.text = this@IntercropFertilizersActivity.getString(R.string.lbl_finish)
         recyclerView!!.visibility = View.GONE
         recyclerView!!.layoutManager = GridLayoutManager(this, 2)
         recyclerView!!.addItemDecoration(SpacingItemDecoration(2, dpToPx(this, 3), true))
         recyclerView!!.setHasFixedSize(true)
-        mAdapter = IntercropFertilizerGridAdapter(context)
+        mAdapter = FertilizerGridAdapter(this@IntercropFertilizersActivity)
         recyclerView!!.adapter = mAdapter
 
 
         mAdapter!!.setOnItemClickListener { view: View?, clickedFertilizer: Fertilizer, position: Int ->
             mAdapter!!.setActiveRowIndex(position)
             var selectedType = database.fertilizerDao().findByTypeCountryAndUseCase(
-                clickedFertilizer.fertilizerType!!, countryCode, enumUseCase.name
+                clickedFertilizer.fertilizerType!!, countryCode, enumUseCase!!.name
             )
             if (selectedType == null) {
                 selectedType = clickedFertilizer
@@ -220,7 +217,7 @@ class IntercropFertilizersActivity : BaseActivity() {
     override fun validate(backPressed: Boolean) {
         if (mAdapter != null) {
             availableFertilizersList = database.fertilizerDao()
-                .findAllByCountryAndUseCase(countryCode, enumUseCase.name)
+                .findAllByCountryAndUseCase(countryCode, enumUseCase!!.name)
             mAdapter!!.setItems(availableFertilizersList)
         }
     }
@@ -285,7 +282,8 @@ class IntercropFertilizersActivity : BaseActivity() {
                 errorImage!!.visibility = View.VISIBLE
                 btnRetry!!.visibility = View.VISIBLE
                 Sentry.captureException(t)
-                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@IntercropFertilizersActivity, t.message, Toast.LENGTH_SHORT)
+                    .show()
             }
 
         })
@@ -318,7 +316,8 @@ class IntercropFertilizersActivity : BaseActivity() {
                 errorImage!!.visibility = View.VISIBLE
                 btnRetry!!.visibility = View.VISIBLE
                 Sentry.captureException(t)
-                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@IntercropFertilizersActivity, t.message, Toast.LENGTH_SHORT)
+                    .show()
             }
 
         })
@@ -326,15 +325,15 @@ class IntercropFertilizersActivity : BaseActivity() {
 
     private val isMinSelected: Boolean
         get() {
-            val count = database.interCropFertilizerDao()
-                .findAllSelectedByCountryAndUseCase(countryCode, enumUseCase.name).size
+            val count = database.fertilizerDao()
+                .findAllSelectedByCountryAndUseCase(countryCode, enumUseCase!!.name).size
             if (count < minSelection) {
                 val snackBar = Snackbar
                     .make(
                         coordinatorLayout!!,
                         String.format(
                             Locale.US,
-                            context.getString(R.string.lbl_min_selection),
+                            this@IntercropFertilizersActivity.getString(R.string.lbl_min_selection),
                             minSelection
                         ),
                         Snackbar.LENGTH_LONG
