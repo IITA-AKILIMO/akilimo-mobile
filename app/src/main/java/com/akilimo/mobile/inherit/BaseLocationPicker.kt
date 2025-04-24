@@ -1,6 +1,7 @@
 package com.akilimo.mobile.inherit
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.Toast
@@ -61,7 +62,7 @@ abstract class BaseLocationPicker : BaseActivity(), OnMapReadyCallback {
         )
     }
 
-    protected fun reverseGeocode(style: Style, point: Point) {
+    protected fun reverseGeocode(style: Style, point: Point, context: Context) {
         try {
             val geoCodingTypes = arrayOf(
                 GeocodingCriteria.TYPE_NEIGHBORHOOD,
