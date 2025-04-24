@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.MyStepperAdapter
-import com.akilimo.mobile.data.RemoteConfig
+import com.akilimo.mobile.data.RemoteConfigResponse
 import com.akilimo.mobile.databinding.ActivityHomeStepperBinding
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.FuelrodApi
@@ -84,9 +84,10 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
     private fun loadConfig() {
         val configReader = FuelrodApi.apiService.readConfig("akilimo")
 
-        configReader.enqueue(object : Callback<List<RemoteConfig>> {
+        configReader.enqueue(object : Callback<List<RemoteConfigResponse>> {
             override fun onResponse(
-                call: Call<List<RemoteConfig>>, response: Response<List<RemoteConfig>>
+                call: Call<List<RemoteConfigResponse>>,
+                response: Response<List<RemoteConfigResponse>>
             ) {
                 val configList = response.body()
                 if (!configList.isNullOrEmpty()) {
@@ -110,7 +111,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
             }
 
-            override fun onFailure(call: Call<List<RemoteConfig>>, t: Throwable) {
+            override fun onFailure(call: Call<List<RemoteConfigResponse>>, t: Throwable) {
                 Sentry.captureException(t)
                 val errorMessage = t.message.toString()
                 Toast.makeText(

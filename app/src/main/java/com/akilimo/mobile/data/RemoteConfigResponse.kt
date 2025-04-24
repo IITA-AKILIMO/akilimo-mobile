@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class RemoteConfig(
+data class RemoteConfigResponse(
     @JsonProperty("app_name")
     val appName: String,
     @JsonProperty("config_name")
