@@ -9,12 +9,12 @@ import androidx.room.Update
 import com.akilimo.mobile.entities.UserLocation
 
 @Dao
-interface LocationInfoDao {
+interface UserLocationDao {
 
-    @Query("SELECT * FROM location_info")
+    @Query("SELECT * FROM user_location")
     fun listAll(): List<UserLocation>
 
-    @Query("SELECT * FROM location_info LIMIT 1")
+    @Query("SELECT * FROM user_location LIMIT 1")
     fun findOne(): UserLocation?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -26,6 +26,6 @@ interface LocationInfoDao {
     @Delete
     fun delete(location: UserLocation?)
 
-    @Query("DELETE FROM location_info")
+    @Query("DELETE FROM user_location")
     fun deleteAll()
 }

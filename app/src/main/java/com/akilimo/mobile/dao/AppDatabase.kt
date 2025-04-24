@@ -69,7 +69,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun interCropFertilizerDao(): InterCropFertilizerDao
 
     abstract fun investmentAmountDao(): InvestmentAmountDao
-    abstract fun locationInfoDao(): LocationInfoDao
+    abstract fun locationInfoDao(): UserLocationDao
     abstract fun maizeMarketDao(): MaizeMarketDao
     abstract fun maizePerformanceDao(): MaizePerformanceDao
     abstract fun maizePriceDao(): MaizePriceDao
