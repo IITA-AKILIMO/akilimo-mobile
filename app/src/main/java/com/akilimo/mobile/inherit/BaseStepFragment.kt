@@ -31,9 +31,9 @@ import java.util.Locale
  */
 abstract class BaseStepFragment : Fragment(), Step {
 
-    protected var currency: String? = null
+    protected var currency: String = ""
     protected var countryCode: String = ""
-    protected var countryName: String? = null
+    protected var countryName: String = ""
     protected var errorMessage: String = ""
     protected var dataIsValid = false
 
