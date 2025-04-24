@@ -1,217 +1,205 @@
-package com.akilimo.mobile.views.fragments;
+package com.akilimo.mobile.views.fragments
 
-import android.content.Context;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-
-import com.akilimo.mobile.databinding.FragmentTillageOperationBinding;
-import com.akilimo.mobile.entities.CurrentPractice;
-import com.akilimo.mobile.inherit.BaseStepFragment;
-import com.akilimo.mobile.utils.enums.EnumOperationType;
-import com.akilimo.mobile.views.fragments.dialog.OperationTypeDialogFragment;
-import com.stepstone.stepper.VerificationError;
-
-import io.sentry.Sentry;
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.CompoundButton
+import android.widget.Toast
+import com.akilimo.mobile.databinding.FragmentTillageOperationBinding
+import com.akilimo.mobile.entities.CurrentPractice
+import com.akilimo.mobile.inherit.BaseStepFragment
+import com.akilimo.mobile.interfaces.IDismissOperationsDialogListener
+import com.akilimo.mobile.utils.enums.EnumOperationType
+import com.akilimo.mobile.views.fragments.dialog.OperationTypeDialogFragment
+import com.stepstone.stepper.VerificationError
+import io.sentry.Sentry
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link TillageOperationFragment#newInstance} factory method to
+ * A simple [Fragment] subclass.
+ * Use the [TillageOperationFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-public class TillageOperationFragment extends BaseStepFragment {
+class TillageOperationFragment : BaseStepFragment() {
+    private var currentPractice: CurrentPractice? = null
+    private var _binding: FragmentTillageOperationBinding? = null
+    private val binding get() = _binding!!
 
-    private CurrentPractice currentPractice;
-    FragmentTillageOperationBinding binding;
-    private boolean performPloughing;
-    private boolean performRidging;
-    private boolean performHarrowing;
-    private boolean isDataRefreshing = false;
-
-    private CheckBox chkPloughing;
-    private CheckBox chkRidging;
-
-    private String ploughingMethod;
-    private String ridgingMethod;
-    private String harrowingMethod;
-    private String operation;
+    private var performPloughing = false
+    private var performRidging = false
+    private var performHarrowing = false
+    private var isDataRefreshing = false
 
 
-    public TillageOperationFragment() {
-        // Required empty public constructor
+    private var ploughingMethod: String? = null
+    private var ridgingMethod: String? = null
+    private var harrowingMethod: String? = null
+    private var operation: String? = null
+
+    companion object {
+        fun newInstance(): TillageOperationFragment {
+            return TillageOperationFragment()
+        }
     }
 
-    public static TillageOperationFragment newInstance() {
-        return new TillageOperationFragment();
+    override fun loadFragmentLayout(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentTillageOperationBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.context = context;
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    @Override
-    protected View loadFragmentLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentTillageOperationBinding.inflate(inflater, container, false);
-        return binding.getRoot();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        chkPloughing = binding.chkPloughing;
-        chkRidging = binding.chkRidging;
-
-        chkPloughing.setOnCheckedChangeListener((buttonView, checked) -> {
-            operation = checked ? "Plough" : "NA";
-            performPloughing = checked;
-            if (buttonView.isPressed()) {
-                onCheckboxClicked(checked);
+        binding.apply {
+            chkPloughing.setOnCheckedChangeListener { buttonView: CompoundButton, checked: Boolean ->
+                operation = if (checked) "Plough" else "NA"
+                performPloughing = checked
+                if (buttonView.isPressed) {
+                    onCheckboxClicked(checked)
+                }
+                isDataRefreshing = false
             }
-            isDataRefreshing = false;
-        });
-        chkRidging.setOnCheckedChangeListener((buttonView, checked) -> {
-            performRidging = checked;
-            operation = checked ? "Ridge" : "NA";
-            if (buttonView.isPressed()) {
-                onCheckboxClicked(checked);
+            chkRidging.setOnCheckedChangeListener { buttonView: CompoundButton, checked: Boolean ->
+                performRidging = checked
+                operation = if (checked) "Ridge" else "NA"
+                if (buttonView.isPressed) {
+                    onCheckboxClicked(checked)
+                }
+                isDataRefreshing = false
             }
-            isDataRefreshing = false;
-        });
+        }
     }
 
-    public void refreshData() {
+    fun refreshData() {
         try {
-            currentPractice = database.currentPracticeDao().findOne();
+            currentPractice = database.currentPracticeDao().findOne()
             if (currentPractice != null) {
-                isDataRefreshing = true;
-                performPloughing = currentPractice.getPerformPloughing();
-                performRidging = currentPractice.getPerformRidging();
-                ploughingMethod = currentPractice.getPloughingMethod();
-                ridgingMethod = currentPractice.getRidgingMethod();
+                isDataRefreshing = true
+                performPloughing = currentPractice!!.performPloughing
+                performRidging = currentPractice!!.performRidging
+                ploughingMethod = currentPractice!!.ploughingMethod
+                ridgingMethod = currentPractice!!.ridgingMethod
 
-                if (performPloughing) {
-                    chkPloughing.setChecked(true);
+                binding.apply {
+                    if (performPloughing) {
+                        chkPloughing.isChecked = true
+                    }
+                    if (performRidging) {
+                        chkRidging.isChecked = true
+                    }
                 }
-                if (performRidging) {
-                    chkRidging.setChecked(true);
-                }
-
             }
-        } catch (Exception ex) {
-            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            Sentry.captureException(ex);
+        } catch (ex: Exception) {
+            Toast.makeText(requireContext(), ex.message, Toast.LENGTH_SHORT).show()
+            Sentry.captureException(ex)
         }
     }
 
-    private void onCheckboxClicked(boolean checked) {
+    private fun onCheckboxClicked(checked: Boolean) {
         if (!checked) {
-            saveEntities();
-            return;
+            saveEntities()
+            return
         }
-        Bundle arguments = new Bundle();
-        arguments.putString(OperationTypeDialogFragment.OPERATION_TYPE, operation);
+        val arguments = Bundle()
+        arguments.putString(OperationTypeDialogFragment.OPERATION_TYPE, operation)
 
-        OperationTypeDialogFragment operationTypeDialogFragment = new OperationTypeDialogFragment();
-        operationTypeDialogFragment.setArguments(arguments);
-        FragmentTransaction fragmentTransaction;
+        val operationTypeDialogFragment = OperationTypeDialogFragment()
+        operationTypeDialogFragment.arguments = arguments
 
 
-        fragmentTransaction = getParentFragmentManager().beginTransaction();
-        Fragment prev = getParentFragmentManager().findFragmentByTag(OperationTypeDialogFragment.ARG_ITEM_ID);
+        val fragmentTransaction = parentFragmentManager.beginTransaction()
+        val prev = parentFragmentManager.findFragmentByTag(OperationTypeDialogFragment.ARG_ITEM_ID)
         if (prev != null) {
-            fragmentTransaction.remove(prev);
+            fragmentTransaction.remove(prev)
         }
-        fragmentTransaction.addToBackStack(null);
-        operationTypeDialogFragment.show(getParentFragmentManager(), OperationTypeDialogFragment.ARG_ITEM_ID);
+        fragmentTransaction.addToBackStack(null)
+        operationTypeDialogFragment.show(
+            parentFragmentManager,
+            OperationTypeDialogFragment.ARG_ITEM_ID
+        )
 
 
-        operationTypeDialogFragment.setOnDismissListener((dialogOperation, enumOperationType, cancelled) -> {
-            switch (dialogOperation) {
-                case "Plough":
-                    performPloughing = !cancelled;
-                    chkPloughing.setChecked(!cancelled);
-                    ploughingMethod = enumOperationType.operationName();
-                    break;
-                case "Ridge":
-                    performRidging = !cancelled;
-                    chkRidging.setChecked(!cancelled);
-                    ridgingMethod = enumOperationType.operationName();
-                    break;
-                default:
-                    ridgingMethod = EnumOperationType.NONE.operationName();
-                    performPloughing = performRidging = false;
-                    break;
+        operationTypeDialogFragment.setOnDismissListener(object : IDismissOperationsDialogListener {
+            override fun onDismiss(
+                operation: String,
+                enumOperationType: EnumOperationType,
+                cancelled: Boolean
+            ) {
+                when (operation.uppercase()) {
+                    "PLOUGH" -> {
+                        performPloughing = !cancelled
+                        binding.chkPloughing.isChecked = !cancelled
+                        ploughingMethod = enumOperationType.operationName()
+                    }
+
+                    "RIDGE" -> {
+                        performRidging = !cancelled
+                        binding.chkRidging.isChecked = !cancelled
+                        ridgingMethod = enumOperationType.operationName()
+                    }
+
+                    else -> {
+                        ridgingMethod = EnumOperationType.NONE.operationName()
+                        ploughingMethod = EnumOperationType.NONE.operationName()
+                        harrowingMethod = EnumOperationType.NONE.operationName()
+                        run {
+                            performRidging = false
+                            performPloughing = false
+                            performHarrowing = false
+                        }
+                    }
+                }
+                saveEntities()
             }
-            saveEntities();
-        });
-
+        })
     }
 
-    private void saveEntities() {
-        if (!performPloughing) {
-            ploughingMethod = EnumOperationType.NONE.operationName();
-        }
-        if (!performRidging) {
-            ridgingMethod = EnumOperationType.NONE.operationName();
-        }
-        if (!performHarrowing) {
-            harrowingMethod = EnumOperationType.NONE.operationName();
-        }
+    private fun saveEntities() {
 
         try {
             if (currentPractice == null) {
-                currentPractice = new CurrentPractice();
+                currentPractice = CurrentPractice()
             }
-            currentPractice.setRidgingMethod(ridgingMethod);
-            currentPractice.setPloughingMethod(ploughingMethod);
-            currentPractice.setPerformRidging(performRidging);
-            currentPractice.setPerformPloughing(performPloughing);
-            currentPractice.setPerformHarrowing(performHarrowing);
 
-            if (currentPractice.getId() != null) {
-                database.currentPracticeDao().update(currentPractice);
+            currentPractice!!.ridgingMethod = ridgingMethod
+            currentPractice!!.ploughingMethod = ploughingMethod
+            currentPractice!!.performRidging = performRidging
+            currentPractice!!.performPloughing = performPloughing
+            currentPractice!!.performHarrowing = performHarrowing
+
+            if (currentPractice!!.id != null) {
+                database.currentPracticeDao().update(currentPractice!!)
             } else {
-                database.currentPracticeDao().insert(currentPractice);
+                database.currentPracticeDao().insert(currentPractice!!)
             }
 
-            currentPractice = database.currentPracticeDao().findOne();
-            dataIsValid = true;
-        } catch (Exception ex) {
-            dataIsValid = false;
-            errorMessage = ex.getMessage();
-            Sentry.captureException(ex);
+            currentPractice = database.currentPracticeDao().findOne()
+            dataIsValid = true
+        } catch (ex: Exception) {
+            dataIsValid = false
+            errorMessage = ex.message!!
+            Sentry.captureException(ex)
         }
     }
 
-    @Nullable
-    @Override
-    public VerificationError verifyStep() {
-        saveEntities();
+    override fun verifyStep(): VerificationError? {
+        saveEntities()
         if (!dataIsValid) {
-            showCustomWarningDialog(errorMessage);
-            return new VerificationError(errorMessage);
+            showCustomWarningDialog(errorMessage)
+            return VerificationError(errorMessage)
         }
-        return null;
+        return null
     }
 
-    @Override
-    public void onSelected() {
-        refreshData();
+    override fun onSelected() {
+        refreshData()
     }
 
-    @Override
-    public void onError(@NonNull VerificationError error) {
+    override fun onError(error: VerificationError) {
         //Not implemented
     }
 }
