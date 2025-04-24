@@ -1,6 +1,5 @@
 package com.akilimo.mobile.utils
 
-import android.app.Activity
 import io.sentry.Sentry
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -46,43 +45,13 @@ class MathHelper {
     ).toMutableMap()
 
     /**
-     * Default constructor using hardcoded exchange rates
-     */
-    constructor()
-
-    /**
-     * Constructor that loads exchange rates from session
-     *
-     * @param activity The activity context to get session data
-     */
-    constructor(activity: Activity?) {
-        activity?.let {
-            val sessionManager = SessionManager(it)
-            updateExchangeRates(
-                ngnRate = sessionManager.ngnRate,
-                tzsRate = sessionManager.tzsRate,
-                ghsRate = sessionManager.ghsRate
-            )
-        }
-    }
-
-    /**
-     * Updates the exchange rates used for conversions
-     */
-    private fun updateExchangeRates(ngnRate: Double, tzsRate: Double, ghsRate: Double) {
-        exchangeRates[CURRENCY_NGN] = ngnRate
-        exchangeRates[CURRENCY_TZS] = tzsRate
-        exchangeRates[CURRENCY_GHS] = ghsRate
-    }
-
-    /**
      * Converts a currency range string to another currency
      *
      * @param input The string containing currency value(s) to convert
      * @param targetCurrency The currency code to convert to
      * @return The converted currency string
      */
-    fun convertCurrency(input: String, targetCurrency: String): String {
+    private fun convertCurrency(input: String, targetCurrency: String): String {
         // If already in target currency, return as is
         if (input.contains(targetCurrency)) {
             return input
