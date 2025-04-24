@@ -9,7 +9,6 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import com.akilimo.mobile.R
-import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityMaizeMarketBinding
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.MaizeMarket
@@ -22,7 +21,6 @@ import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumMaizeProduceType
 import com.akilimo.mobile.utils.enums.EnumUnitOfSale
 import com.akilimo.mobile.views.fragments.dialog.MaizePriceDialogFragment
-import com.android.volley.toolbox.Volley
 import io.sentry.Sentry
 
 class MaizeMarketActivity : BaseActivity() {
@@ -43,7 +41,8 @@ class MaizeMarketActivity : BaseActivity() {
     var btnFinish: AppCompatButton? = null
     var btnCancel: AppCompatButton? = null
 
-    var binding: ActivityMaizeMarketBinding? = null
+    private var _binding: ActivityMaizeMarketBinding? = null
+    private val binding get() = _binding!!
 
     private var mathHelper: MathHelper? = null
     private var maizeMarket: MaizeMarket? = null
@@ -70,42 +69,35 @@ class MaizeMarketActivity : BaseActivity() {
     private val exactPrice = 0.0
     private val averagePrice = 0.0
 
-    private val minAmountUSD = 5.00
-    private val maxAmountUSD = 500.00
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMaizeMarketBinding.inflate(layoutInflater)
-        setContentView(binding!!.root)
+        _binding = ActivityMaizeMarketBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        context = this
-        database = getDatabase(context)
-        queue = Volley.newRequestQueue(context)
-        mathHelper = MathHelper(this)
+        mathHelper = MathHelper()
 
-        toolbar = binding!!.toolbar
-        unitOfSaleGrainTitle = binding!!.marketContent.unitOfSaleGrainTitle
-        maizeCobPriceTitle = binding!!.marketContent.maizeCobPriceTitle
-        lblPricePerCob = binding!!.marketContent.lblPricePerCob
-        unitOfSaleGrainCard = binding!!.marketContent.unitOfSaleGrainCard
-        maizeCobPriceCard = binding!!.marketContent.maizeCobPriceCard
-        rdgMaizeProduceType = binding!!.marketContent.rdgMaizeProduceType
-        rdgUnitOfSaleGrain = binding!!.marketContent.rdgUnitOfSaleGrain
-        btnPickCobPrice = binding!!.marketContent.btnPickCobPrice
-        btnFinish = binding!!.marketContent.twoButtons.btnFinish
-        btnCancel = binding!!.marketContent.twoButtons.btnCancel
+        toolbar = binding.toolbar
+        unitOfSaleGrainTitle = binding.marketContent.unitOfSaleGrainTitle
+        maizeCobPriceTitle = binding.marketContent.maizeCobPriceTitle
+        lblPricePerCob = binding.marketContent.lblPricePerCob
+        unitOfSaleGrainCard = binding.marketContent.unitOfSaleGrainCard
+        maizeCobPriceCard = binding.marketContent.maizeCobPriceCard
+        rdgMaizeProduceType = binding.marketContent.rdgMaizeProduceType
+        rdgUnitOfSaleGrain = binding.marketContent.rdgUnitOfSaleGrain
+        btnPickCobPrice = binding.marketContent.btnPickCobPrice
+        btnFinish = binding.marketContent.twoButtons.btnFinish
+        btnCancel = binding.marketContent.twoButtons.btnCancel
 
 
         maizeMarket = database.maizeMarketDao().findOne()
 
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.countryCode
-            currency = profileInfo.currency
+            countryCode = profileInfo.countryCode!!
+            currency = profileInfo.currency!!
 
             val myAkilimoCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode)
-            currencyName = myAkilimoCurrency.currencyName
+            currencyName = myAkilimoCurrency.currencyName!!
         }
 
         initToolbar()
@@ -143,7 +135,7 @@ class MaizeMarketActivity : BaseActivity() {
                     maizeCobPriceTitle!!.visibility = View.VISIBLE
                     maizeCobPriceCard!!.visibility = View.VISIBLE
                     produceType = EnumMaizeProduceType.FRESH_COB.produce()
-                    unitOfSale = EnumUnitOfSale.NA.unitOfSale(context)
+                    unitOfSale = EnumUnitOfSale.NA.unitOfSale(this@MaizeMarketActivity)
                     unitOfSaleEnum = EnumUnitOfSale.NA
                     unitPrice = -1.0
                     cobPriceRequired = true
@@ -157,19 +149,19 @@ class MaizeMarketActivity : BaseActivity() {
         rdgUnitOfSaleGrain!!.setOnCheckedChangeListener { group: RadioGroup?, radioIndex: Int ->
             when (radioIndex) {
                 R.id.rd_per_kg -> {
-                    unitOfSale = EnumUnitOfSale.ONE_KG.unitOfSale(context)
+                    unitOfSale = EnumUnitOfSale.ONE_KG.unitOfSale(this@MaizeMarketActivity)
                     unitOfSaleEnum = EnumUnitOfSale.ONE_KG
                     unitWeight = EnumUnitOfSale.ONE_KG.unitWeight()
                 }
 
                 R.id.rd_50_kg_bag -> {
-                    unitOfSale = EnumUnitOfSale.FIFTY_KG.unitOfSale(context)
+                    unitOfSale = EnumUnitOfSale.FIFTY_KG.unitOfSale(this@MaizeMarketActivity)
                     unitOfSaleEnum = EnumUnitOfSale.FIFTY_KG
                     unitWeight = EnumUnitOfSale.FIFTY_KG.unitWeight()
                 }
 
                 R.id.rd_100_kg_bag -> {
-                    unitOfSale = EnumUnitOfSale.HUNDRED_KG.unitOfSale(context)
+                    unitOfSale = EnumUnitOfSale.HUNDRED_KG.unitOfSale(this@MaizeMarketActivity)
                     unitOfSaleEnum = EnumUnitOfSale.HUNDRED_KG
                     unitWeight = EnumUnitOfSale.HUNDRED_KG.unitWeight()
                 }
@@ -179,7 +171,7 @@ class MaizeMarketActivity : BaseActivity() {
         btnFinish!!.setOnClickListener { view: View? -> validate(false) }
         btnCancel!!.setOnClickListener { view: View? -> closeActivity(false) }
         btnPickCobPrice!!.setOnClickListener { view: View? ->
-            unitOfSale = EnumUnitOfSale.FRESH_COB.unitOfSale(context)
+            unitOfSale = EnumUnitOfSale.FRESH_COB.unitOfSale(this@MaizeMarketActivity)
             unitWeight = EnumUnitOfSale.FRESH_COB.unitWeight()
             unitOfSaleEnum = EnumUnitOfSale.FRESH_COB
             showUnitGrainPriceDialog("cob")
@@ -274,7 +266,7 @@ class MaizeMarketActivity : BaseActivity() {
                 database.maizeMarketDao().insert(market)
                 closeActivity(backPressed)
             } catch (ex: Exception) {
-                Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MaizeMarketActivity, ex.message, Toast.LENGTH_SHORT).show()
                 Sentry.captureException(ex)
             }
         }
@@ -339,7 +331,7 @@ class MaizeMarketActivity : BaseActivity() {
 
             override fun onFailure(call: retrofit2.Call<MaizePriceResponse>, t: Throwable) {
                 Sentry.captureException(t)
-                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MaizeMarketActivity, t.message, Toast.LENGTH_SHORT).show()
             }
         })
     }
