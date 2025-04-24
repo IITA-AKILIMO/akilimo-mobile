@@ -16,7 +16,7 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.RecommendationAdapter
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityDstRecomendationBinding
-import com.akilimo.mobile.entities.ProfileInfo
+import com.akilimo.mobile.entities.UserProfile
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.interfaces.IRecommendationCallBack
@@ -48,7 +48,7 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
     var recData: RecommendationRequest? = null
     var recAdapter: RecommendationAdapter? = null
     var recList: List<ComputedResponse>? = null
-    var profileInfo: ProfileInfo? = null
+    var userProfile: UserProfile? = null
     var recommendationChannelDialog: RecommendationChannelDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,7 +88,7 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
         recyclerView!!.setHasFixedSize(true)
 
         recAdapter = RecommendationAdapter()
-        profileInfo = database.profileInfoDao().findOne()
+        userProfile = database.profileInfoDao().findOne()
 
         lyt_progress!!.visibility = View.VISIBLE
         lyt_progress!!.alpha = 1.0f
@@ -98,8 +98,8 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
 
 
         fabRetry!!.setOnClickListener { view: View? ->
-            if (profileInfo != null) {
-                displayDialog(profileInfo)
+            if (userProfile != null) {
+                displayDialog(userProfile)
             }
         }
 
@@ -109,7 +109,7 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
             startActivityForResult(surveyIntent, MySurveyActivity.REQUEST_CODE)
         }
 
-        displayDialog(profileInfo)
+        displayDialog(userProfile)
     }
 
 
@@ -124,9 +124,9 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
         throw UnsupportedOperationException()
     }
 
-    private fun displayDialog(profileInfo: ProfileInfo?) {
-        if (profileInfo != null) {
-            recommendationChannelDialog = RecommendationChannelDialog(this, profileInfo)
+    private fun displayDialog(userProfile: UserProfile?) {
+        if (userProfile != null) {
+            recommendationChannelDialog = RecommendationChannelDialog(this, userProfile)
             recommendationChannelDialog!!.show(
                 supportFragmentManager,
                 RecommendationChannelDialog.TAG
@@ -142,9 +142,9 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
         }
     }
 
-    override fun onDataReceived(profileInfo: ProfileInfo) {
+    override fun onDataReceived(userProfile: UserProfile) {
         val database = getDatabase(this@DstRecommendationActivity)
-        database.profileInfoDao().update(profileInfo)
+        database.profileInfoDao().update(userProfile)
         buildRecommendationData()
     }
 

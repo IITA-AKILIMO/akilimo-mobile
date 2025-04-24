@@ -18,7 +18,7 @@ import com.akilimo.mobile.Locales;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.adapters.MySpinnerAdapter;
 import com.akilimo.mobile.databinding.FragmentWelcomeBinding;
-import com.akilimo.mobile.entities.ProfileInfo;
+import com.akilimo.mobile.entities.UserProfile;
 import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.interfaces.IFragmentCallBack;
 import com.akilimo.mobile.utils.enums.EnumCountry;
@@ -45,7 +45,7 @@ public class WelcomeFragment extends BaseStepFragment {
     private IFragmentCallBack fragmentCallBack;
     private Spinner languagePicker;
     private SharedPrefsAppLocaleRepository prefs;
-    private ProfileInfo profileInfo;
+    private UserProfile userProfile;
     private int selectedLanguageIndex = -1;
     private Locale selectedLocale;
     String selectedLanguage = "en";
@@ -80,7 +80,7 @@ public class WelcomeFragment extends BaseStepFragment {
 
         languagePicker = binding.languagePicker;
         prefs = new SharedPrefsAppLocaleRepository(context);
-        profileInfo = database.profileInfoDao().findOne();
+        userProfile = database.profileInfoDao().findOne();
 
         languagePicker.setOnTouchListener((touchView, motionEvent) -> {
             languagePicked = true;
@@ -150,21 +150,21 @@ public class WelcomeFragment extends BaseStepFragment {
     @Nullable
     @Override
     public VerificationError verifyStep() {
-        profileInfo = database.profileInfoDao().findOne();
-        if (profileInfo == null) {
-            profileInfo = new ProfileInfo();
+        userProfile = database.profileInfoDao().findOne();
+        if (userProfile == null) {
+            userProfile = new UserProfile();
         }
         if (selectedLocale != null) {
             selectedLanguage = selectedLocale.getLanguage();
         }
-        profileInfo.setLanguage(selectedLanguage);
-        if (profileInfo.getProfileId() != null) {
-            int id = profileInfo.getProfileId();
+        userProfile.setLanguage(selectedLanguage);
+        if (userProfile.getProfileId() != null) {
+            int id = userProfile.getProfileId();
             if (id > 0) {
-                database.profileInfoDao().update(profileInfo);
+                database.profileInfoDao().update(userProfile);
             }
         } else {
-            database.profileInfoDao().insert(profileInfo);
+            database.profileInfoDao().insert(userProfile);
         }
 
         return verificationError;

@@ -20,7 +20,7 @@ import androidx.fragment.app.Fragment;
 
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.databinding.FragmentCountryBinding;
-import com.akilimo.mobile.entities.ProfileInfo;
+import com.akilimo.mobile.entities.UserProfile;
 import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.utils.enums.EnumCountry;
 import com.blongho.country_data.World;
@@ -30,8 +30,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.sentry.Sentry;
-
-;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,7 +45,7 @@ public class CountryFragment extends BaseStepFragment {
     FragmentCountryBinding binding;
 
 
-    private ProfileInfo profileInfo;
+    private UserProfile userProfile;
     private String name = "";
     private String selectedLanguage = "";
     private int selectedCountryIndex = -1;
@@ -79,17 +77,17 @@ public class CountryFragment extends BaseStepFragment {
 
     public void refreshData() {
         try {
-            profileInfo = database.profileInfoDao().findOne();
-            if (profileInfo != null) {
-                name = profileInfo.getFirstName();
-                countryCode = profileInfo.getCountryCode();
-                currency = profileInfo.getCurrency();
-                countryName = profileInfo.getCountryName();
-                currency = profileInfo.getCurrency();
-                selectedLanguage = profileInfo.getLanguage();
+            userProfile = database.profileInfoDao().findOne();
+            if (userProfile != null) {
+                name = userProfile.getFirstName();
+                countryCode = userProfile.getCountryCode();
+                currency = userProfile.getCurrency();
+                countryName = userProfile.getCountryName();
+                currency = userProfile.getCurrency();
+                selectedLanguage = userProfile.getLanguage();
 
                 if (countryCode != null && !countryCode.isEmpty()) {
-                    selectedCountryIndex = profileInfo.getSelectedCountryIndex();
+                    selectedCountryIndex = userProfile.getSelectedCountryIndex();
                     countryImage.setImageResource(World.getFlagOf(countryCode));
                 }
                 if (countryName != null && !countryName.isEmpty()) {
@@ -168,23 +166,23 @@ public class CountryFragment extends BaseStepFragment {
 
     private void updateSelectedCountry() {
         try {
-            if (profileInfo == null) {
-                profileInfo = new ProfileInfo();
+            if (userProfile == null) {
+                userProfile = new UserProfile();
             }
 
-            profileInfo.setSelectedCountryIndex(selectedCountryIndex);
-            profileInfo.setCountryCode(countryCode);
-            profileInfo.setCountryName(countryName);
-            profileInfo.setCurrency(currency);
+            userProfile.setSelectedCountryIndex(selectedCountryIndex);
+            userProfile.setCountryCode(countryCode);
+            userProfile.setCountryName(countryName);
+            userProfile.setCurrency(currency);
 
             dataIsValid = !TextUtils.isEmpty(countryCode);
-            if (profileInfo.getProfileId() != null) {
-                int id = profileInfo.getProfileId();
+            if (userProfile.getProfileId() != null) {
+                int id = userProfile.getProfileId();
                 if (id > 0) {
-                    database.profileInfoDao().update(profileInfo);
+                    database.profileInfoDao().update(userProfile);
                 }
             } else {
-                database.profileInfoDao().insert(profileInfo);
+                database.profileInfoDao().insert(userProfile);
             }
             sessionManager.setCountry(countryCode);
         } catch (Exception ex) {

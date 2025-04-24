@@ -18,7 +18,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentFieldSizeBinding
 import com.akilimo.mobile.entities.MandatoryInfo
-import com.akilimo.mobile.entities.ProfileInfo
+import com.akilimo.mobile.entities.UserProfile
 import com.akilimo.mobile.inherit.BaseStepFragment
 import com.akilimo.mobile.utils.enums.EnumFieldArea
 import com.stepstone.stepper.VerificationError
@@ -43,7 +43,7 @@ class FieldSizeFragment : BaseStepFragment() {
     var rd_one_acre: RadioButton? = null
     var rd_two_half_acre: RadioButton? = null
 
-    private var profileInfo: ProfileInfo? = null
+    private var userProfile: UserProfile? = null
     private var mandatoryInfo: MandatoryInfo? = null
 
     private var myFieldSize: String? = ""
@@ -103,9 +103,9 @@ class FieldSizeFragment : BaseStepFragment() {
 
     private fun refreshData() {
         try {
-            profileInfo = database.profileInfoDao().findOne()
-            if (profileInfo != null) {
-                displayLanguage = profileInfo!!.language
+            userProfile = database.profileInfoDao().findOne()
+            if (userProfile != null) {
+                displayLanguage = userProfile!!.language
             }
             mandatoryInfo = database.mandatoryInfoDao().findOne()
             if (mandatoryInfo != null) {

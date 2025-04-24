@@ -23,7 +23,7 @@ import androidx.fragment.app.Fragment;
 import com.akilimo.mobile.R;
 import com.akilimo.mobile.databinding.FragmentLocationBinding;
 import com.akilimo.mobile.entities.LocationInfo;
-import com.akilimo.mobile.entities.ProfileInfo;
+import com.akilimo.mobile.entities.UserProfile;
 import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.services.GPSTracker;
 import com.akilimo.mobile.views.activities.MapBoxActivity;
@@ -67,7 +67,7 @@ public class LocationFragment extends BaseStepFragment {
     private String userSelectedCountryCode;
     private String userSelectedCountryName;
 
-    private ProfileInfo profileInfo;
+    private UserProfile userProfile;
     private LocationInfo locationInformation;
     private String farmName = "";
     private String fullNames;
@@ -220,9 +220,9 @@ public class LocationFragment extends BaseStepFragment {
 
     private void saveLocation() {
         try {
-            if (profileInfo != null) {
-                profileInfo.setFarmName(farmName);
-                database.profileInfoDao().update(profileInfo);
+            if (userProfile != null) {
+                userProfile.setFarmName(farmName);
+                database.profileInfoDao().update(userProfile);
             }
             if (locationInformation == null) {
                 locationInformation = new LocationInfo();
@@ -245,14 +245,14 @@ public class LocationFragment extends BaseStepFragment {
 
     private void reloadLocationInfo() {
         try {
-            profileInfo = database.profileInfoDao().findOne();
+            userProfile = database.profileInfoDao().findOne();
             locationInformation = database.locationInfoDao().findOne();
 
-            if (profileInfo != null) {
-                farmName = profileInfo.getFarmName();
-                fullNames = profileInfo.names();
-                userSelectedCountryCode = profileInfo.getCountryCode();
-                userSelectedCountryName = profileInfo.getCountryName();
+            if (userProfile != null) {
+                farmName = userProfile.getFarmName();
+                fullNames = userProfile.names();
+                userSelectedCountryCode = userProfile.getCountryCode();
+                userSelectedCountryName = userProfile.getCountryName();
                 setFarmNameInfo(fullNames, farmName);
             }
             if (locationInformation != null) {

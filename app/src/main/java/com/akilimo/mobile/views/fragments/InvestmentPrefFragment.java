@@ -2,19 +2,18 @@ package com.akilimo.mobile.views.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.akilimo.mobile.databinding.FragmentInvestmentPrefBinding;
-import com.akilimo.mobile.entities.ProfileInfo;
+import com.akilimo.mobile.entities.UserProfile;
 import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.utils.enums.EnumInvestmentPref;
 import com.stepstone.stepper.VerificationError;
@@ -29,7 +28,7 @@ import io.sentry.Sentry;
 public class InvestmentPrefFragment extends BaseStepFragment {
 
     private FragmentInvestmentPrefBinding binding;
-    private ProfileInfo profileInfo;
+    private UserProfile userProfile;
 
 
     String riskName;
@@ -112,12 +111,12 @@ public class InvestmentPrefFragment extends BaseStepFragment {
 
     private void updateInvestmentPref(int investmentPref, int investmentRadioIndex) {
         try {
-            if (profileInfo != null) {
-                profileInfo.setSelectedRiskIndex(investmentRadioIndex);
-                profileInfo.setRiskAtt(investmentPref);
+            if (userProfile != null) {
+                userProfile.setSelectedRiskIndex(investmentRadioIndex);
+                userProfile.setRiskAtt(investmentPref);
 
-                if (profileInfo.getProfileId() != null) {
-                    database.profileInfoDao().update(profileInfo);
+                if (userProfile.getProfileId() != null) {
+                    database.profileInfoDao().update(userProfile);
                 }
             }
         } catch (Exception ex) {
@@ -146,10 +145,10 @@ public class InvestmentPrefFragment extends BaseStepFragment {
 
     private void refreshData() {
         try {
-            profileInfo = database.profileInfoDao().findOne();
-            if (profileInfo != null) {
-                riskAtt = profileInfo.getRiskAtt();
-                riskRadioIndex = profileInfo.getSelectedRiskIndex();
+            userProfile = database.profileInfoDao().findOne();
+            if (userProfile != null) {
+                riskAtt = userProfile.getRiskAtt();
+                riskRadioIndex = userProfile.getSelectedRiskIndex();
                 binding.rdgRiskGroup.check(riskRadioIndex);
             }
             riskName = investmentPreference[riskAtt];

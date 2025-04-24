@@ -20,8 +20,8 @@ import com.akilimo.mobile.databinding.FragmentSummaryBinding;
 import com.akilimo.mobile.entities.CurrentPractice;
 import com.akilimo.mobile.entities.LocationInfo;
 import com.akilimo.mobile.entities.MandatoryInfo;
-import com.akilimo.mobile.entities.ProfileInfo;
 import com.akilimo.mobile.entities.ScheduledDate;
+import com.akilimo.mobile.entities.UserProfile;
 import com.akilimo.mobile.inherit.BaseStepFragment;
 import com.akilimo.mobile.models.TimeLineModel;
 import com.akilimo.mobile.models.TimelineAttributes;
@@ -54,7 +54,7 @@ public class SummaryFragment extends BaseStepFragment {
     private MandatoryInfo mandatoryInfo;
     private CurrentPractice currentPractice;
     private ScheduledDate scheduledDate;
-    private ProfileInfo profileInfo;
+    private UserProfile userProfile;
 
     private MyTimeLineAdapter adapter;
 
@@ -131,12 +131,12 @@ public class SummaryFragment extends BaseStepFragment {
         currentPractice = database.currentPracticeDao().findOne();
         scheduledDate = database.scheduleDateDao().findOne();
 
-        profileInfo = database.profileInfoDao().findOne();
-        if (profileInfo != null) {
-            countryName = profileInfo.getCountryName();
-            countryCode = profileInfo.getCountryCode();
+        userProfile = database.profileInfoDao().findOne();
+        if (userProfile != null) {
+            countryName = userProfile.getCountryName();
+            countryCode = userProfile.getCountryCode();
             countrySelected = !countryName.isEmpty();
-            riskAttitude = profileInfo.getRiskAtt();
+            riskAttitude = userProfile.getRiskAtt();
         }
         riskAttitudeName = risks[riskAttitude];
 
@@ -144,7 +144,7 @@ public class SummaryFragment extends BaseStepFragment {
             areaUnit = mandatoryInfo.getDisplayAreaUnit();
             areaUnitSelected = areaUnit != null && !areaUnit.isEmpty();
 
-            summaryTitle = String.format(context.getString(R.string.lbl_summary_text), profileInfo.names(), profileInfo.getFarmName());
+            summaryTitle = String.format(context.getString(R.string.lbl_summary_text), userProfile.names(), userProfile.getFarmName());
             if (areaUnitSelected) {
                 fieldSize = mandatoryInfo.getAreaSize();
                 fieldSizeSelected = fieldSize > 0.0;
