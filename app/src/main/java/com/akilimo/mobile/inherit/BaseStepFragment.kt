@@ -1,73 +1,51 @@
 package com.akilimo.mobile.inherit
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase
-import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.entities.LocationInfo
 import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.SessionManager
-import com.android.volley.RequestQueue
-import com.android.volley.toolbox.Volley
 import com.stepstone.stepper.Step
 import com.stepstone.stepper.VerificationError
 import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository
 import dev.b3nedikt.reword.Reword.reword
 import io.sentry.Sentry
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.Locale
 
-abstract class BaseStepFragment protected constructor() : Fragment(), Step {
-    protected var LOG_TAG: String = BaseStepFragment::class.java.simpleName
+/**
+ * Base fragment implementing common functionality for stepper fragments
+ */
+abstract class BaseStepFragment : Fragment(), Step {
 
-    @JvmField
     protected var currency: String? = null
-
-    @JvmField
     protected var countryCode: String = ""
-
-    @JvmField
     protected var countryName: String? = null
-
-    @JvmField
     protected var errorMessage: String = ""
 
-    @JvmField
-    protected var database: AppDatabase? = null
+    // Lazy initialization for dependencies
+    protected val database: AppDatabase by lazy { AppDatabase.getDatabase(requireContext()) }
+    protected val sessionManager: SessionManager by lazy { SessionManager(requireContext()) }
+    protected val mathHelper: MathHelper by lazy { MathHelper() }
 
-    @JvmField
     protected var verificationError: VerificationError? = null
-
-    protected var queue: RequestQueue? = null
-
-    @JvmField
-    protected var sessionManager: SessionManager? = null
-
-    @JvmField
-    protected var mathHelper: MathHelper? = null
-
-    @JvmField
-    @Deprecated("")
-    protected var dataIsValid: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(false)
-
-        val context = requireContext()
-        sessionManager = SessionManager(context)
-        queue = Volley.newRequestQueue(context.applicationContext)
-        database = getDatabase(context)
-        mathHelper = MathHelper()
     }
 
     override fun onCreateView(
@@ -75,78 +53,113 @@ abstract class BaseStepFragment protected constructor() : Fragment(), Step {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = loadFragmentLayout(inflater, container, savedInstanceState)
-        reword(view)
-        return view
+        return loadFragmentLayout(inflater, container, savedInstanceState).also { view ->
+            reword(view)
+        }
     }
 
+    /**
+     * Load the specific layout for this fragment
+     * @return The inflated view
+     */
     protected abstract fun loadFragmentLayout(
-        inflater: LayoutInflater?,
+        inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View
 
+    /**
+     * Shows a custom warning dialog with customizable title, content and button text
+     *
+     * @param titleText Title of the dialog
+     * @param contentText Content of the dialog (defaults to title text if null)
+     * @param buttonTitle Custom text for the close button (optional)
+     */
     protected fun showCustomWarningDialog(
-        titleText: String?,
+        titleText: String,
         contentText: String? = titleText,
         buttonTitle: String? = null
     ) {
-        val context = requireContext()
         try {
-            val dialog = Dialog(context)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE) // before
-            dialog.setContentView(R.layout.dialog_warning)
-            dialog.setCancelable(true)
+            Dialog(requireContext()).apply {
+                requestWindowFeature(Window.FEATURE_NO_TITLE)
+                setContentView(R.layout.dialog_warning)
+                setCancelable(false)
+                setCanceledOnTouchOutside(false)
 
-            val layoutParams = WindowManager.LayoutParams()
-            layoutParams.copyFrom(dialog.window!!.attributes)
-            layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                // Set layout parameters
+                window?.apply {
+                    val params = attributes
+                    params.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    attributes = params
+                }
 
+                // Set dialog content
+                findViewById<TextView>(R.id.title).text = titleText
+                findViewById<TextView>(R.id.content).text = contentText
 
-            val title = dialog.findViewById<TextView>(R.id.title)
-            val content = dialog.findViewById<TextView>(R.id.content)
-            val btnClose = dialog.findViewById<AppCompatButton>(R.id.bt_close)
-            title.text = titleText
-            content.text = contentText
-
-            if (buttonTitle != null && btnClose != null && buttonTitle.isNotEmpty() && buttonTitle.length > 1) {
-                btnClose.text = buttonTitle
+                // Configure close button
+                findViewById<AppCompatButton>(R.id.bt_close)?.apply {
+                    if (!buttonTitle.isNullOrBlank()) {
+                        text = buttonTitle
+                    }
+                    setOnClickListener { dismiss() }
+                }
+                show()
             }
-            btnClose!!.setOnClickListener { dialog.dismiss() }
-            dialog.setCancelable(false)
-            dialog.setCanceledOnTouchOutside(false)
-            dialog.show()
-            dialog.window!!.attributes = layoutParams
         } catch (ex: Exception) {
+            Timber.e(ex, "Error showing warning dialog")
             Sentry.captureException(ex)
         }
     }
 
-    protected fun loadLocationInfo(locationInfo: LocationInfo?): StringBuilder {
-        val stBuilder = StringBuilder()
-        if (locationInfo != null) {
-            val lat = mathHelper!!.removeLeadingZero(locationInfo.latitude, "#.####")
-            val lon = mathHelper!!.removeLeadingZero(locationInfo.longitude, "#.####")
+    /**
+     * Creates a formatted string with location information
+     *
+     * @param locationInfo Location data to format
+     * @return Formatted location string
+     */
+    protected fun formatLocationInfo(locationInfo: LocationInfo?): String {
+        return locationInfo?.let {
+            val lat = mathHelper.removeLeadingZero(it.latitude, "#.####")
+            val lon = mathHelper.removeLeadingZero(it.longitude, "#.####")
+            val place = it.locationCountryName
 
-            val place = locationInfo.locationCountryName
-            stBuilder.append(String.format("%s %n%s,%s", place, lat, lon))
-        }
-
-        return stBuilder
+            "${place}\n${lat},${lon}"
+        } ?: ""
     }
 
+    /**
+     * Gets the current locale from shared preferences
+     *
+     * @return Current locale or null if not set
+     */
+    protected fun getCurrentLocale(): Locale? {
+        return SharedPrefsAppLocaleRepository(requireContext()).desiredLocale
+    }
 
-    protected val currentLocale: Locale?
-        get() {
-            val prefs = SharedPrefsAppLocaleRepository(requireContext())
-            var desiredLocale = prefs.desiredLocale
-            if (desiredLocale != null) {
+    /**
+     * Helper function to perform database operations safely in a coroutine
+     */
+    protected fun performDatabaseOperation(
+        operation: suspend () -> Unit,
+        onError: (Exception) -> Unit = { Sentry.captureException(it) }
+    ) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    operation()
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Database operation failed")
+                onError(e)
             }
-            return desiredLocale
         }
+    }
 
     override fun onError(error: VerificationError) {
-        //not implemented
+        // Base implementation - override in subclasses if needed
+        Timber.e("Verification error: ${error.errorMessage}")
     }
 }
