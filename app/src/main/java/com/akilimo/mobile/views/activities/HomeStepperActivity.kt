@@ -1,6 +1,5 @@
 package com.akilimo.mobile.views.activities
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -10,14 +9,12 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.MyStepperAdapter
-import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.data.RemoteConfig
 import com.akilimo.mobile.databinding.ActivityHomeStepperBinding
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.FuelrodApi
 import com.akilimo.mobile.interfaces.IFragmentCallBack
 import com.akilimo.mobile.utils.InAppUpdate
-import com.akilimo.mobile.utils.SessionManager
 import com.akilimo.mobile.views.fragments.AreaUnitFragment
 import com.akilimo.mobile.views.fragments.BioDataFragment
 import com.akilimo.mobile.views.fragments.CountryFragment
@@ -41,12 +38,11 @@ import kotlin.system.exitProcess
 
 
 class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
-    companion object {
-        const val MAP_BOX_PLACE_PICKER_REQUEST_CODE = 208
-    }
 
-    private lateinit var activity: Activity
-    private lateinit var binding: ActivityHomeStepperBinding
+
+    private var _binding: ActivityHomeStepperBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var inAppUpdate: InAppUpdate
 
     private lateinit var stepperAdapter: MyStepperAdapter
@@ -72,15 +68,11 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityHomeStepperBinding.inflate(layoutInflater)
+        _binding = ActivityHomeStepperBinding.inflate(layoutInflater)
         inAppUpdate = InAppUpdate(this@HomeStepperActivity)
 
         setContentView(binding.root)
 
-        activity = this
-        context = this
-        database = AppDatabase.getDatabase(this@HomeStepperActivity)
-        sessionManager = SessionManager(this)
         mStepperLayout = binding.stepperLayout
 
         inAppUpdate.checkForUpdates()
@@ -91,7 +83,6 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
     private fun loadConfig() {
         val configReader = FuelrodApi.apiService.readConfig("akilimo")
-
 
         configReader.enqueue(object : Callback<List<RemoteConfig>> {
             override fun onResponse(
@@ -104,7 +95,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
                     }
                 }
                 if (configListDict.isNotEmpty()) {
-                    sessionManager?.apply {
+                    sessionManager.apply {
                         configListDict["api_endpoint"]?.let { setAkilimoEndpoint(it) }
                         configListDict["location_iq"]?.let { setLocationIqToken(it) }
                         configListDict["mapbox"]?.let { setMapBoxApiKey(it) }
@@ -135,18 +126,18 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
 
         fragmentArray.add(WelcomeFragment.newInstance())
-        if (!sessionManager!!.getDisclaimerRead()) {
+        if (!sessionManager.getDisclaimerRead()) {
             fragmentArray.add(InfoFragment.newInstance())
             stepperReduction++
         }
-        if (!sessionManager!!.getTermsAccepted()) {
+        if (!sessionManager.getTermsAccepted()) {
             fragmentArray.add(PrivacyStatementFragment.newInstance())
             stepperReduction++
         }
         fragmentArray.add(BioDataFragment.newInstance())
         fragmentArray.add(CountryFragment.newInstance())
         fragmentArray.add(LocationFragment.newInstance())
-        if (!sessionManager!!.getRememberAreaUnit()) {
+        if (!sessionManager.getRememberAreaUnit()) {
             fragmentArray.add(AreaUnitFragment.newInstance())
             stepperReduction++
         }
@@ -154,7 +145,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         fragmentArray.add(PlantingDateFragment.newInstance())
 
         fragmentArray.add(TillageOperationFragment.newInstance())
-        if (!sessionManager!!.getRememberInvestmentPref()) {
+        if (!sessionManager.getRememberInvestmentPref()) {
             fragmentArray.add(InvestmentPrefFragment.newInstance())
             stepperReduction++
         }
@@ -227,7 +218,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
                 exitProcess(0) //exit the system
             } else {
                 Toast.makeText(
-                    this, getString(R.string.lbl_exit_tip), Toast.LENGTH_SHORT
+                    this@HomeStepperActivity, getString(R.string.lbl_exit_tip), Toast.LENGTH_SHORT
                 ).show()
                 exit = true
                 Thread(Runnable {
