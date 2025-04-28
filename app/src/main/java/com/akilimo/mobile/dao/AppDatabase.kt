@@ -52,7 +52,7 @@ import com.akilimo.mobile.entities.UserProfile
         UseCases::class,
         AkilimoCurrency::class,
         AdviceStatus::class
-    ], version = 1,
+    ], version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -97,6 +97,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java, DATABASE_NAME
                 )
+                    .allowMainThreadQueries() //TODO migrate to coroutines later
                     .fallbackToDestructiveMigration()
                     .build().also { database = it }
             }
