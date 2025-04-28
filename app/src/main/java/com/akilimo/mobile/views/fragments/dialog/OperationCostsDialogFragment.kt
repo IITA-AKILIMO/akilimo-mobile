@@ -63,14 +63,14 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val bundle = this.arguments
         val context = requireContext()
-        if (bundle != null) {
-            operationCosts = bundle.getParcelableArrayList(COST_LIST)
-            countryCode = bundle.getString(COUNTRY_CODE)
-            currencyCode = bundle.getString(CURRENCY_CODE)
-            currencySymbol = bundle.getString(CURRENCY_SYMBOL)
-            operationName = bundle.getString(OPERATION_NAME)
-            dialogTitle = bundle.getString(DIALOG_TITLE)
-            exactPriceHint = bundle.getString(EXACT_PRICE_HINT)
+        bundle?.let {
+            operationCosts = it.getParcelableArrayList(COST_LIST)
+            countryCode = it.getString(COUNTRY_CODE)
+            currencyCode = it.getString(CURRENCY_CODE)
+            currencySymbol = it.getString(CURRENCY_SYMBOL) ?: ""
+            operationName = it.getString(OPERATION_NAME)
+            dialogTitle = it.getString(DIALOG_TITLE)
+            exactPriceHint = it.getString(EXACT_PRICE_HINT)
         }
 
         _binding = FragmentOperationCostDialogBinding.inflate(layoutInflater)
@@ -126,7 +126,7 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
                     return@setOnClickListener
                 }
                 selectedCost = bagPrice!!.toDouble()
-                bagPriceRange = mathHelper!!.formatNumber(selectedCost, currencySymbol)
+                bagPriceRange = mathHelper.formatNumber(selectedCost, currencySymbol)
                 isPriceValid = true
                 cancelled = false
                 binding.editExactCost.error = null
@@ -189,7 +189,7 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
 
             val defaultLabel = String.format(
                 getString(R.string.lbl_operation_cost_label),
-                mathHelper!!.formatNumber(maxPrice, null),
+                mathHelper.formatNumber(maxPrice, null),
                 currencySymbol
             )
 
