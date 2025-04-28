@@ -23,7 +23,6 @@ import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumCountry
 import com.akilimo.mobile.utils.enums.EnumUseCase
 import com.akilimo.mobile.views.activities.DstRecommendationActivity
-import com.android.volley.RequestQueue
 import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import com.nabinbhandari.android.permissions.PermissionHandler
 import com.nabinbhandari.android.permissions.Permissions
@@ -41,16 +40,11 @@ abstract class BaseActivity : AppCompatActivity() {
     protected val database: AppDatabase by lazy { getDatabase(this@BaseActivity) }
     protected val mathHelper: MathHelper by lazy { MathHelper() }
 
-
-    @Deprecated("")
-    protected var queue: RequestQueue? = null
-
-    @JvmField
     protected var countryCode: String = EnumCountry.Nigeria.countryCode()
 
-    @JvmField
+    @Deprecated("Do we really need this")
     protected var currency: String = EnumCountry.Nigeria.currency()
-    protected var currencyName: String = ""
+    protected var currencyName: String = EnumCountry.Nigeria.currency()
     protected var currencyCode: String = EnumCountry.Nigeria.currency()
     protected var currencySymbol: String = EnumCountry.Nigeria.currency()
     protected var baseCurrency: String = "USD"
@@ -84,11 +78,11 @@ abstract class BaseActivity : AppCompatActivity() {
         if (!backPressed) {
             finish()
         }
-        Animatoo.animateSwipeRight(this)
+        Animatoo.animateSwipeRight(this@BaseActivity)
     }
 
     protected fun openActivity() {
-        Animatoo.animateSwipeLeft(this)
+        Animatoo.animateSwipeLeft(this@BaseActivity)
     }
 
 
