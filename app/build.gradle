@@ -223,6 +223,9 @@ dependencies {
 
     testImplementation project(path: ':app')
     testImplementation 'junit:junit:4.13.2'
+    testImplementation 'com.jakewharton.threetenabp:threetenabp:1.4.9'
+    testImplementation 'org.mockito:mockito-core:4.5.1'
+
     androidTestImplementation 'androidx.test:runner:1.6.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 
