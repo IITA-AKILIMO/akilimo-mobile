@@ -62,8 +62,8 @@ interface AkilimoService {
     fun getCassavaPrices(@Path("country_code") countryCode: String): Call<CassavaPricePriceResponse>
 
     @GET("v1/potato-prices/country/{country_code}")
-    fun getPotatoPrices(countryCode: String?): Call<PotatoPriceResponse>
+    fun getPotatoPrices(@Path("country_code") countryCode: String?): Call<PotatoPriceResponse>
 
     @GET("v1/maize-prices/country/{country_code}")
-    fun getMaizePrices(countryCode: String): Call<MaizePriceResponse>
+    fun getMaizePrices(@Path("country_code") countryCode: String): Call<MaizePriceResponse>
 }
