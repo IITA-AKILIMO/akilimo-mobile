@@ -39,7 +39,6 @@ class InvestmentAmountActivity : BaseActivity() {
 
     var investmentAmountError: String? = null
 
-    private var invAmount: InvestmentAmount? = null
     private var isExactAmount = false
     private var hasErrors = false
 
@@ -56,7 +55,7 @@ class InvestmentAmountActivity : BaseActivity() {
     private var selectedPrice = -1.0
     private var selectedFieldArea: String? = null
 
-    private var investmentAmountList: List<InvestmentAmount> = ArrayList()
+    //private var investmentAmountList: List<InvestmentAmount> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,8 +69,6 @@ class InvestmentAmountActivity : BaseActivity() {
         txtEditInvestmentAmount = binding!!.editInvestmentAmount
         txtEditInvestmentAmountLayout = binding!!.editInvestmentAmountLayout
         btnFinish = binding!!.btnFinish
-
-        invAmount = database.investmentAmountDao().findOne()
 
         initToolbar()
         initComponent()
@@ -101,15 +98,14 @@ class InvestmentAmountActivity : BaseActivity() {
         rdgInvestmentAmount!!.setOnCheckedChangeListener { group: RadioGroup, checkedId: Int ->
             val radioButtonId = group.checkedRadioButtonId
             val radioButton = findViewById<RadioButton>(radioButtonId)
-            val itemTagIndex = radioButton.tag as Long
+            val radioTag = radioButton.tag as String
 
-            val inv = database.investmentAmountDao().findOneByInvestmentId(itemTagIndex)
+            isExactAmount = false
+            txtEditInvestmentAmountLayout!!.visibility = View.GONE
+            val inv = database.investmentAmountDao().findOneByItemTag(radioTag)
             if (inv != null) {
                 investmentAmountLocal = inv.investmentAmount
-                if (inv.sortOrder != 0L) {
-                    isExactAmount = false
-                    txtEditInvestmentAmountLayout!!.visibility = View.GONE
-                } else {
+                if (inv.sortOrder == 0L) {
                     isExactAmount = true
                     txtEditInvestmentAmountLayout!!.visibility = View.VISIBLE
                     txtEditInvestmentAmountLayout!!.requestFocus()
@@ -127,7 +123,7 @@ class InvestmentAmountActivity : BaseActivity() {
                 validateEditText(editable)
             }
         })
-        btnFinish!!.setOnClickListener { view: View? ->
+        btnFinish!!.setOnClickListener {
             validateInvestmentAmount()
             if (hasErrors) {
                 showCustomWarningDialog(
@@ -136,20 +132,21 @@ class InvestmentAmountActivity : BaseActivity() {
                 return@setOnClickListener
             }
 
-            invAmount = database.investmentAmountDao().findOne()
+            var invAmount = database.investmentAmountDao().findOne()
+            if (invAmount == null) {
+                invAmount = InvestmentAmount()
+            }
             try {
-                if (invAmount == null) {
-                    invAmount = InvestmentAmount()
-                }
                 val amountToInvestRaw = mathHelper.computeInvestmentForSpecifiedAreaUnit(
                     investmentAmountLocal, fieldSize, areaUnit
                 )
                 val amountToInvest = mathHelper.roundToNDecimalPlaces(amountToInvestRaw, 2.0)
-                invAmount!!.investmentAmount = amountToInvest
-                invAmount!!.minInvestmentAmount = minimumAmountLocal
-                invAmount!!.fieldSize = fieldSizeAcre
+                invAmount.investmentAmount = amountToInvest
+                invAmount.minInvestmentAmount = minimumAmountLocal
+                invAmount.fieldSize = fieldSizeAcre
 
-                database.investmentAmountDao().insert(invAmount!!)
+                database.investmentAmountDao().insert(invAmount)
+
                 database.adviceStatusDao()
                     .insert(AdviceStatus(EnumAdviceTasks.INVESTMENT_AMOUNT.name, true))
 
@@ -172,11 +169,11 @@ class InvestmentAmountActivity : BaseActivity() {
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
             countryCode = profileInfo.countryCode
-            if (!profileInfo.currencyCode.isNullOrEmpty()) {
+            if (profileInfo.currencyCode.isNotEmpty()) {
                 currency = profileInfo.currencyCode
+                currencyCode = profileInfo.currencyCode
             }
         }
-        currencyCode = currency
 
         val investmentAmount = database.investmentAmountDao().findOne()
         if (investmentAmount != null) {
@@ -231,7 +228,7 @@ class InvestmentAmountActivity : BaseActivity() {
                 response: retrofit2.Response<InvestmentAmountResponse>
             ) {
                 if (response.isSuccessful) {
-                    investmentAmountList = response.body()!!.data
+                    val investmentAmountList = response.body()!!.data
                     if (investmentAmountList.isNotEmpty()) {
                         database.investmentAmountDao().insertAll(investmentAmountList)
                         addInvestmentRadioButtons(investmentAmountList)
@@ -255,7 +252,6 @@ class InvestmentAmountActivity : BaseActivity() {
     private fun addInvestmentRadioButtons(investmentAmountList: List<InvestmentAmount>) {
         val context = this@InvestmentAmountActivity
         rdgInvestmentAmount!!.removeAllViews()
-        currencySymbol = currencyCode
         val extendedCurrency = CurrencyCode.getCurrencySymbol(currencyCode)
         if (extendedCurrency != null) {
             currencySymbol = extendedCurrency.symbol
@@ -282,23 +278,21 @@ class InvestmentAmountActivity : BaseActivity() {
         for (pricesResp in investmentAmountList) {
             minimumAmountLocal = pricesResp.minInvestmentAmount
             maxAmountLocal = pricesResp.maxInvestmentAmount
-            val listIndex = pricesResp.id!!.toLong()
 
+            val radioTag = pricesResp.itemTag
             val radioButton = RadioButton(context)
+
             radioButton.id = View.generateViewId()
-            radioButton.tag = listIndex
+            radioButton.tag = radioTag
 
             val price = pricesResp.investmentAmount
             val amountToInvest =
                 mathHelper.computeInvestmentForSpecifiedAreaUnit(price, fieldSize, areaUnit)
             var radioLabel = setLabel(
                 amountToInvest,
-                currencyCode,
-                currencySymbol,
-                areaUnit,
-                fieldAreaAcre,
-                selectedFieldArea,
-                separator
+                currencySymbol = currencySymbol,
+                selectedFieldArea = selectedFieldArea,
+                separator = separator
             )
             if (price == 0.0) {
                 radioLabel = context.getString(R.string.exact_investment_x_per_field_area)
@@ -308,8 +302,7 @@ class InvestmentAmountActivity : BaseActivity() {
             radioButton.layoutParams = params
 
             rdgInvestmentAmount!!.addView(radioButton)
-            //set relevant radio button as selected based on the price range
-            val refAmount = mathHelper.roundToNDecimalPlaces(amountToInvest, 2.0)
+            val refAmount = mathHelper.roundToNDecimalPlaces(amountToInvest)
             if (refAmount == selectedPrice) {
                 radioButton.isChecked = true
             }
@@ -318,10 +311,7 @@ class InvestmentAmountActivity : BaseActivity() {
 
     private fun setLabel(
         amountToInvest: Double,
-        currencyCode: String,
         currencySymbol: String,
-        areaUnit: String,
-        fieldAreaAcre: String?,
         selectedFieldArea: String?,
         separator: String
     ): String {
