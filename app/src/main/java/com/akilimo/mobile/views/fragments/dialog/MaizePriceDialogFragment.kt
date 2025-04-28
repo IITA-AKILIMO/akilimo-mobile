@@ -125,7 +125,7 @@ class MaizePriceDialogFragment : BaseDialogFragment() {
             )
         }
         if (database != null) {
-            maizePriceList = database!!.maizePriceDao().findAllByCountryAndProduceType(
+            maizePriceList = database.maizePriceDao().findAllByCountryAndProduceType(
                 countryCode!!,
                 produceType!!
             )
@@ -140,7 +140,7 @@ class MaizePriceDialogFragment : BaseDialogFragment() {
         val itemTagIndex = radioButton.tag as Long
 
         try {
-            val pricesResp = database!!.maizePriceDao().findById(itemTagIndex.toInt())
+            val pricesResp = database.maizePriceDao().findById(itemTagIndex.toInt())
             isExactPriceRequired = false
             isPriceValid = true
             averagePrice = pricesResp.averagePrice
@@ -242,26 +242,26 @@ class MaizePriceDialogFragment : BaseDialogFragment() {
                 priceLower = (unitPriceLower * EnumUnitOfSale.ONE_KG.unitWeight()) / 1000
                 priceHigher = (unitPriceUpper * EnumUnitOfSale.ONE_KG.unitWeight()) / 1000
 
-                finalPrice = mathHelper!!.roundToNearestSpecifiedValue(priceHigher, 10.0)
+                finalPrice = mathHelper.roundToNearestSpecifiedValue(priceHigher, 10.0)
             }
 
             EnumUnitOfSale.FIFTY_KG -> {
                 priceLower = (unitPriceLower * EnumUnitOfSale.FIFTY_KG.unitWeight()) / 1000
                 priceHigher = (unitPriceUpper * EnumUnitOfSale.FIFTY_KG.unitWeight()) / 1000
 
-                finalPrice = mathHelper!!.roundToNearestSpecifiedValue(priceHigher, 10.0)
+                finalPrice = mathHelper.roundToNearestSpecifiedValue(priceHigher, 10.0)
             }
 
             EnumUnitOfSale.HUNDRED_KG -> {
                 priceLower = (unitPriceLower * EnumUnitOfSale.HUNDRED_KG.unitWeight()) / 1000
                 priceHigher = (unitPriceUpper * EnumUnitOfSale.HUNDRED_KG.unitWeight()) / 1000
 
-                finalPrice = mathHelper!!.roundToNearestSpecifiedValue(priceHigher, 100.0)
+                finalPrice = mathHelper.roundToNearestSpecifiedValue(priceHigher, 100.0)
             }
 
             EnumUnitOfSale.FRESH_COB -> finalPrice = priceHigher
             EnumUnitOfSale.NA -> TODO()
-            EnumUnitOfSale.THOUSAND_KG -> TODO()
+            EnumUnitOfSale.TONNE -> TODO()
             null -> TODO()
         }
         return requireContext().getString(

@@ -16,7 +16,6 @@ import com.akilimo.mobile.entities.MaizePrice
 import com.akilimo.mobile.entities.MaizePriceResponse
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
-import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumMaizeProduceType
 import com.akilimo.mobile.utils.enums.EnumUnitOfSale
@@ -44,7 +43,6 @@ class MaizeMarketActivity : BaseActivity() {
     private var _binding: ActivityMaizeMarketBinding? = null
     private val binding get() = _binding!!
 
-    private var mathHelper: MathHelper? = null
     private var maizeMarket: MaizeMarket? = null
     private var produceType: String? = null
     private var unitPrice: Double = 0.00
@@ -74,8 +72,6 @@ class MaizeMarketActivity : BaseActivity() {
         _binding = ActivityMaizeMarketBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        mathHelper = MathHelper()
-
         toolbar = binding.toolbar
         unitOfSaleGrainTitle = binding.marketContent.unitOfSaleGrainTitle
         maizeCobPriceTitle = binding.marketContent.maizeCobPriceTitle
@@ -93,11 +89,11 @@ class MaizeMarketActivity : BaseActivity() {
 
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.countryCode!!
-            currency = profileInfo.currencyCode!!
+            countryCode = profileInfo.countryCode
+            currency = profileInfo.currencyCode
 
             val myAkilimoCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode)
-            currencyName = myAkilimoCurrency.currencyName!!
+            currencyName = myAkilimoCurrency.currencyName
         }
 
         initToolbar()
@@ -293,7 +289,7 @@ class MaizeMarketActivity : BaseActivity() {
         priceDialogFragment.arguments = arguments
 
         priceDialogFragment.setOnDismissListener { selectedPrice: Double, isExactPrice: Boolean ->
-            unitPrice = if (isExactPrice) selectedPrice else mathHelper!!.convertToUnitWeightPrice(
+            unitPrice = if (isExactPrice) selectedPrice else mathHelper.convertToUnitWeightPrice(
                 selectedPrice,
                 unitWeight
             )

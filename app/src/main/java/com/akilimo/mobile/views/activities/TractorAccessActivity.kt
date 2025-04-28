@@ -17,7 +17,6 @@ import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.inherit.CostBaseActivity
 import com.akilimo.mobile.models.OperationCost
-import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumOperation
 import com.akilimo.mobile.utils.enums.EnumOperationType
@@ -39,7 +38,6 @@ class TractorAccessActivity : CostBaseActivity() {
     private var _binding: ActivityTractorAccessBinding? = null
     private val binding get() = _binding!!
 
-    var mathHelper: MathHelper? = null
     var fieldOperationCost: FieldOperationCost? = null
     var currentPractice: CurrentPractice? = null
 
@@ -66,21 +64,19 @@ class TractorAccessActivity : CostBaseActivity() {
         _binding = ActivityTractorAccessBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        mathHelper = MathHelper()
-
         val mandatoryInfo = database.mandatoryInfoDao().findOne()
         if (mandatoryInfo != null) {
-            areaUnit = mandatoryInfo.areaUnit!!
+            areaUnit = mandatoryInfo.areaUnit
             fieldSize = mandatoryInfo.areaSize
         }
 
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.countryCode!!
-            currency = profileInfo.currencyCode!!
-            currencyCode = profileInfo.currencyCode!!
+            countryCode = profileInfo.countryCode
+            currency = profileInfo.currencyCode
+            currencyCode = profileInfo.currencyCode
             val myAkilimoCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode)
-            currencySymbol = myAkilimoCurrency.currencySymbol!!
+            currencySymbol = myAkilimoCurrency.currencySymbol
         }
 
         toolbar = binding.toolbar
@@ -150,24 +146,24 @@ class TractorAccessActivity : CostBaseActivity() {
             if (buttonView.isPressed && isChecked && !dialogOpen) {
                 var title = (getString(
                     R.string.lbl_tractor_plough_cost,
-                    mathHelper!!.removeLeadingZero(fieldSize),
+                    mathHelper.removeLeadingZero(fieldSize),
                     finalTranslatedUnit
                 ))
                 var hintText = (getString(
                     R.string.lbl_tractor_plough_cost_hint,
-                    mathHelper!!.removeLeadingZero(fieldSize),
+                    mathHelper.removeLeadingZero(fieldSize),
                     finalTranslatedUnit
                 ))
                 if (myLocale.language == "sw") {
                     title = (getString(
                         R.string.lbl_tractor_plough_cost,
                         finalTranslatedUnit,
-                        mathHelper!!.removeLeadingZero(fieldSize)
+                        mathHelper.removeLeadingZero(fieldSize)
                     ))
                     hintText = (getString(
                         R.string.lbl_tractor_plough_cost_hint,
                         finalTranslatedUnit,
-                        mathHelper!!.removeLeadingZero(fieldSize)
+                        mathHelper.removeLeadingZero(fieldSize)
                     ))
                 }
                 loadOperationCost(
@@ -181,24 +177,24 @@ class TractorAccessActivity : CostBaseActivity() {
             if (buttonView.isPressed && isChecked && !dialogOpen) {
                 var title = (getString(
                     R.string.lbl_tractor_ridge_cost,
-                    mathHelper!!.removeLeadingZero(fieldSize),
+                    mathHelper.removeLeadingZero(fieldSize),
                     finalTranslatedUnit
                 ))
                 var hintText = (getString(
                     R.string.lbl_tractor_ridge_cost_hint,
-                    mathHelper!!.removeLeadingZero(fieldSize),
+                    mathHelper.removeLeadingZero(fieldSize),
                     finalTranslatedUnit
                 ))
                 if (myLocale.language == "sw") {
                     title = (getString(
                         R.string.lbl_tractor_ridge_cost,
                         finalTranslatedUnit,
-                        mathHelper!!.removeLeadingZero(fieldSize)
+                        mathHelper.removeLeadingZero(fieldSize)
                     ))
                     hintText = (getString(
                         R.string.lbl_tractor_ridge_cost_hint,
                         finalTranslatedUnit,
-                        mathHelper!!.removeLeadingZero(fieldSize)
+                        mathHelper.removeLeadingZero(fieldSize)
                     ))
                 }
                 loadOperationCost(
@@ -296,7 +292,7 @@ class TractorAccessActivity : CostBaseActivity() {
             ) {
                 if (!cancelled && operationName != null) {
                     val roundedCost =
-                        mathHelper!!.roundToNearestSpecifiedValue(selectedCost, 1000.0)
+                        mathHelper.roundToNearestSpecifiedValue(selectedCost, 1000.0)
                     when (operationName) {
                         "TILLAGE" -> {
                             tractorPloughCost = roundedCost

@@ -13,12 +13,10 @@ import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.inherit.CostBaseActivity
 import com.akilimo.mobile.models.OperationCost
-import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumOperation
 import com.akilimo.mobile.utils.enums.EnumOperationType
 import com.akilimo.mobile.views.fragments.dialog.OperationCostsDialogFragment
-import com.android.volley.toolbox.Volley
 import io.sentry.Sentry
 
 class ManualTillageCostActivity : CostBaseActivity() {
@@ -36,7 +34,6 @@ class ManualTillageCostActivity : CostBaseActivity() {
     private var _binding: ActivityManualTillageCostBinding? = null
     private val binding get() = _binding!!
 
-    var mathHelper: MathHelper? = null
     var fieldOperationCost: FieldOperationCost? = null
 
     private var manualPloughCost = 0.0
@@ -54,9 +51,6 @@ class ManualTillageCostActivity : CostBaseActivity() {
         )
         setContentView(binding.root)
 
-        queue = Volley.newRequestQueue(this)
-        mathHelper = MathHelper()
-
         toolbar = binding.toolbar
         manualPloughCostTitle = binding.manualTillage.manualPloughCostTitle
         manualRidgeCostTitle = binding.manualTillage.manualRidgeCostTitle
@@ -69,16 +63,16 @@ class ManualTillageCostActivity : CostBaseActivity() {
 
         val mandatoryInfo = database.mandatoryInfoDao().findOne()
         if (mandatoryInfo != null) {
-            areaUnit = mandatoryInfo.areaUnit!!
+            areaUnit = mandatoryInfo.areaUnit
             fieldSize = mandatoryInfo.areaSize
         }
 
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.countryCode!!
-            currencyCode = profileInfo.currencyCode!!
+            countryCode = profileInfo.countryCode
+            currencyCode = profileInfo.currencyCode
             val myAkilimoCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode)
-            currencySymbol = myAkilimoCurrency.currencySymbol!!
+            currencySymbol = myAkilimoCurrency.currencySymbol
         }
 
         initToolbar()
@@ -91,16 +85,16 @@ class ManualTillageCostActivity : CostBaseActivity() {
 
             manualPloughCostText!!.text = getString(
                 R.string.lbl_ploughing_cost_text,
-                mathHelper!!.removeLeadingZero(fieldSize),
+                mathHelper.removeLeadingZero(fieldSize),
                 areaUnit,
-                mathHelper!!.removeLeadingZero(manualPloughCost),
+                mathHelper.removeLeadingZero(manualPloughCost),
                 currencySymbol
             )
             manualRidgingCostText!!.text = getString(
                 R.string.lbl_ridging_cost_text,
-                mathHelper!!.removeLeadingZero(fieldSize),
+                mathHelper.removeLeadingZero(fieldSize),
                 areaUnit,
-                mathHelper!!.removeLeadingZero(manualRidgeCost),
+                mathHelper.removeLeadingZero(manualRidgeCost),
                 currencySymbol
             )
         }
@@ -125,31 +119,31 @@ class ManualTillageCostActivity : CostBaseActivity() {
 
         var ploughTitle = context.getString(
             R.string.lbl_manual_tillage_cost,
-            mathHelper!!.removeLeadingZero(fieldSize),
+            mathHelper.removeLeadingZero(fieldSize),
             finalTranslatedUnit
         )
         var ridgeTitle = context.getString(
             R.string.lbl_manual_ridge_cost,
-            mathHelper!!.removeLeadingZero(fieldSize),
+            mathHelper.removeLeadingZero(fieldSize),
             finalTranslatedUnit
         )
         if (myLocale.language == "sw") {
             ploughTitle = context.getString(
                 R.string.lbl_manual_tillage_cost,
                 finalTranslatedUnit,
-                mathHelper!!.removeLeadingZero(fieldSize)
+                mathHelper.removeLeadingZero(fieldSize)
             )
             ridgeTitle = context.getString(
                 R.string.lbl_manual_ridge_cost,
                 finalTranslatedUnit,
-                mathHelper!!.removeLeadingZero(fieldSize)
+                mathHelper.removeLeadingZero(fieldSize)
             )
         }
         val finalPloughTitle = ploughTitle
         btnPloughCost!!.setOnClickListener { view: View? ->
             hintText = context.getString(
                 R.string.lbl_manual_tillage_cost_hint,
-                mathHelper!!.removeLeadingZero(fieldSize),
+                mathHelper.removeLeadingZero(fieldSize),
                 finalTranslatedUnit
             )
             if (!dialogOpen) {
@@ -164,7 +158,7 @@ class ManualTillageCostActivity : CostBaseActivity() {
         btnRidgeCost!!.setOnClickListener { view: View? ->
             hintText = context.getString(
                 R.string.lbl_manual_ridge_cost_hint,
-                mathHelper!!.removeLeadingZero(fieldSize),
+                mathHelper.removeLeadingZero(fieldSize),
                 finalTranslatedUnit
             )
             if (!dialogOpen) {
@@ -270,23 +264,23 @@ class ManualTillageCostActivity : CostBaseActivity() {
             ) {
                 if (!cancelled && operationName != null) {
                     val roundedCost =
-                        mathHelper!!.roundToNearestSpecifiedValue(selectedCost, 1000.0)
+                        mathHelper.roundToNearestSpecifiedValue(selectedCost, 1000.0)
                     when (operationName) {
                         "TILLAGE" -> {
                             manualPloughCost = roundedCost
                             var manualTillageText = getString(
                                 R.string.lbl_ploughing_cost_text,
-                                mathHelper!!.removeLeadingZero(fieldSize),
+                                mathHelper.removeLeadingZero(fieldSize),
                                 finalTranslatedUnit,
-                                mathHelper!!.formatNumber(roundedCost, null),
+                                mathHelper.formatNumber(roundedCost, null),
                                 currencySymbol
                             )
                             if (myLocale.language == "sw") {
                                 manualTillageText = getString(
                                     R.string.lbl_ploughing_cost_text,
                                     finalTranslatedUnit,
-                                    mathHelper!!.removeLeadingZero(fieldSize),
-                                    mathHelper!!.formatNumber(roundedCost, null),
+                                    mathHelper.removeLeadingZero(fieldSize),
+                                    mathHelper.formatNumber(roundedCost, null),
                                     currencySymbol
                                 )
                             }
@@ -297,17 +291,17 @@ class ManualTillageCostActivity : CostBaseActivity() {
                             manualRidgeCost = roundedCost
                             var manualRidgeText = getString(
                                 R.string.lbl_ridging_cost_text,
-                                mathHelper!!.removeLeadingZero(fieldSize),
+                                mathHelper.removeLeadingZero(fieldSize),
                                 finalTranslatedUnit,
-                                mathHelper!!.formatNumber(roundedCost, null),
+                                mathHelper.formatNumber(roundedCost, null),
                                 currencySymbol
                             )
                             if (myLocale.language == "sw") {
                                 manualRidgeText = getString(
                                     R.string.lbl_ridging_cost_text,
                                     finalTranslatedUnit,
-                                    mathHelper!!.removeLeadingZero(fieldSize),
-                                    mathHelper!!.formatNumber(roundedCost, null),
+                                    mathHelper.removeLeadingZero(fieldSize),
+                                    mathHelper.formatNumber(roundedCost, null),
                                     currencySymbol
                                 )
                             }

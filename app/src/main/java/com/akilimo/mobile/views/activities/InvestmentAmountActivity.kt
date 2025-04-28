@@ -19,7 +19,6 @@ import com.akilimo.mobile.entities.InvestmentAmountResponse
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.utils.CurrencyCode
-import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputLayout
@@ -40,7 +39,6 @@ class InvestmentAmountActivity : BaseActivity() {
 
     var investmentAmountError: String? = null
 
-    var mathHelper: MathHelper? = null
     private var invAmount: InvestmentAmount? = null
     private var isExactAmount = false
     private var hasErrors = false
@@ -66,8 +64,6 @@ class InvestmentAmountActivity : BaseActivity() {
             layoutInflater
         )
         setContentView(binding!!.root)
-
-        mathHelper = MathHelper()
 
         toolbar = binding!!.toolbar
         rdgInvestmentAmount = binding!!.rdgInvestmentAmount
@@ -145,10 +141,10 @@ class InvestmentAmountActivity : BaseActivity() {
                 if (invAmount == null) {
                     invAmount = InvestmentAmount()
                 }
-                val amountToInvestRaw = mathHelper!!.computeInvestmentForSpecifiedAreaUnit(
+                val amountToInvestRaw = mathHelper.computeInvestmentForSpecifiedAreaUnit(
                     investmentAmountLocal, fieldSize, areaUnit
                 )
-                val amountToInvest = mathHelper!!.roundToNDecimalPlaces(amountToInvestRaw, 2.0)
+                val amountToInvest = mathHelper.roundToNDecimalPlaces(amountToInvestRaw, 2.0)
                 invAmount!!.investmentAmount = amountToInvest
                 invAmount!!.minInvestmentAmount = minimumAmountLocal
                 invAmount!!.fieldSize = fieldSizeAcre
@@ -175,9 +171,9 @@ class InvestmentAmountActivity : BaseActivity() {
     private fun updateLabels() {
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.countryCode!!
+            countryCode = profileInfo.countryCode
             if (!profileInfo.currencyCode.isNullOrEmpty()) {
-                currency = profileInfo.currencyCode!!
+                currency = profileInfo.currencyCode
             }
         }
         currencyCode = currency
@@ -192,7 +188,7 @@ class InvestmentAmountActivity : BaseActivity() {
             fieldSizeAcre = mandatoryInfo.areaSize
             fieldArea = fieldSize.toString()
             fieldAreaAcre = fieldSizeAcre.toString()
-            areaUnit = mandatoryInfo.areaUnit!!
+            areaUnit = mandatoryInfo.areaUnit
             areaUnitText = mandatoryInfo.displayAreaUnit!!
         }
         selectedFieldArea =
@@ -215,12 +211,12 @@ class InvestmentAmountActivity : BaseActivity() {
 
         if (amount.isNotEmpty()) {
             investmentAmountLocal = amount.toDouble()
-            investmentAmountUSD = mathHelper!!.convertToUSD(investmentAmountLocal, currency)
+            investmentAmountUSD = mathHelper.convertToUSD(investmentAmountLocal, currency)
         }
 
         minimumAmountUSD =
-            mathHelper!!.computeInvestmentAmount(minInvestmentUSD, fieldSizeAcre, baseCurrency)
-        minimumAmountLocal = mathHelper!!.convertToLocalCurrency(minimumAmountUSD, currency)
+            mathHelper.computeInvestmentAmount(minInvestmentUSD, fieldSizeAcre, baseCurrency)
+        minimumAmountLocal = mathHelper.convertToLocalCurrency(minimumAmountUSD, currency)
         hasErrors = investmentAmountLocal < minimumAmountLocal
         return getString(
             R.string.lbl_investment_validation_msg, minimumAmountLocal, currencyCode
@@ -294,7 +290,7 @@ class InvestmentAmountActivity : BaseActivity() {
 
             val price = pricesResp.investmentAmount
             val amountToInvest =
-                mathHelper!!.computeInvestmentForSpecifiedAreaUnit(price, fieldSize, areaUnit)
+                mathHelper.computeInvestmentForSpecifiedAreaUnit(price, fieldSize, areaUnit)
             var radioLabel = setLabel(
                 amountToInvest,
                 currencyCode,
@@ -313,7 +309,7 @@ class InvestmentAmountActivity : BaseActivity() {
 
             rdgInvestmentAmount!!.addView(radioButton)
             //set relevant radio button as selected based on the price range
-            val refAmount = mathHelper!!.roundToNDecimalPlaces(amountToInvest, 2.0)
+            val refAmount = mathHelper.roundToNDecimalPlaces(amountToInvest, 2.0)
             if (refAmount == selectedPrice) {
                 radioButton.isChecked = true
             }
@@ -329,7 +325,7 @@ class InvestmentAmountActivity : BaseActivity() {
         selectedFieldArea: String?,
         separator: String
     ): String {
-        val formattedNumber = mathHelper!!.formatNumber(amountToInvest, currencySymbol)
+        val formattedNumber = mathHelper.formatNumber(amountToInvest, currencySymbol)
         return String.format("%s %s %s", formattedNumber, separator, selectedFieldArea)
     }
 }

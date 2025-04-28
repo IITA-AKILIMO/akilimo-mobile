@@ -16,7 +16,6 @@ import com.akilimo.mobile.entities.PotatoPrice
 import com.akilimo.mobile.entities.PotatoPriceResponse
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
-import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumPotatoProduceType
 import com.akilimo.mobile.utils.enums.EnumUnitOfSale
@@ -36,8 +35,6 @@ class SweetPotatoMarketActivity : BaseActivity() {
 
     private var _binding: ActivitySweetPotatoMarketBinding? = null
     private val binding get() = _binding!!
-
-    private var mathHelper: MathHelper? = null
     private var potatoMarket: PotatoMarket? = null
     private var enumPotatoProduceType: String? = null
     private var potatoPriceList: List<PotatoPrice>? = null
@@ -69,13 +66,10 @@ class SweetPotatoMarketActivity : BaseActivity() {
         )
         setContentView(binding.root)
 
-
-        mathHelper = MathHelper()
-
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.countryCode!!
-            currency = profileInfo.currencyCode!!
+            countryCode = profileInfo.countryCode
+            currency = profileInfo.currencyCode
         }
 
         toolbar = binding.toolbar
@@ -138,9 +132,9 @@ class SweetPotatoMarketActivity : BaseActivity() {
                 }
 
                 R.id.rd_1000_kg_bag -> {
-                    unitOfSale = EnumUnitOfSale.THOUSAND_KG.unitOfSale(context)
-                    unitOfSaleEnum = EnumUnitOfSale.THOUSAND_KG
-                    unitWeight = EnumUnitOfSale.THOUSAND_KG.unitWeight()
+                    unitOfSale = EnumUnitOfSale.TONNE.unitOfSale(context)
+                    unitOfSaleEnum = EnumUnitOfSale.TONNE
+                    unitWeight = EnumUnitOfSale.TONNE.unitWeight()
                 }
             }
         }
@@ -251,7 +245,7 @@ class SweetPotatoMarketActivity : BaseActivity() {
             unitPrice = if (isExactPrice) {
                 selectedPrice
             } else {
-                mathHelper!!.convertToUnitWeightPrice(selectedPrice, unitWeight)
+                mathHelper.convertToUnitWeightPrice(selectedPrice, unitWeight)
             }
         }
 
