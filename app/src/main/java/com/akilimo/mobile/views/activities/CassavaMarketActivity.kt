@@ -1,6 +1,5 @@
 package com.akilimo.mobile.views.activities
 
-
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -17,14 +16,11 @@ import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityCassavaMarketBinding
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.CassavaMarket
-import com.akilimo.mobile.entities.CassavaPrice
 import com.akilimo.mobile.entities.CassavaPricePriceResponse
-import com.akilimo.mobile.entities.ScheduledDate
 import com.akilimo.mobile.entities.StarchFactory
 import com.akilimo.mobile.entities.StarchFactoryResponse
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
-import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumCassavaProduceType
 import com.akilimo.mobile.utils.enums.EnumContext
@@ -43,7 +39,7 @@ class CassavaMarketActivity : BaseActivity() {
     var unitOfSaleTitle: AppCompatTextView? = null
     var rdgMarketOutlet: RadioGroup? = null
     var rdgStarchFactories: RadioGroup? = null
-    var rdgUnitOfSale: RadioGroup? = null
+//    var rdgUnitOfSale: RadioGroup? = null
 
     var rdStarchFactory: RadioButton? = null
 
@@ -59,7 +55,6 @@ class CassavaMarketActivity : BaseActivity() {
     private var _binding: ActivityCassavaMarketBinding? = null
     private val binding get() = _binding!!
 
-    var mathHelper: MathHelper? = null
     private var selectedFactory: String? = "NA"
 
     var produceType: String? = null
@@ -70,14 +65,9 @@ class CassavaMarketActivity : BaseActivity() {
     private var unitPriceM2 = 0.0
 
     var priceText: String? = null
-    var unitOfSale: String? = null
+    var unitOfSale: String = "NA"
     var unitWeight: Int = 0
     private var harvestWindow = 0
-    private var unitOfSaleEnum: EnumUnitOfSale = EnumUnitOfSale.ONE_KG
-
-    private var cassavaMarket: CassavaMarket? = null
-    private var scheduledDate: ScheduledDate? = null
-    private var cassavaPriceList: List<CassavaPrice>? = null
 
     private var factoryRequired = false
     private var otherMarketsRequired = false
@@ -85,7 +75,6 @@ class CassavaMarketActivity : BaseActivity() {
     private var selectionMade = false
 
     companion object {
-        @JvmField
         var useCaseTag: String = "useCase"
     }
 
@@ -103,7 +92,6 @@ class CassavaMarketActivity : BaseActivity() {
             unitOfSaleTitle = contentCassavaMarket.unitOfSaleTitle
             rdgMarketOutlet = contentCassavaMarket.rdgMarketOutlet
             rdgStarchFactories = contentCassavaMarket.rdgStarchFactories
-            rdgUnitOfSale = contentCassavaMarket.rdgUnitOfSale
 
             rdStarchFactory = contentCassavaMarket.rdFactory
 
@@ -138,28 +126,25 @@ class CassavaMarketActivity : BaseActivity() {
             }
         }
 
-        val database = getDatabase(this@CassavaMarketActivity)
-        mathHelper = MathHelper()
-
-        cassavaMarket = database.cassavaMarketDao().findOne()
-        scheduledDate = database.scheduleDateDao().findOne()
+        val cassavaMarket = database.cassavaMarketDao().findOne()
         if (cassavaMarket != null) {
-            selectedFactory = cassavaMarket!!.starchFactory
-            unitOfSale = cassavaMarket!!.unitOfSale
-            unitPrice = cassavaMarket!!.unitPrice
-            unitPriceM1 = cassavaMarket!!.unitPriceM1
-            unitPriceM2 = cassavaMarket!!.unitPriceM2
-            unitPriceP1 = cassavaMarket!!.unitPriceP1
-            unitPriceP2 = cassavaMarket!!.unitPriceP2
+            selectedFactory = cassavaMarket.starchFactory
+            unitOfSale = cassavaMarket.unitOfSale.toString()
+            unitPrice = cassavaMarket.unitPrice
+            unitPriceM1 = cassavaMarket.unitPriceM1
+            unitPriceM2 = cassavaMarket.unitPriceM2
+            unitPriceP1 = cassavaMarket.unitPriceP1
+            unitPriceP2 = cassavaMarket.unitPriceP2
         }
+        val scheduledDate = database.scheduleDateDao().findOne()
         if (scheduledDate != null) {
-            harvestWindow = scheduledDate!!.harvestWindow
+            harvestWindow = scheduledDate.harvestWindow
         }
 
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.countryCode!!
-            currency = profileInfo.currencyCode!!
+            countryCode = profileInfo.countryCode
+            currency = profileInfo.currencyCode
         }
         val intent = intent
         if (intent != null) {
@@ -196,15 +181,15 @@ class CassavaMarketActivity : BaseActivity() {
                 factoryTitle!!.visibility = View.VISIBLE
                 starchFactoryCard!!.visibility = View.VISIBLE
                 factoryRequired = true
-                produceType = EnumCassavaProduceType.ROOTS.produce()
-                unitOfSale = "NA"
+                produceType = EnumCassavaProduceType.ROOTS.name
+                unitOfSale = EnumUnitOfSale.NA.name
                 unitPrice = 0.0
                 unitPriceP1 = 0.0
                 unitPriceP2 = 0.0
                 unitPriceM1 = 0.0
                 unitPriceM2 = 0.0
             } else if (radioIndex == R.id.rdOtherMarket) {
-                produceType = EnumCassavaProduceType.ROOTS.produce()
+                produceType = EnumCassavaProduceType.ROOTS.name
                 selectedFactory = "NA"
                 otherMarketsRequired = true
                 hideAll(false)
@@ -233,40 +218,36 @@ class CassavaMarketActivity : BaseActivity() {
             }
         }
 
-        rdgUnitOfSale!!.setOnCheckedChangeListener { radioGroup: RadioGroup?, radioIndex: Int ->
+        binding.contentCassavaMarket.rdgUnitOfSale.setOnCheckedChangeListener { radioGroup: RadioGroup?, radioIndex: Int ->
+            dataIsValid = false
             when (radioIndex) {
                 R.id.rd_per_kg -> {
-                    unitOfSale = EnumUnitOfSale.ONE_KG.unitOfSale(this@CassavaMarketActivity)
-                    unitOfSaleEnum = EnumUnitOfSale.ONE_KG
+                    unitOfSale = EnumUnitOfSale.ONE_KG.name
                     unitWeight = EnumUnitOfSale.ONE_KG.unitWeight()
                 }
 
                 R.id.rd_50_kg_bag -> {
-                    unitOfSale = EnumUnitOfSale.FIFTY_KG.unitOfSale(this@CassavaMarketActivity)
-                    unitOfSaleEnum = EnumUnitOfSale.FIFTY_KG
+                    unitOfSale = EnumUnitOfSale.FIFTY_KG.name
                     unitWeight = EnumUnitOfSale.FIFTY_KG.unitWeight()
                 }
 
                 R.id.rd_100_kg_bag -> {
-                    unitOfSale = EnumUnitOfSale.HUNDRED_KG.unitOfSale(this@CassavaMarketActivity)
-                    unitOfSaleEnum = EnumUnitOfSale.HUNDRED_KG
+                    unitOfSale = EnumUnitOfSale.HUNDRED_KG.name
                     unitWeight = EnumUnitOfSale.HUNDRED_KG.unitWeight()
                 }
 
                 R.id.rd_per_tonne -> {
-                    unitOfSale = EnumUnitOfSale.THOUSAND_KG.unitOfSale(this@CassavaMarketActivity)
-                    unitOfSaleEnum = EnumUnitOfSale.THOUSAND_KG
-                    unitWeight = EnumUnitOfSale.THOUSAND_KG.unitWeight()
+                    unitOfSale = EnumUnitOfSale.TONNE.name
+                    unitWeight = EnumUnitOfSale.TONNE.unitWeight()
                 }
             }
-            dataIsValid = false
         }
 
 
-        btnFinish!!.setOnClickListener { view: View? -> validate(false) }
-        btnCancel!!.setOnClickListener { view: View? -> closeActivity(false) }
+        btnFinish!!.setOnClickListener { validate(false) }
+        btnCancel!!.setOnClickListener { closeActivity(false) }
         if (enumUseCase == EnumUseCase.CIM) {
-            produceType = EnumCassavaProduceType.ROOTS.produce()
+            produceType = EnumCassavaProduceType.ROOTS.name
             factoryRequired = false
             otherMarketsRequired = false
             selectionMade = true
@@ -286,7 +267,6 @@ class CassavaMarketActivity : BaseActivity() {
     }
 
     override fun validate(backPressed: Boolean) {
-        val database = getDatabase(this@CassavaMarketActivity)
         if (factoryRequired) {
             if (selectedFactory.isNullOrEmpty() || selectedFactory.equals(
                     "NA",
@@ -308,7 +288,7 @@ class CassavaMarketActivity : BaseActivity() {
                 )
                 return
             }
-            if (unitOfSale.isNullOrEmpty()) {
+            if (unitOfSale.isEmpty()) {
                 showCustomWarningDialog(
                     getString(R.string.lbl_invalid_sale_unit),
                     getString(R.string.lbl_sale_unit_prompt)
@@ -340,22 +320,18 @@ class CassavaMarketActivity : BaseActivity() {
 
         if (dataIsValid) {
             try {
-                val market = cassavaMarket ?: CassavaMarket()
-                cassavaMarket = market.apply {
+                var cassavaMarket = database.cassavaMarketDao().findOne()
+                if (cassavaMarket == null) {
+                    cassavaMarket = CassavaMarket()
+                }
+                cassavaMarket.apply {
                     starchFactory = selectedFactory
                     isStarchFactoryRequired = factoryRequired
                     produceType = this@CassavaMarketActivity.produceType
-                        ?: EnumCassavaProduceType.ROOTS.produce()
-                    unitOfSale = this@CassavaMarketActivity.unitOfSale
-                    unitWeight = this@CassavaMarketActivity.unitWeight
-                    unitPrice = this@CassavaMarketActivity.unitPrice
-                    unitPriceM1 = this@CassavaMarketActivity.unitPriceM1
-                    unitPriceM2 = this@CassavaMarketActivity.unitPriceM2
-                    unitPriceP1 = this@CassavaMarketActivity.unitPriceP1
-                    unitPriceP2 = this@CassavaMarketActivity.unitPriceP2
+                        ?: EnumCassavaProduceType.ROOTS.name
                 }
 
-                database.cassavaMarketDao().insert(market)
+                database.cassavaMarketDao().insert(cassavaMarket)
                 closeActivity(backPressed)
             } catch (ex: Exception) {
                 Sentry.captureException(ex)
@@ -365,20 +341,22 @@ class CassavaMarketActivity : BaseActivity() {
     }
 
     private fun hideAll(clearMarket: Boolean) {
-        if (clearMarket) {
-            rdgStarchFactories!!.clearCheck()
-        } else {
-            rdgUnitOfSale!!.clearCheck()
+        binding.contentCassavaMarket.apply {
+            if (clearMarket) {
+                rdgStarchFactories.clearCheck()
+            } else {
+                rdgUnitOfSale.clearCheck()
+            }
+
+            factoryTitle.visibility = View.GONE
+            starchFactoryCard.visibility = View.GONE
+
+            unitOfSaleTitle.visibility = View.GONE
+            unitOfSaleCard.visibility = View.GONE
+
+            monthOneWindowCard.visibility = View.GONE
+            monthTwoWindowCard.visibility = View.GONE
         }
-
-        factoryTitle!!.visibility = View.GONE
-        starchFactoryCard!!.visibility = View.GONE
-
-        unitOfSaleTitle!!.visibility = View.GONE
-        unitOfSaleCard!!.visibility = View.GONE
-
-        monthOneWindowCard!!.visibility = View.GONE
-        monthTwoWindowCard!!.visibility = View.GONE
     }
 
 
@@ -416,8 +394,8 @@ class CassavaMarketActivity : BaseActivity() {
                 response: Response<CassavaPricePriceResponse>
             ) {
                 if (response.isSuccessful) {
-                    cassavaPriceList = response.body()!!.data
-                    database.cassavaPriceDao().insertAll(cassavaPriceList!!)
+                    val cassavaPriceList = response.body()!!.data
+                    database.cassavaPriceDao().insertAll(cassavaPriceList)
                 }
             }
 
@@ -435,22 +413,25 @@ class CassavaMarketActivity : BaseActivity() {
         val starchFactoriesList =
             database.starchFactoryDao().findStarchFactoriesByCountry(countryCode)
         addFactoriesRadioButtons(starchFactoriesList)
-        cassavaMarket = database.cassavaMarketDao().findOne()
 
+        val cassavaMarket = database.cassavaMarketDao().findOne()
         if (cassavaMarket != null) {
-            val sfRequired = cassavaMarket!!.isStarchFactoryRequired
+            val sfRequired = cassavaMarket.isStarchFactoryRequired
             rdgMarketOutlet!!.check(if (sfRequired) R.id.rdFactory else R.id.rdOtherMarket)
             if (!sfRequired) {
-                produceType = cassavaMarket!!.produceType
-                unitOfSale = cassavaMarket!!.unitOfSale
-                unitPrice = cassavaMarket!!.unitPrice
-                when (unitOfSaleEnum) {
-                    EnumUnitOfSale.ONE_KG -> rdgUnitOfSale!!.check(R.id.rd_per_kg)
-                    EnumUnitOfSale.FIFTY_KG -> rdgUnitOfSale!!.check(R.id.rd_50_kg_bag)
-                    EnumUnitOfSale.HUNDRED_KG -> rdgUnitOfSale!!.check(R.id.rd_100_kg_bag)
-                    EnumUnitOfSale.THOUSAND_KG -> rdgUnitOfSale!!.check(R.id.rd_per_tonne)
-                    EnumUnitOfSale.NA -> TODO()
-                    EnumUnitOfSale.FRESH_COB -> TODO()
+                produceType = cassavaMarket.produceType
+                unitOfSale = cassavaMarket.unitOfSale ?: "NA"
+                unitPrice = cassavaMarket.unitPrice
+                val unitOfSaleEnum = EnumUnitOfSale.valueOf(unitOfSale)
+
+                binding.contentCassavaMarket.apply {
+                    when (unitOfSaleEnum) {
+                        EnumUnitOfSale.ONE_KG -> rdgUnitOfSale.check(R.id.rd_per_kg)
+                        EnumUnitOfSale.FIFTY_KG -> rdgUnitOfSale.check(R.id.rd_50_kg_bag)
+                        EnumUnitOfSale.HUNDRED_KG -> rdgUnitOfSale.check(R.id.rd_100_kg_bag)
+                        EnumUnitOfSale.TONNE -> rdgUnitOfSale.check(R.id.rd_per_tonne)
+                        else -> {}
+                    }
                 }
             }
         }
@@ -496,14 +477,13 @@ class CassavaMarketActivity : BaseActivity() {
         arguments.putDouble(CassavaPriceDialogFragment.SELECTED_PRICE, unitPrice)
         arguments.putDouble(CassavaPriceDialogFragment.AVERAGE_PRICE, unitPrice)
         arguments.putString(CassavaPriceDialogFragment.UNIT_OF_SALE, unitOfSale)
-        arguments.putParcelable(CassavaPriceDialogFragment.ENUM_UNIT_OF_SALE, unitOfSaleEnum)
 
         val priceDialogFragment = CassavaPriceDialogFragment()
         priceDialogFragment.arguments = arguments
 
         priceDialogFragment.setOnDismissListener { selectedPrice: Double, isExactPrice: Boolean ->
             val setPrice =
-                if (isExactPrice) selectedPrice else mathHelper!!.convertToUnitWeightPrice(
+                if (isExactPrice) selectedPrice else mathHelper.convertToUnitWeightPrice(
                     selectedPrice,
                     unitWeight
                 )
