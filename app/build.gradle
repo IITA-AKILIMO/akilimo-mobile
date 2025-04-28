@@ -172,7 +172,8 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'              // image loader
     implementation 'com.mikhaellopez:circularimageview:4.3.0'           // circle image view
 
-    implementation 'net.danlew:android.joda:2.10.6'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.4.9'
+
     implementation 'com.github.mohammadatif:Animatoo:master'
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.2' //Feature discovery library
 
@@ -219,7 +220,6 @@ dependencies {
     kapt 'com.fasterxml.jackson.core:jackson-annotations:2.17.1'
 
     testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.17.1'
-    testImplementation 'joda-time:joda-time:2.12.2'
 
     testImplementation project(path: ':app')
     testImplementation 'junit:junit:4.13.2'
