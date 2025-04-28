@@ -119,8 +119,10 @@ abstract class BaseActivity : AppCompatActivity() {
         title.text = titleText
         content.text = contentText
 
-        if (buttonTitle!!.isNotEmpty()) {
-            btnClose.text = buttonTitle
+        if (buttonTitle != null) {
+            if (buttonTitle.isNotEmpty()) {
+                btnClose.text = buttonTitle
+            }
         }
         btnClose.setOnClickListener { view: View? ->
             dialog.dismiss()
