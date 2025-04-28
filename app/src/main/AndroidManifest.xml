@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <!-- let us add permissions here -->
+
+    <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -15,64 +16,46 @@
         android:name=".Akilimo"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="DataExtractionRules,GoogleAppIndexingWarning"
-        tools:replace="android:icon, android:theme, android:label"
+        tools:replace="android:icon,android:theme,android:label"
         tools:targetApi="s">
 
-        <!-- Required: set your sentry.io project identifier (DSN) -->
+        <!-- Sentry Configuration -->
         <meta-data
             android:name="io.sentry.dsn"
             android:value="https://a411c08f8d5249f393ecdc3496fa069c@o212209.ingest.sentry.io/1338615" />
-
-        <!-- enable automatic breadcrumbs for user interactions (clicks, swipes, scrolls) -->
         <meta-data
             android:name="io.sentry.traces.user-interaction.enable"
             android:value="true" />
-        <!-- enable screenshot for crashes -->
         <meta-data
             android:name="io.sentry.attach-screenshot"
             android:value="true" />
-        <!-- enable view hierarchy for crashes -->
         <meta-data
             android:name="io.sentry.attach-view-hierarchy"
             android:value="true" />
-
-        <!-- enable the performance API by setting a sample-rate, adjust in production env -->
         <meta-data
             android:name="io.sentry.traces.sample-rate"
             android:value="1.0" />
-        <!-- enable profiling when starting transactions, adjust in production env -->
         <meta-data
             android:name="io.sentry.traces.profiling.sample-rate"
             android:value="1.0" />
 
-        <service android:name=".services.GPSTracker" />
-
-<!--        <uses-library-->
-<!--            android:name="org.apache.http.legacy"-->
-<!--            android:required="false" />-->
-
-
+        <!-- Preloaded fonts (optimize app startup if fonts are used early) -->
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
+        <!-- Services -->
+        <service
+            android:name=".services.GPSTracker"
+            android:exported="false" /> <!-- Service shouldn't be exposed unless really needed -->
+
+        <!-- Activities -->
         <activity android:name=".views.activities.HomeStepperActivity" />
-        <activity
-            android:name=".views.activities.SplashActivity"
-            android:exported="true"
-            android:theme="@style/SplashTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
         <activity android:name=".views.activities.SweetPotatoMarketActivity" />
         <activity android:name=".views.activities.TractorAccessActivity" />
         <activity android:name=".views.activities.ManualTillageCostActivity" />
@@ -93,6 +76,18 @@
         <activity android:name=".views.activities.MaizePerformanceActivity" />
         <activity android:name=".views.activities.usecases.InterCropRecActivity" />
         <activity android:name=".views.activities.MySurveyActivity" />
+
+        <!-- Splash Activity (Launcher) -->
+        <activity
+            android:name=".views.activities.SplashActivity"
+            android:exported="true"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>
