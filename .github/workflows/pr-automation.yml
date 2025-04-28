@@ -1,0 +1,15 @@
+name: Auto Approve
+on: pull_request_target
+jobs:
+  auto-approve:
+    runs-on: ubuntu-24.04
+    permissions:
+      pull-requests: write
+    concurrency:
+      cancel-in-progress: true
+      group: pr-${{ github.ref }}
+    steps:
+      - name: Auto approve PR
+        uses: hmarr/auto-approve-action@v4
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
