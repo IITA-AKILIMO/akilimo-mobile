@@ -53,7 +53,7 @@ object DateHelper {
         }
     }
 
-    fun olderThanCurrent(dateOne: String?, dateFormat: String): Boolean {
+    fun olderThanCurrent(dateOne: String?, dateFormat: String = "dd/MM/yyyy"): Boolean {
         val currentDate = LocalDate.now()
         val d1 = formatToLocalDate(dateOne, dateFormat)
         return d1.isBefore(currentDate)
