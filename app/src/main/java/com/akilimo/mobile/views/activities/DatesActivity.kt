@@ -17,11 +17,10 @@ import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.ScheduledDate
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.IDatePickerDismissListener
-import com.akilimo.mobile.utils.DateHelper
+import com.akilimo.mobile.utils.DateHelper.formatLongToDateString
 import com.akilimo.mobile.utils.DateHelper.formatToLocalDate
 import com.akilimo.mobile.utils.DateHelper.olderThanCurrent
 import com.akilimo.mobile.utils.DateHelper.simpleDateFormatter
-import com.akilimo.mobile.utils.Tools.formatLongToDateString
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.views.fragments.dialog.DateDialogPickerFragment
 import io.sentry.Sentry
@@ -62,7 +61,7 @@ class DatesActivity : BaseActivity() {
     var alternativeDate: Boolean = false
     var alreadyPlanted: Boolean = false
 
-    var scheduledDate: ScheduledDate? = null
+//    var scheduledDate: ScheduledDate? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -177,20 +176,21 @@ class DatesActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         val database = getDatabase(this@DatesActivity)
-        scheduledDate = database.scheduleDateDao().findOne()
 
+        val scheduledDate = database.scheduleDateDao().findOne()
+
+        val dateFormat = "dd-MM-yyyy"
         if (scheduledDate != null) {
-            alternativeDate = scheduledDate!!.alternativeDate
-            val pd = scheduledDate!!.plantingDate
-            val hd = scheduledDate!!.harvestDate
-            val pw = scheduledDate!!.plantingWindow
-            val hw = scheduledDate!!.harvestWindow
+            alternativeDate = scheduledDate.alternativeDate
+            val pd = scheduledDate.plantingDate
+            val hd = scheduledDate.harvestDate
+            val pw = scheduledDate.plantingWindow
+            val hw = scheduledDate.harvestWindow
 
-            alreadyPlanted = scheduledDate!!.alreadyPlanted
+            alreadyPlanted = scheduledDate.alreadyPlanted
 
-            DateHelper.dateTimeFormat = "dd/MM/yyyy"
-            val pDate = formatToLocalDate(pd)
-            val hDate = formatToLocalDate(hd)
+            val pDate = formatToLocalDate(pd, dateFormat)
+            val hDate = formatToLocalDate(hd, dateFormat)
             lblSelectedPlantingDate!!.text = pDate.toString()
             lblSelectedHarvestDate!!.text = hDate.toString()
             rdgAlternativeDate!!.check(if (alternativeDate) R.id.rdYes else R.id.rdNo)
@@ -226,22 +226,22 @@ class DatesActivity : BaseActivity() {
             return
         }
 
+        var scheduledDate = database.scheduleDateDao().findOne()
+        if (scheduledDate == null) {
+            scheduledDate = ScheduledDate()
+        }
         try {
 
-            if (scheduledDate == null) {
-                scheduledDate = ScheduledDate()
-            }
-
             alreadyPlanted = olderThanCurrent(selectedPlantingDate)
-            scheduledDate!!.harvestDate = selectedHarvestDate
-            scheduledDate!!.harvestWindow = harvestWindow
-            scheduledDate!!.plantingDate = selectedPlantingDate
-            scheduledDate!!.plantingWindow = plantingWindow
-            scheduledDate!!.alternativeDate = alternativeDate
-            scheduledDate!!.alreadyPlanted = alreadyPlanted
+            scheduledDate.harvestDate = selectedHarvestDate
+            scheduledDate.harvestWindow = harvestWindow
+            scheduledDate.plantingDate = selectedPlantingDate
+            scheduledDate.plantingWindow = plantingWindow
+            scheduledDate.alternativeDate = alternativeDate
+            scheduledDate.alreadyPlanted = alreadyPlanted
 
             val database = getDatabase(this@DatesActivity)
-            database.scheduleDateDao().insert(scheduledDate!!)
+            database.scheduleDateDao().insert(scheduledDate)
             database.adviceStatusDao()
                 .insert(AdviceStatus(EnumAdviceTasks.PLANTING_AND_HARVEST.name, true))
 
@@ -270,13 +270,13 @@ class DatesActivity : BaseActivity() {
             ) {
                 val dateMs = myCalendar.timeInMillis
                 if (pickPlantingDate) {
-                    selectedPlantingDate = simpleDateFormatter.format(myCalendar.time)
-                    lblSelectedPlantingDate!!.text = formatLongToDateString(dateMs)
                     selectedHarvestDate = null
-                    lblSelectedHarvestDate?.text = null
+                    selectedPlantingDate = simpleDateFormatter.format(myCalendar.time)
+                    binding.lblSelectedPlantingDate.text = formatLongToDateString(dateMs)
+                    binding.lblSelectedHarvestDate.text = null
                     alreadyPlanted = olderThanCurrent(selectedPlantingDate)
                     if (alreadyPlanted) {
-                        flexiblePlanting!!.isChecked = false
+                        binding.flexiblePlanting.isChecked = false
                     }
                 } else if (pickHarvestDate) {
                     selectedHarvestDate = simpleDateFormatter.format(myCalendar.time)
