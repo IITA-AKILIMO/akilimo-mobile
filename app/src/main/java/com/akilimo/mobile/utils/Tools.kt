@@ -18,9 +18,6 @@ import io.sentry.Sentry
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import java.util.UUID
 import kotlin.math.roundToInt
 
@@ -43,15 +40,6 @@ object Tools {
         } catch (e: Exception) {
             // Optional: log or ignore
         }
-    }
-
-    private fun formatCalendarToDateString(dateTime: Date): String {
-        val newFormat = SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH)
-        return newFormat.format(dateTime)
-    }
-
-    fun formatLongToDateString(dateTime: Long): String {
-        return formatCalendarToDateString(Date(dateTime))
     }
 
     fun dpToPx(context: Context, dp: Int): Int {

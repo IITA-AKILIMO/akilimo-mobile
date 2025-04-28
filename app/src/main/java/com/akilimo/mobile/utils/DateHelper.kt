@@ -13,7 +13,6 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-@Deprecated("Find better ways to implement the functions listed")
 object DateHelper {
 
     var format: String = "dd/MM/yyyy"
@@ -71,4 +70,14 @@ object DateHelper {
             null
         }
     }
+
+    private fun formatCalendarToDateString(dateTime: Date): String {
+        val newFormat = SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH)
+        return newFormat.format(dateTime)
+    }
+
+    fun formatLongToDateString(dateTime: Long): String {
+        return formatCalendarToDateString(Date(dateTime))
+    }
+
 }
