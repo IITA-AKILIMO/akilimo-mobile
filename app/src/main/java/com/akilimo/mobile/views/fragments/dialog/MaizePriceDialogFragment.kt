@@ -72,6 +72,7 @@ class MaizePriceDialogFragment : BaseDialogFragment() {
             countryCode = bundle.getString(COUNTRY_CODE)
             unitOfSaleEnum = bundle.getParcelable(ENUM_UNIT_OF_SALE)
         }
+        _binding = FragmentCassavaPriceDialogBinding.inflate(layoutInflater)
 
         val dialog = Dialog(context)
 
@@ -124,13 +125,11 @@ class MaizePriceDialogFragment : BaseDialogFragment() {
                 radioGroup, dialog
             )
         }
-        if (database != null) {
-            maizePriceList = database.maizePriceDao().findAllByCountryAndProduceType(
-                countryCode!!,
-                produceType!!
-            )
-            addPriceRadioButtons(maizePriceList!!, averagePrice)
-        }
+        maizePriceList = database.maizePriceDao().findAllByCountryAndProduceType(
+            countryCode!!,
+            produceType!!
+        )
+        addPriceRadioButtons(maizePriceList!!, averagePrice)
         return dialog
     }
 
