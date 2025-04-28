@@ -6,20 +6,20 @@ import com.akilimo.mobile.entities.StarchFactory
 @Dao
 interface StarchFactoryDao {
 
-    @Query("SELECT * FROM starch_factory")
+    @Query("SELECT * FROM starch_factories")
     fun listAll(): List<StarchFactory>
 
-    @Query("SELECT * FROM starch_factory LIMIT 1")
+    @Query("SELECT * FROM starch_factories LIMIT 1")
     fun findOne(): StarchFactory?
 
-    @Query("SELECT * FROM starch_factory where countryCode=:countryCode and factorySelected=1")
-    fun findOneByCountry(countryCode: String): StarchFactory?
+    @Query("SELECT * FROM starch_factories where country_code=:countryCode and factory_selected=1")
+    fun findOneByCountryCode(countryCode: String): StarchFactory?
 
-    @Query("SELECT * FROM starch_factory where factoryName=:factoryName LIMIT 1")
+    @Query("SELECT * FROM starch_factories where factory_name=:factoryName LIMIT 1")
     fun findStarchFactoryByName(factoryName: String): StarchFactory?
 
 
-    @Query("SELECT * FROM starch_factory where factoryNameCountry=:factoryNameCountry LIMIT 1")
+    @Query("SELECT * FROM starch_factories where factory_name_country=:factoryNameCountry LIMIT 1")
     fun findStarchFactoryByNameCountry(factoryNameCountry: String): StarchFactory?
 
 
@@ -35,9 +35,10 @@ interface StarchFactoryDao {
     @Delete
     fun delete(starchFactory: StarchFactory?)
 
-    @Query("select * from starch_factory where countryCode=:countryCode")
+    @Query("select * from starch_factories where country_code=:countryCode")
     fun findStarchFactoriesByCountry(countryCode: String): List<StarchFactory>
-    @Query("DELETE FROM starch_factory")
+
+    @Query("DELETE FROM starch_factories")
     fun deleteAll()
 
 }

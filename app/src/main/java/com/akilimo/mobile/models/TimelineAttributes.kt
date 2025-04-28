@@ -2,8 +2,9 @@ package com.akilimo.mobile.models
 
 import android.os.Parcelable
 import com.akilimo.mobile.utils.enums.Orientation
-import kotlinx.android.parcel.IgnoredOnParcel
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
+
 import kotlin.properties.Delegates.observable
 
 @Parcelize
@@ -53,12 +54,5 @@ class TimelineAttributes(
         )
         attributes.orientation = orientation
         return attributes
-    }
-
-    override fun toString(): String {
-        return "TimelineAttributes(markerSize=$markerSize, markerCompleteColor=$markerCompleteColor,markerIncompleteColor=$markerIncompleteColor, markerInCenter=$markerInCenter, " +
-                "markerTopPadding=$markerTopPadding, markerBottomPadding=$markerBottomPadding, linePadding=$linePadding, " +
-                "lineWidth=$lineWidth, startLineColor=$startLineColor, endLineColor=$endLineColor, lineStyle=$lineStyle, " +
-                "lineDashWidth=$lineDashWidth, lineDashGap=$lineDashGap, onOrientationChanged=$onOrientationChanged)"
     }
 }

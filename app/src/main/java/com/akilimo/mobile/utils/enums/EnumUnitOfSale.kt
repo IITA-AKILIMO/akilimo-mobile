@@ -3,7 +3,7 @@ package com.akilimo.mobile.utils.enums
 import android.content.Context
 import android.os.Parcelable
 import com.akilimo.mobile.R
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 enum class EnumUnitOfSale : Parcelable {

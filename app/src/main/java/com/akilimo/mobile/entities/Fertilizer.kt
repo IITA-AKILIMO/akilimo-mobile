@@ -1,80 +1,98 @@
 package com.akilimo.mobile.entities
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
+
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class FertilizerResponse(
+    @JsonProperty("data") val data: List<Fertilizer>
+)
 
 @Parcelize
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Entity(tableName = "fertilizer", indices = [Index(value = ["fertilizerCountry"], unique = true)])
-open class Fertilizer : Parcelable {
-    @PrimaryKey(autoGenerate = true)
-    var id: Int? = null
+@Entity(
+    tableName = "fertilizers",
+    indices = [Index(value = ["fertilizer_key", "country_code"], unique = true)]
+)
+data class Fertilizer(
+    @PrimaryKey(autoGenerate = false)
+    @ColumnInfo(name = "id")
+    @JsonProperty("id") val id: Int,
 
-    var imageId = 0
+    @ColumnInfo(name = "image_id")
+    @JsonProperty("imageId") val imageId: Int = 0,
 
-    @JsonProperty("fertilizerKey")
-    var fertilizerKey: String? = null
+    @ColumnInfo(name = "country_code")
+    @JsonProperty("country_code") var countryCode: String? = null,
 
-    @JsonProperty("fertilizerId")
-    var fertilizerId = 0
+    @ColumnInfo(name = "fertilizer_key")
+    @JsonProperty("fertilizer_key") val fertilizerKey: String? = null,
 
-    @JsonProperty("name")
-    var name: String? = null
+    @ColumnInfo(name = "name")
+    @JsonProperty("name") val name: String? = null,
 
+    @ColumnInfo(name = "type")
+    @JsonProperty("type") val fertilizerType: String? = null,
 
-    @JsonProperty("type")
-    var fertilizerType: String? = null
+    @ColumnInfo(name = "weight")
+    @JsonProperty("weight") val weight: Int = 0,
 
-    @JsonProperty("weight")
-    var weight = 0
+    @ColumnInfo(name = "use_case")
+    @JsonProperty("use_case") val useCase: String? = null,
 
-    @JsonProperty("price")
-    var price: Double = 0.0
+    @ColumnInfo(name = "available")
+    @JsonProperty("available") var available: Boolean = false,
 
+    @ColumnInfo(name = "sort_order")
+    @JsonProperty("sort_order") val sortOrder: Int = 0,
 
-    @JsonProperty("fertilizerCountry")
-    var fertilizerCountry: String? = null
+    @ColumnInfo(name = "created_at")
+    @JsonProperty("created_at") val createdAt: String? = null,
 
-    @JsonProperty("currency")
-    var currency: String? = null
+    @ColumnInfo(name = "updated_at")
+    @JsonProperty("updated_at") val updatedAt: String? = null,
 
-    @JsonProperty("useCase")
-    var useCase: String? = null
+    @ColumnInfo(name = "price")
+    @JsonProperty("price") var price: Double = 0.0,
 
-    var countryCode: String? = null
+    @ColumnInfo(name = "currency_code")
+    @JsonProperty("currency_code") var currencyCode: String? = null,
 
-    var priceRange: String? = null
+    @ColumnInfo(name = "price_range")
+    @JsonProperty("price_range") var priceRange: String? = null,
 
-    var pricePerBag = 0.0
+    @ColumnInfo(name = "price_per_bag")
+    @JsonProperty("price_per_bag") var pricePerBag: Double = 0.0,
 
-    @JsonProperty("kcontent")
-    var kContent = 0
+    @ColumnInfo(name = "k_content")
+    @JsonProperty("k_content") var kContent: Int = 0,
 
-    @JsonProperty("ncontent")
-    var nContent = 0
+    @ColumnInfo(name = "n_content")
+    @JsonProperty("n_content") var nContent: Int = 0,
 
-    @JsonProperty("pcontent")
-    var pContent = 0
+    @ColumnInfo(name = "p_content")
+    @JsonProperty("p_content") var pContent: Int = 0,
 
-    /***---Boolean fields here--- */
-    @JsonProperty("available")
-    var available = false
+    @ColumnInfo(name = "cim_available")
+    @JsonProperty("cim_available") var cimAvailable: Boolean = false,
 
-    @JsonProperty("cimAvailable")
-    var cimAvailable = false
+    @ColumnInfo(name = "cis_available")
+    @JsonProperty("cis_available") var cisAvailable: Boolean = false,
 
-    @JsonProperty("cisAvailable")
-    var cisAvailable = false
+    @ColumnInfo(name = "selected")
+    @JsonProperty("selected") var selected: Boolean = false,
 
-    var selected = false
+    @ColumnInfo(name = "exact_price")
+    @JsonProperty("exact_price") var exactPrice: Boolean = false,
 
-    var exactPrice = false
-
-    @JsonProperty("custom")
-    var custom = false
-}
+    @ColumnInfo(name = "custom")
+    @JsonProperty("custom") var custom: Boolean = false
+) : Parcelable

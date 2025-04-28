@@ -7,20 +7,20 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
-import com.hbb20.CountryCodePicker
 import com.akilimo.mobile.R
-import com.akilimo.mobile.entities.ProfileInfo
+import com.akilimo.mobile.entities.UserProfile
 import com.akilimo.mobile.inherit.BaseDialogFragment
 import com.akilimo.mobile.interfaces.IRecommendationCallBack
 import com.akilimo.mobile.utils.ValidationHelper
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import com.hbb20.CountryCodePicker
 import org.jetbrains.annotations.NotNull
 
 
 class RecommendationChannelDialog(
     private val callbackListener: @NotNull IRecommendationCallBack,
-    private val myProfileInfo: @NotNull ProfileInfo
+    private val myUserProfile: @NotNull UserProfile
 ) : BaseDialogFragment() {
 
 
@@ -40,7 +40,7 @@ class RecommendationChannelDialog(
     lateinit var btnFinish: AppCompatButton
     lateinit var btnCancel: AppCompatButton
 
-    private var profileInfo: ProfileInfo? = null
+    private var userProfile: UserProfile? = null
 
     private var dataIsValid = false
     private var numberIsValid = false
@@ -69,7 +69,7 @@ class RecommendationChannelDialog(
         super.onCreateView(inflater, container, savedInstanceState)
         val view = inflater.inflate(R.layout.dialog_recommendations_channel, container, false)
 
-        this.profileInfo = myProfileInfo
+        this.userProfile = myUserProfile
 
         toolbar = view.findViewById(R.id.toolbar)
         lytEmail = view.findViewById(R.id.lytEmail)
@@ -82,11 +82,11 @@ class RecommendationChannelDialog(
         btnFinish = view.findViewById(R.id.btnFinish)
         btnCancel = view.findViewById(R.id.btnCancel)
 
-        if (profileInfo != null) {
-            fullMobileNumber = profileInfo?.fullMobileNumber
-            email = profileInfo?.email
-            sendEmail = profileInfo?.sendEmail!!
-            sendSms = profileInfo?.sendSms!!
+        if (userProfile != null) {
+            fullMobileNumber = userProfile?.fullMobileNumber
+            email = userProfile?.email
+            sendEmail = userProfile?.sendEmail!!
+            sendSms = userProfile?.sendSms!!
         }
 
         chkEmail.isChecked = sendEmail
@@ -135,16 +135,16 @@ class RecommendationChannelDialog(
             }
 
             if (dataIsValid) {
-                if (profileInfo == null) {
-                    profileInfo = ProfileInfo()
+                if (userProfile == null) {
+                    userProfile = UserProfile()
                 }
-                profileInfo?.mobileCode = (mobileCode)
-                profileInfo?.email = (email)
-                profileInfo?.fullMobileNumber = (fullMobileNumber)
-                profileInfo?.sendEmail = (sendEmail)
-                profileInfo?.sendSms = (sendSms)
+                userProfile?.mobileCode = (mobileCode)
+                userProfile?.email = (email)
+                userProfile?.fullMobileNumber = (fullMobileNumber)
+                userProfile?.sendEmail = (sendEmail)
+                userProfile?.sendSms = (sendSms)
 
-                callbackListener.onDataReceived(profileInfo!!)
+                callbackListener.onDataReceived(userProfile!!)
                 dismiss()
             }
 

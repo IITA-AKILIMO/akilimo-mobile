@@ -6,10 +6,10 @@ import com.akilimo.mobile.entities.CassavaMarket
 @Dao
 interface CassavaMarketDao {
 
-    @Query("SELECT * FROM cassava_market")
+    @Query("SELECT * FROM cassava_markets")
     fun listAll(): List<CassavaMarket>
 
-    @Query("SELECT * FROM cassava_market LIMIT 1")
+    @Query("SELECT * FROM cassava_markets LIMIT 1")
     fun findOne(): CassavaMarket?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -21,6 +21,6 @@ interface CassavaMarketDao {
     @Delete
     fun delete(market: CassavaMarket?)
 
-    @Query("DELETE FROM cassava_market")
+    @Query("DELETE FROM cassava_markets")
     fun deleteAll()
 }

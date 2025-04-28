@@ -257,7 +257,7 @@
     <string name="title_activity_dst_recommendation">Recommendation</string>
 
     <string name="lbl_get_recommendations">Get recommendations</string>
-    <string name="lbl_rec_header">We are ready to give you recommendation. If you want more customized advice answer the questions below otherwise hit the "Get recommendations" button at the bottom</string>
+    <string name="lbl_rec_header">We are ready to give you recommendationResp. If you want more customized advice answer the questions below otherwise hit the "Get recommendations" button at the bottom</string>
     <string name="lbl_compute_error">Unable to compute recommendations, please try again</string>
     <string name="lbl_compute_timeout_error">Unable to compute recommendations, please try again</string>
 
@@ -413,7 +413,7 @@
     <string name="lbl_operation_type_validation_message">Select a proper operation type</string>
     <string name="lbl_bag_price">Bag price</string>
     <string name="lbl_how_do_you_sell_your_sweet_potato">How do you sell your sweet potato?</string>
-    <string name="lbl_do_you_want_to_receive_recommendations_via_email_and_sms">We are ready to calculate your recommendation. You can choose also to receive the advice via email and SMS.</string>
+    <string name="lbl_do_you_want_to_receive_recommendations_via_email_and_sms">We are ready to calculate your recommendationResp. You can choose also to receive the advice via email and SMS.</string>
     <string name="lbl_which_of_these_tillage_operations_do_you_perform">Which of these tillage operations do you perform?</string>
     <string name="lbl_dummy_fertilizer" translatable="false">NPK 20:10:10</string>
     <string name="lbl_options">Options</string>

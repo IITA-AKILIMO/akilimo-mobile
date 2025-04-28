@@ -1,179 +1,189 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_centerHorizontal="true"
     android:layout_centerVertical="true"
+    android:gravity="center"
     android:orientation="vertical"
     android:padding="@dimen/spacing_medium"
     tools:context="com.akilimo.mobile.views.activities.MySurveyActivity">
 
-
+    <!-- Title TextView -->
     <TextView
         android:id="@+id/textView0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_medium"
-
+        android:gravity="center"
         android:text="@string/lbl_describe_tool_use"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/primaryColor" />
 
+    <!-- User Type RadioGroup -->
     <RadioGroup
         android:id="@+id/rdgAkilimoUser"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:orientation="vertical">
 
         <RadioButton
             android:id="@+id/rdGrower"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_small"
             android:text="@string/lbl_grower" />
 
         <RadioButton
             android:id="@+id/rdFarmer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_small"
             android:text="@string/lbl_farmer" />
 
         <RadioButton
             android:id="@+id/rdExtAgent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_small"
             android:text="@string/lbl_ext_worker" />
 
         <RadioButton
             android:id="@+id/rdOther"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_small"
             android:text="@string/lbl_other" />
 
     </RadioGroup>
 
-
+    <!-- Advice Usefulness Scale -->
     <TextView
         android:id="@+id/textView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_medium"
-
+        android:gravity="center"
         android:text="@string/lbl_advice_usefulness_scale"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/primaryColor" />
 
-    <LinearLayout
+    <!-- Radio Group for Usefulness -->
+    <RadioGroup
+        android:id="@+id/rdgUseful"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_small">
 
-        <RadioGroup
-            android:id="@+id/rdgUseful"
+        <RadioButton
+            android:id="@+id/rdUseful1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="@dimen/spacing_medium">
+            android:padding="@dimen/spacing_small"
+            android:text="@string/lbl_one" />
 
-            <RadioButton
-                android:id="@+id/rdUseful1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/lbl_one" />
+        <RadioButton
+            android:id="@+id/rdUseful2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_small"
+            android:text="@string/lbl_two" />
 
-            <RadioButton
-                android:id="@+id/rdUseful2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/lbl_two" />
+        <RadioButton
+            android:id="@+id/rdUseful3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_small"
+            android:text="@string/lbl_three" />
 
+        <RadioButton
+            android:id="@+id/rdUseful4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_small"
+            android:text="@string/lbl_four" />
 
-            <RadioButton
-                android:id="@+id/rdUseful3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/lbl_three" />
+        <RadioButton
+            android:id="@+id/rdUseful5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_small"
+            android:text="@string/lbl_five" />
 
+    </RadioGroup>
 
-            <RadioButton
-                android:id="@+id/rdUseful4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/lbl_four" />
-
-            <RadioButton
-                android:id="@+id/rdUseful5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/lbl_five" />
-
-        </RadioGroup>
-    </LinearLayout>
-
+    <!-- Recommendation Scale -->
     <TextView
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_medium"
-
+        android:gravity="center"
         android:text="@string/lbl_recommendation_scale"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/primaryColor" />
 
-    <LinearLayout
+    <!-- Radio Group for Recommendation -->
+    <RadioGroup
+        android:id="@+id/rdgRecommend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_small">
 
-        <RadioGroup
-            android:id="@+id/rdgRecommend"
+        <RadioButton
+            android:id="@+id/rdRec1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="@dimen/spacing_medium">
+            android:padding="@dimen/spacing_small"
+            android:text="@string/lbl_one" />
 
-            <RadioButton
-                android:id="@+id/rdRec1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/lbl_one" />
+        <RadioButton
+            android:id="@+id/rdRec2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_small"
+            android:text="@string/lbl_two" />
 
-            <RadioButton
-                android:id="@+id/rdRec2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/lbl_two" />
+        <RadioButton
+            android:id="@+id/rdRec3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_small"
+            android:text="@string/lbl_three" />
 
-            <RadioButton
-                android:id="@+id/rdRec3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/lbl_three" />
+        <RadioButton
+            android:id="@+id/rdRec4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_small"
+            android:text="@string/lbl_four" />
 
-            <RadioButton
-                android:id="@+id/rdRec4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/lbl_four" />
+        <RadioButton
+            android:id="@+id/rdRec5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_small"
+            android:text="@string/lbl_five" />
 
-            <RadioButton
-                android:id="@+id/rdRec5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/lbl_five" />
+    </RadioGroup>
 
-        </RadioGroup>
-    </LinearLayout>
-
-
+    <!-- Finish Button -->
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnFinish"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_large"
-
         android:text="@string/lbl_finish"
         android:textAllCaps="true"
         android:theme="@style/Button.Green" />
+
 
 </LinearLayout>

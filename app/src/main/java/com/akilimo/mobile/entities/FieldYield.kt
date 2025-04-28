@@ -1,25 +1,30 @@
 package com.akilimo.mobile.entities
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@Entity(tableName = "field_yield")
-open class FieldYield : Parcelable {
-
+@Entity(tableName = "field_yields")
+data class FieldYield(
     @PrimaryKey(autoGenerate = true)
-    var id: Int? = null
-    var yieldAmount = 0.0
-    var fieldYieldLabel: String? = null
+    @ColumnInfo(name = "id")
+    var id: Int? = null,
 
-    @Transient
-    var fieldYieldDesc: String? = null
+    @ColumnInfo(name = "yield_amount")
+    var yieldAmount: Double = 0.0,
 
-    @Transient
-    var fieldYieldAmountLabel: String? = null
+    @ColumnInfo(name = "field_yield_label")
+    var fieldYieldLabel: String? = null,
 
-    @Transient
-    var imageId = 0
-}
+    @ColumnInfo(name = "field_yield_desc")
+    var fieldYieldDesc: String? = null,
+
+    @ColumnInfo(name = "field_yield_amount_label")
+    var fieldYieldAmountLabel: String? = null,
+
+    @ColumnInfo(name = "image_id")
+    var imageId: Int = 0
+) : Parcelable

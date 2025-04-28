@@ -6,11 +6,14 @@ import com.akilimo.mobile.entities.MaizePrice
 @Dao
 interface MaizePriceDao {
 
-    @Query("SELECT * FROM maize_price")
-    fun listAll(): List<MaizePrice>
+    @Query("SELECT * FROM maize_prices")
+    fun findAll(): List<MaizePrice>
 
-    @Query("SELECT * FROM maize_price LIMIT 1")
+    @Query("SELECT * FROM maize_prices LIMIT 1")
     fun findOne(): MaizePrice?
+
+    @Query("SELECT * FROM maize_prices where id=:id")
+    fun findById(id: Int): MaizePrice
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(location: MaizePrice)
@@ -24,18 +27,17 @@ interface MaizePriceDao {
     @Delete
     fun delete(maizePrice: MaizePrice?)
 
-    @Query("SELECT * FROM maize_price where country=:countryCode")
+    @Query("SELECT * FROM maize_prices where country_code=:countryCode")
     fun findAllByCountry(countryCode: String): MutableList<MaizePrice>
 
-    @Query("SELECT * FROM maize_price where country=:countryCode and produceType=:produceType")
+    @Query("SELECT * FROM maize_prices where country_code=:countryCode and produce_type=:produceType")
     fun findAllByCountryAndProduceType(
         countryCode: String,
         produceType: String
     ): MutableList<MaizePrice>
 
-    @Query("SELECT * FROM maize_price where priceIndex=:itemTagIndex")
-    fun findPriceByPriceIndex(itemTagIndex: Int): MaizePrice
 
-    @Query("DELETE FROM maize_price")
+
+    @Query("DELETE FROM maize_prices")
     fun deleteAll()
 }

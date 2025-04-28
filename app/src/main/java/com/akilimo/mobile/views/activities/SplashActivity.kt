@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.rest.retrofit.RetrofitManager
 import com.akilimo.mobile.utils.SessionManager
 import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import io.sentry.Sentry
@@ -13,7 +14,6 @@ import io.sentry.Sentry
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : BaseActivity() {
-    val LOG_TAG: String = this::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,16 +44,21 @@ class SplashActivity : BaseActivity() {
         val isInDevMode = BuildConfig.DEBUG
         try {
             val sessionManager = SessionManager(this@SplashActivity)
+            val akilimoEndpoint = sessionManager.getAkilimoEndpoint()
+            val fuelrodEndpoint = sessionManager.getFuelrodEndpoint()
+
+            RetrofitManager.init(akilimoEndpoint, fuelrodEndpoint)
+
             if (!isInDevMode) {
                 val db = getDatabase(this)
                 if (db != null) {
                     with(db) {
 
-                        if (!sessionManager.rememberUserInfo) {
+                        if (!sessionManager.getRememberUserInfo()) {
                             profileInfoDao().deleteAll()
                         }
 
-                        if (!sessionManager.rememberAreaUnit) {
+                        if (!sessionManager.getRememberAreaUnit()) {
                             mandatoryInfoDao().deleteAll()
                         }
 
@@ -67,7 +72,6 @@ class SplashActivity : BaseActivity() {
                         fieldOperationCostDao().deleteAll()
                         fieldYieldDao().deleteAll()
                         investmentAmountDao().deleteAll()
-                        investmentAmountDtoDao().deleteAll()
                         locationInfoDao().deleteAll()
                         maizeMarketDao().deleteAll()
                         maizePerformanceDao().deleteAll()
@@ -85,7 +89,8 @@ class SplashActivity : BaseActivity() {
         }
         var intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
         if (isInDevMode) {
-            intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
+//            intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
+//            intent = Intent(this@SplashActivity, ApiTestActivity::class.java)
 //            intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
 //            intent = Intent(this@SplashActivity, FertilizerRecActivity::class.java)
 //            intent = Intent(this@SplashActivity, RootYieldActivity::class.java)

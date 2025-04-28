@@ -2,17 +2,17 @@ package com.akilimo.mobile.rest.request
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-class SurveyRequest(
-    @JsonProperty("deviceToken")
+data class SurveyRequest(
+    @JsonProperty("device_token")
     val deviceToken: String,
 
-    @JsonProperty("akilimoUsage")
+    @JsonProperty("akilimo_usage")
     val akilimoUsage: String,
 
-    @JsonProperty("akilimoRecRating")
+    @JsonProperty("akilimo_rec_rating")
     val akilimoRecRating: Int,
 
-    @JsonProperty("akilimoUsefulRating")
+    @JsonProperty("akilimo_useful_rating")
     val akilimoUsefulRating: Int,
 
     @JsonProperty("language")
