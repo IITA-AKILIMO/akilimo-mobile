@@ -130,7 +130,7 @@ class PlantingDateFragment : BaseStepFragment() {
                 scheduledDate = ScheduledDate()
             }
 
-            alreadyPlanted = olderThanCurrent(selectedPlantingDate, "dd/MM/yyyy")
+            alreadyPlanted = olderThanCurrent(selectedPlantingDate)
 
             scheduledDate!!.plantingDate = selectedPlantingDate
             scheduledDate!!.harvestDate = selectedHarvestDate
