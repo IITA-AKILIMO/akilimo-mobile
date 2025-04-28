@@ -19,6 +19,7 @@ import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumMaizeProduceType
 import com.akilimo.mobile.utils.enums.EnumUnitOfSale
+import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.MaizePriceDialogFragment
 import io.sentry.Sentry
 
@@ -293,15 +294,14 @@ class MaizeMarketActivity : BaseActivity() {
                 selectedPrice,
                 unitWeight
             )
+            binding.marketContent.btnPickCobPrice.text =
+                getString(R.string.lbl_cob_price, unitPrice, currencyCode)
         }
-
-        supportFragmentManager.beginTransaction().apply {
-            supportFragmentManager.findFragmentByTag(MaizePriceDialogFragment.ARG_ITEM_ID)?.let {
-                remove(it)
-            }
-            addToBackStack(null)
-        }.commit()
-        priceDialogFragment.show(supportFragmentManager, MaizePriceDialogFragment.ARG_ITEM_ID)
+        showDialogFragmentSafely(
+            fragmentManager = supportFragmentManager,
+            dialogFragment = priceDialogFragment,
+            tag = MaizePriceDialogFragment.ARG_ITEM_ID
+        )
     }
 
 
