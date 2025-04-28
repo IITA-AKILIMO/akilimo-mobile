@@ -12,7 +12,6 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentPlantingHarvestDateBinding
 import com.akilimo.mobile.entities.ScheduledDate
 import com.akilimo.mobile.inherit.BaseStepFragment
-import com.akilimo.mobile.utils.DateHelper
 import com.akilimo.mobile.utils.DateHelper.olderThanCurrent
 import com.akilimo.mobile.views.fragments.dialog.DateDialogPickerFragment
 import com.stepstone.stepper.VerificationError
@@ -41,7 +40,7 @@ class PlantingDateFragment : BaseStepFragment() {
             return PlantingDateFragment()
         }
     }
-    
+
     override fun loadFragmentLayout(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -130,8 +129,8 @@ class PlantingDateFragment : BaseStepFragment() {
             if (scheduledDate == null) {
                 scheduledDate = ScheduledDate()
             }
-            DateHelper.dateTimeFormat = "dd/MM/yyyy"
-            alreadyPlanted = olderThanCurrent(selectedPlantingDate)
+
+            alreadyPlanted = olderThanCurrent(selectedPlantingDate, "dd/MM/yyyy")
 
             scheduledDate!!.plantingDate = selectedPlantingDate
             scheduledDate!!.harvestDate = selectedHarvestDate
