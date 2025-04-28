@@ -1,0 +1,228 @@
+package com.akilimo.mobile.inherit
+
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.Dialog
+import android.content.Context
+import android.content.Intent
+import android.content.res.Resources
+import android.view.View
+import android.view.Window
+import android.view.WindowManager
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
+import com.akilimo.mobile.R
+import com.akilimo.mobile.dao.AppDatabase
+import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
+import com.akilimo.mobile.entities.AdviceStatus
+import com.akilimo.mobile.utils.SessionManager
+import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.utils.enums.EnumCountry
+import com.akilimo.mobile.utils.enums.EnumUseCase
+import com.akilimo.mobile.views.activities.DstRecommendationActivity
+import com.android.volley.RequestQueue
+import com.blogspot.atifsoftwares.animatoolib.Animatoo
+import com.nabinbhandari.android.permissions.PermissionHandler
+import com.nabinbhandari.android.permissions.Permissions
+import dev.b3nedikt.app_locale.AppLocale.wrap
+import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository
+import io.github.inflationx.viewpump.ViewPumpContextWrapper
+import io.sentry.Sentry
+import java.util.Locale
+
+@SuppressLint("LogNotTimber")
+abstract class BaseActivity : AppCompatActivity() {
+    protected val LOG_TAG: String = this::class.java.simpleName
+
+    protected val sessionManager: SessionManager by lazy { SessionManager(this@BaseActivity) }
+    protected val database: AppDatabase by lazy { getDatabase(this@BaseActivity) }
+
+
+    @Deprecated("")
+    protected var queue: RequestQueue? = null
+
+    @JvmField
+    protected var countryCode: String = EnumCountry.Nigeria.countryCode()
+
+    @JvmField
+    protected var currency: String = EnumCountry.Nigeria.currency()
+    protected var currencyName: String = ""
+    protected var currencyCode: String = EnumCountry.Nigeria.currency()
+    protected var currencySymbol: String = EnumCountry.Nigeria.currency()
+    protected var baseCurrency: String = "USD"
+    protected var enumUseCase: EnumUseCase? = null
+    protected var areaUnit: String = "acre"
+    protected var areaUnitText: String = "acre"
+    protected var fieldSize: Double = 0.0
+    protected var fieldSizeAcre: Double = 2.471
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        super.onBackPressed()
+        closeActivity(true)
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(wrap(newBase)))
+    }
+
+    override fun getResources(): Resources {
+        return wrap(baseContext).resources
+    }
+
+    protected abstract fun initToolbar()
+
+    protected abstract fun initComponent()
+
+    protected abstract fun validate(backPressed: Boolean)
+
+    protected fun closeActivity(backPressed: Boolean) {
+        if (!backPressed) {
+            finish()
+        }
+        Animatoo.animateSwipeRight(this)
+    }
+
+    protected fun openActivity() {
+        Animatoo.animateSwipeLeft(this)
+    }
+
+
+    protected fun showCustomNotificationDialog(
+        titleText: String? = getString(R.string.title_realistic_price),
+        contentText: String? = getString(R.string.lbl_realistic_price),
+        buttonTitle: String? = null
+    ) {
+
+        val notificationCount = sessionManager.getNotificationCount()
+        if (notificationCount <= 0) {
+            return
+        }
+        sessionManager.updateNotificationCount(notificationCount)
+
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE) // before
+        dialog.setContentView(R.layout.dialog_notification)
+        dialog.setCancelable(true)
+
+        val lp = WindowManager.LayoutParams()
+        lp.copyFrom(dialog.window!!.attributes)
+        lp.width = WindowManager.LayoutParams.WRAP_CONTENT
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+
+
+        val title = dialog.findViewById<TextView>(R.id.title)
+        val content = dialog.findViewById<TextView>(R.id.content)
+        val btnClose = dialog.findViewById<AppCompatButton>(R.id.bt_close)
+        title.text = titleText
+        content.text = contentText
+
+        if (buttonTitle!!.isNotEmpty()) {
+            btnClose.text = buttonTitle
+        }
+        btnClose.setOnClickListener { view: View? ->
+            dialog.dismiss()
+        }
+
+        dialog.show()
+        dialog.window!!.attributes = lp
+    }
+
+    /**
+     * @param titleText   title of the warning
+     * @param contentText stepTitle of the warning
+     */
+    protected fun showCustomWarningDialog(
+        titleText: String?,
+        contentText: String?,
+        buttonTitle: String? = null
+    ) {
+        try {
+            val dialog = Dialog(this@BaseActivity)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE) // before
+            dialog.setContentView(R.layout.dialog_warning)
+            dialog.setCancelable(true)
+
+            val lp = WindowManager.LayoutParams()
+            lp.copyFrom(dialog.window!!.attributes)
+            lp.width = WindowManager.LayoutParams.WRAP_CONTENT
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+
+
+            val title = dialog.findViewById<TextView>(R.id.title)
+            val content = dialog.findViewById<TextView>(R.id.content)
+            val btnClose = dialog.findViewById<AppCompatButton>(R.id.bt_close)
+            title.text = titleText
+            content.text = contentText
+
+            if (!buttonTitle.isNullOrEmpty()) {
+                btnClose.text = buttonTitle
+            }
+            btnClose.setOnClickListener { view: View? ->
+                dialog.dismiss()
+            }
+
+            dialog.show()
+            dialog.window!!.attributes = lp
+        } catch (ex: Exception) {
+            Sentry.captureException(ex)
+        }
+    }
+
+
+    protected fun checkAppPermissions(rationale: String?) {
+        val permissions = arrayOf(
+            Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.VIBRATE
+        )
+
+        val options = Permissions.Options()
+            .setRationaleDialogTitle("Info")
+            .setSettingsDialogTitle("Warning")
+
+        Permissions.check(
+            this,
+            permissions,
+            rationale,
+            options,
+            object : PermissionHandler() {
+                override fun onGranted() {
+                    // do your task.
+                }
+
+                override fun onDenied(context: Context, deniedPermissions: ArrayList<String>) {
+                    super.onDenied(context, deniedPermissions)
+                }
+            })
+    }
+
+    protected fun processRecommendations(activity: Activity) {
+        val intent = Intent(activity, DstRecommendationActivity::class.java)
+        activity.startActivity(intent)
+    }
+
+    protected fun getCurrentLocale(): Locale {
+        val prefs = SharedPrefsAppLocaleRepository(this@BaseActivity)
+        var myDesiredLocale = prefs.desiredLocale
+        if (myDesiredLocale == null) {
+            myDesiredLocale = Locale("en", "NG")
+        }
+        return myDesiredLocale
+    }
+
+    protected fun checkStatus(taskName: EnumAdviceTasks): AdviceStatus {
+        val database = getDatabase(this)
+        val adviceStatus = database.adviceStatusDao().findOne(taskName.name)
+
+        if (adviceStatus != null) {
+            return adviceStatus
+        }
+
+        return AdviceStatus(taskName.name, false)
+    }
+}

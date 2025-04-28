@@ -1,5 +1,6 @@
 package com.akilimo.mobile.entities
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -8,61 +9,77 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Entity(
-    tableName = "fertilizer_price",
-    indices = [Index(value = ["fertilizerCountry"], unique = true)]
+data class FertilizerPriceResponse(
+    @JsonProperty("data") val data: List<FertilizerPrice>
 )
-open class FertilizerPrice {
 
-    @PrimaryKey(autoGenerate = true)
-    var id: Int? = null
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Entity(
+    tableName = "fertilizer_prices",
+    indices = [Index(value = ["fertilizer_country"], unique = true)]
+)
+data class FertilizerPrice(
 
-    @JsonProperty("recordId")
-    var recordId = 0
+    @PrimaryKey(autoGenerate = false)
+    @ColumnInfo(name = "id")
+    @JsonProperty("id") val id: Int,
 
-    @JsonProperty("priceId")
-    var priceId = 0
+    @ColumnInfo(name = "record_id")
+    @JsonProperty("record_id")
+    @Deprecated("Remove")
+    var recordId: Int = 0,
 
-    @JsonProperty("sortOrder")
-    var sortOrder = 0
+    @ColumnInfo(name = "price_id")
+    @JsonProperty("price_id")
+    @Deprecated("Remove")
+    var priceId: Int = 0,
+
+    @ColumnInfo(name = "sort_order")
+    @JsonProperty("sort_order")
+    var sortOrder: Int = 0,
+
+    @ColumnInfo(name = "min_local_price")
+    @JsonProperty("min_local_price")
+    var minLocalPrice: Double = 0.0,
 
 
-    @JsonProperty("minLocalPrice")
-    var minLocalPrice = 0.0
+    @ColumnInfo(name = "max_local_price")
+    @JsonProperty("max_local_price")
+    var maxLocalPrice: Double = 0.0,
 
-    @JsonProperty("minAllowedPrice")
-    var minAllowedPrice = 0.0
+    @ColumnInfo(name = "min_allowed_price")
+    @JsonProperty("min_allowed_price")
+    var minAllowedPrice: Double = 0.0,
 
-    @JsonProperty("maxAllowedPrice")
-    var maxAllowedPrice = 0.0
+    @ColumnInfo(name = "max_allowed_price")
+    @JsonProperty("max_allowed_price")
+    var maxAllowedPrice: Double = 0.0,
 
-    @JsonProperty("minUsd")
-    var minUsd = 0.0
+    @ColumnInfo(name = "price_per_bag")
+    @JsonProperty("price_per_bag")
+    var pricePerBag: Double = 0.0,
 
-    @JsonProperty("maxLocalPrice")
-    var maxLocalPrice = 0.0
-
-    @JsonProperty("maxUsd")
-    var maxUsd = 0.0
-
-    @JsonProperty("pricePerBag")
-    var pricePerBag = 0.0
-
+    @ColumnInfo(name = "active")
     @JsonProperty("active")
-    var active = false
+    var active: Boolean = false,
 
-    @JsonProperty("priceRange")
-    var priceRange: String? = null
+    @ColumnInfo(name = "price_range")
+    @JsonProperty("price_range")
+    var priceRange: String? = null,
 
-    @JsonProperty("country")
-    var country: String? = null
+    @ColumnInfo(name = "country_code")
+    @JsonProperty("country_code")
+    var countryCode: String? = null,
 
-    @JsonProperty("fertilizerCountry")
-    var fertilizerCountry: String? = null
+    @ColumnInfo(name = "fertilizer_country")
+    @JsonProperty("fertilizer_country")
+    var fertilizerCountry: String? = null,
 
-    @JsonProperty("fertilizerKey")
-    var fertilizerKey: String? = null
+    @ColumnInfo(name = "fertilizer_key")
+    @JsonProperty("fertilizer_key")
+    var fertilizerKey: String? = null,
 
+    @ColumnInfo(name = "description")
     @JsonProperty("description")
     var description: String? = null
-}
+)

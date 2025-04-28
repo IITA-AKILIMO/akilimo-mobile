@@ -8,8 +8,6 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.github.vipulasri.timelineview.TimelineView
-import com.google.android.gms.common.util.Strings
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ItemTimelineBinding
 import com.akilimo.mobile.models.TimeLineModel
@@ -17,12 +15,13 @@ import com.akilimo.mobile.models.TimelineAttributes
 import com.akilimo.mobile.utils.TheItemAnimation
 import com.akilimo.mobile.utils.VectorDrawableUtils
 import com.akilimo.mobile.utils.enums.StepStatus
+import com.github.vipulasri.timelineview.TimelineView
 
 class MyTimeLineAdapter(
     private val mFeedList: List<TimeLineModel>,
     private var mAttributes: TimelineAttributes,
     private var context: Context,
-    private val animation_type: Int
+    private val animationType: Int
 ) : RecyclerView.Adapter<MyTimeLineAdapter.TimeLineViewHolder>() {
 
     private var lastPosition = -1
@@ -55,7 +54,7 @@ class MyTimeLineAdapter(
 
     private fun setAnimation(view: View, position: Int) {
         if (position > lastPosition) {
-            TheItemAnimation.animate(view, if (onAttach) position else -1, animation_type)
+            TheItemAnimation.animate(view, if (onAttach) position else -1, animationType)
             lastPosition = position
         }
     }
@@ -63,27 +62,32 @@ class MyTimeLineAdapter(
     inner class TimeLineViewHolder(itemView: ItemTimelineBinding, viewType: Int) :
         RecyclerView.ViewHolder(itemView.root) {
 
-        val title: AppCompatTextView = itemView.timelineTitle
-        val message: AppCompatTextView = itemView.timelineContent
-        val timelineView: TimelineView = itemView.timeline
+        private val title: AppCompatTextView = itemView.timelineTitle
+        private val message: AppCompatTextView = itemView.timelineContent
+        private val timelineView: TimelineView = itemView.timeline
 
         init {
-            timelineView.initLine(viewType)
-            timelineView.markerSize = mAttributes.markerSize
-            timelineView.setMarkerColor(mAttributes.markerCompleteColor)
-            timelineView.isMarkerInCenter = mAttributes.markerInCenter
-            timelineView.markerPaddingLeft = mAttributes.markerLeftPadding
-            timelineView.markerPaddingTop = mAttributes.markerTopPadding
-            timelineView.markerPaddingRight = mAttributes.markerRightPadding
-            timelineView.markerPaddingBottom = mAttributes.markerBottomPadding
-            timelineView.linePadding = mAttributes.linePadding
+            timelineView.apply {
+                initLine(viewType)
+                markerSize = mAttributes.markerSize
 
-            timelineView.lineWidth = mAttributes.lineWidth
-            timelineView.setStartLineColor(mAttributes.startLineColor, viewType)
-            timelineView.setEndLineColor(mAttributes.endLineColor, viewType)
-            timelineView.lineStyle = mAttributes.lineStyle
-            timelineView.lineStyleDashLength = mAttributes.lineDashWidth
-            timelineView.lineStyleDashGap = mAttributes.lineDashGap
+                setMarkerColor(mAttributes.markerCompleteColor)
+                isMarkerInCenter = mAttributes.markerInCenter
+                markerPaddingLeft = mAttributes.markerLeftPadding
+                markerPaddingTop = mAttributes.markerTopPadding
+                markerPaddingRight = mAttributes.markerRightPadding
+                markerPaddingBottom = mAttributes.markerBottomPadding
+
+                linePadding = mAttributes.linePadding
+                lineWidth = mAttributes.lineWidth
+
+                setStartLineColor(mAttributes.startLineColor, viewType)
+                setEndLineColor(mAttributes.endLineColor, viewType)
+
+                lineStyle = mAttributes.lineStyle
+                lineStyleDashLength = mAttributes.lineDashWidth
+                lineStyleDashGap = mAttributes.lineDashGap
+            }
         }
 
         fun bind(timeLineModel: TimeLineModel) {
@@ -123,7 +127,7 @@ class MyTimeLineAdapter(
 
             title.text = context.getString(R.string.lbl_timeline_title, timeLineModel.stepTitle)
 
-            if (Strings.isEmptyOrWhitespace(timeLineModel.message)) {
+            if (timeLineModel.message.isNullOrEmpty()) {
                 message.text = context.getString(R.string.lbl_not_provided)
             } else {
                 message.visibility = VISIBLE

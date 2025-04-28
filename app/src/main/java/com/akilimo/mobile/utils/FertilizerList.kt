@@ -11,7 +11,7 @@ object FertilizerList {
     fun removeFertilizerByType(
         fertilizerTypeList: MutableList<Fertilizer>,
         fertilizerTypeToRemove: String
-    ): List<Fertilizer> {
+    ): MutableList<Fertilizer> {
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> fertilizerTypeList.removeIf { obj ->
                 obj.fertilizerType.equals(fertilizerTypeToRemove, ignoreCase = true)
@@ -34,10 +34,12 @@ object FertilizerList {
     }
 
 
+
+    @Deprecated("Replae with removeFertilizerByType")
     fun removeIntercropFertilizerByType(
-        fertilizerTypeList: MutableList<InterCropFertilizer>,
+        fertilizerTypeList: MutableList<Fertilizer>,
         fertilizerTypeToRemove: String
-    ): List<InterCropFertilizer> {
+    ): MutableList<Fertilizer> {
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> fertilizerTypeList.removeIf { obj ->
                 obj.fertilizerType.equals(fertilizerTypeToRemove, ignoreCase = true)

@@ -6,10 +6,10 @@ import com.akilimo.mobile.entities.FieldOperationCost
 @Dao
 interface FieldOperationCostsDao {
 
-    @Query("SELECT * FROM field_operation_cost")
+    @Query("SELECT * FROM field_operation_costs")
     fun listAll(): List<FieldOperationCost>
 
-    @Query("SELECT * FROM field_operation_cost LIMIT 1")
+    @Query("SELECT * FROM field_operation_costs LIMIT 1")
     fun findOne(): FieldOperationCost?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -20,6 +20,6 @@ interface FieldOperationCostsDao {
 
     @Delete
     fun delete(fieldYield: FieldOperationCost?)
-    @Query("DELETE FROM field_operation_cost")
+    @Query("DELETE FROM field_operation_costs")
     fun deleteAll()
 }

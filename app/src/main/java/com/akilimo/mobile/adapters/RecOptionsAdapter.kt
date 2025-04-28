@@ -16,9 +16,9 @@ import com.akilimo.mobile.utils.VectorDrawableUtils
 class RecOptionsAdapter : RecyclerView.Adapter<RecOptionsAdapter.OriginalViewHolder>() {
     private var mOnItemClickListener: OnItemClickListener? = null
     private var lastPosition = -1
-    private var on_attach = true
+    private var onAttach = true
 
-    private var animation_type: Int = TheItemAnimation.FADE_IN
+    private var animationType: Int = TheItemAnimation.FADE_IN
     private lateinit var items: List<RecommendationOptions>
     private lateinit var mLayoutInflater: LayoutInflater
 
@@ -37,7 +37,7 @@ class RecOptionsAdapter : RecyclerView.Adapter<RecOptionsAdapter.OriginalViewHol
 
     fun setData(items: List<RecommendationOptions>, animation_type: Int) {
         this.items = items
-        this.animation_type = animation_type
+        this.animationType = animation_type
         notifyDataSetChanged()
     }
 
@@ -59,7 +59,7 @@ class RecOptionsAdapter : RecyclerView.Adapter<RecOptionsAdapter.OriginalViewHol
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                on_attach = false
+                onAttach = false
                 super.onScrollStateChanged(recyclerView, newState)
             }
         })
@@ -72,7 +72,7 @@ class RecOptionsAdapter : RecyclerView.Adapter<RecOptionsAdapter.OriginalViewHol
 
     private fun setAnimation(view: View, position: Int) {
         if (position > lastPosition) {
-            TheItemAnimation.animate(view, if (on_attach) position else -1, animation_type)
+            TheItemAnimation.animate(view, if (onAttach) position else -1, animationType)
             lastPosition = position
         }
     }

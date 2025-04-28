@@ -1,15 +1,20 @@
 package com.akilimo.mobile.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
 import com.akilimo.mobile.entities.FertilizerPrice
 
 @Dao
 interface FertilizerPriceDao {
 
-    @Query("SELECT * FROM fertilizer_price")
+    @Query("SELECT * FROM fertilizer_prices")
     fun listAll(): List<FertilizerPrice>
 
-    @Query("SELECT * FROM fertilizer_price LIMIT 1")
+    @Query("SELECT * FROM fertilizer_prices LIMIT 1")
     fun findOne(): FertilizerPrice?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -24,15 +29,15 @@ interface FertilizerPriceDao {
     @Delete
     fun delete(fieldYield: FertilizerPrice?)
 
-    @Query("SELECT * FROM fertilizer_price where country=:countryCode")
+    @Query("SELECT * FROM fertilizer_prices where country_code=:countryCode")
     fun findAllByCountry(countryCode: String): List<FertilizerPrice>
 
-    @Query("SELECT * FROM fertilizer_price where fertilizerKey=:fertKey ORDER BY sortOrder ASC")
-    fun findAllByFertilizerKey(fertKey: String): List<FertilizerPrice>
+    @Query("SELECT * FROM fertilizer_prices where fertilizer_key=:fertilizerKey ORDER BY sort_order ASC")
+    fun findAllByFertilizerKey(fertilizerKey: String): List<FertilizerPrice>
 
-    @Query("SELECT * FROM fertilizer_price where priceId=:itemTagIndex LIMIT 1")
+    @Query("SELECT * FROM fertilizer_prices where price_id=:itemTagIndex LIMIT 1")
     fun findOneByPriceId(itemTagIndex: Long): FertilizerPrice
 
-    @Query("DELETE FROM fertilizer_price")
+    @Query("DELETE FROM fertilizer_prices")
     fun deleteAll()
 }

@@ -5,7 +5,28 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.akilimo.mobile.entities.*
+import com.akilimo.mobile.entities.AdviceStatus
+import com.akilimo.mobile.entities.AkilimoCurrency
+import com.akilimo.mobile.entities.CassavaMarket
+import com.akilimo.mobile.entities.CassavaPrice
+import com.akilimo.mobile.entities.CropPerformance
+import com.akilimo.mobile.entities.CurrentPractice
+import com.akilimo.mobile.entities.Fertilizer
+import com.akilimo.mobile.entities.FertilizerPrice
+import com.akilimo.mobile.entities.FieldOperationCost
+import com.akilimo.mobile.entities.FieldYield
+import com.akilimo.mobile.entities.InterCropFertilizer
+import com.akilimo.mobile.entities.InvestmentAmount
+import com.akilimo.mobile.entities.MaizeMarket
+import com.akilimo.mobile.entities.MaizePrice
+import com.akilimo.mobile.entities.MandatoryInfo
+import com.akilimo.mobile.entities.PotatoMarket
+import com.akilimo.mobile.entities.PotatoPrice
+import com.akilimo.mobile.entities.ScheduledDate
+import com.akilimo.mobile.entities.StarchFactory
+import com.akilimo.mobile.entities.UseCases
+import com.akilimo.mobile.entities.UserLocation
+import com.akilimo.mobile.entities.UserProfile
 
 @Database(
     entities = [
@@ -18,21 +39,21 @@ import com.akilimo.mobile.entities.*
         FieldOperationCost::class,
         InterCropFertilizer::class,
         InvestmentAmount::class,
-        InvestmentAmountDto::class,
-        LocationInfo::class,
+        UserLocation::class,
         MaizeMarket::class,
-        MaizePerformance::class,
+        CropPerformance::class,
         MaizePrice::class,
         MandatoryInfo::class,
         PotatoMarket::class,
         PotatoPrice::class,
-        ProfileInfo::class,
+        UserProfile::class,
         ScheduledDate::class,
         StarchFactory::class,
         UseCases::class,
-        Currency::class,
+        AkilimoCurrency::class,
         AdviceStatus::class
-    ], version = 1, exportSchema = false
+    ], version = 2,
+    exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -48,15 +69,14 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun interCropFertilizerDao(): InterCropFertilizerDao
 
     abstract fun investmentAmountDao(): InvestmentAmountDao
-    abstract fun investmentAmountDtoDao(): InvestmentAmountDtoDao
-    abstract fun locationInfoDao(): LocationInfoDao
+    abstract fun locationInfoDao(): UserLocationDao
     abstract fun maizeMarketDao(): MaizeMarketDao
-    abstract fun maizePerformanceDao(): MaizePerformanceDao
+    abstract fun maizePerformanceDao(): CropPerformanceDao
     abstract fun maizePriceDao(): MaizePriceDao
     abstract fun mandatoryInfoDao(): MandatoryInfoDao
     abstract fun potatoMarketDao(): PotatoMarketDao
     abstract fun potatoPriceDao(): PotatoPriceDao
-    abstract fun profileInfoDao(): ProfileInfoDao
+    abstract fun profileInfoDao(): UserProfileDao
     abstract fun scheduleDateDao(): ScheduleDateDao
     abstract fun starchFactoryDao(): StarchFactoryDao
     abstract fun useCaseDao(): UseCaseDao
@@ -68,25 +88,20 @@ abstract class AppDatabase : RoomDatabase() {
         // For Singleton instantiation
         @Volatile
         private var database: AppDatabase? = null
-        private const val NUMBER_OF_THREADS = 4
+        private const val DATABASE_NAME = "AKILIMO_APR_2025"
 
         @JvmStatic
-        @Synchronized
-        fun getDatabase(context: Context): AppDatabase? {
-            if (database == null) {
-                synchronized(AppDatabase::class.java) {
-                    if (database == null) {
-                        database = Room.databaseBuilder(
-                            context.applicationContext,
-                            AppDatabase::class.java, "AKILIMO_05_JULY_2023"
-                        )
-                            .fallbackToDestructiveMigration()
-                            .allowMainThreadQueries()
-                            .build()
-                    }
-                }
+        fun getDatabase(context: Context): AppDatabase {
+            return database ?: synchronized(this) {
+                database ?: Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java, DATABASE_NAME
+                )
+                    .allowMainThreadQueries() //TODO migrate to coroutines later
+                    .fallbackToDestructiveMigration()
+                    .build().also { database = it }
             }
-            return database
         }
     }
+
 }
