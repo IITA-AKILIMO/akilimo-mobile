@@ -17,6 +17,7 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.entities.AdviceStatus
+import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.SessionManager
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumCountry
@@ -38,6 +39,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected val sessionManager: SessionManager by lazy { SessionManager(this@BaseActivity) }
     protected val database: AppDatabase by lazy { getDatabase(this@BaseActivity) }
+    protected val mathHelper: MathHelper by lazy { MathHelper() }
 
 
     @Deprecated("")
