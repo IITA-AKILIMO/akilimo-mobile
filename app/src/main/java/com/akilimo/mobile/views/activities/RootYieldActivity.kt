@@ -148,8 +148,8 @@ class RootYieldActivity : BaseActivity() {
         })
 
         binding.twoButtons.apply {
-            btnFinish.setOnClickListener { view: View? -> validate(true) }
-            btnCancel.setOnClickListener { view: View? -> closeActivity(false) }
+            btnFinish.setOnClickListener { validate(true) }
+            btnCancel.setOnClickListener { closeActivity(false) }
         }
     }
 
@@ -171,7 +171,7 @@ class RootYieldActivity : BaseActivity() {
         database.adviceStatusDao()
             .insert(AdviceStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD.name, true))
 
-        closeActivity(backPressed)
+        closeActivity(false)
     }
 
     private fun setYieldData(areaUnit: String): List<FieldYield> {
