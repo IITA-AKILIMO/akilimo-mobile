@@ -33,7 +33,7 @@ class FertilizerPriceDialogFragment : BaseDialogFragment() {
     private var maxPrice = 0.0
     private var minPrice = 0.0
     private var countryCode: String? = null
-    private var currencyCode: String? = null
+    private var currencyCode: String = "USD"
     private var fertilizerKey: String? = null
     private var currencyName: String? = null
     private var bagPrice: Double? = null
@@ -123,7 +123,7 @@ class FertilizerPriceDialogFragment : BaseDialogFragment() {
                     bagPrice = 0.0
                 }
                 savedPricePerBag = bagPrice!!
-                bagPriceRange = mathHelper!!.formatNumber(savedPricePerBag, currencyCode)
+                bagPriceRange = mathHelper.formatNumber(savedPricePerBag, currencyCode)
                 isPriceValid = true
                 binding.editExactFertilizerPrice.error = null
             }
@@ -145,11 +145,10 @@ class FertilizerPriceDialogFragment : BaseDialogFragment() {
             radioSelected(group, dialog)
         }
 
-        if (database != null) {
-            fertilizerPricesList =
-                database!!.fertilizerPriceDao().findAllByFertilizerKey(fertilizerKey!!)
-            addPriceRadioButtons(fertilizerPricesList!!, fertilizer)
-        }
+
+        fertilizerPricesList =
+            database.fertilizerPriceDao().findAllByFertilizerKey(fertilizerKey!!)
+        addPriceRadioButtons(fertilizerPricesList!!, fertilizer)
 
         return dialog
     }
@@ -165,7 +164,7 @@ class FertilizerPriceDialogFragment : BaseDialogFragment() {
         }
 
         try {
-            val pricesResp = database!!.fertilizerPriceDao().findOneByPriceId(itemTagIndex)
+            val pricesResp = database.fertilizerPriceDao().findOneByPriceId(itemTagIndex)
             isExactPriceRequired = false
             isPriceValid = true
             savedPricePerBag = pricesResp.pricePerBag
