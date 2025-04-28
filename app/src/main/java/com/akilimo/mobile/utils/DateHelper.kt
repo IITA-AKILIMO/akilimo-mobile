@@ -16,13 +16,9 @@ import java.util.Locale
 object DateHelper {
 
     var format: String = "dd/MM/yyyy"
-    var dateTimeFormat: String = "dd-MM-yyyy"
 
     val simpleDateFormatter: SimpleDateFormat
         get() = SimpleDateFormat(format, Locale.getDefault())
-
-    private val dateTimeFormatter: DateTimeFormatter
-        get() = DateTimeFormatter.ofPattern(dateTimeFormat)
 
 
     fun getMaxDate(maxMonths: Int): Calendar = getAdjustedCalendar(maxMonths)
@@ -42,8 +38,9 @@ object DateHelper {
     }
 
 
-    fun formatToLocalDate(dateString: String?): LocalDate {
-        return LocalDate.parse(dateString, dateTimeFormatter)
+    fun formatToLocalDate(dateString: String?, dateFormat: String): LocalDate {
+        val pattern = DateTimeFormatter.ofPattern(dateFormat)
+        return LocalDate.parse(dateString, pattern)
     }
 
     fun unixTimeStampToDate(unixTimestamp: Long, timeZone: ZoneId?): LocalDateTime {
@@ -56,9 +53,9 @@ object DateHelper {
         }
     }
 
-    fun olderThanCurrent(dateOne: String?): Boolean {
+    fun olderThanCurrent(dateOne: String?, dateFormat: String): Boolean {
         val currentDate = LocalDate.now()
-        val d1 = formatToLocalDate(dateOne)
+        val d1 = formatToLocalDate(dateOne, dateFormat)
         return d1.isBefore(currentDate)
     }
 
