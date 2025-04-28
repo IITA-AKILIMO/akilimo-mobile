@@ -1,6 +1,11 @@
 package com.akilimo.mobile.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
 import com.akilimo.mobile.entities.CassavaPrice
 
 @Dao
@@ -29,4 +34,7 @@ interface CassavaPriceDao {
 
     @Query("DELETE FROM cassava_prices")
     fun deleteAll()
+
+    @Query("SELECT * FROM cassava_prices where item_tag=:itemTag")
+    fun findByItemTag(itemTag: String): CassavaPrice?
 }
