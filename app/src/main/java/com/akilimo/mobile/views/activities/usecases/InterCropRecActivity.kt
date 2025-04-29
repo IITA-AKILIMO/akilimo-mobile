@@ -144,7 +144,7 @@ class InterCropRecActivity : BaseActivity() {
             })
         }
 
-        binding.singleButton.btnGetRecommendation.setOnClickListener {
+        binding.singleButton.btnAction.setOnClickListener {
             try {
                 val database = getDatabase(context)
                 val useCases = database.useCaseDao().findOne() ?: UseCase()

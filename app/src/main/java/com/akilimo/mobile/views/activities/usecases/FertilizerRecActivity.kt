@@ -1,17 +1,12 @@
 package com.akilimo.mobile.views.activities.usecases
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.RecOptionsAdapter
-import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityFertilizerRecBinding
 import com.akilimo.mobile.entities.UseCase
 import com.akilimo.mobile.inherit.BaseActivity
@@ -26,10 +21,6 @@ import com.akilimo.mobile.views.activities.RootYieldActivity
 import io.sentry.Sentry
 
 class FertilizerRecActivity : BaseActivity() {
-    var recyclerView: RecyclerView? = null
-    var myToolbar: Toolbar? = null
-    var btnGetRec: AppCompatButton? = null
-
     private var _binding: ActivityFertilizerRecBinding? = null
     private val binding get() = _binding!!
 
@@ -40,33 +31,27 @@ class FertilizerRecActivity : BaseActivity() {
     var rootYieldString: String? = null
     var marketOutletString: String? = null
 
-    private var activity: Activity? = null
     private var mAdapter: RecOptionsAdapter? = null
     private var items: List<RecommendationOptions> = ArrayList()
-    private var useCase: UseCase? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityFertilizerRecBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        recyclerView = binding.recyclerView
-        myToolbar = binding.toolbarLayout.toolbar
-        btnGetRec = binding.singleButton.btnGetRecommendation
-
         mAdapter = RecOptionsAdapter()
         initToolbar()
         initComponent()
     }
 
     override fun initToolbar() {
-        myToolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
-        setSupportActionBar(myToolbar)
-        supportActionBar!!.title = getString(R.string.lbl_fertilizer_recommendations)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setDisplayShowHomeEnabled(true)
-
-        myToolbar!!.setNavigationOnClickListener { v: View? -> closeActivity(false) }
+        binding.toolbarLayout.toolbar.apply {
+            setNavigationIcon(R.drawable.ic_left_arrow)
+            setSupportActionBar(binding.toolbarLayout.toolbar)
+            supportActionBar!!.title = getString(R.string.lbl_fertilizer_recommendations)
+            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+            supportActionBar!!.setDisplayShowHomeEnabled(true)
+            setNavigationOnClickListener { v: View? -> closeActivity(false) }
+        }
     }
 
     override fun initComponent() {
@@ -76,32 +61,35 @@ class FertilizerRecActivity : BaseActivity() {
         rootYieldString = getString(R.string.lbl_typical_yield)
         marketOutletString = getString(R.string.lbl_market_outlet)
 
-        recyclerView!!.layoutManager = LinearLayoutManager(this)
-        recyclerView!!.setHasFixedSize(true)
-        recyclerView!!.adapter = mAdapter
-        val database = getDatabase(this@FertilizerRecActivity)
-        btnGetRec!!.setOnClickListener { view: View? ->
-            //launch the recommendation view
-            useCase = database.useCaseDao().findOne()
-            try {
-                if (useCase == null) {
-                    useCase = UseCase()
-                }
-                useCase!!.fertilizerRecommendation = true
-                useCase!!.maizeInterCropping = false
-                useCase!!.sweetPotatoInterCropping = false
-                useCase!!.scheduledPlantingHighStarch = false
-                useCase!!.scheduledPlanting = false
-                useCase!!.bestPlantingPractices = false
-                useCase!!.useCaseName = EnumUseCase.FR.name
+        binding.apply {
+            recyclerView.layoutManager = LinearLayoutManager(this@FertilizerRecActivity)
+            recyclerView.setHasFixedSize(true)
+            recyclerView.adapter = mAdapter
 
-                database.useCaseDao().insertAll(useCase!!)
-                processRecommendations(activity!!)
-            } catch (ex: Exception) {
-                Toast.makeText(this@FertilizerRecActivity, ex.message, Toast.LENGTH_SHORT).show()
-                Sentry.captureException(ex)
+            singleButton.btnAction.setOnClickListener {
+                var useCase = database.useCaseDao().findOne()
+                try {
+                    if (useCase == null) {
+                        useCase = UseCase()
+                    }
+                    useCase.fertilizerRecommendation = true
+                    useCase.maizeInterCropping = false
+                    useCase.sweetPotatoInterCropping = false
+                    useCase.scheduledPlantingHighStarch = false
+                    useCase.scheduledPlanting = false
+                    useCase.bestPlantingPractices = false
+                    useCase.useCaseName = EnumUseCase.FR.name
+
+                    database.useCaseDao().insertAll(useCase)
+                    processRecommendations(this@FertilizerRecActivity)
+                } catch (ex: Exception) {
+                    Toast.makeText(this@FertilizerRecActivity, ex.message, Toast.LENGTH_SHORT)
+                        .show()
+                    Sentry.captureException(ex)
+                }
             }
         }
+
         mAdapter!!.setOnItemClickListener(object : RecOptionsAdapter.OnItemClickListener {
             override fun onItemClick(view: View?, obj: RecommendationOptions?, position: Int) {
                 var intent: Intent? = null
@@ -142,13 +130,11 @@ class FertilizerRecActivity : BaseActivity() {
     }
 
     private fun setAdapter() {
-        //set data and list adapter
-        items = recItems
-        mAdapter!!.setData(items)
-        recyclerView!!.adapter = mAdapter
+        mAdapter!!.setData(recommendationOptions)
+        binding.recyclerView.adapter = mAdapter
     }
 
-    private val recItems: List<RecommendationOptions>
+    private val recommendationOptions: List<RecommendationOptions>
         get() {
             val myItems: MutableList<RecommendationOptions> =
                 ArrayList()

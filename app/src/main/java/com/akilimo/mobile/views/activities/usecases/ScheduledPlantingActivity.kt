@@ -3,13 +3,11 @@ package com.akilimo.mobile.views.activities.usecases
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.RecOptionsAdapter
-import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityScheduledPlantingBinding
 import com.akilimo.mobile.entities.UseCase
 import com.akilimo.mobile.inherit.BaseActivity
@@ -24,7 +22,6 @@ import io.sentry.Sentry
 class ScheduledPlantingActivity : BaseActivity() {
     var toolbar: Toolbar? = null
     var recyclerView: RecyclerView? = null
-    var btnGetRec: AppCompatButton? = null
 
     private var _binding: ActivityScheduledPlantingBinding? = null
     private val binding get() = _binding!!
@@ -49,7 +46,6 @@ class ScheduledPlantingActivity : BaseActivity() {
         mAdapter = RecOptionsAdapter()
         toolbar = binding.toolbarLayout.toolbar
         recyclerView = binding.recyclerView
-        btnGetRec = binding.singleButton.btnGetRecommendation
 
         initToolbar()
         initComponent()
@@ -71,13 +67,13 @@ class ScheduledPlantingActivity : BaseActivity() {
         rootYieldString = getString(R.string.lbl_typical_yield)
 
 
-        recyclerView!!.layoutManager = LinearLayoutManager(this)
-        recyclerView!!.setHasFixedSize(true)
-        recyclerView!!.adapter = mAdapter
+        binding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(this@ScheduledPlantingActivity)
+            setHasFixedSize(true)
+            adapter = mAdapter
+        }
 
-        val database = getDatabase(this@ScheduledPlantingActivity)
-        btnGetRec!!.setOnClickListener { view: View? ->
-            //launch the recommendation view
+        binding.singleButton.btnAction.setOnClickListener {
             var useCases = database.useCaseDao().findOne()
             try {
                 if (useCases == null) {

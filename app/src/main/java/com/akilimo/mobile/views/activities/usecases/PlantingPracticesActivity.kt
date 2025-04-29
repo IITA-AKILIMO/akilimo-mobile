@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,7 +27,6 @@ import io.sentry.Sentry
 class PlantingPracticesActivity : BaseActivity() {
     var toolbar: Toolbar? = null
     var recyclerView: RecyclerView? = null
-    var btnGetRec: AppCompatButton? = null
 
 
     var recommendations: String? = null
@@ -59,8 +57,6 @@ class PlantingPracticesActivity : BaseActivity() {
 
         toolbar = binding.toolbarLayout.toolbar
         recyclerView = binding.recyclerView
-        btnGetRec = binding.singleButton.btnGetRecommendation
-
         mAdapter = RecOptionsAdapter()
         initToolbar()
         initComponent()
@@ -97,8 +93,7 @@ class PlantingPracticesActivity : BaseActivity() {
         if (useCase == null) {
             useCase = UseCase()
         }
-        btnGetRec!!.setOnClickListener { view: View? ->
-
+        binding.singleButton.btnAction.setOnClickListener {
             try {
                 useCase.apply {
                     fertilizerRecommendation = false
