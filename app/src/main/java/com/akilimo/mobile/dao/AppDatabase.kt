@@ -20,6 +20,7 @@ import com.akilimo.mobile.entities.InvestmentAmount
 import com.akilimo.mobile.entities.MaizeMarket
 import com.akilimo.mobile.entities.MaizePrice
 import com.akilimo.mobile.entities.MandatoryInfo
+import com.akilimo.mobile.entities.OperationCost
 import com.akilimo.mobile.entities.PotatoMarket
 import com.akilimo.mobile.entities.PotatoPrice
 import com.akilimo.mobile.entities.ScheduledDate
@@ -37,6 +38,7 @@ import com.akilimo.mobile.entities.UserProfile
         FertilizerPrice::class,
         FieldYield::class,
         FieldOperationCost::class,
+        OperationCost::class,
         InterCropFertilizer::class,
         InvestmentAmount::class,
         UserLocation::class,
@@ -52,7 +54,7 @@ import com.akilimo.mobile.entities.UserProfile
         UseCase::class,
         AkilimoCurrency::class,
         AdviceStatus::class
-    ], version = 1,
+    ], version = 3,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -74,6 +76,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun maizePerformanceDao(): CropPerformanceDao
     abstract fun maizePriceDao(): MaizePriceDao
     abstract fun mandatoryInfoDao(): MandatoryInfoDao
+    abstract fun operationCostDao(): OperationCostDao
     abstract fun potatoMarketDao(): PotatoMarketDao
     abstract fun potatoPriceDao(): PotatoPriceDao
     abstract fun profileInfoDao(): UserProfileDao

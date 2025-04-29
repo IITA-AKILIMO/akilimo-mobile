@@ -14,6 +14,13 @@ interface OperationCostDao {
     @Query("SELECT * FROM operation_costs")
     fun findAll(): List<OperationCost>
 
+    @Query("SELECT * FROM operation_costs WHERE operation_name = :operationName AND operation_type = :operationType AND country_code = :countryCode")
+    fun findAllFiltered(
+        operationName: String,
+        operationType: String,
+        countryCode: String
+    ): List<OperationCost>
+
     @Query("SELECT * FROM operation_costs LIMIT 1")
     fun findOne(): OperationCost?
 
