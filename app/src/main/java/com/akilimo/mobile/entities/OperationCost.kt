@@ -1,4 +1,4 @@
-package com.akilimo.mobile.models
+package com.akilimo.mobile.entities
 
 import android.os.Parcelable
 import androidx.room.ColumnInfo
@@ -25,6 +25,10 @@ data class OperationCost(
     @ColumnInfo(name = "id")
     val id: Int,
 
+    @JsonProperty("item_tag")
+    @ColumnInfo(name = "item_tag")
+    val itemTag: String? = null,
+
     @JsonProperty("operation_name")
     @ColumnInfo(name = "operation_name")
     val operationName: String? = null,
@@ -48,7 +52,5 @@ data class OperationCost(
 
     @JsonProperty("average_cost")
     @ColumnInfo(name = "average_cost")
-    val averageCost: Double = 0.0,
-
-
-    ) : Parcelable
+    val averageCost: Double = 0.0
+) : Parcelable
