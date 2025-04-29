@@ -1,23 +1,31 @@
 package com.akilimo.mobile.dao
 
-import androidx.room.*
-import com.akilimo.mobile.entities.UseCases
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
+import com.akilimo.mobile.entities.UseCase
 
 @Dao
 interface UseCaseDao {
 
-    @Query("SELECT * FROM use_case")
-    fun listAll(): List<UseCases>
+    @Query("SELECT * FROM use_cases")
+    fun getAll(): List<UseCase>
 
-    @Query("SELECT * FROM use_case LIMIT 1")
-    fun findOne(): UseCases?
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg users: UseCases)
+    @Query("SELECT * FROM use_cases LIMIT 1")
+    fun findOne(): UseCase?
 
     @Update
-    fun update(vararg users: UseCases)
+    fun update(useCase: UseCase)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(vararg useCases: UseCase)
+
+    @Update
+    fun updateAll(vararg useCases: UseCase)
 
     @Delete
-    fun delete(user: UseCases?)
+    fun delete(useCase: UseCase?)
 }
