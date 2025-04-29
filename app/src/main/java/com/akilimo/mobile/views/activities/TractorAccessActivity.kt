@@ -167,8 +167,10 @@ class TractorAccessActivity : CostBaseActivity() {
                     ))
                 }
                 loadOperationCost(
-                    EnumOperation.TILLAGE.name, EnumOperationType.MECHANICAL.operationName(),
-                    title, hintText
+                    EnumOperation.TILLAGE.name,
+                    EnumOperationType.TRACTOR.name,
+                    title,
+                    hintText
                 )
             }
         }
@@ -198,8 +200,10 @@ class TractorAccessActivity : CostBaseActivity() {
                     ))
                 }
                 loadOperationCost(
-                    EnumOperation.RIDGING.name, EnumOperationType.MECHANICAL.operationName(),
-                    title, hintText
+                    EnumOperation.RIDGING.name,
+                    EnumOperationType.TRACTOR.name,
+                    title,
+                    hintText
                 )
             }
         }
@@ -246,8 +250,8 @@ class TractorAccessActivity : CostBaseActivity() {
     }
 
     override fun showDialogFullscreen(
-        operationCostList: ArrayList<OperationCost>?,
         operationName: String?,
+        operationType: String?,
         countryCode: String?,
         dialogTitle: String?,
         hintText: String
@@ -259,8 +263,8 @@ class TractorAccessActivity : CostBaseActivity() {
         }
 
         showCustomNotificationDialog()
-        arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList)
         arguments.putString(OperationCostsDialogFragment.OPERATION_NAME, operationName)
+        arguments.putString(OperationCostsDialogFragment.OPERATION_TYPE, operationType)
         arguments.putString(OperationCostsDialogFragment.CURRENCY_CODE, currencySymbol)
         arguments.putString(OperationCostsDialogFragment.COUNTRY_CODE, countryCode)
         arguments.putString(OperationCostsDialogFragment.DIALOG_TITLE, dialogTitle)
@@ -270,9 +274,7 @@ class TractorAccessActivity : CostBaseActivity() {
 
 
         showDialogFragmentSafely(
-            supportFragmentManager,
-            dialogFragment,
-            OperationCostsDialogFragment.ARG_ITEM_ID
+            supportFragmentManager, dialogFragment, OperationCostsDialogFragment.ARG_ITEM_ID
         )
         dialogOpen = true
     }
@@ -290,16 +292,14 @@ class TractorAccessActivity : CostBaseActivity() {
                 isExactCost: Boolean
             ) {
                 if (!cancelled && operationName != null) {
-                    val roundedCost =
-                        mathHelper.roundToNearestSpecifiedValue(selectedCost, 1000.0)
                     when (operationName) {
                         "TILLAGE" -> {
-                            tractorPloughCost = roundedCost
+                            tractorPloughCost = selectedCost
                             exactPloughCost = isExactCost
                         }
 
                         "RIDGING" -> {
-                            tractorRidgeCost = roundedCost
+                            tractorRidgeCost = selectedCost
                             exactRidgeCost = isExactCost
                         }
                     }
