@@ -29,11 +29,9 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
 
     private var selectedCost = 0.0
     private var translatedSuffix: String? = null
-    private var currencyCode: String? = null
     private var operationName: String? = null
     private var bagPrice: String? = null
     private var bagPriceRange = "NA"
-    private val exactPrice = "0"
     private var dialogTitle: String? = null
     private var exactPriceHint: String? = null
 
@@ -49,7 +47,6 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
         const val OPERATION_NAME: String = "operation_type"
         const val COUNTRY_CODE: String = "country"
         const val CURRENCY_CODE: String = "currency_code"
-        const val CURRENCY_SYMBOL: String = "currency_symbol"
         const val COST_LIST: String = "cost_list"
         const val DIALOG_TITLE: String = "dialog_title"
         const val EXACT_PRICE_HINT: String = "exact_price_title"
@@ -66,8 +63,7 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
         bundle?.let {
             operationCosts = it.getParcelableArrayList(COST_LIST)
             countryCode = it.getString(COUNTRY_CODE)
-            currencyCode = it.getString(CURRENCY_CODE)
-            currencySymbol = it.getString(CURRENCY_SYMBOL) ?: ""
+            currencySymbol = it.getString(CURRENCY_CODE) ?: ""
             operationName = it.getString(OPERATION_NAME)
             dialogTitle = it.getString(DIALOG_TITLE)
             exactPriceHint = it.getString(EXACT_PRICE_HINT)
@@ -89,15 +85,6 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
 
             setContentView(binding.root)
         }
-
-
-//        val btnClose = dialog.findViewById<Button>(R.id.close_button)
-//        val btnSave = dialog.findViewById<Button>(R.id.save_button)
-//        val lblPricePerBag = dialog.findViewById<TextView>(R.id.lblFragmentTitle)
-//
-//        radioGroup = dialog.findViewById(R.id.radioGroup)
-//        exactPriceWrapper = dialog.findViewById(R.id.exactPriceWrapper)
-//        editExactCost = dialog.findViewById(R.id.editExactCost)
 
 
         translatedSuffix = context.getString(R.string.lbl_to)

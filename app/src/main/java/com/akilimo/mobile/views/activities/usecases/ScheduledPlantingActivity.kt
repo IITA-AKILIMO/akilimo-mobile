@@ -11,7 +11,7 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.RecOptionsAdapter
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityScheduledPlantingBinding
-import com.akilimo.mobile.entities.UseCases
+import com.akilimo.mobile.entities.UseCase
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.models.RecommendationOptions
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
@@ -81,19 +81,19 @@ class ScheduledPlantingActivity : BaseActivity() {
             var useCases = database.useCaseDao().findOne()
             try {
                 if (useCases == null) {
-                    useCases = UseCases()
+                    useCases = UseCase()
                 }
                 useCases.apply {
-                    useCases.FR = false
-                    useCases.CIM = false
-                    useCases.CIS = false
-                    useCases.SPH = true
-                    useCases.SPP = true
-                    useCases.BPP = false
-                    useCases.name = EnumUseCase.SP.name
+                    useCases.fertilizerRecommendation = false
+                    useCases.maizeInterCropping = false
+                    useCases.sweetPotatoInterCropping = false
+                    useCases.scheduledPlantingHighStarch = true
+                    useCases.scheduledPlanting = true
+                    useCases.bestPlantingPractices = false
+                    useCases.useCaseName = EnumUseCase.SP.name
                 }
 
-                database.useCaseDao().insert(useCases)
+                database.useCaseDao().insertAll(useCases)
                 processRecommendations(this@ScheduledPlantingActivity)
             } catch (ex: Exception) {
                 Sentry.captureException(ex)

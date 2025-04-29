@@ -13,7 +13,7 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.RecOptionsAdapter
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityFertilizerRecBinding
-import com.akilimo.mobile.entities.UseCases
+import com.akilimo.mobile.entities.UseCase
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.models.RecommendationOptions
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
@@ -43,7 +43,7 @@ class FertilizerRecActivity : BaseActivity() {
     private var activity: Activity? = null
     private var mAdapter: RecOptionsAdapter? = null
     private var items: List<RecommendationOptions> = ArrayList()
-    private var useCases: UseCases? = null
+    private var useCase: UseCase? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,20 +82,20 @@ class FertilizerRecActivity : BaseActivity() {
         val database = getDatabase(this@FertilizerRecActivity)
         btnGetRec!!.setOnClickListener { view: View? ->
             //launch the recommendation view
-            useCases = database.useCaseDao().findOne()
+            useCase = database.useCaseDao().findOne()
             try {
-                if (useCases == null) {
-                    useCases = UseCases()
+                if (useCase == null) {
+                    useCase = UseCase()
                 }
-                useCases!!.FR = true
-                useCases!!.CIM = false
-                useCases!!.CIS = false
-                useCases!!.SPH = false
-                useCases!!.SPP = false
-                useCases!!.BPP = false
-                useCases!!.name = EnumUseCase.FR.name
+                useCase!!.fertilizerRecommendation = true
+                useCase!!.maizeInterCropping = false
+                useCase!!.sweetPotatoInterCropping = false
+                useCase!!.scheduledPlantingHighStarch = false
+                useCase!!.scheduledPlanting = false
+                useCase!!.bestPlantingPractices = false
+                useCase!!.useCaseName = EnumUseCase.FR.name
 
-                database.useCaseDao().insert(useCases!!)
+                database.useCaseDao().insertAll(useCase!!)
                 processRecommendations(activity!!)
             } catch (ex: Exception) {
                 Toast.makeText(this@FertilizerRecActivity, ex.message, Toast.LENGTH_SHORT).show()

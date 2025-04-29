@@ -12,7 +12,7 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.RecOptionsAdapter
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityPlantingPracticesBinding
-import com.akilimo.mobile.entities.UseCases
+import com.akilimo.mobile.entities.UseCase
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.models.RecommendationOptions
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
@@ -46,6 +46,7 @@ class PlantingPracticesActivity : BaseActivity() {
 
     private var mAdapter: RecOptionsAdapter? = null
     private var items: List<RecommendationOptions> = ArrayList()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,23 +93,23 @@ class PlantingPracticesActivity : BaseActivity() {
 
         val database = getDatabase(this@PlantingPracticesActivity)
 
-        var useCases = database.useCaseDao().findOne()
-        if (useCases == null) {
-            useCases = UseCases()
+        var useCase = database.useCaseDao().findOne()
+        if (useCase == null) {
+            useCase = UseCase()
         }
         btnGetRec!!.setOnClickListener { view: View? ->
 
             try {
-                useCases.apply {
-                    FR = false
-                    CIM = false
-                    CIS = false
-                    SPH = false
-                    SPP = false
-                    BPP = true
-                    name = EnumUseCase.PP.name
+                useCase.apply {
+                    fertilizerRecommendation = false
+                    maizeInterCropping = false
+                    sweetPotatoInterCropping = false
+                    scheduledPlantingHighStarch = false
+                    scheduledPlanting = false
+                    bestPlantingPractices = true
+                    useCaseName = EnumUseCase.PP.name
                 }
-                database.useCaseDao().insert(useCases)
+                database.useCaseDao().insertAll(useCase)
                 processRecommendations(this@PlantingPracticesActivity)
             } catch (ex: Exception) {
                 Toast.makeText(this@PlantingPracticesActivity, ex.message, Toast.LENGTH_SHORT)
@@ -167,48 +168,48 @@ class PlantingPracticesActivity : BaseActivity() {
     }
 
     private fun setAdapter() {
-        items = recItems
+        items = getRecItems()
         mAdapter!!.setData(items)
     }
 
-    private val recItems: List<RecommendationOptions>
-        get() {
-            val myItems: MutableList<RecommendationOptions> = ArrayList()
-            myItems.add(
-                RecommendationOptions(
-                    manualTillageCostsString!!,
-                    EnumAdviceTasks.MANUAL_TILLAGE_COST,
-                    checkStatus(EnumAdviceTasks.MANUAL_TILLAGE_COST)
-                )
+    private fun getRecItems(): List<RecommendationOptions> {
+        val myItems: MutableList<RecommendationOptions> = ArrayList()
+        myItems.add(
+            RecommendationOptions(
+                manualTillageCostsString!!,
+                EnumAdviceTasks.MANUAL_TILLAGE_COST,
+                checkStatus(EnumAdviceTasks.MANUAL_TILLAGE_COST)
             )
-            myItems.add(
-                RecommendationOptions(
-                    tractorAccessString!!,
-                    EnumAdviceTasks.TRACTOR_ACCESS,
-                    checkStatus(EnumAdviceTasks.TRACTOR_ACCESS)
-                )
+        )
+        myItems.add(
+            RecommendationOptions(
+                tractorAccessString!!,
+                EnumAdviceTasks.TRACTOR_ACCESS,
+                checkStatus(EnumAdviceTasks.TRACTOR_ACCESS)
             )
-            myItems.add(
-                RecommendationOptions(
-                    weedControlCostString!!,
-                    EnumAdviceTasks.COST_OF_WEED_CONTROL,
-                    checkStatus(EnumAdviceTasks.COST_OF_WEED_CONTROL)
-                )
+        )
+        myItems.add(
+            RecommendationOptions(
+                weedControlCostString!!,
+                EnumAdviceTasks.COST_OF_WEED_CONTROL,
+                checkStatus(EnumAdviceTasks.COST_OF_WEED_CONTROL)
             )
-            myItems.add(
-                RecommendationOptions(
-                    rootYieldString!!,
-                    EnumAdviceTasks.CURRENT_CASSAVA_YIELD,
-                    checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)
-                )
+        )
+        myItems.add(
+            RecommendationOptions(
+                rootYieldString!!,
+                EnumAdviceTasks.CURRENT_CASSAVA_YIELD,
+                checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)
             )
-            myItems.add(
-                RecommendationOptions(
-                    marketOutletString!!,
-                    EnumAdviceTasks.MARKET_OUTLET_CASSAVA,
-                    checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)
-                )
+        )
+        myItems.add(
+            RecommendationOptions(
+                marketOutletString!!,
+                EnumAdviceTasks.MARKET_OUTLET_CASSAVA,
+                checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)
             )
-            return myItems
-        }
+        )
+        return myItems
+    }
+
 }

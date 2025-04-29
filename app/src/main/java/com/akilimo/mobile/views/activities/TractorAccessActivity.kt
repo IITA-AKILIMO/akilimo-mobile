@@ -15,8 +15,8 @@ import com.akilimo.mobile.databinding.ActivityTractorAccessBinding
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.entities.FieldOperationCost
-import com.akilimo.mobile.inherit.CostBaseActivity
 import com.akilimo.mobile.entities.OperationCost
+import com.akilimo.mobile.inherit.CostBaseActivity
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumOperation
 import com.akilimo.mobile.utils.enums.EnumOperationType
@@ -236,7 +236,7 @@ class TractorAccessActivity : CostBaseActivity() {
             fieldOperationCost!!.exactTractorPloughPrice = exactPloughCost
             fieldOperationCost!!.exactTractorRidgePrice = exactRidgeCost
 
-            database.fieldOperationCostDao().insert(fieldOperationCost!!)
+            database.fieldOperationCostDao().insertOrUpdate(fieldOperationCost!!)
             database.adviceStatusDao()
                 .insert(AdviceStatus(EnumAdviceTasks.TRACTOR_ACCESS.name, true))
         } catch (ex: Exception) {
@@ -250,7 +250,7 @@ class TractorAccessActivity : CostBaseActivity() {
         operationName: String?,
         countryCode: String?,
         dialogTitle: String?,
-        hintText: String?
+        hintText: String
     ) {
         val arguments = Bundle()
 
@@ -261,8 +261,7 @@ class TractorAccessActivity : CostBaseActivity() {
         showCustomNotificationDialog()
         arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList)
         arguments.putString(OperationCostsDialogFragment.OPERATION_NAME, operationName)
-        arguments.putString(OperationCostsDialogFragment.CURRENCY_CODE, currency)
-        arguments.putString(OperationCostsDialogFragment.CURRENCY_SYMBOL, currencySymbol)
+        arguments.putString(OperationCostsDialogFragment.CURRENCY_CODE, currencySymbol)
         arguments.putString(OperationCostsDialogFragment.COUNTRY_CODE, countryCode)
         arguments.putString(OperationCostsDialogFragment.DIALOG_TITLE, dialogTitle)
         arguments.putString(OperationCostsDialogFragment.EXACT_PRICE_HINT, hintText)

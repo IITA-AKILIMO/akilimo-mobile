@@ -14,7 +14,7 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.RecOptionsAdapter
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityInterCropRecBinding
-import com.akilimo.mobile.entities.UseCases
+import com.akilimo.mobile.entities.UseCase
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.models.RecommendationOptions
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
@@ -50,7 +50,7 @@ class InterCropRecActivity : BaseActivity() {
     private var activity: Activity? = null
     private var mAdapter: RecOptionsAdapter? = null
     private var items: List<RecommendationOptions> = ArrayList()
-    private var useCases: UseCases? = null
+    private var useCases: UseCase? = null
     private var useCase: EnumUseCase? = null
     private var icMaize = false
     private var icPotato = false
@@ -69,8 +69,8 @@ class InterCropRecActivity : BaseActivity() {
         mAdapter = RecOptionsAdapter()
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.countryCode!!
-            currency = profileInfo.currencyCode!!
+            countryCode = profileInfo.countryCode
+            currency = profileInfo.currencyCode
         }
 
         when (countryCode) {
@@ -119,17 +119,17 @@ class InterCropRecActivity : BaseActivity() {
             var useCases = database.useCaseDao().findOne()
             try {
                 if (useCases == null) {
-                    useCases = UseCases()
+                    useCases = UseCase()
                 }
-                useCases.FR = false
-                useCases.CIM = icMaize
-                useCases.CIS = icPotato
-                useCases.SPH = false
-                useCases.SPP = false
-                useCases.BPP = false
-                useCases.name = useCase!!.name
+                useCases.fertilizerRecommendation = false
+                useCases.maizeInterCropping = icMaize
+                useCases.sweetPotatoInterCropping = icPotato
+                useCases.scheduledPlantingHighStarch = false
+                useCases.scheduledPlanting = false
+                useCases.bestPlantingPractices = false
+                useCases.useCaseName = useCase!!.name
 
-                database.useCaseDao().insert(useCases)
+                database.useCaseDao().insertAll(useCases)
                 processRecommendations(this@InterCropRecActivity)
             } catch (ex: Exception) {
                 Toast.makeText(this@InterCropRecActivity, ex.message, Toast.LENGTH_SHORT).show()

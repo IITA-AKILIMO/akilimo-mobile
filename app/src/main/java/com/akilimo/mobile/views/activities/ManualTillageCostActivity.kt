@@ -6,7 +6,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.FragmentTransaction
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ActivityManualTillageCostBinding
 import com.akilimo.mobile.entities.AdviceStatus
@@ -16,6 +15,7 @@ import com.akilimo.mobile.inherit.CostBaseActivity
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumOperation
 import com.akilimo.mobile.utils.enums.EnumOperationType
+import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.OperationCostsDialogFragment
 import io.sentry.Sentry
 
@@ -34,14 +34,14 @@ class ManualTillageCostActivity : CostBaseActivity() {
     private var _binding: ActivityManualTillageCostBinding? = null
     private val binding get() = _binding!!
 
-    var fieldOperationCost: FieldOperationCost? = null
+//    private var fieldOperationCost: FieldOperationCost? = null
 
     private var manualPloughCost = 0.0
     private var manualRidgeCost = 0.0
     private var dataValid = false
     private var dialogOpen = false
 
-    private var hintText: String? = null
+//    private var hintText: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,10 +78,10 @@ class ManualTillageCostActivity : CostBaseActivity() {
         initToolbar()
         initComponent()
 
-        fieldOperationCost = database.fieldOperationCostDao().findOne()
+        val fieldOperationCost = database.fieldOperationCostDao().findOne()
         if (fieldOperationCost != null) {
-            manualPloughCost = fieldOperationCost!!.manualPloughCost
-            manualRidgeCost = fieldOperationCost!!.manualRidgeCost
+            manualPloughCost = fieldOperationCost.manualPloughCost
+            manualRidgeCost = fieldOperationCost.manualRidgeCost
 
             manualPloughCostText!!.text = getString(
                 R.string.lbl_ploughing_cost_text,
@@ -141,30 +141,34 @@ class ManualTillageCostActivity : CostBaseActivity() {
         }
         val finalPloughTitle = ploughTitle
         btnPloughCost!!.setOnClickListener { view: View? ->
-            hintText = context.getString(
+            val hintText = context.getString(
                 R.string.lbl_manual_tillage_cost_hint,
                 mathHelper.removeLeadingZero(fieldSize),
                 finalTranslatedUnit
             )
             if (!dialogOpen) {
                 loadOperationCost(
-                    EnumOperation.TILLAGE.name, EnumOperationType.MANUAL.name, finalPloughTitle,
-                    hintText!!
+                    operationName = EnumOperation.TILLAGE.name,
+                    operationType = EnumOperationType.MANUAL.name,
+                    dialogTitle = finalPloughTitle,
+                    hintText = hintText
                 )
             }
         }
 
         val finalRidgeTitle = ridgeTitle
-        btnRidgeCost!!.setOnClickListener { view: View? ->
-            hintText = context.getString(
+        btnRidgeCost!!.setOnClickListener {
+            val hintText = context.getString(
                 R.string.lbl_manual_ridge_cost_hint,
                 mathHelper.removeLeadingZero(fieldSize),
                 finalTranslatedUnit
             )
             if (!dialogOpen) {
                 loadOperationCost(
-                    EnumOperation.RIDGING.name, EnumOperationType.MANUAL.name, finalRidgeTitle,
-                    hintText!!
+                    operationName = EnumOperation.RIDGING.name,
+                    operationType = EnumOperationType.MANUAL.name,
+                    dialogTitle = finalRidgeTitle,
+                    hintText = hintText
                 )
             }
         }
@@ -189,6 +193,7 @@ class ManualTillageCostActivity : CostBaseActivity() {
     }
 
     private fun setData() {
+        var fieldOperationCost = database.fieldOperationCostDao().findOne()
         if (fieldOperationCost == null) {
             fieldOperationCost = FieldOperationCost()
         }
@@ -212,9 +217,9 @@ class ManualTillageCostActivity : CostBaseActivity() {
 
         dataValid = true
         try {
-            fieldOperationCost!!.manualPloughCost = manualPloughCost
-            fieldOperationCost!!.manualRidgeCost = manualRidgeCost
-            database.fieldOperationCostDao().insert(fieldOperationCost!!)
+            fieldOperationCost.manualPloughCost = manualPloughCost
+            fieldOperationCost.manualRidgeCost = manualRidgeCost
+            database.fieldOperationCostDao().insertOrUpdate(fieldOperationCost)
         } catch (ex: Exception) {
             Toast.makeText(this@ManualTillageCostActivity, ex.message, Toast.LENGTH_SHORT).show()
             Sentry.captureException(ex)
@@ -227,7 +232,7 @@ class ManualTillageCostActivity : CostBaseActivity() {
         operationName: String?,
         countryCode: String?,
         dialogTitle: String?,
-        hintText: String?
+        hintText: String
     ) {
         val arguments = Bundle()
 
@@ -247,8 +252,7 @@ class ManualTillageCostActivity : CostBaseActivity() {
         arguments.putString(OperationCostsDialogFragment.OPERATION_NAME, operationName)
         arguments.putString(OperationCostsDialogFragment.DIALOG_TITLE, dialogTitle)
         arguments.putString(OperationCostsDialogFragment.EXACT_PRICE_HINT, hintText)
-        arguments.putString(OperationCostsDialogFragment.CURRENCY_CODE, currency)
-        arguments.putString(OperationCostsDialogFragment.CURRENCY_SYMBOL, currencySymbol)
+        arguments.putString(OperationCostsDialogFragment.CURRENCY_CODE, currencySymbol)
         arguments.putString(OperationCostsDialogFragment.COUNTRY_CODE, countryCode)
 
         val dialogFragment = OperationCostsDialogFragment()
@@ -311,27 +315,12 @@ class ManualTillageCostActivity : CostBaseActivity() {
                 }
                 dialogOpen = false
             }
-
         })
 
-
-
-        supportFragmentManager.beginTransaction().apply {
-            dialogOpen = true
-            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            setCustomAnimations(
-                R.anim.animate_slide_in_left,
-                R.anim.animate_slide_out_right
-            )
-            supportFragmentManager.findFragmentByTag(OperationCostsDialogFragment.ARG_ITEM_ID)
-                ?.let {
-                    remove(it)
-                }
-            addToBackStack(null)
-        }.also { transaction ->
-            dialogFragment.show(transaction, OperationCostsDialogFragment.ARG_ITEM_ID)
-            transaction.commit()
-        }
-
+        showDialogFragmentSafely(
+            supportFragmentManager,
+            dialogFragment,
+            OperationCostsDialogFragment.ARG_ITEM_ID
+        )
     }
 }

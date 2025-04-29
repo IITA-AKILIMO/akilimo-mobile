@@ -232,7 +232,7 @@ class WeedControlCostsActivity : BaseActivity() {
             fieldOperationCost!!.firstWeedingOperationCost = firstOperationCost
             fieldOperationCost!!.secondWeedingOperationCost = secondOperationCost
 
-            database.fieldOperationCostDao().insert(fieldOperationCost!!)
+            database.fieldOperationCostDao().insertOrUpdate(fieldOperationCost!!)
             database.adviceStatusDao()
                 .insert(AdviceStatus(EnumAdviceTasks.COST_OF_WEED_CONTROL.name, true))
 
