@@ -19,7 +19,6 @@ abstract class CostBaseActivity : BaseActivity() {
         val queryParams = mapOf(
             "operation_type" to operationName,
             "operation_name" to operationType,
-            "foo" to "bar",  // add as many as needed
         )
 
         val call = AkilimoApi.apiService.getOperationCosts(currencyCode, queryParams)
