@@ -21,7 +21,6 @@ import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.SessionManager
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumCountry
-import com.akilimo.mobile.utils.enums.EnumUseCase
 import com.akilimo.mobile.views.activities.DstRecommendationActivity
 import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import com.nabinbhandari.android.permissions.PermissionHandler
@@ -46,7 +45,8 @@ abstract class BaseActivity : AppCompatActivity() {
     protected var currencyCode: String = EnumCountry.Nigeria.currency()
     protected var currencySymbol: String = EnumCountry.Nigeria.currency()
     protected var baseCurrency: String = "USD"
-    protected var enumUseCase: EnumUseCase? = null
+
+    //    protected var enumUseCase: EnumUseCase =EnumUseCase.NA
     protected var areaUnit: String = "acre"
     protected var areaUnitText: String = "acre"
     protected var fieldSize: Double = 0.0
