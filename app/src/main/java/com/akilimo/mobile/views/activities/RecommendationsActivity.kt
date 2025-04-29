@@ -44,7 +44,7 @@ class RecommendationsActivity : BaseActivity() {
     private var sphString: String? = null
     private var bppString: String? = null
 
-    private var useCase: UseCase? = null
+    //    private var useCase: UseCase? = null
     private var mAdapter: AdapterListAnimation? = null
     private var items: MutableList<Recommendations> = ArrayList()
 
@@ -93,61 +93,65 @@ class RecommendationsActivity : BaseActivity() {
 
         val database = getDatabase(this@RecommendationsActivity)
         val profileInfo = database.profileInfoDao().findOne()
-        useCase = database.useCaseDao().findOne()
         if (profileInfo != null) {
             countryCode = profileInfo.countryCode
-            currency = profileInfo.currencyCode
+            currencyCode = profileInfo.currencyCode
         }
 
-        val FR = Recommendations()
-        FR.recCode = EnumAdvice.FR
-        FR.recommendationName = frString
-        FR.background = ContextCompat.getDrawable(
-            this@RecommendationsActivity,
-            R.drawable.bg_gradient_very_soft
-        )
-        items.add(FR)
-
-        val SPH = Recommendations()
-        SPH.recCode = EnumAdvice.SPH
-        SPH.recommendationName = sphString
-        SPH.background = ContextCompat.getDrawable(
-            this@RecommendationsActivity,
-            R.drawable.bg_gradient_very_soft
-        )
-        items.add(SPH)
-
-        if (countryCode != EnumCountry.Ghana.countryCode()) {
-            val BPP = Recommendations()
-            BPP.recCode = EnumAdvice.BPP
-            BPP.recommendationName = bppString
-            BPP.background = ContextCompat.getDrawable(
+        val frRecommendations = Recommendations().apply {
+            recCode = EnumAdvice.FR
+            recommendationName = frString
+            background = ContextCompat.getDrawable(
                 this@RecommendationsActivity,
                 R.drawable.bg_gradient_very_soft
             )
-            items.add(BPP)
+        }
+        items.add(frRecommendations)
+
+        val sphRecommendations = Recommendations().apply {
+            recCode = EnumAdvice.SPH
+            recommendationName = sphString
+            background = ContextCompat.getDrawable(
+                this@RecommendationsActivity,
+                R.drawable.bg_gradient_very_soft
+            )
+        }
+        items.add(sphRecommendations)
+
+        if (countryCode != EnumCountry.Ghana.countryCode()) {
+            val bppRecommendations = Recommendations().apply {
+                recCode = EnumAdvice.BPP
+                recommendationName = bppString
+                background = ContextCompat.getDrawable(
+                    this@RecommendationsActivity,
+                    R.drawable.bg_gradient_very_soft
+                )
+            }
+            items.add(bppRecommendations)
         }
 
         if (countryCode == EnumCountry.Nigeria.countryCode()) {
-            val IC_MAIZE = Recommendations()
-            IC_MAIZE.recCode = EnumAdvice.IC_MAIZE
-            IC_MAIZE.recommendationName = icMaizeString
-            IC_MAIZE.background =
-                ContextCompat.getDrawable(
-                    this@RecommendationsActivity,
-                    R.drawable.bg_gradient_very_soft
-                )
-            items.add(IC_MAIZE)
+            val icMaizeRecommendations = Recommendations().apply {
+                recCode = EnumAdvice.IC_MAIZE
+                recommendationName = icMaizeString
+                background =
+                    ContextCompat.getDrawable(
+                        this@RecommendationsActivity,
+                        R.drawable.bg_gradient_very_soft
+                    )
+            }
+            items.add(icMaizeRecommendations)
         } else if (countryCode == EnumCountry.Tanzania.countryCode()) {
-            val IC_SWEET_POTATO = Recommendations()
-            IC_SWEET_POTATO.recCode = EnumAdvice.IC_SWEET_POTATO
-            IC_SWEET_POTATO.recommendationName = icSweetPotatoString
-            IC_SWEET_POTATO.background =
-                ContextCompat.getDrawable(
-                    this@RecommendationsActivity,
-                    R.drawable.bg_gradient_very_soft
-                )
-            items.add(IC_SWEET_POTATO)
+            val icSweetPotatoRecommendations = Recommendations().apply {
+                recCode = EnumAdvice.IC_SWEET_POTATO
+                recommendationName = icSweetPotatoString
+                background =
+                    ContextCompat.getDrawable(
+                        this@RecommendationsActivity,
+                        R.drawable.bg_gradient_very_soft
+                    )
+            }
+            items.add(icSweetPotatoRecommendations)
         }
 
 
@@ -202,11 +206,13 @@ class RecommendationsActivity : BaseActivity() {
             }
 
             if (intent != null) {
+                var useCase = database.useCaseDao().findOne()
                 if (useCase == null) {
                     useCase = UseCase()
                 }
-                useCase!!.useCaseName = advice.name
-                database.useCaseDao().insertAll(useCase!!)
+                useCase.useCaseName = advice.name
+                database.useCaseDao().insertAll(useCase)
+
                 startActivity(intent)
                 openActivity()
             }
