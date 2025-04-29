@@ -29,22 +29,25 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
 
     private var selectedCost = 0.0
     private var translatedSuffix: String? = null
-    private var operationName: String? = null
-    private var bagPrice: String? = null
+    private var operationName: String = ""
+    private var operationType: String = ""
+    private var operationCost: String? = null
     private var bagPriceRange = "NA"
     private var dialogTitle: String? = null
     private var exactPriceHint: String? = null
 
-    private var countryCode: String? = null
+    private var countryCode: String = ""
     private var onDismissListener: IDismissDialog? = null
-    private var operationCosts: ArrayList<OperationCost>? = null
-    private var operationCost: OperationCost? = null
+
+    //    private var operationCosts: ArrayList<OperationCost>? = null
+    private var selectedOperationCost: OperationCost? = null
 
     private var _binding: FragmentOperationCostDialogBinding? = null
     private val binding get() = _binding!!
 
     companion object {
-        const val OPERATION_NAME: String = "operation_type"
+        const val OPERATION_NAME: String = "operation_name"
+        const val OPERATION_TYPE: String = "operation_type"
         const val COUNTRY_CODE: String = "country"
         const val CURRENCY_CODE: String = "currency_code"
         const val COST_LIST: String = "cost_list"
@@ -61,10 +64,10 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
         val bundle = this.arguments
         val context = requireContext()
         bundle?.let {
-            operationCosts = it.getParcelableArrayList(COST_LIST)
-            countryCode = it.getString(COUNTRY_CODE)
+            countryCode = it.getString(COUNTRY_CODE) ?: ""
             currencySymbol = it.getString(CURRENCY_CODE) ?: ""
-            operationName = it.getString(OPERATION_NAME)
+            operationName = it.getString(OPERATION_NAME) ?: ""
+            operationType = it.getString(OPERATION_TYPE) ?: ""
             dialogTitle = it.getString(DIALOG_TITLE)
             exactPriceHint = it.getString(EXACT_PRICE_HINT)
         }
@@ -104,15 +107,15 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
         }
 
         //save the data
-        binding.saveButton.setOnClickListener { v: View? ->
+        binding.saveButton.setOnClickListener {
             if (isExactCostRequired) {
-                bagPrice = binding.editExactCost.getText().toString()
-                if (bagPrice.isNullOrEmpty()) {
+                operationCost = binding.editExactCost.getText().toString()
+                if (operationCost.isNullOrEmpty()) {
                     binding.editExactCost.error = "Please provide a valid cost value"
                     isPriceValid = false
                     return@setOnClickListener
                 }
-                selectedCost = bagPrice!!.toDouble()
+                selectedCost = operationCost!!.toDouble()
                 bagPriceRange = mathHelper.formatNumber(selectedCost, currencySymbol)
                 isPriceValid = true
                 cancelled = false
@@ -125,12 +128,10 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
             }
         }
 
-        binding.radioGroup.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener { radioGroup: RadioGroup, i: Int ->
-            radioSelected(
-                radioGroup, dialog
-            )
-        })
-        addCostRadioButtons(operationCosts!!)
+        binding.radioGroup.setOnCheckedChangeListener { radioGroup: RadioGroup, _: Int ->
+            radioSelected(radioGroup, dialog)
+        }
+        addCostRadioButtons()
         binding.exactPriceWrapper.hint = exactPriceHint
         return dialog
     }
@@ -138,16 +139,13 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
     private fun radioSelected(radioGroup: RadioGroup, dialog: Dialog) {
         val radioButtonId = radioGroup.checkedRadioButtonId
         val radioButton = dialog.findViewById<RadioButton>(radioButtonId)
-        val itemTagIndex = radioButton.tag as Long
-
+        val itemTagIndex = radioButton.tag as String
+        selectedOperationCost = database.operationCostDao().findOneByItemTag(itemTagIndex)
         try {
-            operationCost = operationCosts!![itemTagIndex.toInt()]
-            selectedCost = operationCost!!.averageCost
+            selectedCost = selectedOperationCost!!.averageCost
+            operationCost = selectedCost.toString()
             isExactCostRequired = false
             isPriceValid = true
-
-            bagPrice = selectedCost.toString()
-
 
             if (selectedCost < 0) {
                 isExactCostRequired = true
@@ -162,12 +160,14 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
         }
     }
 
-    private fun addCostRadioButtons(operationCosts: ArrayList<OperationCost>) {
+    private fun addCostRadioButtons() {
         binding.radioGroup.removeAllViews()
         val context = requireContext()
-
-        for ((id, _, _, _, minPrice, maxPrice, price) in operationCosts) {
-            val listIndex = id.toLong()
+        val operationCosts = database.operationCostDao()
+            .findAllFiltered(operationName, operationType, countryCode)
+        for (cost in operationCosts) {
+            val listIndex = cost.itemTag
+            val price = cost.averageCost
 
             val radioButton = RadioButton(activity)
             radioButton.id = View.generateViewId()
@@ -176,7 +176,7 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
 
             val defaultLabel = String.format(
                 getString(R.string.lbl_operation_cost_label),
-                mathHelper.formatNumber(maxPrice, null),
+                mathHelper.formatNumber(price, null),
                 currencySymbol
             )
 
@@ -195,7 +195,7 @@ class OperationCostsDialogFragment : BaseDialogFragment() {
         super.onDismiss(dialog)
         if (onDismissListener != null) {
             onDismissListener!!.onDismiss(
-                operationCost,
+                selectedOperationCost,
                 operationName,
                 selectedCost,
                 cancelled,
