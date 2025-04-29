@@ -42,8 +42,6 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected var countryCode: String = EnumCountry.Nigeria.countryCode()
 
-    @Deprecated("Do we really need this")
-    protected var currency: String = EnumCountry.Nigeria.currency()
     protected var currencyName: String = EnumCountry.Nigeria.currency()
     protected var currencyCode: String = EnumCountry.Nigeria.currency()
     protected var currencySymbol: String = EnumCountry.Nigeria.currency()

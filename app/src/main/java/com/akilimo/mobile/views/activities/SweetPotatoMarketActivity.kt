@@ -69,7 +69,7 @@ class SweetPotatoMarketActivity : BaseActivity() {
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
             countryCode = profileInfo.countryCode
-            currency = profileInfo.currencyCode
+            currencyCode = profileInfo.currencyCode
         }
 
         toolbar = binding.toolbar
@@ -228,7 +228,7 @@ class SweetPotatoMarketActivity : BaseActivity() {
 
     private fun showPotatoUnitPriceDialog() {
         val arguments = Bundle().apply {
-            putString(SweetPotatoPriceDialogFragment.CURRENCY_CODE, currency)
+            putString(SweetPotatoPriceDialogFragment.CURRENCY_CODE, currencyCode)
             putString(SweetPotatoPriceDialogFragment.COUNTRY_CODE, countryCode)
             putDouble(SweetPotatoPriceDialogFragment.SELECTED_PRICE, unitPrice)
             putString(SweetPotatoPriceDialogFragment.UNIT_OF_SALE, unitOfSale)

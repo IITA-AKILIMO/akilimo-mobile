@@ -170,7 +170,6 @@ class InvestmentAmountActivity : BaseActivity() {
         if (profileInfo != null) {
             countryCode = profileInfo.countryCode
             if (profileInfo.currencyCode.isNotEmpty()) {
-                currency = profileInfo.currencyCode
                 currencyCode = profileInfo.currencyCode
             }
         }
@@ -208,12 +207,12 @@ class InvestmentAmountActivity : BaseActivity() {
 
         if (amount.isNotEmpty()) {
             investmentAmountLocal = amount.toDouble()
-            investmentAmountUSD = mathHelper.convertToUSD(investmentAmountLocal, currency)
+            investmentAmountUSD = mathHelper.convertToUSD(investmentAmountLocal, currencyCode)
         }
 
         minimumAmountUSD =
             mathHelper.computeInvestmentAmount(minInvestmentUSD, fieldSizeAcre, baseCurrency)
-        minimumAmountLocal = mathHelper.convertToLocalCurrency(minimumAmountUSD, currency)
+        minimumAmountLocal = mathHelper.convertToLocalCurrency(minimumAmountUSD, currencyCode)
         hasErrors = investmentAmountLocal < minimumAmountLocal
         return getString(
             R.string.lbl_investment_validation_msg, minimumAmountLocal, currencyCode

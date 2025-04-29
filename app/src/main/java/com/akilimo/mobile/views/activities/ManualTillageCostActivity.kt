@@ -72,7 +72,10 @@ class ManualTillageCostActivity : CostBaseActivity() {
             countryCode = profileInfo.countryCode
             currencyCode = profileInfo.currencyCode
             val myAkilimoCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode)
-            currencySymbol = myAkilimoCurrency.currencySymbol
+            if (myAkilimoCurrency != null) {
+                currencyCode = myAkilimoCurrency.currencyCode
+                currencySymbol = myAkilimoCurrency.currencySymbol
+            }
         }
 
         initToolbar()

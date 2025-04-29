@@ -26,6 +26,7 @@ import com.akilimo.mobile.utils.enums.EnumCassavaProduceType
 import com.akilimo.mobile.utils.enums.EnumContext
 import com.akilimo.mobile.utils.enums.EnumUnitOfSale
 import com.akilimo.mobile.utils.enums.EnumUseCase
+import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.CassavaPriceDialogFragment
 import io.sentry.Sentry
 import retrofit2.Call
@@ -144,7 +145,7 @@ class CassavaMarketActivity : BaseActivity() {
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
             countryCode = profileInfo.countryCode
-            currency = profileInfo.currencyCode
+            currencyCode = profileInfo.currencyCode
         }
         val intent = intent
         if (intent != null) {
@@ -472,7 +473,7 @@ class CassavaMarketActivity : BaseActivity() {
 
     private fun showUnitPriceDialog(userContext: EnumContext) {
         val arguments = Bundle()
-        arguments.putString(CassavaPriceDialogFragment.CURRENCY_CODE, currency)
+        arguments.putString(CassavaPriceDialogFragment.CURRENCY_CODE, currencyCode)
         arguments.putString(CassavaPriceDialogFragment.COUNTRY_CODE, countryCode)
         arguments.putDouble(CassavaPriceDialogFragment.SELECTED_PRICE, unitPrice)
         arguments.putDouble(CassavaPriceDialogFragment.AVERAGE_PRICE, unitPrice)
@@ -496,16 +497,11 @@ class CassavaMarketActivity : BaseActivity() {
             }
         }
 
-        supportFragmentManager.beginTransaction().apply {
-            supportFragmentManager.findFragmentByTag(CassavaPriceDialogFragment.ARG_ITEM_ID)?.let {
-                remove(it)
-            }
-            addToBackStack(null)
-        }.commit()  // Commit the transaction
-
-        priceDialogFragment.show(supportFragmentManager, CassavaPriceDialogFragment.ARG_ITEM_ID)
-
-
+        showDialogFragmentSafely(
+            supportFragmentManager,
+            priceDialogFragment,
+            CassavaPriceDialogFragment.ARG_ITEM_ID
+        )
     }
 
 }

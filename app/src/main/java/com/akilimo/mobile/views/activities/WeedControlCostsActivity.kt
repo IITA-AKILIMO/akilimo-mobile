@@ -59,11 +59,12 @@ class WeedControlCostsActivity : BaseActivity() {
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
             countryCode = profileInfo.countryCode
-            currency = profileInfo.currencyCode
             currencyCode = profileInfo.currencyCode
             val myAkilimoCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode)
-            currencySymbol = myAkilimoCurrency.currencySymbol
-            currencyName = myAkilimoCurrency.currencyName
+            if (myAkilimoCurrency != null) {
+                currencySymbol = myAkilimoCurrency.currencySymbol
+                currencyName = myAkilimoCurrency.currencyName
+            }
         }
 
         fieldOperationCost = database.fieldOperationCostDao().findOne()

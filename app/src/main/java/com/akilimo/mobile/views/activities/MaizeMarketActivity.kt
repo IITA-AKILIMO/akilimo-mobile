@@ -91,10 +91,11 @@ class MaizeMarketActivity : BaseActivity() {
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
             countryCode = profileInfo.countryCode
-            currency = profileInfo.currencyCode
-
+            currencyCode = profileInfo.currencyCode
             val myAkilimoCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode)
-            currencyName = myAkilimoCurrency.currencyName
+            if (myAkilimoCurrency != null) {
+                currencyName = myAkilimoCurrency.currencyName
+            }
         }
 
         initToolbar()
@@ -112,7 +113,7 @@ class MaizeMarketActivity : BaseActivity() {
     }
 
     override fun initComponent() {
-        lblPricePerCob!!.text = currency
+        lblPricePerCob!!.text = currencyCode
         rdgMaizeProduceType!!.setOnCheckedChangeListener { group: RadioGroup?, radioIndex: Int ->
             grainPriceRequired = false
             cobPriceRequired = false
@@ -277,7 +278,7 @@ class MaizeMarketActivity : BaseActivity() {
 
     private fun showUnitGrainPriceDialog(produceType: String) {
         val arguments = Bundle()
-        arguments.putString(MaizePriceDialogFragment.CURRENCY_CODE, currency)
+        arguments.putString(MaizePriceDialogFragment.CURRENCY_CODE, currencyCode)
         arguments.putString(MaizePriceDialogFragment.CURRENCY_NAME, currencyName)
         arguments.putString(MaizePriceDialogFragment.COUNTRY_CODE, countryCode)
         arguments.putDouble(MaizePriceDialogFragment.SELECTED_PRICE, exactPrice)

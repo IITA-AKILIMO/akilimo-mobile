@@ -36,7 +36,7 @@ class FertilizerPriceDialogFragment : BaseDialogFragment() {
     private var currencyCode: String = "USD"
     private var fertilizerKey: String? = null
     private var currencyName: String? = null
-    private var bagPrice: Double? = null
+    private var bagPrice: Double = 0.0
     private var bagPriceRange: String? = "NA"
     private var exactPrice = 0.0
 
@@ -122,13 +122,13 @@ class FertilizerPriceDialogFragment : BaseDialogFragment() {
                     Sentry.captureException(ex)
                     bagPrice = 0.0
                 }
-                savedPricePerBag = bagPrice!!
+                savedPricePerBag = bagPrice
                 bagPriceRange = mathHelper.formatNumber(savedPricePerBag, currencyCode)
                 isPriceValid = true
                 binding.editExactFertilizerPrice.error = null
             }
             fertilizer?.apply {
-                price = bagPrice!!
+                price = bagPrice
                 pricePerBag = savedPricePerBag
                 priceRange = bagPriceRange
                 selected = true

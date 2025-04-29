@@ -73,10 +73,12 @@ class TractorAccessActivity : CostBaseActivity() {
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
             countryCode = profileInfo.countryCode
-            currency = profileInfo.currencyCode
             currencyCode = profileInfo.currencyCode
             val myAkilimoCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode)
-            currencySymbol = myAkilimoCurrency.currencySymbol
+            if (myAkilimoCurrency != null) {
+                currencyCode = myAkilimoCurrency.currencyCode
+                currencySymbol = myAkilimoCurrency.currencySymbol
+            }
         }
 
         toolbar = binding.toolbar
