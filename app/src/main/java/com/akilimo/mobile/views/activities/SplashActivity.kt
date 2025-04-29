@@ -74,6 +74,7 @@ class SplashActivity : BaseActivity() {
                     potatoMarketDao().deleteAll()
                     scheduleDateDao().deleteAll()
                     starchFactoryDao().deleteAll()
+                    operationCostDao().deleteAll()
 
                 }
             }
