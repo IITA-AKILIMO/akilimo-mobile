@@ -1,15 +1,10 @@
 package com.akilimo.mobile.views.activities.usecases
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.RecOptionsAdapter
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
@@ -30,58 +25,34 @@ import com.akilimo.mobile.views.activities.SweetPotatoMarketActivity
 import io.sentry.Sentry
 
 class InterCropRecActivity : BaseActivity() {
-    var recyclerView: RecyclerView? = null
-    var myToolbar: Toolbar? = null
-    var btnGetRec: AppCompatButton? = null
 
     private var _binding: ActivityInterCropRecBinding? = null
     private val binding get() = _binding!!
 
-
-    var recommendations: String? = null
-    var plantingString: String? = null
-    var fertilizerString: String? = null
-    var marketOutletString: String? = null
-    var marketOutletMaizeString: String? = null
-    var rootYieldString: String? = null
-    var maizeHeightString: String? = null
-    var sweetPotatoPricesString: String? = null
-
-    private var activity: Activity? = null
     private var mAdapter: RecOptionsAdapter? = null
-    private var items: List<RecommendationOptions> = ArrayList()
-    private var useCases: UseCase? = null
-    private var useCase: EnumUseCase? = null
     private var icMaize = false
     private var icPotato = false
+    private var useCase: String = EnumUseCase.NA.name
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityInterCropRecBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        recyclerView = binding.recyclerView
-        myToolbar = binding.toolbarLayout.toolbar
-        btnGetRec = binding.singleButton.btnGetRecommendation
-
-        val database = getDatabase(this@InterCropRecActivity)
-
-        mAdapter = RecOptionsAdapter()
+        val database = getDatabase(this)
         val profileInfo = database.profileInfoDao().findOne()
-        if (profileInfo != null) {
-            countryCode = profileInfo.countryCode
-            currencyCode = profileInfo.currencyCode
+        profileInfo?.let {
+            countryCode = it.countryCode
+            currencyCode = it.currencyCode
         }
 
         when (countryCode) {
             "NG" -> {
-                recommendations = getString(R.string.title_maize_intercropping)
-                useCase = EnumUseCase.CIM
+                useCase = EnumUseCase.CIM.name
             }
 
             "TZ" -> {
-                recommendations = getString(R.string.title_sweet_potato_intercropping)
-                useCase = EnumUseCase.CIS
+                useCase = EnumUseCase.CIS.name
             }
         }
 
@@ -90,104 +61,110 @@ class InterCropRecActivity : BaseActivity() {
     }
 
     override fun initToolbar() {
-        myToolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
-        setSupportActionBar(myToolbar)
-        supportActionBar!!.title = recommendations
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setDisplayShowHomeEnabled(true)
-
-        myToolbar!!.setNavigationOnClickListener { v: View? -> closeActivity(false) }
+        val toolbar = binding.toolbarLayout.toolbar
+        toolbar.setNavigationIcon(R.drawable.ic_left_arrow)
+        setSupportActionBar(toolbar)
+        supportActionBar?.apply {
+            title = when (countryCode) {
+                "NG" -> getString(R.string.title_maize_intercropping)
+                "TZ" -> getString(R.string.title_sweet_potato_intercropping)
+                else -> getString(R.string.lbl_intercropping)
+            }
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(true)
+        }
+        toolbar.setNavigationOnClickListener { closeActivity(false) }
     }
 
     override fun initComponent() {
-        recommendations = getString(R.string.lbl_intercropping)
-        plantingString = getString(R.string.lbl_planting_harvest)
-        fertilizerString = getString(R.string.lbl_available_fertilizers)
-        marketOutletString = getString(R.string.lbl_market_outlet)
-        marketOutletMaizeString = getString(R.string.lbl_market_outlet_maize)
-        rootYieldString = getString(R.string.lbl_typical_yield)
-        maizeHeightString = getString(R.string.lbl_maize_performance)
-        sweetPotatoPricesString = getString(R.string.lbl_sweet_potato_prices)
+        val context = this@InterCropRecActivity
 
-        recyclerView!!.layoutManager = LinearLayoutManager(this)
-        recyclerView!!.setHasFixedSize(true)
-        recyclerView!!.adapter = mAdapter
+        binding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            setHasFixedSize(true)
+        }
 
-        btnGetRec!!.setOnClickListener { view: View? ->
-            //launch the recommendation view
-            val database = getDatabase(this@InterCropRecActivity)
-            var useCases = database.useCaseDao().findOne()
-            try {
-                if (useCases == null) {
-                    useCases = UseCase()
+        mAdapter = RecOptionsAdapter().also { adapter ->
+            binding.recyclerView.adapter = adapter
+            adapter.setData(recItems)
+            adapter.setOnItemClickListener(object : RecOptionsAdapter.OnItemClickListener {
+                override fun onItemClick(view: View?, obj: RecommendationOptions?, position: Int) {
+                    val intent = when (obj?.adviceName) {
+                        EnumAdviceTasks.PLANTING_AND_HARVEST -> Intent(
+                            context,
+                            DatesActivity::class.java
+                        )
+
+                        EnumAdviceTasks.MARKET_OUTLET_CASSAVA -> Intent(
+                            context,
+                            CassavaMarketActivity::class.java
+                        ).apply {
+                            putExtra(CassavaMarketActivity.useCaseTag, useCase)
+                        }
+
+                        EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO -> Intent(
+                            context,
+                            SweetPotatoMarketActivity::class.java
+                        )
+
+                        EnumAdviceTasks.MARKET_OUTLET_MAIZE -> Intent(
+                            context,
+                            MaizeMarketActivity::class.java
+                        )
+
+                        EnumAdviceTasks.CURRENT_CASSAVA_YIELD -> Intent(
+                            context,
+                            RootYieldActivity::class.java
+                        )
+
+                        EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM,
+                        EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS -> Intent(
+                            context,
+                            InterCropFertilizersActivity::class.java
+                        ).apply {
+                            putExtra(
+                                InterCropFertilizersActivity.useCaseTag,
+                                useCase
+                            )
+                        }
+
+                        EnumAdviceTasks.MAIZE_PERFORMANCE -> Intent(
+                            context,
+                            MaizePerformanceActivity::class.java
+                        )
+
+                        else -> null
+                    }
+
+                    intent?.let {
+                        startActivity(it)
+                        openActivity()
+                    }
                 }
-                useCases.fertilizerRecommendation = false
-                useCases.maizeInterCropping = icMaize
-                useCases.sweetPotatoInterCropping = icPotato
-                useCases.scheduledPlantingHighStarch = false
-                useCases.scheduledPlanting = false
-                useCases.bestPlantingPractices = false
-                useCases.useCaseName = useCase!!.name
+            })
+        }
+
+        binding.singleButton.btnGetRecommendation.setOnClickListener {
+            try {
+                val database = getDatabase(context)
+                val useCases = database.useCaseDao().findOne() ?: UseCase()
+                useCases.apply {
+                    fertilizerRecommendation = false
+                    maizeInterCropping = icMaize
+                    sweetPotatoInterCropping = icPotato
+                    scheduledPlantingHighStarch = false
+                    scheduledPlanting = false
+                    bestPlantingPractices = false
+                    useCaseName = useCase
+                }
 
                 database.useCaseDao().insertAll(useCases)
-                processRecommendations(this@InterCropRecActivity)
+                processRecommendations(context)
             } catch (ex: Exception) {
-                Toast.makeText(this@InterCropRecActivity, ex.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
                 Sentry.captureException(ex)
             }
         }
-
-
-        mAdapter!!.setOnItemClickListener(object : RecOptionsAdapter.OnItemClickListener {
-            override fun onItemClick(view: View?, obj: RecommendationOptions?, position: Int) {
-                var intent: Intent? = null
-                val advice = obj?.adviceName
-                when (advice) {
-                    EnumAdviceTasks.PLANTING_AND_HARVEST -> intent =
-                        Intent(this@InterCropRecActivity, DatesActivity::class.java)
-
-                    EnumAdviceTasks.MARKET_OUTLET_CASSAVA -> {
-                        intent =
-                            Intent(this@InterCropRecActivity, CassavaMarketActivity::class.java)
-                        intent.putExtra(CassavaMarketActivity.useCaseTag, useCase as Parcelable?)
-                    }
-
-                    EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO -> intent = Intent(
-                        this@InterCropRecActivity,
-                        SweetPotatoMarketActivity::class.java
-                    )
-
-                    EnumAdviceTasks.MARKET_OUTLET_MAIZE -> intent =
-                        Intent(this@InterCropRecActivity, MaizeMarketActivity::class.java)
-
-                    EnumAdviceTasks.CURRENT_CASSAVA_YIELD -> intent =
-                        Intent(this@InterCropRecActivity, RootYieldActivity::class.java)
-
-                    EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS, EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM -> {
-                        intent =
-                            Intent(
-                                this@InterCropRecActivity,
-                                InterCropFertilizersActivity::class.java
-                            )
-                        intent.putExtra(
-                            InterCropFertilizersActivity.useCaseTag,
-                            useCase as Parcelable?
-                        )
-                    }
-
-                    EnumAdviceTasks.MAIZE_PERFORMANCE -> intent =
-                        Intent(this@InterCropRecActivity, MaizePerformanceActivity::class.java)
-
-                    else -> EnumAdviceTasks.NOT_SELECTED
-                }
-                if (intent != null) {
-                    startActivity(intent)
-                    openActivity()
-                }
-            }
-        })
-
-        setAdapter()
     }
 
     override fun validate(backPressed: Boolean) {
@@ -196,73 +173,64 @@ class InterCropRecActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        setAdapter()
+        mAdapter?.setData(recItems)
     }
-
-    private fun setAdapter() {
-        items = recItems
-        mAdapter!!.setData(items)
-    }
-
 
     private val recItems: List<RecommendationOptions>
         get() {
-            val myItems: MutableList<RecommendationOptions> =
-                ArrayList()
+            val items = mutableListOf<RecommendationOptions>()
+            val res = resources
+
             if (countryCode.equals(EnumCountry.Nigeria.countryCode(), ignoreCase = true)) {
                 icMaize = true
-                myItems.add(
-                    RecommendationOptions(
-                        fertilizerString!!,
-                        EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM,
-                        checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM)
-                    )
-                )
-                myItems.add(
-                    RecommendationOptions(
-                        maizeHeightString!!,
-                        EnumAdviceTasks.MAIZE_PERFORMANCE,
-                        checkStatus(EnumAdviceTasks.MAIZE_PERFORMANCE)
-                    )
-                )
-                myItems.add(
-                    RecommendationOptions(
-                        marketOutletMaizeString!!,
-                        EnumAdviceTasks.MARKET_OUTLET_MAIZE,
-                        checkStatus(EnumAdviceTasks.MARKET_OUTLET_MAIZE)
+                items.addAll(
+                    listOf(
+                        RecommendationOptions(
+                            res.getString(R.string.lbl_available_fertilizers),
+                            EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM,
+                            checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM)
+                        ),
+                        RecommendationOptions(
+                            res.getString(R.string.lbl_maize_performance),
+                            EnumAdviceTasks.MAIZE_PERFORMANCE,
+                            checkStatus(EnumAdviceTasks.MAIZE_PERFORMANCE)
+                        ),
+                        RecommendationOptions(
+                            res.getString(R.string.lbl_market_outlet_maize),
+                            EnumAdviceTasks.MARKET_OUTLET_MAIZE,
+                            checkStatus(EnumAdviceTasks.MARKET_OUTLET_MAIZE)
+                        )
                     )
                 )
             } else if (countryCode.equals(EnumCountry.Tanzania.countryCode(), ignoreCase = true)) {
                 icPotato = true
-                myItems.add(
-                    RecommendationOptions(
-                        fertilizerString!!,
-                        EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS,
-                        checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS)
-                    )
-                )
-                myItems.add(
-                    RecommendationOptions(
-                        marketOutletString!!,
-                        EnumAdviceTasks.MARKET_OUTLET_CASSAVA,
-                        checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)
-                    )
-                )
-                myItems.add(
-                    RecommendationOptions(
-                        rootYieldString!!,
-                        EnumAdviceTasks.CURRENT_CASSAVA_YIELD,
-                        checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)
-                    )
-                )
-                myItems.add(
-                    RecommendationOptions(
-                        sweetPotatoPricesString!!,
-                        EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO,
-                        checkStatus(EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO)
+                items.addAll(
+                    listOf(
+                        RecommendationOptions(
+                            res.getString(R.string.lbl_available_fertilizers),
+                            EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS,
+                            checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS)
+                        ),
+                        RecommendationOptions(
+                            res.getString(R.string.lbl_market_outlet),
+                            EnumAdviceTasks.MARKET_OUTLET_CASSAVA,
+                            checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)
+                        ),
+                        RecommendationOptions(
+                            res.getString(R.string.lbl_typical_yield),
+                            EnumAdviceTasks.CURRENT_CASSAVA_YIELD,
+                            checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)
+                        ),
+                        RecommendationOptions(
+                            res.getString(R.string.lbl_sweet_potato_prices),
+                            EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO,
+                            checkStatus(EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO)
+                        )
                     )
                 )
             }
-            return myItems
+
+            return items
         }
 }
+
