@@ -14,7 +14,7 @@ import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityRecommendationsActivityBinding
 import com.akilimo.mobile.entities.AkilimoCurrency
 import com.akilimo.mobile.entities.AkilimoCurrencyResponse
-import com.akilimo.mobile.entities.UseCases
+import com.akilimo.mobile.entities.UseCase
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.models.Recommendations
@@ -44,7 +44,7 @@ class RecommendationsActivity : BaseActivity() {
     private var sphString: String? = null
     private var bppString: String? = null
 
-    private var useCase: UseCases? = null
+    private var useCase: UseCase? = null
     private var mAdapter: AdapterListAnimation? = null
     private var items: MutableList<Recommendations> = ArrayList()
 
@@ -203,10 +203,10 @@ class RecommendationsActivity : BaseActivity() {
 
             if (intent != null) {
                 if (useCase == null) {
-                    useCase = UseCases()
+                    useCase = UseCase()
                 }
-                useCase!!.name = advice.name
-                database.useCaseDao().insert(useCase!!)
+                useCase!!.useCaseName = advice.name
+                database.useCaseDao().insertAll(useCase!!)
                 startActivity(intent)
                 openActivity()
             }
