@@ -65,7 +65,7 @@ class CassavaMarketActivity : BaseActivity() {
     private var unitPriceM1 = 0.0
     private var unitPriceM2 = 0.0
 
-    var priceText: String? = null
+    var useCase: String = "NA"
     var unitOfSale: String = "NA"
     var unitWeight: Int = 0
     private var harvestWindow = 0
@@ -149,7 +149,7 @@ class CassavaMarketActivity : BaseActivity() {
         }
         val intent = intent
         if (intent != null) {
-            enumUseCase = intent.getParcelableExtra(useCaseTag)
+            useCase = intent.getStringExtra(useCaseTag) ?: "NA"
         }
 
         onBackPressedDispatcher.addCallback(this) {
@@ -245,17 +245,27 @@ class CassavaMarketActivity : BaseActivity() {
         }
 
 
-        btnFinish!!.setOnClickListener { validate(false) }
-        btnCancel!!.setOnClickListener { closeActivity(false) }
-        if (enumUseCase == EnumUseCase.CIM) {
-            produceType = EnumCassavaProduceType.ROOTS.name
-            factoryRequired = false
-            otherMarketsRequired = false
-            selectionMade = true
-            marketOutLetTitle!!.visibility = View.GONE
-            marketOutletCard!!.visibility = View.GONE
-            unitOfSaleTitle!!.visibility = View.VISIBLE
-            unitOfSaleCard!!.visibility = View.VISIBLE
+
+        binding.contentCassavaMarket.apply {
+            twoButtons.apply {
+                btnFinish.setOnClickListener {
+                    validate(
+                        false
+                    )
+                }
+                btnCancel.setOnClickListener { closeActivity(false) }
+                val enumUseCase = EnumUseCase.valueOf(useCase)
+                if (enumUseCase == EnumUseCase.CIM) {
+                    produceType = EnumCassavaProduceType.ROOTS.name
+                    factoryRequired = false
+                    otherMarketsRequired = false
+                    selectionMade = true
+                    marketOutLetTitle.visibility = View.GONE
+                    marketOutletCard.visibility = View.GONE
+                    unitOfSaleTitle.visibility = View.VISIBLE
+                    unitOfSaleCard.visibility = View.VISIBLE
+                }
+            }
         }
 
         showCustomNotificationDialog()
