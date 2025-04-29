@@ -17,7 +17,6 @@ import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityFertilizersBinding
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.Fertilizer
-import com.akilimo.mobile.entities.FertilizerPrice
 import com.akilimo.mobile.entities.FertilizerPriceResponse
 import com.akilimo.mobile.entities.FertilizerResponse
 import com.akilimo.mobile.inherit.BaseActivity
@@ -56,9 +55,6 @@ class FertilizersActivity : BaseActivity() {
 
     private var availableFertilizersList: MutableList<Fertilizer> = ArrayList()
     private var selectedFertilizers: MutableList<Fertilizer> = ArrayList()
-    private val fertilizerTypesList: List<Fertilizer> = ArrayList()
-    private val fertilizerPricesList: List<FertilizerPrice> = ArrayList()
-
     private var mAdapter: FertilizerGridAdapter? = null
     private var minSelection: Int = 2
 
@@ -83,13 +79,6 @@ class FertilizersActivity : BaseActivity() {
         btnRetry = binding.btnRetry
         errorImage = binding.errorImage
         errorLabel = binding.errorLabel
-
-        val database = getDatabase(this@FertilizersActivity)
-
-        val intent = intent
-        if (intent != null) {
-            enumUseCase = intent.getParcelableExtra(useCaseTag)
-        }
 
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
