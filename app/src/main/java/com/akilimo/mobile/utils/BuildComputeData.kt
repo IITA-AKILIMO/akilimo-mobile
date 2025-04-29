@@ -216,14 +216,14 @@ class BuildComputeData(context: Context) {
         //check for values we have to give recommendations for
         val useCases = database.useCaseDao().findOne()
         if (useCases != null) {
-            computeRequest.interCroppingMaizeRec = useCases.CIM
-            computeRequest.interCroppingPotatoRec = useCases.CIS
-            computeRequest.useCase = useCases.name
+            computeRequest.interCroppingMaizeRec = useCases.maizeInterCropping
+            computeRequest.interCroppingPotatoRec = useCases.sweetPotatoInterCropping
+            computeRequest.useCase = useCases.useCaseName
 
-            computeRequest.fertilizerRec = useCases.FR
-            computeRequest.plantingPracticesRec = useCases.BPP
-            computeRequest.scheduledPlantingRec = useCases.SPP
-            computeRequest.scheduledHarvestRec = useCases.SPH
+            computeRequest.fertilizerRec = useCases.fertilizerRecommendation
+            computeRequest.plantingPracticesRec = useCases.bestPlantingPractices
+            computeRequest.scheduledPlantingRec = useCases.scheduledPlanting
+            computeRequest.scheduledHarvestRec = useCases.scheduledPlantingHighStarch
         }
         return computeRequest
     }
