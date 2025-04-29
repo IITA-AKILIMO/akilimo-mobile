@@ -38,9 +38,9 @@ data class OperationCost(
     @ColumnInfo(name = "operation_type")
     val operationType: String? = null,
 
-    @JsonProperty("currency_code")
-    @ColumnInfo(name = "currency_code")
-    val currencyCode: String? = null,
+    @JsonProperty("country_code")
+    @ColumnInfo(name = "country_code")
+    val countryCode: String? = null,
 
     @JsonProperty("min_cost")
     @ColumnInfo(name = "min_cost")
@@ -52,5 +52,9 @@ data class OperationCost(
 
     @JsonProperty("average_cost")
     @ColumnInfo(name = "average_cost")
-    val averageCost: Double = 0.0
+    val averageCost: Double = 0.0,
+
+    @JsonProperty("is_active")
+    @ColumnInfo(name = "is_active")
+    val active: Boolean = false,
 ) : Parcelable
