@@ -228,8 +228,8 @@ class ManualTillageCostActivity : CostBaseActivity() {
 
 
     override fun showDialogFullscreen(
-        operationCostList: ArrayList<OperationCost>?,
         operationName: String?,
+        operationType: String?,
         countryCode: String?,
         dialogTitle: String?,
         hintText: String
@@ -240,16 +240,13 @@ class ManualTillageCostActivity : CostBaseActivity() {
             return
         }
 
-        val myLocale = getCurrentLocale()
         var translatedUnit = this@ManualTillageCostActivity.getString(R.string.lbl_acre)
         if (areaUnit == "ha") {
             translatedUnit = this@ManualTillageCostActivity.getString(R.string.lbl_ha)
         }
-        val finalTranslatedUnit = translatedUnit.lowercase(myLocale)
-
-
-        arguments.putParcelableArrayList(OperationCostsDialogFragment.COST_LIST, operationCostList)
+        val finalTranslatedUnit = translatedUnit.lowercase(getCurrentLocale())
         arguments.putString(OperationCostsDialogFragment.OPERATION_NAME, operationName)
+        arguments.putString(OperationCostsDialogFragment.OPERATION_TYPE, operationType)
         arguments.putString(OperationCostsDialogFragment.DIALOG_TITLE, dialogTitle)
         arguments.putString(OperationCostsDialogFragment.EXACT_PRICE_HINT, hintText)
         arguments.putString(OperationCostsDialogFragment.CURRENCY_CODE, currencySymbol)
@@ -267,24 +264,22 @@ class ManualTillageCostActivity : CostBaseActivity() {
                 isExactCost: Boolean
             ) {
                 if (!cancelled && operationName != null) {
-                    val roundedCost =
-                        mathHelper.roundToNearestSpecifiedValue(selectedCost, 1000.0)
                     when (operationName) {
                         "TILLAGE" -> {
-                            manualPloughCost = roundedCost
+                            manualPloughCost = selectedCost
                             var manualTillageText = getString(
                                 R.string.lbl_ploughing_cost_text,
                                 mathHelper.removeLeadingZero(fieldSize),
                                 finalTranslatedUnit,
-                                mathHelper.formatNumber(roundedCost, null),
+                                mathHelper.formatNumber(selectedCost, null),
                                 currencySymbol
                             )
-                            if (myLocale.language == "sw") {
+                            if (getCurrentLocale().language == "sw") {
                                 manualTillageText = getString(
                                     R.string.lbl_ploughing_cost_text,
                                     finalTranslatedUnit,
                                     mathHelper.removeLeadingZero(fieldSize),
-                                    mathHelper.formatNumber(roundedCost, null),
+                                    mathHelper.formatNumber(selectedCost, null),
                                     currencySymbol
                                 )
                             }
@@ -292,20 +287,20 @@ class ManualTillageCostActivity : CostBaseActivity() {
                         }
 
                         "RIDGING" -> {
-                            manualRidgeCost = roundedCost
+                            manualRidgeCost = selectedCost
                             var manualRidgeText = getString(
                                 R.string.lbl_ridging_cost_text,
                                 mathHelper.removeLeadingZero(fieldSize),
                                 finalTranslatedUnit,
-                                mathHelper.formatNumber(roundedCost, null),
+                                mathHelper.formatNumber(selectedCost, null),
                                 currencySymbol
                             )
-                            if (myLocale.language == "sw") {
+                            if (getCurrentLocale().language == "sw") {
                                 manualRidgeText = getString(
                                     R.string.lbl_ridging_cost_text,
                                     finalTranslatedUnit,
                                     mathHelper.removeLeadingZero(fieldSize),
-                                    mathHelper.formatNumber(roundedCost, null),
+                                    mathHelper.formatNumber(selectedCost, null),
                                     currencySymbol
                                 )
                             }
