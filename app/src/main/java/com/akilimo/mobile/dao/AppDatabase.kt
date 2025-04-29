@@ -24,7 +24,7 @@ import com.akilimo.mobile.entities.PotatoMarket
 import com.akilimo.mobile.entities.PotatoPrice
 import com.akilimo.mobile.entities.ScheduledDate
 import com.akilimo.mobile.entities.StarchFactory
-import com.akilimo.mobile.entities.UseCases
+import com.akilimo.mobile.entities.UseCase
 import com.akilimo.mobile.entities.UserLocation
 import com.akilimo.mobile.entities.UserProfile
 
@@ -49,10 +49,10 @@ import com.akilimo.mobile.entities.UserProfile
         UserProfile::class,
         ScheduledDate::class,
         StarchFactory::class,
-        UseCases::class,
+        UseCase::class,
         AkilimoCurrency::class,
         AdviceStatus::class
-    ], version = 2,
+    ], version = 1,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
