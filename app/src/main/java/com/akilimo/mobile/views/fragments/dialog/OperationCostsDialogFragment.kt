@@ -12,8 +12,8 @@ import android.widget.RadioGroup
 import androidx.core.graphics.drawable.toDrawable
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentOperationCostDialogBinding
+import com.akilimo.mobile.entities.OperationCost
 import com.akilimo.mobile.inherit.BaseDialogFragment
-import com.akilimo.mobile.models.OperationCost
 import io.sentry.Sentry
 
 

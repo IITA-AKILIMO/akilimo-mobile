@@ -1,9 +1,9 @@
 package com.akilimo.mobile.inherit
 
 import android.widget.Toast
+import com.akilimo.mobile.entities.OperationCost
+import com.akilimo.mobile.entities.OperationCostResponse
 import com.akilimo.mobile.interfaces.AkilimoApi
-import com.akilimo.mobile.models.OperationCost
-import com.akilimo.mobile.models.OperationCostResponse
 import io.sentry.Sentry
 
 
