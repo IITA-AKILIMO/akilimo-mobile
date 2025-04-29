@@ -9,5 +9,6 @@ enum class EnumUseCase : Parcelable {
     SP,
     PP,
     CIS,
-    CIM
+    CIM,
+    NA
 }
