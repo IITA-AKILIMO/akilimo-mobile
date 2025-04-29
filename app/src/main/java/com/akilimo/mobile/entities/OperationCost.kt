@@ -22,8 +22,9 @@ data class OperationCostResponse(
 data class OperationCost(
 
     @PrimaryKey(autoGenerate = false)
+    @JsonProperty("id")
     @ColumnInfo(name = "id")
-    val id: Int,
+    val id: Long,
 
     @JsonProperty("item_tag")
     @ColumnInfo(name = "item_tag")
@@ -36,7 +37,6 @@ data class OperationCost(
     @JsonProperty("operation_type")
     @ColumnInfo(name = "operation_type")
     val operationType: String? = null,
-
 
     @JsonProperty("currency_code")
     @ColumnInfo(name = "currency_code")
