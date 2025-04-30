@@ -10,7 +10,7 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.RecOptionsAdapter
 import com.akilimo.mobile.databinding.ActivityScheduledPlantingBinding
 import com.akilimo.mobile.entities.UseCase
-import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.inherit.BaseRecommendationActivity
 import com.akilimo.mobile.models.RecommendationOptions
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumUseCase
@@ -19,21 +19,13 @@ import com.akilimo.mobile.views.activities.DatesActivity
 import com.akilimo.mobile.views.activities.RootYieldActivity
 import io.sentry.Sentry
 
-class ScheduledPlantingActivity : BaseActivity() {
+class ScheduledPlantingActivity : BaseRecommendationActivity() {
     var toolbar: Toolbar? = null
     var recyclerView: RecyclerView? = null
 
     private var _binding: ActivityScheduledPlantingBinding? = null
     private val binding get() = _binding!!
 
-
-    var plantingString: String? = null
-    var marketOutletString: String? = null
-    var rootYieldString: String? = null
-
-    private var mAdapter: RecOptionsAdapter? = null
-    private var items: List<RecommendationOptions> = ArrayList()
-//    private var useCases: UseCases? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,32 +34,13 @@ class ScheduledPlantingActivity : BaseActivity() {
         )
         setContentView(binding.root)
 
+        setupToolbar(binding.toolbarLayout.toolbar, R.string.lbl_scheduled_planting_and_harvest) {
+            closeActivity(false)
+        }
 
-        mAdapter = RecOptionsAdapter()
-        toolbar = binding.toolbarLayout.toolbar
-        recyclerView = binding.recyclerView
-
-        initToolbar()
-        initComponent()
-    }
-
-    override fun initToolbar() {
-        toolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.title = getString(R.string.lbl_scheduled_planting_and_harvest)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setDisplayShowHomeEnabled(true)
-
-        toolbar!!.setNavigationOnClickListener { v: View? -> closeActivity(false) }
-    }
-
-    override fun initComponent() {
-        plantingString = getString(R.string.lbl_planting_harvest)
-        marketOutletString = getString(R.string.lbl_market_outlet)
-        rootYieldString = getString(R.string.lbl_typical_yield)
-
-
-        binding.recyclerView.apply {
+        val dataSet = getRecItems()
+        val mAdapter = RecOptionsAdapter(dataSet)
+        binding.recyclerView.run {
             layoutManager = LinearLayoutManager(this@ScheduledPlantingActivity)
             setHasFixedSize(true)
             adapter = mAdapter
@@ -97,7 +70,7 @@ class ScheduledPlantingActivity : BaseActivity() {
         }
 
         // on item list clicked
-        mAdapter!!.setOnItemClickListener(object : RecOptionsAdapter.OnItemClickListener {
+        mAdapter.setOnItemClickListener(object : RecOptionsAdapter.OnItemClickListener {
             override fun onItemClick(view: View?, obj: RecommendationOptions?, position: Int) {
                 var intent: Intent? = null
                 val advice = obj?.adviceName
@@ -119,49 +92,36 @@ class ScheduledPlantingActivity : BaseActivity() {
                 }
             }
         })
-        setAdapter()
     }
 
-    override fun validate(backPressed: Boolean) {
-        throw UnsupportedOperationException()
-    }
+    private fun getRecItems(): List<RecommendationOptions> {
+        val plantingString = getString(R.string.lbl_planting_harvest)
+        val marketOutletString = getString(R.string.lbl_market_outlet)
+        val rootYieldString = getString(R.string.lbl_typical_yield)
 
-
-    override fun onResume() {
-        super.onResume()
-        setAdapter()
-    }
-
-    private fun setAdapter() {
-        items = recItems
-        mAdapter!!.setData(items)
-    }
-
-    private val recItems: List<RecommendationOptions>
-        get() {
-            val myItems: MutableList<RecommendationOptions> =
-                ArrayList()
-            myItems.add(
-                RecommendationOptions(
-                    plantingString!!,
-                    EnumAdviceTasks.PLANTING_AND_HARVEST,
-                    checkStatus(EnumAdviceTasks.PLANTING_AND_HARVEST)
-                )
+        val myItems: MutableList<RecommendationOptions> =
+            ArrayList()
+        myItems.add(
+            RecommendationOptions(
+                plantingString,
+                EnumAdviceTasks.PLANTING_AND_HARVEST,
+                checkStatus(EnumAdviceTasks.PLANTING_AND_HARVEST)
             )
-            myItems.add(
-                RecommendationOptions(
-                    rootYieldString!!,
-                    EnumAdviceTasks.CURRENT_CASSAVA_YIELD,
-                    checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)
-                )
+        )
+        myItems.add(
+            RecommendationOptions(
+                rootYieldString,
+                EnumAdviceTasks.CURRENT_CASSAVA_YIELD,
+                checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)
             )
-            myItems.add(
-                RecommendationOptions(
-                    marketOutletString!!,
-                    EnumAdviceTasks.MARKET_OUTLET_CASSAVA,
-                    checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)
-                )
+        )
+        myItems.add(
+            RecommendationOptions(
+                marketOutletString,
+                EnumAdviceTasks.MARKET_OUTLET_CASSAVA,
+                checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)
             )
-            return myItems
-        }
+        )
+        return myItems
+    }
 }
