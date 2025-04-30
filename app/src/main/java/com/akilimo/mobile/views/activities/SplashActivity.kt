@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.rest.retrofit.RetrofitManager
+import com.akilimo.mobile.views.activities.usecases.FertilizerRecActivity
 import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import io.sentry.Sentry
 
@@ -85,14 +86,14 @@ class SplashActivity : BaseActivity() {
         var intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
         if (isInDevMode) {
 //            intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
-//            intent = Intent(this@SplashActivity, ApiTestActivity::class.java)
-            intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
-//            intent = Intent(this@SplashActivity, FertilizerRecActivity::class.java)
+//            intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
+//            intent = Intent(this@SplashActivity, FertilizerRecommendationActivity::class.java)
+            intent = Intent(this@SplashActivity, FertilizerRecActivity::class.java)
 //            intent = Intent(this@SplashActivity, RootYieldActivity::class.java)
 //            intent = Intent(this@SplashActivity, InvestmentAmountActivity::class.java)
         }
         startActivity(intent)
         finish()
-        Animatoo.animateSlideDown(this)
+        Animatoo.animateSlideDown(this@SplashActivity)
     }
 }
