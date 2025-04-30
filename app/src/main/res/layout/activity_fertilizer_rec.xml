@@ -29,8 +29,7 @@
             android:layout_marginTop="@dimen/spacing_medium"
             android:layout_marginRight="@dimen/spacing_medium"
             android:layout_marginBottom="@dimen/spacing_medium"
-            android:fontFamily="@font/roboto_bold"
-            android:gravity="center"
+            android:gravity="start"
             android:text="@string/lbl_rec_header"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
             android:textColor="@color/grey_90" />
@@ -43,6 +42,7 @@
             android:layout_above="@id/single_button"
             android:layout_below="@id/title"
             android:scrollbars="vertical"
+            tools:itemCount="5"
             android:scrollingCache="true"
             tools:listitem="@layout/item_card_recommendation_no_arrow" />
 
