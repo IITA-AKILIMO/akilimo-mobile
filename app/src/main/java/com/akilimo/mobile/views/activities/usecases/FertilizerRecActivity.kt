@@ -9,7 +9,7 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.RecOptionsAdapter
 import com.akilimo.mobile.databinding.ActivityFertilizerRecBinding
 import com.akilimo.mobile.entities.UseCase
-import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.inherit.BaseRecommendationActivity
 import com.akilimo.mobile.models.RecommendationOptions
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumUseCase
@@ -20,55 +20,34 @@ import com.akilimo.mobile.views.activities.InvestmentAmountActivity
 import com.akilimo.mobile.views.activities.RootYieldActivity
 import io.sentry.Sentry
 
-class FertilizerRecActivity : BaseActivity() {
+class FertilizerRecActivity : BaseRecommendationActivity() {
     private var _binding: ActivityFertilizerRecBinding? = null
     private val binding get() = _binding!!
-
-
-    var plantingString: String? = null
-    var fertilizerString: String? = null
-    var investmentString: String? = null
-    var rootYieldString: String? = null
-    var marketOutletString: String? = null
-
-    private var mAdapter: RecOptionsAdapter? = null
-    private var items: List<RecommendationOptions> = ArrayList()
+    private var mAdapter: RecOptionsAdapter = RecOptionsAdapter(emptyList())
+    private var dataPositionChanged = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityFertilizerRecBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        mAdapter = RecOptionsAdapter()
-        initToolbar()
-        initComponent()
-    }
-
-    override fun initToolbar() {
-        binding.toolbarLayout.toolbar.apply {
-            setNavigationIcon(R.drawable.ic_left_arrow)
-            setSupportActionBar(binding.toolbarLayout.toolbar)
-            supportActionBar!!.title = getString(R.string.lbl_fertilizer_recommendations)
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            supportActionBar!!.setDisplayShowHomeEnabled(true)
-            setNavigationOnClickListener { v: View? -> closeActivity(false) }
-        }
-    }
-
-    override fun initComponent() {
-        plantingString = getString(R.string.lbl_planting_harvest)
-        fertilizerString = getString(R.string.lbl_available_fertilizers)
-        investmentString = getString(R.string.lbl_investment_amount)
-        rootYieldString = getString(R.string.lbl_typical_yield)
-        marketOutletString = getString(R.string.lbl_market_outlet)
+        val dataSet = getRecommendationOptions()
+        mAdapter = RecOptionsAdapter(dataSet)
 
         binding.apply {
-            recyclerView.layoutManager = LinearLayoutManager(this@FertilizerRecActivity)
-            recyclerView.setHasFixedSize(true)
-            recyclerView.adapter = mAdapter
+
+            setupToolbar(toolbarLayout.toolbar, R.string.lbl_fertilizer_recommendations) {
+                closeActivity(false)
+            }
+
+            recyclerView.apply {
+                layoutManager = LinearLayoutManager(this@FertilizerRecActivity)
+                setHasFixedSize(true)
+                adapter = mAdapter
+            }
 
             singleButton.btnAction.setOnClickListener {
-                var useCase = database.useCaseDao().findOne()
                 try {
+                    var useCase = database.useCaseDao().findOne()
                     if (useCase == null) {
                         useCase = UseCase()
                     }
@@ -90,10 +69,13 @@ class FertilizerRecActivity : BaseActivity() {
             }
         }
 
-        mAdapter!!.setOnItemClickListener(object : RecOptionsAdapter.OnItemClickListener {
+
+
+        mAdapter.setOnItemClickListener(object : RecOptionsAdapter.OnItemClickListener {
             override fun onItemClick(view: View?, obj: RecommendationOptions?, position: Int) {
                 var intent: Intent? = null
                 val advice = obj?.adviceName
+                dataPositionChanged = position
                 when (advice) {
                     EnumAdviceTasks.PLANTING_AND_HARVEST -> intent =
                         Intent(this@FertilizerRecActivity, DatesActivity::class.java)
@@ -120,57 +102,56 @@ class FertilizerRecActivity : BaseActivity() {
             }
 
         })
-
-        setAdapter()
     }
 
     override fun onResume() {
         super.onResume()
-        setAdapter()
+        val recList = getRecommendationOptions()
+        mAdapter.setData(recList, dataPositionChanged)
     }
 
-    private fun setAdapter() {
-        mAdapter!!.setData(recommendationOptions)
-        binding.recyclerView.adapter = mAdapter
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
-    private val recommendationOptions: List<RecommendationOptions>
-        get() {
-            val myItems: MutableList<RecommendationOptions> =
-                ArrayList()
-            myItems.add(
-                RecommendationOptions(
-                    marketOutletString!!,
-                    EnumAdviceTasks.MARKET_OUTLET_CASSAVA,
-                    checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)
-                )
-            )
-            myItems.add(
-                RecommendationOptions(
-                    fertilizerString!!,
-                    EnumAdviceTasks.AVAILABLE_FERTILIZERS,
-                    checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS)
-                )
-            )
-            myItems.add(
-                RecommendationOptions(
-                    investmentString!!,
-                    EnumAdviceTasks.INVESTMENT_AMOUNT,
-                    checkStatus(EnumAdviceTasks.INVESTMENT_AMOUNT)
-                )
-            )
-            myItems.add(
-                RecommendationOptions(
-                    rootYieldString!!,
-                    EnumAdviceTasks.CURRENT_CASSAVA_YIELD,
-                    checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)
-                )
-            )
+    private fun getRecommendationOptions(): List<RecommendationOptions> {
+        val plantingString = getString(R.string.lbl_planting_harvest)
+        val fertilizerString = getString(R.string.lbl_available_fertilizers)
+        val investmentString = getString(R.string.lbl_investment_amount)
+        val rootYieldString = getString(R.string.lbl_typical_yield)
+        val marketOutletString = getString(R.string.lbl_market_outlet)
 
-            return myItems
-        }
+        val myItems: MutableList<RecommendationOptions> = ArrayList()
+        myItems.add(
+            RecommendationOptions(
+                marketOutletString,
+                EnumAdviceTasks.MARKET_OUTLET_CASSAVA,
+                checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)
+            )
+        )
+        myItems.add(
+            RecommendationOptions(
+                fertilizerString,
+                EnumAdviceTasks.AVAILABLE_FERTILIZERS,
+                checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS)
+            )
+        )
+        myItems.add(
+            RecommendationOptions(
+                investmentString,
+                EnumAdviceTasks.INVESTMENT_AMOUNT,
+                checkStatus(EnumAdviceTasks.INVESTMENT_AMOUNT)
+            )
+        )
+        myItems.add(
+            RecommendationOptions(
+                rootYieldString,
+                EnumAdviceTasks.CURRENT_CASSAVA_YIELD,
+                checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)
+            )
+        )
 
-    override fun validate(backPressed: Boolean) {
-        throw UnsupportedOperationException()
+        return myItems
     }
 }
