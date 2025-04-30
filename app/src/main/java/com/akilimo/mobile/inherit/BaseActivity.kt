@@ -11,8 +11,10 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.Toolbar
 import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
@@ -66,8 +68,36 @@ abstract class BaseActivity : AppCompatActivity() {
         return wrap(baseContext).resources
     }
 
+    @Deprecated(
+        message = "Remove completely and use setupToolbar(toolbar, titleResId) instead.",
+        replaceWith = ReplaceWith("setupToolbar(binding.toolbarLayout.toolbar, R.string.your_title)"),
+        level = DeprecationLevel.WARNING
+    )
     protected abstract fun initToolbar()
 
+    fun setupToolbar(
+        toolbar: Toolbar,
+        @StringRes titleResId: Int,
+        showBackButton: Boolean = true,
+        onBackClick: (() -> Unit)? = null
+    ) {
+        setSupportActionBar(toolbar)
+        supportActionBar?.apply {
+            title = getString(titleResId)
+            setDisplayHomeAsUpEnabled(showBackButton)
+            setDisplayShowHomeEnabled(showBackButton)
+        }
+
+        if (showBackButton) {
+            toolbar.setNavigationIcon(R.drawable.ic_left_arrow)
+            toolbar.setNavigationOnClickListener {
+                onBackClick?.invoke() ?: onBackPressedDispatcher.onBackPressed()
+            }
+        }
+    }
+
+
+    @Deprecated("Deprecated remove it completely")
     protected abstract fun initComponent()
 
     protected abstract fun validate(backPressed: Boolean)
