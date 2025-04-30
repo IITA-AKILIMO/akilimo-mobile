@@ -10,6 +10,7 @@ import com.akilimo.mobile.entities.AkilimoCurrency
 import com.akilimo.mobile.entities.CassavaMarket
 import com.akilimo.mobile.entities.CassavaPrice
 import com.akilimo.mobile.entities.CropPerformance
+import com.akilimo.mobile.entities.CropSchedule
 import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.entities.Fertilizer
 import com.akilimo.mobile.entities.FertilizerPrice
@@ -23,7 +24,6 @@ import com.akilimo.mobile.entities.MandatoryInfo
 import com.akilimo.mobile.entities.OperationCost
 import com.akilimo.mobile.entities.PotatoMarket
 import com.akilimo.mobile.entities.PotatoPrice
-import com.akilimo.mobile.entities.ScheduledDate
 import com.akilimo.mobile.entities.StarchFactory
 import com.akilimo.mobile.entities.UseCase
 import com.akilimo.mobile.entities.UserLocation
@@ -49,12 +49,12 @@ import com.akilimo.mobile.entities.UserProfile
         PotatoMarket::class,
         PotatoPrice::class,
         UserProfile::class,
-        ScheduledDate::class,
+        CropSchedule::class,
         StarchFactory::class,
         UseCase::class,
         AkilimoCurrency::class,
         AdviceStatus::class
-    ], version = 3,
+    ], version = 4,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -80,7 +80,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun potatoMarketDao(): PotatoMarketDao
     abstract fun potatoPriceDao(): PotatoPriceDao
     abstract fun profileInfoDao(): UserProfileDao
-    abstract fun scheduleDateDao(): ScheduleDateDao
+    abstract fun scheduleDateDao(): CropScheduleDao
     abstract fun starchFactoryDao(): StarchFactoryDao
     abstract fun useCaseDao(): UseCaseDao
     abstract fun adviceStatusDao(): AdviceStatusDao
