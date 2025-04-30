@@ -3,7 +3,10 @@ package com.akilimo.mobile.inherit
 import android.os.Bundle
 import androidx.viewbinding.ViewBinding
 import com.akilimo.mobile.adapters.RecOptionsAdapter
+import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
+import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.models.RecommendationOptions
+import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import io.sentry.Sentry
 
 abstract class BaseRecommendationActivity<T : ViewBinding> : BaseActivity() {
@@ -34,6 +37,17 @@ abstract class BaseRecommendationActivity<T : ViewBinding> : BaseActivity() {
     override fun onResume() {
         super.onResume()
         mAdapter.setData(recList, dataPositionChanged)
+    }
+
+    protected fun checkStatus(taskName: EnumAdviceTasks): AdviceStatus {
+        val database = getDatabase(this)
+        val adviceStatus = database.adviceStatusDao().findOne(taskName.name)
+
+        if (adviceStatus != null) {
+            return adviceStatus
+        }
+
+        return AdviceStatus(taskName.name, false)
     }
 
     @Deprecated(

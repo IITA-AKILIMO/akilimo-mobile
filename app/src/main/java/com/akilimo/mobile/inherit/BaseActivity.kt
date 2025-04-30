@@ -18,10 +18,8 @@ import androidx.appcompat.widget.Toolbar
 import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
-import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.SessionManager
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumCountry
 import com.akilimo.mobile.views.activities.DstRecommendationActivity
 import com.blogspot.atifsoftwares.animatoolib.Animatoo
@@ -242,16 +240,5 @@ abstract class BaseActivity : AppCompatActivity() {
             myDesiredLocale = Locale("en", "NG")
         }
         return myDesiredLocale
-    }
-
-    protected fun checkStatus(taskName: EnumAdviceTasks): AdviceStatus {
-        val database = getDatabase(this)
-        val adviceStatus = database.adviceStatusDao().findOne(taskName.name)
-
-        if (adviceStatus != null) {
-            return adviceStatus
-        }
-
-        return AdviceStatus(taskName.name, false)
     }
 }
