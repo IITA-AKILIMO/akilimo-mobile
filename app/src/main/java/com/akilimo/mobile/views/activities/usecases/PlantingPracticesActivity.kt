@@ -4,15 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.RecOptionsAdapter
-import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityPlantingPracticesBinding
 import com.akilimo.mobile.entities.UseCase
-import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.inherit.BaseRecommendationActivity
 import com.akilimo.mobile.models.RecommendationOptions
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumUseCase
@@ -24,26 +21,11 @@ import com.akilimo.mobile.views.activities.TractorAccessActivity
 import com.akilimo.mobile.views.activities.WeedControlCostsActivity
 import io.sentry.Sentry
 
-class PlantingPracticesActivity : BaseActivity() {
-    var toolbar: Toolbar? = null
-    var recyclerView: RecyclerView? = null
+class PlantingPracticesActivity : BaseRecommendationActivity() {
 
-
-    var recommendations: String? = null
-    var plantingString: String? = null
-    var marketOutletString: String? = null
-    var rootYieldString: String? = null
-    var tillageOperationsString: String? = null
-    var manualTillageCostsString: String? = null
-    var tractorAccessString: String? = null
-    var weedControlCostString: String? = null
 
     private var _binding: ActivityPlantingPracticesBinding? = null
     private val binding get() = _binding!!
-
-
-    private var mAdapter: RecOptionsAdapter? = null
-    private var items: List<RecommendationOptions> = ArrayList()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,41 +35,18 @@ class PlantingPracticesActivity : BaseActivity() {
         )
         setContentView(binding.root)
 
+        setupToolbar(binding.toolbarLayout.toolbar, R.string.lbl_best_planting_practices) {
+            closeActivity(false)
+        }
 
 
-        toolbar = binding.toolbarLayout.toolbar
-        recyclerView = binding.recyclerView
-        mAdapter = RecOptionsAdapter()
-        initToolbar()
-        initComponent()
-    }
-
-    override fun initToolbar() {
-        toolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.title = recommendations
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setDisplayShowHomeEnabled(true)
-
-        toolbar!!.setNavigationOnClickListener { v: View? -> closeActivity(false) }
-    }
-
-    override fun initComponent() {
-        recommendations = getString(R.string.lbl_best_planting_practices)
-        plantingString = getString(R.string.lbl_planting_harvest)
-        marketOutletString = getString(R.string.lbl_market_outlet)
-        weedControlCostString = getString(R.string.lbl_cost_of_weed_control)
-        rootYieldString = getString(R.string.lbl_typical_yield)
-        tillageOperationsString = getString(R.string.lbl_tillage_operations)
-        manualTillageCostsString = getString(R.string.lbl_cost_of_manual_tillage)
-        tractorAccessString = getString(R.string.lbl_tractor_access)
-
-
-        recyclerView!!.layoutManager = LinearLayoutManager(this)
-        recyclerView!!.setHasFixedSize(true)
-        recyclerView!!.adapter = mAdapter
-
-        val database = getDatabase(this@PlantingPracticesActivity)
+        val dataSet = getRecItems()
+        val mAdapter = RecOptionsAdapter(dataSet)
+        binding.recyclerView.run {
+            layoutManager = LinearLayoutManager(this@PlantingPracticesActivity)
+            setHasFixedSize(true)
+            adapter = mAdapter
+        }
 
         var useCase = database.useCaseDao().findOne()
         if (useCase == null) {
@@ -114,7 +73,7 @@ class PlantingPracticesActivity : BaseActivity() {
         }
 
 
-        mAdapter!!.setOnItemClickListener(object : RecOptionsAdapter.OnItemClickListener {
+        mAdapter.setOnItemClickListener(object : RecOptionsAdapter.OnItemClickListener {
             override fun onItemClick(view: View?, obj: RecommendationOptions?, position: Int) {
                 var intent: Intent? = null
                 val advice = obj?.adviceName
@@ -149,57 +108,51 @@ class PlantingPracticesActivity : BaseActivity() {
                 }
             }
         })
-
-        setAdapter()
     }
 
-    override fun validate(backPressed: Boolean) {
-        throw UnsupportedOperationException()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        setAdapter()
-    }
-
-    private fun setAdapter() {
-        items = getRecItems()
-        mAdapter!!.setData(items)
-    }
 
     private fun getRecItems(): List<RecommendationOptions> {
+        val recommendations = getString(R.string.lbl_best_planting_practices)
+        val plantingString = getString(R.string.lbl_planting_harvest)
+        val marketOutletString = getString(R.string.lbl_market_outlet)
+        val weedControlCostString = getString(R.string.lbl_cost_of_weed_control)
+        val rootYieldString = getString(R.string.lbl_typical_yield)
+        val tillageOperationsString = getString(R.string.lbl_tillage_operations)
+        val manualTillageCostsString = getString(R.string.lbl_cost_of_manual_tillage)
+        val tractorAccessString = getString(R.string.lbl_tractor_access)
+
         val myItems: MutableList<RecommendationOptions> = ArrayList()
         myItems.add(
             RecommendationOptions(
-                manualTillageCostsString!!,
+                manualTillageCostsString,
                 EnumAdviceTasks.MANUAL_TILLAGE_COST,
                 checkStatus(EnumAdviceTasks.MANUAL_TILLAGE_COST)
             )
         )
         myItems.add(
             RecommendationOptions(
-                tractorAccessString!!,
+                tractorAccessString,
                 EnumAdviceTasks.TRACTOR_ACCESS,
                 checkStatus(EnumAdviceTasks.TRACTOR_ACCESS)
             )
         )
         myItems.add(
             RecommendationOptions(
-                weedControlCostString!!,
+                weedControlCostString,
                 EnumAdviceTasks.COST_OF_WEED_CONTROL,
                 checkStatus(EnumAdviceTasks.COST_OF_WEED_CONTROL)
             )
         )
         myItems.add(
             RecommendationOptions(
-                rootYieldString!!,
+                rootYieldString,
                 EnumAdviceTasks.CURRENT_CASSAVA_YIELD,
                 checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)
             )
         )
         myItems.add(
             RecommendationOptions(
-                marketOutletString!!,
+                marketOutletString,
                 EnumAdviceTasks.MARKET_OUTLET_CASSAVA,
                 checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)
             )
