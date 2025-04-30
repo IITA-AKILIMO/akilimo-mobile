@@ -10,7 +10,7 @@ import com.akilimo.mobile.adapters.RecOptionsAdapter
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityInterCropRecBinding
 import com.akilimo.mobile.entities.UseCase
-import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.inherit.BaseRecommendationActivity
 import com.akilimo.mobile.models.RecommendationOptions
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumCountry
@@ -24,7 +24,7 @@ import com.akilimo.mobile.views.activities.RootYieldActivity
 import com.akilimo.mobile.views.activities.SweetPotatoMarketActivity
 import io.sentry.Sentry
 
-class InterCropRecActivity : BaseActivity() {
+class InterCropRecActivity : BaseRecommendationActivity() {
 
     private var _binding: ActivityInterCropRecBinding? = null
     private val binding get() = _binding!!
@@ -32,7 +32,6 @@ class InterCropRecActivity : BaseActivity() {
     private var mAdapter: RecOptionsAdapter? = null
     private var icMaize = false
     private var icPotato = false
-    private var useCase: String = EnumUseCase.NA.name
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,47 +45,30 @@ class InterCropRecActivity : BaseActivity() {
             currencyCode = it.currencyCode
         }
 
-        when (countryCode) {
-            "NG" -> {
-                useCase = EnumUseCase.CIM.name
-            }
-
-            "TZ" -> {
-                useCase = EnumUseCase.CIS.name
-            }
+        val useCase = when (countryCode) {
+            "NG" -> EnumUseCase.CIM.name
+            "TZ" -> EnumUseCase.CIS.name
+            else -> EnumUseCase.NA.name
         }
 
-        initToolbar()
-        initComponent()
-    }
-
-    override fun initToolbar() {
-        val toolbar = binding.toolbarLayout.toolbar
-        toolbar.setNavigationIcon(R.drawable.ic_left_arrow)
-        setSupportActionBar(toolbar)
-        supportActionBar?.apply {
-            title = when (countryCode) {
-                "NG" -> getString(R.string.title_maize_intercropping)
-                "TZ" -> getString(R.string.title_sweet_potato_intercropping)
-                else -> getString(R.string.lbl_intercropping)
-            }
-            setDisplayHomeAsUpEnabled(true)
-            setDisplayShowHomeEnabled(true)
+        val title = when (countryCode) {
+            "NG" -> R.string.title_maize_intercropping
+            "TZ" -> R.string.title_sweet_potato_intercropping
+            else -> R.string.lbl_intercropping
         }
-        toolbar.setNavigationOnClickListener { closeActivity(false) }
-    }
+        setupToolbar(binding.toolbarLayout.toolbar, title) {
+            closeActivity(false)
+        }
 
-    override fun initComponent() {
-        val context = this@InterCropRecActivity
 
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
         }
 
-        mAdapter = RecOptionsAdapter().also { adapter ->
+        mAdapter = RecOptionsAdapter(getRecItems()).also { adapter ->
+            val context = this@InterCropRecActivity
             binding.recyclerView.adapter = adapter
-            adapter.setData(recItems)
             adapter.setOnItemClickListener(object : RecOptionsAdapter.OnItemClickListener {
                 override fun onItemClick(view: View?, obj: RecommendationOptions?, position: Int) {
                     val intent = when (obj?.adviceName) {
@@ -146,7 +128,6 @@ class InterCropRecActivity : BaseActivity() {
 
         binding.singleButton.btnAction.setOnClickListener {
             try {
-                val database = getDatabase(context)
                 val useCases = database.useCaseDao().findOne() ?: UseCase()
                 useCases.apply {
                     fertilizerRecommendation = false
@@ -159,78 +140,68 @@ class InterCropRecActivity : BaseActivity() {
                 }
 
                 database.useCaseDao().insertAll(useCases)
-                processRecommendations(context)
+                processRecommendations(this@InterCropRecActivity)
             } catch (ex: Exception) {
-                Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@InterCropRecActivity, ex.message, Toast.LENGTH_SHORT).show()
                 Sentry.captureException(ex)
             }
         }
     }
 
-    override fun validate(backPressed: Boolean) {
-        throw UnsupportedOperationException()
-    }
 
-    override fun onResume() {
-        super.onResume()
-        mAdapter?.setData(recItems)
-    }
+    private fun getRecItems(): List<RecommendationOptions> {
+        val items = mutableListOf<RecommendationOptions>()
 
-    private val recItems: List<RecommendationOptions>
-        get() {
-            val items = mutableListOf<RecommendationOptions>()
-            val res = resources
-
-            if (countryCode.equals(EnumCountry.Nigeria.countryCode(), ignoreCase = true)) {
-                icMaize = true
-                items.addAll(
-                    listOf(
-                        RecommendationOptions(
-                            res.getString(R.string.lbl_available_fertilizers),
-                            EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM,
-                            checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM)
-                        ),
-                        RecommendationOptions(
-                            res.getString(R.string.lbl_maize_performance),
-                            EnumAdviceTasks.MAIZE_PERFORMANCE,
-                            checkStatus(EnumAdviceTasks.MAIZE_PERFORMANCE)
-                        ),
-                        RecommendationOptions(
-                            res.getString(R.string.lbl_market_outlet_maize),
-                            EnumAdviceTasks.MARKET_OUTLET_MAIZE,
-                            checkStatus(EnumAdviceTasks.MARKET_OUTLET_MAIZE)
-                        )
+        if (countryCode.equals(EnumCountry.Nigeria.countryCode(), ignoreCase = true)) {
+            icMaize = true
+            items.addAll(
+                listOf(
+                    RecommendationOptions(
+                        getString(R.string.lbl_available_fertilizers),
+                        EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM,
+                        checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM)
+                    ),
+                    RecommendationOptions(
+                        getString(R.string.lbl_maize_performance),
+                        EnumAdviceTasks.MAIZE_PERFORMANCE,
+                        checkStatus(EnumAdviceTasks.MAIZE_PERFORMANCE)
+                    ),
+                    RecommendationOptions(
+                        getString(R.string.lbl_market_outlet_maize),
+                        EnumAdviceTasks.MARKET_OUTLET_MAIZE,
+                        checkStatus(EnumAdviceTasks.MARKET_OUTLET_MAIZE)
                     )
                 )
-            } else if (countryCode.equals(EnumCountry.Tanzania.countryCode(), ignoreCase = true)) {
-                icPotato = true
-                items.addAll(
-                    listOf(
-                        RecommendationOptions(
-                            res.getString(R.string.lbl_available_fertilizers),
-                            EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS,
-                            checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS)
-                        ),
-                        RecommendationOptions(
-                            res.getString(R.string.lbl_market_outlet),
-                            EnumAdviceTasks.MARKET_OUTLET_CASSAVA,
-                            checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)
-                        ),
-                        RecommendationOptions(
-                            res.getString(R.string.lbl_typical_yield),
-                            EnumAdviceTasks.CURRENT_CASSAVA_YIELD,
-                            checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)
-                        ),
-                        RecommendationOptions(
-                            res.getString(R.string.lbl_sweet_potato_prices),
-                            EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO,
-                            checkStatus(EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO)
-                        )
+            )
+        } else if (countryCode.equals(EnumCountry.Tanzania.countryCode(), ignoreCase = true)) {
+            icPotato = true
+            items.addAll(
+                listOf(
+                    RecommendationOptions(
+                        getString(R.string.lbl_available_fertilizers),
+                        EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS,
+                        checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS)
+                    ),
+                    RecommendationOptions(
+                        getString(R.string.lbl_market_outlet),
+                        EnumAdviceTasks.MARKET_OUTLET_CASSAVA,
+                        checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)
+                    ),
+                    RecommendationOptions(
+                        getString(R.string.lbl_typical_yield),
+                        EnumAdviceTasks.CURRENT_CASSAVA_YIELD,
+                        checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)
+                    ),
+                    RecommendationOptions(
+                        getString(R.string.lbl_sweet_potato_prices),
+                        EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO,
+                        checkStatus(EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO)
                     )
                 )
-            }
-
-            return items
+            )
         }
+
+        return items
+    }
 }
 
