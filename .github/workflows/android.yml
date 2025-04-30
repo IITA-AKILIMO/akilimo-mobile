@@ -1,4 +1,4 @@
-name: Android CICD
+name: Android Builder
 on:
   push:
   workflow_dispatch:
