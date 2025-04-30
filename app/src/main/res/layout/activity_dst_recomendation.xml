@@ -93,7 +93,7 @@
         app:srcCompat="@drawable/ic_refresh" />
 
     <include
-        android:id="@+id/feedback_button"
+        android:id="@+id/single_button"
         layout="@layout/bottom_single_button_layout" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
