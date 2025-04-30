@@ -10,7 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatDialogFragment
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentPlantingHarvestDateBinding
-import com.akilimo.mobile.entities.ScheduledDate
+import com.akilimo.mobile.entities.CropSchedule
 import com.akilimo.mobile.inherit.BaseStepFragment
 import com.akilimo.mobile.utils.DateHelper.olderThanCurrent
 import com.akilimo.mobile.views.fragments.dialog.DateDialogPickerFragment
@@ -22,17 +22,12 @@ import io.sentry.Sentry
  * A simple [androidx.fragment.app.Fragment] subclass.
  */
 class PlantingDateFragment : BaseStepFragment() {
-
-    private val fm by lazy { requireActivity().supportFragmentManager }
-
     private var _binding: FragmentPlantingHarvestDateBinding? = null
     private val binding get() = _binding!!
 
 
-    private var selectedPlantingDate: String? = null
-    private var selectedHarvestDate: String? = null
-
-    private var scheduledDate: ScheduledDate? = null
+    private var selectedPlantingDate: String = ""
+    private var selectedHarvestDate: String = ""
     private var alreadyPlanted = false
 
     companion object {
@@ -62,14 +57,14 @@ class PlantingDateFragment : BaseStepFragment() {
                 DateDialogPickerFragment.PLANTING_REQUEST_CODE
             )
             // show the datePicker
-            newFragment.show(fm, "PlantingDatePicker")
+            newFragment.show(parentFragmentManager, "PlantingDatePicker")
         }
 
         binding.btnPickHarvestDate.setOnClickListener { v: View? ->
             // create the datePickerFragment
             val newFragment: AppCompatDialogFragment = DateDialogPickerFragment(
                 true,
-                selectedPlantingDate!!
+                selectedPlantingDate
             )
             // set the targetFragment to receive the results, specifying the request code
             newFragment.setTargetFragment(
@@ -77,17 +72,16 @@ class PlantingDateFragment : BaseStepFragment() {
                 DateDialogPickerFragment.HARVEST_REQUEST_CODE
             )
             // show the datePicker
-            newFragment.show(fm, "HarvestDatePicker")
+            newFragment.show(parentFragmentManager, "HarvestDatePicker")
         }
     }
 
-    fun refreshData() {
+    private fun refreshData() {
         try {
-            scheduledDate = database.scheduleDateDao().findOne()
-
-            if (scheduledDate != null) {
-                selectedPlantingDate = scheduledDate!!.plantingDate
-                selectedHarvestDate = scheduledDate!!.harvestDate
+            val cropSchedule = database.scheduleDateDao().findOne()
+            if (cropSchedule != null) {
+                selectedPlantingDate = cropSchedule.plantingDate
+                selectedHarvestDate = cropSchedule.harvestDate
                 binding.lblSelectedPlantingDate.text = selectedPlantingDate
                 binding.lblSelectedHarvestDate.text = selectedHarvestDate
             }
@@ -104,10 +98,10 @@ class PlantingDateFragment : BaseStepFragment() {
         // check for the results
         if (resultCode == Activity.RESULT_OK && data != null) {
             if (requestCode == DateDialogPickerFragment.PLANTING_REQUEST_CODE) {
-                selectedPlantingDate = data.getStringExtra("selectedDate")
-                selectedHarvestDate = null
+                selectedPlantingDate = data.getStringExtra("selectedDate") ?: ""
+                selectedHarvestDate = ""
             } else if (requestCode == DateDialogPickerFragment.HARVEST_REQUEST_CODE) {
-                selectedHarvestDate = data.getStringExtra("selectedDate")
+                selectedHarvestDate = data.getStringExtra("selectedDate") ?: ""
             }
         }
         binding.lblSelectedPlantingDate.text = selectedPlantingDate
@@ -126,22 +120,16 @@ class PlantingDateFragment : BaseStepFragment() {
             return
         }
         try {
-            if (scheduledDate == null) {
-                scheduledDate = ScheduledDate()
-            }
-
             alreadyPlanted = olderThanCurrent(selectedPlantingDate)
 
-            scheduledDate!!.plantingDate = selectedPlantingDate
-            scheduledDate!!.harvestDate = selectedHarvestDate
-            scheduledDate!!.alreadyPlanted = alreadyPlanted
-
-            if (scheduledDate!!.id != null) {
-                database.scheduleDateDao().update(scheduledDate!!)
-            } else {
-                database.scheduleDateDao().insert(scheduledDate!!)
+            var cropSchedule = database.scheduleDateDao().findOne()
+            if (cropSchedule == null) {
+                cropSchedule = CropSchedule()
             }
-            scheduledDate = database.scheduleDateDao().findOne()
+            cropSchedule.plantingDate = selectedPlantingDate
+            cropSchedule.harvestDate = selectedHarvestDate
+            cropSchedule.alreadyPlanted = alreadyPlanted
+            database.scheduleDateDao().insert(cropSchedule)
             dataIsValid = true
         } catch (ex: Exception) {
             dataIsValid = false
