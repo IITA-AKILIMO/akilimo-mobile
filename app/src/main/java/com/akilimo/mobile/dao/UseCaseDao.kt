@@ -17,6 +17,10 @@ interface UseCaseDao {
     @Query("SELECT * FROM use_cases LIMIT 1")
     fun findOne(): UseCase?
 
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(useCases: UseCase)
+
     @Update
     fun update(useCase: UseCase)
 
