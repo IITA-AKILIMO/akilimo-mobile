@@ -7,18 +7,18 @@
     android:layout_alignParentStart="true"
     android:layout_alignParentBottom="true"
     android:layout_gravity="bottom"
+    android:background="?android:attr/windowBackground"
     android:gravity="bottom|center"
     android:orientation="horizontal"
+    android:padding="@dimen/spacing_medium"
     app:layout_scrollFlags="scroll|enterAlways|snap">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnGetRecommendation"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnAction"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_58"
         android:text="@string/lbl_get_recommendations"
-        android:textAllCaps="false"
-        android:theme="@style/Button.Green"
-        app:cornerRadius="@dimen/spacing_small" />
-
+        app:backgroundTint="@color/green_600"
+        app:cornerRadius="@dimen/dimen_5" />
 </LinearLayout>

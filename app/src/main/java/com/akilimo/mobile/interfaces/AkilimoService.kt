@@ -7,9 +7,9 @@ import com.akilimo.mobile.entities.FertilizerPriceResponse
 import com.akilimo.mobile.entities.FertilizerResponse
 import com.akilimo.mobile.entities.InvestmentAmountResponse
 import com.akilimo.mobile.entities.MaizePriceResponse
+import com.akilimo.mobile.entities.OperationCostResponse
 import com.akilimo.mobile.entities.PotatoPriceResponse
 import com.akilimo.mobile.entities.StarchFactoryResponse
-import com.akilimo.mobile.models.OperationCostResponse
 import com.akilimo.mobile.rest.request.RecommendationRequest
 import com.akilimo.mobile.rest.request.SurveyRequest
 import com.akilimo.mobile.rest.response.RecommendationResponse
@@ -49,9 +49,9 @@ interface AkilimoService {
     @POST("v1/recommendations")
     fun computeRecommendations(@Body recommendationRequest: RecommendationRequest?): Call<RecommendationResponse>
 
-    @GET("v1/operation-costs/currency/{currency_code}")
+    @GET("v1/operation-costs/country/{country_code}")
     fun getOperationCosts(
-        @Path("currency_code") currencyCode: String,
+        @Path("country_code") countryCode: String,
         @QueryMap queryParams: Map<String, String>
     ): Call<OperationCostResponse>
 
@@ -62,8 +62,8 @@ interface AkilimoService {
     fun getCassavaPrices(@Path("country_code") countryCode: String): Call<CassavaPricePriceResponse>
 
     @GET("v1/potato-prices/country/{country_code}")
-    fun getPotatoPrices(countryCode: String?): Call<PotatoPriceResponse>
+    fun getPotatoPrices(@Path("country_code") countryCode: String?): Call<PotatoPriceResponse>
 
     @GET("v1/maize-prices/country/{country_code}")
-    fun getMaizePrices(countryCode: String): Call<MaizePriceResponse>
+    fun getMaizePrices(@Path("country_code") countryCode: String): Call<MaizePriceResponse>
 }

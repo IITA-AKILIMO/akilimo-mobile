@@ -5,7 +5,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import kotlinx.parcelize.Parcelize
@@ -64,7 +63,7 @@ data class Fertilizer(
     @JsonProperty("price") var price: Double = 0.0,
 
     @ColumnInfo(name = "currency_code")
-    @JsonProperty("currency_code") var currencyCode: String? = null,
+    @JsonProperty("currency_code") var currencyCode: String = "",
 
     @ColumnInfo(name = "price_range")
     @JsonProperty("price_range") var priceRange: String? = null,

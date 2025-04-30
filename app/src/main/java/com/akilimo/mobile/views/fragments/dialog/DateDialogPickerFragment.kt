@@ -17,8 +17,8 @@ class DateDialogPickerFragment : AppCompatDialogFragment, OnDateSetListener {
     private val myCalendar: Calendar = Calendar.getInstance()
     private var pickPlantingDate = false
     private var pickHarvestDate = false
-    private var selectedPlantingDate: String? = null
-    private var selectedDate: String? = null
+    private var selectedPlantingDate: String = "01-01-1990"
+    private var selectedDate: String = "01-01-1990"
 
     private var onDismissListener: IDatePickerDismissListener? = null
 
@@ -62,7 +62,7 @@ class DateDialogPickerFragment : AppCompatDialogFragment, OnDateSetListener {
             val maxDate = DateHelper.getMinDate(12)
             datePicker.minDate = minDate.timeInMillis
             datePicker.maxDate = maxDate.timeInMillis
-        } else if (pickHarvestDate && !selectedPlantingDate.isNullOrEmpty()) {
+        } else if (pickHarvestDate && selectedPlantingDate.isNotEmpty()) {
             val minDate = DateHelper.getFutureOrPastMonth(selectedPlantingDate, 8)
             val maxDate = DateHelper.getFutureOrPastMonth(selectedPlantingDate, 16)
             datePicker.minDate = minDate.timeInMillis
@@ -96,7 +96,7 @@ class DateDialogPickerFragment : AppCompatDialogFragment, OnDateSetListener {
         if (onDismissListener != null) {
             onDismissListener!!.onDismiss(
                 myCalendar,
-                selectedDate!!, pickPlantingDate, pickHarvestDate
+                selectedDate, pickPlantingDate, pickHarvestDate
             )
         }
     }

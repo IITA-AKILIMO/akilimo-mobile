@@ -8,11 +8,30 @@ import com.akilimo.mobile.rest.request.RecommendationRequest
 import com.akilimo.mobile.rest.request.UserInfo
 import com.google.android.gms.common.util.Strings
 import io.sentry.Sentry
-import org.joda.time.format.DateTimeFormat
 import org.modelmapper.ModelMapper
 import org.modelmapper.TypeToken
 
 class BuildComputeData(context: Context) {
+
+    companion object {
+        private val LOG_TAG: String = BuildComputeData::class.java.simpleName
+
+        private const val DEFAULT_CASSAVA_PD = "roots"
+        private const val DEFAULT_MAIZE_PD = "fresh_cob"
+        private const val DEFAULT_SWEET_POTATO_PD = "tubers"
+        private const val DEFAULT_UNAVAILABLE = "NA"
+        private const val DEFAULT_FALLOW_TYPE = "none"
+        private const val DEFAULT_MAIZE_PERFORMANCE_VALUE = "3"
+        private const val DEFAULT_PRACTICE_METHOD = "NA"
+
+        private const val DEFAULT_FIELD_YIELD = 11
+        private const val DEFAULT_UNAVAILABLE_INT = 0
+        private const val DEFAULT_UNIT_WEIGHT = 50
+        private const val DEFAULT_LMNO_BASIS = "areaUnit"
+        private const val DEFAULT_USERNAME = "Akilimo Farmer"
+        private const val DEFAULT_FIELD_DESC = "Akilimo field"
+    }
+
     private var smsRequired = false
     private var emailRequired = false
     private var countryCode: String? = DEFAULT_UNAVAILABLE
@@ -197,14 +216,14 @@ class BuildComputeData(context: Context) {
         //check for values we have to give recommendations for
         val useCases = database.useCaseDao().findOne()
         if (useCases != null) {
-            computeRequest.interCroppingMaizeRec = useCases.CIM
-            computeRequest.interCroppingPotatoRec = useCases.CIS
-            computeRequest.useCase = useCases.name
+            computeRequest.interCroppingMaizeRec = useCases.maizeInterCropping
+            computeRequest.interCroppingPotatoRec = useCases.sweetPotatoInterCropping
+            computeRequest.useCase = useCases.useCaseName
 
-            computeRequest.fertilizerRec = useCases.FR
-            computeRequest.plantingPracticesRec = useCases.BPP
-            computeRequest.scheduledPlantingRec = useCases.SPP
-            computeRequest.scheduledHarvestRec = useCases.SPH
+            computeRequest.fertilizerRec = useCases.fertilizerRecommendation
+            computeRequest.plantingPracticesRec = useCases.bestPlantingPractices
+            computeRequest.scheduledPlantingRec = useCases.scheduledPlanting
+            computeRequest.scheduledHarvestRec = useCases.scheduledPlantingHighStarch
         }
         return computeRequest
     }
@@ -223,22 +242,15 @@ class BuildComputeData(context: Context) {
     private fun buildPlantingDates(computeRequest: ComputeRequest): ComputeRequest {
         try {
             val sph = database.scheduleDateDao().findOne()
-            val formatter = DateTimeFormat.forPattern("dd/MM/yyyy")
-
             if (sph != null) {
                 plantingDate = sph.plantingDate
                 plantingDateWindow = sph.plantingWindow
                 harvestDate = sph.harvestDate
                 harvestDateWindow = sph.harvestWindow
 
-
-                val PD = formatter.parseLocalDate(plantingDate)
-                val HD = formatter.parseLocalDate(harvestDate)
-
-                computeRequest.plantingDate = PD.toString("yyyy-MM-dd")
+                computeRequest.plantingDate = plantingDate
                 computeRequest.plantingDateWindow = plantingDateWindow
-
-                computeRequest.harvestDate = HD.toString("yyyy-MM-dd")
+                computeRequest.harvestDate = harvestDate
                 computeRequest.harvestDateWindow = harvestDateWindow
             }
         } catch (ex: Exception) {
@@ -412,24 +424,5 @@ class BuildComputeData(context: Context) {
         computeRequest.sweetPotatoUnitWeight = sweetPotatoUnitWeight
         computeRequest.sweetPotatoUnitPrice = sweetPotatoUnitPrice
         return computeRequest
-    }
-
-    companion object {
-        private val LOG_TAG: String = BuildComputeData::class.java.simpleName
-
-        private const val DEFAULT_CASSAVA_PD = "roots"
-        private const val DEFAULT_MAIZE_PD = "fresh_cob"
-        private const val DEFAULT_SWEET_POTATO_PD = "tubers"
-        private const val DEFAULT_UNAVAILABLE = "NA"
-        private const val DEFAULT_FALLOW_TYPE = "none"
-        private const val DEFAULT_MAIZE_PERFORMANCE_VALUE = "3"
-        private const val DEFAULT_PRACTICE_METHOD = "NA"
-
-        private const val DEFAULT_FIELD_YIELD = 11
-        private const val DEFAULT_UNAVAILABLE_INT = 0
-        private const val DEFAULT_UNIT_WEIGHT = 50
-        private const val DEFAULT_LMNO_BASIS = "areaUnit"
-        private const val DEFAULT_USERNAME = "Akilimo Farmer"
-        private const val DEFAULT_FIELD_DESC = "Akilimo field"
     }
 }

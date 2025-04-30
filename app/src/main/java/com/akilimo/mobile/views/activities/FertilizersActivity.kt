@@ -17,7 +17,6 @@ import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityFertilizersBinding
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.Fertilizer
-import com.akilimo.mobile.entities.FertilizerPrice
 import com.akilimo.mobile.entities.FertilizerPriceResponse
 import com.akilimo.mobile.entities.FertilizerResponse
 import com.akilimo.mobile.inherit.BaseActivity
@@ -56,9 +55,6 @@ class FertilizersActivity : BaseActivity() {
 
     private var availableFertilizersList: MutableList<Fertilizer> = ArrayList()
     private var selectedFertilizers: MutableList<Fertilizer> = ArrayList()
-    private val fertilizerTypesList: List<Fertilizer> = ArrayList()
-    private val fertilizerPricesList: List<FertilizerPrice> = ArrayList()
-
     private var mAdapter: FertilizerGridAdapter? = null
     private var minSelection: Int = 2
 
@@ -84,17 +80,10 @@ class FertilizersActivity : BaseActivity() {
         errorImage = binding.errorImage
         errorLabel = binding.errorLabel
 
-        val database = getDatabase(this@FertilizersActivity)
-
-        val intent = intent
-        if (intent != null) {
-            enumUseCase = intent.getParcelableExtra(useCaseTag)
-        }
-
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
             countryCode = profileInfo.countryCode
-            currency = profileInfo.currencyCode
+            currencyCode = profileInfo.currencyCode
         }
 
         initToolbar()
@@ -117,7 +106,7 @@ class FertilizersActivity : BaseActivity() {
     }
 
     private fun validateInput(backPressed: Boolean) {
-        if (isMinSelected) {
+        if (isMinSelected()) {
             closeActivity(backPressed)
         }
     }
@@ -188,10 +177,11 @@ class FertilizersActivity : BaseActivity() {
         btnSave!!.setOnClickListener { view: View? ->
             database.adviceStatusDao().insert(
                 AdviceStatus(
-                    EnumAdviceTasks.AVAILABLE_FERTILIZERS.name, isMinSelected
+                    EnumAdviceTasks.AVAILABLE_FERTILIZERS.name,
+                    isMinSelected()
                 )
             )
-            if (isMinSelected) {
+            if (isMinSelected()) {
                 closeActivity(false)
             }
         }
@@ -214,7 +204,13 @@ class FertilizersActivity : BaseActivity() {
         errorImage!!.visibility = View.GONE
         btnRetry!!.visibility = View.GONE
 
-        val database = getDatabase(this@FertilizersActivity)
+
+        availableFertilizersList = database.fertilizerDao().findAllByCountry(countryCode)
+        if (availableFertilizersList.isNotEmpty()) {
+            mAdapter!!.setItems(availableFertilizersList)
+            lyt_progress!!.visibility = View.GONE
+            recyclerView!!.visibility = View.VISIBLE
+        }
         val call = akilimoService.getFertilizers(countryCode = countryCode)
         call.enqueue(object : Callback<FertilizerResponse> {
             override fun onResponse(
@@ -280,7 +276,6 @@ class FertilizersActivity : BaseActivity() {
     }
 
     private fun loadFertilizerPrices(fertilizerKey: String) {
-        val database = getDatabase(this@FertilizersActivity)
         val call = akilimoService.getFertilizerPrices(fertilizerKey = fertilizerKey)
         call.enqueue(object : Callback<FertilizerPriceResponse> {
             override fun onResponse(
@@ -312,20 +307,18 @@ class FertilizersActivity : BaseActivity() {
         })
     }
 
-    private val isMinSelected: Boolean
-        get() {
-            val database = getDatabase(this@FertilizersActivity)
-            val count = database.fertilizerDao().findAllSelectedByCountry(countryCode).size
-            if (count < minSelection) {
-                val snackBar = Snackbar.make(
-                    lyt_progress!!, String.format(
-                        Locale.US,
-                        this@FertilizersActivity.getString(R.string.lbl_min_selection),
-                        minSelection
-                    ), Snackbar.LENGTH_SHORT
-                )
-                snackBar.show()
-            }
-            return count >= minSelection
+    private fun isMinSelected(): Boolean {
+        val count = database.fertilizerDao().findAllSelectedByCountry(countryCode).size
+        if (count < minSelection) {
+            val snackBar = Snackbar.make(
+                lyt_progress!!, String.format(
+                    Locale.US,
+                    this@FertilizersActivity.getString(R.string.lbl_min_selection),
+                    minSelection
+                ), Snackbar.LENGTH_SHORT
+            )
+            snackBar.show()
         }
+        return count >= minSelection
+    }
 }

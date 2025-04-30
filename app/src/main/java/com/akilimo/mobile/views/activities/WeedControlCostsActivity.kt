@@ -14,7 +14,6 @@ import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.inherit.BaseActivity
-import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumCountry
 import io.sentry.Sentry
@@ -31,8 +30,6 @@ class WeedControlCostsActivity : BaseActivity() {
     private var editFirstWeedingOpCost: EditText? = null
     private var editSecondWeedingOpCost: EditText? = null
 
-
-    private var mathHelper: MathHelper? = null
     private var currentPractice: CurrentPractice? = null
     private var fieldOperationCost: FieldOperationCost? = null
     private var usesHerbicide = false
@@ -53,8 +50,6 @@ class WeedControlCostsActivity : BaseActivity() {
         )
         setContentView(binding.root)
 
-        mathHelper = MathHelper()
-
         val mandatoryInfo = database.mandatoryInfoDao().findOne()
         if (mandatoryInfo != null) {
             areaUnit = mandatoryInfo.areaUnit
@@ -64,11 +59,12 @@ class WeedControlCostsActivity : BaseActivity() {
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
             countryCode = profileInfo.countryCode
-            currency = profileInfo.currencyCode
             currencyCode = profileInfo.currencyCode
             val myAkilimoCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode)
-            currencySymbol = myAkilimoCurrency.currencySymbol
-            currencyName = myAkilimoCurrency.currencyName
+            if (myAkilimoCurrency != null) {
+                currencySymbol = myAkilimoCurrency.currencySymbol
+                currencyName = myAkilimoCurrency.currencyName
+            }
         }
 
         fieldOperationCost = database.fieldOperationCostDao().findOne()
@@ -139,13 +135,13 @@ class WeedControlCostsActivity : BaseActivity() {
         var firstWeedCostTitle = getString(
             R.string.lbl_cost_of_first_weeding_operation,
             currencyName,
-            mathHelper!!.removeLeadingZero(fieldSize),
+            mathHelper.removeLeadingZero(fieldSize),
             finalTranslatedUnit
         )
         var secondWeedCostTitle = getString(
             R.string.lbl_cost_of_second_weeding_operation,
             currencyName,
-            mathHelper!!.removeLeadingZero(fieldSize),
+            mathHelper.removeLeadingZero(fieldSize),
             finalTranslatedUnit
         )
         if (myLocale.language == "sw") {
@@ -153,13 +149,13 @@ class WeedControlCostsActivity : BaseActivity() {
                 R.string.lbl_cost_of_first_weeding_operation,
                 currencyCode,
                 finalTranslatedUnit,
-                mathHelper!!.removeLeadingZero(fieldSize)
+                mathHelper.removeLeadingZero(fieldSize)
             )
             secondWeedCostTitle = getString(
                 R.string.lbl_cost_of_second_weeding_operation,
                 currencyCode,
                 finalTranslatedUnit,
-                mathHelper!!.removeLeadingZero(fieldSize)
+                mathHelper.removeLeadingZero(fieldSize)
             )
         }
         firstWeedingOpCostTitle!!.text = firstWeedCostTitle
@@ -201,9 +197,9 @@ class WeedControlCostsActivity : BaseActivity() {
 
         //get the user input
         weedRadioIndex = rdgWeedControl!!.checkedRadioButtonId
-        firstOperationCost = mathHelper!!.convertToDouble(editFirstWeedingOpCost!!.text.toString())
+        firstOperationCost = mathHelper.convertToDouble(editFirstWeedingOpCost!!.text.toString())
         secondOperationCost =
-            mathHelper!!.convertToDouble(editSecondWeedingOpCost!!.text.toString())
+            mathHelper.convertToDouble(editSecondWeedingOpCost!!.text.toString())
 
         if (firstOperationCost <= minCost) {
             showCustomWarningDialog(
@@ -237,7 +233,7 @@ class WeedControlCostsActivity : BaseActivity() {
             fieldOperationCost!!.firstWeedingOperationCost = firstOperationCost
             fieldOperationCost!!.secondWeedingOperationCost = secondOperationCost
 
-            database.fieldOperationCostDao().insert(fieldOperationCost!!)
+            database.fieldOperationCostDao().insertOrUpdate(fieldOperationCost!!)
             database.adviceStatusDao()
                 .insert(AdviceStatus(EnumAdviceTasks.COST_OF_WEED_CONTROL.name, true))
 

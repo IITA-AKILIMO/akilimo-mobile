@@ -233,9 +233,9 @@ class SweetPotatoPriceDialogFragment : DialogFragment() {
                 priceHigher = (unitPriceUpper * EnumUnitOfSale.HUNDRED_KG.unitWeight()) / 1000
             }
 
-            EnumUnitOfSale.THOUSAND_KG -> {
-                priceLower = (unitPriceLower * EnumUnitOfSale.THOUSAND_KG.unitWeight()) / 1000
-                priceHigher = (unitPriceUpper * EnumUnitOfSale.THOUSAND_KG.unitWeight()) / 1000
+            EnumUnitOfSale.TONNE -> {
+                priceLower = (unitPriceLower * EnumUnitOfSale.TONNE.unitWeight()) / 1000
+                priceHigher = (unitPriceUpper * EnumUnitOfSale.TONNE.unitWeight()) / 1000
             }
 
             else -> {

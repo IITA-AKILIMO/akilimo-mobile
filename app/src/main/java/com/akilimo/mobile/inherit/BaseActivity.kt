@@ -11,18 +11,19 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.Toolbar
 import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.entities.AdviceStatus
+import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.SessionManager
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumCountry
-import com.akilimo.mobile.utils.enums.EnumUseCase
 import com.akilimo.mobile.views.activities.DstRecommendationActivity
-import com.android.volley.RequestQueue
 import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import com.nabinbhandari.android.permissions.PermissionHandler
 import com.nabinbhandari.android.permissions.Permissions
@@ -38,21 +39,16 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected val sessionManager: SessionManager by lazy { SessionManager(this@BaseActivity) }
     protected val database: AppDatabase by lazy { getDatabase(this@BaseActivity) }
+    protected val mathHelper: MathHelper by lazy { MathHelper() }
 
-
-    @Deprecated("")
-    protected var queue: RequestQueue? = null
-
-    @JvmField
     protected var countryCode: String = EnumCountry.Nigeria.countryCode()
 
-    @JvmField
-    protected var currency: String = EnumCountry.Nigeria.currency()
-    protected var currencyName: String = ""
+    protected var currencyName: String = EnumCountry.Nigeria.currency()
     protected var currencyCode: String = EnumCountry.Nigeria.currency()
     protected var currencySymbol: String = EnumCountry.Nigeria.currency()
     protected var baseCurrency: String = "USD"
-    protected var enumUseCase: EnumUseCase? = null
+
+    //    protected var enumUseCase: EnumUseCase =EnumUseCase.NA
     protected var areaUnit: String = "acre"
     protected var areaUnitText: String = "acre"
     protected var fieldSize: Double = 0.0
@@ -72,8 +68,36 @@ abstract class BaseActivity : AppCompatActivity() {
         return wrap(baseContext).resources
     }
 
+    @Deprecated(
+        message = "Remove completely and use setupToolbar(toolbar, titleResId) instead.",
+        replaceWith = ReplaceWith("setupToolbar(binding.toolbarLayout.toolbar, R.string.your_title)"),
+        level = DeprecationLevel.WARNING
+    )
     protected abstract fun initToolbar()
 
+    fun setupToolbar(
+        toolbar: Toolbar,
+        @StringRes titleResId: Int,
+        showBackButton: Boolean = true,
+        onBackClick: (() -> Unit)? = null
+    ) {
+        setSupportActionBar(toolbar)
+        supportActionBar?.apply {
+            title = getString(titleResId)
+            setDisplayHomeAsUpEnabled(showBackButton)
+            setDisplayShowHomeEnabled(showBackButton)
+        }
+
+        if (showBackButton) {
+            toolbar.setNavigationIcon(R.drawable.ic_left_arrow)
+            toolbar.setNavigationOnClickListener {
+                onBackClick?.invoke() ?: onBackPressedDispatcher.onBackPressed()
+            }
+        }
+    }
+
+
+    @Deprecated("Deprecated remove it completely")
     protected abstract fun initComponent()
 
     protected abstract fun validate(backPressed: Boolean)
@@ -82,11 +106,14 @@ abstract class BaseActivity : AppCompatActivity() {
         if (!backPressed) {
             finish()
         }
-        Animatoo.animateSwipeRight(this)
+        Animatoo.animateSlideLeft(this@BaseActivity)
     }
 
-    protected fun openActivity() {
-        Animatoo.animateSwipeLeft(this)
+    protected fun openActivity(intent: Intent?) {
+        intent?.let {
+            startActivity(intent)
+            Animatoo.animateSlideRight(this@BaseActivity)
+        }
     }
 
 
@@ -119,8 +146,10 @@ abstract class BaseActivity : AppCompatActivity() {
         title.text = titleText
         content.text = contentText
 
-        if (buttonTitle!!.isNotEmpty()) {
-            btnClose.text = buttonTitle
+        if (buttonTitle != null) {
+            if (buttonTitle.isNotEmpty()) {
+                btnClose.text = buttonTitle
+            }
         }
         btnClose.setOnClickListener { view: View? ->
             dialog.dismiss()
