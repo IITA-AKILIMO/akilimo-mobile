@@ -106,11 +106,14 @@ abstract class BaseActivity : AppCompatActivity() {
         if (!backPressed) {
             finish()
         }
-        Animatoo.animateSwipeRight(this@BaseActivity)
+        Animatoo.animateSlideLeft(this@BaseActivity)
     }
 
-    protected fun openActivity() {
-        Animatoo.animateSwipeLeft(this@BaseActivity)
+    protected fun openActivity(intent: Intent?) {
+        intent?.let {
+            startActivity(intent)
+            Animatoo.animateSlideRight(this@BaseActivity)
+        }
     }
 
 
