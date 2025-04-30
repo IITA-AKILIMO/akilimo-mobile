@@ -19,27 +19,19 @@ import com.akilimo.mobile.views.activities.DatesActivity
 import com.akilimo.mobile.views.activities.RootYieldActivity
 import io.sentry.Sentry
 
-class ScheduledPlantingActivity : BaseRecommendationActivity() {
+class ScheduledPlantingActivity : BaseRecommendationActivity<ActivityScheduledPlantingBinding>() {
     var toolbar: Toolbar? = null
     var recyclerView: RecyclerView? = null
 
-    private var _binding: ActivityScheduledPlantingBinding? = null
-    private val binding get() = _binding!!
-
+    override fun inflateBinding(): ActivityScheduledPlantingBinding {
+        return ActivityScheduledPlantingBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityScheduledPlantingBinding.inflate(
-            layoutInflater
-        )
-        setContentView(binding.root)
-
         setupToolbar(binding.toolbarLayout.toolbar, R.string.lbl_scheduled_planting_and_harvest) {
             closeActivity(false)
         }
-
-        val dataSet = getRecItems()
-        val mAdapter = RecOptionsAdapter(dataSet)
         binding.recyclerView.run {
             layoutManager = LinearLayoutManager(this@ScheduledPlantingActivity)
             setHasFixedSize(true)
@@ -86,15 +78,12 @@ class ScheduledPlantingActivity : BaseRecommendationActivity() {
 
                     else -> {}
                 }
-                if (intent != null) {
-                    startActivity(intent)
-                    openActivity()
-                }
+                openActivity(intent)
             }
         })
     }
 
-    private fun getRecItems(): List<RecommendationOptions> {
+    override fun getRecommendationOptions(): List<RecommendationOptions> {
         val plantingString = getString(R.string.lbl_planting_harvest)
         val marketOutletString = getString(R.string.lbl_market_outlet)
         val rootYieldString = getString(R.string.lbl_typical_yield)

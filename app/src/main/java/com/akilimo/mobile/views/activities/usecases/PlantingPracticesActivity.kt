@@ -21,27 +21,19 @@ import com.akilimo.mobile.views.activities.TractorAccessActivity
 import com.akilimo.mobile.views.activities.WeedControlCostsActivity
 import io.sentry.Sentry
 
-class PlantingPracticesActivity : BaseRecommendationActivity() {
+class PlantingPracticesActivity : BaseRecommendationActivity<ActivityPlantingPracticesBinding>() {
 
 
-    private var _binding: ActivityPlantingPracticesBinding? = null
-    private val binding get() = _binding!!
-
+    override fun inflateBinding(): ActivityPlantingPracticesBinding {
+        return ActivityPlantingPracticesBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityPlantingPracticesBinding.inflate(
-            layoutInflater
-        )
-        setContentView(binding.root)
 
         setupToolbar(binding.toolbarLayout.toolbar, R.string.lbl_best_planting_practices) {
             closeActivity(false)
         }
-
-
-        val dataSet = getRecItems()
-        val mAdapter = RecOptionsAdapter(dataSet)
         binding.recyclerView.run {
             layoutManager = LinearLayoutManager(this@PlantingPracticesActivity)
             setHasFixedSize(true)
@@ -88,30 +80,26 @@ class PlantingPracticesActivity : BaseRecommendationActivity() {
                         Intent(this@PlantingPracticesActivity, RootYieldActivity::class.java)
 
                     EnumAdviceTasks.MANUAL_TILLAGE_COST -> intent = Intent(
-                        this@PlantingPracticesActivity,
-                        ManualTillageCostActivity::class.java
+                        this@PlantingPracticesActivity, ManualTillageCostActivity::class.java
                     )
 
                     EnumAdviceTasks.TRACTOR_ACCESS -> intent =
                         Intent(this@PlantingPracticesActivity, TractorAccessActivity::class.java)
 
                     EnumAdviceTasks.COST_OF_WEED_CONTROL -> intent = Intent(
-                        this@PlantingPracticesActivity,
-                        WeedControlCostsActivity::class.java
+                        this@PlantingPracticesActivity, WeedControlCostsActivity::class.java
                     )
 
                     else -> EnumAdviceTasks.NOT_SELECTED
                 }
-                if (intent != null) {
-                    startActivity(intent)
-                    openActivity()
-                }
+                openActivity(intent)
+
             }
         })
     }
 
 
-    private fun getRecItems(): List<RecommendationOptions> {
+    override fun getRecommendationOptions(): List<RecommendationOptions> {
         val recommendations = getString(R.string.lbl_best_planting_practices)
         val plantingString = getString(R.string.lbl_planting_harvest)
         val marketOutletString = getString(R.string.lbl_market_outlet)

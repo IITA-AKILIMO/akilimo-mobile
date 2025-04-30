@@ -24,20 +24,17 @@ import com.akilimo.mobile.views.activities.RootYieldActivity
 import com.akilimo.mobile.views.activities.SweetPotatoMarketActivity
 import io.sentry.Sentry
 
-class InterCropRecActivity : BaseRecommendationActivity() {
+class InterCropRecActivity : BaseRecommendationActivity<ActivityInterCropRecBinding>() {
 
-    private var _binding: ActivityInterCropRecBinding? = null
-    private val binding get() = _binding!!
-
-    private var mAdapter: RecOptionsAdapter? = null
     private var icMaize = false
     private var icPotato = false
 
+    override fun inflateBinding(): ActivityInterCropRecBinding {
+        return ActivityInterCropRecBinding.inflate(layoutInflater)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityInterCropRecBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
         val database = getDatabase(this)
         val profileInfo = database.profileInfoDao().findOne()
         profileInfo?.let {
@@ -64,67 +61,62 @@ class InterCropRecActivity : BaseRecommendationActivity() {
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
+            adapter = mAdapter
         }
 
-        mAdapter = RecOptionsAdapter(getRecItems()).also { adapter ->
-            val context = this@InterCropRecActivity
-            binding.recyclerView.adapter = adapter
-            adapter.setOnItemClickListener(object : RecOptionsAdapter.OnItemClickListener {
-                override fun onItemClick(view: View?, obj: RecommendationOptions?, position: Int) {
-                    val intent = when (obj?.adviceName) {
-                        EnumAdviceTasks.PLANTING_AND_HARVEST -> Intent(
-                            context,
-                            DatesActivity::class.java
-                        )
+        val context = this@InterCropRecActivity
+        mAdapter.setOnItemClickListener(object : RecOptionsAdapter.OnItemClickListener {
+            override fun onItemClick(view: View?, obj: RecommendationOptions?, position: Int) {
+                val intent = when (obj?.adviceName) {
+                    EnumAdviceTasks.PLANTING_AND_HARVEST -> Intent(
+                        context,
+                        DatesActivity::class.java
+                    )
 
-                        EnumAdviceTasks.MARKET_OUTLET_CASSAVA -> Intent(
-                            context,
-                            CassavaMarketActivity::class.java
-                        ).apply {
-                            putExtra(CassavaMarketActivity.useCaseTag, useCase)
-                        }
-
-                        EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO -> Intent(
-                            context,
-                            SweetPotatoMarketActivity::class.java
-                        )
-
-                        EnumAdviceTasks.MARKET_OUTLET_MAIZE -> Intent(
-                            context,
-                            MaizeMarketActivity::class.java
-                        )
-
-                        EnumAdviceTasks.CURRENT_CASSAVA_YIELD -> Intent(
-                            context,
-                            RootYieldActivity::class.java
-                        )
-
-                        EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM,
-                        EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS -> Intent(
-                            context,
-                            InterCropFertilizersActivity::class.java
-                        ).apply {
-                            putExtra(
-                                InterCropFertilizersActivity.useCaseTag,
-                                useCase
-                            )
-                        }
-
-                        EnumAdviceTasks.MAIZE_PERFORMANCE -> Intent(
-                            context,
-                            MaizePerformanceActivity::class.java
-                        )
-
-                        else -> null
+                    EnumAdviceTasks.MARKET_OUTLET_CASSAVA -> Intent(
+                        context,
+                        CassavaMarketActivity::class.java
+                    ).apply {
+                        putExtra(CassavaMarketActivity.useCaseTag, useCase)
                     }
 
-                    intent?.let {
-                        startActivity(it)
-                        openActivity()
+                    EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO -> Intent(
+                        context,
+                        SweetPotatoMarketActivity::class.java
+                    )
+
+                    EnumAdviceTasks.MARKET_OUTLET_MAIZE -> Intent(
+                        context,
+                        MaizeMarketActivity::class.java
+                    )
+
+                    EnumAdviceTasks.CURRENT_CASSAVA_YIELD -> Intent(
+                        context,
+                        RootYieldActivity::class.java
+                    )
+
+                    EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM,
+                    EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS -> Intent(
+                        context,
+                        InterCropFertilizersActivity::class.java
+                    ).apply {
+                        putExtra(
+                            InterCropFertilizersActivity.useCaseTag,
+                            useCase
+                        )
                     }
+
+                    EnumAdviceTasks.MAIZE_PERFORMANCE -> Intent(
+                        context,
+                        MaizePerformanceActivity::class.java
+                    )
+
+                    else -> null
                 }
-            })
-        }
+                openActivity(intent)
+            }
+        })
+
 
         binding.singleButton.btnAction.setOnClickListener {
             try {
@@ -149,9 +141,8 @@ class InterCropRecActivity : BaseRecommendationActivity() {
     }
 
 
-    private fun getRecItems(): List<RecommendationOptions> {
+    override fun getRecommendationOptions(): List<RecommendationOptions> {
         val items = mutableListOf<RecommendationOptions>()
-
         if (countryCode.equals(EnumCountry.Nigeria.countryCode(), ignoreCase = true)) {
             icMaize = true
             items.addAll(

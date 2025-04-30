@@ -206,21 +206,21 @@ class RecommendationsActivity : BaseActivity() {
             }
 
             if (intent != null) {
-                var useCase = database.useCaseDao().findOne()
-                if (useCase == null) {
-                    useCase = UseCase()
-                }
+                val useCase = database.useCaseDao().findOne().let { UseCase() }
                 useCase.useCaseName = advice.name
                 database.useCaseDao().insertAll(useCase)
-
-                startActivity(intent)
-                openActivity()
+                openActivity(intent)
             }
         }
     }
 
 
     private fun updateCurrencyList() {
+        val currencies = database.currencyDao().listAll()
+        if (currencies.isNotEmpty()) {
+            return
+        }
+
         val currencyCall = AkilimoApi.apiService.listCurrencies()
         currencyCall.enqueue(object : Callback<AkilimoCurrencyResponse> {
             override fun onResponse(

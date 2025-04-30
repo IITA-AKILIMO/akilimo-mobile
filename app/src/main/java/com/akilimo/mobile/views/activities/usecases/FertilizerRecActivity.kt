@@ -20,25 +20,20 @@ import com.akilimo.mobile.views.activities.InvestmentAmountActivity
 import com.akilimo.mobile.views.activities.RootYieldActivity
 import io.sentry.Sentry
 
-class FertilizerRecActivity : BaseRecommendationActivity() {
-    private var _binding: ActivityFertilizerRecBinding? = null
-    private val binding get() = _binding!!
-    private var mAdapter: RecOptionsAdapter = RecOptionsAdapter(emptyList())
-    private var dataPositionChanged = 0
+class FertilizerRecActivity : BaseRecommendationActivity<ActivityFertilizerRecBinding>() {
+
+    override fun inflateBinding(): ActivityFertilizerRecBinding {
+        return ActivityFertilizerRecBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityFertilizerRecBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val dataSet = getRecommendationOptions()
-        mAdapter = RecOptionsAdapter(dataSet)
 
         binding.apply {
-
             setupToolbar(toolbarLayout.toolbar, R.string.lbl_fertilizer_recommendations) {
                 closeActivity(false)
             }
-
             recyclerView.apply {
                 layoutManager = LinearLayoutManager(this@FertilizerRecActivity)
                 setHasFixedSize(true)
@@ -95,27 +90,15 @@ class FertilizerRecActivity : BaseRecommendationActivity() {
                     else -> EnumAdviceTasks.NOT_SELECTED
                 }
 
-                if (intent != null) {
-                    startActivity(intent)
-                    openActivity()
+                intent?.let {
+                    startActivity(it)
+                    openActivity(intent)
                 }
             }
-
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        val recList = getRecommendationOptions()
-        mAdapter.setData(recList, dataPositionChanged)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
-    }
-
-    private fun getRecommendationOptions(): List<RecommendationOptions> {
+    override fun getRecommendationOptions(): List<RecommendationOptions> {
         val plantingString = getString(R.string.lbl_planting_harvest)
         val fertilizerString = getString(R.string.lbl_available_fertilizers)
         val investmentString = getString(R.string.lbl_investment_amount)
