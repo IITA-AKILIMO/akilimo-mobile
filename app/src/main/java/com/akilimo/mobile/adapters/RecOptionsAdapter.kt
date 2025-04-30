@@ -13,13 +13,13 @@ import com.akilimo.mobile.models.RecommendationOptions
 import com.akilimo.mobile.utils.TheItemAnimation
 import com.akilimo.mobile.utils.VectorDrawableUtils
 
-class RecOptionsAdapter : RecyclerView.Adapter<RecOptionsAdapter.OriginalViewHolder>() {
+class RecOptionsAdapter(private var items: List<RecommendationOptions>) :
+    RecyclerView.Adapter<RecOptionsAdapter.OriginalViewHolder>() {
     private var mOnItemClickListener: OnItemClickListener? = null
     private var lastPosition = -1
     private var onAttach = true
 
     private var animationType: Int = TheItemAnimation.FADE_IN
-    private lateinit var items: List<RecommendationOptions>
     private lateinit var mLayoutInflater: LayoutInflater
 
     interface OnItemClickListener {
@@ -30,15 +30,9 @@ class RecOptionsAdapter : RecyclerView.Adapter<RecOptionsAdapter.OriginalViewHol
         mOnItemClickListener = mItemClickListener
     }
 
-    fun setData(items: List<RecommendationOptions>) {
+    fun setData(items: List<RecommendationOptions>, itemPosition: Int) {
         this.items = items
-        notifyDataSetChanged()
-    }
-
-    fun setData(items: List<RecommendationOptions>, animation_type: Int) {
-        this.items = items
-        this.animationType = animation_type
-        notifyDataSetChanged()
+        notifyItemChanged(itemPosition)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OriginalViewHolder {
