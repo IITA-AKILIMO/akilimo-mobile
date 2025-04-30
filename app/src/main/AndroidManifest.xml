@@ -27,7 +27,13 @@
         <!-- Sentry Configuration -->
         <meta-data
             android:name="io.sentry.dsn"
-            android:value="https://a411c08f8d5249f393ecdc3496fa069c@o212209.ingest.sentry.io/1338615" />
+            android:value="https://1f810ab3a50a9560556ec17f79c55579@o212209.ingest.us.sentry.io/4509241934872577" />
+
+          <!-- Add data like request headers, user ip adress and device name, see https://docs.sentry.io/platforms/android/data-management/data-collected/ for more info -->
+          <meta-data 
+              android:name="io.sentry.send-default-pii" 
+              android:value="true" />
+        
         <meta-data
             android:name="io.sentry.traces.user-interaction.enable"
             android:value="true" />
