@@ -1,4 +1,4 @@
-name: Android CICD
+name: Android Builder
 on:
   push:
   workflow_dispatch:
@@ -54,7 +54,7 @@ jobs:
       PACKAGE_NAME: ${{ secrets.APP_PACKAGE }}
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: set up JDK
         uses: actions/setup-java@v4
@@ -69,7 +69,9 @@ jobs:
         run: echo ${BRANCH_NAME}
 
       - name: Set up Python 3.9
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
 
       - name: Install Poetry
         run: |

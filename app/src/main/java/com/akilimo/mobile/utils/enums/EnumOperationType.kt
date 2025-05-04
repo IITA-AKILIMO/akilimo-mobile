@@ -1,30 +1,23 @@
 package com.akilimo.mobile.utils.enums
 
+import android.content.Context
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 enum class EnumOperationType : Parcelable {
-    MANUAL {
-        override fun operationName(): String {
-            return "manual"
-        }
-    },
-    MECHANICAL {
-        override fun operationName(): String {
-            return "tractor"
-        }
-    },
-    HERBICIDE {
-        override fun operationName(): String {
-            return "herbicide"
-        }
-    },
-    NONE {
-        override fun operationName(): String {
-            return "NA"
-        }
-    };
+    MANUAL,
+    TRACTOR,
+    HERBICIDE,
+    NONE;
 
-    abstract fun operationName(): String
+    fun getLocalizedName(context: Context): String {
+        return when (this) {
+//            MANUAL -> context.getString(R.string.operation_manual)
+//            TRACTOR -> context.getString(R.string.operation_tractor)
+//            HERBICIDE -> context.getString(R.string.operation_herbicide)
+//            NONE -> context.getString(R.string.operation_none)
+            else -> ""
+        }
+    }
 }

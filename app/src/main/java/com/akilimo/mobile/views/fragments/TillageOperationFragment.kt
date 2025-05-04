@@ -11,6 +11,7 @@ import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.inherit.BaseStepFragment
 import com.akilimo.mobile.interfaces.IDismissOperationsDialogListener
 import com.akilimo.mobile.utils.enums.EnumOperationType
+import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.OperationTypeDialogFragment
 import com.stepstone.stepper.VerificationError
 import io.sentry.Sentry
@@ -110,18 +111,11 @@ class TillageOperationFragment : BaseStepFragment() {
         val operationTypeDialogFragment = OperationTypeDialogFragment()
         operationTypeDialogFragment.arguments = arguments
 
-
-        val fragmentTransaction = parentFragmentManager.beginTransaction()
-        val prev = parentFragmentManager.findFragmentByTag(OperationTypeDialogFragment.ARG_ITEM_ID)
-        if (prev != null) {
-            fragmentTransaction.remove(prev)
-        }
-        fragmentTransaction.addToBackStack(null)
-        operationTypeDialogFragment.show(
+        showDialogFragmentSafely(
             parentFragmentManager,
+            operationTypeDialogFragment,
             OperationTypeDialogFragment.ARG_ITEM_ID
         )
-
 
         operationTypeDialogFragment.setOnDismissListener(object : IDismissOperationsDialogListener {
             override fun onDismiss(
@@ -133,19 +127,19 @@ class TillageOperationFragment : BaseStepFragment() {
                     "PLOUGH" -> {
                         performPloughing = !cancelled
                         binding.chkPloughing.isChecked = !cancelled
-                        ploughingMethod = enumOperationType.operationName()
+                        ploughingMethod = enumOperationType.name
                     }
 
                     "RIDGE" -> {
                         performRidging = !cancelled
                         binding.chkRidging.isChecked = !cancelled
-                        ridgingMethod = enumOperationType.operationName()
+                        ridgingMethod = enumOperationType.name
                     }
 
                     else -> {
-                        ridgingMethod = EnumOperationType.NONE.operationName()
-                        ploughingMethod = EnumOperationType.NONE.operationName()
-                        harrowingMethod = EnumOperationType.NONE.operationName()
+                        ridgingMethod = EnumOperationType.NONE.name
+                        ploughingMethod = EnumOperationType.NONE.name
+                        harrowingMethod = EnumOperationType.NONE.name
                         run {
                             performRidging = false
                             performPloughing = false

@@ -17,8 +17,8 @@ interface InvestmentAmountDao {
     @Query("SELECT * FROM investment_amounts LIMIT 1")
     fun findOne(): InvestmentAmount?
 
-    @Query("SELECT * FROM investment_amounts where id=:itemTagIndex LIMIT 1")
-    fun findOneByInvestmentId(itemTagIndex: Long): InvestmentAmount?
+    @Query("SELECT * FROM investment_amounts where item_tag=:itemTag LIMIT 1")
+    fun findOneByItemTag(itemTag: String): InvestmentAmount?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg investmentAmount: InvestmentAmount)

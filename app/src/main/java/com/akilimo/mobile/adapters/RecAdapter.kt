@@ -10,36 +10,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ItemCardRecommendationArrowBinding
 import com.akilimo.mobile.models.RecommendationOptions
-import com.akilimo.mobile.utils.TheItemAnimation
 import com.akilimo.mobile.utils.VectorDrawableUtils
 
-class RecOptionsAdapter(private var items: List<RecommendationOptions>) :
-    RecyclerView.Adapter<RecOptionsAdapter.OriginalViewHolder>() {
-    private var mOnItemClickListener: OnItemClickListener? = null
-    private var lastPosition = -1
-    private var onAttach = true
-
-    private var animationType: Int = TheItemAnimation.FADE_IN
+class RecAdapter(private val items: List<RecommendationOptions>) :
+    RecyclerView.Adapter<RecAdapter.OriginalViewHolder>() {
     private lateinit var mLayoutInflater: LayoutInflater
 
-    interface OnItemClickListener {
-        fun onItemClick(view: View?, obj: RecommendationOptions?, position: Int)
-    }
-
-    fun setOnItemClickListener(mItemClickListener: OnItemClickListener?) {
-        mOnItemClickListener = mItemClickListener
-    }
-
-    fun setData(items: List<RecommendationOptions>, itemPosition: Int) {
-        this.items = items
-        notifyItemChanged(itemPosition)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OriginalViewHolder {
         if (!::mLayoutInflater.isInitialized) {
             mLayoutInflater = LayoutInflater.from(parent.context)
         }
-
         val view = ItemCardRecommendationArrowBinding.inflate(mLayoutInflater, parent, false)
         return OriginalViewHolder(view, viewType)
     }
@@ -47,29 +28,9 @@ class RecOptionsAdapter(private var items: List<RecommendationOptions>) :
     override fun onBindViewHolder(holder: OriginalViewHolder, position: Int) {
         val recModel = items[position]
         holder.bind(recModel, position)
-        setAnimation(holder.itemView, position)
     }
 
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                onAttach = false
-                super.onScrollStateChanged(recyclerView, newState)
-            }
-        })
-        super.onAttachedToRecyclerView(recyclerView)
-    }
-
-    override fun getItemCount(): Int {
-        return items.size
-    }
-
-    private fun setAnimation(view: View, position: Int) {
-        if (position > lastPosition) {
-            TheItemAnimation.animate(view, if (onAttach) position else -1, animationType)
-            lastPosition = position
-        }
-    }
+    override fun getItemCount() = items.size
 
 
     inner class OriginalViewHolder(itemView: ItemCardRecommendationArrowBinding, viewType: Int) :
@@ -86,16 +47,8 @@ class RecOptionsAdapter(private var items: List<RecommendationOptions>) :
                 icon = R.drawable.ic_done
                 statusColor = ContextCompat.getColor(itemView.context, R.color.green_600)
             }
-
             val drawable = VectorDrawableUtils.getDrawable(itemView.context, icon, statusColor)
-
             image.setImageDrawable(drawable)
-
-            cardView.setOnClickListener { view: View? ->
-                if (mOnItemClickListener != null) {
-                    mOnItemClickListener!!.onItemClick(view, recModel, position)
-                }
-            }
         }
     }
 

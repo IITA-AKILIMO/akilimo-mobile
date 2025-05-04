@@ -22,6 +22,10 @@ data class InvestmentAmount(
     @JsonProperty("id")
     var id: Int? = null,
 
+    @ColumnInfo(name = "item_tag")
+    @JsonProperty("item_tag")
+    var itemTag: String? = null,
+
     @ColumnInfo(name = "country_code")
     @JsonProperty("country_code")
     var countryCode: String? = null,

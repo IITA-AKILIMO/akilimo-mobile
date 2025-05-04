@@ -1,6 +1,11 @@
 package com.akilimo.mobile.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
 import com.akilimo.mobile.entities.AkilimoCurrency
 
 @Dao
@@ -13,7 +18,7 @@ interface CurrencyDao {
     fun findOne(): AkilimoCurrency?
 
     @Query("SELECT * FROM currencies where currency_code=:currencyCode LIMIT 1")
-    fun findOneByCurrencyCode(currencyCode: String): AkilimoCurrency
+    fun findOneByCurrencyCode(currencyCode: String): AkilimoCurrency?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(currencyList: List<AkilimoCurrency>):LongArray?

@@ -1,15 +1,12 @@
 package com.akilimo.mobile.inherit
 
 import android.widget.Toast
+import com.akilimo.mobile.entities.OperationCostResponse
 import com.akilimo.mobile.interfaces.AkilimoApi
-import com.akilimo.mobile.models.OperationCost
-import com.akilimo.mobile.models.OperationCostResponse
 import io.sentry.Sentry
 
 
 abstract class CostBaseActivity : BaseActivity() {
-    protected var operationCostList: ArrayList<OperationCost>? = null
-
     protected fun loadOperationCost(
         operationName: String,
         operationType: String,
@@ -17,12 +14,26 @@ abstract class CostBaseActivity : BaseActivity() {
         hintText: String
     ) {
         val queryParams = mapOf(
-            "operation_type" to operationName,
-            "operation_name" to operationType,
-            "foo" to "bar",  // add as many as needed
+            "operation_type" to operationType,
+            "operation_name" to operationName,
+        )
+        val operationCosts = database.operationCostDao().findAllFiltered(
+            operationName,
+            operationType,
+            countryCode
         )
 
-        val call = AkilimoApi.apiService.getOperationCosts(currencyCode, queryParams)
+        if (operationCosts.isNotEmpty()) {
+            showDialogFullscreen(
+                operationName,
+                operationType,
+                countryCode,
+                dialogTitle,
+                hintText
+            )
+            return
+        }
+        val call = AkilimoApi.apiService.getOperationCosts(countryCode, queryParams)
         call.enqueue(object : retrofit2.Callback<OperationCostResponse> {
             override fun onResponse(
                 call: retrofit2.Call<OperationCostResponse>,
@@ -30,11 +41,10 @@ abstract class CostBaseActivity : BaseActivity() {
             ) {
                 if (response.isSuccessful) {
                     val list = response.body()!!.data
-                    operationCostList = list.toCollection(ArrayList())
-
+                    database.operationCostDao().insertAll(list)
                     showDialogFullscreen(
-                        operationCostList,
                         operationName,
+                        operationType,
                         countryCode,
                         dialogTitle,
                         hintText
@@ -53,10 +63,10 @@ abstract class CostBaseActivity : BaseActivity() {
 
 
     protected abstract fun showDialogFullscreen(
-        operationCostList: ArrayList<OperationCost>?,
         operationName: String?,
+        operationType: String?,
         countryCode: String?,
         dialogTitle: String?,
-        hintText: String?
+        hintText: String
     )
 }

@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.akilimo.mobile.BuildConfig
 import io.sentry.Sentry
-import org.joda.time.DateTimeZone
+import org.threeten.bp.ZoneId
 import java.util.UUID
 
 class SessionManager(context: Context) {
@@ -110,11 +110,11 @@ class SessionManager(context: Context) {
         }
     }
 
-    fun getAppBuildDate(): String {
+    private fun getAppBuildDate(): String {
         return try {
             val unixTimestamp = BuildConfig.VERSION_CODE * 1000L
-            val parsedDateTime = DateHelper.unixTimeStampToDate(unixTimestamp, DateTimeZone.UTC)
-            parsedDateTime.toDate().toString()
+            val parsedDateTime = DateHelper.unixTimeStampToDate(unixTimestamp, ZoneId.of("UTC"))
+            parsedDateTime.toString()
         } catch (ex: Exception) {
             Sentry.captureException(ex)
             ""

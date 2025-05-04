@@ -72,7 +72,7 @@ enum class EnumUnitOfSale : Parcelable {
             return context.getString(R.string.lbl_100_kg_bag_unit)
         }
     },
-    THOUSAND_KG {
+    TONNE {
         override fun unitWeight(): Int {
             return 1000
         }

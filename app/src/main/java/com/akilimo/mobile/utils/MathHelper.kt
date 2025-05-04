@@ -239,7 +239,7 @@ class MathHelper {
      * @param decimalPlaces The number of decimal places to round to
      * @return The rounded value
      */
-    fun roundToNDecimalPlaces(value: Double, decimalPlaces: Double): Double {
+    fun roundToNDecimalPlaces(value: Double, decimalPlaces: Double = 2.0): Double {
         return Math.round(value * decimalPlaces) / decimalPlaces
     }
 

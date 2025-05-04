@@ -22,5 +22,6 @@ enum class EnumCassavaProduceType {
         }
     };
 
+    @Deprecated("Use name instead")
     abstract fun produce(): String
 }

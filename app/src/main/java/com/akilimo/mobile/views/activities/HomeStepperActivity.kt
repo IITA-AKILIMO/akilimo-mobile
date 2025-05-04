@@ -161,8 +161,7 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         mStepperLayout.setListener(object : StepperListener {
             override fun onCompleted(completeButton: View?) {
                 val intent = Intent(this@HomeStepperActivity, RecommendationsActivity::class.java)
-                startActivity(intent)
-                openActivity()
+                openActivity(intent)
             }
 
             override fun onError(verificationError: VerificationError) {

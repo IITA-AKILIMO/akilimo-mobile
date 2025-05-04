@@ -16,7 +16,6 @@ import com.akilimo.mobile.adapters.FertilizerGridAdapter
 import com.akilimo.mobile.databinding.ActivityFertilizersBinding
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.Fertilizer
-import com.akilimo.mobile.entities.FertilizerPrice
 import com.akilimo.mobile.entities.FertilizerPriceResponse
 import com.akilimo.mobile.entities.FertilizerResponse
 import com.akilimo.mobile.inherit.BaseActivity
@@ -25,6 +24,7 @@ import com.akilimo.mobile.interfaces.IFertilizerDismissListener
 import com.akilimo.mobile.utils.FertilizerList.removeFertilizerByType
 import com.akilimo.mobile.utils.Tools.dpToPx
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.utils.enums.EnumUseCase
 import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.FertilizerPriceDialogFragment
 import com.akilimo.mobile.widget.SpacingItemDecoration
@@ -56,17 +56,14 @@ class InterCropFertilizersActivity : BaseActivity() {
 
     private var availableFertilizersList: List<Fertilizer> = ArrayList()
     private var selectedFertilizers: MutableList<Fertilizer> = ArrayList()
-    private val fertilizerTypesList: List<Fertilizer> = ArrayList()
-    private var fertilizerPricesList: List<FertilizerPrice> = ArrayList()
+    private var useCase: String = EnumUseCase.NA.name
 
     private var mAdapter: FertilizerGridAdapter? = null
     private val minSelection = 1
     private var modelMapper: ModelMapper? = null
 
     companion object {
-        @JvmField
         var useCaseTag: String = "useCase"
-        var interCropTag: String = "interCrop"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,13 +86,13 @@ class InterCropFertilizersActivity : BaseActivity() {
 
         val intent = intent
         if (intent != null) {
-            enumUseCase = intent.getParcelableExtra(useCaseTag)
+            useCase = intent.getStringExtra(useCaseTag) ?: EnumUseCase.NA.name
         }
 
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
             countryCode = profileInfo.countryCode
-            currency = profileInfo.currencyCode
+            currencyCode = profileInfo.currencyCode
         }
 
         initToolbar()
@@ -138,7 +135,7 @@ class InterCropFertilizersActivity : BaseActivity() {
             override fun onItemClick(view: View, clickedFertilizer: Fertilizer, position: Int) {
                 mAdapter!!.setActiveRowIndex(position)
                 var selectedType = database.fertilizerDao().findByTypeCountryAndUseCase(
-                    clickedFertilizer.fertilizerType!!, countryCode, enumUseCase!!.name
+                    clickedFertilizer.fertilizerType!!, countryCode, useCase
                 )
                 if (selectedType == null) {
                     selectedType = clickedFertilizer
@@ -210,7 +207,7 @@ class InterCropFertilizersActivity : BaseActivity() {
     override fun validate(backPressed: Boolean) {
         if (mAdapter != null) {
             availableFertilizersList = database.fertilizerDao()
-                .findAllByCountryAndUseCase(countryCode, enumUseCase!!.name)
+                .findAllByCountryAndUseCase(countryCode, useCase)
             mAdapter!!.setItems(availableFertilizersList)
         }
     }
@@ -319,7 +316,7 @@ class InterCropFertilizersActivity : BaseActivity() {
     private val isMinSelected: Boolean
         get() {
             val count = database.fertilizerDao()
-                .findAllSelectedByCountryAndUseCase(countryCode, enumUseCase!!.name).size
+                .findAllSelectedByCountryAndUseCase(countryCode, useCase).size
             if (count < minSelection) {
                 val snackBar = Snackbar
                     .make(

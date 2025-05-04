@@ -16,10 +16,10 @@ import com.akilimo.mobile.entities.MaizePrice
 import com.akilimo.mobile.entities.MaizePriceResponse
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
-import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumMaizeProduceType
 import com.akilimo.mobile.utils.enums.EnumUnitOfSale
+import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.MaizePriceDialogFragment
 import io.sentry.Sentry
 
@@ -44,7 +44,6 @@ class MaizeMarketActivity : BaseActivity() {
     private var _binding: ActivityMaizeMarketBinding? = null
     private val binding get() = _binding!!
 
-    private var mathHelper: MathHelper? = null
     private var maizeMarket: MaizeMarket? = null
     private var produceType: String? = null
     private var unitPrice: Double = 0.00
@@ -74,8 +73,6 @@ class MaizeMarketActivity : BaseActivity() {
         _binding = ActivityMaizeMarketBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        mathHelper = MathHelper()
-
         toolbar = binding.toolbar
         unitOfSaleGrainTitle = binding.marketContent.unitOfSaleGrainTitle
         maizeCobPriceTitle = binding.marketContent.maizeCobPriceTitle
@@ -93,11 +90,12 @@ class MaizeMarketActivity : BaseActivity() {
 
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
-            countryCode = profileInfo.countryCode!!
-            currency = profileInfo.currencyCode!!
-
+            countryCode = profileInfo.countryCode
+            currencyCode = profileInfo.currencyCode
             val myAkilimoCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode)
-            currencyName = myAkilimoCurrency.currencyName!!
+            if (myAkilimoCurrency != null) {
+                currencyName = myAkilimoCurrency.currencyName
+            }
         }
 
         initToolbar()
@@ -115,7 +113,7 @@ class MaizeMarketActivity : BaseActivity() {
     }
 
     override fun initComponent() {
-        lblPricePerCob!!.text = currency
+        lblPricePerCob!!.text = currencyCode
         rdgMaizeProduceType!!.setOnCheckedChangeListener { group: RadioGroup?, radioIndex: Int ->
             grainPriceRequired = false
             cobPriceRequired = false
@@ -280,7 +278,7 @@ class MaizeMarketActivity : BaseActivity() {
 
     private fun showUnitGrainPriceDialog(produceType: String) {
         val arguments = Bundle()
-        arguments.putString(MaizePriceDialogFragment.CURRENCY_CODE, currency)
+        arguments.putString(MaizePriceDialogFragment.CURRENCY_CODE, currencyCode)
         arguments.putString(MaizePriceDialogFragment.CURRENCY_NAME, currencyName)
         arguments.putString(MaizePriceDialogFragment.COUNTRY_CODE, countryCode)
         arguments.putDouble(MaizePriceDialogFragment.SELECTED_PRICE, exactPrice)
@@ -293,19 +291,18 @@ class MaizeMarketActivity : BaseActivity() {
         priceDialogFragment.arguments = arguments
 
         priceDialogFragment.setOnDismissListener { selectedPrice: Double, isExactPrice: Boolean ->
-            unitPrice = if (isExactPrice) selectedPrice else mathHelper!!.convertToUnitWeightPrice(
+            unitPrice = if (isExactPrice) selectedPrice else mathHelper.convertToUnitWeightPrice(
                 selectedPrice,
                 unitWeight
             )
+            binding.marketContent.btnPickCobPrice.text =
+                getString(R.string.lbl_cob_price, unitPrice, currencyCode)
         }
-
-        supportFragmentManager.beginTransaction().apply {
-            supportFragmentManager.findFragmentByTag(MaizePriceDialogFragment.ARG_ITEM_ID)?.let {
-                remove(it)
-            }
-            addToBackStack(null)
-        }.commit()
-        priceDialogFragment.show(supportFragmentManager, MaizePriceDialogFragment.ARG_ITEM_ID)
+        showDialogFragmentSafely(
+            fragmentManager = supportFragmentManager,
+            dialogFragment = priceDialogFragment,
+            tag = MaizePriceDialogFragment.ARG_ITEM_ID
+        )
     }
 
 

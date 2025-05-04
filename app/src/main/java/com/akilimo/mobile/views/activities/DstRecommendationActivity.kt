@@ -8,7 +8,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,7 +24,6 @@ import com.akilimo.mobile.rest.request.RecommendationRequest
 import com.akilimo.mobile.rest.response.RecommendationResponse
 import com.akilimo.mobile.utils.BuildComputeData
 import com.akilimo.mobile.views.fragments.dialog.RecommendationChannelDialog
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.sentry.Sentry
 
 /**
@@ -35,8 +33,6 @@ import io.sentry.Sentry
 class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
     var toolbar: Toolbar? = null
     var recyclerView: RecyclerView? = null
-    var fabRetry: FloatingActionButton? = null
-    var btnFeedback: AppCompatButton? = null
     var errorImage: ImageView? = null
     var errorLabel: TextView? = null
     var lyt_progress: LinearLayout? = null
@@ -60,13 +56,13 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
 
         toolbar = binding.toolbarLayout.toolbar
         recyclerView = binding.recyclerView
-        fabRetry = binding.fabRetry
-        btnFeedback = binding.feedbackButton.btnGetRecommendation
         errorImage = binding.errorImage
         errorLabel = binding.errorLabel
         lyt_progress = binding.lytProgress
 
-        btnFeedback!!.setText(R.string.lbl_provide_feedback)
+        binding.singleButton.apply {
+            btnAction.setText(R.string.lbl_provide_feedback)
+        }
         initToolbar()
         initComponent()
     }
@@ -82,7 +78,6 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
     }
 
     override fun initComponent() {
-        val database = getDatabase(this@DstRecommendationActivity)
         recyclerView!!.visibility = View.GONE
         recyclerView!!.layoutManager = LinearLayoutManager(this@DstRecommendationActivity)
         recyclerView!!.setHasFixedSize(true)
@@ -97,14 +92,13 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
         errorImage!!.visibility = View.GONE
 
 
-        fabRetry!!.setOnClickListener { view: View? ->
+        binding.fabRetry.setOnClickListener { view: View? ->
             if (userProfile != null) {
                 displayDialog(userProfile)
             }
         }
 
-        btnFeedback!!.setOnClickListener { view: View? ->
-            //launch the feedback dialog
+        binding.singleButton.btnAction.setOnClickListener {
             val surveyIntent = Intent(this, MySurveyActivity::class.java)
             startActivityForResult(surveyIntent, MySurveyActivity.REQUEST_CODE)
         }
@@ -173,6 +167,13 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
                     recyclerView!!.adapter = recAdapter
                     recyclerView!!.visibility = View.VISIBLE
                     recList = initializeData(recommendationResp)
+                } else {
+                    binding.apply {
+                        lytProgress.visibility = View.GONE
+                        errorImage.visibility = View.VISIBLE
+                        errorLabel.visibility = View.VISIBLE
+                        recyclerView.visibility = View.GONE
+                    }
                 }
             }
 

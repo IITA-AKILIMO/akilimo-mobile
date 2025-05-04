@@ -8,30 +8,33 @@
     android:layout_alignParentBottom="true"
     android:layout_gravity="bottom"
     android:background="?android:attr/windowBackground"
-    android:gravity="bottom|center"
     android:orientation="horizontal"
+    android:gravity="bottom|center"
+    android:padding="@dimen/spacing_medium"
     app:layout_scrollFlags="scroll|enterAlways|snap">
 
-    <androidx.appcompat.widget.AppCompatButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnFinish"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/ubuntu_bold"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dimen_58"
+        android:layout_marginEnd="@dimen/spacing_medium"
+        android:layout_weight="1"
         android:text="@string/lbl_finish"
-        android:textAllCaps="false"
-        android:theme="@style/Button.Green" />
+        app:backgroundTint="@color/green_600"
+        app:cornerRadius="@dimen/dimen_5" />
 
-    <View
-        android:layout_width="130dp"
-        android:layout_height="0dp" />
-
-    <androidx.appcompat.widget.AppCompatButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnCancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dimen_58"
+        android:layout_marginStart="@dimen/spacing_medium"
+        android:layout_weight="1"
         android:text="@string/lbl_cancel"
-        android:textAllCaps="false"
-        android:theme="@style/Button.Accent" />
+        app:backgroundTint="@android:color/transparent"
+        app:cornerRadius="@dimen/dimen_5"
+        app:strokeColor="@color/red_900"
+        app:strokeWidth="2dp" />
 
 </LinearLayout>

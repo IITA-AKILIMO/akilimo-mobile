@@ -91,7 +91,7 @@ class OperationTypeDialogFragment : BaseDialogFragment() {
     private fun radioSelected(radioIndex: Int) {
         binding.lblError.visibility = View.GONE
         enumOperationType = when (radioIndex) {
-            R.id.rdMechanical -> EnumOperationType.MECHANICAL
+            R.id.rdMechanical -> EnumOperationType.TRACTOR
             R.id.rdManual -> EnumOperationType.MANUAL
             else -> EnumOperationType.NONE
         }

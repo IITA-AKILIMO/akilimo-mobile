@@ -116,6 +116,7 @@
                 android:textColor="@color/colorPrimaryDark" />
 
             <include
+                android:id="@+id/two_buttons"
                 layout="@layout/bottom_two_buttons_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

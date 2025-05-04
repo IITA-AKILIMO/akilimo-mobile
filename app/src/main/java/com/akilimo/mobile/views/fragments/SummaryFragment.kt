@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.MyTimeLineAdapter
 import com.akilimo.mobile.databinding.FragmentSummaryBinding
+import com.akilimo.mobile.entities.CropSchedule
 import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.entities.MandatoryInfo
-import com.akilimo.mobile.entities.ScheduledDate
 import com.akilimo.mobile.entities.UserLocation
 import com.akilimo.mobile.entities.UserProfile
 import com.akilimo.mobile.inherit.BaseStepFragment
@@ -40,7 +40,7 @@ class SummaryFragment : BaseStepFragment() {
     private var location: UserLocation? = null
     private var mandatoryInfo: MandatoryInfo? = null
     private var currentPractice: CurrentPractice? = null
-    private var scheduledDate: ScheduledDate? = null
+    private var cropSchedule: CropSchedule? = null
     private var userProfile: UserProfile? = null
 
     private var adapter: MyTimeLineAdapter? = null
@@ -132,7 +132,7 @@ class SummaryFragment : BaseStepFragment() {
         location = database.locationInfoDao().findOne()
         mandatoryInfo = database.mandatoryInfoDao().findOne()
         currentPractice = database.currentPracticeDao().findOne()
-        scheduledDate = database.scheduleDateDao().findOne()
+        cropSchedule = database.scheduleDateDao().findOne()
 
         userProfile = database.profileInfoDao().findOne()
         if (userProfile != null) {
@@ -176,9 +176,9 @@ class SummaryFragment : BaseStepFragment() {
             locationPicked = lat != 0.0 || lon != 0.0
         }
 
-        if (scheduledDate != null) {
-            plantingDate = scheduledDate!!.plantingDate
-            harvestDate = scheduledDate!!.harvestDate
+        if (cropSchedule != null) {
+            plantingDate = cropSchedule!!.plantingDate
+            harvestDate = cropSchedule!!.harvestDate
             plantingDateProvided = !plantingDate.isNullOrEmpty()
             harvestDateProvided = !harvestDate.isNullOrEmpty()
         }

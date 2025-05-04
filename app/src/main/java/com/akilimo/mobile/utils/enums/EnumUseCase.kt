@@ -1,7 +1,7 @@
 package com.akilimo.mobile.utils.enums
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 enum class EnumUseCase : Parcelable {
@@ -9,5 +9,6 @@ enum class EnumUseCase : Parcelable {
     SP,
     PP,
     CIS,
-    CIM
+    CIM,
+    NA
 }
