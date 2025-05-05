@@ -70,12 +70,11 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun launchNextActivity(isInDevMode: Boolean) {
-        val intent = if (isInDevMode) {
-            Intent(this, FertilizerRecActivity::class.java)
-        } else {
-            Intent(this, HomeStepperActivity::class.java)
-        }
+        var intent: Intent = Intent(this, HomeStepperActivity::class.java)
 
+        if (isInDevMode) {
+            intent = Intent(this, FertilizerRecActivity::class.java)
+        }
         startActivity(intent)
         finish()
         Animatoo.animateSlideDown(this)
