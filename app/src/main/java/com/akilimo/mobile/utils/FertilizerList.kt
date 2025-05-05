@@ -1,14 +1,21 @@
 package com.akilimo.mobile.utils
 
 import android.os.Build
-
 import com.akilimo.mobile.entities.Fertilizer
-import com.akilimo.mobile.entities.InterCropFertilizer
 
 
 object FertilizerList {
 
     fun removeFertilizerByType(
+        fertilizers: List<Fertilizer>,
+        typeToRemove: String
+    ): MutableList<Fertilizer> {
+        return fertilizers
+            .filterNot { it.fertilizerType.equals(typeToRemove, ignoreCase = true) }
+            .toMutableList()
+    }
+
+    fun removeFertilizerByTypeOld(
         fertilizerTypeList: MutableList<Fertilizer>,
         fertilizerTypeToRemove: String
     ): MutableList<Fertilizer> {
