@@ -51,7 +51,7 @@ class SweetPotatoMarketActivity : BaseActivity() {
     var unitPriceUSD: Double = 0.0
     var unitPriceLocal: Double = 0.0
     private var unitPrice = 0.0
-    private var unitWeight = 0
+    private var unitWeight = 0.0
 
     private val minAmountUSD = 5.00
     private val maxAmountUSD = 500.00

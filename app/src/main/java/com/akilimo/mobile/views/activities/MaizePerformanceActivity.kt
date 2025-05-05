@@ -43,8 +43,8 @@ class MaizePerformanceActivity : BaseActivity() {
 
     private var savedCropPerformance: CropPerformance? = null
 
-    private var selectedPerformanceValue: String = ""
-    private var maizePerformanceValue: String = ""
+    private var selectedPerformanceValue: String = "3"
+    private var maizePerformanceValue: String = "3"
 
     private val performanceImages = arrayOf(
         R.drawable.ic_maize_1,
@@ -180,7 +180,7 @@ class MaizePerformanceActivity : BaseActivity() {
                                 savedCropPerformance = CropPerformance()
                             }
                             val maizePerformance = performance.maizePerformance
-                            selectedPerformanceValue = performance.performanceValue!!
+                            selectedPerformanceValue = performance.performanceValue
                             savedCropPerformance!!.maizePerformance = maizePerformance
                             savedCropPerformance!!.performanceValue = selectedPerformanceValue
 

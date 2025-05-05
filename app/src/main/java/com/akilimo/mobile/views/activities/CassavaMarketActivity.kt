@@ -67,7 +67,7 @@ class CassavaMarketActivity : BaseActivity() {
 
     var useCase: String = "NA"
     var unitOfSale: String = "NA"
-    var unitWeight: Int = 0
+    var unitWeight: Double = 0.0
     private var harvestWindow = 0
 
     private var factoryRequired = false

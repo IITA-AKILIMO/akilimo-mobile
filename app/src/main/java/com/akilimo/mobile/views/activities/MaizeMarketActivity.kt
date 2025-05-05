@@ -64,7 +64,7 @@ class MaizeMarketActivity : BaseActivity() {
     private var cobPriceRequired = false
 
     private val unitPriceUSD = 0.0
-    private var unitWeight = 0
+    private var unitWeight = 0.0
     private val exactPrice = 0.0
     private val averagePrice = 0.0
 
