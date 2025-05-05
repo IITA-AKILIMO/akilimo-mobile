@@ -2,31 +2,26 @@ package com.akilimo.mobile.utils
 
 import android.content.Context
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
-import com.akilimo.mobile.entities.Fertilizer
 import com.akilimo.mobile.rest.request.ComputeRequest
+import com.akilimo.mobile.rest.request.FertilizerRequest
 import com.akilimo.mobile.rest.request.RecommendationRequest
 import com.akilimo.mobile.rest.request.UserInfo
 import org.modelmapper.ModelMapper
 import org.modelmapper.TypeToken
 
-class BuildComputeData(context: Context) {
+class BuildComputeData(val context: Context) {
 
     companion object {
         private val LOG_TAG: String = BuildComputeData::class.java.simpleName
-
-        //        private const val DEFAULT_CASSAVA_PD = "roots"
-//        private const val DEFAULT_MAIZE_PD = "fresh_cob"
         private const val DEFAULT_UNAVAILABLE = "NA"
-
-//        private const val DEFAULT_FALLOW_TYPE = "none"
-
-        //        private const val DEFAULT_MAIZE_PERFORMANCE_VALUE = "3"
         private const val DEFAULT_PRACTICE_METHOD = "NA"
         private const val DEFAULT_USERNAME = "akilimo"
     }
 
     private val modelMapper = ModelMapper()
+
     private val database = getDatabase(context)
+    val session = SessionManager(context = context)
 
     fun buildRecommendationReq(): RecommendationRequest {
         val userInfo = buildProfileInfo()
@@ -46,41 +41,48 @@ class BuildComputeData(context: Context) {
         buildMaizeMarketOutlet(computeRequest)
         buildSweetPotatoMarketOutlet(computeRequest)
 
-        val fertilizerList: List<Fertilizer>
-        val listType = object : TypeToken<List<Fertilizer?>?>() {}.type
 
-        if (computeRequest.interCroppingPotatoRec || computeRequest.interCroppingMaizeRec) {
-            val interCropFertilizers = database.fertilizerDao().findAllSelectedByCountry(
-                computeRequest.countryCode
-            )
-            fertilizerList = modelMapper.map(interCropFertilizers, listType)
+        val countryCode = computeRequest.countryCode.toString()
+        val fertilizerDao = database.fertilizerDao()
+        val fertilizerList =
+            if (computeRequest.interCroppingPotatoRec || computeRequest.interCroppingMaizeRec) {
+                val useCases = database.useCaseDao().getAllUseCases()
+                fertilizerDao.findAllSelectedByCountryAndUseCases(countryCode, useCases)
         } else {
-            fertilizerList =
-                database.fertilizerDao().findAllSelectedByCountry(computeRequest.countryCode)
+                fertilizerDao.findAllSelectedByCountry(countryCode)
         }
 
+        val result: List<FertilizerRequest> = modelMapper.map(
+            fertilizerList,
+            object : TypeToken<List<FertilizerRequest>>() {}.type
+        )
 
-        return RecommendationRequest(userInfo, computeRequest, fertilizerList)
+
+        return RecommendationRequest(
+            userInfo = userInfo,
+            computeRequest = computeRequest,
+            fertilizerList = result
+        )
     }
 
     private fun buildProfileInfo(): UserInfo {
+        val userInfo = UserInfo()
 
-        val profileInfo = database.profileInfoDao().findOne() ?: return UserInfo()
+        userInfo.deviceToken = session.getDeviceToken() // Always set
 
-        return UserInfo().apply {
-            val firstName = profileInfo.firstName.orIfBlank(DEFAULT_USERNAME)
-            val lastName = profileInfo.lastName.orIfBlank(DEFAULT_USERNAME)
-
-            this.firstName = firstName
-            this.lastName = lastName
-            userName = profileInfo.names().orIfBlank(DEFAULT_USERNAME)
-            gender = profileInfo.gender.orIfBlank(DEFAULT_UNAVAILABLE)
-            fieldDescription = profileInfo.farmName.orIfBlank(DEFAULT_UNAVAILABLE)
-            phoneNumber = profileInfo.fullMobileNumber.orIfBlank(DEFAULT_UNAVAILABLE)
-            this.deviceToken = profileInfo.deviceToken.orEmpty()
-            this.sendSms = profileInfo.sendSms
-            this.sendEmail = profileInfo.sendEmail
+        database.profileInfoDao().findOne()?.let { profile ->
+            userInfo.apply {
+                firstName = profile.firstName.orIfBlank(DEFAULT_USERNAME)
+                lastName = profile.lastName.orIfBlank(DEFAULT_USERNAME)
+                userName = profile.names().orIfBlank(DEFAULT_USERNAME)
+                gender = profile.gender.orIfBlank(DEFAULT_UNAVAILABLE)
+                fieldDescription = profile.farmName.orIfBlank(DEFAULT_UNAVAILABLE)
+                phoneNumber = profile.phoneNumber.orIfBlank(DEFAULT_UNAVAILABLE)
+                sendSms = profile.sendSms
+                sendEmail = profile.sendEmail
+            }
         }
+        return userInfo
     }
 
 
@@ -96,11 +98,11 @@ class BuildComputeData(context: Context) {
                 mapLong = it.longitude
             }
             mandatoryInfo?.let {
-                fieldArea = it.areaSize
-                areaUnits = it.areaUnit
+                fieldSize = it.areaSize
+                areaUnit = it.areaUnit
             }
             profileInfo?.let {
-                currency = it.currencyCode
+                currencyCode = it.currencyCode
                 countryCode = it.countryCode
                 riskAttitude = it.riskAtt
             }
