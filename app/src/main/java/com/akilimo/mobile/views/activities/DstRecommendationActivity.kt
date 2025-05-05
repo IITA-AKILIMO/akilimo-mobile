@@ -41,7 +41,6 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
 
     var activity: Activity? = null
 
-    //var recData: RecommendationRequest? = null
     var recAdapter: RecommendationAdapter? = null
     var responseList: List<ComputedResponse>? = null
     var userProfile: UserProfile? = null
