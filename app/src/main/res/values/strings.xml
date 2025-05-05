@@ -581,4 +581,10 @@
     <string name="lbl_cob_price">%1$.2f %2$s</string>
     <string name="lbl_use_this_date">Use this date</string>
     <string name="lbl_separator">--</string>
+
+    <string name="update_downloaded">Update downloaded and ready to install</string>
+    <string name="update_failed">Failed to download update</string>
+    <string name="update_start_failed">Could not start the update</string>
+    <string name="update_cancelled">Update cancelled</string>
+    <string name="restart">RESTART</string>
 </resources>
