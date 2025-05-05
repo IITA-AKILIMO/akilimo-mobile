@@ -22,6 +22,7 @@ import io.sentry.Sentry
 
 class FertilizerRecActivity : BaseRecommendationActivity<ActivityFertilizerRecBinding>() {
 
+    private var useCaseName = ""
     override fun inflateBinding(): ActivityFertilizerRecBinding {
         return ActivityFertilizerRecBinding.inflate(layoutInflater)
     }
@@ -72,11 +73,18 @@ class FertilizerRecActivity : BaseRecommendationActivity<ActivityFertilizerRecBi
                 val advice = obj?.adviceName
                 dataPositionChanged = position
                 when (advice) {
-                    EnumAdviceTasks.PLANTING_AND_HARVEST -> intent =
-                        Intent(this@FertilizerRecActivity, DatesActivity::class.java)
+                    EnumAdviceTasks.PLANTING_AND_HARVEST ->
+                        intent = Intent(this@FertilizerRecActivity, DatesActivity::class.java)
 
-                    EnumAdviceTasks.AVAILABLE_FERTILIZERS -> intent =
-                        Intent(this@FertilizerRecActivity, FertilizersActivity::class.java)
+                    EnumAdviceTasks.AVAILABLE_FERTILIZERS -> {
+                        intent = Intent(this@FertilizerRecActivity, FertilizersActivity::class.java)
+                            .apply {
+                                putExtra(
+                                    FertilizersActivity.useCaseTag,
+                                    EnumUseCase.FR.name
+                                )
+                            }
+                    }
 
                     EnumAdviceTasks.INVESTMENT_AMOUNT -> intent =
                         Intent(this@FertilizerRecActivity, InvestmentAmountActivity::class.java)
@@ -90,16 +98,14 @@ class FertilizerRecActivity : BaseRecommendationActivity<ActivityFertilizerRecBi
                     else -> EnumAdviceTasks.NOT_SELECTED
                 }
 
-                intent?.let {
-                    startActivity(it)
-                    openActivity(intent)
-                }
+                intent?.putExtra("UseCase", useCaseName)
+                openActivity(intent)
             }
         })
     }
 
     override fun getRecommendationOptions(): List<RecommendationOptions> {
-        val plantingString = getString(R.string.lbl_planting_harvest)
+        getString(R.string.lbl_planting_harvest)
         val fertilizerString = getString(R.string.lbl_available_fertilizers)
         val investmentString = getString(R.string.lbl_investment_amount)
         val rootYieldString = getString(R.string.lbl_typical_yield)
