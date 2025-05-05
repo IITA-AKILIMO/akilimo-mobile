@@ -54,7 +54,7 @@ import com.akilimo.mobile.entities.UserProfile
         UseCase::class,
         AkilimoCurrency::class,
         AdviceStatus::class
-    ], version = 4,
+    ], version = 1,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -91,7 +91,7 @@ abstract class AppDatabase : RoomDatabase() {
         // For Singleton instantiation
         @Volatile
         private var database: AppDatabase? = null
-        private const val DATABASE_NAME = "AKILIMO_APR_2025"
+        private const val DATABASE_NAME = "AKILIMO_MAY_2025"
 
         @JvmStatic
         fun getDatabase(context: Context): AppDatabase {
