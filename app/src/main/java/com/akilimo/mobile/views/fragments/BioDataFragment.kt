@@ -42,11 +42,11 @@ class BioDataFragment : BaseStepFragment() {
     var edtPhone: TextInputEditText? = null
     var ccp: CountryCodePicker? = null
 
-    private var firstName: String? = null
-    private var lastName: String? = null
-    private var email: String? = null
-    private var mobileCode: String? = null
-    private var fullMobileNumber: String? = null
+    private var myFirstName: String? = null
+    private var myLastName: String? = null
+    private var myEmail: String? = null
+    private var myMobileCode: String? = null
+    private var myPhoneNumber: String? = null
     private var userEnteredNumber: String? = null
     private var gender: String? = null
     private var akilimoInterest: String? = null
@@ -60,7 +60,7 @@ class BioDataFragment : BaseStepFragment() {
             return BioDataFragment()
         }
     }
-    
+
     override fun loadFragmentLayout(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -144,7 +144,7 @@ class BioDataFragment : BaseStepFragment() {
             phoneIsValid = isValidNumber
         }
 
-        ccp!!.setOnCountryChangeListener { mobileCode = ccp!!.selectedCountryCodeWithPlus }
+        ccp!!.setOnCountryChangeListener { myMobileCode = ccp!!.selectedCountryCodeWithPlus }
         ccp!!.registerCarrierNumberEditText(edtPhone)
 
         binding.chkRememberDetails.setOnCheckedChangeListener { _: CompoundButton?, rememberInfo: Boolean ->
@@ -158,22 +158,22 @@ class BioDataFragment : BaseStepFragment() {
             userProfile = database.profileInfoDao().findOne()
             rememberUserInfo = sessionManager.getRememberUserInfo()
             if (userProfile != null) {
-                firstName = userProfile!!.firstName
-                lastName = userProfile!!.lastName
-                email = userProfile!!.email
-                mobileCode = userProfile!!.mobileCode
-                fullMobileNumber = userProfile!!.fullMobileNumber
+                myFirstName = userProfile!!.firstName
+                myLastName = userProfile!!.lastName
+                myEmail = userProfile!!.email
+                myMobileCode = userProfile!!.mobileCode
+                myPhoneNumber = userProfile!!.phoneNumber
                 gender = userProfile!!.gender
                 akilimoInterest = userProfile!!.akilimoInterest
 
                 selectedGenderIndex = userProfile!!.selectedGenderIndex
                 selectedInterestIndex = userProfile!!.selectedInterestIndex
 
-                edtFirstName!!.setText(firstName)
-                edtLastName!!.setText(lastName)
-                edtEmail!!.setText(email)
-                if (!TextUtils.isEmpty(fullMobileNumber)) {
-                    ccp!!.fullNumber = fullMobileNumber
+                edtFirstName!!.setText(myFirstName)
+                edtLastName!!.setText(myLastName)
+                edtEmail!!.setText(myEmail)
+                if (!TextUtils.isEmpty(myPhoneNumber)) {
+                    ccp!!.fullNumber = myPhoneNumber
                 }
 
                 genderSpinner!!.setSelection(selectedGenderIndex)
@@ -190,27 +190,27 @@ class BioDataFragment : BaseStepFragment() {
         edtEmail!!.error = null
         errorMessage = ""
 
-        firstName = edtFirstName!!.text.toString()
-        lastName = edtLastName!!.text.toString()
-        email = edtEmail!!.text.toString().trim { it <= ' ' }
+        myFirstName = edtFirstName!!.text.toString()
+        myLastName = edtLastName!!.text.toString()
+        myEmail = edtEmail!!.text.toString().trim { it <= ' ' }
         userEnteredNumber = edtPhone!!.text.toString()
-        fullMobileNumber = ccp!!.fullNumber
-        mobileCode = ccp!!.selectedCountryCodeWithPlus
+        myPhoneNumber = ccp!!.fullNumber
+        myMobileCode = ccp!!.selectedCountryCodeWithPlus
 
-        if (TextUtils.isEmpty(firstName)) {
+        if (TextUtils.isEmpty(myFirstName)) {
             errorMessage = this.getString(R.string.lbl_first_name_req)
             edtFirstName!!.error = errorMessage
             return
         }
 
-        if (TextUtils.isEmpty(lastName)) {
+        if (TextUtils.isEmpty(myLastName)) {
             errorMessage = this.getString(R.string.lbl_last_name_req)
             edtLastName!!.error = errorMessage
             return
         }
 
 
-        if (!TextUtils.isEmpty(fullMobileNumber) && !TextUtils.isEmpty(userEnteredNumber)) {
+        if (!TextUtils.isEmpty(myPhoneNumber) && !TextUtils.isEmpty(userEnteredNumber)) {
             if (!phoneIsValid) {
                 errorMessage = this.getString(R.string.lbl_valid_number_req)
                 edtPhone!!.error = errorMessage
@@ -220,7 +220,7 @@ class BioDataFragment : BaseStepFragment() {
             }
         }
 
-        if (!validationHelper.isValidEmail(email!!) && !TextUtils.isEmpty(email)) {
+        if (!validationHelper.isValidEmail(myEmail!!) && !TextUtils.isEmpty(myEmail)) {
             errorMessage = this.getString(R.string.lbl_valid_email_req)
             edtEmail!!.error = errorMessage
             return
@@ -242,19 +242,18 @@ class BioDataFragment : BaseStepFragment() {
             if (userProfile == null) {
                 userProfile = UserProfile()
             }
-            userProfile!!.firstName = firstName
-            userProfile!!.lastName = lastName
-            userProfile!!.gender = gender
-            userProfile!!.akilimoInterest = akilimoInterest
-            userProfile!!.email = email
-            userProfile!!.mobileCode = mobileCode
-            userProfile!!.fullMobileNumber = fullMobileNumber
-            userProfile!!.selectedGenderIndex = selectedGenderIndex
-            userProfile!!.selectedInterestIndex = selectedInterestIndex
-
-            userProfile!!.deviceToken = sessionManager.getDeviceToken()
-
-            userProfile!!.userName = userProfile!!.names()
+            userProfile?.apply {
+                firstName = myFirstName
+                lastName = myLastName
+                this.gender = gender
+                this.akilimoInterest = akilimoInterest
+                email = myEmail
+                mobileCode = myMobileCode
+                phoneNumber = myPhoneNumber
+                this.selectedGenderIndex = selectedGenderIndex
+                this.selectedInterestIndex = selectedInterestIndex
+                userProfile!!.userName = userProfile!!.names()
+            }
 
             if (userProfile!!.profileId != null) {
                 database.profileInfoDao().update(userProfile!!)
