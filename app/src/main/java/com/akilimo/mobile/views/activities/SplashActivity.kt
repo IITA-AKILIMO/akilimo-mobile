@@ -3,97 +3,86 @@ package com.akilimo.mobile.views.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
 import com.akilimo.mobile.BuildConfig
+import com.akilimo.mobile.data.UserDataCleaner
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.rest.retrofit.RetrofitManager
 import com.akilimo.mobile.views.activities.usecases.FertilizerRecActivity
 import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import io.sentry.Sentry
-
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initComponent()
-    }
 
-    override fun initComponent() {
-        try {
-            val background = object : Thread() {
-                override fun run() {
-                    launchActivity()
-                }
+        lifecycleScope.launch {
+            try {
+                launchAppFlow()
+            } catch (ex: Exception) {
+                Sentry.captureException(ex)
+                fallbackLaunch()
             }
-            background.start()
-        } catch (ex: Exception) {
-            launchActivity()
-            Sentry.captureException(ex)
         }
     }
 
-    override fun validate(backPressed: Boolean) {}
-
-    override fun initToolbar() {
-        Sentry.captureMessage("Empty toolbar initialization")
+    override fun validate(backPressed: Boolean) {
+        // No back navigation handling needed on splash
     }
 
-    private fun launchActivity() {
+    @Deprecated("No longer used. Remove once toolbar code is fully refactored.")
+    override fun initToolbar() {
+        Sentry.captureMessage("Deprecated toolbar initialization in SplashActivity")
+    }
+
+    @Deprecated("Deprecated method. Can be safely removed.")
+    override fun initComponent() {
+        // Intentionally unimplemented
+    }
+
+    private suspend fun launchAppFlow() {
         val isInDevMode = BuildConfig.DEBUG
+
         try {
+            // Initialize API endpoints
             val akilimoEndpoint = sessionManager.getAkilimoEndpoint()
             val fuelrodEndpoint = sessionManager.getFuelrodEndpoint()
-
             RetrofitManager.init(akilimoEndpoint, fuelrodEndpoint)
 
             if (!isInDevMode) {
-                with(database) {
-
-                    if (!sessionManager.getRememberUserInfo()) {
-                        profileInfoDao().deleteAll()
-                    }
-
-                    if (!sessionManager.getRememberAreaUnit()) {
-                        mandatoryInfoDao().deleteAll()
-                    }
-
-                    adviceStatusDao().deleteAll()
-                    cassavaMarketDao().deleteAll()
-                    cassavaPriceDao().deleteAll()
-                    currencyDao().deleteAll()
-                    currentPracticeDao().deleteAll()
-                    fertilizerDao().deleteAll()
-                    fertilizerPriceDao().deleteAll()
-                    fieldOperationCostDao().deleteAll()
-                    fieldYieldDao().deleteAll()
-                    investmentAmountDao().deleteAll()
-                    locationInfoDao().deleteAll()
-                    maizeMarketDao().deleteAll()
-                    maizePerformanceDao().deleteAll()
-                    maizePriceDao().deleteAll()
-                    potatoMarketDao().deleteAll()
-                    scheduleDateDao().deleteAll()
-                    starchFactoryDao().deleteAll()
-                    operationCostDao().deleteAll()
-
+                withContext(Dispatchers.IO) {
+                    val cleaner = UserDataCleaner(database, sessionManager)
+                    cleaner.clearUserRelatedData()
                 }
             }
 
+            launchNextActivity(isInDevMode)
+
         } catch (ex: Exception) {
             Sentry.captureException(ex)
+            fallbackLaunch()
         }
-        var intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
-        if (isInDevMode) {
-//            intent = Intent(this@SplashActivity, HomeStepperActivity::class.java)
-//            intent = Intent(this@SplashActivity, RecommendationsActivity::class.java)
-//            intent = Intent(this@SplashActivity, FertilizerRecommendationActivity::class.java)
-            intent = Intent(this@SplashActivity, FertilizerRecActivity::class.java)
-//            intent = Intent(this@SplashActivity, RootYieldActivity::class.java)
-//            intent = Intent(this@SplashActivity, InvestmentAmountActivity::class.java)
+    }
+
+    private fun launchNextActivity(isInDevMode: Boolean) {
+        val intent = if (isInDevMode) {
+            Intent(this, FertilizerRecActivity::class.java)
+        } else {
+            Intent(this, HomeStepperActivity::class.java)
         }
+
         startActivity(intent)
         finish()
-        Animatoo.animateSlideDown(this@SplashActivity)
+        Animatoo.animateSlideDown(this)
+    }
+
+    private fun fallbackLaunch() {
+        startActivity(Intent(this, HomeStepperActivity::class.java))
+        finish()
     }
 }
