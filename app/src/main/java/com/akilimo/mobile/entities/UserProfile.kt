@@ -14,9 +14,6 @@ data class UserProfile(
     @ColumnInfo(name = "profile_id")
     var profileId: Int? = null,
 
-    @ColumnInfo(name = "device_token")
-    var deviceToken: String? = null,
-
     @ColumnInfo(name = "user_name")
     var userName: String? = null,
 
@@ -32,8 +29,8 @@ data class UserProfile(
     @ColumnInfo(name = "mobile_code")
     var mobileCode: String? = null,
 
-    @ColumnInfo(name = "full_mobile_number")
-    var fullMobileNumber: String? = null,
+    @ColumnInfo(name = "phone_number")
+    var phoneNumber: String? = null,
 
     @ColumnInfo(name = "farm_name")
     var farmName: String = "",
