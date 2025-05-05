@@ -20,7 +20,6 @@ import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.interfaces.IRecommendationCallBack
 import com.akilimo.mobile.mappers.ComputedResponse
-import com.akilimo.mobile.rest.request.RecommendationRequest
 import com.akilimo.mobile.rest.response.RecommendationResponse
 import com.akilimo.mobile.utils.BuildComputeData
 import com.akilimo.mobile.views.fragments.dialog.RecommendationChannelDialog
@@ -41,7 +40,8 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
     private val binding get() = _binding!!
 
     var activity: Activity? = null
-    var recData: RecommendationRequest? = null
+
+    //var recData: RecommendationRequest? = null
     var recAdapter: RecommendationAdapter? = null
     var recList: List<ComputedResponse>? = null
     var userProfile: UserProfile? = null
@@ -94,19 +94,13 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
         }
 
 //        displayDialog(userProfile)
-        buildRecommendationData()
+        loadingAndDisplayContent()
     }
 
     override fun initComponent() {}
     override fun initToolbar() {
     }
 
-
-    private fun buildRecommendationData() {
-        val buildComputeData = BuildComputeData(this@DstRecommendationActivity)
-        recData = buildComputeData.buildRecommendationReq()
-        loadingAndDisplayContent()
-    }
 
 
     override fun validate(backPressed: Boolean) {
@@ -134,7 +128,7 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
     override fun onDataReceived(userProfile: UserProfile) {
         val database = getDatabase(this@DstRecommendationActivity)
         database.profileInfoDao().update(userProfile)
-        buildRecommendationData()
+        loadingAndDisplayContent()
     }
 
     override fun onDismiss() {
@@ -148,6 +142,9 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
         recyclerView!!.visibility = View.GONE
         errorLabel!!.visibility = View.GONE
         errorImage!!.visibility = View.GONE
+
+        val buildComputeData = BuildComputeData(this@DstRecommendationActivity)
+        val recData = buildComputeData.buildRecommendationReq()
 
         val call = AkilimoApi.apiService.computeRecommendations(recData)
         call.enqueue(object : retrofit2.Callback<RecommendationResponse> {
