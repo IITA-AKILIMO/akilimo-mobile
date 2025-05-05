@@ -44,7 +44,6 @@ android {
         }
         debug {
             resValue("string", "PORT_NUMBER", "9085")
-            versionNameSuffix "-dev"
             enableUnitTestCoverage true
             enableAndroidTestCoverage true
             //  pseudoLocalesEnabled true
