@@ -24,7 +24,7 @@ data class CropPerformance(
     var maizePerformance: String = "",
 
     @ColumnInfo(name = "performance_value")
-    var performanceValue: String? = null,
+    var performanceValue: String = "3",
 
     @ColumnInfo(name = "maize_performance_desc")
     var maizePerformanceDesc: String? = null,

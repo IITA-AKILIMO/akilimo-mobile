@@ -16,7 +16,7 @@ data class PotatoMarket(
     var unitPrice: Double = 0.0,
 
     @ColumnInfo(name = "unit_weight")
-    var unitWeight: Int = 0,
+    var unitWeight: Double = 0.0,
 
     @ColumnInfo(name = "produce_type")
     var produceType: String = EnumPotatoProduceType.TUBERS.produce(),
