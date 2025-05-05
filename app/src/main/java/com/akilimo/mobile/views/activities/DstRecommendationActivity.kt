@@ -63,21 +63,11 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
         binding.singleButton.apply {
             btnAction.setText(R.string.lbl_provide_feedback)
         }
-        initToolbar()
-        initComponent()
-    }
 
-    override fun initToolbar() {
-        toolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.title = getString(R.string.lbl_recommendations)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        toolbar!!.setNavigationOnClickListener { v: View? ->
+        setupToolbar(binding.toolbarLayout.toolbar, R.string.lbl_recommendations) {
             closeActivity(false)
         }
-    }
 
-    override fun initComponent() {
         recyclerView!!.visibility = View.GONE
         recyclerView!!.layoutManager = LinearLayoutManager(this@DstRecommendationActivity)
         recyclerView!!.setHasFixedSize(true)
@@ -103,7 +93,12 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
             startActivityForResult(surveyIntent, MySurveyActivity.REQUEST_CODE)
         }
 
-        displayDialog(userProfile)
+//        displayDialog(userProfile)
+        buildRecommendationData()
+    }
+
+    override fun initComponent() {}
+    override fun initToolbar() {
     }
 
 
