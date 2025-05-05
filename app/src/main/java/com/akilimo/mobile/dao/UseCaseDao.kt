@@ -21,6 +21,9 @@ interface UseCaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(useCases: UseCase)
 
+    @Query("SELECT DISTINCT use_case_name FROM use_cases")
+    fun getAllUseCases(): MutableList<String>
+
     @Update
     fun update(useCase: UseCase)
 
