@@ -68,7 +68,7 @@ class MySurveyActivity : BaseActivity() {
                 akilimoRecRating = akilimoRecRating,
                 akilimoUsefulRating = akilimoUsefulRating,
                 language = profileInfo?.language!!,
-                deviceToken = profileInfo.deviceToken!!
+                deviceToken = sessionManager.getDeviceToken()
             )
 
             submitUserReview(surveyRequest = surveyRequest)
