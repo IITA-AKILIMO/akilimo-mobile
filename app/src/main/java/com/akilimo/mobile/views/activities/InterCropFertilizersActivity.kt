@@ -134,7 +134,7 @@ class InterCropFertilizersActivity : BaseActivity() {
         mAdapter!!.setOnItemClickListener(object : FertilizerGridAdapter.OnItemClickListener {
             override fun onItemClick(view: View, clickedFertilizer: Fertilizer, position: Int) {
                 mAdapter!!.setActiveRowIndex(position)
-                var selectedType = database.fertilizerDao().findByTypeCountryAndUseCase(
+                var selectedType = database.fertilizerDao().findOneByTypeCountryAndUseCase(
                     clickedFertilizer.fertilizerType!!, countryCode, useCase
                 )
                 if (selectedType == null) {
@@ -206,8 +206,8 @@ class InterCropFertilizersActivity : BaseActivity() {
 
     override fun validate(backPressed: Boolean) {
         if (mAdapter != null) {
-            availableFertilizersList = database.fertilizerDao()
-                .findAllByCountryAndUseCase(countryCode, useCase)
+            availableFertilizersList =
+                database.fertilizerDao().findAllByCountryAndUseCase(countryCode, useCase)
             mAdapter!!.setItems(availableFertilizersList)
         }
     }
