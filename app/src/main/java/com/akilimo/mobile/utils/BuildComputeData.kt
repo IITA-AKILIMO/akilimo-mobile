@@ -44,13 +44,23 @@ class BuildComputeData(val context: Context) {
 
         val countryCode = computeRequest.countryCode.toString()
         val fertilizerDao = database.fertilizerDao()
+        val useCases = database.useCaseDao().getAllUseCases()
         val fertilizerList =
-            if (computeRequest.interCroppingPotatoRec || computeRequest.interCroppingMaizeRec) {
-                val useCases = database.useCaseDao().getAllUseCases()
-                fertilizerDao.findAllSelectedByCountryAndUseCases(countryCode, useCases)
-        } else {
-                fertilizerDao.findAllSelectedByCountry(countryCode)
-        }
+            when {
+                computeRequest.interCroppingPotatoRec -> {
+                    fertilizerDao.findAllSelectedByCountryAndUseCases(countryCode, useCases)
+                    computeRequest.interCroppedCrop = "sweetpotato"
+                }
+
+                computeRequest.interCroppingMaizeRec -> {
+                    fertilizerDao.findAllSelectedByCountryAndUseCases(countryCode, useCases)
+                    computeRequest.interCroppedCrop = "maize"
+                }
+
+                else -> {
+                    fertilizerDao.findAllSelectedByCountry(countryCode)
+                }
+            }
 
         val result: List<FertilizerRequest> = modelMapper.map(
             fertilizerList,
@@ -76,7 +86,8 @@ class BuildComputeData(val context: Context) {
                 lastName = profile.lastName.orIfBlank(DEFAULT_USERNAME)
                 userName = profile.names().orIfBlank(DEFAULT_USERNAME)
                 gender = profile.gender.orIfBlank(DEFAULT_UNAVAILABLE)
-                fieldDescription = profile.farmName.orIfBlank(DEFAULT_UNAVAILABLE)
+                farmName = profile.farmName.orIfBlank(DEFAULT_UNAVAILABLE)
+                emailAddress = profile.email.orIfBlank(DEFAULT_UNAVAILABLE)
                 phoneNumber = profile.phoneNumber.orIfBlank(DEFAULT_UNAVAILABLE)
                 sendSms = profile.sendSms
                 sendEmail = profile.sendEmail
@@ -202,6 +213,7 @@ class BuildComputeData(val context: Context) {
         database.maizePerformanceDao().findOne()?.let { maizePerformance ->
             computeRequest.apply {
                 currentMaizePerformance = maizePerformance.performanceValue
+                interCroppedCrop = "maize"
             }
         }
 
