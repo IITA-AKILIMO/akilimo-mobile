@@ -26,13 +26,10 @@ class ComputeRequest {
     var fieldSize: Double = 0.0
 
     @JsonProperty("area_unit")
-    var areaUnit: String? = null
+    var areaUnit: String = "acre"
 
-    @JsonProperty("inter_cropping_type")
-    var interCroppingType: String? = null
-
-    @JsonProperty("inter_crop")
-    var interCrop: Boolean = false
+    @JsonProperty("inter_cropped_crop")
+    var interCroppedCrop: String = "NA"
 
     @JsonProperty("inter_cropping_maize_rec")
     var interCroppingMaizeRec: Boolean = false
