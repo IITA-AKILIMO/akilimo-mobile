@@ -42,7 +42,7 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
     var activity: Activity? = null
 
     var recAdapter: RecommendationAdapter? = null
-    var responseList: List<ComputedResponse>? = null
+    var responseList: List<ComputedResponse> = emptyList()
     var userProfile: UserProfile? = null
     var recommendationChannelDialog: RecommendationChannelDialog? = null
 
@@ -101,7 +101,6 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
     }
 
 
-
     override fun validate(backPressed: Boolean) {
         throw UnsupportedOperationException()
     }
@@ -154,10 +153,12 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
                 if (response.isSuccessful) {
                     val recommendationResp = response.body()!!
                     lyt_progress!!.visibility = View.GONE
-                    recAdapter!!.setData(responseList!!)
-                    recyclerView!!.adapter = recAdapter
+                    if (!responseList.isEmpty()) {
+                        recAdapter!!.setData(responseList)
+                        recyclerView!!.adapter = recAdapter
+                        responseList = initializeData(recommendationResp)
+                    }
                     recyclerView!!.visibility = View.VISIBLE
-                    responseList = initializeData(recommendationResp)
                 } else {
                     binding.apply {
                         lytProgress.visibility = View.GONE
