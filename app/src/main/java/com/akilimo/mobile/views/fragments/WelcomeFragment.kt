@@ -70,7 +70,7 @@ class WelcomeFragment : BaseStepFragment() {
             ) {
                 if (languagePicked) {
                     applyLanguageChange(position)
-                    showRestartSnackbar()
+                    showRestartSnackBar()
                     populateLanguages()
                 }
                 languagePicked = false
@@ -112,7 +112,7 @@ class WelcomeFragment : BaseStepFragment() {
         }
     }
 
-    private fun showRestartSnackbar() {
+    private fun showRestartSnackBar() {
         Snackbar.make(
             binding.lytParent,
             getString(R.string.lbl_restart_app_prompt),
