@@ -32,6 +32,8 @@ class SweetPotatoPriceDialogFragment : DialogFragment() {
     private var countryCode: String? = null
     private var currencyCode: String? = null
     private var unitOfSale: String? = null
+
+    @Deprecated("Use unitOfSale instead")
     private var enumUnitOfSale: EnumUnitOfSale? = null
 
     private var onDismissListener: IPriceDialogDismissListener? = null
@@ -63,13 +65,15 @@ class SweetPotatoPriceDialogFragment : DialogFragment() {
         _binding = FragmentCassavaPriceDialogBinding.inflate(layoutInflater)
 
         dialog.apply {
-            window!!.requestFeature(Window.FEATURE_NO_TITLE)
-            window!!.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-            )
-            window!!.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-            window!!.attributes.windowAnimations = R.style.DialogSlideAnimation
+            window?.let { wd ->
+                wd.requestFeature(Window.FEATURE_NO_TITLE)
+                wd.setFlags(
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                )
+                wd.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+                wd.attributes.windowAnimations = R.style.DialogSlideAnimation
+            }
 
             setContentView(binding.root)
             setCancelable(true)
