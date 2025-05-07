@@ -1,6 +1,5 @@
 package com.akilimo.mobile.utils
 
-
 import io.sentry.Sentry
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDate
@@ -15,11 +14,10 @@ import java.util.Locale
 
 object DateHelper {
 
-    var format: String = "dd/MM/yyyy"
+    // Make format immutable to avoid accidental changes
+    private const val DEFAULT_FORMAT = "dd/MM/yyyy"
 
-    val simpleDateFormatter: SimpleDateFormat
-        get() = SimpleDateFormat(format, Locale.getDefault())
-
+    val simpleDateFormatter: SimpleDateFormat = SimpleDateFormat(DEFAULT_FORMAT, Locale.ENGLISH)
 
     fun getMaxDate(maxMonths: Int): Calendar = getAdjustedCalendar(maxMonths)
 
@@ -37,13 +35,21 @@ object DateHelper {
         return calendar
     }
 
-
-    fun formatToLocalDate(dateString: String?, dateFormat: String): LocalDate {
-        val pattern = DateTimeFormatter.ofPattern(dateFormat)
-        return LocalDate.parse(dateString, pattern)
+    fun formatToLocalDate(dateString: String?, dateFormat: String = DEFAULT_FORMAT): LocalDate? {
+        return if (dateString.isNullOrEmpty()) {
+            null
+        } else {
+            try {
+                val pattern = DateTimeFormatter.ofPattern(dateFormat)
+                LocalDate.parse(dateString, pattern)
+            } catch (e: Exception) {
+                Sentry.captureException(e)
+                null
+            }
+        }
     }
 
-    fun unixTimeStampToDate(unixTimestamp: Long, timeZone: ZoneId?): LocalDateTime {
+    fun unixTimeStampToDate(unixTimestamp: Long, timeZone: ZoneId? = null): LocalDateTime {
         return try {
             Instant.ofEpochMilli(unixTimestamp).atZone(timeZone ?: ZoneId.systemDefault())
                 .toLocalDateTime()
@@ -53,12 +59,13 @@ object DateHelper {
         }
     }
 
-    fun olderThanCurrent(dateOne: String?, dateFormat: String = "dd/MM/yyyy"): Boolean {
+    fun olderThanCurrent(dateOne: String?, dateFormat: String = DEFAULT_FORMAT): Boolean {
         val currentDate = LocalDate.now()
         val d1 = formatToLocalDate(dateOne, dateFormat)
-        return d1.isBefore(currentDate)
+        return d1?.isBefore(currentDate) == true
     }
 
+    // This function parses a date string using the default format or a custom format and returns a Date object.
     private fun parseDate(dateString: String?): Date? {
         return try {
             dateString?.let { simpleDateFormatter.parse(it) }
@@ -68,13 +75,14 @@ object DateHelper {
         }
     }
 
+    // This method formats the given Date object into a human-readable string.
     private fun formatCalendarToDateString(dateTime: Date): String {
         val newFormat = SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH)
         return newFormat.format(dateTime)
     }
 
+    // This method formats the given long timestamp into a human-readable date string.
     fun formatLongToDateString(dateTime: Long): String {
         return formatCalendarToDateString(Date(dateTime))
     }
-
 }
