@@ -109,7 +109,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected fun openActivity(intent: Intent?) {
         intent?.let {
-            startActivity(intent)
+            startActivity(it)
             Animatoo.animateSlideRight(this@BaseActivity)
         }
     }
