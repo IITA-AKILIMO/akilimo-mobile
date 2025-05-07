@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.akilimo.mobile.entities.Fertilizer
-import com.akilimo.mobile.entities.InterCropFertilizer
 
 @Dao
 interface FertilizerDao {
@@ -22,7 +21,7 @@ interface FertilizerDao {
     fun findByType(fertilizerType: String?): Fertilizer?
 
     @Query("select * FROM fertilizers where type=:fertilizerType and country_code=:countryCode limit 1")
-    fun findOneByTypeAndCountry(fertilizerType: String?, countryCode: String): Fertilizer?
+    fun findOneByTypeAndCountry(fertilizerType: String, countryCode: String): Fertilizer?
 
     @Query("SELECT * FROM fertilizers where country_code=:countryCode and selected=1")
     fun findAllSelectedByCountry(countryCode: String): MutableList<Fertilizer>
@@ -35,7 +34,7 @@ interface FertilizerDao {
     fun findAllByCountryAndUseCase(
         countryCode: String,
         useCase: String
-    ): List<Fertilizer>
+    ): MutableList<Fertilizer>
 
     @Query("SELECT * FROM fertilizers where country_code=:countryCode and use_case=:useCase and selected=1")
     fun findAllSelectedByCountryAndUseCase(
@@ -43,8 +42,14 @@ interface FertilizerDao {
         useCase: String
     ): List<Fertilizer>
 
+    @Query("SELECT * FROM fertilizers WHERE country_code = :countryCode AND use_case IN (:useCases) AND selected = 1")
+    fun findAllSelectedByCountryAndUseCases(
+        countryCode: String,
+        useCases: List<String>
+    ): List<Fertilizer>
+
     @Query("SELECT * FROM fertilizers where type=:fertilizerType and country_code=:countryCode and use_case=:useCase")
-    fun findByTypeCountryAndUseCase(
+    fun findOneByTypeCountryAndUseCase(
         fertilizerType: String,
         countryCode: String,
         useCase: String

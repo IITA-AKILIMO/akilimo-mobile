@@ -17,7 +17,7 @@ enum class EnumCountry : Parcelable {
             return "NG"
         }
 
-        override fun currency(): String {
+        override fun currencyCode(): String {
             return "NGN"
         }
 
@@ -34,7 +34,7 @@ enum class EnumCountry : Parcelable {
             return "TZ"
         }
 
-        override fun currency(): String {
+        override fun currencyCode(): String {
             return "TZS"
         }
 
@@ -51,7 +51,7 @@ enum class EnumCountry : Parcelable {
             return "KE"
         }
 
-        override fun currency(): String {
+        override fun currencyCode(): String {
             return "KES"
         }
 
@@ -68,7 +68,7 @@ enum class EnumCountry : Parcelable {
             return "GH"
         }
 
-        override fun currency(): String {
+        override fun currencyCode(): String {
             return "GHS"
         }
 
@@ -85,7 +85,7 @@ enum class EnumCountry : Parcelable {
             return "RW"
         }
 
-        override fun currency(): String {
+        override fun currencyCode(): String {
             return "RWF"
         }
 
@@ -102,7 +102,7 @@ enum class EnumCountry : Parcelable {
             return "BI"
         }
 
-        override fun currency(): String {
+        override fun currencyCode(): String {
             return "BIF"
         }
 
@@ -119,7 +119,7 @@ enum class EnumCountry : Parcelable {
             return "US"
         }
 
-        override fun currency(): String {
+        override fun currencyCode(): String {
             return "USD"
         }
 
@@ -130,6 +130,6 @@ enum class EnumCountry : Parcelable {
 
     abstract fun countryCode(): String
     abstract fun countryName(): String
-    abstract fun currency(): String
+    abstract fun currencyCode(): String
     abstract fun currencyName(context: Context): @NotNull String
 }

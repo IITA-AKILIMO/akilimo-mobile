@@ -1,7 +1,10 @@
 package com.akilimo.mobile.rest.retrofit
 
+import com.fasterxml.jackson.databind.MapperFeature
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
+import com.fasterxml.jackson.databind.json.JsonMapper
+import com.fasterxml.jackson.module.kotlin.kotlinModule
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -20,10 +23,16 @@ object RetroFitFactory {
 
         val client = builder.build()
 
+        val objectMapper = JsonMapper.builder()
+            .addModule(kotlinModule()) // Enable Kotlin class support
+            .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+            .disable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY) // Keep declared field order
+            .build()
+
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .client(client)
-            .addConverterFactory(JacksonConverterFactory.create())
+            .addConverterFactory(JacksonConverterFactory.create(objectMapper))
             .build()
 
     }

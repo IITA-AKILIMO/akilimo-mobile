@@ -19,10 +19,10 @@ class InvestmentPrefFragment : BaseStepFragment() {
     private val binding get() = _binding!!
 
     private var userProfile: UserProfile? = null
-    private var riskName: String? = null
-    private var riskAtt = 0
-    private var riskRadioIndex = -1
-    private var investmentPreference: Array<String>? = null
+    private var myRiskName: String = ""
+    private var myRiskAtt = 0
+    private var myRiskRadioIndex = -1
+    private var investmentPreference: Array<String> = arrayOf()
     private var rememberInvestmentPref = false
 
     companion object {
@@ -39,9 +39,7 @@ class InvestmentPrefFragment : BaseStepFragment() {
     }
 
     override fun loadFragmentLayout(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentInvestmentPrefBinding.inflate(inflater, container, false)
         return binding.root
@@ -50,16 +48,16 @@ class InvestmentPrefFragment : BaseStepFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        addRiskRadioButtons(investmentPreference!!)
+        addRiskRadioButtons(investmentPreference)
 
         binding.apply {
             rdgRiskGroup.setOnCheckedChangeListener { radioGroup, _ ->
                 val radioButton = root.findViewById<RadioButton>(radioGroup.checkedRadioButtonId)
                     ?: return@setOnCheckedChangeListener
                 val itemTagIndex = radioButton.tag as Int
-                riskAtt = itemTagIndex.coerceIn(0, 2)
-                riskName = investmentPreference!![riskAtt]
-                updateInvestmentPref(riskAtt, radioButton.id)
+                myRiskAtt = itemTagIndex.coerceIn(0, 2)
+                myRiskName = investmentPreference[myRiskAtt]
+                updateInvestmentPref(myRiskAtt, radioButton.id)
             }
 
             chkRememberDetails.setOnCheckedChangeListener { _, rememberInfo ->
@@ -97,7 +95,7 @@ class InvestmentPrefFragment : BaseStepFragment() {
     }
 
     override fun verifyStep(): VerificationError? =
-        if (riskName?.isEmpty() != false) VerificationError("Please select an option") else null
+        if (myRiskName.isEmpty() != false) VerificationError("Please select an option") else null
 
     override fun onSelected() {
         refreshData()
@@ -109,12 +107,12 @@ class InvestmentPrefFragment : BaseStepFragment() {
 
     private fun refreshData() {
         try {
-            userProfile = database.profileInfoDao().findOne()
+            val userProfile = database.profileInfoDao().findOne()
             userProfile?.let {
-                riskAtt = it.riskAtt
-                riskRadioIndex = it.selectedRiskIndex
-                binding.rdgRiskGroup.check(riskRadioIndex)
-                riskName = investmentPreference!![riskAtt]
+                myRiskAtt = it.riskAtt
+                myRiskRadioIndex = it.selectedRiskIndex
+                binding.rdgRiskGroup.check(myRiskRadioIndex)
+                myRiskName = investmentPreference[myRiskAtt]
             }
         } catch (ex: Exception) {
             Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()

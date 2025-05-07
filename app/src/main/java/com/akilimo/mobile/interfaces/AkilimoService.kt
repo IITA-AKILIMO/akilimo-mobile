@@ -46,8 +46,8 @@ interface AkilimoService {
     @POST("v1/user-reviews")
     fun submitUserReview(@Body surveyRequest: SurveyRequest): Call<ResponseBody>
 
-    @POST("v1/recommendations")
-    fun computeRecommendations(@Body recommendationRequest: RecommendationRequest?): Call<RecommendationResponse>
+    @POST("v1/recommendations/compute")
+    fun computeRecommendations(@Body recommendationRequest: RecommendationRequest): Call<RecommendationResponse>
 
     @GET("v1/operation-costs/country/{country_code}")
     fun getOperationCosts(

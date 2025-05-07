@@ -20,7 +20,6 @@ import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.interfaces.IRecommendationCallBack
 import com.akilimo.mobile.mappers.ComputedResponse
-import com.akilimo.mobile.rest.request.RecommendationRequest
 import com.akilimo.mobile.rest.response.RecommendationResponse
 import com.akilimo.mobile.utils.BuildComputeData
 import com.akilimo.mobile.views.fragments.dialog.RecommendationChannelDialog
@@ -41,9 +40,9 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
     private val binding get() = _binding!!
 
     var activity: Activity? = null
-    var recData: RecommendationRequest? = null
+
     var recAdapter: RecommendationAdapter? = null
-    var recList: List<ComputedResponse>? = null
+    var responseList: List<ComputedResponse> = emptyList()
     var userProfile: UserProfile? = null
     var recommendationChannelDialog: RecommendationChannelDialog? = null
 
@@ -63,21 +62,11 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
         binding.singleButton.apply {
             btnAction.setText(R.string.lbl_provide_feedback)
         }
-        initToolbar()
-        initComponent()
-    }
 
-    override fun initToolbar() {
-        toolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.title = getString(R.string.lbl_recommendations)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        toolbar!!.setNavigationOnClickListener { v: View? ->
+        setupToolbar(binding.toolbarLayout.toolbar, R.string.lbl_recommendations) {
             closeActivity(false)
         }
-    }
 
-    override fun initComponent() {
         recyclerView!!.visibility = View.GONE
         recyclerView!!.layoutManager = LinearLayoutManager(this@DstRecommendationActivity)
         recyclerView!!.setHasFixedSize(true)
@@ -103,14 +92,12 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
             startActivityForResult(surveyIntent, MySurveyActivity.REQUEST_CODE)
         }
 
-        displayDialog(userProfile)
+//        displayDialog(userProfile)
+        loadingAndDisplayContent()
     }
 
-
-    private fun buildRecommendationData() {
-        val buildComputeData = BuildComputeData(this@DstRecommendationActivity)
-        recData = buildComputeData.buildRecommendationReq()
-        loadingAndDisplayContent()
+    override fun initComponent() {}
+    override fun initToolbar() {
     }
 
 
@@ -139,7 +126,7 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
     override fun onDataReceived(userProfile: UserProfile) {
         val database = getDatabase(this@DstRecommendationActivity)
         database.profileInfoDao().update(userProfile)
-        buildRecommendationData()
+        loadingAndDisplayContent()
     }
 
     override fun onDismiss() {
@@ -154,6 +141,9 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
         errorLabel!!.visibility = View.GONE
         errorImage!!.visibility = View.GONE
 
+        val buildComputeData = BuildComputeData(this@DstRecommendationActivity)
+        val recData = buildComputeData.buildRecommendationReq()
+
         val call = AkilimoApi.apiService.computeRecommendations(recData)
         call.enqueue(object : retrofit2.Callback<RecommendationResponse> {
             override fun onResponse(
@@ -163,10 +153,12 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
                 if (response.isSuccessful) {
                     val recommendationResp = response.body()!!
                     lyt_progress!!.visibility = View.GONE
-                    recAdapter!!.setData(recList!!)
-                    recyclerView!!.adapter = recAdapter
+                    if (!responseList.isEmpty()) {
+                        recAdapter!!.setData(responseList)
+                        recyclerView!!.adapter = recAdapter
+                        responseList = initializeData(recommendationResp)
+                    }
                     recyclerView!!.visibility = View.VISIBLE
-                    recList = initializeData(recommendationResp)
                 } else {
                     binding.apply {
                         lytProgress.visibility = View.GONE

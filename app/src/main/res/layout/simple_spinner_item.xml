@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@android:id/text1"
+    android:id="@+id/spinnerText"
     android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
-    android:ellipsize="marquee"
-    android:gravity="center_vertical"
-    android:singleLine="true"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/spacing_medium"
     android:text="@string/app_name"
-
-    android:textAlignment="inherit"
-    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+    android:textColor="@android:color/black"
+    android:textSize="@dimen/font_size_16" />

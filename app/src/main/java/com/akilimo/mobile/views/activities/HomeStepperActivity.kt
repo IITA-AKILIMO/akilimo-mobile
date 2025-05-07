@@ -78,7 +78,47 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         inAppUpdate.checkForUpdates()
         loadConfig()
         createFragmentArray()
-        initComponent()
+
+        stepperAdapter =
+            MyStepperAdapter(supportFragmentManager, this@HomeStepperActivity, fragmentArray)
+        mStepperLayout.adapter = stepperAdapter
+
+        mStepperLayout.setListener(object : StepperListener {
+            override fun onCompleted(completeButton: View?) {
+                val intent = Intent(this@HomeStepperActivity, RecommendationsActivity::class.java)
+                openActivity(intent)
+            }
+
+            override fun onError(verificationError: VerificationError) {
+                showCustomWarningDialog(
+                    getString(R.string.empty_text), verificationError.errorMessage
+                )
+            }
+
+            override fun onStepSelected(newStepPosition: Int) {
+                //not implemented
+            }
+
+            override fun onReturn() {
+                finish()
+            }
+        })
+
+        val rationale: String = getString(R.string.lbl_permission_rationale)
+
+        checkAppPermissions(rationale)
+    }
+
+    override fun validate(backPressed: Boolean) {
+        throw UnsupportedOperationException()
+    }
+
+    override fun initToolbar() {
+        throw UnsupportedOperationException()
+    }
+
+    override fun initComponent() {
+        throw UnsupportedOperationException()
     }
 
     private fun loadConfig() {
@@ -153,44 +193,6 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         fragmentArray.add(SummaryFragment.newInstance())
     }
 
-    override fun initComponent() {
-        stepperAdapter =
-            MyStepperAdapter(supportFragmentManager, this@HomeStepperActivity, fragmentArray)
-        mStepperLayout.adapter = stepperAdapter
-
-        mStepperLayout.setListener(object : StepperListener {
-            override fun onCompleted(completeButton: View?) {
-                val intent = Intent(this@HomeStepperActivity, RecommendationsActivity::class.java)
-                openActivity(intent)
-            }
-
-            override fun onError(verificationError: VerificationError) {
-                showCustomWarningDialog(
-                    getString(R.string.empty_text), verificationError.errorMessage
-                )
-            }
-
-            override fun onStepSelected(newStepPosition: Int) {
-                //not implemented
-            }
-
-            override fun onReturn() {
-                finish()
-            }
-        })
-
-        val rationale: String = getString(R.string.lbl_permission_rationale)
-
-        checkAppPermissions(rationale)
-    }
-
-    override fun validate(backPressed: Boolean) {
-        throw UnsupportedOperationException()
-    }
-
-    override fun initToolbar() {
-        throw UnsupportedOperationException()
-    }
 
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

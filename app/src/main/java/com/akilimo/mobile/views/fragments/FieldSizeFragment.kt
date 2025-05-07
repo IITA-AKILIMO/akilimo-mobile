@@ -21,6 +21,7 @@ import com.akilimo.mobile.entities.UserProfile
 import com.akilimo.mobile.inherit.BaseStepFragment
 import com.akilimo.mobile.utils.enums.EnumFieldArea
 import com.stepstone.stepper.VerificationError
+import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository
 import io.sentry.Sentry
 
 
@@ -30,6 +31,11 @@ import io.sentry.Sentry
  * create an instance of this fragment.
  */
 class FieldSizeFragment : BaseStepFragment() {
+
+    private val prefs: SharedPrefsAppLocaleRepository by lazy {
+        SharedPrefsAppLocaleRepository(requireContext())
+    }
+
     private var _binding: FragmentFieldSizeBinding? = null
     private val binding get() = _binding!!
 
@@ -51,7 +57,6 @@ class FieldSizeFragment : BaseStepFragment() {
     private var areaUnitChanged = false
     private var titleMessage: String? = null
     private var areaUnit: String? = ""
-    private var displayLanguage: String? = ""
     private var displayAreaUnit: String? = ""
     private var oldAreaUnit: String? = ""
     private var fieldSizeRadioIndex = 0
@@ -98,10 +103,6 @@ class FieldSizeFragment : BaseStepFragment() {
 
     private fun refreshData() {
         try {
-            userProfile = database.profileInfoDao().findOne()
-            if (userProfile != null) {
-                displayLanguage = userProfile!!.language
-            }
             mandatoryInfo = database.mandatoryInfoDao().findOne()
             if (mandatoryInfo != null) {
                 isExactArea = mandatoryInfo!!.exactArea
@@ -134,6 +135,7 @@ class FieldSizeFragment : BaseStepFragment() {
     }
 
     private fun setExactAreaText(areaSize: Double, displayUnit: String) {
+        val displayLanguage = prefs.desiredLocale?.language.let { "en" }
         val fieldSize = mathHelper.removeLeadingZero(areaSize)
         var areaUnitLabel = String.format("%s %s", fieldSize, displayUnit)
         if (displayLanguage.equals("sw", ignoreCase = true)) {

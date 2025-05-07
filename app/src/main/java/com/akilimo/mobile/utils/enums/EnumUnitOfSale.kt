@@ -8,8 +8,8 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 enum class EnumUnitOfSale : Parcelable {
     NA {
-        override fun unitWeight(): Int {
-            return 0
+        override fun unitWeight(): Double {
+            return 0.0
         }
 
         override fun unitOfSale(context: Context): String {
@@ -21,8 +21,8 @@ enum class EnumUnitOfSale : Parcelable {
         }
     },
     FRESH_COB {
-        override fun unitWeight(): Int {
-            return 1000
+        override fun unitWeight(): Double {
+            return 1000.0
         }
 
         override fun unitOfSale(context: Context): String {
@@ -34,8 +34,8 @@ enum class EnumUnitOfSale : Parcelable {
         }
     },
     ONE_KG {
-        override fun unitWeight(): Int {
-            return 1
+        override fun unitWeight(): Double {
+            return 1.0
         }
 
         override fun unitOfSale(context: Context): String {
@@ -47,8 +47,8 @@ enum class EnumUnitOfSale : Parcelable {
         }
     },
     FIFTY_KG {
-        override fun unitWeight(): Int {
-            return 50
+        override fun unitWeight(): Double {
+            return 50.0
         }
 
         override fun unitOfSale(context: Context): String {
@@ -60,8 +60,8 @@ enum class EnumUnitOfSale : Parcelable {
         }
     },
     HUNDRED_KG {
-        override fun unitWeight(): Int {
-            return 100
+        override fun unitWeight(): Double {
+            return 100.0
         }
 
         override fun unitOfSale(context: Context): String {
@@ -73,8 +73,8 @@ enum class EnumUnitOfSale : Parcelable {
         }
     },
     TONNE {
-        override fun unitWeight(): Int {
-            return 1000
+        override fun unitWeight(): Double {
+            return 1000.0
         }
 
         override fun unitOfSale(context: Context): String {
@@ -86,7 +86,7 @@ enum class EnumUnitOfSale : Parcelable {
         }
     };
 
-    abstract fun unitWeight(): Int
+    abstract fun unitWeight(): Double
     abstract fun unitOfSale(context: Context): String
     abstract fun unitOfSaleText(context: Context): String
 }

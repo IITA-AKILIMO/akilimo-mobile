@@ -206,7 +206,7 @@ class RecommendationsActivity : BaseActivity() {
             }
 
             if (intent != null) {
-                val useCase = database.useCaseDao().findOne().let { UseCase() }
+                val useCase = database.useCaseDao().findOne() ?: UseCase()
                 useCase.useCaseName = advice.name
                 database.useCaseDao().insertAll(useCase)
                 openActivity(intent)

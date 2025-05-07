@@ -122,7 +122,7 @@ class RecommendationChannelDialog(
         }
         val userProfile = database.profileInfoDao().findOne()
         if (userProfile != null) {
-            fullMobileNumber = userProfile.fullMobileNumber
+            fullMobileNumber = userProfile.phoneNumber
             email = userProfile.email
             sendEmail = userProfile.sendEmail
             sendSms = userProfile.sendSms

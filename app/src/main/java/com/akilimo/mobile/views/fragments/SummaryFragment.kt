@@ -1,6 +1,5 @@
 package com.akilimo.mobile.views.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,94 +9,59 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.MyTimeLineAdapter
 import com.akilimo.mobile.databinding.FragmentSummaryBinding
-import com.akilimo.mobile.entities.CropSchedule
 import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.entities.MandatoryInfo
 import com.akilimo.mobile.entities.UserLocation
-import com.akilimo.mobile.entities.UserProfile
 import com.akilimo.mobile.inherit.BaseStepFragment
 import com.akilimo.mobile.models.TimeLineModel
 import com.akilimo.mobile.models.TimelineAttributes
 import com.akilimo.mobile.utils.TheItemAnimation
-import com.akilimo.mobile.utils.enums.EnumCountry
 import com.akilimo.mobile.utils.enums.EnumInvestmentPref
 import com.akilimo.mobile.utils.enums.StepStatus
 import com.github.vipulasri.timelineview.TimelineView
 import com.stepstone.stepper.VerificationError
 
-
-/**
- * A simple [Fragment] subclass.
- * Use the [SummaryFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SummaryFragment : BaseStepFragment() {
     private var _binding: FragmentSummaryBinding? = null
     private val binding get() = _binding!!
 
     private var mDataList: MutableList<TimeLineModel> = ArrayList()
     private var mAttributes: TimelineAttributes? = null
-    private var location: UserLocation? = null
-    private var mandatoryInfo: MandatoryInfo? = null
-    private var currentPractice: CurrentPractice? = null
-    private var cropSchedule: CropSchedule? = null
-    private var userProfile: UserProfile? = null
 
-    private var adapter: MyTimeLineAdapter? = null
+    private var myAdapter: MyTimeLineAdapter? = null
 
-
-    private var countrySelected = false
-    private var areaUnitSelected = false
-    private var fieldSizeSelected = false
-    private var locationPicked = false
-    private var plantingDateProvided = false
-    private var harvestDateProvided = false
-    private var currentPracticeSelected = false
-    private var performPloughing = false
-    private var performRidging = false
+//    private var countrySelected = false
+//    private var areaUnitSelected = false
+//    private var fieldSizeSelected = false
+//    private var locationPicked = false
+//    private var plantingDateProvided = false
+//    private var harvestDateProvided = false
+//    private var currentPracticeSelected = false
+//    private var performPloughing = false
+//    private var performRidging = false
 
     private var areaUnit: String? = ""
     private var fieldSize = 0.0
+    private var lat = 0.0
+    private var lon = 0.0
     private var pickedLocation = ""
-    private var risks: Array<String>? = null
 
     companion object {
-        fun newInstance(): SummaryFragment {
-            return SummaryFragment()
-        }
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        risks = arrayOf(
-            EnumInvestmentPref.Rarely.prefName(context),
-            EnumInvestmentPref.Sometimes.prefName(context),
-            EnumInvestmentPref.Often.prefName(context)
-        )
+        fun newInstance(): SummaryFragment = SummaryFragment()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mAttributes = TimelineAttributes(
-            48,
-            ContextCompat.getColor(requireContext(), R.color.akilimoLightGreen),
-            ContextCompat.getColor(
-                requireContext(), R.color.red_A400
+            markerSize = 48,
+            markerCompleteColor = ContextCompat.getColor(
+                requireContext(),
+                R.color.akilimoLightGreen
             ),
-            true,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            ContextCompat.getColor(requireContext(), R.color.colorAccent),
-            ContextCompat.getColor(
-                requireContext(), R.color.colorAccent
-            ),
-            TimelineView.LineStyle.DASHED,
-            4,
-            2
+            markerIncompleteColor = ContextCompat.getColor(requireContext(), R.color.red_A400),
+            startLineColor = ContextCompat.getColor(requireContext(), R.color.colorAccent),
+            endLineColor = ContextCompat.getColor(requireContext(), R.color.colorAccent),
+            lineStyle = TimelineView.LineStyle.DASHED
         )
     }
 
@@ -113,198 +77,141 @@ class SummaryFragment : BaseStepFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
+        setDataListItems()
     }
 
     private fun setDataListItems() {
-        var plantingDate: String? = ""
-        var harvestDate: String? = ""
-        var fieldInfo = ""
-        val fieldName = ""
-        var summaryTitle: String? = requireContext().getString(R.string.lbl_summary_title)
-        var riskAttitude = 0
-        var riskAttitudeName = ""
-        var lat = 0.0
-        var lon = 0.0
-        val ploughStr = StringBuilder()
-        val ridgeStr = StringBuilder()
-        val stepStatus = StepStatus.WARNING
+        val location = database.locationInfoDao().findOne()
+        val mandatoryInfo = database.mandatoryInfoDao().findOne()
+        val currentPractice = database.currentPracticeDao().findOne()
+        val cropSchedule = database.scheduleDateDao().findOne()
+        val userProfile = database.profileInfoDao().findOne()
+        val countryName = userProfile?.countryName.orEmpty()
 
-        location = database.locationInfoDao().findOne()
-        mandatoryInfo = database.mandatoryInfoDao().findOne()
-        currentPractice = database.currentPracticeDao().findOne()
-        cropSchedule = database.scheduleDateDao().findOne()
+        val risks = EnumInvestmentPref.entries.map { it.prefName(requireContext()) }.toTypedArray()
 
-        userProfile = database.profileInfoDao().findOne()
-        if (userProfile != null) {
-            countryName = userProfile!!.countryName
-            countryCode = userProfile!!.countryCode
-            countrySelected = countryName.isNotEmpty()
-            riskAttitude = userProfile!!.riskAtt
-        }
-        riskAttitudeName = risks!![riskAttitude]
+        val riskAttitudeName = risks[userProfile?.riskAtt ?: 0]
 
-        if (mandatoryInfo != null) {
-            areaUnit = mandatoryInfo!!.displayAreaUnit
-            areaUnitSelected = areaUnit != null && areaUnit!!.isNotEmpty()
+        val fieldInfo = buildFieldInfo(mandatoryInfo)
+        val locationString = buildLocationString(location)
+        val plantingDate = cropSchedule?.plantingDate.orEmpty()
+        val harvestDate = cropSchedule?.harvestDate.orEmpty()
+        val ploughStr = buildPloughStr(currentPractice)
+        val ridgeStr = buildRidgeStr(currentPractice)
 
-            summaryTitle = java.lang.String.format(
-                requireContext().getString(R.string.lbl_summary_text),
-                userProfile!!.names(),
-                userProfile!!.farmName
-            )
-            if (areaUnitSelected) {
-                fieldSize = mandatoryInfo!!.areaSize
-                fieldSizeSelected = fieldSize > 0.0
-                fieldInfo = String.format("%s %s", fieldSize, areaUnit)
-                try {
-                    val locale = getCurrentLocale()
-                    fieldInfo = if (locale!!.language.equals("sw", ignoreCase = true)) {
-                        String.format("%s %s", areaUnit, fieldSize)
-                    } else {
-                        String.format("%s %s", fieldSize, areaUnit)
-                    }
-                } catch (ignored: Exception) {
-                }
-            }
+        mDataList.apply {
+            clear()
+            addTimeLineItem(R.string.lbl_country, countryName, countryName.isNotEmpty())
+            addTimeLineItem(R.string.lbl_farm_place, locationString, locationString.isNotEmpty())
+            addTimeLineItem(R.string.lbl_farm_size, fieldInfo, fieldInfo.isNotEmpty())
+            addTimeLineItem(R.string.lbl_planting_date, plantingDate, plantingDate.isNotEmpty())
+            addTimeLineItem(R.string.lbl_harvesting_date, harvestDate, harvestDate.isNotEmpty())
+            addTimeLineItem(R.string.lbl_ploughing, ploughStr, ploughStr.isNotEmpty())
+            addTimeLineItem(R.string.lbl_ridging, ridgeStr, ridgeStr.isNotEmpty())
+            addTimeLineItem(R.string.lbl_risk_attitude, riskAttitudeName, true)
         }
 
-        binding.txtSummaryTitle.text = summaryTitle
-        if (location != null) {
-            pickedLocation = formatLocationInfo(location)
-            lat = location!!.latitude
-            lon = location!!.longitude
-            locationPicked = lat != 0.0 || lon != 0.0
-        }
-
-        if (cropSchedule != null) {
-            plantingDate = cropSchedule!!.plantingDate
-            harvestDate = cropSchedule!!.harvestDate
-            plantingDateProvided = !plantingDate.isNullOrEmpty()
-            harvestDateProvided = !harvestDate.isNullOrEmpty()
-        }
-
-        if (currentPractice != null) {
-            currentPracticeSelected = true
-            performPloughing = currentPractice!!.performPloughing
-            performRidging = currentPractice!!.performRidging
-
-            val _ploughMethod = currentPractice!!.ploughingMethod
-            val _ridgeMethod = currentPractice!!.ridgingMethod
-            if (performPloughing && _ploughMethod != null) {
-                var ploughMethod = requireContext().getString(R.string.lbl_manual)
-                if (_ploughMethod == "tractor") {
-                    ploughMethod = requireContext().getString(R.string.lbl_tractor)
-                }
-                ploughStr.append(ploughMethod)
-            } else {
-                ploughStr.append(requireContext().getString(R.string.lbl_no_ploughing))
-            }
-
-
-            if (performRidging && _ridgeMethod != null) {
-                var ridgeMethod = requireContext().getString(R.string.lbl_manual)
-                if (_ridgeMethod == "tractor") {
-                    ridgeMethod = requireContext().getString(R.string.lbl_tractor)
-                }
-                ridgeStr.append(ridgeMethod)
-            } else {
-                ridgeStr.append(requireContext().getString(R.string.lbl_no_ridging))
-            }
-        }
-
-        val location =
-            mathHelper.removeLeadingZero(lat, "#.####") + "," + mathHelper.removeLeadingZero(
-                lon,
-                "#.####"
-            )
-
-        mDataList = ArrayList()
-        mDataList.add(
-            TimeLineModel(
-                requireContext().getString(R.string.lbl_country),
-                countryName,
-                if (countrySelected) StepStatus.COMPLETED else StepStatus.INCOMPLETE
-            )
-        )
-        mDataList.add(
-            TimeLineModel(
-                requireContext().getString(R.string.lbl_farm_place),
-                location,
-                if (locationPicked) StepStatus.COMPLETED else StepStatus.INCOMPLETE
-            )
-        )
-        mDataList.add(
-            TimeLineModel(
-                requireContext().getString(R.string.lbl_farm_size),
-                fieldInfo,
-                if (fieldSizeSelected) StepStatus.COMPLETED else StepStatus.INCOMPLETE
-            )
-        )
-
-        mDataList.add(
-            TimeLineModel(
-                requireContext().getString(R.string.lbl_planting_date),
-                plantingDate,
-                if (plantingDateProvided) StepStatus.COMPLETED else StepStatus.INCOMPLETE
-            )
-        )
-        mDataList.add(
-            TimeLineModel(
-                requireContext().getString(R.string.lbl_harvesting_date),
-                harvestDate,
-                if (harvestDateProvided) StepStatus.COMPLETED else StepStatus.INCOMPLETE
-            )
-        )
-
-        if (countryCode != EnumCountry.Ghana.countryCode()) {
-            mDataList.add(
-                TimeLineModel(
-                    requireContext().getString(R.string.lbl_ploughing),
-                    ploughStr.toString(),
-                    if (currentPracticeSelected) StepStatus.COMPLETED else StepStatus.INCOMPLETE
-                )
-            )
-            mDataList.add(
-                TimeLineModel(
-                    requireContext().getString(R.string.lbl_ridging),
-                    ridgeStr.toString(),
-                    if (currentPracticeSelected) StepStatus.COMPLETED else StepStatus.INCOMPLETE
-                )
-            )
-        }
-
-        mDataList.add(
-            TimeLineModel(
-                requireContext().getString(R.string.lbl_risk_attitude),
-                riskAttitudeName,
-                StepStatus.COMPLETED
-            )
-        )
         initAdapter()
     }
 
+    private fun MutableList<TimeLineModel>.addTimeLineItem(
+        labelResId: Int,
+        value: String,
+        isCompleted: Boolean
+    ) {
+        add(
+            TimeLineModel(
+                requireContext().getString(labelResId),
+                value,
+                if (isCompleted) StepStatus.COMPLETED else StepStatus.INCOMPLETE
+            )
+        )
+    }
+
+    private fun buildFieldInfo(mandatoryInfo: MandatoryInfo?): String {
+        mandatoryInfo?.let {
+            areaUnit = it.displayAreaUnit
+            val areaUnitSelected = areaUnit?.isNotEmpty() == true
+            fieldSize = it.areaSize
+
+            if (areaUnitSelected) {
+                val locale = getCurrentLocale()
+                return if (locale?.language.equals("sw", ignoreCase = true)) {
+                    String.format("%s %s", areaUnit, fieldSize)
+                } else {
+                    String.format("%s %s", fieldSize, areaUnit)
+                }
+            }
+        }
+        return ""
+    }
+
+    private fun buildLocationString(location: UserLocation?): String {
+        location?.let {
+            lat = it.latitude
+            lon = it.longitude
+            return "${mathHelper.removeLeadingZero(lat, "#.####")},${
+                mathHelper.removeLeadingZero(
+                    lon,
+                    "#.####"
+                )
+            }"
+        }
+        return ""
+    }
+
+    private fun buildPloughStr(currentPractice: CurrentPractice?): String {
+        currentPractice?.let {
+            val ploughMethod = it.ploughingMethod
+            return when {
+                ploughMethod != null -> {
+                    if (ploughMethod == "tractor") requireContext().getString(R.string.lbl_tractor)
+                    else requireContext().getString(R.string.lbl_manual)
+                }
+
+                else -> requireContext().getString(R.string.lbl_no_ploughing)
+            }
+        }
+        return ""
+    }
+
+    private fun buildRidgeStr(currentPractice: CurrentPractice?): String {
+        currentPractice?.let {
+            val ridgeMethod = it.ridgingMethod
+            return when {
+                ridgeMethod != null -> {
+                    if (ridgeMethod == "tractor") requireContext().getString(R.string.lbl_tractor)
+                    else requireContext().getString(R.string.lbl_manual)
+                }
+
+                else -> requireContext().getString(R.string.lbl_no_ridging)
+            }
+        }
+        return ""
+    }
+
     private fun initRecyclerView() {
-        val mLayoutManager = LinearLayoutManager(context)
         binding.timelineRecycler.apply {
-            layoutManager = mLayoutManager
+            layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
         }
     }
 
     private fun initAdapter() {
-        adapter =
-            MyTimeLineAdapter(mDataList, mAttributes!!, requireContext(), TheItemAnimation.FADE_IN)
-        binding.timelineRecycler.adapter = adapter
+        myAdapter = MyTimeLineAdapter(
+            mDataList,
+            mAttributes!!,
+            requireContext(),
+            TheItemAnimation.FADE_IN
+        )
+        binding.timelineRecycler.adapter = myAdapter
     }
 
-    override fun verifyStep(): VerificationError? {
-        return null
-    }
+    override fun verifyStep(): VerificationError? = null
 
     override fun onSelected() {
         setDataListItems()
     }
 
-    override fun onError(error: VerificationError) {
-    }
+    override fun onError(error: VerificationError) {}
 }

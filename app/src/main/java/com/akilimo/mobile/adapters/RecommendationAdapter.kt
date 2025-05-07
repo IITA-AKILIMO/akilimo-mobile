@@ -11,28 +11,26 @@ import com.akilimo.mobile.adapters.RecommendationAdapter.RecViewHolder
 import com.akilimo.mobile.mappers.ComputedResponse
 
 class RecommendationAdapter : RecyclerView.Adapter<RecViewHolder>() {
-    private var computedResponseList: List<ComputedResponse>? = null
+    private var computedResponseList: List<ComputedResponse> = ArrayList()
 
     fun setData(computedResponseList: List<ComputedResponse>) {
         this.computedResponseList = computedResponseList
         notifyDataSetChanged()
     }
 
+
+    override fun getItemCount() = computedResponseList.size
+
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): RecViewHolder {
         val v = LayoutInflater.from(viewGroup.context)
             .inflate(R.layout.content_compute_card, viewGroup, false)
-        val pvh = RecViewHolder(v)
-        return pvh
+        return RecViewHolder(v)
     }
 
-    override fun onBindViewHolder(recViewHolder: RecViewHolder, i: Int) {
-        val cr = computedResponseList!![i]
+    override fun onBindViewHolder(recViewHolder: RecViewHolder, position: Int) {
+        val cr = computedResponseList[position]
         recViewHolder.computedTitle.text = cr.computedTitle
         recViewHolder.computedBody.text = cr.computedRecommendation
-    }
-
-    override fun getItemCount(): Int {
-        return computedResponseList!!.size
     }
 
     class RecViewHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {

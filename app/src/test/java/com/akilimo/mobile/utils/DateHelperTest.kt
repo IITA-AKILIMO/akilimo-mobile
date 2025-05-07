@@ -36,4 +36,11 @@ internal class DateHelperTest {
         val formattedDate = DateHelper.formatLongToDateString(timestamp)
         Assert.assertEquals("January 01, 2099", formattedDate)
     }
+
+    @Test
+    fun formatToSpecifiedDateFormat() {
+        val dateString = "30/01/2026"
+        val formattedDate = DateHelper.formatToLocalDate(dateString, "dd/MM/yyyy")
+        Assert.assertEquals("2026-01-30", formattedDate.toString())
+    }
 }

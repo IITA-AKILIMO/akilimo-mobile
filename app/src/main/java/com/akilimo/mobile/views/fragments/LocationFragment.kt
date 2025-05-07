@@ -238,7 +238,7 @@ class LocationFragment : BaseStepFragment() {
 
             if (userProfile != null) {
                 farmName = userProfile.farmName
-                fullNames = userProfile.names()
+                fullNames = userProfile.firstName.plus(" ").plus(userProfile.lastName)
                 userSelectedCountryCode = userProfile.countryCode
                 userSelectedCountryName = userProfile.countryName
                 setFarmNameInfo(fullNames!!, farmName!!)

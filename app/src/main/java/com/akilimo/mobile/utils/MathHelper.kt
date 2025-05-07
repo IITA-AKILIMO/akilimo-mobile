@@ -307,7 +307,7 @@ class MathHelper {
      * @param unitWeight The unit weight in g
      * @return The price per kg
      */
-    fun convertToUnitWeightPrice(price: Double, unitWeight: Int): Double {
+    fun convertToUnitWeightPrice(price: Double, unitWeight: Double): Double {
         return (price * unitWeight) / 1000
     }
 
