@@ -76,9 +76,9 @@ class BuildComputeData(val context: Context) {
     }
 
     private fun buildProfileInfo(): UserInfo {
-        val userInfo = UserInfo()
-
-        userInfo.deviceToken = session.getDeviceToken() // Always set
+        val userInfo = UserInfo(
+            deviceToken = session.getDeviceToken()
+        )
 
         database.profileInfoDao().findOne()?.let { profile ->
             userInfo.apply {
@@ -86,8 +86,8 @@ class BuildComputeData(val context: Context) {
                 lastName = profile.lastName.orIfBlank(DEFAULT_USERNAME)
                 userName = firstName.plus(" ").plus(lastName)
                 gender = profile.gender.orIfBlank(DEFAULT_UNAVAILABLE)
-                farmName = profile.farmName
-                emailAddress = profile.email
+                farmName = profile.farmName.orIfBlank("my_farm")
+                emailAddress = profile.email.orIfBlank("na@mail.com")
                 phoneNumber = profile.phoneNumber.orIfBlank(DEFAULT_UNAVAILABLE)
                 sendSms = profile.sendSms
                 sendEmail = profile.sendEmail
