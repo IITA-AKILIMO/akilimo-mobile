@@ -16,20 +16,15 @@ import com.akilimo.mobile.databinding.FragmentCassavaPriceDialogBinding
 import com.akilimo.mobile.entities.PotatoPrice
 import com.akilimo.mobile.interfaces.IPriceDialogDismissListener
 import com.akilimo.mobile.utils.CurrencyCode
-import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.enums.EnumUnitOfSale
 import io.sentry.Sentry
 
 class SweetPotatoPriceDialogFragment : DialogFragment() {
-    private var isExactPriceRequired = false
-    private var isPriceValid = false
-    private val priceSpecified = false
-    private val removeSelected = false
-
     private lateinit var _binding: FragmentCassavaPriceDialogBinding
     private val binding get() = _binding
 
-    private val mathHelper: MathHelper? = null
+    private var isExactPriceRequired = false
+    private var isPriceValid = false
     private var averagePrice = 0.0
     private var potatoPrice = 0.0
     private var potatoPriceList: List<PotatoPrice>? = null
@@ -38,11 +33,6 @@ class SweetPotatoPriceDialogFragment : DialogFragment() {
     private var currencyCode: String? = null
     private var unitOfSale: String? = null
     private var enumUnitOfSale: EnumUnitOfSale? = null
-
-    var unitPriceUSD: Double = 0.0
-    var unitPriceLocal: Double = 0.0
-    private var minAmountUSD = 5.00
-    private val maxAmountUSD = 500.00
 
     private var onDismissListener: IPriceDialogDismissListener? = null
 
@@ -206,8 +196,7 @@ class SweetPotatoPriceDialogFragment : DialogFragment() {
         unitPriceLower: Double,
         unitPriceUpper: Double,
         currencyCode: String?,
-        uos: String?,
-        vararg doConversions: Boolean
+        uos: String?
     ): String {
         val priceLower: Double
         val priceHigher: Double
@@ -243,10 +232,6 @@ class SweetPotatoPriceDialogFragment : DialogFragment() {
                 priceHigher = (unitPriceUpper * EnumUnitOfSale.ONE_KG.unitWeight()) / 1000
             }
         }
-
-        minAmountUSD =
-            priceLower // Minimum amount will be dynamic based on weight being sold, max amount will be constant
-
         return requireContext().getString(
             R.string.unit_price_label,
             priceLower,
