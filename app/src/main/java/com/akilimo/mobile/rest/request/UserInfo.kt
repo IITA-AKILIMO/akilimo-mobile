@@ -13,19 +13,19 @@ data class UserInfo(
     var userName: String = "akilimo",
 
     @JsonProperty("first_name")
-    var firstName: String = "AKILIMO",
+    var firstName: String = "akilimo",
 
     @JsonProperty("last_name")
-    var lastName: String = "USER",
+    var lastName: String = "user",
 
     @JsonProperty("gender")
     var gender: String = "NA",
 
     @JsonProperty("email_address")
-    var emailAddress: String = "NA",
+    var emailAddress: String? = null,
 
     @JsonProperty("farm_name")
-    var farmName: String = "NA",
+    var farmName: String = "my_farm",
 
     @JsonProperty("send_sms")
     var sendSms: Boolean = false,
