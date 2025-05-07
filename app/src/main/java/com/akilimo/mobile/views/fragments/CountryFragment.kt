@@ -1,14 +1,11 @@
 package com.akilimo.mobile.views.fragments
 
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.AppCompatTextView
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentCountryBinding
 import com.akilimo.mobile.entities.UserProfile
@@ -19,40 +16,23 @@ import com.stepstone.stepper.VerificationError
 import io.sentry.Sentry
 import java.util.Locale
 
-
-/**
- * A simple [Fragment] subclass.
- * Use the [CountryFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class CountryFragment : BaseStepFragment() {
-    var title: AppCompatTextView? = null
-    var btnPickCountry: AppCompatButton? = null
-
-    //var countryImage: ImageView? = null
-    var txtCountryName: AppCompatTextView? = null
 
     private var _binding: FragmentCountryBinding? = null
     private val binding get() = _binding!!
 
+    private var mySelectedCountryIndex = -1
 
-    private var userProfile: UserProfile? = null
-    private var name: String? = ""
-    private var selectedLanguage: String? = ""
-    private var selectedCountryIndex = -1
+    private val countries = EnumCountry.entries
+        .filter { it != EnumCountry.Other }
+        .map { it.name }
+        .toTypedArray()
 
-
-    private var countries = arrayOf(
-        EnumCountry.Burundi.name,
-        EnumCountry.Ghana.name,
-        EnumCountry.Nigeria.name,
-        EnumCountry.Tanzania.name,  //            EnumCountry.Rwanda.name(),
-    )
+    private val countryMap: Map<String, EnumCountry> = EnumCountry.entries
+        .associateBy { it.name.lowercase(Locale.getDefault()) }
 
     companion object {
-        fun newInstance(): CountryFragment {
-            return CountryFragment()
-        }
+        fun newInstance(): CountryFragment = CountryFragment()
     }
 
     override fun loadFragmentLayout(
@@ -64,138 +44,105 @@ class CountryFragment : BaseStepFragment() {
         return binding.root
     }
 
-    private fun refreshData() {
-        val context = requireContext()
-        try {
-            userProfile = database.profileInfoDao().findOne()
-            if (userProfile != null) {
-                name = userProfile!!.firstName
-                countryCode = userProfile!!.countryCode!!
-                currency = userProfile!!.currencyCode
-                countryName = userProfile!!.countryName
-                currency = userProfile!!.currencyCode
-                selectedLanguage = userProfile!!.language
-
-                if (countryCode.isNotEmpty()) {
-                    selectedCountryIndex = userProfile!!.selectedCountryIndex
-                    binding.countryImage.setImageResource(World.getFlagOf(countryCode))
-                }
-                if (countryName!!.isNotEmpty()) {
-                    txtCountryName!!.text = countryName
-                }
-            }
-
-            val message = context.getString(R.string.lbl_country_location, name)
-            title!!.text = message
-        } catch (ex: Exception) {
-            Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
-            Sentry.captureException(ex)
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val context = requireContext()
-        title = binding.title
-        btnPickCountry = binding.btnPickCountry
-        txtCountryName = binding.countryName
-
-        btnPickCountry!!.setOnClickListener { pickerDialog: View? ->
-            if (selectedLanguage.equals("sw", ignoreCase = true)) {
-                countries = arrayOf(EnumCountry.Tanzania.name)
-            }
-            val builder =
-                AlertDialog.Builder(
-                    context
-                )
-            builder.setTitle(context.getString(R.string.lbl_pick_your_country))
-            builder.setSingleChoiceItems(
-                countries,
-                selectedCountryIndex
-            ) { _, i -> selectedCountryIndex = i }
-
-            val countryMap: MutableMap<String, EnumCountry> =
-                HashMap()
-            countryMap["kenya"] = EnumCountry.Kenya
-            countryMap["tanzania"] = EnumCountry.Tanzania
-            countryMap["nigeria"] = EnumCountry.Nigeria
-            countryMap["ghana"] = EnumCountry.Ghana
-            countryMap["rwanda"] = EnumCountry.Rwanda
-            countryMap["burundi"] = EnumCountry.Burundi
-
-
-            builder.setPositiveButton(context.getString(R.string.lbl_ok)) { dialogInterface, whichButton ->
-                if (selectedCountryIndex >= 0 && countries.isNotEmpty()) {
-                    countryName = countries[selectedCountryIndex]
-                    var selectedCountry =
-                        countryMap[countryName!!.lowercase(Locale.getDefault())]
-                    if (selectedCountry == null) {
-                        selectedCountry = EnumCountry.Other
-                    }
-
-                    countryName = selectedCountry.name
-                    currency = selectedCountry.currency()
-                    countryCode = selectedCountry.countryCode()
-                    binding.countryImage.setImageResource(World.getFlagOf(countryCode))
-                    txtCountryName!!.text = countryName
-                    dialogInterface.dismiss()
-                    updateSelectedCountry()
-                }
-            }
-            builder.setNegativeButton(
-                context.getString(R.string.lbl_cancel),
-                ({ dialogInterface, i ->
-                    dialogInterface.dismiss()
-                })
-            )
-
-            val dialog = builder.create()
-            dialog.setCancelable(false)
-            dialog.setCanceledOnTouchOutside(false)
-            dialog.show()
+        binding.btnPickCountry.setOnClickListener {
+            showCountryPickerDialog()
         }
-    }
-
-    private fun updateSelectedCountry() {
-        try {
-            if (userProfile == null) {
-                userProfile = UserProfile()
-            }
-
-            userProfile!!.selectedCountryIndex = selectedCountryIndex
-            userProfile!!.countryCode = countryCode
-            userProfile!!.countryName = countryName
-            userProfile!!.currencyCode = currency
-
-            dataIsValid = !TextUtils.isEmpty(countryCode)
-            if (userProfile!!.profileId != null) {
-                val id = userProfile!!.profileId!!
-                if (id > 0) {
-                    database.profileInfoDao().update(userProfile!!)
-                }
-            } else {
-                database.profileInfoDao().insert(userProfile!!)
-            }
-            sessionManager.setCountry(countryCode)
-        } catch (ex: Exception) {
-            dataIsValid = false
-            Sentry.captureException(ex)
-        }
-    }
-
-    override fun verifyStep(): VerificationError? {
-        updateSelectedCountry()
-        if (!dataIsValid) {
-            return VerificationError("Please select country")
-        }
-        return null
     }
 
     override fun onSelected() {
         refreshData()
     }
 
+    private fun refreshData() {
+        try {
+            database.profileInfoDao().findOne()?.let { profile ->
+                binding.title.text = getString(R.string.lbl_country_location, profile.firstName)
+                mySelectedCountryIndex = profile.selectedCountryIndex
+                val countryCode = profile.countryCode
+                val countryName = profile.countryName
+
+                if (countryCode.isNotBlank() && countryName.isNotBlank()) {
+                    dataIsValid = true
+                    binding.countryImage.setImageResource(World.getFlagOf(countryCode))
+                    binding.countryName.text = countryName
+                }
+            }
+        } catch (ex: Exception) {
+            Toast.makeText(requireContext(), ex.localizedMessage, Toast.LENGTH_SHORT).show()
+            Sentry.captureException(ex)
+        }
+    }
+
+    private fun showCountryPickerDialog() {
+        val context = requireContext()
+
+        AlertDialog.Builder(context).apply {
+            setTitle(context.getString(R.string.lbl_pick_your_country))
+            setSingleChoiceItems(countries, mySelectedCountryIndex) { _, index ->
+                mySelectedCountryIndex = index
+            }
+            setPositiveButton(getString(R.string.lbl_ok)) { dialog, _ ->
+                handleCountrySelection()
+                dialog.dismiss()
+            }
+            setNegativeButton(getString(R.string.lbl_cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            setCancelable(false)
+            create().apply {
+                setCanceledOnTouchOutside(false)
+                show()
+            }
+        }
+    }
+
+    private fun handleCountrySelection() {
+        if (mySelectedCountryIndex < 0 || mySelectedCountryIndex >= countries.size) return
+
+        val selectedName = countries[mySelectedCountryIndex]
+        val selectedEnum =
+            countryMap[selectedName.lowercase(Locale.getDefault())] ?: EnumCountry.Other
+
+        val countryName = selectedEnum.name
+        val countryCode = selectedEnum.countryCode()
+        val currencyCode = selectedEnum.currencyCode()
+
+        binding.countryImage.setImageResource(World.getFlagOf(countryCode))
+        binding.countryName.text = countryName
+
+        updateSelectedCountry(countryCode, countryName, currencyCode)
+    }
+
+    private fun updateSelectedCountry(
+        selectedCountryCode: String,
+        selectedCountryName: String,
+        selectedCurrencyCode: String
+    ) {
+        try {
+            dataIsValid = selectedCountryCode.isNotBlank()
+            val profile = database.profileInfoDao().findOne() ?: UserProfile()
+            profile.apply {
+                selectedCountryIndex = mySelectedCountryIndex
+                countryCode = selectedCountryCode
+                countryName = selectedCountryName
+                currencyCode = selectedCurrencyCode
+            }
+
+            database.profileInfoDao().insert(profile)
+            sessionManager.setCountry(selectedCountryCode)
+        } catch (ex: Exception) {
+            Sentry.captureException(ex)
+        }
+    }
+
+    override fun verifyStep(): VerificationError? {
+        return if (dataIsValid) null else VerificationError("Please select a country")
+    }
+
     override fun onError(error: VerificationError) {
+        // Not implemented
     }
 }
