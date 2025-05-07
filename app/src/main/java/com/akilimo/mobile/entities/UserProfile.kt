@@ -17,9 +17,6 @@ data class UserProfile(
     @ColumnInfo(name = "device_token")
     var deviceToken: String? = null,
 
-    @ColumnInfo(name = "user_name")
-    var userName: String? = null,
-
     @ColumnInfo(name = "first_name")
     var firstName: String? = null,
 
@@ -76,6 +73,4 @@ data class UserProfile(
 
     @ColumnInfo(name = "selected_risk_index")
     var selectedRiskIndex: Int = 0
-) {
-    fun names(): String = "$firstName $lastName"
-}
+)
