@@ -2,6 +2,7 @@ package com.akilimo.mobile.models
 
 import android.os.Parcelable
 import com.akilimo.mobile.utils.enums.Orientation
+import com.github.vipulasri.timelineview.TimelineView
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
@@ -9,21 +10,21 @@ import kotlin.properties.Delegates.observable
 
 @Parcelize
 class TimelineAttributes(
-    var markerSize: Int,
+    var markerSize: Int = 48,
     var markerCompleteColor: Int,
     var markerIncompleteColor: Int,
-    var markerInCenter: Boolean,
-    var markerLeftPadding: Int,
-    var markerTopPadding: Int,
-    var markerRightPadding: Int,
-    var markerBottomPadding: Int,
-    var linePadding: Int,
-    var lineWidth: Int,
+    var markerInCenter: Boolean = true,
+    var markerLeftPadding: Int = 0,
+    var markerTopPadding: Int = 0,
+    var markerRightPadding: Int = 0,
+    var markerBottomPadding: Int = 0,
+    var linePadding: Int = 0,
+    var lineWidth: Int = 0,
     var startLineColor: Int,
     var endLineColor: Int,
-    var lineStyle: Int,
-    var lineDashWidth: Int,
-    var lineDashGap: Int
+    var lineStyle: Int = TimelineView.LineStyle.DASHED,
+    var lineDashWidth: Int = 4,
+    var lineDashGap: Int = 2
 ) : Parcelable {
 
     @IgnoredOnParcel
