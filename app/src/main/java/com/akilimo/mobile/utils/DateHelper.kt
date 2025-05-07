@@ -36,16 +36,12 @@ object DateHelper {
     }
 
     fun formatToLocalDate(dateString: String?, dateFormat: String = DEFAULT_FORMAT): LocalDate? {
-        return if (dateString.isNullOrEmpty()) {
+        if (dateString.isNullOrEmpty()) return null
+        return try {
+            LocalDate.parse(dateString, DateTimeFormatter.ofPattern(dateFormat))
+        } catch (e: Exception) {
+            Sentry.captureException(e)
             null
-        } else {
-            try {
-                val pattern = DateTimeFormatter.ofPattern(dateFormat)
-                LocalDate.parse(dateString, pattern)
-            } catch (e: Exception) {
-                Sentry.captureException(e)
-                null
-            }
         }
     }
 
