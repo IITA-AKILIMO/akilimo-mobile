@@ -28,7 +28,7 @@
         <!-- Sentry Configuration -->
         <meta-data
             android:name="io.sentry.dsn"
-            android:value="https://1f810ab3a50a9560556ec17f79c55579@o212209.ingest.us.sentry.io/4509241934872577" />
+            android:value="https://ab9bb55415aaf06a144320ef8fd57860@o212209.ingest.us.sentry.io/4509276157640704" />
 
           <!-- Add data like request headers, user ip adress and device name, see https://docs.sentry.io/platforms/android/data-management/data-collected/ for more info -->
           <meta-data 
