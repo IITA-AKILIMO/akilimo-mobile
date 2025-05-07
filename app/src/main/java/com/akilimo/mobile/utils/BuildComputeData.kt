@@ -148,9 +148,9 @@ class BuildComputeData(val context: Context) {
     private fun buildPlantingDates(computeRequest: ComputeRequest): ComputeRequest {
         database.scheduleDateDao().findOne()?.let { sph ->
             computeRequest.apply {
-                plantingDate = sph.plantingDate
+                plantingDate = DateHelper.formatToLocalDate(sph.plantingDate)
                 plantingDateWindow = sph.plantingWindow
-                harvestDate = sph.harvestDate
+                harvestDate = DateHelper.formatToLocalDate(sph.harvestDate)
                 harvestDateWindow = sph.harvestWindow
             }
         }
