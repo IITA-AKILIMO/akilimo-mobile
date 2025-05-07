@@ -3,6 +3,7 @@ package com.akilimo.mobile.rest.request
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
+import org.threeten.bp.LocalDate
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 class ComputeRequest {
@@ -50,13 +51,13 @@ class ComputeRequest {
     var scheduledHarvestRec: Boolean = false
 
     @JsonProperty("planting_date")
-    var plantingDate: String? = null
+    var plantingDate: LocalDate? = null
 
     @JsonProperty("planting_date_window")
     var plantingDateWindow: Int = 0
 
     @JsonProperty("harvest_date")
-    var harvestDate: String? = null
+    var harvestDate: LocalDate? = null
 
     @JsonProperty("harvest_date_window")
     var harvestDateWindow: Int = 0
