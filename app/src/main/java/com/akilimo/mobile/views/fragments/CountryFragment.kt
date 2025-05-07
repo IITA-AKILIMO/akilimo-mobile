@@ -58,7 +58,8 @@ class CountryFragment : BaseStepFragment() {
 
     private fun refreshData() {
         try {
-            database.profileInfoDao().findOne()?.let { profile ->
+            val profile = database.profileInfoDao().findOne()
+            if (profile != null) {
                 binding.title.text = getString(R.string.lbl_country_location, profile.firstName)
                 mySelectedCountryIndex = profile.selectedCountryIndex
                 val countryCode = profile.countryCode
