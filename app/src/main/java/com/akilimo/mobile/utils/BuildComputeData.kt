@@ -84,10 +84,10 @@ class BuildComputeData(val context: Context) {
             userInfo.apply {
                 firstName = profile.firstName.orIfBlank(DEFAULT_USERNAME)
                 lastName = profile.lastName.orIfBlank(DEFAULT_USERNAME)
-                userName = profile.names().orIfBlank(DEFAULT_USERNAME)
+                userName = firstName.plus(" ").plus(lastName)
                 gender = profile.gender.orIfBlank(DEFAULT_UNAVAILABLE)
-                farmName = profile.farmName.orIfBlank(DEFAULT_UNAVAILABLE)
-                emailAddress = profile.email.orIfBlank(DEFAULT_UNAVAILABLE)
+                farmName = profile.farmName
+                emailAddress = profile.email
                 phoneNumber = profile.phoneNumber.orIfBlank(DEFAULT_UNAVAILABLE)
                 sendSms = profile.sendSms
                 sendEmail = profile.sendEmail
@@ -147,10 +147,12 @@ class BuildComputeData(val context: Context) {
 
     private fun buildPlantingDates(computeRequest: ComputeRequest): ComputeRequest {
         database.scheduleDateDao().findOne()?.let { sph ->
+            val myPlantingDate = DateHelper.formatToLocalDate(sph.plantingDate)
+            val myHarvestDate = DateHelper.formatToLocalDate(sph.harvestDate)
             computeRequest.apply {
-                plantingDate = DateHelper.formatToLocalDate(sph.plantingDate)
+                plantingDate = myPlantingDate.toString()
+                harvestDate = myHarvestDate.toString()
                 plantingDateWindow = sph.plantingWindow
-                harvestDate = DateHelper.formatToLocalDate(sph.harvestDate)
                 harvestDateWindow = sph.harvestWindow
             }
         }
