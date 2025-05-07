@@ -24,7 +24,7 @@ data class UserProfile(
     var lastName: String? = null,
 
     @ColumnInfo(name = "email")
-    var email: String? = null,
+    var email: String = "na@mail.com",
 
     @ColumnInfo(name = "mobile_code")
     var mobileCode: String = "",
