@@ -222,10 +222,12 @@ class BioDataFragment : BaseStepFragment() {
             }
         }
 
-        if (!validationHelper.isValidEmail(myEmail) && myEmail.isEmpty()) {
-            errorMessage = this.getString(R.string.lbl_valid_email_req)
-            binding.edtEmail.error = errorMessage
-            return
+        if (myEmail.isNotEmpty()) {
+            if (!validationHelper.isValidEmail(myEmail)) {
+                errorMessage = this.getString(R.string.lbl_valid_email_req)
+                binding.edtEmail.error = errorMessage
+                return
+            }
         }
 
         if (myGender.isNullOrEmpty()) {
@@ -253,7 +255,6 @@ class BioDataFragment : BaseStepFragment() {
                 phoneNumber = myPhoneNumber
                 selectedGenderIndex = mySelectedGenderIndex
                 selectedInterestIndex = mySelectedInterestIndex
-                userName = names()
                 deviceToken = sessionManager.getDeviceToken()
             }
             val profileId = userProfile.profileId
