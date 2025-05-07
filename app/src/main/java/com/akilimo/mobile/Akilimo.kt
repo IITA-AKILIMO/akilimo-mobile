@@ -1,6 +1,5 @@
 package com.akilimo.mobile
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDexApplication
 import com.akilimo.mobile.utils.Locales
@@ -20,8 +19,6 @@ class Akilimo : MultiDexApplication() {
         supportedLocales = Locales.LOCALE_COUNTRIES
         val prefs = SharedPrefsAppLocaleRepository(this@Akilimo)
         appLocaleRepository = prefs
-        AppLocale.desiredLocale = prefs.desiredLocale!!
-
 
 
         ViewPump.init(
@@ -33,9 +30,6 @@ class Akilimo : MultiDexApplication() {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         AndroidThreeTen.init(this@Akilimo) // Initialize the library
         World.init(this@Akilimo)
-    }
-
-    override fun attachBaseContext(base: Context?) {
-        super.attachBaseContext(base)
+        AppLocale.desiredLocale = prefs.desiredLocale ?: return
     }
 }
