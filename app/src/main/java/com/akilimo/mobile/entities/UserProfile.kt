@@ -7,12 +7,15 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "user_profiles",
-    indices = [Index(value = ["user_name"], unique = true)]
+    indices = [Index(value = ["device_token"], unique = true)]
 )
 data class UserProfile(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "profile_id")
     var profileId: Int? = null,
+
+    @ColumnInfo(name = "device_token")
+    var deviceToken: String? = null,
 
     @ColumnInfo(name = "user_name")
     var userName: String? = null,
@@ -27,7 +30,7 @@ data class UserProfile(
     var email: String? = null,
 
     @ColumnInfo(name = "mobile_code")
-    var mobileCode: String? = null,
+    var mobileCode: String = "",
 
     @ColumnInfo(name = "phone_number")
     var phoneNumber: String? = null,
@@ -55,9 +58,6 @@ data class UserProfile(
 
     @ColumnInfo(name = "send_sms")
     var sendSms: Boolean = false,
-
-    @ColumnInfo(name = "language")
-    var language: String = "en",
 
     @ColumnInfo(name = "country_code")
     var countryCode: String = "",
