@@ -6,7 +6,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'jacoco'
-
+//apply plugin: 'io.sentry.android.gradle'
 
 android {
     def releaseVersionName = computeBuildNumber()
@@ -128,7 +128,9 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
 
     //sentry
-    implementation 'io.sentry:sentry-android:6.19.1'
+    implementation 'io.sentry:sentry-android:6.34.0'
+//    implementation "io.sentry:sentry-android-okhttp:6.32.0"
+
 
     // google library ------------------------------------------------------------------------
     implementation 'com.google.android.material:material:1.5.0'
