@@ -37,9 +37,9 @@ class InterCropRecActivity : BaseRecommendationActivity<ActivityInterCropRecBind
         super.onCreate(savedInstanceState)
         val database = getDatabase(this)
         val profileInfo = database.profileInfoDao().findOne()
-        profileInfo?.let {
-            countryCode = it.countryCode
-            currencyCode = it.currencyCode
+        if (profileInfo != null) {
+            countryCode = profileInfo.countryCode
+            currencyCode = profileInfo.currencyCode
         }
 
         val useCase = when (countryCode) {
