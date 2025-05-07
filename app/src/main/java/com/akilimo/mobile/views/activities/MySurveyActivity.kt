@@ -71,7 +71,7 @@ class MySurveyActivity : BaseActivity() {
                 akilimoUsage = akilimoUsage,
                 akilimoRecRating = akilimoRecRating,
                 akilimoUsefulRating = akilimoUsefulRating,
-                language = prefs.desiredLocale?.language.let { "en" },
+                language = prefs.desiredLocale?.language ?: "en",
                 deviceToken = sessionManager.getDeviceToken()
             )
 
