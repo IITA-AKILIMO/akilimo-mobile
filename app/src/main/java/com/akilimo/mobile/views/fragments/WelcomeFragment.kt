@@ -9,7 +9,6 @@ import android.widget.AdapterView
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.MySpinnerAdapter
 import com.akilimo.mobile.databinding.FragmentWelcomeBinding
-import com.akilimo.mobile.entities.UserProfile
 import com.akilimo.mobile.inherit.BaseStepFragment
 import com.akilimo.mobile.interfaces.IFragmentCallBack
 import com.akilimo.mobile.utils.Locales
@@ -125,10 +124,6 @@ class WelcomeFragment : BaseStepFragment() {
     }
 
     override fun verifyStep(): VerificationError? {
-        prefs.desiredLocale?.language?.let { lang ->
-            val profile = UserProfile().apply { language = lang }
-            database.profileInfoDao().insert(profile)
-        }
         return verificationError
     }
 
