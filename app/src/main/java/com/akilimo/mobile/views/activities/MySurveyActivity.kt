@@ -9,11 +9,16 @@ import com.akilimo.mobile.databinding.ActivityMySurveyBinding
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.rest.request.SurveyRequest
+import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository
 import io.sentry.Sentry
 import okhttp3.ResponseBody
 
 
 class MySurveyActivity : BaseActivity() {
+
+    private val prefs: SharedPrefsAppLocaleRepository by lazy {
+        SharedPrefsAppLocaleRepository(this@MySurveyActivity)
+    }
 
     private lateinit var binding: ActivityMySurveyBinding
 
@@ -42,8 +47,6 @@ class MySurveyActivity : BaseActivity() {
         val rdgUseful = binding.rdgUseful
         val btnFinish = binding.btnFinish
 
-        val profileInfo = database.profileInfoDao().findOne()
-
         rdgAkilimoUser.setOnCheckedChangeListener { _, checkedId ->
             val radioButton: RadioButton = rdgAkilimoUser.findViewById(checkedId)
             akilimoUsage = radioButton.text.toString()
@@ -60,6 +63,7 @@ class MySurveyActivity : BaseActivity() {
             akilimoUsefulRating = idx + 1
         }
 
+
         //now we submit to the API
         btnFinish.setOnClickListener {
             //send data to REST api
@@ -67,7 +71,7 @@ class MySurveyActivity : BaseActivity() {
                 akilimoUsage = akilimoUsage,
                 akilimoRecRating = akilimoRecRating,
                 akilimoUsefulRating = akilimoUsefulRating,
-                language = profileInfo?.language!!,
+                language = prefs.desiredLocale?.language.let { "en" },
                 deviceToken = sessionManager.getDeviceToken()
             )
 
@@ -95,8 +99,7 @@ class MySurveyActivity : BaseActivity() {
                         this@MySurveyActivity,
                         "Feedback submitted successfully",
                         Toast.LENGTH_SHORT
-                    )
-                        .show()
+                    ).show()
                 }
             }
 
