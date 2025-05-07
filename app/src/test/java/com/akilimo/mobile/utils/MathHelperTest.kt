@@ -78,7 +78,7 @@ internal class MathHelperTest {
     @Test
     fun compute_price_by_per_tonne_of_cassava() {
         val expected = 166000.00
-        val unitWeight = 1000
+        val unitWeight = 1000.0
         val result = mathHelper.convertToUnitWeightPrice(166000.00, unitWeight)
         Assert.assertEquals(expected, result, 0.0)
     }
