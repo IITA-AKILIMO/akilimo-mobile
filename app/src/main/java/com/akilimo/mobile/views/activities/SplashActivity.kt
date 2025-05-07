@@ -8,7 +8,6 @@ import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.data.UserDataCleaner
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.rest.retrofit.RetrofitManager
-import com.akilimo.mobile.views.activities.usecases.FertilizerRecActivity
 import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import io.sentry.Sentry
 import kotlinx.coroutines.Dispatchers
@@ -73,7 +72,7 @@ class SplashActivity : BaseActivity() {
         var intent: Intent = Intent(this, HomeStepperActivity::class.java)
 
         if (isInDevMode) {
-            intent = Intent(this, FertilizerRecActivity::class.java)
+//            intent = Intent(this, FertilizerRecActivity::class.java)
         }
         startActivity(intent)
         finish()
