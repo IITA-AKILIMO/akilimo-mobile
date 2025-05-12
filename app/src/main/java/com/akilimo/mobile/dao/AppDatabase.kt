@@ -52,7 +52,7 @@ import com.akilimo.mobile.entities.UserProfile
         UseCase::class,
         AkilimoCurrency::class,
         AdviceStatus::class
-    ], version = 7,
+    ], version = 8,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
