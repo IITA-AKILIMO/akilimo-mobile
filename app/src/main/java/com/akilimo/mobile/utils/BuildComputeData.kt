@@ -170,24 +170,23 @@ class BuildComputeData(val context: Context) {
 
     private fun buildCurrentPractice(computeRequest: ComputeRequest): ComputeRequest {
         database.currentPracticeDao().findOne()?.let { practice ->
-            val methodPloughing = practice.ploughingMethod.orIfBlank(DEFAULT_PRACTICE_METHOD)
-            val methodHarrowing = practice.harrowingMethod.orIfBlank(DEFAULT_PRACTICE_METHOD)
-            val methodRidging = practice.ridgingMethod.orIfBlank(DEFAULT_PRACTICE_METHOD)
-            val methodWeeding = practice.weedControlTechnique.orIfBlank(DEFAULT_PRACTICE_METHOD)
+            val myMethodPloughing = practice.ploughingMethod.orIfBlank(DEFAULT_PRACTICE_METHOD)
+            val myMethodHarrowing = practice.harrowingMethod.orIfBlank(DEFAULT_PRACTICE_METHOD)
+            val myMethodRidging = practice.ridgingMethod.orIfBlank(DEFAULT_PRACTICE_METHOD)
+            val myMethodWeeding = practice.weedControlTechnique.orIfBlank(DEFAULT_PRACTICE_METHOD)
 
             computeRequest.apply {
                 ploughingDone = practice.performPloughing
                 harrowingDone = practice.performHarrowing
                 ridgingDone = practice.performRidging
 
-                tractorPlough = methodPloughing.equals("tractor", ignoreCase = true)
-                tractorHarrow = methodHarrowing.equals("tractor", ignoreCase = true)
-                tractorRidger = methodRidging.equals("tractor", ignoreCase = true)
-
-                this.methodPloughing = methodPloughing
-                this.methodHarrowing = methodHarrowing
-                this.methodRidging = methodRidging
-                this.methodWeeding = methodWeeding
+                tractorPlough = myMethodPloughing.equals("tractor", ignoreCase = true)
+                tractorHarrow = myMethodHarrowing.equals("tractor", ignoreCase = true)
+                tractorRidger = myMethodRidging.equals("tractor", ignoreCase = true)
+                methodPloughing = myMethodPloughing
+                methodHarrowing = myMethodHarrowing
+                methodRidging = myMethodRidging
+                methodWeeding = myMethodWeeding
             }
         }
         return computeRequest
@@ -214,7 +213,7 @@ class BuildComputeData(val context: Context) {
     private fun buildMaizePerformance(computeRequest: ComputeRequest): ComputeRequest {
         database.maizePerformanceDao().findOne()?.let { maizePerformance ->
             computeRequest.apply {
-                currentMaizePerformance = maizePerformance.performanceValue
+                currentMaizePerformance = maizePerformance.performanceScore
                 interCroppedCrop = "maize"
             }
         }
@@ -226,7 +225,7 @@ class BuildComputeData(val context: Context) {
     private fun buildCassavaMarketOutlet(computeRequest: ComputeRequest): ComputeRequest {
         database.cassavaMarketDao().findOne()?.let { cassavaMarket ->
             computeRequest.apply {
-                starchFactoryName = cassavaMarket.starchFactory
+                starchFactoryName = cassavaMarket.starchFactory.orIfBlank(DEFAULT_UNAVAILABLE)
                 sellToStarchFactory = cassavaMarket.isStarchFactoryRequired
                 cassavaProduceType = cassavaMarket.produceType
                 cassavaUnitWeight = cassavaMarket.unitWeight
