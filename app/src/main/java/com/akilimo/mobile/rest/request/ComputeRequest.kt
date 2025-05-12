@@ -134,13 +134,13 @@ class ComputeRequest {
     var currentFieldYield: Double = 0.0
 
     @JsonProperty("current_maize_performance")
-    var currentMaizePerformance: String? = null
+    var currentMaizePerformance: Int = 0
 
     @JsonProperty("sell_to_starch_factory")
     var sellToStarchFactory: Boolean = false
 
     @JsonProperty("starch_factory_name")
-    var starchFactoryName: String? = null
+    var starchFactoryName: String = "NA"
 
     @JsonProperty("cassava_produce_type")
     var cassavaProduceType: String = "roots"
