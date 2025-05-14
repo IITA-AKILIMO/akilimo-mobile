@@ -72,7 +72,7 @@ class SplashActivity : BaseActivity() {
         var intent: Intent = Intent(this, HomeStepperActivity::class.java)
 
         if (isInDevMode) {
-//            intent = Intent(this, FertilizerRecActivity::class.java)
+            intent = Intent(this, RecommendationsActivity::class.java)
         }
         startActivity(intent)
         finish()
