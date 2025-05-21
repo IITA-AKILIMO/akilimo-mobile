@@ -34,7 +34,7 @@ data class MaizeMarket(
     var unitWeight: Double = 0.0,
 
     @ColumnInfo(name = "produce_type")
-    var produceType: String = EnumMaizeProduceType.GRAIN.name,
+    var produceType: String = EnumMaizeProduceType.GRAIN.name.lowercase(),
 
     @ColumnInfo(name = "unit_of_sale")
     var unitOfSale: String? = null
