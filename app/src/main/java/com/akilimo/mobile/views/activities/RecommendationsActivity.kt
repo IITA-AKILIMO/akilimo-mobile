@@ -74,6 +74,7 @@ class RecommendationsActivity : BaseActivity() {
     }
 
 
+    @Deprecated("Deprecated remove it completely")
     override fun initComponent() {
         frString = getString(R.string.lbl_fertilizer_recommendations)
         icMaizeString = getString(R.string.lbl_intercropping_maize)
