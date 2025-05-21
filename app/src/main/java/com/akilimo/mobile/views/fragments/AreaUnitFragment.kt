@@ -116,7 +116,7 @@ class AreaUnitFragment : BaseStepFragment() {
             }
 
             if (profileInfo != null) {
-                countryCode = profileInfo.countryCode!!
+                val countryCode = profileInfo.countryCode
                 if (countryCode == EnumCountry.Rwanda.countryCode()) {
                     //set the are unit radiobutton to visible
                     rdAre.visibility = View.VISIBLE
