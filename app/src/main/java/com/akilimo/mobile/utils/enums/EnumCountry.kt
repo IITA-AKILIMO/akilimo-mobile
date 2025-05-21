@@ -9,9 +9,6 @@ import org.jetbrains.annotations.NotNull
 @Parcelize
 enum class EnumCountry : Parcelable {
     Nigeria {
-        override fun countryName(): String {
-            return "Nigeria"
-        }
 
         override fun countryCode(): String {
             return "NG"
@@ -26,10 +23,6 @@ enum class EnumCountry : Parcelable {
         }
     },
     Tanzania {
-        override fun countryName(): String {
-            return "Tanzania"
-        }
-
         override fun countryCode(): String {
             return "TZ"
         }
@@ -43,9 +36,7 @@ enum class EnumCountry : Parcelable {
         }
     },
     Kenya {
-        override fun countryName(): String {
-            return "Kenya"
-        }
+
 
         override fun countryCode(): String {
             return "KE"
@@ -60,9 +51,7 @@ enum class EnumCountry : Parcelable {
         }
     },
     Ghana {
-        override fun countryName(): String {
-            return "Ghana"
-        }
+
 
         override fun countryCode(): String {
             return "GH"
@@ -77,9 +66,7 @@ enum class EnumCountry : Parcelable {
         }
     },
     Rwanda {
-        override fun countryName(): String {
-            return "Rwanda"
-        }
+
 
         override fun countryCode(): String {
             return "RW"
@@ -94,9 +81,7 @@ enum class EnumCountry : Parcelable {
         }
     },
     Burundi {
-        override fun countryName(): String {
-            return "Burundi"
-        }
+
 
         override fun countryCode(): String {
             return "BI"
@@ -111,10 +96,6 @@ enum class EnumCountry : Parcelable {
         }
     },
     Other {
-        override fun countryName(): String {
-            return "U.S.A"
-        }
-
         override fun countryCode(): String {
             return "US"
         }
@@ -129,7 +110,6 @@ enum class EnumCountry : Parcelable {
     };
 
     abstract fun countryCode(): String
-    abstract fun countryName(): String
     abstract fun currencyCode(): String
     abstract fun currencyName(context: Context): @NotNull String
 }
