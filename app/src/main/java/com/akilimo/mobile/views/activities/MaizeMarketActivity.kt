@@ -123,7 +123,7 @@ class MaizeMarketActivity : BaseActivity() {
                     unitOfSaleGrainCard!!.visibility = View.VISIBLE
                     maizeCobPriceTitle!!.visibility = View.GONE
                     maizeCobPriceCard!!.visibility = View.GONE
-                    produceType = EnumMaizeProduceType.GRAIN.produce()
+                    produceType = EnumMaizeProduceType.GRAIN.name.lowercase()
                     grainPriceRequired = true
                 }
 
@@ -132,7 +132,7 @@ class MaizeMarketActivity : BaseActivity() {
                     unitOfSaleGrainCard!!.visibility = View.GONE
                     maizeCobPriceTitle!!.visibility = View.VISIBLE
                     maizeCobPriceCard!!.visibility = View.VISIBLE
-                    produceType = EnumMaizeProduceType.FRESH_COB.produce()
+                    produceType = EnumMaizeProduceType.FRESH_COB.name.lowercase()
                     unitOfSale = EnumUnitOfSale.NA.unitOfSale(this@MaizeMarketActivity)
                     unitOfSaleEnum = EnumUnitOfSale.NA
                     unitPrice = -1.0
@@ -192,7 +192,7 @@ class MaizeMarketActivity : BaseActivity() {
 
             rdgMaizeProduceType!!.check(produceRadioIndex)
 
-            if (produceType == EnumMaizeProduceType.GRAIN.produce()) {
+            if (produceType == EnumMaizeProduceType.GRAIN.name.lowercase()) {
                 rdgUnitOfSaleGrain!!.check(grainUnitRadioIndex)
             }
         }

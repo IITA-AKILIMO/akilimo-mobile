@@ -107,22 +107,22 @@ class CassavaMarketActivity : BaseActivity() {
 
             contentCassavaMarket.btnUpP1.setOnClickListener { v: View? ->
                 showUnitPriceDialog(
-                    EnumContext.unit_price_p1
+                    EnumContext.UNIT_PRICE_P1
                 )
             }
             contentCassavaMarket.btnUpP2.setOnClickListener { v: View? ->
                 showUnitPriceDialog(
-                    EnumContext.unit_price_p2
+                    EnumContext.UNIT_PRICE_P2
                 )
             }
             contentCassavaMarket.btnUpM1.setOnClickListener { v: View? ->
                 showUnitPriceDialog(
-                    EnumContext.unit_price_m1
+                    EnumContext.UNIT_PRICE_M1
                 )
             }
             contentCassavaMarket.btnUpM2.setOnClickListener { v: View? ->
                 showUnitPriceDialog(
-                    EnumContext.unit_price_m2
+                    EnumContext.UNIT_PRICE_M2
                 )
             }
         }
@@ -273,7 +273,7 @@ class CassavaMarketActivity : BaseActivity() {
 
     fun onRadioButtonClicked(radioButton: View?) {
         if (radioButton != null && radioButton.isPressed) {
-            showUnitPriceDialog(EnumContext.unit_price)
+            showUnitPriceDialog(EnumContext.UNIT_PRICE)
         }
     }
 
@@ -499,11 +499,11 @@ class CassavaMarketActivity : BaseActivity() {
                     unitWeight
                 )
             when (userContext) {
-                EnumContext.unit_price -> unitPrice = setPrice
-                EnumContext.unit_price_p1 -> unitPriceP1 = setPrice
-                EnumContext.unit_price_p2 -> unitPriceP2 = setPrice
-                EnumContext.unit_price_m1 -> unitPriceM1 = setPrice
-                EnumContext.unit_price_m2 -> unitPriceM2 = setPrice
+                EnumContext.UNIT_PRICE -> unitPrice = setPrice
+                EnumContext.UNIT_PRICE_P1 -> unitPriceP1 = setPrice
+                EnumContext.UNIT_PRICE_P2 -> unitPriceP2 = setPrice
+                EnumContext.UNIT_PRICE_M1 -> unitPriceM1 = setPrice
+                EnumContext.UNIT_PRICE_M2 -> unitPriceM2 = setPrice
             }
         }
 
