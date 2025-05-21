@@ -94,7 +94,7 @@ class SweetPotatoMarketActivity : BaseActivity() {
     }
 
     override fun initComponent() {
-        enumPotatoProduceType = EnumPotatoProduceType.TUBERS.produce()
+        enumPotatoProduceType = EnumPotatoProduceType.TUBERS.name.lowercase()
 
         val potatoMarket = database.potatoMarketDao().findOne()
         if (potatoMarket != null) {
