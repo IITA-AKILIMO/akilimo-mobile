@@ -1,7 +1,7 @@
 package com.akilimo.mobile.utils.enums
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 enum class EnumOperation : Parcelable {
