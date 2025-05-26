@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.akilimo.mobile.views.activities.DstRecommendationActivity">
+    tools:context=".views.activities.DstRecommendationActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,61 +20,94 @@
             <include
                 android:id="@+id/toolbar_layout"
                 layout="@layout/toolbar" />
-
         </com.google.android.material.appbar.AppBarLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:padding="@dimen/spacing_medium">
 
             <!-- Recommendation Display -->
-            <LinearLayout
-                android:id="@+id/recommendationLayout"
-                android:layout_width="match_parent"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/recommendationCard"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_medium"
-                android:orientation="vertical"
-                android:visibility="visible">
+                android:layout_centerInParent="true"
+                android:layout_marginStart="@dimen/spacing_medium"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:layout_marginEnd="@dimen/spacing_medium"
+                android:minWidth="280dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="@dimen/dimen_5"
+                app:cardElevation="4dp">
 
-                <TextView
-                    android:id="@+id/txtRecType"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/spacing_medium"
-                    android:text="@string/lbl_recommendations"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/font_size_16" />
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_large">
 
-                <TextView
-                    android:id="@+id/txtRecommendation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/spacing_medium"
-                    android:text="@string/lbl_get_recommendations"
-                    android:textColor="@android:color/darker_gray"
-                    android:textSize="@dimen/font_size_14" />
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/txtRecType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lbl_recommendations"
+                        android:textAlignment="center"
+                        android:textColor="@color/primaryLightColor"
+                        android:textSize="@dimen/font_size_18"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtRecommendation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_large"
+                        android:lineSpacingExtra="@dimen/spacing_middle"
+                        android:text="@string/lbl_get_recommendations"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_size_16" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <!-- Error Display -->
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/errorImage"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/errorContainer"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:visibility="visible"
-                app:srcCompat="@drawable/ic_error" />
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/errorLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/errorImage"
-                android:layout_centerInParent="true"
-                android:layout_margin="@dimen/spacing_medium"
-                android:text="@string/lbl_compute_error"
-                android:textAlignment="center"
-                android:textColor="@color/red_A400"
-                android:visibility="visible" />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/errorImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_error" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/errorLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/lbl_compute_error"
+                    android:textAlignment="center"
+                    android:textColor="@color/red_A400"
+                    android:textSize="@dimen/font_size_14" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRetry"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_large"
+                    android:text="@string/lbl_retry"
+                    android:textColor="@color/colorAccentDark"
+                    app:cornerRadius="@dimen/dimen_5"
+                    app:icon="@drawable/ic_refresh"
+                    app:iconPadding="@dimen/spacing_medium"
+                    app:iconTint="@color/colorAccentDark" />
+            </LinearLayout>
 
             <!-- Progress Indicator -->
             <LinearLayout
@@ -82,7 +115,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:layout_margin="@dimen/spacing_medium"
                 android:orientation="vertical"
                 android:visibility="gone">
 
@@ -90,26 +122,11 @@
                     android:layout_width="50dp"
                     android:layout_height="40dp"
                     android:background="@color/colorAccent" />
-
             </LinearLayout>
-
         </RelativeLayout>
     </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabRetry"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_large"
-        android:contentDescription="@string/app_name"
-        android:tint="@color/colorAccentDark"
-        app:backgroundTint="@color/white"
-        app:fabSize="auto"
-        app:layout_anchor="@id/toolbar_layout"
-        app:layout_anchorGravity="end|right|bottom"
-        app:rippleColor="@color/purple_100"
-        app:srcCompat="@drawable/ic_refresh" />
-
+    <!-- Bottom Button -->
     <include
         android:id="@+id/single_button"
         layout="@layout/bottom_single_button_layout" />
