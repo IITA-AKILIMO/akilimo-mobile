@@ -55,12 +55,12 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
 
             errorLabel.visibility = View.GONE
             errorImage.visibility = View.GONE
-            recommendationLayout.visibility = View.GONE
+            recommendationCard.visibility = View.GONE
         }
 
 
         val userProfile = database.profileInfoDao().findOne()
-        binding.fabRetry.setOnClickListener { view: View? ->
+        binding.btnRetry.setOnClickListener { view: View? ->
             displayDialog(userProfile)
         }
 
@@ -97,7 +97,7 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
                 lytProgress.visibility = View.GONE
                 errorImage.visibility = View.VISIBLE
                 errorLabel.visibility = View.VISIBLE
-                recommendationLayout.visibility = View.GONE
+                recommendationCard.visibility = View.GONE
             }
         }
     }
@@ -119,7 +119,7 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
                 visibility = View.VISIBLE
                 alpha = 1.0f
             }
-            recommendationLayout.visibility = View.GONE
+            recommendationCard.visibility = View.GONE
             errorLabel.visibility = View.GONE
             errorImage.visibility = View.GONE
         }
@@ -137,7 +137,7 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
                     val recommendationResp = response.body()!!
                     binding.lytProgress.visibility = View.GONE
                     initializeData(recommendationResp)
-                    binding.recommendationLayout.visibility = View.VISIBLE
+                    binding.recommendationCard.visibility = View.VISIBLE
                 } else {
 
                     val error = response.parseError()
@@ -149,7 +149,7 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
                         lytProgress.visibility = View.GONE
                         errorImage.visibility = View.VISIBLE
                         errorLabel.visibility = View.VISIBLE
-                        recommendationLayout.visibility = View.GONE
+                        recommendationCard.visibility = View.GONE
                     }
                 }
             }
@@ -159,7 +159,7 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
                     lytProgress.visibility = View.GONE
                     errorImage.visibility = View.VISIBLE
                     errorLabel.visibility = View.VISIBLE
-                    recommendationLayout.visibility = View.GONE
+                    recommendationCard.visibility = View.GONE
 
                     errorLabel.text = ex.message
                 }
