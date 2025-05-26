@@ -36,6 +36,7 @@
 
     <!--dimens for font size-->
     <dimen name="font_size_12">12sp</dimen>
+    <dimen name="font_size_14">14sp</dimen>
     <dimen name="font_size_16">16sp</dimen>
     <dimen name="font_size_24">24sp</dimen>
 
