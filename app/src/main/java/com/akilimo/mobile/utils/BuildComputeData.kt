@@ -227,7 +227,7 @@ class BuildComputeData(val context: Context) {
             computeRequest.apply {
                 starchFactoryName = cassavaMarket.starchFactory.orIfBlank(DEFAULT_UNAVAILABLE)
                 sellToStarchFactory = cassavaMarket.isStarchFactoryRequired
-                cassavaProduceType = cassavaMarket.produceType
+                cassavaProduceType = cassavaMarket.produceType.lowercase()
                 cassavaUnitWeight = cassavaMarket.unitWeight
                 cassavaUnitPrice = cassavaMarket.unitPrice
             }
@@ -239,7 +239,7 @@ class BuildComputeData(val context: Context) {
     private fun buildMaizeMarketOutlet(computeRequest: ComputeRequest): ComputeRequest {
         database.maizeMarketDao().findOne()?.let { maizeMarket ->
             computeRequest.apply {
-                maizeProduceType = maizeMarket.produceType
+                maizeProduceType = maizeMarket.produceType.lowercase()
                 maizeUnitWeight = maizeMarket.unitWeight
                 maizeUnitPrice = maizeMarket.exactPrice
             }
@@ -251,7 +251,7 @@ class BuildComputeData(val context: Context) {
     private fun buildSweetPotatoMarketOutlet(computeRequest: ComputeRequest): ComputeRequest {
         database.potatoMarketDao().findOne()?.let { potatoMarket ->
             computeRequest.apply {
-                sweetPotatoProduceType = potatoMarket.produceType
+                sweetPotatoProduceType = potatoMarket.produceType.lowercase()
                 sweetPotatoUnitWeight = potatoMarket.unitWeight
                 sweetPotatoUnitPrice = potatoMarket.unitPrice
             }
