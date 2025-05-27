@@ -45,9 +45,6 @@ jobs:
         uses: asadmansr/android-test-report-action@v1.2.0
         if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
 
-      - name: Update build version
-        run: curl -s https://munywele.co.ke/app-releases/akilimo/update
-
   build_artifacts:
     if: contains(github.ref, 'version-fix') || contains(github.ref, 'main')
     needs: run_tests
