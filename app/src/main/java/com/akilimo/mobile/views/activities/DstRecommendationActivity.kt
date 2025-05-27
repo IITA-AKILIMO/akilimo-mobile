@@ -52,10 +52,8 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
                 visibility = View.VISIBLE
                 alpha = 1.0f
             }
-
-            errorLabel.visibility = View.GONE
-            errorImage.visibility = View.GONE
             recommendationCard.visibility = View.GONE
+            errorContainer.visibility = View.GONE
         }
 
 
@@ -69,8 +67,8 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
             startActivityForResult(surveyIntent, MySurveyActivity.REQUEST_CODE)
         }
 
-        displayDialog(userProfile)
-//        loadingAndDisplayContent()
+//        displayDialog(userProfile)
+        loadingAndDisplayContent()
     }
 
     override fun initComponent() {}
@@ -120,8 +118,7 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
                 alpha = 1.0f
             }
             recommendationCard.visibility = View.GONE
-            errorLabel.visibility = View.GONE
-            errorImage.visibility = View.GONE
+            errorContainer.visibility = View.GONE
         }
 
         val buildComputeData = BuildComputeData(this@DstRecommendationActivity)
@@ -140,32 +137,51 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
                     binding.recommendationCard.visibility = View.VISIBLE
                 } else {
 
-                    val error = response.parseError()
-                    if (error != null) {
-                        binding.errorLabel.text = error.message
+                    // Handle HTTP errors and unreachable server (like 502, 503, etc.)
+                    val errorCode = response.code()
+                    val errorMessage = when (errorCode) {
+                        502 -> "Bad Gateway. The server is currently unavailable."
+                        503 -> "Service Unavailable. Please try again later."
+                        500 -> "Internal Server Error. Please try again later."
+                        else -> "Something went wrong (${response.code()}). Please try again later."
                     }
 
+                    val parsedError = response.parseError()
+                    val displayMessage = parsedError?.message ?: errorMessage
+
                     binding.apply {
-                        lytProgress.visibility = View.GONE
-                        errorImage.visibility = View.VISIBLE
-                        errorLabel.visibility = View.VISIBLE
+                        binding.lytProgress.visibility = View.GONE
+                        errorLabel.text = displayMessage
                         recommendationCard.visibility = View.GONE
+                        errorContainer.visibility = View.VISIBLE
                     }
+
+                    Toast.makeText(
+                        this@DstRecommendationActivity,
+                        displayMessage,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    Sentry.captureMessage("API Error: $displayMessage")
                 }
             }
 
             override fun onFailure(call: retrofit2.Call<RecommendationResponse>, ex: Throwable) {
                 binding.apply {
                     lytProgress.visibility = View.GONE
-                    errorImage.visibility = View.VISIBLE
-                    errorLabel.visibility = View.VISIBLE
                     recommendationCard.visibility = View.GONE
-
-                    errorLabel.text = ex.message
+                    errorContainer.visibility = View.VISIBLE
                 }
 
-                Toast.makeText(this@DstRecommendationActivity, ex.message, Toast.LENGTH_SHORT)
-                    .show()
+                val message = when (ex) {
+                    is java.net.UnknownHostException -> "No internet connection. Please check your network."
+                    is java.net.ConnectException -> "Server is unreachable. Please try again later."
+                    is java.net.SocketTimeoutException -> "Request timed out. Please try again."
+                    else -> ex.localizedMessage ?: "An unexpected error occurred."
+                }
+
+                binding.errorLabel.text = message
+
+                Toast.makeText(this@DstRecommendationActivity, message, Toast.LENGTH_SHORT).show()
                 Sentry.captureException(ex)
             }
 
