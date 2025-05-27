@@ -101,12 +101,7 @@ static def computeBuildNumber() {
 }
 
 def computeVersionCode() {
-    def branch = System.env.BRANCH_NAME ?: "dev"
-    long unixTimestamp = Instant.now().getEpochSecond()
-    def versionCode = System.env.RELEASE_VERSION ? unixTimestamp.intValue() : 1613040938
-    if (branch == "dev") {
-        versionCode = 2000000000
-    }
+    def versionCode = System.env.VERSION_CODE.toInteger() ?: 1
     println("Version code is " + versionCode)
     return versionCode
 }
