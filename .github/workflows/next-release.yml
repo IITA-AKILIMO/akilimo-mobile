@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - develop
+      - ci/fix-auto-approve
 jobs:
   action-pull-request:
     runs-on: ubuntu-latest
@@ -17,7 +18,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           title: 'Next release'
-          reviewer: ${{ github.actor }}
+          reviewer: "munywele-bot"
           assignee: ${{ github.actor }}
           target_branch: main
           label: automatic,release
