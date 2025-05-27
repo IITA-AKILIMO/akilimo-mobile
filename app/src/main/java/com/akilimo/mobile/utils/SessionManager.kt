@@ -166,29 +166,6 @@ class SessionManager(context: Context) {
             ?: ""
     }
 
-    fun setForward(goForward: Boolean) {
-        editor.putBoolean("goF", goForward).apply()
-    }
-
-    fun goForward(): Boolean {
-        return pref.getBoolean("goF", true)
-    }
-
-    fun setApiUser(user: String) {
-        editor.putString("apiUser", user).apply()
-    }
-
-    fun getApiUser(): String {
-        return pref.getString("apiUser", "") ?: ""
-    }
-
-    fun setApiPass(pass: String) {
-        editor.putString("apiPass", pass).apply()
-    }
-
-    fun getApiPass(): String {
-        return pref.getString("apiPass", "") ?: ""
-    }
 
     fun setRememberUserInfo(rememberUserInfo: Boolean) {
         editor.putBoolean("rememberUserInfo", rememberUserInfo).apply()
