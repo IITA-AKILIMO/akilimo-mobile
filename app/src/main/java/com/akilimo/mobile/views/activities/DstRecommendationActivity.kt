@@ -67,8 +67,8 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
             startActivityForResult(surveyIntent, MySurveyActivity.REQUEST_CODE)
         }
 
-//        displayDialog(userProfile)
-        loadingAndDisplayContent()
+        displayDialog(userProfile)
+//        loadingAndDisplayContent()
     }
 
     override fun initComponent() {}
