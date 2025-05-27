@@ -17,8 +17,7 @@ class SessionManager(context: Context) {
     private val editor: SharedPreferences.Editor = pref.edit()
 
     fun getAkilimoEndpoint(): String {
-        return "https://stag-emerging-dodo.ngrok-free.app/api/"
-        // return pref.getString("apiResource", "https://api.akilimo.org/") ?: ""
+        return pref.getString("apiResource", "https://api.akilimo.org/") ?: ""
     }
 
     fun setAkilimoEndpoint(apiResource: String?) {
