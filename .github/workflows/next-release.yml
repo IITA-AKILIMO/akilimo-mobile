@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - develop
-      - ci/fix-auto-approve
 jobs:
   action-pull-request:
     runs-on: ubuntu-latest
