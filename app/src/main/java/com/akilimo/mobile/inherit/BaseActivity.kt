@@ -127,14 +127,18 @@ abstract class BaseActivity : AppCompatActivity() {
         sessionManager.updateNotificationCount(notificationCount)
 
         val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE) // before
-        dialog.setContentView(R.layout.dialog_notification)
-        dialog.setCancelable(true)
+        dialog.apply {
+            requestWindowFeature(Window.FEATURE_NO_TITLE) // before
+            setContentView(R.layout.dialog_notification)
+            setCancelable(true)
+        }
 
         val lp = WindowManager.LayoutParams()
-        lp.copyFrom(dialog.window!!.attributes)
-        lp.width = WindowManager.LayoutParams.WRAP_CONTENT
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+        lp.apply {
+            copyFrom(dialog.window!!.attributes)
+            width = WindowManager.LayoutParams.WRAP_CONTENT
+            height = WindowManager.LayoutParams.WRAP_CONTENT
+        }
 
 
         val title = dialog.findViewById<TextView>(R.id.title)
@@ -143,11 +147,11 @@ abstract class BaseActivity : AppCompatActivity() {
         title.text = titleText
         content.text = contentText
 
-        if (buttonTitle != null) {
-            if (buttonTitle.isNotEmpty()) {
-                btnClose.text = buttonTitle
-            }
+
+        if (!buttonTitle.isNullOrEmpty()) {
+            btnClose.text = buttonTitle
         }
+
         btnClose.setOnClickListener { view: View? ->
             dialog.dismiss()
         }
@@ -167,14 +171,19 @@ abstract class BaseActivity : AppCompatActivity() {
     ) {
         try {
             val dialog = Dialog(this@BaseActivity)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE) // before
-            dialog.setContentView(R.layout.dialog_warning)
-            dialog.setCancelable(true)
+
+            dialog.apply {
+                requestWindowFeature(Window.FEATURE_NO_TITLE) // before
+                setContentView(R.layout.dialog_warning)
+                setCancelable(true)
+            }
 
             val lp = WindowManager.LayoutParams()
-            lp.copyFrom(dialog.window!!.attributes)
-            lp.width = WindowManager.LayoutParams.WRAP_CONTENT
-            lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+            lp.apply {
+                copyFrom(dialog.window!!.attributes)
+                width = WindowManager.LayoutParams.WRAP_CONTENT
+                height = WindowManager.LayoutParams.WRAP_CONTENT
+            }
 
 
             val title = dialog.findViewById<TextView>(R.id.title)
@@ -186,6 +195,7 @@ abstract class BaseActivity : AppCompatActivity() {
             if (!buttonTitle.isNullOrEmpty()) {
                 btnClose.text = buttonTitle
             }
+
             btnClose.setOnClickListener { view: View? ->
                 dialog.dismiss()
             }
