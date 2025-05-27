@@ -146,8 +146,6 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
                         configListDict["location_iq"]?.let { setLocationIqToken(it) }
                         configListDict["mapbox"]?.let { setMapBoxApiKey(it) }
                         configListDict["privacy"]?.let { setTermsLink(it) }
-                        configListDict["api_user"]?.let { setApiUser(it) }
-                        configListDict["api_pass"]?.let { setApiPass(it) }
                         configListDict["api_refresh_key"]?.let { setApiRefreshToken(it) }
                         configListDict["api_token"]?.let { setApiToken(it) }
                     }
