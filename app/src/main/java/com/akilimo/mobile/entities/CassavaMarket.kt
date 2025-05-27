@@ -13,7 +13,7 @@ data class CassavaMarket(
     var id: Int? = null,
 
     @ColumnInfo(name = "produce_type")
-    var produceType: String = EnumCassavaProduceType.ROOTS.produce(),
+    var produceType: String = EnumCassavaProduceType.ROOTS.name,
 
     @ColumnInfo(name = "unit_of_sale")
     var unitOfSale: String? = null,

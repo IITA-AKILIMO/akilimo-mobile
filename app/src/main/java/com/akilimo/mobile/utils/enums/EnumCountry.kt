@@ -3,21 +3,18 @@ package com.akilimo.mobile.utils.enums
 import android.content.Context
 import android.os.Parcelable
 import com.akilimo.mobile.R
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import org.jetbrains.annotations.NotNull
 
 @Parcelize
 enum class EnumCountry : Parcelable {
     Nigeria {
-        override fun countryName(): String {
-            return "Nigeria"
-        }
 
         override fun countryCode(): String {
             return "NG"
         }
 
-        override fun currency(): String {
+        override fun currencyCode(): String {
             return "NGN"
         }
 
@@ -26,15 +23,11 @@ enum class EnumCountry : Parcelable {
         }
     },
     Tanzania {
-        override fun countryName(): String {
-            return "Tanzania"
-        }
-
         override fun countryCode(): String {
             return "TZ"
         }
 
-        override fun currency(): String {
+        override fun currencyCode(): String {
             return "TZS"
         }
 
@@ -43,15 +36,13 @@ enum class EnumCountry : Parcelable {
         }
     },
     Kenya {
-        override fun countryName(): String {
-            return "Kenya"
-        }
+
 
         override fun countryCode(): String {
             return "KE"
         }
 
-        override fun currency(): String {
+        override fun currencyCode(): String {
             return "KES"
         }
 
@@ -60,15 +51,13 @@ enum class EnumCountry : Parcelable {
         }
     },
     Ghana {
-        override fun countryName(): String {
-            return "Ghana"
-        }
+
 
         override fun countryCode(): String {
             return "GH"
         }
 
-        override fun currency(): String {
+        override fun currencyCode(): String {
             return "GHS"
         }
 
@@ -77,15 +66,13 @@ enum class EnumCountry : Parcelable {
         }
     },
     Rwanda {
-        override fun countryName(): String {
-            return "Rwanda"
-        }
+
 
         override fun countryCode(): String {
             return "RW"
         }
 
-        override fun currency(): String {
+        override fun currencyCode(): String {
             return "RWF"
         }
 
@@ -94,15 +81,13 @@ enum class EnumCountry : Parcelable {
         }
     },
     Burundi {
-        override fun countryName(): String {
-            return "Burundi"
-        }
+
 
         override fun countryCode(): String {
             return "BI"
         }
 
-        override fun currency(): String {
+        override fun currencyCode(): String {
             return "BIF"
         }
 
@@ -111,15 +96,11 @@ enum class EnumCountry : Parcelable {
         }
     },
     Other {
-        override fun countryName(): String {
-            return "U.S.A"
-        }
-
         override fun countryCode(): String {
             return "US"
         }
 
-        override fun currency(): String {
+        override fun currencyCode(): String {
             return "USD"
         }
 
@@ -129,7 +110,6 @@ enum class EnumCountry : Parcelable {
     };
 
     abstract fun countryCode(): String
-    abstract fun countryName(): String
-    abstract fun currency(): String
+    abstract fun currencyCode(): String
     abstract fun currencyName(context: Context): @NotNull String
 }

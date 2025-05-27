@@ -7,6 +7,7 @@ import android.os.Looper
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.MyStepperAdapter
 import com.akilimo.mobile.data.RemoteConfigResponse
@@ -78,7 +79,47 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         inAppUpdate.checkForUpdates()
         loadConfig()
         createFragmentArray()
-        initComponent()
+
+        stepperAdapter =
+            MyStepperAdapter(supportFragmentManager, this@HomeStepperActivity, fragmentArray)
+        mStepperLayout.adapter = stepperAdapter
+
+        mStepperLayout.setListener(object : StepperListener {
+            override fun onCompleted(completeButton: View?) {
+                val intent = Intent(this@HomeStepperActivity, RecommendationsActivity::class.java)
+                openActivity(intent)
+            }
+
+            override fun onError(verificationError: VerificationError) {
+                showCustomWarningDialog(
+                    getString(R.string.empty_text), verificationError.errorMessage
+                )
+            }
+
+            override fun onStepSelected(newStepPosition: Int) {
+                //not implemented
+            }
+
+            override fun onReturn() {
+                finish()
+            }
+        })
+
+        val rationale: String = getString(R.string.lbl_permission_rationale)
+
+        checkAppPermissions(rationale)
+    }
+
+    override fun validate(backPressed: Boolean) {
+        throw UnsupportedOperationException()
+    }
+
+    override fun initToolbar() {
+        throw UnsupportedOperationException()
+    }
+
+    override fun initComponent() {
+        throw UnsupportedOperationException()
     }
 
     private fun loadConfig() {
@@ -97,12 +138,14 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
                 }
                 if (configListDict.isNotEmpty()) {
                     sessionManager.apply {
-                        configListDict["api_endpoint"]?.let { setAkilimoEndpoint(it) }
+                        if (BuildConfig.DEBUG) {
+                            configListDict["api_endpoint_dev"]?.let { setAkilimoEndpoint(it) }
+                        } else {
+                            configListDict["api_endpoint"]?.let { setAkilimoEndpoint(it) }
+                        }
                         configListDict["location_iq"]?.let { setLocationIqToken(it) }
                         configListDict["mapbox"]?.let { setMapBoxApiKey(it) }
                         configListDict["privacy"]?.let { setTermsLink(it) }
-                        configListDict["api_user"]?.let { setApiUser(it) }
-                        configListDict["api_pass"]?.let { setApiPass(it) }
                         configListDict["api_refresh_key"]?.let { setApiRefreshToken(it) }
                         configListDict["api_token"]?.let { setApiToken(it) }
                     }
@@ -153,45 +196,6 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         fragmentArray.add(SummaryFragment.newInstance())
     }
 
-    override fun initComponent() {
-        stepperAdapter =
-            MyStepperAdapter(supportFragmentManager, this@HomeStepperActivity, fragmentArray)
-        mStepperLayout.adapter = stepperAdapter
-
-        mStepperLayout.setListener(object : StepperListener {
-            override fun onCompleted(completeButton: View?) {
-                val intent = Intent(this@HomeStepperActivity, RecommendationsActivity::class.java)
-                startActivity(intent)
-                openActivity()
-            }
-
-            override fun onError(verificationError: VerificationError) {
-                showCustomWarningDialog(
-                    getString(R.string.empty_text), verificationError.errorMessage
-                )
-            }
-
-            override fun onStepSelected(newStepPosition: Int) {
-                //not implemented
-            }
-
-            override fun onReturn() {
-                finish()
-            }
-        })
-
-        val rationale: String = getString(R.string.lbl_permission_rationale)
-
-        checkAppPermissions(rationale)
-    }
-
-    override fun validate(backPressed: Boolean) {
-        throw UnsupportedOperationException()
-    }
-
-    override fun initToolbar() {
-        throw UnsupportedOperationException()
-    }
 
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

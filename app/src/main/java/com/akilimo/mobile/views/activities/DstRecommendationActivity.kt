@@ -1,31 +1,20 @@
 package com.akilimo.mobile.views.activities
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.Toolbar
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.R
-import com.akilimo.mobile.adapters.RecommendationAdapter
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityDstRecomendationBinding
 import com.akilimo.mobile.entities.UserProfile
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.interfaces.IRecommendationCallBack
-import com.akilimo.mobile.mappers.ComputedResponse
-import com.akilimo.mobile.rest.request.RecommendationRequest
 import com.akilimo.mobile.rest.response.RecommendationResponse
+import com.akilimo.mobile.rest.retrofit.parseError
 import com.akilimo.mobile.utils.BuildComputeData
 import com.akilimo.mobile.views.fragments.dialog.RecommendationChannelDialog
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.sentry.Sentry
 
 /**
@@ -33,22 +22,10 @@ import io.sentry.Sentry
  * status bar and navigation/system bar) with user interaction.
  */
 class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
-    var toolbar: Toolbar? = null
-    var recyclerView: RecyclerView? = null
-    var fabRetry: FloatingActionButton? = null
-    var btnFeedback: AppCompatButton? = null
-    var errorImage: ImageView? = null
-    var errorLabel: TextView? = null
-    var lyt_progress: LinearLayout? = null
 
     private var _binding: ActivityDstRecomendationBinding? = null
     private val binding get() = _binding!!
 
-    var activity: Activity? = null
-    var recData: RecommendationRequest? = null
-    var recAdapter: RecommendationAdapter? = null
-    var recList: List<ComputedResponse>? = null
-    var userProfile: UserProfile? = null
     var recommendationChannelDialog: RecommendationChannelDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,65 +35,44 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
         )
         setContentView(binding.root)
 
-        toolbar = binding.toolbarLayout.toolbar
-        recyclerView = binding.recyclerView
-        fabRetry = binding.fabRetry
-        btnFeedback = binding.feedbackButton.btnGetRecommendation
-        errorImage = binding.errorImage
-        errorLabel = binding.errorLabel
-        lyt_progress = binding.lytProgress
 
-        btnFeedback!!.setText(R.string.lbl_provide_feedback)
-        initToolbar()
-        initComponent()
-    }
+        binding.singleButton.apply {
+            btnAction.setText(R.string.lbl_provide_feedback)
+        }
 
-    override fun initToolbar() {
-        toolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.title = getString(R.string.lbl_recommendations)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        toolbar!!.setNavigationOnClickListener { v: View? ->
+        setupToolbar(binding.toolbarLayout.toolbar, R.string.lbl_recommendations) {
             closeActivity(false)
         }
-    }
-
-    override fun initComponent() {
-        val database = getDatabase(this@DstRecommendationActivity)
-        recyclerView!!.visibility = View.GONE
-        recyclerView!!.layoutManager = LinearLayoutManager(this@DstRecommendationActivity)
-        recyclerView!!.setHasFixedSize(true)
-
-        recAdapter = RecommendationAdapter()
-        userProfile = database.profileInfoDao().findOne()
-
-        lyt_progress!!.visibility = View.VISIBLE
-        lyt_progress!!.alpha = 1.0f
-        recyclerView!!.visibility = View.GONE
-        errorLabel!!.visibility = View.GONE
-        errorImage!!.visibility = View.GONE
 
 
-        fabRetry!!.setOnClickListener { view: View? ->
-            if (userProfile != null) {
-                displayDialog(userProfile)
+
+
+        binding.apply {
+            lytProgress.apply {
+                visibility = View.VISIBLE
+                alpha = 1.0f
             }
+            recommendationCard.visibility = View.GONE
+            errorContainer.visibility = View.GONE
         }
 
-        btnFeedback!!.setOnClickListener { view: View? ->
-            //launch the feedback dialog
+
+        val userProfile = database.profileInfoDao().findOne()
+        binding.btnRetry.setOnClickListener { view: View? ->
+            displayDialog(userProfile)
+        }
+
+        binding.singleButton.btnAction.setOnClickListener {
             val surveyIntent = Intent(this, MySurveyActivity::class.java)
             startActivityForResult(surveyIntent, MySurveyActivity.REQUEST_CODE)
         }
 
         displayDialog(userProfile)
+//        loadingAndDisplayContent()
     }
 
-
-    private fun buildRecommendationData() {
-        val buildComputeData = BuildComputeData(this@DstRecommendationActivity)
-        recData = buildComputeData.buildRecommendationReq()
-        loadingAndDisplayContent()
+    override fun initComponent() {}
+    override fun initToolbar() {
     }
 
 
@@ -134,18 +90,20 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
             recommendationChannelDialog!!.isCancelable = false
         } else {
             //show a message
-            errorLabel!!.setText(R.string.lbl_no_profile_info)
-            lyt_progress!!.visibility = View.GONE
-            errorImage!!.visibility = View.VISIBLE
-            errorLabel!!.visibility = View.VISIBLE
-            recyclerView!!.visibility = View.GONE
+            binding.apply {
+                errorLabel.setText(R.string.lbl_no_profile_info)
+                lytProgress.visibility = View.GONE
+                errorImage.visibility = View.VISIBLE
+                errorLabel.visibility = View.VISIBLE
+                recommendationCard.visibility = View.GONE
+            }
         }
     }
 
     override fun onDataReceived(userProfile: UserProfile) {
         val database = getDatabase(this@DstRecommendationActivity)
         database.profileInfoDao().update(userProfile)
-        buildRecommendationData()
+        loadingAndDisplayContent()
     }
 
     override fun onDismiss() {
@@ -154,11 +112,17 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
 
 
     private fun loadingAndDisplayContent() {
-        lyt_progress!!.visibility = View.VISIBLE
-        lyt_progress!!.alpha = 1.0f
-        recyclerView!!.visibility = View.GONE
-        errorLabel!!.visibility = View.GONE
-        errorImage!!.visibility = View.GONE
+        binding.apply {
+            lytProgress.apply {
+                visibility = View.VISIBLE
+                alpha = 1.0f
+            }
+            recommendationCard.visibility = View.GONE
+            errorContainer.visibility = View.GONE
+        }
+
+        val buildComputeData = BuildComputeData(this@DstRecommendationActivity)
+        val recData = buildComputeData.buildRecommendationReq()
 
         val call = AkilimoApi.apiService.computeRecommendations(recData)
         call.enqueue(object : retrofit2.Callback<RecommendationResponse> {
@@ -168,77 +132,89 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
             ) {
                 if (response.isSuccessful) {
                     val recommendationResp = response.body()!!
-                    lyt_progress!!.visibility = View.GONE
-                    recAdapter!!.setData(recList!!)
-                    recyclerView!!.adapter = recAdapter
-                    recyclerView!!.visibility = View.VISIBLE
-                    recList = initializeData(recommendationResp)
+                    binding.lytProgress.visibility = View.GONE
+                    initializeData(recommendationResp)
+                    binding.recommendationCard.visibility = View.VISIBLE
+                } else {
+
+                    // Handle HTTP errors and unreachable server (like 502, 503, etc.)
+                    val errorCode = response.code()
+                    val errorMessage = when (errorCode) {
+                        502 -> "Bad Gateway. The server is currently unavailable."
+                        503 -> "Service Unavailable. Please try again later."
+                        500 -> "Internal Server Error. Please try again later."
+                        else -> "Something went wrong (${response.code()}). Please try again later."
+                    }
+
+                    val parsedError = response.parseError()
+                    val displayMessage = parsedError?.message ?: errorMessage
+
+                    binding.apply {
+                        binding.lytProgress.visibility = View.GONE
+                        errorLabel.text = displayMessage
+                        recommendationCard.visibility = View.GONE
+                        errorContainer.visibility = View.VISIBLE
+                    }
+
+                    Toast.makeText(
+                        this@DstRecommendationActivity,
+                        displayMessage,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    Sentry.captureMessage("API Error: $displayMessage")
                 }
             }
 
             override fun onFailure(call: retrofit2.Call<RecommendationResponse>, ex: Throwable) {
-                lyt_progress!!.visibility = View.GONE
-                errorImage!!.visibility = View.VISIBLE
-                errorLabel!!.visibility = View.VISIBLE
-                recyclerView!!.visibility = View.GONE
+                binding.apply {
+                    lytProgress.visibility = View.GONE
+                    recommendationCard.visibility = View.GONE
+                    errorContainer.visibility = View.VISIBLE
+                }
 
-                Toast.makeText(this@DstRecommendationActivity, ex.message, Toast.LENGTH_SHORT)
-                    .show()
+                val message = when (ex) {
+                    is java.net.UnknownHostException -> "No internet connection. Please check your network."
+                    is java.net.ConnectException -> "Server is unreachable. Please try again later."
+                    is java.net.SocketTimeoutException -> "Request timed out. Please try again."
+                    else -> ex.localizedMessage ?: "An unexpected error occurred."
+                }
+
+                binding.errorLabel.text = message
+
+                Toast.makeText(this@DstRecommendationActivity, message, Toast.LENGTH_SHORT).show()
                 Sentry.captureException(ex)
             }
 
         })
     }
 
-    private fun initializeData(recommendationResponse: RecommendationResponse): List<ComputedResponse> {
-        val recList: MutableList<ComputedResponse> = ArrayList()
+    private fun initializeData(recommendationResponse: RecommendationResponse) {
 
-        val FR = recommendationResponse.fertilizerRecText
-        val IC = recommendationResponse.interCroppingRecText
-        val PP = recommendationResponse.plantingPracticeRecText
-        val SP = recommendationResponse.scheduledPlantingRecText
+        var label = getString(R.string.lbl_no_recommendations)
 
-        var computedResponse: ComputedResponse
+        var recText = recommendationResponse.recommendation
+        var recType = recommendationResponse.recType
 
-        if (!FR.isNullOrEmpty()) {
-            computedResponse = ComputedResponse()
-            recList.add(computedResponse.createObject(getString(R.string.lbl_fertilizer_rec), FR))
+        if (recText.isNullOrEmpty()) {
+            recText = getString(R.string.lbl_no_recommendations_prompt)
         }
 
-        if (!IC.isNullOrEmpty()) {
-            computedResponse = ComputedResponse()
-            recList.add(computedResponse.createObject(getString(R.string.lbl_intercrop_rec), IC))
+        if (recType.equals("FR")) {
+            label = getString(R.string.lbl_fertilizer_rec)
         }
 
-        if (!PP.isNullOrEmpty()) {
-            computedResponse = ComputedResponse()
-            recList.add(
-                computedResponse.createObject(
-                    getString(R.string.lbl_planting_practices_rec),
-                    PP
-                )
-            )
+        if (recType.equals("IC")) {
+            label = getString(R.string.lbl_intercrop_rec)
+        }
+        if (recType.equals("PP")) {
+            label = getString(R.string.lbl_planting_practices_rec)
+        }
+        if (recType.equals("SP")) {
+            label = getString(R.string.lbl_scheduled_planting_rec)
         }
 
-        if (!SP.isNullOrEmpty()) {
-            computedResponse = ComputedResponse()
-            recList.add(
-                computedResponse.createObject(
-                    getString(R.string.lbl_scheduled_planting_rec),
-                    SP
-                )
-            )
-        }
 
-        if (recList.size <= 0) {
-            computedResponse = ComputedResponse()
-            recList.add(
-                computedResponse.createObject(
-                    getString(R.string.lbl_no_recommendations),
-                    getString(R.string.lbl_no_recommendations_prompt)
-                )
-            )
-        }
-        return recList
+        binding.txtRecommendation.text = recText
+        binding.txtRecType.text = label
     }
 }

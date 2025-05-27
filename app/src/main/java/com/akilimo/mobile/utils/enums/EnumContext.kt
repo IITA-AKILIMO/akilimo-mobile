@@ -1,5 +1,5 @@
 package com.akilimo.mobile.utils.enums
 
 enum class EnumContext {
-    unit_price, unit_price_p1, unit_price_p2, unit_price_m1, unit_price_m2
+    UNIT_PRICE, UNIT_PRICE_P1, UNIT_PRICE_P2, UNIT_PRICE_M1, UNIT_PRICE_M2
 }

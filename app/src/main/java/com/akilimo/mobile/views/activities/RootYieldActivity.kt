@@ -8,7 +8,7 @@ import com.akilimo.mobile.adapters.FieldYieldAdapter
 import com.akilimo.mobile.databinding.ActivityRootYieldBinding
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.FieldYield
-import com.akilimo.mobile.entities.UseCases
+import com.akilimo.mobile.entities.UseCase
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.IFieldYieldDismissListener
 import com.akilimo.mobile.utils.TheItemAnimation
@@ -26,7 +26,7 @@ class RootYieldActivity : BaseActivity() {
     private val binding get() = _binding!!
 
     private var savedYield: FieldYield? = null
-    private var useCase: UseCases? = null
+    private var useCase: UseCase? = null
     private var mAdapter: FieldYieldAdapter? = null
 
     private var selectedYieldAmount = 0.0
@@ -53,7 +53,7 @@ class RootYieldActivity : BaseActivity() {
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
             countryCode = profileInfo.countryCode
-            currency = profileInfo.currencyCode
+            currencyCode = profileInfo.currencyCode
         }
 
         savedYield = database.fieldYieldDao().findOne()
@@ -96,7 +96,7 @@ class RootYieldActivity : BaseActivity() {
 
         var title = getString(R.string.lbl_typical_yield_question, tonnage)
         if (useCase != null) {
-            if (useCase!!.name == EnumUseCase.FR.name) {
+            if (useCase!!.useCaseName == EnumUseCase.FR.name) {
                 title = getString(R.string.lbl_typical_yield_question_fr, tonnage)
             }
         }
@@ -148,8 +148,8 @@ class RootYieldActivity : BaseActivity() {
         })
 
         binding.twoButtons.apply {
-            btnFinish.setOnClickListener { view: View? -> validate(true) }
-            btnCancel.setOnClickListener { view: View? -> closeActivity(false) }
+            btnFinish.setOnClickListener { validate(true) }
+            btnCancel.setOnClickListener { closeActivity(false) }
         }
     }
 
@@ -171,7 +171,7 @@ class RootYieldActivity : BaseActivity() {
         database.adviceStatusDao()
             .insert(AdviceStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD.name, true))
 
-        closeActivity(backPressed)
+        closeActivity(false)
     }
 
     private fun setYieldData(areaUnit: String): List<FieldYield> {

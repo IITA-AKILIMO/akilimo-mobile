@@ -6,6 +6,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'jacoco'
+//apply plugin: 'io.sentry.android.gradle'
 
 android {
     def releaseVersionName = computeBuildNumber()
@@ -43,7 +44,6 @@ android {
         }
         debug {
             resValue("string", "PORT_NUMBER", "9085")
-            versionNameSuffix ".dev"
             enableUnitTestCoverage true
             enableAndroidTestCoverage true
             //  pseudoLocalesEnabled true
@@ -76,9 +76,15 @@ android {
 }
 
 static def computeVersionName() {
-    def versionMajor = 22
+    def versionMajor = 26
     def versionMinor = LocalDateTime.now().getMonthValue()
     def buildNumber = LocalDateTime.now().getDayOfMonth()
+
+    def branch = System.env.BRANCH_NAME ?: "dev"
+    if (branch == "dev") {
+        buildNumber = 0
+        versionMinor = 0
+    }
 
     return String.format('%d.%d.%d', Integer.valueOf(System.env.VERSION_MAJOR ?: versionMajor),
             Integer.valueOf(System.env.VERSION_MINOR ?: versionMinor),
@@ -88,33 +94,20 @@ static def computeVersionName() {
 static def computeBuildNumber() {
     def newFile = new File("nextrelease.txt")
     newFile.createNewFile()
-
     def gitVersionTag = System.env.RELEASE_VERSION ?: computeVersionName()
-    def branch = System.env.BRANCH_NAME ?: "not-beta"
-    def buildNumber = System.env.BUILD_NUMBER ?: LocalDateTime.now().getDayOfMonth()
-
-    if (branch == "beta") {
-        def splitMe = gitVersionTag.split('\\.')
-        def versionMajor = splitMe[0]
-        def versionMinor = splitMe[1]
-        def versionPatchRaw = splitMe[2].split('-')
-        def versionPatch = versionPatchRaw[0].toInteger()
-        gitVersionTag = String.format('%d.%d.%d_beta_%d',
-                Integer.valueOf(versionMajor),
-                Integer.valueOf(versionMinor),
-                Integer.valueOf(versionPatch),
-                Integer.valueOf(buildNumber))
-
-    }
-
     println("This build tag is:" + gitVersionTag)
     newFile.write(gitVersionTag)
     return gitVersionTag
 }
 
 def computeVersionCode() {
+    def branch = System.env.BRANCH_NAME ?: "dev"
     long unixTimestamp = Instant.now().getEpochSecond()
     def versionCode = System.env.RELEASE_VERSION ? unixTimestamp.intValue() : 1613040938
+    if (branch == "dev") {
+        versionCode = 2000000000
+    }
+    println("Version code is " + versionCode)
     return versionCode
 }
 
@@ -135,7 +128,9 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
 
     //sentry
-    implementation 'io.sentry:sentry-android:6.19.1'
+    implementation 'io.sentry:sentry-android:6.34.0'
+//    implementation "io.sentry:sentry-android-okhttp:6.32.0"
+
 
     // google library ------------------------------------------------------------------------
     implementation 'com.google.android.material:material:1.5.0'
@@ -172,7 +167,8 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'              // image loader
     implementation 'com.mikhaellopez:circularimageview:4.3.0'           // circle image view
 
-    implementation 'net.danlew:android.joda:2.10.6'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.4.9'
+
     implementation 'com.github.mohammadatif:Animatoo:master'
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.2' //Feature discovery library
 
@@ -182,6 +178,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.11.0'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0' //TODO Will replace Volley eventually
     implementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.15.0"
 
 
     implementation 'com.fasterxml.jackson.core:jackson-core:2.17.1'
@@ -219,10 +216,12 @@ dependencies {
     kapt 'com.fasterxml.jackson.core:jackson-annotations:2.17.1'
 
     testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.17.1'
-    testImplementation 'joda-time:joda-time:2.12.2'
 
     testImplementation project(path: ':app')
     testImplementation 'junit:junit:4.13.2'
+    testImplementation 'com.jakewharton.threetenabp:threetenabp:1.4.9'
+    testImplementation 'org.mockito:mockito-core:4.5.1'
+
     androidTestImplementation 'androidx.test:runner:1.6.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 

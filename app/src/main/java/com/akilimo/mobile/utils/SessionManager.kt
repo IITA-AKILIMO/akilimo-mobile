@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.akilimo.mobile.BuildConfig
 import io.sentry.Sentry
-import org.joda.time.DateTimeZone
+import org.threeten.bp.ZoneId
 import java.util.UUID
 
 class SessionManager(context: Context) {
@@ -17,8 +17,7 @@ class SessionManager(context: Context) {
     private val editor: SharedPreferences.Editor = pref.edit()
 
     fun getAkilimoEndpoint(): String {
-        return "https://stag-emerging-dodo.ngrok-free.app/api/"
-        // return pref.getString("apiResource", "https://api.akilimo.org/") ?: ""
+        return pref.getString("apiResource", "https://api.akilimo.org/") ?: ""
     }
 
     fun setAkilimoEndpoint(apiResource: String?) {
@@ -110,11 +109,11 @@ class SessionManager(context: Context) {
         }
     }
 
-    fun getAppBuildDate(): String {
+    private fun getAppBuildDate(): String {
         return try {
             val unixTimestamp = BuildConfig.VERSION_CODE * 1000L
-            val parsedDateTime = DateHelper.unixTimeStampToDate(unixTimestamp, DateTimeZone.UTC)
-            parsedDateTime.toDate().toString()
+            val parsedDateTime = DateHelper.unixTimeStampToDate(unixTimestamp, ZoneId.of("UTC"))
+            parsedDateTime.toString()
         } catch (ex: Exception) {
             Sentry.captureException(ex)
             ""
@@ -167,29 +166,6 @@ class SessionManager(context: Context) {
             ?: ""
     }
 
-    fun setForward(goForward: Boolean) {
-        editor.putBoolean("goF", goForward).apply()
-    }
-
-    fun goForward(): Boolean {
-        return pref.getBoolean("goF", true)
-    }
-
-    fun setApiUser(user: String) {
-        editor.putString("apiUser", user).apply()
-    }
-
-    fun getApiUser(): String {
-        return pref.getString("apiUser", "") ?: ""
-    }
-
-    fun setApiPass(pass: String) {
-        editor.putString("apiPass", pass).apply()
-    }
-
-    fun getApiPass(): String {
-        return pref.getString("apiPass", "") ?: ""
-    }
 
     fun setRememberUserInfo(rememberUserInfo: Boolean) {
         editor.putBoolean("rememberUserInfo", rememberUserInfo).apply()

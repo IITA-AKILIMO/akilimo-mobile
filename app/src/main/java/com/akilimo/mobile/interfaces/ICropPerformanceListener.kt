@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull
 
 interface ICropPerformanceListener {
     fun onDismiss(
-        performance: @NotNull CropPerformance,
+        cropPerformance: @NotNull CropPerformance,
         performanceConfirmed: Boolean
     )
 }

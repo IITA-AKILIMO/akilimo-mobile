@@ -18,144 +18,92 @@ import io.sentry.Sentry
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import java.util.UUID
 import kotlin.math.roundToInt
 
 object Tools {
-    private val LOG_TAG = Tools::class.java.simpleName
-    private val mapper = ObjectMapper()
 
-    @JvmStatic
+    private val mapper: ObjectMapper = ObjectMapper().apply {
+        setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
+        configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
+        configure(SerializationFeature.INDENT_OUTPUT, true)
+    }
+
     fun displayImageOriginal(ctx: Context?, img: ImageView?, @DrawableRes drawable: Int) {
+        if (ctx == null || img == null) return
         try {
-            Glide.with(ctx!!).load(drawable).transition(DrawableTransitionOptions.withCrossFade())
-                .diskCacheStrategy(DiskCacheStrategy.NONE).into(img!!)
+            Glide.with(ctx)
+                .load(drawable)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .into(img)
         } catch (e: Exception) {
+            // Optional: log or ignore
         }
     }
 
-    @JvmStatic
-    fun formatCalendarToDateString(dateTime: Date): String {
-        val newFormat = SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH)
-        return newFormat.format(dateTime)
-    }
-
-    @JvmStatic
-    fun formatLongToDateString(dateTime: Long?): String {
-        return formatCalendarToDateString(Date(dateTime!!))
-    }
-
-
-    @JvmStatic
-    fun dpToPx(c: Context, dp: Int): Int {
-        val r = c.resources
+    fun dpToPx(context: Context, dp: Int): Int {
         return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), r.displayMetrics
+            TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), context.resources.displayMetrics
         ).roundToInt()
     }
 
-    @JvmStatic
     fun replaceNonNumbers(rawString: String, replaceWith: String?): String {
         return try {
-            rawString.replace("\\D+".toRegex(), replaceWith!!)
+            rawString.replace("\\D+".toRegex(), replaceWith ?: "")
         } catch (ex: Exception) {
             rawString
         }
     }
 
-    @JvmStatic
     fun replaceCharacters(
         rawString: String,
         stringToReplace: String?,
-        replaceWith: String?,
+        replaceWith: String?
     ): String {
-        var cleanedString = rawString
-        try {
-            cleanedString = rawString.replace(stringToReplace!!, replaceWith!!).trim { it <= ' ' }
+        return try {
+            rawString.replace(stringToReplace ?: "", replaceWith ?: "").trim()
         } catch (ex: Exception) {
-            ex.printStackTrace()
+            rawString
         }
-        return cleanedString
     }
 
-    @JvmStatic
-    fun parseNetworkError( ex: VolleyError): VolleyError {
-        return  ex
-    }
+    fun parseNetworkError(ex: VolleyError): VolleyError = ex
 
-    /**
-     * @param objectClass
-     * @return JsonObject
-     */
-    @JvmStatic
     fun prepareJsonObject(objectClass: RecommendationRequest): JSONObject? {
-        var jsonObject: JSONObject? = null
-        val jsonString: String
-        try {
-            mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
-            mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
-            mapper.configure(SerializationFeature.INDENT_OUTPUT, true)
-            jsonString = mapper.writeValueAsString(objectClass)
-            jsonObject = JSONObject(jsonString)
-        } catch (ex: Exception) {
-            Sentry.captureException(ex)
-        }
-        return jsonObject
+        return serializeObjectToJson(objectClass)
     }
 
-    @JvmStatic
     fun prepareJsonObject(objectClass: SurveyRequest): JSONObject? {
-        var jsonObject: JSONObject? = null
-        val jsonString: String
-        try {
-            mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
-            mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
-            mapper.configure(SerializationFeature.INDENT_OUTPUT, true)
-            jsonString = mapper.writeValueAsString(objectClass)
-            jsonObject = JSONObject(jsonString)
-        } catch (ex: Exception) {
-            Sentry.captureException(ex)
-        }
-        return jsonObject
+        return serializeObjectToJson(objectClass)
     }
 
-    private fun iterateJsonObjects(jObject: JSONObject): String? {
-        val keys: Iterator<*> = jObject.keys()
-        var message: String? = null
-        try {
-            while (keys.hasNext()) {
-                val key = keys.next() as String
-                val jsonObject = jObject[key]
-                when {
-                    jsonObject is JSONObject -> {
-                        message = jObject.getString(key)
-                        break
-                    }
+    private fun serializeObjectToJson(obj: Any): JSONObject? {
+        return try {
+            val jsonString = mapper.writeValueAsString(obj)
+            JSONObject(jsonString)
+        } catch (ex: Exception) {
+            Sentry.captureException(ex)
+            null
+        }
+    }
 
-                    jsonObject is JSONArray -> {
-                        val J = jObject[key] as JSONArray
-                        message = J[0].toString()
-                        break
+    fun iterateJsonObjects(jObject: JSONObject): String? {
+        return try {
+            jObject.keys().asSequence()
+                .mapNotNull { key ->
+                    when (val value = jObject[key]) {
+                        is JSONObject -> jObject.optString(key)
+                        is JSONArray -> value.optString(0)
+                        is String -> value
+                        else -> null
                     }
-
-                    jsonObject is String -> {
-                        //it is a string
-                        message = jObject.getString(key)
-                        break
-                    }
-                }
-            }
+                }.firstOrNull()
         } catch (e: JSONException) {
             e.printStackTrace()
+            null
         }
-        return message
     }
 
-    fun generateUUID(): String {
-        return UUID.randomUUID().toString()
-    }
-
+    fun generateUUID(): String = UUID.randomUUID().toString()
 }

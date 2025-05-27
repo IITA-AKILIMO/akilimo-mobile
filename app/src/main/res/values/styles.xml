@@ -1,21 +1,31 @@
 <resources>
 
-    <style name="AppTheme" parent="BaseTheme">
+    <style name="AppTheme" parent="BaseTheme" />
+
+    <style name="BaseTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
+        <!-- Material Design 2/3 Primary Colors -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryDark
+        </item> <!-- Rename from colorPrimaryDark -->
+        <item name="colorSecondary">@color/colorAccent</item>
+
+        <!-- App-wide font -->
         <item name="android:fontFamily">@font/ubuntu</item>
         <item name="fontFamily">@font/ubuntu</item>
-    </style>
 
-    <style name="BaseTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <!-- General window/action modes -->
         <item name="windowActionModeOverlay">true</item>
         <item name="android:actionModeBackground">@color/blue_grey_600</item>
-        <item name="android:dialogTheme">@style/Dialog.Theme</item>
 
-        <item name="ms_activeStepColor">@color/akilimoDarkGreen</item>
-        <item name="ms_inactiveStepColor">@color/akilimoLightGreen</item>
+        <!-- Dialog consistency -->
+        <item name="dialogTheme">@style/DialogTheme</item>
+    </style>
+
+    <!-- Create DialogTheme separately -->
+    <style name="DialogTheme" parent="Theme.MaterialComponents.Light.Dialog">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorSecondary">@color/colorAccent</item>
     </style>
 
     <style name="SplashThemeCommon" parent="AppTheme.NoActionBar">

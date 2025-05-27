@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.akilimo.mobile.views.activities.DstRecommendationActivity">
+    tools:context=".views.activities.DstRecommendationActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,80 +20,158 @@
             <include
                 android:id="@+id/toolbar_layout"
                 layout="@layout/toolbar" />
-
         </com.google.android.material.appbar.AppBarLayout>
 
-        <RelativeLayout
+        <!-- Main Content with ScrollView for better overflow handling -->
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/spacing_medium"
-                android:scrollbars="none"
-                android:scrollingCache="true"
-                tools:itemCount="1"
-                tools:listitem="@layout/content_compute_card" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/errorImage"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="visible"
-                app:srcCompat="@drawable/ic_error" />
+                android:minHeight="400dp"
+                android:padding="@dimen/spacing_medium">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/errorLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/errorImage"
-                android:layout_centerInParent="true"
-                android:layout_margin="@dimen/spacing_medium"
+                <!-- Recommendation Display -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/recommendationCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/spacing_medium"
+                    android:layout_marginEnd="@dimen/spacing_medium"
+                    android:maxWidth="400dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/dimen_5"
+                    app:cardElevation="4dp"
+                    app:strokeColor="@color/colorAccent"
+                    app:strokeWidth="0.5dp">
 
-                android:text="@string/lbl_compute_error"
-                android:textAlignment="center"
-                android:textColor="@color/red_A400"
-                android:visibility="visible" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_large">
 
-            <LinearLayout
-                android:id="@+id/lyt_progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_margin="@dimen/spacing_medium"
-                android:orientation="vertical"
-                android:visibility="gone">
+                        <!-- Optional icon for visual enhancement -->
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/imgRecommendationIcon"
+                            android:layout_width="@dimen/dimen_100"
+                            android:layout_height="@dimen/dimen_100"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="@dimen/spacing_medium"
+                            android:contentDescription="@string/app_name"
+                            app:srcCompat="@drawable/ic_lightbulb" />
 
-                <com.akilimo.mobile.widget.ViewLoadingDotsBounce
-                    android:layout_width="50dp"
-                    android:layout_height="40dp"
-                    android:background="@color/colorAccent" />
+                        <TextView
+                            android:id="@+id/txtRecType"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/spacing_medium"
+                            android:text="@string/lbl_recommendations"
+                            android:textAlignment="center"
+                            android:textColor="@color/primaryLightColor"
+                            android:textSize="@dimen/font_size_18"
+                            android:textStyle="bold" />
 
-            </LinearLayout>
+                        <!-- Subtle divider -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="@dimen/spacing_large"
+                            android:alpha="0.3"
+                            android:background="@color/primaryLightColor" />
 
-        </RelativeLayout>
+                        <TextView
+                            android:id="@+id/txtRecommendation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:lineSpacingExtra="@dimen/spacing_middle"
+                            android:text="@string/lbl_get_recommendations"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/font_size_16" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
+                <!-- Error Display -->
+                <LinearLayout
+                    android:id="@+id/errorContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_large"
+                    android:visibility="gone">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/errorImage"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_marginBottom="@dimen/spacing_large"
+                        android:contentDescription="@string/lbl_compute_error"
+                        app:srcCompat="@drawable/ic_error" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/errorLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_large"
+                        android:text="@string/lbl_compute_error"
+                        android:textAlignment="center"
+                        android:textColor="@color/red_A400"
+                        android:textSize="@dimen/font_size_14" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnRetry"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lbl_retry"
+                        android:textColor="@color/colorAccentDark"
+                        app:cornerRadius="@dimen/dimen_5"
+                        app:icon="@drawable/ic_refresh"
+                        app:iconGravity="textStart"
+                        app:iconPadding="@dimen/spacing_medium"
+                        app:iconTint="@color/colorAccentDark" />
+                </LinearLayout>
+
+                <!-- Progress Indicator -->
+                <LinearLayout
+                    android:id="@+id/lyt_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <com.akilimo.mobile.widget.ViewLoadingDotsBounce
+                        android:layout_width="60dp"
+                        android:layout_height="48dp"
+                        android:layout_marginBottom="@dimen/spacing_medium"
+                        android:background="@color/colorAccent" />
+
+                    <!-- Optional loading text -->
+                    <TextView
+                        android:id="@+id/txtLoadingMessage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lbl_processing_recommendations"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_size_14" />
+                </LinearLayout>
+            </FrameLayout>
+        </androidx.core.widget.NestedScrollView>
     </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabRetry"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_large"
-        android:contentDescription="@string/app_name"
-        android:tint="@color/colorAccentDark"
-        app:backgroundTint="@color/white"
-        app:fabSize="auto"
-        app:layout_anchor="@id/toolbar_layout"
-        app:layout_anchorGravity="end|right|bottom"
-        app:rippleColor="@color/purple_100"
-        app:srcCompat="@drawable/ic_refresh" />
-
+    <!-- Bottom Button -->
     <include
-        android:id="@+id/feedback_button"
+        android:id="@+id/single_button"
         layout="@layout/bottom_single_button_layout" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

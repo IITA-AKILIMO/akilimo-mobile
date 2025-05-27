@@ -19,7 +19,13 @@ data class CassavaPricePriceResponse(
 data class CassavaPrice(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "id")
-    @JsonProperty("id") val id: Int,
+    @JsonProperty("id")
+    val id: Int,
+
+    @ColumnInfo(name = "item_tag")
+    @JsonProperty("item_tag")
+    val itemTag: String = "",
+
 
     @ColumnInfo(name = "country_code")
     @JsonProperty("country_code")
@@ -33,6 +39,9 @@ data class CassavaPrice(
     @JsonProperty("max_local_price")
     val maxLocalPrice: Double = 0.0,
 
+    @ColumnInfo(name = "average_price")
+    @JsonProperty("average_price")
+    val averagePrice: Double = 0.0,
 
     @ColumnInfo(name = "min_allowed_price")
     @JsonProperty("min_allowed_price")
@@ -46,7 +55,8 @@ data class CassavaPrice(
     @JsonProperty("active")
     val active: Boolean = false,
 
-    @ColumnInfo(name = "average_price")
-    @JsonProperty("average_price")
-    val averagePrice: Double = 0.0
+    @ColumnInfo(name = "exact_price")
+    @JsonProperty("exact_price")
+    val exactPrice: Boolean = false
+
 )
