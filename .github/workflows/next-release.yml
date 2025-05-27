@@ -21,6 +21,7 @@ jobs:
           reviewer: "munywele-bot"
           assignee: ${{ github.actor }}
           target_branch: main
-          label: automatic,release
-          new_string: 'Preparing next release'  # or a dynamic short text
+          label: release
+          new_string: "** Automatic pull request **"
+          body: "** Automatic pull request **"
           get_diff: false
