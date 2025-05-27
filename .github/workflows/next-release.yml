@@ -21,6 +21,7 @@ jobs:
           assignee: ${{ github.actor }}
           target_branch: main
           label: release
-          new_string: "** Automatic pull request **"
-          body: "** Automatic pull request **"
+          old_string: "**Write you description here**"
+          new_string: ${{ github.event.commits[0].message }}
+          body: ${{ github.event.commits[0].message }}
           get_diff: false
