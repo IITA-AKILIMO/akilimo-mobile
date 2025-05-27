@@ -17,9 +17,11 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           title: 'Next release'
-          reviewer: ${{ github.actor }}
+          reviewer: "munywele-bot"
           assignee: ${{ github.actor }}
           target_branch: main
-          label: automatic,release
-          new_string: 'Preparing next release'  # or a dynamic short text
+          label: release
+          old_string: "**Write you description here**"
+          new_string: ${{ github.event.commits[0].message }}
+          body: ${{ github.event.commits[0].message }}
           get_diff: false
