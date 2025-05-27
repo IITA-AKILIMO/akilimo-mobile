@@ -46,7 +46,6 @@ abstract class BaseActivity : AppCompatActivity() {
     protected var currencySymbol: String = EnumCountry.Nigeria.currencyCode()
     protected var baseCurrency: String = "USD"
 
-    //    protected var enumUseCase: EnumUseCase =EnumUseCase.NA
     protected var areaUnit: String = "acre"
     protected var areaUnitText: String = "acre"
     protected var fieldSize: Double = 0.0
