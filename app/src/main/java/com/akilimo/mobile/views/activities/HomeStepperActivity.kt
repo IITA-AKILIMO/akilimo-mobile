@@ -7,6 +7,7 @@ import android.os.Looper
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.MyStepperAdapter
 import com.akilimo.mobile.data.RemoteConfigResponse
@@ -137,7 +138,11 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
                 }
                 if (configListDict.isNotEmpty()) {
                     sessionManager.apply {
-                        configListDict["api_endpoint"]?.let { setAkilimoEndpoint(it) }
+                        if (BuildConfig.DEBUG) {
+                            configListDict["api_endpoint_dev"]?.let { setAkilimoEndpoint(it) }
+                        } else {
+                            configListDict["api_endpoint"]?.let { setAkilimoEndpoint(it) }
+                        }
                         configListDict["location_iq"]?.let { setLocationIqToken(it) }
                         configListDict["mapbox"]?.let { setMapBoxApiKey(it) }
                         configListDict["privacy"]?.let { setTermsLink(it) }
