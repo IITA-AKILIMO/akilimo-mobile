@@ -170,7 +170,7 @@ jobs:
           whatsNewDirectory: release/distribution/whatsnew
 
       - name: Update build version
-        run: curl -s https://munywele.co.ke/app-releases/akilimo/pudate
+        run: curl -s https://munywele.co.ke/app-releases/akilimo/update
 
 
   upload_beta_artifacts:
