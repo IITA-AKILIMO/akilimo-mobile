@@ -74,6 +74,7 @@ class RecommendationsActivity : BaseActivity() {
     }
 
 
+    @Deprecated("Deprecated remove it completely")
     override fun initComponent() {
         frString = getString(R.string.lbl_fertilizer_recommendations)
         icMaizeString = getString(R.string.lbl_intercropping_maize)
@@ -206,7 +207,7 @@ class RecommendationsActivity : BaseActivity() {
             }
 
             if (intent != null) {
-                val useCase = database.useCaseDao().findOne().let { UseCase() }
+                val useCase = database.useCaseDao().findOne() ?: UseCase()
                 useCase.useCaseName = advice.name
                 database.useCaseDao().insertAll(useCase)
                 openActivity(intent)

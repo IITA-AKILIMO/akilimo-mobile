@@ -19,6 +19,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_58"
         android:text="@string/lbl_get_recommendations"
-        app:backgroundTint="@color/green_600"
+        android:textAllCaps="false"
         app:cornerRadius="@dimen/dimen_5" />
 </LinearLayout>

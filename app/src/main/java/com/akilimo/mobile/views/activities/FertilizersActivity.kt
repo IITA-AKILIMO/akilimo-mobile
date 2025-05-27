@@ -26,6 +26,7 @@ import com.akilimo.mobile.interfaces.IFertilizerDismissListener
 import com.akilimo.mobile.utils.FertilizerList.removeFertilizerByType
 import com.akilimo.mobile.utils.Tools.dpToPx
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.utils.enums.EnumUseCase
 import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.FertilizerPriceDialogFragment
 import com.akilimo.mobile.widget.SpacingItemDecoration
@@ -47,6 +48,7 @@ class FertilizersActivity : BaseActivity() {
     var errorImage: ImageView? = null
     var errorLabel: TextView? = null
 
+
     private var _binding: ActivityFertilizersBinding? = null
     private val binding get() = _binding!!
 
@@ -57,7 +59,7 @@ class FertilizersActivity : BaseActivity() {
     private var selectedFertilizers: MutableList<Fertilizer> = ArrayList()
     private var mAdapter: FertilizerGridAdapter? = null
     private var minSelection: Int = 2
-
+    private var useCase: String = EnumUseCase.NA.name
 
     companion object {
         var useCaseTag: String = "useCase"
@@ -80,23 +82,26 @@ class FertilizersActivity : BaseActivity() {
         errorImage = binding.errorImage
         errorLabel = binding.errorLabel
 
+        val intent = intent
+        if (intent != null) {
+            useCase = intent.getStringExtra(useCaseTag) ?: EnumUseCase.NA.name
+        }
+
+
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
             countryCode = profileInfo.countryCode
             currencyCode = profileInfo.currencyCode
         }
 
-        initToolbar()
+        setupToolbar(binding.toolbarLayout.toolbar, R.string.title_activity_fertilizer_choice) {
+            validateInput(false)
+        }
+
         initComponent()
     }
 
     override fun initToolbar() {
-        myToolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
-        setSupportActionBar(myToolbar)
-        supportActionBar!!.title = getString(R.string.title_activity_fertilizer_choice)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
-        myToolbar!!.setNavigationOnClickListener { v: View? -> validateInput(false) }
     }
 
     @Deprecated("Deprecated in Java")
@@ -127,8 +132,9 @@ class FertilizersActivity : BaseActivity() {
         mAdapter!!.setOnItemClickListener(object : FertilizerGridAdapter.OnItemClickListener {
             override fun onItemClick(view: View, clickedFertilizer: Fertilizer, position: Int) {
                 mAdapter!!.setActiveRowIndex(position)
-                var selectedType = database.fertilizerDao()
-                    .findOneByTypeAndCountry(clickedFertilizer.fertilizerType, countryCode)
+                var selectedType = database.fertilizerDao().findOneByTypeCountryAndUseCase(
+                    clickedFertilizer.fertilizerType.toString(), countryCode, useCase
+                )
                 if (selectedType == null) {
                     selectedType = clickedFertilizer
                 }
@@ -177,8 +183,7 @@ class FertilizersActivity : BaseActivity() {
         btnSave!!.setOnClickListener { view: View? ->
             database.adviceStatusDao().insert(
                 AdviceStatus(
-                    EnumAdviceTasks.AVAILABLE_FERTILIZERS.name,
-                    isMinSelected()
+                    EnumAdviceTasks.AVAILABLE_FERTILIZERS.name, isMinSelected()
                 )
             )
             if (isMinSelected()) {
@@ -189,9 +194,8 @@ class FertilizersActivity : BaseActivity() {
     }
 
     override fun validate(backPressed: Boolean) {
-        val database = getDatabase(this@FertilizersActivity)
-        availableFertilizersList = database.fertilizerDao().findAllByCountry(countryCode)
         if (mAdapter != null) {
+            availableFertilizersList = database.fertilizerDao().findAllByCountry(countryCode)
             mAdapter!!.setItems(availableFertilizersList)
         }
     }
@@ -210,6 +214,7 @@ class FertilizersActivity : BaseActivity() {
             mAdapter!!.setItems(availableFertilizersList)
             lyt_progress!!.visibility = View.GONE
             recyclerView!!.visibility = View.VISIBLE
+            return
         }
         val call = akilimoService.getFertilizers(countryCode = countryCode)
         call.enqueue(object : Callback<FertilizerResponse> {
@@ -221,7 +226,7 @@ class FertilizersActivity : BaseActivity() {
                     val availableFertilizersList = response.body()!!.data
                     val savedList = database.fertilizerDao().findAllByCountry(countryCode)
                     if (availableFertilizersList.isNotEmpty()) {
-                        if (savedList.size > 0) {
+                        if (savedList.isNotEmpty()) {
                             for (savedFertilizer in savedList) {
                                 // Loop arrayList1 items
                                 var found = false

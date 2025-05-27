@@ -61,6 +61,7 @@
     <string name="lbl_acre">acre</string>
     <string name="lbl_ha">ha</string>
     <string name="lbl_are">are</string>
+    <string name="lbl_m2" translatable="false">m\u00B2</string>
 
     <string name="lbl_cassava_field_size_no_ph">What is the size of your field?</string>
     <string name="lbl_cassava_field_size">What is the size of your field (in %1$s)?</string>
@@ -580,5 +581,12 @@
     <string name="location_info">Country: %1$s, Latitude: %2$.2f, Longitude: %3$.2f</string>
     <string name="lbl_cob_price">%1$.2f %2$s</string>
     <string name="lbl_use_this_date">Use this date</string>
-    <string name="lbl_separator">--</string>
+    <string name="lbl_separator" translatable="false">--</string>
+
+    <string name="update_downloaded">Update downloaded and ready to install</string>
+    <string name="update_failed">Failed to download update</string>
+    <string name="update_start_failed">Could not start the update</string>
+    <string name="update_cancelled">Update cancelled</string>
+    <string name="restart">RESTART</string>
+    <string name="lbl_processing_recommendations">Processing recommendations...</string>
 </resources>

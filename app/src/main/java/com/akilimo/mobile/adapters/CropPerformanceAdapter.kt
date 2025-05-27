@@ -23,7 +23,7 @@ class CropPerformanceAdapter(
     private var lastPosition = -1
     private var rowIndex = -1
     private val onAttach = true
-    private var performanceValue = "0"
+    private var performanceScore = 0
 
 
     interface OnItemClickListener {
@@ -34,10 +34,14 @@ class CropPerformanceAdapter(
         this.mOnItemClickListener = mItemClickListener
     }
 
-    fun setItems(performanceValue: String, items: List<CropPerformance>) {
-        this.items = items
-        this.performanceValue = performanceValue
-        notifyDataSetChanged()
+    fun setItems(
+        performanceScoreValue: Int,
+        performanceList: List<CropPerformance>,
+        positionChanged: Int = 0
+    ) {
+        items = performanceList
+        performanceScore = performanceScoreValue
+        notifyItemChanged(positionChanged)
     }
 
     inner class OriginalViewHolder(v: View) : RecyclerView.ViewHolder(v) {
@@ -61,7 +65,7 @@ class CropPerformanceAdapter(
         if (holder is OriginalViewHolder) {
 
             val maizePerformance = items[position]
-            val currentPerformanceValue = maizePerformance.performanceValue
+            val currentPerformanceValue = maizePerformance.performanceScore
             holder.name.text = maizePerformance.maizePerformanceLabel
             displayImageOriginal(ctx, holder.rootYieldImage, maizePerformance.imageId)
 
@@ -71,7 +75,7 @@ class CropPerformanceAdapter(
                 }
             }
 
-            if ((rowIndex == position) || (currentPerformanceValue == performanceValue)) {
+            if ((rowIndex == position) || (currentPerformanceValue == performanceScore)) {
                 holder.mainCard.setCardBackgroundColor(ctx.resources.getColor(R.color.green_100))
             } else {
                 holder.mainCard.setCardBackgroundColor(ctx.resources.getColor(R.color.grey_3))

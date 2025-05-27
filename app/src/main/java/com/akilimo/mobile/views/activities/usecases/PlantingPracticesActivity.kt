@@ -69,6 +69,7 @@ class PlantingPracticesActivity : BaseRecommendationActivity<ActivityPlantingPra
             override fun onItemClick(view: View?, obj: RecommendationOptions?, position: Int) {
                 var intent: Intent? = null
                 val advice = obj?.adviceName
+                dataPositionChanged = position
                 when (advice) {
                     EnumAdviceTasks.PLANTING_AND_HARVEST -> intent =
                         Intent(this@PlantingPracticesActivity, DatesActivity::class.java)

@@ -5,6 +5,7 @@ import androidx.multidex.MultiDexApplication
 import com.akilimo.mobile.utils.Locales
 import com.blongho.country_data.World
 import com.jakewharton.threetenabp.AndroidThreeTen
+import dev.b3nedikt.app_locale.AppLocale
 import dev.b3nedikt.app_locale.AppLocale.appLocaleRepository
 import dev.b3nedikt.app_locale.AppLocale.supportedLocales
 import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository
@@ -15,7 +16,7 @@ import io.github.inflationx.viewpump.ViewPump
 class Akilimo : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
-        supportedLocales = Locales.APP_LOCALES
+        supportedLocales = Locales.LOCALE_COUNTRIES
         val prefs = SharedPrefsAppLocaleRepository(this@Akilimo)
         appLocaleRepository = prefs
 
@@ -29,5 +30,6 @@ class Akilimo : MultiDexApplication() {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         AndroidThreeTen.init(this@Akilimo) // Initialize the library
         World.init(this@Akilimo)
+        AppLocale.desiredLocale = prefs.desiredLocale ?: return
     }
 }

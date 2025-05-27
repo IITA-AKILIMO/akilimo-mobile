@@ -31,9 +31,16 @@ import java.util.Locale
  */
 abstract class BaseStepFragment : Fragment(), Step {
 
+    @Deprecated("Remove")
     protected var currency: String = ""
+
+    @Deprecated("Remove")
     protected var countryCode: String = ""
+
+    @Deprecated("Remove")
     protected var countryName: String = ""
+
+
     protected var errorMessage: String = ""
     protected var dataIsValid = false
 

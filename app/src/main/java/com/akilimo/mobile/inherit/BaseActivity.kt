@@ -18,10 +18,8 @@ import androidx.appcompat.widget.Toolbar
 import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
-import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.SessionManager
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumCountry
 import com.akilimo.mobile.views.activities.DstRecommendationActivity
 import com.blogspot.atifsoftwares.animatoolib.Animatoo
@@ -43,12 +41,11 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected var countryCode: String = EnumCountry.Nigeria.countryCode()
 
-    protected var currencyName: String = EnumCountry.Nigeria.currency()
-    protected var currencyCode: String = EnumCountry.Nigeria.currency()
-    protected var currencySymbol: String = EnumCountry.Nigeria.currency()
+    protected var currencyName: String = EnumCountry.Nigeria.currencyCode()
+    protected var currencyCode: String = EnumCountry.Nigeria.currencyCode()
+    protected var currencySymbol: String = EnumCountry.Nigeria.currencyCode()
     protected var baseCurrency: String = "USD"
 
-    //    protected var enumUseCase: EnumUseCase =EnumUseCase.NA
     protected var areaUnit: String = "acre"
     protected var areaUnitText: String = "acre"
     protected var fieldSize: Double = 0.0
@@ -111,7 +108,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected fun openActivity(intent: Intent?) {
         intent?.let {
-            startActivity(intent)
+            startActivity(it)
             Animatoo.animateSlideRight(this@BaseActivity)
         }
     }
@@ -130,14 +127,18 @@ abstract class BaseActivity : AppCompatActivity() {
         sessionManager.updateNotificationCount(notificationCount)
 
         val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE) // before
-        dialog.setContentView(R.layout.dialog_notification)
-        dialog.setCancelable(true)
+        dialog.apply {
+            requestWindowFeature(Window.FEATURE_NO_TITLE) // before
+            setContentView(R.layout.dialog_notification)
+            setCancelable(true)
+        }
 
         val lp = WindowManager.LayoutParams()
-        lp.copyFrom(dialog.window!!.attributes)
-        lp.width = WindowManager.LayoutParams.WRAP_CONTENT
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+        lp.apply {
+            copyFrom(dialog.window!!.attributes)
+            width = WindowManager.LayoutParams.WRAP_CONTENT
+            height = WindowManager.LayoutParams.WRAP_CONTENT
+        }
 
 
         val title = dialog.findViewById<TextView>(R.id.title)
@@ -146,11 +147,11 @@ abstract class BaseActivity : AppCompatActivity() {
         title.text = titleText
         content.text = contentText
 
-        if (buttonTitle != null) {
-            if (buttonTitle.isNotEmpty()) {
-                btnClose.text = buttonTitle
-            }
+
+        if (!buttonTitle.isNullOrEmpty()) {
+            btnClose.text = buttonTitle
         }
+
         btnClose.setOnClickListener { view: View? ->
             dialog.dismiss()
         }
@@ -170,14 +171,19 @@ abstract class BaseActivity : AppCompatActivity() {
     ) {
         try {
             val dialog = Dialog(this@BaseActivity)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE) // before
-            dialog.setContentView(R.layout.dialog_warning)
-            dialog.setCancelable(true)
+
+            dialog.apply {
+                requestWindowFeature(Window.FEATURE_NO_TITLE) // before
+                setContentView(R.layout.dialog_warning)
+                setCancelable(true)
+            }
 
             val lp = WindowManager.LayoutParams()
-            lp.copyFrom(dialog.window!!.attributes)
-            lp.width = WindowManager.LayoutParams.WRAP_CONTENT
-            lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+            lp.apply {
+                copyFrom(dialog.window!!.attributes)
+                width = WindowManager.LayoutParams.WRAP_CONTENT
+                height = WindowManager.LayoutParams.WRAP_CONTENT
+            }
 
 
             val title = dialog.findViewById<TextView>(R.id.title)
@@ -189,6 +195,7 @@ abstract class BaseActivity : AppCompatActivity() {
             if (!buttonTitle.isNullOrEmpty()) {
                 btnClose.text = buttonTitle
             }
+
             btnClose.setOnClickListener { view: View? ->
                 dialog.dismiss()
             }
@@ -242,16 +249,5 @@ abstract class BaseActivity : AppCompatActivity() {
             myDesiredLocale = Locale("en", "NG")
         }
         return myDesiredLocale
-    }
-
-    protected fun checkStatus(taskName: EnumAdviceTasks): AdviceStatus {
-        val database = getDatabase(this)
-        val adviceStatus = database.adviceStatusDao().findOne(taskName.name)
-
-        if (adviceStatus != null) {
-            return adviceStatus
-        }
-
-        return AdviceStatus(taskName.name, false)
     }
 }

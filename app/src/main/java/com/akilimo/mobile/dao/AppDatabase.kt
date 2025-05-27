@@ -16,7 +16,6 @@ import com.akilimo.mobile.entities.Fertilizer
 import com.akilimo.mobile.entities.FertilizerPrice
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.entities.FieldYield
-import com.akilimo.mobile.entities.InterCropFertilizer
 import com.akilimo.mobile.entities.InvestmentAmount
 import com.akilimo.mobile.entities.MaizeMarket
 import com.akilimo.mobile.entities.MaizePrice
@@ -39,7 +38,6 @@ import com.akilimo.mobile.entities.UserProfile
         FieldYield::class,
         FieldOperationCost::class,
         OperationCost::class,
-        InterCropFertilizer::class,
         InvestmentAmount::class,
         UserLocation::class,
         MaizeMarket::class,
@@ -54,7 +52,7 @@ import com.akilimo.mobile.entities.UserProfile
         UseCase::class,
         AkilimoCurrency::class,
         AdviceStatus::class
-    ], version = 4,
+    ], version = 9,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -66,9 +64,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun fertilizerPriceDao(): FertilizerPriceDao
     abstract fun fieldOperationCostDao(): FieldOperationCostsDao
     abstract fun fieldYieldDao(): FieldYieldDao
-
-    @Deprecated("To be removed in future release")
-    abstract fun interCropFertilizerDao(): InterCropFertilizerDao
 
     abstract fun investmentAmountDao(): InvestmentAmountDao
     abstract fun locationInfoDao(): UserLocationDao
@@ -91,7 +86,7 @@ abstract class AppDatabase : RoomDatabase() {
         // For Singleton instantiation
         @Volatile
         private var database: AppDatabase? = null
-        private const val DATABASE_NAME = "AKILIMO_APR_2025"
+        private const val DATABASE_NAME = "AKILIMO_MAY_2025"
 
         @JvmStatic
         fun getDatabase(context: Context): AppDatabase {

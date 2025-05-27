@@ -6,7 +6,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'jacoco'
-
+//apply plugin: 'io.sentry.android.gradle'
 
 android {
     def releaseVersionName = computeBuildNumber()
@@ -44,7 +44,6 @@ android {
         }
         debug {
             resValue("string", "PORT_NUMBER", "9085")
-            versionNameSuffix "-dev"
             enableUnitTestCoverage true
             enableAndroidTestCoverage true
             //  pseudoLocalesEnabled true
@@ -129,7 +128,9 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
 
     //sentry
-    implementation 'io.sentry:sentry-android:6.19.1'
+    implementation 'io.sentry:sentry-android:6.34.0'
+//    implementation "io.sentry:sentry-android-okhttp:6.32.0"
+
 
     // google library ------------------------------------------------------------------------
     implementation 'com.google.android.material:material:1.5.0'
@@ -177,6 +178,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.11.0'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0' //TODO Will replace Volley eventually
     implementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.15.0"
 
 
     implementation 'com.fasterxml.jackson.core:jackson-core:2.17.1'

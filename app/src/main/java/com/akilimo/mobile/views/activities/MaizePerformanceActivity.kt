@@ -41,10 +41,7 @@ class MaizePerformanceActivity : BaseActivity() {
     private val binding get() = _binding!!
 
 
-    private var savedCropPerformance: CropPerformance? = null
-
-    private var selectedPerformanceValue: String = ""
-    private var maizePerformanceValue: String = ""
+    private var selectedPerformanceScore: Int = -1
 
     private val performanceImages = arrayOf(
         R.drawable.ic_maize_1,
@@ -69,9 +66,9 @@ class MaizePerformanceActivity : BaseActivity() {
         btnFinish = binding.twoButtons.btnFinish
         btnCancel = binding.twoButtons.btnCancel
 
-        savedCropPerformance = database.maizePerformanceDao().findOne()
-        if (savedCropPerformance != null) {
-            selectedPerformanceValue = savedCropPerformance!!.maizePerformance
+        val cropPerformanceRecord = database.maizePerformanceDao().findOne()
+        if (cropPerformanceRecord != null) {
+            selectedPerformanceScore = cropPerformanceRecord.performanceScore
         }
         initToolbar()
         initComponent()
@@ -108,7 +105,7 @@ class MaizePerformanceActivity : BaseActivity() {
             createPerformanceObject(
                 performanceImages[0],
                 poorSoil,
-                "1",
+                1,
                 "50",
                 getString(R.string.lbl_knee_height)
             )
@@ -117,7 +114,7 @@ class MaizePerformanceActivity : BaseActivity() {
             createPerformanceObject(
                 performanceImages[1],
                 null,
-                "2",
+                2,
                 "150",
                 getString(R.string.lbl_chest_height)
             )
@@ -126,7 +123,7 @@ class MaizePerformanceActivity : BaseActivity() {
             createPerformanceObject(
                 performanceImages[2],
                 null,
-                "3",
+                3,
                 "yellow",
                 getString(R.string.lbl_yellowish_leaves)
             )
@@ -135,7 +132,7 @@ class MaizePerformanceActivity : BaseActivity() {
             createPerformanceObject(
                 performanceImages[3],
                 null,
-                "4",
+                4,
                 "green",
                 getString(R.string.lbl_green_leaves)
             )
@@ -144,7 +141,7 @@ class MaizePerformanceActivity : BaseActivity() {
             createPerformanceObject(
                 performanceImages[4],
                 richSoil,
-                "5",
+                5,
                 "dark green",
                 getString(R.string.lbl_dark_green_leaves)
             )
@@ -153,7 +150,7 @@ class MaizePerformanceActivity : BaseActivity() {
         mAdapter =
             CropPerformanceAdapter(this@MaizePerformanceActivity, items, TheItemAnimation.FADE_IN)
         recyclerView!!.adapter = mAdapter
-        mAdapter!!.setItems(selectedPerformanceValue, items)
+        mAdapter!!.setItems(selectedPerformanceScore, items)
 
         mAdapter!!.setOnItemClickListener(object : CropPerformanceAdapter.OnItemClickListener {
             override fun onItemClick(
@@ -172,24 +169,23 @@ class MaizePerformanceActivity : BaseActivity() {
                 rootYieldDialogFragment.setOnDismissListener(object :
                     ICropPerformanceListener {
                     override fun onDismiss(
-                        performance: CropPerformance,
+                        cropPerformance: CropPerformance,
                         performanceConfirmed: Boolean
                     ) {
                         if (performanceConfirmed) {
-                            if (savedCropPerformance == null) {
-                                savedCropPerformance = CropPerformance()
-                            }
-                            val maizePerformance = performance.maizePerformance
-                            selectedPerformanceValue = performance.performanceValue!!
-                            savedCropPerformance!!.maizePerformance = maizePerformance
-                            savedCropPerformance!!.performanceValue = selectedPerformanceValue
+                            val savedCropPerformance =
+                                database.maizePerformanceDao().findOne() ?: CropPerformance()
 
-                            database.maizePerformanceDao().insert(savedCropPerformance!!)
+                            val maizePerformance = cropPerformance.maizePerformance
+                            selectedPerformanceScore = cropPerformance.performanceScore
+                            savedCropPerformance.maizePerformance = maizePerformance
+                            savedCropPerformance.performanceScore = selectedPerformanceScore
+
+                            database.maizePerformanceDao().insert(savedCropPerformance)
 
                             mAdapter!!.setActiveRowIndex(position)
-                            maizePerformanceValue = selectedPerformanceValue
+                            mAdapter!!.setItems(selectedPerformanceScore, items, position)
                         }
-                        mAdapter!!.setItems(selectedPerformanceValue, items)
                     }
 
                 })
@@ -208,21 +204,21 @@ class MaizePerformanceActivity : BaseActivity() {
     private fun createPerformanceObject(
         yieldImage: Int,
         performanceDesc: String?,
-        performanceValue: String,
-        maizePerformance: String,
+        performanceValue: Int,
+        maizePerformanceDesc: String,
         maizePerformanceLabel: String
     ): CropPerformance {
         val performance = CropPerformance()
         performance.imageId = yieldImage
         performance.maizePerformanceDesc = performanceDesc
-        performance.performanceValue = performanceValue
-        performance.maizePerformance = maizePerformance
+        performance.performanceScore = performanceValue
+        performance.maizePerformance = maizePerformanceDesc
         performance.maizePerformanceLabel = maizePerformanceLabel
         return performance
     }
 
     override fun validate(backPressed: Boolean) {
-        if (selectedPerformanceValue.isEmpty()) {
+        if (selectedPerformanceScore < 0) {
             showCustomWarningDialog(
                 getString(R.string.lbl_invalid_selection),
                 getString(R.string.lbl_maize_performance_prompt)

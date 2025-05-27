@@ -51,7 +51,7 @@ class SweetPotatoMarketActivity : BaseActivity() {
     var unitPriceUSD: Double = 0.0
     var unitPriceLocal: Double = 0.0
     private var unitPrice = 0.0
-    private var unitWeight = 0
+    private var unitWeight = 0.0
 
     private val minAmountUSD = 5.00
     private val maxAmountUSD = 500.00
@@ -94,9 +94,10 @@ class SweetPotatoMarketActivity : BaseActivity() {
     }
 
     override fun initComponent() {
-        enumPotatoProduceType = EnumPotatoProduceType.TUBERS.produce()
+        enumPotatoProduceType = EnumPotatoProduceType.TUBERS.name.lowercase()
 
-        database.potatoMarketDao().findOne()?.let { potatoMarket ->
+        val potatoMarket = database.potatoMarketDao().findOne()
+        if (potatoMarket != null) {
             produceTypeRadioIndex = potatoMarket.produceTypeIdx
             potatoUnitOfSaleRadioIndex = potatoMarket.potatoUnitOfSaleIdx
             potatoUnitPriceRadioIndex = potatoMarket.potatoUnitPriceIdx
