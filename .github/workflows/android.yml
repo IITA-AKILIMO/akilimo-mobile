@@ -17,6 +17,7 @@ jobs:
       REPO_NAME: ${{ secrets.REPO_NAME }}
       LATEST_TAG_FILE: "latest_tag.txt"
       RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
+      VERSION_CODE: ${{ secrets.GITHUB_RUN_ID }}
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
     steps:
       - name: Checkout the code
@@ -27,6 +28,11 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 21
+
+      - name: Get build version
+        run: |
+          VERSION_CODE=$(curl -s https://munywele.co.ke/app-releases/akilimo)
+          echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
@@ -40,7 +46,7 @@ jobs:
         if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
 
   build_artifacts:
-    if: contains(github.ref, 'build') || contains(github.ref, 'main')
+    if: contains(github.ref, 'beta') || contains(github.ref, 'main')
     needs: run_tests
     name: Build artifacts
     runs-on: ubuntu-latest
@@ -48,6 +54,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       REPO_NAME: ${{ secrets.REPO_NAME }}
       BRANCH_NAME: ${{ github.head_ref }}
+      VERSION_CODE: ${{ secrets.GITHUB_RUN_ID }}
       LATEST_TAG_FILE: "latest_tag.txt"
       RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
@@ -67,6 +74,11 @@ jobs:
 
       - name: Display current branch name
         run: echo ${BRANCH_NAME}
+
+      - name: Get build version
+        run: |
+          VERSION_CODE=$(curl -s https://munywele.co.ke/app-releases/akilimo)
+          echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
 
       - name: Set up Python 3.9
         uses: actions/setup-python@v5
@@ -137,7 +149,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4.1.7
-        name: Retreive artifacts
+        name: Retrieve artifacts
         with:
           name: app-release
           path: release
@@ -223,3 +235,6 @@ jobs:
 
       - name: Upload release artifacts
         uses: masgeek/github-action-ghr@v1.3.2
+
+      - name: Update build version
+        run: curl -s https://munywele.co.ke/app-releases/akilimo/update
