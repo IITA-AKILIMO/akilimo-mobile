@@ -4,6 +4,7 @@
     <string name="welcome_instructions">AKILIMO inaweza kukupatia ushauri binafsi wa kuongeza mavuno ya muhogo katika shamba lako iwapo utatoa taarifa muhimu za kuiwezesha kufanya hivyo.</string>
     <string name="important_instructions_title">TAARIFA MUHIMU</string>
     <string name="important_instructions">Mapendekezo AKILIMO itakupatia yanategemea usahihi wa taarifa utakazo zitoa yaani eneo lilipo shamba lako, ukubwa wa shamba, bei ya mazao, mbolea, n.k. Kwa mfano, ukubwa wa shamba ukitajwa kuwa mkubwa kuliko ulivyo, utaongeza gharama zisizo za lazima, yaani  kuongezeka uwekezaji na kusababisha hasara; na ikiwa ukubwa wa shamba unaotajwa utakuwa ni chini ya ukweli,  itapunguza fursa ya kupata faida kutoka kwenye shamba lako.</string>
+    <string name="important_instructions_b">Programu ya AKILIMO hukusanya taarifa muhimu kama vile eneo ulipo, ukubwa wa shamba na tarehe ya kupanda ili kukupa mapendekezo maalum kulingana na hali yako. Ili kupata matokeo bora, tafadhali jaza taarifa sahihi na kamili. Kupima kwa usahihi ukubwa wa shamba ni jambo muhimu ili kuepuka kudharau rasilimali zinazohitajika kufanikisha mavuno mengi na kuongeza faida. Vipimo visivyo sahihi vinaweza kusababisha gharama zisizohitajika na kuathiri mapato yako.</string>
     <string name="title_activity_fertilizer_choice">Mbolea zinazopatikana</string>
     <string name="title_activity_fertilizer_rec">Mapendekezo ya matumizi ya mbolea</string>
     <string name="title_activity_investment_amount">Kiasi cha uwekezaji</string>
@@ -371,6 +372,7 @@
     <string name="lbl_already_planted_title">Imepandwa tayari</string>
     <string name="lbl_already_planted_text">Inaonekana tayari umepanda, kwa hivyo huwezi kubadili tarehe ya kupanda</string>
     <string name="lbl_agree_to_terms">Bonyeza hapa kuashiria kuwa umesoma na unakubali vigezo na masharti </string>
+    <string name="lbl_agree_to_disclaimer">Tafadhali thibitisha kuwa umeisoma na kuelewa taarifa hii ya maelezo ya kisheria.</string>
     <string name="lbl_accept_terms_prompt">Tafadhali kubali vigezo na masharti kabla ya kuendelea</string>
     <string name="lbl_restart_app_prompt">Anzisha tena programu ili kuwezesha tafsiri</string>
     <string name="lbl_optional">(Hiari)</string>
@@ -436,4 +438,7 @@
     <string name="lbl_area_unit_subtitle">Ili kupata matokeo bora, tafadhali toa kipimo sahihi cha ukubwa wa shamba lako. Ikiwa hauko uhakika na kipimo halisi, unaweza kupakua programu kutoka Goole PlayStore, kwa mfano \"GPS Fields Area Measure.\" Programu hii inaweza kukusaidia kujua ukubwa wa shamba lako kwa kutembea kwenye mipaka yake au kwa kuweka alama kutimia mikono.</string>
     <string name="lbl_remember_pref">Kumbuka mapendeleo yangu na ruka wakati ujao</string>
     <string name="location_info">Nchi: %1$s, Latitudo: %2$.2f, Longitudo: %3$.2f</string>
+    <string name="restart">ANZA UPYA</string>
+    <string name="lbl_processing_recommendations">Inashughulikia mapendekezo...</string>
+    <string name="select_language">Chagua Lugha</string>
 </resources>

@@ -6,11 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.CompoundButton
-import android.widget.SpinnerAdapter
 import android.widget.Toast
 import com.akilimo.mobile.R
+import com.akilimo.mobile.adapters.MySpinnerAdapter
 import com.akilimo.mobile.data.InterestOption
 import com.akilimo.mobile.databinding.FragmentBioDataBinding
 import com.akilimo.mobile.entities.UserProfile
@@ -32,14 +30,10 @@ class BioDataFragment : BaseStepFragment() {
 
     private var myMobileCode: String = ""
 
-    //    private var myPhoneNumber: String? = null
-//    private var userEnteredNumber: String? = null
     private var myGender: String? = null
     private var myAkilimoInterest: String? = null
     private var mySelectedGenderIndex = -1
     private var mySelectedInterestIndex = -1
-
-    private var rememberUserInfo = false
 
     var genderOptions = listOf<InterestOption>()
     var interestOptions = listOf<InterestOption>()
@@ -75,46 +69,30 @@ class BioDataFragment : BaseStepFragment() {
             InterestOption(getString(R.string.lbl_interest_curious), "curious")
         )
 
-        val genderAdapter: SpinnerAdapter =
-            ArrayAdapter(
-                requireContext(),
-                R.layout.simple_spinner_item,
-                genderOptions.map { it.label }
-            ).also { adapter ->
-                adapter.setDropDownViewResource(R.layout.simple_spinner_item)
-            }
+        val genderAdapter = MySpinnerAdapter(requireContext(), genderOptions.map { it.label })
+        val interestAdapter = MySpinnerAdapter(requireContext(), interestOptions.map { it.label })
 
 
-        val interestAdapter: SpinnerAdapter =
-            ArrayAdapter(
-                requireContext(),
-                R.layout.simple_spinner_item,
-                interestOptions.map { it.label }
-            ).also { adapter ->
-                adapter.setDropDownViewResource(R.layout.simple_spinner_item)
-            }
+        binding.apply {
+            genderSpinner.adapter = genderAdapter
+            interestSpinner.adapter = interestAdapter
 
-        binding.genderSpinner.adapter = genderAdapter
-        binding.interestSpinner.adapter = interestAdapter
+            genderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?, view: View?, position: Int, id: Long
+                ) {
+                    mySelectedGenderIndex = position
+                    myGender = null
+                    if (position > 0) {
+                        myGender = genderOptions[position].value
+                    }
+                }
 
-
-        binding.genderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?, view: View?, position: Int, id: Long
-            ) {
-                mySelectedGenderIndex = position
-                myGender = null
-                if (position > 0) {
-                    myGender = genderOptions[position].value
+                override fun onNothingSelected(parent: AdapterView<*>?) {
                 }
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-        }
-
-        binding.interestSpinner.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
+            interestSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>?, view: View?, position: Int, id: Long
                 ) {
@@ -129,25 +107,21 @@ class BioDataFragment : BaseStepFragment() {
                 }
             }
 
-        binding.ccp.setPhoneNumberValidityChangeListener { isValidNumber: Boolean ->
-            phoneIsValid = isValidNumber
-        }
-
-        binding.ccp.setOnCountryChangeListener {
-            myMobileCode = binding.ccp.selectedCountryCodeWithPlus
-        }
-        binding.ccp.registerCarrierNumberEditText(binding.edtPhone)
-
-        binding.chkRememberDetails.setOnCheckedChangeListener { _: CompoundButton?, rememberInfo: Boolean ->
-            rememberUserInfo = rememberInfo
-            sessionManager.setRememberUserInfo(rememberUserInfo)
+            ccp.apply {
+                setPhoneNumberValidityChangeListener { isValidNumber: Boolean ->
+                    phoneIsValid = isValidNumber
+                }
+                setOnCountryChangeListener {
+                    myMobileCode = binding.ccp.selectedCountryCodeWithPlus
+                }
+                registerCarrierNumberEditText(binding.edtPhone)
+            }
         }
     }
 
     private fun refreshData() {
         try {
             val userProfile = database.profileInfoDao().findOne()
-            rememberUserInfo = sessionManager.getRememberUserInfo()
             if (userProfile != null) {
                 val myFirstName = userProfile.firstName
                 val myLastName = userProfile.lastName
@@ -175,8 +149,6 @@ class BioDataFragment : BaseStepFragment() {
                     if (mySelectedInterestIndex in interestOptions.indices) {
                         interestSpinner.setSelection(mySelectedInterestIndex)
                     }
-
-                    chkRememberDetails.isChecked = rememberUserInfo
                 }
             }
         } catch (ex: Exception) {

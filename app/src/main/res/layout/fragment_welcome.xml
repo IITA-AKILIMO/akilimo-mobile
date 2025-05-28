@@ -5,23 +5,24 @@
     android:id="@+id/lyt_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey_5"
-    android:padding="@dimen/spacing_small"
+    android:padding="@dimen/spacing_medium"
     tools:context=".views.fragments.WelcomeFragment">
 
-
+    <!-- Logo Card -->
     <ImageView
         android:id="@+id/image"
         android:layout_width="wrap_content"
-        android:layout_height="250dp"
-        android:layout_marginTop="@dimen/spacing_xxxlarge"
+        android:layout_height="@dimen/img_height"
+        android:layout_marginTop="@dimen/spacing_xlarge"
         android:contentDescription="@string/app_name"
-        android:padding="@dimen/spacing_small"
+        android:padding="@dimen/spacing_medium"
+        android:scaleType="centerInside"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_akilimo_logo" />
 
+    <!-- Welcome Title -->
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
@@ -29,36 +30,67 @@
         android:layout_marginTop="@dimen/spacing_large"
         android:text="@string/welcome_title"
         android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@color/akilimoDarkGreen"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/image" />
 
+    <!-- Description -->
     <TextView
         android:id="@+id/description"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_large"
+        android:layout_marginHorizontal="@dimen/spacing_large"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:gravity="center"
+        android:lineSpacingExtra="@dimen/spacing_small"
         android:text="@string/welcome_instructions"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="@color/grey_80"
+        android:textSize="@dimen/font_size_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title" />
 
-
-    <Spinner
-        android:id="@+id/language_picker"
+    <!-- Language Label -->
+    <TextView
+        android:id="@+id/language_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_xxxlarge"
-        android:spinnerMode="dialog"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="@dimen/spacing_xlarge"
+        android:layout_marginBottom="@dimen/spacing_small"
+        android:text="@string/select_language"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/font_size_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/description"
-        tools:listitem="@android:layout/simple_dropdown_item_1line" />
+        app:layout_constraintTop_toBottomOf="@id/description" />
 
+    <!-- Spinner Card -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/language_spinner_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_large"
+        android:layout_marginBottom="@dimen/spacing_large"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardCornerRadius="@dimen/spacing_small"
+        app:cardElevation="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/language_label">
+
+        <Spinner
+            android:id="@+id/language_picker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minWidth="@dimen/img_width"
+            android:minHeight="@dimen/dimen_36"
+            android:paddingHorizontal="@dimen/spacing_medium"
+            android:paddingVertical="@dimen/spacing_small"
+            android:spinnerMode="dialog"
+            tools:listitem="@android:layout/simple_spinner_item" />
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

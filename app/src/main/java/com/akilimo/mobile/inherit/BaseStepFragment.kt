@@ -17,8 +17,6 @@ import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.SessionManager
 import com.stepstone.stepper.Step
 import com.stepstone.stepper.VerificationError
-import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository
-import dev.b3nedikt.reword.Reword.reword
 import io.sentry.Sentry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -61,9 +59,7 @@ abstract class BaseStepFragment : Fragment(), Step {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return loadFragmentLayout(inflater, container, savedInstanceState).also { view ->
-            reword(view)
-        }
+        return loadFragmentLayout(inflater, container, savedInstanceState)
     }
 
     /**
@@ -137,15 +133,6 @@ abstract class BaseStepFragment : Fragment(), Step {
         val place = userLocation.locationCountryName
 
         return "${place}\n${lat},${lon}"
-    }
-
-    /**
-     * Gets the current locale from shared preferences
-     *
-     * @return Current locale or null if not set
-     */
-    protected fun getCurrentLocale(): Locale? {
-        return SharedPrefsAppLocaleRepository(requireContext()).desiredLocale
     }
 
     /**

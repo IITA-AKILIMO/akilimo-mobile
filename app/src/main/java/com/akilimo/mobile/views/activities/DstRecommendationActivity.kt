@@ -71,7 +71,15 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
 //        loadingAndDisplayContent()
     }
 
-    override fun initComponent() {}
+    @Deprecated("Deprecated remove it completely")
+    override fun initComponent() {
+    }
+
+    @Deprecated(
+        "Remove completely and use setupToolbar(toolbar, titleResId) instead.",
+        replaceWith = ReplaceWith("setupToolbar(binding.toolbarLayout.toolbar, R.string.your_title)"),
+        level = DeprecationLevel.WARNING
+    )
     override fun initToolbar() {
     }
 
@@ -91,7 +99,7 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
         } else {
             //show a message
             binding.apply {
-                errorLabel.setText(R.string.lbl_no_profile_info)
+                lblErrorMessage.setText(R.string.lbl_no_profile_info)
                 lytProgress.visibility = View.GONE
                 recommendationCard.visibility = View.GONE
                 errorContainer.visibility = View.VISIBLE
@@ -138,29 +146,36 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
 
                     // Handle HTTP errors and unreachable server (like 502, 503, etc.)
                     val errorCode = response.code()
-                    val errorMessage = when (errorCode) {
+                    var errorMessage = when (errorCode) {
                         502 -> "Bad Gateway. The server is currently unavailable."
                         503 -> "Service Unavailable. Please try again later."
                         500 -> "Internal Server Error. Please try again later."
                         else -> "Something went wrong (${response.code()}). Please try again later."
                     }
 
+                    var errorDetail = errorMessage
+
                     val parsedError = response.parseError()
-                    val displayMessage = parsedError?.message ?: errorMessage
+                    if (parsedError != null) {
+                        errorDetail = parsedError.error
+                    }
+
 
                     binding.apply {
                         binding.lytProgress.visibility = View.GONE
-                        errorLabel.text = displayMessage
+                        lblErrorMessage.text = errorMessage
+                        lblErrorDetail.text = errorDetail
                         recommendationCard.visibility = View.GONE
                         errorContainer.visibility = View.VISIBLE
                     }
 
+
                     Toast.makeText(
                         this@DstRecommendationActivity,
-                        displayMessage,
+                        errorMessage,
                         Toast.LENGTH_SHORT
                     ).show()
-                    Sentry.captureMessage("API Error: $displayMessage")
+                    Sentry.captureMessage("API Error: $errorDetail")
                 }
             }
 
@@ -178,7 +193,8 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
                     else -> ex.localizedMessage ?: "An unexpected error occurred."
                 }
 
-                binding.errorLabel.text = message
+                binding.lblErrorMessage.text = message
+                binding.lblErrorDetail.text = ex.message
 
                 Toast.makeText(this@DstRecommendationActivity, message, Toast.LENGTH_SHORT).show()
                 Sentry.captureException(ex)

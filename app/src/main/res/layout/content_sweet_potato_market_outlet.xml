@@ -20,7 +20,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:fontFamily="@font/roboto_bold"
             android:text="@string/lbl_how_do_you_sell_your_sweet_potato"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:visibility="gone" />
@@ -69,7 +68,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/produceTypeCard"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:fontFamily="@font/roboto_bold"
             android:text="@string/lbl_potato_sale_unit"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:visibility="visible" />

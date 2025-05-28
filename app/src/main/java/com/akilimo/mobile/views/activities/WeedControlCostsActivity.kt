@@ -14,6 +14,7 @@ import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.utils.LanguageManager
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumCountry
 import io.sentry.Sentry
@@ -102,12 +103,12 @@ class WeedControlCostsActivity : BaseActivity() {
 
     override fun initComponent() {
         val context = this@WeedControlCostsActivity
-        val myLocale = getCurrentLocale()
+        val language = LanguageManager.getLanguage(this@WeedControlCostsActivity)
         var translatedUnit = context.getString(R.string.lbl_acre)
         if (areaUnit == "ha") {
             translatedUnit = context.getString(R.string.lbl_ha)
         }
-        val finalTranslatedUnit = translatedUnit.lowercase(myLocale)
+        val finalTranslatedUnit = translatedUnit.lowercase()
         when (countryCode) {
             "TZ" -> currencyName = EnumCountry.Tanzania.currencyName(context)
             "NG" -> currencyName = EnumCountry.Nigeria.currencyName(context)
@@ -144,7 +145,7 @@ class WeedControlCostsActivity : BaseActivity() {
             mathHelper.removeLeadingZero(fieldSize),
             finalTranslatedUnit
         )
-        if (myLocale.language == "sw") {
+        if (language == "sw") {
             firstWeedCostTitle = getString(
                 R.string.lbl_cost_of_first_weeding_operation,
                 currencyCode,

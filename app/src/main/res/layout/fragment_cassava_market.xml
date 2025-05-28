@@ -10,7 +10,6 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/ubuntu_bold"
         android:text="@string/lbl_market_outlet"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textColor="@color/colorAccent" />
