@@ -19,9 +19,9 @@ import com.akilimo.mobile.databinding.FragmentFieldSizeBinding
 import com.akilimo.mobile.entities.MandatoryInfo
 import com.akilimo.mobile.entities.UserProfile
 import com.akilimo.mobile.inherit.BaseStepFragment
+import com.akilimo.mobile.utils.LanguageManager
 import com.akilimo.mobile.utils.enums.EnumFieldArea
 import com.stepstone.stepper.VerificationError
-import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository
 import io.sentry.Sentry
 
 
@@ -31,10 +31,6 @@ import io.sentry.Sentry
  * create an instance of this fragment.
  */
 class FieldSizeFragment : BaseStepFragment() {
-
-    private val prefs: SharedPrefsAppLocaleRepository by lazy {
-        SharedPrefsAppLocaleRepository(requireContext())
-    }
 
     private var _binding: FragmentFieldSizeBinding? = null
     private val binding get() = _binding!!
@@ -135,7 +131,7 @@ class FieldSizeFragment : BaseStepFragment() {
     }
 
     private fun setExactAreaText(areaSize: Double, displayUnit: String) {
-        val displayLanguage = prefs.desiredLocale?.language.let { "en" }
+        val displayLanguage = LanguageManager.getLanguage(requireContext())
         val fieldSize = mathHelper.removeLeadingZero(areaSize)
         var areaUnitLabel = String.format("%s %s", fieldSize, displayUnit)
         if (displayLanguage.equals("sw", ignoreCase = true)) {
