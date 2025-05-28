@@ -8,7 +8,6 @@ jobs:
     concurrency:
       cancel-in-progress: true
       group: pr-${{ github.ref }}
-    if: github.actor != 'masgeek'
     steps:
       - name: Auto approve PR
         uses: hmarr/auto-approve-action@v4
