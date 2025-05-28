@@ -191,7 +191,7 @@ dependencies {
     implementation 'org.modelmapper:modelmapper:2.4.4'
     implementation 'com.hbb20:ccp:2.5.0'
 
-    implementation 'dev.b3nedikt.applocale:applocale:1.2.4' //App language switcher
+    implementation 'dev.b3nedikt.applocale:applocale:1.2.4'
     implementation 'dev.b3nedikt.reword:reword:1.0.0'
     implementation 'io.github.inflationx:viewpump:2.0.3'
     implementation 'com.github.blongho:worldCountryData:1.5'
