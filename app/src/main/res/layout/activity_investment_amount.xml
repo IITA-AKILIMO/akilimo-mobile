@@ -126,7 +126,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_large"
             android:background="@drawable/btn_rect_primary"
-            android:fontFamily="@font/roboto"
             android:text="@string/lbl_finish"
             android:textColor="@color/grey_50" />
 

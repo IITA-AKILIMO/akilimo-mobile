@@ -29,7 +29,6 @@
             android:layout_marginTop="@dimen/spacing_medium"
             android:layout_marginRight="@dimen/spacing_medium"
             android:layout_marginBottom="@dimen/spacing_medium"
-            android:fontFamily="@font/roboto_bold"
             android:gravity="center"
             android:text="@string/lbl_rec_header"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"

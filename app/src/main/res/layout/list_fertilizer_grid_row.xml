@@ -47,7 +47,7 @@
                 android:layout_alignStart="@+id/fertilizerImage"
                 android:layout_alignEnd="@+id/fertilizerImage"
                 android:layout_centerVertical="true"
-                android:fontFamily="@font/roboto_bold"
+
                 android:gravity="center"
                 android:paddingBottom="@dimen/spacing_medium"
                 android:text="@string/lbl_dummy_fertilizer"
