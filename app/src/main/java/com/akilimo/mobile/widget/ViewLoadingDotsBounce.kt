@@ -23,10 +23,11 @@ import android.widget.LinearLayout
  * android:background="@color/exampleColor"
  */
 class ViewLoadingDotsBounce : LinearLayout {
+
     private var context: Context? = null
     private lateinit var img: Array<ImageView?>
     private val circle = GradientDrawable()
-    private lateinit var animator: Array<ObjectAnimator?>
+    private var animator: Array<ObjectAnimator?>? = null
 
     private var onLayoutReach: Boolean = false
 
@@ -36,7 +37,6 @@ class ViewLoadingDotsBounce : LinearLayout {
         private const val DURATION = 500
     }
 
-
     constructor(context: Context?) : super(context)
 
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
@@ -44,9 +44,10 @@ class ViewLoadingDotsBounce : LinearLayout {
 
         orientation = HORIZONTAL
         gravity = Gravity.CENTER
-        val layoutParams =
-            LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        setLayoutParams(layoutParams)
+        layoutParams = LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
 
         initView()
     }
@@ -75,25 +76,24 @@ class ViewLoadingDotsBounce : LinearLayout {
         layoutParams2.weight = 1f
 
         val rel = arrayOfNulls<LinearLayout>(OBJECT_SIZE)
-        for (i in 0..<OBJECT_SIZE) {
+        for (i in 0 until OBJECT_SIZE) {
             rel[i] = LinearLayout(context)
             rel[i]!!.gravity = Gravity.CENTER
             rel[i]!!.layoutParams = layoutParams2
             img[i] = ImageView(context)
-            img[i]!!.setBackgroundDrawable(circle)
+            img[i]!!.background = circle
             rel[i]!!.addView(img[i])
             addView(rel[i])
         }
     }
-
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         super.onLayout(changed, l, t, r, b)
         if (!onLayoutReach) {
             onLayoutReach = true
             val lp = LayoutParams(width / 5, width / 5)
-            for (i in 0..<OBJECT_SIZE) {
-                img[i]!!.layoutParams = lp
+            for (i in 0 until OBJECT_SIZE) {
+                img[i]?.layoutParams = lp
             }
             animateView()
         }
@@ -101,29 +101,30 @@ class ViewLoadingDotsBounce : LinearLayout {
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        for (i in 0..<OBJECT_SIZE) {
-            if (animator[i]!!.isRunning) {
-                animator[i]!!.removeAllListeners()
-                animator[i]!!.end()
-                animator[i]!!.cancel()
+        animator?.forEach { anim ->
+            anim?.let {
+                if (it.isRunning) {
+                    it.removeAllListeners()
+                    it.end()
+                    it.cancel()
+                }
             }
         }
     }
 
     private fun animateView() {
         animator = arrayOfNulls(OBJECT_SIZE)
-        for (i in 0..<OBJECT_SIZE) {
-            img[i]!!.translationY =
-                (height / POST_DIV).toFloat()
-            val Y = PropertyValuesHolder.ofFloat(TRANSLATION_Y, (-height / POST_DIV).toFloat())
-            val X = PropertyValuesHolder.ofFloat(TRANSLATION_X, 0f)
-            animator[i] = ObjectAnimator.ofPropertyValuesHolder(img[i], X, Y)
-            animator[i]!!.repeatCount = -1
-            animator[i]!!.repeatMode = ValueAnimator.REVERSE
-            animator[i]!!.setDuration(DURATION.toLong())
-            animator[i]!!.startDelay =
-                ((DURATION / 3) * i).toLong()
-            animator[i]!!.start()
+        for (i in 0 until OBJECT_SIZE) {
+            img[i]?.translationY = (height / POST_DIV).toFloat()
+            val yCord = PropertyValuesHolder.ofFloat(TRANSLATION_Y, (-height / POST_DIV).toFloat())
+            val xCord = PropertyValuesHolder.ofFloat(TRANSLATION_X, 0f)
+            animator!![i] = ObjectAnimator.ofPropertyValuesHolder(img[i], xCord, yCord).apply {
+                repeatCount = ValueAnimator.INFINITE
+                repeatMode = ValueAnimator.REVERSE
+                duration = DURATION.toLong()
+                startDelay = ((DURATION / 3) * i).toLong()
+                start()
+            }
         }
     }
 }
