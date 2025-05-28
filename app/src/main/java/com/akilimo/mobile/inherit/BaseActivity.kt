@@ -18,6 +18,7 @@ import androidx.appcompat.widget.Toolbar
 import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
+import com.akilimo.mobile.utils.LanguageManager
 import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.SessionManager
 import com.akilimo.mobile.utils.enums.EnumCountry
@@ -27,7 +28,6 @@ import com.nabinbhandari.android.permissions.PermissionHandler
 import com.nabinbhandari.android.permissions.Permissions
 import dev.b3nedikt.app_locale.AppLocale.wrap
 import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository
-import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import io.sentry.Sentry
 import java.util.Locale
 
@@ -58,7 +58,9 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(ViewPumpContextWrapper.wrap(wrap(newBase)))
+        val language = LanguageManager.getLanguage(newBase)
+        val context = LanguageManager.setLocale(newBase, language)
+        super.attachBaseContext(context)
     }
 
     override fun getResources(): Resources {
