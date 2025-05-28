@@ -1,12 +1,28 @@
 import java.time.LocalDateTime
 
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-parcelize'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'jacoco'
-//apply plugin: 'io.sentry.android.gradle'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'kotlin-parcelize'
+    id 'com.google.gms.google-services'
+    id 'jacoco'
+    id 'org.sonarqube'
+    id 'io.gitlab.arturbosch.detekt'
+//id 'io.sentry.android.gradle'
+}
+
+detekt {
+    // other detekt configuration goes here
+    baseline = file("detekt-baseline.xml")
+}
+
+sonar {
+    properties {
+        property "sonar.projectKey", "IITA-AKILIMO_akilimo-mobile_abcb50d1-1abd-4e32-bd76-b385f65cfc5d"
+        property "sonar.projectName", "akilimo-mobile"
+    }
+}
 
 android {
     def releaseVersionName = computeBuildNumber()
