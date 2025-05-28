@@ -9,18 +9,15 @@ import com.akilimo.mobile.databinding.ActivityMySurveyBinding
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.rest.request.SurveyRequest
-import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository
+import com.akilimo.mobile.utils.LanguageManager
 import io.sentry.Sentry
 import okhttp3.ResponseBody
 
 
 class MySurveyActivity : BaseActivity() {
 
-    private val prefs: SharedPrefsAppLocaleRepository by lazy {
-        SharedPrefsAppLocaleRepository(this@MySurveyActivity)
-    }
-
-    private lateinit var binding: ActivityMySurveyBinding
+    private lateinit var _binding: ActivityMySurveyBinding
+    private val binding get() = _binding
 
     private var akilimoUsage: String = ""
     private var akilimoRecRating: Int = 0
@@ -32,15 +29,21 @@ class MySurveyActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMySurveyBinding.inflate(layoutInflater)
+        _binding = ActivityMySurveyBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         initComponent()
     }
 
+    @Deprecated(
+        "Remove completely and use setupToolbar(toolbar, titleResId) instead.",
+        replaceWith = ReplaceWith("setupToolbar(binding.toolbarLayout.toolbar, R.string.your_title)"),
+        level = DeprecationLevel.WARNING
+    )
     override fun initToolbar() {/*No processing*/
     }
 
+    @Deprecated("Deprecated remove it completely")
     override fun initComponent() {
         val rdgAkilimoUser = binding.rdgAkilimoUser
         val rdgRecommend = binding.rdgRecommend
@@ -71,7 +74,7 @@ class MySurveyActivity : BaseActivity() {
                 akilimoUsage = akilimoUsage,
                 akilimoRecRating = akilimoRecRating,
                 akilimoUsefulRating = akilimoUsefulRating,
-                language = prefs.desiredLocale?.language ?: "en",
+                language = LanguageManager.getLanguage(this@MySurveyActivity),
                 deviceToken = sessionManager.getDeviceToken()
             )
 
