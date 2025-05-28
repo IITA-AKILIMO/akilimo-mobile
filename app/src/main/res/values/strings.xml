@@ -589,4 +589,5 @@
     <string name="update_cancelled">Update cancelled</string>
     <string name="restart">RESTART</string>
     <string name="lbl_processing_recommendations">Processing recommendations...</string>
+    <string name="select_language">Select language</string>
 </resources>
