@@ -17,6 +17,7 @@ import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.entities.OperationCost
 import com.akilimo.mobile.inherit.CostBaseActivity
+import com.akilimo.mobile.utils.LanguageManager
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumOperation
 import com.akilimo.mobile.utils.enums.EnumOperationType
@@ -46,13 +47,9 @@ class TractorAccessActivity : CostBaseActivity() {
     private var hasPlough = false
     private var hasRidger = false
     private val hasHarrow = false
-    private val isDialogOpen = false
 
     private var exactPloughCost = false
     private var exactRidgeCost = false
-
-    private val ploughCostText: String? = null
-    private val ridgingCostText: String? = null
 
     private var dataValid = false
     private var tractorPloughCost = 0.0
@@ -100,6 +97,11 @@ class TractorAccessActivity : CostBaseActivity() {
         }
     }
 
+    @Deprecated(
+        "Remove completely and use setupToolbar(toolbar, titleResId) instead.",
+        replaceWith = ReplaceWith("setupToolbar(binding.toolbarLayout.toolbar, R.string.your_title)"),
+        level = DeprecationLevel.WARNING
+    )
     override fun initToolbar() {
         toolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
         setSupportActionBar(toolbar)
@@ -108,6 +110,7 @@ class TractorAccessActivity : CostBaseActivity() {
         toolbar!!.setNavigationOnClickListener { v: View? -> validate(false) }
     }
 
+    @Deprecated("Deprecated remove it completely")
     override fun initComponent() {
         rdgTractor!!.setOnCheckedChangeListener { radioGroup: RadioGroup?, radioIndex: Int ->
             when (radioIndex) {
@@ -135,12 +138,12 @@ class TractorAccessActivity : CostBaseActivity() {
             }
         }
 
-        val myLocale = getCurrentLocale()
+        val language = LanguageManager.getLanguage(this@TractorAccessActivity)
         var translatedUnit = this@TractorAccessActivity.getString(R.string.lbl_acre)
         if (areaUnit == "ha") {
             translatedUnit = this@TractorAccessActivity.getString(R.string.lbl_ha)
         }
-        val finalTranslatedUnit = translatedUnit.lowercase(myLocale)
+        val finalTranslatedUnit = translatedUnit.lowercase()
 
 
         chkPlough!!.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean ->
@@ -156,7 +159,7 @@ class TractorAccessActivity : CostBaseActivity() {
                     mathHelper.removeLeadingZero(fieldSize),
                     finalTranslatedUnit
                 ))
-                if (myLocale.language == "sw") {
+                if (language == "sw") {
                     title = (getString(
                         R.string.lbl_tractor_plough_cost,
                         finalTranslatedUnit,
@@ -189,7 +192,7 @@ class TractorAccessActivity : CostBaseActivity() {
                     mathHelper.removeLeadingZero(fieldSize),
                     finalTranslatedUnit
                 ))
-                if (myLocale.language == "sw") {
+                if (language == "sw") {
                     title = (getString(
                         R.string.lbl_tractor_ridge_cost,
                         finalTranslatedUnit,

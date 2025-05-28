@@ -44,6 +44,7 @@
                     android:layout_marginStart="@dimen/spacing_medium"
                     android:layout_marginEnd="@dimen/spacing_medium"
                     android:maxWidth="400dp"
+                    android:visibility="gone"
                     app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="@dimen/dimen_5"
                     app:cardElevation="4dp"
@@ -106,7 +107,7 @@
                     android:gravity="center"
                     android:orientation="vertical"
                     android:padding="@dimen/spacing_large"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/errorImage"
@@ -117,13 +118,22 @@
                         app:srcCompat="@drawable/ic_error" />
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/errorLabel"
+                        android:id="@+id/lblErrorMessage"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/spacing_large"
                         android:text="@string/lbl_compute_error"
                         android:textAlignment="center"
                         android:textColor="@color/red_A400"
+                        android:textSize="@dimen/font_size_16" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/lblErrorDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_large"
+                        android:text="@string/lbl_compute_timeout_error"
+                        android:textAlignment="center"
                         android:textSize="@dimen/font_size_14" />
 
                     <com.google.android.material.button.MaterialButton

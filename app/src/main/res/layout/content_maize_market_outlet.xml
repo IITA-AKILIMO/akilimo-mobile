@@ -21,7 +21,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/starchFactoryCard"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:fontFamily="@font/roboto_bold"
             android:text="@string/lbl_maize_outlets"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
@@ -74,7 +73,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/produceTypeCard"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:fontFamily="@font/roboto_bold"
             android:text="@string/lbl_maize_sale_unit"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:visibility="gone" />

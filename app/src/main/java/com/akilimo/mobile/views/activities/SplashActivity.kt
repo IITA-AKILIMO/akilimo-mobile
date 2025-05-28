@@ -69,14 +69,14 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun launchNextActivity(isInDevMode: Boolean) {
-        var intent: Intent = Intent(this, HomeStepperActivity::class.java)
+        var intent = Intent(this, HomeStepperActivity::class.java)
 
         if (isInDevMode) {
             intent = Intent(this, RecommendationsActivity::class.java)
         }
         startActivity(intent)
         finish()
-        Animatoo.animateSlideDown(this)
+        Animatoo.animateFade(this@SplashActivity)
     }
 
     private fun fallbackLaunch() {

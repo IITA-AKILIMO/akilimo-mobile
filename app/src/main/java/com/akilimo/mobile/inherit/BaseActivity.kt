@@ -18,6 +18,7 @@ import androidx.appcompat.widget.Toolbar
 import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
+import com.akilimo.mobile.utils.LanguageManager
 import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.SessionManager
 import com.akilimo.mobile.utils.enums.EnumCountry
@@ -25,9 +26,6 @@ import com.akilimo.mobile.views.activities.DstRecommendationActivity
 import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import com.nabinbhandari.android.permissions.PermissionHandler
 import com.nabinbhandari.android.permissions.Permissions
-import dev.b3nedikt.app_locale.AppLocale.wrap
-import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository
-import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import io.sentry.Sentry
 import java.util.Locale
 
@@ -58,11 +56,9 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(ViewPumpContextWrapper.wrap(wrap(newBase)))
-    }
-
-    override fun getResources(): Resources {
-        return wrap(baseContext).resources
+        val language = LanguageManager.getLanguage(newBase)
+        val context = LanguageManager.setLocale(newBase, language)
+        super.attachBaseContext(context)
     }
 
     @Deprecated(
@@ -240,14 +236,5 @@ abstract class BaseActivity : AppCompatActivity() {
     protected fun processRecommendations(activity: Activity) {
         val intent = Intent(activity, DstRecommendationActivity::class.java)
         activity.startActivity(intent)
-    }
-
-    protected fun getCurrentLocale(): Locale {
-        val prefs = SharedPrefsAppLocaleRepository(this@BaseActivity)
-        var myDesiredLocale = prefs.desiredLocale
-        if (myDesiredLocale == null) {
-            myDesiredLocale = Locale("en", "NG")
-        }
-        return myDesiredLocale
     }
 }

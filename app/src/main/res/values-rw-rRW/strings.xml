@@ -4,6 +4,7 @@
     <string name="welcome_instructions">AKILIMO igufasha gufata ibyemezo byiza mu murima w\'imyumbati kugirango ubone umusaruro mwinshi kandi ugire inyungu nyinshi</string>
     <string name="important_instructions_title">AMAKURU Y\'INGENZI</string>
     <string name="important_instructions">Inama ugirwa na AKILIMO zose zishingiye ku hantu uherereye, ingano y\'umurima wawe n\'ibiciro. Urugero, iyo ubuso bw\'umurima wawe wibeshye ukabugira bunini, bituma utanga igishoro kinini bityo ugahomba.  Ku rundi ruhande, niba ubuso bw\'umurima wawe ugereranije ari butoya ugereranije nukuri, ibi biganisha ku kudaha agaciro umusaruro wawe kandi ukaba watakaza amahirwe yo kubona inyungu mu murima wawe.</string>
+    <string name="important_instructions_b">Porogaramu ya AKILIMO ikusanya amakuru y’ingenzi nk’aho uherereye, ubunini bw’umurima n’itariki wateyemo kugira ngo itange inama zihuye n’ibikenewe. Kugira ngo ubone umusaruro mwiza, nyamuneka andika amakuru yizewe kandi yuzuye. Gupima neza ubunini bw’umurima ni ingenzi cyane kugira ngo wirinde kwibeshya ku ngano y’ibikoresho bikenewe ngo ugerwe ku musaruro mwiza no kunguka. Iyo upimye nabi, bishobora gutuma ukoresha amafaranga atari ngombwa kandi bikagabanya inyungu zawe.</string>
     <string name="title_activity_fertilizer_choice">Ifumbire iboneka</string>
     <string name="title_activity_fertilizer_rec">Inama kw\'ikoreshwa ry\'ifumbire</string>
     <string name="title_activity_investment_amount">Ingano y\'ishoramari</string>
@@ -383,6 +384,7 @@
     <string name="lbl_already_planted_title">Byamaze guterwa</string>
     <string name="lbl_already_planted_text">Bigaragara ko umaze gutera, ntushobora rero kugira icyo wongeraho</string>
     <string name="lbl_agree_to_terms">Nemeye amategeko n\'amabwiriza ngenderwaho</string>
+    <string name="lbl_agree_to_disclaimer">Nyamuneka wemeze ko wasomye kandi wumvise neza iri tangazo ry’uruhushya.</string>
     <string name="lbl_accept_terms_prompt">Emera amategeko n\'amabwiriza mbere yo gukomeza</string>
     <string name="lbl_restart_app_prompt">Ongera utangire porogaramu kugirango ukoreshe ibisobanuro kuri buto ikoreshwa?</string>
     <string name="lbl_optional">(N\'ubushake bwawe)</string>
@@ -446,4 +448,7 @@
     <string name="lbl_area_unit_subtitle">Umwihariko mwiza, nkomeza igisubizo kigomba ku isi ya kibondo cy\'urwego rwa shamba ryawe. Iki wakoranye n\'ubuhamya ntikivomo, wabandikire inyandiko muri iyi nkuru \'GPS Fields Area Measure.\' Iyi ndirimbo izakuboneza ukuboko bw\'ishamba ryawe kugira ngo utembe ukimishe amakaza ye cyangwa ukubandakize iyo mikino ye.</string>
     <string name="lbl_remember_pref">Kubona ibyifuzo byanjye na jya itariki inyuma</string>
     <string name="location_info">Isi: %1$s, Latitudo: %2$.2f, Longitudo: %3$.2f</string>
+    <string name="restart">ONGERA UTANGIRE</string>
+    <string name="lbl_processing_recommendations">Hanozwa inama zitangwa...</string>
+    <string name="select_language">Hitamo ururimi</string>
 </resources>

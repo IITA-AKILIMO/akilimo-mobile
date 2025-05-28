@@ -14,6 +14,11 @@ class InfoFragment : BaseStepFragment() {
     private var _binding: FragmentInfoBinding? = null
     private val binding get() = _binding!!
 
+    companion object {
+        fun newInstance(): InfoFragment {
+            return InfoFragment()
+        }
+    }
 
     override fun loadFragmentLayout(
         inflater: LayoutInflater,
@@ -43,11 +48,5 @@ class InfoFragment : BaseStepFragment() {
     }
 
     override fun onError(error: VerificationError) {
-    }
-
-    companion object {
-        fun newInstance(): InfoFragment {
-            return InfoFragment()
-        }
     }
 }

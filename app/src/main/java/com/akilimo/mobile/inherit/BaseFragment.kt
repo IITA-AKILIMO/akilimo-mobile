@@ -16,7 +16,6 @@ import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.entities.UserLocation
 import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.SessionManager
-import dev.b3nedikt.reword.Reword.reword
 import io.sentry.Sentry
 
 abstract class BaseFragment : Fragment() {
@@ -42,19 +41,14 @@ abstract class BaseFragment : Fragment() {
     abstract fun refreshData()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view = loadFragmentLayout(inflater, container, savedInstanceState)
-        reword(view)
         return view
     }
 
     protected abstract fun loadFragmentLayout(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View
 
 
@@ -75,9 +69,7 @@ abstract class BaseFragment : Fragment() {
 
 
     protected fun showCustomWarningDialog(
-        titleText: String?,
-        contentText: String?,
-        buttonTitle: String? = null
+        titleText: String?, contentText: String?, buttonTitle: String? = null
     ) {
         try {
             val dialog = Dialog(requireContext())

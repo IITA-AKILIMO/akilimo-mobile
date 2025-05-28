@@ -12,6 +12,7 @@ import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.entities.OperationCost
 import com.akilimo.mobile.inherit.CostBaseActivity
+import com.akilimo.mobile.utils.LanguageManager
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumOperation
 import com.akilimo.mobile.utils.enums.EnumOperationType
@@ -34,14 +35,13 @@ class ManualTillageCostActivity : CostBaseActivity() {
     private var _binding: ActivityManualTillageCostBinding? = null
     private val binding get() = _binding!!
 
-//    private var fieldOperationCost: FieldOperationCost? = null
 
     private var manualPloughCost = 0.0
     private var manualRidgeCost = 0.0
     private var dataValid = false
     private var dialogOpen = false
 
-//    private var hintText: String? = null
+    private var activeLanguage = "en"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +61,7 @@ class ManualTillageCostActivity : CostBaseActivity() {
         btnFinish = binding.twoButtons.btnFinish
         btnCancel = binding.twoButtons.btnCancel
 
+        activeLanguage = LanguageManager.getLanguage(this@ManualTillageCostActivity)
         val mandatoryInfo = database.mandatoryInfoDao().findOne()
         if (mandatoryInfo != null) {
             areaUnit = mandatoryInfo.areaUnit
@@ -103,6 +104,11 @@ class ManualTillageCostActivity : CostBaseActivity() {
         }
     }
 
+    @Deprecated(
+        "Remove completely and use setupToolbar(toolbar, titleResId) instead.",
+        replaceWith = ReplaceWith("setupToolbar(binding.toolbarLayout.toolbar, R.string.your_title)"),
+        level = DeprecationLevel.WARNING
+    )
     override fun initToolbar() {
         toolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
         setSupportActionBar(toolbar)
@@ -111,14 +117,14 @@ class ManualTillageCostActivity : CostBaseActivity() {
         toolbar!!.setNavigationOnClickListener { v: View? -> validate(false) }
     }
 
+    @Deprecated("Deprecated remove it completely")
     override fun initComponent() {
         val context = this@ManualTillageCostActivity
-        val myLocale = getCurrentLocale()
         var translatedUnit = context.getString(R.string.lbl_acre)
         if (areaUnit == "ha") {
             translatedUnit = context.getString(R.string.lbl_ha)
         }
-        val finalTranslatedUnit = translatedUnit.lowercase(myLocale)
+        val finalTranslatedUnit = translatedUnit.lowercase()
 
         var ploughTitle = context.getString(
             R.string.lbl_manual_tillage_cost,
@@ -130,7 +136,7 @@ class ManualTillageCostActivity : CostBaseActivity() {
             mathHelper.removeLeadingZero(fieldSize),
             finalTranslatedUnit
         )
-        if (myLocale.language == "sw") {
+        if (activeLanguage == "sw") {
             ploughTitle = context.getString(
                 R.string.lbl_manual_tillage_cost,
                 finalTranslatedUnit,
@@ -247,7 +253,7 @@ class ManualTillageCostActivity : CostBaseActivity() {
         if (areaUnit == "ha") {
             translatedUnit = this@ManualTillageCostActivity.getString(R.string.lbl_ha)
         }
-        val finalTranslatedUnit = translatedUnit.lowercase(getCurrentLocale())
+        val finalTranslatedUnit = translatedUnit.lowercase()
         arguments.putString(OperationCostsDialogFragment.OPERATION_NAME, operationName)
         arguments.putString(OperationCostsDialogFragment.OPERATION_TYPE, operationType)
         arguments.putString(OperationCostsDialogFragment.DIALOG_TITLE, dialogTitle)
@@ -277,7 +283,7 @@ class ManualTillageCostActivity : CostBaseActivity() {
                                 mathHelper.formatNumber(selectedCost, null),
                                 currencySymbol
                             )
-                            if (getCurrentLocale().language == "sw") {
+                            if (activeLanguage == "sw") {
                                 manualTillageText = getString(
                                     R.string.lbl_ploughing_cost_text,
                                     finalTranslatedUnit,
@@ -298,7 +304,7 @@ class ManualTillageCostActivity : CostBaseActivity() {
                                 mathHelper.formatNumber(selectedCost, null),
                                 currencySymbol
                             )
-                            if (getCurrentLocale().language == "sw") {
+                            if (activeLanguage == "sw") {
                                 manualRidgeText = getString(
                                     R.string.lbl_ridging_cost_text,
                                     finalTranslatedUnit,

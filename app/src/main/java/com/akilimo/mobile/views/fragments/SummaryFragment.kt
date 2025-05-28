@@ -15,6 +15,7 @@ import com.akilimo.mobile.entities.UserLocation
 import com.akilimo.mobile.inherit.BaseStepFragment
 import com.akilimo.mobile.models.TimeLineModel
 import com.akilimo.mobile.models.TimelineAttributes
+import com.akilimo.mobile.utils.LanguageManager
 import com.akilimo.mobile.utils.TheItemAnimation
 import com.akilimo.mobile.utils.enums.EnumInvestmentPref
 import com.akilimo.mobile.utils.enums.StepStatus
@@ -135,8 +136,8 @@ class SummaryFragment : BaseStepFragment() {
             fieldSize = it.areaSize
 
             if (areaUnitSelected) {
-                val locale = getCurrentLocale()
-                return if (locale?.language.equals("sw", ignoreCase = true)) {
+                val language = LanguageManager.getLanguage(requireContext())
+                return if (language.equals("sw", ignoreCase = true)) {
                     String.format("%s %s", areaUnit, fieldSize)
                 } else {
                     String.format("%s %s", fieldSize, areaUnit)
