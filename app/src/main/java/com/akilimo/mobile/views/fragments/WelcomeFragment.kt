@@ -14,7 +14,6 @@ import com.akilimo.mobile.interfaces.IFragmentCallBack
 import com.akilimo.mobile.utils.LanguageManager
 import com.akilimo.mobile.utils.LanguageOption
 import com.akilimo.mobile.utils.Locales
-import com.akilimo.mobile.views.activities.HomeStepperActivity
 import com.akilimo.mobile.views.activities.SplashActivity
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.processphoenix.ProcessPhoenix
@@ -24,7 +23,7 @@ class WelcomeFragment : BaseStepFragment() {
 
     private var _binding: FragmentWelcomeBinding? = null
     private val binding get() = _binding!!
-    private var languagePicked = false;
+    private var languagePicked = false
 
     private var fragmentCallBack: IFragmentCallBack? = null
 
