@@ -59,6 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/spacing_large"
             android:orientation="vertical"
             android:paddingHorizontal="@dimen/spacing_large"
             android:paddingTop="@dimen/spacing_large">
@@ -84,7 +85,6 @@
                     android:id="@+id/rdYes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/ubuntu_bold"
                     android:text="@string/lbl_yes"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textStyle="bold" />
@@ -97,7 +97,6 @@
                     android:id="@+id/rdNo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/ubuntu_bold"
                     android:text="@string/lbl_no"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textStyle="bold" />
