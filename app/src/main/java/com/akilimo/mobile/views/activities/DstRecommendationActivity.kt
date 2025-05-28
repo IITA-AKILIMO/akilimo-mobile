@@ -93,9 +93,8 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
             binding.apply {
                 errorLabel.setText(R.string.lbl_no_profile_info)
                 lytProgress.visibility = View.GONE
-                errorImage.visibility = View.VISIBLE
-                errorLabel.visibility = View.VISIBLE
                 recommendationCard.visibility = View.GONE
+                errorContainer.visibility = View.VISIBLE
             }
         }
     }
