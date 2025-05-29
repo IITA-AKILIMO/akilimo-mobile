@@ -1,12 +1,45 @@
 import java.time.LocalDateTime
 
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-parcelize'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'jacoco'
-//apply plugin: 'io.sentry.android.gradle'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'kotlin-parcelize'
+    id 'com.google.gms.google-services'
+    id 'jacoco'
+    id 'org.sonarqube'
+    id 'io.gitlab.arturbosch.detekt'
+//id 'io.sentry.android.gradle'
+}
+
+detekt {
+    // other detekt configuration goes here
+    baseline = file("detekt-baseline.xml")
+}
+
+sonar {
+    properties {
+        property "sonar.projectName", "akilimo-mobile"
+        property "sonar.projectKey", "IITA-AKILIMO_akilimo-mobile_abcb50d1-1abd-4e32-bd76-b385f65cfc5d"
+        property "sonar.token", "sqp_d9cf0aa4c4bbfef6e08dfc95eb7dbe1689390627"
+        property "sonar.host.url", "https://sonar.munywele.co.ke"
+        property "sonar.sources", "src"
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.androidLint.reportPaths", "build/reports/lint-results.xml"
+        property "sonar.test.inclusions", "**/*Test*/**"
+        property "sonar.exclusions", '**/.gradle/**,' +
+                "**/androidTest/**," +
+                "**/R.class," +
+                "**/BuildConfig.*," +
+                "**/Manifest*.*," +
+                "**/android/databinding/*," +
+                "**/androidx/databinding/*," +
+                "**/*MapperImpl*.*," +
+                "**/BuildConfig.*," +
+                "**/Manifest*.*," +
+                "**/google-services.json"
+    }
+}
 
 android {
     def releaseVersionName = computeBuildNumber()
@@ -35,6 +68,23 @@ android {
             // dynamic feature APK.
             enableSplit = false
         }
+    }
+
+    lint {
+        ignoreWarnings = true
+        abortOnError = false
+        checkReleaseBuilds = false
+//        baseline = file("lint-baseline.xml")
+
+        disable 'MissingTranslation'
+    }
+    lintOptions {
+        // Specify the XML report file name and location
+        xmlReport = true
+        xmlOutput = layout.buildDirectory.file("reports/lint-results.xml").get().asFile
+
+        // Optional: disable the HTML report if you want
+        htmlReport = true
     }
 
     buildTypes {
@@ -133,8 +183,6 @@ dependencies {
     implementation 'com.google.android.gms:play-services-places:17.0.0'
     implementation 'com.google.android.play:app-update:2.1.0'
     implementation 'com.google.android.play:app-update-ktx:2.1.0'
-
-
     implementation 'com.google.firebase:firebase-config:20.0.4'
     implementation 'com.google.firebase:firebase-analytics:18.0.3'
     implementation 'com.google.firebase:firebase-messaging:21.1.0' //for push notifications
@@ -192,7 +240,7 @@ dependencies {
     implementation 'com.github.twinone:AndroidWizard:b4546bd712'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.6.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
-    implementation 'androidx.activity:activity:1.8.0'
+    implementation 'androidx.activity:activity-ktx:1.8.0'
 
 
     //If you are using Kotlin, replace annotationProcessor with kapt.

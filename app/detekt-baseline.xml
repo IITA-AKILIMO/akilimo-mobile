@@ -1,0 +1,306 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:BioDataFragment.kt$BioDataFragment$private fun saveBioData()</ID>
+    <ID>CyclomaticComplexMethod:DatesActivity.kt$DatesActivity$override fun initComponent()</ID>
+    <ID>CyclomaticComplexMethod:FertilizerPriceDialogFragment.kt$FertilizerPriceDialogFragment$override fun onCreateDialog(savedInstanceState: Bundle?): Dialog</ID>
+    <ID>CyclomaticComplexMethod:WeedControlCostsActivity.kt$WeedControlCostsActivity$override fun initComponent()</ID>
+    <ID>DestructuringDeclarationWithTooManyEntries:FertilizerPriceDialogFragment.kt$FertilizerPriceDialogFragment$(_, _, priceId, _, _, _, minAllowedPrice, maxAllowedPrice, price, _, priceRange)</ID>
+    <ID>DestructuringDeclarationWithTooManyEntries:SweetPotatoPriceDialogFragment.kt$SweetPotatoPriceDialogFragment$(id, _, _, _, minLocalPrice, maxLocalPrice, _, _, _, _, price)</ID>
+    <ID>EmptyFunctionBlock:AreaUnitFragment.kt$AreaUnitFragment${ }</ID>
+    <ID>EmptyFunctionBlock:BioDataFragment.kt$BioDataFragment${ }</ID>
+    <ID>EmptyFunctionBlock:BioDataFragment.kt$BioDataFragment.&lt;no name provided&gt;${ }</ID>
+    <ID>EmptyFunctionBlock:DstRecommendationActivity.kt$DstRecommendationActivity${ }</ID>
+    <ID>EmptyFunctionBlock:FertilizersActivity.kt$FertilizersActivity${ }</ID>
+    <ID>EmptyFunctionBlock:FieldSizeFragment.kt$FieldSizeFragment${ }</ID>
+    <ID>EmptyFunctionBlock:GPSTracker.kt$GPSTracker${}</ID>
+    <ID>EmptyFunctionBlock:InfoFragment.kt$InfoFragment${ }</ID>
+    <ID>EmptyFunctionBlock:InvestmentAmountActivity.kt$InvestmentAmountActivity.&lt;no name provided&gt;${ }</ID>
+    <ID>EmptyFunctionBlock:PlantingDateFragment.kt$PlantingDateFragment${ }</ID>
+    <ID>EmptyFunctionBlock:PrivacyStatementFragment.kt$PrivacyStatementFragment${ }</ID>
+    <ID>EmptyFunctionBlock:SummaryFragment.kt$SummaryFragment${}</ID>
+    <ID>EmptyFunctionBlock:ViewAnimation.kt$ViewAnimation.&lt;no name provided&gt;${ }</ID>
+    <ID>EmptyFunctionBlock:WelcomeFragment.kt$WelcomeFragment${}</ID>
+    <ID>EmptyFunctionBlock:WelcomeFragment.kt$WelcomeFragment.&lt;no name provided&gt;${}</ID>
+    <ID>ExplicitGarbageCollectionCall:HomeStepperActivity.kt$HomeStepperActivity$gc()</ID>
+    <ID>ImplicitDefaultLocale:FieldSizeFragment.kt$FieldSizeFragment$String.format("%s %s", displayUnit, fieldSize)</ID>
+    <ID>ImplicitDefaultLocale:FieldSizeFragment.kt$FieldSizeFragment$String.format("%s %s", fieldSize, displayUnit)</ID>
+    <ID>ImplicitDefaultLocale:InvestmentAmountActivity.kt$InvestmentAmountActivity$String.format("%s %s %s", formattedNumber, separator, selectedFieldArea)</ID>
+    <ID>ImplicitDefaultLocale:LocationFragment.kt$LocationFragment$String.format( "%s’s cassava farm: %s", fullNames, farmName )</ID>
+    <ID>ImplicitDefaultLocale:MapBoxActivity.kt$MapBoxActivity$String.format( "Lat:%s Lon:%s", currentCoordinates!!.latitude, currentCoordinates!!.longitude )</ID>
+    <ID>ImplicitDefaultLocale:MathHelper.kt$MathHelper$String.format("%,.0f $currency", number)</ID>
+    <ID>ImplicitDefaultLocale:SummaryFragment.kt$SummaryFragment$String.format("%s %s", areaUnit, fieldSize)</ID>
+    <ID>ImplicitDefaultLocale:SummaryFragment.kt$SummaryFragment$String.format("%s %s", fieldSize, areaUnit)</ID>
+    <ID>LongMethod:BioDataFragment.kt$BioDataFragment$private fun saveBioData()</ID>
+    <ID>LongMethod:CassavaMarketActivity.kt$CassavaMarketActivity$override fun initComponent()</ID>
+    <ID>LongMethod:CassavaMarketActivity.kt$CassavaMarketActivity$override fun onCreate(savedInstanceState: Bundle?)</ID>
+    <ID>LongMethod:CassavaMarketActivity.kt$CassavaMarketActivity$override fun validate(backPressed: Boolean)</ID>
+    <ID>LongMethod:CassavaPriceDialogFragment.kt$CassavaPriceDialogFragment$override fun onCreateDialog(savedInstanceState: Bundle?): Dialog</ID>
+    <ID>LongMethod:FertilizerPriceDialogFragment.kt$FertilizerPriceDialogFragment$override fun onCreateDialog(savedInstanceState: Bundle?): Dialog</ID>
+    <ID>LongMethod:MaizeMarketActivity.kt$MaizeMarketActivity$override fun initComponent()</ID>
+    <ID>LongMethod:MaizeMarketActivity.kt$MaizeMarketActivity$override fun validate(backPressed: Boolean)</ID>
+    <ID>LongMethod:MaizePerformanceActivity.kt$MaizePerformanceActivity$override fun initComponent()</ID>
+    <ID>LongMethod:MaizePriceDialogFragment.kt$MaizePriceDialogFragment$override fun onCreateDialog(savedInstanceState: Bundle?): Dialog</ID>
+    <ID>LongMethod:ManualTillageCostActivity.kt$ManualTillageCostActivity$@Deprecated("Deprecated remove it completely") override fun initComponent()</ID>
+    <ID>LongMethod:OperationCostsDialogFragment.kt$OperationCostsDialogFragment$override fun onCreateDialog(savedInstanceState: Bundle?): Dialog</ID>
+    <ID>LongMethod:RecommendationChannelDialog.kt$RecommendationChannelDialog$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
+    <ID>LongMethod:RecommendationsActivity.kt$RecommendationsActivity$@Deprecated("Deprecated remove it completely") override fun initComponent()</ID>
+    <ID>LongMethod:RootYieldActivity.kt$RootYieldActivity$private fun setYieldData(areaUnit: String): List&lt;FieldYield&gt;</ID>
+    <ID>LongMethod:SweetPotatoPriceDialogFragment.kt$SweetPotatoPriceDialogFragment$override fun onCreateDialog(savedInstanceState: Bundle?): Dialog</ID>
+    <ID>LongMethod:TractorAccessActivity.kt$TractorAccessActivity$@Deprecated("Deprecated remove it completely") override fun initComponent()</ID>
+    <ID>LongMethod:WeedControlCostsActivity.kt$WeedControlCostsActivity$override fun initComponent()</ID>
+    <ID>LongParameterList:MathHelper.kt$MathHelper$( input: String, targetCurrency: String, currencySymbol: String?, unitType: String?, fieldSize: String, selectedField: String?, separator: String )</ID>
+    <ID>LongParameterList:TimelineAttributes.kt$TimelineAttributes$( var markerSize: Int = 48, var markerCompleteColor: Int, var markerIncompleteColor: Int, var markerInCenter: Boolean = true, var markerLeftPadding: Int = 0, var markerTopPadding: Int = 0, var markerRightPadding: Int = 0, var markerBottomPadding: Int = 0, var linePadding: Int = 0, var lineWidth: Int = 0, var startLineColor: Int, var endLineColor: Int, var lineStyle: Int = TimelineView.LineStyle.DASHED, var lineDashWidth: Int = 4, var lineDashGap: Int = 2 )</ID>
+    <ID>MagicNumber:BaseActivity.kt$BaseActivity$2.471</ID>
+    <ID>MagicNumber:CassavaPriceDialogFragment.kt$CassavaPriceDialogFragment$1000</ID>
+    <ID>MagicNumber:ComputeRequest.kt$ComputeRequest$100</ID>
+    <ID>MagicNumber:ComputeRequest.kt$ComputeRequest$1000</ID>
+    <ID>MagicNumber:ComputeRequest.kt$ComputeRequest$1000.0</ID>
+    <ID>MagicNumber:ComputeRequest.kt$ComputeRequest$120000.0</ID>
+    <ID>MagicNumber:ComputeRequest.kt$ComputeRequest$230.0</ID>
+    <ID>MagicNumber:DateDialogPickerFragment.kt$DateDialogPickerFragment$12</ID>
+    <ID>MagicNumber:DateDialogPickerFragment.kt$DateDialogPickerFragment$16</ID>
+    <ID>MagicNumber:DateDialogPickerFragment.kt$DateDialogPickerFragment$8</ID>
+    <ID>MagicNumber:DstRecommendationActivity.kt$DstRecommendationActivity.&lt;no name provided&gt;$500</ID>
+    <ID>MagicNumber:DstRecommendationActivity.kt$DstRecommendationActivity.&lt;no name provided&gt;$502</ID>
+    <ID>MagicNumber:DstRecommendationActivity.kt$DstRecommendationActivity.&lt;no name provided&gt;$503</ID>
+    <ID>MagicNumber:FertilizersActivity.kt$FertilizersActivity$3</ID>
+    <ID>MagicNumber:HomeStepperActivity.kt$HomeStepperActivity$1000</ID>
+    <ID>MagicNumber:HomeStepperActivity.kt$HomeStepperActivity$3</ID>
+    <ID>MagicNumber:InterCropFertilizersActivity.kt$InterCropFertilizersActivity$3</ID>
+    <ID>MagicNumber:InvestmentAmountActivity.kt$InvestmentAmountActivity$30</ID>
+    <ID>MagicNumber:MaizePerformanceActivity.kt$MaizePerformanceActivity$3</ID>
+    <ID>MagicNumber:MaizePerformanceActivity.kt$MaizePerformanceActivity$4</ID>
+    <ID>MagicNumber:MaizePerformanceActivity.kt$MaizePerformanceActivity$5</ID>
+    <ID>MagicNumber:MaizePriceDialogFragment.kt$MaizePriceDialogFragment$10.0</ID>
+    <ID>MagicNumber:MaizePriceDialogFragment.kt$MaizePriceDialogFragment$100.0</ID>
+    <ID>MagicNumber:MaizePriceDialogFragment.kt$MaizePriceDialogFragment$1000</ID>
+    <ID>MagicNumber:MapBoxActivity.kt$MapBoxActivity$17</ID>
+    <ID>MagicNumber:MapBoxActivity.kt$MapBoxActivity$5</ID>
+    <ID>MagicNumber:MathHelper.kt$MathHelper$1000</ID>
+    <ID>MagicNumber:MathHelper.kt$MathHelper$2250.0</ID>
+    <ID>MagicNumber:MathHelper.kt$MathHelper$360.0</ID>
+    <ID>MagicNumber:MathHelper.kt$MathHelper$6.11</ID>
+    <ID>MagicNumber:RetrofitManager.kt$RetrofitManager$130</ID>
+    <ID>MagicNumber:RootYieldActivity.kt$RootYieldActivity$11.25</ID>
+    <ID>MagicNumber:RootYieldActivity.kt$RootYieldActivity$18.75</ID>
+    <ID>MagicNumber:RootYieldActivity.kt$RootYieldActivity$26.25</ID>
+    <ID>MagicNumber:RootYieldActivity.kt$RootYieldActivity$3</ID>
+    <ID>MagicNumber:RootYieldActivity.kt$RootYieldActivity$3.75</ID>
+    <ID>MagicNumber:RootYieldActivity.kt$RootYieldActivity$33.75</ID>
+    <ID>MagicNumber:RootYieldActivity.kt$RootYieldActivity$4</ID>
+    <ID>MagicNumber:SessionManager.kt$SessionManager$1000L</ID>
+    <ID>MagicNumber:SessionManager.kt$SessionManager$3</ID>
+    <ID>MagicNumber:SessionManager.kt$SessionManager$390.34</ID>
+    <ID>MagicNumber:SessionManager.kt$SessionManager$6.11</ID>
+    <ID>MagicNumber:SweetPotatoMarketActivity.kt$SweetPotatoMarketActivity$5.00</ID>
+    <ID>MagicNumber:SweetPotatoMarketActivity.kt$SweetPotatoMarketActivity$500.00</ID>
+    <ID>MagicNumber:SweetPotatoPriceDialogFragment.kt$SweetPotatoPriceDialogFragment$1000</ID>
+    <ID>MagicNumber:TheItemAnimation.kt$TheItemAnimation$0.5f</ID>
+    <ID>MagicNumber:TheItemAnimation.kt$TheItemAnimation$3</ID>
+    <ID>MagicNumber:TheItemAnimation.kt$TheItemAnimation$400</ID>
+    <ID>MagicNumber:TheItemAnimation.kt$TheItemAnimation$400f</ID>
+    <ID>MagicNumber:TheItemAnimation.kt$TheItemAnimation$500</ID>
+    <ID>MagicNumber:TheItemAnimation.kt$TheItemAnimation$800</ID>
+    <ID>MagicNumber:ViewAnimation.kt$ViewAnimation$0.5f</ID>
+    <ID>MagicNumber:ViewAnimation.kt$ViewAnimation$135f</ID>
+    <ID>MagicNumber:ViewAnimation.kt$ViewAnimation$200</ID>
+    <ID>MagicNumber:ViewAnimation.kt$ViewAnimation$300</ID>
+    <ID>MagicNumber:ViewAnimation.kt$ViewAnimation$500</ID>
+    <ID>MagicNumber:ViewLoadingDotsBounce.kt$ViewLoadingDotsBounce$200</ID>
+    <ID>MagicNumber:ViewLoadingDotsBounce.kt$ViewLoadingDotsBounce$3</ID>
+    <ID>MagicNumber:ViewLoadingDotsBounce.kt$ViewLoadingDotsBounce$5</ID>
+    <ID>MagicNumber:ViewLoadingDotsFade.kt$ViewLoadingDotsFade$0.2f</ID>
+    <ID>MagicNumber:ViewLoadingDotsFade.kt$ViewLoadingDotsFade$200</ID>
+    <ID>MagicNumber:ViewLoadingDotsFade.kt$ViewLoadingDotsFade$5</ID>
+    <ID>MagicNumber:ViewLoadingDotsGrow.kt$ViewLoadingDotsGrow$1.5f</ID>
+    <ID>MagicNumber:ViewLoadingDotsGrow.kt$ViewLoadingDotsGrow$200</ID>
+    <ID>MagicNumber:ViewLoadingDotsGrow.kt$ViewLoadingDotsGrow$6</ID>
+    <ID>MaxLineLength:Akilimo.kt$Akilimo$//@FIX This is used to enable proper vector support for android 4.4 and below, it causes crashing when firing up the application</ID>
+    <ID>MaxLineLength:CassavaMarketActivity.kt$CassavaMarketActivity$binding.contentCassavaMarket.rdgUnitOfSale</ID>
+    <ID>MaxLineLength:LocationFragment.kt$LocationFragment$//https://api.mapbox.com/geocoding/v5/mapbox.places/39.326888,-3.384999.json?access_token=pk.eyJ1IjoibWFzZ2VlayIsImEiOiJjanp0bm43ZmwwNm9jM29udjJod3V6dzB1In0.MevkJtANWZ8Wl9abnLu1Uw</ID>
+    <ID>MaxLineLength:OperationCostDao.kt$OperationCostDao$@Query("SELECT * FROM operation_costs WHERE operation_name = :operationName AND operation_type = :operationType AND country_code = :countryCode")</ID>
+    <ID>MaxLineLength:OperationTypeDialogFragment.kt$OperationTypeDialogFragment$binding.rdgOperationType</ID>
+    <ID>MaxLineLength:SingleSelectDialogFragment.kt$SingleSelectDialogFragment$binding.rdgSingleChoice</ID>
+    <ID>NestedBlockDepth:AreaUnitFragment.kt$AreaUnitFragment$private fun refreshData()</ID>
+    <ID>NestedBlockDepth:BaseStepFragment.kt$BaseStepFragment$protected fun showCustomWarningDialog( titleText: String, contentText: String? = titleText, buttonTitle: String? = null )</ID>
+    <ID>NestedBlockDepth:BioDataFragment.kt$BioDataFragment$private fun refreshData()</ID>
+    <ID>NestedBlockDepth:CassavaMarketActivity.kt$CassavaMarketActivity$protected fun processData()</ID>
+    <ID>NestedBlockDepth:GPSTracker.kt$GPSTracker$@SuppressLint("MissingPermission") fun getLocation(): Location?</ID>
+    <ID>NestedBlockDepth:TillageOperationFragment.kt$TillageOperationFragment$fun refreshData()</ID>
+    <ID>NewLineAtEndOfFile:AkilimoCurrency.kt$com.akilimo.mobile.entities.AkilimoCurrency.kt</ID>
+    <ID>NewLineAtEndOfFile:BaseRecommendationActivity.kt$com.akilimo.mobile.inherit.BaseRecommendationActivity.kt</ID>
+    <ID>NewLineAtEndOfFile:BaseStepFragment.kt$com.akilimo.mobile.inherit.BaseStepFragment.kt</ID>
+    <ID>NewLineAtEndOfFile:CassavaPrice.kt$com.akilimo.mobile.entities.CassavaPrice.kt</ID>
+    <ID>NewLineAtEndOfFile:ComputeRequest.kt$com.akilimo.mobile.rest.request.ComputeRequest.kt</ID>
+    <ID>NewLineAtEndOfFile:CountryFragment.kt$com.akilimo.mobile.views.fragments.CountryFragment.kt</ID>
+    <ID>NewLineAtEndOfFile:DateHelper.kt$com.akilimo.mobile.utils.DateHelper.kt</ID>
+    <ID>NewLineAtEndOfFile:DatesActivity.kt$com.akilimo.mobile.views.activities.DatesActivity.kt</ID>
+    <ID>NewLineAtEndOfFile:EnumOperationType.kt$com.akilimo.mobile.utils.enums.EnumOperationType.kt</ID>
+    <ID>NewLineAtEndOfFile:FertilizerPrice.kt$com.akilimo.mobile.entities.FertilizerPrice.kt</ID>
+    <ID>NewLineAtEndOfFile:FertilizerRecommendationActivity.kt$com.akilimo.mobile.views.activities.usecases.FertilizerRecommendationActivity.kt</ID>
+    <ID>NewLineAtEndOfFile:FragmentUtils.kt$com.akilimo.mobile.utils.FragmentUtils.kt</ID>
+    <ID>NewLineAtEndOfFile:InAppUpdate.kt$com.akilimo.mobile.utils.InAppUpdate.kt</ID>
+    <ID>NewLineAtEndOfFile:InvestmentPrefFragment.kt$com.akilimo.mobile.views.fragments.InvestmentPrefFragment.kt</ID>
+    <ID>NewLineAtEndOfFile:MathHelper.kt$com.akilimo.mobile.utils.MathHelper.kt</ID>
+    <ID>NewLineAtEndOfFile:OperationCost.kt$com.akilimo.mobile.entities.OperationCost.kt</ID>
+    <ID>NewLineAtEndOfFile:RecAdapter.kt$com.akilimo.mobile.adapters.RecAdapter.kt</ID>
+    <ID>NewLineAtEndOfFile:RecommendationResponse.kt$com.akilimo.mobile.rest.response.RecommendationResponse.kt</ID>
+    <ID>NewLineAtEndOfFile:RetrofitManager.kt$com.akilimo.mobile.rest.retrofit.RetrofitManager.kt</ID>
+    <ID>NewLineAtEndOfFile:RetrofitUtils.kt$com.akilimo.mobile.rest.retrofit.RetrofitUtils.kt</ID>
+    <ID>NewLineAtEndOfFile:SpinnerOptions.kt$com.akilimo.mobile.data.SpinnerOptions.kt</ID>
+    <ID>NewLineAtEndOfFile:SplashActivity.kt$com.akilimo.mobile.views.activities.SplashActivity.kt</ID>
+    <ID>NewLineAtEndOfFile:Tools.kt$com.akilimo.mobile.utils.Tools.kt</ID>
+    <ID>NewLineAtEndOfFile:UserDataCleaner.kt$com.akilimo.mobile.data.UserDataCleaner.kt</ID>
+    <ID>NewLineAtEndOfFile:UserInfo.kt$com.akilimo.mobile.rest.request.UserInfo.kt</ID>
+    <ID>NewLineAtEndOfFile:WelcomeFragment.kt$com.akilimo.mobile.views.fragments.WelcomeFragment.kt</ID>
+    <ID>ProtectedMemberInFinalClass:CassavaMarketActivity.kt$CassavaMarketActivity$protected fun processData()</ID>
+    <ID>ReturnCount:BioDataFragment.kt$BioDataFragment$private fun saveBioData()</ID>
+    <ID>ReturnCount:CassavaMarketActivity.kt$CassavaMarketActivity$override fun validate(backPressed: Boolean)</ID>
+    <ID>ReturnCount:MaizeMarketActivity.kt$MaizeMarketActivity$override fun validate(backPressed: Boolean)</ID>
+    <ID>ReturnCount:MathHelper.kt$MathHelper$fun convertToLocalCurrency( amount: Double, targetCurrency: String, vararg nearestRounding: Int ): Double</ID>
+    <ID>ReturnCount:MathHelper.kt$MathHelper$fun convertToUSD( amount: Double, sourceCurrency: String, vararg nearestRounding: Int ): Double</ID>
+    <ID>ReturnCount:MathHelper.kt$MathHelper$private fun convertCurrency(input: String, targetCurrency: String): String</ID>
+    <ID>ReturnCount:SweetPotatoMarketActivity.kt$SweetPotatoMarketActivity$override fun validate(backPressed: Boolean)</ID>
+    <ID>ReturnCount:WeedControlCostsActivity.kt$WeedControlCostsActivity$override fun validate(backPressed: Boolean)</ID>
+    <ID>SpreadOperator:BaseLocationPicker.kt$BaseLocationPicker$(*geoCodingTypes)</ID>
+    <ID>SwallowedException:CassavaPriceDialogFragment.kt$CassavaPriceDialogFragment$ex: Exception</ID>
+    <ID>SwallowedException:RetrofitUtils.kt$e: Exception</ID>
+    <ID>SwallowedException:Tools.kt$Tools$e: Exception</ID>
+    <ID>SwallowedException:Tools.kt$Tools$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:AreaUnitFragment.kt$AreaUnitFragment$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:BaseActivity.kt$BaseActivity$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:BaseFragment.kt$BaseFragment$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:BaseStepFragment.kt$BaseStepFragment$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:BaseStepFragment.kt$BaseStepFragment$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:BioDataFragment.kt$BioDataFragment$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:CassavaMarketActivity.kt$CassavaMarketActivity$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:CassavaPriceDialogFragment.kt$CassavaPriceDialogFragment$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:CountryFragment.kt$CountryFragment$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:CurrencyCode.kt$CurrencyCode$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:DateHelper.kt$DateHelper$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DateHelper.kt$DateHelper$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:DatesActivity.kt$DatesActivity$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:FertilizerPriceDialogFragment.kt$FertilizerPriceDialogFragment$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:FertilizerRecActivity.kt$FertilizerRecActivity$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:FieldSizeFragment.kt$FieldSizeFragment$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:GPSTracker.kt$GPSTracker$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:HomeStepperActivity.kt$HomeStepperActivity$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:InterCropRecActivity.kt$InterCropRecActivity$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:InvestmentAmountActivity.kt$InvestmentAmountActivity$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:InvestmentPrefFragment.kt$InvestmentPrefFragment$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:LocationFragment.kt$LocationFragment$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:MaizeMarketActivity.kt$MaizeMarketActivity$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:MaizePriceDialogFragment.kt$MaizePriceDialogFragment$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:ManualTillageCostActivity.kt$ManualTillageCostActivity$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:MathHelper.kt$MathHelper$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:MySpinnerAdapter.kt$MySpinnerAdapter$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:OperationCostsDialogFragment.kt$OperationCostsDialogFragment$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:PlantingDateFragment.kt$PlantingDateFragment$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:PlantingPracticesActivity.kt$PlantingPracticesActivity$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:RetrofitUtils.kt$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ScheduledPlantingActivity.kt$ScheduledPlantingActivity$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:SessionManager.kt$SessionManager$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:SplashActivity.kt$SplashActivity$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:SweetPotatoMarketActivity.kt$SweetPotatoMarketActivity$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:SweetPotatoPriceDialogFragment.kt$SweetPotatoPriceDialogFragment$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:TillageOperationFragment.kt$TillageOperationFragment$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:Tools.kt$Tools$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:Tools.kt$Tools$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:TractorAccessActivity.kt$TractorAccessActivity$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:WeedControlCostsActivity.kt$WeedControlCostsActivity$ex: Exception</ID>
+    <ID>TooManyFunctions:AkilimoService.kt$AkilimoService</ID>
+    <ID>TooManyFunctions:AppDatabase.kt$AppDatabase : RoomDatabase</ID>
+    <ID>TooManyFunctions:BaseActivity.kt$BaseActivity : AppCompatActivity</ID>
+    <ID>TooManyFunctions:BuildComputeData.kt$BuildComputeData</ID>
+    <ID>TooManyFunctions:CassavaMarketActivity.kt$CassavaMarketActivity : BaseActivity</ID>
+    <ID>TooManyFunctions:FertilizerDao.kt$FertilizerDao</ID>
+    <ID>TooManyFunctions:FieldSizeFragment.kt$FieldSizeFragment : BaseStepFragment</ID>
+    <ID>TooManyFunctions:GPSTracker.kt$GPSTracker : ServiceLocationListener</ID>
+    <ID>TooManyFunctions:HomeStepperActivity.kt$HomeStepperActivity : BaseActivityIFragmentCallBack</ID>
+    <ID>TooManyFunctions:MathHelper.kt$MathHelper</ID>
+    <ID>TooManyFunctions:SessionManager.kt$SessionManager</ID>
+    <ID>TooManyFunctions:StarchFactoryDao.kt$StarchFactoryDao</ID>
+    <ID>TooManyFunctions:SummaryFragment.kt$SummaryFragment : BaseStepFragment</ID>
+    <ID>TooManyFunctions:ViewAnimation.kt$ViewAnimation</ID>
+    <ID>UnusedParameter:EnumOperationType.kt$EnumOperationType$context: Context</ID>
+    <ID>UnusedParameter:MaizePriceDialogFragment.kt$MaizePriceDialogFragment$vararg doConversions: Boolean</ID>
+    <ID>UnusedParameter:RecAdapter.kt$RecAdapter.OriginalViewHolder$position: Int</ID>
+    <ID>UnusedPrivateProperty:BuildComputeData.kt$BuildComputeData.Companion$private val LOG_TAG: String = BuildComputeData::class.java.simpleName</ID>
+    <ID>UnusedPrivateProperty:FertilizerPriceDialogFragment.kt$FertilizerPriceDialogFragment.Companion$private val LOG_TAG: String = FertilizerPriceDialogFragment::class.java.simpleName</ID>
+    <ID>UnusedPrivateProperty:FieldSizeFragment.kt$FieldSizeFragment$private var userProfile: UserProfile? = null</ID>
+    <ID>UnusedPrivateProperty:GPSTracker.kt$GPSTracker$private var LOG_TAG = GPSTracker::class.java.simpleName</ID>
+    <ID>UnusedPrivateProperty:InterCropFertilizersActivity.kt$InterCropFertilizersActivity$private val TAG: String = BaseActivity::class.java.simpleName</ID>
+    <ID>UnusedPrivateProperty:InvestmentAmountActivity.kt$InvestmentAmountActivity$private val maxInvestmentUSD = 1.0</ID>
+    <ID>UnusedPrivateProperty:InvestmentPrefFragment.kt$InvestmentPrefFragment$private var rememberInvestmentPref = false</ID>
+    <ID>UnusedPrivateProperty:Locales.kt$Locales$private val LOCAL_KE_SWA = Locale("sw", "KE")</ID>
+    <ID>UnusedPrivateProperty:MaizeMarketActivity.kt$MaizeMarketActivity$private val dialogOpen = false</ID>
+    <ID>UnusedPrivateProperty:MaizeMarketActivity.kt$MaizeMarketActivity$private val selectionMade = false</ID>
+    <ID>UnusedPrivateProperty:MaizeMarketActivity.kt$MaizeMarketActivity$private val unitPriceUSD = 0.0</ID>
+    <ID>UnusedPrivateProperty:MaizePriceDialogFragment.kt$MaizePriceDialogFragment.Companion$private val LOG_TAG: String = MaizePriceDialogFragment::class.java.simpleName</ID>
+    <ID>UnusedPrivateProperty:MapBoxActivity.kt$MapBoxActivity$val coordinates = String.format( "Lat:%s Lon:%s", currentCoordinates!!.latitude, currentCoordinates!!.longitude )</ID>
+    <ID>UnusedPrivateProperty:MySpinnerAdapter.kt$MySpinnerAdapter$private val context: Context = applicationContext</ID>
+    <ID>UnusedPrivateProperty:MySpinnerAdapter.kt$MySpinnerAdapter$private var spinnerImages: List&lt;Int&gt;? = null</ID>
+    <ID>UnusedPrivateProperty:OperationCostsDialogFragment.kt$OperationCostsDialogFragment.Companion$private val LOG_TAG: String = OperationCostsDialogFragment::class.java.simpleName</ID>
+    <ID>UnusedPrivateProperty:OperationTypeDialogFragment.kt$OperationTypeDialogFragment.Companion$private val LOG_TAG: String = OperationTypeDialogFragment::class.java.simpleName</ID>
+    <ID>UnusedPrivateProperty:PlantingPracticesActivity.kt$PlantingPracticesActivity$val plantingString = getString(R.string.lbl_planting_harvest)</ID>
+    <ID>UnusedPrivateProperty:PlantingPracticesActivity.kt$PlantingPracticesActivity$val recommendations = getString(R.string.lbl_best_planting_practices)</ID>
+    <ID>UnusedPrivateProperty:PlantingPracticesActivity.kt$PlantingPracticesActivity$val tillageOperationsString = getString(R.string.lbl_tillage_operations)</ID>
+    <ID>UnusedPrivateProperty:RecommendationChannelDialog.kt$RecommendationChannelDialog$private val myUserProfile: @NotNull UserProfile</ID>
+    <ID>UnusedPrivateProperty:RootYieldDialogFragment.kt$RootYieldDialogFragment$val yieldLabel = fieldYield!!.fieldYieldLabel</ID>
+    <ID>UnusedPrivateProperty:RootYieldDialogFragment.kt$RootYieldDialogFragment.Companion$private val LOG_TAG: String = RootYieldDialogFragment::class.java.simpleName</ID>
+    <ID>UnusedPrivateProperty:SummaryFragment.kt$SummaryFragment$private var pickedLocation = ""</ID>
+    <ID>UnusedPrivateProperty:SweetPotatoMarketActivity.kt$SweetPotatoMarketActivity$private val dialogOpen = false</ID>
+    <ID>UnusedPrivateProperty:SweetPotatoMarketActivity.kt$SweetPotatoMarketActivity$private val maxAmountUSD = 500.00</ID>
+    <ID>UnusedPrivateProperty:SweetPotatoMarketActivity.kt$SweetPotatoMarketActivity$private val minAmountUSD = 5.00</ID>
+    <ID>UnusedPrivateProperty:SweetPotatoMarketActivity.kt$SweetPotatoMarketActivity$private val selectionMade = false</ID>
+    <ID>UnusedPrivateProperty:SweetPotatoPriceDialogFragment.kt$SweetPotatoPriceDialogFragment.Companion$private val LOG_TAG: String = SweetPotatoPriceDialogFragment::class.java.simpleName</ID>
+    <ID>UnusedPrivateProperty:ValidationHelper.kt$ValidationHelper.Companion$private val LOG_TAG = ValidationHelper::class.java.simpleName</ID>
+    <ID>UseCheckOrError:BaseRecommendationActivity.kt$BaseRecommendationActivity$throw IllegalStateException("Binding is not initialized yet.")</ID>
+    <ID>UseCheckOrError:RetrofitManager.kt$RetrofitManager$throw IllegalStateException("Akilimo Retrofit not initialized")</ID>
+    <ID>UseCheckOrError:RetrofitManager.kt$RetrofitManager$throw IllegalStateException("Fuelrod Retrofit not initialized")</ID>
+    <ID>VariableNaming:BaseActivity.kt$BaseActivity$protected val LOG_TAG: String = this::class.java.simpleName</ID>
+    <ID>VariableNaming:BaseDialogFragment.kt$BaseDialogFragment$protected var LOG_TAG: String = BaseDialogFragment::class.java.simpleName</ID>
+    <ID>VariableNaming:BaseFragment.kt$BaseFragment$protected var LOG_TAG: String = BaseFragment::class.java.simpleName</ID>
+    <ID>VariableNaming:BaseLocationPicker.kt$BaseLocationPicker$protected val DROPPED_MARKER_LAYER_ID = "DROPPED_MARKER_LAYER_ID"</ID>
+    <ID>VariableNaming:BaseLocationPicker.kt$BaseLocationPicker$protected val DROPPED_MARKER_SOURCE_ID = "DROPPED_MARKER_SOURCE_ID"</ID>
+    <ID>VariableNaming:BaseLocationPicker.kt$BaseLocationPicker$protected val IMAGE_NAME = "DROPPED-ICON-IMAGE"</ID>
+    <ID>VariableNaming:BaseLocationPicker.kt$BaseLocationPicker$protected val REQUEST_CODE_AUTOCOMPLETE = 1</ID>
+    <ID>VariableNaming:BaseLocationPicker.kt$BaseLocationPicker$protected val TAG: String = BaseLocationPicker::class.java.simpleName</ID>
+    <ID>VariableNaming:DstOptionsFragment.kt$DstOptionsFragment$val BPP = Recommendations()</ID>
+    <ID>VariableNaming:DstOptionsFragment.kt$DstOptionsFragment$val FR = Recommendations()</ID>
+    <ID>VariableNaming:DstOptionsFragment.kt$DstOptionsFragment$val IC = Recommendations()</ID>
+    <ID>VariableNaming:DstOptionsFragment.kt$DstOptionsFragment$val SPH = Recommendations()</ID>
+    <ID>VariableNaming:FertilizersActivity.kt$FertilizersActivity$private var lyt_progress: LinearLayout? = null</ID>
+    <ID>VariableNaming:FieldSizeFragment.kt$FieldSizeFragment$val et_post = dialog.findViewById&lt;EditText&gt;(R.id.et_post)</ID>
+    <ID>VariableNaming:FieldSizeFragment.kt$FieldSizeFragment$var rd_half_acre: RadioButton? = null</ID>
+    <ID>VariableNaming:FieldSizeFragment.kt$FieldSizeFragment$var rd_one_acre: RadioButton? = null</ID>
+    <ID>VariableNaming:FieldSizeFragment.kt$FieldSizeFragment$var rd_quarter_acre: RadioButton? = null</ID>
+    <ID>VariableNaming:FieldSizeFragment.kt$FieldSizeFragment$var rd_two_half_acre: RadioButton? = null</ID>
+    <ID>VariableNaming:GPSTracker.kt$GPSTracker$private var LOG_TAG = GPSTracker::class.java.simpleName</ID>
+    <ID>VariableNaming:InterCropFertilizersActivity.kt$InterCropFertilizersActivity$private val TAG: String = BaseActivity::class.java.simpleName</ID>
+    <ID>VariableNaming:InterCropFertilizersActivity.kt$InterCropFertilizersActivity$var lyt_progress: LinearLayout? = null</ID>
+    <ID>VariableNaming:InvestmentAmountActivity.kt$InvestmentAmountActivity$var rd_exact_investment: RadioButton? = null</ID>
+    <ID>VariableNaming:LocationFragment.kt$LocationFragment$private var MAP_BOX_ACCESS_TOKEN = ""</ID>
+    <ID>VariableNaming:MyStepperAdapter.kt$MyStepperAdapter$val CURRENT_STEP_POSITION_KEY = "CURRENT_STEP_POSITION_KEY"</ID>
+    <ID>VariableNaming:RootYieldActivity.kt$RootYieldActivity$val rd_12_tonnes: String</ID>
+    <ID>VariableNaming:RootYieldActivity.kt$RootYieldActivity$val rd_3_tonnes: String</ID>
+    <ID>VariableNaming:RootYieldActivity.kt$RootYieldActivity$val rd_6_tonnes: String</ID>
+    <ID>VariableNaming:RootYieldActivity.kt$RootYieldActivity$val rd_9_tonnes: String</ID>
+    <ID>VariableNaming:RootYieldActivity.kt$RootYieldActivity$val rd_more: String</ID>
+    <ID>VariableNaming:ViewLoadingDotsFade.kt$ViewLoadingDotsFade$val A = PropertyValuesHolder.ofFloat("alpha", 0.2f)</ID>
+    <ID>VariableNaming:ViewLoadingDotsFade.kt$ViewLoadingDotsFade$val B = PropertyValuesHolder.ofFloat("alpha", 1.0f)</ID>
+    <ID>VariableNaming:ViewLoadingDotsGrow.kt$ViewLoadingDotsGrow$val SCALE_X = PropertyValuesHolder.ofFloat(SCALE_X, 1.5f)</ID>
+    <ID>VariableNaming:ViewLoadingDotsGrow.kt$ViewLoadingDotsGrow$val SCALE_Y = PropertyValuesHolder.ofFloat(SCALE_Y, 1.5f)</ID>
+    <ID>WildcardImport:AdviceStatusDao.kt$import androidx.room.*</ID>
+    <ID>WildcardImport:CassavaMarketDao.kt$import androidx.room.*</ID>
+    <ID>WildcardImport:CurrentPracticeDao.kt$import androidx.room.*</ID>
+    <ID>WildcardImport:MaizeMarketDao.kt$import androidx.room.*</ID>
+    <ID>WildcardImport:MaizePriceDao.kt$import androidx.room.*</ID>
+    <ID>WildcardImport:MandatoryInfoDao.kt$import androidx.room.*</ID>
+    <ID>WildcardImport:PotatoMarketDao.kt$import androidx.room.*</ID>
+    <ID>WildcardImport:PotatoPriceDao.kt$import androidx.room.*</ID>
+    <ID>WildcardImport:StarchFactoryDao.kt$import androidx.room.*</ID>
+  </CurrentIssues>
+</SmellBaseline>

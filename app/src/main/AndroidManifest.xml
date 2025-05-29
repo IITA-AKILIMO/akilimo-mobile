@@ -10,17 +10,20 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".Akilimo"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:allowBackup="false"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="false"
         tools:ignore="DataExtractionRules,GoogleAppIndexingWarning"
-        tools:replace="android:icon,android:theme,android:label"
+        tools:replace="android:icon,android:theme,android:label,android:allowBackup"
         tools:targetApi="s">
         <activity
             android:name=".views.activities.usecases.FertilizerRecommendationActivity"
@@ -30,11 +33,11 @@
             android:name="io.sentry.dsn"
             android:value="https://ab9bb55415aaf06a144320ef8fd57860@o212209.ingest.us.sentry.io/4509276157640704" />
 
-          <!-- Add data like request headers, user ip adress and device name, see https://docs.sentry.io/platforms/android/data-management/data-collected/ for more info -->
-          <meta-data 
-              android:name="io.sentry.send-default-pii" 
-              android:value="true" />
-        
+        <!-- Add data like request headers, user ip adress and device name, see https://docs.sentry.io/platforms/android/data-management/data-collected/ for more info -->
+        <meta-data
+            android:name="io.sentry.send-default-pii"
+            android:value="true" />
+
         <meta-data
             android:name="io.sentry.traces.user-interaction.enable"
             android:value="true" />

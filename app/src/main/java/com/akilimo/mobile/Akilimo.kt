@@ -2,7 +2,6 @@ package com.akilimo.mobile
 
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDexApplication
-import com.akilimo.mobile.utils.Locales
 import com.blongho.country_data.World
 import com.jakewharton.threetenabp.AndroidThreeTen
 

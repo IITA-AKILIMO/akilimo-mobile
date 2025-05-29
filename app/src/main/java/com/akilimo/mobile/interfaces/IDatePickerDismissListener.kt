@@ -1,6 +1,6 @@
 package com.akilimo.mobile.interfaces
 
-import java.util.*
+import java.util.Calendar
 
 interface IDatePickerDismissListener {
     fun onDismiss(

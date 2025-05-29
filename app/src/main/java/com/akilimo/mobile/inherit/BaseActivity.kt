@@ -6,7 +6,6 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -27,7 +26,6 @@ import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import com.nabinbhandari.android.permissions.PermissionHandler
 import com.nabinbhandari.android.permissions.Permissions
 import io.sentry.Sentry
-import java.util.Locale
 
 @SuppressLint("LogNotTimber")
 abstract class BaseActivity : AppCompatActivity() {

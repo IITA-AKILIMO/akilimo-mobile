@@ -20,8 +20,7 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:contentDescription="@string/app_name"
-            android:tint="@color/grey_10"
-            app:srcCompat="@drawable/ic_akilimo_logo" />
+            app:srcCompat="@drawable/ic_akilimo_logo_white" />
 
         <TextView
             android:id="@+id/title"
