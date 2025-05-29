@@ -1,6 +1,7 @@
 name: Create PR to develop
 
 on:
+  workflow_dispatch:
   push:
     paths-ignore:
       - '**.md'
@@ -23,6 +24,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Create pull request to develop
         uses: devops-infra/action-pull-request@v0.6.0
