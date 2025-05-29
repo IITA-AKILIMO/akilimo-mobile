@@ -11,7 +11,6 @@ on:
       - '**.sh'
       - 'docs/**'
       - '.github/ISSUE_TEMPLATE/**'
-      - '.github/**'
     branches-ignore:
       - main  # Exclude main branch
     # optional: you can use `branches: ['**']` if you want to explicitly allow all others
