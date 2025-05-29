@@ -1,5 +1,8 @@
 # AKILIMO Mobile
 
+[![Android CI](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/android.yml/badge.svg)](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/android.yml)
+
+
 [![Quality gate](https://sonar.munywele.co.ke/api/project_badges/quality_gate?project=IITA-AKILIMO_akilimo-mobile_abcb50d1-1abd-4e32-bd76-b385f65cfc5d&token=sqb_31a18546176db4735c7afc45a9561b931d046803)](https://sonar.munywele.co.ke/dashboard?id=IITA-AKILIMO_akilimo-mobile_abcb50d1-1abd-4e32-bd76-b385f65cfc5d)
 
 
