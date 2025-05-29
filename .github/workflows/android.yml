@@ -61,9 +61,9 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: ./gradlew build sonar --info
 
-      - name: Report
-        uses: FlickerSoul/android-test-report-actions@v1.2
-        if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
+#      - name: Report
+#        uses: FlickerSoul/android-test-report-actions@v1.2
+#        if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
 
   #      - name: Make Unit test report
   #        uses: asadmansr/android-test-report-action@v1.2.0
