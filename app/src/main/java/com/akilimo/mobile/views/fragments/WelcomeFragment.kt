@@ -54,18 +54,18 @@ class WelcomeFragment : BaseStepFragment() {
 
         val adapter = MySpinnerAdapter(requireContext(), languageOptions.map { it.displayName })
         binding.apply {
-            languagePicker.adapter = adapter
+            welcomeLanguageSpinner.adapter = adapter
 
-            languagePicker.setSelection(if (selectedIndex >= 0) selectedIndex else 0)
+            welcomeLanguageSpinner.setSelection(if (selectedIndex >= 0) selectedIndex else 0)
 
-            languagePicker.setOnTouchListener { v, event ->
+            welcomeLanguageSpinner.setOnTouchListener { v, event ->
                 languagePicked = true
                 v.performClick()
                 v.onTouchEvent(event)
             }
 
 
-            languagePicker.onItemSelectedListener =
+            welcomeLanguageSpinner.onItemSelectedListener =
                 object : AdapterView.OnItemSelectedListener {
                     override fun onItemSelected(
                         parent: AdapterView<*>,
@@ -90,7 +90,7 @@ class WelcomeFragment : BaseStepFragment() {
 
     private fun showRestartSnackBar() {
         Snackbar.make(
-            binding.lytParent, getString(R.string.lbl_restart_app_prompt), Snackbar.LENGTH_SHORT
+            binding.welcomeLayout, getString(R.string.lbl_restart_app_prompt), Snackbar.LENGTH_SHORT
         ).setAction(getString(R.string.lbl_ok)) {
             val restartIntent = Intent(requireContext(), SplashActivity::class.java)
             ProcessPhoenix.triggerRebirth(requireContext(), restartIntent)
