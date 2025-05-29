@@ -20,6 +20,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="false"
         tools:ignore="DataExtractionRules,GoogleAppIndexingWarning"
         tools:replace="android:icon,android:theme,android:label"
         tools:targetApi="s">
@@ -31,11 +32,11 @@
             android:name="io.sentry.dsn"
             android:value="https://ab9bb55415aaf06a144320ef8fd57860@o212209.ingest.us.sentry.io/4509276157640704" />
 
-          <!-- Add data like request headers, user ip adress and device name, see https://docs.sentry.io/platforms/android/data-management/data-collected/ for more info -->
-          <meta-data 
-              android:name="io.sentry.send-default-pii" 
-              android:value="true" />
-        
+        <!-- Add data like request headers, user ip adress and device name, see https://docs.sentry.io/platforms/android/data-management/data-collected/ for more info -->
+        <meta-data
+            android:name="io.sentry.send-default-pii"
+            android:value="true" />
+
         <meta-data
             android:name="io.sentry.traces.user-interaction.enable"
             android:value="true" />
