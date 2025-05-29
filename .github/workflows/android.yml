@@ -59,9 +59,16 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: ./gradlew build sonar --info
 
-      - name: Make Unit test report
-        uses: asadmansr/android-test-report-action@v1.2.0
+      - name: Report
+        uses: FlickerSoul/android-test-report-actions@v1.2
         if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
+        with:
+          show-skipped: "true"  # Optional, default to "false"
+          report-header-postfix: "(OS: ${{ matrix.os }})"  # Optional, defaulted to ""
+
+  #      - name: Make Unit test report
+  #        uses: asadmansr/android-test-report-action@v1.2.0
+  #        if: ${{ always() }}
 
   build_artifacts:
     if: contains(github.ref, 'beta') || contains(github.ref, 'main')
