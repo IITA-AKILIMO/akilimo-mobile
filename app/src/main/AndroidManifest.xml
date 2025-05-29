@@ -23,7 +23,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="false"
         tools:ignore="DataExtractionRules,GoogleAppIndexingWarning"
-        tools:replace="android:icon,android:theme,android:label"
+        tools:replace="android:icon,android:theme,android:label,android:allowBackup"
         tools:targetApi="s">
         <activity
             android:name=".views.activities.usecases.FertilizerRecommendationActivity"
