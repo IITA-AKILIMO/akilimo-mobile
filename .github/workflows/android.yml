@@ -9,6 +9,7 @@ on:
       - '**.sh'
       - 'docs/**'
       - '.github/ISSUE_TEMPLATE/**'
+      - '.github/**'
   workflow_dispatch:
 
 jobs:
