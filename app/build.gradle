@@ -23,6 +23,20 @@ sonar {
         property "sonar.projectKey", "IITA-AKILIMO_akilimo-mobile_abcb50d1-1abd-4e32-bd76-b385f65cfc5d"
         property "sonar.token", "sqp_d9cf0aa4c4bbfef6e08dfc95eb7dbe1689390627"
         property "sonar.host.url", "https://sonar.munywele.co.ke"
+        property "sonar.sources", "src"
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.test.inclusions", "**/*Test*/**"
+        property "sonar.exclusions", '**/.gradle/**,' +
+                "**/androidTest/**," +
+                "**/R.class," +
+                "**/BuildConfig.*," +
+                "**/Manifest*.*," +
+                "**/android/databinding/*," +
+                "**/androidx/databinding/*," +
+                "**/*MapperImpl*.*," +
+                "**/BuildConfig.*," +
+                "**/Manifest*.*," +
+                "**/google-services.json"
     }
 }
 
