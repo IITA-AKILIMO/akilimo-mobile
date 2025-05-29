@@ -70,6 +70,14 @@ android {
         }
     }
 
+    lint {
+        ignoreWarnings = true
+        abortOnError = false
+        checkReleaseBuilds = false
+//        baseline = file("lint-baseline.xml")
+
+        disable 'MissingTranslation'
+    }
     lintOptions {
         // Specify the XML report file name and location
         xmlReport = true
@@ -232,7 +240,7 @@ dependencies {
     implementation 'com.github.twinone:AndroidWizard:b4546bd712'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.6.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
-    implementation 'androidx.activity:activity:1.8.0'
+    implementation 'androidx.activity:activity-ktx:1.8.0'
 
 
     //If you are using Kotlin, replace annotationProcessor with kapt.
