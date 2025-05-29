@@ -1,6 +1,15 @@
 name: Android Builder
 on:
   push:
+    paths-ignore:
+      - '**.md'
+      - '**.txt'
+      - '**.yml'
+      - '**.yaml'
+      - '**.sh'
+      - 'docs/**'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/**'
   workflow_dispatch:
 
 jobs:
@@ -9,7 +18,7 @@ jobs:
     name: Unit tests
     runs-on: ubuntu-latest
     concurrency:
-      group: ci-${{ github.ref }}
+      group: ci-${{ github.head_ref || github.ref_name }}
       cancel-in-progress: true
 
     env:
@@ -41,9 +50,33 @@ jobs:
         run: ./gradlew testDebugUnitTest
         continue-on-error: false
 
-      - name: Make Unit test report
-        uses: asadmansr/android-test-report-action@v1.2.0
-        if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+
+      - name: Build and analyze
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: ./gradlew sonar
+
+#      - name: Report
+#        uses: FlickerSoul/android-test-report-actions@v1.2
+#        if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
+
+  #      - name: Make Unit test report
+  #        uses: asadmansr/android-test-report-action@v1.2.0
+  #        if: ${{ always() }}
 
   build_artifacts:
     if: contains(github.ref, 'beta') || contains(github.ref, 'main')

@@ -1,7 +1,7 @@
 package com.akilimo.mobile.dao
 
 import androidx.room.TypeConverter
-import java.util.*
+import java.util.Calendar
 
 /**
  * Type converters to allow Room to reference complex data types.

@@ -1,36 +1,42 @@
-
-### AKILIMO mobile decision support tools
+# AKILIMO Mobile
 
 [![Android CI](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/android.yml/badge.svg)](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/android.yml)
 
-## Meercode insights
 
-![akilimo-mobile Actions](https://api.meercode.io/badge/IITA-AKILIMO/akilimo-mobile?type=ci-total-count&token=7QwvPQUxRPTOd8fotZBAjCPXzBoFqm2R&lastDay=14)
-
-![akilimo-mobile Actions](https://api.meercode.io/badge/IITA-AKILIMO/akilimo-mobile?type=ci-score&token=7QwvPQUxRPTOd8fotZBAjCPXzBoFqm2R&lastDay=14) ![akilimo-mobile Actions](https://api.meercode.io/badge/IITA-AKILIMO/akilimo-mobile?type=ci-success-rate&token=7QwvPQUxRPTOd8fotZBAjCPXzBoFqm2R&lastDay=14)
-
-![akilimo-mobile Actions](https://api.meercode.io/badge/IITA-AKILIMO/akilimo-mobile?type=ci-count&token=7QwvPQUxRPTOd8fotZBAjCPXzBoFqm2R&lastDay=14)
+[![Quality gate](https://sonar.munywele.co.ke/api/project_badges/quality_gate?project=IITA-AKILIMO_akilimo-mobile_abcb50d1-1abd-4e32-bd76-b385f65cfc5d&token=sqb_31a18546176db4735c7afc45a9561b931d046803)](https://sonar.munywele.co.ke/dashboard?id=IITA-AKILIMO_akilimo-mobile_abcb50d1-1abd-4e32-bd76-b385f65cfc5d)
 
 
+[![Security Issues](https://sonar.munywele.co.ke/api/project_badges/measure?project=IITA-AKILIMO_akilimo-mobile_abcb50d1-1abd-4e32-bd76-b385f65cfc5d&metric=software_quality_security_issues&token=sqb_31a18546176db4735c7afc45a9561b931d046803)](https://sonar.munywele.co.ke/dashboard?id=IITA-AKILIMO_akilimo-mobile_abcb50d1-1abd-4e32-bd76-b385f65cfc5d)
 
-https://appicon.co/#image-sets
+[![Maintainability Rating](https://sonar.munywele.co.ke/api/project_badges/measure?project=IITA-AKILIMO_akilimo-mobile_abcb50d1-1abd-4e32-bd76-b385f65cfc5d&metric=software_quality_maintainability_rating&token=sqb_31a18546176db4735c7afc45a9561b931d046803)](https://sonar.munywele.co.ke/dashboard?id=IITA-AKILIMO_akilimo-mobile_abcb50d1-1abd-4e32-bd76-b385f65cfc5d)
 
-# installing github hooks
+AKILIMO Mobile is an Android-based decision support tool developed by the International Institute of
+Tropical Agriculture (IITA) under the African Cassava Agronomy Initiative (ACAI). 
 
-* https://pre-commit.com/
+The app provides site-specific agronomic advice tailored to cassava farmers, enabling them to optimize fertilizer
+use, improve yields, and make informed farming decisions.
 
-* https://commitizen-tools.github.io/commitizen/
+## Features
 
-`pre-commit install`
+- **Customized Fertilizer Recommendations**: Offers tailored advice on fertilizer application based
+  on user inputs such as location, yield, and input prices.
 
-`pre-commit uninstall`
+- **Multi-Channel Delivery**: Provides recommendations directly within the app, via SMS, or through
+  email.
 
-`pre-commit install --hook-type commit-msg`
+- **User-Friendly Interface**: Designed with simplicity in mind to cater to farmers with varying
+  levels of digital literacy.
 
-`pre-commit uninstall --hook-type commit-msg`
+- **Data Collection**: Gathers minimal user data, including GPS location, land area, and input
+  prices, to provide accurate recommendations.
 
-`pre-commit run --all-files`
+## Installation
 
-# Generating changelog
+To build and run the AKILIMO Mobile app locally:
 
-`git-chglog -o CHANGELOG.md`
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/IITA-AKILIMO/akilimo-mobile.git
+   cd akilimo-mobile
+   ```
