@@ -32,7 +32,7 @@ class InfoFragment : BaseStepFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.chkAgreeToDisclaimer.setOnCheckedChangeListener { compoundButton: CompoundButton?, checked: Boolean ->
+        binding.chkAgreeTerms.setOnCheckedChangeListener { compoundButton: CompoundButton?, checked: Boolean ->
             sessionManager.setDisclaimerRead(checked)
         }
     }
