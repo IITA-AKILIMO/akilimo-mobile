@@ -9,17 +9,17 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.R
-import com.akilimo.mobile.models.Recommendations
+import com.akilimo.mobile.models.Recommendation
 import com.akilimo.mobile.utils.TheItemAnimation.animate
 
 class AdapterListAnimation(
     private val layoutId: Int = R.layout.item_card_recommendation_arrow,
-) : ListAdapter<Recommendations, AdapterListAnimation.OriginalViewHolder>(RecommendationDiffCallback()) {
+) : ListAdapter<Recommendation, AdapterListAnimation.OriginalViewHolder>(RecommendationDiffCallback()) {
 
     private var lastPosition = -1
     private var onAttach = true
     private var animationType: Int = 0
-    private var onItemClickListener: ((View, Recommendations, Int) -> Unit)? = null
+    private var onItemClickListener: ((View, Recommendation, Int) -> Unit)? = null
 
     fun setAnimationType(type: Int) {
         this.animationType = type
@@ -66,18 +66,18 @@ class AdapterListAnimation(
     }
 
 
-    fun setOnItemClickListener(listener: (View, Recommendations, Int) -> Unit) {
+    fun setOnItemClickListener(listener: (View, Recommendation, Int) -> Unit) {
         this.onItemClickListener = listener
     }
 
-    class RecommendationDiffCallback : DiffUtil.ItemCallback<Recommendations>() {
-        override fun areItemsTheSame(oldItem: Recommendations, newItem: Recommendations): Boolean {
+    class RecommendationDiffCallback : DiffUtil.ItemCallback<Recommendation>() {
+        override fun areItemsTheSame(oldItem: Recommendation, newItem: Recommendation): Boolean {
             return oldItem.recommendationName == newItem.recommendationName
         }
 
         override fun areContentsTheSame(
-            oldItem: Recommendations,
-            newItem: Recommendations
+            oldItem: Recommendation,
+            newItem: Recommendation
         ): Boolean {
             return oldItem.recommendationName == newItem.recommendationName
         }
