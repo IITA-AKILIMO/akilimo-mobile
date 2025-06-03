@@ -48,7 +48,7 @@ class PlantingDateFragment : BaseStepFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnPickPlantingDate.setOnClickListener { v: View? ->
+        binding.plantingBtnPickDate.setOnClickListener { v: View? ->
             // create the datePickerFragment
             val newFragment: AppCompatDialogFragment = DateDialogPickerFragment(true)
             // set the targetFragment to receive the results, specifying the request code
@@ -60,7 +60,7 @@ class PlantingDateFragment : BaseStepFragment() {
             newFragment.show(parentFragmentManager, "PlantingDatePicker")
         }
 
-        binding.btnPickHarvestDate.setOnClickListener { v: View? ->
+        binding.harvestBtnPickDate.setOnClickListener { v: View? ->
             // create the datePickerFragment
             val newFragment: AppCompatDialogFragment = DateDialogPickerFragment(
                 true,
@@ -82,8 +82,8 @@ class PlantingDateFragment : BaseStepFragment() {
             if (cropSchedule != null) {
                 selectedPlantingDate = cropSchedule.plantingDate
                 selectedHarvestDate = cropSchedule.harvestDate
-                binding.lblSelectedPlantingDate.text = selectedPlantingDate
-                binding.lblSelectedHarvestDate.text = selectedHarvestDate
+                binding.plantingDateLabel.text = selectedPlantingDate
+                binding.harvestDateLabel.text = selectedHarvestDate
             }
         } catch (ex: Exception) {
             Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
@@ -104,17 +104,17 @@ class PlantingDateFragment : BaseStepFragment() {
                 selectedHarvestDate = data.getStringExtra("selectedDate") ?: ""
             }
         }
-        binding.lblSelectedPlantingDate.text = selectedPlantingDate
-        binding.lblSelectedHarvestDate.text = selectedHarvestDate
+        binding.plantingDateLabel.text = selectedPlantingDate
+        binding.harvestDateLabel.text = selectedHarvestDate
     }
 
     private fun saveEntities() {
-        dataIsValid = !selectedPlantingDate.isNullOrEmpty()
+        dataIsValid = selectedPlantingDate.isNotEmpty()
         if (!dataIsValid) {
             errorMessage = requireContext().getString(R.string.lbl_planting_date_prompt)
             return
         }
-        dataIsValid = !selectedHarvestDate.isNullOrEmpty()
+        dataIsValid = selectedHarvestDate.isNotEmpty()
         if (!dataIsValid) {
             errorMessage = requireContext().getString(R.string.lbl_harvest_date_prompt)
             return

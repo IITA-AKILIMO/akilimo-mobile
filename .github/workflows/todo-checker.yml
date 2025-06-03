@@ -5,7 +5,7 @@ on:
       - develop
   workflow_dispatch:
 jobs:
-  build:
+  check-todo:
     runs-on: ubuntu-24.04
     concurrency:
       cancel-in-progress: true

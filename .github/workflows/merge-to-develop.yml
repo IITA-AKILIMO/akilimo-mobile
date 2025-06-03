@@ -16,7 +16,7 @@ on:
     # optional: you can use `branches: ['**']` if you want to explicitly allow all others
 
 jobs:
-  create-pr:
+  pr-to-develop:
     runs-on: ubuntu-24.04
     if: github.ref != 'refs/heads/main'  # Extra safety check
 

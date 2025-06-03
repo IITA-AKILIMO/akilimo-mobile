@@ -2,76 +2,78 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/lyt_parent"
+    android:id="@+id/scroll_view_important_info"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:padding="@dimen/spacing_small"
+    android:padding="@dimen/spacing_medium"
     tools:context=".views.fragments.InfoFragment">
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="wrap_content"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/img_instruction_header"
+            android:layout_width="250dp"
             android:layout_height="250dp"
-            android:layout_marginTop="@dimen/spacing_medium"
+            android:layout_marginTop="@dimen/spacing_large"
             android:contentDescription="@string/app_name"
-            android:padding="@dimen/spacing_medium"
+            android:padding="@dimen/spacing_small"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.MediumComponent"
             app:srcCompat="@drawable/ic_akilimo_logo" />
 
-        <TextView
-            android:id="@+id/importantInfoTitle"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txt_important_title"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_large"
+            android:text="@string/important_instructions_title"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/img_instruction_header" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txt_important_paragraph_1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:text="@string/important_instructions_title"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/akilimoDarkGreen"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image" />
-
-        <TextView
-            android:id="@+id/importantInfo1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_large"
-            android:lineSpacingExtra="@dimen/spacing_medium"
+            android:lineSpacingExtra="@dimen/spacing_small"
             android:text="@string/important_instructions"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/importantInfoTitle"
-            app:layout_constraintVertical_bias="0.04" />
+            app:layout_constraintTop_toBottomOf="@id/txt_important_title" />
 
-        <TextView
-            android:id="@+id/importantInfo2"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txt_important_paragraph_2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_large"
+            android:lineSpacingExtra="@dimen/spacing_small"
+            android:text="@string/important_instructions_b"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_important_paragraph_1" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/chk_agree_terms"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_large"
-            android:lineSpacingExtra="@dimen/spacing_medium"
-            android:text="@string/important_instructions_b"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/importantInfo1" />
-
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:id="@+id/chkAgreeToDisclaimer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:importantForAccessibility="yes"
             android:text="@string/lbl_agree_to_terms"
-            android:textSize="@dimen/font_size_12"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/importantInfo2" />
+            app:layout_constraintTop_toBottomOf="@id/txt_important_paragraph_2" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

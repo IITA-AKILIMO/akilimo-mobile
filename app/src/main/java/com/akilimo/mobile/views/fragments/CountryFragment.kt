@@ -47,7 +47,7 @@ class CountryFragment : BaseStepFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnPickCountry.setOnClickListener {
+        binding.countryBtnPickCountry.setOnClickListener {
             showCountryPickerDialog()
         }
     }
@@ -60,7 +60,7 @@ class CountryFragment : BaseStepFragment() {
         try {
             val profile = database.profileInfoDao().findOne()
             if (profile != null) {
-                binding.title.text = getString(R.string.lbl_country_location, profile.firstName)
+                binding.countryTitle.text = getString(R.string.lbl_country_location, profile.firstName)
                 mySelectedCountryIndex = profile.selectedCountryIndex
                 val countryCode = profile.countryCode
                 val countryName = profile.countryName
