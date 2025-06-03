@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout the code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 #do not shallow clone the repository`
 
       - name: Set up JDK
         uses: actions/setup-java@v4
