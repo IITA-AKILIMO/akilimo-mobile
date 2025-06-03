@@ -1,94 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/lyt_parent"
+    android:id="@+id/lyt_field_size"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/spacing_small"
+    android:padding="@dimen/spacing_medium"
     tools:context="com.akilimo.mobile.views.fragments.FieldSizeFragment">
 
 
-    <LinearLayout
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/field_size_image"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="@dimen/spacing_large"
+        android:contentDescription="@string/app_name"
+        android:scaleType="centerInside"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.MaterialComponents.MediumComponent"
+        app:srcCompat="@drawable/ic_land_measure" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/field_size_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:paddingBottom="?attr/actionBarSize">
+        android:text="@string/lbl_cassava_field_size_no_ph"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:textColor="@color/akilimoDarkGreen"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/field_size_image" />
 
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="@dimen/img_width"
-            android:layout_height="@dimen/img_height"
-            android:padding="@dimen/spacing_xlarge"
-            app:srcCompat="@drawable/ic_land_measure" />
+    <ScrollView
+        android:id="@+id/field_size_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/spacing_medium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/field_size_title">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/title"
+        <RadioGroup
+            android:id="@+id/rdg_field_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/lbl_cassava_field_size_no_ph"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/akilimoDarkGreen"
-            android:textStyle="bold" />
+            android:layout_marginTop="@dimen/spacing_small">
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/spacing_medium">
 
-            <RadioGroup
-                android:id="@+id/rdgFieldArea"
-                android:layout_width="wrap_content"
+            <RadioButton
+                android:id="@+id/rd_field_size_quarter_acre"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_small">
+                android:text="@string/quarter_acre" />
 
 
-                <RadioButton
-                    android:id="@+id/rd_quarter_acre"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/quarter_acre" />
+            <RadioButton
+                android:id="@+id/rd_field_size_half_acre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/half_acre" />
 
 
-                <RadioButton
-                    android:id="@+id/rd_half_acre"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/half_acre" />
+            <RadioButton
+                android:id="@+id/rd_field_size_one_acre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/one_acre" />
 
+            <RadioButton
+                android:id="@+id/rd_field_size_two_half_acre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/two_half_acres"
+                android:visibility="gone" />
 
-                <RadioButton
-                    android:id="@+id/rd_one_acre"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/one_acre" />
+            <RadioButton
+                android:id="@+id/rd_field_size_specify_area"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/exact_field_area" />
 
-                <RadioButton
-                    android:id="@+id/rd_two_half_acre"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/two_half_acres"
-                    android:visibility="gone" />
+        </RadioGroup>
+    </ScrollView>
 
-                <RadioButton
-                    android:id="@+id/rd_specify_acre"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/exact_field_area" />
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/txt_field_size_specified_area"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:text="@string/empty_text"
+        android:textAlignment="center"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/field_size_scrollview" />
 
-            </RadioGroup>
-        </ScrollView>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/specifiedArea"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/empty_text"
-            android:textAlignment="center"
-            android:textColor="@color/grey_80"
-            android:visibility="gone" />
-    </LinearLayout>
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
