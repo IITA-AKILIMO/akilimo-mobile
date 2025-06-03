@@ -7,6 +7,7 @@ on:
       - '**.yml'
       - '**.yaml'
       - '**.sh'
+      - '**.xml'
       - 'docs/**'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/**'
@@ -14,8 +15,7 @@ on:
 
 jobs:
 
-  run_tests:
-    name: Unit tests
+  unit-test:
     runs-on: ubuntu-latest
     concurrency:
       group: ci-${{ github.head_ref || github.ref_name }}
@@ -50,6 +50,42 @@ jobs:
         run: ./gradlew testDebugUnitTest
         continue-on-error: false
 
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+
+      - name: Report
+        uses: FlickerSoul/android-test-report-actions@v1.2
+        if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
+
+      - name: Make Unit test report
+        uses: asadmansr/android-test-report-action@v1.2.0
+        if: ${{ always() }}
+
+  sonar-checks:
+    runs-on: ubuntu-latest
+    if: contains(github.ref, 'develop')
+    needs: unit-test
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 21
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:
@@ -64,23 +100,12 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
 
-      - name: Build and analyze
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      - name: Run Sonar Analysis
         run: ./gradlew sonar
-
-#      - name: Report
-#        uses: FlickerSoul/android-test-report-actions@v1.2
-#        if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
-
-  #      - name: Make Unit test report
-  #        uses: asadmansr/android-test-report-action@v1.2.0
-  #        if: ${{ always() }}
 
   build_artifacts:
     if: contains(github.ref, 'beta') || contains(github.ref, 'main')
-    needs: run_tests
+    needs: 'unit-test'
     name: Build artifacts
     runs-on: ubuntu-latest
     env:

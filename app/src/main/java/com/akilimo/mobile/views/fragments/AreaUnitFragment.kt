@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import android.widget.RadioGroup
 import android.widget.Toast
 import com.akilimo.mobile.R
@@ -48,20 +47,20 @@ class AreaUnitFragment : BaseStepFragment() {
         errorMessage = context.getString(R.string.lbl_area_unit_prompt)
         binding.rdgAreaUnit.setOnCheckedChangeListener { _: RadioGroup?, radioIndex: Int ->
             when (radioIndex) {
-                R.id.rdAcre -> {
-                    areaUnitRadioIndex = R.id.rdAcre
+                R.id.rb_unit_acre -> {
+                    areaUnitRadioIndex = R.id.rb_unit_acre
                     areaUnitDisplay = context.getString(R.string.lbl_acre)
                     areaUnit = EnumAreaUnits.ACRE.name
                 }
 
-                R.id.rdHa -> {
-                    areaUnitRadioIndex = R.id.rdHa
+                R.id.rb_unit_ha -> {
+                    areaUnitRadioIndex = R.id.rb_unit_ha
                     areaUnitDisplay = context.getString(R.string.lbl_ha)
                     areaUnit = EnumAreaUnits.HA.name
                 }
 
-                R.id.rdAre -> {
-                    areaUnitRadioIndex = R.id.rdHa
+                R.id.rb_unit_are -> {
+                    areaUnitRadioIndex = R.id.rb_unit_are
                     areaUnitDisplay = context.getString(R.string.lbl_are)
                     areaUnit = EnumAreaUnits.ARE.name
                 }
@@ -92,17 +91,13 @@ class AreaUnitFragment : BaseStepFragment() {
             }
         }
 
-        binding.chkRememberDetails.setOnCheckedChangeListener { _: CompoundButton?, rememberInfo: Boolean ->
-            rememberPreference = rememberInfo
-            sessionManager.setRememberAreaUnit(rememberInfo)
-        }
     }
 
     private fun refreshData() {
         try {
             rememberPreference = sessionManager.getRememberAreaUnit()
             mandatoryInfo = database.mandatoryInfoDao().findOne()
-            val rdAre = binding.rdAre
+            val rdAre = binding.rbUnitAre
             val profileInfo = database.profileInfoDao().findOne()
             if (mandatoryInfo != null) {
                 areaUnit = mandatoryInfo!!.areaUnit

@@ -16,7 +16,7 @@ open class MandatoryInfo {
 
     var areaUnit: String = "acre"
     var oldAreaUnit: String? = null
-    var displayAreaUnit: String? = null
+    var displayAreaUnit: String = ""
     var areaSize: Double = 0.0
     var exactArea: Boolean = false
 }

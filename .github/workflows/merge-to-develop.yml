@@ -3,20 +3,11 @@ name: Create PR to develop
 on:
   workflow_dispatch:
   push:
-    paths-ignore:
-      - '**.md'
-      - '**.txt'
-      - '**.yml'
-      - '**.yaml'
-      - '**.sh'
-      - 'docs/**'
-      - '.github/ISSUE_TEMPLATE/**'
     branches-ignore:
-      - main  # Exclude main branch
-    # optional: you can use `branches: ['**']` if you want to explicitly allow all others
+      - main
 
 jobs:
-  create-pr:
+  pr-to-develop:
     runs-on: ubuntu-24.04
     if: github.ref != 'refs/heads/main'  # Extra safety check
 

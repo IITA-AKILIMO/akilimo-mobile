@@ -2,16 +2,15 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/lyt_parent"
+    android:id="@+id/lyt_area_unit"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/spacing_medium"
     tools:context=".views.fragments.AreaUnitFragment">
 
-
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="wrap_content"
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/img_area_unit"
+        android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_marginTop="@dimen/spacing_mxlarge"
         android:contentDescription="@string/app_name"
@@ -19,23 +18,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.MaterialComponents.MediumComponent"
         app:srcCompat="@drawable/ic_young_cassava" />
 
-    <TextView
-        android:id="@+id/title"
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/txt_area_unit_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_large"
         android:text="@string/lbl_area_unit"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textColor="@color/akilimoDarkGreen"
-        android:textStyle="bold"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image" />
+        app:layout_constraintTop_toBottomOf="@id/img_area_unit" />
 
-    <TextView
-        android:id="@+id/subtitle"
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/txt_area_unit_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_large"
@@ -43,53 +41,43 @@
         android:text="@string/lbl_area_unit_subtitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+        app:layout_constraintTop_toBottomOf="@id/txt_area_unit_title" />
 
     <RadioGroup
-        android:id="@+id/rdgAreaUnit"
+        android:id="@+id/rdg_area_unit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_xlarge"
+        android:layout_marginTop="@dimen/spacing_medium"
         android:padding="@dimen/spacing_medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subtitle">
+        app:layout_constraintTop_toBottomOf="@id/txt_area_unit_subtitle">
 
-        <RadioButton
-            android:id="@+id/rdAcre"
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/rb_unit_acre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/area_unit_acre" />
 
-        <RadioButton
-            android:id="@+id/rdHa"
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/rb_unit_ha"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/area_unit_ha" />
 
-        <RadioButton
-            android:id="@+id/rdAre"
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/rb_unit_are"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/area_unit_are"
             android:visibility="gone" />
 
-        <RadioButton
-            android:id="@+id/rdSqm"
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/rb_unit_sqm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/area_unit_square_meter"
             android:visibility="gone" />
     </RadioGroup>
-
-    <com.google.android.material.checkbox.MaterialCheckBox
-        android:id="@+id/chkRememberDetails"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/lbl_remember_pref"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rdgAreaUnit" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
