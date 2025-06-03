@@ -2,7 +2,7 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/lyt_parent"
+    android:id="@+id/planting_scroll_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/spacing_medium"
@@ -13,8 +13,9 @@
         android:layout_height="wrap_content"
         android:paddingBottom="?attr/actionBarSize">
 
+        <!-- Image -->
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/plantingImage"
+            android:id="@+id/planting_image"
             android:layout_width="250dp"
             android:layout_height="250dp"
             android:layout_marginTop="@dimen/spacing_large"
@@ -26,8 +27,9 @@
             app:shapeAppearanceOverlay="@style/ShapeAppearance.MaterialComponents.MediumComponent"
             app:srcCompat="@drawable/ic_schedule" />
 
+        <!-- Title -->
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/title"
+            android:id="@+id/planting_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_large"
@@ -37,32 +39,34 @@
             android:textColor="@color/akilimoDarkGreen"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/plantingImage" />
+            app:layout_constraintTop_toBottomOf="@id/planting_image" />
 
+        <!-- Subtitle -->
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/subtitle"
+            android:id="@+id/planting_subtitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
+            android:layout_marginTop="@dimen/spacing_large"
             android:text="@string/title_planting_harvest_subtitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title" />
+            app:layout_constraintTop_toBottomOf="@id/planting_title" />
 
+        <!-- Pick Planting Date Button -->
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnPickPlantingDate"
+            android:id="@+id/planting_btn_pick_date"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_xlarge"
             android:text="@string/lbl_pick_planting_date"
-            app:cornerRadius="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/subtitle" />
+            app:layout_constraintTop_toBottomOf="@id/planting_subtitle" />
 
+        <!-- Selected Planting Date Hint -->
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/plantingDateHint"
+            android:id="@+id/planting_date_hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
@@ -70,10 +74,11 @@
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnPickPlantingDate" />
+            app:layout_constraintTop_toBottomOf="@id/planting_btn_pick_date" />
 
+        <!-- Selected Planting Date Label -->
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/lblSelectedPlantingDate"
+            android:id="@+id/planting_date_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_small"
@@ -82,22 +87,23 @@
             android:textColor="?attr/colorSecondary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/plantingDateHint" />
+            app:layout_constraintTop_toBottomOf="@id/planting_date_hint" />
 
+        <!-- Pick Harvest Date Button -->
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnPickHarvestDate"
+            android:id="@+id/harvest_btn_pick_date"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_large"
             android:text="@string/lbl_pick_harvest_date"
-            app:cornerRadius="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/lblSelectedPlantingDate" />
+            app:layout_constraintTop_toBottomOf="@id/planting_date_label" />
 
+        <!-- Selected Harvest Date Hint -->
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/harvestDateHint"
+            android:id="@+id/harvest_date_hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
@@ -105,10 +111,11 @@
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnPickHarvestDate" />
+            app:layout_constraintTop_toBottomOf="@id/harvest_btn_pick_date" />
 
+        <!-- Selected Harvest Date Label -->
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/lblSelectedHarvestDate"
+            android:id="@+id/harvest_date_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_small"
@@ -118,7 +125,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/harvestDateHint"
+            app:layout_constraintTop_toBottomOf="@id/harvest_date_hint"
             app:layout_constraintVertical_bias="0.1" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
