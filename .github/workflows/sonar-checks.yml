@@ -4,13 +4,6 @@ on:
   push:
     branches:
       - develop
-    paths-ignore:
-      - '**.md'
-      - '**.txt'
-      - '**.xml'
-      - 'docs/**'
-      - '.github/ISSUE_TEMPLATE/**'
-      - '.github/**'
   workflow_dispatch:
 
 jobs:
