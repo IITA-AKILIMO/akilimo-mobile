@@ -22,8 +22,7 @@ class InvestmentPrefFragment : BaseStepFragment() {
     private var myRiskName: String = ""
     private var myRiskAtt = 0
     private var myRiskRadioIndex = -1
-    private var investmentPreference: Array<String> = arrayOf()
-    private var rememberInvestmentPref = false
+    private var riskAttitudes: Array<String> = arrayOf()
 
     companion object {
         fun newInstance() = InvestmentPrefFragment()
@@ -31,7 +30,7 @@ class InvestmentPrefFragment : BaseStepFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        investmentPreference = arrayOf(
+        riskAttitudes = arrayOf(
             EnumInvestmentPref.Rarely.prefName(context),
             EnumInvestmentPref.Sometimes.prefName(context),
             EnumInvestmentPref.Often.prefName(context)
@@ -48,40 +47,37 @@ class InvestmentPrefFragment : BaseStepFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        addRiskRadioButtons(investmentPreference)
+        addRiskRadioButtons(riskAttitudes)
 
         binding.apply {
-            rdgRiskGroup.setOnCheckedChangeListener { radioGroup, _ ->
+            binding.rdgRiskAttitude.setOnCheckedChangeListener { radioGroup, _ ->
                 val radioButton = root.findViewById<RadioButton>(radioGroup.checkedRadioButtonId)
                     ?: return@setOnCheckedChangeListener
                 val itemTagIndex = radioButton.tag as Int
                 myRiskAtt = itemTagIndex.coerceIn(0, 2)
-                myRiskName = investmentPreference[myRiskAtt]
+                myRiskName = riskAttitudes[myRiskAtt]
                 updateInvestmentPref(myRiskAtt, radioButton.id)
             }
 
-            chkRememberDetails.setOnCheckedChangeListener { _, rememberInfo ->
-                sessionManager.setRememberInvestmentPref(rememberInfo)
-            }
         }
     }
 
     private fun addRiskRadioButtons(risks: Array<String>) {
-        binding.rdgRiskGroup.removeAllViews()
+        binding.rdgRiskAttitude.removeAllViews()
         risks.forEachIndexed { index, riskText ->
             RadioButton(activity).apply {
                 id = index
                 tag = index
                 text = riskText
-                binding.rdgRiskGroup.addView(this)
+                binding.rdgRiskAttitude.addView(this)
             }
         }
     }
 
-    private fun updateInvestmentPref(investmentPref: Int, investmentRadioIndex: Int) {
+    private fun updateInvestmentPref(investmentPref: Int, riskRadioIndex: Int) {
         try {
             userProfile?.let {
-                it.selectedRiskIndex = investmentRadioIndex
+                it.selectedRiskIndex = riskRadioIndex
                 it.riskAtt = investmentPref
 
                 if (it.profileId != null) {
@@ -111,8 +107,8 @@ class InvestmentPrefFragment : BaseStepFragment() {
             userProfile?.let {
                 myRiskAtt = it.riskAtt
                 myRiskRadioIndex = it.selectedRiskIndex
-                binding.rdgRiskGroup.check(myRiskRadioIndex)
-                myRiskName = investmentPreference[myRiskAtt]
+                binding.rdgRiskAttitude.check(myRiskRadioIndex)
+                myRiskName = riskAttitudes[myRiskAtt]
             }
         } catch (ex: Exception) {
             Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
