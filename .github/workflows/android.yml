@@ -15,7 +15,7 @@ on:
 
 jobs:
 
-  unit-tests:
+  unit-test:
     runs-on: ubuntu-latest
     concurrency:
       group: ci-${{ github.head_ref || github.ref_name }}
