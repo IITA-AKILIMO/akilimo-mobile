@@ -80,7 +80,7 @@ jobs:
 
   build_artifacts:
     if: contains(github.ref, 'beta') || contains(github.ref, 'main')
-    needs: run_tests
+    needs: 'unit-test'
     name: Build artifacts
     runs-on: ubuntu-latest
     env:
