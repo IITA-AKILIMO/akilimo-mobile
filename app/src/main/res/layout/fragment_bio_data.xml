@@ -2,13 +2,14 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nested_scroll_view"
+    android:id="@+id/lyt_scroll_biodata"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
     tools:context=".views.fragments.BioDataFragment">
 
     <LinearLayout
+        android:id="@+id/lyt_biodata_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -17,7 +18,7 @@
 
         <!-- Title -->
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/txt_title_biodata"
             style="@style/TextAppearance.MaterialComponents.Headline6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,6 +30,7 @@
 
         <!-- Personal Info Card -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_personal_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_medium"
@@ -36,14 +38,15 @@
             app:cardElevation="@dimen/spacing_small">
 
             <LinearLayout
+                android:id="@+id/lyt_personal_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_large"
                 android:orientation="vertical"
                 android:padding="@dimen/spacing_medium">
 
                 <!-- First Name -->
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/lyt_first_name"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -51,7 +54,7 @@
                     android:hint="@string/lbl_first_name">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edtFirstName"
+                        android:id="@+id/edt_first_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textPersonName" />
@@ -59,6 +62,7 @@
 
                 <!-- Last Name -->
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/lyt_last_name"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -66,7 +70,7 @@
                     android:hint="@string/lbl_last_name">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edtLastName"
+                        android:id="@+id/edt_last_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textPersonName" />
@@ -74,7 +78,7 @@
 
                 <!-- Gender -->
                 <TextView
-                    android:id="@+id/genderLabel"
+                    android:id="@+id/txt_gender_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_large"
@@ -82,7 +86,7 @@
                     android:textColor="@color/grey_40" />
 
                 <Spinner
-                    android:id="@+id/genderSpinner"
+                    android:id="@+id/spn_gender"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_small"
@@ -96,6 +100,7 @@
 
         <!-- Contact Info Card -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_contact_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_medium"
@@ -103,14 +108,15 @@
             app:cardElevation="@dimen/spacing_small">
 
             <LinearLayout
+                android:id="@+id/lyt_contact_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_large"
                 android:orientation="vertical"
                 android:padding="@dimen/spacing_medium">
 
                 <!-- Email -->
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/lyt_email"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -118,7 +124,7 @@
                     android:hint="@string/lbl_email_address">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edtEmail"
+                        android:id="@+id/edt_email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textEmailAddress" />
@@ -126,6 +132,7 @@
 
                 <!-- Phone Label -->
                 <TextView
+                    android:id="@+id/txt_phone_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_large"
@@ -134,7 +141,7 @@
 
                 <!-- Country Picker -->
                 <com.hbb20.CountryCodePicker
-                    android:id="@+id/ccp"
+                    android:id="@+id/ccp_country"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_large"
@@ -148,6 +155,7 @@
 
                 <!-- Phone Input -->
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/lyt_phone"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -155,7 +163,7 @@
                     android:hint="@string/lbl_phone_number">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edtPhone"
+                        android:id="@+id/edt_phone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="phone" />
@@ -165,6 +173,7 @@
 
         <!-- Interest Card -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_interest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_medium"
@@ -172,15 +181,15 @@
             app:cardElevation="@dimen/spacing_small">
 
             <LinearLayout
+                android:id="@+id/lyt_interest"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_large"
                 android:orientation="vertical"
                 android:padding="@dimen/spacing_medium">
 
                 <!-- Interest Label -->
                 <TextView
-                    android:id="@+id/interestLabel"
+                    android:id="@+id/txt_interest_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_medium"
@@ -189,10 +198,10 @@
 
                 <!-- Interest Spinner -->
                 <Spinner
-                    android:id="@+id/interestSpinner"
+                    android:id="@+id/spn_interest"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_small"
+                    android:layout_marginTop="@dimen/spacing_medium"
                     android:minWidth="@dimen/img_width"
                     android:minHeight="@dimen/dimen_36"
                     android:paddingHorizontal="@dimen/spacing_medium"

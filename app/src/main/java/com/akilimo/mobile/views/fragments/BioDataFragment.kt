@@ -74,45 +74,49 @@ class BioDataFragment : BaseStepFragment() {
 
 
         binding.apply {
-            genderSpinner.adapter = genderAdapter
-            interestSpinner.adapter = interestAdapter
 
-            genderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?, view: View?, position: Int, id: Long
-                ) {
-                    mySelectedGenderIndex = position
-                    myGender = null
-                    if (position > 0) {
-                        myGender = genderOptions[position].value
+            spnGender.apply {
+                adapter = genderAdapter
+                onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(
+                        parent: AdapterView<*>?, view: View?, position: Int, id: Long
+                    ) {
+                        mySelectedGenderIndex = position
+                        myGender = null
+                        if (position > 0) {
+                            myGender = genderOptions[position].value
+                        }
                     }
-                }
 
-                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                    }
                 }
             }
 
-            interestSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?, view: View?, position: Int, id: Long
-                ) {
-                    mySelectedInterestIndex = position
-                    myAkilimoInterest = null
-                    if (position > 0) {
-                        myAkilimoInterest = interestOptions[position].value
+            spnInterest.apply {
+                adapter = interestAdapter
+                onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(
+                        parent: AdapterView<*>?, view: View?, position: Int, id: Long
+                    ) {
+                        mySelectedInterestIndex = position
+                        myAkilimoInterest = null
+                        if (position > 0) {
+                            myAkilimoInterest = interestOptions[position].value
+                        }
                     }
-                }
 
-                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                    }
                 }
             }
 
-            ccp.apply {
+            ccpCountry.apply {
                 setPhoneNumberValidityChangeListener { isValidNumber: Boolean ->
                     phoneIsValid = isValidNumber
                 }
                 setOnCountryChangeListener {
-                    myMobileCode = binding.ccp.selectedCountryCodeWithPlus
+                    myMobileCode = binding.ccpCountry.selectedCountryCodeWithPlus
                 }
                 registerCarrierNumberEditText(binding.edtPhone)
             }
@@ -139,15 +143,15 @@ class BioDataFragment : BaseStepFragment() {
                     edtEmail.setText(myEmail)
 
                     if (!myPhoneNumber.isNullOrEmpty()) {
-                        ccp.fullNumber = myPhoneNumber
+                        ccpCountry.fullNumber = myPhoneNumber
                     }
 
                     if (mySelectedGenderIndex in genderOptions.indices) {
-                        genderSpinner.setSelection(mySelectedGenderIndex)
+                        spnGender.setSelection(mySelectedGenderIndex)
                     }
 
                     if (mySelectedInterestIndex in interestOptions.indices) {
-                        interestSpinner.setSelection(mySelectedInterestIndex)
+                        spnInterest.setSelection(mySelectedInterestIndex)
                     }
                 }
             }
@@ -157,30 +161,31 @@ class BioDataFragment : BaseStepFragment() {
     }
 
     private fun saveBioData() {
+        errorMessage = ""
+
         binding.apply {
             edtFirstName.error = null
             edtLastName.error = null
             edtEmail.error = null
             edtPhone.error = null
         }
-        errorMessage = ""
 
-        binding
+
         val myFirstName = binding.edtFirstName.text.toString()
         val myLastName = binding.edtLastName.text.toString()
         val myEmail = binding.edtEmail.text.toString().trim { it <= ' ' }
         val userEnteredNumber = binding.edtPhone.text.toString()
-        val myPhoneNumber = binding.ccp.fullNumber
-        val myMobileCode = binding.ccp.selectedCountryCodeWithPlus
+        val myPhoneNumber = binding.ccpCountry.fullNumber
+        val myMobileCode = binding.ccpCountry.selectedCountryCodeWithPlus
 
         if (TextUtils.isEmpty(myFirstName)) {
-            errorMessage = this.getString(R.string.lbl_first_name_req)
+            errorMessage = getString(R.string.lbl_first_name_req)
             binding.edtFirstName.error = errorMessage
             return
         }
 
         if (myLastName.isEmpty()) {
-            errorMessage = this.getString(R.string.lbl_last_name_req)
+            errorMessage = getString(R.string.lbl_last_name_req)
             binding.edtLastName.error = errorMessage
             return
         }
@@ -188,7 +193,7 @@ class BioDataFragment : BaseStepFragment() {
 
         if (myPhoneNumber.isNullOrEmpty() && userEnteredNumber.isEmpty()) {
             if (!phoneIsValid) {
-                errorMessage = this.getString(R.string.lbl_valid_number_req)
+                errorMessage = getString(R.string.lbl_valid_number_req)
                 binding.edtPhone.error = errorMessage
                 return
             }
@@ -196,20 +201,20 @@ class BioDataFragment : BaseStepFragment() {
 
         if (myEmail.isNotEmpty()) {
             if (!validationHelper.isValidEmail(myEmail)) {
-                errorMessage = this.getString(R.string.lbl_valid_email_req)
+                errorMessage = getString(R.string.lbl_valid_email_req)
                 binding.edtEmail.error = errorMessage
                 return
             }
         }
 
         if (myGender.isNullOrEmpty()) {
-            errorMessage = this.getString(R.string.lbl_gender_prompt)
+            errorMessage = getString(R.string.lbl_gender_prompt)
             return
         }
 
 
         if (myAkilimoInterest.isNullOrEmpty()) {
-            errorMessage = this.getString(R.string.lbl_akilimo_interest_prompt)
+            errorMessage = getString(R.string.lbl_akilimo_interest_prompt)
             return
         }
 
