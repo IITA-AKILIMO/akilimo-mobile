@@ -48,6 +48,6 @@ jobs:
         uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
         with:
           pollingTimeoutSec: 600
-#          scanMetadataReportFile: build/sonar/report-task.txt
+          scanMetadataReportFile: app/build/sonar/report-task.txt
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
