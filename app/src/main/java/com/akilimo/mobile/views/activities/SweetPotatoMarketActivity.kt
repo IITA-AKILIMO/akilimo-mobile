@@ -80,20 +80,10 @@ class SweetPotatoMarketActivity : BaseActivity() {
         btnFinish = binding.potatoMarket.twoButtons.btnFinish
         btnCancel = binding.potatoMarket.twoButtons.btnCancel
 
-        initToolbar()
-        initComponent()
-        processPotatoPrices()
-    }
+        setupToolbar(binding.toolbar, R.string.lbl_sweet_potato_prices) {
+            validate(false)
+        }
 
-    override fun initToolbar() {
-        toolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.title = getString(R.string.lbl_sweet_potato_prices)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        toolbar!!.setNavigationOnClickListener { v: View? -> validate(false) }
-    }
-
-    override fun initComponent() {
         enumPotatoProduceType = EnumPotatoProduceType.TUBERS.name.lowercase()
 
         val potatoMarket = database.potatoMarketDao().findOne()
@@ -143,6 +133,8 @@ class SweetPotatoMarketActivity : BaseActivity() {
         btnCancel!!.setOnClickListener { view: View? -> closeActivity(false) }
 
         showCustomNotificationDialog()
+        
+        processPotatoPrices()
     }
 
     override fun validate(backPressed: Boolean) {

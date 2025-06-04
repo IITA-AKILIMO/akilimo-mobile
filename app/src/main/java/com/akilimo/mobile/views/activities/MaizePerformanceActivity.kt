@@ -70,25 +70,12 @@ class MaizePerformanceActivity : BaseActivity() {
         if (cropPerformanceRecord != null) {
             selectedPerformanceScore = cropPerformanceRecord.performanceScore
         }
-        initToolbar()
-        initComponent()
-    }
 
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        super.onBackPressed()
-        validate(true)
-    }
 
-    override fun initToolbar() {
-        toolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.title = getString(R.string.title_activity_maize_performance)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        toolbar!!.setNavigationOnClickListener { v: View? -> validate(false) }
-    }
+        setupToolbar(binding.toolbar, R.string.title_activity_maize_performance) {
+            validate(false)
+        }
 
-    override fun initComponent() {
         poorSoil = getString(R.string.lbl_maize_performance_poor)
         richSoil = getString(R.string.lbl_maize_performance_rich)
 
@@ -200,6 +187,13 @@ class MaizePerformanceActivity : BaseActivity() {
 
         })
     }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        super.onBackPressed()
+        validate(true)
+    }
+
 
     private fun createPerformanceObject(
         yieldImage: Int,

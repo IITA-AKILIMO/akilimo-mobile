@@ -30,20 +30,6 @@ class SplashActivity : BaseActivity() {
         }
     }
 
-    override fun validate(backPressed: Boolean) {
-        // No back navigation handling needed on splash
-    }
-
-    @Deprecated("No longer used. Remove once toolbar code is fully refactored.")
-    override fun initToolbar() {
-        Sentry.captureMessage("Deprecated toolbar initialization in SplashActivity")
-    }
-
-    @Deprecated("Deprecated method. Can be safely removed.")
-    override fun initComponent() {
-        // Intentionally unimplemented
-    }
-
     private suspend fun launchAppFlow() {
         val isInDevMode = BuildConfig.DEBUG
 

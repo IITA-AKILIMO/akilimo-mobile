@@ -110,18 +110,6 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         checkAppPermissions(rationale)
     }
 
-    override fun validate(backPressed: Boolean) {
-        throw UnsupportedOperationException()
-    }
-
-    override fun initToolbar() {
-        throw UnsupportedOperationException()
-    }
-
-    override fun initComponent() {
-        throw UnsupportedOperationException()
-    }
-
     private fun loadConfig() {
         val configReader = FuelrodApi.apiService.readConfig("akilimo")
 

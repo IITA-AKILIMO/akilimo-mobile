@@ -162,4 +162,8 @@ abstract class BaseLocationPicker : BaseActivity(), OnMapReadyCallback {
         super.onLowMemory()
         mapView.onLowMemory()
     }
+
+    override fun validate(backPressed: Boolean) {
+        TODO("Not yet implemented")
+    }
 }

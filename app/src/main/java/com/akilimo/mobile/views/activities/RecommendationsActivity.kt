@@ -13,7 +13,7 @@ import com.akilimo.mobile.databinding.ActivityRecommendationsActivityBinding
 import com.akilimo.mobile.entities.AkilimoCurrency
 import com.akilimo.mobile.entities.AkilimoCurrencyResponse
 import com.akilimo.mobile.entities.UseCase
-import com.akilimo.mobile.inherit.MyBaseActivity
+import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.models.Recommendation
 import com.akilimo.mobile.utils.TheItemAnimation
@@ -28,7 +28,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RecommendationsActivity : MyBaseActivity() {
+class RecommendationsActivity : BaseActivity() {
 
     private var _binding: ActivityRecommendationsActivityBinding? = null
     private val binding get() = _binding!!

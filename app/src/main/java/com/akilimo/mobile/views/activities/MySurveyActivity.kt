@@ -32,19 +32,6 @@ class MySurveyActivity : BaseActivity() {
         _binding = ActivityMySurveyBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        initComponent()
-    }
-
-    @Deprecated(
-        "Remove completely and use setupToolbar(toolbar, titleResId) instead.",
-        replaceWith = ReplaceWith("setupToolbar(binding.toolbarLayout.toolbar, R.string.your_title)"),
-        level = DeprecationLevel.WARNING
-    )
-    override fun initToolbar() {/*No processing*/
-    }
-
-    @Deprecated("Deprecated remove it completely")
-    override fun initComponent() {
         val rdgAkilimoUser = binding.rdgAkilimoUser
         val rdgRecommend = binding.rdgRecommend
         val rdgUseful = binding.rdgUseful
@@ -85,6 +72,7 @@ class MySurveyActivity : BaseActivity() {
             closeActivity(false)
         }
     }
+
 
     override fun validate(backPressed: Boolean) {
         closeActivity(backPressed)

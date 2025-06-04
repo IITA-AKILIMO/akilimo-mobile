@@ -156,23 +156,10 @@ class CassavaMarketActivity : BaseActivity() {
             validate(true)
         }
 
-        initToolbar()
-        initComponent()
-        processStarchFactories()
-        processCassavaPrices()
-        processData()
-    }
+        setupToolbar(binding.toolbar, R.string.title_activity_cassava_market_outlet) {
+            validate(false)
+        }
 
-
-    override fun initToolbar() {
-        myToolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
-        setSupportActionBar(myToolbar)
-        supportActionBar!!.title = getString(R.string.title_activity_cassava_market_outlet)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        myToolbar!!.setNavigationOnClickListener { v: View? -> validate(false) }
-    }
-
-    override fun initComponent() {
         rdgMarketOutlet!!.setOnCheckedChangeListener { radioGroup: RadioGroup?, radioIndex: Int ->
             factoryRequired = false
             otherMarketsRequired = false
@@ -269,7 +256,11 @@ class CassavaMarketActivity : BaseActivity() {
         }
 
         showCustomNotificationDialog()
+        processStarchFactories()
+        processCassavaPrices()
+        processData()
     }
+
 
     fun onRadioButtonClicked(radioButton: View?) {
         if (radioButton != null && radioButton.isPressed) {
@@ -419,7 +410,7 @@ class CassavaMarketActivity : BaseActivity() {
     }
 
 
-    protected fun processData() {
+    private fun processData() {
         val database = getDatabase(this@CassavaMarketActivity)
         val starchFactoriesList =
             database.starchFactoryDao().findStarchFactoriesByCountry(countryCode)

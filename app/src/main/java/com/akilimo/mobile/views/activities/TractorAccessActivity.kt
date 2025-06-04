@@ -87,31 +87,17 @@ class TractorAccessActivity : CostBaseActivity() {
         btnFinish = binding.twoButtons.btnFinish
         btnCancel = binding.twoButtons.btnCancel
 
-        initToolbar()
-        initComponent()
         fieldOperationCost = database.fieldOperationCostDao().findOne()
         currentPractice = database.currentPracticeDao().findOne()
         if (fieldOperationCost != null) {
             tractorPloughCost = fieldOperationCost!!.tractorPloughCost
             tractorRidgeCost = fieldOperationCost!!.tractorRidgeCost
         }
-    }
 
-    @Deprecated(
-        "Remove completely and use setupToolbar(toolbar, titleResId) instead.",
-        replaceWith = ReplaceWith("setupToolbar(binding.toolbarLayout.toolbar, R.string.your_title)"),
-        level = DeprecationLevel.WARNING
-    )
-    override fun initToolbar() {
-        toolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.title = getString(R.string.title_tillage_operations)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        toolbar!!.setNavigationOnClickListener { v: View? -> validate(false) }
-    }
+        setupToolbar(binding.toolbar, R.string.title_tillage_operations) {
+            validate(false)
+        }
 
-    @Deprecated("Deprecated remove it completely")
-    override fun initComponent() {
         rdgTractor!!.setOnCheckedChangeListener { radioGroup: RadioGroup?, radioIndex: Int ->
             when (radioIndex) {
                 R.id.rdYesTractor -> {
@@ -215,6 +201,7 @@ class TractorAccessActivity : CostBaseActivity() {
         btnFinish!!.setOnClickListener { view: View? -> validate(false) }
         btnCancel!!.setOnClickListener { view: View? -> closeActivity(false) }
     }
+
 
     override fun validate(backPressed: Boolean) {
         setData()
