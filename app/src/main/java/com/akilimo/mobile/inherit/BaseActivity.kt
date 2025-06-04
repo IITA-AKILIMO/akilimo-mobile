@@ -80,7 +80,11 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    protected abstract fun validate(backPressed: Boolean)
+    open fun validate(backPressed: Boolean) {
+        val errorMsg = "validate Not implemented for this class"
+        Sentry.captureMessage(errorMsg)
+        throw UnsupportedOperationException(errorMsg)
+    }
 
     protected fun closeActivity(backPressed: Boolean) {
         if (!backPressed) {
