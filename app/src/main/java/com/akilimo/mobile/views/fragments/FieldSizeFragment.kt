@@ -35,7 +35,6 @@ class FieldSizeFragment : BaseStepFragment() {
     private var areaSize = 0.0
     private var isExactArea = false
     private var areaUnitChanged = false
-    private var dataValid = false
     private var areaUnit: String = ""
     private var titleMessage: String? = null
     private var displayAreaUnit: String = ""
@@ -80,6 +79,7 @@ class FieldSizeFragment : BaseStepFragment() {
 
     private fun refreshData() {
         try {
+            dataIsValid = false
             val mandatoryInfo = database.mandatoryInfoDao().findOne()
             if (mandatoryInfo != null) {
                 val oldAreaUnit = mandatoryInfo.oldAreaUnit
@@ -93,6 +93,9 @@ class FieldSizeFragment : BaseStepFragment() {
                 areaUnitChanged = !areaUnit.equals(oldAreaUnit, ignoreCase = true)
 
 
+                if (areaSize > 0.0) {
+                    dataIsValid = true
+                }
 
 
                 setFieldLabels(areaUnit)
@@ -272,11 +275,12 @@ class FieldSizeFragment : BaseStepFragment() {
         try {
             val mandatoryInfo = database.mandatoryInfoDao().findOne()
             if (mandatoryInfo != null) {
-                dataValid = true
                 mandatoryInfo.fieldSizeRadioIndex = fieldSizeRadioIndex
                 mandatoryInfo.areaSize = convertedAreaSize
                 mandatoryInfo.oldAreaUnit = areaUnit
                 mandatoryInfo.exactArea = isExactArea
+
+                dataIsValid = areaSize > 0.0
 
                 database.mandatoryInfoDao().update(mandatoryInfo)
             } else {
@@ -292,7 +296,7 @@ class FieldSizeFragment : BaseStepFragment() {
     }
 
     override fun verifyStep(): VerificationError? {
-        if (areaSize <= 0 || dataValid == false) {
+        if (areaSize <= 0.0 || dataIsValid == false) {
             errorMessage =
                 requireContext().getString(R.string.lbl_field_size_prompt, displayAreaUnit)
             return VerificationError(errorMessage)
