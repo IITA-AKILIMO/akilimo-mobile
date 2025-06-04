@@ -10,7 +10,6 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.RadioButton
-import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import com.akilimo.mobile.R
@@ -62,14 +61,15 @@ class FieldSizeFragment : BaseStepFragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        binding.rdgFieldSize.setOnCheckedChangeListener { radioGroup: RadioGroup?, radioIndex: Int ->
-            val radioButton = view.findViewById<RadioButton>(radioIndex)
-            if (radioButton != null) {
-                if (radioButton.isPressed) {
-                    radioSelected(radioIndex)
-                }
+        binding.rdgFieldSize.setOnCheckedChangeListener { _, checkedId ->
+            val radioButton = binding.root.findViewById<RadioButton>(checkedId)
+                ?: return@setOnCheckedChangeListener
+            if (radioButton.isPressed) {
+                // Only react to user presses, not programmatic selection changes
+                radioSelected(checkedId)
             }
         }
+
 
         binding.rdFieldSizeSpecifyArea.setOnClickListener { radioButton: View? ->
             if (radioButton != null && radioButton.isPressed) {
