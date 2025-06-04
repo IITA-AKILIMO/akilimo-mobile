@@ -8,7 +8,7 @@ import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.models.RecommendationOptions
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 
-abstract class BaseRecommendationActivity<T : ViewBinding> : MyBaseActivity() {
+abstract class BaseRecommendationActivity<T : ViewBinding> : BaseActivity() {
 
     private var _binding: T? = null
     protected val binding
