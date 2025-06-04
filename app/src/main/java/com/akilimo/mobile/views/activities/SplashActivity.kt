@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.data.UserDataCleaner
-import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.inherit.MyBaseActivity
 import com.akilimo.mobile.rest.retrofit.RetrofitManager
 import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import io.sentry.Sentry
@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @SuppressLint("CustomSplashScreen")
-class SplashActivity : BaseActivity() {
+class SplashActivity : MyBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,20 +28,6 @@ class SplashActivity : BaseActivity() {
                 fallbackLaunch()
             }
         }
-    }
-
-    override fun validate(backPressed: Boolean) {
-        // No back navigation handling needed on splash
-    }
-
-    @Deprecated("No longer used. Remove once toolbar code is fully refactored.")
-    override fun initToolbar() {
-        Sentry.captureMessage("Deprecated toolbar initialization in SplashActivity")
-    }
-
-    @Deprecated("Deprecated method. Can be safely removed.")
-    override fun initComponent() {
-        // Intentionally unimplemented
     }
 
     private suspend fun launchAppFlow() {

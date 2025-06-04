@@ -98,26 +98,6 @@ class FertilizersActivity : BaseActivity() {
             validateInput(false)
         }
 
-        initComponent()
-    }
-
-    override fun initToolbar() {
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        super.onBackPressed()
-        validateInput(true)
-    }
-
-    private fun validateInput(backPressed: Boolean) {
-        if (isMinSelected()) {
-            closeActivity(backPressed)
-        }
-    }
-
-
-    override fun initComponent() {
         recyclerView!!.visibility = View.GONE
         recyclerView!!.layoutManager = GridLayoutManager(this, 2)
         recyclerView!!.addItemDecoration(SpacingItemDecoration(2, dpToPx(this, 3), true))
@@ -191,6 +171,20 @@ class FertilizersActivity : BaseActivity() {
             }
         }
         btnCancel!!.setOnClickListener { view: View? -> closeActivity(false) }
+        
+    }
+
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        super.onBackPressed()
+        validateInput(true)
+    }
+
+    private fun validateInput(backPressed: Boolean) {
+        if (isMinSelected()) {
+            closeActivity(backPressed)
+        }
     }
 
     override fun validate(backPressed: Boolean) {

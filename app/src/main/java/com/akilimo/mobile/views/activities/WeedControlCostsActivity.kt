@@ -83,25 +83,10 @@ class WeedControlCostsActivity : BaseActivity() {
         editSecondWeedingOpCost = binding.weedControlCosts.editSecondWeedingOpCost
 
 
-        initToolbar()
-        initComponent()
-    }
+        setupToolbar(binding.toolbar, R.string.title_weed_control) {
+            validate(false)
+        }
 
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        super.onBackPressed()
-        validate(true)
-    }
-
-    override fun initToolbar() {
-        toolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.title = getString(R.string.title_weed_control)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        toolbar!!.setNavigationOnClickListener { closeActivity(false) }
-    }
-
-    override fun initComponent() {
         val context = this@WeedControlCostsActivity
         val language = LanguageManager.getLanguage(this@WeedControlCostsActivity)
         var translatedUnit = context.getString(R.string.lbl_acre)

@@ -37,8 +37,6 @@ import retrofit2.Response
 import java.util.Locale
 
 class InterCropFertilizersActivity : BaseActivity() {
-    private val TAG: String = BaseActivity::class.java.simpleName
-
 
     var toolbar: Toolbar? = null
     var recyclerView: RecyclerView? = null
@@ -95,33 +93,10 @@ class InterCropFertilizersActivity : BaseActivity() {
             currencyCode = profileInfo.currencyCode
         }
 
-        initToolbar()
-        initComponent()
-    }
-
-    override fun initToolbar() {
-        toolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.title = getString(R.string.title_activity_fertilizer_choice)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
-        toolbar!!.setNavigationOnClickListener { v: View? -> validateInput(false) }
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        super.onBackPressed()
-        validateInput(true)
-    }
-
-    private fun validateInput(backPressed: Boolean) {
-        if (isMinSelected) {
-            closeActivity(backPressed)
+        setupToolbar(binding.toolbarLayout.toolbar, R.string.title_activity_fertilizer_choice) {
+            validateInput(false)
         }
-    }
 
-
-    override fun initComponent() {
         btnSave!!.text = this@InterCropFertilizersActivity.getString(R.string.lbl_finish)
         recyclerView!!.visibility = View.GONE
         recyclerView!!.layoutManager = GridLayoutManager(this, 2)
@@ -204,6 +179,20 @@ class InterCropFertilizersActivity : BaseActivity() {
         btnCancel!!.setOnClickListener { view: View? -> closeActivity(false) }
     }
 
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        super.onBackPressed()
+        validateInput(true)
+    }
+
+    private fun validateInput(backPressed: Boolean) {
+        if (isMinSelected) {
+            closeActivity(backPressed)
+        }
+    }
+
+
     override fun validate(backPressed: Boolean) {
         if (mAdapter != null) {
             availableFertilizersList =
@@ -230,7 +219,7 @@ class InterCropFertilizersActivity : BaseActivity() {
                     val deletionList: MutableList<Fertilizer> = ArrayList()
                     availableFertilizersList = response.body()!!.data
                     val savedList = database.fertilizerDao().findAllByCountry(countryCode)
-                    if (savedList.size > 0) {
+                    if (savedList.isNotEmpty()) {
                         for (savedFertilizer in savedList) {
                             var found = false
                             for (latestFertilizer in availableFertilizersList) {

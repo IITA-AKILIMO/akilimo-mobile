@@ -79,9 +79,9 @@ class ManualTillageCostActivity : CostBaseActivity() {
             }
         }
 
-        initToolbar()
-        initComponent()
-
+        setupToolbar(binding.toolbar, R.string.title_manual_tillage_cost) {
+            validate(false)
+        }
         val fieldOperationCost = database.fieldOperationCostDao().findOne()
         if (fieldOperationCost != null) {
             manualPloughCost = fieldOperationCost.manualPloughCost
@@ -102,23 +102,7 @@ class ManualTillageCostActivity : CostBaseActivity() {
                 currencySymbol
             )
         }
-    }
 
-    @Deprecated(
-        "Remove completely and use setupToolbar(toolbar, titleResId) instead.",
-        replaceWith = ReplaceWith("setupToolbar(binding.toolbarLayout.toolbar, R.string.your_title)"),
-        level = DeprecationLevel.WARNING
-    )
-    override fun initToolbar() {
-        toolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.title = getString(R.string.title_manual_tillage_cost)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        toolbar!!.setNavigationOnClickListener { v: View? -> validate(false) }
-    }
-
-    @Deprecated("Deprecated remove it completely")
-    override fun initComponent() {
         val context = this@ManualTillageCostActivity
         var translatedUnit = context.getString(R.string.lbl_acre)
         if (areaUnit == "ha") {

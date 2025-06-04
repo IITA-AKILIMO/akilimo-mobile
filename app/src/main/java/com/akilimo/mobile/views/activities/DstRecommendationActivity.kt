@@ -71,18 +71,6 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
 //        loadingAndDisplayContent()
     }
 
-    @Deprecated("Deprecated remove it completely")
-    override fun initComponent() {
-    }
-
-    @Deprecated(
-        "Remove completely and use setupToolbar(toolbar, titleResId) instead.",
-        replaceWith = ReplaceWith("setupToolbar(binding.toolbarLayout.toolbar, R.string.your_title)"),
-        level = DeprecationLevel.WARNING
-    )
-    override fun initToolbar() {
-    }
-
 
     override fun validate(backPressed: Boolean) {
         throw UnsupportedOperationException()
