@@ -1,11 +1,6 @@
 package com.akilimo.mobile.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.akilimo.mobile.entities.Fertilizer
 
 @Dao
@@ -60,6 +55,9 @@ interface FertilizerDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAll(availableFertilizersList: List<Fertilizer>)
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    fun updateSelected(selectedList: List<Fertilizer>)
 
     @Update
     fun update(fertilizer: Fertilizer?)
