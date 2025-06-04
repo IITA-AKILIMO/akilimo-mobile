@@ -7,9 +7,8 @@ import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.models.RecommendationOptions
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
-import io.sentry.Sentry
 
-abstract class BaseRecommendationActivity<T : ViewBinding> : BaseActivity() {
+abstract class BaseRecommendationActivity<T : ViewBinding> : MyBaseActivity() {
 
     private var _binding: T? = null
     protected val binding
@@ -48,28 +47,5 @@ abstract class BaseRecommendationActivity<T : ViewBinding> : BaseActivity() {
         }
 
         return AdviceStatus(taskName.name, false)
-    }
-
-    @Deprecated(
-        "Remove completely and use setupToolbar(toolbar, titleResId) instead.",
-        replaceWith = ReplaceWith("setupToolbar(binding.toolbarLayout.toolbar, R.string.your_title)"),
-        level = DeprecationLevel.WARNING
-    )
-    override fun initToolbar() {
-        // Log the usage of deprecated method
-        Sentry.captureMessage("initToolbar is deprecated. Use setupToolbar instead.")
-    }
-
-    @Deprecated("Deprecated remove it completely")
-    override fun initComponent() {
-        // Log the usage of deprecated method
-        Sentry.captureMessage("initComponent is deprecated and should no longer be used.")
-    }
-
-    override fun validate(backPressed: Boolean) {
-        // Logging to indicate that validate is not implemented
-        val errorMsg = "validate Not implemented for this class"
-        Sentry.captureMessage(errorMsg)
-        throw UnsupportedOperationException(errorMsg)
     }
 }
