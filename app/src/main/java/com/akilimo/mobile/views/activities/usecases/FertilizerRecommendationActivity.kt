@@ -1,24 +1,25 @@
 package com.akilimo.mobile.views.activities.usecases
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.RecAdapter
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityFertilizerRecommendationBinding
 import com.akilimo.mobile.entities.AdviceStatus
+import com.akilimo.mobile.inherit.BindBaseActivity
 import com.akilimo.mobile.models.RecommendationOptions
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 
-class FertilizerRecommendationActivity : AppCompatActivity() {
-    private var _binding: ActivityFertilizerRecommendationBinding? = null
-    private val binding get() = _binding!!
+class FertilizerRecommendationActivity :
+    BindBaseActivity<ActivityFertilizerRecommendationBinding>() {
+
+    override fun inflateBinding(): ActivityFertilizerRecommendationBinding {
+        return ActivityFertilizerRecommendationBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityFertilizerRecommendationBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
         val dataSet = getRecommendationOptions()
         val mAdapter = RecAdapter(dataSet)

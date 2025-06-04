@@ -10,40 +10,29 @@ import androidx.activity.addCallback
 import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityCassavaMarketBinding
-import com.akilimo.mobile.entities.AdviceStatus
-import com.akilimo.mobile.entities.CassavaMarket
-import com.akilimo.mobile.entities.CassavaPricePriceResponse
-import com.akilimo.mobile.entities.StarchFactory
-import com.akilimo.mobile.entities.StarchFactoryResponse
-import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.entities.*
+import com.akilimo.mobile.inherit.BindBaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks
-import com.akilimo.mobile.utils.enums.EnumCassavaProduceType
-import com.akilimo.mobile.utils.enums.EnumContext
-import com.akilimo.mobile.utils.enums.EnumUnitOfSale
-import com.akilimo.mobile.utils.enums.EnumUseCase
+import com.akilimo.mobile.utils.enums.*
 import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.CassavaPriceDialogFragment
 import io.sentry.Sentry
 import retrofit2.Call
 import retrofit2.Response
 
-class CassavaMarketActivity : BaseActivity() {
-    private var _binding: ActivityCassavaMarketBinding? = null
-    private val binding get() = _binding!!
+class CassavaMarketActivity : BindBaseActivity<ActivityCassavaMarketBinding>() {
 
     private var selectedFactory: String? = "NA"
-
-    var produceType: String? = null
+    private var produceType: String? = null
     private var unitPrice = 0.0
     private var unitPriceP1 = 0.0
     private var unitPriceP2 = 0.0
     private var unitPriceM1 = 0.0
     private var unitPriceM2 = 0.0
 
-    var useCase: String = "NA"
-    var unitOfSale: String = "NA"
-    var unitWeight: Double = 0.0
+    private var useCase: String = "NA"
+    private var unitOfSale: String = "NA"
+    private var unitWeight: Double = 0.0
     private var harvestWindow = 0
 
     private var factoryRequired = false
@@ -55,11 +44,10 @@ class CassavaMarketActivity : BaseActivity() {
         var useCaseTag: String = "useCase"
     }
 
+    override fun inflateBinding() = ActivityCassavaMarketBinding.inflate(layoutInflater)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityCassavaMarketBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
         loadSavedData()
         loadIntentExtras()
         setupBackPressedHandler()
@@ -319,7 +307,7 @@ class CassavaMarketActivity : BaseActivity() {
     }
 
 
-    private fun hideAll(clearMarket: Boolean=false) {
+    private fun hideAll(clearMarket: Boolean = false) {
         binding.contentCassavaMarket.apply {
             if (clearMarket) {
                 rdgStarchFactories.clearCheck()

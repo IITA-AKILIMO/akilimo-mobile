@@ -8,7 +8,7 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityDstRecomendationBinding
 import com.akilimo.mobile.entities.UserProfile
-import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.inherit.BindBaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.interfaces.IRecommendationCallBack
 import com.akilimo.mobile.rest.response.RecommendationResponse
@@ -21,20 +21,15 @@ import io.sentry.Sentry
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
-
-    private var _binding: ActivityDstRecomendationBinding? = null
-    private val binding get() = _binding!!
+class DstRecommendationActivity : BindBaseActivity<ActivityDstRecomendationBinding>(),
+    IRecommendationCallBack {
 
     var recommendationChannelDialog: RecommendationChannelDialog? = null
 
+    override fun inflateBinding() = ActivityDstRecomendationBinding.inflate(layoutInflater)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityDstRecomendationBinding.inflate(
-            layoutInflater
-        )
-        setContentView(binding.root)
-
 
         binding.singleButton.apply {
             btnAction.setText(R.string.lbl_provide_feedback)
@@ -43,9 +38,6 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
         setupToolbar(binding.toolbarLayout.toolbar, R.string.lbl_recommendations) {
             closeActivity(false)
         }
-
-
-
 
         binding.apply {
             lytProgress.apply {
@@ -58,7 +50,7 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
 
 
         val userProfile = database.profileInfoDao().findOne()
-        binding.btnRetry.setOnClickListener { view: View? ->
+        binding.btnRetry.setOnClickListener { _: View? ->
             displayDialog(userProfile)
         }
 
@@ -68,9 +60,7 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
         }
 
         displayDialog(userProfile)
-//        loadingAndDisplayContent()
     }
-
 
     override fun validate(backPressed: Boolean) {
         throw UnsupportedOperationException()
@@ -85,7 +75,6 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
             )
             recommendationChannelDialog!!.isCancelable = false
         } else {
-            //show a message
             binding.apply {
                 lblErrorMessage.setText(R.string.lbl_no_profile_info)
                 lytProgress.visibility = View.GONE
@@ -192,20 +181,15 @@ class DstRecommendationActivity : BaseActivity(), IRecommendationCallBack {
     }
 
     private fun initializeData(recommendationResponse: RecommendationResponse) {
-
         var label = getString(R.string.lbl_no_recommendations)
-
         var recText = recommendationResponse.recommendation
         var recType = recommendationResponse.recType
-
         if (recText.isNullOrEmpty()) {
             recText = getString(R.string.lbl_no_recommendations_prompt)
         }
-
         if (recType.equals("FR")) {
             label = getString(R.string.lbl_fertilizer_rec)
         }
-
         if (recType.equals("IC")) {
             label = getString(R.string.lbl_intercrop_rec)
         }

@@ -7,7 +7,7 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ActivityDatesBinding
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.CropSchedule
-import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.inherit.BindBaseActivity
 import com.akilimo.mobile.interfaces.IDatePickerDismissListener
 import com.akilimo.mobile.utils.DateHelper.formatLongToDateString
 import com.akilimo.mobile.utils.DateHelper.formatToLocalDate
@@ -16,141 +16,145 @@ import com.akilimo.mobile.utils.DateHelper.simpleDateFormatter
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.views.fragments.dialog.DateDialogPickerFragment
 import io.sentry.Sentry
-import java.util.Calendar
+import java.util.*
 
-class DatesActivity : BaseActivity() {
-    private var _binding: ActivityDatesBinding? = null
-    private val binding get() = _binding!!
+class DatesActivity : BindBaseActivity<ActivityDatesBinding>() {
 
-    private var selectedPlantingDate: String = ""
-    private var selectedHarvestDate: String = ""
-    private var plantingWindow: Int = 0
-    private var harvestWindow: Int = 0
-    private var alternativeDate: Boolean = false
-    private var alreadyPlanted: Boolean = false
+    private var selectedPlantingDate = ""
+    private var selectedHarvestDate = ""
+    private var plantingWindow = 0
+    private var harvestWindow = 0
+    private var alternativeDate = false
+    private var alreadyPlanted = false
+
+    override fun inflateBinding() = ActivityDatesBinding.inflate(layoutInflater)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityDatesBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        setupToolbar(binding.toolbar, R.string.lbl_planting_harvest_dates) {
-            validate(true)
-        }
-
-        binding.run {
-            cardPlanting.run {
-                flexiblePlanting.setOnCheckedChangeListener { _, isChecked ->
-                    rdgPlantingWindow.clearCheck()
-                    plantingWindow = 0
-                    if (!isChecked) {
-                        rdgPlantingWindow.visibility = View.GONE
-                        return@setOnCheckedChangeListener
-                    }
-                    if (alreadyPlanted) {
-                        showCustomWarningDialog(
-                            getString(R.string.lbl_already_planted_title),
-                            getString(R.string.lbl_already_planted_text)
-                        )
-                        flexiblePlanting.isChecked = false
-                        return@setOnCheckedChangeListener
-                    }
-                    rdgPlantingWindow.visibility = View.VISIBLE
-                }
-
-                rdgPlantingWindow.setOnCheckedChangeListener { _, checkedId ->
-                    plantingWindow = when (checkedId) {
-                        R.id.rdPlantingOneMonth -> 1
-                        R.id.rdPlantingTwoMonths -> 2
-                        else -> 0
-                    }
-                }
-
-                btnPickPlantingDate.setOnClickListener {
-                    dialogDatePickerLight(true, false)
-                }
-            }
-
-            cardHarvest.run {
-                flexibleHarvest.setOnCheckedChangeListener { _, isChecked ->
-                    rdgHarvestWindow.visibility = if (isChecked) View.VISIBLE else View.GONE
-                    rdgHarvestWindow.clearCheck()
-                    harvestWindow = 0
-                }
-
-                rdgHarvestWindow.setOnCheckedChangeListener { _, checkedId ->
-                    harvestWindow = when (checkedId) {
-                        R.id.rdHarvestOneMonth -> 1
-                        R.id.rdHarvestTwoMonths -> 2
-                        else -> 0
-                    }
-                }
-
-                btnPickHarvestDate.setOnClickListener {
-                    dialogDatePickerLight(false, true)
-                }
-            }
-
-            rdgAlternativeDate.setOnCheckedChangeListener { _, checkedId ->
-                alternativeDate = checkedId == R.id.rdYes
-                datesGroup.visibility = if (alternativeDate) View.VISIBLE else View.GONE
-            }
-
-            twoButtons.run {
-                btnFinish.setOnClickListener { validate(false) }
-                btnCancel.setOnClickListener { closeActivity(false) }
-            }
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null  // Prevent memory leak
+        setupToolbar(binding.toolbar, R.string.lbl_planting_harvest_dates) { validate(true) }
+        setupPlantingUI()
+        setupHarvestUI()
+        setupAlternativeDateUI()
+        setupButtons()
     }
 
     override fun onResume() {
         super.onResume()
-        val scheduledDate = database.scheduleDateDao().findOne()
-        val dateFormat = "dd-MM-yyyy"
-        if (scheduledDate != null) {
-            alternativeDate = scheduledDate.alternativeDate
-            selectedPlantingDate = scheduledDate.plantingDate
-            selectedHarvestDate = scheduledDate.harvestDate
-            plantingWindow = scheduledDate.plantingWindow
-            harvestWindow = scheduledDate.harvestWindow
-            alreadyPlanted = scheduledDate.alreadyPlanted
-        }
-
-        binding.run {
-            cardPlanting.lblSelectedPlantingDate.text =
-                formatToLocalDate(selectedPlantingDate, dateFormat).toString()
-            cardHarvest.lblSelectedHarvestDate.text =
-                formatToLocalDate(selectedHarvestDate, dateFormat).toString()
-            rdgAlternativeDate.check(if (alternativeDate) R.id.rdYes else R.id.rdNo)
-
-            if (plantingWindow > 0) {
-                cardPlanting.flexiblePlanting.isChecked = true
-                cardPlanting.rdgPlantingWindow.check(
-                    if (plantingWindow == 1) R.id.rdPlantingOneMonth else R.id.rdPlantingTwoMonths
-                )
-            }
-
-            if (harvestWindow > 0) {
-                cardHarvest.flexibleHarvest.isChecked = true
-                cardHarvest.rdgHarvestWindow.check(
-                    if (harvestWindow == 1) R.id.rdHarvestOneMonth else R.id.rdHarvestTwoMonths
-                )
-            }
-        }
+        loadSchedule()
+        updateUIFromData()
     }
 
     override fun validate(backPressed: Boolean) {
+        if (!validateDates()) return
+
+        try {
+            saveSchedule()
+            closeActivity(backPressed)
+        } catch (ex: Exception) {
+            Toast.makeText(this, ex.message ?: "Unknown error", Toast.LENGTH_SHORT).show()
+            Sentry.captureException(ex)
+        }
+    }
+
+    private fun setupPlantingUI() = binding.cardPlanting.run {
+        flexiblePlanting.setOnCheckedChangeListener { _, isChecked ->
+            rdgPlantingWindow.clearCheck()
+            plantingWindow = 0
+
+            if (!isChecked) {
+                rdgPlantingWindow.visibility = View.GONE
+                return@setOnCheckedChangeListener
+            }
+
+            if (alreadyPlanted) {
+                showCustomWarningDialog(
+                    getString(R.string.lbl_already_planted_title),
+                    getString(R.string.lbl_already_planted_text)
+                )
+                flexiblePlanting.isChecked = false
+                return@setOnCheckedChangeListener
+            }
+
+            rdgPlantingWindow.visibility = View.VISIBLE
+        }
+
+        rdgPlantingWindow.setOnCheckedChangeListener { _, checkedId ->
+            plantingWindow = when (checkedId) {
+                R.id.rdPlantingOneMonth -> 1
+                R.id.rdPlantingTwoMonths -> 2
+                else -> 0
+            }
+        }
+
+        btnPickPlantingDate.setOnClickListener { showDatePicker(pickPlantingDate = true) }
+    }
+
+    private fun setupHarvestUI() = binding.cardHarvest.run {
+        flexibleHarvest.setOnCheckedChangeListener { _, isChecked ->
+            rdgHarvestWindow.visibility = if (isChecked) View.VISIBLE else View.GONE
+            rdgHarvestWindow.clearCheck()
+            harvestWindow = 0
+        }
+
+        rdgHarvestWindow.setOnCheckedChangeListener { _, checkedId ->
+            harvestWindow = when (checkedId) {
+                R.id.rdHarvestOneMonth -> 1
+                R.id.rdHarvestTwoMonths -> 2
+                else -> 0
+            }
+        }
+
+        btnPickHarvestDate.setOnClickListener { showDatePicker(pickHarvestDate = true) }
+    }
+
+    private fun setupAlternativeDateUI() = binding.rdgAlternativeDate.setOnCheckedChangeListener { _, checkedId ->
+        alternativeDate = checkedId == R.id.rdYes
+        binding.datesGroup.visibility = if (alternativeDate) View.VISIBLE else View.GONE
+    }
+
+    private fun setupButtons() = binding.twoButtons.run {
+        btnFinish.setOnClickListener { validate(false) }
+        btnCancel.setOnClickListener { closeActivity(false) }
+    }
+
+    private fun loadSchedule() {
+        val schedule = database.scheduleDateDao().findOne() ?: return
+        selectedPlantingDate = schedule.plantingDate
+        selectedHarvestDate = schedule.harvestDate
+        plantingWindow = schedule.plantingWindow
+        harvestWindow = schedule.harvestWindow
+        alternativeDate = schedule.alternativeDate
+        alreadyPlanted = schedule.alreadyPlanted
+    }
+
+    private fun updateUIFromData() = binding.run {
+        val dateFormat = "dd-MM-yyyy"
+        cardPlanting.lblSelectedPlantingDate.text = formatToLocalDate(selectedPlantingDate, dateFormat).toString()
+        cardHarvest.lblSelectedHarvestDate.text = formatToLocalDate(selectedHarvestDate, dateFormat).toString()
+        rdgAlternativeDate.check(if (alternativeDate) R.id.rdYes else R.id.rdNo)
+
+        if (plantingWindow > 0) {
+            cardPlanting.flexiblePlanting.isChecked = true
+            cardPlanting.rdgPlantingWindow.check(
+                if (plantingWindow == 1) R.id.rdPlantingOneMonth else R.id.rdPlantingTwoMonths
+            )
+        }
+
+        if (harvestWindow > 0) {
+            cardHarvest.flexibleHarvest.isChecked = true
+            cardHarvest.rdgHarvestWindow.check(
+                if (harvestWindow == 1) R.id.rdHarvestOneMonth else R.id.rdHarvestTwoMonths
+            )
+        }
+    }
+
+    private fun validateDates(): Boolean {
         if (selectedPlantingDate.isEmpty()) {
             showCustomWarningDialog(
                 getString(R.string.lbl_invalid_planting_date),
                 getString(R.string.lbl_planting_date_prompt)
             )
-            return
+            return false
         }
 
         if (selectedHarvestDate.isEmpty()) {
@@ -158,35 +162,30 @@ class DatesActivity : BaseActivity() {
                 getString(R.string.lbl_invalid_harvest_date),
                 getString(R.string.lbl_harvest_date_prompt)
             )
-            return
+            return false
         }
 
-        try {
-            val cropSchedule = database.scheduleDateDao().findOne() ?: CropSchedule()
-            alreadyPlanted = olderThanCurrent(selectedPlantingDate)
-
-            cropSchedule.apply {
-                harvestDate = selectedHarvestDate
-                harvestWindow = this@DatesActivity.harvestWindow
-                plantingDate = selectedPlantingDate
-                plantingWindow = this@DatesActivity.plantingWindow
-                alternativeDate = this@DatesActivity.alternativeDate
-                alreadyPlanted = this@DatesActivity.alreadyPlanted
-            }
-
-            database.scheduleDateDao().insert(cropSchedule)
-            database.adviceStatusDao()
-                .insert(AdviceStatus(EnumAdviceTasks.PLANTING_AND_HARVEST.name, true))
-
-            closeActivity(backPressed)
-        } catch (ex: Exception) {
-            Toast.makeText(this@DatesActivity, ex.message ?: "Unknown error", Toast.LENGTH_SHORT)
-                .show()
-            Sentry.captureException(ex)
-        }
+        return true
     }
 
-    private fun dialogDatePickerLight(pickPlantingDate: Boolean, pickHarvestDate: Boolean) {
+    private fun saveSchedule() {
+        val cropSchedule = database.scheduleDateDao().findOne() ?: CropSchedule()
+        alreadyPlanted = olderThanCurrent(selectedPlantingDate)
+
+        cropSchedule.apply {
+            plantingDate = this@DatesActivity.selectedPlantingDate
+            harvestDate = this@DatesActivity.selectedHarvestDate
+            plantingWindow = this@DatesActivity.plantingWindow
+            harvestWindow = this@DatesActivity.harvestWindow
+            alternativeDate = this@DatesActivity.alternativeDate
+            alreadyPlanted = this@DatesActivity.alreadyPlanted
+        }
+
+        database.scheduleDateDao().insert(cropSchedule)
+        database.adviceStatusDao().insert(AdviceStatus(EnumAdviceTasks.PLANTING_AND_HARVEST.name, true))
+    }
+
+    private fun showDatePicker(pickPlantingDate: Boolean = false, pickHarvestDate: Boolean = false) {
         val pickerFragment = if (pickHarvestDate) {
             DateDialogPickerFragment(true, selectedPlantingDate)
         } else {
@@ -204,8 +203,7 @@ class DatesActivity : BaseActivity() {
                 if (pickPlantingDate) {
                     selectedHarvestDate = ""
                     selectedPlantingDate = simpleDateFormatter.format(myCalendar.time)
-                    binding.cardPlanting.lblSelectedPlantingDate.text =
-                        formatLongToDateString(dateMs)
+                    binding.cardPlanting.lblSelectedPlantingDate.text = formatLongToDateString(dateMs)
                     binding.cardHarvest.lblSelectedHarvestDate.text = null
 
                     alreadyPlanted = olderThanCurrent(selectedPlantingDate)
