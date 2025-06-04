@@ -12,7 +12,7 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.MyStepperAdapter
 import com.akilimo.mobile.data.RemoteConfigResponse
 import com.akilimo.mobile.databinding.ActivityHomeStepperBinding
-import com.akilimo.mobile.inherit.MyBaseActivity
+import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.FuelrodApi
 import com.akilimo.mobile.interfaces.IFragmentCallBack
 import com.akilimo.mobile.utils.InAppUpdate
@@ -38,7 +38,7 @@ import retrofit2.Response
 import kotlin.system.exitProcess
 
 
-class HomeStepperActivity : MyBaseActivity(), IFragmentCallBack {
+class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
 
     private var _binding: ActivityHomeStepperBinding? = null

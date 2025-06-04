@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.data.UserDataCleaner
-import com.akilimo.mobile.inherit.MyBaseActivity
+import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.rest.retrofit.RetrofitManager
 import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import io.sentry.Sentry
@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @SuppressLint("CustomSplashScreen")
-class SplashActivity : MyBaseActivity() {
+class SplashActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

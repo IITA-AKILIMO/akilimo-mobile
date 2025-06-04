@@ -13,7 +13,6 @@ import com.akilimo.mobile.databinding.ActivityInvestmentAmountBinding
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.InvestmentAmount
 import com.akilimo.mobile.entities.InvestmentAmountResponse
-import com.akilimo.mobile.inherit.MyBaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.utils.CurrencyCode
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
