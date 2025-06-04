@@ -13,7 +13,7 @@ import com.akilimo.mobile.databinding.ActivityInvestmentAmountBinding
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.InvestmentAmount
 import com.akilimo.mobile.entities.InvestmentAmountResponse
-import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.inherit.MyBaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.utils.CurrencyCode
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
@@ -22,7 +22,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class InvestmentAmountActivity : BaseActivity() {
+class InvestmentAmountActivity : MyBaseActivity() {
 
     private var _binding: ActivityInvestmentAmountBinding? = null
     private val binding get() = _binding!!
@@ -70,8 +70,13 @@ class InvestmentAmountActivity : BaseActivity() {
                 validateInvestmentInput()
             }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                //do nothing
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                //do nothing
+            }
         })
 
         binding.btnSubmitInvestment.setOnClickListener {
@@ -260,21 +265,5 @@ class InvestmentAmountActivity : BaseActivity() {
     override fun onDestroy() {
         _binding = null
         super.onDestroy()
-    }
-
-    @Deprecated(
-        "Remove completely and use setupToolbar(toolbar, titleResId) instead.",
-        replaceWith = ReplaceWith("setupToolbar(binding.toolbarLayout.toolbar, R.string.your_title)"),
-        level = DeprecationLevel.WARNING
-    )
-    override fun initToolbar() {
-    }
-
-    @Deprecated("Deprecated remove it completely")
-    override fun initComponent() {
-    }
-
-    override fun validate(backPressed: Boolean) {
-        throw UnsupportedOperationException()
     }
 }
