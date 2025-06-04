@@ -13,7 +13,7 @@ import com.akilimo.mobile.databinding.ActivityRecommendationsActivityBinding
 import com.akilimo.mobile.entities.AkilimoCurrency
 import com.akilimo.mobile.entities.AkilimoCurrencyResponse
 import com.akilimo.mobile.entities.UseCase
-import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.inherit.MyBaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.models.Recommendation
 import com.akilimo.mobile.utils.TheItemAnimation
@@ -28,11 +28,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RecommendationsActivity : BaseActivity() {
+class RecommendationsActivity : MyBaseActivity() {
 
     private var _binding: ActivityRecommendationsActivityBinding? = null
     private val binding get() = _binding!!
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -160,23 +159,6 @@ class RecommendationsActivity : BaseActivity() {
         }
 
         updateCurrencyList()
-    }
-
-    @Deprecated(
-        "Remove completely and use setupToolbar(toolbar, titleResId) instead.",
-        replaceWith = ReplaceWith("setupToolbar(binding.toolbarLayout.toolbar, R.string.your_title)"),
-        level = DeprecationLevel.WARNING
-    )
-    override fun initToolbar() {
-    }
-
-
-    @Deprecated("Deprecated remove it completely")
-    override fun initComponent() {
-    }
-
-    override fun validate(backPressed: Boolean) {
-        throw UnsupportedOperationException()
     }
 
     override fun onSupportNavigateUp(): Boolean {
