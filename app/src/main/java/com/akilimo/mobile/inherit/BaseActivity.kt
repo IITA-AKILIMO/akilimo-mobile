@@ -80,17 +80,6 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-
-    @Deprecated(
-        message = "Remove completely and use setupToolbar(toolbar, titleResId) instead.",
-        replaceWith = ReplaceWith("setupToolbar(binding.toolbarLayout.toolbar, R.string.your_title)"),
-        level = DeprecationLevel.WARNING
-    )
-    protected abstract fun initToolbar()
-
-    @Deprecated("Deprecated remove it completely")
-    protected abstract fun initComponent()
-
     protected abstract fun validate(backPressed: Boolean)
 
     protected fun closeActivity(backPressed: Boolean) {
