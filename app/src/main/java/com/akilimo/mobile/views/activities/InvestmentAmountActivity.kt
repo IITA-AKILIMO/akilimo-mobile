@@ -13,6 +13,7 @@ import com.akilimo.mobile.databinding.ActivityInvestmentAmountBinding
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.InvestmentAmount
 import com.akilimo.mobile.entities.InvestmentAmountResponse
+import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.utils.CurrencyCode
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
@@ -21,7 +22,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class InvestmentAmountActivity : MyBaseActivity() {
+class InvestmentAmountActivity : BaseActivity() {
 
     private var _binding: ActivityInvestmentAmountBinding? = null
     private val binding get() = _binding!!
