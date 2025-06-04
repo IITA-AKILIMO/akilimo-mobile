@@ -153,6 +153,10 @@ jobs:
       - name: Copy release tag file
         run: cp  $LATEST_TAG_FILE release
 
+      - name: Generate release notes
+        run: |
+          python .github/scripts/generate_release_notes.py
+
       - name: Copy release notes
         run: cp -r distribution release
 
