@@ -117,6 +117,30 @@ For UI tests:
 ./gradlew connectedAndroidTest
 ```
 
+## Release Process
+
+The project uses GitHub Actions for automated releases to the Google Play Store. The workflow is defined in `.github/workflows/android.yml`.
+
+### Release Notes Generation
+
+Release notes are automatically generated during the build process:
+
+1. Update the `CHANGELOG.md` file with details of your changes following the established format
+2. The GitHub Actions workflow will:
+   - Extract the latest version information from `CHANGELOG.md`
+   - Generate release notes in English and Swahili
+   - Include these notes in both the Google Play Store release and GitHub release
+
+### Manual Release
+
+If you need to manually generate release notes:
+
+```bash
+python .github/scripts/generate_release_notes.py
+```
+
+This will create release notes files in the `distribution/whatsnew/` directory based on the latest entry in `CHANGELOG.md`.
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
