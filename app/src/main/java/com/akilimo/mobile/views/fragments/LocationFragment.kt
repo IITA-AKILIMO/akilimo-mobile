@@ -1,5 +1,6 @@
 package com.akilimo.mobile.views.fragments
 
+import android.Manifest
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
@@ -11,6 +12,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.annotation.RequiresPermission
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentLocationBinding
 import com.akilimo.mobile.entities.UserLocation
@@ -138,6 +140,7 @@ class LocationFragment : BaseStepFragment() {
     }
 
     private val currentLocation: Unit
+        @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
         get() {
             val gps = GPSTracker(requireContext())
             gps.getLocation()
@@ -146,8 +149,8 @@ class LocationFragment : BaseStepFragment() {
                     GoogleApiAvailability.getInstance()
                         .isGooglePlayServicesAvailable(requireContext())
                 if (status == ConnectionResult.SUCCESS) {
-                    currentLat = gps.getLatitude()
-                    currentLon = gps.getLongitude()
+                    currentLat = gps.latitudeValue
+                    currentLon = gps.longitudeValue
                     gps.stopUsingGPS()
                     reverseGeoCode(currentLat, currentLon)
                 } else {

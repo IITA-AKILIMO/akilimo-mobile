@@ -113,9 +113,11 @@ class GPSTracker : Service, LocationListener {
         locationManager?.removeUpdates(this)
     }
 
-    fun getLatitude(): Double = location?.latitude ?: latitude
+    val latitudeValue: Double
+        get() = location?.latitude ?: latitude
 
-    fun getLongitude(): Double = location?.longitude ?: longitude
+    val longitudeValue: Double
+        get() = location?.longitude ?: longitude
 
     fun canGetLocation(): Boolean = canGetLocation
 

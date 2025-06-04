@@ -1,9 +1,11 @@
 package com.akilimo.mobile.views.activities
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresPermission
 import androidx.appcompat.widget.Toolbar
 import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.R
@@ -178,6 +180,7 @@ class MapBoxActivity : BaseLocationPicker() {
         mapboxMap.easeCamera(CameraUpdateFactory.newCameraPosition(newCameraPosition))
     }
 
+    @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
     private fun initCurrentLocation() {
         val gps = GPSTracker(this@MapBoxActivity)
         gps.getLocation()
@@ -186,8 +189,8 @@ class MapBoxActivity : BaseLocationPicker() {
                 GoogleApiAvailability.getInstance()
                     .isGooglePlayServicesAvailable(this@MapBoxActivity)
             if (status == ConnectionResult.SUCCESS) {
-                currentLong = gps.getLongitude()
-                currentLat = gps.getLatitude()
+                currentLong = gps.longitudeValue
+                currentLat = gps.latitudeValue
             }
             gps.stopUsingGPS()
         } else {
