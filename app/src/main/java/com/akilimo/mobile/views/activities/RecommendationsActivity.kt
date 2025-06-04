@@ -4,10 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.AdapterListAnimation
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
@@ -31,14 +29,11 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class RecommendationsActivity : BaseActivity() {
-    var toolbar: Toolbar? = null
-    var recyclerView: RecyclerView? = null
 
     private var _binding: ActivityRecommendationsActivityBinding? = null
     private val binding get() = _binding!!
 
-    private var mAdapter: AdapterListAnimation? = null
-    private var items: MutableList<Recommendation> = ArrayList()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,41 +43,16 @@ class RecommendationsActivity : BaseActivity() {
 
         setContentView(binding.root)
 
-        toolbar = binding.toolbar
-        recyclerView = binding.recyclerView
-        initToolbar()
-        initComponent()
 
-        updateCurrencyList()
-    }
+        setupToolbar(binding.toolbar, R.string.lbl_recommendations) {
+            closeActivity(false)
+        }
 
-    override fun initToolbar() {
-        toolbar!!.setNavigationIcon(R.drawable.ic_home)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.title = getString(R.string.lbl_recommendations)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setDisplayShowHomeEnabled(true)
-        toolbar!!.setNavigationOnClickListener { v: View? -> closeActivity(false) }
-    }
-
-
-    @Deprecated("Deprecated remove it completely")
-    override fun initComponent() {
         val frString = getString(R.string.lbl_fertilizer_recommendations)
         val icMaizeString = getString(R.string.lbl_intercropping_maize)
         val icSweetPotatoString = getString(R.string.lbl_intercropping_sweet_potato)
         val sphString = getString(R.string.lbl_scheduled_planting_and_harvest)
         val bppString = getString(R.string.lbl_best_planting_practices)
-
-
-        recyclerView!!.layoutManager = LinearLayoutManager(this)
-        recyclerView!!.setHasFixedSize(true)
-        //set data and list adapter
-        mAdapter = AdapterListAnimation()
-
-
-        recyclerView!!.adapter = mAdapter
-        items = ArrayList()
 
         val database = getDatabase(this@RecommendationsActivity)
         val profileInfo = database.profileInfoDao().findOne()
@@ -90,6 +60,15 @@ class RecommendationsActivity : BaseActivity() {
             countryCode = profileInfo.countryCode
             currencyCode = profileInfo.currencyCode
         }
+
+        val mAdapter = AdapterListAnimation()
+        val items: MutableList<Recommendation> = ArrayList()
+        binding.recommendationsRecyclerView.apply {
+            layoutManager = LinearLayoutManager(this@RecommendationsActivity)
+            setHasFixedSize(true)
+            adapter = mAdapter
+        }
+
 
         val frRecommendation = Recommendation(
             recCode = EnumAdvice.FR,
@@ -147,32 +126,9 @@ class RecommendationsActivity : BaseActivity() {
             items.add(icSweetPotatoRecommendation)
         }
 
-
-        setAdapter()
-    }
-
-    override fun validate(backPressed: Boolean) {
-        throw UnsupportedOperationException()
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        return true
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        super.onBackPressed()
-        Toast.makeText(
-            this@RecommendationsActivity,
-            R.string.lbl_back_instructions,
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-
-    private fun setAdapter() {
-        mAdapter!!.setAnimationType(TheItemAnimation.BOTTOM_UP)
-        mAdapter!!.submitList(items)
-        mAdapter!!.setOnItemClickListener { view: View?, recommendation: Recommendation, position: Int ->
+        mAdapter.setAnimationType(TheItemAnimation.BOTTOM_UP)
+        mAdapter.submitList(items)
+        mAdapter.setOnItemClickListener { _: View?, recommendation: Recommendation, _: Int ->
             //let us process the data
             var intent: Intent? = null
             var advice = recommendation.recCode
@@ -202,6 +158,39 @@ class RecommendationsActivity : BaseActivity() {
                 openActivity(intent)
             }
         }
+
+        updateCurrencyList()
+    }
+
+    @Deprecated(
+        "Remove completely and use setupToolbar(toolbar, titleResId) instead.",
+        replaceWith = ReplaceWith("setupToolbar(binding.toolbarLayout.toolbar, R.string.your_title)"),
+        level = DeprecationLevel.WARNING
+    )
+    override fun initToolbar() {
+    }
+
+
+    @Deprecated("Deprecated remove it completely")
+    override fun initComponent() {
+    }
+
+    override fun validate(backPressed: Boolean) {
+        throw UnsupportedOperationException()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return true
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        super.onBackPressed()
+        Toast.makeText(
+            this@RecommendationsActivity,
+            R.string.lbl_back_instructions,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
 
