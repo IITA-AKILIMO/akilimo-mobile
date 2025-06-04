@@ -591,4 +591,5 @@
     <string name="lbl_processing_recommendations">Processing recommendations...</string>
     <string name="select_language">Select language</string>
     <string name="lbl_remember_details">Remember details</string>
+    <string name="lbl_location_selected_prompt">Location has been selected. press OK to save and exit</string>
 </resources>
