@@ -21,7 +21,7 @@ import com.blogspot.atifsoftwares.animatoolib.Animatoo
 
 
 /**
- * A simple [Fragment] subclass.
+ * A simple [BaseFragment] subclass.
  */
 class DstOptionsFragment : BaseFragment() {
     private var _binding: FragmentDstOptionsBinding? = null
@@ -51,36 +51,7 @@ class DstOptionsFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         val context = requireContext()
 
-        val frString = context.getString(R.string.lbl_fertilizer_recommendations)
-        val icString = context.getString(R.string.lbl_intercropping)
-        val sphString = context.getString(R.string.lbl_scheduled_planting_and_harvest)
-        val bppString = context.getString(R.string.lbl_best_planting_practices)
-
-
-        val items: MutableList<Recommendation> = ArrayList()
-        val FR = Recommendation(
-            recCode = EnumAdvice.FR,
-            recommendationName = frString
-        )
-        items.add(FR)
-
-        val IC = Recommendation(
-            recCode = EnumAdvice.IC_MAIZE,
-            recommendationName = icString
-        )
-        items.add(IC)
-
-        val SPH = Recommendation(
-            recCode = EnumAdvice.SPH,
-            recommendationName = sphString
-        )
-        items.add(SPH)
-
-        val BPP = Recommendation(
-            recCode = EnumAdvice.BPP,
-            recommendationName = bppString
-        )
-        items.add(BPP)
+        val items = recommendationItems()
         binding.dstOptionsRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
@@ -90,7 +61,7 @@ class DstOptionsFragment : BaseFragment() {
             //set data and list adapter
             mAdapter.setAnimationType(TheItemAnimation.FADE_IN)
             mAdapter.submitList(items)
-            mAdapter.setOnItemClickListener { view: View?, recommendation: Recommendation, position: Int ->
+            mAdapter.setOnItemClickListener { _: View?, recommendation: Recommendation, _: Int ->
                 var intent: Intent? = null
                 val advice = recommendation.recCode
                 when (advice) {
@@ -112,6 +83,61 @@ class DstOptionsFragment : BaseFragment() {
                 }
             }
         }
+    }
+
+    /**
+     * Creates and returns a list of recommendation items.
+     *
+     * This function initializes a list of `Recommendation` objects. Each recommendation
+     * is created with a specific `recCode` from the `EnumAdvice` enum and a
+     * localized `recommendationName` retrieved from string resources.
+     *
+     * The following recommendations are included:
+     * - Fertilizer Recommendations (FR)
+     * - Intercropping (IC)
+     * - Scheduled Planting and Harvest (SPH)
+     * - Best Planting Practices (BPP)
+     *
+     * @return A `MutableList` of `Recommendation` objects.
+     */
+    private fun recommendationItems(): MutableList<Recommendation> {
+        val context = requireContext()
+        val frString = context.getString(R.string.lbl_fertilizer_recommendations)
+        val icString = context.getString(R.string.lbl_intercropping)
+        val sphString = context.getString(R.string.lbl_scheduled_planting_and_harvest)
+        val bppString = context.getString(R.string.lbl_best_planting_practices)
+
+
+        val items: MutableList<Recommendation> = ArrayList()
+        val fertilizerRec = Recommendation(
+            recCode = EnumAdvice.FR,
+            recommendationName = frString
+        )
+
+
+        val interCropping = Recommendation(
+            recCode = EnumAdvice.IC_MAIZE,
+            recommendationName = icString
+        )
+
+
+        val scheduledPlanting = Recommendation(
+            recCode = EnumAdvice.SPH,
+            recommendationName = sphString
+        )
+
+
+        val bestPlantingPractices = Recommendation(
+            recCode = EnumAdvice.BPP,
+            recommendationName = bppString
+        )
+
+        items.add(fertilizerRec)
+        items.add(interCropping)
+        items.add(scheduledPlanting)
+        items.add(bestPlantingPractices)
+
+        return items
     }
 
 }
