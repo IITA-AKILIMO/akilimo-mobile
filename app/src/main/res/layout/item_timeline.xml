@@ -51,7 +51,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_medium"
                 android:layout_marginTop="@dimen/spacing_medium"
-
                 android:textAppearance="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
                 android:textColor="@color/grey_80"
                 tools:text="@string/welcome_title" />
