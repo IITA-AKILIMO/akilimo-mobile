@@ -9,17 +9,18 @@ import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 
 abstract class BaseRecommendationActivity<T : ViewBinding> : BindBaseActivity<T>() {
 
-    private val recList get() = getRecommendationOptions()
-
+    protected open val displayArrow: Boolean = true
     protected lateinit var mAdapter: RecOptionsAdapter
     protected var dataPositionChanged: Int = -1
+
+    private val recList get() = getRecommendationOptions()
 
 
     protected abstract fun getRecommendationOptions(): List<RecommendationOptions>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mAdapter = RecOptionsAdapter(applicationContext, recList)
+        mAdapter = RecOptionsAdapter(applicationContext, recList, displayArrow)
     }
 
 
