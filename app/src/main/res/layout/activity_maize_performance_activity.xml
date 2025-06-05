@@ -1,50 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coordinatorLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/grey_3"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical"
-    tools:context="com.akilimo.mobile.views.activities.MaizePerformanceActivity">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/coordinatorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey_3"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical"
+        tools:context="com.akilimo.mobile.views.activities.MaizePerformanceActivity">
 
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/app_bar_height"
-        android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/app_bar_height"
+            android:fitsSystemWindows="true"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/collapsing_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:titleEnabled="false">
-
-            <ImageView
-                android:id="@+id/image_header"
+                android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:contentDescription="@string/app_name"
                 android:fitsSystemWindows="true"
-                android:scaleType="centerCrop"
-                app:layout_collapseMode="parallax"
-                app:srcCompat="@drawable/bg_header" />
+                app:contentScrim="?attr/colorPrimary"
+                app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:titleEnabled="false">
+
+            <ImageView
+                    android:id="@+id/image_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/app_name"
+                    android:fitsSystemWindows="true"
+                    android:scaleType="centerCrop"
+                    app:layout_collapseMode="parallax"
+                    app:srcCompat="@drawable/bg_header" />
 
             <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:contentInsetStartWithNavigation="0dp"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:contentInsetStartWithNavigation="0dp"
+                    app:layout_collapseMode="pin"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -53,49 +53,49 @@
 
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/rootYieldTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_medium"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:layout_marginRight="@dimen/spacing_medium"
-            android:layout_marginBottom="@dimen/spacing_medium"
+                android:id="@+id/rootYieldTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_medium"
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:layout_marginRight="@dimen/spacing_medium"
+                android:layout_marginBottom="@dimen/spacing_medium"
 
-            android:gravity="center"
-            android:text="@string/lbl_height_of_maize_at_tasseling"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/grey_90" />
+                android:gravity="center"
+                android:text="@string/lbl_height_of_maize_at_tasseling"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/grey_90" />
 
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rootYieldRecycler"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/two_buttons"
-            android:layout_below="@id/rootYieldTitle"
-            android:scrollbars="vertical"
-            android:scrollingCache="true"
-            tools:listitem="@layout/item_card_recommendation_image" />
+                android:id="@+id/rootYieldRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/two_buttons"
+                android:layout_below="@id/rootYieldTitle"
+                android:scrollbars="vertical"
+                android:scrollingCache="true"
+                tools:itemCount="3"
+                tools:listitem="@layout/item_card_recommendation_arrow" />
 
         <TextView
-            android:id="@+id/exceptionTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
-
-            android:text="@string/lbl_height_of_maize_at_tasseling"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textColor="@color/red_600"
-            android:visibility="gone" />
+                android:id="@+id/exceptionTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:text="@string/lbl_height_of_maize_at_tasseling"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:textColor="@color/red_600"
+                android:visibility="gone" />
 
         <include
-            android:id="@+id/two_buttons"
-            layout="@layout/bottom_two_buttons_layout" />
+                android:id="@+id/two_buttons"
+                layout="@layout/bottom_two_buttons_layout" />
 
     </RelativeLayout>
 
