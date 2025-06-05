@@ -1,11 +1,6 @@
 package com.akilimo.mobile.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.akilimo.mobile.entities.AdviceStatus
 
 @Dao
@@ -19,6 +14,9 @@ interface AdviceStatusDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(adviceStatus: AdviceStatus)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(adviceStatuses: List<AdviceStatus>)
 
     @Update
     fun update(adviceStatus: AdviceStatus)

@@ -63,10 +63,10 @@ class ScheduledPlantingActivity : BaseRecommendationActivity<ActivityScheduledPl
 
         // on item list clicked
         mAdapter.setOnItemClickListener(object : RecOptionsAdapter.OnItemClickListener {
-            override fun onItemClick(view: View?, obj: RecommendationOptions?, position: Int) {
+            override fun onItemClick(view: View?, recommendation: RecommendationOptions, position: Int) {
                 var intent: Intent? = null
                 dataPositionChanged = position
-                val advice = obj?.adviceName
+                val advice = recommendation.adviceName
                 when (advice) {
                     EnumAdviceTasks.PLANTING_AND_HARVEST -> intent =
                         Intent(this@ScheduledPlantingActivity, DatesActivity::class.java)

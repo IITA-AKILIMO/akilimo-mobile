@@ -37,7 +37,7 @@
             app:contentPadding="@dimen/spacing_small">
 
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -63,7 +63,7 @@
 
                 </RadioGroup>
 
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.cardview.widget.CardView>
 
         <!-- unit of sale grain -->
@@ -91,7 +91,7 @@
             app:contentPadding="@dimen/spacing_small">
 
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -125,7 +125,7 @@
 
                 </RadioGroup>
 
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.cardview.widget.CardView>
 
         <!-- unit of sale cob -->
@@ -154,7 +154,7 @@
             app:contentPadding="@dimen/spacing_small">
 
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -180,7 +180,7 @@
                     android:text="@string/lbl_price_per_cob"
                     android:textAllCaps="false"
                     android:theme="@style/Button.Brown" />
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.cardview.widget.CardView>
 
         <include

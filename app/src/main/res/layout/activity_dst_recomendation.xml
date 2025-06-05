@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".views.activities.DstRecommendationActivity">
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white"
@@ -51,7 +51,7 @@
                     app:strokeColor="@color/colorAccent"
                     app:strokeWidth="0.5dp">
 
-                    <LinearLayout
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -95,11 +95,11 @@
                             android:text="@string/lbl_get_recommendations"
                             android:textColor="@color/black"
                             android:textSize="@dimen/font_size_16" />
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
                 </com.google.android.material.card.MaterialCardView>
 
                 <!-- Error Display -->
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/errorContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -148,10 +148,10 @@
                         app:iconGravity="textStart"
                         app:iconPadding="@dimen/spacing_medium"
                         app:iconTint="@color/colorAccentDark" />
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <!-- Progress Indicator -->
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/lyt_progress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -175,10 +175,10 @@
                         android:textAlignment="center"
                         android:textColor="@color/black"
                         android:textSize="@dimen/font_size_14" />
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
             </FrameLayout>
         </androidx.core.widget.NestedScrollView>
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <!-- Bottom Button -->
     <include

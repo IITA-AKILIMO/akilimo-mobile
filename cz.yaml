@@ -2,3 +2,10 @@ commitizen:
   name: cz_conventional_commits
   tag_format: $version
   version: 18.4.0
+  message_template: |
+    {{change_type}}{% if scope %}({{scope}}){% endif %}: {{message}}
+    {% if body %}
+    {{body}}
+    {% endif %}{% if footer %}
+    {{footer}}
+    {% endif %}

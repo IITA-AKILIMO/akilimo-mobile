@@ -1,11 +1,6 @@
 package com.akilimo.mobile.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.akilimo.mobile.entities.Fertilizer
 
 @Dao
@@ -16,6 +11,9 @@ interface FertilizerDao {
 
     @Query("SELECT * FROM fertilizers LIMIT 1")
     fun findOne(): Fertilizer?
+
+    @Query("select * FROM fertilizers where fertilizer_key=:fertilizerKey")
+    fun findByKey(fertilizerKey: String?): Fertilizer?
 
     @Query("select * FROM fertilizers where type=:fertilizerType")
     fun findByType(fertilizerType: String?): Fertilizer?
@@ -40,7 +38,7 @@ interface FertilizerDao {
     fun findAllSelectedByCountryAndUseCase(
         countryCode: String,
         useCase: String
-    ): List<Fertilizer>
+    ): MutableList<Fertilizer>
 
     @Query("SELECT * FROM fertilizers WHERE country_code = :countryCode AND use_case IN (:useCases) AND selected = 1")
     fun findAllSelectedByCountryAndUseCases(
@@ -55,20 +53,23 @@ interface FertilizerDao {
         useCase: String
     ): Fertilizer?
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(fertilizer: Fertilizer)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(availableFertilizersList: List<Fertilizer>)
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    fun updateSelected(selectedList: List<Fertilizer>)
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     fun update(fertilizer: Fertilizer?)
 
     @Delete
     fun delete(fertilizer: Fertilizer?)
 
     @Delete
-    fun deleteFertilizerByList(fertilizerList: MutableList<Fertilizer>)
+    fun deleteFertilizerByList(fertilizerList: List<Fertilizer>)
 
     @Query("DELETE FROM fertilizers")
     fun deleteAll()

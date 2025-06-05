@@ -6,85 +6,68 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.MyStepperAdapter
-import com.akilimo.mobile.data.RemoteConfigResponse
 import com.akilimo.mobile.databinding.ActivityHomeStepperBinding
-import com.akilimo.mobile.inherit.BaseActivity
-import com.akilimo.mobile.interfaces.FuelrodApi
+import com.akilimo.mobile.inherit.BindBaseActivity
 import com.akilimo.mobile.interfaces.IFragmentCallBack
 import com.akilimo.mobile.utils.InAppUpdate
-import com.akilimo.mobile.views.fragments.AreaUnitFragment
-import com.akilimo.mobile.views.fragments.BioDataFragment
-import com.akilimo.mobile.views.fragments.CountryFragment
-import com.akilimo.mobile.views.fragments.FieldSizeFragment
-import com.akilimo.mobile.views.fragments.InfoFragment
-import com.akilimo.mobile.views.fragments.InvestmentPrefFragment
-import com.akilimo.mobile.views.fragments.LocationFragment
-import com.akilimo.mobile.views.fragments.PlantingDateFragment
-import com.akilimo.mobile.views.fragments.PrivacyStatementFragment
-import com.akilimo.mobile.views.fragments.SummaryFragment
-import com.akilimo.mobile.views.fragments.TillageOperationFragment
-import com.akilimo.mobile.views.fragments.WelcomeFragment
+import com.akilimo.mobile.viewmodels.HomeStepperViewModel
+import com.akilimo.mobile.views.fragments.*
 import com.stepstone.stepper.StepperLayout
-import com.stepstone.stepper.StepperLayout.StepperListener
 import com.stepstone.stepper.VerificationError
 import io.sentry.Sentry
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import kotlin.system.exitProcess
 
+class HomeStepperActivity : BindBaseActivity<ActivityHomeStepperBinding>(), IFragmentCallBack {
 
-class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
-
-
-    private var _binding: ActivityHomeStepperBinding? = null
-    private val binding get() = _binding!!
+    private val viewModel: HomeStepperViewModel by viewModels()
 
     private lateinit var inAppUpdate: InAppUpdate
-
     private lateinit var stepperAdapter: MyStepperAdapter
-
     private lateinit var mStepperLayout: StepperLayout
 
-    private val fragmentArray: MutableList<Fragment> = arrayListOf()
+    private val fragmentArray = mutableListOf<Fragment>()
+    private var exit = false
 
-    private val configListDict = HashMap<String, String>()
 
-    private var exit: Boolean = false
-    private var stepperReduction = 0
+    override fun inflateBinding() = ActivityHomeStepperBinding.inflate(layoutInflater)
 
     @Deprecated("Deprecated in Java")
     override fun onAttachFragment(fragment: Fragment) {
-        when (fragment) {
-            is WelcomeFragment -> {
-                fragment.setOnFragmentCloseListener(this)
-            }
+        if (fragment is WelcomeFragment) {
+            fragment.setOnFragmentCloseListener(this)
         }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityHomeStepperBinding.inflate(layoutInflater)
         inAppUpdate = InAppUpdate(this@HomeStepperActivity)
-
-        setContentView(binding.root)
-
         mStepperLayout = binding.stepperLayout
 
         inAppUpdate.checkForUpdates()
-        loadConfig()
+
+        viewModel.configData.observe(this, Observer { configMap ->
+            applyRemoteConfigs(configMap)
+        })
+
+        viewModel.errorMessage.observe(this, Observer { error ->
+            error?.let {
+                Sentry.captureMessage(it)
+                Toast.makeText(this, "Unable to load remote configuration: $it", Toast.LENGTH_LONG)
+                    .show()
+            }
+        })
+        
+        viewModel.loadRemoteConfig()
         createFragmentArray()
-
-        stepperAdapter =
-            MyStepperAdapter(supportFragmentManager, this@HomeStepperActivity, fragmentArray)
+        stepperAdapter = MyStepperAdapter(supportFragmentManager, this, fragmentArray)
         mStepperLayout.adapter = stepperAdapter
-
-        mStepperLayout.setListener(object : StepperListener {
+        mStepperLayout.setListener(object : StepperLayout.StepperListener {
             override fun onCompleted(completeButton: View?) {
                 val intent = Intent(this@HomeStepperActivity, RecommendationsActivity::class.java)
                 openActivity(intent)
@@ -92,103 +75,63 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
 
             override fun onError(verificationError: VerificationError) {
                 showCustomWarningDialog(
-                    getString(R.string.empty_text), verificationError.errorMessage
+                    getString(R.string.empty_text),
+                    verificationError.errorMessage
                 )
             }
 
             override fun onStepSelected(newStepPosition: Int) {
-                //not implemented
+                //Not implemented
             }
 
             override fun onReturn() {
                 finish()
             }
+
         })
 
-        val rationale: String = getString(R.string.lbl_permission_rationale)
-
+        val rationale = getString(R.string.lbl_permission_rationale)
         checkAppPermissions(rationale)
     }
 
-    private fun loadConfig() {
-        val configReader = FuelrodApi.apiService.readConfig("akilimo")
 
-        configReader.enqueue(object : Callback<List<RemoteConfigResponse>> {
-            override fun onResponse(
-                call: Call<List<RemoteConfigResponse>>,
-                response: Response<List<RemoteConfigResponse>>
-            ) {
-                val configList = response.body()
-                if (!configList.isNullOrEmpty()) {
-                    configList.forEach { config ->
-                        configListDict[config.configName] = config.configValue
-                    }
-                }
-                if (configListDict.isNotEmpty()) {
-                    sessionManager.apply {
-                        if (BuildConfig.DEBUG) {
-                            configListDict["api_endpoint_dev"]?.let { setAkilimoEndpoint(it) }
-                        } else {
-                            configListDict["api_endpoint"]?.let { setAkilimoEndpoint(it) }
-                        }
-                        configListDict["location_iq"]?.let { setLocationIqToken(it) }
-                        configListDict["mapbox"]?.let { setMapBoxApiKey(it) }
-                        configListDict["privacy"]?.let { setTermsLink(it) }
-                        configListDict["api_refresh_key"]?.let { setApiRefreshToken(it) }
-                        configListDict["api_token"]?.let { setApiToken(it) }
-                    }
-                }
-
-
+    private fun applyRemoteConfigs(configMap: Map<String, String>) {
+        with(sessionManager) {
+            if (BuildConfig.DEBUG) {
+                configMap["api_endpoint_dev"]?.let { setAkilimoEndpoint(it) }
+            } else {
+                configMap["api_endpoint"]?.let { setAkilimoEndpoint(it) }
             }
 
-            override fun onFailure(call: Call<List<RemoteConfigResponse>>, t: Throwable) {
-                Sentry.captureException(t)
-                val errorMessage = t.message.toString()
-                Toast.makeText(
-                    applicationContext,
-                    "Unable to load remote configurations, using default config: $errorMessage",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        })
+            configMap["location_iq"]?.let { setLocationIqToken(it) }
+            configMap["mapbox"]?.let { setMapBoxApiKey(it) }
+            configMap["privacy"]?.let { setTermsLink(it) }
+            configMap["api_refresh_key"]?.let { setApiRefreshToken(it) }
+            configMap["api_token"]?.let { setApiToken(it) }
+        }
     }
 
-    private fun createFragmentArray() {
+    private fun createFragmentArray() = with(sessionManager) {
+        fragmentArray.apply {
+            add(WelcomeFragment.newInstance())
 
+            if (!getDisclaimerRead()) add(InfoFragment.newInstance())
+            if (!getTermsAccepted()) add(PrivacyStatementFragment.newInstance())
 
-        fragmentArray.add(WelcomeFragment.newInstance())
-        if (!sessionManager.getDisclaimerRead()) {
-            fragmentArray.add(InfoFragment.newInstance())
-            stepperReduction++
+            add(BioDataFragment.newInstance())
+            add(CountryFragment.newInstance())
+            add(LocationFragment.newInstance())
+
+            if (!getRememberAreaUnit()) add(AreaUnitFragment.newInstance())
+
+            add(FieldSizeFragment.newInstance())
+            add(PlantingDateFragment.newInstance())
+            add(TillageOperationFragment.newInstance())
+
+            if (!getRememberInvestmentPref()) add(InvestmentPrefFragment.newInstance())
+
+            add(SummaryFragment.newInstance())
         }
-        if (!sessionManager.getTermsAccepted()) {
-            fragmentArray.add(PrivacyStatementFragment.newInstance())
-            stepperReduction++
-        }
-        fragmentArray.add(BioDataFragment.newInstance())
-        fragmentArray.add(CountryFragment.newInstance())
-        fragmentArray.add(LocationFragment.newInstance())
-        if (!sessionManager.getRememberAreaUnit()) {
-            fragmentArray.add(AreaUnitFragment.newInstance())
-            stepperReduction++
-        }
-        fragmentArray.add(FieldSizeFragment.newInstance())
-        fragmentArray.add(PlantingDateFragment.newInstance())
-
-        fragmentArray.add(TillageOperationFragment.newInstance())
-        if (!sessionManager.getRememberInvestmentPref()) {
-            fragmentArray.add(InvestmentPrefFragment.newInstance())
-            stepperReduction++
-        }
-        fragmentArray.add(SummaryFragment.newInstance())
-    }
-
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        inAppUpdate.onActivityResult(requestCode, resultCode)
     }
 
     override fun onResume() {
@@ -201,31 +144,35 @@ class HomeStepperActivity : BaseActivity(), IFragmentCallBack {
         inAppUpdate.onDestroy()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        inAppUpdate.onActivityResult(requestCode, resultCode)
+    }
+
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         super.onBackPressed()
         try {
             if (exit) {
-                finish() // finish activity
-                System.gc() //run the garbage collector to free up memory resources
-                exitProcess(0) //exit the system
+                finish()
+                System.gc()
+                exitProcess(0)
             } else {
                 Toast.makeText(
-                    this@HomeStepperActivity, getString(R.string.lbl_exit_tip), Toast.LENGTH_SHORT
+                    this,
+                    getString(R.string.lbl_exit_tip),
+                    Toast.LENGTH_SHORT
                 ).show()
                 exit = true
-                Thread(Runnable {
-                    Handler(Looper.getMainLooper()).postDelayed(Runnable {
-                        exit = false
-                    }, 3 * 1000)
-                }).start()
+                Handler(Looper.getMainLooper()).postDelayed({ exit = false }, 3_000)
             }
         } catch (ex: Exception) {
-            Toast.makeText(this@HomeStepperActivity, ex.message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, ex.message, Toast.LENGTH_SHORT).show()
+            Sentry.captureException(ex)
         }
     }
 
     override fun reloadView() {
-        // Not implemented
+        // not implmented
     }
 }

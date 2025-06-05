@@ -3,22 +3,17 @@ package com.akilimo.mobile.utils
 import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
-
-
-/**
- * Created by Vipul Asri on 28/12/16.
- */
+import androidx.appcompat.content.res.AppCompatResources
 
 object VectorDrawableUtils {
 
     fun getDrawable(context: Context, drawableResId: Int): Drawable? {
-        return VectorDrawableCompat.create(context.resources, drawableResId, context.theme)
+        return AppCompatResources.getDrawable(context, drawableResId)
     }
 
-    fun getDrawable(context: Context, drawableResId: Int, colorFilter: Int): Drawable {
-        val drawable = getDrawable(context, drawableResId)
-        drawable!!.setColorFilter(colorFilter, PorterDuff.Mode.SRC_IN)
+    fun getDrawable(context: Context, drawableResId: Int, colorFilter: Int): Drawable? {
+        val drawable = getDrawable(context, drawableResId)?.mutate()
+        drawable?.setColorFilter(colorFilter, PorterDuff.Mode.SRC_IN)
         return drawable
     }
 }
