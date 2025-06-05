@@ -46,12 +46,11 @@ class DatesActivity : BindBaseActivity<ActivityDatesBinding>() {
 
     override fun validate(backPressed: Boolean) {
         if (!validateDates()) return
-
         try {
             saveSchedule()
             closeActivity(backPressed)
         } catch (ex: Exception) {
-            Toast.makeText(this, ex.message ?: "Unknown error", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@DatesActivity, ex.message ?: "Unknown error", Toast.LENGTH_SHORT).show()
             Sentry.captureException(ex)
         }
     }
