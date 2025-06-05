@@ -31,6 +31,7 @@
                     android:id="@+id/rec_icon_container"
                     android:layout_width="@dimen/dimen_48"
                     android:layout_height="@dimen/dimen_48"
+                    android:visibility="visible"
                     android:layout_gravity="center_vertical">
 
                 <com.google.android.material.imageview.ShapeableImageView
@@ -40,7 +41,7 @@
                         android:contentDescription="@string/app_name"
                         android:scaleType="centerCrop"
                         app:srcCompat="@drawable/shape_circle"
-                        app:tint="@color/grey_10" />
+                        app:tint="@color/colorPrimaryLight" />
 
                 <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/rec_icon"
@@ -54,6 +55,7 @@
 
             <!-- Spacer -->
             <View
+                    android:id="@+id/rec_icon_spacer"
                     android:layout_width="@dimen/spacing_middle"
                     android:layout_height="0dp" />
 
@@ -68,11 +70,12 @@
 
                 <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/rec_title"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/lbl_typical_yield"
-                        android:textStyle="bold"
-                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
+                        android:textSize="@dimen/font_size_16"
+                        android:lineSpacingExtra="@dimen/dimen_5" />
+
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
     </com.google.android.material.card.MaterialCardView>
