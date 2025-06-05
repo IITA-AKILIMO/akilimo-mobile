@@ -93,12 +93,12 @@
                         android:text="@string/lbl_loading_fertilizers"
                         style="@style/TextAppearance.Material3.BodyMedium" />
 
-                <com.google.android.material.progressindicator.LinearProgressIndicator
+                <ProgressBar
                         android:id="@+id/progress_indicator"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:indeterminate="true"
-                        style="@style/Widget.Material3.LinearProgressIndicator"/>
+                        android:indeterminate="true" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
