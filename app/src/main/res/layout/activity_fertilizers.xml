@@ -1,100 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coordinatorLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context="com.akilimo.mobile.views.activities.FertilizersActivity">
-
-    <LinearLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:orientation="vertical">
+        android:fitsSystemWindows="true"
+        tools:context=".views.activities.FertilizersActivity">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:orientation="vertical">
 
         <include
-            android:id="@+id/toolbar_layout"
-            layout="@layout/toolbar" />
+                android:id="@+id/toolbar_layout"
+                layout="@layout/toolbar" />
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/availableFertilizers"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_medium"
-                android:clipToPadding="false"
-                android:paddingBottom="@dimen/spacing_xxxlarge"
-                android:scrollbars="none"
-                android:visibility="visible"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="2"
-                tools:itemCount="6"
-                tools:listitem="@layout/list_fertilizer_grid_row" />
+                android:layout_height="match_parent">
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                    android:id="@+id/swipeRefreshLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/availableFertilizers"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/spacing_medium"
+                        android:clipToPadding="false"
+                        android:paddingBottom="@dimen/spacing_xxxlarge"
+                        android:scrollbars="none"
+                        android:visibility="visible"
+                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                        app:spanCount="2"
+                        tools:itemCount="6"
+                        tools:listitem="@layout/list_fertilizer_grid_row" />
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/errorImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="gone"
-                app:srcCompat="@drawable/ic_error" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/errorLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/errorImage"
-                android:layout_centerInParent="true"
-                android:layout_margin="@dimen/spacing_large"
-
-                android:text="@string/lbl_fertilizer_load_error"
-                android:textColor="@color/red_500"
-                android:visibility="gone" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnRetry"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/errorLabel"
-                android:layout_centerInParent="true"
-                android:background="@drawable/btn_rounded_accent"
-
-                android:paddingLeft="@dimen/spacing_xlarge"
-                android:paddingRight="@dimen/spacing_xlarge"
-                android:text="@string/lbl_retry"
-                android:textColor="@color/white"
-                android:visibility="gone" />
-
-            <LinearLayout
-                android:id="@+id/lyt_progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_margin="@dimen/spacing_medium"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
+                    android:id="@+id/errorImage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_large"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_error" />
 
-                    android:text="@string/lbl_loading_fertilizers"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/grey_80" />
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/errorLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/errorImage"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="@dimen/spacing_large"
+
+                    android:text="@string/lbl_fertilizer_load_error"
+                    android:textColor="@color/red_500"
+                    android:visibility="gone" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnRetry"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/errorLabel"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/btn_rounded_accent"
+
+                    android:paddingLeft="@dimen/spacing_xlarge"
+                    android:paddingRight="@dimen/spacing_xlarge"
+                    android:text="@string/lbl_retry"
+                    android:textColor="@color/white"
+                    android:visibility="gone" />
+
+            <LinearLayout
+                    android:id="@+id/lyt_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="@dimen/spacing_medium"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_large"
+
+                        android:text="@string/lbl_loading_fertilizers"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/grey_80" />
 
                 <ProgressBar
-                    android:id="@+id/progress_indeterminate"
-                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:indeterminate="true" />
+                        android:id="@+id/progress_indeterminate"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="true" />
 
             </LinearLayout>
 
@@ -102,8 +109,8 @@
     </LinearLayout>
 
     <include
-        android:id="@+id/two_buttons"
-        layout="@layout/bottom_two_buttons_layout" />
+            android:id="@+id/two_buttons"
+            layout="@layout/bottom_two_buttons_layout" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
