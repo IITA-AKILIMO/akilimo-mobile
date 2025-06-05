@@ -21,7 +21,6 @@
         android:layout_marginEnd="@dimen/spacing_medium"
         android:layout_weight="1"
         android:text="@string/lbl_finish"
-        android:textAllCaps="false"
         app:cornerRadius="@dimen/dimen_5" />
 
     <com.google.android.material.button.MaterialButton
@@ -32,7 +31,6 @@
         android:layout_marginStart="@dimen/spacing_medium"
         android:layout_weight="1"
         android:text="@string/lbl_cancel"
-        android:textAllCaps="false"
         app:backgroundTint="@android:color/transparent"
         app:cornerRadius="@dimen/dimen_5"
         app:strokeColor="@color/colorAccentLight"
