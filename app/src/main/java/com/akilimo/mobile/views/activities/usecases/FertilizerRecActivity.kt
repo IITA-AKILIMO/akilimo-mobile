@@ -108,30 +108,30 @@ class FertilizerRecActivity : BaseRecommendationActivity<ActivityFertilizerRecBi
         val myItems: MutableList<RecommendationOptions> = ArrayList()
         myItems.add(
             RecommendationOptions(
-                marketOutletString,
-                EnumAdviceTasks.MARKET_OUTLET_CASSAVA,
-                checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)
+                recommendationName = marketOutletString,
+                adviceName = EnumAdviceTasks.MARKET_OUTLET_CASSAVA,
+                adviceStatus = checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)
             )
         )
         myItems.add(
             RecommendationOptions(
-                fertilizerString,
-                EnumAdviceTasks.AVAILABLE_FERTILIZERS,
-                checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS)
+                recommendationName = fertilizerString,
+                adviceName = EnumAdviceTasks.AVAILABLE_FERTILIZERS,
+                adviceStatus = checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS)
             )
         )
         myItems.add(
             RecommendationOptions(
-                investmentString,
-                EnumAdviceTasks.INVESTMENT_AMOUNT,
-                checkStatus(EnumAdviceTasks.INVESTMENT_AMOUNT)
+                recommendationName = investmentString,
+                adviceName = EnumAdviceTasks.INVESTMENT_AMOUNT,
+                adviceStatus = checkStatus(EnumAdviceTasks.INVESTMENT_AMOUNT)
             )
         )
         myItems.add(
             RecommendationOptions(
-                rootYieldString,
-                EnumAdviceTasks.CURRENT_CASSAVA_YIELD,
-                checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)
+                recommendationName = rootYieldString,
+                adviceName = EnumAdviceTasks.CURRENT_CASSAVA_YIELD,
+                adviceStatus = checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)
             )
         )
 
