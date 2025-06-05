@@ -16,7 +16,7 @@ class FertilizerGridAdapter(
     private val context: Context
 ) : RecyclerView.Adapter<FertilizerGridAdapter.OriginalViewHolder>() {
 
-    private var items: List<Fertilizer> = ArrayList()
+    private var availableFertilizers: List<Fertilizer> = ArrayList()
     private var onLoadMoreListener: OnLoadMoreListener? = null
     private var mOnItemClickListener: OnItemClickListener? = null
     private var rowIndex = -1
@@ -33,9 +33,14 @@ class FertilizerGridAdapter(
         this.mOnItemClickListener = listener
     }
 
-    fun setItems(fertilizerList: List<Fertilizer>) {
-        this.items = fertilizerList
+    fun setFertilizers(fertilizerList: List<Fertilizer>) {
+        this.availableFertilizers = fertilizerList
         notifyDataSetChanged()
+    }
+
+    fun setFertilizer(fertilizer: Fertilizer, position: Int) {
+        (availableFertilizers as MutableList)[position] = fertilizer
+        notifyItemChanged(position)
     }
 
     fun setActiveRowIndex(position: Int) {
@@ -46,10 +51,10 @@ class FertilizerGridAdapter(
         this.onLoadMoreListener = listener
     }
 
-    fun getAll(): List<Fertilizer> = items
+    fun getAll(): List<Fertilizer> = availableFertilizers
 
     fun getSelected(): List<Fertilizer> {
-        return items.filter { it.selected }
+        return availableFertilizers.filter { it.selected }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OriginalViewHolder {
@@ -59,7 +64,7 @@ class FertilizerGridAdapter(
     }
 
     override fun onBindViewHolder(holder: OriginalViewHolder, position: Int) {
-        val fertilizer = items[position]
+        val fertilizer = availableFertilizers[position]
         val fertilizerName = fertilizer.name
         val bagPrice = fertilizer.priceRange
         val isSelected = fertilizer.selected
@@ -80,10 +85,11 @@ class FertilizerGridAdapter(
     }
 
     private fun clickListener(view: View, fertilizer: Fertilizer, position: Int) {
+        notifyItemChanged(position)
         mOnItemClickListener?.onItemClick(view, fertilizer, position)
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount(): Int = availableFertilizers.size
 
     inner class OriginalViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val image: ImageView = view.findViewById(R.id.fertilizerImage)
