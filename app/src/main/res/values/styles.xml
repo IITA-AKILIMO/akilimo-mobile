@@ -11,8 +11,8 @@
         <item name="colorSecondary">@color/colorAccent</item>
 
         <!-- App-wide font -->
-        <item name="android:fontFamily">@font/ubuntu</item>
-        <item name="fontFamily">@font/ubuntu</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="fontFamily">@font/roboto</item>
 
         <!-- Window / action modes -->
         <item name="windowActionModeOverlay">true</item>
@@ -30,8 +30,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
         <item name="colorSecondary">@color/colorAccent</item>
-        <item name="android:fontFamily">@font/ubuntu</item>
-        <item name="fontFamily">@font/ubuntu</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="fontFamily">@font/roboto</item>
     </style>
 
     <!-- Dialog theme using Material -->
@@ -66,18 +66,18 @@
 
     <!-- Overlays for AppBar, Toolbar and Popups -->
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
-        <item name="android:fontFamily">@font/ubuntu</item>
-        <item name="fontFamily">@font/ubuntu</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="fontFamily">@font/roboto</item>
     </style>
 
     <style name="ToolbarTheme" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
-        <item name="android:fontFamily">@font/ubuntu</item>
-        <item name="fontFamily">@font/ubuntu</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="fontFamily">@font/roboto</item>
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light">
-        <item name="android:fontFamily">@font/ubuntu</item>
-        <item name="fontFamily">@font/ubuntu</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="fontFamily">@font/roboto</item>
     </style>
 
     <!-- Buttons -->
