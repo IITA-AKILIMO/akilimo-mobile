@@ -18,7 +18,6 @@ import io.sentry.Sentry
 
 class FertilizerRecActivity : BaseRecommendationActivity<ActivityFertilizerRecBinding>() {
 
-    private var useCaseName = ""
     override fun inflateBinding(): ActivityFertilizerRecBinding {
         return ActivityFertilizerRecBinding.inflate(layoutInflater)
     }
@@ -62,7 +61,11 @@ class FertilizerRecActivity : BaseRecommendationActivity<ActivityFertilizerRecBi
         }
 
         mAdapter.setOnItemClickListener(object : RecOptionsAdapter.OnItemClickListener {
-            override fun onItemClick(view: View?, recommendation: RecommendationOptions, position: Int) {
+            override fun onItemClick(
+                view: View?,
+                recommendation: RecommendationOptions,
+                position: Int
+            ) {
                 var intent: Intent? = null
                 val advice = recommendation.adviceName
                 dataPositionChanged = position
@@ -91,8 +94,6 @@ class FertilizerRecActivity : BaseRecommendationActivity<ActivityFertilizerRecBi
 
                     else -> EnumAdviceTasks.NOT_SELECTED
                 }
-
-                intent?.putExtra("UseCase", useCaseName)
                 openActivity(intent)
             }
         })
