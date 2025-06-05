@@ -1,9 +1,10 @@
 package com.akilimo.mobile.views.activities
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresPermission
 import androidx.appcompat.widget.Toolbar
 import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.R
@@ -43,6 +44,7 @@ class MapBoxActivity : BaseLocationPicker() {
         const val PLACE_NAME: String = "PLACE_NAME"
     }
 
+    @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         accessToken = sessionManager.getMapBoxApiKey()
@@ -60,20 +62,10 @@ class MapBoxActivity : BaseLocationPicker() {
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
 
-        initToolbar()
-        initComponent()
-    }
+        setupToolbar(binding.toolbarLayout.toolbar, R.string.title_activity_farm_location) {
+            processActivityResult()
+        }
 
-    override fun initToolbar() {
-        toolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.title = getString(R.string.title_activity_farm_location)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
-        toolbar!!.setNavigationOnClickListener { v: View? -> processActivityResult() }
-    }
-
-    override fun initComponent() {
         val extras = intent.extras
         if (extras != null) {
             currentLat = extras.getDouble(LAT)
@@ -89,16 +81,12 @@ class MapBoxActivity : BaseLocationPicker() {
 
         snackbar = Snackbar.make(
             binding.coordinatorLayout,
-            "Location has been selected. press OK to save and exit",
+            getString(R.string.lbl_location_selected_prompt),
             Snackbar.LENGTH_INDEFINITE
         )
-        snackbar!!.setAction("OK") {
+        snackbar!!.setAction(getString(R.string.lbl_ok)) {
             processActivityResult()
         }
-    }
-
-    override fun validate(backPressed: Boolean) {
-        throw UnsupportedOperationException()
     }
 
     @Deprecated("Deprecated in Java")
@@ -178,6 +166,7 @@ class MapBoxActivity : BaseLocationPicker() {
         mapboxMap.easeCamera(CameraUpdateFactory.newCameraPosition(newCameraPosition))
     }
 
+    @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
     private fun initCurrentLocation() {
         val gps = GPSTracker(this@MapBoxActivity)
         gps.getLocation()
@@ -186,8 +175,8 @@ class MapBoxActivity : BaseLocationPicker() {
                 GoogleApiAvailability.getInstance()
                     .isGooglePlayServicesAvailable(this@MapBoxActivity)
             if (status == ConnectionResult.SUCCESS) {
-                currentLong = gps.getLongitude()
-                currentLat = gps.getLatitude()
+                currentLong = gps.longitudeValue
+                currentLat = gps.latitudeValue
             }
             gps.stopUsingGPS()
         } else {

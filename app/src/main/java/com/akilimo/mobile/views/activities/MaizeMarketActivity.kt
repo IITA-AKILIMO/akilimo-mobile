@@ -98,21 +98,10 @@ class MaizeMarketActivity : BaseActivity() {
             }
         }
 
-        initToolbar()
-        initComponent()
-        processMaizePrices()
-    }
+        setupToolbar(binding.toolbar, R.string.title_activity_maize_market_outlet) {
+            validate(false)
+        }
 
-
-    override fun initToolbar() {
-        toolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.title = getString(R.string.title_activity_maize_market_outlet)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        toolbar!!.setNavigationOnClickListener { v: View? -> validate(false) }
-    }
-
-    override fun initComponent() {
         lblPricePerCob!!.text = currencyCode
         rdgMaizeProduceType!!.setOnCheckedChangeListener { group: RadioGroup?, radioIndex: Int ->
             grainPriceRequired = false
@@ -198,6 +187,8 @@ class MaizeMarketActivity : BaseActivity() {
         }
 
         showCustomNotificationDialog()
+        
+        processMaizePrices()
     }
 
     override fun validate(backPressed: Boolean) {

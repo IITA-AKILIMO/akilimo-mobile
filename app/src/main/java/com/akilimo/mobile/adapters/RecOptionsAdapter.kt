@@ -1,10 +1,9 @@
 package com.akilimo.mobile.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.R
@@ -13,90 +12,83 @@ import com.akilimo.mobile.models.RecommendationOptions
 import com.akilimo.mobile.utils.TheItemAnimation
 import com.akilimo.mobile.utils.VectorDrawableUtils
 
-class RecOptionsAdapter(private var items: List<RecommendationOptions>) :
-    RecyclerView.Adapter<RecOptionsAdapter.OriginalViewHolder>() {
-    private var mOnItemClickListener: OnItemClickListener? = null
+class RecOptionsAdapter(
+    private val context: Context,
+    private val recommendationsList: List<RecommendationOptions>,
+    private val displayArrow: Boolean
+) : RecyclerView.Adapter<RecOptionsAdapter.OriginalViewHolder>() {
+
+    private var _itemClickListener: OnItemClickListener? = null
     private var lastPosition = -1
     private var onAttach = true
-
-    private var animationType: Int = TheItemAnimation.FADE_IN
-    private lateinit var mLayoutInflater: LayoutInflater
+    private var _animationType: Int = TheItemAnimation.FADE_IN
 
     interface OnItemClickListener {
-        fun onItemClick(view: View?, obj: RecommendationOptions?, position: Int)
+        fun onItemClick(view: View?, recommendation: RecommendationOptions, position: Int)
     }
 
-    fun setOnItemClickListener(mItemClickListener: OnItemClickListener?) {
-        mOnItemClickListener = mItemClickListener
+    fun setAnimationType(animationTYpe: Int) {
+        _animationType = animationTYpe
     }
 
-    fun setData(items: List<RecommendationOptions>, itemPosition: Int) {
-        this.items = items
-        notifyItemChanged(itemPosition)
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OriginalViewHolder {
-        if (!::mLayoutInflater.isInitialized) {
-            mLayoutInflater = LayoutInflater.from(parent.context)
-        }
-
-        val view = ItemCardRecommendationArrowBinding.inflate(mLayoutInflater, parent, false)
-        return OriginalViewHolder(view, viewType)
-    }
-
-    override fun onBindViewHolder(holder: OriginalViewHolder, position: Int) {
-        val recModel = items[position]
-        holder.bind(recModel, position)
-        setAnimation(holder.itemView, position)
+    fun setOnItemClickListener(onItemClickListener: OnItemClickListener?) {
+        _itemClickListener = onItemClickListener
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 onAttach = false
                 super.onScrollStateChanged(recyclerView, newState)
             }
         })
-        super.onAttachedToRecyclerView(recyclerView)
     }
 
-    override fun getItemCount(): Int {
-        return items.size
-    }
+    override fun getItemCount(): Int = recommendationsList.size
 
     private fun setAnimation(view: View, position: Int) {
         if (position > lastPosition) {
-            TheItemAnimation.animate(view, if (onAttach) position else -1, animationType)
+            TheItemAnimation.animate(view, if (onAttach) position else -1, _animationType)
             lastPosition = position
         }
     }
 
+    inner class OriginalViewHolder(val binding: ItemCardRecommendationArrowBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
-    inner class OriginalViewHolder(itemView: ItemCardRecommendationArrowBinding, viewType: Int) :
-        RecyclerView.ViewHolder(itemView.root) {
-        var image: ImageView = itemView.statusImage
-        var name: TextView = itemView.name
-        var cardView: View = itemView.lytParent
-
-        fun bind(recModel: RecommendationOptions, position: Int) {
-            name.text = recModel.recName
-            var icon = R.drawable.ic_info
-            var statusColor = ContextCompat.getColor(itemView.context, R.color.red_400)
-            if (recModel.adviceStatus!!.completed) {
-                icon = R.drawable.ic_done
-                statusColor = ContextCompat.getColor(itemView.context, R.color.green_600)
-            }
-
-            val drawable = VectorDrawableUtils.getDrawable(itemView.context, icon, statusColor)
-
-            image.setImageDrawable(drawable)
-
-            cardView.setOnClickListener { view: View? ->
-                if (mOnItemClickListener != null) {
-                    mOnItemClickListener!!.onItemClick(view, recModel, position)
-                }
-            }
-        }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OriginalViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = ItemCardRecommendationArrowBinding.inflate(inflater, parent, false)
+        return OriginalViewHolder(binding)
     }
 
+    override fun onBindViewHolder(holder: OriginalViewHolder, position: Int) {
+        val recModel = recommendationsList[position]
+
+        with(holder.binding) {
+            recTitle.text = recModel.recommendationName
+
+            if (displayArrow) {
+                val isCompleted = recModel.adviceStatus.completed == true
+                val iconRes = if (isCompleted) R.drawable.ic_done else R.drawable.ic_pending
+                val colorRes = if (isCompleted) R.color.green_600 else R.color.red_400
+                val drawable = VectorDrawableUtils.getDrawable(
+                    context,
+                    iconRes,
+                    ContextCompat.getColor(context, colorRes)
+                )
+                recIcon.setImageDrawable(drawable)
+            } else {
+                recIconSpacer.visibility = View.GONE
+                recIconContainer.visibility = View.GONE
+            }
+
+            recCard.setOnClickListener { view ->
+                _itemClickListener?.onItemClick(view, recModel, position)
+            }
+        }
+
+        setAnimation(holder.itemView, position)
+    }
 }

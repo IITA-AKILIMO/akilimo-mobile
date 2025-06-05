@@ -13,12 +13,7 @@ import com.akilimo.mobile.inherit.BaseRecommendationActivity
 import com.akilimo.mobile.models.RecommendationOptions
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumUseCase
-import com.akilimo.mobile.views.activities.CassavaMarketActivity
-import com.akilimo.mobile.views.activities.DatesActivity
-import com.akilimo.mobile.views.activities.ManualTillageCostActivity
-import com.akilimo.mobile.views.activities.RootYieldActivity
-import com.akilimo.mobile.views.activities.TractorAccessActivity
-import com.akilimo.mobile.views.activities.WeedControlCostsActivity
+import com.akilimo.mobile.views.activities.*
 import io.sentry.Sentry
 
 class PlantingPracticesActivity : BaseRecommendationActivity<ActivityPlantingPracticesBinding>() {
@@ -66,9 +61,13 @@ class PlantingPracticesActivity : BaseRecommendationActivity<ActivityPlantingPra
 
 
         mAdapter.setOnItemClickListener(object : RecOptionsAdapter.OnItemClickListener {
-            override fun onItemClick(view: View?, obj: RecommendationOptions?, position: Int) {
+            override fun onItemClick(
+                view: View?,
+                recommendation: RecommendationOptions,
+                position: Int
+            ) {
                 var intent: Intent? = null
-                val advice = obj?.adviceName
+                val advice = recommendation.adviceName
                 dataPositionChanged = position
                 when (advice) {
                     EnumAdviceTasks.PLANTING_AND_HARVEST -> intent =

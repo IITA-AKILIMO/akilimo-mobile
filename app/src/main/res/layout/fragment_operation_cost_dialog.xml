@@ -13,7 +13,7 @@
         android:text="@string/lbl_close"
         android:theme="@style/Button.Accent" />
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/top_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
             android:padding="@dimen/spacing_medium"
             android:text="@string/lbl_operation_costs" />
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/spacing_small"
@@ -68,9 +68,9 @@
                     android:inputType="numberDecimal"
                     android:selectAllOnFocus="true" />
             </com.google.android.material.textfield.TextInputLayout>
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_small"
@@ -91,8 +91,8 @@
                 android:textAllCaps="false"
                 android:theme="@style/Button.Primary" />
 
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </RelativeLayout>

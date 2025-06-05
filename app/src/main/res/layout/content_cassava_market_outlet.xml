@@ -8,10 +8,10 @@
     tools:context="com.akilimo.mobile.views.activities.CassavaMarketActivity"
     tools:showIn="@layout/activity_cassava_market">
 
-
-    <RelativeLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:padding="@dimen/spacing_medium">
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -20,24 +20,23 @@
             android:layout_height="wrap_content"
             android:text="@string/lbl_market_outlet"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/colorAccent"
+            android:importantForAccessibility="yes" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/marketOutLetTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/title"
             android:layout_marginTop="@dimen/spacing_large"
             android:text="@string/lbl_cassava_sales_outlet"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:importantForAccessibility="yes" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/marketOutletCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/marketOutLetTitle"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:checkable="true"
             android:clickable="true"
             android:focusable="true"
             app:cardBackgroundColor="@color/grey_5"
@@ -46,8 +45,7 @@
             app:cardMaxElevation="6dp"
             app:contentPadding="@dimen/spacing_small">
 
-
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -64,44 +62,29 @@
                         android:layout_height="wrap_content"
                         android:text="@string/lbl_starch_factory" />
 
-
                     <RadioButton
                         android:id="@+id/rdOtherMarket"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/lbl_regular_market" />
-
                 </RadioGroup>
 
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </com.google.android.material.card.MaterialCardView>
 
         <!-- starch factory section -->
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/factoryTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/marketOutletCard"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:text="@string/lbl_select_starch_factory"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:visibility="gone" />
-
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/starchFactoryCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/factoryTitle"
             android:layout_marginTop="@dimen/spacing_medium"
             android:visibility="gone"
-            app:cardBackgroundColor="@color/grey_5"
-            app:cardCornerRadius="5dp"
-            app:cardElevation="2dp"
-            app:cardMaxElevation="6dp"
+            app:cardCornerRadius="@dimen/dimen_5"
+            app:cardElevation="@dimen/spacing_small"
+            app:cardMaxElevation="@dimen/spacing_medium"
             app:contentPadding="@dimen/spacing_small">
 
-
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -111,36 +94,22 @@
                     android:id="@+id/rdgStarchFactories"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- unit of sale roots -->
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/unitOfSaleTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/starchFactoryCard"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:text="@string/unit_of_sale"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:visibility="gone" />
-
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/unitOfSaleCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/unitOfSaleTitle"
             android:layout_marginTop="@dimen/spacing_medium"
             android:visibility="gone"
-            app:cardBackgroundColor="@color/purple_50"
-            app:cardCornerRadius="5dp"
-            app:cardElevation="2dp"
-            app:cardMaxElevation="6dp"
+            app:cardCornerRadius="@dimen/dimen_5"
+            app:cardElevation="@dimen/spacing_small"
+            app:cardMaxElevation="@dimen/spacing_medium"
             app:contentPadding="@dimen/spacing_small">
 
-
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -178,105 +147,82 @@
                         android:layout_height="wrap_content"
                         android:onClick="onRadioButtonClicked"
                         android:text="@string/per_tonne_sale_unit" />
-
                 </RadioGroup>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </com.google.android.material.card.MaterialCardView>
 
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-
-        <androidx.cardview.widget.CardView
+        <!-- Month 1 price window -->
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/monthOneWindowCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/unitOfSaleCard"
             android:layout_marginTop="@dimen/spacing_medium"
             android:visibility="gone"
-            app:cardBackgroundColor="@color/green_50"
-            app:cardCornerRadius="5dp"
-            app:cardElevation="2dp"
-            app:cardMaxElevation="6dp"
+            app:cardCornerRadius="@dimen/dimen_5"
+            app:cardElevation="@dimen/spacing_small"
+            app:cardMaxElevation="@dimen/spacing_medium"
             app:contentPadding="@dimen/spacing_small">
 
-
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="@dimen/spacing_small">
 
-                <androidx.appcompat.widget.AppCompatButton
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnUpP1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="@string/lbl_unit_price_p1" />
 
-                    android:text="@string/lbl_unit_price_p1"
-                    android:textAllCaps="false"
-                    android:theme="@style/Button.Brown" />
-
-                <androidx.appcompat.widget.AppCompatButton
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnUpM1"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="@string/lbl_unit_price_m1" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </com.google.android.material.card.MaterialCardView>
 
-                    android:text="@string/lbl_unit_price_m1"
-                    android:textAllCaps="false"
-                    android:theme="@style/Button.Brown" />
-
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
+        <!-- Month 2 price window -->
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/monthTwoWindowCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/monthOneWindowCard"
             android:layout_marginTop="@dimen/spacing_medium"
             android:visibility="gone"
-            app:cardBackgroundColor="@color/purple_50"
-            app:cardCornerRadius="5dp"
-            app:cardElevation="2dp"
-            app:cardMaxElevation="6dp"
+            app:cardCornerRadius="@dimen/dimen_5"
+            app:cardElevation="@dimen/spacing_small"
+            app:cardMaxElevation="@dimen/spacing_medium"
             app:contentPadding="@dimen/spacing_small">
 
-
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="@dimen/spacing_small">
 
-                <androidx.appcompat.widget.AppCompatButton
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnUpP2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="@string/lbl_unit_price_p2" />
 
-                    android:text="@string/lbl_unit_price_p2"
-                    android:textAllCaps="false"
-                    android:theme="@style/Button.Brown" />
-
-                <androidx.appcompat.widget.AppCompatButton
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnUpM2"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
-                    android:text="@string/lbl_unit_price_m2"
-                    android:textAllCaps="false"
-                    android:theme="@style/Button.Brown" />
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+                    android:text="@string/lbl_unit_price_m2" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </com.google.android.material.card.MaterialCardView>
 
         <include
             android:id="@+id/two_buttons"
             layout="@layout/bottom_two_buttons_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/monthTwoWindowCard"
             android:layout_marginTop="@dimen/spacing_large" />
-
-    </RelativeLayout>
-
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.core.widget.NestedScrollView>

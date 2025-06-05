@@ -60,22 +60,11 @@ class RootYieldActivity : BaseActivity() {
         if (savedYield != null) {
             selectedYieldAmount = savedYield!!.yieldAmount
         }
-        initToolbar()
-        initComponent()
-    }
 
+        setupToolbar(binding.toolbarLayout.toolbar, R.string.title_activity_cassava_root_yield) {
+            validate(false)
+        }
 
-    override fun initToolbar() {
-        val toolbar = binding.toolbarLayout.toolbar
-        toolbar.setNavigationIcon(R.drawable.ic_left_arrow)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.title = getString(R.string.title_activity_cassava_root_yield)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
-        toolbar.setNavigationOnClickListener { v: View? -> validate(false) }
-    }
-
-    override fun initComponent() {
         val recyclerView = binding.rootYieldRecycler
 
         binding.twoButtons.btnFinish.text = getString(R.string.lbl_finish)
@@ -152,6 +141,7 @@ class RootYieldActivity : BaseActivity() {
             btnCancel.setOnClickListener { closeActivity(false) }
         }
     }
+
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {

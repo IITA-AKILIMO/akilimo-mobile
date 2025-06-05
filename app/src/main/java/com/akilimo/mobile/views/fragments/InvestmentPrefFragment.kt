@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.Toast
 import com.akilimo.mobile.databinding.FragmentInvestmentPrefBinding
-import com.akilimo.mobile.entities.UserProfile
 import com.akilimo.mobile.inherit.BaseStepFragment
 import com.akilimo.mobile.utils.enums.EnumInvestmentPref
 import com.stepstone.stepper.VerificationError
@@ -18,7 +17,6 @@ class InvestmentPrefFragment : BaseStepFragment() {
     private var _binding: FragmentInvestmentPrefBinding? = null
     private val binding get() = _binding!!
 
-    private var userProfile: UserProfile? = null
     private var myRiskName: String = ""
     private var myRiskAtt = 0
     private var myRiskRadioIndex = -1
@@ -76,6 +74,7 @@ class InvestmentPrefFragment : BaseStepFragment() {
 
     private fun updateInvestmentPref(investmentPref: Int, riskRadioIndex: Int) {
         try {
+            val userProfile = database.profileInfoDao().findOne()
             userProfile?.let {
                 it.selectedRiskIndex = riskRadioIndex
                 it.riskAtt = investmentPref

@@ -7,67 +7,32 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.activity.addCallback
-import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.appcompat.widget.Toolbar
-import androidx.cardview.widget.CardView
 import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityCassavaMarketBinding
-import com.akilimo.mobile.entities.AdviceStatus
-import com.akilimo.mobile.entities.CassavaMarket
-import com.akilimo.mobile.entities.CassavaPricePriceResponse
-import com.akilimo.mobile.entities.StarchFactory
-import com.akilimo.mobile.entities.StarchFactoryResponse
-import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.entities.*
+import com.akilimo.mobile.inherit.BindBaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks
-import com.akilimo.mobile.utils.enums.EnumCassavaProduceType
-import com.akilimo.mobile.utils.enums.EnumContext
-import com.akilimo.mobile.utils.enums.EnumUnitOfSale
-import com.akilimo.mobile.utils.enums.EnumUseCase
+import com.akilimo.mobile.utils.enums.*
 import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.CassavaPriceDialogFragment
 import io.sentry.Sentry
 import retrofit2.Call
 import retrofit2.Response
 
-class CassavaMarketActivity : BaseActivity() {
-
-    var myToolbar: Toolbar? = null
-    var marketOutLetTitle: AppCompatTextView? = null
-    var factoryTitle: AppCompatTextView? = null
-    var unitOfSaleTitle: AppCompatTextView? = null
-    var rdgMarketOutlet: RadioGroup? = null
-    var rdgStarchFactories: RadioGroup? = null
-//    var rdgUnitOfSale: RadioGroup? = null
-
-    var rdStarchFactory: RadioButton? = null
-
-    var marketOutletCard: CardView? = null
-    var starchFactoryCard: CardView? = null
-    var unitOfSaleCard: CardView? = null
-    var monthOneWindowCard: CardView? = null
-    var monthTwoWindowCard: CardView? = null
-
-    var btnFinish: AppCompatButton? = null
-    var btnCancel: AppCompatButton? = null
-
-    private var _binding: ActivityCassavaMarketBinding? = null
-    private val binding get() = _binding!!
+class CassavaMarketActivity : BindBaseActivity<ActivityCassavaMarketBinding>() {
 
     private var selectedFactory: String? = "NA"
-
-    var produceType: String? = null
+    private var produceType: String? = null
     private var unitPrice = 0.0
     private var unitPriceP1 = 0.0
     private var unitPriceP2 = 0.0
     private var unitPriceM1 = 0.0
     private var unitPriceM2 = 0.0
 
-    var useCase: String = "NA"
-    var unitOfSale: String = "NA"
-    var unitWeight: Double = 0.0
+    private var useCase: String = "NA"
+    private var unitOfSale: String = "NA"
+    private var unitWeight: Double = 0.0
     private var harvestWindow = 0
 
     private var factoryRequired = false
@@ -79,56 +44,26 @@ class CassavaMarketActivity : BaseActivity() {
         var useCaseTag: String = "useCase"
     }
 
+    override fun inflateBinding() = ActivityCassavaMarketBinding.inflate(layoutInflater)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //        setContentView(R.layout.activity_cassava_market);
-        _binding = ActivityCassavaMarketBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        loadSavedData()
+        loadIntentExtras()
+        setupBackPressedHandler()
+        setupToolbar()
+        setupUIControls()
+        hideAll()
 
-        //Set ui elements
-        binding.apply {
-            myToolbar = toolbar
-            marketOutLetTitle = contentCassavaMarket.marketOutLetTitle
-            factoryTitle = contentCassavaMarket.factoryTitle
-            unitOfSaleTitle = contentCassavaMarket.unitOfSaleTitle
-            rdgMarketOutlet = contentCassavaMarket.rdgMarketOutlet
-            rdgStarchFactories = contentCassavaMarket.rdgStarchFactories
+        showCustomNotificationDialog()
 
-            rdStarchFactory = contentCassavaMarket.rdFactory
+        processStarchFactories()
+        processCassavaPrices()
+        processData()
+    }
 
-            marketOutletCard = contentCassavaMarket.marketOutletCard
-            starchFactoryCard = contentCassavaMarket.starchFactoryCard
-            unitOfSaleCard = contentCassavaMarket.unitOfSaleCard
-            monthOneWindowCard = contentCassavaMarket.monthOneWindowCard
-            monthTwoWindowCard = contentCassavaMarket.monthTwoWindowCard
-
-            btnFinish = contentCassavaMarket.twoButtons.btnFinish
-            btnCancel = contentCassavaMarket.twoButtons.btnCancel
-
-            contentCassavaMarket.btnUpP1.setOnClickListener { v: View? ->
-                showUnitPriceDialog(
-                    EnumContext.UNIT_PRICE_P1
-                )
-            }
-            contentCassavaMarket.btnUpP2.setOnClickListener { v: View? ->
-                showUnitPriceDialog(
-                    EnumContext.UNIT_PRICE_P2
-                )
-            }
-            contentCassavaMarket.btnUpM1.setOnClickListener { v: View? ->
-                showUnitPriceDialog(
-                    EnumContext.UNIT_PRICE_M1
-                )
-            }
-            contentCassavaMarket.btnUpM2.setOnClickListener { v: View? ->
-                showUnitPriceDialog(
-                    EnumContext.UNIT_PRICE_M2
-                )
-            }
-        }
-
-        val cassavaMarket = database.cassavaMarketDao().findOne()
-        if (cassavaMarket != null) {
+    private fun loadSavedData() {
+        database.cassavaMarketDao().findOne()?.let { cassavaMarket ->
             selectedFactory = cassavaMarket.starchFactory
             unitOfSale = cassavaMarket.unitOfSale.toString()
             unitPrice = cassavaMarket.unitPrice
@@ -137,139 +72,154 @@ class CassavaMarketActivity : BaseActivity() {
             unitPriceP1 = cassavaMarket.unitPriceP1
             unitPriceP2 = cassavaMarket.unitPriceP2
         }
-        val scheduledDate = database.scheduleDateDao().findOne()
-        if (scheduledDate != null) {
+
+        database.scheduleDateDao().findOne()?.let { scheduledDate ->
             harvestWindow = scheduledDate.harvestWindow
         }
 
-        val profileInfo = database.profileInfoDao().findOne()
-        if (profileInfo != null) {
+        database.profileInfoDao().findOne()?.let { profileInfo ->
             countryCode = profileInfo.countryCode
             currencyCode = profileInfo.currencyCode
         }
-        val intent = intent
-        if (intent != null) {
-            useCase = intent.getStringExtra(useCaseTag) ?: "NA"
-        }
+    }
 
+    private fun loadIntentExtras() {
+        useCase = intent.getStringExtra(useCaseTag) ?: "NA"
+    }
+
+    private fun setupBackPressedHandler() {
         onBackPressedDispatcher.addCallback(this) {
             validate(true)
         }
-
-        initToolbar()
-        initComponent()
-        processStarchFactories()
-        processCassavaPrices()
-        processData()
     }
 
-
-    override fun initToolbar() {
-        myToolbar!!.setNavigationIcon(R.drawable.ic_left_arrow)
-        setSupportActionBar(myToolbar)
-        supportActionBar!!.title = getString(R.string.title_activity_cassava_market_outlet)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        myToolbar!!.setNavigationOnClickListener { v: View? -> validate(false) }
+    private fun setupToolbar() {
+        setupToolbar(binding.toolbar, R.string.title_activity_cassava_market_outlet) {
+            validate(false)
+        }
     }
 
-    override fun initComponent() {
-        rdgMarketOutlet!!.setOnCheckedChangeListener { radioGroup: RadioGroup?, radioIndex: Int ->
+    private fun setupUIControls() = with(binding.contentCassavaMarket) {
+        setupUnitPriceButtons()
+
+        setupMarketOutletRadioGroup()
+
+        setupStarchFactoriesRadioGroup()
+
+        setupUnitOfSaleRadioGroup()
+
+        setupTwoButtons()
+    }
+
+    private fun setupUnitPriceButtons() = with(binding.contentCassavaMarket) {
+        btnUpP1.setOnClickListener { showUnitPriceDialog(EnumContext.UNIT_PRICE_P1) }
+        btnUpP2.setOnClickListener { showUnitPriceDialog(EnumContext.UNIT_PRICE_P2) }
+        btnUpM1.setOnClickListener { showUnitPriceDialog(EnumContext.UNIT_PRICE_M1) }
+        btnUpM2.setOnClickListener { showUnitPriceDialog(EnumContext.UNIT_PRICE_M2) }
+    }
+
+    private fun setupMarketOutletRadioGroup() = with(binding.contentCassavaMarket) {
+        rdgMarketOutlet.setOnCheckedChangeListener { _, checkedId ->
             factoryRequired = false
             otherMarketsRequired = false
             selectionMade = true
-            if (radioIndex == R.id.rdFactory) {
-                hideAll(true)
-                factoryTitle!!.visibility = View.VISIBLE
-                starchFactoryCard!!.visibility = View.VISIBLE
-                factoryRequired = true
-                produceType = EnumCassavaProduceType.ROOTS.name
-                unitOfSale = EnumUnitOfSale.NA.name
-                unitPrice = 0.0
-                unitPriceP1 = 0.0
-                unitPriceP2 = 0.0
-                unitPriceM1 = 0.0
-                unitPriceM2 = 0.0
-            } else if (radioIndex == R.id.rdOtherMarket) {
-                produceType = EnumCassavaProduceType.ROOTS.name
-                selectedFactory = "NA"
-                otherMarketsRequired = true
-                hideAll(false)
-                unitOfSaleTitle!!.visibility = View.VISIBLE
-                unitOfSaleCard!!.visibility = View.VISIBLE
-                if (harvestWindow > 0) {
-                    monthOneWindowCard!!.visibility = View.VISIBLE
-                    monthTwoWindowCard!!.visibility = View.VISIBLE
-                }
+
+            when (checkedId) {
+                R.id.rdFactory -> setupFactorySelection()
+                R.id.rdOtherMarket -> setupOtherMarketSelection()
             }
         }
-
-        rdgStarchFactories!!.setOnCheckedChangeListener { radioGroup: RadioGroup, radioIndex: Int ->
-            val radioButtonId = radioGroup.checkedRadioButtonId
-            val database = getDatabase(this@CassavaMarketActivity)
-            dataIsValid = false
-            if (radioButtonId > -1) {
-                val radioButton = findViewById<RadioButton>(radioButtonId)
-                val factoryNameCountry = radioButton.tag as String
-                val selectedStarchFactory = database.starchFactoryDao()
-                    .findStarchFactoryByNameCountry(factoryNameCountry)
-                if (selectedStarchFactory != null) {
-                    selectedFactory = selectedStarchFactory.factoryName
-                }
-                dataIsValid = true
-            }
-        }
-
-        binding.contentCassavaMarket.rdgUnitOfSale.setOnCheckedChangeListener { radioGroup: RadioGroup?, radioIndex: Int ->
-            dataIsValid = false
-            when (radioIndex) {
-                R.id.rd_per_kg -> {
-                    unitOfSale = EnumUnitOfSale.ONE_KG.name
-                    unitWeight = EnumUnitOfSale.ONE_KG.unitWeight()
-                }
-
-                R.id.rd_50_kg_bag -> {
-                    unitOfSale = EnumUnitOfSale.FIFTY_KG.name
-                    unitWeight = EnumUnitOfSale.FIFTY_KG.unitWeight()
-                }
-
-                R.id.rd_100_kg_bag -> {
-                    unitOfSale = EnumUnitOfSale.HUNDRED_KG.name
-                    unitWeight = EnumUnitOfSale.HUNDRED_KG.unitWeight()
-                }
-
-                R.id.rd_per_tonne -> {
-                    unitOfSale = EnumUnitOfSale.TONNE.name
-                    unitWeight = EnumUnitOfSale.TONNE.unitWeight()
-                }
-            }
-        }
-
-
-
-        binding.contentCassavaMarket.apply {
-            twoButtons.apply {
-                btnFinish.setOnClickListener {
-                    validate(
-                        false
-                    )
-                }
-                btnCancel.setOnClickListener { closeActivity(false) }
-                val enumUseCase = EnumUseCase.valueOf(useCase)
-                if (enumUseCase == EnumUseCase.CIM) {
-                    produceType = EnumCassavaProduceType.ROOTS.name
-                    factoryRequired = false
-                    otherMarketsRequired = false
-                    selectionMade = true
-                    marketOutLetTitle.visibility = View.GONE
-                    marketOutletCard.visibility = View.GONE
-                    unitOfSaleTitle.visibility = View.VISIBLE
-                    unitOfSaleCard.visibility = View.VISIBLE
-                }
-            }
-        }
-
-        showCustomNotificationDialog()
     }
+
+    private fun setupFactorySelection() = with(binding.contentCassavaMarket) {
+        hideAll(true)
+        starchFactoryCard.visibility = View.VISIBLE
+        factoryRequired = true
+        produceType = EnumCassavaProduceType.ROOTS.name
+        unitOfSale = EnumUnitOfSale.NA.name
+        resetUnitPrices()
+    }
+
+    private fun setupOtherMarketSelection() = with(binding.contentCassavaMarket) {
+        produceType = EnumCassavaProduceType.ROOTS.name
+        selectedFactory = "NA"
+        otherMarketsRequired = true
+        hideAll(false)
+        unitOfSaleCard.visibility = View.VISIBLE
+        if (harvestWindow > 0) {
+            monthOneWindowCard.visibility = View.VISIBLE
+            monthTwoWindowCard.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setupStarchFactoriesRadioGroup() = with(binding.contentCassavaMarket) {
+        rdgStarchFactories.setOnCheckedChangeListener { _, checkedRadioButtonId ->
+            dataIsValid = validateStarchFactorySelection(checkedRadioButtonId)
+        }
+    }
+
+    private fun validateStarchFactorySelection(checkedRadioButtonId: Int): Boolean {
+        if (checkedRadioButtonId == -1) return false
+
+        val radioButton = findViewById<RadioButton>(checkedRadioButtonId)
+            ?: return false
+
+        val factoryNameCountry = radioButton.tag as? String ?: return false
+
+        val starchFactory =
+            database.starchFactoryDao().findStarchFactoryByNameCountry(factoryNameCountry)
+        return if (starchFactory != null) {
+            selectedFactory = starchFactory.factoryName
+            true
+        } else {
+            false
+        }
+    }
+
+    private fun setupUnitOfSaleRadioGroup() = with(binding.contentCassavaMarket) {
+        rdgUnitOfSale.setOnCheckedChangeListener { _, checkedId ->
+            dataIsValid = false
+            when (checkedId) {
+                R.id.rd_per_kg -> setUnitOfSale(EnumUnitOfSale.ONE_KG)
+                R.id.rd_50_kg_bag -> setUnitOfSale(EnumUnitOfSale.FIFTY_KG)
+                R.id.rd_100_kg_bag -> setUnitOfSale(EnumUnitOfSale.HUNDRED_KG)
+                R.id.rd_per_tonne -> setUnitOfSale(EnumUnitOfSale.TONNE)
+            }
+        }
+    }
+
+    private fun setUnitOfSale(unit: EnumUnitOfSale) {
+        unitOfSale = unit.name
+        unitWeight = unit.unitWeight()
+    }
+
+    private fun setupTwoButtons() = with(binding.contentCassavaMarket.twoButtons) {
+        btnFinish.setOnClickListener { validate(false) }
+        btnCancel.setOnClickListener { closeActivity(false) }
+
+        val enumUseCase = EnumUseCase.valueOf(useCase)
+        if (enumUseCase == EnumUseCase.CIM) {
+            with(binding.contentCassavaMarket) {
+                produceType = EnumCassavaProduceType.ROOTS.name
+                factoryRequired = false
+                otherMarketsRequired = false
+                selectionMade = true
+                marketOutLetTitle.visibility = View.GONE
+                marketOutletCard.visibility = View.GONE
+                unitOfSaleCard.visibility = View.VISIBLE
+            }
+        }
+    }
+
+
+    private fun resetUnitPrices() {
+        unitPrice = 0.0
+        unitPriceP1 = 0.0
+        unitPriceP2 = 0.0
+        unitPriceM1 = 0.0
+        unitPriceM2 = 0.0
+    }
+
 
     fun onRadioButtonClicked(radioButton: View?) {
         if (radioButton != null && radioButton.isPressed) {
@@ -278,80 +228,86 @@ class CassavaMarketActivity : BaseActivity() {
     }
 
     override fun validate(backPressed: Boolean) {
-        if (factoryRequired) {
-            if (selectedFactory.isNullOrEmpty() || selectedFactory.equals(
-                    "NA",
-                    ignoreCase = true
-                )
-            ) {
-                showCustomWarningDialog(
-                    getString(R.string.lbl_invalid_factory),
-                    getString(R.string.lbl_factory_prompt),
-                    getString(R.string.lbl_ok)
-                )
-                return
-            }
-        } else if (otherMarketsRequired) {
-            if (produceType == null) {
-                showCustomWarningDialog(
-                    getString(R.string.lbl_invalid_produce),
-                    getString(R.string.lbl_produce_prompt)
-                )
-                return
-            }
-            if (unitOfSale.isEmpty()) {
-                showCustomWarningDialog(
-                    getString(R.string.lbl_invalid_sale_unit),
-                    getString(R.string.lbl_sale_unit_prompt)
-                )
-                return
-            }
-            if (unitPrice <= 0) {
-                showCustomWarningDialog(
-                    getString(R.string.lbl_invalid_unit_price),
-                    getString(R.string.lbl_unit_price_prompt)
-                )
-                return
-            }
-
-            dataIsValid = true
-        }
-
-        if (!selectionMade) {
-            showCustomWarningDialog(
-                getString(R.string.lbl_nothing),
-                getString(R.string.lbl_nothing_prompt)
-            )
-            return
-        }
-
+        if (!validateFactory()) return
+        if (!validateOtherMarkets()) return
+        if (!validateSelection()) return
 
         database.adviceStatusDao()
             .insert(AdviceStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA.name, dataIsValid))
 
         if (dataIsValid) {
-            try {
-                var cassavaMarket = database.cassavaMarketDao().findOne()
-                if (cassavaMarket == null) {
-                    cassavaMarket = CassavaMarket()
-                }
-                cassavaMarket.apply {
-                    starchFactory = selectedFactory
-                    isStarchFactoryRequired = factoryRequired
-                    produceType = this@CassavaMarketActivity.produceType
-                        ?: EnumCassavaProduceType.ROOTS.name
-                }
-
-                database.cassavaMarketDao().insert(cassavaMarket)
-                closeActivity(backPressed)
-            } catch (ex: Exception) {
-                Sentry.captureException(ex)
-            }
-
+            saveCassavaMarket(backPressed)
         }
     }
 
-    private fun hideAll(clearMarket: Boolean) {
+    private fun validateFactory(): Boolean {
+        if (!factoryRequired) return true
+
+        if (selectedFactory.isNullOrEmpty() || selectedFactory.equals("NA", ignoreCase = true)) {
+            showWarning(R.string.lbl_invalid_factory, R.string.lbl_factory_prompt)
+            return false
+        }
+        return true
+    }
+
+    private fun validateOtherMarkets(): Boolean {
+        if (!otherMarketsRequired) return true
+
+        if (produceType == null) {
+            showWarning(R.string.lbl_invalid_produce, R.string.lbl_produce_prompt)
+            return false
+        }
+        if (unitOfSale.isEmpty()) {
+            showWarning(R.string.lbl_invalid_sale_unit, R.string.lbl_sale_unit_prompt)
+            return false
+        }
+        if (unitPrice <= 0) {
+            showWarning(R.string.lbl_invalid_unit_price, R.string.lbl_unit_price_prompt)
+            return false
+        }
+        dataIsValid = true
+        return true
+    }
+
+    private fun validateSelection(): Boolean {
+        if (selectionMade) return true
+
+        showWarning(R.string.lbl_nothing, R.string.lbl_nothing_prompt)
+        return false
+    }
+
+    private fun showWarning(
+        titleResId: Int,
+        messageResId: Int,
+        positiveBtnResId: Int = R.string.lbl_ok
+    ) {
+        showCustomWarningDialog(
+            getString(titleResId),
+            getString(messageResId),
+            getString(positiveBtnResId)
+        )
+    }
+
+    private fun saveCassavaMarket(backPressed: Boolean) {
+        try {
+            var cassavaMarket = database.cassavaMarketDao().findOne() ?: CassavaMarket()
+
+            cassavaMarket.apply {
+                starchFactory = selectedFactory
+                isStarchFactoryRequired = factoryRequired
+                produceType =
+                    this@CassavaMarketActivity.produceType ?: EnumCassavaProduceType.ROOTS.name
+            }
+
+            database.cassavaMarketDao().insert(cassavaMarket)
+            closeActivity(backPressed)
+        } catch (ex: Exception) {
+            Sentry.captureException(ex)
+        }
+    }
+
+
+    private fun hideAll(clearMarket: Boolean = false) {
         binding.contentCassavaMarket.apply {
             if (clearMarket) {
                 rdgStarchFactories.clearCheck()
@@ -359,10 +315,7 @@ class CassavaMarketActivity : BaseActivity() {
                 rdgUnitOfSale.clearCheck()
             }
 
-            factoryTitle.visibility = View.GONE
             starchFactoryCard.visibility = View.GONE
-
-            unitOfSaleTitle.visibility = View.GONE
             unitOfSaleCard.visibility = View.GONE
 
             monthOneWindowCard.visibility = View.GONE
@@ -383,8 +336,6 @@ class CassavaMarketActivity : BaseActivity() {
                     val starchFactoriesList = response.body()!!.data
                     database.starchFactoryDao().insertAll(starchFactoriesList)
                     addFactoriesRadioButtons(starchFactoriesList)
-                } else {
-                    rdStarchFactory!!.visibility = View.GONE
                 }
 
             }
@@ -419,7 +370,7 @@ class CassavaMarketActivity : BaseActivity() {
     }
 
 
-    protected fun processData() {
+    private fun processData() {
         val database = getDatabase(this@CassavaMarketActivity)
         val starchFactoriesList =
             database.starchFactoryDao().findStarchFactoriesByCountry(countryCode)
@@ -428,7 +379,7 @@ class CassavaMarketActivity : BaseActivity() {
         val cassavaMarket = database.cassavaMarketDao().findOne()
         if (cassavaMarket != null) {
             val sfRequired = cassavaMarket.isStarchFactoryRequired
-            rdgMarketOutlet!!.check(if (sfRequired) R.id.rdFactory else R.id.rdOtherMarket)
+            binding.contentCassavaMarket.rdgMarketOutlet.check(if (sfRequired) R.id.rdFactory else R.id.rdOtherMarket)
             if (!sfRequired) {
                 produceType = cassavaMarket.produceType
                 unitOfSale = cassavaMarket.unitOfSale ?: "NA"
@@ -441,7 +392,9 @@ class CassavaMarketActivity : BaseActivity() {
                         EnumUnitOfSale.FIFTY_KG -> rdgUnitOfSale.check(R.id.rd_50_kg_bag)
                         EnumUnitOfSale.HUNDRED_KG -> rdgUnitOfSale.check(R.id.rd_100_kg_bag)
                         EnumUnitOfSale.TONNE -> rdgUnitOfSale.check(R.id.rd_per_tonne)
-                        else -> {}
+                        else -> {
+                            /** DO Nothing **/
+                        }
                     }
                 }
             }
@@ -449,7 +402,7 @@ class CassavaMarketActivity : BaseActivity() {
     }
 
     private fun addFactoriesRadioButtons(starchFactoryList: List<StarchFactory>) {
-        rdgStarchFactories!!.removeAllViews()
+        binding.contentCassavaMarket.rdgStarchFactories.removeAllViews()
 
         val params = RadioGroup.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -460,7 +413,6 @@ class CassavaMarketActivity : BaseActivity() {
             val radioLabel = factory.factoryLabel
             val factoryNameCountry = factory.factoryNameCountry
             if (!radioLabel.equals("NA", ignoreCase = true)) {
-                rdgStarchFactories!!.visibility = View.VISIBLE
                 val radioButton = RadioButton(this)
                 radioButton.id = View.generateViewId()
                 radioButton.tag = factoryNameCountry
@@ -470,13 +422,11 @@ class CassavaMarketActivity : BaseActivity() {
 
                 radioButton.text = radioLabel
 
-                rdgStarchFactories!!.addView(radioButton)
+                binding.contentCassavaMarket.rdgStarchFactories.addView(radioButton)
 
                 if (factory.factoryName == selectedFactory) {
                     radioButton.isChecked = true
                 }
-            } else {
-                rdStarchFactory!!.visibility = View.GONE
             }
         }
     }

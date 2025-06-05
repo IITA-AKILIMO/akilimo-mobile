@@ -15,7 +15,7 @@
         android:contentDescription="@string/app_name"
         android:scaleType="centerCrop" />
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/labelCardLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
             android:gravity="center"
             android:text="@string/lbl_bag_price"
             android:textColor="@color/colorAccent" />
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 
 </androidx.cardview.widget.CardView>

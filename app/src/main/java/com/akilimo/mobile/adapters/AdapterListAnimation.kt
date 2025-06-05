@@ -3,15 +3,18 @@ package com.akilimo.mobile.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.R
+import com.akilimo.mobile.databinding.ItemCardRecommendationArrowBinding
 import com.akilimo.mobile.models.Recommendation
 import com.akilimo.mobile.utils.TheItemAnimation.animate
 
+@Deprecated(
+    message = "Consider moving to a RecOptionsAdapter",
+    replaceWith = ReplaceWith("RecOptionsAdapter")
+)
 class AdapterListAnimation(
     private val layoutId: Int = R.layout.item_card_recommendation_arrow,
 ) : ListAdapter<Recommendation, AdapterListAnimation.OriginalViewHolder>(RecommendationDiffCallback()) {
@@ -25,26 +28,27 @@ class AdapterListAnimation(
         this.animationType = type
     }
 
-    inner class OriginalViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val image: ImageView? = view.findViewById(R.id.image)
-        val name: TextView = view.findViewById(R.id.name)
-        val cardView: View = view.findViewById(R.id.lyt_parent)
-        val contentLayout: View = view.findViewById(R.id.contentLayout)
-    }
+    inner class OriginalViewHolder(val binding: ItemCardRecommendationArrowBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OriginalViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(layoutId, parent, false)
-        return OriginalViewHolder(view)
+        val binding = ItemCardRecommendationArrowBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return OriginalViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: OriginalViewHolder, position: Int) {
         val recommendation = getItem(position)
-        holder.name.text = recommendation.recommendationName
+        with(holder.binding) {
+            recTitle.text = recommendation.recommendationName
 
-        holder.cardView.setOnClickListener { view ->
-            onItemClickListener?.invoke(view, recommendation, position)
+            recCard.setOnClickListener { view ->
+                onItemClickListener?.invoke(view, recommendation, position)
+            }
         }
-
         setAnimation(holder.itemView, position)
     }
 

@@ -59,13 +59,6 @@ abstract class BaseActivity : AppCompatActivity() {
         super.attachBaseContext(context)
     }
 
-    @Deprecated(
-        message = "Remove completely and use setupToolbar(toolbar, titleResId) instead.",
-        replaceWith = ReplaceWith("setupToolbar(binding.toolbarLayout.toolbar, R.string.your_title)"),
-        level = DeprecationLevel.WARNING
-    )
-    protected abstract fun initToolbar()
-
     fun setupToolbar(
         toolbar: Toolbar,
         @StringRes titleResId: Int,
@@ -87,11 +80,11 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-
-    @Deprecated("Deprecated remove it completely")
-    protected abstract fun initComponent()
-
-    protected abstract fun validate(backPressed: Boolean)
+    open fun validate(backPressed: Boolean) {
+        val errorMsg = "validate Not implemented for this class"
+        Sentry.captureMessage(errorMsg)
+        throw UnsupportedOperationException(errorMsg)
+    }
 
     protected fun closeActivity(backPressed: Boolean) {
         if (!backPressed) {
