@@ -14,26 +14,25 @@ import com.akilimo.mobile.utils.VectorDrawableUtils
 
 class RecOptionsAdapter(
     private val context: Context,
-    private var items: List<RecommendationOptions>,
+    private val recommendationsList: List<RecommendationOptions>,
     private val displayArrow: Boolean
 ) : RecyclerView.Adapter<RecOptionsAdapter.OriginalViewHolder>() {
 
-    private var itemClickListener: OnItemClickListener? = null
+    private var _itemClickListener: OnItemClickListener? = null
     private var lastPosition = -1
     private var onAttach = true
-    private var animationType: Int = TheItemAnimation.FADE_IN
+    private var _animationType: Int = TheItemAnimation.FADE_IN
 
     interface OnItemClickListener {
         fun onItemClick(view: View?, recommendation: RecommendationOptions, position: Int)
     }
 
-    fun setOnItemClickListener(listener: OnItemClickListener?) {
-        this.itemClickListener = listener
+    fun setAnimationType(animationTYpe: Int) {
+        _animationType = animationTYpe
     }
 
-    fun setData(newItems: List<RecommendationOptions>) {
-        this.items = newItems
-        notifyDataSetChanged()
+    fun setOnItemClickListener(onItemClickListener: OnItemClickListener?) {
+        _itemClickListener = onItemClickListener
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -46,11 +45,11 @@ class RecOptionsAdapter(
         })
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount(): Int = recommendationsList.size
 
     private fun setAnimation(view: View, position: Int) {
         if (position > lastPosition) {
-            TheItemAnimation.animate(view, if (onAttach) position else -1, animationType)
+            TheItemAnimation.animate(view, if (onAttach) position else -1, _animationType)
             lastPosition = position
         }
     }
@@ -65,13 +64,13 @@ class RecOptionsAdapter(
     }
 
     override fun onBindViewHolder(holder: OriginalViewHolder, position: Int) {
-        val recModel = items[position]
+        val recModel = recommendationsList[position]
 
         with(holder.binding) {
-            recTitle.text = recModel.recName
+            recTitle.text = recModel.recommendationName
 
             if (displayArrow) {
-                val isCompleted = recModel.adviceStatus?.completed == true
+                val isCompleted = recModel.adviceStatus.completed == true
                 val iconRes = if (isCompleted) R.drawable.ic_done else R.drawable.ic_info
                 val colorRes = if (isCompleted) R.color.green_600 else R.color.red_400
                 val drawable = VectorDrawableUtils.getDrawable(
@@ -81,11 +80,12 @@ class RecOptionsAdapter(
                 )
                 recIcon.setImageDrawable(drawable)
             } else {
+                recIconSpacer.visibility = View.GONE
                 recIconContainer.visibility = View.GONE
             }
 
             recCard.setOnClickListener { view ->
-                itemClickListener?.onItemClick(view, recModel, position)
+                _itemClickListener?.onItemClick(view, recModel, position)
             }
         }
 
