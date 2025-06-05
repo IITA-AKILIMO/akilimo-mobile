@@ -9,7 +9,7 @@
     android:foreground="?android:attr/selectableItemBackground"
     app:cardElevation="10dp">
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/labelCardLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
                 android:textColor="@color/grey_5" />
 
         </RelativeLayout>
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 
 </androidx.cardview.widget.CardView>

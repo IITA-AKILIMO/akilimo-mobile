@@ -8,7 +8,7 @@
     android:fillViewport="true"
     tools:context=".views.fragments.BioDataFragment">
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/lyt_biodata_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
             app:cardCornerRadius="@dimen/dimen_5"
             app:cardElevation="@dimen/spacing_small">
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/lyt_personal_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -95,7 +95,7 @@
                     android:paddingHorizontal="@dimen/spacing_medium"
                     android:paddingVertical="@dimen/spacing_small"
                     android:spinnerMode="dialog" />
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Contact Info Card -->
@@ -107,7 +107,7 @@
             app:cardCornerRadius="@dimen/dimen_5"
             app:cardElevation="@dimen/spacing_small">
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/lyt_contact_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -168,7 +168,7 @@
                         android:layout_height="wrap_content"
                         android:inputType="phone" />
                 </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Interest Card -->
@@ -180,7 +180,7 @@
             app:cardCornerRadius="@dimen/dimen_5"
             app:cardElevation="@dimen/spacing_small">
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/lyt_interest"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -207,8 +207,8 @@
                     android:paddingHorizontal="@dimen/spacing_medium"
                     android:paddingVertical="@dimen/spacing_small"
                     android:spinnerMode="dialog" />
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </com.google.android.material.card.MaterialCardView>
 
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.core.widget.NestedScrollView>

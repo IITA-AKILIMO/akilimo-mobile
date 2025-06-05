@@ -13,7 +13,7 @@
         android:text="@string/lbl_close"
         android:theme="@style/Button.Accent" />
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/top_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
             android:padding="@dimen/spacing_medium"
             android:text="@string/lbl_fertilizer_price" />
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/spacing_small"
@@ -62,9 +62,9 @@
                     android:layout_height="wrap_content"
                     android:text="@string/lbl_manual" />
             </RadioGroup>
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_xsmall"
@@ -103,7 +103,7 @@
                 android:visibility="gone" />
 
 
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <TextView
             android:id="@+id/lblError"
@@ -117,6 +117,6 @@
             android:textAlignment="center"
             android:textColor="@color/red_400"
             android:visibility="gone" />
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </RelativeLayout>
