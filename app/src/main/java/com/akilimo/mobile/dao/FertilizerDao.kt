@@ -35,7 +35,7 @@ interface FertilizerDao {
     fun findAllSelectedByCountryAndUseCase(
         countryCode: String,
         useCase: String
-    ): List<Fertilizer>
+    ): MutableList<Fertilizer>
 
     @Query("SELECT * FROM fertilizers WHERE country_code = :countryCode AND use_case IN (:useCases) AND selected = 1")
     fun findAllSelectedByCountryAndUseCases(
@@ -59,7 +59,7 @@ interface FertilizerDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateSelected(selectedList: List<Fertilizer>)
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     fun update(fertilizer: Fertilizer?)
 
     @Delete
