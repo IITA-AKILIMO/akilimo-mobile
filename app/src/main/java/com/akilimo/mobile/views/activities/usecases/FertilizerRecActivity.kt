@@ -28,16 +28,16 @@ class FertilizerRecActivity : BaseRecommendationActivity<ActivityFertilizerRecBi
         setContentView(binding.root)
 
         binding.apply {
-            setupToolbar(toolbarLayout.toolbar, R.string.lbl_fertilizer_recommendations) {
+            setupToolbar(fertilizerRecToolbar.toolbar, R.string.lbl_fertilizer_recommendations) {
                 closeActivity(false)
             }
-            recyclerView.apply {
+            fertilizerRecList.apply {
                 layoutManager = LinearLayoutManager(this@FertilizerRecActivity)
                 setHasFixedSize(true)
                 adapter = mAdapter
             }
 
-            singleButton.btnAction.setOnClickListener {
+            fertilizerRecButton.btnAction.setOnClickListener {
                 try {
                     var useCase = database.useCaseDao().findOne()
                     if (useCase == null) {
@@ -61,12 +61,10 @@ class FertilizerRecActivity : BaseRecommendationActivity<ActivityFertilizerRecBi
             }
         }
 
-
-
         mAdapter.setOnItemClickListener(object : RecOptionsAdapter.OnItemClickListener {
-            override fun onItemClick(view: View?, obj: RecommendationOptions?, position: Int) {
+            override fun onItemClick(view: View?, recommendation: RecommendationOptions, position: Int) {
                 var intent: Intent? = null
-                val advice = obj?.adviceName
+                val advice = recommendation.adviceName
                 dataPositionChanged = position
                 when (advice) {
                     EnumAdviceTasks.PLANTING_AND_HARVEST ->
@@ -101,7 +99,6 @@ class FertilizerRecActivity : BaseRecommendationActivity<ActivityFertilizerRecBi
     }
 
     override fun getRecommendationOptions(): List<RecommendationOptions> {
-        getString(R.string.lbl_planting_harvest)
         val fertilizerString = getString(R.string.lbl_available_fertilizers)
         val investmentString = getString(R.string.lbl_investment_amount)
         val rootYieldString = getString(R.string.lbl_typical_yield)
