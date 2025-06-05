@@ -23,12 +23,6 @@ abstract class BaseRecommendationActivity<T : ViewBinding> : BindBaseActivity<T>
         mAdapter = RecOptionsAdapter(applicationContext, recList, displayArrow)
     }
 
-
-    override fun onResume() {
-        super.onResume()
-        mAdapter.setData(recList)
-    }
-
     protected fun checkStatus(taskName: EnumAdviceTasks): AdviceStatus {
         val adviceStatus = database.adviceStatusDao().findOne(taskName.name)
         if (adviceStatus != null) {
