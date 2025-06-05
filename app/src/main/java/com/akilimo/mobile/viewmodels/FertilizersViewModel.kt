@@ -102,15 +102,15 @@ class FertilizersViewModel(
             newList.any { it.fertilizerType == current.fertilizerType }
         }
 
-        newList.forEach { new ->
-            val existing = database.fertilizerDao().findByType(new.fertilizerType)
+        newList.forEach { newFertilizer ->
+            val existing = database.fertilizerDao().findByKey(newFertilizer.fertilizerKey)
             if (existing != null) {
-                existing.available = new.available
-                database.fertilizerDao().update(existing)
+                newFertilizer.selected = existing.selected
+                database.fertilizerDao().update(newFertilizer)
             } else {
-                database.fertilizerDao().insert(new)
+                database.fertilizerDao().insert(newFertilizer)
             }
-            loadFertilizerPrices(new.fertilizerKey ?: "")
+            loadFertilizerPrices(newFertilizer.fertilizerKey ?: "")
         }
 
         if (toDelete.isNotEmpty()) {
