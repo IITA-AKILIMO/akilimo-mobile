@@ -12,6 +12,9 @@ interface FertilizerDao {
     @Query("SELECT * FROM fertilizers LIMIT 1")
     fun findOne(): Fertilizer?
 
+    @Query("select * FROM fertilizers where fertilizer_key=:fertilizerKey")
+    fun findByKey(fertilizerKey: String?): Fertilizer?
+
     @Query("select * FROM fertilizers where type=:fertilizerType")
     fun findByType(fertilizerType: String?): Fertilizer?
 
@@ -50,10 +53,10 @@ interface FertilizerDao {
         useCase: String
     ): Fertilizer?
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(fertilizer: Fertilizer)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(availableFertilizersList: List<Fertilizer>)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
@@ -66,7 +69,7 @@ interface FertilizerDao {
     fun delete(fertilizer: Fertilizer?)
 
     @Delete
-    fun deleteFertilizerByList(fertilizerList: MutableList<Fertilizer>)
+    fun deleteFertilizerByList(fertilizerList: List<Fertilizer>)
 
     @Query("DELETE FROM fertilizers")
     fun deleteAll()
