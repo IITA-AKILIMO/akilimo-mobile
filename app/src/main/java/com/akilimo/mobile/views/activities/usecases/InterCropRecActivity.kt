@@ -60,9 +60,9 @@ class InterCropRecActivity : BaseRecommendationActivity<ActivityInterCropRecBind
 
         val context = this@InterCropRecActivity
         mAdapter.setOnItemClickListener(object : RecOptionsAdapter.OnItemClickListener {
-            override fun onItemClick(view: View?, obj: RecommendationOptions?, position: Int) {
+            override fun onItemClick(view: View?, recommendation: RecommendationOptions, position: Int) {
                 dataPositionChanged = position
-                val intent = when (obj?.adviceName) {
+                val intent = when (recommendation.adviceName) {
                     EnumAdviceTasks.PLANTING_AND_HARVEST -> Intent(
                         context,
                         DatesActivity::class.java
