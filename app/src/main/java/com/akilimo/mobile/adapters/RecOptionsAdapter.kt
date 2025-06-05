@@ -71,7 +71,7 @@ class RecOptionsAdapter(
 
             if (displayArrow) {
                 val isCompleted = recModel.adviceStatus.completed == true
-                val iconRes = if (isCompleted) R.drawable.ic_done else R.drawable.ic_info
+                val iconRes = if (isCompleted) R.drawable.ic_done else R.drawable.ic_pending
                 val colorRes = if (isCompleted) R.color.green_600 else R.color.red_400
                 val drawable = VectorDrawableUtils.getDrawable(
                     context,
