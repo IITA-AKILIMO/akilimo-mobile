@@ -133,28 +133,7 @@
     <ID>NewLineAtEndOfFile:BaseRecommendationActivity.kt$com.akilimo.mobile.inherit.BaseRecommendationActivity.kt</ID>
     <ID>NewLineAtEndOfFile:BaseStepFragment.kt$com.akilimo.mobile.inherit.BaseStepFragment.kt</ID>
     <ID>NewLineAtEndOfFile:CassavaPrice.kt$com.akilimo.mobile.entities.CassavaPrice.kt</ID>
-    <ID>NewLineAtEndOfFile:ComputeRequest.kt$com.akilimo.mobile.rest.request.ComputeRequest.kt</ID>
-    <ID>NewLineAtEndOfFile:CountryFragment.kt$com.akilimo.mobile.views.fragments.CountryFragment.kt</ID>
-    <ID>NewLineAtEndOfFile:DateHelper.kt$com.akilimo.mobile.utils.DateHelper.kt</ID>
-    <ID>NewLineAtEndOfFile:DatesActivity.kt$com.akilimo.mobile.views.activities.DatesActivity.kt</ID>
-    <ID>NewLineAtEndOfFile:EnumOperationType.kt$com.akilimo.mobile.utils.enums.EnumOperationType.kt</ID>
-    <ID>NewLineAtEndOfFile:FertilizerPrice.kt$com.akilimo.mobile.entities.FertilizerPrice.kt</ID>
-    <ID>NewLineAtEndOfFile:FertilizerRecommendationActivity.kt$com.akilimo.mobile.views.activities.usecases.FertilizerRecommendationActivity.kt</ID>
-    <ID>NewLineAtEndOfFile:FragmentUtils.kt$com.akilimo.mobile.utils.FragmentUtils.kt</ID>
-    <ID>NewLineAtEndOfFile:InAppUpdate.kt$com.akilimo.mobile.utils.InAppUpdate.kt</ID>
-    <ID>NewLineAtEndOfFile:InvestmentPrefFragment.kt$com.akilimo.mobile.views.fragments.InvestmentPrefFragment.kt</ID>
-    <ID>NewLineAtEndOfFile:MathHelper.kt$com.akilimo.mobile.utils.MathHelper.kt</ID>
-    <ID>NewLineAtEndOfFile:OperationCost.kt$com.akilimo.mobile.entities.OperationCost.kt</ID>
-    <ID>NewLineAtEndOfFile:RecAdapter.kt$com.akilimo.mobile.adapters.RecAdapter.kt</ID>
-    <ID>NewLineAtEndOfFile:RecommendationResponse.kt$com.akilimo.mobile.rest.response.RecommendationResponse.kt</ID>
-    <ID>NewLineAtEndOfFile:RetrofitManager.kt$com.akilimo.mobile.rest.retrofit.RetrofitManager.kt</ID>
-    <ID>NewLineAtEndOfFile:RetrofitUtils.kt$com.akilimo.mobile.rest.retrofit.RetrofitUtils.kt</ID>
-    <ID>NewLineAtEndOfFile:SpinnerOptions.kt$com.akilimo.mobile.data.SpinnerOptions.kt</ID>
-    <ID>NewLineAtEndOfFile:SplashActivity.kt$com.akilimo.mobile.views.activities.SplashActivity.kt</ID>
-    <ID>NewLineAtEndOfFile:Tools.kt$com.akilimo.mobile.utils.Tools.kt</ID>
-    <ID>NewLineAtEndOfFile:UserDataCleaner.kt$com.akilimo.mobile.data.UserDataCleaner.kt</ID>
-    <ID>NewLineAtEndOfFile:UserInfo.kt$com.akilimo.mobile.rest.request.UserInfo.kt</ID>
-    <ID>NewLineAtEndOfFile:WelcomeFragment.kt$com.akilimo.mobile.views.fragments.WelcomeFragment.kt</ID>
+
     <ID>ProtectedMemberInFinalClass:CassavaMarketActivity.kt$CassavaMarketActivity$protected fun processData()</ID>
     <ID>ReturnCount:BioDataFragment.kt$BioDataFragment$private fun saveBioData()</ID>
     <ID>ReturnCount:CassavaMarketActivity.kt$CassavaMarketActivity$override fun validate(backPressed: Boolean)</ID>
