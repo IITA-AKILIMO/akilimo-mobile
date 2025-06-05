@@ -13,11 +13,7 @@ import com.akilimo.mobile.inherit.BaseRecommendationActivity
 import com.akilimo.mobile.models.RecommendationOptions
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumUseCase
-import com.akilimo.mobile.views.activities.CassavaMarketActivity
-import com.akilimo.mobile.views.activities.DatesActivity
-import com.akilimo.mobile.views.activities.FertilizersActivity
-import com.akilimo.mobile.views.activities.InvestmentAmountActivity
-import com.akilimo.mobile.views.activities.RootYieldActivity
+import com.akilimo.mobile.views.activities.*
 import io.sentry.Sentry
 
 class FertilizerRecActivity : BaseRecommendationActivity<ActivityFertilizerRecBinding>() {
@@ -80,7 +76,7 @@ class FertilizerRecActivity : BaseRecommendationActivity<ActivityFertilizerRecBi
                         intent = Intent(this@FertilizerRecActivity, FertilizersActivity::class.java)
                             .apply {
                                 putExtra(
-                                    FertilizersActivity.useCaseTag,
+                                    BaseFertilizersActivity.useCaseTag,
                                     EnumUseCase.FR.name
                                 )
                             }
