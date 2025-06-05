@@ -6,32 +6,28 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.dao.AppDatabase
-import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.Fertilizer
-import com.akilimo.mobile.entities.FertilizerPriceResponse
-import com.akilimo.mobile.entities.FertilizerResponse
 import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.interfaces.AkilimoService
 import com.akilimo.mobile.interfaces.DefaultDispatcherProvider
 import com.akilimo.mobile.interfaces.IDispatcherProvider
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import io.sentry.Sentry
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.util.*
 
 class FertilizersViewModel(
-    application: Application,
+    private val application: Application,
+    private val minSelection: Int,
+    private val useCase: String?,
+    private val akilimoService: AkilimoService = AkilimoApi.apiService,
+    private val database: AppDatabase = AppDatabase.getDatabase(application),
     private val myDispatchers: IDispatcherProvider = DefaultDispatcherProvider()
 ) : AndroidViewModel(application) {
 
-    private val database = AppDatabase.getDatabase(application)
-    private val akilimoService: AkilimoService = AkilimoApi.apiService
-
     private val _fertilizers = MutableLiveData<List<Fertilizer>>()
     val fertilizers: LiveData<List<Fertilizer>> = _fertilizers
+
+    private val _fertilizerUpdated = MutableLiveData<Fertilizer>()
+    val fertilizerUpdated: LiveData<Fertilizer> = _fertilizerUpdated
 
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> = _loading
@@ -44,19 +40,23 @@ class FertilizersViewModel(
 
     var countryCode: String = ""
     var currencyCode: String = ""
-    var useCase: String = "NA"
 
-    private val minSelection = 2
+    private val prefs =
+        application.getSharedPreferences("fertilizer_prefs", Application.MODE_PRIVATE)
 
-    // For selected fertilizers tracking inside VM (optional)
-    private val _selectedFertilizers = mutableListOf<Fertilizer>()
-//    val selectedFertilizers: List<Fertilizer> get() = _selectedFertilizers
+    private val LAST_SYNC_KEY = "last_fertilizer_sync"
+    private val oneDayMillis = 24 * 60 * 60 * 1000L
+
+    private val lastSync: Long
+        get() = prefs.getLong(LAST_SYNC_KEY, 0L)
+
+    private val now: Long
+        get() = System.currentTimeMillis()
 
     init {
-        val profileInfo = database.profileInfoDao().findOne()
-        if (profileInfo != null) {
-            countryCode = profileInfo.countryCode
-            currencyCode = profileInfo.currencyCode
+        database.profileInfoDao().findOne()?.let {
+            countryCode = it.countryCode
+            currencyCode = it.currencyCode
         }
     }
 
@@ -65,118 +65,142 @@ class FertilizersViewModel(
             _loading.postValue(true)
             _error.postValue(false)
 
-            val localFertilizers = database.fertilizerDao().findAllByCountry(countryCode)
-            if (localFertilizers.isNotEmpty()) {
-                _fertilizers.postValue(localFertilizers)
-                _loading.postValue(false)
-                return@launch
-            }
+            try {
+                val localFertilizers = loadLocalFertilizers()
 
-            val call = akilimoService.getFertilizers(countryCode)
-            call.enqueue(object : Callback<FertilizerResponse> {
-                override fun onResponse(
-                    call: Call<FertilizerResponse>, response: Response<FertilizerResponse>
-                ) {
-                    if (response.isSuccessful) {
-                        val remoteFertilizers = response.body()?.data ?: emptyList()
-                        viewModelScope.launch(myDispatchers.io) {
-                            syncFertilizers(remoteFertilizers)
-                            _fertilizers.postValue(remoteFertilizers)
-                            _loading.postValue(false)
-                        }
-                    } else {
-                        _loading.postValue(false)
-                        _error.postValue(true)
-                    }
+                if (localFertilizers.isNotEmpty()) {
+                    _fertilizers.postValue(localFertilizers)
                 }
 
-                override fun onFailure(call: Call<FertilizerResponse>, t: Throwable) {
-                    _loading.postValue(false)
+                if (shouldSync(localFertilizers)) {
+                    fetchAndSyncFertilizers()
+                } else if (localFertilizers.isEmpty()) {
                     _error.postValue(true)
-                    Sentry.captureException(t)
                 }
-            })
+            } catch (e: Exception) {
+                handleError(e)
+            } finally {
+                _loading.postValue(false)
+            }
         }
     }
 
+    fun refreshFertilizers() {
+        viewModelScope.launch(myDispatchers.io) {
+            _loading.postValue(true)
+            _error.postValue(false)
+
+            try {
+                fetchAndSyncFertilizers()
+            } catch (e: Exception) {
+                handleError(e)
+            } finally {
+                _loading.postValue(false)
+            }
+        }
+    }
+
+    private suspend fun loadLocalFertilizers(): List<Fertilizer> {
+        return if (!useCase.isNullOrBlank()) {
+            database.fertilizerDao().findAllSelectedByCountryAndUseCase(countryCode, useCase)
+        } else {
+            database.fertilizerDao().findAllSelectedByCountry(countryCode)
+        }
+    }
+
+    private fun shouldSync(localFertilizers: List<Fertilizer>): Boolean {
+        return now - lastSync > oneDayMillis || localFertilizers.isEmpty()
+    }
+
+    private suspend fun fetchAndSyncFertilizers() {
+        val response = akilimoService.getFertilizers(countryCode, useCase)
+        val remoteFertilizers = response.data
+
+        if (remoteFertilizers.isNotEmpty()) {
+            syncFertilizers(remoteFertilizers)
+            _fertilizers.postValue(remoteFertilizers)
+            prefs.edit().putLong(LAST_SYNC_KEY, now).apply()
+        } else {
+            _error.postValue(true)
+        }
+    }
+
+    private fun handleError(e: Exception) {
+        _error.postValue(true)
+        Sentry.captureException(e)
+    }
+
     private suspend fun syncFertilizers(fertilizers: List<Fertilizer>) {
-        val savedList = database.fertilizerDao().findAllByCountry(countryCode)
+        val savedList = if (useCase.isNullOrBlank()) {
+            database.fertilizerDao().findAllByCountry(countryCode)
+        } else {
+            database.fertilizerDao().findAllByCountryAndUseCase(countryCode, useCase)
+        }
+
         val toDelete = mutableListOf<Fertilizer>()
 
         if (savedList.isNotEmpty()) {
-            for (fertilizer in savedList) {
+            for (savedFertilizer in savedList) {
                 var found = false
-                for (fertilizer in fertilizers) {
-                    val existing = database.fertilizerDao().findByType(fertilizer.fertilizerType)
-                    if (existing != null) {
-                        existing.available = fertilizer.available
-                        database.fertilizerDao().update(existing)
-                    } else {
-                        database.fertilizerDao().insert(fertilizer)
-                    }
-                    if (fertilizer.fertilizerType.equals(fertilizer.fertilizerType)) {
+                for (newFertilizer in fertilizers) {
+                    if (savedFertilizer.fertilizerType == newFertilizer.fertilizerType) {
                         found = true
+                        val existing =
+                            database.fertilizerDao().findByType(newFertilizer.fertilizerType)
+                        if (existing != null) {
+                            existing.available = newFertilizer.available
+                            database.fertilizerDao().update(existing)
+                        } else {
+                            database.fertilizerDao().insert(newFertilizer)
+                        }
+                        break
                     }
                 }
-                if (!found) toDelete.add(fertilizer)
+                if (!found) toDelete.add(savedFertilizer)
             }
         } else {
             database.fertilizerDao().insertAll(fertilizers)
         }
         database.fertilizerDao().deleteFertilizerByList(toDelete)
 
-        // Load prices for all fertilizers asynchronously
         fertilizers.forEach { fertilizer ->
             loadFertilizerPrices(fertilizer.fertilizerKey ?: "")
         }
     }
 
     fun loadFertilizerPrices(fertilizerKey: String) {
-        val call = akilimoService.getFertilizerPrices(fertilizerKey)
-        call.enqueue(object : Callback<FertilizerPriceResponse> {
-            override fun onResponse(
-                call: Call<FertilizerPriceResponse>, response: Response<FertilizerPriceResponse>
-            ) {
-                if (response.isSuccessful) {
-                    viewModelScope.launch(myDispatchers.io) {
-                        response.body()?.data?.let { prices ->
-                            database.fertilizerPriceDao().insertAll(prices)
-                        }
-                    }
-                } else {
-                    _error.postValue(true)
+        viewModelScope.launch(myDispatchers.io) {
+            try {
+                val response = akilimoService.getFertilizerPrices(fertilizerKey)
+                response.data.let { prices ->
+                    database.fertilizerPriceDao().insertAll(prices)
                 }
+            } catch (e: Exception) {
+                handleError(e)
             }
-
-            override fun onFailure(call: Call<FertilizerPriceResponse>, t: Throwable) {
-                _error.postValue(true)
-                Sentry.captureException(t)
-            }
-        })
+        }
     }
 
-    fun saveSelectedFertilizers(selected: List<Fertilizer>) {
+    fun saveSelectedFertilizer(selectedFertilizer: Fertilizer) {
         viewModelScope.launch(myDispatchers.io) {
-            _selectedFertilizers.clear()
-            _selectedFertilizers.addAll(selected)
-            database.fertilizerDao().updateSelected(selected)
-            database.adviceStatusDao().insert(
-                AdviceStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS.name, isMinSelected())
-            )
+            database.fertilizerDao().update(selectedFertilizer)
+            _fertilizerUpdated.postValue(selectedFertilizer)
         }
     }
 
     fun isMinSelected(): Boolean {
-        val count = database.fertilizerDao().findAllSelectedByCountry(countryCode).size
-        if (count < minSelection) {
-            _showSnackBarEvent.postValue(
-                String.format(
-                    Locale.US, "Please select at least %d fertilizers", minSelection
-                )
-            )
-            return false
+        val count = if (useCase.isNullOrBlank()) {
+            database.fertilizerDao().findAllSelectedByCountry(countryCode).size
+        } else {
+            database.fertilizerDao().findAllSelectedByCountryAndUseCase(countryCode, useCase).size
         }
-        return true
+
+        return if (count < minSelection) {
+            _showSnackBarEvent.postValue(
+                "Please select at least $minSelection fertilizers"
+            )
+            false
+        } else true
     }
 
     fun clearSnackBarEvent() {
