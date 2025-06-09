@@ -11,7 +11,7 @@ class Akilimo : MultiDexApplication() {
         super.onCreate()
         //@FIX This is used to enable proper vector support for android 4.4 and below, it causes crashing when firing up the application
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-        AndroidThreeTen.init(this@Akilimo) // Initialize the library
+        AndroidThreeTen.init(this@Akilimo)
         World.init(this@Akilimo)
     }
 }
