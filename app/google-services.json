@@ -1,36 +1,27 @@
 {
   "project_info": {
-    "project_number": "749454353398",
-    "project_id": "akilimo-dst-c708b",
-    "storage_bucket": "akilimo-dst-c708b.appspot.com"
+    "project_number": "530681337655",
+    "firebase_url": "https://fertilizerestimate.firebaseio.com",
+    "project_id": "fertilizerestimate",
+    "storage_bucket": "fertilizerestimate.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:749454353398:android:a07b36f3670f81ff2fddd7",
+        "mobilesdk_app_id": "1:530681337655:android:a44dc9b13971b3aa022cb2",
         "android_client_info": {
           "package_name": "com.akilimo.mobile"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "749454353398-h53ck0kiem3obv999fif05tr4dja2ptb.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCfDtqm17af13zZVzHB6XKXMnZXKXoywgs"
+          "current_key": "AIzaSyBrL3vtT4E3MDDCUsdOsmOpHdAHkYZqBF4"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "749454353398-h53ck0kiem3obv999fif05tr4dja2ptb.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

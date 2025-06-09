@@ -23,9 +23,14 @@ class CountryFragment : BaseStepFragment() {
 
     private var mySelectedCountryIndex = -1
 
+    private val allowedCountries = setOf(
+        EnumCountry.Nigeria,
+        EnumCountry.Tanzania
+    )
+
     private val countries = EnumCountry.entries
-        .filter { it != EnumCountry.Other }
-        .map { it.name }
+        .filter { it in allowedCountries }
+        .map(EnumCountry::name)
         .toTypedArray()
 
     private val countryMap: Map<String, EnumCountry> = EnumCountry.entries
@@ -60,7 +65,8 @@ class CountryFragment : BaseStepFragment() {
         try {
             val profile = database.profileInfoDao().findOne()
             if (profile != null) {
-                binding.countryTitle.text = getString(R.string.lbl_country_location, profile.firstName)
+                binding.countryTitle.text =
+                    getString(R.string.lbl_country_location, profile.firstName)
                 mySelectedCountryIndex = profile.selectedCountryIndex
                 val countryCode = profile.countryCode
                 val countryName = profile.countryName

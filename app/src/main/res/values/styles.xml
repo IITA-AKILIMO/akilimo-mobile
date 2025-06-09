@@ -3,7 +3,7 @@
     <!-- Base application theme -->
     <style name="AppTheme" parent="BaseTheme" />
 
-    <style name="BaseTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="BaseTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
 
         <!-- Material Design Primary Colors -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -25,7 +25,7 @@
         <item name="colorControlHighlight">@color/colorPrimary</item>
     </style>
 
-    <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Inherit colors and fonts from your main theme -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>

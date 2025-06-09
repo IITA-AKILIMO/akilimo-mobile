@@ -9,9 +9,12 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 class Akilimo : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
+        // TODO: Revise and remove in future releases
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
         //@FIX This is used to enable proper vector support for android 4.4 and below, it causes crashing when firing up the application
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-        AndroidThreeTen.init(this@Akilimo) // Initialize the library
+        AndroidThreeTen.init(this@Akilimo)
         World.init(this@Akilimo)
     }
 }

@@ -1,35 +1,37 @@
 package com.akilimo.mobile.rest.request
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class UserInfo(
-    @JsonProperty("device_token")
+    @Json(name = "device_token")
     var deviceToken: String,
 
-    @JsonProperty("phone_number")
+    @Json(name = "phone_number")
     var phoneNumber: String = "NA",
 
-    @JsonProperty("user_name")
+    @Json(name = "user_name")
     var userName: String = "akilimo",
 
-    @JsonProperty("first_name")
+    @Json(name = "first_name")
     var firstName: String = "akilimo",
 
-    @JsonProperty("last_name")
+    @Json(name = "last_name")
     var lastName: String = "user",
 
-    @JsonProperty("gender")
+    @Json(name = "gender")
     var gender: String = "NA",
 
-    @JsonProperty("email_address")
+    @Json(name = "email_address")
     var emailAddress: String = "na@mail.com",
 
-    @JsonProperty("farm_name")
+    @Json(name = "farm_name")
     var farmName: String = "my_farm",
 
-    @JsonProperty("send_sms")
+    @Json(name = "send_sms")
     var sendSms: Boolean = false,
 
-    @JsonProperty("send_email")
+    @Json(name = "send_email")
     var sendEmail: Boolean = false
 )
