@@ -1,76 +1,74 @@
 package com.akilimo.mobile.rest.response
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
-
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonClass(generateAdapter = true)
 data class ReverseGeoCode(
-    @JsonProperty("type")
+    @Json(name = "type")
     val type: String,
-    @JsonProperty("query")
+    @Json(name = "query")
     val query: List<Double>? = null,
-    @JsonProperty("features")
+    @Json(name = "features")
     val mapFeatures: List<MapFeature>? = null,
-    @JsonProperty("attribution")
+    @Json(name = "attribution")
     val attribution: String? = null
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonClass(generateAdapter = true)
 data class MapContext(
-    @JsonProperty("id")
+    @Json(name = "id")
     var id: String? = null,
-    @JsonProperty("mapbox_id")
+    @Json(name = "mapbox_id")
     var mapboxId: String? = null,
-    @JsonProperty("text")
+    @Json(name = "text")
     var text: String? = null,
-    @JsonProperty("short_code")
+    @Json(name = "short_code")
     var shortCode: String? = null,
-    @JsonProperty("wikidata")
+    @Json(name = "wikidata")
     var wikidata: String? = null
 )
 
-
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonClass(generateAdapter = true)
 data class MapFeature(
-    @JsonProperty("id")
+    @Json(name = "id")
     var id: String? = null,
-    @JsonProperty("type")
+    @Json(name = "type")
     var type: String? = null,
-    @JsonProperty("place_type")
+    @Json(name = "place_type")
     var placeType: List<String>? = null,
-    @JsonProperty("relevance")
+    @Json(name = "relevance")
     var relevance: Int? = null,
-    @JsonProperty("properties")
+    @Json(name = "properties")
     var mapProperties: MapProperties? = null,
-    @JsonProperty("text")
+    @Json(name = "text")
     var text: String? = null,
-    @JsonProperty("place_name")
+    @Json(name = "place_name")
     var placeName: String? = null,
-    @JsonProperty("bbox")
+    @Json(name = "bbox")
     var boundingBox: List<Double>? = null,
-    @JsonProperty("center")
+    @Json(name = "center")
     var center: List<Double>? = null,
-    @JsonProperty("geometry")
+    @Json(name = "geometry")
     var geometry: MapGeometry? = null,
-    @JsonProperty("context")
+    @Json(name = "context")
     var mapContext: List<MapContext>? = null
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonClass(generateAdapter = true)
 data class MapGeometry(
-    @JsonProperty("type")
+    @Json(name = "type")
     var type: String? = null,
-    @JsonProperty("coordinates")
+    @Json(name = "coordinates")
     var coordinates: List<Double>? = null
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonClass(generateAdapter = true)
 data class MapProperties(
-    @JsonProperty("mapbox_id")
+    @Json(name = "mapbox_id")
     var mapboxId: String? = null,
-    @JsonProperty("short_code")
+    @Json(name = "short_code")
     var shortCode: String? = null,
-    @JsonProperty("wikidata")
+    @Json(name = "wikidata")
     var wikidata: String? = null
 )
