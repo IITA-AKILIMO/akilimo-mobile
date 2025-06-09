@@ -3,44 +3,44 @@ package com.akilimo.mobile.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonClass(generateAdapter = true)
 data class StarchFactoryResponse(
-    @JsonProperty("data")
+    @Json(name = "data")
     var data: List<StarchFactory>
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonClass(generateAdapter = true)
 @Entity(tableName = "starch_factories")
 data class StarchFactory(
-    @JsonProperty("id")
+    @Json(name = "id")
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "id")
     var id: Int,
 
-    @JsonProperty("factory_name")
+    @Json(name = "factory_name")
     @ColumnInfo(name = "factory_name")
     var factoryName: String? = null,
 
-    @JsonProperty("factory_label")
+    @Json(name = "factory_label")
     @ColumnInfo(name = "factory_label")
     var factoryLabel: String? = null,
 
-    @JsonProperty("factory_name_country")
+    @Json(name = "factory_name_country")
     @ColumnInfo(name = "factory_name_country")
     var factoryNameCountry: String? = null,
 
-    @JsonProperty("country_code")
+    @Json(name = "country_code")
     @ColumnInfo(name = "country_code")
     var countryCode: String? = null,
 
-    @JsonProperty("factory_active")
+    @Json(name = "factory_active")
     @ColumnInfo(name = "factory_active")
     var factoryActive: Boolean = false,
 
-    @JsonProperty("factory_selected")
+    @Json(name = "factory_selected")
     @ColumnInfo(name = "factory_selected")
     var factorySelected: Boolean = false
 )
