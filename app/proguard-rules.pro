@@ -21,3 +21,19 @@
 #-renamesourcefileattribute SourceFile
 
 #-keep class com.getkeepsafe.relinker.** { *; }
+
+# Keep Jackson annotations
+-keep class com.fasterxml.jackson.databind.ObjectMapper
+-keep class com.fasterxml.jackson.databind.ObjectWriter
+-keep class com.fasterxml.jackson.databind.ObjectReader
+-keep @com.fasterxml.jackson.annotation.JsonCreator class *
+-keep @com.fasterxml.jackson.annotation.JsonProperty class *
+-keepclassmembers public class * {
+    @com.fasterxml.jackson.annotation.JsonCreator *;
+    @com.fasterxml.jackson.annotation.JsonProperty *;
+}
+
+# Keep classes related to Java 8 features if desugaring isn't fully covering it
+# This might be needed if you see BootstrapMethodError specifically
+-dontwarn java.lang.invoke.*
+-keep class java.lang.invoke.** { *; }
