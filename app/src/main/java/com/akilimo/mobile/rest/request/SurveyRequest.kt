@@ -1,20 +1,22 @@
 package com.akilimo.mobile.rest.request
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class SurveyRequest(
-    @JsonProperty("device_token")
+    @Json(name = "device_token")
     val deviceToken: String,
 
-    @JsonProperty("akilimo_usage")
+    @Json(name = "akilimo_usage")
     val akilimoUsage: String,
 
-    @JsonProperty("akilimo_rec_rating")
+    @Json(name = "akilimo_rec_rating")
     val akilimoRecRating: Int,
 
-    @JsonProperty("akilimo_useful_rating")
+    @Json(name = "akilimo_useful_rating")
     val akilimoUsefulRating: Int,
 
-    @JsonProperty("language")
+    @Json(name = "language")
     val language: String
 )

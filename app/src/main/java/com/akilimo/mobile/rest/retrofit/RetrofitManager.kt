@@ -1,14 +1,15 @@
 package com.akilimo.mobile.rest.retrofit
 
+import android.content.Context
 import retrofit2.Retrofit
 
 object RetrofitManager {
     private var akilimoRetrofit: Retrofit? = null
     private var fuelrodRetroFit: Retrofit? = null
 
-    fun init(akilimoUrl: String, fuelrodUrl: String) {
-        akilimoRetrofit = RetroFitFactory.create(akilimoUrl, 130)
-        fuelrodRetroFit = RetroFitFactory.create(fuelrodUrl)
+    fun init(context: Context, akilimoUrl: String, fuelrodUrl: String) {
+        akilimoRetrofit = RetroFitFactory.create(context, akilimoUrl, 130)
+        fuelrodRetroFit = RetroFitFactory.create(context, fuelrodUrl)
     }
 
     fun akilimo(): Retrofit =

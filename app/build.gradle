@@ -94,23 +94,21 @@ android {
         }
         debug {
             resValue("string", "PORT_NUMBER", "9085")
-            enableUnitTestCoverage true
-            enableAndroidTestCoverage true
-            //  pseudoLocalesEnabled true
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
         }
     }
     buildFeatures {
-        viewBinding true
-        buildConfig true
-        //  dataBinding = false
+        viewBinding = true
+        buildConfig = true
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17
+        jvmTarget = JavaVersion.VERSION_21
     }
 
 //    kotlin {
@@ -119,8 +117,8 @@ android {
 
 
     lint {
-        abortOnError false
-        checkReleaseBuilds false
+        abortOnError = false
+        checkReleaseBuilds = false
     }
 
 }
@@ -213,16 +211,13 @@ dependencies {
 
 
     //https://stackoverflow.com/questions/63917431/expected-android-api-level-21-but-was-30
-    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.11.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
-    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.15.0"
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
 
+    implementation 'com.squareup.retrofit2:retrofit:2.12.0'
+    implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
+    implementation 'com.squareup.moshi:moshi-kotlin:1.15.0'
 
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.17.1'
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.17.1'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.1'
     implementation 'com.github.Redman1037:Android-Permissions:3.8'
     implementation 'com.github.vipulasri:timelineview:1.1.1'
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.13.38'
@@ -247,9 +242,11 @@ dependencies {
     kapt 'androidx.room:room-compiler:2.4.2'
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
     kapt 'com.jakewharton:butterknife-compiler:10.2.1'
-    kapt 'com.fasterxml.jackson.core:jackson-annotations:2.17.1'
 
-    testAnnotationProcessor 'com.fasterxml.jackson.core:jackson-annotations:2.17.1'
+    //migrated to KSP
+    kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.15.2'
+
+    testAnnotationProcessor 'com.squareup.moshi:moshi-kotlin-codegen:1.15.2'
 
     testImplementation project(path: ':app')
     testImplementation 'junit:junit:4.13.2'

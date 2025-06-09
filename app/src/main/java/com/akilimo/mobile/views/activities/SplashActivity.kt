@@ -37,7 +37,7 @@ class SplashActivity : BaseActivity() {
             // Initialize API endpoints
             val akilimoEndpoint = sessionManager.getAkilimoEndpoint()
             val fuelrodEndpoint = sessionManager.getFuelrodEndpoint()
-            RetrofitManager.init(akilimoEndpoint, fuelrodEndpoint)
+            RetrofitManager.init(this, akilimoEndpoint, fuelrodEndpoint)
 
             if (!isInDevMode) {
                 withContext(Dispatchers.IO) {
@@ -58,7 +58,7 @@ class SplashActivity : BaseActivity() {
         var intent = Intent(this, HomeStepperActivity::class.java)
 
         if (isInDevMode) {
-            intent = Intent(this, RecommendationsActivity::class.java)
+//            intent = Intent(this, RecommendationsActivity::class.java)
         }
         startActivity(intent)
         finish()

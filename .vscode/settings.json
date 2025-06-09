@@ -1,3 +1,7 @@
 {
-    "java.configuration.updateBuildConfiguration": "disabled"
+    "java.configuration.updateBuildConfiguration": "disabled",
+    "sonarlint.connectedMode.project": {
+        "connectionId": "https-sonar-munywele-co-ke",
+        "projectKey": "IITA-AKILIMO_akilimo-mobile_abcb50d1-1abd-4e32-bd76-b385f65cfc5d"
+    }
 }

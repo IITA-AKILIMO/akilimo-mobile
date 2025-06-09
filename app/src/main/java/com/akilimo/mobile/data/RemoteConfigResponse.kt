@@ -1,14 +1,14 @@
 package com.akilimo.mobile.data
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonClass(generateAdapter = true)
 data class RemoteConfigResponse(
-    @JsonProperty("app_name")
+    @field:Json(name = "app_name")
     val appName: String,
-    @JsonProperty("config_name")
+    @field:Json(name = "config_name")
     val configName: String,
-    @JsonProperty("config_value")
+    @field:Json(name = "config_value")
     val configValue: String
 )

@@ -4,57 +4,55 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonClass(generateAdapter = true)
 data class OperationCostResponse(
-    @JsonProperty("data")
+    @Json(name = "data")
     val data: List<OperationCost>
 )
 
 @Parcelize
 @Entity(tableName = "operation_costs")
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonClass(generateAdapter = true)
 data class OperationCost(
 
     @PrimaryKey(autoGenerate = false)
-    @JsonProperty("id")
+    @Json(name = "id")
     @ColumnInfo(name = "id")
     val id: Long,
 
-    @JsonProperty("item_tag")
+    @Json(name = "item_tag")
     @ColumnInfo(name = "item_tag")
     val itemTag: String? = null,
 
-    @JsonProperty("operation_name")
+    @Json(name = "operation_name")
     @ColumnInfo(name = "operation_name")
     val operationName: String? = null,
 
-    @JsonProperty("operation_type")
+    @Json(name = "operation_type")
     @ColumnInfo(name = "operation_type")
     val operationType: String? = null,
 
-    @JsonProperty("country_code")
+    @Json(name = "country_code")
     @ColumnInfo(name = "country_code")
     val countryCode: String? = null,
 
-    @JsonProperty("min_cost")
+    @Json(name = "min_cost")
     @ColumnInfo(name = "min_cost")
     val minCost: Double = 0.0,
 
-    @JsonProperty("max_cost")
+    @Json(name = "max_cost")
     @ColumnInfo(name = "max_cost")
     val maxCost: Double = 0.0,
 
-    @JsonProperty("average_cost")
+    @Json(name = "average_cost")
     @ColumnInfo(name = "average_cost")
     val averageCost: Double = 0.0,
 
-    @JsonProperty("is_active")
+    @Json(name = "is_active")
     @ColumnInfo(name = "is_active")
     val active: Boolean = false,
 ) : Parcelable

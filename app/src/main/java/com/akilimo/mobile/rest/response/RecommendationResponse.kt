@@ -1,18 +1,17 @@
 package com.akilimo.mobile.rest.response
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonClass(generateAdapter = true)
 data class RecommendationResponse(
-    @JsonProperty("recommendation") var recommendation: String? = null,
-    @JsonProperty("rec_type") var recType: String? = null,
+    @Json(name = "recommendation") var recommendation: String? = null,
+    @Json(name = "rec_type") var recType: String? = null,
 )
 
-
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonClass(generateAdapter = true)
 data class ApiErrorResponse(
-    @JsonProperty("error") val error: String,
-    @JsonProperty("status") val status: Int,
-    @JsonProperty("message") val message: String?
+    @Json(name = "error") val error: String,
+    @Json(name = "status") val status: Int,
+    @Json(name = "message") val message: String?
 )
