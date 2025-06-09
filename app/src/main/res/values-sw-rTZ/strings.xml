@@ -119,7 +119,7 @@
     <string name="current_field_yield">Uwekezaji halisi (x %1$s kwa ekari %2$s)</string>
     <string name="exact_investment_x_per_field_area">Ninataka kutaja kiwango halisi</string>
     <string name="exact_investment_x_per_field_area_hint">Bei katika %1$s for %2$s %3$s</string>
-    <string name="exact_fertilizer_price">Nataka kutaja bei halisi</string>
+    <string name="exact_price">Nataka kutaja bei halisi</string>
     <string name="exact_fertilizer_price_currency">Bei halisi katika %1$s</string>
     <string name="unit_of_sale">Kipimo cha kuuza</string>
     <string name="inv_200_usd_per_acre">Dola 200 kwa</string>

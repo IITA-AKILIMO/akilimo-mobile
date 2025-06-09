@@ -180,7 +180,7 @@
     <string name="current_field_yield">Exact investment (x %1$s per %2$s acre)</string>
     <string name="exact_investment_x_per_field_area">I want to specify the exact amount</string>
     <string name="exact_investment_x_per_field_area_hint">Price in %1$s for %2$s %3$s</string>
-    <string name="exact_fertilizer_price">I want to specify the exact price</string>
+    <string name="exact_price">I want to specify the exact price</string>
     <string name="exact_fertilizer_price_currency">Exact price in %1$s</string>
 
     <string name="unit_of_sale">Unit of Sale</string>
@@ -592,4 +592,5 @@
     <string name="select_language">Select language</string>
     <string name="lbl_remember_details">Remember details</string>
     <string name="lbl_location_selected_prompt">Location has been selected. press OK to save and exit</string>
+    <string name="lbl_error_invalid_cost">Please provide a valid cost value</string>
 </resources>

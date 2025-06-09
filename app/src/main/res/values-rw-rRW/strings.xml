@@ -120,7 +120,7 @@
     <string name="current_field_yield">Igishoro nyacyo (x %1$s kuri %2$s hegitari)</string>
     <string name="exact_investment_x_per_field_area">Ndashaka kwerekana umubare nyawo</string>
     <string name="exact_investment_x_per_field_area_hint">Igiciro muri %1$s kuri %2$s %3$s</string>
-    <string name="exact_fertilizer_price">Ndashaka kwerekana igiciro nyacyo</string>
+    <string name="exact_price">Ndashaka kwerekana igiciro nyacyo</string>
     <string name="exact_fertilizer_price_currency">Igiciro nyacyo muri %1$s</string>
     <string name="unit_of_sale">Igiciro ku kiguzi</string>
     <string name="inv_200_usd_per_acre">200 USD kuri</string>
