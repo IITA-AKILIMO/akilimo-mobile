@@ -1,25 +1,26 @@
 package com.akilimo.mobile.rest.request
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
-//@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
+@JsonClass(generateAdapter = true)
 class FertilizerRequest {
 
-    @JsonProperty("name")
+    @Json(name = "name")
     var name: String = "NA"
 
-    @JsonProperty("key")
+    @Json(name = "key")
     var key: String = "NA"
 
-    @JsonProperty("fertilizer_type")
+    @Json(name = "fertilizer_type")
     var fertilizerType: String = "NA"
 
-    @JsonProperty("weight")
+    @Json(name = "weight")
     var weight: Double = 0.0
 
-    @JsonProperty("price")
+    @Json(name = "price")
     var price: Double = 0.0
 
-    @JsonProperty("selected")
+    @Json(name = "selected")
     var selected: Boolean = false
 }

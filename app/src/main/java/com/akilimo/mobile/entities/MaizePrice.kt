@@ -3,71 +3,69 @@ package com.akilimo.mobile.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonClass(generateAdapter = true)
 data class MaizePriceResponse(
-    @JsonProperty("data") val data: List<MaizePrice>
+    @Json(name = "data") val data: List<MaizePrice>
 )
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonClass(generateAdapter = true)
 @Entity(tableName = "maize_prices")
 data class MaizePrice(
 
     @PrimaryKey(autoGenerate = false)
-    @JsonProperty("id")
+    @Json(name = "id")
     @ColumnInfo(name = "id")
     val id: Long,
 
     @ColumnInfo(name = "sort_order")
-    @JsonProperty("sort_order")
+    @Json(name = "sort_order")
     var sortOrder: Int = 0,
 
-    @JsonProperty("country_code")
+    @Json(name = "country_code")
     @ColumnInfo(name = "country_code")
     val countryCode: String? = null,
 
-    @JsonProperty("produce_type")
+    @Json(name = "produce_type")
     @ColumnInfo(name = "produce_type")
     val produceType: String? = null,
 
-    @JsonProperty("country_price")
+    @Json(name = "country_price")
     @ColumnInfo(name = "country_price")
     val countryPrice: String? = null,
 
-    @JsonProperty("min_local_price")
+    @Json(name = "min_local_price")
     @ColumnInfo(name = "min_local_price")
     val minLocalPrice: Double = 0.0,
 
-    @JsonProperty("max_local_price")
+    @Json(name = "max_local_price")
     @ColumnInfo(name = "max_local_price")
     val maxLocalPrice: Double = 0.0,
 
     @ColumnInfo(name = "min_allowed_price")
-    @JsonProperty("min_allowed_price")
+    @Json(name = "min_allowed_price")
     var minAllowedPrice: Double = 0.0,
 
     @ColumnInfo(name = "max_allowed_price")
-    @JsonProperty("max_allowed_price")
+    @Json(name = "max_allowed_price")
     var maxAllowedPrice: Double = 0.0,
 
     @ColumnInfo(name = "price_range")
-    @JsonProperty("price_range")
+    @Json(name = "price_range")
     var priceRange: String? = null,
 
-    @JsonProperty("active")
+    @Json(name = "active")
     @ColumnInfo(name = "active")
     val active: Boolean = false,
 
-    @JsonProperty("average_price")
+    @Json(name = "average_price")
     @ColumnInfo(name = "average_price")
     val averagePrice: Double = 0.0,
 
     @ColumnInfo(name = "description")
-    @JsonProperty("description")
+    @Json(name = "description")
     var description: String? = null
 )
