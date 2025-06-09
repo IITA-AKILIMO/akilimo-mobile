@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.akilimo.mobile.BuildConfig
@@ -16,7 +17,6 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.MyStepperAdapter
 import com.akilimo.mobile.databinding.ActivityHomeStepperBinding
 import com.akilimo.mobile.inherit.BindBaseActivity
-import com.akilimo.mobile.interfaces.IFragmentCallBack
 import com.akilimo.mobile.utils.InAppUpdate
 import com.akilimo.mobile.viewmodels.HomeStepperViewModel
 import com.akilimo.mobile.views.fragments.AreaUnitFragment
@@ -37,7 +37,7 @@ import io.sentry.Sentry
 import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
 
-class HomeStepperActivity : BindBaseActivity<ActivityHomeStepperBinding>(){
+class HomeStepperActivity : BindBaseActivity<ActivityHomeStepperBinding>() {
 
     private val viewModel: HomeStepperViewModel by viewModels()
     private lateinit var inAppUpdate: InAppUpdate
@@ -78,7 +78,7 @@ class HomeStepperActivity : BindBaseActivity<ActivityHomeStepperBinding>(){
 
     private fun observeViewModel() {
         lifecycleScope.launch {
-            repeatOnLifecycle(lifecycle.currentState) {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.configData.observe(this@HomeStepperActivity) {
                     applyRemoteConfigs(it)
                 }
