@@ -2,14 +2,7 @@ package com.akilimo.mobile.views.activities
 
 import android.os.Bundle
 import android.view.View
-import android.widget.CheckBox
-import android.widget.CompoundButton
-import android.widget.RadioGroup
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.Toolbar
-import androidx.cardview.widget.CardView
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ActivityTractorAccessBinding
 import com.akilimo.mobile.entities.AdviceStatus
@@ -25,23 +18,10 @@ import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.OperationCostsDialogFragment
 import io.sentry.Sentry
 
-class TractorAccessActivity : CostBaseActivity() {
-    var toolbar: Toolbar? = null
-    var implementTitle: TextView? = null
-    var rdgTractor: RadioGroup? = null
-    var implementCard: CardView? = null
-    var chkPlough: CheckBox? = null
-    var chkRidger: CheckBox? = null
+class TractorAccessActivity : CostBaseActivity<ActivityTractorAccessBinding>() {
 
-    var btnFinish: AppCompatButton? = null
-    var btnCancel: AppCompatButton? = null
-
-    private var _binding: ActivityTractorAccessBinding? = null
-    private val binding get() = _binding!!
-
-    var fieldOperationCost: FieldOperationCost? = null
-    var currentPractice: CurrentPractice? = null
-
+    private var fieldOperationCost: FieldOperationCost? = null
+    private var currentPractice: CurrentPractice? = null
 
     private var hasTractor = false
     private var hasPlough = false
@@ -50,158 +30,121 @@ class TractorAccessActivity : CostBaseActivity() {
 
     private var exactPloughCost = false
     private var exactRidgeCost = false
-
     private var dataValid = false
+
     private var tractorPloughCost = 0.0
     private var tractorRidgeCost = 0.0
     private var dialogOpen = false
 
+    override fun inflateBinding() = ActivityTractorAccessBinding.inflate(layoutInflater)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityTractorAccessBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        val mandatoryInfo = database.mandatoryInfoDao().findOne()
-        if (mandatoryInfo != null) {
-            areaUnit = mandatoryInfo.areaUnit
-            fieldSize = mandatoryInfo.areaSize
+        setupData()
+        bindViews()
+        setupListeners()
+    }
+
+    private fun setupData() {
+        database.mandatoryInfoDao().findOne()?.let {
+            areaUnit = it.areaUnit
+            fieldSize = it.areaSize
         }
 
-        val profileInfo = database.profileInfoDao().findOne()
-        if (profileInfo != null) {
-            countryCode = profileInfo.countryCode
-            currencyCode = profileInfo.currencyCode
-            val myAkilimoCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode)
-            if (myAkilimoCurrency != null) {
-                currencyCode = myAkilimoCurrency.currencyCode
-                currencySymbol = myAkilimoCurrency.currencySymbol
+        database.profileInfoDao().findOne()?.let { profile ->
+            countryCode = profile.countryCode
+            currencyCode = profile.currencyCode
+
+            database.currencyDao().findOneByCurrencyCode(currencyCode)?.let {
+                currencyCode = it.currencyCode
+                currencySymbol = it.currencySymbol
             }
         }
 
-        toolbar = binding.toolbar
-        implementTitle = binding.tractorAccess.implementTitle
-        rdgTractor = binding.tractorAccess.rdgTractor
-        implementCard = binding.tractorAccess.implementCard
-        chkPlough = binding.tractorAccess.chkPlough
-        chkRidger = binding.tractorAccess.chkRidger
-        btnFinish = binding.twoButtons.btnFinish
-        btnCancel = binding.twoButtons.btnCancel
-
         fieldOperationCost = database.fieldOperationCostDao().findOne()
         currentPractice = database.currentPracticeDao().findOne()
-        if (fieldOperationCost != null) {
-            tractorPloughCost = fieldOperationCost!!.tractorPloughCost
-            tractorRidgeCost = fieldOperationCost!!.tractorRidgeCost
-        }
 
-        setupToolbar(binding.toolbar, R.string.title_tillage_operations) {
+        fieldOperationCost?.let {
+            tractorPloughCost = it.tractorPloughCost
+            tractorRidgeCost = it.tractorRidgeCost
+        }
+    }
+
+    private fun bindViews() = with(binding) {
+        setupToolbar(toolbar, R.string.title_tillage_operations) {
             validate(false)
         }
 
-        rdgTractor!!.setOnCheckedChangeListener { radioGroup: RadioGroup?, radioIndex: Int ->
-            when (radioIndex) {
+        twoButtons.btnFinish.setOnClickListener { validate(false) }
+        twoButtons.btnCancel.setOnClickListener { closeActivity(false) }
+    }
+
+    private fun setupListeners() = with(binding.tractorAccess) {
+        val language = LanguageManager.getLanguage(this@TractorAccessActivity)
+        val translatedUnit = if (areaUnit == "ha") {
+            getString(R.string.lbl_ha)
+        } else {
+            getString(R.string.lbl_acre)
+        }.lowercase()
+
+        rdgTractor.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
                 R.id.rdYesTractor -> {
                     hasTractor = true
-                    implementTitle!!.visibility = View.VISIBLE
-                    implementCard!!.visibility = View.VISIBLE
+                    implementTitle.visibility = View.VISIBLE
+                    implementCard.visibility = View.VISIBLE
                 }
 
                 R.id.rdNoTractor -> {
                     hasTractor = false
-                    implementTitle!!.visibility = View.GONE
-                    implementCard!!.visibility = View.GONE
-                    chkRidger!!.isChecked = false
-                    chkPlough!!.isChecked = false
-                }
-
-                else -> {
-                    hasTractor = false
-                    implementTitle!!.visibility = View.GONE
-                    implementCard!!.visibility = View.GONE
-                    chkRidger!!.isChecked = false
-                    chkPlough!!.isChecked = false
+                    chkPlough.isChecked = false
+                    chkRidger.isChecked = false
+                    implementTitle.visibility = View.GONE
+                    implementCard.visibility = View.GONE
                 }
             }
         }
 
-        val language = LanguageManager.getLanguage(this@TractorAccessActivity)
-        var translatedUnit = this@TractorAccessActivity.getString(R.string.lbl_acre)
-        if (areaUnit == "ha") {
-            translatedUnit = this@TractorAccessActivity.getString(R.string.lbl_ha)
-        }
-        val finalTranslatedUnit = translatedUnit.lowercase()
-
-
-        chkPlough!!.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean ->
+        chkPlough.setOnCheckedChangeListener { buttonView, isChecked ->
             hasPlough = isChecked
             if (buttonView.isPressed && isChecked && !dialogOpen) {
-                var title = (getString(
-                    R.string.lbl_tractor_plough_cost,
-                    mathHelper.removeLeadingZero(fieldSize),
-                    finalTranslatedUnit
-                ))
-                var hintText = (getString(
-                    R.string.lbl_tractor_plough_cost_hint,
-                    mathHelper.removeLeadingZero(fieldSize),
-                    finalTranslatedUnit
-                ))
-                if (language == "sw") {
-                    title = (getString(
-                        R.string.lbl_tractor_plough_cost,
-                        finalTranslatedUnit,
-                        mathHelper.removeLeadingZero(fieldSize)
-                    ))
-                    hintText = (getString(
-                        R.string.lbl_tractor_plough_cost_hint,
-                        finalTranslatedUnit,
-                        mathHelper.removeLeadingZero(fieldSize)
-                    ))
-                }
+                val title = getCostTitle(R.string.lbl_tractor_plough_cost, language, translatedUnit)
+                val hint =
+                    getCostTitle(R.string.lbl_tractor_plough_cost_hint, language, translatedUnit)
                 loadOperationCost(
                     EnumOperation.TILLAGE.name,
                     EnumOperationType.TRACTOR.name,
                     title,
-                    hintText
+                    hint
                 )
             }
         }
-        chkRidger!!.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean ->
+
+        chkRidger.setOnCheckedChangeListener { buttonView, isChecked ->
             hasRidger = isChecked
             if (buttonView.isPressed && isChecked && !dialogOpen) {
-                var title = (getString(
-                    R.string.lbl_tractor_ridge_cost,
-                    mathHelper.removeLeadingZero(fieldSize),
-                    finalTranslatedUnit
-                ))
-                var hintText = (getString(
-                    R.string.lbl_tractor_ridge_cost_hint,
-                    mathHelper.removeLeadingZero(fieldSize),
-                    finalTranslatedUnit
-                ))
-                if (language == "sw") {
-                    title = (getString(
-                        R.string.lbl_tractor_ridge_cost,
-                        finalTranslatedUnit,
-                        mathHelper.removeLeadingZero(fieldSize)
-                    ))
-                    hintText = (getString(
-                        R.string.lbl_tractor_ridge_cost_hint,
-                        finalTranslatedUnit,
-                        mathHelper.removeLeadingZero(fieldSize)
-                    ))
-                }
+                val title = getCostTitle(R.string.lbl_tractor_ridge_cost, language, translatedUnit)
+                val hint =
+                    getCostTitle(R.string.lbl_tractor_ridge_cost_hint, language, translatedUnit)
                 loadOperationCost(
                     EnumOperation.RIDGING.name,
                     EnumOperationType.TRACTOR.name,
                     title,
-                    hintText
+                    hint
                 )
             }
         }
-        btnFinish!!.setOnClickListener { view: View? -> validate(false) }
-        btnCancel!!.setOnClickListener { view: View? -> closeActivity(false) }
     }
 
+    private fun getCostTitle(resId: Int, language: String, unit: String): String {
+        val size = mathHelper.removeLeadingZero(fieldSize)
+        return if (language == "sw") {
+            getString(resId, unit, size)
+        } else {
+            getString(resId, size, unit)
+        }
+    }
 
     override fun validate(backPressed: Boolean) {
         setData()
@@ -212,31 +155,32 @@ class TractorAccessActivity : CostBaseActivity() {
 
     private fun setData() {
         try {
-            if (fieldOperationCost == null) {
-                fieldOperationCost = FieldOperationCost()
-            }
-            if (currentPractice == null) {
-                currentPractice = CurrentPractice()
-            }
+            if (fieldOperationCost == null) fieldOperationCost = FieldOperationCost()
+            if (currentPractice == null) currentPractice = CurrentPractice()
 
             dataValid = true
-            currentPractice!!.tractorAvailable = hasTractor
-            currentPractice!!.tractorPlough = hasPlough
-            currentPractice!!.tractorHarrow = hasHarrow
-            currentPractice!!.tractorRidger = hasRidger
 
-            database.currentPracticeDao().insert(currentPractice!!)
+            currentPractice?.apply {
+                tractorAvailable = hasTractor
+                tractorPlough = hasPlough
+                tractorHarrow = hasHarrow
+                tractorRidger = hasRidger
+                database.currentPracticeDao().insert(this)
+            }
 
-            fieldOperationCost!!.tractorPloughCost = tractorPloughCost
-            fieldOperationCost!!.tractorRidgeCost = tractorRidgeCost
-            fieldOperationCost!!.exactTractorPloughPrice = exactPloughCost
-            fieldOperationCost!!.exactTractorRidgePrice = exactRidgeCost
+            fieldOperationCost?.apply {
+                tractorPloughCost = this@TractorAccessActivity.tractorPloughCost
+                tractorRidgeCost = this@TractorAccessActivity.tractorRidgeCost
+                exactTractorPloughPrice = exactPloughCost
+                exactTractorRidgePrice = exactRidgeCost
+                database.fieldOperationCostDao().insertOrUpdate(this)
+            }
 
-            database.fieldOperationCostDao().insertOrUpdate(fieldOperationCost!!)
             database.adviceStatusDao()
                 .insert(AdviceStatus(EnumAdviceTasks.TRACTOR_ACCESS.name, true))
+
         } catch (ex: Exception) {
-            Toast.makeText(this@TractorAccessActivity, ex.message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, ex.message, Toast.LENGTH_SHORT).show()
             Sentry.captureException(ex)
         }
     }
@@ -248,58 +192,53 @@ class TractorAccessActivity : CostBaseActivity() {
         dialogTitle: String?,
         hintText: String
     ) {
-        val arguments = Bundle()
+        if (dialogOpen) return
 
-        if (dialogOpen) {
-            return
+        val args = Bundle().apply {
+            putString(OperationCostsDialogFragment.OPERATION_NAME, operationName)
+            putString(OperationCostsDialogFragment.OPERATION_TYPE, operationType)
+            putString(OperationCostsDialogFragment.CURRENCY_CODE, currencySymbol)
+            putString(OperationCostsDialogFragment.COUNTRY_CODE, countryCode)
+            putString(OperationCostsDialogFragment.DIALOG_TITLE, dialogTitle)
+            putString(OperationCostsDialogFragment.EXACT_PRICE_HINT, hintText)
         }
 
-        showCustomNotificationDialog()
-        arguments.putString(OperationCostsDialogFragment.OPERATION_NAME, operationName)
-        arguments.putString(OperationCostsDialogFragment.OPERATION_TYPE, operationType)
-        arguments.putString(OperationCostsDialogFragment.CURRENCY_CODE, currencySymbol)
-        arguments.putString(OperationCostsDialogFragment.COUNTRY_CODE, countryCode)
-        arguments.putString(OperationCostsDialogFragment.DIALOG_TITLE, dialogTitle)
-        arguments.putString(OperationCostsDialogFragment.EXACT_PRICE_HINT, hintText)
-
-        val dialogFragment = getOperationCostsDialogFragment(arguments)
-
-
+        val dialogFragment = getOperationCostsDialogFragment(args)
         showDialogFragmentSafely(
-            supportFragmentManager, dialogFragment, OperationCostsDialogFragment.ARG_ITEM_ID
+            supportFragmentManager,
+            dialogFragment,
+            OperationCostsDialogFragment.ARG_ITEM_ID
         )
         dialogOpen = true
     }
 
     private fun getOperationCostsDialogFragment(arguments: Bundle): OperationCostsDialogFragment {
-        val dialogFragment = OperationCostsDialogFragment()
-        dialogFragment.arguments = arguments
+        return OperationCostsDialogFragment().apply {
+            this.arguments = arguments
+            setOnDismissListener(object : OperationCostsDialogFragment.IDismissDialog {
+                override fun onDismiss(
+                    operationCost: OperationCost?,
+                    operationName: String?,
+                    selectedCost: Double,
+                    cancelled: Boolean,
+                    isExactCost: Boolean
+                ) {
+                    if (!cancelled && operationName != null) {
+                        when (operationName) {
+                            EnumOperation.TILLAGE.name -> {
+                                tractorPloughCost = selectedCost
+                                exactPloughCost = isExactCost
+                            }
 
-        dialogFragment.setOnDismissListener(object : OperationCostsDialogFragment.IDismissDialog {
-            override fun onDismiss(
-                operationCost: OperationCost?,
-                operationName: String?,
-                selectedCost: Double,
-                cancelled: Boolean,
-                isExactCost: Boolean
-            ) {
-                if (!cancelled && operationName != null) {
-                    when (operationName) {
-                        "TILLAGE" -> {
-                            tractorPloughCost = selectedCost
-                            exactPloughCost = isExactCost
-                        }
-
-                        "RIDGING" -> {
-                            tractorRidgeCost = selectedCost
-                            exactRidgeCost = isExactCost
+                            EnumOperation.RIDGING.name -> {
+                                tractorRidgeCost = selectedCost
+                                exactRidgeCost = isExactCost
+                            }
                         }
                     }
+                    dialogOpen = false
                 }
-                dialogOpen = false
-            }
-        })
-
-        return dialogFragment
+            })
+        }
     }
 }
