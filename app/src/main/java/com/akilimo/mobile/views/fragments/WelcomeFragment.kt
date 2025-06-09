@@ -28,6 +28,7 @@ class WelcomeFragment : BaseStepFragment() {
     private var fragmentCallBack: IFragmentCallBack? = null
 
     companion object {
+        const val CLOSE_REQUEST_KEY = "close_request"
         fun newInstance(): WelcomeFragment = WelcomeFragment()
     }
 

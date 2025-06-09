@@ -37,7 +37,7 @@ import io.sentry.Sentry
 import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
 
-class HomeStepperActivity : BindBaseActivity<ActivityHomeStepperBinding>(), IFragmentCallBack {
+class HomeStepperActivity : BindBaseActivity<ActivityHomeStepperBinding>(){
 
     private val viewModel: HomeStepperViewModel by viewModels()
     private lateinit var inAppUpdate: InAppUpdate
@@ -73,7 +73,6 @@ class HomeStepperActivity : BindBaseActivity<ActivityHomeStepperBinding>(), IFra
         setupStepper()
 
         checkAppPermissions(getString(R.string.lbl_permission_rationale))
-
         handleBackPress()
     }
 
@@ -184,17 +183,6 @@ class HomeStepperActivity : BindBaseActivity<ActivityHomeStepperBinding>(), IFra
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         inAppUpdate.onActivityResult(requestCode, resultCode)
-    }
-
-    override fun reloadView() {
-        // not implemented yet
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onAttachFragment(fragment: androidx.fragment.app.Fragment) {
-        if (fragment is WelcomeFragment) {
-            fragment.setOnFragmentCloseListener(this)
-        }
     }
 
     private fun Context.showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
