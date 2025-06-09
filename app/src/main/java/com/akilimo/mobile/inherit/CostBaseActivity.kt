@@ -1,12 +1,13 @@
 package com.akilimo.mobile.inherit
 
 import android.widget.Toast
+import androidx.viewbinding.ViewBinding
 import com.akilimo.mobile.entities.OperationCostResponse
 import com.akilimo.mobile.interfaces.AkilimoApi
 import io.sentry.Sentry
 
 
-abstract class CostBaseActivity : BaseActivity() {
+abstract class CostBaseActivity<T : ViewBinding> : BindBaseActivity<T>() {
     protected fun loadOperationCost(
         operationName: String,
         operationType: String,
