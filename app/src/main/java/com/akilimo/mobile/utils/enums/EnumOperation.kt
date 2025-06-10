@@ -5,5 +5,5 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 enum class EnumOperation : Parcelable {
-    TILLAGE, HARROWING, RIDGING, WEEDING
+    TILLAGE, HARROWING, RIDGING, WEEDING,NONE
 }
