@@ -55,11 +55,6 @@ class TillageOperationFragment : BaseStepFragment() {
             }
         }
 
-        viewModel.dataIsValid.observe(viewLifecycleOwner) { isValid ->
-            // This can be used if you need to react to data validity changes directly
-            // For verifyStep, we'll check the LiveData's value directly
-        }
-
         viewModel.errorMessage.observe(viewLifecycleOwner) { errorMsg ->
             errorMsg?.let {
                 showCustomWarningDialog(it)
