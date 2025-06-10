@@ -7,6 +7,10 @@ import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.SessionManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
+@Deprecated(
+    "Use BaseBottomSheetDialogFragment instead",
+    replaceWith = ReplaceWith("BaseBottomSheetDialogFragment")
+)
 abstract class BaseDialogFragment : DialogFragment() {
     protected var LOG_TAG: String = BaseDialogFragment::class.java.simpleName
 
