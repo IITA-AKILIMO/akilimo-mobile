@@ -5,14 +5,14 @@ import androidx.viewbinding.ViewBinding
 import com.akilimo.mobile.entities.OperationCostResponse
 import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.utils.enums.EnumOperation
-import com.akilimo.mobile.utils.enums.EnumOperationType
+import com.akilimo.mobile.utils.enums.EnumOperationMethod
 import io.sentry.Sentry
 
 
 abstract class CostBaseActivity<T : ViewBinding> : BindBaseActivity<T>() {
     protected fun loadOperationCost(
         operationName: EnumOperation,
-        operationType: EnumOperationType,
+        operationType: EnumOperationMethod,
         dialogTitle: String,
         hintText: String
     ) {
@@ -67,7 +67,7 @@ abstract class CostBaseActivity<T : ViewBinding> : BindBaseActivity<T>() {
 
     protected abstract fun showDialogFullscreen(
         operationName: EnumOperation,
-        operationType: EnumOperationType,
+        operationType: EnumOperationMethod,
         countryCode: String?,
         dialogTitle: String?,
         hintText: String
