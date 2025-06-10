@@ -24,7 +24,7 @@
 
         <!-- Tractor Access Card -->
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/tractorCard"
+            android:id="@+id/tractor_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
@@ -53,7 +53,8 @@
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/lbl_no" />
+                    android:text="@string/lbl_no"
+                    android:textColor="@color/primaryDarkColor" />
 
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
@@ -67,20 +68,21 @@
             android:layout_marginTop="@dimen/spacing_medium"
             android:text="@string/lbl_which_implements_do_you_have_access_to"
             android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <!-- Implements Card -->
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/implementCard"
+            android:id="@+id/implement_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
             android:layout_marginBottom="@dimen/spacing_medium"
+            android:visibility="gone"
             app:cardCornerRadius="@dimen/dimen_5"
             app:cardElevation="@dimen/spacing_medium">
 
             <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/implementToggleGroup"
+                android:id="@+id/implement_toggle_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
