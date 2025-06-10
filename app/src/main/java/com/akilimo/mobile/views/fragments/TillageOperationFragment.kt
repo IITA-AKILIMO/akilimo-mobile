@@ -1,35 +1,35 @@
 package com.akilimo.mobile.views.fragments
 
+// import com.akilimo.mobile.entities.CurrentPractice // No longer directly needed
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentTillageOperationBinding
-import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.inherit.BaseStepFragment
-import com.akilimo.mobile.interfaces.DefaultDispatcherProvider
 import com.akilimo.mobile.interfaces.IDismissOperationsDialogListener
-import com.akilimo.mobile.interfaces.IDispatcherProvider
 import com.akilimo.mobile.utils.enums.EnumOperation
 import com.akilimo.mobile.utils.enums.EnumOperationMethod
 import com.akilimo.mobile.utils.showDialogFragmentSafely
+import com.akilimo.mobile.viewmodels.TillageOperationViewModel
+import com.akilimo.mobile.viewmodels.TillageOperationViewModelFactory
 import com.akilimo.mobile.views.fragments.dialog.OperationTypeDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.stepstone.stepper.VerificationError
-import io.sentry.Sentry
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-class TillageOperationFragment(private val dispatchers: IDispatcherProvider = DefaultDispatcherProvider()) :
-    BaseStepFragment() {
+class TillageOperationFragment : BaseStepFragment() {
     private var _binding: FragmentTillageOperationBinding? = null
     private val binding get() = _binding!!
-    override var dataIsValid: Boolean = true
 
-    private var currentPractice: CurrentPractice? = null
+    private val viewModel: TillageOperationViewModel by viewModels {
+        TillageOperationViewModelFactory(
+            application = requireActivity().application,
+        )
+    }
+
 
     companion object {
         private const val TAG = "TillOperationFragment"
@@ -48,61 +48,43 @@ class TillageOperationFragment(private val dispatchers: IDispatcherProvider = De
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Load initial data from database in the background
-        loadCurrentPractice()
+        viewModel.currentPractice.observe(viewLifecycleOwner) { practice ->
+            practice?.let {
+                binding.tillageBtnPloughing.isChecked = it.performPloughing
+                binding.tillageBtnRidging.isChecked = it.performRidging
+            }
+        }
+
+        viewModel.dataIsValid.observe(viewLifecycleOwner) { isValid ->
+            // This can be used if you need to react to data validity changes directly
+            // For verifyStep, we'll check the LiveData's value directly
+        }
+
+        viewModel.errorMessage.observe(viewLifecycleOwner) { errorMsg ->
+            errorMsg?.let {
+                showCustomWarningDialog(it)
+                viewModel.errorShown() // Notify ViewModel the error has been shown
+            }
+        }
+
 
         binding.apply {
             tillageOperationsGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
                 val button = group.findViewById<MaterialButton>(checkedId)
-                if (button.isPressed) {
+                if (button.isPressed) { // Only act on user presses
                     handleTillageOperationChange(checkedId, isChecked)
                 }
             }
         }
     }
 
-    private fun loadCurrentPractice() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            val startTime = System.currentTimeMillis()
-            Log.d(TAG, "Loading current practice from database...")
-            try {
-                // Perform database read on a background thread
-                currentPractice = withContext(dispatchers.io) {
-                    database.currentPracticeDao().findOne() ?: CurrentPractice()
-                }
-                updateUiFromCurrentPractice()
-                val endTime = System.currentTimeMillis()
-                Log.d(TAG, "Current practice loaded in ${endTime - startTime} ms")
-            } catch (e: Exception) {
-                Log.e(TAG, "Error loading current practice", e)
-                Sentry.captureException(e)
-            }
-        }
-    }
-
-    private fun updateUiFromCurrentPractice() {
-        currentPractice?.let { practice ->
-            binding.tillageBtnPloughing.isChecked = practice.performPloughing
-            binding.tillageBtnRidging.isChecked = practice.performRidging
-        }
-    }
-
-
     private fun handleTillageOperationChange(checkedId: Int, isChecked: Boolean) {
-        val practice = currentPractice ?: CurrentPractice().also { currentPractice = it }
-
-        var practiceChanged = false
         when (checkedId) {
             R.id.tillage_btn_ploughing -> {
                 if (isChecked) {
                     showOperationsDialog(EnumOperation.TILLAGE)
                 } else {
-                    if (practice.performPloughing) { // Check if value actually changed
-                        practice.performPloughing = false
-                        practice.ploughingMethod =
-                            EnumOperationMethod.NONE // Reset method if operation is disabled
-                        practiceChanged = true
-                    }
+                    viewModel.updatePloughing(perform = false)
                 }
             }
 
@@ -110,18 +92,9 @@ class TillageOperationFragment(private val dispatchers: IDispatcherProvider = De
                 if (isChecked) {
                     showOperationsDialog(EnumOperation.RIDGING)
                 } else {
-                    if (practice.performRidging) { // Check if value actually changed
-                        practice.performRidging = false
-                        practice.ridgingMethod =
-                            EnumOperationMethod.NONE // Reset method if operation is disabled
-                        practiceChanged = true
-                    }
+                    viewModel.updateRidging(perform = false)
                 }
             }
-        }
-
-        if (practiceChanged) {
-            saveCurrentPracticeToDatabase()
         }
     }
 
@@ -137,50 +110,20 @@ class TillageOperationFragment(private val dispatchers: IDispatcherProvider = De
                     return
                 }
 
-                val practice = currentPractice ?: CurrentPractice().also { currentPractice = it }
-                var practiceModifiedInDialog = false
-
                 when (operationName) {
                     EnumOperation.TILLAGE -> {
-                        if (enumOperationMethod != EnumOperationMethod.NONE) {
-                            if (!practice.performPloughing || practice.ploughingMethod != enumOperationMethod) {
-                                practice.performPloughing = true
-                                practice.ploughingMethod = enumOperationMethod
-                                practiceModifiedInDialog = true
-                            }
-                        } else {
-                            if (practice.performPloughing) {
-                                practice.performPloughing = false
-                                practice.ploughingMethod = EnumOperationMethod.NONE
-                                practiceModifiedInDialog = true
-                            }
-                        }
+                        val performOperation = enumOperationMethod != EnumOperationMethod.NONE
+                        viewModel.updatePloughing(performOperation, enumOperationMethod)
                     }
 
-                    EnumOperation.RIDGING -> { // Assuming this dialog is for ridging
-                        if (enumOperationMethod != EnumOperationMethod.NONE) {
-                            if (!practice.performRidging || practice.ridgingMethod != enumOperationMethod) {
-                                practice.performRidging = true
-                                practice.ridgingMethod = enumOperationMethod
-                                practiceModifiedInDialog = true
-                            }
-                        } else {
-                            if (practice.performRidging) {
-                                practice.performRidging = false
-                                practice.ridgingMethod = EnumOperationMethod.NONE
-                                practiceModifiedInDialog = true
-                            }
-                        }
+                    EnumOperation.RIDGING -> {
+                        val performOperation = enumOperationMethod != EnumOperationMethod.NONE
+                        viewModel.updateRidging(performOperation, enumOperationMethod)
                     }
 
                     else -> {
                         Log.w(TAG, "Unhandled operation name in dialog dismiss: $operationName")
                     }
-                }
-
-                if (practiceModifiedInDialog) {
-                    updateUiFromCurrentPractice()
-                    saveCurrentPracticeToDatabase()
                 }
             }
         })
@@ -192,50 +135,26 @@ class TillageOperationFragment(private val dispatchers: IDispatcherProvider = De
         )
     }
 
-
-    private fun saveCurrentPracticeToDatabase() {
-        val practiceToSave = currentPractice ?: return // Nothing to save
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                withContext(dispatchers.io) {
-                    database.currentPracticeDao().insert(practiceToSave)
-                }
-                dataIsValid = true
-            } catch (ex: Exception) {
-                dataIsValid = false
-                errorMessage = ex.message ?: "Unknown error during save"
-                Log.e(TAG, "Error saving current practice: $errorMessage", ex)
-                Sentry.captureException(ex)
-            }
-        }
-    }
+    // saveCurrentPracticeToDatabase() is removed from Fragment, handled by ViewModel.
 
     override fun verifyStep(): VerificationError? {
-        // Data validation should ideally check the current state of `currentPractice`
-        // For example: if (currentPractice?.performPloughing == true && currentPractice?.ploughingMethod == EnumOperationMethod.NONE)
-        // For now, it relies on the dataIsValid flag which is set after save attempts.
-        if (!dataIsValid) {
-            showCustomWarningDialog(errorMessage)
-            return VerificationError(errorMessage)
+        val isValid = viewModel.dataIsValid.value != false
+        if (!isValid) {
+            val error = viewModel.errorMessage.value ?: "Data is invalid."
+            return VerificationError(error)
         }
         return null
     }
 
     override fun onSelected() {
-        // Data should already be loaded in onViewCreated or via ViewModel.
-        // UI should be up-to-date. If not, trigger a reload or UI update.
         Log.d(TAG, "TillageOperationFragment selected.")
-        if (currentPractice == null) {
-            loadCurrentPractice() // Load if not already loaded (e.g., if fragment was recreated)
-        } else {
-            updateUiFromCurrentPractice() // Ensure UI is consistent with cached data
-        }
+        // ViewModel handles loading data. If you need to refresh data on selection:
+        viewModel.loadCurrentPractice()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null // Important for preventing memory leaks
+        _binding = null
         Log.d(TAG, "onDestroyView called.")
     }
 }
