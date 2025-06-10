@@ -1,5 +1,6 @@
 package com.akilimo.mobile.views.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,11 +19,12 @@ import com.akilimo.mobile.models.TimelineAttributes
 import com.akilimo.mobile.utils.LanguageManager
 import com.akilimo.mobile.utils.TheItemAnimation
 import com.akilimo.mobile.utils.enums.EnumInvestmentPref
+import com.akilimo.mobile.utils.enums.EnumOperationMethod
 import com.akilimo.mobile.utils.enums.StepStatus
 import com.github.vipulasri.timelineview.TimelineView
 import com.stepstone.stepper.VerificationError
 
-class SummaryFragment : BaseStepFragment() {
+class SummaryFragment() : BaseStepFragment() {
     private var _binding: FragmentSummaryBinding? = null
     private val binding get() = _binding!!
 
@@ -31,21 +33,11 @@ class SummaryFragment : BaseStepFragment() {
 
     private var myAdapter: MyTimeLineAdapter? = null
 
-//    private var countrySelected = false
-//    private var areaUnitSelected = false
-//    private var fieldSizeSelected = false
-//    private var locationPicked = false
-//    private var plantingDateProvided = false
-//    private var harvestDateProvided = false
-//    private var currentPracticeSelected = false
-//    private var performPloughing = false
-//    private var performRidging = false
 
     private var areaUnit: String? = ""
     private var fieldSize = 0.0
     private var lat = 0.0
     private var lon = 0.0
-    private var pickedLocation = ""
 
     companion object {
         fun newInstance(): SummaryFragment = SummaryFragment()
@@ -82,9 +74,11 @@ class SummaryFragment : BaseStepFragment() {
     }
 
     private fun setDataListItems() {
+        val context = requireContext()
+
         val location = database.locationInfoDao().findOne()
         val mandatoryInfo = database.mandatoryInfoDao().findOne()
-        val currentPractice = database.currentPracticeDao().findOne()
+
         val cropSchedule = database.scheduleDateDao().findOne()
         val userProfile = database.profileInfoDao().findOne()
         val countryName = userProfile?.countryName.orEmpty()
@@ -93,12 +87,14 @@ class SummaryFragment : BaseStepFragment() {
 
         val riskAttitudeName = risks[userProfile?.riskAtt ?: 0]
 
-        val fieldInfo = buildFieldInfo(mandatoryInfo)
+        val fieldInfo = buildFieldInfo(mandatoryInfo, context)
         val locationString = buildLocationString(location)
         val plantingDate = cropSchedule?.plantingDate.orEmpty()
         val harvestDate = cropSchedule?.harvestDate.orEmpty()
-        val ploughStr = buildPloughStr(currentPractice)
-        val ridgeStr = buildRidgeStr(currentPractice)
+
+        val currentPractice = database.currentPracticeDao().findOne()
+        val ploughStr = buildPloughStr(currentPractice, context)
+        val ridgeStr = buildRidgeStr(currentPractice, context)
 
         mDataList.apply {
             clear()
@@ -129,14 +125,14 @@ class SummaryFragment : BaseStepFragment() {
         )
     }
 
-    private fun buildFieldInfo(mandatoryInfo: MandatoryInfo?): String {
+    private fun buildFieldInfo(mandatoryInfo: MandatoryInfo?, context: Context): String {
         mandatoryInfo?.let {
             areaUnit = it.displayAreaUnit
             val areaUnitSelected = areaUnit?.isNotEmpty() == true
             fieldSize = it.areaSize
 
             if (areaUnitSelected) {
-                val language = LanguageManager.getLanguage(requireContext())
+                val language = LanguageManager.getLanguage(context)
                 return if (language.equals("sw", ignoreCase = true)) {
                     String.format("%s %s", areaUnit, fieldSize)
                 } else {
@@ -161,35 +157,23 @@ class SummaryFragment : BaseStepFragment() {
         return ""
     }
 
-    private fun buildPloughStr(currentPractice: CurrentPractice?): String {
-        currentPractice?.let {
-            val ploughMethod = it.ploughingMethod
-            return when {
-                ploughMethod != null -> {
-                    if (ploughMethod == "tractor") requireContext().getString(R.string.lbl_tractor)
-                    else requireContext().getString(R.string.lbl_manual)
-                }
-
-                else -> requireContext().getString(R.string.lbl_no_ploughing)
-            }
+    private fun buildPloughStr(currentPractice: CurrentPractice?, context: Context): String {
+        return when (currentPractice?.ploughingMethod) {
+            EnumOperationMethod.TRACTOR -> context.getString(R.string.lbl_tractor)
+            EnumOperationMethod.MANUAL -> context.getString(R.string.lbl_manual)
+            else -> context.getString(R.string.lbl_no_ploughing)
         }
-        return ""
     }
 
-    private fun buildRidgeStr(currentPractice: CurrentPractice?): String {
-        currentPractice?.let {
-            val ridgeMethod = it.ridgingMethod
-            return when {
-                ridgeMethod != null -> {
-                    if (ridgeMethod == "tractor") requireContext().getString(R.string.lbl_tractor)
-                    else requireContext().getString(R.string.lbl_manual)
-                }
+    private fun buildRidgeStr(currentPractice: CurrentPractice?, context: Context): String {
 
-                else -> requireContext().getString(R.string.lbl_no_ridging)
-            }
+        return when (currentPractice?.ridgingMethod) {
+            EnumOperationMethod.TRACTOR -> context.getString(R.string.lbl_tractor)
+            EnumOperationMethod.MANUAL -> context.getString(R.string.lbl_manual)
+            else -> context.getString(R.string.lbl_no_ridging)
         }
-        return ""
     }
+
 
     private fun initRecyclerView() {
         binding.timelineRecycler.apply {
@@ -213,6 +197,4 @@ class SummaryFragment : BaseStepFragment() {
     override fun onSelected() {
         setDataListItems()
     }
-
-    override fun onError(error: VerificationError) {}
 }
