@@ -17,6 +17,7 @@ import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.utils.LanguageManager
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumCountry
+import com.akilimo.mobile.utils.enums.EnumWeedControlMethod
 import io.sentry.Sentry
 
 class WeedControlCostsActivity : BaseActivity() {
@@ -34,7 +35,7 @@ class WeedControlCostsActivity : BaseActivity() {
     private var currentPractice: CurrentPractice? = null
     private var fieldOperationCost: FieldOperationCost? = null
     private var usesHerbicide = false
-    private var weedControlTechnique: String? = null
+    private var weedControlTechnique: EnumWeedControlMethod = EnumWeedControlMethod.NONE
     private var firstOperationCost = 0.0
     private var secondOperationCost = 0.0
     private var weedRadioIndex = 0
@@ -68,8 +69,6 @@ class WeedControlCostsActivity : BaseActivity() {
             }
         }
 
-        fieldOperationCost = database.fieldOperationCostDao().findOne()
-        currentPractice = database.currentPracticeDao().findOne()
 
         toolbar = binding.toolbar
         firstWeedingOpCostTitle = binding.weedControlCosts.firstWeedingOpCostTitle
@@ -102,18 +101,22 @@ class WeedControlCostsActivity : BaseActivity() {
             "BI" -> currencyName = EnumCountry.Burundi.currencyName(context)
         }
 
+
+        val currentPractice = database.currentPracticeDao().findOne()
         if (currentPractice != null) {
-            weedRadioIndex = currentPractice!!.weedRadioIndex
-            weedControlTechnique = currentPractice!!.weedControlTechnique
+            weedRadioIndex = currentPractice.weedRadioIndex
+            weedControlTechnique = currentPractice.weedControlMethod
             rdgWeedControl!!.check(weedRadioIndex)
         }
+
+        val fieldOperationCost = database.fieldOperationCostDao().findOne()
         if (fieldOperationCost != null) {
-            firstOperationCost = fieldOperationCost!!.firstWeedingOperationCost
+            firstOperationCost = fieldOperationCost.firstWeedingOperationCost
             if (firstOperationCost > 0) {
                 editFirstWeedingOpCost!!.setText(firstOperationCost.toString())
             }
 
-            secondOperationCost = fieldOperationCost!!.secondWeedingOperationCost
+            secondOperationCost = fieldOperationCost.secondWeedingOperationCost
             if (secondOperationCost > 0) {
                 editSecondWeedingOpCost!!.setText(secondOperationCost.toString())
             }
@@ -151,17 +154,17 @@ class WeedControlCostsActivity : BaseActivity() {
             when (radioIndex) {
                 R.id.rdManualOnlyControl -> {
                     usesHerbicide = false
-                    weedControlTechnique = "manual"
+                    weedControlTechnique = EnumWeedControlMethod.MANUAL
                 }
 
                 R.id.rdHerbicideControl -> {
                     usesHerbicide = true
-                    weedControlTechnique = "herbicide"
+                    weedControlTechnique = EnumWeedControlMethod.HERBICIDE
                 }
 
                 R.id.rdManualHerbicideControl -> {
                     usesHerbicide = true
-                    weedControlTechnique = "manual_herbicide"
+                    weedControlTechnique = EnumWeedControlMethod.MANUAL
                 }
             }
         }
@@ -173,15 +176,6 @@ class WeedControlCostsActivity : BaseActivity() {
     }
 
     override fun validate(backPressed: Boolean) {
-        if (weedControlTechnique.isNullOrEmpty()) {
-            showCustomWarningDialog(
-                getString(R.string.lbl_invalid_selection),
-                getString(R.string.lbl_weed_control_prompt)
-            )
-            return
-        }
-
-        //get the user input
         weedRadioIndex = rdgWeedControl!!.checkedRadioButtonId
         firstOperationCost = mathHelper.convertToDouble(editFirstWeedingOpCost!!.text.toString())
         secondOperationCost =
@@ -210,7 +204,7 @@ class WeedControlCostsActivity : BaseActivity() {
                 fieldOperationCost = FieldOperationCost()
             }
 
-            currentPractice!!.weedControlTechnique = weedControlTechnique
+            currentPractice!!.weedControlMethod = weedControlTechnique
             currentPractice!!.usesHerbicide = usesHerbicide
             currentPractice!!.weedRadioIndex = weedRadioIndex
 
