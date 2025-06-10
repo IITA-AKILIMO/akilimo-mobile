@@ -11,7 +11,7 @@ import com.akilimo.mobile.inherit.CostBaseActivity
 import com.akilimo.mobile.utils.LanguageManager
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumOperation
-import com.akilimo.mobile.utils.enums.EnumOperationType
+import com.akilimo.mobile.utils.enums.EnumOperationMethod
 import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.OperationCostsDialogFragment
 import io.sentry.Sentry
@@ -125,7 +125,7 @@ class ManualTillageCostActivity : CostBaseActivity<ActivityManualTillageCostBind
             getString(hintResId, mathHelper.removeLeadingZero(fieldSize), finalTranslatedUnit)
         loadOperationCost(
             operation,
-            EnumOperationType.MANUAL,
+            EnumOperationMethod.MANUAL,
             title,
             hint
         )
@@ -133,7 +133,7 @@ class ManualTillageCostActivity : CostBaseActivity<ActivityManualTillageCostBind
 
     override fun showDialogFullscreen(
         operationName: EnumOperation,
-        operationType: EnumOperationType,
+        operationType: EnumOperationMethod,
         countryCode: String?,
         dialogTitle: String?,
         hintText: String
