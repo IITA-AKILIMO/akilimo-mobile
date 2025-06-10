@@ -39,7 +39,7 @@ abstract class BaseStepFragment : Fragment(), Step {
 
 
     protected var errorMessage: String = ""
-    protected var dataIsValid = false
+    open var dataIsValid = false
 
     // Lazy initialization for dependencies
     protected val database: AppDatabase by lazy { AppDatabase.getDatabase(requireContext()) }
@@ -54,9 +54,7 @@ abstract class BaseStepFragment : Fragment(), Step {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         return loadFragmentLayout(inflater, container, savedInstanceState)
     }
@@ -66,9 +64,7 @@ abstract class BaseStepFragment : Fragment(), Step {
      * @return The inflated view
      */
     protected abstract fun loadFragmentLayout(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View
 
     /**
@@ -79,9 +75,7 @@ abstract class BaseStepFragment : Fragment(), Step {
      * @param buttonTitle Custom text for the close button (optional)
      */
     protected fun showCustomWarningDialog(
-        titleText: String,
-        contentText: String? = titleText,
-        buttonTitle: String? = null
+        titleText: String, contentText: String? = titleText, buttonTitle: String? = null
     ) {
         try {
             Dialog(requireContext()).apply {
@@ -156,5 +150,9 @@ abstract class BaseStepFragment : Fragment(), Step {
     override fun onError(error: VerificationError) {
         // Base implementation - override in subclasses if needed
         Timber.e("Verification error: ${error.errorMessage}")
+    }
+
+    override fun onSelected() {
+        Timber.d("Fragment selected")
     }
 }
