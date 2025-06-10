@@ -124,16 +124,16 @@ class ManualTillageCostActivity : CostBaseActivity<ActivityManualTillageCostBind
         val hint =
             getString(hintResId, mathHelper.removeLeadingZero(fieldSize), finalTranslatedUnit)
         loadOperationCost(
-            operation.name,
-            EnumOperationType.MANUAL.name,
+            operation,
+            EnumOperationType.MANUAL,
             title,
             hint
         )
     }
 
     override fun showDialogFullscreen(
-        operationName: String?,
-        operationType: String?,
+        operationName: EnumOperation,
+        operationType: EnumOperationType,
         countryCode: String?,
         dialogTitle: String?,
         hintText: String
@@ -142,8 +142,8 @@ class ManualTillageCostActivity : CostBaseActivity<ActivityManualTillageCostBind
         dialogOpen = true
 
         val args = Bundle().apply {
-            putString(OperationCostsDialogFragment.OPERATION_NAME, operationName)
-            putString(OperationCostsDialogFragment.OPERATION_TYPE, operationType)
+            putString(OperationCostsDialogFragment.OPERATION_NAME, operationName.name)
+            putString(OperationCostsDialogFragment.OPERATION_TYPE, operationType.name)
             putString(OperationCostsDialogFragment.DIALOG_TITLE, dialogTitle)
             putString(OperationCostsDialogFragment.EXACT_PRICE_HINT, hintText)
             putString(OperationCostsDialogFragment.CURRENCY_CODE, currencySymbol)
