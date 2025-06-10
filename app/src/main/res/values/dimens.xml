@@ -51,6 +51,7 @@
     <dimen name="dimen_58">58dp</dimen>
     <dimen name="dimen_100">100dp</dimen>
     <dimen name="dimen_110">110dp</dimen>
+    <dimen name="dimen_250">250dp</dimen>
 
     <!--others-->
     <dimen name="wrap_constraints">0dp</dimen>
