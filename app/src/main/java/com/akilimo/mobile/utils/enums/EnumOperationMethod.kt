@@ -4,9 +4,16 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-enum class EnumOperationType : Parcelable {
+enum class EnumOperationMethod : Parcelable {
     MANUAL,
     TRACTOR,
+    NONE
+}
+
+@Parcelize
+enum class EnumWeedControlMethod : Parcelable {
+    MANUAL,
     HERBICIDE,
+    HERBICIDE_MANUAL,
     NONE
 }
