@@ -14,7 +14,7 @@ import com.akilimo.mobile.inherit.CostBaseActivity
 import com.akilimo.mobile.utils.LanguageManager
 import com.akilimo.mobile.utils.enums.EnumAdviceTasks
 import com.akilimo.mobile.utils.enums.EnumOperation
-import com.akilimo.mobile.utils.enums.EnumOperationType
+import com.akilimo.mobile.utils.enums.EnumOperationMethod
 import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.OperationCostsDialogFragment
 import io.sentry.Sentry
@@ -146,7 +146,7 @@ class TractorAccessActivity : CostBaseActivity<ActivityTractorAccessBinding>() {
 
         loadOperationCost(
             enumOperationName,
-            EnumOperationType.TRACTOR,
+            EnumOperationMethod.TRACTOR,
             title,
             hint
         )
@@ -203,7 +203,7 @@ class TractorAccessActivity : CostBaseActivity<ActivityTractorAccessBinding>() {
 
     override fun showDialogFullscreen(
         operationName: EnumOperation,
-        operationType: EnumOperationType,
+        operationType: EnumOperationMethod,
         countryCode: String?,
         dialogTitle: String?,
         hintText: String
