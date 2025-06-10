@@ -5,119 +5,110 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.akilimo.mobile.views.activities.TractorAccessActivity"
+    tools:context="views.activities.TractorAccessActivity"
     tools:showIn="@layout/activity_tractor_access">
 
-
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:padding="@dimen/spacing_medium">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <!-- Title -->
+        <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:text="@string/lbl_access_to_tractor"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
 
+        <!-- Tractor Access Card -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/tractorCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/title"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:visibility="visible"
-            app:cardBackgroundColor="@color/grey_3"
-            app:cardCornerRadius="5dp"
-            app:cardElevation="2dp"
-            app:cardMaxElevation="6dp"
-            app:contentPadding="@dimen/spacing_small">
+            android:layout_marginBottom="@dimen/spacing_medium"
+            app:cardCornerRadius="@dimen/dimen_5"
+            app:cardElevation="@dimen/spacing_medium">
 
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/tractor_toggle_group"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_small">
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/spacing_small"
+                app:checkedButton="@+id/btn_no_tractor"
+                app:singleSelection="true">
 
-                <RadioGroup
-                    android:id="@+id/rdgTractor"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_yes_tractor"
+                    style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:text="@string/lbl_yes" />
 
-                    <RadioButton
-                        android:id="@+id/rdYesTractor"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_no_tractor"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lbl_no" />
 
-                        android:text="@string/lbl_yes" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
 
-
-                    <RadioButton
-                        android:id="@+id/rdNoTractor"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-
-                        android:text="@string/lbl_no" />
-
-                </RadioGroup>
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
         </com.google.android.material.card.MaterialCardView>
 
-
-        <!-- implement section -->
-        <androidx.appcompat.widget.AppCompatTextView
+        <!-- Implements Title -->
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/implementTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tractorCard"
             android:layout_marginTop="@dimen/spacing_medium"
-
             android:text="@string/lbl_which_implements_do_you_have_access_to"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:visibility="gone" />
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+            android:visibility="visible" />
 
-        <androidx.cardview.widget.CardView
+        <!-- Implements Card -->
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/implementCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/implementTitle"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:visibility="gone"
-            app:cardBackgroundColor="@color/grey_3"
-            app:cardCornerRadius="5dp"
-            app:cardElevation="2dp"
-            app:cardMaxElevation="6dp"
-            app:contentPadding="@dimen/spacing_small">
+            android:layout_marginBottom="@dimen/spacing_medium"
+            app:cardCornerRadius="@dimen/dimen_5"
+            app:cardElevation="@dimen/spacing_medium">
 
-
-            <androidx.appcompat.widget.LinearLayoutCompat
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/implementToggleGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_small">
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                app:selectionRequired="false"
+                app:singleSelection="false">
 
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:id="@+id/chkPlough"
-                    android:layout_width="match_parent"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_plough"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/lbl_plough"
+                    app:strokeColor="@color/primaryDarkColor" />
 
-                    android:text="@string/lbl_plough" />
-
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:id="@+id/chkRidger"
-                    android:layout_width="match_parent"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_ridger"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/lbl_ridger"
+                    app:strokeColor="@color/primaryDarkColor" />
 
-                    android:text="@string/lbl_ridger" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
-    </RelativeLayout>
-
-
+    </LinearLayout>
 </androidx.core.widget.NestedScrollView>
