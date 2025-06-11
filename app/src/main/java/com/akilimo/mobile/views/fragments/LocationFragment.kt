@@ -37,9 +37,11 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
     private var userSelectedCountryCode: String? = null
     private var userSelectedCountryName: String? = null
 
+    private var countryCode: String = ""
+    private var countryName: String = ""
     private var farmName: String? = ""
     private var fullNames: String? = null
-    private var MAP_BOX_ACCESS_TOKEN = ""
+    private var mapBoxToken = ""
 
     private var isLocationValid = false
 
@@ -53,7 +55,7 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
         errorMessage = getString(R.string.lbl_location_error)
-        MAP_BOX_ACCESS_TOKEN = sessionManager.getMapBoxApiKey()
+        mapBoxToken = sessionManager.getMapBoxApiKey()
 
         setupFarmNameDialog()
         setupLocationButtons()
@@ -136,7 +138,7 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
         }
 
     private fun reverseGeoCode(lat: Double, lon: Double) {
-        val reverseGeocode = MapboxGeocoding.builder().accessToken(MAP_BOX_ACCESS_TOKEN)
+        val reverseGeocode = MapboxGeocoding.builder().accessToken(mapBoxToken)
             .query(Point.fromLngLat(lon, lat)).fuzzyMatch(true).build()
 
         reverseGeocode.enqueueCall(object : Callback<GeocodingResponse?> {
