@@ -57,7 +57,7 @@ class BioDataFragment : BindBaseStepFragment<FragmentBioDataBinding>() {
         )
 
         binding.spnGender.apply {
-            adapter = MySpinnerAdapter(requireContext(), genderOptions.map { it.label })
+            adapter = MySpinnerAdapter(requireContext(), genderOptions.map { it.displayLabel })
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>?,
@@ -73,7 +73,7 @@ class BioDataFragment : BindBaseStepFragment<FragmentBioDataBinding>() {
         }
 
         binding.spnInterest.apply {
-            adapter = MySpinnerAdapter(requireContext(), interestOptions.map { it.label })
+            adapter = MySpinnerAdapter(requireContext(), interestOptions.map { it.displayLabel })
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>?,
