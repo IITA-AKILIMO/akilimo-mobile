@@ -14,6 +14,7 @@ class SessionManager(context: Context) {
     }
 
     private val pref: SharedPreferences = context.getSharedPreferences(PREF_NAME, 0)
+
     private val editor: SharedPreferences.Editor = pref.edit()
 
     fun getAkilimoEndpoint(): String {
@@ -29,7 +30,7 @@ class SessionManager(context: Context) {
     }
 
     fun setFuelrodEndpoint(apiResource: String) {
-        editor.putString("apiResource", apiResource).apply()
+        editor.putString("fuelrodResource", apiResource).apply()
     }
 
     fun setApiRefreshToken(apiToken: String) {
@@ -62,33 +63,6 @@ class SessionManager(context: Context) {
 
     fun getLocationIqToken(): String {
         return pref.getString("locationIqToken", "") ?: ""
-    }
-
-    fun setNgnRate(ngnRate: String) {
-        editor.putString("ngnRate", ngnRate).apply()
-    }
-
-    fun getNgnRate(): Double {
-        val rate = pref.getString("ngnRate", "390.34") ?: "390.34"
-        return rate.toDoubleOrNull() ?: 390.34
-    }
-
-    fun setTzsRate(tzsRate: String) {
-        editor.putString("tzsRate", tzsRate).apply()
-    }
-
-    fun getTzsRate(): Double {
-        val rate = pref.getString("tzsRate", "6.11") ?: "6.11"
-        return rate.toDoubleOrNull() ?: 6.11
-    }
-
-    fun setGhsRate(ghsRate: String) {
-        editor.putString("ghsRate", ghsRate).apply()
-    }
-
-    fun getGhsRate(): Double {
-        val rate = pref.getString("ghsRate", "6.11") ?: "6.11"
-        return rate.toDoubleOrNull() ?: 6.11
     }
 
     fun setFirstRun(firstRun: Boolean) {
@@ -149,14 +123,6 @@ class SessionManager(context: Context) {
         return pref.getBoolean("termsAccepted", false)
     }
 
-    fun setCountry(country: String) {
-        editor.putString("country", country).apply()
-    }
-
-    fun getCountry(): String {
-        return pref.getString("country", "NA") ?: "NA"
-    }
-
     fun setTermsLink(termsLink: String) {
         editor.putString("termsLink", termsLink).apply()
     }
@@ -164,31 +130,6 @@ class SessionManager(context: Context) {
     fun getTermsLink(): String {
         return pref.getString("termsLink", "https://akilimo.org/index.php/akilimo-privacy-policy")
             ?: ""
-    }
-
-
-    fun setRememberUserInfo(rememberUserInfo: Boolean) {
-        editor.putBoolean("rememberUserInfo", rememberUserInfo).apply()
-    }
-
-    fun getRememberUserInfo(): Boolean {
-        return pref.getBoolean("rememberUserInfo", false)
-    }
-
-    fun setRememberAreaUnit(rememberAreaUnit: Boolean) {
-        editor.putBoolean("rememberAreaUnit", rememberAreaUnit).apply()
-    }
-
-    fun getRememberAreaUnit(): Boolean {
-        return pref.getBoolean("rememberAreaUnit", false)
-    }
-
-    fun setRememberInvestmentPref(rememberInvestmentPref: Boolean) {
-        editor.putBoolean("rememberInvestmentPref", rememberInvestmentPref).apply()
-    }
-
-    fun getRememberInvestmentPref(): Boolean {
-        return pref.getBoolean("rememberInvestmentPref", false)
     }
 
     fun setDisclaimerRead(disclaimerRead: Boolean) {

@@ -6,105 +6,94 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.Window
-import android.view.WindowManager
-import android.widget.RadioGroup
-import android.widget.TextView
 import androidx.core.graphics.drawable.toDrawable
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentOperationTypeDialogBinding
 import com.akilimo.mobile.inherit.BaseDialogFragment
 import com.akilimo.mobile.interfaces.IDismissOperationsDialogListener
-import com.akilimo.mobile.utils.enums.EnumOperationType
+import com.akilimo.mobile.utils.enums.EnumOperation
+import com.akilimo.mobile.utils.enums.EnumOperationMethod
 
 class OperationTypeDialogFragment : BaseDialogFragment() {
 
     private var onDismissListener: IDismissOperationsDialogListener? = null
-    private var enumOperationType: EnumOperationType? = null
-    private var operation: String? = null
-    private var cancelled = false
+    private var selectedOperationType: EnumOperationMethod = EnumOperationMethod.NONE
+    private var operationType: EnumOperation = EnumOperation.NONE
+    private var wasCancelled = false
 
     private var _binding: FragmentOperationTypeDialogBinding? = null
     private val binding get() = _binding!!
 
-
     companion object {
-        const val ARG_ITEM_ID: String = "OperationTypeDialogFragment"
-        const val OPERATION_TYPE: String = "operation_type"
-        private val LOG_TAG: String = OperationTypeDialogFragment::class.java.simpleName
+        private val LOG_TAG = OperationTypeDialogFragment::class.java.simpleName
+        const val TAG_OPERATION_DIALOG = "OperationTypeDialogFragment"
+        const val OPERATION_TYPE = "operation_type_enum"
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val bundle = this.arguments
         val context = requireContext()
-        if (bundle != null) {
-            operation = bundle.getString(OPERATION_TYPE)
-        }
+        operationType = arguments?.getParcelable(OPERATION_TYPE) ?: EnumOperation.NONE
 
         _binding = FragmentOperationTypeDialogBinding.inflate(layoutInflater)
-        val dialog = Dialog(context)
 
-        dialog.apply {
-            window!!.requestFeature(Window.FEATURE_NO_TITLE)
-            window!!.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-            )
-            window!!.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-            window!!.attributes.windowAnimations = R.style.DialogSlideAnimation
+        return Dialog(context).apply {
+            requestWindowFeature(Window.FEATURE_NO_TITLE)
+            window?.apply {
+                setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+                attributes.windowAnimations = R.style.DialogSlideAnimation
+            }
 
             setContentView(binding.root)
-
             setCancelable(true)
             setCanceledOnTouchOutside(false)
+            setupUI()
         }
-
-
-        val lblFragmentTitle = dialog.findViewById<TextView>(R.id.lblFragmentTitle)
-        if (operation == "Plough") {
-            lblFragmentTitle.setText(R.string.lbl_plough_op_type)
-        } else if (operation == "Ridge") {
-            lblFragmentTitle.setText(R.string.lbl_ridge_op_type)
-        }
-
-        binding.updateButton.setOnClickListener(View.OnClickListener { view: View? ->
-            if (enumOperationType != null) {
-                cancelled = false
-                dismiss()
-            }
-            binding.lblError.visibility = View.VISIBLE
-        })
-
-        binding.closeButton.setOnClickListener(View.OnClickListener { view: View? ->
-            cancelled = true
-            enumOperationType = EnumOperationType.NONE
-            dismiss()
-        })
-
-        binding.rdgOperationType.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener { radioGroup: RadioGroup?, radioIndex: Int ->
-            radioSelected(
-                radioIndex
-            )
-        })
-        return dialog
     }
 
-    private fun radioSelected(radioIndex: Int) {
-        binding.lblError.visibility = View.GONE
-        enumOperationType = when (radioIndex) {
-            R.id.rdMechanical -> EnumOperationType.TRACTOR
-            R.id.rdManual -> EnumOperationType.MANUAL
-            else -> EnumOperationType.NONE
+    private fun setupUI() {
+        val titleRes = when (operationType) {
+            EnumOperation.TILLAGE -> R.string.lbl_plough_op_type
+            EnumOperation.RIDGING -> R.string.lbl_ridge_op_type
+            else -> R.string.app_name
+        }
+        binding.lblFragmentTitle.setText(titleRes)
+
+        binding.updateButton.setOnClickListener {
+            if (selectedOperationType != EnumOperationMethod.NONE) {
+                wasCancelled = false
+                dismiss()
+            } else {
+                binding.lblError.visibility = View.VISIBLE
+            }
+        }
+
+        binding.closeButton.setOnClickListener {
+            wasCancelled = true
+            selectedOperationType = EnumOperationMethod.NONE
+            dismiss()
+        }
+
+        binding.rdgOperationType.setOnCheckedChangeListener { _, checkedId ->
+            binding.lblError.visibility = View.GONE
+            selectedOperationType = when (checkedId) {
+                R.id.rdMechanical -> EnumOperationMethod.TRACTOR
+                R.id.rdManual -> EnumOperationMethod.MANUAL
+                else -> EnumOperationMethod.NONE
+            }
         }
     }
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        if (onDismissListener != null && enumOperationType != null) {
-            onDismissListener!!.onDismiss(operation!!, enumOperationType!!, cancelled)
-        }
+        onDismissListener?.onDismiss(selectedOperationType, wasCancelled)
     }
 
-    fun setOnDismissListener(dismissListener: IDismissOperationsDialogListener?) {
-        this.onDismissListener = dismissListener
+    fun setOnDismissListener(listener: IDismissOperationsDialogListener?) {
+        onDismissListener = listener
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

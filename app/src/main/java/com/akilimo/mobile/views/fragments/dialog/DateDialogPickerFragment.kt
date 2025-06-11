@@ -1,107 +1,100 @@
 package com.akilimo.mobile.views.fragments.dialog
 
-import android.app.Activity
 import android.app.DatePickerDialog
-import android.app.DatePickerDialog.OnDateSetListener
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.widget.DatePicker
-import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.fragment.app.DialogFragment
 import com.akilimo.mobile.interfaces.IDatePickerDismissListener
 import com.akilimo.mobile.utils.DateHelper
 import java.util.Calendar
 
-class DateDialogPickerFragment : AppCompatDialogFragment, OnDateSetListener {
-    private val myCalendar: Calendar = Calendar.getInstance()
-    private var pickPlantingDate = false
-    private var pickHarvestDate = false
-    private var selectedPlantingDate: String = "01-01-1990"
+class DateDialogPickerFragment : DialogFragment(), DatePickerDialog.OnDateSetListener {
+
+    private val calendar: Calendar = Calendar.getInstance()
+
+    private var isPlantingDate = false
+    private var isHarvestDate = false
+    private var plantingDateStr: String = "01-01-1990"
     private var selectedDate: String = "01-01-1990"
 
-    private var onDismissListener: IDatePickerDismissListener? = null
+    private var dismissListener: IDatePickerDismissListener? = null
 
     companion object {
-        const val PLANTING_REQUEST_CODE: Int = 11 // Used to identify the result
-        const val HARVEST_REQUEST_CODE: Int = 12 // Used to identify the result
-        const val TAG: String = "DatePickerFragment"
-    }
+        const val PLANTING_REQUEST_CODE = 11
+        const val HARVEST_REQUEST_CODE = 12
+        const val TAG = "DatePickerFragment"
 
+        fun newInstanceForPlanting(): DateDialogPickerFragment {
+            return DateDialogPickerFragment().apply {
+                isPlantingDate = true
+            }
+        }
 
-    constructor(pickPlantingDate: Boolean) {
-        this.pickPlantingDate = pickPlantingDate
-    }
-
-    /**
-     * @param pickHarvestDate      Indicate if harvest date is being picked
-     * @param selectedPlantingDate pass the planting date parameter
-     */
-    constructor(pickHarvestDate: Boolean, selectedPlantingDate: String) {
-        this.pickHarvestDate = pickHarvestDate
-        this.selectedPlantingDate = selectedPlantingDate
+        fun newInstanceForHarvest(plantingDate: String): DateDialogPickerFragment {
+            return DateDialogPickerFragment().apply {
+                isHarvestDate = true
+                plantingDateStr = plantingDate
+            }
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        // Set the current date as the default date
-        val c = Calendar.getInstance()
-        val year = c[Calendar.YEAR]
-        val month = c[Calendar.MONTH]
-        val day = c[Calendar.DAY_OF_MONTH]
-
-        // Return a new instance of DatePickerDialog
-        val datePickerDialog = DatePickerDialog(
-            requireActivity(),
-            this@DateDialogPickerFragment, year, month, day
+        val currentDate = Calendar.getInstance()
+        val (year, month, day) = listOf(
+            currentDate.get(Calendar.YEAR),
+            currentDate.get(Calendar.MONTH),
+            currentDate.get(Calendar.DAY_OF_MONTH)
         )
 
-        val datePicker = datePickerDialog.datePicker
+        val dialog = DatePickerDialog(requireContext(), this, year, month, day)
+        val datePicker = dialog.datePicker
 
-        if (pickPlantingDate) {
-            val minDate = DateHelper.getMinDate(-16)
-            val maxDate = DateHelper.getMinDate(12)
-            datePicker.minDate = minDate.timeInMillis
-            datePicker.maxDate = maxDate.timeInMillis
-        } else if (pickHarvestDate && selectedPlantingDate.isNotEmpty()) {
-            val minDate = DateHelper.getFutureOrPastMonth(selectedPlantingDate, 8)
-            val maxDate = DateHelper.getFutureOrPastMonth(selectedPlantingDate, 16)
-            datePicker.minDate = minDate.timeInMillis
-            datePicker.maxDate = maxDate.timeInMillis
+        when {
+            isPlantingDate -> {
+                datePicker.minDate = DateHelper.getMinDate(-16).timeInMillis
+                datePicker.maxDate = DateHelper.getMinDate(12).timeInMillis
+            }
+
+            isHarvestDate && plantingDateStr.isNotEmpty() -> {
+                datePicker.minDate =
+                    DateHelper.getFutureOrPastMonth(plantingDateStr, 8).timeInMillis
+                datePicker.maxDate =
+                    DateHelper.getFutureOrPastMonth(plantingDateStr, 16).timeInMillis
+            }
         }
-        return datePickerDialog
+
+        return dialog
     }
 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, dayOfMonth: Int) {
-        myCalendar[Calendar.YEAR] = year
-        myCalendar[Calendar.MONTH] = month
-        myCalendar[Calendar.DAY_OF_MONTH] = dayOfMonth
-        selectedDate = DateHelper.simpleDateFormatter.format(myCalendar.time)
+        calendar.set(year, month, dayOfMonth)
+        selectedDate = DateHelper.simpleDateFormatter.format(calendar.time)
 
-        //TODO use the Fragment Result API, which is cleaner and lifecycle-aware.
-        val target = targetFragment
-        if (target != null) {
-            val intent = Intent()
-            intent.putExtra("selectedDate", selectedDate)
-            intent.putExtra("selectedDateObject", myCalendar.time)
-            target.onActivityResult(
-                targetRequestCode,
-                Activity.RESULT_OK,
-                intent
-            )
+        targetFragment?.let { target ->
+            val resultIntent = Intent().apply {
+                putExtra("selectedDate", selectedDate)
+                putExtra("selectedDateObject", calendar.time)
+            }
+            target.onActivityResult(targetRequestCode, android.app.Activity.RESULT_OK, resultIntent)
         }
+
+        // TODO: Replace with FragmentResult API if targetFragment is deprecated in your app
     }
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        if (onDismissListener != null) {
-            onDismissListener!!.onDismiss(
-                myCalendar,
-                selectedDate, pickPlantingDate, pickHarvestDate
-            )
-        }
+        dismissListener?.onDismiss(
+            calendar,
+            selectedDate,
+            isPlantingDate,
+            isHarvestDate
+        )
     }
 
-    fun setOnDismissListener(dismissListener: IDatePickerDismissListener?) {
-        this.onDismissListener = dismissListener
+    fun setOnDismissListener(listener: IDatePickerDismissListener?) {
+        dismissListener = listener
     }
 }

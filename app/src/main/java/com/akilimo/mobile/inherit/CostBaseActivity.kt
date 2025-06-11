@@ -1,25 +1,28 @@
 package com.akilimo.mobile.inherit
 
 import android.widget.Toast
+import androidx.viewbinding.ViewBinding
 import com.akilimo.mobile.entities.OperationCostResponse
 import com.akilimo.mobile.interfaces.AkilimoApi
+import com.akilimo.mobile.utils.enums.EnumOperation
+import com.akilimo.mobile.utils.enums.EnumOperationMethod
 import io.sentry.Sentry
 
 
-abstract class CostBaseActivity : BaseActivity() {
+abstract class CostBaseActivity<T : ViewBinding> : BindBaseActivity<T>() {
     protected fun loadOperationCost(
-        operationName: String,
-        operationType: String,
+        operationName: EnumOperation,
+        operationType: EnumOperationMethod,
         dialogTitle: String,
         hintText: String
     ) {
         val queryParams = mapOf(
-            "operation_type" to operationType,
-            "operation_name" to operationName,
+            "operation_type" to operationType.name,
+            "operation_name" to operationName.name,
         )
         val operationCosts = database.operationCostDao().findAllFiltered(
-            operationName,
-            operationType,
+            operationName.name,
+            operationType.name,
             countryCode
         )
 
@@ -63,8 +66,8 @@ abstract class CostBaseActivity : BaseActivity() {
 
 
     protected abstract fun showDialogFullscreen(
-        operationName: String?,
-        operationType: String?,
+        operationName: EnumOperation,
+        operationType: EnumOperationMethod,
         countryCode: String?,
         dialogTitle: String?,
         hintText: String

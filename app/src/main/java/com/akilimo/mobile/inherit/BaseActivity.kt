@@ -37,9 +37,9 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected var countryCode: String = EnumCountry.Nigeria.countryCode()
 
-    protected var currencyName: String = EnumCountry.Nigeria.currencyCode()
-    protected var currencyCode: String = EnumCountry.Nigeria.currencyCode()
-    protected var currencySymbol: String = EnumCountry.Nigeria.currencyCode()
+    protected var currencyName: String = EnumCountry.Nigeria.currencyCode
+    protected var currencyCode: String = EnumCountry.Nigeria.currencyCode
+    protected var currencySymbol: String = EnumCountry.Nigeria.currencyCode
     protected var baseCurrency: String = "USD"
 
     protected var areaUnit: String = "acre"

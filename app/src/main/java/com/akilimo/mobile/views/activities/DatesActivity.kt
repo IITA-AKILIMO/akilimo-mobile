@@ -13,10 +13,10 @@ import com.akilimo.mobile.utils.DateHelper.formatLongToDateString
 import com.akilimo.mobile.utils.DateHelper.formatToLocalDate
 import com.akilimo.mobile.utils.DateHelper.olderThanCurrent
 import com.akilimo.mobile.utils.DateHelper.simpleDateFormatter
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.utils.enums.EnumAdviceTask
 import com.akilimo.mobile.views.fragments.dialog.DateDialogPickerFragment
 import io.sentry.Sentry
-import java.util.*
+import java.util.Calendar
 
 class DatesActivity : BindBaseActivity<ActivityDatesBinding>() {
 
@@ -50,7 +50,8 @@ class DatesActivity : BindBaseActivity<ActivityDatesBinding>() {
             saveSchedule()
             closeActivity(backPressed)
         } catch (ex: Exception) {
-            Toast.makeText(this@DatesActivity, ex.message ?: "Unknown error", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@DatesActivity, ex.message ?: "Unknown error", Toast.LENGTH_SHORT)
+                .show()
             Sentry.captureException(ex)
         }
     }
@@ -106,10 +107,11 @@ class DatesActivity : BindBaseActivity<ActivityDatesBinding>() {
         btnPickHarvestDate.setOnClickListener { showDatePicker(pickHarvestDate = true) }
     }
 
-    private fun setupAlternativeDateUI() = binding.rdgAlternativeDate.setOnCheckedChangeListener { _, checkedId ->
-        alternativeDate = checkedId == R.id.rdYes
-        binding.datesGroup.visibility = if (alternativeDate) View.VISIBLE else View.GONE
-    }
+    private fun setupAlternativeDateUI() =
+        binding.rdgAlternativeDate.setOnCheckedChangeListener { _, checkedId ->
+            alternativeDate = checkedId == R.id.rdYes
+            binding.datesGroup.visibility = if (alternativeDate) View.VISIBLE else View.GONE
+        }
 
     private fun setupButtons() = binding.twoButtons.run {
         btnFinish.setOnClickListener { validate(false) }
@@ -128,8 +130,10 @@ class DatesActivity : BindBaseActivity<ActivityDatesBinding>() {
 
     private fun updateUIFromData() = binding.run {
         val dateFormat = "dd-MM-yyyy"
-        cardPlanting.lblSelectedPlantingDate.text = formatToLocalDate(selectedPlantingDate, dateFormat).toString()
-        cardHarvest.lblSelectedHarvestDate.text = formatToLocalDate(selectedHarvestDate, dateFormat).toString()
+        cardPlanting.lblSelectedPlantingDate.text =
+            formatToLocalDate(selectedPlantingDate, dateFormat).toString()
+        cardHarvest.lblSelectedHarvestDate.text =
+            formatToLocalDate(selectedHarvestDate, dateFormat).toString()
         rdgAlternativeDate.check(if (alternativeDate) R.id.rdYes else R.id.rdNo)
 
         if (plantingWindow > 0) {
@@ -181,14 +185,18 @@ class DatesActivity : BindBaseActivity<ActivityDatesBinding>() {
         }
 
         database.scheduleDateDao().insert(cropSchedule)
-        database.adviceStatusDao().insert(AdviceStatus(EnumAdviceTasks.PLANTING_AND_HARVEST.name, true))
+        database.adviceStatusDao()
+            .insert(AdviceStatus(EnumAdviceTask.PLANTING_AND_HARVEST.name, true))
     }
 
-    private fun showDatePicker(pickPlantingDate: Boolean = false, pickHarvestDate: Boolean = false) {
+    private fun showDatePicker(
+        pickPlantingDate: Boolean = false,
+        pickHarvestDate: Boolean = false
+    ) {
         val pickerFragment = if (pickHarvestDate) {
-            DateDialogPickerFragment(true, selectedPlantingDate)
+            DateDialogPickerFragment.newInstanceForHarvest(selectedPlantingDate)
         } else {
-            DateDialogPickerFragment(true)
+            DateDialogPickerFragment.newInstanceForPlanting()
         }
 
         pickerFragment.setOnDismissListener(object : IDatePickerDismissListener {
@@ -202,7 +210,8 @@ class DatesActivity : BindBaseActivity<ActivityDatesBinding>() {
                 if (pickPlantingDate) {
                     selectedHarvestDate = ""
                     selectedPlantingDate = simpleDateFormatter.format(myCalendar.time)
-                    binding.cardPlanting.lblSelectedPlantingDate.text = formatLongToDateString(dateMs)
+                    binding.cardPlanting.lblSelectedPlantingDate.text =
+                        formatLongToDateString(dateMs)
                     binding.cardHarvest.lblSelectedHarvestDate.text = null
 
                     alreadyPlanted = olderThanCurrent(selectedPlantingDate)

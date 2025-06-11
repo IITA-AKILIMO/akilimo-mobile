@@ -16,15 +16,13 @@
         <!-- Image -->
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/planting_image"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_width="@dimen/dimen_250"
+            android:layout_height="@dimen/dimen_250"
             android:layout_marginTop="@dimen/spacing_large"
             android:contentDescription="@string/app_name"
-            android:scaleType="centerInside"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.MaterialComponents.MediumComponent"
             app:srcCompat="@drawable/ic_schedule" />
 
         <!-- Title -->
@@ -55,7 +53,7 @@
         <!-- Pick Planting Date Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/planting_btn_pick_date"
-            style="@style/Widget.MaterialComponents.Button"
+            style="@style/AppMaterialButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_xlarge"
@@ -92,7 +90,7 @@
         <!-- Pick Harvest Date Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/harvest_btn_pick_date"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            style="@style/AppMaterialButton.Outline"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_large"

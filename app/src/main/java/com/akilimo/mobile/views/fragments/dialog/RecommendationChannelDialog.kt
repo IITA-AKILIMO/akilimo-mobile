@@ -79,7 +79,7 @@ class RecommendationChannelDialog(
             twoButtons.btnFinish.setOnClickListener {
                 val validationHelper = ValidationHelper()
                 email = lytEmail.editText?.text.toString()
-                if (!validationHelper.isValidEmail(email!!) && sendEmail) {
+                if (!validationHelper.isEmailValid(email!!) && sendEmail) {
                     dataIsValid = false
                     lytEmail.error = getString(R.string.lbl_valid_email_req)
                 } else {

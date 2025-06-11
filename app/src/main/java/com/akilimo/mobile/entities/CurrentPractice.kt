@@ -1,28 +1,66 @@
 package com.akilimo.mobile.entities
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.akilimo.mobile.utils.enums.EnumOperationMethod
+import com.akilimo.mobile.utils.enums.EnumWeedControlMethod
 
-@Entity(tableName = "current_practice")
+@Entity(tableName = "current_practices")
 open class CurrentPractice {
 
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
     var id: Long? = null
-    var weedRadioIndex = 0
-    var weedControlTechnique: String? = null
+
+    @ColumnInfo(name = "weed_radio_index")
+    var weedRadioIndex: Int = -1
+
+    @ColumnInfo(name = "weed_control_method")
+    var weedControlMethod: EnumWeedControlMethod = EnumWeedControlMethod.NONE
+
+    @ColumnInfo(name = "plough_operations")
     var ploughOperations: String? = null
+
+    @ColumnInfo(name = "ridge_operations")
     var ridgeOperations: String? = null
+
+    @ColumnInfo(name = "harrow_operations")
     var harrowOperations: String? = null
+
+    @ColumnInfo(name = "weed_control_operations")
     var weedControlOperations: String? = null
-    var ploughingMethod: String? = null
-    var ridgingMethod: String? = null
-    var harrowingMethod: String? = null
+
+    @ColumnInfo(name = "ploughing_method")
+    var ploughingMethod: EnumOperationMethod = EnumOperationMethod.NONE
+
+    @ColumnInfo(name = "ridging_method")
+    var ridgingMethod: EnumOperationMethod = EnumOperationMethod.NONE
+
+    @ColumnInfo(name = "harrowing_method")
+    var harrowingMethod: EnumOperationMethod = EnumOperationMethod.NONE
+
+    @ColumnInfo(name = "tractor_available")
     var tractorAvailable = false
+
+    @ColumnInfo(name = "tractor_plough")
     var tractorPlough = false
+
+    @ColumnInfo(name = "tractor_harrow")
     var tractorHarrow = false
+
+    @ColumnInfo(name = "tractor_ridger")
     var tractorRidger = false
+
+    @ColumnInfo(name = "uses_herbicide")
     var usesHerbicide = false
+
+    @ColumnInfo(name = "perform_ploughing")
     var performPloughing = false
+
+    @ColumnInfo(name = "perform_harrowing")
     var performHarrowing = false
+
+    @ColumnInfo(name = "perform_ridging")
     var performRidging = false
 }

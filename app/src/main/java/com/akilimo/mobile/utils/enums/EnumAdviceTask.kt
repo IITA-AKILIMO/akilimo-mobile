@@ -1,6 +1,6 @@
 package com.akilimo.mobile.utils.enums
 
-enum class EnumAdviceTasks {
+enum class EnumAdviceTask {
     PLANTING_AND_HARVEST,
     AVAILABLE_FERTILIZERS,
     AVAILABLE_FERTILIZERS_CIS,
