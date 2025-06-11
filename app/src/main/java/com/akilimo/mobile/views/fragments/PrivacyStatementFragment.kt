@@ -32,10 +32,9 @@ class PrivacyStatementFragment : BindBaseStepFragment<FragmentPrivacyStatementBi
         savedInstanceState: Bundle?
     ) = FragmentPrivacyStatementBinding.inflate(inflater, container, false)
 
-    @SuppressLint("SetJavaScriptEnabled")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
+    @SuppressLint("SetJavaScriptEnabled")
+    override fun onBindingReady(savedInstanceState: Bundle?) {
         WebView.setWebContentsDebuggingEnabled(false)
         binding.apply {
 

@@ -2,7 +2,6 @@ package com.akilimo.mobile.views.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import com.akilimo.mobile.R
@@ -24,8 +23,7 @@ class InfoFragment : BindBaseStepFragment<FragmentInfoBinding>() {
         savedInstanceState: Bundle?
     ) = FragmentInfoBinding.inflate(inflater, container, false)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onBindingReady(savedInstanceState: Bundle?) {
         binding.chkAgreeTerms.setOnCheckedChangeListener { _: CompoundButton?, checked: Boolean ->
             sessionManager.setDisclaimerRead(checked)
         }

@@ -10,7 +10,6 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.MySpinnerAdapter
 import com.akilimo.mobile.databinding.FragmentWelcomeBinding
 import com.akilimo.mobile.inherit.BindBaseStepFragment
-import com.akilimo.mobile.interfaces.IFragmentCallBack
 import com.akilimo.mobile.utils.LanguageManager
 import com.akilimo.mobile.utils.LanguageOption
 import com.akilimo.mobile.utils.Locales
@@ -23,8 +22,6 @@ class WelcomeFragment : BindBaseStepFragment<FragmentWelcomeBinding>() {
 
     private var languagePicked = false
 
-    private var fragmentCallBack: IFragmentCallBack? = null
-
     companion object {
         fun newInstance(): WelcomeFragment = WelcomeFragment()
     }
@@ -35,17 +32,10 @@ class WelcomeFragment : BindBaseStepFragment<FragmentWelcomeBinding>() {
         savedInstanceState: Bundle?
     ) = FragmentWelcomeBinding.inflate(inflater, container, false)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        populateLanguages()
-    }
-
-    private fun populateLanguages() {
+    override fun onBindingReady(savedInstanceState: Bundle?) {
         val languageOptions = Locales.LOCALE_COUNTRIES.map {
             LanguageOption(it.language, it.getDisplayLanguage(it))
         }
-
-
         val savedLanguageCode = LanguageManager.getLanguage(requireContext())
         val selectedIndex = languageOptions.indexOfFirst { it.code == savedLanguageCode }
 

@@ -1,6 +1,5 @@
 package com.akilimo.mobile.views.fragments
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -50,16 +49,11 @@ class FieldSizeFragment : BindBaseStepFragment<FragmentFieldSizeBinding>() {
         savedInstanceState: Bundle?
     ) = FragmentFieldSizeBinding.inflate(inflater, container, false)
 
-    @SuppressLint("ClickableViewAccessibility")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-
+    override fun onBindingReady(savedInstanceState: Bundle?) {
         binding.rdgFieldSize.setOnCheckedChangeListener { _, checkedId ->
             val radioButton = binding.root.findViewById<RadioButton>(checkedId)
                 ?: return@setOnCheckedChangeListener
             if (radioButton.isPressed) {
-                // Only react to user presses, not programmatic selection changes
                 radioSelected(checkedId)
             }
         }
@@ -91,8 +85,6 @@ class FieldSizeFragment : BindBaseStepFragment<FragmentFieldSizeBinding>() {
                 if (areaSize > 0.0) {
                     dataIsValid = true
                 }
-
-
                 setFieldLabels(areaUnit)
                 if (areaUnitChanged) {
                     areaSize = 0.0
@@ -185,10 +177,7 @@ class FieldSizeFragment : BindBaseStepFragment<FragmentFieldSizeBinding>() {
             }
 
             else -> {
-                quarterAcre = getString(R.string.quarter_acre)
-                halfAcre = getString(R.string.half_acre)
-                oneAcre = getString(R.string.one_acre)
-                twoHalfAcre = getString(R.string.two_half_acres)
+                throw IllegalArgumentException("Invalid area unit")
             }
         }
 
@@ -228,14 +217,14 @@ class FieldSizeFragment : BindBaseStepFragment<FragmentFieldSizeBinding>() {
         }
         dialogTitle.text = titleMessage
 
-        dialog.findViewById<View>(R.id.bt_cancel).setOnClickListener { v: View? ->
+        dialog.findViewById<View>(R.id.bt_cancel).setOnClickListener { _: View? ->
             dialog.dismiss()
             binding.rdgFieldSize.clearCheck()
             areaSize = -1.0
             isExactArea = false
         }
 
-        dialog.findViewById<View>(R.id.bt_submit).setOnClickListener { v: View? ->
+        dialog.findViewById<View>(R.id.bt_submit).setOnClickListener { _: View? ->
             myFieldSize = etPost.text.toString().trim { it <= ' ' }
             if (myFieldSize!!.isEmpty()) {
                 val prompt =
@@ -301,8 +290,5 @@ class FieldSizeFragment : BindBaseStepFragment<FragmentFieldSizeBinding>() {
 
     override fun onSelected() {
         refreshData()
-    }
-
-    override fun onError(error: VerificationError) {
     }
 }

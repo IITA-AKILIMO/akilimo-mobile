@@ -86,7 +86,7 @@ class DstRecommendationActivity : BindBaseActivity<ActivityDstRecomendationBindi
 
     override fun onDataReceived(userProfile: UserProfile) {
         val database = getDatabase(this@DstRecommendationActivity)
-        database.profileInfoDao().update(userProfile)
+        database.profileInfoDao().insert(userProfile)
         loadingAndDisplayContent()
     }
 

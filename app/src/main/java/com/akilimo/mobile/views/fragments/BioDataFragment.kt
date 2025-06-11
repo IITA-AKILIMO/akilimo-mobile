@@ -158,7 +158,7 @@ class BioDataFragment : BindBaseStepFragment<FragmentBioDataBinding>() {
             return
         }
 
-        if (validationHelper.isEmailValid(email)) {
+        if (!validationHelper.isEmailValid(email)) {
             errorMessage = getString(R.string.lbl_valid_email_req)
             binding.edtEmail.error = errorMessage
             return

@@ -40,8 +40,7 @@ class PlantingDateFragment : BindBaseStepFragment<FragmentPlantingHarvestDateBin
         savedInstanceState: Bundle?
     ) = FragmentPlantingHarvestDateBinding.inflate(inflater, container, false)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onBindingReady(savedInstanceState: Bundle?) {
 
         binding.plantingBtnPickDate.setOnClickListener { v: View? ->
             // create the datePickerFragment

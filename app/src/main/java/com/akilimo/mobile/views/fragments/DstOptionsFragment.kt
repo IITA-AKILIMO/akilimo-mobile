@@ -37,9 +37,7 @@ class DstOptionsFragment : BaseFragment<FragmentDstOptionsBinding>() {
         savedInstanceState: Bundle?
     ) = FragmentDstOptionsBinding.inflate(inflater, container, false)
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onBindingReady(savedInstanceState: Bundle?) {
         val context = requireContext()
 
         val items = recommendationItems()
@@ -53,19 +51,12 @@ class DstOptionsFragment : BaseFragment<FragmentDstOptionsBinding>() {
             mAdapter.setAnimationType(TheItemAnimation.FADE_IN)
             mAdapter.submitList(items)
             mAdapter.setOnItemClickListener { _: View?, recommendation: Recommendation, _: Int ->
-                var intent: Intent? = null
                 val advice = recommendation.recCode
-                when (advice) {
-                    EnumAdvice.FR -> intent = Intent(context, FertilizerRecActivity::class.java)
-                    EnumAdvice.BPP -> intent =
-                        Intent(context, PlantingPracticesActivity::class.java)
-
-                    EnumAdvice.IC_MAIZE -> intent =
-                        Intent(context, InterCropRecActivity::class.java)
-
-                    EnumAdvice.SPH -> intent =
-                        Intent(context, ScheduledPlantingActivity::class.java)
-
+                val intent = when (advice) {
+                    EnumAdvice.FR -> Intent(context, FertilizerRecActivity::class.java)
+                    EnumAdvice.BPP -> Intent(context, PlantingPracticesActivity::class.java)
+                    EnumAdvice.IC_MAIZE -> Intent(context, InterCropRecActivity::class.java)
+                    EnumAdvice.SPH -> Intent(context, ScheduledPlantingActivity::class.java)
                     else -> {
                         throw IllegalArgumentException("Invalid recommendation code")
                     }

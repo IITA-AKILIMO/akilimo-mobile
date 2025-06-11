@@ -1,25 +1,19 @@
 package com.akilimo.mobile.utils.enums
 
 import android.content.Context
+import androidx.annotation.StringRes
 import com.akilimo.mobile.R
-import org.jetbrains.annotations.NotNull
 
-enum class EnumInvestmentPref {
-    Rarely {
-        override fun prefName(context: Context): String {
-            return context.getString(R.string.lbl_rarely)
-        }
-    },
-    Sometimes {
-        override fun prefName(context: Context): String {
-            return context.getString(R.string.lbl_sometimes)
-        }
-    },
-    Often {
-        override fun prefName(context: Context): String {
-            return context.getString(R.string.lbl_often)
-        }
-    };
+enum class EnumInvestmentPref(@StringRes private val stringResId: Int, private val riskAtt: Int) {
+    RARELY(R.string.lbl_rarely, 0),
+    SOMETIMES(R.string.lbl_sometimes, 1),
+    OFTEN(R.string.lbl_often, 2);
 
-    abstract fun prefName(context: Context): @NotNull String
+    fun prefName(context: Context): String {
+        return context.getString(stringResId)
+    }
+
+    fun riskAtt(): Int {
+        return riskAtt
+    }
 }

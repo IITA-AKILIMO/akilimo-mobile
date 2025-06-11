@@ -4,7 +4,6 @@ package com.akilimo.mobile.views.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.akilimo.mobile.R
@@ -42,8 +41,7 @@ class TillageOperationFragment : BindBaseStepFragment<FragmentTillageOperationBi
         )
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onBindingReady(savedInstanceState: Bundle?) {
 
         viewModel.currentPractice.observe(viewLifecycleOwner) { practice ->
             practice?.let {
@@ -135,6 +133,7 @@ class TillageOperationFragment : BindBaseStepFragment<FragmentTillageOperationBi
         }
         return null
     }
+
     override fun onSelected() {
         Log.d(TAG, "TillageOperationFragment selected.")
         // ViewModel handles loading data. If you need to refresh data on selection:

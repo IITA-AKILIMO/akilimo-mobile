@@ -180,7 +180,7 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
             val userProfile = database.profileInfoDao().findOne()
             if (userProfile != null) {
                 userProfile.farmName = farmName.orEmpty()
-                database.profileInfoDao().update(userProfile)
+                database.profileInfoDao().insert(userProfile)
             }
 
             var locationInfo = database.locationInfoDao().findOne()

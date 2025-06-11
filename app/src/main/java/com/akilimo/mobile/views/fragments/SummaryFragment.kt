@@ -3,7 +3,6 @@ package com.akilimo.mobile.views.fragments
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,7 +25,19 @@ import com.github.vipulasri.timelineview.TimelineView
 class SummaryFragment : BindBaseStepFragment<FragmentSummaryBinding>() {
 
     private var mDataList: MutableList<TimeLineModel> = ArrayList()
-    private var mAttributes: TimelineAttributes? = null
+    private val mAttributes: TimelineAttributes by lazy {
+        TimelineAttributes(
+            markerSize = 48,
+            markerCompleteColor = ContextCompat.getColor(
+                requireContext(),
+                R.color.akilimoLightGreen
+            ),
+            markerIncompleteColor = ContextCompat.getColor(requireContext(), R.color.red_A400),
+            startLineColor = ContextCompat.getColor(requireContext(), R.color.colorAccent),
+            endLineColor = ContextCompat.getColor(requireContext(), R.color.colorAccent),
+            lineStyle = TimelineView.LineStyle.DASHED
+        )
+    }
 
     private var myAdapter: MyTimeLineAdapter? = null
 
@@ -40,29 +51,13 @@ class SummaryFragment : BindBaseStepFragment<FragmentSummaryBinding>() {
         fun newInstance(): SummaryFragment = SummaryFragment()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        mAttributes = TimelineAttributes(
-            markerSize = 48,
-            markerCompleteColor = ContextCompat.getColor(
-                requireContext(),
-                R.color.akilimoLightGreen
-            ),
-            markerIncompleteColor = ContextCompat.getColor(requireContext(), R.color.red_A400),
-            startLineColor = ContextCompat.getColor(requireContext(), R.color.colorAccent),
-            endLineColor = ContextCompat.getColor(requireContext(), R.color.colorAccent),
-            lineStyle = TimelineView.LineStyle.DASHED
-        )
-    }
-
     override fun inflateBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ) = FragmentSummaryBinding.inflate(inflater, container, false)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onBindingReady(savedInstanceState: Bundle?) {
         initRecyclerView()
         setDataListItems()
     }
@@ -179,7 +174,7 @@ class SummaryFragment : BindBaseStepFragment<FragmentSummaryBinding>() {
     private fun initAdapter() {
         myAdapter = MyTimeLineAdapter(
             mDataList,
-            mAttributes!!,
+            mAttributes,
             requireContext(),
             TheItemAnimation.FADE_IN
         )
