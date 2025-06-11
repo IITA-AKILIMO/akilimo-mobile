@@ -2,14 +2,11 @@ package com.akilimo.mobile.inherit
 
 import android.app.Dialog
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.entities.UserLocation
@@ -18,14 +15,12 @@ import com.akilimo.mobile.utils.SessionManager
 import com.stepstone.stepper.Step
 import com.stepstone.stepper.VerificationError
 import io.sentry.Sentry
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 /**
  * Base fragment implementing common functionality for stepper fragments
  */
+@Deprecated("REmove and replace")
 abstract class BaseStepFragment : Fragment(), Step {
 
     @Deprecated("Remove")
@@ -52,20 +47,6 @@ abstract class BaseStepFragment : Fragment(), Step {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(false)
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
-        return loadFragmentLayout(inflater, container, savedInstanceState)
-    }
-
-    /**
-     * Load the specific layout for this fragment
-     * @return The inflated view
-     */
-    protected abstract fun loadFragmentLayout(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View
 
     /**
      * Shows a custom warning dialog with customizable title, content and button text
@@ -126,25 +107,6 @@ abstract class BaseStepFragment : Fragment(), Step {
         val place = userLocation.locationCountryName
 
         return "${place}\n${lat},${lon}"
-    }
-
-    /**
-     * Helper function to perform database operations safely in a coroutine
-     */
-    protected fun performDatabaseOperation(
-        operation: suspend () -> Unit,
-        onError: (Exception) -> Unit = { Sentry.captureException(it) }
-    ) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                withContext(Dispatchers.IO) {
-                    operation()
-                }
-            } catch (e: Exception) {
-                Timber.e(e, "Database operation failed")
-                onError(e)
-            }
-        }
     }
 
     override fun onError(error: VerificationError) {
