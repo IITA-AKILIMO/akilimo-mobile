@@ -1,7 +1,6 @@
 package com.akilimo.mobile.inherit
 
 import android.app.Dialog
-import android.os.Bundle
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
@@ -20,18 +19,8 @@ import timber.log.Timber
 /**
  * Base fragment implementing common functionality for stepper fragments
  */
-@Deprecated("REmove and replace")
+@Deprecated("Remove and replace")
 abstract class BaseStepFragment : Fragment(), Step {
-
-    @Deprecated("Remove")
-    protected var currency: String = ""
-
-    @Deprecated("Remove")
-    protected var countryCode: String = ""
-
-    @Deprecated("Remove")
-    protected var countryName: String = ""
-
 
     protected var errorMessage: String = ""
     open var dataIsValid = false
@@ -42,11 +31,6 @@ abstract class BaseStepFragment : Fragment(), Step {
     protected val mathHelper: MathHelper by lazy { MathHelper() }
 
     protected var verificationError: VerificationError? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(false)
-    }
 
     /**
      * Shows a custom warning dialog with customizable title, content and button text
