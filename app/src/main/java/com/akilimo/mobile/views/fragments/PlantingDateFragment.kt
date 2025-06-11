@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatDialogFragment
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentPlantingHarvestDateBinding
 import com.akilimo.mobile.entities.CropSchedule
@@ -44,7 +43,7 @@ class PlantingDateFragment : BindBaseStepFragment<FragmentPlantingHarvestDateBin
 
         binding.plantingBtnPickDate.setOnClickListener { v: View? ->
             // create the datePickerFragment
-            val newFragment: AppCompatDialogFragment = DateDialogPickerFragment(true)
+            val newFragment = DateDialogPickerFragment.newInstanceForPlanting()
             // set the targetFragment to receive the results, specifying the request code
             newFragment.setTargetFragment(
                 this@PlantingDateFragment,
@@ -56,10 +55,7 @@ class PlantingDateFragment : BindBaseStepFragment<FragmentPlantingHarvestDateBin
 
         binding.harvestBtnPickDate.setOnClickListener { v: View? ->
             // create the datePickerFragment
-            val newFragment: AppCompatDialogFragment = DateDialogPickerFragment(
-                true,
-                selectedPlantingDate
-            )
+            val newFragment = DateDialogPickerFragment.newInstanceForHarvest(selectedPlantingDate)
             // set the targetFragment to receive the results, specifying the request code
             newFragment.setTargetFragment(
                 this@PlantingDateFragment,
