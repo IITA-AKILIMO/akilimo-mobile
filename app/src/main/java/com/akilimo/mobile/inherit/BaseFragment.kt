@@ -44,6 +44,14 @@ abstract class BaseFragment<T : ViewBinding> : Fragment() {
         savedInstanceState: Bundle?
     ): T
 
+
+    /**
+     * Subclasses must implement this. Called after binding is safely initialized.
+     */
+    protected abstract fun onBindingReady(savedInstanceState: Bundle?)
+
+
+    
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
