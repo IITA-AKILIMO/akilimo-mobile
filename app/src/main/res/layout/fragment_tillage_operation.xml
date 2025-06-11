@@ -35,27 +35,27 @@
 
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/tillage_operations_group"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
             android:orientation="vertical"
+            android:padding="@dimen/spacing_small"
             app:selectionRequired="false"
             app:singleSelection="false">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/tillage_btn_ploughing"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                style="@style/AppMaterialButton.Outline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/lbl_ploughing" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/tillage_btn_ridging"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                style="@style/AppMaterialButton.Outline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/lbl_ridging"
-                app:strokeColor="@color/primaryDarkColor" />
+                android:text="@string/lbl_ridging" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
     </LinearLayout>
