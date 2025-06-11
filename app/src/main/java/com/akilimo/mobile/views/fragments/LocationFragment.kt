@@ -24,6 +24,7 @@ import com.mapbox.api.geocoding.v5.MapboxGeocoding
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse
 import com.mapbox.geojson.Point
 import com.stepstone.stepper.VerificationError
+import io.sentry.Sentry
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -39,7 +40,7 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
 
     private var countryCode: String = ""
     private var countryName: String = ""
-    private var farmName: String? = ""
+    private var farmName: String = ""
     private var fullNames: String? = null
     private var mapBoxToken = ""
 
@@ -69,16 +70,27 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
             maxLines = 1
         }
 
-        val fieldNameDialog =
-            MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.lbl_farm_name_title)
-                .setView(editTextFarmName).setCancelable(false)
-                .setPositiveButton(R.string.lbl_ok) { _, _ ->
-                    farmName = editTextFarmName.text.toString()
-                    if (fullNames != null) {
-                        setFarmNameInfo(fullNames!!, farmName!!)
-                    }
-                    editTextFarmName.setText(farmName)
-                }.setNegativeButton(R.string.lbl_cancel, null).create()
+        val fieldNameDialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.lbl_farm_name_title)
+            .setView(editTextFarmName)
+            .setCancelable(false)
+            .setPositiveButton(R.string.lbl_ok) { _, _ ->
+                val enteredName = editTextFarmName.text?.toString().orEmpty()
+                farmName = enteredName
+
+                fullNames?.let {
+                    setFarmNameInfo(it, enteredName)
+                }
+
+                editTextFarmName.setText(enteredName)
+
+                database.profileInfoDao().findOne()?.let { profile ->
+                    profile.farmName = enteredName
+                    database.profileInfoDao().insert(profile)
+                }
+            }
+            .setNegativeButton(R.string.lbl_cancel, null)
+            .create()
 
         binding.btnFieldName.setOnClickListener { fieldNameDialog.show() }
 
@@ -138,8 +150,9 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
         }
 
     private fun reverseGeoCode(lat: Double, lon: Double) {
-        val reverseGeocode = MapboxGeocoding.builder().accessToken(mapBoxToken)
-            .query(Point.fromLngLat(lon, lat)).fuzzyMatch(true).build()
+        val reverseGeocode =
+            MapboxGeocoding.builder().accessToken(mapBoxToken).query(Point.fromLngLat(lon, lat))
+                .fuzzyMatch(true).build()
 
         reverseGeocode.enqueueCall(object : Callback<GeocodingResponse?> {
             override fun onResponse(
@@ -170,40 +183,29 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
                 if (isAdded) {
                     Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
                 }
-                saveLocation()
             }
         })
     }
 
     private fun saveLocation() {
         try {
-            val userProfile = database.profileInfoDao().findOne()
-            if (userProfile != null) {
-                userProfile.farmName = farmName.orEmpty()
-                database.profileInfoDao().insert(userProfile)
-            }
-
-            var locationInfo = database.locationInfoDao().findOne()
-            if (locationInfo == null) locationInfo = UserLocation()
-
-            locationInfo.apply {
+            val location = database.locationInfoDao().findOne() ?: UserLocation()
+            location.apply {
                 locationCountryCode = countryCode
                 locationCountryName = countryName
                 latitude = currentLat
                 longitude = currentLon
             }
+            database.locationInfoDao().insert(location)
 
-            if (locationInfo.id != null) {
-                database.locationInfoDao().update(locationInfo)
-            } else {
-                database.locationInfoDao().insert(locationInfo)
-            }
-
-            reloadLocationInfo()
         } catch (ex: Exception) {
-            Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                requireContext(), ex.localizedMessage ?: "Unexpected error", Toast.LENGTH_SHORT
+            ).show()
+            Sentry.captureException(ex)
         }
     }
+
 
     private fun reloadLocationInfo() {
         try {
@@ -215,7 +217,7 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
                 fullNames = "${it.firstName} ${it.lastName}"
                 userSelectedCountryCode = it.countryCode
                 userSelectedCountryName = it.countryName
-                setFarmNameInfo(fullNames!!, farmName!!)
+                setFarmNameInfo(fullNames!!, farmName)
             }
 
             userLocation?.let {
@@ -239,8 +241,7 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
 
     override fun verifyStep(): VerificationError? {
         return if (countryCode.isNotEmpty() && !userSelectedCountryCode.equals(
-                countryCode,
-                ignoreCase = true
+                countryCode, ignoreCase = true
             )
         ) {
             VerificationError(
