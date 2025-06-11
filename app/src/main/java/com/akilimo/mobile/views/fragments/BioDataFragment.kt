@@ -1,7 +1,6 @@
 package com.akilimo.mobile.views.fragments
 
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +9,7 @@ import android.widget.Toast
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.MySpinnerAdapter
 import com.akilimo.mobile.data.InterestOption
+import com.akilimo.mobile.data.indexOfValue
 import com.akilimo.mobile.databinding.FragmentBioDataBinding
 import com.akilimo.mobile.entities.UserProfile
 import com.akilimo.mobile.inherit.BindBaseStepFragment
@@ -17,27 +17,21 @@ import com.akilimo.mobile.utils.ValidationHelper
 import com.stepstone.stepper.VerificationError
 import io.sentry.Sentry
 
-
 class BioDataFragment : BindBaseStepFragment<FragmentBioDataBinding>() {
 
-    private val validationHelper: ValidationHelper by lazy { ValidationHelper() }
+    private val validationHelper by lazy { ValidationHelper() }
 
-    private var phoneIsValid = true
+    private var isPhoneValid = true
+    private var selectedMobileCode: String = ""
 
-    private var myMobileCode: String = ""
+    private var selectedGenderValue: String? = null
+    private var selectedInterestValue: String? = null
 
-    private var myGender: String? = null
-    private var myAkilimoInterest: String? = null
-    private var mySelectedGenderIndex = -1
-    private var mySelectedInterestIndex = -1
-
-    var genderOptions = listOf<InterestOption>()
-    var interestOptions = listOf<InterestOption>()
+    private var genderOptions: List<InterestOption> = emptyList()
+    private var interestOptions: List<InterestOption> = emptyList()
 
     companion object {
-        fun newInstance(): BioDataFragment {
-            return BioDataFragment()
-        }
+        fun newInstance(): BioDataFragment = BioDataFragment()
     }
 
     override fun inflateBinding(
@@ -46,16 +40,14 @@ class BioDataFragment : BindBaseStepFragment<FragmentBioDataBinding>() {
         savedInstanceState: Bundle?
     ) = FragmentBioDataBinding.inflate(inflater, container, false)
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun onBindingReady(savedInstanceState: Bundle?) {
         genderOptions = listOf(
             InterestOption(getString(R.string.lbl_gender_prompt), ""),
             InterestOption(getString(R.string.lbl_female), "F"),
             InterestOption(getString(R.string.lbl_male), "M"),
-            InterestOption(getString(R.string.lbl_prefer_not_to_say), "NA"),
+            InterestOption(getString(R.string.lbl_prefer_not_to_say), "NA")
         )
+
         interestOptions = listOf(
             InterestOption(getString(R.string.lbl_akilimo_interest_prompt), ""),
             InterestOption(getString(R.string.lbl_interest_farmer), "farmer"),
@@ -64,93 +56,67 @@ class BioDataFragment : BindBaseStepFragment<FragmentBioDataBinding>() {
             InterestOption(getString(R.string.lbl_interest_curious), "curious")
         )
 
-        val genderAdapter = MySpinnerAdapter(requireContext(), genderOptions.map { it.label })
-        val interestAdapter = MySpinnerAdapter(requireContext(), interestOptions.map { it.label })
-
-
-        binding.apply {
-
-            spnGender.apply {
-                adapter = genderAdapter
-                onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(
-                        parent: AdapterView<*>?, view: View?, position: Int, id: Long
-                    ) {
-                        mySelectedGenderIndex = position
-                        myGender = null
-                        if (position > 0) {
-                            myGender = genderOptions[position].value
-                        }
-                    }
-
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-                        //do nothing
-                    }
+        binding.spnGender.apply {
+            adapter = MySpinnerAdapter(requireContext(), genderOptions.map { it.label })
+            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    pos: Int,
+                    id: Long
+                ) {
+                    selectedGenderValue = genderOptions.getOrNull(pos)?.value.takeIf { pos > 0 }
                 }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) = Unit
             }
+        }
 
-            spnInterest.apply {
-                adapter = interestAdapter
-                onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(
-                        parent: AdapterView<*>?, view: View?, position: Int, id: Long
-                    ) {
-                        mySelectedInterestIndex = position
-                        myAkilimoInterest = null
-                        if (position > 0) {
-                            myAkilimoInterest = interestOptions[position].value
-                        }
-                    }
-
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-                        //do nothing
-                    }
+        binding.spnInterest.apply {
+            adapter = MySpinnerAdapter(requireContext(), interestOptions.map { it.label })
+            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    pos: Int,
+                    id: Long
+                ) {
+                    selectedInterestValue = interestOptions.getOrNull(pos)?.value.takeIf { pos > 0 }
                 }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) = Unit
             }
+        }
 
-            ccpCountry.apply {
-                setPhoneNumberValidityChangeListener { isValidNumber: Boolean ->
-                    phoneIsValid = isValidNumber
-                }
-                setOnCountryChangeListener {
-                    myMobileCode = binding.ccpCountry.selectedCountryCodeWithPlus
-                }
-                registerCarrierNumberEditText(binding.edtPhone)
+        binding.ccpCountry.apply {
+            setPhoneNumberValidityChangeListener { isValid -> isPhoneValid = isValid }
+            setOnCountryChangeListener {
+                selectedMobileCode = selectedCountryCodeWithPlus
             }
+            registerCarrierNumberEditText(binding.edtPhone)
         }
     }
 
     private fun refreshData() {
         try {
-            val userProfile = database.profileInfoDao().findOne()
-            if (userProfile != null) {
-                val myFirstName = userProfile.firstName
-                val myLastName = userProfile.lastName
-                val myEmail = userProfile.email
-                myMobileCode = userProfile.mobileCode
-                val myPhoneNumber = userProfile.phoneNumber
-                myGender = userProfile.gender
-                myAkilimoInterest = userProfile.akilimoInterest
+            val userProfile = database.profileInfoDao().findOne() ?: return
 
-                mySelectedGenderIndex = userProfile.selectedGenderIndex
-                mySelectedInterestIndex = userProfile.selectedInterestIndex
-                binding.apply {
-                    edtFirstName.setText(myFirstName)
-                    edtLastName.setText(myLastName)
-                    edtEmail.setText(myEmail)
+            selectedMobileCode = userProfile.mobileCode
+            selectedGenderValue = userProfile.gender
+            selectedInterestValue = userProfile.akilimoInterest
 
-                    if (!myPhoneNumber.isNullOrEmpty()) {
-                        ccpCountry.fullNumber = myPhoneNumber
-                    }
+            binding.apply {
+                edtFirstName.setText(userProfile.firstName)
+                edtLastName.setText(userProfile.lastName)
+                edtEmail.setText(userProfile.email)
 
-                    if (mySelectedGenderIndex in genderOptions.indices) {
-                        spnGender.setSelection(mySelectedGenderIndex)
-                    }
-
-                    if (mySelectedInterestIndex in interestOptions.indices) {
-                        spnInterest.setSelection(mySelectedInterestIndex)
-                    }
+                if (!userProfile.phoneNumber.isNullOrEmpty()) {
+                    ccpCountry.fullNumber = userProfile.phoneNumber
                 }
+
+                spnGender.setSelection(genderOptions.indexOfValue(selectedGenderValue))
+                spnInterest.setSelection(interestOptions.indexOfValue(selectedInterestValue))
+
             }
         } catch (ex: Exception) {
             Sentry.captureException(ex)
@@ -167,96 +133,75 @@ class BioDataFragment : BindBaseStepFragment<FragmentBioDataBinding>() {
             edtPhone.error = null
         }
 
+        val firstName = binding.edtFirstName.text.toString()
+        val lastName = binding.edtLastName.text.toString()
+        val email = binding.edtEmail.text.toString().trim()
+        val rawPhoneNumber = binding.edtPhone.text.toString()
+        val fullPhoneNumber = binding.ccpCountry.fullNumber
+        val mobileCode = binding.ccpCountry.selectedCountryCodeWithPlus
 
-        val myFirstName = binding.edtFirstName.text.toString()
-        val myLastName = binding.edtLastName.text.toString()
-        val myEmail = binding.edtEmail.text.toString().trim { it <= ' ' }
-        val userEnteredNumber = binding.edtPhone.text.toString()
-        val myPhoneNumber = binding.ccpCountry.fullNumber
-        val myMobileCode = binding.ccpCountry.selectedCountryCodeWithPlus
-
-        if (TextUtils.isEmpty(myFirstName)) {
+        if (firstName.isBlank()) {
             errorMessage = getString(R.string.lbl_first_name_req)
             binding.edtFirstName.error = errorMessage
             return
         }
 
-        if (myLastName.isEmpty()) {
+        if (lastName.isBlank()) {
             errorMessage = getString(R.string.lbl_last_name_req)
             binding.edtLastName.error = errorMessage
             return
         }
 
-
-        if (myPhoneNumber.isNullOrEmpty() && userEnteredNumber.isEmpty()) {
-            if (!phoneIsValid) {
-                errorMessage = getString(R.string.lbl_valid_number_req)
-                binding.edtPhone.error = errorMessage
-                return
-            }
+        if ((fullPhoneNumber.isNullOrEmpty() || rawPhoneNumber.isEmpty()) && !isPhoneValid) {
+            errorMessage = getString(R.string.lbl_valid_number_req)
+            binding.edtPhone.error = errorMessage
+            return
         }
 
-        if (myEmail.isNotEmpty()) {
-            if (!validationHelper.isValidEmail(myEmail)) {
-                errorMessage = getString(R.string.lbl_valid_email_req)
-                binding.edtEmail.error = errorMessage
-                return
-            }
+        if (validationHelper.isEmailValid(email)) {
+            errorMessage = getString(R.string.lbl_valid_email_req)
+            binding.edtEmail.error = errorMessage
+            return
         }
 
-        if (myGender.isNullOrEmpty()) {
+        if (selectedGenderValue.isNullOrEmpty()) {
             errorMessage = getString(R.string.lbl_gender_prompt)
             return
         }
 
-
-        if (myAkilimoInterest.isNullOrEmpty()) {
+        if (selectedInterestValue.isNullOrEmpty()) {
             errorMessage = getString(R.string.lbl_akilimo_interest_prompt)
             return
         }
-
 
         try {
             val userProfile = database.profileInfoDao().findOne() ?: UserProfile()
 
             userProfile.apply {
-                firstName = myFirstName
-                lastName = myLastName
-                gender = myGender
-                akilimoInterest = myAkilimoInterest
-                email = myEmail
-                mobileCode = myMobileCode
-                phoneNumber = myPhoneNumber
-                selectedGenderIndex = mySelectedGenderIndex
-                selectedInterestIndex = mySelectedInterestIndex
-                deviceToken = sessionManager.getDeviceToken()
-            }
-            val profileId = userProfile.profileId
-            if (profileId != null) {
-                database.profileInfoDao().update(userProfile)
-            } else {
-                database.profileInfoDao().insert(userProfile)
+                this.firstName = firstName
+                this.lastName = lastName
+                this.gender = selectedGenderValue
+                this.akilimoInterest = selectedInterestValue
+                this.email = email
+                this.mobileCode = mobileCode
+                this.phoneNumber = fullPhoneNumber
+                this.deviceToken = sessionManager.getDeviceToken()
             }
 
+            database.profileInfoDao().insert(userProfile)
+
         } catch (ex: Exception) {
-            Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, ex.message.orEmpty(), Toast.LENGTH_SHORT).show()
             Sentry.captureException(ex)
         }
     }
 
-
     override fun verifyStep(): VerificationError? {
         saveBioData()
-        if (!TextUtils.isEmpty(errorMessage)) {
-            return VerificationError(errorMessage)
-        }
-        return null
+        return if (errorMessage.isNotEmpty()) VerificationError(errorMessage) else null
     }
 
     override fun onSelected() {
         refreshData()
-    }
-
-    override fun onError(error: VerificationError) {
     }
 }
