@@ -46,12 +46,14 @@
     <dimen name="dimen_5">5dp</dimen>
     <dimen name="dimen_12">12dp</dimen>
     <dimen name="dimen_16">16dp</dimen>
+    <dimen name="dimen_24">24dp</dimen>
     <dimen name="dimen_36">36dp</dimen>
     <dimen name="dimen_48">48dp</dimen>
     <dimen name="dimen_58">58dp</dimen>
     <dimen name="dimen_100">100dp</dimen>
     <dimen name="dimen_110">110dp</dimen>
     <dimen name="dimen_250">250dp</dimen>
+
 
     <!--others-->
     <dimen name="wrap_constraints">0dp</dimen>
