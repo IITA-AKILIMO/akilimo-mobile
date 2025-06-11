@@ -1,11 +1,9 @@
 package com.akilimo.mobile.views.fragments
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioGroup
 import android.widget.Toast
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentAreaUnitBinding
@@ -15,110 +13,96 @@ import com.akilimo.mobile.utils.enums.EnumAreaUnits
 import com.akilimo.mobile.utils.enums.EnumCountry
 import com.stepstone.stepper.VerificationError
 import io.sentry.Sentry
-import java.util.Locale
-
 
 class AreaUnitFragment : BindBaseStepFragment<FragmentAreaUnitBinding>() {
 
-
-    private var mandatoryInfo: MandatoryInfo? = null
-    private var areaUnit: String? = "acre"
+    private var _areaUnit: String = EnumAreaUnits.ACRE.name
     private var oldAreaUnit: String? = ""
-    private var areaUnitDisplay = "acre"
-    private var areaUnitRadioIndex = 0
-    private var rememberPreference = false
+    private var areaUnitDisplay = ""
+    private var _areaUnitRadioIndex: Int = -1
 
     companion object {
-        fun newInstance(): AreaUnitFragment {
-            return AreaUnitFragment()
-        }
+        fun newInstance() = AreaUnitFragment()
     }
-    
+
     override fun inflateBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): FragmentAreaUnitBinding = FragmentAreaUnitBinding.inflate(inflater, container, false)
 
-    @SuppressLint("ClickableViewAccessibility")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onBindingReady(savedInstanceState: Bundle?) {
+        errorMessage = getString(R.string.lbl_area_unit_prompt)
 
+        with(binding) {
+            rdgAreaUnit.setOnCheckedChangeListener { _, _ -> handleUnitSelection() }
+        }
+    }
+
+    private fun handleUnitSelection() {
         val context = requireContext()
+        val selectedId = binding.rdgAreaUnit.checkedRadioButtonId
 
-        errorMessage = context.getString(R.string.lbl_area_unit_prompt)
-        binding.rdgAreaUnit.setOnCheckedChangeListener { _: RadioGroup?, radioIndex: Int ->
-            when (radioIndex) {
-                R.id.rb_unit_acre -> {
-                    areaUnitRadioIndex = R.id.rb_unit_acre
-                    areaUnitDisplay = context.getString(R.string.lbl_acre)
-                    areaUnit = EnumAreaUnits.ACRE.name
-                }
-
-                R.id.rb_unit_ha -> {
-                    areaUnitRadioIndex = R.id.rb_unit_ha
-                    areaUnitDisplay = context.getString(R.string.lbl_ha)
-                    areaUnit = EnumAreaUnits.HA.name
-                }
-
-                R.id.rb_unit_are -> {
-                    areaUnitRadioIndex = R.id.rb_unit_are
-                    areaUnitDisplay = context.getString(R.string.lbl_are)
-                    areaUnit = EnumAreaUnits.ARE.name
-                }
-
-                else -> {
-                    areaUnitRadioIndex = -1
-                    areaUnit = null
-                }
+        when (binding.root.findViewById<View>(selectedId)) {
+            binding.rbUnitAcre -> {
+                _areaUnit = EnumAreaUnits.ACRE.name
+                areaUnitDisplay = getString(R.string.lbl_acre)
+                _areaUnitRadioIndex = selectedId
             }
-            if (areaUnit == null) {
-                return@setOnCheckedChangeListener
+
+            binding.rbUnitHa -> {
+                _areaUnit = EnumAreaUnits.HA.name
+                areaUnitDisplay = getString(R.string.lbl_ha)
+                _areaUnitRadioIndex = selectedId
             }
-            try {
-                mandatoryInfo = database.mandatoryInfoDao().findOne()
-                if (mandatoryInfo == null) {
-                    mandatoryInfo = MandatoryInfo()
-                }
-                mandatoryInfo!!.areaUnitRadioIndex = areaUnitRadioIndex
-                mandatoryInfo!!.areaUnit = areaUnit!!.lowercase(Locale.getDefault())
-                mandatoryInfo!!.displayAreaUnit = areaUnitDisplay
-                if (mandatoryInfo!!.id != null) {
-                    database.mandatoryInfoDao().update(mandatoryInfo!!)
-                } else {
-                    database.mandatoryInfoDao().insert(mandatoryInfo!!)
-                }
-            } catch (ex: Exception) {
-                Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+
+            binding.rbUnitAre -> {
+                _areaUnit = EnumAreaUnits.ARE.name
+                areaUnitDisplay = getString(R.string.lbl_are)
+                _areaUnitRadioIndex = selectedId
+            }
+
+            else -> {
+                _areaUnit = EnumAreaUnits.ACRE.name
+                _areaUnitRadioIndex = -1
             }
         }
 
+        try {
+            val dao = database.mandatoryInfoDao()
+            val mandatoryInfo = dao.findOne() ?: MandatoryInfo()
+            mandatoryInfo.apply {
+                areaUnit = _areaUnit
+                displayAreaUnit = areaUnitDisplay
+                areaUnitRadioIndex = _areaUnitRadioIndex
+                if (id != null) dao.update(this) else dao.insert(this)
+            }
+        } catch (ex: Exception) {
+            Toast.makeText(context, ex.message.orEmpty(), Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun refreshData() {
         try {
-            rememberPreference = sessionManager.getRememberAreaUnit()
-            mandatoryInfo = database.mandatoryInfoDao().findOne()
-            val rdAre = binding.rbUnitAre
+            val mandatoryInfo = database.mandatoryInfoDao().findOne()
             val profileInfo = database.profileInfoDao().findOne()
+
             if (mandatoryInfo != null) {
-                areaUnit = mandatoryInfo!!.areaUnit
-                oldAreaUnit = mandatoryInfo!!.oldAreaUnit
-                areaUnitRadioIndex = mandatoryInfo!!.areaUnitRadioIndex
-                binding.rdgAreaUnit.check(areaUnitRadioIndex)
+                _areaUnit = mandatoryInfo.areaUnit
+                oldAreaUnit = mandatoryInfo.oldAreaUnit
+                _areaUnitRadioIndex = mandatoryInfo.areaUnitRadioIndex
             } else {
-                binding.rdgAreaUnit.check(areaUnitRadioIndex)
-                areaUnitRadioIndex = -1
-                areaUnit = null
+                _areaUnit = EnumAreaUnits.ACRE.name
+                _areaUnitRadioIndex = -1
             }
 
-            if (profileInfo != null) {
-                val countryCode = profileInfo.countryCode
-                if (countryCode == EnumCountry.Rwanda.countryCode()) {
-                    //set the are unit radiobutton to visible
-                    rdAre.visibility = View.VISIBLE
+            binding.rdgAreaUnit.check(_areaUnitRadioIndex)
+
+            profileInfo?.countryCode?.let { code ->
+                if (code == EnumCountry.Rwanda.countryCode()) {
+                    binding.rbUnitAre.visibility = View.VISIBLE
                     if (oldAreaUnit == EnumAreaUnits.ARE.unitName(requireContext())) {
-                        rdAre.isChecked = true
+                        binding.rbUnitAre.isChecked = true
                     }
                 }
             }
@@ -127,14 +111,15 @@ class AreaUnitFragment : BindBaseStepFragment<FragmentAreaUnitBinding>() {
         }
     }
 
-    override fun verifyStep(): VerificationError? {
-        if (areaUnit == null || areaUnit!!.isEmpty()) {
-            return VerificationError(errorMessage)
-        }
-        return null
-    }
-
     override fun onSelected() {
         refreshData()
     }
+
+    override fun verifyStep(): VerificationError? {
+        return if (_areaUnit.isEmpty()) {
+            VerificationError(errorMessage)
+        } else null
+    }
+
+
 }
