@@ -10,15 +10,21 @@ import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
+import androidx.viewbinding.ViewBinding
 import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
-import com.akilimo.mobile.entities.UserLocation
 import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.SessionManager
 import io.sentry.Sentry
 
-abstract class BaseFragment : Fragment() {
+abstract class BaseFragment<T : ViewBinding> : Fragment() {
+
+    private var _binding: T? = null
+    protected val binding
+        get() = _binding ?: throw IllegalStateException("Binding is not initialized yet.")
+
+
     protected var LOG_TAG: String = BaseFragment::class.java.simpleName
 
     protected var currency: String? = null
@@ -32,41 +38,20 @@ abstract class BaseFragment : Fragment() {
     protected val mathHelper: MathHelper by lazy { MathHelper() }
     protected val database: AppDatabase by lazy { getDatabase(requireContext()) }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(false)
-        appVersion = sessionManager.getAppVersion()
-    }
-
-    abstract fun refreshData()
+    protected abstract fun inflateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): T
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
-        val view = loadFragmentLayout(inflater, container, savedInstanceState)
-        return view
+        _binding = inflateBinding(inflater, container, savedInstanceState)
+        return binding.root
     }
-
-    protected abstract fun loadFragmentLayout(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View
-
-
-    protected fun loadLocationInfo(userLocation: UserLocation?): StringBuilder {
-        val stBuilder = StringBuilder()
-        if (userLocation != null) {
-            val latitude = userLocation.latitude.toString()
-            val longitude = userLocation.longitude.toString()
-            stBuilder.append("Lat:")
-            stBuilder.append(latitude)
-            stBuilder.append(" ")
-            stBuilder.append("Lon:")
-            stBuilder.append(longitude)
-        }
-
-        return stBuilder
-    }
-
 
     protected fun showCustomWarningDialog(
         titleText: String?, contentText: String?, buttonTitle: String? = null
