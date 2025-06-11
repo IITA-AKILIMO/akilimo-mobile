@@ -78,9 +78,8 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
                     editTextFarmName.setText(farmName)
                 }.setNegativeButton(R.string.lbl_cancel, null).create()
 
-        if (isBindingInitialized) {
-            binding.btnFieldName.setOnClickListener { fieldNameDialog.show() }
-        }
+        binding.btnFieldName.setOnClickListener { fieldNameDialog.show() }
+
     }
 
     private fun setupLocationButtons() {
@@ -99,18 +98,17 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
                 }
             }
 
-        if (isBindingInitialized) {
-            binding.btnSelectLocation.setOnClickListener {
-                val intent = Intent(requireContext(), MapBoxActivity::class.java).apply {
-                    putExtra(MapBoxActivity.LAT, currentLat)
-                    putExtra(MapBoxActivity.LON, currentLon)
-                    putExtra(MapBoxActivity.ALT, currentAlt)
-                }
-                mapResultLauncher.launch(intent)
+        binding.btnSelectLocation.setOnClickListener {
+            val intent = Intent(requireContext(), MapBoxActivity::class.java).apply {
+                putExtra(MapBoxActivity.LAT, currentLat)
+                putExtra(MapBoxActivity.LON, currentLon)
+                putExtra(MapBoxActivity.ALT, currentAlt)
             }
-
-            binding.btnCurrentLocation.setOnClickListener { currentLocation }
+            mapResultLauncher.launch(intent)
         }
+
+        binding.btnCurrentLocation.setOnClickListener { currentLocation }
+
     }
 
     private val currentLocation: Unit
@@ -145,7 +143,7 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
             override fun onResponse(
                 call: Call<GeocodingResponse?>, response: Response<GeocodingResponse?>
             ) {
-                if (!isAdded || !isBindingInitialized) return
+                if (!isAdded) return
 
                 val features = response.body()?.features()
                 if (!features.isNullOrEmpty()) {
@@ -215,7 +213,7 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
                 fullNames = "${it.firstName} ${it.lastName}"
                 userSelectedCountryCode = it.countryCode
                 userSelectedCountryName = it.countryName
-                if (isBindingInitialized) setFarmNameInfo(fullNames!!, farmName!!)
+                setFarmNameInfo(fullNames!!, farmName!!)
             }
 
             userLocation?.let {
@@ -224,10 +222,7 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
                 currentAlt = it.altitude
                 countryCode = it.locationCountryCode.orEmpty()
                 countryName = it.locationCountryName.orEmpty()
-
-                if (isBindingInitialized) {
-                    binding.locationInfo.text = formatLocationInfo(it)
-                }
+                binding.locationInfo.text = formatLocationInfo(it)
             }
         } catch (ex: Exception) {
             errorMessage = ex.message ?: "Unknown error"
@@ -237,9 +232,7 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
     private fun setFarmNameInfo(fullNames: String, farmName: String) {
         val farmInfo =
             if (farmName.isEmpty() || fullNames.isEmpty()) null else "$fullNames’s cassava farm: $farmName"
-        if (isBindingInitialized) {
-            binding.txtFarmInfo.text = farmInfo
-        }
+        binding.txtFarmInfo.text = farmInfo
     }
 
     override fun verifyStep(): VerificationError? {
