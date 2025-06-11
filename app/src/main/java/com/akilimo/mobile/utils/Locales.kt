@@ -17,7 +17,7 @@ object Locales {
         listOf(LOCAL_NG_ENGLISH, LOCAL_TZ_SWA, LOCAL_RW_KINYARWANDA)
 }
 
-
+// @TODO implement encryption of shared preferences
 object LanguageManager {
     private const val LANGUAGE_KEY = "language_key"
     private const val DEFAULT_LANGUAGE = "en"
