@@ -441,4 +441,6 @@
     <string name="restart">ANZA UPYA</string>
     <string name="lbl_processing_recommendations">Inashughulikia mapendekezo...</string>
     <string name="select_language">Chagua Lugha</string>
+    <string name="label_ploughing_method">Njia ya kulima: %1$s</string>
+    <string name="label_ridging_method">Njia ya kutengeneza matuta: %1$s</string>
 </resources>

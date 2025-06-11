@@ -451,4 +451,6 @@
     <string name="restart">ONGERA UTANGIRE</string>
     <string name="lbl_processing_recommendations">Hanozwa inama zitangwa...</string>
     <string name="select_language">Hitamo ururimi</string>
+    <string name="label_ploughing_method">Uburyo bwo guhinga: %1$s</string>
+    <string name="label_ridging_method">Uburyo bwo gukora imirongo: %1$s</string>
 </resources>

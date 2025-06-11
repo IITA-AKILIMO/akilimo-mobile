@@ -593,4 +593,7 @@
     <string name="lbl_remember_details">Remember details</string>
     <string name="lbl_location_selected_prompt">Location has been selected. press OK to save and exit</string>
     <string name="lbl_error_invalid_cost">Please provide a valid cost value</string>
+
+    <string name="label_ploughing_method">Ploughing method: %1$s</string>
+    <string name="label_ridging_method">Ridging method: %1$s</string>
 </resources>
