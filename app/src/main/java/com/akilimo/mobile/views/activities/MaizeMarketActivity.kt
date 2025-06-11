@@ -16,7 +16,7 @@ import com.akilimo.mobile.entities.MaizePrice
 import com.akilimo.mobile.entities.MaizePriceResponse
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.utils.enums.EnumAdviceTask
 import com.akilimo.mobile.utils.enums.EnumMaizeProduceType
 import com.akilimo.mobile.utils.enums.EnumUnitOfSale
 import com.akilimo.mobile.utils.showDialogFragmentSafely
@@ -235,7 +235,7 @@ class MaizeMarketActivity : BaseActivity() {
 
 
         database.adviceStatusDao()
-            .insert(AdviceStatus(EnumAdviceTasks.MARKET_OUTLET_MAIZE.name, dataIsValid))
+            .insert(AdviceStatus(EnumAdviceTask.MARKET_OUTLET_MAIZE.name, dataIsValid))
         if (dataIsValid) {
             try {
 

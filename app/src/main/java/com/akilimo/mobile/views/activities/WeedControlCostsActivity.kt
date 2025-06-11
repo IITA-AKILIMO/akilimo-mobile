@@ -15,7 +15,7 @@ import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.utils.LanguageManager
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.utils.enums.EnumAdviceTask
 import com.akilimo.mobile.utils.enums.EnumCountry
 import com.akilimo.mobile.utils.enums.EnumWeedControlMethod
 import io.sentry.Sentry
@@ -215,7 +215,7 @@ class WeedControlCostsActivity : BaseActivity() {
 
             database.fieldOperationCostDao().insertOrUpdate(fieldOperationCost!!)
             database.adviceStatusDao()
-                .insert(AdviceStatus(EnumAdviceTasks.COST_OF_WEED_CONTROL.name, true))
+                .insert(AdviceStatus(EnumAdviceTask.COST_OF_WEED_CONTROL.name, true))
 
             closeActivity(backPressed)
         } catch (ex: Exception) {

@@ -9,7 +9,7 @@ import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.entities.OperationCost
 import com.akilimo.mobile.inherit.CostBaseActivity
 import com.akilimo.mobile.utils.LanguageManager
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.utils.enums.EnumAdviceTask
 import com.akilimo.mobile.utils.enums.EnumOperation
 import com.akilimo.mobile.utils.enums.EnumOperationMethod
 import com.akilimo.mobile.utils.showDialogFragmentSafely
@@ -189,7 +189,7 @@ class ManualTillageCostActivity : CostBaseActivity<ActivityManualTillageCostBind
     override fun validate(backPressed: Boolean) {
         setData()
         database.adviceStatusDao().insert(
-            AdviceStatus(EnumAdviceTasks.MANUAL_TILLAGE_COST.name, dataValid)
+            AdviceStatus(EnumAdviceTask.MANUAL_TILLAGE_COST.name, dataValid)
         )
         if (dataValid) {
             closeActivity(backPressed)
