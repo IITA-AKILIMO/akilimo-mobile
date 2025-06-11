@@ -45,8 +45,14 @@ class TillageOperationFragment : BindBaseStepFragment<FragmentTillageOperationBi
 
         viewModel.currentPractice.observe(viewLifecycleOwner) { practice ->
             practice?.let {
-                binding.tillageBtnPloughing.isChecked = it.performPloughing
-                binding.tillageBtnRidging.isChecked = it.performRidging
+                binding.tillageBtnPloughing.apply {
+                    isChecked = it.performPloughing
+                    text = getString(R.string.label_ploughing_method, it.ploughingMethod.name)
+                }
+                binding.tillageBtnRidging.apply {
+                    isChecked = it.performRidging
+                    text = getString(R.string.label_ridging_method, it.ridgingMethod.name)
+                }
             }
         }
 
