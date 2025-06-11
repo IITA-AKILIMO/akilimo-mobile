@@ -18,6 +18,12 @@ abstract class BindBaseStepFragment<T : ViewBinding> : BaseStepFragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): T
 
+    /**
+     * Subclasses must implement this. Called after binding is safely initialized.
+     */
+    protected abstract fun onBindingReady(savedInstanceState: Bundle?)
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -30,15 +36,10 @@ abstract class BindBaseStepFragment<T : ViewBinding> : BaseStepFragment() {
         onBindingReady(savedInstanceState)
     }
 
-    /**
-     * Subclasses must implement this. Called after binding is safely initialized.
-     */
-    protected abstract fun onBindingReady(savedInstanceState: Bundle?)
-
+    override fun verifyStep(): VerificationError? = null
+    
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
-    override fun verifyStep(): VerificationError? = null
 }
