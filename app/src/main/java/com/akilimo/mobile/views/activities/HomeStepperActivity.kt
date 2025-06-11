@@ -143,15 +143,11 @@ class HomeStepperActivity : BindBaseActivity<ActivityHomeStepperBinding>() {
         add(BioDataFragment.newInstance())
         add(CountryFragment.newInstance())
         add(LocationFragment.newInstance())
-
-        if (!sessionManager.getRememberAreaUnit()) add(AreaUnitFragment.newInstance())
-
+        add(AreaUnitFragment.newInstance())
         add(FieldSizeFragment.newInstance())
         add(PlantingDateFragment.newInstance())
         add(TillageOperationFragment.newInstance())
-
-        if (!sessionManager.getRememberInvestmentPref()) add(InvestmentPrefFragment.newInstance())
-
+        add(InvestmentPrefFragment.newInstance())
         add(SummaryFragment.newInstance())
     }
 
