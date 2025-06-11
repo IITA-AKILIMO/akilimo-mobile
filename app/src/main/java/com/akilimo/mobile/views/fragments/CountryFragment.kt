@@ -104,7 +104,6 @@ class CountryFragment : BindBaseStepFragment<FragmentCountryBinding>() {
             }
 
             database.profileInfoDao().insert(profile)
-            sessionManager.setCountry(selectedCountryCode)
         } catch (ex: Exception) {
             Sentry.captureException(ex)
         }
