@@ -11,9 +11,14 @@ import com.akilimo.mobile.databinding.ActivityPlantingPracticesBinding
 import com.akilimo.mobile.entities.UseCase
 import com.akilimo.mobile.inherit.BaseRecommendationActivity
 import com.akilimo.mobile.models.RecommendationOptions
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.utils.enums.EnumAdviceTask
 import com.akilimo.mobile.utils.enums.EnumUseCase
-import com.akilimo.mobile.views.activities.*
+import com.akilimo.mobile.views.activities.CassavaMarketActivity
+import com.akilimo.mobile.views.activities.DatesActivity
+import com.akilimo.mobile.views.activities.ManualTillageCostActivity
+import com.akilimo.mobile.views.activities.RootYieldActivity
+import com.akilimo.mobile.views.activities.TractorAccessActivity
+import com.akilimo.mobile.views.activities.WeedControlCostsActivity
 import io.sentry.Sentry
 
 class PlantingPracticesActivity : BaseRecommendationActivity<ActivityPlantingPracticesBinding>() {
@@ -70,27 +75,27 @@ class PlantingPracticesActivity : BaseRecommendationActivity<ActivityPlantingPra
                 val advice = recommendation.adviceName
                 dataPositionChanged = position
                 when (advice) {
-                    EnumAdviceTasks.PLANTING_AND_HARVEST -> intent =
+                    EnumAdviceTask.PLANTING_AND_HARVEST -> intent =
                         Intent(this@PlantingPracticesActivity, DatesActivity::class.java)
 
-                    EnumAdviceTasks.MARKET_OUTLET_CASSAVA -> intent =
+                    EnumAdviceTask.MARKET_OUTLET_CASSAVA -> intent =
                         Intent(this@PlantingPracticesActivity, CassavaMarketActivity::class.java)
 
-                    EnumAdviceTasks.CURRENT_CASSAVA_YIELD -> intent =
+                    EnumAdviceTask.CURRENT_CASSAVA_YIELD -> intent =
                         Intent(this@PlantingPracticesActivity, RootYieldActivity::class.java)
 
-                    EnumAdviceTasks.MANUAL_TILLAGE_COST -> intent = Intent(
+                    EnumAdviceTask.MANUAL_TILLAGE_COST -> intent = Intent(
                         this@PlantingPracticesActivity, ManualTillageCostActivity::class.java
                     )
 
-                    EnumAdviceTasks.TRACTOR_ACCESS -> intent =
+                    EnumAdviceTask.TRACTOR_ACCESS -> intent =
                         Intent(this@PlantingPracticesActivity, TractorAccessActivity::class.java)
 
-                    EnumAdviceTasks.COST_OF_WEED_CONTROL -> intent = Intent(
+                    EnumAdviceTask.COST_OF_WEED_CONTROL -> intent = Intent(
                         this@PlantingPracticesActivity, WeedControlCostsActivity::class.java
                     )
 
-                    else -> EnumAdviceTasks.NOT_SELECTED
+                    else -> EnumAdviceTask.NOT_SELECTED
                 }
                 openActivity(intent)
 
@@ -113,36 +118,36 @@ class PlantingPracticesActivity : BaseRecommendationActivity<ActivityPlantingPra
         myItems.add(
             RecommendationOptions(
                 manualTillageCostsString,
-                EnumAdviceTasks.MANUAL_TILLAGE_COST,
-                checkStatus(EnumAdviceTasks.MANUAL_TILLAGE_COST)
+                EnumAdviceTask.MANUAL_TILLAGE_COST,
+                checkStatus(EnumAdviceTask.MANUAL_TILLAGE_COST)
             )
         )
         myItems.add(
             RecommendationOptions(
                 tractorAccessString,
-                EnumAdviceTasks.TRACTOR_ACCESS,
-                checkStatus(EnumAdviceTasks.TRACTOR_ACCESS)
+                EnumAdviceTask.TRACTOR_ACCESS,
+                checkStatus(EnumAdviceTask.TRACTOR_ACCESS)
             )
         )
         myItems.add(
             RecommendationOptions(
                 weedControlCostString,
-                EnumAdviceTasks.COST_OF_WEED_CONTROL,
-                checkStatus(EnumAdviceTasks.COST_OF_WEED_CONTROL)
+                EnumAdviceTask.COST_OF_WEED_CONTROL,
+                checkStatus(EnumAdviceTask.COST_OF_WEED_CONTROL)
             )
         )
         myItems.add(
             RecommendationOptions(
                 rootYieldString,
-                EnumAdviceTasks.CURRENT_CASSAVA_YIELD,
-                checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)
+                EnumAdviceTask.CURRENT_CASSAVA_YIELD,
+                checkStatus(EnumAdviceTask.CURRENT_CASSAVA_YIELD)
             )
         )
         myItems.add(
             RecommendationOptions(
                 marketOutletString,
-                EnumAdviceTasks.MARKET_OUTLET_CASSAVA,
-                checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)
+                EnumAdviceTask.MARKET_OUTLET_CASSAVA,
+                checkStatus(EnumAdviceTask.MARKET_OUTLET_CASSAVA)
             )
         )
         return myItems

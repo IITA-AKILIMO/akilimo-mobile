@@ -4,6 +4,7 @@ import io.sentry.Sentry
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.util.Locale
+import kotlin.math.roundToInt
 
 /**
  * Utility class that handles mathematical operations including:
@@ -209,7 +210,7 @@ class MathHelper {
             return if (roundedValue < 1) {
                 roundedValue
             } else {
-                Math.round(roundedValue).toDouble()
+                roundedValue.roundToInt().toDouble()
             }
         } catch (ex: Exception) {
             Sentry.captureException(ex)
@@ -229,7 +230,7 @@ class MathHelper {
             return roundToNDecimalPlaces(value, DECIMAL_PRECISION)
         }
 
-        return Math.round(value / nearest) * nearest
+        return (value / nearest).roundToInt() * nearest
     }
 
     /**
@@ -240,7 +241,7 @@ class MathHelper {
      * @return The rounded value
      */
     fun roundToNDecimalPlaces(value: Double, decimalPlaces: Double = 2.0): Double {
-        return Math.round(value * decimalPlaces) / decimalPlaces
+        return (value * decimalPlaces).roundToInt() / decimalPlaces
     }
 
     /**

@@ -5,7 +5,7 @@ import androidx.viewbinding.ViewBinding
 import com.akilimo.mobile.adapters.RecOptionsAdapter
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.models.RecommendationOptions
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.utils.enums.EnumAdviceTask
 
 abstract class BaseRecommendationActivity<T : ViewBinding> : BindBaseActivity<T>() {
 
@@ -23,7 +23,7 @@ abstract class BaseRecommendationActivity<T : ViewBinding> : BindBaseActivity<T>
         mAdapter = RecOptionsAdapter(applicationContext, recList, displayArrow)
     }
 
-    protected fun checkStatus(taskName: EnumAdviceTasks): AdviceStatus {
+    protected fun checkStatus(taskName: EnumAdviceTask): AdviceStatus {
         val adviceStatus = database.adviceStatusDao().findOne(taskName.name)
         if (adviceStatus != null) {
             return adviceStatus

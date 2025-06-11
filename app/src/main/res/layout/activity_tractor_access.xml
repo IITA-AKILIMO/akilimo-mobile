@@ -1,35 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.akilimo.mobile.views.activities.TractorAccessActivity">
+    tools:context=".views.activities.TractorAccessActivity">
 
+    <!-- App Bar with Collapsing Toolbar -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/app_bar_height"
-        android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:toolbarId="@+id/toolbar">
+            app:contentScrim="?attr/colorPrimary"
+            app:toolbarId="@id/toolbar">
 
             <ImageView
                 android:id="@+id/image_header"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:scaleType="centerCrop"
                 android:contentDescription="@string/app_name"
                 android:fitsSystemWindows="true"
-                android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax"
                 app:srcCompat="@drawable/bg_header_faded_logo" />
 
@@ -38,21 +40,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:theme="@style/ToolbarTheme"
-                app:contentInsetStartWithNavigation="0dp"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
+                app:contentInsetStartWithNavigation="0dp" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-
+    <!-- Main Content Layout -->
     <include
         android:id="@+id/tractor_access"
-        layout="@layout/content_tractor_access" />
+        layout="@layout/content_tractor_access"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:viewBindingIgnore="true" />
 
-
+    <!-- Bottom Buttons Layout -->
     <include
         android:id="@+id/two_buttons"
-        layout="@layout/bottom_two_buttons_layout" />
+        layout="@layout/bottom_two_buttons_layout"
+        tools:viewBindingIgnore="true" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

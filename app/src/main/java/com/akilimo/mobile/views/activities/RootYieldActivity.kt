@@ -13,7 +13,7 @@ import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.IFieldYieldDismissListener
 import com.akilimo.mobile.utils.TheItemAnimation
 import com.akilimo.mobile.utils.Tools.dpToPx
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.utils.enums.EnumAdviceTask
 import com.akilimo.mobile.utils.enums.EnumUseCase
 import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.RootYieldDialogFragment
@@ -159,7 +159,7 @@ class RootYieldActivity : BaseActivity() {
             return
         }
         database.adviceStatusDao()
-            .insert(AdviceStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD.name, true))
+            .insert(AdviceStatus(EnumAdviceTask.CURRENT_CASSAVA_YIELD.name, true))
 
         closeActivity(false)
     }

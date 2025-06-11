@@ -1,15 +1,11 @@
 package com.akilimo.mobile.inherit
 
 import android.app.Dialog
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.entities.UserLocation
@@ -18,28 +14,16 @@ import com.akilimo.mobile.utils.SessionManager
 import com.stepstone.stepper.Step
 import com.stepstone.stepper.VerificationError
 import io.sentry.Sentry
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 /**
  * Base fragment implementing common functionality for stepper fragments
  */
+@Deprecated("Remove and replace")
 abstract class BaseStepFragment : Fragment(), Step {
 
-    @Deprecated("Remove")
-    protected var currency: String = ""
-
-    @Deprecated("Remove")
-    protected var countryCode: String = ""
-
-    @Deprecated("Remove")
-    protected var countryName: String = ""
-
-
     protected var errorMessage: String = ""
-    protected var dataIsValid = false
+    open var dataIsValid = false
 
     // Lazy initialization for dependencies
     protected val database: AppDatabase by lazy { AppDatabase.getDatabase(requireContext()) }
@@ -47,29 +31,6 @@ abstract class BaseStepFragment : Fragment(), Step {
     protected val mathHelper: MathHelper by lazy { MathHelper() }
 
     protected var verificationError: VerificationError? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(false)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return loadFragmentLayout(inflater, container, savedInstanceState)
-    }
-
-    /**
-     * Load the specific layout for this fragment
-     * @return The inflated view
-     */
-    protected abstract fun loadFragmentLayout(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View
 
     /**
      * Shows a custom warning dialog with customizable title, content and button text
@@ -79,9 +40,7 @@ abstract class BaseStepFragment : Fragment(), Step {
      * @param buttonTitle Custom text for the close button (optional)
      */
     protected fun showCustomWarningDialog(
-        titleText: String,
-        contentText: String? = titleText,
-        buttonTitle: String? = null
+        titleText: String, contentText: String? = titleText, buttonTitle: String? = null
     ) {
         try {
             Dialog(requireContext()).apply {
@@ -134,27 +93,12 @@ abstract class BaseStepFragment : Fragment(), Step {
         return "${place}\n${lat},${lon}"
     }
 
-    /**
-     * Helper function to perform database operations safely in a coroutine
-     */
-    protected fun performDatabaseOperation(
-        operation: suspend () -> Unit,
-        onError: (Exception) -> Unit = { Sentry.captureException(it) }
-    ) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                withContext(Dispatchers.IO) {
-                    operation()
-                }
-            } catch (e: Exception) {
-                Timber.e(e, "Database operation failed")
-                onError(e)
-            }
-        }
-    }
-
     override fun onError(error: VerificationError) {
         // Base implementation - override in subclasses if needed
         Timber.e("Verification error: ${error.errorMessage}")
+    }
+
+    override fun onSelected() {
+        Timber.d("Fragment selected")
     }
 }

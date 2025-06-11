@@ -44,12 +44,6 @@ data class UserProfile(
     @ColumnInfo(name = "akilimo_interest")
     var akilimoInterest: String? = null,
 
-    @ColumnInfo(name = "selected_gender_index")
-    var selectedGenderIndex: Int = -1,
-
-    @ColumnInfo(name = "selected_interest_index")
-    var selectedInterestIndex: Int = -1,
-
     @ColumnInfo(name = "send_email")
     var sendEmail: Boolean = false,
 
@@ -62,15 +56,9 @@ data class UserProfile(
     @ColumnInfo(name = "country_name")
     var countryName: String = "",
 
-    @ColumnInfo(name = "selected_country_index")
-    var selectedCountryIndex: Int = 0,
-
     @ColumnInfo(name = "currency_code")
     var currencyCode: String = "",
 
     @ColumnInfo(name = "risk_att")
     var riskAtt: Int = 0,
-
-    @ColumnInfo(name = "selected_risk_index")
-    var selectedRiskIndex: Int = 0
 )

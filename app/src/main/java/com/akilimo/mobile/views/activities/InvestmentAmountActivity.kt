@@ -16,7 +16,7 @@ import com.akilimo.mobile.entities.InvestmentAmountResponse
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.utils.CurrencyCode
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.utils.enums.EnumAdviceTask
 import io.sentry.Sentry
 import retrofit2.Call
 import retrofit2.Callback
@@ -104,7 +104,7 @@ class InvestmentAmountActivity : BaseActivity() {
 
                 database.investmentAmountDao().insert(investment)
                 database.adviceStatusDao()
-                    .insert(AdviceStatus(EnumAdviceTasks.INVESTMENT_AMOUNT.name, true))
+                    .insert(AdviceStatus(EnumAdviceTask.INVESTMENT_AMOUNT.name, true))
 
                 closeActivity(false)
             } catch (ex: Exception) {

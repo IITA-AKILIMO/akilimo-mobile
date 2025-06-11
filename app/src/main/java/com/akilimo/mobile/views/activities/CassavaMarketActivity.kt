@@ -10,10 +10,18 @@ import androidx.activity.addCallback
 import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityCassavaMarketBinding
-import com.akilimo.mobile.entities.*
+import com.akilimo.mobile.entities.AdviceStatus
+import com.akilimo.mobile.entities.CassavaMarket
+import com.akilimo.mobile.entities.CassavaPricePriceResponse
+import com.akilimo.mobile.entities.StarchFactory
+import com.akilimo.mobile.entities.StarchFactoryResponse
 import com.akilimo.mobile.inherit.BindBaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
-import com.akilimo.mobile.utils.enums.*
+import com.akilimo.mobile.utils.enums.EnumAdviceTask
+import com.akilimo.mobile.utils.enums.EnumCassavaProduceType
+import com.akilimo.mobile.utils.enums.EnumContext
+import com.akilimo.mobile.utils.enums.EnumUnitOfSale
+import com.akilimo.mobile.utils.enums.EnumUseCase
 import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.CassavaPriceDialogFragment
 import io.sentry.Sentry
@@ -233,7 +241,7 @@ class CassavaMarketActivity : BindBaseActivity<ActivityCassavaMarketBinding>() {
         if (!validateSelection()) return
 
         database.adviceStatusDao()
-            .insert(AdviceStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA.name, dataIsValid))
+            .insert(AdviceStatus(EnumAdviceTask.MARKET_OUTLET_CASSAVA.name, dataIsValid))
 
         if (dataIsValid) {
             saveCassavaMarket(backPressed)

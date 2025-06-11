@@ -12,7 +12,7 @@ import com.akilimo.mobile.entities.Fertilizer
 import com.akilimo.mobile.inherit.BindBaseActivity
 import com.akilimo.mobile.interfaces.IFertilizerDismissListener
 import com.akilimo.mobile.utils.Tools.dpToPx
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.utils.enums.EnumAdviceTask
 import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.viewmodels.FertilizersViewModel
 import com.akilimo.mobile.viewmodels.FertilizersViewModelFactory
@@ -75,7 +75,7 @@ abstract class BaseFertilizersActivity(
         binding.twoButtons.btnFinish.setOnClickListener {
             val isMinSelected = viewModel.isMinSelected()
             val adviceStatus = AdviceStatus(
-                EnumAdviceTasks.AVAILABLE_FERTILIZERS.name, isMinSelected
+                EnumAdviceTask.AVAILABLE_FERTILIZERS.name, isMinSelected
             )
             if (isMinSelected) {
                 database.adviceStatusDao().insert(adviceStatus)

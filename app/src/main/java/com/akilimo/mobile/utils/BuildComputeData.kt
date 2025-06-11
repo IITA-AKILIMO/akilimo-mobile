@@ -12,15 +12,13 @@ import org.modelmapper.TypeToken
 class BuildComputeData(val context: Context) {
 
     companion object {
-        private val LOG_TAG: String = BuildComputeData::class.java.simpleName
         private const val DEFAULT_UNAVAILABLE = "NA"
-        private const val DEFAULT_PRACTICE_METHOD = "NA"
         private const val DEFAULT_USERNAME = "akilimo"
     }
 
     private val modelMapper = ModelMapper()
 
-    private val database = getDatabase(context)
+    private val database = getDatabase(context = context)
     val session = SessionManager(context = context)
 
     fun buildRecommendationReq(): RecommendationRequest {
@@ -170,10 +168,10 @@ class BuildComputeData(val context: Context) {
 
     private fun buildCurrentPractice(computeRequest: ComputeRequest): ComputeRequest {
         database.currentPracticeDao().findOne()?.let { practice ->
-            val myMethodPloughing = practice.ploughingMethod.orIfBlank(DEFAULT_PRACTICE_METHOD)
-            val myMethodHarrowing = practice.harrowingMethod.orIfBlank(DEFAULT_PRACTICE_METHOD)
-            val myMethodRidging = practice.ridgingMethod.orIfBlank(DEFAULT_PRACTICE_METHOD)
-            val myMethodWeeding = practice.weedControlTechnique.orIfBlank(DEFAULT_PRACTICE_METHOD)
+            val myMethodPloughing = practice.ploughingMethod.name
+            val myMethodHarrowing = practice.harrowingMethod.name
+            val myMethodRidging = practice.ridgingMethod.name
+            val myMethodWeeding = practice.weedControlMethod.name
 
             computeRequest.apply {
                 ploughingDone = practice.performPloughing

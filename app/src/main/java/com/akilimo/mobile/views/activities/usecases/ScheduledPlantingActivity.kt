@@ -12,7 +12,7 @@ import com.akilimo.mobile.databinding.ActivityScheduledPlantingBinding
 import com.akilimo.mobile.entities.UseCase
 import com.akilimo.mobile.inherit.BaseRecommendationActivity
 import com.akilimo.mobile.models.RecommendationOptions
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.utils.enums.EnumAdviceTask
 import com.akilimo.mobile.utils.enums.EnumUseCase
 import com.akilimo.mobile.views.activities.CassavaMarketActivity
 import com.akilimo.mobile.views.activities.DatesActivity
@@ -68,13 +68,13 @@ class ScheduledPlantingActivity : BaseRecommendationActivity<ActivityScheduledPl
                 dataPositionChanged = position
                 val advice = recommendation.adviceName
                 when (advice) {
-                    EnumAdviceTasks.PLANTING_AND_HARVEST -> intent =
+                    EnumAdviceTask.PLANTING_AND_HARVEST -> intent =
                         Intent(this@ScheduledPlantingActivity, DatesActivity::class.java)
 
-                    EnumAdviceTasks.MARKET_OUTLET_CASSAVA -> intent =
+                    EnumAdviceTask.MARKET_OUTLET_CASSAVA -> intent =
                         Intent(this@ScheduledPlantingActivity, CassavaMarketActivity::class.java)
 
-                    EnumAdviceTasks.CURRENT_CASSAVA_YIELD -> intent =
+                    EnumAdviceTask.CURRENT_CASSAVA_YIELD -> intent =
                         Intent(this@ScheduledPlantingActivity, RootYieldActivity::class.java)
 
                     else -> {}
@@ -94,22 +94,22 @@ class ScheduledPlantingActivity : BaseRecommendationActivity<ActivityScheduledPl
         myItems.add(
             RecommendationOptions(
                 plantingString,
-                EnumAdviceTasks.PLANTING_AND_HARVEST,
-                checkStatus(EnumAdviceTasks.PLANTING_AND_HARVEST)
+                EnumAdviceTask.PLANTING_AND_HARVEST,
+                checkStatus(EnumAdviceTask.PLANTING_AND_HARVEST)
             )
         )
         myItems.add(
             RecommendationOptions(
                 rootYieldString,
-                EnumAdviceTasks.CURRENT_CASSAVA_YIELD,
-                checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)
+                EnumAdviceTask.CURRENT_CASSAVA_YIELD,
+                checkStatus(EnumAdviceTask.CURRENT_CASSAVA_YIELD)
             )
         )
         myItems.add(
             RecommendationOptions(
                 marketOutletString,
-                EnumAdviceTasks.MARKET_OUTLET_CASSAVA,
-                checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)
+                EnumAdviceTask.MARKET_OUTLET_CASSAVA,
+                checkStatus(EnumAdviceTask.MARKET_OUTLET_CASSAVA)
             )
         )
         return myItems

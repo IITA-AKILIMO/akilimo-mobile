@@ -1,199 +1,147 @@
 package com.akilimo.mobile.views.fragments
 
+// import com.akilimo.mobile.entities.CurrentPractice // No longer directly needed
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
-import android.widget.Toast
+import androidx.fragment.app.viewModels
+import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentTillageOperationBinding
-import com.akilimo.mobile.entities.CurrentPractice
-import com.akilimo.mobile.inherit.BaseStepFragment
+import com.akilimo.mobile.inherit.BindBaseStepFragment
 import com.akilimo.mobile.interfaces.IDismissOperationsDialogListener
-import com.akilimo.mobile.utils.enums.EnumOperationType
+import com.akilimo.mobile.utils.enums.EnumOperation
+import com.akilimo.mobile.utils.enums.EnumOperationMethod
 import com.akilimo.mobile.utils.showDialogFragmentSafely
+import com.akilimo.mobile.viewmodels.TillageOperationViewModel
+import com.akilimo.mobile.viewmodels.TillageOperationViewModelFactory
 import com.akilimo.mobile.views.fragments.dialog.OperationTypeDialogFragment
+import com.google.android.material.button.MaterialButton
 import com.stepstone.stepper.VerificationError
-import io.sentry.Sentry
 
-/**
- * A simple [Fragment] subclass.
- * Use the [TillageOperationFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class TillageOperationFragment : BaseStepFragment() {
-    private var currentPractice: CurrentPractice? = null
-    private var _binding: FragmentTillageOperationBinding? = null
-    private val binding get() = _binding!!
-
-    private var performPloughing = false
-    private var performRidging = false
-    private var performHarrowing = false
-    private var isDataRefreshing = false
-
-
-    private var ploughingMethod: String? = null
-    private var ridgingMethod: String? = null
-    private var harrowingMethod: String? = null
-    private var operation: String? = null
+class TillageOperationFragment : BindBaseStepFragment<FragmentTillageOperationBinding>() {
 
     companion object {
+        private const val TAG = "TillOperationFragment"
         fun newInstance(): TillageOperationFragment {
             return TillageOperationFragment()
         }
     }
 
-    override fun loadFragmentLayout(
+    override fun inflateBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentTillageOperationBinding.inflate(inflater, container, false)
-        return binding.root
+    ): FragmentTillageOperationBinding =
+        FragmentTillageOperationBinding.inflate(inflater, container, false)
+
+    private val viewModel: TillageOperationViewModel by viewModels {
+        TillageOperationViewModelFactory(
+            application = requireActivity().application,
+        )
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onBindingReady(savedInstanceState: Bundle?) {
+
+        viewModel.currentPractice.observe(viewLifecycleOwner) { practice ->
+            practice?.let {
+                binding.tillageBtnPloughing.apply {
+                    isChecked = it.performPloughing
+                    text = getString(R.string.label_ploughing_method, it.ploughingMethod.name)
+                }
+                binding.tillageBtnRidging.apply {
+                    isChecked = it.performRidging
+                    text = getString(R.string.label_ridging_method, it.ridgingMethod.name)
+                }
+            }
+        }
+
+        viewModel.errorMessage.observe(viewLifecycleOwner) { errorMsg ->
+            errorMsg?.let {
+                showCustomWarningDialog(it)
+                viewModel.errorShown() // Notify ViewModel the error has been shown
+            }
+        }
+
 
         binding.apply {
-            chkPloughing.setOnCheckedChangeListener { buttonView: CompoundButton, checked: Boolean ->
-                operation = if (checked) "Plough" else "NA"
-                performPloughing = checked
-                if (buttonView.isPressed) {
-                    onCheckboxClicked(checked)
+            tillageOperationsGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
+                val button = group.findViewById<MaterialButton>(checkedId)
+                if (button.isPressed) { // Only act on user presses
+                    handleTillageOperationChange(checkedId, isChecked)
                 }
-                isDataRefreshing = false
-            }
-            chkRidging.setOnCheckedChangeListener { buttonView: CompoundButton, checked: Boolean ->
-                performRidging = checked
-                operation = if (checked) "Ridge" else "NA"
-                if (buttonView.isPressed) {
-                    onCheckboxClicked(checked)
-                }
-                isDataRefreshing = false
             }
         }
     }
 
-    fun refreshData() {
-        try {
-            currentPractice = database.currentPracticeDao().findOne()
-            if (currentPractice != null) {
-                isDataRefreshing = true
-                performPloughing = currentPractice!!.performPloughing
-                performRidging = currentPractice!!.performRidging
-                ploughingMethod = currentPractice!!.ploughingMethod
-                ridgingMethod = currentPractice!!.ridgingMethod
-
-                binding.apply {
-                    if (performPloughing) {
-                        chkPloughing.isChecked = true
-                    }
-                    if (performRidging) {
-                        chkRidging.isChecked = true
-                    }
+    private fun handleTillageOperationChange(checkedId: Int, isChecked: Boolean) {
+        when (checkedId) {
+            R.id.tillage_btn_ploughing -> {
+                if (isChecked) {
+                    showOperationsDialog(EnumOperation.TILLAGE)
+                } else {
+                    viewModel.updatePloughing(perform = false)
                 }
             }
-        } catch (ex: Exception) {
-            Toast.makeText(requireContext(), ex.message, Toast.LENGTH_SHORT).show()
-            Sentry.captureException(ex)
+
+            R.id.tillage_btn_ridging -> {
+                if (isChecked) {
+                    showOperationsDialog(EnumOperation.RIDGING)
+                } else {
+                    viewModel.updateRidging(perform = false)
+                }
+            }
         }
     }
 
-    private fun onCheckboxClicked(checked: Boolean) {
-        if (!checked) {
-            saveEntities()
-            return
-        }
+    private fun showOperationsDialog(operationName: EnumOperation) {
         val arguments = Bundle()
-        arguments.putString(OperationTypeDialogFragment.OPERATION_TYPE, operation)
-
+        arguments.putParcelable(OperationTypeDialogFragment.OPERATION_TYPE, operationName)
         val operationTypeDialogFragment = OperationTypeDialogFragment()
         operationTypeDialogFragment.arguments = arguments
+
+        operationTypeDialogFragment.setOnDismissListener(object : IDismissOperationsDialogListener {
+            override fun onDismiss(enumOperationMethod: EnumOperationMethod, cancelled: Boolean) {
+                if (cancelled) {
+                    return
+                }
+
+                when (operationName) {
+                    EnumOperation.TILLAGE -> {
+                        val performOperation = enumOperationMethod != EnumOperationMethod.NONE
+                        viewModel.updatePloughing(performOperation, enumOperationMethod)
+                    }
+
+                    EnumOperation.RIDGING -> {
+                        val performOperation = enumOperationMethod != EnumOperationMethod.NONE
+                        viewModel.updateRidging(performOperation, enumOperationMethod)
+                    }
+
+                    else -> {
+                        Log.w(TAG, "Unhandled operation name in dialog dismiss: $operationName")
+                    }
+                }
+            }
+        })
 
         showDialogFragmentSafely(
             parentFragmentManager,
             operationTypeDialogFragment,
-            OperationTypeDialogFragment.ARG_ITEM_ID
+            OperationTypeDialogFragment.TAG_OPERATION_DIALOG
         )
-
-        operationTypeDialogFragment.setOnDismissListener(object : IDismissOperationsDialogListener {
-            override fun onDismiss(
-                operation: String,
-                enumOperationType: EnumOperationType,
-                cancelled: Boolean
-            ) {
-                when (operation.uppercase()) {
-                    "PLOUGH" -> {
-                        performPloughing = !cancelled
-                        binding.chkPloughing.isChecked = !cancelled
-                        ploughingMethod = enumOperationType.name
-                    }
-
-                    "RIDGE" -> {
-                        performRidging = !cancelled
-                        binding.chkRidging.isChecked = !cancelled
-                        ridgingMethod = enumOperationType.name
-                    }
-
-                    else -> {
-                        ridgingMethod = EnumOperationType.NONE.name
-                        ploughingMethod = EnumOperationType.NONE.name
-                        harrowingMethod = EnumOperationType.NONE.name
-                        run {
-                            performRidging = false
-                            performPloughing = false
-                            performHarrowing = false
-                        }
-                    }
-                }
-                saveEntities()
-            }
-        })
-    }
-
-    private fun saveEntities() {
-
-        try {
-            if (currentPractice == null) {
-                currentPractice = CurrentPractice()
-            }
-
-            currentPractice!!.ridgingMethod = ridgingMethod
-            currentPractice!!.ploughingMethod = ploughingMethod
-            currentPractice!!.performRidging = performRidging
-            currentPractice!!.performPloughing = performPloughing
-            currentPractice!!.performHarrowing = performHarrowing
-
-            if (currentPractice!!.id != null) {
-                database.currentPracticeDao().update(currentPractice!!)
-            } else {
-                database.currentPracticeDao().insert(currentPractice!!)
-            }
-
-            currentPractice = database.currentPracticeDao().findOne()
-            dataIsValid = true
-        } catch (ex: Exception) {
-            dataIsValid = false
-            errorMessage = ex.message!!
-            Sentry.captureException(ex)
-        }
     }
 
     override fun verifyStep(): VerificationError? {
-        saveEntities()
-        if (!dataIsValid) {
-            showCustomWarningDialog(errorMessage)
-            return VerificationError(errorMessage)
+        val isValid = viewModel.dataIsValid.value != false
+        if (!isValid) {
+            val error = viewModel.errorMessage.value ?: "Data is invalid."
+            return VerificationError(error)
         }
         return null
     }
 
     override fun onSelected() {
-        refreshData()
-    }
-
-    override fun onError(error: VerificationError) {
-        //Not implemented
+        Log.d(TAG, "TillageOperationFragment selected.")
+        viewModel.loadCurrentPractice()
     }
 }
