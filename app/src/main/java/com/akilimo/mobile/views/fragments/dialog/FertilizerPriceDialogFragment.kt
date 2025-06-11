@@ -225,7 +225,7 @@ class FertilizerPriceDialogFragment : BaseDialogFragment() {
                     price < 0 -> {
                         binding.exactPriceWrapper.hint =
                             getString(R.string.exact_fertilizer_price_currency, currencyName)
-                        context.getString(R.string.exact_fertilizer_price)
+                        context.getString(R.string.exact_price)
                     }
 
                     else -> context.getString(R.string.lbl_about, priceRange)

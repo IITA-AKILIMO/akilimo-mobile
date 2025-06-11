@@ -7,15 +7,18 @@ import androidx.lifecycle.lifecycleScope
 import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.data.UserDataCleaner
 import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.interfaces.DefaultDispatcherProvider
+import com.akilimo.mobile.interfaces.IDispatcherProvider
 import com.akilimo.mobile.rest.retrofit.RetrofitManager
 import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import io.sentry.Sentry
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @SuppressLint("CustomSplashScreen")
-class SplashActivity : BaseActivity() {
+class SplashActivity(
+    private val dispatchers: IDispatcherProvider = DefaultDispatcherProvider()
+) : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,14 +37,12 @@ class SplashActivity : BaseActivity() {
         val isInDevMode = BuildConfig.DEBUG
 
         try {
-            // Initialize API endpoints
             val akilimoEndpoint = sessionManager.getAkilimoEndpoint()
             val fuelrodEndpoint = sessionManager.getFuelrodEndpoint()
-            RetrofitManager.init(akilimoEndpoint, fuelrodEndpoint)
-
+            RetrofitManager.init(this, akilimoEndpoint, fuelrodEndpoint)
             if (!isInDevMode) {
-                withContext(Dispatchers.IO) {
-                    val cleaner = UserDataCleaner(database, sessionManager)
+                withContext(dispatchers.io) {
+                    val cleaner = UserDataCleaner(database)
                     cleaner.clearUserRelatedData()
                 }
             }
@@ -58,7 +59,7 @@ class SplashActivity : BaseActivity() {
         var intent = Intent(this, HomeStepperActivity::class.java)
 
         if (isInDevMode) {
-            intent = Intent(this, RecommendationsActivity::class.java)
+//            intent = Intent(this, RecommendationsActivity::class.java)
         }
         startActivity(intent)
         finish()

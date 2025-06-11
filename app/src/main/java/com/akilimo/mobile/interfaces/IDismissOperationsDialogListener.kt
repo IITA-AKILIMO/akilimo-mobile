@@ -1,7 +1,7 @@
 package com.akilimo.mobile.interfaces
 
-import com.akilimo.mobile.utils.enums.EnumOperationType
+import com.akilimo.mobile.utils.enums.EnumOperationMethod
 
-interface IDismissOperationsDialogListener {
-    fun onDismiss(operation: String, enumOperationType: EnumOperationType, cancelled: Boolean)
+fun interface IDismissOperationsDialogListener {
+    fun onDismiss(enumOperationMethod: EnumOperationMethod, cancelled: Boolean)
 }

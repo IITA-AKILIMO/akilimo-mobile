@@ -11,9 +11,14 @@ import com.akilimo.mobile.databinding.ActivityFertilizerRecBinding
 import com.akilimo.mobile.entities.UseCase
 import com.akilimo.mobile.inherit.BaseRecommendationActivity
 import com.akilimo.mobile.models.RecommendationOptions
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.utils.enums.EnumAdviceTask
 import com.akilimo.mobile.utils.enums.EnumUseCase
-import com.akilimo.mobile.views.activities.*
+import com.akilimo.mobile.views.activities.BaseFertilizersActivity
+import com.akilimo.mobile.views.activities.CassavaMarketActivity
+import com.akilimo.mobile.views.activities.DatesActivity
+import com.akilimo.mobile.views.activities.FertilizersActivity
+import com.akilimo.mobile.views.activities.InvestmentAmountActivity
+import com.akilimo.mobile.views.activities.RootYieldActivity
 import io.sentry.Sentry
 
 class FertilizerRecActivity : BaseRecommendationActivity<ActivityFertilizerRecBinding>() {
@@ -70,10 +75,10 @@ class FertilizerRecActivity : BaseRecommendationActivity<ActivityFertilizerRecBi
                 val advice = recommendation.adviceName
                 dataPositionChanged = position
                 when (advice) {
-                    EnumAdviceTasks.PLANTING_AND_HARVEST ->
+                    EnumAdviceTask.PLANTING_AND_HARVEST ->
                         intent = Intent(this@FertilizerRecActivity, DatesActivity::class.java)
 
-                    EnumAdviceTasks.AVAILABLE_FERTILIZERS -> {
+                    EnumAdviceTask.AVAILABLE_FERTILIZERS -> {
                         intent = Intent(this@FertilizerRecActivity, FertilizersActivity::class.java)
                             .apply {
                                 putExtra(
@@ -83,16 +88,16 @@ class FertilizerRecActivity : BaseRecommendationActivity<ActivityFertilizerRecBi
                             }
                     }
 
-                    EnumAdviceTasks.INVESTMENT_AMOUNT -> intent =
+                    EnumAdviceTask.INVESTMENT_AMOUNT -> intent =
                         Intent(this@FertilizerRecActivity, InvestmentAmountActivity::class.java)
 
-                    EnumAdviceTasks.CURRENT_CASSAVA_YIELD -> intent =
+                    EnumAdviceTask.CURRENT_CASSAVA_YIELD -> intent =
                         Intent(this@FertilizerRecActivity, RootYieldActivity::class.java)
 
-                    EnumAdviceTasks.MARKET_OUTLET_CASSAVA -> intent =
+                    EnumAdviceTask.MARKET_OUTLET_CASSAVA -> intent =
                         Intent(this@FertilizerRecActivity, CassavaMarketActivity::class.java)
 
-                    else -> EnumAdviceTasks.NOT_SELECTED
+                    else -> EnumAdviceTask.NOT_SELECTED
                 }
                 openActivity(intent)
             }
@@ -109,29 +114,29 @@ class FertilizerRecActivity : BaseRecommendationActivity<ActivityFertilizerRecBi
         myItems.add(
             RecommendationOptions(
                 recommendationName = marketOutletString,
-                adviceName = EnumAdviceTasks.MARKET_OUTLET_CASSAVA,
-                adviceStatus = checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)
+                adviceName = EnumAdviceTask.MARKET_OUTLET_CASSAVA,
+                adviceStatus = checkStatus(EnumAdviceTask.MARKET_OUTLET_CASSAVA)
             )
         )
         myItems.add(
             RecommendationOptions(
                 recommendationName = fertilizerString,
-                adviceName = EnumAdviceTasks.AVAILABLE_FERTILIZERS,
-                adviceStatus = checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS)
+                adviceName = EnumAdviceTask.AVAILABLE_FERTILIZERS,
+                adviceStatus = checkStatus(EnumAdviceTask.AVAILABLE_FERTILIZERS)
             )
         )
         myItems.add(
             RecommendationOptions(
                 recommendationName = investmentString,
-                adviceName = EnumAdviceTasks.INVESTMENT_AMOUNT,
-                adviceStatus = checkStatus(EnumAdviceTasks.INVESTMENT_AMOUNT)
+                adviceName = EnumAdviceTask.INVESTMENT_AMOUNT,
+                adviceStatus = checkStatus(EnumAdviceTask.INVESTMENT_AMOUNT)
             )
         )
         myItems.add(
             RecommendationOptions(
                 recommendationName = rootYieldString,
-                adviceName = EnumAdviceTasks.CURRENT_CASSAVA_YIELD,
-                adviceStatus = checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)
+                adviceName = EnumAdviceTask.CURRENT_CASSAVA_YIELD,
+                adviceStatus = checkStatus(EnumAdviceTask.CURRENT_CASSAVA_YIELD)
             )
         )
 

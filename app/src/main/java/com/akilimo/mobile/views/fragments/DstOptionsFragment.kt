@@ -23,10 +23,7 @@ import com.blogspot.atifsoftwares.animatoolib.Animatoo
 /**
  * A simple [BaseFragment] subclass.
  */
-class DstOptionsFragment : BaseFragment() {
-    private var _binding: FragmentDstOptionsBinding? = null
-    private val binding get() = _binding!!
-
+class DstOptionsFragment : BaseFragment<FragmentDstOptionsBinding>() {
 
     companion object {
         fun newInstance(): DstOptionsFragment {
@@ -34,21 +31,13 @@ class DstOptionsFragment : BaseFragment() {
         }
     }
 
-    override fun loadFragmentLayout(
+    override fun inflateBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentDstOptionsBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    ) = FragmentDstOptionsBinding.inflate(inflater, container, false)
 
-    override fun refreshData() {
-        throw UnsupportedOperationException()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onBindingReady(savedInstanceState: Bundle?) {
         val context = requireContext()
 
         val items = recommendationItems()
@@ -62,25 +51,18 @@ class DstOptionsFragment : BaseFragment() {
             mAdapter.setAnimationType(TheItemAnimation.FADE_IN)
             mAdapter.submitList(items)
             mAdapter.setOnItemClickListener { _: View?, recommendation: Recommendation, _: Int ->
-                var intent: Intent? = null
                 val advice = recommendation.recCode
-                when (advice) {
-                    EnumAdvice.FR -> intent = Intent(context, FertilizerRecActivity::class.java)
-                    EnumAdvice.BPP -> intent =
-                        Intent(context, PlantingPracticesActivity::class.java)
-
-                    EnumAdvice.IC_MAIZE -> intent =
-                        Intent(context, InterCropRecActivity::class.java)
-
-                    EnumAdvice.SPH -> intent =
-                        Intent(context, ScheduledPlantingActivity::class.java)
-
-                    else -> {}
+                val intent = when (advice) {
+                    EnumAdvice.FR -> Intent(context, FertilizerRecActivity::class.java)
+                    EnumAdvice.BPP -> Intent(context, PlantingPracticesActivity::class.java)
+                    EnumAdvice.IC_MAIZE -> Intent(context, InterCropRecActivity::class.java)
+                    EnumAdvice.SPH -> Intent(context, ScheduledPlantingActivity::class.java)
+                    else -> {
+                        throw IllegalArgumentException("Invalid recommendation code")
+                    }
                 }
-                if (intent != null) {
-                    startActivity(intent)
-                    Animatoo.animateSlideRight(context)
-                }
+                startActivity(intent)
+                Animatoo.animateSlideRight(context)
             }
         }
     }

@@ -5,7 +5,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
 import com.akilimo.mobile.entities.UserLocation
 
 @Dao
@@ -19,9 +18,6 @@ interface UserLocationDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(location: UserLocation)
-
-    @Update
-    fun update(location: UserLocation)
 
     @Delete
     fun delete(location: UserLocation?)

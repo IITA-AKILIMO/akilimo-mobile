@@ -3,7 +3,7 @@
     <!-- Base application theme -->
     <style name="AppTheme" parent="BaseTheme" />
 
-    <style name="BaseTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="BaseTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
 
         <!-- Material Design Primary Colors -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -25,7 +25,7 @@
         <item name="colorControlHighlight">@color/colorPrimary</item>
     </style>
 
-    <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Inherit colors and fonts from your main theme -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
@@ -58,6 +58,7 @@
         <item name="android:windowBackground">@null</item>
         <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
         <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+        <item name="materialButtonStyle">@style/AppMaterialButton</item>
     </style>
 
     <style name="FullscreenActionBarStyle" parent="Widget.MaterialComponents.ActionBar.Solid">
@@ -161,6 +162,20 @@
         <item name="tabTextAppearance">@style/CustomTabTextAppearance</item>
         <item name="tabSelectedTextColor">@android:color/white</item>
     </style>
+
+    <style name="AppMaterialButton" parent="Widget.MaterialComponents.Button">
+        <item name="cornerRadius">@dimen/dimen_5</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="AppMaterialButton.Outline" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="cornerRadius">@dimen/dimen_5</item>
+        <item name="textAllCaps">false</item>
+        <item name="strokeColor">@color/primaryColor</item>
+        <item name="strokeWidth">@dimen/dimen_1</item>
+        <item name="iconTint">@color/akilimoDarkGreen</item>
+    </style>
+
 
     <style name="CustomTabTextAppearance" parent="Widget.Design.TabLayout">
         <item name="android:textColor">@color/grey_10</item>

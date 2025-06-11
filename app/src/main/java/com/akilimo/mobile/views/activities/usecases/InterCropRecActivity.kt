@@ -12,10 +12,17 @@ import com.akilimo.mobile.databinding.ActivityInterCropRecBinding
 import com.akilimo.mobile.entities.UseCase
 import com.akilimo.mobile.inherit.BaseRecommendationActivity
 import com.akilimo.mobile.models.RecommendationOptions
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.utils.enums.EnumAdviceTask
 import com.akilimo.mobile.utils.enums.EnumCountry
 import com.akilimo.mobile.utils.enums.EnumUseCase
-import com.akilimo.mobile.views.activities.*
+import com.akilimo.mobile.views.activities.BaseFertilizersActivity
+import com.akilimo.mobile.views.activities.CassavaMarketActivity
+import com.akilimo.mobile.views.activities.DatesActivity
+import com.akilimo.mobile.views.activities.InterCropFertilizersActivity
+import com.akilimo.mobile.views.activities.MaizeMarketActivity
+import com.akilimo.mobile.views.activities.MaizePerformanceActivity
+import com.akilimo.mobile.views.activities.RootYieldActivity
+import com.akilimo.mobile.views.activities.SweetPotatoMarketActivity
 import io.sentry.Sentry
 
 class InterCropRecActivity : BaseRecommendationActivity<ActivityInterCropRecBinding>() {
@@ -63,35 +70,35 @@ class InterCropRecActivity : BaseRecommendationActivity<ActivityInterCropRecBind
             override fun onItemClick(view: View?, recommendation: RecommendationOptions, position: Int) {
                 dataPositionChanged = position
                 val intent = when (recommendation.adviceName) {
-                    EnumAdviceTasks.PLANTING_AND_HARVEST -> Intent(
+                    EnumAdviceTask.PLANTING_AND_HARVEST -> Intent(
                         context,
                         DatesActivity::class.java
                     )
 
-                    EnumAdviceTasks.MARKET_OUTLET_CASSAVA -> Intent(
+                    EnumAdviceTask.MARKET_OUTLET_CASSAVA -> Intent(
                         context,
                         CassavaMarketActivity::class.java
                     ).apply {
                         putExtra(CassavaMarketActivity.useCaseTag, useCase)
                     }
 
-                    EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO -> Intent(
+                    EnumAdviceTask.MARKET_OUTLET_SWEET_POTATO -> Intent(
                         context,
                         SweetPotatoMarketActivity::class.java
                     )
 
-                    EnumAdviceTasks.MARKET_OUTLET_MAIZE -> Intent(
+                    EnumAdviceTask.MARKET_OUTLET_MAIZE -> Intent(
                         context,
                         MaizeMarketActivity::class.java
                     )
 
-                    EnumAdviceTasks.CURRENT_CASSAVA_YIELD -> Intent(
+                    EnumAdviceTask.CURRENT_CASSAVA_YIELD -> Intent(
                         context,
                         RootYieldActivity::class.java
                     )
 
-                    EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM,
-                    EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS -> Intent(
+                    EnumAdviceTask.AVAILABLE_FERTILIZERS_CIM,
+                    EnumAdviceTask.AVAILABLE_FERTILIZERS_CIS -> Intent(
                         context,
                         InterCropFertilizersActivity::class.java
                     ).apply {
@@ -101,7 +108,7 @@ class InterCropRecActivity : BaseRecommendationActivity<ActivityInterCropRecBind
                         )
                     }
 
-                    EnumAdviceTasks.MAIZE_PERFORMANCE -> Intent(
+                    EnumAdviceTask.MAIZE_PERFORMANCE -> Intent(
                         context,
                         MaizePerformanceActivity::class.java
                     )
@@ -144,18 +151,18 @@ class InterCropRecActivity : BaseRecommendationActivity<ActivityInterCropRecBind
                 listOf(
                     RecommendationOptions(
                         getString(R.string.lbl_available_fertilizers),
-                        EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM,
-                        checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIM)
+                        EnumAdviceTask.AVAILABLE_FERTILIZERS_CIM,
+                        checkStatus(EnumAdviceTask.AVAILABLE_FERTILIZERS_CIM)
                     ),
                     RecommendationOptions(
                         getString(R.string.lbl_maize_performance),
-                        EnumAdviceTasks.MAIZE_PERFORMANCE,
-                        checkStatus(EnumAdviceTasks.MAIZE_PERFORMANCE)
+                        EnumAdviceTask.MAIZE_PERFORMANCE,
+                        checkStatus(EnumAdviceTask.MAIZE_PERFORMANCE)
                     ),
                     RecommendationOptions(
                         getString(R.string.lbl_market_outlet_maize),
-                        EnumAdviceTasks.MARKET_OUTLET_MAIZE,
-                        checkStatus(EnumAdviceTasks.MARKET_OUTLET_MAIZE)
+                        EnumAdviceTask.MARKET_OUTLET_MAIZE,
+                        checkStatus(EnumAdviceTask.MARKET_OUTLET_MAIZE)
                     )
                 )
             )
@@ -165,23 +172,23 @@ class InterCropRecActivity : BaseRecommendationActivity<ActivityInterCropRecBind
                 listOf(
                     RecommendationOptions(
                         getString(R.string.lbl_available_fertilizers),
-                        EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS,
-                        checkStatus(EnumAdviceTasks.AVAILABLE_FERTILIZERS_CIS)
+                        EnumAdviceTask.AVAILABLE_FERTILIZERS_CIS,
+                        checkStatus(EnumAdviceTask.AVAILABLE_FERTILIZERS_CIS)
                     ),
                     RecommendationOptions(
                         getString(R.string.lbl_market_outlet),
-                        EnumAdviceTasks.MARKET_OUTLET_CASSAVA,
-                        checkStatus(EnumAdviceTasks.MARKET_OUTLET_CASSAVA)
+                        EnumAdviceTask.MARKET_OUTLET_CASSAVA,
+                        checkStatus(EnumAdviceTask.MARKET_OUTLET_CASSAVA)
                     ),
                     RecommendationOptions(
                         getString(R.string.lbl_typical_yield),
-                        EnumAdviceTasks.CURRENT_CASSAVA_YIELD,
-                        checkStatus(EnumAdviceTasks.CURRENT_CASSAVA_YIELD)
+                        EnumAdviceTask.CURRENT_CASSAVA_YIELD,
+                        checkStatus(EnumAdviceTask.CURRENT_CASSAVA_YIELD)
                     ),
                     RecommendationOptions(
                         getString(R.string.lbl_sweet_potato_prices),
-                        EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO,
-                        checkStatus(EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO)
+                        EnumAdviceTask.MARKET_OUTLET_SWEET_POTATO,
+                        checkStatus(EnumAdviceTask.MARKET_OUTLET_SWEET_POTATO)
                     )
                 )
             )

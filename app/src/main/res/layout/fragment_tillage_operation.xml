@@ -1,61 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/lyt_parent"
+    android:id="@+id/tillage_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     android:padding="@dimen/spacing_medium"
-    tools:context="com.akilimo.mobile.views.fragments.TillageOperationFragment">
+    tools:context=".views.fragments.TillageOperationFragment">
 
-
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="wrap_content"
-        android:layout_height="250dp"
-        android:layout_marginTop="@dimen/spacing_xxxlarge"
-        android:contentDescription="@string/app_name"
-        android:padding="@dimen/spacing_xlarge"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_land_practices" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/tillage_root_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_large"
-        android:text="@string/lbl_which_of_these_tillage_operations_do_you_perform"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textColor="@color/akilimoDarkGreen"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image" />
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/tillage_header_image"
+            android:layout_width="@dimen/dimen_250"
+            android:layout_height="@dimen/dimen_250"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:contentDescription="@string/app_name"
+            app:srcCompat="@drawable/ic_land_practices" />
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_xxxlarge"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title">
-
-        <CheckBox
-            android:id="@+id/chkPloughing"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tillage_title_text"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/lbl_ploughing" />
+            android:layout_marginTop="@dimen/spacing_large"
+            android:text="@string/lbl_which_of_these_tillage_operations_do_you_perform"
+            android:textAlignment="center"
+            android:textSize="@dimen/font_size_18" />
 
-        <CheckBox
-            android:id="@+id/chkRidging"
-            android:layout_width="wrap_content"
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/tillage_operations_group"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/lbl_ridging" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_small"
+            app:selectionRequired="false"
+            app:singleSelection="false">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/tillage_btn_ploughing"
+                style="@style/AppMaterialButton.Outline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/lbl_ploughing" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/tillage_btn_ridging"
+                style="@style/AppMaterialButton.Outline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/lbl_ridging" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

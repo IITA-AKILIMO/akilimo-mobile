@@ -16,7 +16,7 @@ import com.akilimo.mobile.entities.PotatoPrice
 import com.akilimo.mobile.entities.PotatoPriceResponse
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
-import com.akilimo.mobile.utils.enums.EnumAdviceTasks
+import com.akilimo.mobile.utils.enums.EnumAdviceTask
 import com.akilimo.mobile.utils.enums.EnumPotatoProduceType
 import com.akilimo.mobile.utils.enums.EnumUnitOfSale
 import com.akilimo.mobile.utils.showDialogFragmentSafely
@@ -178,7 +178,7 @@ class SweetPotatoMarketActivity : BaseActivity() {
 
             database.potatoMarketDao().insert(market)
             database.adviceStatusDao()
-                .insert(AdviceStatus(EnumAdviceTasks.MARKET_OUTLET_SWEET_POTATO.name, true))
+                .insert(AdviceStatus(EnumAdviceTask.MARKET_OUTLET_SWEET_POTATO.name, true))
             closeActivity(backPressed)
         } catch (ex: Exception) {
             Toast.makeText(this@SweetPotatoMarketActivity, ex.message, Toast.LENGTH_SHORT).show()

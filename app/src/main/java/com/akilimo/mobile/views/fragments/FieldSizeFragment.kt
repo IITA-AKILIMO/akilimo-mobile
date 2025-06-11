@@ -1,6 +1,5 @@
 package com.akilimo.mobile.views.fragments
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,306 +7,225 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
-import android.widget.EditText
-import android.widget.RadioButton
-import android.widget.TextView
 import android.widget.Toast
 import com.akilimo.mobile.R
+import com.akilimo.mobile.databinding.DialogFieldSizeBinding
 import com.akilimo.mobile.databinding.FragmentFieldSizeBinding
-import com.akilimo.mobile.inherit.BaseStepFragment
+import com.akilimo.mobile.inherit.BindBaseStepFragment
 import com.akilimo.mobile.utils.LanguageManager
+import com.akilimo.mobile.utils.enums.EnumAreaUnit
 import com.akilimo.mobile.utils.enums.EnumFieldArea
 import com.stepstone.stepper.VerificationError
 import io.sentry.Sentry
 
+class FieldSizeFragment : BindBaseStepFragment<FragmentFieldSizeBinding>() {
 
-/**
- * A simple [BaseStepFragment] subclass.
- * Use the [FieldSizeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class FieldSizeFragment : BaseStepFragment() {
-
-    private var _binding: FragmentFieldSizeBinding? = null
-    private val binding get() = _binding!!
-
-    private var myFieldSize: String? = ""
-    private var areaSize = 0.0
+    private var myFieldSize: String? = null
+    private var areaSizeInput = 0.0
     private var isExactArea = false
     private var areaUnitChanged = false
-    private var areaUnit: String = ""
-    private var titleMessage: String? = null
-    private var displayAreaUnit: String = ""
-
+    private var areaUnitInput: String = ""
+    private var displayAreaUnitInput: String = ""
 
     companion object {
-        fun newInstance(): FieldSizeFragment {
-            return FieldSizeFragment()
-        }
+        fun newInstance() = FieldSizeFragment()
     }
 
-    override fun loadFragmentLayout(
+    override fun inflateBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentFieldSizeBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    ) = FragmentFieldSizeBinding.inflate(inflater, container, false)
 
-    @SuppressLint("ClickableViewAccessibility")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-
-        binding.rdgFieldSize.setOnCheckedChangeListener { _, checkedId ->
-            val radioButton = binding.root.findViewById<RadioButton>(checkedId)
-                ?: return@setOnCheckedChangeListener
-            if (radioButton.isPressed) {
-                // Only react to user presses, not programmatic selection changes
-                radioSelected(checkedId)
-            }
-        }
-
-
-        binding.rdFieldSizeSpecifyArea.setOnClickListener { radioButton: View? ->
-            if (radioButton != null && radioButton.isPressed) {
+    override fun onBindingReady(savedInstanceState: Bundle?) {
+        with(binding) {
+            rdFieldSizeQuarterAcre.setOnClickListener { radioSelected(R.id.rd_field_size_quarter_acre) }
+            rdFieldSizeHalfAcre.setOnClickListener { radioSelected(R.id.rd_field_size_half_acre) }
+            rdFieldSizeOneAcre.setOnClickListener { radioSelected(R.id.rd_field_size_one_acre) }
+            rdFieldSizeTwoHalfAcre.setOnClickListener { radioSelected(R.id.rd_field_size_two_half_acre) }
+            rdFieldSizeSpecifyArea.setOnClickListener {
                 showCustomDialog()
+                radioSelected(R.id.rd_field_size_specify_area)
             }
         }
-    }
-
-    private fun refreshData() {
-        try {
-            dataIsValid = false
-            val mandatoryInfo = database.mandatoryInfoDao().findOne()
-            if (mandatoryInfo != null) {
-                val oldAreaUnit = mandatoryInfo.oldAreaUnit
-                val fieldSizeRadioIndex = mandatoryInfo.fieldSizeRadioIndex
-
-                displayAreaUnit = mandatoryInfo.displayAreaUnit
-                areaUnit = mandatoryInfo.areaUnit
-                isExactArea = mandatoryInfo.exactArea
-                areaSize = mandatoryInfo.areaSize
-                myFieldSize = areaSize.toString()
-                areaUnitChanged = !areaUnit.equals(oldAreaUnit, ignoreCase = true)
-
-
-                if (areaSize > 0.0) {
-                    dataIsValid = true
-                }
-
-
-                setFieldLabels(areaUnit)
-                if (areaUnitChanged) {
-                    areaSize = 0.0
-                    myFieldSize = null
-                    binding.rdgFieldSize.clearCheck()
-                } else {
-                    binding.rdgFieldSize.check(fieldSizeRadioIndex)
-                }
-                if (isExactArea) {
-                    setExactAreaText(areaSize, displayAreaUnit)
-                    binding.rdFieldSizeSpecifyArea.visibility = View.VISIBLE
-                } else {
-                    binding.rdFieldSizeSpecifyArea.visibility = View.GONE
-                }
-            }
-        } catch (ex: Exception) {
-            Sentry.captureException(ex)
-        }
-    }
-
-    private fun setExactAreaText(areaSize: Double, displayUnit: String) {
-        val displayLanguage = LanguageManager.getLanguage(requireContext())
-        val fieldSize = mathHelper.removeLeadingZero(areaSize)
-        var areaUnitLabel = String.format("%s %s", fieldSize, displayUnit)
-        if (displayLanguage.equals("sw", ignoreCase = true)) {
-            areaUnitLabel = String.format("%s %s", displayUnit, fieldSize)
-        }
-        binding.txtFieldSizeSpecifiedArea.text = areaUnitLabel
-    }
-
-
-    private fun radioSelected(checked: Int) {
-        binding.txtFieldSizeSpecifiedArea.visibility = View.GONE
-        isExactArea = false
-        when (checked) {
-            R.id.rd_field_size_quarter_acre -> areaSize = EnumFieldArea.QUARTER_ACRE.areaValue()
-            R.id.rd_field_size_half_acre -> areaSize = EnumFieldArea.HALF_ACRE.areaValue()
-            R.id.rd_field_size_one_acre -> areaSize = EnumFieldArea.ONE_ACRE.areaValue()
-            R.id.rd_field_size_two_half_acre -> areaSize = EnumFieldArea.TWO_HALF_ACRE.areaValue()
-            R.id.rd_field_size_specify_area -> {
-                isExactArea = true
-                areaSize = EnumFieldArea.EXACT_AREA.areaValue()
-                myFieldSize = null
-                return
-            }
-        }
-
-        //convert to specified area unit
-        val convertedAreaSize = mathHelper.convertFromAcreToSpecifiedArea(
-            areaSize,
-            areaUnit
-        )
-        saveFieldSize(convertedAreaSize)
-    }
-
-    private fun setFieldLabels(areaUnit: String) {
-        val quarterAcre: String
-        val halfAcre: String
-        val oneAcre: String
-        val twoHalfAcre: String
-        binding.rdFieldSizeTwoHalfAcre.visibility = View.GONE
-        when (areaUnit) {
-            "acre" -> {
-                quarterAcre = getString(R.string.quarter_acre)
-                halfAcre = getString(R.string.half_acre)
-                oneAcre = getString(R.string.one_acre)
-                twoHalfAcre = getString(R.string.two_half_acres)
-            }
-
-            "ha" -> {
-                quarterAcre = getString(R.string.quarter_acre_to_ha)
-                halfAcre = getString(R.string.half_acre_to_ha)
-                oneAcre = getString(R.string.one_acre_to_ha)
-                twoHalfAcre = getString(R.string.two_half_acre_to_ha)
-                binding.rdFieldSizeTwoHalfAcre.visibility = View.VISIBLE
-            }
-
-            "are" -> {
-                quarterAcre = getString(R.string.quarter_acre_to_are)
-                halfAcre = getString(R.string.half_acre_to_are)
-                oneAcre = getString(R.string.one_acre_to_are)
-                twoHalfAcre = getString(R.string.two_half_acre_to_are)
-            }
-
-            "sqm" -> {
-                quarterAcre = getString(R.string.quarter_acre_to_m2)
-                halfAcre = getString(R.string.half_acre_to_m2)
-                oneAcre = getString(R.string.one_acre_to_m2)
-                twoHalfAcre = getString(R.string.two_half_acre_to_m2)
-            }
-
-            else -> {
-                quarterAcre = getString(R.string.quarter_acre)
-                halfAcre = getString(R.string.half_acre)
-                oneAcre = getString(R.string.one_acre)
-                twoHalfAcre = getString(R.string.two_half_acres)
-            }
-        }
-
-
-        val exactArea = requireContext().getString(R.string.exact_field_area)
-        binding.apply {
-            rdFieldSizeQuarterAcre.text = quarterAcre
-            rdFieldSizeHalfAcre.text = halfAcre
-            rdFieldSizeOneAcre.text = oneAcre
-            rdFieldSizeTwoHalfAcre.text = twoHalfAcre
-            rdFieldSizeSpecifyArea.text = exactArea
-            fieldSizeTitle.text =
-                requireContext().getString(R.string.lbl_cassava_field_size, displayAreaUnit)
-
-        }
-    }
-
-    private fun showCustomDialog() {
-        val dialog = Dialog(requireContext())
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE) // before
-        dialog.setContentView(R.layout.dialog_field_size)
-        dialog.setCancelable(true)
-
-        val lp = WindowManager.LayoutParams()
-        lp.copyFrom(dialog.window!!.attributes)
-        lp.width = WindowManager.LayoutParams.WRAP_CONTENT
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
-
-        titleMessage = requireContext().getString(R.string.lbl_cassava_field_size, displayAreaUnit)
-
-        // TODO: Revise these element names
-        val dialogTitle = dialog.findViewById<TextView>(R.id.dialogTitle)
-        val etPost = dialog.findViewById<EditText>(R.id.et_post)
-
-        if (isExactArea && myFieldSize != null) {
-            etPost.setText(myFieldSize)
-        }
-        dialogTitle.text = titleMessage
-
-        dialog.findViewById<View>(R.id.bt_cancel).setOnClickListener { v: View? ->
-            dialog.dismiss()
-            binding.rdgFieldSize.clearCheck()
-            areaSize = -1.0
-            isExactArea = false
-        }
-
-        dialog.findViewById<View>(R.id.bt_submit).setOnClickListener { v: View? ->
-            myFieldSize = etPost.text.toString().trim { it <= ' ' }
-            if (myFieldSize!!.isEmpty()) {
-                val prompt =
-                    requireContext().getString(R.string.lbl_field_size_prompt, displayAreaUnit)
-                Toast.makeText(context, prompt, Toast.LENGTH_SHORT).show()
-            } else {
-                areaSize = myFieldSize!!.toDouble()
-                dialog.dismiss()
-                setExactAreaText(areaSize, displayAreaUnit)
-                saveFieldSize(areaSize)
-                binding.txtFieldSizeSpecifiedArea.visibility = View.VISIBLE
-            }
-        }
-
-        dialog.show()
-        dialog.window!!.attributes = lp
-    }
-
-    private fun saveFieldSize(convertedAreaSize: Double) {
-        val fieldSizeRadioIndex = binding.rdgFieldSize.checkedRadioButtonId
-        if (convertedAreaSize <= 0) {
-            showCustomWarningDialog(
-                requireContext().getString(
-                    R.string.lbl_field_size_prompt,
-                    displayAreaUnit
-                ), requireContext().getString(R.string.lbl_field_size_prompt, displayAreaUnit)
-            )
-            return
-        }
-
-        areaUnitChanged = false //Reset the area unit changed flag
-        try {
-            val mandatoryInfo = database.mandatoryInfoDao().findOne()
-            if (mandatoryInfo != null) {
-                mandatoryInfo.fieldSizeRadioIndex = fieldSizeRadioIndex
-                mandatoryInfo.areaSize = convertedAreaSize
-                mandatoryInfo.oldAreaUnit = areaUnit
-                mandatoryInfo.exactArea = isExactArea
-
-                dataIsValid = areaSize > 0.0
-
-                database.mandatoryInfoDao().update(mandatoryInfo)
-            } else {
-                Toast.makeText(
-                    context,
-                    "Mandatory user information not provided",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        } catch (ex: Exception) {
-            Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    override fun verifyStep(): VerificationError? {
-        if (areaSize <= 0.0 || dataIsValid == false) {
-            errorMessage =
-                requireContext().getString(R.string.lbl_field_size_prompt, displayAreaUnit)
-            return VerificationError(errorMessage)
-        }
-        return null
     }
 
     override fun onSelected() {
         refreshData()
     }
 
-    override fun onError(error: VerificationError) {
+    override fun verifyStep(): VerificationError? {
+        return if (areaSizeInput <= 0.0 || dataIsValid == false) {
+            errorMessage = getString(R.string.lbl_field_size_prompt, displayAreaUnitInput)
+            VerificationError(errorMessage)
+        } else null
+    }
+
+    private fun refreshData() {
+        try {
+            dataIsValid = false
+            val mandatoryInfo = database.mandatoryInfoDao().findOne() ?: return
+
+            with(mandatoryInfo) {
+                areaUnitChanged = !areaUnit.equals(oldAreaUnit, ignoreCase = true)
+                areaUnitInput = areaUnit
+                displayAreaUnitInput = displayAreaUnit
+                isExactArea = exactArea
+                areaSizeInput = areaSize
+                myFieldSize = areaSize.toString()
+
+                dataIsValid = areaSizeInput > 0.0
+                setFieldLabels(areaUnit)
+
+                val matchedOption = when (areaSizeInput) {
+                    EnumFieldArea.QUARTER_ACRE.areaValue() -> binding.rdFieldSizeQuarterAcre.id
+                    EnumFieldArea.HALF_ACRE.areaValue() -> binding.rdFieldSizeHalfAcre.id
+                    EnumFieldArea.ONE_ACRE.areaValue() -> binding.rdFieldSizeOneAcre.id
+                    EnumFieldArea.TWO_HALF_ACRE.areaValue() -> binding.rdFieldSizeTwoHalfAcre.id
+                    else -> binding.rdFieldSizeSpecifyArea.id
+                }
+
+                binding.rdgFieldSize.check(matchedOption)
+                if (matchedOption == binding.rdFieldSizeSpecifyArea.id) {
+                    setExactAreaText(areaSizeInput, displayAreaUnit)
+                }
+
+                binding.rdFieldSizeSpecifyArea.visibility =
+                    if (isExactArea) View.VISIBLE else View.GONE
+            }
+        } catch (ex: Exception) {
+            Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+            Sentry.captureException(ex)
+        }
+    }
+
+    private fun radioSelected(checkedId: Int) {
+        binding.txtFieldSizeSpecifiedArea.visibility = View.GONE
+        isExactArea = false
+
+        areaSizeInput = when (checkedId) {
+            R.id.rd_field_size_quarter_acre -> EnumFieldArea.QUARTER_ACRE.areaValue()
+            R.id.rd_field_size_half_acre -> EnumFieldArea.HALF_ACRE.areaValue()
+            R.id.rd_field_size_one_acre -> EnumFieldArea.ONE_ACRE.areaValue()
+            R.id.rd_field_size_two_half_acre -> EnumFieldArea.TWO_HALF_ACRE.areaValue()
+            R.id.rd_field_size_specify_area -> {
+                isExactArea = true
+                EnumFieldArea.EXACT_AREA.areaValue()
+            }
+
+            else -> return
+        }
+
+        if (!isExactArea) {
+            val convertedAreaSize =
+                mathHelper.convertFromAcreToSpecifiedArea(areaSizeInput, areaUnitInput)
+            saveFieldSize(convertedAreaSize)
+        }
+    }
+
+    private fun setFieldLabels(areaUnit: String) {
+        val unitEnum = EnumAreaUnit.valueOf(areaUnit)
+        val (quarterAcre, halfAcre, oneAcre, twoHalfAcre) = unitEnum.labelResIds()
+
+        binding.apply {
+            rdFieldSizeQuarterAcre.setText(quarterAcre)
+            rdFieldSizeHalfAcre.setText(halfAcre)
+            rdFieldSizeOneAcre.setText(oneAcre)
+            rdFieldSizeTwoHalfAcre.setText(twoHalfAcre)
+            rdFieldSizeSpecifyArea.setText(R.string.exact_field_area)
+            fieldSizeTitle.text = getString(R.string.lbl_cassava_field_size, displayAreaUnitInput)
+        }
+    }
+
+    private fun setExactAreaText(areaSize: Double, displayUnit: String) {
+        val displayLanguage = LanguageManager.getLanguage(requireContext())
+        val fieldSize = mathHelper.removeLeadingZero(areaSize)
+        val areaUnitLabel = if (displayLanguage.equals("sw", true)) {
+            "$displayUnit $fieldSize"
+        } else {
+            "$fieldSize $displayUnit"
+        }
+
+        binding.txtFieldSizeSpecifiedArea.text = areaUnitLabel
+    }
+
+    private fun showCustomDialog() {
+        val dialog = Dialog(requireContext()).apply {
+            requestWindowFeature(Window.FEATURE_NO_TITLE)
+            setCancelable(true)
+        }
+
+        val dialogBinding = DialogFieldSizeBinding.inflate(layoutInflater)
+        dialog.setContentView(dialogBinding.root)
+
+        dialog.window?.setLayout(
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
+
+        dialogBinding.dialogTitle.text =
+            getString(R.string.lbl_cassava_field_size, displayAreaUnitInput)
+
+        myFieldSize?.takeIf { isExactArea }?.let {
+            dialogBinding.etPost.setText(it)
+        }
+
+        dialogBinding.btCancel.setOnClickListener {
+            dialog.dismiss()
+            binding.rdgFieldSize.clearCheck()
+            areaSizeInput = -1.0
+            isExactArea = false
+        }
+
+        dialogBinding.btSubmit.setOnClickListener {
+            val input = dialogBinding.etPost.text.toString().trim()
+            if (input.isEmpty()) {
+                Toast.makeText(
+                    context,
+                    getString(R.string.lbl_field_size_prompt, displayAreaUnitInput),
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                myFieldSize = input
+                areaSizeInput = input.toDouble()
+                setExactAreaText(areaSizeInput, displayAreaUnitInput)
+                saveFieldSize(areaSizeInput)
+                binding.txtFieldSizeSpecifiedArea.visibility = View.VISIBLE
+                dialog.dismiss()
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun saveFieldSize(convertedAreaSize: Double) {
+        if (convertedAreaSize <= 0) {
+            showCustomWarningDialog(
+                getString(R.string.lbl_field_size_prompt, displayAreaUnitInput),
+                getString(R.string.lbl_field_size_prompt, displayAreaUnitInput)
+            )
+            return
+        }
+
+        areaUnitChanged = false // Reset flag
+
+        try {
+            database.mandatoryInfoDao().findOne()?.let { info ->
+                info.apply {
+                    areaSize = convertedAreaSize
+                    oldAreaUnit = areaUnit
+                    exactArea = isExactArea
+                }
+
+                dataIsValid = areaSizeInput > 0.0
+                database.mandatoryInfoDao().update(info)
+            } ?: Toast.makeText(
+                context,
+                "Mandatory user information not provided",
+                Toast.LENGTH_SHORT
+            ).show()
+        } catch (ex: Exception) {
+            Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+        }
     }
 }

@@ -2,51 +2,49 @@ package com.akilimo.mobile.views.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import com.akilimo.mobile.R
+import com.akilimo.mobile.data.CountryOption
+import com.akilimo.mobile.data.indexOfValue
 import com.akilimo.mobile.databinding.FragmentCountryBinding
 import com.akilimo.mobile.entities.UserProfile
-import com.akilimo.mobile.inherit.BaseStepFragment
+import com.akilimo.mobile.inherit.BindBaseStepFragment
 import com.akilimo.mobile.utils.enums.EnumCountry
+import com.akilimo.mobile.views.fragments.dialog.CountryPickerDialogFragment
 import com.blongho.country_data.World
 import com.stepstone.stepper.VerificationError
 import io.sentry.Sentry
-import java.util.Locale
 
-class CountryFragment : BaseStepFragment() {
+class CountryFragment : BindBaseStepFragment<FragmentCountryBinding>() {
 
-    private var _binding: FragmentCountryBinding? = null
-    private val binding get() = _binding!!
+    private val allowedCountries = setOf(EnumCountry.Nigeria, EnumCountry.Tanzania)
 
-    private var mySelectedCountryIndex = -1
+    private val countries: List<CountryOption> by lazy {
+        EnumCountry.entries
+            .filter { it in allowedCountries }
+            .map {
+                CountryOption(
+                    displayLabel = it.name,
+                    value = it.countryCode(),
+                    currencyCode = it.currencyName(requireContext())
+                )
+            }
+    }
 
-    private val countries = EnumCountry.entries
-        .filter { it != EnumCountry.Other }
-        .map { it.name }
-        .toTypedArray()
-
-    private val countryMap: Map<String, EnumCountry> = EnumCountry.entries
-        .associateBy { it.name.lowercase(Locale.getDefault()) }
+    private var selectedCountry = ""
 
     companion object {
         fun newInstance(): CountryFragment = CountryFragment()
     }
 
-    override fun loadFragmentLayout(
+    override fun inflateBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentCountryBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    ) = FragmentCountryBinding.inflate(inflater, container, false)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun onBindingReady(savedInstanceState: Bundle?) {
         binding.countryBtnPickCountry.setOnClickListener {
             showCountryPickerDialog()
         }
@@ -60,15 +58,12 @@ class CountryFragment : BaseStepFragment() {
         try {
             val profile = database.profileInfoDao().findOne()
             if (profile != null) {
-                binding.countryTitle.text = getString(R.string.lbl_country_location, profile.firstName)
-                mySelectedCountryIndex = profile.selectedCountryIndex
-                val countryCode = profile.countryCode
-                val countryName = profile.countryName
-
-                if (countryCode.isNotBlank() && countryName.isNotBlank()) {
+                binding.countryTitle.text =
+                    getString(R.string.lbl_country_location, profile.firstName)
+                if (profile.countryCode.isNotBlank() && profile.countryName.isNotBlank()) {
                     dataIsValid = true
-                    binding.countryImage.setImageResource(World.getFlagOf(countryCode))
-                    binding.countryName.text = countryName
+                    binding.countryImage.setImageResource(World.getFlagOf(profile.countryCode))
+                    binding.countryName.text = profile.countryName
                 }
             }
         } catch (ex: Exception) {
@@ -78,44 +73,21 @@ class CountryFragment : BaseStepFragment() {
     }
 
     private fun showCountryPickerDialog() {
-        val context = requireContext()
+        val selectedCountryIndex = countries.indexOfValue(selectedCountry)
 
-        AlertDialog.Builder(context).apply {
-            setTitle(context.getString(R.string.lbl_pick_your_country))
-            setSingleChoiceItems(countries, mySelectedCountryIndex) { _, index ->
-                mySelectedCountryIndex = index
-            }
-            setPositiveButton(getString(R.string.lbl_ok)) { dialog, _ ->
-                handleCountrySelection()
-                dialog.dismiss()
-            }
-            setNegativeButton(getString(R.string.lbl_cancel)) { dialog, _ ->
-                dialog.dismiss()
-            }
-            setCancelable(false)
-            create().apply {
-                setCanceledOnTouchOutside(false)
-                show()
-            }
-        }
+        CountryPickerDialogFragment(countries, selectedCountryIndex) { selectedIndex ->
+            val selected = countries[selectedIndex]
+            val countryCode = selected.value
+            val countryName = selected.displayLabel
+            val currencyCode = selected.currencyCode
+
+            binding.countryImage.setImageResource(World.getFlagOf(countryCode))
+            binding.countryName.text = countryName
+
+            updateSelectedCountry(countryCode, countryName, currencyCode)
+        }.show(parentFragmentManager, "countryPickerDialog")
     }
 
-    private fun handleCountrySelection() {
-        if (mySelectedCountryIndex < 0 || mySelectedCountryIndex >= countries.size) return
-
-        val selectedName = countries[mySelectedCountryIndex]
-        val selectedEnum =
-            countryMap[selectedName.lowercase(Locale.getDefault())] ?: EnumCountry.Other
-
-        val countryName = selectedEnum.name
-        val countryCode = selectedEnum.countryCode()
-        val currencyCode = selectedEnum.currencyCode()
-
-        binding.countryImage.setImageResource(World.getFlagOf(countryCode))
-        binding.countryName.text = countryName
-
-        updateSelectedCountry(countryCode, countryName, currencyCode)
-    }
 
     private fun updateSelectedCountry(
         selectedCountryCode: String,
@@ -126,14 +98,12 @@ class CountryFragment : BaseStepFragment() {
             dataIsValid = selectedCountryCode.isNotBlank()
             val profile = database.profileInfoDao().findOne() ?: UserProfile()
             profile.apply {
-                selectedCountryIndex = mySelectedCountryIndex
                 countryCode = selectedCountryCode
                 countryName = selectedCountryName
                 currencyCode = selectedCurrencyCode
             }
 
             database.profileInfoDao().insert(profile)
-            sessionManager.setCountry(selectedCountryCode)
         } catch (ex: Exception) {
             Sentry.captureException(ex)
         }
@@ -141,9 +111,5 @@ class CountryFragment : BaseStepFragment() {
 
     override fun verifyStep(): VerificationError? {
         return if (dataIsValid) null else VerificationError("Please select a country")
-    }
-
-    override fun onError(error: VerificationError) {
-        // Not implemented
     }
 }

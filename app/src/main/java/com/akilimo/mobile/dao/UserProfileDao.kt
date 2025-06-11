@@ -20,9 +20,6 @@ interface UserProfileDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg arrayOfUserProfiles: UserProfile)
 
-    @Update
-    fun update(vararg arrayOfUserProfiles: UserProfile)
-
     @Delete
     fun delete(userProfile: UserProfile?)
 

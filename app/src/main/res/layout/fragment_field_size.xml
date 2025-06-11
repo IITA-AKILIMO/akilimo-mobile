@@ -6,16 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/spacing_medium"
-    tools:context="com.akilimo.mobile.views.fragments.FieldSizeFragment">
+    tools:context=".views.fragments.FieldSizeFragment">
 
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/field_size_image"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="@dimen/dimen_250"
+        android:layout_height="@dimen/dimen_250"
         android:layout_marginTop="@dimen/spacing_large"
         android:contentDescription="@string/app_name"
-        android:scaleType="centerInside"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -44,7 +43,7 @@
 
         <RadioGroup
             android:id="@+id/rdg_field_size"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_small">
 
@@ -73,8 +72,7 @@
                 android:id="@+id/rd_field_size_two_half_acre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/two_half_acres"
-                android:visibility="gone" />
+                android:text="@string/two_half_acres" />
 
             <RadioButton
                 android:id="@+id/rd_field_size_specify_area"
