@@ -17,12 +17,6 @@ open class MandatoryInfo {
     @ColumnInfo(name = "address")
     var address: String? = null
 
-    @ColumnInfo(name = "area_unit_radio_index")
-    var areaUnitRadioIndex: Int = 0
-
-    @ColumnInfo(name = "field_size_radio_index")
-    var fieldSizeRadioIndex: Int = 0
-
     @ColumnInfo(name = "area_unit")
     var areaUnit: String = "acre"
 
