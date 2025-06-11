@@ -37,10 +37,8 @@ class ValidationHelper {
         return phoneNumber
     }
 
-    fun isValidEmail(email: String): Boolean {
-        if (email.matches(emailPattern.toRegex())) {
-            return true
-        }
-        return false
+    fun isEmailValid(email: String): Boolean {
+        if (email.isEmpty()) return false
+        return email.matches(emailPattern.toRegex())
     }
 }
