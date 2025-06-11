@@ -136,7 +136,6 @@ class TillageOperationFragment : BindBaseStepFragment<FragmentTillageOperationBi
 
     override fun onSelected() {
         Log.d(TAG, "TillageOperationFragment selected.")
-        // ViewModel handles loading data. If you need to refresh data on selection:
         viewModel.loadCurrentPractice()
     }
 }
