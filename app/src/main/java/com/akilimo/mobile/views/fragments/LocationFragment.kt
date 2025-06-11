@@ -92,7 +92,7 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
             .setNegativeButton(R.string.lbl_cancel, null)
             .create()
 
-        binding.btnFieldName.setOnClickListener { fieldNameDialog.show() }
+        binding.btnSelectFarmName.setOnClickListener { fieldNameDialog.show() }
 
     }
 
@@ -112,7 +112,7 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
                 }
             }
 
-        binding.btnSelectLocation.setOnClickListener {
+        binding.btnSelectLocationManually.setOnClickListener {
             val intent = Intent(requireContext(), MapBoxActivity::class.java).apply {
                 putExtra(MapBoxActivity.LAT, currentLat)
                 putExtra(MapBoxActivity.LON, currentLon)
@@ -121,7 +121,7 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
             mapResultLauncher.launch(intent)
         }
 
-        binding.btnCurrentLocation.setOnClickListener { currentLocation }
+        binding.btnUseCurrentLocation.setOnClickListener { currentLocation }
 
     }
 
@@ -168,7 +168,7 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
                     countryName = carmenFeature.placeName().orEmpty()
 
                     val welcomeMessage = getString(R.string.location_info, countryName, lat, lon)
-                    binding.locationInfo.text = welcomeMessage
+                    binding.textLocationInfo.text = welcomeMessage
 
                     isLocationValid = true
                     saveLocation()
@@ -226,7 +226,7 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
                 currentAlt = it.altitude
                 countryCode = it.locationCountryCode.orEmpty()
                 countryName = it.locationCountryName.orEmpty()
-                binding.locationInfo.text = formatLocationInfo(it)
+                binding.textLocationInfo.text = formatLocationInfo(it)
             }
         } catch (ex: Exception) {
             errorMessage = ex.message ?: "Unknown error"
@@ -236,7 +236,7 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
     private fun setFarmNameInfo(fullNames: String, farmName: String) {
         val farmInfo =
             if (farmName.isEmpty() || fullNames.isEmpty()) null else "$fullNames’s cassava farm: $farmName"
-        binding.txtFarmInfo.text = farmInfo
+        binding.textFarmInfo.text = farmInfo
     }
 
     override fun verifyStep(): VerificationError? {
