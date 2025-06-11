@@ -9,17 +9,14 @@ import androidx.appcompat.app.AlertDialog
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentCountryBinding
 import com.akilimo.mobile.entities.UserProfile
-import com.akilimo.mobile.inherit.BaseStepFragment
+import com.akilimo.mobile.inherit.BindBaseStepFragment
 import com.akilimo.mobile.utils.enums.EnumCountry
 import com.blongho.country_data.World
 import com.stepstone.stepper.VerificationError
 import io.sentry.Sentry
 import java.util.Locale
 
-class CountryFragment : BaseStepFragment() {
-
-    private var _binding: FragmentCountryBinding? = null
-    private val binding get() = _binding!!
+class CountryFragment : BindBaseStepFragment<FragmentCountryBinding>() {
 
     private var mySelectedCountryIndex = -1
 
@@ -40,14 +37,11 @@ class CountryFragment : BaseStepFragment() {
         fun newInstance(): CountryFragment = CountryFragment()
     }
 
-    override fun loadFragmentLayout(
+    override fun inflateBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentCountryBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    ) = FragmentCountryBinding.inflate(inflater, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -147,9 +141,5 @@ class CountryFragment : BaseStepFragment() {
 
     override fun verifyStep(): VerificationError? {
         return if (dataIsValid) null else VerificationError("Please select a country")
-    }
-
-    override fun onError(error: VerificationError) {
-        // Not implemented
     }
 }

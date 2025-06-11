@@ -12,21 +12,17 @@ import com.akilimo.mobile.adapters.MySpinnerAdapter
 import com.akilimo.mobile.data.InterestOption
 import com.akilimo.mobile.databinding.FragmentBioDataBinding
 import com.akilimo.mobile.entities.UserProfile
-import com.akilimo.mobile.inherit.BaseStepFragment
+import com.akilimo.mobile.inherit.BindBaseStepFragment
 import com.akilimo.mobile.utils.ValidationHelper
 import com.stepstone.stepper.VerificationError
 import io.sentry.Sentry
 
 
-class BioDataFragment : BaseStepFragment() {
-//    private var userProfile: UserProfile? = null
+class BioDataFragment : BindBaseStepFragment<FragmentBioDataBinding>() {
 
     private val validationHelper: ValidationHelper by lazy { ValidationHelper() }
 
     private var phoneIsValid = true
-
-    private var _binding: FragmentBioDataBinding? = null
-    private val binding get() = _binding!!
 
     private var myMobileCode: String = ""
 
@@ -44,12 +40,11 @@ class BioDataFragment : BaseStepFragment() {
         }
     }
 
-    override fun loadFragmentLayout(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentBioDataBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    override fun inflateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ) = FragmentBioDataBinding.inflate(inflater, container, false)
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -89,6 +84,7 @@ class BioDataFragment : BaseStepFragment() {
                     }
 
                     override fun onNothingSelected(parent: AdapterView<*>?) {
+                        //do nothing
                     }
                 }
             }
@@ -107,6 +103,7 @@ class BioDataFragment : BaseStepFragment() {
                     }
 
                     override fun onNothingSelected(parent: AdapterView<*>?) {
+                        //do nothing
                     }
                 }
             }

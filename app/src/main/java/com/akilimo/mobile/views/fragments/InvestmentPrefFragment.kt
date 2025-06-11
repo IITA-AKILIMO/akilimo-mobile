@@ -8,14 +8,12 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.Toast
 import com.akilimo.mobile.databinding.FragmentInvestmentPrefBinding
-import com.akilimo.mobile.inherit.BaseStepFragment
+import com.akilimo.mobile.inherit.BindBaseStepFragment
 import com.akilimo.mobile.utils.enums.EnumInvestmentPref
 import com.stepstone.stepper.VerificationError
 import io.sentry.Sentry
 
-class InvestmentPrefFragment : BaseStepFragment() {
-    private var _binding: FragmentInvestmentPrefBinding? = null
-    private val binding get() = _binding!!
+class InvestmentPrefFragment : BindBaseStepFragment<FragmentInvestmentPrefBinding>() {
 
     private var myRiskName: String = ""
     private var myRiskAtt = 0
@@ -35,12 +33,11 @@ class InvestmentPrefFragment : BaseStepFragment() {
         )
     }
 
-    override fun loadFragmentLayout(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentInvestmentPrefBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    override fun inflateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ) = FragmentInvestmentPrefBinding.inflate(inflater, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -93,14 +90,6 @@ class InvestmentPrefFragment : BaseStepFragment() {
         if (myRiskName.isEmpty() != false) VerificationError("Please select an option") else null
 
     override fun onSelected() {
-        refreshData()
-    }
-
-    override fun onError(error: VerificationError) {
-        // No implementation needed
-    }
-
-    private fun refreshData() {
         try {
             val userProfile = database.profileInfoDao().findOne()
             userProfile?.let {

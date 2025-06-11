@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatDialogFragment
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentPlantingHarvestDateBinding
 import com.akilimo.mobile.entities.CropSchedule
-import com.akilimo.mobile.inherit.BaseStepFragment
+import com.akilimo.mobile.inherit.BindBaseStepFragment
 import com.akilimo.mobile.utils.DateHelper.olderThanCurrent
 import com.akilimo.mobile.views.fragments.dialog.DateDialogPickerFragment
 import com.stepstone.stepper.VerificationError
@@ -21,9 +21,7 @@ import io.sentry.Sentry
 /**
  * A simple [androidx.fragment.app.Fragment] subclass.
  */
-class PlantingDateFragment : BaseStepFragment() {
-    private var _binding: FragmentPlantingHarvestDateBinding? = null
-    private val binding get() = _binding!!
+class PlantingDateFragment : BindBaseStepFragment<FragmentPlantingHarvestDateBinding>() {
 
 
     private var selectedPlantingDate: String = ""
@@ -36,14 +34,11 @@ class PlantingDateFragment : BaseStepFragment() {
         }
     }
 
-    override fun loadFragmentLayout(
+    override fun inflateBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentPlantingHarvestDateBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    ) = FragmentPlantingHarvestDateBinding.inflate(inflater, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -149,8 +144,5 @@ class PlantingDateFragment : BaseStepFragment() {
 
     override fun onSelected() {
         refreshData()
-    }
-
-    override fun onError(error: VerificationError) {
     }
 }

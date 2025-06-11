@@ -15,6 +15,7 @@ import android.widget.Toast
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentFieldSizeBinding
 import com.akilimo.mobile.inherit.BaseStepFragment
+import com.akilimo.mobile.inherit.BindBaseStepFragment
 import com.akilimo.mobile.utils.LanguageManager
 import com.akilimo.mobile.utils.enums.EnumFieldArea
 import com.stepstone.stepper.VerificationError
@@ -26,10 +27,7 @@ import io.sentry.Sentry
  * Use the [FieldSizeFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class FieldSizeFragment : BaseStepFragment() {
-
-    private var _binding: FragmentFieldSizeBinding? = null
-    private val binding get() = _binding!!
+class FieldSizeFragment : BindBaseStepFragment<FragmentFieldSizeBinding>() {
 
     private var myFieldSize: String? = ""
     private var areaSize = 0.0
@@ -46,14 +44,11 @@ class FieldSizeFragment : BaseStepFragment() {
         }
     }
 
-    override fun loadFragmentLayout(
+    override fun inflateBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentFieldSizeBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    ) = FragmentFieldSizeBinding.inflate(inflater, container, false)
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

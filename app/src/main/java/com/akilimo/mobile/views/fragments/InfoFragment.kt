@@ -7,12 +7,10 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentInfoBinding
-import com.akilimo.mobile.inherit.BaseStepFragment
+import com.akilimo.mobile.inherit.BindBaseStepFragment
 import com.stepstone.stepper.VerificationError
 
-class InfoFragment : BaseStepFragment() {
-    private var _binding: FragmentInfoBinding? = null
-    private val binding get() = _binding!!
+class InfoFragment : BindBaseStepFragment<FragmentInfoBinding>() {
 
     companion object {
         fun newInstance(): InfoFragment {
@@ -20,19 +18,15 @@ class InfoFragment : BaseStepFragment() {
         }
     }
 
-    override fun loadFragmentLayout(
+    override fun inflateBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentInfoBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
+    ) = FragmentInfoBinding.inflate(inflater, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.chkAgreeTerms.setOnCheckedChangeListener { compoundButton: CompoundButton?, checked: Boolean ->
+        binding.chkAgreeTerms.setOnCheckedChangeListener { _: CompoundButton?, checked: Boolean ->
             sessionManager.setDisclaimerRead(checked)
         }
     }
@@ -42,11 +36,5 @@ class InfoFragment : BaseStepFragment() {
             return VerificationError(getString(R.string.lbl_agree_to_disclaimer))
         }
         return null
-    }
-
-    override fun onSelected() {
-    }
-
-    override fun onError(error: VerificationError) {
     }
 }

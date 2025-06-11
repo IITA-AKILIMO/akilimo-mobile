@@ -10,7 +10,7 @@ import android.webkit.WebViewClient
 import android.widget.CompoundButton
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentPrivacyStatementBinding
-import com.akilimo.mobile.inherit.BaseStepFragment
+import com.akilimo.mobile.inherit.BindBaseStepFragment
 import com.stepstone.stepper.VerificationError
 
 
@@ -18,10 +18,7 @@ import com.stepstone.stepper.VerificationError
  * A simple [Fragment] subclass.
  * [...](https://app-privacy-policy-generator.firebaseapp.com/#)
  */
-class PrivacyStatementFragment : BaseStepFragment() {
-    private var _binding: FragmentPrivacyStatementBinding? = null
-    private val binding get() = _binding!!
-
+class PrivacyStatementFragment : BindBaseStepFragment<FragmentPrivacyStatementBinding>() {
 
     companion object {
         fun newInstance(): PrivacyStatementFragment {
@@ -29,15 +26,11 @@ class PrivacyStatementFragment : BaseStepFragment() {
         }
     }
 
-    override fun loadFragmentLayout(
+    override fun inflateBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentPrivacyStatementBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
+    ) = FragmentPrivacyStatementBinding.inflate(inflater, container, false)
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -85,9 +78,5 @@ class PrivacyStatementFragment : BaseStepFragment() {
             return null
         }
         return VerificationError(getString(R.string.lbl_accept_terms_prompt))
-    }
-
-
-    override fun onError(error: VerificationError) {
     }
 }

@@ -9,7 +9,7 @@ import android.widget.AdapterView
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.MySpinnerAdapter
 import com.akilimo.mobile.databinding.FragmentWelcomeBinding
-import com.akilimo.mobile.inherit.BaseStepFragment
+import com.akilimo.mobile.inherit.BindBaseStepFragment
 import com.akilimo.mobile.interfaces.IFragmentCallBack
 import com.akilimo.mobile.utils.LanguageManager
 import com.akilimo.mobile.utils.LanguageOption
@@ -19,25 +19,21 @@ import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.stepstone.stepper.VerificationError
 
-class WelcomeFragment : BaseStepFragment() {
+class WelcomeFragment : BindBaseStepFragment<FragmentWelcomeBinding>() {
 
-    private var _binding: FragmentWelcomeBinding? = null
-    private val binding get() = _binding!!
     private var languagePicked = false
 
     private var fragmentCallBack: IFragmentCallBack? = null
 
     companion object {
-        const val CLOSE_REQUEST_KEY = "close_request"
         fun newInstance(): WelcomeFragment = WelcomeFragment()
     }
 
-    override fun loadFragmentLayout(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentWelcomeBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    override fun inflateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ) = FragmentWelcomeBinding.inflate(inflater, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -88,7 +84,6 @@ class WelcomeFragment : BaseStepFragment() {
 
     }
 
-
     private fun showRestartSnackBar() {
         Snackbar.make(
             binding.welcomeLayout, getString(R.string.lbl_restart_app_prompt), Snackbar.LENGTH_SHORT
@@ -100,17 +95,5 @@ class WelcomeFragment : BaseStepFragment() {
 
     override fun verifyStep(): VerificationError? {
         return verificationError
-    }
-
-    override fun onSelected() {}
-    override fun onError(error: VerificationError) {}
-
-    fun setOnFragmentCloseListener(callBack: IFragmentCallBack?) {
-        this.fragmentCallBack = callBack
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

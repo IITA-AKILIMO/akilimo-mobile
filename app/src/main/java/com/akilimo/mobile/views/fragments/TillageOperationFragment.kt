@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentTillageOperationBinding
-import com.akilimo.mobile.inherit.BaseStepFragment
+import com.akilimo.mobile.inherit.BindBaseStepFragment
 import com.akilimo.mobile.interfaces.IDismissOperationsDialogListener
 import com.akilimo.mobile.utils.enums.EnumOperation
 import com.akilimo.mobile.utils.enums.EnumOperationMethod
@@ -20,16 +20,7 @@ import com.akilimo.mobile.views.fragments.dialog.OperationTypeDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.stepstone.stepper.VerificationError
 
-class TillageOperationFragment : BaseStepFragment() {
-    private var _binding: FragmentTillageOperationBinding? = null
-    private val binding get() = _binding!!
-
-    private val viewModel: TillageOperationViewModel by viewModels {
-        TillageOperationViewModelFactory(
-            application = requireActivity().application,
-        )
-    }
-
+class TillageOperationFragment : BindBaseStepFragment<FragmentTillageOperationBinding>() {
 
     companion object {
         private const val TAG = "TillOperationFragment"
@@ -38,11 +29,17 @@ class TillageOperationFragment : BaseStepFragment() {
         }
     }
 
-    override fun loadFragmentLayout(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentTillageOperationBinding.inflate(inflater, container, false)
-        return binding.root
+    override fun inflateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): FragmentTillageOperationBinding =
+        FragmentTillageOperationBinding.inflate(inflater, container, false)
+
+    private val viewModel: TillageOperationViewModel by viewModels {
+        TillageOperationViewModelFactory(
+            application = requireActivity().application,
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -130,8 +127,6 @@ class TillageOperationFragment : BaseStepFragment() {
         )
     }
 
-    // saveCurrentPracticeToDatabase() is removed from Fragment, handled by ViewModel.
-
     override fun verifyStep(): VerificationError? {
         val isValid = viewModel.dataIsValid.value != false
         if (!isValid) {
@@ -140,16 +135,9 @@ class TillageOperationFragment : BaseStepFragment() {
         }
         return null
     }
-
     override fun onSelected() {
         Log.d(TAG, "TillageOperationFragment selected.")
         // ViewModel handles loading data. If you need to refresh data on selection:
         viewModel.loadCurrentPractice()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-        Log.d(TAG, "onDestroyView called.")
     }
 }

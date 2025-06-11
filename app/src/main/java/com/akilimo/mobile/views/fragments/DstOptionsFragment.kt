@@ -23,10 +23,7 @@ import com.blogspot.atifsoftwares.animatoolib.Animatoo
 /**
  * A simple [BaseFragment] subclass.
  */
-class DstOptionsFragment : BaseFragment() {
-    private var _binding: FragmentDstOptionsBinding? = null
-    private val binding get() = _binding!!
-
+class DstOptionsFragment : BaseFragment<FragmentDstOptionsBinding>() {
 
     companion object {
         fun newInstance(): DstOptionsFragment {
@@ -34,18 +31,12 @@ class DstOptionsFragment : BaseFragment() {
         }
     }
 
-    override fun loadFragmentLayout(
+    override fun inflateBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentDstOptionsBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    ) = FragmentDstOptionsBinding.inflate(inflater, container, false)
 
-    override fun refreshData() {
-        throw UnsupportedOperationException()
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -75,12 +66,12 @@ class DstOptionsFragment : BaseFragment() {
                     EnumAdvice.SPH -> intent =
                         Intent(context, ScheduledPlantingActivity::class.java)
 
-                    else -> {}
+                    else -> {
+                        throw IllegalArgumentException("Invalid recommendation code")
+                    }
                 }
-                if (intent != null) {
-                    startActivity(intent)
-                    Animatoo.animateSlideRight(context)
-                }
+                startActivity(intent)
+                Animatoo.animateSlideRight(context)
             }
         }
     }

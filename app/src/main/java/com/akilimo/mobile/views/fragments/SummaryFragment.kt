@@ -13,7 +13,7 @@ import com.akilimo.mobile.databinding.FragmentSummaryBinding
 import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.entities.MandatoryInfo
 import com.akilimo.mobile.entities.UserLocation
-import com.akilimo.mobile.inherit.BaseStepFragment
+import com.akilimo.mobile.inherit.BindBaseStepFragment
 import com.akilimo.mobile.models.TimeLineModel
 import com.akilimo.mobile.models.TimelineAttributes
 import com.akilimo.mobile.utils.LanguageManager
@@ -22,11 +22,8 @@ import com.akilimo.mobile.utils.enums.EnumInvestmentPref
 import com.akilimo.mobile.utils.enums.EnumOperationMethod
 import com.akilimo.mobile.utils.enums.StepStatus
 import com.github.vipulasri.timelineview.TimelineView
-import com.stepstone.stepper.VerificationError
 
-class SummaryFragment() : BaseStepFragment() {
-    private var _binding: FragmentSummaryBinding? = null
-    private val binding get() = _binding!!
+class SummaryFragment : BindBaseStepFragment<FragmentSummaryBinding>() {
 
     private var mDataList: MutableList<TimeLineModel> = ArrayList()
     private var mAttributes: TimelineAttributes? = null
@@ -58,14 +55,11 @@ class SummaryFragment() : BaseStepFragment() {
         )
     }
 
-    override fun loadFragmentLayout(
+    override fun inflateBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentSummaryBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    ) = FragmentSummaryBinding.inflate(inflater, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -191,8 +185,6 @@ class SummaryFragment() : BaseStepFragment() {
         )
         binding.timelineRecycler.adapter = myAdapter
     }
-
-    override fun verifyStep(): VerificationError? = null
 
     override fun onSelected() {
         setDataListItems()

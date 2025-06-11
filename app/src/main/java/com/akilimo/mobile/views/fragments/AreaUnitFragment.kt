@@ -10,7 +10,7 @@ import android.widget.Toast
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentAreaUnitBinding
 import com.akilimo.mobile.entities.MandatoryInfo
-import com.akilimo.mobile.inherit.BaseStepFragment
+import com.akilimo.mobile.inherit.BindBaseStepFragment
 import com.akilimo.mobile.utils.enums.EnumAreaUnits
 import com.akilimo.mobile.utils.enums.EnumCountry
 import com.stepstone.stepper.VerificationError
@@ -18,9 +18,8 @@ import io.sentry.Sentry
 import java.util.Locale
 
 
-class AreaUnitFragment : BaseStepFragment() {
-    private var _binding: FragmentAreaUnitBinding? = null
-    private val binding get() = _binding!!
+class AreaUnitFragment : BindBaseStepFragment<FragmentAreaUnitBinding>() {
+
 
     private var mandatoryInfo: MandatoryInfo? = null
     private var areaUnit: String? = "acre"
@@ -29,14 +28,17 @@ class AreaUnitFragment : BaseStepFragment() {
     private var areaUnitRadioIndex = 0
     private var rememberPreference = false
 
-    override fun loadFragmentLayout(
+    companion object {
+        fun newInstance(): AreaUnitFragment {
+            return AreaUnitFragment()
+        }
+    }
+    
+    override fun inflateBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentAreaUnitBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    ): FragmentAreaUnitBinding = FragmentAreaUnitBinding.inflate(inflater, container, false)
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -134,15 +136,5 @@ class AreaUnitFragment : BaseStepFragment() {
 
     override fun onSelected() {
         refreshData()
-    }
-
-
-    override fun onError(error: VerificationError) {
-    }
-
-    companion object {
-        fun newInstance(): AreaUnitFragment {
-            return AreaUnitFragment()
-        }
     }
 }
