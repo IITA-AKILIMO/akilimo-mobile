@@ -25,12 +25,12 @@ class InfoFragment : BindBaseStepFragment<FragmentInfoBinding>() {
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
         binding.chkAgreeTerms.setOnCheckedChangeListener { _: CompoundButton?, checked: Boolean ->
-            sessionManager.setDisclaimerRead(checked)
+            preferenceManager.setDisclaimerRead(checked)
         }
     }
 
     override fun verifyStep(): VerificationError? {
-        if (!sessionManager.getDisclaimerRead()) {
+        if (!preferenceManager.getDisclaimerRead()) {
             return VerificationError(getString(R.string.lbl_agree_to_disclaimer))
         }
         return null

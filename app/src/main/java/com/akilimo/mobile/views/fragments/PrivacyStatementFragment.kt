@@ -61,19 +61,19 @@ class PrivacyStatementFragment : BindBaseStepFragment<FragmentPrivacyStatementBi
 
 
             chkAgreeToTerms.setOnCheckedChangeListener { compoundButton: CompoundButton?, checked: Boolean ->
-                sessionManager.setTermsAccepted(checked)
+                preferenceManager.setTermsAccepted(checked)
             }
         }
     }
 
     override fun onSelected() {
-        val termsLink = sessionManager.getTermsLink()
+        val termsLink = preferenceManager.getTermsLink()
         binding.webView.loadUrl(termsLink)
     }
 
 
     override fun verifyStep(): VerificationError? {
-        if (sessionManager.getTermsAccepted()) {
+        if (preferenceManager.getTermsAccepted()) {
             return null
         }
         return VerificationError(getString(R.string.lbl_accept_terms_prompt))

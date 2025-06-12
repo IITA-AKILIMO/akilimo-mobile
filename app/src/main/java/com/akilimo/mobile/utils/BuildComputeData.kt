@@ -19,7 +19,7 @@ class BuildComputeData(val context: Context) {
     private val modelMapper = ModelMapper()
 
     private val database = getDatabase(context = context)
-    val session = SessionManager(context = context)
+    val session = PreferenceManager(context = context)
 
     fun buildRecommendationReq(): RecommendationRequest {
         val userInfo = buildProfileInfo()

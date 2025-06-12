@@ -10,7 +10,7 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.entities.UserLocation
 import com.akilimo.mobile.utils.MathHelper
-import com.akilimo.mobile.utils.SessionManager
+import com.akilimo.mobile.utils.PreferenceManager
 import com.stepstone.stepper.Step
 import com.stepstone.stepper.VerificationError
 import io.sentry.Sentry
@@ -27,7 +27,7 @@ abstract class BaseStepFragment : Fragment(), Step {
 
     // Lazy initialization for dependencies
     protected val database: AppDatabase by lazy { AppDatabase.getDatabase(requireContext()) }
-    protected val sessionManager: SessionManager by lazy { SessionManager(requireContext()) }
+    protected val sessionManager: PreferenceManager by lazy { PreferenceManager(requireContext()) }
     protected val mathHelper: MathHelper by lazy { MathHelper() }
 
     protected var verificationError: VerificationError? = null
