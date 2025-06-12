@@ -62,7 +62,7 @@ class PreferenceManager(context: Context) {
         get() = prefs.getBoolean("termsAccepted", false)
         set(value) = prefs.edit().putBoolean("termsAccepted", value).apply()
 
-    var disclaimerRead: Boolean
+    var termsRead: Boolean
         get() = prefs.getBoolean("disclaimerRead", false)
         set(value) = prefs.edit().putBoolean("disclaimerRead", value).apply()
 
