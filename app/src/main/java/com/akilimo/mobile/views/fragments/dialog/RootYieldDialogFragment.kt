@@ -44,7 +44,6 @@ class RootYieldDialogFragment : BaseDialogFragment() {
             fieldYield = bundle.getParcelable(YIELD_DATA)
         }
         val dialog = Dialog(context)
-
         _binding = FragmentRootYieldDialogBinding.inflate(layoutInflater)
         dialog.apply {
             window!!.requestFeature(Window.FEATURE_NO_TITLE)
@@ -57,7 +56,11 @@ class RootYieldDialogFragment : BaseDialogFragment() {
 
             setContentView(binding.root)
 
-            setCancelable(true)
+            // Prevent dismiss on outside touch
+            setCanceledOnTouchOutside(false)
+
+            // Optionally disable back button cancel as well
+            setCancelable(false)
         }
 
         if (fieldYield != null) {
@@ -87,6 +90,7 @@ class RootYieldDialogFragment : BaseDialogFragment() {
             dismiss()
         })
 
+        isCancelable = false
         return dialog
     }
 

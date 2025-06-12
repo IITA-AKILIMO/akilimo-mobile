@@ -166,7 +166,6 @@ class RootYieldActivity : BindBaseActivity<ActivityRootYieldBinding>() {
                 }
             })
         }
-
         showDialogFragmentSafely(
             supportFragmentManager,
             dialogFragment,
