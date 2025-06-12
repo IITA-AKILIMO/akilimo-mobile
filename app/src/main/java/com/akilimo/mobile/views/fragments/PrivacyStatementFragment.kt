@@ -4,14 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.lifecycle.lifecycleScope
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentPrivacyStatementBinding
 import com.akilimo.mobile.inherit.BindBaseStepFragment
 import com.stepstone.stepper.VerificationError
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class PrivacyStatementFragment : BindBaseStepFragment<FragmentPrivacyStatementBinding>() {
 
@@ -19,13 +22,7 @@ class PrivacyStatementFragment : BindBaseStepFragment<FragmentPrivacyStatementBi
         fun newInstance(): PrivacyStatementFragment = PrivacyStatementFragment()
     }
 
-    private var hasScrollListenerBeenAdded = false
-    private val scrollChangedListener = ViewTreeObserver.OnScrollChangedListener {
-        val webView = binding.privacyStatementWebView
-        if (webView.isScrolledToBottom() && !preferenceManager.privacyPolicyRead) {
-            preferenceManager.privacyPolicyRead = true
-        }
-    }
+    private var scrollCheckJob: Job? = null
 
     override fun inflateBinding(
         inflater: LayoutInflater,
@@ -35,45 +32,53 @@ class PrivacyStatementFragment : BindBaseStepFragment<FragmentPrivacyStatementBi
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
         WebView.setWebContentsDebuggingEnabled(false)
-        setupWebView()
-    }
 
-    private fun setupWebView() = binding.privacyStatementWebView.run {
-        webViewClient = object : WebViewClient() {
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-
-                if (!hasScrollListenerBeenAdded) {
-                    viewTreeObserver?.addOnScrollChangedListener(scrollChangedListener)
-                    hasScrollListenerBeenAdded = true
+        binding.privacyStatementWebView.run {
+            webViewClient = object : WebViewClient() {
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    startScrollMonitoring()
                 }
+
+                override fun shouldOverrideUrlLoading(
+                    view: WebView?,
+                    request: WebResourceRequest?
+                ): Boolean = false
             }
 
-            override fun shouldOverrideUrlLoading(
-                view: WebView?,
-                request: WebResourceRequest?
-            ): Boolean = false
-        }
+            isScrollContainer = true
+            isVerticalScrollBarEnabled = false
+            isHorizontalScrollBarEnabled = false
+            scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
 
-        isScrollContainer = true
-        isVerticalScrollBarEnabled = false
-        isHorizontalScrollBarEnabled = false
-        scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
+            settings.apply {
+                javaScriptEnabled = true
+                domStorageEnabled = true
+                builtInZoomControls = true
+                displayZoomControls = false
+                loadWithOverviewMode = true
+                useWideViewPort = true
+                setSupportZoom(true)
+                setGeolocationEnabled(false)
+            }
 
-        settings.apply {
-            javaScriptEnabled = true
-            domStorageEnabled = true
-            builtInZoomControls = true
-            displayZoomControls = false
-            loadWithOverviewMode = true
-            useWideViewPort = true
-            setSupportZoom(true)
-            setGeolocationEnabled(false)
+            loadUrl(preferenceManager.privacyPolicyLink)
         }
     }
 
-    override fun onSelected() {
-        binding.privacyStatementWebView.loadUrl(preferenceManager.privacyPolicyLink)
+    private fun startScrollMonitoring() {
+        scrollCheckJob?.cancel() // cancel any previous job
+
+        scrollCheckJob = viewLifecycleOwner.lifecycleScope.launch {
+            while (!preferenceManager.privacyPolicyRead) {
+                val webView = binding.privacyStatementWebView
+                if (webView.isScrolledToBottom()) {
+                    preferenceManager.privacyPolicyRead = true
+                    break
+                }
+                delay(300) // check every 300ms
+            }
+        }
     }
 
     override fun verifyStep(): VerificationError? {
@@ -85,8 +90,8 @@ class PrivacyStatementFragment : BindBaseStepFragment<FragmentPrivacyStatementBi
     }
 
     override fun onDestroyView() {
-        binding.privacyStatementWebView.viewTreeObserver
-            ?.removeOnScrollChangedListener(scrollChangedListener)
+        scrollCheckJob?.cancel()
+        scrollCheckJob = null
         super.onDestroyView()
     }
 }
