@@ -14,11 +14,11 @@ import java.util.UUID
 class PreferenceManager(context: Context) {
 
     companion object {
-        private const val PREF_NAME = "akilimo-config"
-        private const val DEFAULT_API_ENDPOINT = "https://api.akilimo.org/"
-        private const val DEFAULT_FUELROD_ENDPOINT = "https://api.munywele.co.ke/"
-        private const val DEFAULT_TERMS_LINK =
-            "https://akilimo.org/index.php/akilimo-privacy-policy"
+        private const val PREF_NAME = "akilimo-pref-data"
+        private const val AKILIMO_API_ENDPOINT = "https://api.akilimo.org/"
+        private const val FUELROD_API_ENDPOINT = "https://api.munywele.co.ke/"
+        private const val PRIVACY_POLICY_LINK =
+            "https://akilimo.org/akilimo-privacy-policy.html"
     }
 
     private val prefs: SharedPreferences =
@@ -27,11 +27,11 @@ class PreferenceManager(context: Context) {
     // region API Settings
 
     var akilimoEndpoint: String
-        get() = prefs.getString("apiResource", DEFAULT_API_ENDPOINT) ?: ""
+        get() = prefs.getString("apiResource", AKILIMO_API_ENDPOINT) ?: ""
         set(value) = prefs.edit().putString("apiResource", value).apply()
 
     var fuelrodEndpoint: String
-        get() = prefs.getString("fuelrodResource", DEFAULT_FUELROD_ENDPOINT) ?: ""
+        get() = prefs.getString("fuelrodResource", FUELROD_API_ENDPOINT) ?: ""
         set(value) = prefs.edit().putString("fuelrodResource", value).apply()
 
     var apiToken: String
@@ -58,7 +58,7 @@ class PreferenceManager(context: Context) {
 
     // region Terms & Disclaimer
 
-    var termsAccepted: Boolean
+    var privacyPolicyRead: Boolean
         get() = prefs.getBoolean("termsAccepted", false)
         set(value) = prefs.edit().putBoolean("termsAccepted", value).apply()
 
@@ -66,8 +66,8 @@ class PreferenceManager(context: Context) {
         get() = prefs.getBoolean("disclaimerRead", false)
         set(value) = prefs.edit().putBoolean("disclaimerRead", value).apply()
 
-    var termsLink: String
-        get() = prefs.getString("termsLink", DEFAULT_TERMS_LINK) ?: DEFAULT_TERMS_LINK
+    var privacyPolicyLink: String
+        get() = prefs.getString("termsLink", PRIVACY_POLICY_LINK) ?: PRIVACY_POLICY_LINK
         set(value) = prefs.edit().putString("termsLink", value).apply()
 
     // endregion
