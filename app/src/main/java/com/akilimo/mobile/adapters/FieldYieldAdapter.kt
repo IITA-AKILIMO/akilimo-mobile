@@ -15,7 +15,8 @@ import com.akilimo.mobile.utils.Tools.displayImageOriginal
 class FieldYieldAdapter(
     private val ctx: Context,
     private var items: List<FieldYield>,
-    private val animationType: Int
+    private val animationType: Int,
+    private val showImage: Boolean = true
 ) : RecyclerView.Adapter<FieldYieldAdapter.OriginalViewHolder>() {
 
     private var mOnItemClickListener: OnItemClickListener? = null
@@ -24,7 +25,7 @@ class FieldYieldAdapter(
     private val onAttach = true
     private var selectedYieldAmount = 0.0
 
-    interface OnItemClickListener {
+    fun interface OnItemClickListener {
         fun onItemClick(view: View?, fieldYield: FieldYield?, position: Int)
     }
 
@@ -56,19 +57,21 @@ class FieldYieldAdapter(
 
         with(holder.binding) {
             recImgTitle.text = fieldYield.fieldYieldLabel
-            displayImageOriginal(ctx, recImgImage, fieldYield.imageId)
+            if (showImage) {
+                displayImageOriginal(ctx, recImgImage, fieldYield.imageId)
 
-            recImgCard.setOnClickListener { view1 ->
-                mOnItemClickListener?.onItemClick(view1, fieldYield, position)
+                recImgCard.setOnClickListener { view1 ->
+                    mOnItemClickListener?.onItemClick(view1, fieldYield, position)
+                }
+
+                val cardColor =
+                    if (rowIndex == position || currentYieldAmount == selectedYieldAmount) {
+                        ContextCompat.getColor(ctx, R.color.green_100)
+                    } else {
+                        ContextCompat.getColor(ctx, R.color.grey_3)
+                    }
+                recImgCard.setCardBackgroundColor(cardColor)
             }
-
-            val cardColor = if (rowIndex == position || currentYieldAmount == selectedYieldAmount) {
-                ContextCompat.getColor(ctx, R.color.green_100)
-            } else {
-                ContextCompat.getColor(ctx, R.color.grey_3)
-            }
-
-            recImgCard.setCardBackgroundColor(cardColor)
             setAnimation(root, position)
         }
     }
