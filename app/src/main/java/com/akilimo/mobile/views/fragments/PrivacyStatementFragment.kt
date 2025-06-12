@@ -1,28 +1,29 @@
 package com.akilimo.mobile.views.fragments
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.CompoundButton
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentPrivacyStatementBinding
 import com.akilimo.mobile.inherit.BindBaseStepFragment
 import com.stepstone.stepper.VerificationError
 
-
-/**
- * A simple [Fragment] subclass.
- * [...](https://app-privacy-policy-generator.firebaseapp.com/#)
- */
 class PrivacyStatementFragment : BindBaseStepFragment<FragmentPrivacyStatementBinding>() {
 
     companion object {
-        fun newInstance(): PrivacyStatementFragment {
-            return PrivacyStatementFragment()
+        fun newInstance(): PrivacyStatementFragment = PrivacyStatementFragment()
+    }
+
+    private var hasScrollListenerBeenAdded = false
+    private val scrollChangedListener = ViewTreeObserver.OnScrollChangedListener {
+        val webView = binding.privacyStatementWebView
+        if (webView.isScrolledToBottom() && !preferenceManager.privacyPolicyRead) {
+            preferenceManager.privacyPolicyRead = true
         }
     }
 
@@ -32,50 +33,60 @@ class PrivacyStatementFragment : BindBaseStepFragment<FragmentPrivacyStatementBi
         savedInstanceState: Bundle?
     ) = FragmentPrivacyStatementBinding.inflate(inflater, container, false)
 
-
-    @SuppressLint("SetJavaScriptEnabled")
     override fun onBindingReady(savedInstanceState: Bundle?) {
         WebView.setWebContentsDebuggingEnabled(false)
-        binding.apply {
+        setupWebView()
+    }
 
-            webView.apply {
-                webViewClient = WebViewClient()
-                isScrollContainer = true
-                isVerticalScrollBarEnabled = false
-                scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
-                isHorizontalScrollBarEnabled = false
+    private fun setupWebView() = binding.privacyStatementWebView.run {
+        webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
 
-                val webSettings = webView.settings
-                webSettings.apply {
-                    javaScriptEnabled = true
-                    domStorageEnabled = true
-                    builtInZoomControls = true
-                    displayZoomControls = false
-                    loadWithOverviewMode = true
-                    useWideViewPort = true
-
-                    setSupportZoom(true)
-                    setGeolocationEnabled(false)
+                if (!hasScrollListenerBeenAdded) {
+                    viewTreeObserver?.addOnScrollChangedListener(scrollChangedListener)
+                    hasScrollListenerBeenAdded = true
                 }
             }
 
+            override fun shouldOverrideUrlLoading(
+                view: WebView?,
+                request: WebResourceRequest?
+            ): Boolean = false
+        }
 
-            chkAgreeToTerms.setOnCheckedChangeListener { compoundButton: CompoundButton?, checked: Boolean ->
-                preferenceManager.setTermsAccepted(checked)
-            }
+        isScrollContainer = true
+        isVerticalScrollBarEnabled = false
+        isHorizontalScrollBarEnabled = false
+        scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
+
+        settings.apply {
+            javaScriptEnabled = true
+            domStorageEnabled = true
+            builtInZoomControls = true
+            displayZoomControls = false
+            loadWithOverviewMode = true
+            useWideViewPort = true
+            setSupportZoom(true)
+            setGeolocationEnabled(false)
         }
     }
 
     override fun onSelected() {
-        val termsLink = preferenceManager.getTermsLink()
-        binding.webView.loadUrl(termsLink)
+        binding.privacyStatementWebView.loadUrl(preferenceManager.privacyPolicyLink)
     }
 
-
     override fun verifyStep(): VerificationError? {
-        if (preferenceManager.getTermsAccepted()) {
-            return null
+        return if (preferenceManager.privacyPolicyRead) {
+            null
+        } else {
+            VerificationError(getString(R.string.lbl_read_full_policy_prompt))
         }
-        return VerificationError(getString(R.string.lbl_accept_terms_prompt))
+    }
+
+    override fun onDestroyView() {
+        binding.privacyStatementWebView.viewTreeObserver
+            ?.removeOnScrollChangedListener(scrollChangedListener)
+        super.onDestroyView()
     }
 }
