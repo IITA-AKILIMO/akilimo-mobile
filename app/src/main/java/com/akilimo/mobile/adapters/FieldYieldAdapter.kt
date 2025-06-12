@@ -71,6 +71,7 @@ class FieldYieldAdapter(
                         ContextCompat.getColor(ctx, R.color.grey_3)
                     }
                 recImgCard.setCardBackgroundColor(cardColor)
+                recImgImageContainer.visibility = View.VISIBLE
             }
             setAnimation(root, position)
         }
