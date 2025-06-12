@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:padding="@dimen/spacing_medium"
-    tools:context=".views.fragments.InfoFragment">
+    tools:context=".views.fragments.TermsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -15,15 +15,14 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/img_instruction_header"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_width="@dimen/dimen_250"
+            android:layout_height="@dimen/dimen_250"
             android:layout_marginTop="@dimen/spacing_large"
             android:contentDescription="@string/app_name"
             android:padding="@dimen/spacing_small"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.MediumComponent"
             app:srcCompat="@drawable/ic_akilimo_logo" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -39,28 +38,26 @@
             app:layout_constraintTop_toBottomOf="@id/img_instruction_header" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/txt_important_paragraph_1"
+            android:id="@+id/txt_important_paragraph_one"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
             android:lineSpacingExtra="@dimen/spacing_small"
             android:text="@string/important_instructions"
-            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_important_title" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/txt_important_paragraph_2"
+            android:id="@+id/txt_important_paragraph_two"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_large"
             android:lineSpacingExtra="@dimen/spacing_small"
             android:text="@string/important_instructions_b"
-            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_important_paragraph_1" />
+            app:layout_constraintTop_toBottomOf="@id/txt_important_paragraph_one" />
 
         <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/chk_agree_terms"
@@ -73,7 +70,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_important_paragraph_2" />
+            app:layout_constraintTop_toBottomOf="@id/txt_important_paragraph_two" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

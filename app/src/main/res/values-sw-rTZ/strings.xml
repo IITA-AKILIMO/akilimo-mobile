@@ -373,7 +373,7 @@
     <string name="lbl_already_planted_text">Inaonekana tayari umepanda, kwa hivyo huwezi kubadili tarehe ya kupanda</string>
     <string name="lbl_agree_to_terms">Bonyeza hapa kuashiria kuwa umesoma na unakubali vigezo na masharti </string>
     <string name="lbl_agree_to_disclaimer">Tafadhali thibitisha kuwa umeisoma na kuelewa taarifa hii ya maelezo ya kisheria.</string>
-    <string name="lbl_accept_terms_prompt">Tafadhali kubali vigezo na masharti kabla ya kuendelea</string>
+    <string name="lbl_read_full_policy_prompt">Tembeza hadi mwisho kisha ukubali sheria na masharti kabla ya kuendelea</string>
     <string name="lbl_restart_app_prompt">Anzisha tena programu ili kuwezesha tafsiri</string>
     <string name="lbl_optional">(Hiari)</string>
     <string name="lbl_country_supported">AKILIMO kwa sasa inatoa ushauri kwa wakulima wa Nigeria,Tanzania,Rwanda na Ghana tu. Eneo ulilochagua halilingani na uchaguzi wako wa nchi. </string>

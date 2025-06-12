@@ -19,7 +19,7 @@ import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.utils.LanguageManager
 import com.akilimo.mobile.utils.MathHelper
-import com.akilimo.mobile.utils.SessionManager
+import com.akilimo.mobile.utils.PreferenceManager
 import com.akilimo.mobile.utils.enums.EnumCountry
 import com.akilimo.mobile.views.activities.DstRecommendationActivity
 import com.blogspot.atifsoftwares.animatoolib.Animatoo
@@ -31,7 +31,7 @@ import io.sentry.Sentry
 abstract class BaseActivity : AppCompatActivity() {
     protected val LOG_TAG: String = this::class.java.simpleName
 
-    protected val sessionManager: SessionManager by lazy { SessionManager(this@BaseActivity) }
+    protected val sessionManager: PreferenceManager by lazy { PreferenceManager(this@BaseActivity) }
     protected val database: AppDatabase by lazy { getDatabase(this@BaseActivity) }
     protected val mathHelper: MathHelper by lazy { MathHelper() }
 
@@ -107,11 +107,11 @@ abstract class BaseActivity : AppCompatActivity() {
         buttonTitle: String? = null
     ) {
 
-        val notificationCount = sessionManager.getNotificationCount()
+        val notificationCount = sessionManager.notificationCount
         if (notificationCount <= 0) {
             return
         }
-        sessionManager.updateNotificationCount(notificationCount)
+        sessionManager.notificationCount = notificationCount
 
         val dialog = Dialog(this)
         dialog.apply {

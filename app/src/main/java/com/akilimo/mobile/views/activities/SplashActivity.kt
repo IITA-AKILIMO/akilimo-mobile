@@ -37,8 +37,8 @@ class SplashActivity(
         val isInDevMode = BuildConfig.DEBUG
 
         try {
-            val akilimoEndpoint = sessionManager.getAkilimoEndpoint()
-            val fuelrodEndpoint = sessionManager.getFuelrodEndpoint()
+            val akilimoEndpoint = sessionManager.akilimoEndpoint
+            val fuelrodEndpoint = sessionManager.fuelrodEndpoint
             RetrofitManager.init(this, akilimoEndpoint, fuelrodEndpoint)
             if (!isInDevMode) {
                 withContext(dispatchers.io) {

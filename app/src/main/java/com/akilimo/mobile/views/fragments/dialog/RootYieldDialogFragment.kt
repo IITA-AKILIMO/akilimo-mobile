@@ -44,7 +44,6 @@ class RootYieldDialogFragment : BaseDialogFragment() {
             fieldYield = bundle.getParcelable(YIELD_DATA)
         }
         val dialog = Dialog(context)
-
         _binding = FragmentRootYieldDialogBinding.inflate(layoutInflater)
         dialog.apply {
             window!!.requestFeature(Window.FEATURE_NO_TITLE)
@@ -57,7 +56,11 @@ class RootYieldDialogFragment : BaseDialogFragment() {
 
             setContentView(binding.root)
 
-            setCancelable(true)
+            // Prevent dismiss on outside touch
+            setCanceledOnTouchOutside(false)
+
+            // Optionally disable back button cancel as well
+            setCancelable(false)
         }
 
         if (fieldYield != null) {
@@ -67,26 +70,27 @@ class RootYieldDialogFragment : BaseDialogFragment() {
             val selectedTitle =
                 getString(R.string.lbl_you_expect_yield, yieldAmountLabel!!.lowercase(), yieldDesc)
 
-            displayImageOriginal(this.context, binding.rootYieldImage, fieldYield!!.imageId)
-            binding.lblFragmentTitle.text = selectedTitle
+            displayImageOriginal(this.context, binding.imgRootYield, fieldYield!!.imageId)
+            binding.tvRootYieldTitle.text = selectedTitle
         }
 
 
-        binding.closeButton.setOnClickListener(View.OnClickListener { view: View? ->
+        binding.btnCloseDialog.setOnClickListener(View.OnClickListener { view: View? ->
             yieldConfirmed = false
             dismiss()
         })
 
-        binding.cancelButton.setOnClickListener(View.OnClickListener { view: View? ->
+        binding.btnCancelYield.setOnClickListener(View.OnClickListener { view: View? ->
             yieldConfirmed = false
             dismiss()
         })
         //save the data
-        binding.confirmButton.setOnClickListener(View.OnClickListener { v: View? ->
+        binding.btnConfirmYield.setOnClickListener(View.OnClickListener { v: View? ->
             yieldConfirmed = true
             dismiss()
         })
 
+        isCancelable = false
         return dialog
     }
 

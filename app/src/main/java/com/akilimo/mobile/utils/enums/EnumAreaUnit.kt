@@ -60,4 +60,38 @@ enum class EnumAreaUnit {
             R.string.two_half_acre_to_m2
         )
     }
+
+    fun yieldLabelIds(): List<Int> = when (this) {
+        ACRE -> listOf(
+            R.string.yield_less_than_3_tonnes_per_acre,
+            R.string.yield_3_to_6_tonnes_per_acre,
+            R.string.yield_6_to_9_tonnes_per_acre,
+            R.string.yield_9_to_12_tonnes_per_acre,
+            R.string.yield_more_than_12_tonnes_per_acre
+        )
+
+        HA -> listOf(
+            R.string.yield_less_than_3_tonnes_per_hectare,
+            R.string.yield_3_to_6_tonnes_per_hectare,
+            R.string.yield_6_to_9_tonnes_per_hectare,
+            R.string.yield_9_to_12_tonnes_per_hectare,
+            R.string.yield_more_than_12_tonnes_per_hectare
+        )
+
+        ARE -> listOf(
+            R.string.yield_less_than_3_tonnes_per_are,
+            R.string.yield_3_to_6_tonnes_per_are,
+            R.string.yield_6_to_9_tonnes_per_are,
+            R.string.yield_9_to_12_tonnes_per_are,
+            R.string.yield_more_than_12_tonnes_per_are
+        )
+
+        M2 -> listOf(
+            R.string.yield_less_than_3_tonnes_per_meter,
+            R.string.yield_3_to_6_tonnes_per_meter,
+            R.string.yield_6_to_9_tonnes_per_meter,
+            R.string.yield_9_to_12_tonnes_per_meter,
+            R.string.yield_more_than_12_tonnes_per_meter
+        )
+    }
 }

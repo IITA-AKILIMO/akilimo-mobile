@@ -509,7 +509,7 @@
     <string name="lbl_already_planted_text">It appears you have already planted, so you cannot set the flexibility</string>
     <string name="lbl_agree_to_terms">I accept the terms and conditions of the application</string>
     <string name="lbl_agree_to_disclaimer">Please confirm you have read and understood this disclaimer.</string>
-    <string name="lbl_accept_terms_prompt">Accept the terms and conditions before proceeding</string>
+    <string name="lbl_read_full_policy_prompt">Scroll to the bottom and accept the terms and conditions before proceeding</string>
     <string name="lbl_restart_app_prompt">Restart the app in order to apply translations to the navigation buttons?</string>
     <string name="lbl_optional">(Optional)</string>
     <string name="lbl_country_supported">Currently AKILIMO gives advice for farms located in Nigeria, Tanzania, Rwanda, Burundi and Ghana. Your selected area does not match your country selection</string>

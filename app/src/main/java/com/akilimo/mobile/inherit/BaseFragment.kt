@@ -15,7 +15,7 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.utils.MathHelper
-import com.akilimo.mobile.utils.SessionManager
+import com.akilimo.mobile.utils.PreferenceManager
 import io.sentry.Sentry
 
 abstract class BaseFragment<T : ViewBinding> : Fragment() {
@@ -34,7 +34,7 @@ abstract class BaseFragment<T : ViewBinding> : Fragment() {
 
     private var appVersion: String? = null
 
-    protected val sessionManager: SessionManager by lazy { SessionManager(requireContext()) }
+    protected val sessionManager: PreferenceManager by lazy { PreferenceManager(requireContext()) }
     protected val mathHelper: MathHelper by lazy { MathHelper() }
     protected val database: AppDatabase by lazy { getDatabase(requireContext()) }
 
