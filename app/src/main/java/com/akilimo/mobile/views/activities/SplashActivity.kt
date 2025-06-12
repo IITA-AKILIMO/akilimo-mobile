@@ -59,7 +59,7 @@ class SplashActivity(
         var intent = Intent(this, HomeStepperActivity::class.java)
 
         if (isInDevMode) {
-//            intent = Intent(this, RecommendationsActivity::class.java)
+            intent = Intent(this, RecommendationsActivity::class.java)
         }
         startActivity(intent)
         finish()
