@@ -44,9 +44,7 @@ class FieldYieldAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OriginalViewHolder {
         val binding = ItemCardRecommendationImageBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
+            LayoutInflater.from(parent.context), parent, false
         )
         return OriginalViewHolder(binding)
     }
@@ -56,25 +54,26 @@ class FieldYieldAdapter(
         val currentYieldAmount = fieldYield.yieldAmount
 
         with(holder.binding) {
-            recImgTitle.text = fieldYield.fieldYieldLabel
             if (showImage) {
                 displayImageOriginal(ctx, recImgImage, fieldYield.imageId)
-
-                recImgCard.setOnClickListener { view1 ->
-                    mOnItemClickListener?.onItemClick(view1, fieldYield, position)
-                }
-
-                val cardColor =
-                    if (rowIndex == position || currentYieldAmount == selectedYieldAmount) {
-                        ContextCompat.getColor(ctx, R.color.green_100)
-                    } else {
-                        ContextCompat.getColor(ctx, R.color.grey_3)
-                    }
-                recImgCard.setCardBackgroundColor(cardColor)
                 recImgImageContainer.visibility = View.VISIBLE
             } else {
                 recImgImageContainer.visibility = View.GONE
             }
+
+            recImgTitle.text = fieldYield.fieldYieldLabel
+            recImgCard.setOnClickListener { view1 ->
+                mOnItemClickListener?.onItemClick(view1, fieldYield, position)
+            }
+
+            val cardColor = if (rowIndex == position || currentYieldAmount == selectedYieldAmount) {
+                ContextCompat.getColor(ctx, R.color.green_100)
+            } else {
+                ContextCompat.getColor(ctx, R.color.grey_3)
+            }
+            recImgCard.setCardBackgroundColor(cardColor)
+
+
             setAnimation(root, position)
         }
     }
