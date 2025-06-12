@@ -185,7 +185,7 @@ class BioDataFragment : BindBaseStepFragment<FragmentBioDataBinding>() {
                 this.email = email
                 this.mobileCode = mobileCode
                 this.phoneNumber = fullPhoneNumber
-                this.deviceToken = preferenceManager.getDeviceToken()
+                this.deviceToken = preferenceManager.deviceToken
             }
 
             database.profileInfoDao().insert(userProfile)

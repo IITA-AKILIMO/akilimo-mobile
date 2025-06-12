@@ -107,11 +107,11 @@ abstract class BaseActivity : AppCompatActivity() {
         buttonTitle: String? = null
     ) {
 
-        val notificationCount = sessionManager.getNotificationCount()
+        val notificationCount = sessionManager.notificationCount
         if (notificationCount <= 0) {
             return
         }
-        sessionManager.updateNotificationCount(notificationCount)
+        sessionManager.notificationCount = notificationCount
 
         val dialog = Dialog(this)
         dialog.apply {

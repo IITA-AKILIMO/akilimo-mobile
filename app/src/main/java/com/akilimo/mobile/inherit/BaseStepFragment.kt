@@ -27,7 +27,7 @@ abstract class BaseStepFragment : Fragment(), Step {
 
     // Lazy initialization for dependencies
     protected val database: AppDatabase by lazy { AppDatabase.getDatabase(requireContext()) }
-    protected val sessionManager: PreferenceManager by lazy { PreferenceManager(requireContext()) }
+    protected val preferenceManager: PreferenceManager by lazy { PreferenceManager(requireContext()) }
     protected val mathHelper: MathHelper by lazy { MathHelper() }
 
     protected var verificationError: VerificationError? = null

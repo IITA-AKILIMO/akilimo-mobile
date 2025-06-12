@@ -75,7 +75,7 @@ class BuildComputeData(val context: Context) {
 
     private fun buildProfileInfo(): UserInfo {
         val userInfo = UserInfo(
-            deviceToken = session.getDeviceToken()
+            deviceToken = session.deviceToken
         )
 
         database.profileInfoDao().findOne()?.let { profile ->

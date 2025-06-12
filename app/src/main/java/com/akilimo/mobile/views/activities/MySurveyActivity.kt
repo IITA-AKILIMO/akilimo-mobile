@@ -62,7 +62,7 @@ class MySurveyActivity : BaseActivity() {
                 akilimoRecRating = akilimoRecRating,
                 akilimoUsefulRating = akilimoUsefulRating,
                 language = LanguageManager.getLanguage(this@MySurveyActivity),
-                deviceToken = sessionManager.getDeviceToken()
+                deviceToken = sessionManager.deviceToken
             )
 
             submitUserReview(surveyRequest = surveyRequest)
