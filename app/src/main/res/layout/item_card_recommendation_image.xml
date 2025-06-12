@@ -1,66 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/rec_img_root"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rec_img_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <com.google.android.material.card.MaterialCardView
-            android:id="@+id/rec_img_card"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
-            app:cardCornerRadius="3dp"
-            app:cardElevation="5dp"
-            app:cardUseCompatPadding="true">
+        android:id="@+id/rec_img_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardCornerRadius="3dp"
+        app:cardElevation="5dp"
+        app:cardUseCompatPadding="true">
 
         <LinearLayout
-                android:id="@+id/rec_img_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="@dimen/spacing_large">
+            android:id="@+id/rec_img_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/spacing_large">
 
             <RelativeLayout
-                    android:layout_width="@dimen/dimen_100"
-                    android:layout_height="@dimen/dimen_110">
+                android:id="@+id/rec_img_image_container"
+                android:layout_width="@dimen/dimen_100"
+                android:layout_height="@dimen/dimen_110"
+                android:visibility="gone">
 
                 <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/rec_img_image"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
-                        android:contentDescription="@string/title_activity_cassava_root_yield"
-                        android:scaleType="centerCrop"
-                        app:srcCompat="@drawable/yield_less_than_7point5" />
+                    android:id="@+id/rec_img_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="@string/title_activity_cassava_root_yield"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/yield_less_than_7point5" />
             </RelativeLayout>
 
             <View
-                    android:layout_width="@dimen/spacing_middle"
-                    android:layout_height="0dp" />
+                android:layout_width="@dimen/spacing_middle"
+                android:layout_height="0dp" />
 
             <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center_vertical">
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
 
                 <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/rec_img_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/lbl_scheduled_planting_and_harvest"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    android:id="@+id/rec_img_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lbl_scheduled_planting_and_harvest"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
             </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
     <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing_medium" />
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_medium" />
 </androidx.appcompat.widget.LinearLayoutCompat>
