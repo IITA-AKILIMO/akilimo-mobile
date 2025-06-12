@@ -5,97 +5,92 @@ import android.animation.ObjectAnimator
 import android.view.View
 
 object TheItemAnimation {
-    /* animation type */
-    const val BOTTOM_UP: Int = 1
-    const val FADE_IN: Int = 2
-    const val LEFT_RIGHT: Int = 3
-    const val RIGHT_LEFT: Int = 4
-    const val NONE: Int = 0
 
-    /* animation duration */
-    private const val DURATION_IN_BOTTOM_UP: Long = 150
-    private const val DURATION_IN_FADE_ID: Long = 500
-    private const val DURATION_IN_LEFT_RIGHT: Long = 150
-    private const val DURATION_IN_RIGHT_LEFT: Long = 150
+    const val NONE = 0
+    const val BOTTOM_UP = 1
+    const val FADE_IN = 2
+    const val LEFT_RIGHT = 3
+    const val RIGHT_LEFT = 4
 
-    @JvmStatic
+    private const val DEFAULT_TRANSLATION_Y = 500f
+    private const val LARGE_TRANSLATION_Y = 800f
+    private const val DEFAULT_TRANSLATION_X = 400f
+
+    private const val DURATION_BOTTOM_UP = 150L
+    private const val DURATION_FADE_IN = 500L
+    private const val DURATION_LEFT_RIGHT = 150L
+    private const val DURATION_RIGHT_LEFT = 150L
+
     fun animate(view: View, position: Int, type: Int) {
         when (type) {
             BOTTOM_UP -> animateBottomUp(view, position)
             FADE_IN -> animateFadeIn(view, position)
-            LEFT_RIGHT -> animateLeftRight(view, position)
-            RIGHT_LEFT -> animateRightLeft(view, position)
+            LEFT_RIGHT -> animateSide(view, position, fromLeft = true)
+            RIGHT_LEFT -> animateSide(view, position, fromLeft = false)
         }
     }
 
     private fun animateBottomUp(view: View, position: Int) {
-        var position = position
-        val not_first_item = position == -1
-        position = position + 1
+        val isNotFirst = position == -1
+        val effectivePosition = position + 1
+        val translationY = if (isNotFirst) LARGE_TRANSLATION_Y else DEFAULT_TRANSLATION_Y
 
-        val translation = (if (not_first_item) 800 else 500).toFloat()
-
-        view.translationY = translation
+        view.translationY = translationY
         view.alpha = 0f
-        val animatorSet = AnimatorSet()
 
-        val animatorTranslateY = ObjectAnimator.ofFloat(view, "translationY", translation, 0f)
+        val animatorTranslateY =
+            ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, translationY, 0f).apply {
+                startDelay = if (isNotFirst) 0 else effectivePosition * DURATION_BOTTOM_UP
+                duration = if (isNotFirst) 3 else 1 * DURATION_BOTTOM_UP
+            }
 
+        val animatorAlpha = ObjectAnimator.ofFloat(view, View.ALPHA, 1f)
 
-        val animatorAlpha = ObjectAnimator.ofFloat(view, "alpha", 1f)
-        animatorTranslateY.startDelay =
-            if (not_first_item) 0 else (position * DURATION_IN_BOTTOM_UP)
-        animatorTranslateY.setDuration((if (not_first_item) 3 else 1) * DURATION_IN_BOTTOM_UP)
-        animatorSet.playTogether(animatorTranslateY, animatorAlpha)
-        animatorSet.start()
+        AnimatorSet().apply {
+            playTogether(animatorTranslateY, animatorAlpha)
+            start()
+        }
     }
 
     private fun animateFadeIn(view: View, position: Int) {
-        var position = position
-        val not_first_item = position == -1
-        position = position + 1
+        val isNotFirst = position == -1
+        val effectivePosition = position + 1
+
         view.alpha = 0f
-        val animatorSet = AnimatorSet()
-        val animatorAlpha = ObjectAnimator.ofFloat(view, "alpha", 0f, 0.5f, 1f)
-        ObjectAnimator.ofFloat(view, "alpha", 0f).start()
-        animatorAlpha.startDelay =
-            if (not_first_item) DURATION_IN_FADE_ID / 2 else (position * DURATION_IN_FADE_ID / 3)
-        animatorAlpha.setDuration(DURATION_IN_FADE_ID)
-        animatorSet.play(animatorAlpha)
-        animatorSet.start()
+
+        val animatorAlpha = ObjectAnimator.ofFloat(view, View.ALPHA, 0f, 0.5f, 1f).apply {
+            startDelay =
+                if (isNotFirst) DURATION_FADE_IN / 2 else effectivePosition * DURATION_FADE_IN / 3
+            duration = DURATION_FADE_IN
+        }
+
+        AnimatorSet().apply {
+            play(animatorAlpha)
+            start()
+        }
     }
 
-    private fun animateLeftRight(view: View, position: Int) {
-        var position = position
-        val not_first_item = position == -1
-        position = position + 1
-        view.translationX = -400f
-        view.alpha = 0f
-        val animatorSet = AnimatorSet()
-        val animatorTranslateY = ObjectAnimator.ofFloat(view, "translationX", -400f, 0f)
-        val animatorAlpha = ObjectAnimator.ofFloat(view, "alpha", 1f)
-        ObjectAnimator.ofFloat(view, "alpha", 0f).start()
-        animatorTranslateY.startDelay =
-            if (not_first_item) DURATION_IN_LEFT_RIGHT else (position * DURATION_IN_LEFT_RIGHT)
-        animatorTranslateY.setDuration((if (not_first_item) 2 else 1) * DURATION_IN_LEFT_RIGHT)
-        animatorSet.playTogether(animatorTranslateY, animatorAlpha)
-        animatorSet.start()
-    }
+    private fun animateSide(view: View, position: Int, fromLeft: Boolean) {
+        val isNotFirst = position == -1
+        val effectivePosition = position + 1
 
-    private fun animateRightLeft(view: View, position: Int) {
-        var position = position
-        val not_first_item = position == -1
-        position = position + 1
-        view.translationX = view.x + 400
+        val translationX = if (fromLeft) -DEFAULT_TRANSLATION_X else DEFAULT_TRANSLATION_X
+        val duration = if (fromLeft) DURATION_LEFT_RIGHT else DURATION_RIGHT_LEFT
+
+        view.translationX = translationX
         view.alpha = 0f
-        val animatorSet = AnimatorSet()
-        val animatorTranslateY = ObjectAnimator.ofFloat(view, "translationX", view.x + 400, 0f)
-        val animatorAlpha = ObjectAnimator.ofFloat(view, "alpha", 1f)
-        ObjectAnimator.ofFloat(view, "alpha", 0f).start()
-        animatorTranslateY.startDelay =
-            if (not_first_item) DURATION_IN_RIGHT_LEFT else (position * DURATION_IN_RIGHT_LEFT)
-        animatorTranslateY.setDuration((if (not_first_item) 2 else 1) * DURATION_IN_RIGHT_LEFT)
-        animatorSet.playTogether(animatorTranslateY, animatorAlpha)
-        animatorSet.start()
+
+        val animatorTranslateX =
+            ObjectAnimator.ofFloat(view, View.TRANSLATION_X, translationX, 0f).apply {
+                startDelay = if (isNotFirst) duration else effectivePosition * duration
+                this.duration = if (isNotFirst) 2 else 1 * duration
+            }
+
+        val animatorAlpha = ObjectAnimator.ofFloat(view, View.ALPHA, 1f)
+
+        AnimatorSet().apply {
+            playTogether(animatorTranslateX, animatorAlpha)
+            start()
+        }
     }
 }
