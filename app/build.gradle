@@ -21,7 +21,7 @@ sonar {
     properties {
         property "sonar.projectName", "akilimo-mobile"
         property "sonar.projectKey", "IITA-AKILIMO_akilimo-mobile_abcb50d1-1abd-4e32-bd76-b385f65cfc5d"
-        property "sonar.token", "sqp_d9cf0aa4c4bbfef6e08dfc95eb7dbe1689390627"
+        property "sonar.token", System.getenv("SONAR_TOKEN") ?: "PLACEHOLDER_TOKEN"
         property "sonar.host.url", "https://sonar.munywele.co.ke"
         property "sonar.sources", "src"
         property "sonar.sourceEncoding", "UTF-8"
@@ -45,7 +45,6 @@ android {
     def releaseVersionName = computeBuildNumber()
     def appVersionCode = computeVersionCode()
     namespace 'com.akilimo.mobile'
-    compileSdk 34
 
     defaultConfig {
         applicationId "com.akilimo.mobile"
@@ -74,8 +73,7 @@ android {
         ignoreWarnings = true
         abortOnError = false
         checkReleaseBuilds = false
-//        baseline = file("lint-baseline.xml")
-
+        baseline = file("lint-baseline.xml")
         disable 'MissingTranslation'
     }
 
@@ -101,16 +99,6 @@ android {
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
-    }
-
-//    kotlin {
-//        jvmToolchain(17)
-//    }
-
-
-    lint {
-        abortOnError = false
-        checkReleaseBuilds = false
     }
 
 }
@@ -225,7 +213,7 @@ dependencies {
 
     implementation 'com.github.stepstone-tech.android-material-stepper:material-stepper:v4.3.1'
     implementation 'com.github.twinone:AndroidWizard:b4546bd712'
-    
+
     implementation 'androidx.navigation:navigation-fragment-ktx:2.6.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
     implementation 'androidx.activity:activity-ktx:1.8.0'
