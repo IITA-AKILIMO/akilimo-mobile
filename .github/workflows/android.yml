@@ -154,8 +154,7 @@ jobs:
         run: cp  $LATEST_TAG_FILE release
 
       - name: Generate release notes
-        run: |
-          python .github/scripts/generate_release_notes.py
+        run: python .github/scripts/generate_release_notes.py
 
       - name: Copy release notes
         run: cp -r distribution release
@@ -200,9 +199,13 @@ jobs:
           status: completed
           whatsNewDirectory: release/distribution/whatsnew
 
+      - name: Update build number
+        if: success()
+        run: curl -s https://munywele.co.ke/app-releases/akilimo/update
+
 
   upload_beta_artifacts:
-    if: contains(github.ref, 'beta')
+    if: success() && contains(github.ref, 'beta')
     needs: publish_to_playstore
     name: Upload to github beta
     runs-on: ubuntu-latest
@@ -232,7 +235,7 @@ jobs:
         uses: masgeek/github-action-ghr@v1.3.2
 
   upload_production_artifacts:
-    if: contains(github.ref, 'main')
+    if: success() && contains(github.ref, 'main')
     needs: publish_to_playstore
     name: Upload to github release
     runs-on: ubuntu-latest
@@ -259,6 +262,3 @@ jobs:
 
       - name: Upload release artifacts
         uses: masgeek/github-action-ghr@v1.3.2
-
-      - name: Update build version
-        run: curl -s https://munywele.co.ke/app-releases/akilimo/update
