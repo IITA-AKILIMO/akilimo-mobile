@@ -1,6 +1,5 @@
 package com.akilimo.mobile.views.activities
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
@@ -10,12 +9,11 @@ import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.DefaultDispatcherProvider
 import com.akilimo.mobile.interfaces.IDispatcherProvider
 import com.akilimo.mobile.rest.retrofit.RetrofitManager
-import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import io.sentry.Sentry
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-@SuppressLint("CustomSplashScreen")
 class SplashActivity(
     private val dispatchers: IDispatcherProvider = DefaultDispatcherProvider()
 ) : BaseActivity() {
@@ -24,46 +22,42 @@ class SplashActivity(
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
-            try {
-                launchAppFlow()
-            } catch (ex: Exception) {
-                Sentry.captureException(ex)
-                fallbackLaunch()
-            }
+            runCatching { launchAppFlow() }
+                .onFailure { ex ->
+                    if (ex !is CancellationException) {
+                        Sentry.captureException(ex)
+                    }
+                    fallbackLaunch()
+                }
         }
     }
 
     private suspend fun launchAppFlow() {
         val isInDevMode = BuildConfig.DEBUG
 
-        try {
-            val akilimoEndpoint = sessionManager.akilimoEndpoint
-            val fuelrodEndpoint = sessionManager.fuelrodEndpoint
-            RetrofitManager.init(this, akilimoEndpoint, fuelrodEndpoint)
-            if (!isInDevMode) {
-                withContext(dispatchers.io) {
-                    val cleaner = UserDataCleaner(database)
-                    cleaner.clearUserRelatedData()
-                }
+        val akilimoEndpoint = sessionManager.akilimoEndpoint
+        val fuelrodEndpoint = sessionManager.fuelrodEndpoint
+
+        RetrofitManager.init(this, akilimoEndpoint, fuelrodEndpoint)
+
+        if (!isInDevMode) {
+            withContext(dispatchers.io) {
+                UserDataCleaner(database).clearUserRelatedData()
             }
-
-            launchNextActivity(isInDevMode)
-
-        } catch (ex: Exception) {
-            Sentry.captureException(ex)
-            fallbackLaunch()
         }
+
+        navigateToNextActivity(isInDevMode)
     }
 
-    private fun launchNextActivity(isInDevMode: Boolean) {
-        var intent = Intent(this, HomeStepperActivity::class.java)
-
-        if (isInDevMode) {
-            intent = Intent(this, RecommendationsActivity::class.java)
+    private fun navigateToNextActivity(isInDevMode: Boolean) {
+        val nextActivity = if (isInDevMode) {
+            RecommendationsActivity::class.java
+        } else {
+            HomeStepperActivity::class.java
         }
-        startActivity(intent)
+
+        openActivity(Intent(this, nextActivity))
         finish()
-        Animatoo.animateFade(this@SplashActivity)
     }
 
     private fun fallbackLaunch() {
