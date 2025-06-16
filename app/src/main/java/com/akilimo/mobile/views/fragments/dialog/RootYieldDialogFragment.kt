@@ -1,108 +1,91 @@
 package com.akilimo.mobile.views.fragments.dialog
 
-import android.app.Dialog
-import android.content.DialogInterface
-import android.graphics.Color
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.view.Window
-import android.view.WindowManager
-import androidx.core.graphics.drawable.toDrawable
+import android.view.ViewGroup
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentRootYieldDialogBinding
 import com.akilimo.mobile.entities.FieldYield
-import com.akilimo.mobile.inherit.BaseDialogFragment
-import com.akilimo.mobile.interfaces.IFieldYieldDismissListener
+import com.akilimo.mobile.inherit.BaseBottomSheetDialogFragment
 import com.akilimo.mobile.utils.Tools.displayImageOriginal
 
-
-/**
- * A simple [androidx.fragment.app.Fragment] subclass.
- */
-class RootYieldDialogFragment : BaseDialogFragment() {
-    private var yieldConfirmed = false
+class RootYieldDialogFragment : BaseBottomSheetDialogFragment() {
 
     private var fieldYield: FieldYield? = null
+    private var yieldConfirmed = false
 
-    private var onDismissListener: IFieldYieldDismissListener? = null
+    private var onConfirmClick: ((FieldYield) -> Unit)? = null
+    private var onCancelClick: (() -> Unit)? = null
 
     private var _binding: FragmentRootYieldDialogBinding? = null
     private val binding get() = _binding!!
 
     companion object {
-        private val LOG_TAG: String = RootYieldDialogFragment::class.java.simpleName
+        const val FIELD_YIELD_DATA = "yield_data"
 
-        const val YIELD_DATA: String = "yield_data"
-        const val ARG_ITEM_ID: String = "root_yield_dialog_fragment"
+        fun newInstance(
+            selectedFieldYield: FieldYield,
+            onConfirmClick: (FieldYield) -> Unit,
+            onCancelClick: (() -> Unit)? = null,
+        ): RootYieldDialogFragment {
+            return RootYieldDialogFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(FIELD_YIELD_DATA, selectedFieldYield)
+                }
+                this.onConfirmClick = onConfirmClick
+                this.onCancelClick = onCancelClick
+            }
+        }
     }
 
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val bundle = this.arguments
-        val context = requireContext()
-        if (bundle != null) {
-            fieldYield = bundle.getParcelable(YIELD_DATA)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            fieldYield = it.getParcelable(FIELD_YIELD_DATA)
         }
-        val dialog = Dialog(context)
-        _binding = FragmentRootYieldDialogBinding.inflate(layoutInflater)
-        dialog.apply {
-            window!!.requestFeature(Window.FEATURE_NO_TITLE)
-            window!!.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-            )
-            window!!.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-            window!!.attributes.windowAnimations = R.style.DialogSlideAnimation
-
-            setContentView(binding.root)
-
-            // Prevent dismiss on outside touch
-            setCanceledOnTouchOutside(false)
-
-            // Optionally disable back button cancel as well
-            setCancelable(false)
-        }
-
-        if (fieldYield != null) {
-            val yieldLabel = fieldYield!!.fieldYieldLabel
-            val yieldAmountLabel = fieldYield!!.fieldYieldAmountLabel
-            val yieldDesc = fieldYield!!.fieldYieldDesc
-            val selectedTitle =
-                getString(R.string.lbl_you_expect_yield, yieldAmountLabel!!.lowercase(), yieldDesc)
-
-            displayImageOriginal(this.context, binding.imgRootYield, fieldYield!!.imageId)
-            binding.tvRootYieldTitle.text = selectedTitle
-        }
-
-
-        binding.btnCloseDialog.setOnClickListener(View.OnClickListener { view: View? ->
-            yieldConfirmed = false
-            dismiss()
-        })
-
-        binding.btnCancelYield.setOnClickListener(View.OnClickListener { view: View? ->
-            yieldConfirmed = false
-            dismiss()
-        })
-        //save the data
-        binding.btnConfirmYield.setOnClickListener(View.OnClickListener { v: View? ->
-            yieldConfirmed = true
-            dismiss()
-        })
-
         isCancelable = false
-        return dialog
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentRootYieldDialogBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        if (onDismissListener != null) {
-            onDismissListener!!.onDismiss(fieldYield!!, yieldConfirmed)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        fieldYield?.let { fy ->
+            val selectedTitle = getString(
+                R.string.lbl_you_expect_yield,
+                fy.fieldYieldAmountLabel?.lowercase(),
+                fy.fieldYieldDesc
+            )
+            binding.tvRootYieldTitle.text = selectedTitle
+            displayImageOriginal(context, binding.imgRootYield, fy.imageId)
+
+            binding.btnCancelYield.setOnClickListener {
+                onCancelClick?.invoke()
+                dismissWithConfirmation(false)
+            }
+
+            binding.btnConfirmYield.setOnClickListener {
+                onConfirmClick?.invoke(fy)
+                dismissWithConfirmation(true)
+            }
         }
     }
 
-    fun setOnDismissListener(dismissListener: IFieldYieldDismissListener?) {
-        this.onDismissListener = dismissListener
+    private fun dismissWithConfirmation(confirmed: Boolean) {
+        yieldConfirmed = confirmed
+        dismiss()
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
