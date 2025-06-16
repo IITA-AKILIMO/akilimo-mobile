@@ -1,93 +1,73 @@
 package com.akilimo.mobile.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ItemCardRecommendationImageBinding
 import com.akilimo.mobile.entities.FieldYield
+import com.akilimo.mobile.utils.TheItemAnimation
 import com.akilimo.mobile.utils.TheItemAnimation.animate
 import com.akilimo.mobile.utils.Tools.displayImageOriginal
 
 class FieldYieldAdapter(
-    private val ctx: Context,
-    private var items: List<FieldYield>,
-    private val animationType: Int,
-    private val showImage: Boolean = true
-) : RecyclerView.Adapter<FieldYieldAdapter.OriginalViewHolder>() {
+    private val animationType: Int = TheItemAnimation.SCALE,
+    private val showImage: Boolean = true,
+    private val isItemSelected: (FieldYield) -> Boolean,
+    private val onItemClick: (View, FieldYield, Int) -> Unit
+) : ListAdapter<FieldYield, FieldYieldAdapter.ViewHolder>(FieldYieldDiffCallback()) {
 
-    private var mOnItemClickListener: OnItemClickListener? = null
-    private var lastPosition = -1
-    private var rowIndex = -1
-    private val onAttach = true
-    private var selectedYieldAmount = 0.0
 
-    fun interface OnItemClickListener {
-        fun onItemClick(view: View?, fieldYield: FieldYield?, position: Int)
-    }
-
-    fun setOnItemClickListener(mItemClickListener: OnItemClickListener?) {
-        this.mOnItemClickListener = mItemClickListener
-    }
-
-    fun setItems(selectedYieldAmount: Double, items: List<FieldYield>) {
-        this.items = items
-        this.selectedYieldAmount = selectedYieldAmount
-        notifyDataSetChanged()
-    }
-
-    inner class OriginalViewHolder(val binding: ItemCardRecommendationImageBinding) :
+    class ViewHolder(val binding: ItemCardRecommendationImageBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OriginalViewHolder {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemCardRecommendationImageBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
-        return OriginalViewHolder(binding)
+        return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: OriginalViewHolder, position: Int) {
-        val fieldYield = items[position]
-        val currentYieldAmount = fieldYield.yieldAmount
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val context = holder.itemView.context
+        val fieldYield = getItem(position)
 
         with(holder.binding) {
+            recImgTitle.text = fieldYield.fieldYieldLabel
+
             if (showImage) {
-                displayImageOriginal(ctx, recImgImage, fieldYield.imageId)
+                displayImageOriginal(context, recImgImage, fieldYield.imageId)
                 recImgImageContainer.visibility = View.VISIBLE
             } else {
                 recImgImageContainer.visibility = View.GONE
             }
 
-            recImgTitle.text = fieldYield.fieldYieldLabel
-            recImgCard.setOnClickListener { view1 ->
-                mOnItemClickListener?.onItemClick(view1, fieldYield, position)
+            val isSelected = isItemSelected(fieldYield)
+            val colorRes = if (isSelected) R.color.green_100 else R.color.grey_3
+            recImgCard.setCardBackgroundColor(ContextCompat.getColor(context, colorRes))
+
+            recImgCard.setOnClickListener { view ->
+                onItemClick(view, fieldYield, position)
             }
 
-            val cardColor = if (rowIndex == position || currentYieldAmount == selectedYieldAmount) {
-                ContextCompat.getColor(ctx, R.color.green_100)
-            } else {
-                ContextCompat.getColor(ctx, R.color.grey_3)
-            }
-            recImgCard.setCardBackgroundColor(cardColor)
-
-
-            setAnimation(root, position)
+            animate(holder.itemView, position, animationType)
         }
     }
 
-    fun setActiveRowIndex(position: Int) {
-        rowIndex = position
-    }
+    private class FieldYieldDiffCallback : DiffUtil.ItemCallback<FieldYield>() {
+        override fun areItemsTheSame(oldItem: FieldYield, newItem: FieldYield): Boolean {
+            return oldItem.yieldAmount == newItem.yieldAmount
+        }
 
-    override fun getItemCount(): Int = items.size
-
-    private fun setAnimation(view: View, position: Int) {
-        if (position > lastPosition) {
-            animate(view, if (onAttach) position else -1, animationType)
-            lastPosition = position
+        override fun areContentsTheSame(oldItem: FieldYield, newItem: FieldYield): Boolean {
+            return oldItem == newItem
         }
     }
 }
