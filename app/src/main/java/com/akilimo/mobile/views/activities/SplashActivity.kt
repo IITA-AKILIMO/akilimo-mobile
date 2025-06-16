@@ -61,7 +61,8 @@ class SplashActivity(
     }
 
     private fun fallbackLaunch() {
-        startActivity(Intent(this, HomeStepperActivity::class.java))
+        val intent = Intent(this, HomeStepperActivity::class.java)
+        openActivity(intent)
         finish()
     }
 }
