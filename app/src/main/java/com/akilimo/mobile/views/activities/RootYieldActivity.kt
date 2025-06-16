@@ -1,7 +1,6 @@
 package com.akilimo.mobile.views.activities
 
 import android.os.Bundle
-import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.recyclerview.widget.GridLayoutManager
 import com.akilimo.mobile.R
@@ -11,8 +10,6 @@ import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.FieldYield
 import com.akilimo.mobile.entities.UseCase
 import com.akilimo.mobile.inherit.BindBaseActivity
-import com.akilimo.mobile.interfaces.IFieldYieldDismissListener
-import com.akilimo.mobile.utils.TheItemAnimation
 import com.akilimo.mobile.utils.Tools.dpToPx
 import com.akilimo.mobile.utils.enums.EnumAdviceTask
 import com.akilimo.mobile.utils.enums.EnumAreaUnit
@@ -25,6 +22,7 @@ import java.util.Locale
 class RootYieldActivity : BindBaseActivity<ActivityRootYieldBinding>() {
 
     private lateinit var yieldDataHolder: YieldDataHolder
+    private lateinit var mAdapter: FieldYieldAdapter
 
     companion object {
         private val yieldImages = arrayOf(
@@ -35,7 +33,6 @@ class RootYieldActivity : BindBaseActivity<ActivityRootYieldBinding>() {
             R.drawable.yield_more_than_30
         )
     }
-
 
     override fun inflateBinding() = ActivityRootYieldBinding.inflate(layoutInflater)
 
@@ -48,21 +45,60 @@ class RootYieldActivity : BindBaseActivity<ActivityRootYieldBinding>() {
             validate(false)
         }
 
-        onBackPressedDispatcher.addCallback(
-            this@RootYieldActivity,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    validate(true)
-                }
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                validate(true)
+            }
+        })
 
-            })
-
-
-        setupRecycler()
         setupTitle(yieldDataHolder.useCase, yieldDataHolder.areaUnit)
 
         val yieldOptions = generateYieldData(yieldDataHolder.areaUnit)
-        setupAdapter(yieldOptions)
+        var selectedIndex =
+            yieldOptions.indexOfFirst { it.yieldAmount == yieldDataHolder.selectedYieldAmount }
+        mAdapter = FieldYieldAdapter(
+            showImage = false,
+            isItemSelected = { it.yieldAmount == yieldDataHolder.selectedYieldAmount },
+        ) { _, fieldYield, position ->
+            val dialogFragment = RootYieldDialogFragment.newInstance(
+                selectedFieldYield = fieldYield,
+                onConfirmClick = {
+                    val updatedYield = (yieldDataHolder.savedYield ?: FieldYield()).apply {
+                        this.yieldAmount = fieldYield.yieldAmount
+                        this.fieldYieldLabel = fieldYield.fieldYieldLabel
+                    }
+
+                    database.fieldYieldDao().insert(updatedYield)
+
+                    val oldIndex = selectedIndex
+                    selectedIndex = position
+                    yieldDataHolder = yieldDataHolder.copy(
+                        savedYield = updatedYield,
+                        selectedYieldAmount = updatedYield.yieldAmount
+                    )
+
+                    // Refresh old and new selected items only
+//                    mAdapter.notifyItemChanged(oldIndex)
+//                    mAdapter.notifyItemChanged(selectedIndex, fieldYield)
+                    mAdapter.notifyDataSetChanged()
+                }
+            )
+
+            showDialogFragmentSafely(
+                supportFragmentManager,
+                dialogFragment,
+                "RootYieldDialogFragment"
+            )
+        }
+
+        binding.rootYieldRecycler.apply {
+            layoutManager = GridLayoutManager(this@RootYieldActivity, 1)
+            addItemDecoration(SpacingItemDecoration(1, dpToPx(this@RootYieldActivity, 3), true))
+            setHasFixedSize(true)
+            adapter = mAdapter
+        }
+
+        mAdapter.submitList(yieldOptions)
 
         binding.twoButtons.apply {
             btnFinish.text = getString(R.string.lbl_finish)
@@ -89,14 +125,6 @@ class RootYieldActivity : BindBaseActivity<ActivityRootYieldBinding>() {
         )
     }
 
-    private fun setupRecycler() {
-        binding.rootYieldRecycler.apply {
-            layoutManager = GridLayoutManager(this@RootYieldActivity, 1)
-            addItemDecoration(SpacingItemDecoration(1, dpToPx(this@RootYieldActivity, 3), true))
-            setHasFixedSize(true)
-        }
-    }
-
     private fun setupTitle(useCase: UseCase?, areaUnit: String) {
         val unitLabel = when (areaUnit.lowercase(Locale.getDefault())) {
             "ha", "hekta" -> getString(R.string.lbl_ha_yield)
@@ -110,67 +138,6 @@ class RootYieldActivity : BindBaseActivity<ActivityRootYieldBinding>() {
         }
 
         binding.rootYieldTitle.text = getString(titleRes, unitLabel)
-    }
-
-    private fun setupAdapter(items: List<FieldYield>) {
-        FieldYieldAdapter(
-            ctx = this,
-            items = items,
-            animationType = TheItemAnimation.FADE_IN,
-            showImage = false
-        ).also {
-            it.setItems(yieldDataHolder.selectedYieldAmount, items)
-            it.setOnItemClickListener(object : FieldYieldAdapter.OnItemClickListener {
-                override fun onItemClick(view: View?, fieldYield: FieldYield?, position: Int) {
-                    fieldYield?.let { yield ->
-                        showDialog(yield, items, position, it)
-                    }
-                }
-            })
-
-            binding.rootYieldRecycler.adapter = it
-        }
-    }
-
-    private fun showDialog(
-        fieldYield: FieldYield,
-        items: List<FieldYield>,
-        position: Int,
-        adapter: FieldYieldAdapter
-    ) {
-        val dialogFragment = RootYieldDialogFragment().apply {
-            arguments = Bundle().apply {
-                putParcelable(RootYieldDialogFragment.YIELD_DATA, fieldYield)
-            }
-
-            setOnDismissListener(object : IFieldYieldDismissListener {
-                override fun onDismiss(fieldYield: FieldYield, yieldConfirmed: Boolean) {
-                    if (yieldConfirmed) {
-                        val yieldLabel = fieldYield.fieldYieldLabel
-                        val selectedYieldAmount = fieldYield.yieldAmount
-
-                        val updatedYield = (yieldDataHolder.savedYield ?: FieldYield()).apply {
-                            this.yieldAmount = selectedYieldAmount
-                            this.fieldYieldLabel = yieldLabel
-                        }
-
-                        database.fieldYieldDao().insert(updatedYield)
-                        yieldDataHolder = yieldDataHolder.copy(
-                            savedYield = updatedYield,
-                            selectedYieldAmount = selectedYieldAmount
-                        )
-
-                        adapter.setActiveRowIndex(position)
-                    }
-                    adapter.setItems(yieldDataHolder.selectedYieldAmount, items)
-                }
-            })
-        }
-        showDialogFragmentSafely(
-            supportFragmentManager,
-            dialogFragment,
-            RootYieldDialogFragment.ARG_ITEM_ID
-        )
     }
 
     override fun validate(backPressed: Boolean) {
@@ -192,7 +159,6 @@ class RootYieldActivity : BindBaseActivity<ActivityRootYieldBinding>() {
 
     private fun generateYieldData(areaUnit: String): List<FieldYield> {
         val unitEnum = EnumAreaUnit.valueOf(areaUnit)
-
         val yieldLabels = unitEnum.yieldLabelIds()
 
         val yieldDefinitions = listOf(
@@ -224,9 +190,9 @@ class RootYieldActivity : BindBaseActivity<ActivityRootYieldBinding>() {
         return FieldYield().apply {
             this.imageId = imageId
             yieldAmount = fieldYieldAmount
-            fieldYieldLabel = getString(yieldLabel)
-            this.fieldYieldAmountLabel = getString(fieldYieldAmountLabel)
-            this.fieldYieldDesc = getString(fieldYieldDesc)
+            yieldLabel.let { this.fieldYieldLabel = getString(it) }
+            fieldYieldAmountLabel.let { this.fieldYieldAmountLabel = getString(it) }
+            fieldYieldDesc.let { this.fieldYieldDesc = getString(it) }
         }
     }
 
@@ -239,4 +205,3 @@ class RootYieldActivity : BindBaseActivity<ActivityRootYieldBinding>() {
         val selectedYieldAmount: Double
     )
 }
-
