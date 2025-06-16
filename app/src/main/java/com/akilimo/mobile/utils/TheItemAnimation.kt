@@ -11,6 +11,8 @@ object TheItemAnimation {
     const val FADE_IN = 2
     const val LEFT_RIGHT = 3
     const val RIGHT_LEFT = 4
+    const val SCALE = 5
+    const val TOP_DOWN = 6
 
     private const val DEFAULT_TRANSLATION_Y = 500f
     private const val LARGE_TRANSLATION_Y = 800f
@@ -18,6 +20,7 @@ object TheItemAnimation {
 
     private const val DURATION_BOTTOM_UP = 150L
     private const val DURATION_FADE_IN = 500L
+    private const val DURATION_SCALE = 500L
     private const val DURATION_LEFT_RIGHT = 150L
     private const val DURATION_RIGHT_LEFT = 150L
 
@@ -25,8 +28,29 @@ object TheItemAnimation {
         when (type) {
             BOTTOM_UP -> animateBottomUp(view, position)
             FADE_IN -> animateFadeIn(view, position)
+            SCALE -> animateScale(view, position)
+            TOP_DOWN -> animateTopDown(view, position)
             LEFT_RIGHT -> animateSide(view, position, fromLeft = true)
             RIGHT_LEFT -> animateSide(view, position, fromLeft = false)
+        }
+    }
+
+    private fun animateScale(view: View, position: Int) {
+        val isNotFirst = position == -1
+        val effectivePosition = position + 1
+
+        view.scaleX = 0.8f
+        view.scaleY = 0.8f
+        view.alpha = 0f
+
+        val scaleX = ObjectAnimator.ofFloat(view, View.SCALE_X, 1f)
+        val scaleY = ObjectAnimator.ofFloat(view, View.SCALE_Y, 1f)
+        val alpha = ObjectAnimator.ofFloat(view, View.ALPHA, 1f)
+
+        AnimatorSet().apply {
+            playTogether(scaleX, scaleY, alpha)
+            duration = if (isNotFirst) 3 else 1 * DURATION_SCALE
+            start()
         }
     }
 
@@ -90,6 +114,21 @@ object TheItemAnimation {
 
         AnimatorSet().apply {
             playTogether(animatorTranslateX, animatorAlpha)
+            start()
+        }
+    }
+
+    private fun animateTopDown(view: View, position: Int) {
+        view.translationY = -DEFAULT_TRANSLATION_Y
+        view.alpha = 0f
+
+        val translateY = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, 0f)
+        val alpha = ObjectAnimator.ofFloat(view, View.ALPHA, 1f)
+
+        AnimatorSet().apply {
+            playTogether(translateY, alpha)
+            duration = 250
+            startDelay = position * 50L
             start()
         }
     }
