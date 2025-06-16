@@ -23,12 +23,12 @@ import com.akilimo.mobile.views.fragments.AreaUnitFragment
 import com.akilimo.mobile.views.fragments.BioDataFragment
 import com.akilimo.mobile.views.fragments.CountryFragment
 import com.akilimo.mobile.views.fragments.FieldSizeFragment
-import com.akilimo.mobile.views.fragments.InfoFragment
 import com.akilimo.mobile.views.fragments.InvestmentPrefFragment
 import com.akilimo.mobile.views.fragments.LocationFragment
 import com.akilimo.mobile.views.fragments.PlantingDateFragment
 import com.akilimo.mobile.views.fragments.PrivacyStatementFragment
 import com.akilimo.mobile.views.fragments.SummaryFragment
+import com.akilimo.mobile.views.fragments.TermsFragment
 import com.akilimo.mobile.views.fragments.TillageOperationFragment
 import com.akilimo.mobile.views.fragments.WelcomeFragment
 import com.stepstone.stepper.StepperLayout
@@ -121,24 +121,24 @@ class HomeStepperActivity : BindBaseActivity<ActivityHomeStepperBinding>() {
     private fun applyRemoteConfigs(configMap: Map<String, String>) {
         with(sessionManager) {
             if (BuildConfig.DEBUG) {
-                configMap[KEY_API_DEV]?.let { setAkilimoEndpoint(it) }
+                configMap[KEY_API_DEV]?.let { akilimoEndpoint = it }
             } else {
-                configMap[KEY_API]?.let { setAkilimoEndpoint(it) }
+                configMap[KEY_API]?.let { akilimoEndpoint = it }
             }
 
-            configMap[KEY_LOCATION_IQ]?.let { setLocationIqToken(it) }
-            configMap[KEY_MAPBOX]?.let { setMapBoxApiKey(it) }
-            configMap[KEY_PRIVACY]?.let { setTermsLink(it) }
-            configMap[KEY_REFRESH_KEY]?.let { setApiRefreshToken(it) }
-            configMap[KEY_API_TOKEN]?.let { setApiToken(it) }
+            configMap[KEY_LOCATION_IQ]?.let { locationIqToken = it }
+            configMap[KEY_MAPBOX]?.let { mapBoxApiKey = it }
+            configMap[KEY_PRIVACY]?.let { privacyPolicyLink = it }
+            configMap[KEY_REFRESH_KEY]?.let { apiRefreshToken = it }
+            configMap[KEY_API_TOKEN]?.let { apiToken = it }
         }
     }
 
     private fun createStepperFragments(): List<androidx.fragment.app.Fragment> = buildList {
         add(WelcomeFragment.newInstance())
 
-        if (!sessionManager.getDisclaimerRead()) add(InfoFragment.newInstance())
-        if (!sessionManager.getTermsAccepted()) add(PrivacyStatementFragment.newInstance())
+        if (!sessionManager.termsRead) add(TermsFragment.newInstance())
+        if (!sessionManager.privacyPolicyRead) add(PrivacyStatementFragment.newInstance())
 
         add(BioDataFragment.newInstance())
         add(CountryFragment.newInstance())

@@ -56,7 +56,7 @@ class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
         errorMessage = getString(R.string.lbl_location_error)
-        mapBoxToken = sessionManager.getMapBoxApiKey()
+        mapBoxToken = preferenceManager.mapBoxApiKey
 
         setupFarmNameDialog()
         setupLocationButtons()

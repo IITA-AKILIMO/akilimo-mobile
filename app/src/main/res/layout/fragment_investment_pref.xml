@@ -11,14 +11,13 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/img_risk_attitude"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="@dimen/dimen_250"
+        android:layout_height="@dimen/dimen_250"
         android:layout_marginTop="@dimen/spacing_medium"
         android:contentDescription="@string/app_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.MaterialComponents.MediumComponent"
         app:srcCompat="@drawable/ic_risk_att" />
 
 
@@ -53,6 +52,6 @@
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_risk_attitude_subtitle"/>
+        app:layout_constraintTop_toBottomOf="@id/txt_risk_attitude_subtitle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

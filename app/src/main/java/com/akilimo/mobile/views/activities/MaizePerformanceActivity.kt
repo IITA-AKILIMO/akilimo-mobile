@@ -2,11 +2,7 @@ package com.akilimo.mobile.views.activities
 
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
-import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.CropPerformanceAdapter
 import com.akilimo.mobile.databinding.ActivityMaizePerformanceActivityBinding
@@ -19,23 +15,13 @@ import com.akilimo.mobile.utils.Tools.dpToPx
 import com.akilimo.mobile.utils.enums.EnumAdviceTask
 import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.MaizePerformanceDialogFragment
-import com.akilimo.mobile.views.fragments.dialog.RootYieldDialogFragment
 import com.akilimo.mobile.widget.SpacingItemDecoration
 
 class MaizePerformanceActivity : BaseActivity() {
-    var activityTitle: String? = null
     var poorSoil: String? = null
     var richSoil: String? = null
 
-    var toolbar: Toolbar? = null
-    var recyclerView: RecyclerView? = null
-    var viewPos: View? = null
-
-    var btnFinish: AppCompatButton? = null
-    var btnCancel: AppCompatButton? = null
-    var exceptionTitle: TextView? = null
-
-    private var mAdapter: CropPerformanceAdapter? = null
+    private lateinit var mAdapter: CropPerformanceAdapter
 
     private var _binding: ActivityMaizePerformanceActivityBinding? = null
     private val binding get() = _binding!!
@@ -58,13 +44,6 @@ class MaizePerformanceActivity : BaseActivity() {
         )
         setContentView(binding.root)
 
-        toolbar = binding.toolbar
-        recyclerView = binding.rootYieldRecycler
-        viewPos = binding.coordinatorLayout
-
-        exceptionTitle = binding.exceptionTitle
-        btnFinish = binding.twoButtons.btnFinish
-        btnCancel = binding.twoButtons.btnCancel
 
         val cropPerformanceRecord = database.maizePerformanceDao().findOne()
         if (cropPerformanceRecord != null) {
@@ -80,11 +59,8 @@ class MaizePerformanceActivity : BaseActivity() {
         richSoil = getString(R.string.lbl_maize_performance_rich)
 
 
-        btnFinish!!.setOnClickListener { view: View? -> validate(false) }
-        btnCancel!!.setOnClickListener { view: View? -> closeActivity(false) }
-        recyclerView!!.layoutManager = GridLayoutManager(this, 1)
-        recyclerView!!.addItemDecoration(SpacingItemDecoration(1, dpToPx(this, 3), true))
-        recyclerView!!.setHasFixedSize(true)
+        binding.twoButtons.btnFinish.setOnClickListener { _: View? -> validate(false) }
+        binding.twoButtons.btnCancel.setOnClickListener { _: View? -> closeActivity(false) }
 
         val items: MutableList<CropPerformance> = ArrayList()
 
@@ -134,23 +110,26 @@ class MaizePerformanceActivity : BaseActivity() {
             )
         )
 
-        mAdapter =
-            CropPerformanceAdapter(this@MaizePerformanceActivity, items, TheItemAnimation.FADE_IN)
-        recyclerView!!.adapter = mAdapter
-        mAdapter!!.setItems(selectedPerformanceScore, items)
+        binding.rootYieldRecycler.apply {
+            layoutManager = GridLayoutManager(this@MaizePerformanceActivity, 1)
+            addItemDecoration(
+                SpacingItemDecoration(
+                    1,
+                    dpToPx(this@MaizePerformanceActivity, 3),
+                    true
+                )
+            )
+            setHasFixedSize(true)
+            adapter = mAdapter
+        }
 
-        mAdapter!!.setOnItemClickListener(object : CropPerformanceAdapter.OnItemClickListener {
-            override fun onItemClick(
-                view: View?,
-                clickedCropPerformance: CropPerformance?,
-                position: Int
-            ) {
+        mAdapter =
+            CropPerformanceAdapter(TheItemAnimation.FADE_IN) { _, clickedCropPerformance, position ->
                 val arguments = Bundle()
                 arguments.putParcelable(
                     MaizePerformanceDialogFragment.PERFORMANCE_DATA,
                     clickedCropPerformance
                 )
-
                 val rootYieldDialogFragment = MaizePerformanceDialogFragment()
                 rootYieldDialogFragment.arguments = arguments
                 rootYieldDialogFragment.setOnDismissListener(object :
@@ -170,22 +149,21 @@ class MaizePerformanceActivity : BaseActivity() {
 
                             database.maizePerformanceDao().insert(savedCropPerformance)
 
-                            mAdapter!!.setActiveRowIndex(position)
-                            mAdapter!!.setItems(selectedPerformanceScore, items, position)
+                            mAdapter.setActiveIndex(position)
+                            mAdapter.updateItems(selectedPerformanceScore, items, position)
                         }
                     }
 
                 })
 
-
                 showDialogFragmentSafely(
                     fragmentManager = supportFragmentManager,
                     dialogFragment = rootYieldDialogFragment,
-                    tag = RootYieldDialogFragment.ARG_ITEM_ID
+                    tag = "RootYieldDialogFragment"
                 )
-            }
 
-        })
+            }
+        mAdapter.updateItems(selectedPerformanceScore, items)
     }
 
     @Deprecated("Deprecated in Java")

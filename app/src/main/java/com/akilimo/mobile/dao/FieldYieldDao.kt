@@ -5,7 +5,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
 import com.akilimo.mobile.entities.FieldYield
 
 @Dao
@@ -19,9 +18,6 @@ interface FieldYieldDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(fieldYield: FieldYield)
-
-    @Update
-    fun update(fieldYield: FieldYield?)
 
     @Delete
     fun delete(fieldYield: FieldYield?)

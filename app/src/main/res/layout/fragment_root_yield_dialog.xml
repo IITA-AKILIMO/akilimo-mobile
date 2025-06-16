@@ -2,99 +2,77 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="@dimen/spacing_small">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/close_button"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="@string/lbl_close"
-        android:theme="@style/Button.Accent" />
-
+    <!-- Dialog Container -->
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/top_layout"
+        android:id="@+id/layout_root_yield_dialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="@dimen/spacing_medium"
-        android:layout_marginRight="@dimen/spacing_medium"
-        android:background="@drawable/custom_dialog_bg"
+        android:layout_marginHorizontal="@dimen/spacing_medium"
+        android:layout_marginTop="@dimen/spacing_small"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:padding="@dimen/padding"
         android:paddingBottom="@dimen/spacing_medium">
 
-
-        <TextView
-            android:id="@+id/lblFragmentTitle"
-            android:layout_width="match_parent"
+        <!-- Title -->
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_root_yield_title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_large"
-            android:layout_marginEnd="@dimen/spacing_xlarge"
-
             android:padding="@dimen/spacing_medium"
-            android:text="@string/title_activity_cassava_root_yield" />
+            android:text="@string/title_activity_cassava_root_yield"
+            android:textAlignment="center"
+            android:textAppearance="?attr/textAppearanceHeadline6" />
 
-
+        <!-- Image Container -->
         <RelativeLayout
-            android:layout_width="170dp"
-            android:layout_height="200dp"
+            android:id="@+id/layout_yield_image_container"
+            android:layout_width="@dimen/dimen_180"
+            android:layout_height="@dimen/dimen_200"
             android:layout_marginTop="@dimen/spacing_small">
 
             <ImageView
-                android:id="@+id/rootYieldImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
+                android:id="@+id/img_root_yield"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
                 android:contentDescription="@string/title_activity_cassava_root_yield"
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/yield_7point5_to_15" />
-
         </RelativeLayout>
 
-
+        <!-- Action Buttons -->
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="fill_parent"
+            android:id="@+id/layout_root_yield_actions"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_small"
             android:orientation="horizontal"
             android:padding="@dimen/padding">
 
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/confirm_button"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_confirm_yield"
+                style="@style/AppMaterialButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_medium"
-                android:layout_marginTop="@dimen/spacing_medium"
-                android:layout_marginRight="@dimen/spacing_medium"
-                android:adjustViewBounds="true"
+                android:layout_marginHorizontal="@dimen/spacing_medium"
+                android:text="@string/lbl_confirm" />
 
-                android:text="@string/lbl_confirm"
-                android:textAllCaps="false"
-                android:theme="@style/Button.Primary" />
-
-            <Space
+            <androidx.legacy.widget.Space
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/cancel_button"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_cancel_yield"
+                style="@style/AppMaterialButton.Outline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_medium"
-                android:layout_marginTop="@dimen/spacing_medium"
-                android:layout_marginRight="@dimen/spacing_medium"
-
-                android:text="@string/lbl_cancel"
-                android:textAllCaps="false" />
-
+                android:layout_marginHorizontal="@dimen/spacing_medium"
+                android:text="@string/lbl_cancel" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

@@ -385,7 +385,7 @@
     <string name="lbl_already_planted_text">Bigaragara ko umaze gutera, ntushobora rero kugira icyo wongeraho</string>
     <string name="lbl_agree_to_terms">Nemeye amategeko n\'amabwiriza ngenderwaho</string>
     <string name="lbl_agree_to_disclaimer">Nyamuneka wemeze ko wasomye kandi wumvise neza iri tangazo ry’uruhushya.</string>
-    <string name="lbl_accept_terms_prompt">Emera amategeko n\'amabwiriza mbere yo gukomeza</string>
+    <string name="lbl_read_full_policy_prompt">Manuka kugeza hepfo hanyuma wemere amabwiriza n’amategeko mbere yo gukomeza</string>
     <string name="lbl_restart_app_prompt">Ongera utangire porogaramu kugirango ukoreshe ibisobanuro kuri buto ikoreshwa?</string>
     <string name="lbl_optional">(N\'ubushake bwawe)</string>
     <string name="lbl_country_supported">Kugeza ubu AKILIMO itanga inama ku mirima iherereye mu Rwanda, Nijeriya, Ghana na Tanzaniya. Agace kawe kari hirya y\'ahantu AKILIMO itanga inama.</string>
