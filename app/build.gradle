@@ -233,8 +233,7 @@ dependencies {
 
     //If you are using Kotlin, replace annotationProcessor with kapt.
     kapt 'androidx.room:room-compiler:2.4.2'
-    kapt 'com.github.bumptech.glide:compiler:4.11.0'
-    kapt 'com.jakewharton:butterknife-compiler:10.2.1'
+    kapt 'com.github.bumptech.glide:compiler:4.16.0'
 
     //migrated to KSP
     kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.15.2'
