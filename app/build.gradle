@@ -78,14 +78,6 @@ android {
 
         disable 'MissingTranslation'
     }
-    lintOptions {
-        // Specify the XML report file name and location
-        xmlReport = true
-        xmlOutput = layout.buildDirectory.file("reports/lint-results.xml").get().asFile
-
-        // Optional: disable the HTML report if you want
-        htmlReport = true
-    }
 
     buildTypes {
         release {
