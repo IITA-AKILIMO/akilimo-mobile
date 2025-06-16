@@ -9,11 +9,11 @@ import com.akilimo.mobile.databinding.FragmentInfoBinding
 import com.akilimo.mobile.inherit.BindBaseStepFragment
 import com.stepstone.stepper.VerificationError
 
-class InfoFragment : BindBaseStepFragment<FragmentInfoBinding>() {
+class TermsFragment : BindBaseStepFragment<FragmentInfoBinding>() {
 
     companion object {
-        fun newInstance(): InfoFragment {
-            return InfoFragment()
+        fun newInstance(): TermsFragment {
+            return TermsFragment()
         }
     }
 
@@ -25,12 +25,12 @@ class InfoFragment : BindBaseStepFragment<FragmentInfoBinding>() {
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
         binding.chkAgreeTerms.setOnCheckedChangeListener { _: CompoundButton?, checked: Boolean ->
-            sessionManager.setDisclaimerRead(checked)
+            preferenceManager.termsRead = checked
         }
     }
 
     override fun verifyStep(): VerificationError? {
-        if (!sessionManager.getDisclaimerRead()) {
+        if (!preferenceManager.termsRead) {
             return VerificationError(getString(R.string.lbl_agree_to_disclaimer))
         }
         return null
