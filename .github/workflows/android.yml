@@ -127,6 +127,16 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      - name: Cache APK & AAB outputs
+        uses: actions/cache@v4
+        with:
+          path: |
+            app/build/outputs/apk/release
+            app/build/outputs/bundle/release
+          key: build-artifacts-${{ runner.os }}-${{ hashFiles('**/*.gradle', '**/build.gradle.kts', 'gradle.properties', 'app/src/main/**') }}
+          restore-keys: |
+            build-artifacts-${{ runner.os }}-
+
       - name: Generate android AAB and APK
         run: ./gradlew bundleRelease assembleRelease -x test
 
