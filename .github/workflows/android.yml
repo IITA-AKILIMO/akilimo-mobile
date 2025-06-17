@@ -145,7 +145,7 @@ jobs:
       - name: Sign APK
         run: jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks \
           -storepass "${{ secrets.KEYSTORE_PASSWORD }}" -keypass "${{ secrets.KEY_PASSWORD }}" \
-          -signedjar $GITHUB_WORKSPACE/release/app-release-signed.apk  app/build/outputs/apk/release/app-release-unsigned.apk "${{ secrets.KEY_ALIAS }}"
+          app/build/outputs/apk/release/app-release-unsigned.apk "${{ secrets.KEY_ALIAS }}" -signedjar $GITHUB_WORKSPACE/release/app-release-signed.apk
 
       - name: Copy release tag file
         run: cp $LATEST_TAG_FILE release
