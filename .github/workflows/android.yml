@@ -131,8 +131,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            app/build/outputs/apk/release
-            app/build/outputs/bundle/release
+            app/build/outputs/apk/release/app-release-unsigned.apk
+            app/build/outputs/bundle/release/app-release.aab
           key: build-artifacts-${{ runner.os }}-${{ hashFiles('**/*.gradle', '**/build.gradle.kts', 'gradle.properties', 'app/src/main/**') }}
           restore-keys: |
             build-artifacts-${{ runner.os }}-
