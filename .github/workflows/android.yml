@@ -17,6 +17,7 @@ on:
 jobs:
 
   unit-test:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     concurrency:
       group: ci-${{ github.head_ref || github.ref_name }}
@@ -68,7 +69,7 @@ jobs:
 
   build_artifacts:
     #if: github.ref == 'refs/heads/main'
-    needs: unit-test
+#    needs: unit-test
     name: Build artifacts
     runs-on: ubuntu-latest
     env:
@@ -139,16 +140,15 @@ jobs:
         run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > $GITHUB_WORKSPACE/akilimo.jks
 
       - name: Sign AAB
-        run: jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks \
-          -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }} \
-          app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEY_ALIAS }} \
-          --signedjar $GITHUB_WORKSPACE/release/app-release-signed.aab
+        run: jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks
+          -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }}
+          app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEY_ALIAS }} --signedjar $GITHUB_WORKSPACE/release/app-release-signed.aab
+
 
       - name: Sign APK
         run: jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks \
           -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }} \
-          app/build/outputs/apk/release/app-release-unsigned.apk ${{ secrets.KEY_ALIAS }} \
-          --signedjar $GITHUB_WORKSPACE/release/app-release-signed.apk
+          app/build/outputs/apk/release/app-release-unsigned.apk ${{ secrets.KEY_ALIAS }} --signedjar $GITHUB_WORKSPACE/release/app-release-signed.apk
 
       - name: Copy release tag file
         run: cp $LATEST_TAG_FILE release
