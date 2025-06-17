@@ -45,16 +45,15 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      # Enhanced Gradle caching for unit tests
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-read-only: false
+
       - name: Run Unit tests
         run: ./gradlew testDebugUnitTest
         continue-on-error: false
-
-      - name: Cache Gradle packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: ${{ runner.os }}-gradle
 
       - name: Report
         uses: FlickerSoul/android-test-report-actions@v1.2
@@ -127,18 +126,84 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      # Enhanced Gradle caching with build cache
+      - name: Setup Gradle with caching
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-read-only: false
+          gradle-home-cache-cleanup: true
+
+      # Cache Android build components
+      - name: Cache Android build components
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.android/build-cache
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: android-build-${{ runner.os }}-${{ hashFiles('**/build.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            android-build-${{ runner.os }}-
+
+      # Multi-layer caching strategy for build outputs
+      - name: Cache build intermediates
+        uses: actions/cache@v4
+        with:
+          path: |
+            app/build/intermediates
+            app/build/tmp
+            build/tmp
+          key: build-intermediates-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle.properties', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', 'app/src/main/res/**', 'app/src/main/AndroidManifest.xml') }}
+          restore-keys: |
+            build-intermediates-${{ runner.os }}-
+
+      # Cache final APK & AAB outputs with more specific key
       - name: Cache APK & AAB outputs
         uses: actions/cache@v4
         with:
           path: |
             app/build/outputs/apk/release/app-release-unsigned.apk
             app/build/outputs/bundle/release/app-release.aab
-          key: build-artifacts-${{ runner.os }}-${{ hashFiles('**/*.gradle', '**/build.gradle.kts', 'gradle.properties', 'app/src/main/**') }}
+          key: build-artifacts-${{ runner.os }}-${{ env.VERSION_CODE }}-${{ hashFiles('**/*.gradle*', '**/gradle.properties', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', 'app/src/main/res/**', 'app/src/main/AndroidManifest.xml', 'app/proguard-rules.pro') }}
           restore-keys: |
+            build-artifacts-${{ runner.os }}-${{ env.VERSION_CODE }}-
             build-artifacts-${{ runner.os }}-
 
+      # Check if cached artifacts exist and are valid
+      - name: Check cached artifacts
+        id: check_cache
+        run: |
+          if [ -f "app/build/outputs/apk/release/app-release-unsigned.apk" ] && [ -f "app/build/outputs/bundle/release/app-release.aab" ]; then
+            echo "cached_artifacts_exist=true" >> $GITHUB_OUTPUT
+            echo "✅ Found cached APK and AAB artifacts"
+            ls -la app/build/outputs/apk/release/app-release-unsigned.apk
+            ls -la app/build/outputs/bundle/release/app-release.aab
+          else
+            echo "cached_artifacts_exist=false" >> $GITHUB_OUTPUT
+            echo "❌ Cached artifacts not found, will build from scratch"
+          fi
+
+      # Only build if cached artifacts don't exist or are invalid
       - name: Generate android AAB and APK
-        run: ./gradlew bundleRelease assembleRelease -x test
+        if: steps.check_cache.outputs.cached_artifacts_exist != 'true'
+        run: |
+          echo "🔨 Building APK and AAB from source..."
+          ./gradlew bundleRelease assembleRelease -x test
+
+      # Verify build outputs exist
+      - name: Verify build outputs
+        run: |
+          if [ ! -f "app/build/outputs/apk/release/app-release-unsigned.apk" ]; then
+            echo "❌ APK not found after build!"
+            exit 1
+          fi
+          if [ ! -f "app/build/outputs/bundle/release/app-release.aab" ]; then
+            echo "❌ AAB not found after build!"
+            exit 1
+          fi
+          echo "✅ Build artifacts verified"
+          echo "APK size: $(du -h app/build/outputs/apk/release/app-release-unsigned.apk | cut -f1)"
+          echo "AAB size: $(du -h app/build/outputs/bundle/release/app-release.aab | cut -f1)"
 
       - name: Create release folder
         run: mkdir -p $GITHUB_WORKSPACE/release
@@ -150,7 +215,6 @@ jobs:
         run: jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks
           -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }}
           app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEY_ALIAS }} --signedjar $GITHUB_WORKSPACE/release/app-release-signed.aab
-
 
       - name: Sign APK
         run: jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks \
