@@ -180,9 +180,20 @@ jobs:
       - name: Reverse JKS file
         run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > $GITHUB_WORKSPACE/akilimo.jks
 
-      - name: Sign app APK
+      - name: Sign AAB
         uses: ilharp/sign-android-release@v2
         # ID used to access action output
+        id: sign_aab
+        with:
+          releaseDir: app/build/outputs/bundle/release
+          signingKey: ${{ secrets.KEYSTORE_FILE }}
+          keyAlias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+          buildToolsVersion: 36.0.0
+
+      - name: Sign APK
+        uses: ilharp/sign-android-release@v2
         id: sign_apk
         with:
           releaseDir: app/build/outputs/apk/release
@@ -191,15 +202,6 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
           buildToolsVersion: 36.0.0
-      #      - name: Sign AAB
-      #        run: jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks
-      #          -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }}
-      #          app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEY_ALIAS }} --signedjar $GITHUB_WORKSPACE/release/app-release-signed.aab
-      #
-      #      - name: Sign APK
-      #        run: jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks \
-      #          -storepass "${{ secrets.KEYSTORE_PASSWORD }}" -keypass "${{ secrets.KEY_PASSWORD }}" \
-      #          app/build/outputs/apk/release/app-release-unsigned.apk "${{ secrets.KEY_ALIAS }}" --signedjar $GITHUB_WORKSPACE/release/app-release-signed.apk
 
       - name: Copy release tag file
         run: cp $LATEST_TAG_FILE release
