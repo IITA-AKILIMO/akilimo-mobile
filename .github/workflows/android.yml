@@ -126,37 +126,6 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      # Enhanced Gradle caching with build cache
-      - name: Setup Gradle with caching
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          cache-read-only: false
-          gradle-home-cache-cleanup: true
-
-      # Cache Android build components
-      - name: Cache Android build components
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.android/build-cache
-            ~/.android/avd/*
-            ~/.android/adb*
-          key: android-build-${{ runner.os }}-${{ hashFiles('**/build.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            android-build-${{ runner.os }}-
-
-      # Multi-layer caching strategy for build outputs
-      - name: Cache build intermediates
-        uses: actions/cache@v4
-        with:
-          path: |
-            app/build/intermediates
-            app/build/tmp
-            build/tmp
-          key: build-intermediates-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle.properties', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', 'app/src/main/res/**', 'app/src/main/AndroidManifest.xml') }}
-          restore-keys: |
-            build-intermediates-${{ runner.os }}-
-
       # Cache final APK & AAB outputs with more specific key
       - name: Cache APK & AAB outputs
         uses: actions/cache@v4
@@ -211,15 +180,25 @@ jobs:
       - name: Reverse JKS file
         run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > $GITHUB_WORKSPACE/akilimo.jks
 
-      - name: Sign AAB
-        run: jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks
-          -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }}
-          app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEY_ALIAS }} --signedjar $GITHUB_WORKSPACE/release/app-release-signed.aab
-
-      - name: Sign APK
-        run: jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks \
-          -storepass "${{ secrets.KEYSTORE_PASSWORD }}" -keypass "${{ secrets.KEY_PASSWORD }}" \
-          app/build/outputs/apk/release/app-release-unsigned.apk "${{ secrets.KEY_ALIAS }}" --signedjar $GITHUB_WORKSPACE/release/app-release-signed.apk
+      - name: Sign app APK
+        uses: r0adkll/sign-android-release@v1
+        # ID used to access action output
+        id: sign_apk
+        with:
+          releaseDirectory: app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.KEYSTORE_FILE }}
+          alias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+      #      - name: Sign AAB
+      #        run: jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks
+      #          -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }}
+      #          app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEY_ALIAS }} --signedjar $GITHUB_WORKSPACE/release/app-release-signed.aab
+      #
+      #      - name: Sign APK
+      #        run: jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks \
+      #          -storepass "${{ secrets.KEYSTORE_PASSWORD }}" -keypass "${{ secrets.KEY_PASSWORD }}" \
+      #          app/build/outputs/apk/release/app-release-unsigned.apk "${{ secrets.KEY_ALIAS }}" --signedjar $GITHUB_WORKSPACE/release/app-release-signed.apk
 
       - name: Copy release tag file
         run: cp $LATEST_TAG_FILE release
