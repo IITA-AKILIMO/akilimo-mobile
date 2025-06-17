@@ -60,6 +60,21 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+//    applicationVariants.configureEach { variant ->
+//        variant.outputs.configureEach { output ->
+//            def appName = "Akilimo"
+//            def variantName = variant.name.capitalize()
+//            def versionName = variant.versionName
+//            def versionCode = variant.versionCode
+//            def timestamp = new Date().format("yyyyMMdd_HHmm")
+//
+//            if (output.outputFileName.endsWith(".apk")) {
+//                output.outputFileName = "${appName}_${variantName}_v${versionName}_${versionCode}_${timestamp}.apk"
+//            } else if (output.outputFileName.endsWith(".aab")) {
+//                output.outputFileName = "${appName}_${variantName}_v${versionName}_${versionCode}_${timestamp}.aab"
+//            }
+//        }
+//    }
 
     bundle {
         language {
