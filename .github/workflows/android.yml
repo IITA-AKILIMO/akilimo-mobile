@@ -121,7 +121,7 @@ jobs:
         run: echo "RELEASE_VERSION=$(cat $LATEST_TAG_FILE)" >> $GITHUB_ENV
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
+        uses: android-actions/setup-android@v3
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
@@ -181,7 +181,7 @@ jobs:
         run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > $GITHUB_WORKSPACE/akilimo.jks
 
       - name: Sign app APK
-        uses: r0adkll/sign-android-release@v1
+        uses: ilharp/sign-android-release@v2
         # ID used to access action output
         id: sign_apk
         with:
@@ -190,6 +190,7 @@ jobs:
           alias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
+          buildToolsVersion: 36.0.0
       #      - name: Sign AAB
       #        run: jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks
       #          -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }}
