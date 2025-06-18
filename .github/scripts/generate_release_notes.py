@@ -1,74 +1,86 @@
-import re
 import os
+import subprocess
+import re
 
-# Define the paths
-changelog_path = 'CHANGELOG.md'
+# Define output paths
 whatsnew_en_path = 'distribution/whatsnew/whatsnew-en-GB'
 whatsnew_sw_path = 'distribution/whatsnew/whatsnew-sw'
 
-# Read the CHANGELOG.md file
-with open(changelog_path, 'r', encoding='utf-8') as f:
-    changelog_content = f.read()
+# Get the latest Git tag (or fallback to initial commit)
+try:
+    latest_tag = subprocess.check_output(['git', 'describe', '--tags', '--abbrev=0'], text=True).strip()
+except subprocess.CalledProcessError:
+    print("No tags found. Using entire commit history.")
+    latest_tag = None
 
-# Find the latest version section
-# The pattern looks for a version header like ## [24.2.0] - 2023-09-14
-version_pattern = r'<a name="([^"]+)"></a>\n## \[\1\] - (\d{4}-\d{2}-\d{2})(.*?)(?=<a name="|$)'
-matches = re.findall(version_pattern, changelog_content, re.DOTALL)
+# Get commit messages since the last tag
+git_log_cmd = ['git', 'log', '--pretty=format:%s']
+if latest_tag:
+    git_log_cmd.insert(2, f'{latest_tag}..HEAD')
 
-if not matches:
-    print("No version information found in CHANGELOG.md")
-    exit(1)
+commit_messages = subprocess.check_output(git_log_cmd, text=True).strip().splitlines()
 
-# Get the latest version (first match)
-latest_version, release_date, content = matches[0]
-print(f"Found latest version: {latest_version} released on {release_date}")
+# Prepare user-friendly mappings
+friendly_messages = {
+    "feature": "New feature added",
+    "feat": "New feature added",
+    "fix": "Bug fixes and performance improvements",
+    "bug": "Bug fixes and performance improvements",
+    "refactor": "App improvements and optimizations",
+    "ui": "Improved design and usability",
+    "perf": "Faster and more reliable performance",
+    "update": "App updated with latest changes",
+}
 
-# Extract sections from the content
-sections = {}
-current_section = None
+def simplify_message(msg: str) -> str:
+    # Strip leading emoji (Gitmoji)
+    msg = re.sub(r'^[\W_]+', '', msg).strip()
 
-for line in content.split('\n'):
-    line = line.strip()
-    if line.startswith('###'):
-        current_section = line[4:].strip()
-        sections[current_section] = []
-    elif current_section and line.startswith('-'):
-        sections[current_section].append(line)
+    # Extract prefix (e.g., "feat:", "fix")
+    match = re.match(r'^(\w+)(:|\s)', msg.lower())
+    if match:
+        keyword = match.group(1)
+        return f"- {friendly_messages.get(keyword, 'General improvements and updates')}"
+    return "- General improvements and updates"
 
-# Generate English release notes
-en_content = []
-for section, items in sections.items():
-    if items:  # Only include non-empty sections
-        en_content.append(section)
-        en_content.extend(items)
-        en_content.append('')  # Add an empty line between sections
+# Process and de-duplicate messages
+simplified = list({simplify_message(msg) for msg in commit_messages if msg.strip()})
 
-# Write English release notes
+# Generate Play Store–friendly English notes
 os.makedirs(os.path.dirname(whatsnew_en_path), exist_ok=True)
 with open(whatsnew_en_path, 'w', encoding='utf-8') as f:
-    f.write('\n'.join(en_content))
+    f.write("What's new:\n")
+    f.write('\n'.join(simplified))
+    f.write('\n')
 
-print(f"Generated English release notes at {whatsnew_en_path}")
+print(f"✅ English Play Store release notes written to: {whatsnew_en_path}")
 
-# Generate Swahili release notes (simplified)
-sw_content = [
-    f"Utoaji huu wa hivi karibuni wa AKILIMO ni pamoja na:",
+# Generate basic Swahili version
+sw_messages = {
+    "New feature added": "- Kipengele kipya kimeongezwa",
+    "Bug fixes and performance improvements": "- Marekebisho ya hitilafu na uboreshaji wa utendaji",
+    "App improvements and optimizations": "- Maboresho ya programu",
+    "Improved design and usability": "- Muonekano na matumizi yameboreshwa",
+    "Faster and more reliable performance": "- Utendaji bora na wa haraka",
+    "App updated with latest changes": "- Programu imesasishwa",
+    "General improvements and updates": "- Maboresho ya jumla"
+}
+
+swahili_output = [
+    "Toleo hili lina:",
 ]
 
-# Add bullet points for features and bug fixes
-if 'Features' in sections and sections['Features']:
-    sw_content.append("- Vipengele vipya")
+# Only include Swahili lines matching the simplified messages
+for msg in simplified:
+    key = msg[2:].strip()  # remove "- " prefix
+    sw_msg = sw_messages.get(key)
+    if sw_msg:
+        swahili_output.append(sw_msg)
 
-if 'Bug Fixes' in sections and sections['Bug Fixes']:
-    sw_content.append("- Marekebisho ya makosa")
-
-if 'Code Refactoring' in sections and sections['Code Refactoring']:
-    sw_content.append("- Maboresho ya programu")
-
-# Write Swahili release notes
+# Write Swahili notes
 os.makedirs(os.path.dirname(whatsnew_sw_path), exist_ok=True)
 with open(whatsnew_sw_path, 'w', encoding='utf-8') as f:
-    f.write('\n'.join(sw_content))
-    f.write('\n')  # Add final newline
+    f.write('\n'.join(swahili_output))
+    f.write('\n')
 
-print(f"Generated Swahili release notes at {whatsnew_sw_path}")
+print(f"✅ Swahili Play Store release notes written to: {whatsnew_sw_path}")

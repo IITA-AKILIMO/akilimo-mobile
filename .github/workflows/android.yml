@@ -1,21 +1,20 @@
 name: Android Builder
+
 on:
   push:
     paths-ignore:
       - '**.md'
       - '**.txt'
-      - '**.yml'
-      - '**.yaml'
       - '**.sh'
       - '**.xml'
       - 'docs/**'
       - '.github/ISSUE_TEMPLATE/**'
-      - '.github/**'
   workflow_dispatch:
 
 jobs:
 
   unit-test:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     concurrency:
       group: ci-${{ github.head_ref || github.ref_name }}
@@ -32,7 +31,7 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v4
 
-      - name: set up JDK
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
@@ -46,34 +45,32 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      # Enhanced Gradle caching for unit tests
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-read-only: false
+
       - name: Run Unit tests
         run: ./gradlew testDebugUnitTest
         continue-on-error: false
 
-      - name: Cache Gradle packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: ${{ runner.os }}-gradle
-
       - name: Report
         uses: FlickerSoul/android-test-report-actions@v1.2
-        if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
+        if: ${{ always() }}
 
       - name: Make Unit test report
         uses: asadmansr/android-test-report-action@v1.2.0
         if: ${{ always() }}
 
   build_artifacts:
-    if: contains(github.ref, 'beta') || contains(github.ref, 'main')
-    needs: 'unit-test'
+    if: github.ref == 'refs/heads/main'
+    needs: unit-test
     name: Build artifacts
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       REPO_NAME: ${{ secrets.REPO_NAME }}
-      BRANCH_NAME: ${{ github.head_ref }}
       VERSION_CODE: ${{ secrets.GITHUB_RUN_ID }}
       LATEST_TAG_FILE: "latest_tag.txt"
       RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
@@ -83,7 +80,7 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v4
 
-      - name: set up JDK
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
@@ -106,8 +103,7 @@ jobs:
           python-version: '3.9'
 
       - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
+        run: curl -sSL https://install.python-poetry.org | python3 -
 
       - name: Download pyproject.toml
         run: curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/pyproject.toml -o pyproject.toml
@@ -124,20 +120,59 @@ jobs:
       - name: Update release version
         run: echo "RELEASE_VERSION=$(cat $LATEST_TAG_FILE)" >> $GITHUB_ENV
 
-      - name: Set branch name
-        run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
-
-      - name: Show branch name
-        run: echo $BRANCH_NAME
-
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
+        uses: android-actions/setup-android@v3
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Generate android AAB
-        run: ./gradlew bundleRelease -x test
+      # Cache final APK & AAB outputs with more specific key
+      - name: Cache APK & AAB outputs
+        uses: actions/cache@v4
+        with:
+          path: |
+            app/build/outputs/apk/release/app-release-unsigned.apk
+            app/build/outputs/bundle/release/app-release.aab
+          key: build-artifacts-${{ runner.os }}-${{ env.VERSION_CODE }}-${{ hashFiles('**/*.gradle*', '**/gradle.properties', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', 'app/src/main/res/**', 'app/src/main/AndroidManifest.xml', 'app/proguard-rules.pro') }}
+          restore-keys: |
+            build-artifacts-${{ runner.os }}-${{ env.VERSION_CODE }}-
+            build-artifacts-${{ runner.os }}-
+
+      # Check if cached artifacts exist and are valid
+      - name: Check cached artifacts
+        id: check_cache
+        run: |
+          if [ -f "app/build/outputs/apk/release/app-release-unsigned.apk" ] && [ -f "app/build/outputs/bundle/release/app-release.aab" ]; then
+            echo "cached_artifacts_exist=true" >> $GITHUB_OUTPUT
+            echo "✅ Found cached APK and AAB artifacts"
+            ls -la app/build/outputs/apk/release/app-release-unsigned.apk
+            ls -la app/build/outputs/bundle/release/app-release.aab
+          else
+            echo "cached_artifacts_exist=false" >> $GITHUB_OUTPUT
+            echo "❌ Cached artifacts not found, will build from scratch"
+          fi
+
+      # Only build if cached artifacts don't exist or are invalid
+      - name: Generate android AAB and APK
+        if: steps.check_cache.outputs.cached_artifacts_exist != 'true'
+        run: |
+          echo "🔨 Building APK and AAB from source..."
+          ./gradlew bundleRelease assembleRelease -x test
+
+      # Verify build outputs exist
+      - name: Verify build outputs
+        run: |
+          if [ ! -f "app/build/outputs/apk/release/app-release-unsigned.apk" ]; then
+            echo "❌ APK not found after build!"
+            exit 1
+          fi
+          if [ ! -f "app/build/outputs/bundle/release/app-release.aab" ]; then
+            echo "❌ AAB not found after build!"
+            exit 1
+          fi
+          echo "✅ Build artifacts verified"
+          echo "APK size: $(du -h app/build/outputs/apk/release/app-release-unsigned.apk | cut -f1)"
+          echo "AAB size: $(du -h app/build/outputs/bundle/release/app-release.aab | cut -f1)"
 
       - name: Create release folder
         run: mkdir -p $GITHUB_WORKSPACE/release
@@ -146,12 +181,45 @@ jobs:
         run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > $GITHUB_WORKSPACE/akilimo.jks
 
       - name: Sign AAB
-        run: jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore akilimo.jks
-          -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }}
-          app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEY_ALIAS }} --signedjar $GITHUB_WORKSPACE/release/app-release-signed.aab
+        uses: ilharp/sign-android-release@v2
+        # ID used to access action output
+        id: sign_aab
+        with:
+          releaseDir: app/build/outputs/bundle/release
+          signingKey: ${{ secrets.KEYSTORE_FILE }}
+          keyAlias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+          buildToolsVersion: 36.0.0
+
+      - name: Sign APK
+        uses: ilharp/sign-android-release@v2
+        id: sign_apk
+        with:
+          releaseDir: app/build/outputs/apk/release
+          signingKey: ${{ secrets.KEYSTORE_FILE }}
+          keyAlias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+          buildToolsVersion: 36.0.0
+
+      - name: Ensure release folder exists
+        run: mkdir -p release
+
+      - name: Copy and rename signed APK and AAB
+        run: |
+          # Rename APK
+          for file in ${{ steps.sign_apk.outputs.signedFiles }}; do
+            cp "$file" "release/akilimo-release.apk"
+          done
+
+          # Rename AAB
+          for file in ${{ steps.sign_aab.outputs.signedFiles }}; do
+            cp "$file" "release/akilimo-release.aab"
+          done
 
       - name: Copy release tag file
-        run: cp  $LATEST_TAG_FILE release
+        run: cp $LATEST_TAG_FILE release
 
       - name: Generate release notes
         run: python .github/scripts/generate_release_notes.py
@@ -164,11 +232,13 @@ jobs:
         with:
           name: app-release
           if-no-files-found: error
+          overwrite: true
           path: release
 
   publish_to_playstore:
+    if: github.ref == 'refs/heads/main'
     needs: build_artifacts
-    name: Publish to Google PlayStore
+    name: Publish to Google PlayStore (Beta)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4.1.7
@@ -177,8 +247,7 @@ jobs:
           name: app-release
           path: release
 
-      - name: Upload Beta Release
-        if: contains(github.ref, 'beta')
+      - name: Upload to Google Play Beta track
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
@@ -188,30 +257,16 @@ jobs:
           status: completed
           whatsNewDirectory: release/distribution/whatsnew
 
-      - name: Upload Production Release
-        if: contains(github.ref, 'main')
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-          packageName: ${{ secrets.APP_PACKAGE }}
-          releaseFiles: release/*.aab
-          track: production
-          status: completed
-          whatsNewDirectory: release/distribution/whatsnew
-
       - name: Update build number
-        if: success()
         run: curl -s https://munywele.co.ke/app-releases/akilimo/update
 
-
-  upload_beta_artifacts:
-    if: success() && contains(github.ref, 'beta')
+  upload_beta_release:
+    if: success() && github.ref == 'refs/heads/main'
     needs: publish_to_playstore
-    name: Upload to github beta
+    name: Upload to GitHub Beta Release
     runs-on: ubuntu-latest
     env:
       LATEST_TAG_FILE: "latest_tag.txt"
-      GHR_TAG: "1.0.0"
       GHR_REPLACE: "1"
       GHR_PATH: release
       GHR_PRERELEASE: "1"
@@ -223,6 +278,7 @@ jobs:
         with:
           name: app-release
           path: release
+
       - run: |
           cp release/distribution/whatsnew/* release
           rm -rf release/distribution
@@ -230,35 +286,6 @@ jobs:
 
       - name: Read latest tag from tag file
         run: echo "GHR_TAG=$(cat release/$LATEST_TAG_FILE)-beta" >> $GITHUB_ENV
-
-      - name: Upload release artifacts
-        uses: masgeek/github-action-ghr@v1.3.2
-
-  upload_production_artifacts:
-    if: success() && contains(github.ref, 'main')
-    needs: publish_to_playstore
-    name: Upload to github release
-    runs-on: ubuntu-latest
-    env:
-      LATEST_TAG_FILE: "latest_tag.txt"
-      GHR_TAG: "1.0.0"
-      GHR_REPLACE: "1"
-      GHR_PATH: release
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    steps:
-      - uses: actions/download-artifact@v4.1.7
-        name: Retrieve artifacts
-        with:
-          name: app-release
-          path: release
-      - run: |
-          cp release/distribution/whatsnew/* release
-          rm -rf release/distribution
-          ls release
-
-      - name: Read latest tag from tag file
-        run: echo "GHR_TAG=$(cat release/$LATEST_TAG_FILE)" >> $GITHUB_ENV
 
       - name: Upload release artifacts
         uses: masgeek/github-action-ghr@v1.3.2
