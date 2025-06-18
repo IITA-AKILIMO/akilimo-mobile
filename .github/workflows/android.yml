@@ -247,6 +247,7 @@ jobs:
   upload_beta_release:
 #    if: success() && github.ref == 'refs/heads/main'
 #    needs: publish_to_playstore
+    needs: build_artifacts
     name: Upload to GitHub Beta Release
     runs-on: ubuntu-latest
     env:
