@@ -33,9 +33,14 @@ friendly_messages = {
 }
 
 def simplify_message(msg: str) -> str:
-    for keyword, friendly in friendly_messages.items():
-        if msg.lower().startswith(keyword):
-            return f"- {friendly}"
+    # Strip leading emoji (Gitmoji)
+    msg = re.sub(r'^[\W_]+', '', msg).strip()
+
+    # Extract prefix (e.g., "feat:", "fix")
+    match = re.match(r'^(\w+)(:|\s)', msg.lower())
+    if match:
+        keyword = match.group(1)
+        return f"- {friendly_messages.get(keyword, 'General improvements and updates')}"
     return "- General improvements and updates"
 
 # Process and de-duplicate messages
