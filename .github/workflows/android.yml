@@ -221,13 +221,15 @@ jobs:
       - name: Copy release tag file
         run: cp $LATEST_TAG_FILE release
 
-      - name: Draft release
-        uses: release-drafter/release-drafter@v5
-#        with:
-#          config-name: release-drafter.yml
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install git-chglog
+        run: |
+          curl -sSL https://github.com/git-chglog/git-chglog/releases/latest/download/git-chglog_$(uname -s)_$(uname -m).tar.gz | tar -xz
+          sudo mv git-chglog /usr/local/bin/
 
+      - name: Generate CHANGELOG.md
+        run: |
+          git fetch --tags --force
+          git-chglog -o CHANGELOG.md
 
       - name: Generate release notes
         run: python .github/scripts/generate_release_notes.py
