@@ -203,6 +203,14 @@ jobs:
           keyPassword: ${{ secrets.KEY_PASSWORD }}
           buildToolsVersion: 36.0.0
 
+      - name: Ensure release folder exists
+        run: mkdir -p release
+
+      - name: Copy signed APK and AAB to release folder
+        run: |
+          cp app/build/outputs/apk/release/*.apk release/
+          cp app/build/outputs/bundle/release/*.aab release/
+
       - name: Copy release tag file
         run: cp $LATEST_TAG_FILE release
 
@@ -217,6 +225,7 @@ jobs:
         with:
           name: app-release
           if-no-files-found: error
+          overwrite: true
           path: release
 
   publish_to_playstore:
