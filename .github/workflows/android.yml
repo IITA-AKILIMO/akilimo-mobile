@@ -206,10 +206,11 @@ jobs:
       - name: Ensure release folder exists
         run: mkdir -p release
 
-      - name: Copy signed APK and AAB to release folder
+      - name: Copy signed APKs and AABs to release folder
         run: |
-          cp app/build/outputs/apk/release/*.apk release/
-          cp app/build/outputs/bundle/release/*.aab release/
+          for file in ${{ steps.sign_apk.outputs.signedFiles }} ${{ steps.sign_aab.outputs.signedFiles }}; do
+            cp "$file" release/
+          done
 
       - name: Copy release tag file
         run: cp $LATEST_TAG_FILE release
