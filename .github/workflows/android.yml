@@ -245,8 +245,8 @@ jobs:
         run: curl -s https://munywele.co.ke/app-releases/akilimo/update
 
   upload_beta_release:
-    if: success() && github.ref == 'refs/heads/main'
-    needs: publish_to_playstore
+#    if: success() && github.ref == 'refs/heads/main'
+#    needs: publish_to_playstore
     name: Upload to GitHub Beta Release
     runs-on: ubuntu-latest
     env:
