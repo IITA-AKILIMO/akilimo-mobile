@@ -221,6 +221,14 @@ jobs:
       - name: Copy release tag file
         run: cp $LATEST_TAG_FILE release
 
+      - name: Draft release
+        uses: release-drafter/release-drafter@v5
+        with:
+          config-name: release-drafter.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
       - name: Generate release notes
         run: python .github/scripts/generate_release_notes.py
 
@@ -261,8 +269,8 @@ jobs:
         run: curl -s https://munywele.co.ke/app-releases/akilimo/update
 
   upload_beta_release:
-#    if: success() && github.ref == 'refs/heads/main'
-#    needs: publish_to_playstore
+    #    if: success() && github.ref == 'refs/heads/main'
+    #    needs: publish_to_playstore
     needs: build_artifacts
     name: Upload to GitHub Beta Release
     runs-on: ubuntu-latest
