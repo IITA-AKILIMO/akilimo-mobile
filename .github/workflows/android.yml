@@ -221,12 +221,6 @@ jobs:
       - name: Copy release tag file
         run: cp $LATEST_TAG_FILE release
 
-      - name: Generate changelog
-        id: gen_changelog
-        uses: bdashrad/git-chglog-action@v2.0.3
-        with:
-          filename: CHANGELOG>md
-
       - name: Generate release notes
         run: python .github/scripts/generate_release_notes.py
 
