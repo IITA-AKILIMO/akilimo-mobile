@@ -206,10 +206,16 @@ jobs:
       - name: Ensure release folder exists
         run: mkdir -p release
 
-      - name: Copy signed APKs and AABs to release folder
+      - name: Copy and rename signed APK and AAB
         run: |
-          for file in ${{ steps.sign_apk.outputs.signedFiles }} ${{ steps.sign_aab.outputs.signedFiles }}; do
-            cp "$file" release/
+          # Rename APK
+          for file in ${{ steps.sign_apk.outputs.signedFiles }}; do
+            cp "$file" "release/akilimo-release.apk"
+          done
+
+          # Rename AAB
+          for file in ${{ steps.sign_aab.outputs.signedFiles }}; do
+            cp "$file" "release/akilimo-release.aab"
           done
 
       - name: Copy release tag file
