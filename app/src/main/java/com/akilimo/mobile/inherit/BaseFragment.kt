@@ -15,26 +15,18 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.utils.MathHelper
-import com.akilimo.mobile.utils.PreferenceManager
 import io.sentry.Sentry
 
 abstract class BaseFragment<T : ViewBinding> : Fragment() {
 
     private var _binding: T? = null
     protected val binding
-        get() = _binding ?: throw IllegalStateException("Binding is not initialized yet.")
+        get() = _binding ?: error("Binding is not initialized yet.")
 
 
-    protected var LOG_TAG: String = BaseFragment::class.java.simpleName
-
-    protected var currency: String? = null
     protected var currencySymbol: String? = null
     protected var countryCode: String? = null
-    protected var countryName: String? = null
 
-    private var appVersion: String? = null
-
-    protected val sessionManager: PreferenceManager by lazy { PreferenceManager(requireContext()) }
     protected val mathHelper: MathHelper by lazy { MathHelper() }
     protected val database: AppDatabase by lazy { getDatabase(requireContext()) }
 
@@ -51,7 +43,6 @@ abstract class BaseFragment<T : ViewBinding> : Fragment() {
     protected abstract fun onBindingReady(savedInstanceState: Bundle?)
 
 
-    
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -85,7 +76,7 @@ abstract class BaseFragment<T : ViewBinding> : Fragment() {
             if (!buttonTitle.isNullOrEmpty()) {
                 btnClose.text = buttonTitle
             }
-            btnClose.setOnClickListener { view: View? ->
+            btnClose.setOnClickListener { _: View? ->
                 dialog.dismiss()
             }
             dialog.setCancelable(false)

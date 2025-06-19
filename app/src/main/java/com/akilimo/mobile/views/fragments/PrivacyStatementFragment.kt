@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 class PrivacyStatementFragment : BindBaseStepFragment<FragmentPrivacyStatementBinding>() {
 
     companion object {
+        const val SCROLL_DELAY = 300L
         fun newInstance(): PrivacyStatementFragment = PrivacyStatementFragment()
     }
 
@@ -76,7 +77,7 @@ class PrivacyStatementFragment : BindBaseStepFragment<FragmentPrivacyStatementBi
                     preferenceManager.privacyPolicyRead = true
                     break
                 }
-                delay(300) // check every 300ms
+                delay(SCROLL_DELAY) // check every 300ms
             }
         }
     }

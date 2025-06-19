@@ -3,6 +3,7 @@ package com.akilimo.mobile.viewmodels.factory
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.akilimo.mobile.exceptions.UnknownViewModelClassException
 import com.akilimo.mobile.viewmodels.FertilizersViewModel
 
 class FertilizersViewModelFactory(
@@ -20,6 +21,6 @@ class FertilizersViewModelFactory(
                 useCase = useCase
             ) as T
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
+        throw UnknownViewModelClassException("Unknown ViewModel class")
     }
 }

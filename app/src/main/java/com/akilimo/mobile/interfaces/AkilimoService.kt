@@ -1,14 +1,27 @@
 package com.akilimo.mobile.interfaces
 
 
-import com.akilimo.mobile.entities.*
+import com.akilimo.mobile.entities.AkilimoCurrencyResponse
+import com.akilimo.mobile.entities.CassavaPricePriceResponse
+import com.akilimo.mobile.entities.FertilizerPriceResponse
+import com.akilimo.mobile.entities.FertilizerResponse
+import com.akilimo.mobile.entities.InvestmentAmountResponse
+import com.akilimo.mobile.entities.MaizePriceResponse
+import com.akilimo.mobile.entities.OperationCostResponse
+import com.akilimo.mobile.entities.PotatoPriceResponse
+import com.akilimo.mobile.entities.StarchFactoryResponse
 import com.akilimo.mobile.rest.request.RecommendationRequest
 import com.akilimo.mobile.rest.request.SurveyRequest
 import com.akilimo.mobile.rest.response.RecommendationResponse
 import com.akilimo.mobile.rest.retrofit.RetrofitManager
 import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 
 object AkilimoApi {

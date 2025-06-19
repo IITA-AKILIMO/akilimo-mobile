@@ -4,6 +4,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.view.View
 
+@Suppress("MagicNumber")
 object TheItemAnimation {
 
     const val NONE = 0
@@ -37,7 +38,6 @@ object TheItemAnimation {
 
     private fun animateScale(view: View, position: Int) {
         val isNotFirst = position == -1
-        val effectivePosition = position + 1
 
         view.scaleX = 0.8f
         view.scaleY = 0.8f

@@ -44,6 +44,8 @@ class FertilizersViewModel(
     private val prefs =
         application.getSharedPreferences("fertilizer_prefs", Application.MODE_PRIVATE)
     private val lastSyncKey = "last_fertilizer_sync"
+
+    @Suppress("MagicNumber")
     private val oneDayMillis = 24 * 60 * 60 * 1000L
 
     private val now: Long get() = System.currentTimeMillis()
