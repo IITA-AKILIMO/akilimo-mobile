@@ -44,10 +44,9 @@ class SplashActivity(
     }
 
     private fun navigateToNextActivity(isInDevMode: Boolean) {
-        val nextActivity = if (isInDevMode) {
-            RecommendationsActivity::class.java
-        } else {
-            HomeStepperActivity::class.java
+        var nextActivity = HomeStepperActivity::class.java
+        if (isInDevMode) {
+//            nextActivity = RecommendationsActivity::class.java
         }
 
         openActivity(Intent(this, nextActivity))
