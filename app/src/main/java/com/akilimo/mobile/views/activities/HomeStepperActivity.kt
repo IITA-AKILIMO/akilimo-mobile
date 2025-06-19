@@ -19,6 +19,7 @@ import com.akilimo.mobile.databinding.ActivityHomeStepperBinding
 import com.akilimo.mobile.inherit.BindBaseActivity
 import com.akilimo.mobile.utils.InAppUpdate
 import com.akilimo.mobile.viewmodels.HomeStepperViewModel
+import com.akilimo.mobile.viewmodels.HomeStepperViewModelFactory
 import com.akilimo.mobile.views.fragments.AreaUnitFragment
 import com.akilimo.mobile.views.fragments.BioDataFragment
 import com.akilimo.mobile.views.fragments.CountryFragment
@@ -39,7 +40,10 @@ import kotlin.system.exitProcess
 
 class HomeStepperActivity : BindBaseActivity<ActivityHomeStepperBinding>() {
 
-    private val viewModel: HomeStepperViewModel by viewModels()
+    private val viewModel: HomeStepperViewModel by viewModels {
+        HomeStepperViewModelFactory()
+    }
+
     private lateinit var inAppUpdate: InAppUpdate
     private lateinit var stepperAdapter: MyStepperAdapter
     private lateinit var mStepperLayout: StepperLayout
@@ -61,6 +65,8 @@ class HomeStepperActivity : BindBaseActivity<ActivityHomeStepperBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
 
         inAppUpdate = InAppUpdate(this)
         mStepperLayout = binding.stepperLayout
