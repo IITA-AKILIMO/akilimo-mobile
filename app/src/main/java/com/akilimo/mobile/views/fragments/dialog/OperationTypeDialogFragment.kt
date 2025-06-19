@@ -25,7 +25,6 @@ class OperationTypeDialogFragment : BaseDialogFragment() {
     private val binding get() = _binding!!
 
     companion object {
-        private val LOG_TAG = OperationTypeDialogFragment::class.java.simpleName
         const val TAG_OPERATION_DIALOG = "OperationTypeDialogFragment"
         const val OPERATION_TYPE = "operation_type_enum"
     }

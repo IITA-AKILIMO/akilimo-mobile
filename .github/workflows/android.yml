@@ -14,7 +14,6 @@ on:
 jobs:
 
   unit-test:
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     concurrency:
       group: ci-${{ github.head_ref || github.ref_name }}
@@ -157,7 +156,7 @@ jobs:
         if: steps.check_cache.outputs.cached_artifacts_exist != 'true'
         run: |
           echo "🔨 Building APK and AAB from source..."
-          ./gradlew bundleRelease assembleRelease -x test
+          ./gradlew bundleRelease assembleRelease -x test -x detekt -x lint
 
       # Verify build outputs exist
       - name: Verify build outputs

@@ -152,24 +152,24 @@ class DatesActivity : BindBaseActivity<ActivityDatesBinding>() {
     }
 
     private fun validateDates(): Boolean {
-        if (selectedPlantingDate.isEmpty()) {
-            showCustomWarningDialog(
+        val isPlantingDateValid = selectedPlantingDate.isNotEmpty()
+        val isHarvestDateValid = selectedHarvestDate.isNotEmpty()
+
+        when {
+            !isPlantingDateValid -> showCustomWarningDialog(
                 getString(R.string.lbl_invalid_planting_date),
                 getString(R.string.lbl_planting_date_prompt)
             )
-            return false
-        }
 
-        if (selectedHarvestDate.isEmpty()) {
-            showCustomWarningDialog(
+            !isHarvestDateValid -> showCustomWarningDialog(
                 getString(R.string.lbl_invalid_harvest_date),
                 getString(R.string.lbl_harvest_date_prompt)
             )
-            return false
         }
 
-        return true
+        return isPlantingDateValid && isHarvestDateValid
     }
+
 
     private fun saveSchedule() {
         val cropSchedule = database.scheduleDateDao().findOne() ?: CropSchedule()

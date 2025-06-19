@@ -223,6 +223,8 @@
     <string name="lbl_valid_number_req">Tanga numero ya terefone yemewe</string>
     <string name="lbl_gender_prompt">Hitamo igitsina</string>
     <string name="lbl_gender">Hitamo igitsina</string>
+    <string name="lbl_akilimo_interest_prompt">Hitamo icyo ushishikajwe cyane na cyo muri AKILIMO</string>
+    <string name="lbl_akilimo_interest">Icyo ushishikajwe cyane na cyo muri AKILIMO</string>
     <string name="lbl_prefer_not_to_say">Hitamo kudasubiza</string>
     <string name="lbl_male">Umugabo</string>
     <string name="lbl_female">Umugore</string>

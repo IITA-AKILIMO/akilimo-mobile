@@ -12,10 +12,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
     replaceWith = ReplaceWith("BaseBottomSheetDialogFragment")
 )
 abstract class BaseDialogFragment : DialogFragment() {
-    protected var LOG_TAG: String = BaseDialogFragment::class.java.simpleName
-
     protected val mathHelper: MathHelper by lazy { MathHelper() }
-
     protected val sessionManager: PreferenceManager by lazy { PreferenceManager(requireContext()) }
     protected val database: AppDatabase by lazy { getDatabase(requireContext()) }
 
@@ -23,12 +20,8 @@ abstract class BaseDialogFragment : DialogFragment() {
 }
 
 abstract class BaseBottomSheetDialogFragment : BottomSheetDialogFragment() {
-    protected var LOG_TAG: String = BaseDialogFragment::class.java.simpleName
-
     protected val mathHelper: MathHelper by lazy { MathHelper() }
-
     protected val sessionManager: PreferenceManager by lazy { PreferenceManager(requireContext()) }
     protected val database: AppDatabase by lazy { getDatabase(requireContext()) }
-
     protected var currencySymbol: String = "USD"
 }
