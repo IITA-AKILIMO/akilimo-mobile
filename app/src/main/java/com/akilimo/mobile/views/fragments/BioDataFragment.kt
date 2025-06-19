@@ -136,7 +136,6 @@ class BioDataFragment : BindBaseStepFragment<FragmentBioDataBinding>() {
         val firstName = binding.edtFirstName.text.toString()
         val lastName = binding.edtLastName.text.toString()
         val email = binding.edtEmail.text.toString().trim()
-        val rawPhoneNumber = binding.edtPhone.text.toString()
         val fullPhoneNumber = binding.ccpCountry.fullNumber
         val mobileCode = binding.ccpCountry.selectedCountryCodeWithPlus
 
@@ -152,7 +151,7 @@ class BioDataFragment : BindBaseStepFragment<FragmentBioDataBinding>() {
             return
         }
 
-        if ((fullPhoneNumber.isNullOrEmpty() || rawPhoneNumber.isEmpty()) && !isPhoneValid) {
+        if (!isPhoneValid) {
             errorMessage = getString(R.string.lbl_valid_number_req)
             binding.edtPhone.error = errorMessage
             return
