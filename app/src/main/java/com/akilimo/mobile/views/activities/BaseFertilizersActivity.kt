@@ -15,7 +15,7 @@ import com.akilimo.mobile.utils.Tools.dpToPx
 import com.akilimo.mobile.utils.enums.EnumAdviceTask
 import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.viewmodels.FertilizersViewModel
-import com.akilimo.mobile.viewmodels.FertilizersViewModelFactory
+import com.akilimo.mobile.viewmodels.factory.FertilizersViewModelFactory
 import com.akilimo.mobile.views.fragments.dialog.FertilizerPriceDialogFragment
 import com.akilimo.mobile.widget.SpacingItemDecoration
 import com.google.android.material.snackbar.Snackbar

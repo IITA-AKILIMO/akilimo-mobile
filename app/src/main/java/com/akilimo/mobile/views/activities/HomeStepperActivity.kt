@@ -19,7 +19,7 @@ import com.akilimo.mobile.databinding.ActivityHomeStepperBinding
 import com.akilimo.mobile.inherit.BindBaseActivity
 import com.akilimo.mobile.utils.InAppUpdate
 import com.akilimo.mobile.viewmodels.HomeStepperViewModel
-import com.akilimo.mobile.viewmodels.HomeStepperViewModelFactory
+import com.akilimo.mobile.viewmodels.factory.HomeStepperViewModelFactory
 import com.akilimo.mobile.views.fragments.AreaUnitFragment
 import com.akilimo.mobile.views.fragments.BioDataFragment
 import com.akilimo.mobile.views.fragments.CountryFragment
