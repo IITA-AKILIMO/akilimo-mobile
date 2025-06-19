@@ -151,13 +151,13 @@ class BioDataFragment : BindBaseStepFragment<FragmentBioDataBinding>() {
             return
         }
 
-        if (!isPhoneValid) {
+        if (binding.edtPhone.text.toString().isNotBlank() && !isPhoneValid) {
             errorMessage = getString(R.string.lbl_valid_number_req)
             binding.edtPhone.error = errorMessage
             return
         }
 
-        if (!validationHelper.isEmailValid(email)) {
+        if (email.isNotBlank() && !validationHelper.isEmailValid(email)) {
             errorMessage = getString(R.string.lbl_valid_email_req)
             binding.edtEmail.error = errorMessage
             return
