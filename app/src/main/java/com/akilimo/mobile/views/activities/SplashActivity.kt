@@ -8,7 +8,6 @@ import com.akilimo.mobile.data.UserDataCleaner
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.DefaultDispatcherProvider
 import com.akilimo.mobile.interfaces.IDispatcherProvider
-import com.akilimo.mobile.rest.retrofit.RetrofitManager
 import io.sentry.Sentry
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
@@ -34,11 +33,6 @@ class SplashActivity(
 
     private suspend fun launchAppFlow() {
         val isInDevMode = BuildConfig.DEBUG
-
-        val akilimoEndpoint = sessionManager.akilimoEndpoint
-        val fuelrodEndpoint = sessionManager.fuelrodEndpoint
-
-        RetrofitManager.init(this, akilimoEndpoint, fuelrodEndpoint)
 
         if (!isInDevMode) {
             withContext(dispatchers.io) {
