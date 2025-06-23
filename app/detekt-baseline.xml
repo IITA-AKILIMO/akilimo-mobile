@@ -14,7 +14,7 @@
     <ID>EmptyFunctionBlock:DstRecommendationActivity.kt$DstRecommendationActivity${ }</ID>
     <ID>EmptyFunctionBlock:FertilizersActivity.kt$FertilizersActivity${ }</ID>
     <ID>EmptyFunctionBlock:FieldSizeFragment.kt$FieldSizeFragment${ }</ID>
-    <ID>EmptyFunctionBlock:GPSTracker.kt$GPSTracker${}</ID>
+    <ID>EmptyFunctionBlock:LiveLocationProvider.kt$GPSTracker${}</ID>
     <ID>EmptyFunctionBlock:TermsFragment.kt$InfoFragment${ }</ID>
     <ID>EmptyFunctionBlock:InvestmentAmountActivity.kt$InvestmentAmountActivity.&lt;no name provided&gt;${ }</ID>
     <ID>EmptyFunctionBlock:PlantingDateFragment.kt$PlantingDateFragment${ }</ID>
@@ -127,7 +127,7 @@
     <ID>NestedBlockDepth:BaseStepFragment.kt$BaseStepFragment$protected fun showCustomWarningDialog( titleText: String, contentText: String? = titleText, buttonTitle: String? = null )</ID>
     <ID>NestedBlockDepth:BioDataFragment.kt$BioDataFragment$private fun refreshData()</ID>
     <ID>NestedBlockDepth:CassavaMarketActivity.kt$CassavaMarketActivity$protected fun processData()</ID>
-    <ID>NestedBlockDepth:GPSTracker.kt$GPSTracker$@SuppressLint("MissingPermission") fun getLocation(): Location?</ID>
+    <ID>NestedBlockDepth:LiveLocationProvider.kt$GPSTracker$@SuppressLint("MissingPermission") fun getLocation(): Location?</ID>
     <ID>NestedBlockDepth:TillageOperationFragment.kt$TillageOperationFragment$fun refreshData()</ID>
     <ID>NewLineAtEndOfFile:AkilimoCurrency.kt$com.akilimo.mobile.entities.AkilimoCurrency.kt</ID>
     <ID>NewLineAtEndOfFile:BaseRecommendationActivity.kt$com.akilimo.mobile.inherit.BaseRecommendationActivity.kt</ID>
@@ -164,7 +164,7 @@
     <ID>TooGenericExceptionCaught:FertilizerPriceDialogFragment.kt$FertilizerPriceDialogFragment$ex: Exception</ID>
     <ID>TooGenericExceptionCaught:FertilizerRecActivity.kt$FertilizerRecActivity$ex: Exception</ID>
     <ID>TooGenericExceptionCaught:FieldSizeFragment.kt$FieldSizeFragment$ex: Exception</ID>
-    <ID>TooGenericExceptionCaught:GPSTracker.kt$GPSTracker$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:LiveLocationProvider.kt$GPSTracker$ex: Exception</ID>
     <ID>TooGenericExceptionCaught:HomeStepperActivity.kt$HomeStepperActivity$ex: Exception</ID>
     <ID>TooGenericExceptionCaught:InterCropRecActivity.kt$InterCropRecActivity$ex: Exception</ID>
     <ID>TooGenericExceptionCaught:InvestmentAmountActivity.kt$InvestmentAmountActivity$ex: Exception</ID>
@@ -196,7 +196,7 @@
     <ID>TooManyFunctions:CassavaMarketActivity.kt$CassavaMarketActivity : BaseActivity</ID>
     <ID>TooManyFunctions:FertilizerDao.kt$FertilizerDao</ID>
     <ID>TooManyFunctions:FieldSizeFragment.kt$FieldSizeFragment : BaseStepFragment</ID>
-    <ID>TooManyFunctions:GPSTracker.kt$GPSTracker : ServiceLocationListener</ID>
+    <ID>TooManyFunctions:LiveLocationProvider.kt$GPSTracker : ServiceLocationListener</ID>
     <ID>TooManyFunctions:HomeStepperActivity.kt$HomeStepperActivity : BaseActivityIFragmentCallBack</ID>
     <ID>TooManyFunctions:MathHelper.kt$MathHelper</ID>
     <ID>TooManyFunctions:SessionManager.kt$SessionManager</ID>
@@ -209,7 +209,7 @@
     <ID>UnusedPrivateProperty:BuildComputeData.kt$BuildComputeData.Companion$private val LOG_TAG: String = BuildComputeData::class.java.simpleName</ID>
     <ID>UnusedPrivateProperty:FertilizerPriceDialogFragment.kt$FertilizerPriceDialogFragment.Companion$private val LOG_TAG: String = FertilizerPriceDialogFragment::class.java.simpleName</ID>
     <ID>UnusedPrivateProperty:FieldSizeFragment.kt$FieldSizeFragment$private var userProfile: UserProfile? = null</ID>
-    <ID>UnusedPrivateProperty:GPSTracker.kt$GPSTracker$private var LOG_TAG = GPSTracker::class.java.simpleName</ID>
+    <ID>UnusedPrivateProperty:LiveLocationProvider.kt$GPSTracker$private var LOG_TAG = GPSTracker::class.java.simpleName</ID>
     <ID>UnusedPrivateProperty:InterCropFertilizersActivity.kt$InterCropFertilizersActivity$private val TAG: String = BaseActivity::class.java.simpleName</ID>
     <ID>UnusedPrivateProperty:InvestmentAmountActivity.kt$InvestmentAmountActivity$private val maxInvestmentUSD = 1.0</ID>
     <ID>UnusedPrivateProperty:InvestmentPrefFragment.kt$InvestmentPrefFragment$private var rememberInvestmentPref = false</ID>
@@ -257,7 +257,7 @@
     <ID>VariableNaming:FieldSizeFragment.kt$FieldSizeFragment$var rd_one_acre: RadioButton? = null</ID>
     <ID>VariableNaming:FieldSizeFragment.kt$FieldSizeFragment$var rd_quarter_acre: RadioButton? = null</ID>
     <ID>VariableNaming:FieldSizeFragment.kt$FieldSizeFragment$var rd_two_half_acre: RadioButton? = null</ID>
-    <ID>VariableNaming:GPSTracker.kt$GPSTracker$private var LOG_TAG = GPSTracker::class.java.simpleName</ID>
+    <ID>VariableNaming:LiveLocationProvider.kt$GPSTracker$private var LOG_TAG = GPSTracker::class.java.simpleName</ID>
     <ID>VariableNaming:InterCropFertilizersActivity.kt$InterCropFertilizersActivity$private val TAG: String = BaseActivity::class.java.simpleName</ID>
     <ID>VariableNaming:InterCropFertilizersActivity.kt$InterCropFertilizersActivity$var lyt_progress: LinearLayout? = null</ID>
     <ID>VariableNaming:InvestmentAmountActivity.kt$InvestmentAmountActivity$var rd_exact_investment: RadioButton? = null</ID>
