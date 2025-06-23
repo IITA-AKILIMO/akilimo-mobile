@@ -59,7 +59,7 @@ class TillageOperationFragment : BindBaseStepFragment<FragmentTillageOperationBi
         viewModel.errorMessage.observe(viewLifecycleOwner) { errorMsg ->
             errorMsg?.let {
                 showCustomWarningDialog(it)
-                viewModel.errorShown() // Notify ViewModel the error has been shown
+                viewModel.errorShown()
             }
         }
 
@@ -131,6 +131,11 @@ class TillageOperationFragment : BindBaseStepFragment<FragmentTillageOperationBi
         )
     }
 
+
+    override fun onSelected() {
+        viewModel.loadCurrentPractice()
+    }
+
     override fun verifyStep(): VerificationError? {
         val isValid = viewModel.dataIsValid.value != false
         if (!isValid) {
@@ -140,8 +145,4 @@ class TillageOperationFragment : BindBaseStepFragment<FragmentTillageOperationBi
         return null
     }
 
-    override fun onSelected() {
-        Log.d(TAG, "TillageOperationFragment selected.")
-        viewModel.loadCurrentPractice()
-    }
 }

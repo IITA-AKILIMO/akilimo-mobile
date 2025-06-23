@@ -1,4 +1,4 @@
-package com.akilimo.mobile.viewmodels // Or your preferred package
+package com.akilimo.mobile.viewmodels
 
 import android.app.Application
 import android.util.Log
@@ -16,19 +16,19 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class TillageOperationViewModel(
-    private val application: Application,
+    application: Application,
     private val database: AppDatabase = AppDatabase.getInstance(application),
     private val dispatchers: IDispatcherProvider = DefaultDispatcherProvider()
 ) : ViewModel() {
 
     private val _currentPractice = MutableLiveData<CurrentPractice?>()
-    val currentPractice: LiveData<CurrentPractice?> = _currentPractice
+    val currentPractice: LiveData<CurrentPractice?> get() = _currentPractice
 
-    private val _dataIsValid = MutableLiveData<Boolean>(true)
-    val dataIsValid: LiveData<Boolean> = _dataIsValid
+    private val _dataIsValid = MutableLiveData(true)
+    val dataIsValid: LiveData<Boolean> get() = _dataIsValid
 
     private val _errorMessage = MutableLiveData<String?>()
-    val errorMessage: LiveData<String?> = _errorMessage
+    val errorMessage: LiveData<String?> get() = _errorMessage
 
     companion object {
         private const val TAG = "TillageOperationVM"
@@ -40,59 +40,78 @@ class TillageOperationViewModel(
 
     fun loadCurrentPractice() {
         viewModelScope.launch {
-            val startTime = System.currentTimeMillis()
-            Log.d(TAG, "Loading current practice from database...")
+            Log.d(TAG, "Loading current practice...")
             try {
-                // Perform database read on a background thread
                 val practice = withContext(dispatchers.io) {
                     database.currentPracticeDao().findOne() ?: CurrentPractice()
                 }
-                _currentPractice.value = practice
-                val endTime = System.currentTimeMillis()
-                Log.d(TAG, "Current practice loaded in ${endTime - startTime} ms")
+                _currentPractice.postValue(practice)
             } catch (e: Exception) {
-                Log.e(TAG, "Error loading current practice", e)
-                _errorMessage.value = "Error loading data: ${e.localizedMessage}"
+                val message = "Failed to load practice: ${e.localizedMessage}"
+                Log.e(TAG, message, e)
+                _errorMessage.postValue(message)
                 Sentry.captureException(e)
             }
         }
     }
 
     fun updatePloughing(perform: Boolean, method: EnumOperationMethod = EnumOperationMethod.NONE) {
-        val practice = _currentPractice.value ?: CurrentPractice()
-        if (practice.performPloughing != perform || (perform && practice.ploughingMethod != method)) {
-            practice.performPloughing = perform
-            practice.ploughingMethod = if (perform) method else EnumOperationMethod.NONE
-            _currentPractice.value = practice // Trigger LiveData update
-            saveCurrentPracticeToDatabase()
-        }
+        updatePracticeField(
+            field = "ploughing",
+            perform = perform,
+            method = method,
+            update = { practice ->
+                practice.performPloughing = perform
+                practice.ploughingMethod = if (perform) method else EnumOperationMethod.NONE
+            }
+        )
     }
 
     fun updateRidging(perform: Boolean, method: EnumOperationMethod = EnumOperationMethod.NONE) {
-        val practice = _currentPractice.value ?: CurrentPractice()
-        if (practice.performRidging != perform || (perform && practice.ridgingMethod != method)) {
-            practice.performRidging = perform
-            practice.ridgingMethod = if (perform) method else EnumOperationMethod.NONE
-            _currentPractice.value = practice // Trigger LiveData update
-            saveCurrentPracticeToDatabase()
+        updatePracticeField(
+            field = "ridging",
+            perform = perform,
+            method = method,
+            update = { practice ->
+                practice.performRidging = perform
+                practice.ridgingMethod = if (perform) method else EnumOperationMethod.NONE
+            }
+        )
+    }
+
+    private fun updatePracticeField(
+        field: String,
+        perform: Boolean,
+        method: EnumOperationMethod,
+        update: (CurrentPractice) -> Unit
+    ) {
+        val current = currentPractice.value ?: CurrentPractice()
+        val hasChanged = when (field) {
+            "ploughing" -> current.performPloughing != perform || (perform && current.ploughingMethod != method)
+            "ridging" -> current.performRidging != perform || (perform && current.ridgingMethod != method)
+            else -> false
+        }
+
+        if (hasChanged) {
+            update(current)
+            _currentPractice.postValue(current)
+            persistPractice(current)
         }
     }
 
-
-    private fun saveCurrentPracticeToDatabase() {
-        val practiceToSave = _currentPractice.value ?: return // Nothing to save
-
+    private fun persistPractice(practice: CurrentPractice) {
         viewModelScope.launch {
             try {
                 withContext(dispatchers.io) {
-                    database.currentPracticeDao().insert(practiceToSave)
+                    database.currentPracticeDao().insert(practice)
                 }
-                _dataIsValid.value = true
-                _errorMessage.value = null
+                _dataIsValid.postValue(true)
+                _errorMessage.postValue(null)
             } catch (ex: Exception) {
-                _dataIsValid.value = false
-                _errorMessage.value = ex.message ?: "Unknown error during save"
-                Log.e(TAG, "Error saving current practice: ${_errorMessage.value}", ex)
+                val message = ex.message ?: "Unknown error while saving practice"
+                Log.e(TAG, message, ex)
+                _dataIsValid.postValue(false)
+                _errorMessage.postValue(message)
                 Sentry.captureException(ex)
             }
         }
