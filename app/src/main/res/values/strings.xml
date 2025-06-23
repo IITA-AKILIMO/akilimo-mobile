@@ -59,7 +59,7 @@
     <string name="area_unit_square_meter">in Square meter (m\u00B2)</string>
 
     <string name="lbl_acre">acre</string>
-    <string name="lbl_ha">ha</string>
+    <string name="lbl_ha">hectare</string>
     <string name="lbl_are">are</string>
     <string name="lbl_sqm" translatable="false">m\u00B2</string>
 

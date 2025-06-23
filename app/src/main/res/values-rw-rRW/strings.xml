@@ -35,7 +35,7 @@
     <string name="area_unit_ha">Hegitare (ha)</string>
     <string name="area_unit_square_meter">muri metero kare (m\u00B2)</string>
     <string name="lbl_acre">are</string>
-    <string name="lbl_ha">ha</string>
+    <string name="lbl_ha">hegitari</string>
     <string name="lbl_cassava_field_size_no_ph">Ubuso bw\'umurima wawe w\'imyumbati bungana iki?</string>
     <string name="lbl_cassava_field_size">Ni ubuhe buso bw\'umurima wawe w\'imyumbati (muri %1$s)?</string>
     <!--  acres  -->
