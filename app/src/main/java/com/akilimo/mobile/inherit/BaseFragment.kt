@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase
-import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.utils.MathHelper
 import io.sentry.Sentry
 
@@ -28,7 +27,7 @@ abstract class BaseFragment<T : ViewBinding> : Fragment() {
     protected var countryCode: String? = null
 
     protected val mathHelper: MathHelper by lazy { MathHelper() }
-    protected val database: AppDatabase by lazy { getDatabase(requireContext()) }
+    protected val database: AppDatabase by lazy { AppDatabase.getInstance(requireContext().applicationContext) }
 
     protected abstract fun inflateBinding(
         inflater: LayoutInflater,

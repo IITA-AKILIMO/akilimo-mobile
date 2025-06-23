@@ -93,6 +93,7 @@ abstract class BaseFertilizersActivity(
         }
 
         binding.btnRetry.setOnClickListener {
+            binding.availableFertilizers.visibility = View.GONE
             viewModel.loadFertilizers()
         }
     }
