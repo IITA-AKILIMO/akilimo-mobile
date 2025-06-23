@@ -54,9 +54,7 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" /> <!-- Services -->
-        <service
-            android:name=".services.GPSTracker"
-            android:exported="false" /> <!-- Service shouldn't be exposed unless really needed -->
+
         <!-- Activities -->
         <activity android:name=".views.activities.HomeStepperActivity" />
         <activity android:name=".views.activities.SweetPotatoMarketActivity" />
