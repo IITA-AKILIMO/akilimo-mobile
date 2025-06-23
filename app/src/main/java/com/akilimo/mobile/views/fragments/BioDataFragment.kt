@@ -27,7 +27,7 @@ class BioDataFragment : BindBaseStepFragment<FragmentBioDataBinding>() {
         fun newInstance(): BioDataFragment = BioDataFragment()
     }
 
-    
+
     override fun inflateBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,9 +36,14 @@ class BioDataFragment : BindBaseStepFragment<FragmentBioDataBinding>() {
         FragmentBioDataBinding.inflate(inflater, container, false)
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
+        setupObservers()
         setupSpinners()
         setupPhoneValidation()
 
+        viewModel.loadUserProfile()
+    }
+
+    override fun setupObservers() {
         viewModel.userProfile.observe(viewLifecycleOwner) { profile ->
             binding.apply {
                 edtFirstName.setText(profile.firstName)
@@ -49,8 +54,6 @@ class BioDataFragment : BindBaseStepFragment<FragmentBioDataBinding>() {
                 spnInterest.setSelection(viewModel.interestOptions.indexOfValue(profile.akilimoInterest))
             }
         }
-
-        viewModel.loadUserProfile()
     }
 
     private fun setupSpinners() {
