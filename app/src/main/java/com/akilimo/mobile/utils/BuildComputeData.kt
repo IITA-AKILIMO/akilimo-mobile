@@ -1,7 +1,7 @@
 package com.akilimo.mobile.utils
 
 import android.content.Context
-import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
+import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.rest.request.ComputeRequest
 import com.akilimo.mobile.rest.request.FertilizerRequest
 import com.akilimo.mobile.rest.request.RecommendationRequest
@@ -18,8 +18,8 @@ class BuildComputeData(val context: Context) {
 
     private val modelMapper = ModelMapper()
 
-    private val database = getDatabase(context = context)
-    val session = PreferenceManager(context = context)
+    private val database = AppDatabase.getInstance(context.applicationContext)
+    private val session = PreferenceManager(applicationContext = context.applicationContext)
 
     fun buildRecommendationReq(): RecommendationRequest {
         val userInfo = buildProfileInfo()

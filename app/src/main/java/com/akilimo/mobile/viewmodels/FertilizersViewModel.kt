@@ -19,7 +19,7 @@ class FertilizersViewModel(
     private val minSelection: Int,
     private val useCase: String?,
     private val akilimoService: AkilimoService = AkilimoApi.apiService,
-    private val database: AppDatabase = AppDatabase.getDatabase(application),
+    private val database: AppDatabase = AppDatabase.getInstance(application),
     private val dispatchers: IDispatcherProvider = DefaultDispatcherProvider()
 ) : AndroidViewModel(application) {
 

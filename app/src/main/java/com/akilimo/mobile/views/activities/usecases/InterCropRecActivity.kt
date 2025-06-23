@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.RecOptionsAdapter
-import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityInterCropRecBinding
 import com.akilimo.mobile.entities.UseCase
 import com.akilimo.mobile.inherit.BaseRecommendationActivity
@@ -36,7 +35,6 @@ class InterCropRecActivity : BaseRecommendationActivity<ActivityInterCropRecBind
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val database = getDatabase(this)
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
             countryCode = profileInfo.countryCode

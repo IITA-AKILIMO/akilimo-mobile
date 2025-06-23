@@ -8,7 +8,6 @@ import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.activity.addCallback
 import com.akilimo.mobile.R
-import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityCassavaMarketBinding
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.CassavaMarket
@@ -346,7 +345,6 @@ class CassavaMarketActivity : BindBaseActivity<ActivityCassavaMarketBinding>() {
 
 
     private fun processStarchFactories() {
-        val database = getDatabase(this@CassavaMarketActivity)
         val call = AkilimoApi.apiService.getStarchFactories(countryCode)
         call.enqueue(object : retrofit2.Callback<StarchFactoryResponse> {
             override fun onResponse(
@@ -369,7 +367,6 @@ class CassavaMarketActivity : BindBaseActivity<ActivityCassavaMarketBinding>() {
     }
 
     private fun processCassavaPrices() {
-        val database = getDatabase(this@CassavaMarketActivity)
         val call = AkilimoApi.apiService.getCassavaPrices(countryCode)
         call.enqueue(object : retrofit2.Callback<CassavaPricePriceResponse> {
             override fun onResponse(
@@ -392,7 +389,6 @@ class CassavaMarketActivity : BindBaseActivity<ActivityCassavaMarketBinding>() {
 
 
     private fun processData() {
-        val database = getDatabase(this@CassavaMarketActivity)
         val starchFactoriesList =
             database.starchFactoryDao().findStarchFactoriesByCountry(countryCode)
         addFactoriesRadioButtons(starchFactoriesList)
