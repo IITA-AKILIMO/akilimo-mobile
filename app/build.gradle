@@ -235,6 +235,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
     implementation 'androidx.activity:activity-ktx:1.8.0'
     implementation "androidx.datastore:datastore-preferences:1.0.0"
+    implementation 'androidx.room:room-runtime-android:2.7.2'
 
     //If you are using Kotlin, replace annotationProcessor with kapt.
     kapt 'androidx.room:room-compiler:2.4.2'
