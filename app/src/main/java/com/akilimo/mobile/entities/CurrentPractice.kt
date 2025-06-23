@@ -7,60 +7,60 @@ import com.akilimo.mobile.utils.enums.EnumOperationMethod
 import com.akilimo.mobile.utils.enums.EnumWeedControlMethod
 
 @Entity(tableName = "current_practices")
-data class CurrentPractice(
+open class CurrentPractice {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    var id: Long? = null,
+    var id: Long? = null
 
     @ColumnInfo(name = "weed_radio_index")
-    var weedRadioIndex: Int = -1,
+    var weedRadioIndex: Int = -1
 
     @ColumnInfo(name = "weed_control_method")
-    var weedControlMethod: EnumWeedControlMethod = EnumWeedControlMethod.NONE,
+    var weedControlMethod: EnumWeedControlMethod = EnumWeedControlMethod.NONE
 
     @ColumnInfo(name = "plough_operations")
-    var ploughOperations: String? = null,
+    var ploughOperations: String? = null
 
     @ColumnInfo(name = "ridge_operations")
-    var ridgeOperations: String? = null,
+    var ridgeOperations: String? = null
 
     @ColumnInfo(name = "harrow_operations")
-    var harrowOperations: String? = null,
+    var harrowOperations: String? = null
 
     @ColumnInfo(name = "weed_control_operations")
-    var weedControlOperations: String? = null,
+    var weedControlOperations: String? = null
 
     @ColumnInfo(name = "ploughing_method")
-    var ploughingMethod: EnumOperationMethod = EnumOperationMethod.NONE,
+    var ploughingMethod: EnumOperationMethod = EnumOperationMethod.NONE
 
     @ColumnInfo(name = "ridging_method")
-    var ridgingMethod: EnumOperationMethod = EnumOperationMethod.NONE,
+    var ridgingMethod: EnumOperationMethod = EnumOperationMethod.NONE
 
     @ColumnInfo(name = "harrowing_method")
-    var harrowingMethod: EnumOperationMethod = EnumOperationMethod.NONE,
+    var harrowingMethod: EnumOperationMethod = EnumOperationMethod.NONE
 
     @ColumnInfo(name = "tractor_available")
-    var tractorAvailable: Boolean = false,
+    var tractorAvailable = false
 
     @ColumnInfo(name = "tractor_plough")
-    var tractorPlough: Boolean = false,
+    var tractorPlough = false
 
     @ColumnInfo(name = "tractor_harrow")
-    var tractorHarrow: Boolean = false,
+    var tractorHarrow = false
 
     @ColumnInfo(name = "tractor_ridger")
-    var tractorRidger: Boolean = false,
+    var tractorRidger = false
 
     @ColumnInfo(name = "uses_herbicide")
-    var usesHerbicide: Boolean = false,
+    var usesHerbicide = false
 
     @ColumnInfo(name = "perform_ploughing")
-    var performPloughing: Boolean = false,
+    var performPloughing = false
 
     @ColumnInfo(name = "perform_harrowing")
-    var performHarrowing: Boolean = false,
+    var performHarrowing = false
 
     @ColumnInfo(name = "perform_ridging")
-    var performRidging: Boolean = false
-)
+    var performRidging = false
+}
