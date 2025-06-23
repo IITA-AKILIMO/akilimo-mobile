@@ -3,36 +3,27 @@ package com.akilimo.mobile.views.fragments
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.fragment.app.viewModels
 import com.akilimo.mobile.R
-import com.akilimo.mobile.data.CountryOption
 import com.akilimo.mobile.data.indexOfValue
 import com.akilimo.mobile.databinding.FragmentCountryBinding
-import com.akilimo.mobile.entities.UserProfile
 import com.akilimo.mobile.inherit.BindBaseStepFragment
 import com.akilimo.mobile.utils.enums.EnumCountry
+import com.akilimo.mobile.viewmodels.CountryViewModel
+import com.akilimo.mobile.viewmodels.factory.CountryViewModelFactory
 import com.akilimo.mobile.views.fragments.dialog.CountryPickerDialogFragment
 import com.blongho.country_data.World
 import com.stepstone.stepper.VerificationError
-import io.sentry.Sentry
 
 class CountryFragment : BindBaseStepFragment<FragmentCountryBinding>() {
 
-    private val allowedCountries = setOf(EnumCountry.Nigeria, EnumCountry.Tanzania)
+    private val allowedCountries: Set<EnumCountry> =
+        setOf(EnumCountry.Nigeria, EnumCountry.Tanzania)
 
-    private val countries: List<CountryOption> by lazy {
-        EnumCountry.entries
-            .filter { it in allowedCountries }
-            .map {
-                CountryOption(
-                    displayLabel = it.name,
-                    value = it.countryCode(),
-                    currencyCode = it.currencyName(requireContext())
-                )
-            }
+    private val viewModel: CountryViewModel by viewModels {
+        CountryViewModelFactory(requireActivity().application, allowedCountries)
     }
 
-    private var selectedCountry = ""
 
     companion object {
         fun newInstance(): CountryFragment = CountryFragment()
@@ -48,15 +39,15 @@ class CountryFragment : BindBaseStepFragment<FragmentCountryBinding>() {
         binding.countryBtnPickCountry.setOnClickListener {
             showCountryPickerDialog()
         }
+        observeProfile()
     }
 
     override fun onSelected() {
-        refreshData()
+        viewModel.loadProfile()
     }
 
-    private fun refreshData() {
-        try {
-            val profile = database.profileInfoDao().findOne()
+    private fun observeProfile() {
+        viewModel.userProfile.observe(viewLifecycleOwner) { profile ->
             if (profile != null) {
                 binding.countryTitle.text =
                     getString(R.string.lbl_country_location, profile.firstName)
@@ -66,13 +57,13 @@ class CountryFragment : BindBaseStepFragment<FragmentCountryBinding>() {
                     binding.countryName.text = profile.countryName
                 }
             }
-        } catch (ex: Exception) {
-            Toast.makeText(requireContext(), ex.localizedMessage, Toast.LENGTH_SHORT).show()
-            Sentry.captureException(ex)
         }
     }
 
+
     private fun showCountryPickerDialog() {
+        val countries = viewModel.countries
+        val selectedCountry = viewModel.userProfile.value?.countryCode ?: ""
         val selectedCountryIndex = countries.indexOfValue(selectedCountry)
 
         CountryPickerDialogFragment(countries, selectedCountryIndex) { selectedIndex ->
@@ -84,30 +75,10 @@ class CountryFragment : BindBaseStepFragment<FragmentCountryBinding>() {
             binding.countryImage.setImageResource(World.getFlagOf(countryCode))
             binding.countryName.text = countryName
 
-            updateSelectedCountry(countryCode, countryName, currencyCode)
+            viewModel.updateCountrySelection(countryCode, countryName, currencyCode)
         }.show(parentFragmentManager, "countryPickerDialog")
     }
 
-
-    private fun updateSelectedCountry(
-        selectedCountryCode: String,
-        selectedCountryName: String,
-        selectedCurrencyCode: String
-    ) {
-        try {
-            dataIsValid = selectedCountryCode.isNotBlank()
-            val profile = database.profileInfoDao().findOne() ?: UserProfile()
-            profile.apply {
-                countryCode = selectedCountryCode
-                countryName = selectedCountryName
-                currencyCode = selectedCurrencyCode
-            }
-
-            database.profileInfoDao().insert(profile)
-        } catch (ex: Exception) {
-            Sentry.captureException(ex)
-        }
-    }
 
     override fun verifyStep(): VerificationError? {
         return if (dataIsValid) null else VerificationError("Please select a country")
