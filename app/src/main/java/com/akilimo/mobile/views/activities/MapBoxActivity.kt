@@ -10,9 +10,6 @@ import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ActivityMapBoxBinding
 import com.akilimo.mobile.inherit.BaseLocationPicker
-import com.akilimo.mobile.services.GPSTracker
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.snackbar.Snackbar
 import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
@@ -168,21 +165,21 @@ class MapBoxActivity : BaseLocationPicker() {
 
     @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
     private fun initCurrentLocation() {
-        val gps = GPSTracker(this@MapBoxActivity)
-        gps.getLocation()
-        if (gps.canGetLocation()) {
-            val status =
-                GoogleApiAvailability.getInstance()
-                    .isGooglePlayServicesAvailable(this@MapBoxActivity)
-            if (status == ConnectionResult.SUCCESS) {
-                currentLong = gps.longitudeValue
-                currentLat = gps.latitudeValue
-            }
-            gps.stopUsingGPS()
-        } else {
-            gps.showSettingsAlert()
-        }
-        currentCoordinates = LatLng(currentLat, currentLong, currentAlt)
+//        val gps = LiveLocationProvider(this@MapBoxActivity)
+//        gps.getLocation()
+//        if (gps.canGetLocation()) {
+//            val status =
+//                GoogleApiAvailability.getInstance()
+//                    .isGooglePlayServicesAvailable(this@MapBoxActivity)
+//            if (status == ConnectionResult.SUCCESS) {
+//                currentLong = gps.longitudeValue
+//                currentLat = gps.latitudeValue
+//            }
+//            gps.stopUsingGPS()
+//        } else {
+//            gps.showSettingsAlert()
+//        }
+//        currentCoordinates = LatLng(currentLat, currentLong, currentAlt)
     }
 
     private fun processActivityResult() {
