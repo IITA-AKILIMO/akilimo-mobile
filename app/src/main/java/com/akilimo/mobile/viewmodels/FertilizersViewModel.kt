@@ -19,9 +19,26 @@ class FertilizersViewModel(
     private val minSelection: Int,
     private val useCase: String?,
     private val akilimoService: AkilimoService = AkilimoApi.apiService,
-    private val database: AppDatabase = AppDatabase.getDatabase(application),
+    private val database: AppDatabase = AppDatabase.getInstance(application),
     private val dispatchers: IDispatcherProvider = DefaultDispatcherProvider()
 ) : AndroidViewModel(application) {
+
+    private var networkFailureCount = 0
+    private var lastFailureTime: Long = 0
+    private val failureCooldownMillis = 30 * 60 * 1000L // 30 minutes
+    private val maxFailures = 3
+
+    var countryCode: String = ""
+    var currencyCode: String = ""
+
+    private val lastSyncKey = "last_fertilizer_sync"
+
+    @Suppress("MagicNumber")
+    private val oneDayMillis = 24 * 60 * 60 * 1000L
+
+    private val now: Long get() = System.currentTimeMillis()
+    private val lastSync: Long get() = prefs.getLong(lastSyncKey, 0L)
+
 
     private val _fertilizers = MutableLiveData<List<Fertilizer>>()
     val fertilizers: LiveData<List<Fertilizer>> = _fertilizers
@@ -38,16 +55,10 @@ class FertilizersViewModel(
     private val _showSnackBarEvent = MutableLiveData<String?>()
     val showSnackBarEvent: LiveData<String?> = _showSnackBarEvent
 
-    var countryCode: String = ""
-    var currencyCode: String = ""
 
     private val prefs =
         application.getSharedPreferences("fertilizer_prefs", Application.MODE_PRIVATE)
-    private val lastSyncKey = "last_fertilizer_sync"
-    private val oneDayMillis = 24 * 60 * 60 * 1000L
 
-    private val now: Long get() = System.currentTimeMillis()
-    private val lastSync: Long get() = prefs.getLong(lastSyncKey, 0L)
 
     init {
         database.profileInfoDao().findOne()?.let {
@@ -58,32 +69,35 @@ class FertilizersViewModel(
 
     fun loadFertilizers() = launchWithState {
         val localFertilizers = getFertilizersFromDb()
-        if (localFertilizers.isNotEmpty()) {
-            _fertilizers.postValue(localFertilizers)
-        }
-
         if (shouldSync(localFertilizers)) {
-            fetchAndSyncFertilizers()
-        } else if (localFertilizers.isEmpty()) {
-            _error.postValue(true)
+            fetchAndSyncFertilizers(localFertilizers)
+        } else {
+            _fertilizers.postValue(localFertilizers)
         }
     }
 
     fun refreshFertilizers() = launchWithState {
-        fetchAndSyncFertilizers()
+        val fallback = getFertilizersFromDb()
+        fetchAndSyncFertilizers(fallback)
     }
 
-    private fun getFertilizersFromDb(): List<Fertilizer> =
-        if (useCase.isNullOrBlank()) {
-            database.fertilizerDao().findAllByCountry(countryCode)
-        } else {
-            database.fertilizerDao().findAllByCountryAndUseCase(countryCode, useCase)
-        }
+    private fun getFertilizersFromDb(): List<Fertilizer> = if (useCase.isNullOrBlank()) {
+        database.fertilizerDao().findAllByCountry(countryCode)
+    } else {
+        database.fertilizerDao().findAllByCountryAndUseCase(countryCode, useCase)
+    }
 
     private fun shouldSync(local: List<Fertilizer>) =
         now - lastSync > oneDayMillis || local.isEmpty()
 
-    private suspend fun fetchAndSyncFertilizers() {
+    private suspend fun fetchAndSyncFertilizers(offlineFertilizers: List<Fertilizer>) {
+        if (networkFailureCount >= maxFailures) {
+            // Too many failures, use local DB only
+            _showSnackBarEvent.postValue("Using offline data due to network issues.")
+            _fertilizers.postValue(offlineFertilizers)
+            return
+        }
+
         val response = akilimoService.getFertilizers(countryCode, useCase)
         val remoteFertilizers = response.data
 
@@ -154,7 +168,9 @@ class FertilizersViewModel(
         _error.postValue(false)
         try {
             block()
+            resetFailureCount()
         } catch (e: Exception) {
+            trackFailure()
             handleError(e)
         } finally {
             _loading.postValue(false)
@@ -165,6 +181,7 @@ class FertilizersViewModel(
         viewModelScope.launch(dispatchers.io) {
             try {
                 block()
+                resetFailureCount()
             } catch (e: Exception) {
                 handleError(e)
             }
@@ -173,5 +190,19 @@ class FertilizersViewModel(
     private fun handleError(e: Exception) {
         _error.postValue(true)
         Sentry.captureException(e)
+    }
+
+    private fun trackFailure() {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastFailureTime > failureCooldownMillis) {
+            networkFailureCount = 1
+        } else {
+            networkFailureCount++
+        }
+        lastFailureTime = currentTime
+    }
+
+    private fun resetFailureCount() {
+        networkFailureCount = 0
     }
 }

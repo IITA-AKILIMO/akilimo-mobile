@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.AkilimoCurrency
 import com.akilimo.mobile.entities.CassavaMarket
@@ -52,11 +53,13 @@ import com.akilimo.mobile.entities.UserProfile
         UseCase::class,
         AkilimoCurrency::class,
         AdviceStatus::class
-    ], version = 4,
+    ],
+    version = 4,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
+
     abstract fun cassavaMarketDao(): CassavaMarketDao
     abstract fun cassavaPriceDao(): CassavaPriceDao
     abstract fun currentPracticeDao(): CurrentPracticeDao
@@ -64,7 +67,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun fertilizerPriceDao(): FertilizerPriceDao
     abstract fun fieldOperationCostDao(): FieldOperationCostsDao
     abstract fun fieldYieldDao(): FieldYieldDao
-
     abstract fun investmentAmountDao(): InvestmentAmountDao
     abstract fun locationInfoDao(): UserLocationDao
     abstract fun maizeMarketDao(): MaizeMarketDao
@@ -81,25 +83,32 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun adviceStatusDao(): AdviceStatusDao
     abstract fun currencyDao(): CurrencyDao
 
-
     companion object {
-        // For Singleton instantiation
         @Volatile
-        private var database: AppDatabase? = null
+        private var INSTANCE: AppDatabase? = null
         private const val DATABASE_NAME = "AKILIMO_JUNE_2025"
 
-        @JvmStatic
-        fun getDatabase(context: Context): AppDatabase {
-            return database ?: synchronized(this) {
-                database ?: Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java, DATABASE_NAME
-                )
-                    .allowMainThreadQueries() //TODO migrate to coroutines later
-                    .fallbackToDestructiveMigration()
-                    .build().also { database = it }
+        fun getInstance(applicationContext: Context): AppDatabase =
+            INSTANCE ?: synchronized(this) {
+                INSTANCE ?: buildDatabase(applicationContext).also { INSTANCE = it }
             }
+
+        private fun buildDatabase(applicationContext: Context): AppDatabase {
+            return Room.databaseBuilder(
+                applicationContext,
+                AppDatabase::class.java,
+                DATABASE_NAME
+            )
+                .fallbackToDestructiveMigration()
+                .allowMainThreadQueries() // ⚠️ optional, discouraged for production
+                .addCallback(object : RoomDatabase.Callback() {
+                    override fun onCreate(db: SupportSQLiteDatabase) {
+                        super.onCreate(db)
+                        // ✅ Optional pre-population logic here
+                        // db.execSQL("INSERT INTO ...")
+                    }
+                })
+                .build()
         }
     }
-
 }

@@ -1,8 +1,10 @@
-package com.akilimo.mobile.viewmodels // Or your preferred package
+package com.akilimo.mobile.viewmodels.factory // Or your preferred package
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.akilimo.mobile.exceptions.UnknownViewModelClassException
+import com.akilimo.mobile.viewmodels.TillageOperationViewModel
 
 class TillageOperationViewModelFactory(
     private val application: Application
@@ -12,6 +14,6 @@ class TillageOperationViewModelFactory(
         if (modelClass.isAssignableFrom(TillageOperationViewModel::class.java)) {
             return TillageOperationViewModel(application) as T
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
+        throw UnknownViewModelClassException("Unknown ViewModel class")
     }
 }

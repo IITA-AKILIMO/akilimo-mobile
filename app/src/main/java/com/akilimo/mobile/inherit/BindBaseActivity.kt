@@ -7,7 +7,7 @@ abstract class BindBaseActivity<T : ViewBinding> : BaseActivity() {
 
     private var _binding: T? = null
     protected val binding
-        get() = _binding ?: throw IllegalStateException("Binding is not initialized yet.")
+        get() = _binding ?: error("Binding is not initialized yet.")
 
 
     protected abstract fun inflateBinding(): T

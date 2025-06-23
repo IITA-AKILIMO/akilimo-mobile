@@ -14,7 +14,7 @@ import com.akilimo.mobile.utils.enums.EnumOperation
 import com.akilimo.mobile.utils.enums.EnumOperationMethod
 import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.viewmodels.TillageOperationViewModel
-import com.akilimo.mobile.viewmodels.TillageOperationViewModelFactory
+import com.akilimo.mobile.viewmodels.factory.TillageOperationViewModelFactory
 import com.akilimo.mobile.views.fragments.dialog.OperationTypeDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.stepstone.stepper.VerificationError

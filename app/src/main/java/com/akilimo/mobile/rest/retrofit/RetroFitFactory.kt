@@ -6,6 +6,7 @@ import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.R
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import io.sentry.Sentry
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -50,8 +51,7 @@ object RetroFitFactory {
                     sslContextAndTrustManager.second
                 )
             } catch (e: Exception) {
-                e.printStackTrace()
-                // fallback to default if cert loading fails
+                Sentry.captureException(e)
             }
         }
 

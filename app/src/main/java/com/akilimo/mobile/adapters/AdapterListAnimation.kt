@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ItemCardRecommendationArrowBinding
 import com.akilimo.mobile.models.Recommendation
 import com.akilimo.mobile.utils.TheItemAnimation.animate
@@ -15,9 +14,8 @@ import com.akilimo.mobile.utils.TheItemAnimation.animate
     message = "Consider moving to a RecOptionsAdapter",
     replaceWith = ReplaceWith("RecOptionsAdapter")
 )
-class AdapterListAnimation(
-    private val layoutId: Int = R.layout.item_card_recommendation_arrow,
-) : ListAdapter<Recommendation, AdapterListAnimation.OriginalViewHolder>(RecommendationDiffCallback()) {
+class AdapterListAnimation :
+    ListAdapter<Recommendation, AdapterListAnimation.OriginalViewHolder>(RecommendationDiffCallback()) {
 
     private var lastPosition = -1
     private var onAttach = true

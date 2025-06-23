@@ -70,16 +70,11 @@ class RootYieldActivity : BindBaseActivity<ActivityRootYieldBinding>() {
 
                     database.fieldYieldDao().insert(updatedYield)
 
-                    val oldIndex = selectedIndex
                     selectedIndex = position
                     yieldDataHolder = yieldDataHolder.copy(
                         savedYield = updatedYield,
                         selectedYieldAmount = updatedYield.yieldAmount
                     )
-
-                    // Refresh old and new selected items only
-//                    mAdapter.notifyItemChanged(oldIndex)
-//                    mAdapter.notifyItemChanged(selectedIndex, fieldYield)
                     mAdapter.notifyDataSetChanged()
                 }
             )

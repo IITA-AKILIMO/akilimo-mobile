@@ -1,194 +1,109 @@
 package com.akilimo.mobile.views.activities
 
 import android.os.Bundle
-import android.widget.EditText
-import android.widget.RadioGroup
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.appcompat.widget.Toolbar
-import androidx.cardview.widget.CardView
+import androidx.activity.viewModels
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ActivityWeedControlCostBinding
-import com.akilimo.mobile.entities.AdviceStatus
-import com.akilimo.mobile.entities.CurrentPractice
-import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.repo.DatabaseRepository
 import com.akilimo.mobile.utils.LanguageManager
-import com.akilimo.mobile.utils.enums.EnumAdviceTask
-import com.akilimo.mobile.utils.enums.EnumCountry
 import com.akilimo.mobile.utils.enums.EnumWeedControlMethod
+import com.akilimo.mobile.viewmodels.WeedControlCostsViewModel
+import com.akilimo.mobile.viewmodels.factory.WeedControlCostsViewModelFactory
 import io.sentry.Sentry
 
 class WeedControlCostsActivity : BaseActivity() {
-    var toolbar: Toolbar? = null
-    private var firstWeedingOpCostTitle: AppCompatTextView? = null
-    private var secondWeedingOpCostTitle: AppCompatTextView? = null
-    private var herbicideUseTitle: AppCompatTextView? = null
-    private var herbicideUseCard: CardView? = null
-    private var btnFinish: AppCompatButton? = null
-    private var btnCancel: AppCompatButton? = null
-    private var rdgWeedControl: RadioGroup? = null
-    private var editFirstWeedingOpCost: EditText? = null
-    private var editSecondWeedingOpCost: EditText? = null
 
-    private var currentPractice: CurrentPractice? = null
-    private var fieldOperationCost: FieldOperationCost? = null
-    private var usesHerbicide = false
-    private var weedControlTechnique: EnumWeedControlMethod = EnumWeedControlMethod.NONE
-    private var firstOperationCost = 0.0
-    private var secondOperationCost = 0.0
-    private var weedRadioIndex = 0
+    private lateinit var binding: ActivityWeedControlCostBinding
+    private val viewModel: WeedControlCostsViewModel by viewModels {
+        WeedControlCostsViewModelFactory(DatabaseRepository(database))
+    }
 
     private val minCost = 1.0
 
-    private var _binding: ActivityWeedControlCostBinding? = null
-    private val binding get() = _binding!!
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityWeedControlCostBinding.inflate(
-            layoutInflater
-        )
+        binding = ActivityWeedControlCostBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val mandatoryInfo = database.mandatoryInfoDao().findOne()
-        if (mandatoryInfo != null) {
-            areaUnit = mandatoryInfo.areaUnit
-            fieldSize = mandatoryInfo.areaSize
-        }
+        setupToolbar()
+        setupObservers()
+        setupListeners()
 
-        val profileInfo = database.profileInfoDao().findOne()
-        if (profileInfo != null) {
-            countryCode = profileInfo.countryCode
-            currencyCode = profileInfo.currencyCode
-            val myAkilimoCurrency = database.currencyDao().findOneByCurrencyCode(currencyCode)
-            if (myAkilimoCurrency != null) {
-                currencySymbol = myAkilimoCurrency.currencySymbol
-                currencyName = myAkilimoCurrency.currencyName
-            }
-        }
-
-
-        toolbar = binding.toolbar
-        firstWeedingOpCostTitle = binding.weedControlCosts.firstWeedingOpCostTitle
-        secondWeedingOpCostTitle = binding.weedControlCosts.secondWeedingOpCostTitle
-        herbicideUseTitle = binding.weedControlCosts.herbicideUseTitle
-        herbicideUseCard = binding.weedControlCosts.herbicideUseCard
-        btnFinish = binding.twoButtons.btnFinish
-        btnCancel = binding.twoButtons.btnCancel
-        rdgWeedControl = binding.weedControlCosts.rdgWeedControl
-        editFirstWeedingOpCost = binding.weedControlCosts.editFirstWeedingOpCost
-        editSecondWeedingOpCost = binding.weedControlCosts.editSecondWeedingOpCost
-
-
-        setupToolbar(binding.toolbar, R.string.title_weed_control) {
-            validate(false)
-        }
-
-        val context = this@WeedControlCostsActivity
-        val language = LanguageManager.getLanguage(this@WeedControlCostsActivity)
-        var translatedUnit = context.getString(R.string.lbl_acre)
-        if (areaUnit == "ha") {
-            translatedUnit = context.getString(R.string.lbl_ha)
-        }
-        val finalTranslatedUnit = translatedUnit.lowercase()
-        when (countryCode) {
-            "TZ" -> currencyName = EnumCountry.Tanzania.currencyName(context)
-            "NG" -> currencyName = EnumCountry.Nigeria.currencyName(context)
-            "GH" -> currencyName = EnumCountry.Ghana.currencyName(context)
-            "RW" -> currencyName = EnumCountry.Rwanda.currencyName(context)
-            "BI" -> currencyName = EnumCountry.Burundi.currencyName(context)
-        }
-
-
-        val currentPractice = database.currentPracticeDao().findOne()
-        if (currentPractice != null) {
-            weedRadioIndex = currentPractice.weedRadioIndex
-            weedControlTechnique = currentPractice.weedControlMethod
-            rdgWeedControl!!.check(weedRadioIndex)
-        }
-
-        val fieldOperationCost = database.fieldOperationCostDao().findOne()
-        if (fieldOperationCost != null) {
-            firstOperationCost = fieldOperationCost.firstWeedingOperationCost
-            if (firstOperationCost > 0) {
-                editFirstWeedingOpCost!!.setText(firstOperationCost.toString())
-            }
-
-            secondOperationCost = fieldOperationCost.secondWeedingOperationCost
-            if (secondOperationCost > 0) {
-                editSecondWeedingOpCost!!.setText(secondOperationCost.toString())
-            }
-        }
-        var firstWeedCostTitle = getString(
-            R.string.lbl_cost_of_first_weeding_operation,
-            currencyName,
-            mathHelper.removeLeadingZero(fieldSize),
-            finalTranslatedUnit
-        )
-        var secondWeedCostTitle = getString(
-            R.string.lbl_cost_of_second_weeding_operation,
-            currencyName,
-            mathHelper.removeLeadingZero(fieldSize),
-            finalTranslatedUnit
-        )
-        if (language == "sw") {
-            firstWeedCostTitle = getString(
-                R.string.lbl_cost_of_first_weeding_operation,
-                currencyCode,
-                finalTranslatedUnit,
-                mathHelper.removeLeadingZero(fieldSize)
-            )
-            secondWeedCostTitle = getString(
-                R.string.lbl_cost_of_second_weeding_operation,
-                currencyCode,
-                finalTranslatedUnit,
-                mathHelper.removeLeadingZero(fieldSize)
-            )
-        }
-        firstWeedingOpCostTitle!!.text = firstWeedCostTitle
-        secondWeedingOpCostTitle!!.text = secondWeedCostTitle
-
-        rdgWeedControl!!.setOnCheckedChangeListener { _: RadioGroup?, radioIndex: Int ->
-            when (radioIndex) {
-                R.id.rdManualOnlyControl -> {
-                    usesHerbicide = false
-                    weedControlTechnique = EnumWeedControlMethod.MANUAL
-                }
-
-                R.id.rdHerbicideControl -> {
-                    usesHerbicide = true
-                    weedControlTechnique = EnumWeedControlMethod.HERBICIDE
-                }
-
-                R.id.rdManualHerbicideControl -> {
-                    usesHerbicide = true
-                    weedControlTechnique = EnumWeedControlMethod.MANUAL
-                }
-            }
-        }
-
-
-        btnFinish!!.setOnClickListener { validate(false) }
-        btnCancel!!.setOnClickListener { closeActivity(false) }
+        viewModel.loadInitialData()
         showCustomNotificationDialog()
     }
 
-    override fun validate(backPressed: Boolean) {
-        weedRadioIndex = rdgWeedControl!!.checkedRadioButtonId
-        firstOperationCost = mathHelper.convertToDouble(editFirstWeedingOpCost!!.text.toString())
-        secondOperationCost =
-            mathHelper.convertToDouble(editSecondWeedingOpCost!!.text.toString())
+    private fun setupToolbar() {
+        setupToolbar(binding.toolbar, R.string.title_weed_control) {
+            validateAndSave()
+        }
+    }
 
-        if (firstOperationCost <= minCost) {
+    private fun setupObservers() {
+        viewModel.currencyName.observe(this) { updateCostLabels() }
+        viewModel.fieldSize.observe(this) { updateCostLabels() }
+        viewModel.currentPractice.observe(this) { practice ->
+            practice?.weedRadioIndex?.let {
+                binding.weedControlCosts.rdgWeedControl.check(it)
+            }
+        }
+
+        viewModel.fieldOperationCost.observe(this) { cost ->
+            binding.weedControlCosts.editFirstWeedingOpCost.setText(
+                if (cost.firstWeedingOperationCost > 0) cost.firstWeedingOperationCost.toString() else ""
+            )
+            binding.weedControlCosts.editSecondWeedingOpCost.setText(
+                if (cost.secondWeedingOperationCost > 0) cost.secondWeedingOperationCost.toString() else ""
+            )
+        }
+
+        viewModel.saveStatus.observe(this) { result ->
+            result.onSuccess {
+                closeActivity(false)
+            }.onFailure {
+                Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+                Sentry.captureException(it)
+            }
+        }
+    }
+
+    private fun setupListeners() {
+        binding.weedControlCosts.rdgWeedControl.setOnCheckedChangeListener { _, checkedId ->
+            val (method, herbicide) = when (checkedId) {
+                R.id.rdManualOnlyControl -> EnumWeedControlMethod.MANUAL to false
+                R.id.rdHerbicideControl -> EnumWeedControlMethod.HERBICIDE to true
+                R.id.rdManualHerbicideControl -> EnumWeedControlMethod.MANUAL to true
+                else -> EnumWeedControlMethod.NONE to false
+            }
+            viewModel.updateWeedControlMethod(method, checkedId, herbicide)
+        }
+
+        binding.twoButtons.btnFinish.setOnClickListener {
+            validateAndSave()
+        }
+
+        binding.twoButtons.btnCancel.setOnClickListener {
+            closeActivity(false)
+        }
+    }
+
+    private fun validateAndSave() {
+        val firstCost =
+            mathHelper.convertToDouble(binding.weedControlCosts.editFirstWeedingOpCost.text.toString())
+        val secondCost =
+            mathHelper.convertToDouble(binding.weedControlCosts.editSecondWeedingOpCost.text.toString())
+
+        if (firstCost <= minCost) {
             showCustomWarningDialog(
                 getString(R.string.lbl_invalid_cost),
                 getString(R.string.lbl_first_weeding_costs_prompt)
             )
             return
         }
-        if (secondOperationCost <= minCost) {
+
+        if (secondCost <= minCost) {
             showCustomWarningDialog(
                 getString(R.string.lbl_invalid_cost),
                 getString(R.string.lbl_second_weeding_cost_prompt)
@@ -196,31 +111,35 @@ class WeedControlCostsActivity : BaseActivity() {
             return
         }
 
-        try {
-            if (currentPractice == null) {
-                currentPractice = CurrentPractice()
-            }
-            if (fieldOperationCost == null) {
-                fieldOperationCost = FieldOperationCost()
-            }
+        viewModel.updateWeedingCosts(firstCost, secondCost)
+        viewModel.saveData()
+    }
 
-            currentPractice!!.weedControlMethod = weedControlTechnique
-            currentPractice!!.usesHerbicide = usesHerbicide
-            currentPractice!!.weedRadioIndex = weedRadioIndex
+    private fun updateCostLabels() {
+        val language = LanguageManager.getLanguage(this)
+        val areaUnit = viewModel.areaUnit.value ?: return
+        val fieldSize = viewModel.fieldSize.value ?: return
+        val currencyCode = viewModel.currencyCode.value ?: ""
+        val currencyName = viewModel.currencyName.value ?: ""
 
-            database.currentPracticeDao().insert(currentPractice!!)
+        val translatedUnit = if (areaUnit == "ha")
+            getString(R.string.lbl_ha) else getString(R.string.lbl_acre)
+        val finalUnit = translatedUnit.lowercase()
+        val size = mathHelper.removeLeadingZero(fieldSize)
 
-            fieldOperationCost!!.firstWeedingOperationCost = firstOperationCost
-            fieldOperationCost!!.secondWeedingOperationCost = secondOperationCost
-
-            database.fieldOperationCostDao().insertOrUpdate(fieldOperationCost!!)
-            database.adviceStatusDao()
-                .insert(AdviceStatus(EnumAdviceTask.COST_OF_WEED_CONTROL.name, true))
-
-            closeActivity(backPressed)
-        } catch (ex: Exception) {
-            Toast.makeText(this@WeedControlCostsActivity, ex.message, Toast.LENGTH_SHORT).show()
-            Sentry.captureException(ex)
+        val firstLabel = if (language == "sw") {
+            getString(R.string.lbl_cost_of_first_weeding_operation, currencyCode, finalUnit, size)
+        } else {
+            getString(R.string.lbl_cost_of_first_weeding_operation, currencyName, size, finalUnit)
         }
+
+        val secondLabel = if (language == "sw") {
+            getString(R.string.lbl_cost_of_second_weeding_operation, currencyCode, finalUnit, size)
+        } else {
+            getString(R.string.lbl_cost_of_second_weeding_operation, currencyName, size, finalUnit)
+        }
+
+        binding.weedControlCosts.firstWeedingOpCostTitle.text = firstLabel
+        binding.weedControlCosts.secondWeedingOpCostTitle.text = secondLabel
     }
 }

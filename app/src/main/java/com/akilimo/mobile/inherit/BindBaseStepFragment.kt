@@ -10,7 +10,7 @@ import com.stepstone.stepper.VerificationError
 abstract class BindBaseStepFragment<T : ViewBinding> : BaseStepFragment() {
     private var _binding: T? = null
     protected val binding: T
-        get() = _binding ?: throw IllegalStateException(
+        get() = _binding ?: error(
             "ViewBinding accessed before onCreateView() or after onDestroyView()."
         )
 
@@ -37,7 +37,7 @@ abstract class BindBaseStepFragment<T : ViewBinding> : BaseStepFragment() {
     }
 
     override fun verifyStep(): VerificationError? = null
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

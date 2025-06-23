@@ -2,7 +2,7 @@ package com.akilimo.mobile.views.activities
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.FertilizerGridAdapter
@@ -15,7 +15,7 @@ import com.akilimo.mobile.utils.Tools.dpToPx
 import com.akilimo.mobile.utils.enums.EnumAdviceTask
 import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.viewmodels.FertilizersViewModel
-import com.akilimo.mobile.viewmodels.FertilizersViewModelFactory
+import com.akilimo.mobile.viewmodels.factory.FertilizersViewModelFactory
 import com.akilimo.mobile.views.fragments.dialog.FertilizerPriceDialogFragment
 import com.akilimo.mobile.widget.SpacingItemDecoration
 import com.google.android.material.snackbar.Snackbar
@@ -24,8 +24,17 @@ abstract class BaseFertilizersActivity(
     private val minSelection: Int
 ) : BindBaseActivity<ActivityFertilizersBinding>() {
 
-    protected lateinit var viewModel: FertilizersViewModel
+
     protected abstract val mAdapter: FertilizerGridAdapter
+
+    protected val viewModel: FertilizersViewModel by viewModels {
+        val useCase = intent?.getStringExtra(useCaseTag)
+        FertilizersViewModelFactory(
+            application = this.application,
+            minSelection = minSelection,
+            useCase = useCase
+        )
+    }
 
     companion object {
         var useCaseTag: String = "useCase"
@@ -36,15 +45,6 @@ abstract class BaseFertilizersActivity(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val useCase = intent?.getStringExtra(useCaseTag)
-
-        val factory = FertilizersViewModelFactory(
-            application = this.application,
-            minSelection = minSelection,
-            useCase = useCase
-        )
-        viewModel = ViewModelProvider(this, factory)[FertilizersViewModel::class.java]
-
         setupUI()
         observeViewModel()
         viewModel.loadFertilizers()
@@ -54,7 +54,7 @@ abstract class BaseFertilizersActivity(
         setupToolbar(binding.toolbarLayout.toolbar, R.string.title_activity_fertilizer_choice) {
             validate(false)
         }
-        
+
         binding.availableFertilizers.apply {
             layoutManager = GridLayoutManager(context, 2)
             addItemDecoration(SpacingItemDecoration(2, dpToPx(context, 3), true))
@@ -93,6 +93,7 @@ abstract class BaseFertilizersActivity(
         }
 
         binding.btnRetry.setOnClickListener {
+            binding.availableFertilizers.visibility = View.GONE
             viewModel.loadFertilizers()
         }
     }

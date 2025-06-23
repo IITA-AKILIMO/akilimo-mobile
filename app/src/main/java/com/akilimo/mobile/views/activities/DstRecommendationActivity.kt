@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.akilimo.mobile.R
-import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityDstRecomendationBinding
 import com.akilimo.mobile.entities.UserProfile
 import com.akilimo.mobile.inherit.BindBaseActivity
@@ -85,7 +84,6 @@ class DstRecommendationActivity : BindBaseActivity<ActivityDstRecomendationBindi
     }
 
     override fun onDataReceived(userProfile: UserProfile) {
-        val database = getDatabase(this@DstRecommendationActivity)
         database.profileInfoDao().insert(userProfile)
         loadingAndDisplayContent()
     }

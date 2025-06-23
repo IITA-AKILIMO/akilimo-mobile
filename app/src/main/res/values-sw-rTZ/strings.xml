@@ -213,6 +213,8 @@
     <string name="lbl_valid_number_req">Tafadhali toa nambari sahihi ya simu</string>
     <string name="lbl_gender_prompt">Chagua jinsia</string>
     <string name="lbl_gender">Chagua jinsia</string>
+    <string name="lbl_akilimo_interest_prompt">Chagua kipendele chako kikuu katika AKILIMO</string>
+    <string name="lbl_akilimo_interest">Jambo linalokuvutia zaidi katika AKILIMO</string>
     <string name="lbl_prefer_not_to_say">Pendelea kutosema</string>
     <string name="lbl_male">Mwanaume</string>
     <string name="lbl_female">Mwanamke</string>

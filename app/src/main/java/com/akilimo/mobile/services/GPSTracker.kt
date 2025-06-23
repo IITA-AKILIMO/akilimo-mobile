@@ -18,7 +18,7 @@ import io.sentry.Sentry
 
 class GPSTracker : Service, LocationListener {
 
-    private val LOG_TAG = GPSTracker::class.java.simpleName
+
     private var mContext: Context? = null
 
     private var location: Location? = null
@@ -36,6 +36,7 @@ class GPSTracker : Service, LocationListener {
     }
 
     companion object {
+        private const val LOG_TAG = "GPSTracker"
         private const val MIN_DISTANCE_CHANGE_FOR_UPDATES: Long = 10 // 10 meters
         private const val MIN_TIME_BW_UPDATES: Long = 1000 * 60 // 1 minute
     }
@@ -62,7 +63,7 @@ class GPSTracker : Service, LocationListener {
     }
 
     private fun initLocationManager() {
-        locationManager = mContext?.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
+        locationManager = mContext?.getSystemService(LOCATION_SERVICE) as? LocationManager
     }
 
     private fun isNetworkEnabled(): Boolean {

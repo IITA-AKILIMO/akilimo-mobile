@@ -17,7 +17,7 @@ import kotlinx.coroutines.withContext
 
 class TillageOperationViewModel(
     private val application: Application,
-    private val database: AppDatabase = AppDatabase.getDatabase(application),
+    private val database: AppDatabase = AppDatabase.getInstance(application),
     private val dispatchers: IDispatcherProvider = DefaultDispatcherProvider()
 ) : ViewModel() {
 

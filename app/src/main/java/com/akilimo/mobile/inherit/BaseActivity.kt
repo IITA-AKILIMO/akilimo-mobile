@@ -16,7 +16,6 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
 import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase
-import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.utils.LanguageManager
 import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.PreferenceManager
@@ -31,8 +30,8 @@ import io.sentry.Sentry
 abstract class BaseActivity : AppCompatActivity() {
     protected val LOG_TAG: String = this::class.java.simpleName
 
-    protected val sessionManager: PreferenceManager by lazy { PreferenceManager(this@BaseActivity) }
-    protected val database: AppDatabase by lazy { getDatabase(this@BaseActivity) }
+    protected val sessionManager: PreferenceManager by lazy { PreferenceManager(applicationContext) }
+    protected val database: AppDatabase by lazy { AppDatabase.getInstance(applicationContext) }
     protected val mathHelper: MathHelper by lazy { MathHelper() }
 
     protected var countryCode: String = EnumCountry.Nigeria.countryCode()
