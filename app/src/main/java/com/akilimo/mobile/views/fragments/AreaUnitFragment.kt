@@ -4,21 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.fragment.app.viewModels
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentAreaUnitBinding
-import com.akilimo.mobile.entities.MandatoryInfo
 import com.akilimo.mobile.inherit.BindBaseStepFragment
 import com.akilimo.mobile.utils.enums.EnumAreaUnit
-import com.akilimo.mobile.utils.enums.EnumCountry
+import com.akilimo.mobile.viewmodels.AreaUnitViewModel
+import com.akilimo.mobile.viewmodels.factory.AreaUnitViewModelFactory
 import com.stepstone.stepper.VerificationError
-import io.sentry.Sentry
 
 class AreaUnitFragment : BindBaseStepFragment<FragmentAreaUnitBinding>() {
 
-    private var _areaUnit: String = EnumAreaUnit.ACRE.name
-    private var oldAreaUnit: String? = ""
-    private var areaUnitDisplay = ""
+    private val viewModel: AreaUnitViewModel by viewModels {
+        AreaUnitViewModelFactory(requireActivity().application)
+    }
 
     companion object {
         fun newInstance() = AreaUnitFragment()
@@ -31,87 +30,53 @@ class AreaUnitFragment : BindBaseStepFragment<FragmentAreaUnitBinding>() {
     ): FragmentAreaUnitBinding = FragmentAreaUnitBinding.inflate(inflater, container, false)
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
-        errorMessage = getString(R.string.lbl_area_unit_prompt)
 
+        setupObservers()
+        errorMessage = getString(R.string.lbl_area_unit_prompt)
         with(binding) {
             rdgAreaUnit.setOnCheckedChangeListener { _, _ -> handleUnitSelection() }
         }
     }
 
-    private fun handleUnitSelection() {
-        val context = requireContext()
-        val selectedId = binding.rdgAreaUnit.checkedRadioButtonId
-
-        when (binding.root.findViewById<View>(selectedId)) {
-            binding.rbUnitAcre -> {
-                _areaUnit = EnumAreaUnit.ACRE.name
-                areaUnitDisplay = getString(R.string.lbl_acre)
-            }
-
-            binding.rbUnitHa -> {
-                _areaUnit = EnumAreaUnit.HA.name
-                areaUnitDisplay = getString(R.string.lbl_ha)
-            }
-
-            binding.rbUnitAre -> {
-                _areaUnit = EnumAreaUnit.ARE.name
-                areaUnitDisplay = getString(R.string.lbl_are)
-            }
-
-            else -> {
-                _areaUnit = EnumAreaUnit.ACRE.name
-            }
-        }
-
-        try {
-            val dao = database.mandatoryInfoDao()
-            val mandatoryInfo = dao.findOne() ?: MandatoryInfo()
-            mandatoryInfo.apply {
-                areaUnit = _areaUnit
-                displayAreaUnit = areaUnitDisplay
-                if (id != null) dao.update(this) else dao.insert(this)
-            }
-        } catch (ex: Exception) {
-            Toast.makeText(context, ex.message.orEmpty(), Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun refreshData() {
-        try {
-            val mandatoryInfo = database.mandatoryInfoDao().findOne()
-            val profileInfo = database.profileInfoDao().findOne()
-            _areaUnit = EnumAreaUnit.ACRE.name
-            if (mandatoryInfo != null) {
-                _areaUnit = mandatoryInfo.areaUnit
-                oldAreaUnit = mandatoryInfo.oldAreaUnit
-            }
-
-            val matchedOption = when (_areaUnit) {
+    override fun setupObservers() {
+        viewModel.areaUnit.observe(viewLifecycleOwner) { unit ->
+            val matchedOption = when (unit) {
                 EnumAreaUnit.ACRE.name -> binding.rbUnitAcre.id
                 EnumAreaUnit.ARE.name -> binding.rbUnitAre.id
                 EnumAreaUnit.HA.name -> binding.rbUnitHa.id
-                EnumAreaUnit.M2.name -> binding.rbUnitSqm.id
+                EnumAreaUnit.SQM.name -> binding.rbUnitSqm.id
                 else -> -1
             }
-            binding.rdgAreaUnit.check(matchedOption)
-
-            profileInfo?.countryCode?.let { code ->
-                if (code == EnumCountry.Rwanda.countryCode()) {
-                    binding.rbUnitAre.visibility = View.VISIBLE
-                }
+            if (matchedOption != -1) {
+                binding.rdgAreaUnit.check(matchedOption)
             }
-        } catch (ex: Exception) {
-            Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
-            Sentry.captureException(ex)
+        }
+
+        viewModel.showAreUnit.observe(viewLifecycleOwner) { visible ->
+            binding.rbUnitAre.visibility = if (visible) View.VISIBLE else View.GONE
         }
     }
 
+
+    private fun handleUnitSelection() {
+        val selectedId = binding.rdgAreaUnit.checkedRadioButtonId
+        val (unit, displayName) = when (binding.root.findViewById<View>(selectedId)) {
+            binding.rbUnitAcre -> EnumAreaUnit.ACRE to getString(R.string.lbl_acre)
+            binding.rbUnitHa -> EnumAreaUnit.HA to getString(R.string.lbl_ha)
+            binding.rbUnitAre -> EnumAreaUnit.ARE to getString(R.string.lbl_are)
+            binding.rbUnitSqm -> EnumAreaUnit.SQM to getString(R.string.lbl_sqm)
+            else -> EnumAreaUnit.ACRE to getString(R.string.lbl_acre)
+        }
+
+        viewModel.updateUnit(unit, displayName)
+    }
+
     override fun onSelected() {
-        refreshData()
+        viewModel.loadData()
     }
 
     override fun verifyStep(): VerificationError? {
-        return if (_areaUnit.isEmpty()) {
+        return if (viewModel.areaUnit.value.isNullOrEmpty()) {
             VerificationError(errorMessage)
         } else null
     }
