@@ -596,4 +596,5 @@
 
     <string name="label_ploughing_method">Ploughing method: %1$s</string>
     <string name="label_ridging_method">Ridging method: %1$s</string>
+    <string name="error_farm_name_required">Farm name required</string>
 </resources>
