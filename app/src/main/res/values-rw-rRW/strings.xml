@@ -39,26 +39,27 @@
     <string name="lbl_cassava_field_size_no_ph">Ubuso bw\'umurima wawe w\'imyumbati bungana iki?</string>
     <string name="lbl_cassava_field_size">Ni ubuhe buso bw\'umurima wawe w\'imyumbati (muri %1$s)?</string>
     <!--  acres  -->
-    <string name="quarter_acre">Hafi ya are 0,25</string>
-    <string name="half_acre">Hafi ya are 0.5</string>
-    <string name="one_acre">Hafi ya are 1</string>
-    <string name="one_half_acre">Hafi ya are 1.5</string>
-    <string name="two_half_acres">Hafi ya are 2,5</string>
-    <string name="five_acres">Hafi ya are 5</string>
-    <string name="exact_field_area">Garagaza neza ubuso bw\'umurima wanjye.</string>
+    <string name="quarter_acre">Hagati ya eka 0.25</string>
+    <string name="half_acre">Hagati ya eka 0.5</string>
+    <string name="one_acre">Hagati ya eka 1</string>
+    <string name="one_half_acre">Hagati ya eka 1.5</string>
+    <string name="two_half_acres">Hagati ya eka 2.5</string>
+    <string name="five_acres">Hagati ya eka 5</string>
+    <string name="exact_field_area">Tanga ubuso nyabwo bw\’umurima wawe.</string>
     <!--  ha  -->
-    <string name="quarter_acre_to_ha">Hafi ya ha 0.1 </string>
-    <string name="half_acre_to_ha">Hafi ya ha 0.2</string>
-    <string name="one_acre_to_ha">Hafi ya ha 0.4</string>
-    <string name="one_half_acre_to_ha">Hafi ya ha 0,6</string>
-    <string name="two_half_acre_to_ha">Hafi ya ha 1</string>
+    <string name="quarter_acre_to_ha">Hagati ya hegitari 0.1</string>
+    <string name="half_acre_to_ha">Hagati ya hegitari 0.2</string>
+    <string name="one_acre_to_ha">Hagati ya hegitari 0.4</string>
+    <string name="one_half_acre_to_ha">Hagati ya hegitari 0.6</string>
+    <string name="two_half_acre_to_ha">Hagati ya hegitari 1</string>
+
 
     <!-- are -->
-    <string name="quarter_acre_to_are">Hafi ya are 10</string>
-    <string name="half_acre_to_are">Hafi ya are 20</string>
-    <string name="one_acre_to_are">Hafi ya are 16</string>
-    <string name="one_half_acre_to_are">Hafi ya are 20</string>
-    <string name="two_half_acre_to_are">Hafi ya are 40</string>
+    <string name="quarter_acre_to_are">Hafi ya ares 10</string>
+    <string name="half_acre_to_are">Hafi ya ares 20</string>
+    <string name="one_acre_to_are">Hafi ya ares 16</string>
+    <string name="one_half_acre_to_are">Hafi ya ares 20</string>
+    <string name="two_half_acre_to_are">Hafi ya ares 40</string>
 
     <!--   m2  -->
     <string name="quarter_acre_to_m2">Hafi ya metero kare 1000 \u00B2</string>

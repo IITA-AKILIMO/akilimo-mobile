@@ -66,27 +66,27 @@
     <string name="lbl_cassava_field_size_no_ph">What is the size of your field?</string>
     <string name="lbl_cassava_field_size">What is the size of your field (in %1$s)?</string>
     <!-- acres -->
-    <string name="quarter_acre">About 0.25 acre</string>
-    <string name="half_acre">About 0.5 acre</string>
+    <string name="quarter_acre">About 0.25 acres</string>
+    <string name="half_acre">About 0.5 acres</string>
     <string name="one_acre">About 1 acre</string>
-    <string name="one_half_acre">About 1.5 acre</string>
-    <string name="two_half_acres">About 2.5 acre</string>
-    <string name="five_acres">About 5 acre</string>
+    <string name="one_half_acre">About 1.5 acres</string>
+    <string name="two_half_acres">About 2.5 acres</string>
+    <string name="five_acres">About 5 acres</string>
     <string name="exact_field_area">Specify the exact area of your field.</string>
 
     <!-- ha -->
-    <string name="quarter_acre_to_ha">About 0.1 ha</string>
-    <string name="half_acre_to_ha">About 0.2 ha</string>
-    <string name="one_acre_to_ha">About 0.4 ha</string>
-    <string name="one_half_acre_to_ha">About 0.6 ha</string>
-    <string name="two_half_acre_to_ha">About 1 ha</string>
+    <string name="quarter_acre_to_ha">About 0.1 hectares</string>
+    <string name="half_acre_to_ha">About 0.2 hectares</string>
+    <string name="one_acre_to_ha">About 0.4 hectares</string>
+    <string name="one_half_acre_to_ha">About 0.6 hectares</string>
+    <string name="two_half_acre_to_ha">About 1 hectare</string>
 
     <!-- are -->
-    <string name="quarter_acre_to_are">About 10 are</string>
-    <string name="half_acre_to_are">About 20 are</string>
-    <string name="one_acre_to_are">About 16 are</string>
-    <string name="one_half_acre_to_are">About 20 are</string>
-    <string name="two_half_acre_to_are">About 40 are</string>
+    <string name="quarter_acre_to_are">About 10 ares</string>
+    <string name="half_acre_to_are">About 20 ares</string>
+    <string name="one_acre_to_are">About 16 ares</string>
+    <string name="one_half_acre_to_are">About 20 ares</string>
+    <string name="two_half_acre_to_are">About 40 ares</string>
 
 
     <!--  m2 -->
