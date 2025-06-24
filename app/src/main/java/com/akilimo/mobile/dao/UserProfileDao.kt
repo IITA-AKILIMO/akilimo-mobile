@@ -18,7 +18,10 @@ interface UserProfileDao {
     fun findOne(): UserProfile?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg arrayOfUserProfiles: UserProfile)
+    fun insert(vararg profiles: UserProfile)
+
+    @Update
+    fun update(profiles: UserProfile)
 
     @Delete
     fun delete(userProfile: UserProfile?)
