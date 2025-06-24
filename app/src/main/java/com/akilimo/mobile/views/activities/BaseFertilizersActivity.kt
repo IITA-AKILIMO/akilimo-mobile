@@ -14,6 +14,7 @@ import com.akilimo.mobile.interfaces.IFertilizerDismissListener
 import com.akilimo.mobile.utils.Tools.dpToPx
 import com.akilimo.mobile.utils.enums.EnumAdviceTask
 import com.akilimo.mobile.utils.showDialogFragmentSafely
+import com.akilimo.mobile.utils.ui.SnackBarMessage
 import com.akilimo.mobile.viewmodels.FertilizersViewModel
 import com.akilimo.mobile.viewmodels.factory.FertilizersViewModelFactory
 import com.akilimo.mobile.views.fragments.dialog.FertilizerPriceDialogFragment
@@ -30,9 +31,7 @@ abstract class BaseFertilizersActivity(
     protected val viewModel: FertilizersViewModel by viewModels {
         val useCase = intent?.getStringExtra(useCaseTag)
         FertilizersViewModelFactory(
-            application = this.application,
-            minSelection = minSelection,
-            useCase = useCase
+            application = this.application, minSelection = minSelection, useCase = useCase
         )
     }
 
@@ -138,7 +137,11 @@ abstract class BaseFertilizersActivity(
 
         viewModel.showSnackBarEvent.observe(this) { message ->
             message?.let {
-                Snackbar.make(binding.lytProgress, it, Snackbar.LENGTH_SHORT).show()
+                val message = when (it) {
+                    is SnackBarMessage.Text -> it.message
+                    is SnackBarMessage.Resource -> getString(it.resId)
+                }
+                Snackbar.make(binding.lytProgress, message, Snackbar.LENGTH_SHORT).show()
                 viewModel.clearSnackBarEvent()
             }
         }
@@ -155,9 +158,7 @@ abstract class BaseFertilizersActivity(
             arguments = args
             setOnDismissListener(object : IFertilizerDismissListener {
                 override fun onDismiss(
-                    priceSpecified: Boolean,
-                    fertilizer: Fertilizer,
-                    removeSelected: Boolean
+                    priceSpecified: Boolean, fertilizer: Fertilizer, removeSelected: Boolean
                 ) {
                     val shouldUpdate = priceSpecified || removeSelected
                     if (!shouldUpdate) return
@@ -169,9 +170,7 @@ abstract class BaseFertilizersActivity(
         }
 
         showDialogFragmentSafely(
-            supportFragmentManager,
-            dialog,
-            FertilizerPriceDialogFragment.ARG_ITEM_ID
+            supportFragmentManager, dialog, FertilizerPriceDialogFragment.ARG_ITEM_ID
         )
     }
 
