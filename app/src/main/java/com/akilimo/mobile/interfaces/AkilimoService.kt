@@ -33,7 +33,7 @@ object AkilimoApi {
 interface AkilimoService {
 
     @GET("v1/currencies")
-    fun listCurrencies(): Call<AkilimoCurrencyResponse>
+    suspend fun listCurrencies(): AkilimoCurrencyResponse
 
     @GET("v1/fertilizers/country/{country_code}")
     suspend fun getFertilizers(
