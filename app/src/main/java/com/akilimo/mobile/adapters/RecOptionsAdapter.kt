@@ -5,7 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ItemCardRecommendationArrowBinding
 import com.akilimo.mobile.models.RecommendationOptions
@@ -14,48 +15,39 @@ import com.akilimo.mobile.utils.VectorDrawableUtils
 
 class RecOptionsAdapter(
     private val context: Context,
-    private val recommendationsList: List<RecommendationOptions>,
-    private val displayArrow: Boolean
-) : RecyclerView.Adapter<RecOptionsAdapter.OriginalViewHolder>() {
+    private val displayArrow: Boolean = true
+) : ListAdapter<RecommendationOptions, RecOptionsAdapter.OriginalViewHolder>(DIFF_CALLBACK) {
 
     private var _itemClickListener: OnItemClickListener? = null
     private var lastPosition = -1
     private var onAttach = true
     private var _animationType: Int = TheItemAnimation.FADE_IN
 
-    interface OnItemClickListener {
+    fun interface OnItemClickListener {
         fun onItemClick(view: View?, recommendation: RecommendationOptions, position: Int)
     }
 
-    fun setAnimationType(animationTYpe: Int) {
-        _animationType = animationTYpe
+    fun setAnimationType(animationType: Int) {
+        _animationType = animationType
     }
 
     fun setOnItemClickListener(onItemClickListener: OnItemClickListener?) {
         _itemClickListener = onItemClickListener
     }
 
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+    override fun onAttachedToRecyclerView(recyclerView: androidx.recyclerview.widget.RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+        recyclerView.addOnScrollListener(object :
+            androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(
+                recyclerView: androidx.recyclerview.widget.RecyclerView,
+                newState: Int
+            ) {
                 onAttach = false
                 super.onScrollStateChanged(recyclerView, newState)
             }
         })
     }
-
-    override fun getItemCount(): Int = recommendationsList.size
-
-    private fun setAnimation(view: View, position: Int) {
-        if (position > lastPosition) {
-            TheItemAnimation.animate(view, if (onAttach) position else -1, _animationType)
-            lastPosition = position
-        }
-    }
-
-    inner class OriginalViewHolder(val binding: ItemCardRecommendationArrowBinding) :
-        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OriginalViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -64,7 +56,7 @@ class RecOptionsAdapter(
     }
 
     override fun onBindViewHolder(holder: OriginalViewHolder, position: Int) {
-        val recModel = recommendationsList[position]
+        val recModel = getItem(position)
 
         with(holder.binding) {
             recTitle.text = recModel.recommendationName
@@ -90,5 +82,33 @@ class RecOptionsAdapter(
         }
 
         setAnimation(holder.itemView, position)
+    }
+
+    private fun setAnimation(view: View, position: Int) {
+        if (position > lastPosition) {
+            TheItemAnimation.animate(view, if (onAttach) position else -1, _animationType)
+            lastPosition = position
+        }
+    }
+
+    inner class OriginalViewHolder(val binding: ItemCardRecommendationArrowBinding) :
+        androidx.recyclerview.widget.RecyclerView.ViewHolder(binding.root)
+
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<RecommendationOptions>() {
+            override fun areItemsTheSame(
+                oldItem: RecommendationOptions,
+                newItem: RecommendationOptions
+            ): Boolean {
+                return oldItem.recommendationName == newItem.recommendationName
+            }
+
+            override fun areContentsTheSame(
+                oldItem: RecommendationOptions,
+                newItem: RecommendationOptions
+            ): Boolean {
+                return oldItem == newItem
+            }
+        }
     }
 }
