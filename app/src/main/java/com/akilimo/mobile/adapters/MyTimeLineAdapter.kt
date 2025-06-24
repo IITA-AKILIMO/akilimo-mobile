@@ -1,9 +1,7 @@
 package com.akilimo.mobile.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.res.ResourcesCompat
@@ -18,39 +16,35 @@ import com.akilimo.mobile.utils.enums.StepStatus
 import com.github.vipulasri.timelineview.TimelineView
 
 class MyTimeLineAdapter(
-    private val mFeedList: List<TimeLineModel>,
-    private var mAttributes: TimelineAttributes,
-    private var context: Context,
-    private val animationType: Int
+    private var items: List<TimeLineModel>,
+    private val attributes: TimelineAttributes,
+    private val animationType: Int = TheItemAnimation.FADE_IN
 ) : RecyclerView.Adapter<MyTimeLineAdapter.TimeLineViewHolder>() {
 
     private var lastPosition = -1
     private var onAttach = true
-    private lateinit var mLayoutInflater: LayoutInflater
 
     override fun getItemViewType(position: Int): Int {
         return TimelineView.getTimeLineViewType(position, itemCount)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeLineViewHolder {
-        if (!::mLayoutInflater.isInitialized) {
-            mLayoutInflater = LayoutInflater.from(parent.context)
-        }
-
-        val view = ItemTimelineBinding.inflate(mLayoutInflater, parent, false)
-
-        return TimeLineViewHolder(view, viewType)
+        val binding =
+            ItemTimelineBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return TimeLineViewHolder(binding, viewType)
     }
 
     override fun onBindViewHolder(holder: TimeLineViewHolder, position: Int) {
-
-        val timeLineModel = mFeedList[position]
-        holder.bind(timeLineModel)
-
+        holder.bind(items[position])
         setAnimation(holder.itemView, position)
     }
 
-    override fun getItemCount() = mFeedList.size
+    override fun getItemCount(): Int = items.size
+
+    fun submitList(newList: List<TimeLineModel>) {
+        items = newList
+        notifyDataSetChanged()
+    }
 
     private fun setAnimation(view: View, position: Int) {
         if (position > lastPosition) {
@@ -59,81 +53,68 @@ class MyTimeLineAdapter(
         }
     }
 
-    inner class TimeLineViewHolder(itemView: ItemTimelineBinding, viewType: Int) :
-        RecyclerView.ViewHolder(itemView.root) {
+    inner class TimeLineViewHolder(
+        private val binding: ItemTimelineBinding,
+        private val viewType: Int
+    ) : RecyclerView.ViewHolder(binding.root) {
 
-        private val title: AppCompatTextView = itemView.timelineTitle
-        private val message: AppCompatTextView = itemView.timelineContent
-        private val timelineView: TimelineView = itemView.timeline
+        private val context = binding.root.context
+        private val title: AppCompatTextView = binding.timelineTitle
+        private val message: AppCompatTextView = binding.timelineContent
+        private val timelineView: TimelineView = binding.timeline
 
-        init {
+        fun bind(model: TimeLineModel) {
+            // Configure TimelineView
             timelineView.apply {
                 initLine(viewType)
-                markerSize = mAttributes.markerSize
+                markerSize = attributes.markerSize
+                isMarkerInCenter = attributes.markerInCenter
+                markerPaddingLeft = attributes.markerLeftPadding
+                markerPaddingTop = attributes.markerTopPadding
+                markerPaddingRight = attributes.markerRightPadding
+                markerPaddingBottom = attributes.markerBottomPadding
 
-                setMarkerColor(mAttributes.markerCompleteColor)
-                isMarkerInCenter = mAttributes.markerInCenter
-                markerPaddingLeft = mAttributes.markerLeftPadding
-                markerPaddingTop = mAttributes.markerTopPadding
-                markerPaddingRight = mAttributes.markerRightPadding
-                markerPaddingBottom = mAttributes.markerBottomPadding
-
-                linePadding = mAttributes.linePadding
-                lineWidth = mAttributes.lineWidth
-
-                setStartLineColor(mAttributes.startLineColor, viewType)
-                setEndLineColor(mAttributes.endLineColor, viewType)
-
-                lineStyle = mAttributes.lineStyle
-                lineStyleDashLength = mAttributes.lineDashWidth
-                lineStyleDashGap = mAttributes.lineDashGap
-            }
-        }
-
-        fun bind(timeLineModel: TimeLineModel) {
-            when (timeLineModel.status) {
-                StepStatus.INCOMPLETE -> {
-                    timelineView.marker = VectorDrawableUtils.getDrawable(
-                        itemView.context,
-                        R.drawable.ic_highlight_off,
-                        mAttributes.markerIncompleteColor
-                    )
-                }
-
-                StepStatus.COMPLETED -> {
-                    timelineView.marker = VectorDrawableUtils.getDrawable(
-                        itemView.context,
-                        R.drawable.ic_done,
-                        mAttributes.markerCompleteColor
-                    )
-                }
-
-                StepStatus.WARNING -> {
-                    timelineView.marker = VectorDrawableUtils.getDrawable(
-                        itemView.context,
-                        R.drawable.ic_warn,
-                        ResourcesCompat.getColor(context.resources, R.color.yellow_900, null)
-                    )
-                }
-
-                StepStatus.CANCELLED -> {
-                    timelineView.marker = VectorDrawableUtils.getDrawable(
-                        itemView.context,
-                        R.drawable.ic_clear,
-                        mAttributes.markerCompleteColor
-                    )
-                }
+                linePadding = attributes.linePadding
+                lineWidth = attributes.lineWidth
+                setStartLineColor(attributes.startLineColor, viewType)
+                setEndLineColor(attributes.endLineColor, viewType)
+                lineStyle = attributes.lineStyle
+                lineStyleDashLength = attributes.lineDashWidth
+                lineStyleDashGap = attributes.lineDashGap
             }
 
-            title.text = context.getString(R.string.lbl_timeline_title, timeLineModel.stepTitle)
+            // Set marker icon based on status
+            timelineView.marker = when (model.status) {
+                StepStatus.INCOMPLETE -> VectorDrawableUtils.getDrawable(
+                    context, R.drawable.ic_highlight_off, attributes.markerIncompleteColor
+                )
 
-            if (timeLineModel.message.isNullOrEmpty()) {
-                message.text = context.getString(R.string.lbl_not_provided)
-            } else {
-                message.visibility = VISIBLE
-                message.text = timeLineModel.message
+                StepStatus.COMPLETED -> VectorDrawableUtils.getDrawable(
+                    context, R.drawable.ic_done, attributes.markerCompleteColor
+                )
+
+                StepStatus.WARNING -> VectorDrawableUtils.getDrawable(
+                    context, R.drawable.ic_warn,
+                    ResourcesCompat.getColor(context.resources, R.color.yellow_900, null)
+                )
+
+                StepStatus.CANCELLED -> VectorDrawableUtils.getDrawable(
+                    context, R.drawable.ic_clear, attributes.markerCompleteColor
+                )
+            }
+
+            // Set title
+            title.text = context.getString(R.string.lbl_timeline_title, model.stepTitle)
+
+            // Set content or fallback
+            message.apply {
+                visibility = View.VISIBLE
+                text = if (model.message.isNullOrEmpty()) {
+                    context.getString(R.string.lbl_not_provided)
+                } else {
+                    model.message
+                }
             }
         }
     }
-
 }
