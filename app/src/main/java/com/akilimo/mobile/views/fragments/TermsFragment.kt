@@ -29,6 +29,9 @@ class TermsFragment : BindBaseStepFragment<FragmentInfoBinding>() {
         }
     }
 
+    override fun setupObservers() {
+        TODO("Not yet implemented")
+    }
     override fun verifyStep(): VerificationError? {
         if (!preferenceManager.termsRead) {
             return VerificationError(getString(R.string.lbl_agree_to_disclaimer))

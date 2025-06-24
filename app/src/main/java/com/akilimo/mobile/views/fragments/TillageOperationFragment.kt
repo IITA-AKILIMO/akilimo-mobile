@@ -1,6 +1,5 @@
 package com.akilimo.mobile.views.fragments
 
-// import com.akilimo.mobile.entities.CurrentPractice // No longer directly needed
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -28,6 +27,12 @@ class TillageOperationFragment : BindBaseStepFragment<FragmentTillageOperationBi
         }
     }
 
+    private val viewModel: TillageOperationViewModel by viewModels {
+        TillageOperationViewModelFactory(
+            application = requireActivity().application,
+        )
+    }
+
     override fun inflateBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,14 +40,20 @@ class TillageOperationFragment : BindBaseStepFragment<FragmentTillageOperationBi
     ): FragmentTillageOperationBinding =
         FragmentTillageOperationBinding.inflate(inflater, container, false)
 
-    private val viewModel: TillageOperationViewModel by viewModels {
-        TillageOperationViewModelFactory(
-            application = requireActivity().application,
-        )
-    }
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
 
+        binding.apply {
+            tillageOperationsGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
+                val button = group.findViewById<MaterialButton>(checkedId)
+                if (button.isPressed) { // Only act on user presses
+                    handleTillageOperationChange(checkedId, isChecked)
+                }
+            }
+        }
+    }
+
+    override fun setupObservers() {
         viewModel.currentPractice.observe(viewLifecycleOwner) { practice ->
             practice?.let {
                 binding.tillageBtnPloughing.apply {
@@ -63,16 +74,22 @@ class TillageOperationFragment : BindBaseStepFragment<FragmentTillageOperationBi
             }
         }
 
-
-        binding.apply {
-            tillageOperationsGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
-                val button = group.findViewById<MaterialButton>(checkedId)
-                if (button.isPressed) { // Only act on user presses
-                    handleTillageOperationChange(checkedId, isChecked)
-                }
-            }
-        }
     }
+
+    override fun onSelected() {
+        viewModel.loadCurrentPractice()
+    }
+
+
+    override fun verifyStep(): VerificationError? {
+        val isValid = viewModel.dataIsValid.value != false
+        if (!isValid) {
+            val error = viewModel.errorMessage.value ?: "Data is invalid."
+            return VerificationError(error)
+        }
+        return null
+    }
+
 
     private fun handleTillageOperationChange(checkedId: Int, isChecked: Boolean) {
         when (checkedId) {
@@ -129,20 +146,6 @@ class TillageOperationFragment : BindBaseStepFragment<FragmentTillageOperationBi
             operationTypeDialogFragment,
             OperationTypeDialogFragment.TAG_OPERATION_DIALOG
         )
-    }
-
-
-    override fun onSelected() {
-        viewModel.loadCurrentPractice()
-    }
-
-    override fun verifyStep(): VerificationError? {
-        val isValid = viewModel.dataIsValid.value != false
-        if (!isValid) {
-            val error = viewModel.errorMessage.value ?: "Data is invalid."
-            return VerificationError(error)
-        }
-        return null
     }
 
 }

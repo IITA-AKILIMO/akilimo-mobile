@@ -82,6 +82,10 @@ class PrivacyStatementFragment : BindBaseStepFragment<FragmentPrivacyStatementBi
         }
     }
 
+    override fun setupObservers() {
+        TODO("Not yet implemented")
+    }
+
     override fun verifyStep(): VerificationError? {
         return if (preferenceManager.privacyPolicyRead) {
             null

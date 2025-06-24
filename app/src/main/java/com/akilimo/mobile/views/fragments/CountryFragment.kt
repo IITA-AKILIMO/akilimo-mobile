@@ -39,14 +39,14 @@ class CountryFragment : BindBaseStepFragment<FragmentCountryBinding>() {
         binding.countryBtnPickCountry.setOnClickListener {
             showCountryPickerDialog()
         }
-        observeProfile()
+        setupObservers()
     }
 
     override fun onSelected() {
         viewModel.loadProfile()
     }
 
-    private fun observeProfile() {
+    override fun setupObservers() {
         viewModel.userProfile.observe(viewLifecycleOwner) { profile ->
             if (profile != null) {
                 binding.countryTitle.text =
