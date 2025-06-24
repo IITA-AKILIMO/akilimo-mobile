@@ -34,7 +34,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_large"
             android:layout_marginEnd="@dimen/spacing_xlarge"
-
             android:lines="2"
             android:padding="@dimen/spacing_medium"
             android:text="@string/lbl_fertilizer_price" />

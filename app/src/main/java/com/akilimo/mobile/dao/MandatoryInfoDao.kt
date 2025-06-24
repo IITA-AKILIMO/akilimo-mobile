@@ -5,7 +5,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
 import com.akilimo.mobile.entities.MandatoryInfo
 
 @Dao
@@ -19,9 +18,6 @@ interface MandatoryInfoDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(mandatoryInfo: MandatoryInfo)
-
-    @Update
-    fun update(mandatoryInfo: MandatoryInfo)
 
     @Delete
     fun delete(mandatoryInfo: MandatoryInfo?)

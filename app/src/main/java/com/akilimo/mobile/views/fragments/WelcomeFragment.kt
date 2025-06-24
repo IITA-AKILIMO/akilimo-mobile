@@ -6,13 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import androidx.fragment.app.viewModels
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.MySpinnerAdapter
 import com.akilimo.mobile.databinding.FragmentWelcomeBinding
 import com.akilimo.mobile.inherit.BindBaseStepFragment
-import com.akilimo.mobile.utils.LanguageManager
-import com.akilimo.mobile.utils.LanguageOption
-import com.akilimo.mobile.utils.Locales
+import com.akilimo.mobile.viewmodels.WelcomeViewModel
+import com.akilimo.mobile.viewmodels.factory.WelcomeViewModelFactory
 import com.akilimo.mobile.views.activities.SplashActivity
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.processphoenix.ProcessPhoenix
@@ -20,7 +20,12 @@ import com.stepstone.stepper.VerificationError
 
 class WelcomeFragment : BindBaseStepFragment<FragmentWelcomeBinding>() {
 
-    private var languagePicked = false
+    private val viewModel: WelcomeViewModel by viewModels {
+        WelcomeViewModelFactory(requireActivity().application)
+    }
+
+    private lateinit var myAdapter: MySpinnerAdapter
+
 
     companion object {
         fun newInstance(): WelcomeFragment = WelcomeFragment()
@@ -33,24 +38,14 @@ class WelcomeFragment : BindBaseStepFragment<FragmentWelcomeBinding>() {
     ) = FragmentWelcomeBinding.inflate(inflater, container, false)
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
-        val languageOptions = Locales.LOCALE_COUNTRIES.map {
-            LanguageOption(it.language, it.getDisplayLanguage(it))
-        }
-        val savedLanguageCode = LanguageManager.getLanguage(requireContext())
-        val selectedIndex = languageOptions.indexOfFirst { it.code == savedLanguageCode }
-
-        val adapter = MySpinnerAdapter(requireContext(), languageOptions.map { it.displayName })
+        setupObservers()
+        viewModel.loadLanguages()
         binding.apply {
-            welcomeLanguageSpinner.adapter = adapter
-
-            welcomeLanguageSpinner.setSelection(if (selectedIndex >= 0) selectedIndex else 0)
-
             welcomeLanguageSpinner.setOnTouchListener { v, event ->
-                languagePicked = true
+                viewModel.setLanguagePicked()
                 v.performClick()
                 v.onTouchEvent(event)
             }
-
 
             welcomeLanguageSpinner.onItemSelectedListener =
                 object : AdapterView.OnItemSelectedListener {
@@ -60,19 +55,32 @@ class WelcomeFragment : BindBaseStepFragment<FragmentWelcomeBinding>() {
                         position: Int,
                         id: Long
                     ) {
-                        val selectedLanguage = languageOptions[position]
-                        LanguageManager.saveLanguage(requireContext(), selectedLanguage.code)
-                        LanguageManager.setLocale(requireContext(), selectedLanguage.code)
-                        if (languagePicked) {
-                            showRestartSnackBar()
+                        viewModel.languageOptions.value?.get(position)?.let { languageOption ->
+                            viewModel.onLanguageSelected(languageOption.code)
+                            if (viewModel.languagePicked.value == true) {
+                                showRestartSnackBar()
+                            }
                         }
                     }
 
-                    override fun onNothingSelected(parent: AdapterView<*>) {}
+                    override fun onNothingSelected(p0: AdapterView<*>?) {
+                        //Nothing
+                    }
                 }
         }
-
     }
+
+
+    override fun setupObservers() {
+        viewModel.languageOptions.observe(viewLifecycleOwner) { options ->
+            myAdapter = MySpinnerAdapter(requireContext(), options.map { it.displayName })
+            binding.welcomeLanguageSpinner.adapter = myAdapter
+        }
+        viewModel.selectedIndex.observe(viewLifecycleOwner) { index ->
+            binding.welcomeLanguageSpinner.setSelection(index)
+        }
+    }
+
 
     private fun showRestartSnackBar() {
         Snackbar.make(

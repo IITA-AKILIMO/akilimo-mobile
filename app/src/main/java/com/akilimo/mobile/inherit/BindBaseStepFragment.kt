@@ -23,6 +23,8 @@ abstract class BindBaseStepFragment<T : ViewBinding> : BaseStepFragment() {
      */
     protected abstract fun onBindingReady(savedInstanceState: Bundle?)
 
+    abstract fun setupObservers()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?

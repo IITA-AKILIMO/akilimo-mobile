@@ -1,256 +1,161 @@
 package com.akilimo.mobile.views.fragments
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
-import androidx.annotation.RequiresPermission
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.viewModels
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.FragmentLocationBinding
-import com.akilimo.mobile.entities.UserLocation
 import com.akilimo.mobile.inherit.BindBaseStepFragment
-import com.akilimo.mobile.services.GPSTracker
+import com.akilimo.mobile.repo.MapBoxLocationRepository
+import com.akilimo.mobile.services.DefaultLocationProvider
+import com.akilimo.mobile.viewmodels.LocationViewModel
+import com.akilimo.mobile.viewmodels.factory.LocationViewModelFactory
 import com.akilimo.mobile.views.activities.MapBoxActivity
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.mapbox.api.geocoding.v5.MapboxGeocoding
-import com.mapbox.api.geocoding.v5.models.GeocodingResponse
-import com.mapbox.geojson.Point
+import com.akilimo.mobile.views.fragments.dialog.FarmNameDialogFragment
 import com.stepstone.stepper.VerificationError
-import io.sentry.Sentry
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.util.Locale
 
 class LocationFragment : BindBaseStepFragment<FragmentLocationBinding>() {
 
-    private var currentLat = 0.0
-    private var currentLon = 0.0
-    private var currentAlt = 0.0
+    private val viewModel: LocationViewModel by viewModels {
+        val context = requireContext().applicationContext
+        val repo = MapBoxLocationRepository(preferenceManager.mapBoxApiKey)
+        val provider = DefaultLocationProvider(context)
+        LocationViewModelFactory(requireActivity().application, repo, provider)
+    }
+
+
+    private var locationState = LocationState()
+
     private var userSelectedCountryCode: String? = null
     private var userSelectedCountryName: String? = null
 
-    private var countryCode: String = ""
-    private var countryName: String = ""
-    private var farmName: String = ""
-    private var fullNames: String? = null
-    private var mapBoxToken = ""
-
-    private var isLocationValid = false
-
     companion object {
-        fun newInstance() = LocationFragment()
+        fun newInstance(): LocationFragment = LocationFragment()
     }
 
+
     override fun inflateBinding(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ) = FragmentLocationBinding.inflate(inflater, container, false)
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
         errorMessage = getString(R.string.lbl_location_error)
-        mapBoxToken = preferenceManager.mapBoxApiKey
 
+        setupObservers()
         setupFarmNameDialog()
         setupLocationButtons()
-        reloadLocationInfo()
+        viewModel.loadInitialData()
+    }
+
+    override fun onSelected() {
+        viewModel.loadInitialData()
+    }
+
+    override fun setupObservers() {
+        viewModel.farmName.observe(viewLifecycleOwner) { updateFarmInfo() }
+        viewModel.fullName.observe(viewLifecycleOwner) { updateFarmInfo() }
+
+        viewModel.locationInfo.observe(viewLifecycleOwner) { location ->
+            location?.let {
+                locationState = locationState.copy(
+                    lat = it.latitude,
+                    lon = it.longitude,
+                    alt = it.altitude,
+                    countryCode = it.locationCountryCode.orEmpty(),
+                    countryName = it.locationCountryName.orEmpty(),
+                    isValid = true
+                )
+                binding.textLocationInfo.text = formatLocationInfo(it)
+            }
+        }
     }
 
     private fun setupFarmNameDialog() {
-        val editTextFarmName = EditText(context).apply {
-            hint = getString(R.string.lbl_farm_name)
-            isSingleLine = true
-            maxLines = 1
-        }
-
-        val fieldNameDialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.lbl_farm_name_title)
-            .setView(editTextFarmName)
-            .setCancelable(false)
-            .setPositiveButton(R.string.lbl_ok) { _, _ ->
-                val enteredName = editTextFarmName.text?.toString().orEmpty()
-                farmName = enteredName
-
-                fullNames?.let {
-                    setFarmNameInfo(it, enteredName)
-                }
-
-                editTextFarmName.setText(enteredName)
-
-                database.profileInfoDao().findOne()?.let { profile ->
-                    profile.farmName = enteredName
-                    database.profileInfoDao().insert(profile)
-                }
+        binding.btnSelectFarmName.setOnClickListener {
+            val modal = FarmNameDialogFragment { farmName ->
+                viewModel.saveFarmName(farmName)
             }
-            .setNegativeButton(R.string.lbl_cancel, null)
-            .create()
+            modal.show(childFragmentManager, "FarmNameModal")
+        }
+    }
 
-        binding.btnSelectFarmName.setOnClickListener { fieldNameDialog.show() }
 
+    private fun updateFarmInfo() {
+        val full = viewModel.fullName.value.orEmpty()
+        val farm = viewModel.farmName.value.orEmpty()
+        binding.textFarmInfo.text =
+            if (farm.isBlank() || full.isBlank()) null else "$full’s cassava farm: $farm"
     }
 
     private fun setupLocationButtons() {
         val mapResultLauncher =
-            registerForActivityResult(StartActivityForResult()) { result: ActivityResult ->
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
-                    val data = result.data
-                    if (data != null) {
-                        currentLat = data.getDoubleExtra(MapBoxActivity.LAT, 0.0)
-                        currentLon = data.getDoubleExtra(MapBoxActivity.LON, 0.0)
-                        currentAlt = data.getDoubleExtra(MapBoxActivity.ALT, 0.0)
-                        reverseGeoCode(currentLat, currentLon)
-                    } else {
-                        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
-                    }
+                    result.data?.let { data ->
+                        val lat = data.getDoubleExtra(MapBoxActivity.LAT, 0.0)
+                        val lon = data.getDoubleExtra(MapBoxActivity.LON, 0.0)
+                        val alt = data.getDoubleExtra(MapBoxActivity.ALT, 0.0)
+
+                        viewModel.reverseGeocodeAndSave(lat, lon, alt) {
+                            showError(it)
+                            locationState = locationState.copy(isValid = false)
+                        }
+
+                        locationState = locationState.copy(lat = lat, lon = lon, alt = alt)
+                    } ?: showError()
                 }
             }
 
         binding.btnSelectLocationManually.setOnClickListener {
-            val intent = Intent(requireContext(), MapBoxActivity::class.java).apply {
-                putExtra(MapBoxActivity.LAT, currentLat)
-                putExtra(MapBoxActivity.LON, currentLon)
-                putExtra(MapBoxActivity.ALT, currentAlt)
-            }
-            mapResultLauncher.launch(intent)
+            mapResultLauncher.launch(Intent(requireContext(), MapBoxActivity::class.java).apply {
+                putExtra(MapBoxActivity.LAT, locationState.lat)
+                putExtra(MapBoxActivity.LON, locationState.lon)
+                putExtra(MapBoxActivity.ALT, locationState.alt)
+            })
         }
 
-        binding.btnUseCurrentLocation.setOnClickListener { currentLocation }
-
-    }
-
-    private val currentLocation: Unit
-        @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION]) get() {
-            val gps = GPSTracker(requireContext())
-            gps.getLocation()
-
-            if (gps.canGetLocation()) {
-                val status = GoogleApiAvailability.getInstance()
-                    .isGooglePlayServicesAvailable(requireContext())
-                if (status == ConnectionResult.SUCCESS) {
-                    currentLat = gps.latitudeValue
-                    currentLon = gps.longitudeValue
-                    gps.stopUsingGPS()
-                    reverseGeoCode(currentLat, currentLon)
-                } else {
-                    showCustomWarningDialog(
-                        "Google Play services not available on your phone",
-                        "Google Play services unavailable"
-                    )
-                }
-            } else {
-                gps.showSettingsAlert()
+        binding.btnUseCurrentLocation.setOnClickListener {
+            viewModel.fetchAndSaveCurrentLocation {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
-        }
-
-    private fun reverseGeoCode(lat: Double, lon: Double) {
-        val reverseGeocode =
-            MapboxGeocoding.builder().accessToken(mapBoxToken).query(Point.fromLngLat(lon, lat))
-                .fuzzyMatch(true).build()
-
-        reverseGeocode.enqueueCall(object : Callback<GeocodingResponse?> {
-            override fun onResponse(
-                call: Call<GeocodingResponse?>, response: Response<GeocodingResponse?>
-            ) {
-                if (!isAdded) return
-
-                val features = response.body()?.features()
-                if (!features.isNullOrEmpty()) {
-                    val carmenFeature = features.last()
-                    countryCode = carmenFeature.properties()
-                        ?.get("short_code")?.asString?.uppercase(Locale.getDefault()).orEmpty()
-                    countryName = carmenFeature.placeName().orEmpty()
-
-                    val welcomeMessage = getString(R.string.location_info, countryName, lat, lon)
-                    binding.textLocationInfo.text = welcomeMessage
-
-                    isLocationValid = true
-                    saveLocation()
-                } else {
-                    isLocationValid = false
-                    showCustomWarningDialog("Unable to save location. Please pick a different location.")
-                }
-            }
-
-            override fun onFailure(call: Call<GeocodingResponse?>, t: Throwable) {
-                isLocationValid = false
-                if (isAdded) {
-                    Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
-                }
-            }
-        })
-    }
-
-    private fun saveLocation() {
-        try {
-            val location = database.locationInfoDao().findOne() ?: UserLocation()
-            location.apply {
-                locationCountryCode = countryCode
-                locationCountryName = countryName
-                latitude = currentLat
-                longitude = currentLon
-            }
-            database.locationInfoDao().insert(location)
-
-        } catch (ex: Exception) {
-            Toast.makeText(
-                requireContext(), ex.localizedMessage ?: "Unexpected error", Toast.LENGTH_SHORT
-            ).show()
-            Sentry.captureException(ex)
         }
     }
 
-
-    private fun reloadLocationInfo() {
-        try {
-            val userProfile = database.profileInfoDao().findOne()
-            val userLocation = database.locationInfoDao().findOne()
-
-            userProfile?.let {
-                farmName = it.farmName
-                fullNames = "${it.firstName} ${it.lastName}"
-                userSelectedCountryCode = it.countryCode
-                userSelectedCountryName = it.countryName
-                setFarmNameInfo(fullNames!!, farmName)
-            }
-
-            userLocation?.let {
-                currentLat = it.latitude
-                currentLon = it.longitude
-                currentAlt = it.altitude
-                countryCode = it.locationCountryCode.orEmpty()
-                countryName = it.locationCountryName.orEmpty()
-                binding.textLocationInfo.text = formatLocationInfo(it)
-            }
-        } catch (ex: Exception) {
-            errorMessage = ex.message ?: "Unknown error"
-        }
+    private fun showError(message: String? = errorMessage) {
+        Toast.makeText(requireContext(), message ?: "Unexpected error", Toast.LENGTH_SHORT).show()
     }
 
-    private fun setFarmNameInfo(fullNames: String, farmName: String) {
-        val farmInfo =
-            if (farmName.isEmpty() || fullNames.isEmpty()) null else "$fullNames’s cassava farm: $farmName"
-        binding.textFarmInfo.text = farmInfo
-    }
 
     override fun verifyStep(): VerificationError? {
-        return if (countryCode.isNotEmpty() && !userSelectedCountryCode.equals(
-                countryCode, ignoreCase = true
-            )
-        ) {
+        val userCode = userSelectedCountryCode?.trim()?.lowercase()
+        val currentCode = locationState.countryCode.trim().lowercase()
+
+        return if (currentCode.isNotEmpty() && userCode != null && userCode != currentCode) {
             VerificationError(
-                getString(R.string.lbl_unsupported_location, countryName, userSelectedCountryName)
+                getString(
+                    R.string.lbl_unsupported_location,
+                    locationState.countryName,
+                    userSelectedCountryName
+                )
             )
         } else null
     }
 
-    override fun onSelected() {
-        reloadLocationInfo()
-    }
+
+    private data class LocationState(
+        val lat: Double = 0.0,
+        val lon: Double = 0.0,
+        val alt: Double = 0.0,
+        val countryCode: String = "",
+        val countryName: String = "",
+        val isValid: Boolean = false
+    )
 }
+

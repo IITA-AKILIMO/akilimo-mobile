@@ -4,19 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.RadioButton
-import android.widget.Toast
+import android.widget.RadioGroup
+import androidx.fragment.app.viewModels
+import com.akilimo.mobile.R
 import com.akilimo.mobile.data.RiskOption
-import com.akilimo.mobile.data.indexOfValue
 import com.akilimo.mobile.databinding.FragmentInvestmentPrefBinding
 import com.akilimo.mobile.inherit.BindBaseStepFragment
 import com.akilimo.mobile.utils.enums.EnumInvestmentPref
+import com.akilimo.mobile.viewmodels.InvestmentPrefViewModel
+import com.akilimo.mobile.viewmodels.factory.InvestmentPrefViewModelFactory
 import com.stepstone.stepper.VerificationError
-import io.sentry.Sentry
 
 class InvestmentPrefFragment : BindBaseStepFragment<FragmentInvestmentPrefBinding>() {
 
-    private var selectedRiskValue: String = EnumInvestmentPref.RARELY.name
-
+    private lateinit var radioButtons: List<RadioButton>
     private val riskOptions: List<RiskOption> by lazy {
         EnumInvestmentPref.entries
             .map {
@@ -26,6 +27,10 @@ class InvestmentPrefFragment : BindBaseStepFragment<FragmentInvestmentPrefBindin
                     riskAtt = it.riskAtt()
                 )
             }
+    }
+
+    private val viewModel: InvestmentPrefViewModel by viewModels {
+        InvestmentPrefViewModelFactory(requireActivity().application, riskOptions)
     }
 
     companion object {
@@ -39,46 +44,39 @@ class InvestmentPrefFragment : BindBaseStepFragment<FragmentInvestmentPrefBindin
     ) = FragmentInvestmentPrefBinding.inflate(inflater, container, false)
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
-        binding.rdgRiskAttitude.setOnCheckedChangeListener { group, _ ->
-            val selectedRadio = group.findViewById<RadioButton>(group.checkedRadioButtonId)
-            val tagValue = selectedRadio?.tag as? String ?: return@setOnCheckedChangeListener
+        viewModel.loadInitialSelection()
+        setupObservers()
+    }
 
-            selectedRiskValue = tagValue
-            val index = riskOptions.indexOfValue(selectedRiskValue)
-            updateInvestmentPref(index)
-        }
-
+    private fun buildRiskOptionsUI(selectedValue: String) {
         binding.rdgRiskAttitude.removeAllViews()
-        riskOptions.forEach { option ->
+        radioButtons = emptyList()
+        radioButtons = riskOptions.map { option ->
             RadioButton(requireContext()).apply {
                 tag = option.value
                 text = option.displayLabel
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
+                layoutParams = RadioGroup.LayoutParams(
+                    RadioGroup.LayoutParams.MATCH_PARENT,
+                    RadioGroup.LayoutParams.WRAP_CONTENT
                 )
+                isChecked = option.value == selectedValue
+                setOnClickListener { viewModel.selectRisk(option) }
                 binding.rdgRiskAttitude.addView(this)
-
-                if (option.value == selectedRiskValue) {
-                    isChecked = true
-                }
             }
         }
     }
 
-    private fun updateInvestmentPref(index: Int) {
-        try {
-            val profile = database.profileInfoDao().findOne() ?: return
-            profile.riskAtt = index
-            if (profile.profileId != null) {
-                database.profileInfoDao().insert(profile)
+    override fun setupObservers() {
+        viewModel.selectedRiskValue.observe(viewLifecycleOwner) { selectedValue ->
+            if (!::radioButtons.isInitialized) {
+                buildRiskOptionsUI(selectedValue)
+            } else {
+                radioButtons.forEach { it.isChecked = it.tag == selectedValue }
             }
-        } catch (ex: Exception) {
-            Toast.makeText(requireContext(), ex.localizedMessage, Toast.LENGTH_SHORT).show()
-            Sentry.captureException(ex)
         }
     }
+
 
     override fun verifyStep(): VerificationError? =
-        if (selectedRiskValue.isEmpty()) VerificationError("Please select an option") else null
+        if (viewModel.selectedRiskValue.value.isNullOrEmpty()) VerificationError(getString(R.string.please_select_an_option)) else null
 }

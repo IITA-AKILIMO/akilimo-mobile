@@ -16,9 +16,9 @@ enum class EnumAreaUnit {
         }
 
     },
-    M2 {
+    SQM {
         override fun unitName(context: Context): String {
-            return context.getString(R.string.lbl_m2)
+            return context.getString(R.string.lbl_sqm)
         }
 
     },
@@ -53,7 +53,7 @@ enum class EnumAreaUnit {
             R.string.two_half_acre_to_are
         )
 
-        M2 -> listOf(
+        SQM -> listOf(
             R.string.quarter_acre_to_m2,
             R.string.half_acre_to_m2,
             R.string.one_acre_to_m2,
@@ -86,7 +86,7 @@ enum class EnumAreaUnit {
             R.string.yield_more_than_12_tonnes_per_are
         )
 
-        M2 -> listOf(
+        SQM -> listOf(
             R.string.yield_less_than_3_tonnes_per_meter,
             R.string.yield_3_to_6_tonnes_per_meter,
             R.string.yield_6_to_9_tonnes_per_meter,

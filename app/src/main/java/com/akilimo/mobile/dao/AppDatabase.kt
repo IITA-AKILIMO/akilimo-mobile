@@ -54,7 +54,7 @@ import com.akilimo.mobile.entities.UserProfile
         AkilimoCurrency::class,
         AdviceStatus::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -100,8 +100,7 @@ abstract class AppDatabase : RoomDatabase() {
                 DATABASE_NAME
             )
                 .fallbackToDestructiveMigration()
-                .allowMainThreadQueries() // ⚠️ optional, discouraged for production
-                .addCallback(object : RoomDatabase.Callback() {
+                .addCallback(object : Callback() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
                         // ✅ Optional pre-population logic here

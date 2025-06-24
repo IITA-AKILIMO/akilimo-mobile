@@ -1,13 +1,12 @@
 package com.akilimo.mobile.views.fragments.dialog
 
-import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
 import android.widget.DatePicker
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.setFragmentResult
 import com.akilimo.mobile.interfaces.IDatePickerDismissListener
 import com.akilimo.mobile.utils.DateHelper
 import java.util.Calendar
@@ -24,8 +23,8 @@ class DateDialogPickerFragment : DialogFragment(), DatePickerDialog.OnDateSetLis
     private var dismissListener: IDatePickerDismissListener? = null
 
     companion object {
-        const val PLANTING_REQUEST_CODE = 11
-        const val HARVEST_REQUEST_CODE = 12
+        const val PLANTING_RESULT_KEY = "planting_result"
+        const val HARVEST_RESULT_KEY = "harvest_result"
         const val TAG = "DatePickerFragment"
 
         fun newInstanceForPlanting(): DateDialogPickerFragment {
@@ -55,15 +54,27 @@ class DateDialogPickerFragment : DialogFragment(), DatePickerDialog.OnDateSetLis
 
         when {
             isPlantingDate -> {
+                // Allow selecting planting dates from 16 months ago...
                 datePicker.minDate = DateHelper.getMinDate(-16).timeInMillis
+                // ...up to 12 months in the future
                 datePicker.maxDate = DateHelper.getMinDate(12).timeInMillis
             }
 
             isHarvestDate && plantingDateStr.isNotEmpty() -> {
-                datePicker.minDate =
-                    DateHelper.getFutureOrPastMonth(plantingDateStr, 8).timeInMillis
-                datePicker.maxDate =
-                    DateHelper.getFutureOrPastMonth(plantingDateStr, 16).timeInMillis
+                val plantingCal = DateHelper.simpleDateFormatter.parse(plantingDateStr)?.let {
+                    Calendar.getInstance().apply { time = it }
+                }
+                plantingCal?.let {
+                    // Harvest allowed from 6 months after planting...
+                    val min = it.clone() as Calendar
+                    min.add(Calendar.MONTH, 6)
+                    datePicker.minDate = min.timeInMillis
+
+                    // ...up to 18 months after planting
+                    val max = it.clone() as Calendar
+                    max.add(Calendar.MONTH, 18)
+                    datePicker.maxDate = max.timeInMillis
+                }
             }
         }
 
@@ -76,19 +87,19 @@ class DateDialogPickerFragment : DialogFragment(), DatePickerDialog.OnDateSetLis
         calendar[Calendar.DAY_OF_MONTH] = dayOfMonth
 
         selectedDate = DateHelper.simpleDateFormatter.format(calendar.time)
-        val resultIntent = Intent().apply {
-            putExtra("selectedDate", selectedDate)
-            putExtra("selectedDateObject", calendar.time)
+        val resultBundle = Bundle().apply {
+            putString("selectedDate", selectedDate)
         }
 
-        targetFragment?.onActivityResult(
-            targetRequestCode,
-            Activity.RESULT_OK,
-            resultIntent
-        ) ?: run {
-            // TODO: Replace with FragmentResult API if targetFragment is deprecated in your app
-        }
+        when {
+            isPlantingDate -> {
+                setFragmentResult(PLANTING_RESULT_KEY, resultBundle)
+            }
 
+            isHarvestDate -> {
+                setFragmentResult(HARVEST_RESULT_KEY, resultBundle)
+            }
+        }
     }
 
     override fun onDismiss(dialog: DialogInterface) {
