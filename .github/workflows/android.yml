@@ -25,7 +25,7 @@ jobs:
 
       - name: Fetch Latest GitHub Tag
         id: fetch_tag
-        uses: masgeek/fetch-github-tag@develop
+        uses: masgeek/fetch-github-tag@1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
