@@ -49,9 +49,9 @@ android {
     defaultConfig {
         applicationId "com.akilimo.mobile"
 
-        compileSdk 34
+        compileSdk 35
         minSdkVersion 21
-        targetSdkVersion 34
+        targetSdkVersion 35
 
         versionCode appVersionCode
         versionName releaseVersionName
