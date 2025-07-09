@@ -68,6 +68,11 @@ jobs:
         with:
           cache-read-only: false
 
+      - name: Update RELEASE_VERSION
+        run: |
+          RELEASE_VERSION="${{ steps.fetch-tag.outputs.tag }}"
+          echo "Building tag $RELEASE_VERSION"
+
       - name: Run Unit tests
         run: ./gradlew testDebugUnitTest
         continue-on-error: false
