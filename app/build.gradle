@@ -130,6 +130,7 @@ static def computeVersionName() {
         buildNumber = 0
         versionMinor = 0
     }
+    println("This build tag is:" + branch)
 
     return String.format('%d.%d.%d', Integer.valueOf(System.env.VERSION_MAJOR ?: versionMajor),
             Integer.valueOf(System.env.VERSION_MINOR ?: versionMinor),
@@ -137,11 +138,8 @@ static def computeVersionName() {
 }
 
 static def computeBuildNumber() {
-    def newFile = new File("nextrelease.txt")
-    newFile.createNewFile()
     def gitVersionTag = System.env.RELEASE_VERSION ?: computeVersionName()
-    println("This build tag is:" + gitVersionTag)
-    newFile.write(gitVersionTag)
+    println("The release tag is:" + gitVersionTag)
     return gitVersionTag
 }
 
