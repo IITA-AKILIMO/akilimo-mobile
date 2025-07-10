@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.widget.Toast
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ActivityManualTillageCostBinding
-import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.entities.OperationCost
 import com.akilimo.mobile.inherit.CostBaseActivity
 import com.akilimo.mobile.utils.LanguageManager
-import com.akilimo.mobile.utils.enums.EnumAdviceTask
+import com.akilimo.mobile.utils.enums.EnumTask
 import com.akilimo.mobile.utils.enums.EnumOperation
 import com.akilimo.mobile.utils.enums.EnumOperationMethod
 import com.akilimo.mobile.utils.showDialogFragmentSafely
@@ -189,7 +188,7 @@ class ManualTillageCostActivity : CostBaseActivity<ActivityManualTillageCostBind
     override fun validate(backPressed: Boolean) {
         setData()
         database.adviceStatusDao().insert(
-            AdviceStatus(EnumAdviceTask.MANUAL_TILLAGE_COST.name, dataValid)
+            AdviceStatus(EnumTask.MANUAL_TILLAGE_COST.name, dataValid)
         )
         if (dataValid) {
             closeActivity(backPressed)

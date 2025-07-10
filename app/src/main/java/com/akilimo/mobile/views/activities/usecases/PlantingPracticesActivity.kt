@@ -6,12 +6,12 @@ import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.akilimo.mobile.R
-import com.akilimo.mobile.adapters.RecOptionsAdapter
+import com.akilimo.mobile.adapters.UseCaseTaskAdapter
 import com.akilimo.mobile.databinding.ActivityPlantingPracticesBinding
 import com.akilimo.mobile.entities.UseCase
-import com.akilimo.mobile.inherit.BaseRecommendationActivity
-import com.akilimo.mobile.models.RecommendationOptions
-import com.akilimo.mobile.utils.enums.EnumAdviceTask
+import com.akilimo.mobile.inherit.BaseUseCaseTaskActivity
+import com.akilimo.mobile.models.UseCaseWithTasks
+import com.akilimo.mobile.utils.enums.EnumTask
 import com.akilimo.mobile.utils.enums.EnumUseCase
 import com.akilimo.mobile.views.activities.CassavaMarketActivity
 import com.akilimo.mobile.views.activities.DatesActivity
@@ -21,7 +21,7 @@ import com.akilimo.mobile.views.activities.TractorAccessActivity
 import com.akilimo.mobile.views.activities.WeedControlCostsActivity
 import io.sentry.Sentry
 
-class PlantingPracticesActivity : BaseRecommendationActivity<ActivityPlantingPracticesBinding>() {
+class PlantingPracticesActivity : BaseUseCaseTaskActivity<ActivityPlantingPracticesBinding>() {
 
 
     override fun inflateBinding(): ActivityPlantingPracticesBinding {
@@ -65,37 +65,37 @@ class PlantingPracticesActivity : BaseRecommendationActivity<ActivityPlantingPra
         }
 
 
-        mAdapter.setOnItemClickListener(object : RecOptionsAdapter.OnItemClickListener {
+        mAdapter.setOnItemClickListener(object : UseCaseTaskAdapter.OnItemClickListener {
             override fun onItemClick(
                 view: View?,
-                recommendation: RecommendationOptions,
+                recommendation: UseCaseWithTasks,
                 position: Int
             ) {
                 var intent: Intent? = null
                 val advice = recommendation.adviceName
                 dataPositionChanged = position
                 when (advice) {
-                    EnumAdviceTask.PLANTING_AND_HARVEST -> intent =
+                    EnumTask.PLANTING_AND_HARVEST -> intent =
                         Intent(this@PlantingPracticesActivity, DatesActivity::class.java)
 
-                    EnumAdviceTask.MARKET_OUTLET_CASSAVA -> intent =
+                    EnumTask.MARKET_OUTLET_CASSAVA -> intent =
                         Intent(this@PlantingPracticesActivity, CassavaMarketActivity::class.java)
 
-                    EnumAdviceTask.CURRENT_CASSAVA_YIELD -> intent =
+                    EnumTask.CURRENT_CASSAVA_YIELD -> intent =
                         Intent(this@PlantingPracticesActivity, RootYieldActivity::class.java)
 
-                    EnumAdviceTask.MANUAL_TILLAGE_COST -> intent = Intent(
+                    EnumTask.MANUAL_TILLAGE_COST -> intent = Intent(
                         this@PlantingPracticesActivity, ManualTillageCostActivity::class.java
                     )
 
-                    EnumAdviceTask.TRACTOR_ACCESS -> intent =
+                    EnumTask.TRACTOR_ACCESS -> intent =
                         Intent(this@PlantingPracticesActivity, TractorAccessActivity::class.java)
 
-                    EnumAdviceTask.COST_OF_WEED_CONTROL -> intent = Intent(
+                    EnumTask.COST_OF_WEED_CONTROL -> intent = Intent(
                         this@PlantingPracticesActivity, WeedControlCostsActivity::class.java
                     )
 
-                    else -> EnumAdviceTask.NOT_SELECTED
+                    else -> EnumTask.NOT_SELECTED
                 }
                 openActivity(intent)
 
@@ -104,7 +104,7 @@ class PlantingPracticesActivity : BaseRecommendationActivity<ActivityPlantingPra
     }
 
 
-    override fun getRecommendationOptions(): List<RecommendationOptions> {
+    override fun getRecommendationOptions(): List<UseCaseWithTasks> {
         val recommendations = getString(R.string.lbl_best_planting_practices)
         val plantingString = getString(R.string.lbl_planting_harvest)
         val marketOutletString = getString(R.string.lbl_market_outlet)
@@ -114,40 +114,40 @@ class PlantingPracticesActivity : BaseRecommendationActivity<ActivityPlantingPra
         val manualTillageCostsString = getString(R.string.lbl_cost_of_manual_tillage)
         val tractorAccessString = getString(R.string.lbl_tractor_access)
 
-        val myItems: MutableList<RecommendationOptions> = ArrayList()
+        val myItems: MutableList<UseCaseWithTasks> = ArrayList()
         myItems.add(
-            RecommendationOptions(
+            UseCaseWithTasks(
                 manualTillageCostsString,
-                EnumAdviceTask.MANUAL_TILLAGE_COST,
-                checkStatus(EnumAdviceTask.MANUAL_TILLAGE_COST)
+                EnumTask.MANUAL_TILLAGE_COST,
+                checkStatus(EnumTask.MANUAL_TILLAGE_COST)
             )
         )
         myItems.add(
-            RecommendationOptions(
+            UseCaseWithTasks(
                 tractorAccessString,
-                EnumAdviceTask.TRACTOR_ACCESS,
-                checkStatus(EnumAdviceTask.TRACTOR_ACCESS)
+                EnumTask.TRACTOR_ACCESS,
+                checkStatus(EnumTask.TRACTOR_ACCESS)
             )
         )
         myItems.add(
-            RecommendationOptions(
+            UseCaseWithTasks(
                 weedControlCostString,
-                EnumAdviceTask.COST_OF_WEED_CONTROL,
-                checkStatus(EnumAdviceTask.COST_OF_WEED_CONTROL)
+                EnumTask.COST_OF_WEED_CONTROL,
+                checkStatus(EnumTask.COST_OF_WEED_CONTROL)
             )
         )
         myItems.add(
-            RecommendationOptions(
+            UseCaseWithTasks(
                 rootYieldString,
-                EnumAdviceTask.CURRENT_CASSAVA_YIELD,
-                checkStatus(EnumAdviceTask.CURRENT_CASSAVA_YIELD)
+                EnumTask.CURRENT_CASSAVA_YIELD,
+                checkStatus(EnumTask.CURRENT_CASSAVA_YIELD)
             )
         )
         myItems.add(
-            RecommendationOptions(
+            UseCaseWithTasks(
                 marketOutletString,
-                EnumAdviceTask.MARKET_OUTLET_CASSAVA,
-                checkStatus(EnumAdviceTask.MARKET_OUTLET_CASSAVA)
+                EnumTask.MARKET_OUTLET_CASSAVA,
+                checkStatus(EnumTask.MARKET_OUTLET_CASSAVA)
             )
         )
         return myItems

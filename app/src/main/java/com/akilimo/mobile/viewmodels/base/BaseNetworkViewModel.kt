@@ -88,6 +88,7 @@ abstract class BaseNetworkViewModel(
     private fun handleError(e: Exception) {
         _error.postValue(true)
         Sentry.captureException(e)
+        showSnackBar(e.message ?: "Unknown error")
     }
 
     fun clearSnackBarEvent() {

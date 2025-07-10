@@ -4,14 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.akilimo.mobile.R
-import com.akilimo.mobile.adapters.RecOptionsAdapter
+import com.akilimo.mobile.adapters.UseCaseTaskAdapter
 import com.akilimo.mobile.databinding.ActivityFertilizerRecBinding
-import com.akilimo.mobile.entities.UseCase
-import com.akilimo.mobile.inherit.BaseRecommendationActivity
-import com.akilimo.mobile.models.RecommendationOptions
-import com.akilimo.mobile.utils.enums.EnumAdviceTask
+import com.akilimo.mobile.inherit.BaseUseCaseTaskActivity
+import com.akilimo.mobile.models.UseCaseWithTasks
+import com.akilimo.mobile.utils.enums.EnumTask
 import com.akilimo.mobile.utils.enums.EnumUseCase
 import com.akilimo.mobile.views.activities.BaseFertilizersActivity
 import com.akilimo.mobile.views.activities.CassavaMarketActivity
@@ -21,7 +19,7 @@ import com.akilimo.mobile.views.activities.InvestmentAmountActivity
 import com.akilimo.mobile.views.activities.RootYieldActivity
 import io.sentry.Sentry
 
-class FertilizerRecActivity : BaseRecommendationActivity<ActivityFertilizerRecBinding>() {
+class FertilizerRecActivity : BaseUseCaseTaskActivity<ActivityFertilizerRecBinding>() {
 
     override fun inflateBinding(): ActivityFertilizerRecBinding {
         return ActivityFertilizerRecBinding.inflate(layoutInflater)
@@ -31,54 +29,51 @@ class FertilizerRecActivity : BaseRecommendationActivity<ActivityFertilizerRecBi
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        binding.apply {
-            setupToolbar(fertilizerRecToolbar.toolbar, R.string.lbl_fertilizer_recommendations) {
-                closeActivity(false)
-            }
-            fertilizerRecList.apply {
-                layoutManager = LinearLayoutManager(this@FertilizerRecActivity)
-                setHasFixedSize(true)
-                adapter = mAdapter
-            }
 
-            fertilizerRecButton.btnAction.setOnClickListener {
-                try {
-                    var useCase = database.useCaseDao().findOne()
-                    if (useCase == null) {
-                        useCase = UseCase()
-                    }
-                    useCase.fertilizerRecommendation = true
-                    useCase.maizeInterCropping = false
-                    useCase.sweetPotatoInterCropping = false
-                    useCase.scheduledPlantingHighStarch = false
-                    useCase.scheduledPlanting = false
-                    useCase.bestPlantingPractices = false
-                    useCase.useCaseName = EnumUseCase.FR.name
-
-                    database.useCaseDao().insertAll(useCase)
-                    processRecommendations(this@FertilizerRecActivity)
-                } catch (ex: Exception) {
-                    Toast.makeText(this@FertilizerRecActivity, ex.message, Toast.LENGTH_SHORT)
-                        .show()
-                    Sentry.captureException(ex)
-                }
-            }
+        setupToolbar(
+            binding.fertilizerRecToolbar.toolbar,
+            R.string.lbl_fertilizer_recommendations
+        ) {
+            closeActivity(false)
         }
 
-        mAdapter.setOnItemClickListener(object : RecOptionsAdapter.OnItemClickListener {
+        setupRecyclerView(binding.fertilizerRecList)
+
+        binding.fertilizerRecButton.btnAction.setOnClickListener {
+            try {
+                viewModel.insertUseCaseWithTasks(
+                    useCase = EnumUseCase.FR,
+                    tasks = listOf(
+                        EnumTask.MARKET_OUTLET_CASSAVA,
+                        EnumTask.AVAILABLE_FERTILIZERS,
+                        EnumTask.INVESTMENT_AMOUNT,
+                        EnumTask.CURRENT_CASSAVA_YIELD
+                    )
+                )
+                processRecommendations(this@FertilizerRecActivity)
+
+            } catch (ex: Exception) {
+                Toast.makeText(this@FertilizerRecActivity, ex.message, Toast.LENGTH_SHORT)
+                    .show()
+                Sentry.captureException(ex)
+            }
+
+        }
+
+        mAdapter.setOnItemClickListener(object : UseCaseTaskAdapter.OnItemClickListener {
             override fun onItemClick(
                 view: View?,
-                recommendation: RecommendationOptions,
+                recommendation: UseCaseWithTasks,
                 position: Int
             ) {
                 var intent: Intent? = null
                 val advice = recommendation.adviceName
                 dataPositionChanged = position
                 when (advice) {
-                    EnumAdviceTask.PLANTING_AND_HARVEST ->
+                    EnumTask.PLANTING_AND_HARVEST ->
                         intent = Intent(this@FertilizerRecActivity, DatesActivity::class.java)
 
-                    EnumAdviceTask.AVAILABLE_FERTILIZERS -> {
+                    EnumTask.AVAILABLE_FERTILIZERS -> {
                         intent = Intent(this@FertilizerRecActivity, FertilizersActivity::class.java)
                             .apply {
                                 putExtra(
@@ -88,55 +83,55 @@ class FertilizerRecActivity : BaseRecommendationActivity<ActivityFertilizerRecBi
                             }
                     }
 
-                    EnumAdviceTask.INVESTMENT_AMOUNT -> intent =
+                    EnumTask.INVESTMENT_AMOUNT -> intent =
                         Intent(this@FertilizerRecActivity, InvestmentAmountActivity::class.java)
 
-                    EnumAdviceTask.CURRENT_CASSAVA_YIELD -> intent =
+                    EnumTask.CURRENT_CASSAVA_YIELD -> intent =
                         Intent(this@FertilizerRecActivity, RootYieldActivity::class.java)
 
-                    EnumAdviceTask.MARKET_OUTLET_CASSAVA -> intent =
+                    EnumTask.MARKET_OUTLET_CASSAVA -> intent =
                         Intent(this@FertilizerRecActivity, CassavaMarketActivity::class.java)
 
-                    else -> EnumAdviceTask.NOT_SELECTED
+                    else -> EnumTask.NOT_SELECTED
                 }
                 openActivity(intent)
             }
         })
     }
 
-    override fun getRecommendationOptions(): List<RecommendationOptions> {
+    override fun getRecommendationOptions(): List<UseCaseWithTasks> {
         val fertilizerString = getString(R.string.lbl_available_fertilizers)
         val investmentString = getString(R.string.lbl_investment_amount)
         val rootYieldString = getString(R.string.lbl_typical_yield)
         val marketOutletString = getString(R.string.lbl_market_outlet)
 
-        val myItems: MutableList<RecommendationOptions> = ArrayList()
+        val myItems: MutableList<UseCaseWithTasks> = ArrayList()
         myItems.add(
-            RecommendationOptions(
-                recommendationName = marketOutletString,
-                adviceName = EnumAdviceTask.MARKET_OUTLET_CASSAVA,
-                adviceStatus = checkStatus(EnumAdviceTask.MARKET_OUTLET_CASSAVA)
+            UseCaseWithTasks(
+                useCase = marketOutletString,
+                adviceName = EnumTask.MARKET_OUTLET_CASSAVA,
+                adviceStatus = checkStatus(EnumTask.MARKET_OUTLET_CASSAVA)
             )
         )
         myItems.add(
-            RecommendationOptions(
-                recommendationName = fertilizerString,
-                adviceName = EnumAdviceTask.AVAILABLE_FERTILIZERS,
-                adviceStatus = checkStatus(EnumAdviceTask.AVAILABLE_FERTILIZERS)
+            UseCaseWithTasks(
+                useCase = fertilizerString,
+                adviceName = EnumTask.AVAILABLE_FERTILIZERS,
+                adviceStatus = checkStatus(EnumTask.AVAILABLE_FERTILIZERS)
             )
         )
         myItems.add(
-            RecommendationOptions(
-                recommendationName = investmentString,
-                adviceName = EnumAdviceTask.INVESTMENT_AMOUNT,
-                adviceStatus = checkStatus(EnumAdviceTask.INVESTMENT_AMOUNT)
+            UseCaseWithTasks(
+                useCase = investmentString,
+                adviceName = EnumTask.INVESTMENT_AMOUNT,
+                adviceStatus = checkStatus(EnumTask.INVESTMENT_AMOUNT)
             )
         )
         myItems.add(
-            RecommendationOptions(
-                recommendationName = rootYieldString,
-                adviceName = EnumAdviceTask.CURRENT_CASSAVA_YIELD,
-                adviceStatus = checkStatus(EnumAdviceTask.CURRENT_CASSAVA_YIELD)
+            UseCaseWithTasks(
+                useCase = rootYieldString,
+                adviceName = EnumTask.CURRENT_CASSAVA_YIELD,
+                adviceStatus = checkStatus(EnumTask.CURRENT_CASSAVA_YIELD)
             )
         )
 

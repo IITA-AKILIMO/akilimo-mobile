@@ -6,12 +6,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.dao.AppDatabase
-import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.CropSchedule
 import com.akilimo.mobile.interfaces.DefaultDispatcherProvider
 import com.akilimo.mobile.interfaces.IDispatcherProvider
 import com.akilimo.mobile.utils.DateHelper
-import com.akilimo.mobile.utils.enums.EnumAdviceTask
+import com.akilimo.mobile.utils.enums.EnumTask
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -72,7 +71,7 @@ class DatesViewModel(
                 }
                 database.scheduleDateDao().insert(cropSchedule)
                 database.adviceStatusDao()
-                    .insert(AdviceStatus(EnumAdviceTask.PLANTING_AND_HARVEST.name, true))
+                    .insert(AdviceStatus(EnumTask.PLANTING_AND_HARVEST.name, true))
                 withContext(dispatchers.main) { onSuccess() }
             } catch (e: Exception) {
                 withContext(dispatchers.main) { onError(e) }

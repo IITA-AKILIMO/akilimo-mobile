@@ -58,7 +58,7 @@ class DstOptionsFragment : BaseFragment<FragmentDstOptionsBinding>() {
                     EnumAdvice.IC_MAIZE -> Intent(context, InterCropRecActivity::class.java)
                     EnumAdvice.SPH -> Intent(context, ScheduledPlantingActivity::class.java)
                     else -> {
-                        throw IllegalArgumentException("Invalid recommendation code")
+                        throw IllegalArgumentException("Invalid useCase code")
                     }
                 }
                 startActivity(intent)
@@ -68,9 +68,9 @@ class DstOptionsFragment : BaseFragment<FragmentDstOptionsBinding>() {
     }
 
     /**
-     * Creates and returns a list of recommendation items.
+     * Creates and returns a list of useCase items.
      *
-     * This function initializes a list of `Recommendation` objects. Each recommendation
+     * This function initializes a list of `UseCase` objects. Each useCase
      * is created with a specific `recCode` from the `EnumAdvice` enum and a
      * localized `recommendationName` retrieved from string resources.
      *
@@ -80,7 +80,7 @@ class DstOptionsFragment : BaseFragment<FragmentDstOptionsBinding>() {
      * - Scheduled Planting and Harvest (SPH)
      * - Best Planting Practices (BPP)
      *
-     * @return A `MutableList` of `Recommendation` objects.
+     * @return A `MutableList` of `UseCase` objects.
      */
     private fun recommendationItems(): MutableList<Recommendation> {
         val context = requireContext()

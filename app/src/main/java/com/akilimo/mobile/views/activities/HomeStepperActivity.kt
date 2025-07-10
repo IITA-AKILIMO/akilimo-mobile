@@ -105,7 +105,7 @@ class HomeStepperActivity : BindBaseActivity<ActivityHomeStepperBinding>() {
         mStepperLayout.adapter = stepperAdapter
         mStepperLayout.setListener(object : StepperLayout.StepperListener {
             override fun onCompleted(completeButton: View?) {
-                openActivity(Intent(this@HomeStepperActivity, RecommendationsActivity::class.java))
+                openActivity(Intent(this@HomeStepperActivity, UseCaseActivity::class.java))
             }
 
             override fun onError(verificationError: VerificationError) {

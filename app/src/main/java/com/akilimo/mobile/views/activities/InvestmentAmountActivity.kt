@@ -10,13 +10,12 @@ import android.widget.RadioGroup
 import android.widget.Toast
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ActivityInvestmentAmountBinding
-import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.InvestmentAmount
 import com.akilimo.mobile.entities.InvestmentAmountResponse
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.utils.CurrencyCode
-import com.akilimo.mobile.utils.enums.EnumAdviceTask
+import com.akilimo.mobile.utils.enums.EnumTask
 import io.sentry.Sentry
 import retrofit2.Call
 import retrofit2.Callback
@@ -104,7 +103,7 @@ class InvestmentAmountActivity : BaseActivity() {
 
                 database.investmentAmountDao().insert(investment)
                 database.adviceStatusDao()
-                    .insert(AdviceStatus(EnumAdviceTask.INVESTMENT_AMOUNT.name, true))
+                    .insert(AdviceStatus(EnumTask.INVESTMENT_AMOUNT.name, true))
 
                 closeActivity(false)
             } catch (ex: Exception) {

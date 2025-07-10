@@ -6,13 +6,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.CropPerformanceAdapter
 import com.akilimo.mobile.databinding.ActivityMaizePerformanceActivityBinding
-import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.CropPerformance
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.ICropPerformanceListener
 import com.akilimo.mobile.utils.TheItemAnimation
 import com.akilimo.mobile.utils.Tools.dpToPx
-import com.akilimo.mobile.utils.enums.EnumAdviceTask
+import com.akilimo.mobile.utils.enums.EnumTask
 import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.MaizePerformanceDialogFragment
 import com.akilimo.mobile.widget.SpacingItemDecoration
@@ -198,7 +197,7 @@ class MaizePerformanceActivity : BaseActivity() {
             return
         }
         database.adviceStatusDao()
-            .insert(AdviceStatus(EnumAdviceTask.MAIZE_PERFORMANCE.name, true))
+            .insert(AdviceStatus(EnumTask.MAIZE_PERFORMANCE.name, true))
         closeActivity(backPressed)
     }
 }

@@ -6,13 +6,12 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ActivityTractorAccessBinding
-import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.entities.OperationCost
 import com.akilimo.mobile.inherit.CostBaseActivity
 import com.akilimo.mobile.utils.LanguageManager
-import com.akilimo.mobile.utils.enums.EnumAdviceTask
+import com.akilimo.mobile.utils.enums.EnumTask
 import com.akilimo.mobile.utils.enums.EnumOperation
 import com.akilimo.mobile.utils.enums.EnumOperationMethod
 import com.akilimo.mobile.utils.showDialogFragmentSafely
@@ -193,7 +192,7 @@ class TractorAccessActivity : CostBaseActivity<ActivityTractorAccessBinding>() {
             }
 
             database.adviceStatusDao()
-                .insert(AdviceStatus(EnumAdviceTask.TRACTOR_ACCESS.name, true))
+                .insert(AdviceStatus(EnumTask.TRACTOR_ACCESS.name, true))
 
         } catch (ex: Exception) {
             Toast.makeText(this, ex.message, Toast.LENGTH_SHORT).show()

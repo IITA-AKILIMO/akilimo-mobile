@@ -1,7 +1,6 @@
 package com.akilimo.mobile.repo
 
 import com.akilimo.mobile.dao.AppDatabase
-import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.entities.FieldOperationCost
 

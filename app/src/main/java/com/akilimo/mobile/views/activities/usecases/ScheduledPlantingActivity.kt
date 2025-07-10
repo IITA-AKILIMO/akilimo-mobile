@@ -7,19 +7,19 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.R
-import com.akilimo.mobile.adapters.RecOptionsAdapter
+import com.akilimo.mobile.adapters.UseCaseTaskAdapter
 import com.akilimo.mobile.databinding.ActivityScheduledPlantingBinding
 import com.akilimo.mobile.entities.UseCase
-import com.akilimo.mobile.inherit.BaseRecommendationActivity
-import com.akilimo.mobile.models.RecommendationOptions
-import com.akilimo.mobile.utils.enums.EnumAdviceTask
+import com.akilimo.mobile.inherit.BaseUseCaseTaskActivity
+import com.akilimo.mobile.models.UseCaseWithTasks
+import com.akilimo.mobile.utils.enums.EnumTask
 import com.akilimo.mobile.utils.enums.EnumUseCase
 import com.akilimo.mobile.views.activities.CassavaMarketActivity
 import com.akilimo.mobile.views.activities.DatesActivity
 import com.akilimo.mobile.views.activities.RootYieldActivity
 import io.sentry.Sentry
 
-class ScheduledPlantingActivity : BaseRecommendationActivity<ActivityScheduledPlantingBinding>() {
+class ScheduledPlantingActivity : BaseUseCaseTaskActivity<ActivityScheduledPlantingBinding>() {
     var toolbar: Toolbar? = null
     var recyclerView: RecyclerView? = null
 
@@ -62,19 +62,19 @@ class ScheduledPlantingActivity : BaseRecommendationActivity<ActivityScheduledPl
         }
 
         // on item list clicked
-        mAdapter.setOnItemClickListener(object : RecOptionsAdapter.OnItemClickListener {
-            override fun onItemClick(view: View?, recommendation: RecommendationOptions, position: Int) {
+        mAdapter.setOnItemClickListener(object : UseCaseTaskAdapter.OnItemClickListener {
+            override fun onItemClick(view: View?, recommendation: UseCaseWithTasks, position: Int) {
                 var intent: Intent? = null
                 dataPositionChanged = position
                 val advice = recommendation.adviceName
                 when (advice) {
-                    EnumAdviceTask.PLANTING_AND_HARVEST -> intent =
+                    EnumTask.PLANTING_AND_HARVEST -> intent =
                         Intent(this@ScheduledPlantingActivity, DatesActivity::class.java)
 
-                    EnumAdviceTask.MARKET_OUTLET_CASSAVA -> intent =
+                    EnumTask.MARKET_OUTLET_CASSAVA -> intent =
                         Intent(this@ScheduledPlantingActivity, CassavaMarketActivity::class.java)
 
-                    EnumAdviceTask.CURRENT_CASSAVA_YIELD -> intent =
+                    EnumTask.CURRENT_CASSAVA_YIELD -> intent =
                         Intent(this@ScheduledPlantingActivity, RootYieldActivity::class.java)
 
                     else -> {}
@@ -84,32 +84,32 @@ class ScheduledPlantingActivity : BaseRecommendationActivity<ActivityScheduledPl
         })
     }
 
-    override fun getRecommendationOptions(): List<RecommendationOptions> {
+    override fun getRecommendationOptions(): List<UseCaseWithTasks> {
         val plantingString = getString(R.string.lbl_planting_harvest)
         val marketOutletString = getString(R.string.lbl_market_outlet)
         val rootYieldString = getString(R.string.lbl_typical_yield)
 
-        val myItems: MutableList<RecommendationOptions> =
+        val myItems: MutableList<UseCaseWithTasks> =
             ArrayList()
         myItems.add(
-            RecommendationOptions(
+            UseCaseWithTasks(
                 plantingString,
-                EnumAdviceTask.PLANTING_AND_HARVEST,
-                checkStatus(EnumAdviceTask.PLANTING_AND_HARVEST)
+                EnumTask.PLANTING_AND_HARVEST,
+                checkStatus(EnumTask.PLANTING_AND_HARVEST)
             )
         )
         myItems.add(
-            RecommendationOptions(
+            UseCaseWithTasks(
                 rootYieldString,
-                EnumAdviceTask.CURRENT_CASSAVA_YIELD,
-                checkStatus(EnumAdviceTask.CURRENT_CASSAVA_YIELD)
+                EnumTask.CURRENT_CASSAVA_YIELD,
+                checkStatus(EnumTask.CURRENT_CASSAVA_YIELD)
             )
         )
         myItems.add(
-            RecommendationOptions(
+            UseCaseWithTasks(
                 marketOutletString,
-                EnumAdviceTask.MARKET_OUTLET_CASSAVA,
-                checkStatus(EnumAdviceTask.MARKET_OUTLET_CASSAVA)
+                EnumTask.MARKET_OUTLET_CASSAVA,
+                checkStatus(EnumTask.MARKET_OUTLET_CASSAVA)
             )
         )
         return myItems

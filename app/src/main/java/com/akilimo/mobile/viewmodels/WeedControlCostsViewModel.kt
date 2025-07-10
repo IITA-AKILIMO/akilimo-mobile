@@ -4,11 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.repo.DatabaseRepository
-import com.akilimo.mobile.utils.enums.EnumAdviceTask
+import com.akilimo.mobile.utils.enums.EnumTask
 import com.akilimo.mobile.utils.enums.EnumWeedControlMethod
 import kotlinx.coroutines.launch
 
@@ -59,7 +58,7 @@ class WeedControlCostsViewModel(private val repo: DatabaseRepository) : ViewMode
             try {
                 _currentPractice.value?.let { repo.saveCurrentPractice(it) }
                 _fieldOperationCost.value?.let { repo.saveFieldOperationCost(it) }
-                repo.saveAdviceStatus(AdviceStatus(EnumAdviceTask.COST_OF_WEED_CONTROL.name, true))
+                repo.saveAdviceStatus(AdviceStatus(EnumTask.COST_OF_WEED_CONTROL.name, true))
                 _saveStatus.value = Result.success(Unit)
             } catch (ex: Exception) {
                 _saveStatus.value = Result.failure(ex)

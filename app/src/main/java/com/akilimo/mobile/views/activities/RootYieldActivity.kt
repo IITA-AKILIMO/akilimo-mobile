@@ -6,12 +6,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.FieldYieldAdapter
 import com.akilimo.mobile.databinding.ActivityRootYieldBinding
-import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.FieldYield
 import com.akilimo.mobile.entities.UseCase
 import com.akilimo.mobile.inherit.BindBaseActivity
 import com.akilimo.mobile.utils.Tools.dpToPx
-import com.akilimo.mobile.utils.enums.EnumAdviceTask
+import com.akilimo.mobile.utils.enums.EnumTask
 import com.akilimo.mobile.utils.enums.EnumAreaUnit
 import com.akilimo.mobile.utils.enums.EnumUseCase
 import com.akilimo.mobile.utils.showDialogFragmentSafely
@@ -127,7 +126,7 @@ class RootYieldActivity : BindBaseActivity<ActivityRootYieldBinding>() {
             else -> getString(R.string.lbl_acre_yield)
         }
 
-        val titleRes = when (useCase?.useCaseName) {
+        val titleRes = when (useCase?.useCase) {
             EnumUseCase.FR.name -> R.string.lbl_typical_yield_question_fr
             else -> R.string.lbl_typical_yield_question
         }
@@ -146,7 +145,7 @@ class RootYieldActivity : BindBaseActivity<ActivityRootYieldBinding>() {
         }
 
         database.adviceStatusDao().insert(
-            AdviceStatus(EnumAdviceTask.CURRENT_CASSAVA_YIELD.name, true)
+            AdviceStatus(EnumTask.CURRENT_CASSAVA_YIELD.name, true)
         )
 
         closeActivity(false)

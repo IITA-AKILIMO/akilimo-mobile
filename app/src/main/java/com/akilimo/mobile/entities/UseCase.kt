@@ -2,32 +2,61 @@ package com.akilimo.mobile.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.akilimo.mobile.utils.enums.EnumTask
+import com.akilimo.mobile.utils.enums.EnumUseCase
 
-@Entity(tableName = "use_cases")
-open class UseCase {
+// Parent entity
+@Entity(
+    tableName = "use_cases",
+    indices = [
+        Index(value = ["use_case_id"]),
+        Index(value = ["use_case"], unique = true)
+    ]
+)
+data class UseCase(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id", index = true)
-    var id: Int? = null
+    val id: Long = 0L,
 
-    @ColumnInfo(name = "use_case_name", index = true)
-    var useCaseName: String = ""
+    @ColumnInfo(name = "use_case_label")
+    val useCaseLabel: Int,
 
-    @ColumnInfo(name = "fr")
-    var fertilizerRecommendation = false
+    @ColumnInfo(name = "use_case", index = true)
+    val useCase: EnumUseCase = EnumUseCase.NA
+)
 
-    @ColumnInfo(name = "cim")
-    var maizeInterCropping = false
+// Child entity with FK to UseCase
+@Entity(
+    tableName = "use_case_tasks",
+    foreignKeys = [ForeignKey(
+        entity = UseCase::class,
+        parentColumns = ["id"],
+        childColumns = ["use_case_id"],
+        onDelete = ForeignKey.CASCADE
+    )],
+    indices = [
+        Index(value = ["use_case_id"]),
+        Index(value = ["use_case_id", "task_name"], unique = true)
+    ]
 
-    @ColumnInfo(name = "cis")
-    var sweetPotatoInterCropping = false
+)
+data class UseCaseTask(
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id", index = true)
+    val id: Long = 0L,
 
-    @ColumnInfo(name = "bpp")
-    var bestPlantingPractices = false
+    @ColumnInfo(name = "use_case_id")
+    val useCaseId: Long,
 
-    @ColumnInfo(name = "sph")
-    var scheduledPlantingHighStarch = false
+    @ColumnInfo(name = "use_case_label")
+    val taskLabel: Int,
 
-    @ColumnInfo(name = "spp")
-    var scheduledPlanting = false
-}
+    @ColumnInfo(name = "task_name")
+    val taskName: EnumTask,
+
+    @ColumnInfo(name = "completed")
+    var completed: Boolean = false
+)

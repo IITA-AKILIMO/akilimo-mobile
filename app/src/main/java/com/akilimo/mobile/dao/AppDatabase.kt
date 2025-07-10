@@ -6,7 +6,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.AkilimoCurrency
 import com.akilimo.mobile.entities.CassavaMarket
 import com.akilimo.mobile.entities.CassavaPrice
@@ -52,9 +51,8 @@ import com.akilimo.mobile.entities.UserProfile
         StarchFactory::class,
         UseCase::class,
         AkilimoCurrency::class,
-        AdviceStatus::class
     ],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -80,7 +78,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun scheduleDateDao(): CropScheduleDao
     abstract fun starchFactoryDao(): StarchFactoryDao
     abstract fun useCaseDao(): UseCaseDao
-    abstract fun adviceStatusDao(): AdviceStatusDao
     abstract fun currencyDao(): CurrencyDao
 
     companion object {

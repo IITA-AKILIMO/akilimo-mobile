@@ -12,6 +12,8 @@ abstract class BindBaseActivity<T : ViewBinding> : BaseActivity() {
 
     protected abstract fun inflateBinding(): T
 
+    abstract fun setupObservers()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = inflateBinding()

@@ -11,8 +11,8 @@ import com.akilimo.mobile.models.Recommendation
 import com.akilimo.mobile.utils.TheItemAnimation.animate
 
 @Deprecated(
-    message = "Consider moving to a RecOptionsAdapter",
-    replaceWith = ReplaceWith("RecOptionsAdapter")
+    message = "Consider moving to a UseCaseTaskAdapter",
+    replaceWith = ReplaceWith("UseCaseTaskAdapter")
 )
 class AdapterListAnimation :
     ListAdapter<Recommendation, AdapterListAnimation.OriginalViewHolder>(RecommendationDiffCallback()) {
