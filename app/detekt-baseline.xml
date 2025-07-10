@@ -45,7 +45,7 @@
     <ID>LongMethod:ManualTillageCostActivity.kt$ManualTillageCostActivity$@Deprecated("Deprecated remove it completely") override fun initComponent()</ID>
     <ID>LongMethod:OperationCostsDialogFragment.kt$OperationCostsDialogFragment$override fun onCreateDialog(savedInstanceState: Bundle?): Dialog</ID>
     <ID>LongMethod:RecommendationChannelDialog.kt$RecommendationChannelDialog$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
-    <ID>LongMethod:RecommendationsActivity.kt$RecommendationsActivity$@Deprecated("Deprecated remove it completely") override fun initComponent()</ID>
+    <ID>LongMethod:UseCaseActivity.kt$RecommendationsActivity$@Deprecated("Deprecated remove it completely") override fun initComponent()</ID>
     <ID>LongMethod:RootYieldActivity.kt$RootYieldActivity$private fun setYieldData(areaUnit: String): List&lt;FieldYield&gt;</ID>
     <ID>LongMethod:SweetPotatoPriceDialogFragment.kt$SweetPotatoPriceDialogFragment$override fun onCreateDialog(savedInstanceState: Bundle?): Dialog</ID>
     <ID>LongMethod:TractorAccessActivity.kt$TractorAccessActivity$@Deprecated("Deprecated remove it completely") override fun initComponent()</ID>
@@ -130,7 +130,7 @@
     <ID>NestedBlockDepth:LiveLocationProvider.kt$GPSTracker$@SuppressLint("MissingPermission") fun getLocation(): Location?</ID>
     <ID>NestedBlockDepth:TillageOperationFragment.kt$TillageOperationFragment$fun refreshData()</ID>
     <ID>NewLineAtEndOfFile:AkilimoCurrency.kt$com.akilimo.mobile.entities.AkilimoCurrency.kt</ID>
-    <ID>NewLineAtEndOfFile:BaseRecommendationActivity.kt$com.akilimo.mobile.inherit.BaseRecommendationActivity.kt</ID>
+    <ID>NewLineAtEndOfFile:BaseUseCaseTaskActivity.kt$com.akilimo.mobile.inherit.BaseUseCaseTaskActivity</ID>
     <ID>NewLineAtEndOfFile:BaseStepFragment.kt$com.akilimo.mobile.inherit.BaseStepFragment.kt</ID>
     <ID>NewLineAtEndOfFile:CassavaPrice.kt$com.akilimo.mobile.entities.CassavaPrice.kt</ID>
 
@@ -224,7 +224,7 @@
     <ID>UnusedPrivateProperty:OperationCostsDialogFragment.kt$OperationCostsDialogFragment.Companion$private val LOG_TAG: String = OperationCostsDialogFragment::class.java.simpleName</ID>
     <ID>UnusedPrivateProperty:OperationTypeDialogFragment.kt$OperationTypeDialogFragment.Companion$private val LOG_TAG: String = OperationTypeDialogFragment::class.java.simpleName</ID>
     <ID>UnusedPrivateProperty:PlantingPracticesActivity.kt$PlantingPracticesActivity$val plantingString = getString(R.string.lbl_planting_harvest)</ID>
-    <ID>UnusedPrivateProperty:PlantingPracticesActivity.kt$PlantingPracticesActivity$val recommendations = getString(R.string.lbl_best_planting_practices)</ID>
+    <ID>UnusedPrivateProperty:PlantingPracticesActivity.kt$PlantingPracticesActivity$val useCases = getString(R.string.lbl_best_planting_practices)</ID>
     <ID>UnusedPrivateProperty:PlantingPracticesActivity.kt$PlantingPracticesActivity$val tillageOperationsString = getString(R.string.lbl_tillage_operations)</ID>
     <ID>UnusedPrivateProperty:RecommendationChannelDialog.kt$RecommendationChannelDialog$private val myUserProfile: @NotNull UserProfile</ID>
     <ID>UnusedPrivateProperty:RootYieldDialogFragment.kt$RootYieldDialogFragment$val yieldLabel = fieldYield!!.fieldYieldLabel</ID>
@@ -236,7 +236,7 @@
     <ID>UnusedPrivateProperty:SweetPotatoMarketActivity.kt$SweetPotatoMarketActivity$private val selectionMade = false</ID>
     <ID>UnusedPrivateProperty:SweetPotatoPriceDialogFragment.kt$SweetPotatoPriceDialogFragment.Companion$private val LOG_TAG: String = SweetPotatoPriceDialogFragment::class.java.simpleName</ID>
     <ID>UnusedPrivateProperty:ValidationHelper.kt$ValidationHelper.Companion$private val LOG_TAG = ValidationHelper::class.java.simpleName</ID>
-    <ID>UseCheckOrError:BaseRecommendationActivity.kt$BaseRecommendationActivity$throw IllegalStateException("Binding is not initialized yet.")</ID>
+    <ID>UseCheckOrError:BaseUseCaseTaskActivity.kt$BaseRecommendationActivity$throw IllegalStateException("Binding is not initialized yet.")</ID>
     <ID>UseCheckOrError:RetrofitManager.kt$RetrofitManager$throw IllegalStateException("Akilimo Retrofit not initialized")</ID>
     <ID>UseCheckOrError:RetrofitManager.kt$RetrofitManager$throw IllegalStateException("Fuelrod Retrofit not initialized")</ID>
     <ID>VariableNaming:BaseActivity.kt$BaseActivity$protected val LOG_TAG: String = this::class.java.simpleName</ID>
