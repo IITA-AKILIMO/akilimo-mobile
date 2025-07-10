@@ -1,21 +1,24 @@
 package com.akilimo.mobile.views.activities
 
 import android.os.Bundle
-import android.widget.Toast
+import androidx.activity.viewModels
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ActivityManualTillageCostBinding
-import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.entities.OperationCost
 import com.akilimo.mobile.inherit.CostBaseActivity
 import com.akilimo.mobile.utils.LanguageManager
 import com.akilimo.mobile.utils.enums.EnumOperation
 import com.akilimo.mobile.utils.enums.EnumOperationMethod
-import com.akilimo.mobile.utils.enums.EnumTask
 import com.akilimo.mobile.utils.showDialogFragmentSafely
+import com.akilimo.mobile.viewmodels.ManualTillageCostViewModel
+import com.akilimo.mobile.viewmodels.factory.OperationCostViewModelFactory
 import com.akilimo.mobile.views.fragments.dialog.OperationCostsDialogFragment
-import io.sentry.Sentry
 
 class ManualTillageCostActivity : CostBaseActivity<ActivityManualTillageCostBinding>() {
+
+    private val viewModel: ManualTillageCostViewModel by viewModels {
+        OperationCostViewModelFactory(this.application)
+    }
 
     private var manualPloughCost = 0.0
     private var manualRidgeCost = 0.0
@@ -30,35 +33,42 @@ class ManualTillageCostActivity : CostBaseActivity<ActivityManualTillageCostBind
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activeLanguage = LanguageManager.getLanguage(this)
-        loadInitialData()
+
         setupToolbar(binding.toolbar, R.string.title_manual_tillage_cost) { validate(false) }
+
+        setupObservers()
+        viewModel.loadInitialData { unit, size, symbol ->
+            areaUnit = unit
+            fieldSize = size
+            currencySymbol = symbol
+            finalTranslatedUnit =
+                getString(if (unit == "ha") R.string.lbl_ha else R.string.lbl_acre).lowercase()
+
+            setupTextsAndButtons()
+            showCustomNotificationDialog()
+        }
         setupTextsAndButtons()
         showCustomNotificationDialog()
     }
 
-    private fun loadInitialData() {
-        database.mandatoryInfoDao().findOne()?.let {
-            areaUnit = it.areaUnit
-            fieldSize = it.areaSize
+    override fun setupObservers() {
+        viewModel.manualPloughCost.observe(this) {
+            binding.manualTillage.manualPloughCostText.text =
+                getCostText(R.string.lbl_ploughing_cost_text, it)
         }
 
-        database.profileInfoDao().findOne()?.let { profile ->
-            countryCode = profile.countryCode
-            currencyCode = profile.currencyCode
-            database.currencyDao().findOneByCurrencyCode(currencyCode)?.let {
-                currencyCode = it.currencyCode
-                currencySymbol = it.currencySymbol
-            }
+        viewModel.manualRidgeCost.observe(this) {
+            binding.manualTillage.manualRidgingCostText.text =
+                getCostText(R.string.lbl_ridging_cost_text, it)
         }
 
-        database.fieldOperationCostDao().findOne()?.let { cost ->
-            manualPloughCost = cost.manualPloughCost
-            manualRidgeCost = cost.manualRidgeCost
+        viewModel.errorMessage.observe(this) {
+            it?.let { showCustomWarningDialog(getString(R.string.lbl_invalid_selection), it) }
         }
 
-        finalTranslatedUnit = getString(
-            if (areaUnit == "ha") R.string.lbl_ha else R.string.lbl_acre
-        ).lowercase()
+        viewModel.dataValid.observe(this) {
+            if (it) closeActivity(false)
+        }
     }
 
     private fun setupTextsAndButtons() = with(binding) {
@@ -186,41 +196,9 @@ class ManualTillageCostActivity : CostBaseActivity<ActivityManualTillageCostBind
     }
 
     override fun validate(backPressed: Boolean) {
-        setData()
-        database.adviceStatusDao().insert(
-            AdviceStatus(EnumTask.MANUAL_TILLAGE_COST.name, dataValid)
+        viewModel.saveCosts(
+            viewModel.manualPloughCost.value ?: 0.0,
+            viewModel.manualRidgeCost.value ?: 0.0
         )
-        if (dataValid) {
-            closeActivity(backPressed)
-        }
-    }
-
-    private fun setData() {
-        if (manualPloughCost <= 0) {
-            showCustomWarningDialog(
-                getString(R.string.lbl_invalid_selection),
-                getString(R.string.lbl_manual_plough_cost_prompt)
-            )
-            return
-        }
-
-        if (manualRidgeCost <= 0) {
-            showCustomWarningDialog(
-                getString(R.string.lbl_invalid_selection),
-                getString(R.string.lbl_manual_ridge_cost_prompt)
-            )
-            return
-        }
-
-        dataValid = true
-        try {
-            val cost = database.fieldOperationCostDao().findOne() ?: FieldOperationCost()
-            cost.manualPloughCost = manualPloughCost
-            cost.manualRidgeCost = manualRidgeCost
-            database.fieldOperationCostDao().insert(cost)
-        } catch (ex: Exception) {
-            Toast.makeText(this, ex.message, Toast.LENGTH_SHORT).show()
-            Sentry.captureException(ex)
-        }
     }
 }
