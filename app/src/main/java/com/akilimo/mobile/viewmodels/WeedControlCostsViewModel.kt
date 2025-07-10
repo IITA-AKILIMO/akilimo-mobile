@@ -6,13 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.entities.FieldOperationCost
+import com.akilimo.mobile.entities.UseCaseTask
 import com.akilimo.mobile.repo.DatabaseRepository
-import com.akilimo.mobile.utils.enums.EnumTask
 import com.akilimo.mobile.utils.enums.EnumWeedControlMethod
 import kotlinx.coroutines.launch
 
 class WeedControlCostsViewModel(private val repo: DatabaseRepository) : ViewModel() {
 
+    private val _useCaseTask = MutableLiveData(UseCaseTask())
+    val useCaseTask: LiveData<UseCaseTask> = _useCaseTask
     private val _currentPractice = MutableLiveData(CurrentPractice())
     val currentPractice: LiveData<CurrentPractice> = _currentPractice
 
@@ -27,10 +29,11 @@ class WeedControlCostsViewModel(private val repo: DatabaseRepository) : ViewMode
     val currencyCode = MutableLiveData<String>()
     val currencyName = MutableLiveData<String>()
 
-    fun loadInitialData() {
+    fun loadInitialData(useCaseId: Long) {
         viewModelScope.launch {
-            repo.getCurrentPractice()?.let { _currentPractice.value = it }
-            repo.getFieldOperationCost()?.let { _fieldOperationCost.value = it }
+            repo.getCurrentPractice()?.let { _currentPractice.postValue(it) }
+            repo.getFieldOperationCost()?.let { _fieldOperationCost.postValue(it) }
+            repo.getUseCaseTask(useCaseId)?.let { _useCaseTask.postValue(it) }
         }
     }
 
@@ -39,17 +42,21 @@ class WeedControlCostsViewModel(private val repo: DatabaseRepository) : ViewMode
         radioId: Int,
         usesHerbicide: Boolean
     ) {
-        _currentPractice.value = _currentPractice.value?.copy(
-            weedControlMethod = method,
-            usesHerbicide = usesHerbicide,
-            weedRadioIndex = radioId
+        _currentPractice.postValue(
+            _currentPractice.value?.copy(
+                weedControlMethod = method,
+                usesHerbicide = usesHerbicide,
+                weedRadioIndex = radioId
+            )
         )
     }
 
     fun updateWeedingCosts(firstCost: Double, secondCost: Double) {
-        _fieldOperationCost.value = _fieldOperationCost.value?.copy(
-            firstWeedingOperationCost = firstCost,
-            secondWeedingOperationCost = secondCost
+        _fieldOperationCost.postValue(
+            _fieldOperationCost.value?.copy(
+                firstWeedingOperationCost = firstCost,
+                secondWeedingOperationCost = secondCost
+            )
         )
     }
 
@@ -58,10 +65,14 @@ class WeedControlCostsViewModel(private val repo: DatabaseRepository) : ViewMode
             try {
                 _currentPractice.value?.let { repo.saveCurrentPractice(it) }
                 _fieldOperationCost.value?.let { repo.saveFieldOperationCost(it) }
-                repo.saveAdviceStatus(AdviceStatus(EnumTask.COST_OF_WEED_CONTROL.name, true))
-                _saveStatus.value = Result.success(Unit)
+                useCaseTask.value?.let { task ->
+                    val updatedTask = task.copy(completed = true)
+                    repo.updateUseCaseTask(updatedTask)
+                    _useCaseTask.postValue(updatedTask) // Reflect change in UI
+                }
+                _saveStatus.postValue(Result.success(Unit))
             } catch (ex: Exception) {
-                _saveStatus.value = Result.failure(ex)
+                _saveStatus.postValue(Result.failure(ex))
             }
         }
     }
