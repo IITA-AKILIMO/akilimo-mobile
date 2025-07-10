@@ -1,5 +1,6 @@
 package com.akilimo.mobile.rest.request
 
+import com.akilimo.mobile.utils.enums.EnumUseCase
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -10,7 +11,7 @@ class ComputeRequest {
     var countryCode: String? = null
 
     @Json(name = "use_case")
-    var useCase: String? = null
+    var useCase: EnumUseCase = EnumUseCase.FR
 
     @Json(name = "currency_code")
     var currencyCode: String? = null
