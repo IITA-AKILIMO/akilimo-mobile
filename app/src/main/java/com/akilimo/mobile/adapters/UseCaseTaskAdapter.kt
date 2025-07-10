@@ -24,7 +24,7 @@ class UseCaseTaskAdapter(
     private var _animationType: Int = TheItemAnimation.FADE_IN
 
     fun interface OnItemClickListener {
-        fun onItemClick(view: View?, task: UseCaseTask, position: Int)
+        fun onItemClick(view: View?, useCaseTask: UseCaseTask, position: Int)
     }
 
     fun setAnimationType(animationType: Int) {
@@ -56,13 +56,14 @@ class UseCaseTaskAdapter(
     }
 
     override fun onBindViewHolder(holder: OriginalViewHolder, position: Int) {
-        val task = getItem(position)
+        val useCaseTask = getItem(position)
 
         with(holder.binding) {
-            recTitle.text = task.taskName.name
+            //TODO: Extract label from string resource
+            recTitle.text = useCaseTask.taskName.name
 
             if (displayArrow) {
-                val isCompleted = task.completed
+                val isCompleted = useCaseTask.completed
                 val iconRes = if (isCompleted) R.drawable.ic_done else R.drawable.ic_pending
                 val colorRes = if (isCompleted) R.color.green_600 else R.color.red_400
                 val drawable = VectorDrawableUtils.getDrawable(
@@ -77,7 +78,7 @@ class UseCaseTaskAdapter(
             }
 
             recCard.setOnClickListener { view ->
-                _itemClickListener?.onItemClick(view, task, position)
+                _itemClickListener?.onItemClick(view, useCaseTask, position)
             }
         }
 
