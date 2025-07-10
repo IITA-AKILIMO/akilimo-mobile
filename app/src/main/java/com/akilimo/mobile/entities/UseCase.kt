@@ -22,7 +22,7 @@ data class UseCase(
     val id: Long = 0L,
 
     @ColumnInfo(name = "use_case_label")
-    val useCaseLabel: Int,
+    val useCaseLabel: Int = -1,
 
     @ColumnInfo(name = "use_case", index = true)
     val useCase: EnumUseCase = EnumUseCase.NA
@@ -49,14 +49,14 @@ data class UseCaseTask(
     val id: Long = 0L,
 
     @ColumnInfo(name = "use_case_id")
-    val useCaseId: Long,
+    val useCaseId: Long = -1,
 
-    @ColumnInfo(name = "use_case_label")
-    val taskLabel: Int,
+    @ColumnInfo(name = "task_label")
+    val taskLabel: Int = -1,
 
     @ColumnInfo(name = "task_name")
-    val taskName: EnumTask,
+    val taskName: EnumTask = EnumTask.NOT_SELECTED,
 
     @ColumnInfo(name = "completed")
-    var completed: Boolean = false
+    val completed: Boolean = false
 )
