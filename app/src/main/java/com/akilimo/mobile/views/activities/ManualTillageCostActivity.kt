@@ -8,9 +8,9 @@ import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.entities.OperationCost
 import com.akilimo.mobile.inherit.CostBaseActivity
 import com.akilimo.mobile.utils.LanguageManager
-import com.akilimo.mobile.utils.enums.EnumTask
 import com.akilimo.mobile.utils.enums.EnumOperation
 import com.akilimo.mobile.utils.enums.EnumOperationMethod
+import com.akilimo.mobile.utils.enums.EnumTask
 import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.OperationCostsDialogFragment
 import io.sentry.Sentry
@@ -217,7 +217,7 @@ class ManualTillageCostActivity : CostBaseActivity<ActivityManualTillageCostBind
             val cost = database.fieldOperationCostDao().findOne() ?: FieldOperationCost()
             cost.manualPloughCost = manualPloughCost
             cost.manualRidgeCost = manualRidgeCost
-            database.fieldOperationCostDao().insertOrUpdate(cost)
+            database.fieldOperationCostDao().insert(cost)
         } catch (ex: Exception) {
             Toast.makeText(this, ex.message, Toast.LENGTH_SHORT).show()
             Sentry.captureException(ex)
