@@ -1,10 +1,15 @@
 package com.akilimo.mobile.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
 import com.akilimo.mobile.entities.Fertilizer
+import com.akilimo.mobile.utils.enums.EnumUseCase
 
 @Dao
-interface FertilizerDao: BaseDao<Fertilizer> {
+interface FertilizerDao : BaseDao<Fertilizer> {
 
     @Query("SELECT * FROM fertilizers")
     fun listAll(): MutableList<Fertilizer>
@@ -43,10 +48,10 @@ interface FertilizerDao: BaseDao<Fertilizer> {
     @Query("SELECT * FROM fertilizers WHERE country_code = :countryCode AND use_case IN (:useCases) AND selected = 1")
     fun findAllSelectedByCountryAndUseCases(
         countryCode: String,
-        useCases: List<String>
+        useCases: List<EnumUseCase>
     ): List<Fertilizer>
 
-    @Query("SELECT * FROM fertilizers where type=:fertilizerType and country_code=:countryCode and use_case=:useCase")
+    @Query("SELECT * FROM fertilizers where type=:fertilizerType and country_code=:countryCode and use_case=:useCase LIMIT 1")
     fun findOneByTypeCountryAndUseCase(
         fertilizerType: String,
         countryCode: String,

@@ -6,6 +6,7 @@ import com.akilimo.mobile.rest.request.ComputeRequest
 import com.akilimo.mobile.rest.request.FertilizerRequest
 import com.akilimo.mobile.rest.request.RecommendationRequest
 import com.akilimo.mobile.rest.request.UserInfo
+import com.akilimo.mobile.utils.enums.EnumUseCase
 import org.modelmapper.ModelMapper
 import org.modelmapper.TypeToken
 
@@ -26,8 +27,6 @@ class BuildComputeData(val context: Context) {
 
         val computeRequest = buildMandatoryInfo()
 
-
-        buildRequestedRec(computeRequest)
         buildPlantingDates(computeRequest)
         buildInvestmentAmount(computeRequest)
         buildCurrentFieldYield(computeRequest)
@@ -42,7 +41,8 @@ class BuildComputeData(val context: Context) {
 
         val countryCode = computeRequest.countryCode.toString()
         val fertilizerDao = database.fertilizerDao()
-        val useCases = database.useCaseDao().getAllUseCases()
+        val useCaseList = database.useCaseDao().getAllUseCases()
+        val useCases: List<EnumUseCase> = useCaseList.map { it.useCase }
         val fertilizerList =
             when {
                 computeRequest.interCroppingPotatoRec -> {
@@ -116,22 +116,6 @@ class BuildComputeData(val context: Context) {
                 riskAttitude = it.riskAtt
             }
         }
-    }
-
-    private fun buildRequestedRec(computeRequest: ComputeRequest): ComputeRequest {
-        database.useCaseDao().findOne()?.let { useCases ->
-            computeRequest.apply {
-                interCroppingMaizeRec = useCases.maizeInterCropping
-                interCroppingPotatoRec = useCases.sweetPotatoInterCropping
-                useCase = useCases.useCaseName
-
-                fertilizerRec = useCases.fertilizerRecommendation
-                plantingPracticesRec = useCases.bestPlantingPractices
-                scheduledPlantingRec = useCases.scheduledPlanting
-                scheduledHarvestRec = useCases.scheduledPlantingHighStarch
-            }
-        }
-        return computeRequest
     }
 
     private fun buildCurrentFieldYield(computeRequest: ComputeRequest): ComputeRequest {
