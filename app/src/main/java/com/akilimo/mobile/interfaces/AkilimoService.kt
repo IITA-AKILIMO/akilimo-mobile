@@ -57,7 +57,7 @@ interface AkilimoService {
     suspend fun getOperationCosts(
         @Path("country_code") countryCode: String,
         @QueryMap queryParams: Map<String, String>
-    ): Call<OperationCostResponse>
+    ): OperationCostResponse
 
     @GET("v1/starch-factories/country/{country_code}")
     suspend fun getStarchFactories(@Path("country_code") countryCode: String): StarchFactoryResponse
