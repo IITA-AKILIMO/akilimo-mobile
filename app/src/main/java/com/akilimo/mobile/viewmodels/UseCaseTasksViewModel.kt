@@ -19,16 +19,16 @@ import io.sentry.Sentry
 import kotlinx.coroutines.launch
 
 
-class UseCaseViewModel(
+class UseCaseTasksViewModel(
     private val application: Application,
-    private val useCaseWithTasks: List<UseCaseWithTasks>,
+    private val useCaseWithTasks: List<UseCaseTask>,
     private val akilimoService: AkilimoService = AkilimoApi.apiService,
     private val database: AppDatabase = AppDatabase.getInstance(application),
     private val dispatchers: IDispatcherProvider = DefaultDispatcherProvider()
 ) : BaseNetworkViewModel(application, dispatchers) {
 
     private val _useCaseWithTasksList = MutableLiveData(useCaseWithTasks)
-    val useCaseWithTasksList: LiveData<List<UseCaseWithTasks>> =
+    val useCaseWithTasksList: LiveData<List<UseCaseTask>> =
         _useCaseWithTasksList
 
     private val _countryCode = MutableLiveData<String>()
@@ -72,29 +72,33 @@ class UseCaseViewModel(
         }
     }
 
-    fun insertUseCaseWithTasks(useCase: EnumUseCase, tasks: List<EnumTask>) {
+    fun insertUseCaseWithTasks(useCase: EnumUseCase, useCaseTasks: List<UseCaseTask>) {
         viewModelScope.launch {
             try {
                 val useCaseDao = database.useCaseDao()
                 val existing = useCaseDao.getUseCaseWithTasks(useCase)
 
-                if (existing == null) {
-                    val newUseCase = UseCase(useCase = useCase, useCaseLabel = 0)
-                    val useCaseId = useCaseDao.insertUseCase(newUseCase)
-
-                    val taskEntities = tasks.map { task ->
-                        UseCaseTask(useCaseId = useCaseId, taskName = task, taskLabel = 0)
-                    }
-
-                    useCaseDao.insertTasks(taskEntities)
+                if (existing != null) {
+                    showSnackBar("Use case ${useCase.name} already exists.")
+                    return@launch
                 }
 
+                val newUseCase = UseCase(useCase = useCase, useCaseLabel = 0)
+                val useCaseId = useCaseDao.insertUseCase(newUseCase)
+
+                val taskEntities = useCaseTasks.map { task ->
+                    task.copy(useCaseId = useCaseId)
+                }
+
+                useCaseDao.insertTasks(taskEntities)
+                showSnackBar("Use case ${useCase.name} and ${taskEntities.size} tasks inserted successfully.")
             } catch (e: Exception) {
                 Sentry.captureException(e)
                 showSnackBar("Failed to insert use case with tasks: ${e.message}")
             }
         }
     }
+
 
     fun saveUseCaseTask(useCases: List<UseCaseWithTasks>) {
         viewModelScope.launch(dispatchers.io) {
@@ -109,8 +113,8 @@ class UseCaseViewModel(
                 val useCaseId = dao.findOne(useCase)?.id ?: return@launch
                 val tasks = dao.getAllTasksForUseCase(useCaseId)
                 val taskItem = tasks.find { it.taskName == task } ?: return@launch
-                taskItem.completed = !taskItem.completed
-                dao.updateTaskCompletion(taskItem)
+                val updatedTask = taskItem.copy(completed = !taskItem.completed)
+                dao.updateTaskCompletion(updatedTask)
             } catch (e: Exception) {
                 Sentry.captureException(e)
                 showSnackBar("Failed to update task completion: ${e.message}")
