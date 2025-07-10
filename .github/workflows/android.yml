@@ -12,10 +12,27 @@ on:
   workflow_dispatch:
 
 jobs:
+  fetch-tag:
+    runs-on: ubuntu-24.04
+    concurrency:
+      group: fetch-tag-${{ github.head_ref || github.ref_name }}
+      cancel-in-progress: true
+    outputs:
+      tag: ${{ steps.fetch_tag.outputs.tag }}  # <-- Expose output to other jobs
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fetch Latest GitHub Tag
+        id: fetch_tag
+        uses: masgeek/fetch-github-tag@develop
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   unit-test:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    needs: fetch-tag
     concurrency:
       group: ci-${{ github.head_ref || github.ref_name }}
       cancel-in-progress: true
@@ -51,6 +68,15 @@ jobs:
         with:
           cache-read-only: false
 
+      - name: Set RELEASE_VERSION from tag
+        run: |
+          echo "RELEASE_VERSION=${{ needs.fetch-tag.outputs.tag }}" >> $GITHUB_ENV
+
+      - name: Update RELEASE_VERSION
+        run: |
+          echo "Building tag ${{ needs.fetch-tag.outputs.tag }}"
+          echo "Building tag $RELEASE_VERSION"
+
       - name: Run Unit tests
         run: ./gradlew testDebugUnitTest
         continue-on-error: false
@@ -64,8 +90,11 @@ jobs:
         if: ${{ always() }}
 
   build_artifacts:
-    if: github.ref == 'refs/heads/main'
-    needs: unit-test
+#    if: github.ref == 'refs/heads/main'
+#    needs: unit-test
+    needs:
+#      - unit-test
+      - fetch-tag
     name: Build artifacts
     runs-on: ubuntu-latest
     env:
@@ -97,28 +126,9 @@ jobs:
           VERSION_CODE=$(curl -s https://munywele.co.ke/app-releases/akilimo)
           echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
 
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
-
-      - name: Install Poetry
-        run: curl -sSL https://install.python-poetry.org | python3 -
-
-      - name: Download pyproject.toml
-        run: curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/pyproject.toml -o pyproject.toml
-
-      - name: Download Tag fetching script
-        run: curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/fetch-tags.py -o latest-tag.py
-
-      - name: Install dependencies with Poetry
-        run: poetry install --no-root
-
-      - name: Fetch latest tag
-        run: poetry run python latest-tag.py
-
-      - name: Update release version
-        run: echo "RELEASE_VERSION=$(cat $LATEST_TAG_FILE)" >> $GITHUB_ENV
+      - name: Set RELEASE_VERSION from tag
+        run: |
+          echo "RELEASE_VERSION=${{ needs.fetch-tag.outputs.tag }}" >> $GITHUB_ENV
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -218,9 +228,6 @@ jobs:
             cp "$file" "release/akilimo-release.aab"
           done
 
-      - name: Copy release tag file
-        run: cp $LATEST_TAG_FILE release
-
       - name: Generate release notes
         run: python .github/scripts/generate_release_notes.py
 
@@ -266,7 +273,6 @@ jobs:
     name: Upload to GitHub Beta Release
     runs-on: ubuntu-latest
     env:
-      LATEST_TAG_FILE: "latest_tag.txt"
       GHR_REPLACE: "1"
       GHR_PATH: release
       GHR_PRERELEASE: "1"
@@ -285,7 +291,9 @@ jobs:
           ls release
 
       - name: Read latest tag from tag file
-        run: echo "GHR_TAG=$(cat release/$LATEST_TAG_FILE)-beta" >> $GITHUB_ENV
+        run: |
+          GHR_TAG="${{ needs.fetch-tag.outputs.tag }}-beta"
+          echo "GHR_TAG=$GHR_TAG-beta" >> $GITHUB_ENV
 
       - name: Upload release artifacts
         uses: masgeek/github-action-ghr@v1.3.2
