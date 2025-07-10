@@ -3,22 +3,26 @@ package com.akilimo.mobile.repo
 import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.entities.FieldOperationCost
+import com.akilimo.mobile.entities.UseCaseTask
 
 class DatabaseRepository(private val db: AppDatabase) {
 
-    fun getCurrentPractice(): CurrentPractice? = db.currentPracticeDao().findOne()
+    suspend fun getCurrentPractice(): CurrentPractice? = db.currentPracticeDao().findOne()
 
-    fun getFieldOperationCost(): FieldOperationCost? = db.fieldOperationCostDao().findOne()
+    suspend fun getFieldOperationCost(): FieldOperationCost? = db.fieldOperationCostDao().findOne()
 
-    fun saveCurrentPractice(practice: CurrentPractice) {
+    suspend fun getUseCaseTask(useCaseId: Long): UseCaseTask? =
+        db.useCaseDao().findOneTask(useCaseId)
+
+    suspend fun saveCurrentPractice(practice: CurrentPractice) {
         db.currentPracticeDao().insert(practice)
     }
 
-    fun saveFieldOperationCost(cost: FieldOperationCost) {
-        db.fieldOperationCostDao().insertOrUpdate(cost)
+    suspend fun saveFieldOperationCost(cost: FieldOperationCost) {
+        db.fieldOperationCostDao().insert(cost)
     }
 
-    fun saveAdviceStatus(status: AdviceStatus) {
-        db.adviceStatusDao().insert(status)
+    suspend fun updateUseCaseTask(useCaseTask: UseCaseTask): UseCaseTask {
+        return db.useCaseDao().updateTaskCompletion(useCaseTask = useCaseTask)
     }
 }
