@@ -1,7 +1,10 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.9.0'
+    ext {
+        kotlin_version = '1.9.0'
+        room_version = "2.4.2"
+    }
     dependencies {
         classpath "org.jacoco:org.jacoco.core:0.8.11"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:6.1.0.5360"

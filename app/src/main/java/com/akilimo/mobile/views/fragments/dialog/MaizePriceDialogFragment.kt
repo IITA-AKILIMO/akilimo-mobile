@@ -101,7 +101,7 @@ class MaizePriceDialogFragment : BaseDialogFragment() {
         binding.updateButton.setOnClickListener(View.OnClickListener { v: View? ->
             if (isExactPriceRequired) {
                 try {
-                    maizePrice = binding.editExactFertilizerPrice.getText().toString().toDouble()
+                    maizePrice = binding.editExactFertilizerPrice.text.toString().toDouble()
                 } catch (ex: Exception) {
                     Sentry.captureException(ex)
                     maizePrice = 0.0

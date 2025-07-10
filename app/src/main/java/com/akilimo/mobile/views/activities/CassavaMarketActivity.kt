@@ -8,7 +8,6 @@ import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.activity.addCallback
 import com.akilimo.mobile.R
-import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityCassavaMarketBinding
 import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.CassavaMarket
@@ -167,22 +166,25 @@ class CassavaMarketActivity : BindBaseActivity<ActivityCassavaMarketBinding>() {
     }
 
     private fun validateStarchFactorySelection(checkedRadioButtonId: Int): Boolean {
-        if (checkedRadioButtonId == -1) return false
+        var isValid = false
 
-        val radioButton = findViewById<RadioButton>(checkedRadioButtonId)
-            ?: return false
+        if (checkedRadioButtonId != -1) {
+            val radioButton = findViewById<RadioButton>(checkedRadioButtonId)
+            val factoryNameCountry = radioButton?.tag as? String
 
-        val factoryNameCountry = radioButton.tag as? String ?: return false
+            val starchFactory = factoryNameCountry?.let {
+                database.starchFactoryDao().findStarchFactoryByNameCountry(it)
+            }
 
-        val starchFactory =
-            database.starchFactoryDao().findStarchFactoryByNameCountry(factoryNameCountry)
-        return if (starchFactory != null) {
-            selectedFactory = starchFactory.factoryName
-            true
-        } else {
-            false
+            if (starchFactory != null) {
+                selectedFactory = starchFactory.factoryName
+                isValid = true
+            }
         }
+
+        return isValid
     }
+
 
     private fun setupUnitOfSaleRadioGroup() = with(binding.contentCassavaMarket) {
         rdgUnitOfSale.setOnCheckedChangeListener { _, checkedId ->
@@ -251,30 +253,40 @@ class CassavaMarketActivity : BindBaseActivity<ActivityCassavaMarketBinding>() {
     private fun validateFactory(): Boolean {
         if (!factoryRequired) return true
 
-        if (selectedFactory.isNullOrEmpty() || selectedFactory.equals("NA", ignoreCase = true)) {
-            showWarning(R.string.lbl_invalid_factory, R.string.lbl_factory_prompt)
-            return false
+        return when {
+            selectedFactory.isNullOrEmpty() -> {
+                showWarning(R.string.lbl_invalid_factory, R.string.lbl_factory_prompt)
+                false
+            }
+
+            else -> true
         }
-        return true
     }
 
     private fun validateOtherMarkets(): Boolean {
         if (!otherMarketsRequired) return true
 
-        if (produceType == null) {
-            showWarning(R.string.lbl_invalid_produce, R.string.lbl_produce_prompt)
-            return false
+        val isValid = when {
+            produceType == null -> {
+                showWarning(R.string.lbl_invalid_produce, R.string.lbl_produce_prompt)
+                false
+            }
+
+            unitOfSale.isEmpty() -> {
+                showWarning(R.string.lbl_invalid_sale_unit, R.string.lbl_sale_unit_prompt)
+                false
+            }
+
+            unitPrice <= 0 -> {
+                showWarning(R.string.lbl_invalid_unit_price, R.string.lbl_unit_price_prompt)
+                false
+            }
+
+            else -> true
         }
-        if (unitOfSale.isEmpty()) {
-            showWarning(R.string.lbl_invalid_sale_unit, R.string.lbl_sale_unit_prompt)
-            return false
-        }
-        if (unitPrice <= 0) {
-            showWarning(R.string.lbl_invalid_unit_price, R.string.lbl_unit_price_prompt)
-            return false
-        }
-        dataIsValid = true
-        return true
+
+        dataIsValid = isValid
+        return isValid
     }
 
     private fun validateSelection(): Boolean {
@@ -333,7 +345,6 @@ class CassavaMarketActivity : BindBaseActivity<ActivityCassavaMarketBinding>() {
 
 
     private fun processStarchFactories() {
-        val database = getDatabase(this@CassavaMarketActivity)
         val call = AkilimoApi.apiService.getStarchFactories(countryCode)
         call.enqueue(object : retrofit2.Callback<StarchFactoryResponse> {
             override fun onResponse(
@@ -356,7 +367,6 @@ class CassavaMarketActivity : BindBaseActivity<ActivityCassavaMarketBinding>() {
     }
 
     private fun processCassavaPrices() {
-        val database = getDatabase(this@CassavaMarketActivity)
         val call = AkilimoApi.apiService.getCassavaPrices(countryCode)
         call.enqueue(object : retrofit2.Callback<CassavaPricePriceResponse> {
             override fun onResponse(
@@ -379,7 +389,6 @@ class CassavaMarketActivity : BindBaseActivity<ActivityCassavaMarketBinding>() {
 
 
     private fun processData() {
-        val database = getDatabase(this@CassavaMarketActivity)
         val starchFactoriesList =
             database.starchFactoryDao().findStarchFactoriesByCountry(countryCode)
         addFactoriesRadioButtons(starchFactoriesList)

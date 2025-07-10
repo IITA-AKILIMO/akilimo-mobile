@@ -19,6 +19,7 @@ import com.akilimo.mobile.databinding.ActivityHomeStepperBinding
 import com.akilimo.mobile.inherit.BindBaseActivity
 import com.akilimo.mobile.utils.InAppUpdate
 import com.akilimo.mobile.viewmodels.HomeStepperViewModel
+import com.akilimo.mobile.viewmodels.factory.HomeStepperViewModelFactory
 import com.akilimo.mobile.views.fragments.AreaUnitFragment
 import com.akilimo.mobile.views.fragments.BioDataFragment
 import com.akilimo.mobile.views.fragments.CountryFragment
@@ -39,7 +40,10 @@ import kotlin.system.exitProcess
 
 class HomeStepperActivity : BindBaseActivity<ActivityHomeStepperBinding>() {
 
-    private val viewModel: HomeStepperViewModel by viewModels()
+    private val viewModel: HomeStepperViewModel by viewModels {
+        HomeStepperViewModelFactory()
+    }
+
     private lateinit var inAppUpdate: InAppUpdate
     private lateinit var stepperAdapter: MyStepperAdapter
     private lateinit var mStepperLayout: StepperLayout
@@ -48,6 +52,7 @@ class HomeStepperActivity : BindBaseActivity<ActivityHomeStepperBinding>() {
     private val fragmentArray = mutableListOf<androidx.fragment.app.Fragment>()
 
     companion object {
+        private const val DELAY_DURATION = 3000L
         private const val KEY_API = "api_endpoint"
         private const val KEY_API_DEV = "api_endpoint_dev"
         private const val KEY_LOCATION_IQ = "location_iq"
@@ -61,6 +66,8 @@ class HomeStepperActivity : BindBaseActivity<ActivityHomeStepperBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
 
         inAppUpdate = InAppUpdate(this)
         mStepperLayout = binding.stepperLayout
@@ -160,7 +167,7 @@ class HomeStepperActivity : BindBaseActivity<ActivityHomeStepperBinding>() {
                 } else {
                     showToast(getString(R.string.lbl_exit_tip))
                     exit = true
-                    Handler(Looper.getMainLooper()).postDelayed({ exit = false }, 3_000)
+                    Handler(Looper.getMainLooper()).postDelayed({ exit = false }, DELAY_DURATION)
                 }
             }
         })

@@ -4,11 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.akilimo.mobile.interfaces.FuelrodApi
+import com.akilimo.mobile.data.ConfigRepository
+import com.akilimo.mobile.utils.retryWithBackoff
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 
-class HomeStepperViewModel : ViewModel() {
+class HomeStepperViewModel(private val repository: ConfigRepository) : ViewModel() {
     private val _configData = MutableLiveData<Map<String, String>>()
     val configData: LiveData<Map<String, String>> = _configData
 
@@ -22,15 +23,10 @@ class HomeStepperViewModel : ViewModel() {
 
         viewModelScope.launch(handler) {
             try {
-                val configList = FuelrodApi.apiService.readConfig("akilimo")
-                if (configList.isNotEmpty()) {
-                    val configMap = configList.associate { it.configName to it.configValue }
-                    _configData.postValue(configMap)
-                } else {
-                    _errorMessage.postValue("Config list is empty")
-                }
+                val config = retryWithBackoff { repository.fetchConfig("akilimo") }
+                _configData.postValue(config)
             } catch (e: Exception) {
-                _errorMessage.postValue("Exception: ${e.localizedMessage}")
+                _errorMessage.postValue("Failed to fetch config: ${e.localizedMessage}")
             }
         }
     }

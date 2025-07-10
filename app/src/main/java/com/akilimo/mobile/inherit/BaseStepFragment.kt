@@ -26,8 +26,8 @@ abstract class BaseStepFragment : Fragment(), Step {
     open var dataIsValid = false
 
     // Lazy initialization for dependencies
-    protected val database: AppDatabase by lazy { AppDatabase.getDatabase(requireContext()) }
-    protected val preferenceManager: PreferenceManager by lazy { PreferenceManager(requireContext()) }
+    protected val database: AppDatabase by lazy { AppDatabase.getInstance(requireContext().applicationContext) }
+    protected val preferenceManager: PreferenceManager by lazy { PreferenceManager(requireContext().applicationContext) }
     protected val mathHelper: MathHelper by lazy { MathHelper() }
 
     protected var verificationError: VerificationError? = null

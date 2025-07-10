@@ -11,7 +11,7 @@ import java.util.UUID
     "kotlin:S6291",
     "kotlin:S2068"
 ) // Unencrypted preferences (justified: no sensitive info stored)
-class PreferenceManager(context: Context) {
+class PreferenceManager(applicationContext: Context) {
 
     companion object {
         private const val PREF_NAME = "akilimo-pref-data"
@@ -22,7 +22,7 @@ class PreferenceManager(context: Context) {
     }
 
     private val prefs: SharedPreferences =
-        context.applicationContext.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        applicationContext.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
     // region API Settings
 

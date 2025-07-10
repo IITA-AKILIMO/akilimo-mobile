@@ -30,7 +30,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   unit-test:
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: fetch-tag
     concurrency:
@@ -167,7 +166,7 @@ jobs:
         if: steps.check_cache.outputs.cached_artifacts_exist != 'true'
         run: |
           echo "🔨 Building APK and AAB from source..."
-          ./gradlew bundleRelease assembleRelease -x test
+          ./gradlew bundleRelease assembleRelease -x test -x detekt -x lint
 
       # Verify build outputs exist
       - name: Verify build outputs

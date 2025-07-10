@@ -16,7 +16,6 @@ import io.sentry.Sentry
 class InvestmentPrefFragment : BindBaseStepFragment<FragmentInvestmentPrefBinding>() {
 
     private var selectedRiskValue: String = EnumInvestmentPref.RARELY.name
-    private var selectedIndex: Int = -1
 
     private val riskOptions: List<RiskOption> by lazy {
         EnumInvestmentPref.entries

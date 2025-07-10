@@ -1,5 +1,6 @@
 package com.akilimo.mobile.views.fragments.dialog
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.DialogInterface
@@ -70,18 +71,24 @@ class DateDialogPickerFragment : DialogFragment(), DatePickerDialog.OnDateSetLis
     }
 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, dayOfMonth: Int) {
-        calendar.set(year, month, dayOfMonth)
-        selectedDate = DateHelper.simpleDateFormatter.format(calendar.time)
+        calendar[Calendar.YEAR] = year
+        calendar[Calendar.MONTH] = month
+        calendar[Calendar.DAY_OF_MONTH] = dayOfMonth
 
-        targetFragment?.let { target ->
-            val resultIntent = Intent().apply {
-                putExtra("selectedDate", selectedDate)
-                putExtra("selectedDateObject", calendar.time)
-            }
-            target.onActivityResult(targetRequestCode, android.app.Activity.RESULT_OK, resultIntent)
+        selectedDate = DateHelper.simpleDateFormatter.format(calendar.time)
+        val resultIntent = Intent().apply {
+            putExtra("selectedDate", selectedDate)
+            putExtra("selectedDateObject", calendar.time)
         }
 
-        // TODO: Replace with FragmentResult API if targetFragment is deprecated in your app
+        targetFragment?.onActivityResult(
+            targetRequestCode,
+            Activity.RESULT_OK,
+            resultIntent
+        ) ?: run {
+            // TODO: Replace with FragmentResult API if targetFragment is deprecated in your app
+        }
+
     }
 
     override fun onDismiss(dialog: DialogInterface) {

@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.RecOptionsAdapter
-import com.akilimo.mobile.dao.AppDatabase.Companion.getDatabase
 import com.akilimo.mobile.databinding.ActivityRecommendationsActivityBinding
 import com.akilimo.mobile.entities.AkilimoCurrency
 import com.akilimo.mobile.entities.AkilimoCurrencyResponse
@@ -89,7 +88,6 @@ class RecommendationsActivity :
             closeActivity(false)
         }
 
-        val database = getDatabase(this@RecommendationsActivity)
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
             countryCode = profileInfo.countryCode
