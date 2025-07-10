@@ -12,7 +12,7 @@ import com.akilimo.mobile.models.UseCaseWithTasks
 import com.akilimo.mobile.utils.enums.EnumUseCase
 
 @Dao
-interface UseCaseDao {
+interface UseCaseDao : BaseDao<UseCase> {
 
     @Query("SELECT * FROM use_cases")
     suspend fun getAllUseCases(useCase: EnumUseCase): List<UseCase>
@@ -46,6 +46,10 @@ interface UseCaseDao {
     suspend fun findOne(useCase: EnumUseCase): UseCase?
 
     @Transaction
+    @Query("SELECT * FROM use_case_tasks where use_case_id = :useCaseId")
+    suspend fun findOneTask(useCaseId: Long): UseCaseTask
+
+    @Transaction
     @Query("SELECT * FROM use_cases where use_case = :useCase")
     suspend fun getUseCaseWithTasks(useCase: EnumUseCase): UseCaseWithTasks?
 
@@ -58,5 +62,5 @@ interface UseCaseDao {
     suspend fun getAllTasksForUseCase(useCaseId: Long): List<UseCaseTask>
 
     @Update
-    fun updateTaskCompletion(useCaseTask: UseCaseTask): UseCaseTask
+    suspend fun updateTaskCompletion(useCaseTask: UseCaseTask): UseCaseTask
 }
