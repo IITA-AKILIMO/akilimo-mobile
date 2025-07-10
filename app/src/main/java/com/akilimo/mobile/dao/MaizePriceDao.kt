@@ -1,15 +1,11 @@
 package com.akilimo.mobile.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
 import com.akilimo.mobile.entities.MaizePrice
 
 @Dao
-interface MaizePriceDao {
+interface MaizePriceDao: BaseDao<MaizePrice> {
 
     @Query("SELECT * FROM maize_prices")
     fun findAll(): List<MaizePrice>
@@ -20,17 +16,6 @@ interface MaizePriceDao {
     @Query("SELECT * FROM maize_prices where id=:id")
     fun findById(id: Int): MaizePrice
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(location: MaizePrice)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(maizePriceList: List<MaizePrice>)
-
-    @Update
-    fun update(maizePrice: MaizePrice)
-
-    @Delete
-    fun delete(maizePrice: MaizePrice?)
 
     @Query("SELECT * FROM maize_prices where country_code=:countryCode")
     fun findAllByCountry(countryCode: String): MutableList<MaizePrice>
