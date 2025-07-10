@@ -15,4 +15,3 @@ data class UseCaseWithTasks(
     )
     val useCaseTasks: List<UseCaseTask>,
 )
-
