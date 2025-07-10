@@ -7,12 +7,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.FertilizerGridAdapter
 import com.akilimo.mobile.databinding.ActivityFertilizersBinding
-import com.akilimo.mobile.entities.AdviceStatus
 import com.akilimo.mobile.entities.Fertilizer
 import com.akilimo.mobile.inherit.BindBaseActivity
 import com.akilimo.mobile.interfaces.IFertilizerDismissListener
 import com.akilimo.mobile.utils.Tools.dpToPx
-import com.akilimo.mobile.utils.enums.EnumAdviceTask
 import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.utils.ui.SnackBarMessage
 import com.akilimo.mobile.viewmodels.FertilizersViewModel
@@ -36,7 +34,7 @@ abstract class BaseFertilizersActivity(
     }
 
     companion object {
-        var useCaseTag: String = "useCase"
+        var useCaseTag: String = "FertilizerUseCase"
     }
 
     override fun inflateBinding() = ActivityFertilizersBinding.inflate(layoutInflater)
@@ -73,11 +71,12 @@ abstract class BaseFertilizersActivity(
 
         binding.twoButtons.btnFinish.setOnClickListener {
             val isMinSelected = viewModel.isMinSelected()
-            val adviceStatus = AdviceStatus(
-                EnumAdviceTask.AVAILABLE_FERTILIZERS.name, isMinSelected
-            )
+            // TODO: TRack the state of the task
+//            val adviceStatus = AdviceStatus(
+//                EnumTask.AVAILABLE_FERTILIZERS.name, isMinSelected
+//            )
             if (isMinSelected) {
-                database.adviceStatusDao().insert(adviceStatus)
+//                database.adviceStatusDao().insert(adviceStatus)
                 closeActivity(false)
             }
         }
