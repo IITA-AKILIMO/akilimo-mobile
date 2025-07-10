@@ -65,7 +65,7 @@
         <activity android:name=".views.activities.FertilizersActivity" />
         <activity android:name=".views.activities.InterCropFertilizersActivity" />
         <activity android:name=".views.activities.DatesActivity" />
-        <activity android:name=".views.activities.RecommendationsActivity" />
+        <activity android:name=".views.activities.UseCaseActivity" />
         <activity android:name=".views.activities.usecases.FertilizerRecActivity" />
         <activity android:name=".views.activities.MapBoxActivity" />
         <activity android:name=".views.activities.RootYieldActivity" />
