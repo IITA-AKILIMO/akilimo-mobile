@@ -7,28 +7,22 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.akilimo.mobile.utils.enums.EnumTask
 import com.akilimo.mobile.utils.enums.EnumUseCase
-
-// Parent entity
 @Entity(
     tableName = "use_cases",
-    indices = [
-        Index(value = ["use_case_id"]),
-        Index(value = ["use_case"], unique = true)
-    ]
+    indices = [Index(value = ["use_case"], unique = true)]
 )
 data class UseCase(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id", index = true)
-    val id: Long = 0L,
+    @ColumnInfo(name = "id")
+    var id: Long = 0L,
 
     @ColumnInfo(name = "use_case_label")
-    val useCaseLabel: Int = -1,
+    var useCaseLabel: Int = -1, // Consider renaming to labelResId
 
-    @ColumnInfo(name = "use_case", index = true)
-    val useCase: EnumUseCase = EnumUseCase.NA
+    @ColumnInfo(name = "use_case")
+    var useCase: EnumUseCase = EnumUseCase.NA
 )
 
-// Child entity with FK to UseCase
 @Entity(
     tableName = "use_case_tasks",
     foreignKeys = [ForeignKey(
@@ -41,22 +35,21 @@ data class UseCase(
         Index(value = ["use_case_id"]),
         Index(value = ["use_case_id", "task_name"], unique = true)
     ]
-
 )
 data class UseCaseTask(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id", index = true)
-    val id: Long = 0L,
+    @ColumnInfo(name = "id")
+    var id: Long = 0L,
 
     @ColumnInfo(name = "use_case_id")
-    val useCaseId: Long = -1,
+    var useCaseId: Long = -1,
 
     @ColumnInfo(name = "task_label")
-    val taskLabel: Int = -1,
+    var taskLabel: Int = -1, // Consider renaming to labelResId
 
     @ColumnInfo(name = "task_name")
-    val taskName: EnumTask = EnumTask.NOT_SELECTED,
+    var taskName: EnumTask = EnumTask.NOT_SELECTED,
 
     @ColumnInfo(name = "completed")
-    val completed: Boolean = false
+    var completed: Boolean = false
 )

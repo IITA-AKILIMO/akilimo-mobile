@@ -50,7 +50,7 @@ abstract class BaseUseCaseTaskActivity<T : ViewBinding> : BindBaseActivity<T>() 
     }
 
     override fun setupObservers() {
-        viewModel.useCaseWithTasksList.observe(this) { recList ->
+        viewModel.useCaseTasks.observe(this) { recList ->
             mAdapter.submitList(recList)
         }
     }

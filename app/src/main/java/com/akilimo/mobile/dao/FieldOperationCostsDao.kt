@@ -8,8 +8,8 @@ import com.akilimo.mobile.entities.FieldOperationCost
 interface FieldOperationCostsDao : BaseDao<FieldOperationCost> {
 
     @Query("SELECT * FROM field_operation_costs")
-    suspend fun listAll(): List<FieldOperationCost>
+    fun listAll(): List<FieldOperationCost>
 
     @Query("SELECT * FROM field_operation_costs LIMIT 1")
-    suspend fun findOne(): FieldOperationCost?
+    fun findOne(): FieldOperationCost?
 }

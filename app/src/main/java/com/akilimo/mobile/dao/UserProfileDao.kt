@@ -12,7 +12,4 @@ interface UserProfileDao: BaseDao<UserProfile> {
 
     @Query("SELECT * FROM user_profiles WHERE device_token IS NOT NULL AND TRIM(device_token) != '' LIMIT 1")
     fun findOne(): UserProfile?
-
-    @Query("DELETE FROM user_profiles")
-    fun deleteAll()
 }

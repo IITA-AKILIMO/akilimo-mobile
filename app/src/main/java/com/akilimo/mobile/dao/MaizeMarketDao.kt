@@ -9,22 +9,11 @@ import androidx.room.Update
 import com.akilimo.mobile.entities.MaizeMarket
 
 @Dao
-interface MaizeMarketDao {
+interface MaizeMarketDao: BaseDao<MaizeMarket> {
 
     @Query("SELECT * FROM maize_market")
     fun listAll(): List<MaizeMarket>
 
     @Query("SELECT * FROM maize_market LIMIT 1")
     fun findOne(): MaizeMarket?
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(maizeMarket: MaizeMarket)
-
-    @Update
-    fun update(maizeMarket: MaizeMarket)
-
-    @Delete
-    fun delete(maizeMarket: MaizeMarket?)
-    @Query("DELETE FROM maize_market")
-    fun deleteAll()
 }

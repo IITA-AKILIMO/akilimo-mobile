@@ -12,7 +12,9 @@ abstract class BindBaseActivity<T : ViewBinding> : BaseActivity() {
 
     protected abstract fun inflateBinding(): T
 
-    abstract fun setupObservers()
+    open fun setupObservers() {
+        // default no-op
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

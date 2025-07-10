@@ -11,5 +11,5 @@ interface CurrentPracticeDao : BaseDao<CurrentPractice> {
     fun listAll(): List<CurrentPractice>
 
     @Query("SELECT * FROM current_practices LIMIT 1")
-    suspend fun findOne(): CurrentPractice?
+    fun findOne(): CurrentPractice?
 }

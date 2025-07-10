@@ -4,7 +4,7 @@ import androidx.room.*
 import com.akilimo.mobile.entities.Fertilizer
 
 @Dao
-interface FertilizerDao {
+interface FertilizerDao: BaseDao<Fertilizer> {
 
     @Query("SELECT * FROM fertilizers")
     fun listAll(): MutableList<Fertilizer>
@@ -53,24 +53,9 @@ interface FertilizerDao {
         useCase: String
     ): Fertilizer?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(fertilizer: Fertilizer)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(availableFertilizersList: List<Fertilizer>)
-
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateSelected(selectedList: List<Fertilizer>)
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun update(fertilizer: Fertilizer?)
-
-    @Delete
-    fun delete(fertilizer: Fertilizer?)
-
     @Delete
     fun deleteFertilizerByList(fertilizerList: List<Fertilizer>)
-
-    @Query("DELETE FROM fertilizers")
-    fun deleteAll()
 }

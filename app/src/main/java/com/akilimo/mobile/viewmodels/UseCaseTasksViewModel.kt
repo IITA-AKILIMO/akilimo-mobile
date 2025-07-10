@@ -27,9 +27,9 @@ class UseCaseTasksViewModel(
     private val dispatchers: IDispatcherProvider = DefaultDispatcherProvider()
 ) : BaseNetworkViewModel(application, dispatchers) {
 
-    private val _useCaseWithTasksList = MutableLiveData(useCaseWithTasks)
-    val useCaseWithTasksList: LiveData<List<UseCaseTask>> =
-        _useCaseWithTasksList
+    private val _useCaseTasks = MutableLiveData(useCaseWithTasks)
+    val useCaseTasks: LiveData<List<UseCaseTask>> =
+        _useCaseTasks
 
     private val _countryCode = MutableLiveData<String>()
     val countryCode: LiveData<String> = _countryCode

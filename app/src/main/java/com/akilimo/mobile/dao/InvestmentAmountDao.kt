@@ -9,7 +9,7 @@ import androidx.room.Update
 import com.akilimo.mobile.entities.InvestmentAmount
 
 @Dao
-interface InvestmentAmountDao {
+interface InvestmentAmountDao: BaseDao<InvestmentAmount> {
 
     @Query("SELECT * FROM investment_amounts")
     fun listAll(): List<InvestmentAmount>
@@ -19,19 +19,4 @@ interface InvestmentAmountDao {
 
     @Query("SELECT * FROM investment_amounts where item_tag=:itemTag LIMIT 1")
     fun findOneByItemTag(itemTag: String): InvestmentAmount?
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg investmentAmount: InvestmentAmount)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(investmentList: List<InvestmentAmount>): LongArray?
-
-    @Update
-    fun update(vararg investmentAmount: InvestmentAmount?)
-
-    @Delete
-    fun delete(investmentAmount: InvestmentAmount?)
-
-    @Query("DELETE FROM investment_amounts")
-    fun deleteAll()
 }

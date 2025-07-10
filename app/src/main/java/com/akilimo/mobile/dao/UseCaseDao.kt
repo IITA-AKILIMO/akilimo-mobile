@@ -15,12 +15,12 @@ import com.akilimo.mobile.utils.enums.EnumUseCase
 interface UseCaseDao : BaseDao<UseCase> {
 
     @Query("SELECT * FROM use_cases")
-    suspend fun getAllUseCases(useCase: EnumUseCase): List<UseCase>
+    fun getAllUseCases(): List<UseCase>
 
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertUseCasesWithTasks(data: List<UseCaseWithTasks>) {
+    fun insertUseCasesWithTasks(data: List<UseCaseWithTasks>) {
         for (useCaseWithTasks in data) {
             val useCaseId = insertUseCase(useCaseWithTasks.useCase)
 
@@ -33,34 +33,34 @@ interface UseCaseDao : BaseDao<UseCase> {
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertUseCase(useCase: UseCase): Long
+    fun insertUseCase(useCase: UseCase): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTask(tasks: UseCaseTask)
+    fun insertTask(tasks: UseCaseTask)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTasks(tasks: List<UseCaseTask>)
+    fun insertTasks(tasks: List<UseCaseTask>)
 
     @Transaction
     @Query("SELECT * FROM use_cases where use_case = :useCase")
-    suspend fun findOne(useCase: EnumUseCase): UseCase?
+    fun findOne(useCase: EnumUseCase): UseCase?
 
     @Transaction
     @Query("SELECT * FROM use_case_tasks where use_case_id = :useCaseId")
-    suspend fun findOneTask(useCaseId: Long): UseCaseTask
+    fun findOneTask(useCaseId: Long): UseCaseTask
 
     @Transaction
     @Query("SELECT * FROM use_cases where use_case = :useCase")
-    suspend fun getUseCaseWithTasks(useCase: EnumUseCase): UseCaseWithTasks?
+    fun getUseCaseWithTasks(useCase: EnumUseCase): UseCaseWithTasks?
 
     @Transaction
     @Query("SELECT * FROM use_cases")
-    suspend fun getAllUseCasesWithTasks(): List<UseCaseWithTasks>
+    fun getAllUseCasesWithTasks(): List<UseCaseWithTasks>
 
     @Transaction
     @Query("SELECT * FROM use_case_tasks where use_case_id = :useCaseId")
-    suspend fun getAllTasksForUseCase(useCaseId: Long): List<UseCaseTask>
+    fun getAllTasksForUseCase(useCaseId: Long): List<UseCaseTask>
 
     @Update
-    suspend fun updateTaskCompletion(useCaseTask: UseCaseTask): UseCaseTask
+    fun updateTaskCompletion(useCaseTask: UseCaseTask)
 }

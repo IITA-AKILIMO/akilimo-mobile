@@ -45,29 +45,29 @@ interface AkilimoService {
     suspend fun getFertilizerPrices(@Path("fertilizer_key") fertilizerKey: String): FertilizerPriceResponse
 
     @GET("v1/investment-amounts/country/{country_code}")
-    fun getInvestmentAmounts(@Path("country_code") countryCode: String): Call<InvestmentAmountResponse>
+    suspend fun getInvestmentAmounts(@Path("country_code") countryCode: String): InvestmentAmountResponse
 
     @POST("v1/user-reviews")
-    fun submitUserReview(@Body surveyRequest: SurveyRequest): Call<ResponseBody>
+    suspend fun submitUserReview(@Body surveyRequest: SurveyRequest): Call<ResponseBody>
 
     @POST("v1/recommendations/compute")
     fun computeRecommendations(@Body recommendationRequest: RecommendationRequest): Call<RecommendationResponse>
 
     @GET("v1/operation-costs/country/{country_code}")
-    fun getOperationCosts(
+    suspend fun getOperationCosts(
         @Path("country_code") countryCode: String,
         @QueryMap queryParams: Map<String, String>
     ): Call<OperationCostResponse>
 
     @GET("v1/starch-factories/country/{country_code}")
-    fun getStarchFactories(@Path("country_code") countryCode: String): Call<StarchFactoryResponse>
+    suspend fun getStarchFactories(@Path("country_code") countryCode: String): StarchFactoryResponse
 
     @GET("v1/cassava-prices/country/{country_code}")
-    fun getCassavaPrices(@Path("country_code") countryCode: String): Call<CassavaPricePriceResponse>
+    suspend fun getCassavaPrices(@Path("country_code") countryCode: String): CassavaPricePriceResponse
 
     @GET("v1/potato-prices/country/{country_code}")
-    fun getPotatoPrices(@Path("country_code") countryCode: String?): Call<PotatoPriceResponse>
+    suspend fun getPotatoPrices(@Path("country_code") countryCode: String?): PotatoPriceResponse
 
     @GET("v1/maize-prices/country/{country_code}")
-    fun getMaizePrices(@Path("country_code") countryCode: String): Call<MaizePriceResponse>
+    suspend fun getMaizePrices(@Path("country_code") countryCode: String): MaizePriceResponse
 }

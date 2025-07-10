@@ -25,6 +25,7 @@ import com.akilimo.mobile.entities.PotatoMarket
 import com.akilimo.mobile.entities.PotatoPrice
 import com.akilimo.mobile.entities.StarchFactory
 import com.akilimo.mobile.entities.UseCase
+import com.akilimo.mobile.entities.UseCaseTask
 import com.akilimo.mobile.entities.UserLocation
 import com.akilimo.mobile.entities.UserProfile
 
@@ -50,6 +51,7 @@ import com.akilimo.mobile.entities.UserProfile
         CropSchedule::class,
         StarchFactory::class,
         UseCase::class,
+        UseCaseTask::class,
         AkilimoCurrency::class,
     ],
     version = 6,
@@ -79,6 +81,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun starchFactoryDao(): StarchFactoryDao
     abstract fun useCaseDao(): UseCaseDao
     abstract fun currencyDao(): CurrencyDao
+
+    abstract fun clearAllDao(): ClearAllDao
 
     companion object {
         @Volatile

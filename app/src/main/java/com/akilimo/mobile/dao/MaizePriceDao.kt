@@ -25,9 +25,4 @@ interface MaizePriceDao: BaseDao<MaizePrice> {
         countryCode: String,
         produceType: String
     ): MutableList<MaizePrice>
-
-
-
-    @Query("DELETE FROM maize_prices")
-    fun deleteAll()
 }
