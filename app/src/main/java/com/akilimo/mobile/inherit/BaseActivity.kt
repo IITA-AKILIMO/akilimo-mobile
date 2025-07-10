@@ -33,7 +33,7 @@ abstract class BaseActivity : AppCompatActivity() {
     protected val sessionManager: PreferenceManager by lazy { PreferenceManager(applicationContext) }
     protected val database: AppDatabase by lazy { AppDatabase.getInstance(applicationContext) }
     protected val mathHelper: MathHelper by lazy { MathHelper() }
-
+    
     protected var countryCode: String = EnumCountry.Nigeria.countryCode()
 
     protected var currencyName: String = EnumCountry.Nigeria.currencyCode
