@@ -43,7 +43,7 @@ abstract class BaseFertilizersActivity(
         super.onCreate(savedInstanceState)
 
         setupUI()
-        observeViewModel()
+        setupObservers()
         viewModel.loadFertilizers()
     }
 
@@ -96,7 +96,7 @@ abstract class BaseFertilizersActivity(
         }
     }
 
-    private fun observeViewModel() {
+    override fun setupObservers() {
         viewModel.loading.observe(this) { isLoading ->
             binding.lytProgress.visibility = if (isLoading) View.VISIBLE else View.GONE
             if (!isLoading) {
