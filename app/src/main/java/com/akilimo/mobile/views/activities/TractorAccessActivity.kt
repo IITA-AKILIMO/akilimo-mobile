@@ -11,9 +11,9 @@ import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.entities.OperationCost
 import com.akilimo.mobile.inherit.CostBaseActivity
 import com.akilimo.mobile.utils.LanguageManager
-import com.akilimo.mobile.utils.enums.EnumTask
 import com.akilimo.mobile.utils.enums.EnumOperation
 import com.akilimo.mobile.utils.enums.EnumOperationMethod
+import com.akilimo.mobile.utils.enums.EnumTask
 import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.OperationCostsDialogFragment
 import io.sentry.Sentry
@@ -188,7 +188,7 @@ class TractorAccessActivity : CostBaseActivity<ActivityTractorAccessBinding>() {
                 tractorRidgeCost = this@TractorAccessActivity.tractorRidgeCost
                 exactTractorPloughPrice = exactPloughCost
                 exactTractorRidgePrice = exactRidgeCost
-                database.fieldOperationCostDao().insertOrUpdate(this)
+                database.fieldOperationCostDao().insert(this)
             }
 
             database.adviceStatusDao()
