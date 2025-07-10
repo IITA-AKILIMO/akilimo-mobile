@@ -5,7 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/grey_3"
-        tools:context=".views.activities.RecommendationsActivity">
+        tools:context=".views.activities.UseCaseActivity">
 
     <!-- Collapsing AppBar -->
     <com.google.android.material.appbar.AppBarLayout
