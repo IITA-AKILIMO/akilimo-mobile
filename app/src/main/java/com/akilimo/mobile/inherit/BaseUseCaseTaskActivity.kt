@@ -9,8 +9,8 @@ import androidx.viewbinding.ViewBinding
 import com.akilimo.mobile.adapters.UseCaseTaskAdapter
 import com.akilimo.mobile.entities.UseCaseTask
 import com.akilimo.mobile.utils.TheItemAnimation
-import com.akilimo.mobile.viewmodels.UseCaseViewModel
-import com.akilimo.mobile.viewmodels.factory.UseCaseViewModelFactory
+import com.akilimo.mobile.viewmodels.UseCaseTasksViewModel
+import com.akilimo.mobile.viewmodels.factory.UseCaseTaskViewModelFactory
 
 abstract class BaseUseCaseTaskActivity<T : ViewBinding> : BindBaseActivity<T>() {
 
@@ -21,21 +21,22 @@ abstract class BaseUseCaseTaskActivity<T : ViewBinding> : BindBaseActivity<T>() 
     protected var dataPositionChanged: Int = -1
 
 
-    protected val viewModel: UseCaseViewModel by viewModels {
-        UseCaseViewModelFactory(application, getRecommendationOptions())
+    protected val viewModel: UseCaseTasksViewModel by viewModels {
+        UseCaseTaskViewModelFactory(application, loadUseCaseTasks())
     }
 
-    protected abstract fun getRecommendationOptions(): List<UseCaseTask>
-    protected abstract fun handleNavigation(adviceCode: UseCaseTask)
+    protected abstract fun loadUseCaseTasks(): List<UseCaseTask>
+    protected abstract fun handleNavigation(useCaseTask: UseCaseTask)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mAdapter.setAnimationType(TheItemAnimation.BOTTOM_UP)
-        mAdapter.submitList(getRecommendationOptions())
+        mAdapter.submitList(loadUseCaseTasks())
 
         mAdapter.setOnItemClickListener(object : UseCaseTaskAdapter.OnItemClickListener {
-            override fun onItemClick(view: View?, task: UseCaseTask, position: Int) {
-                handleNavigation(task.taskName)
+            override fun onItemClick(view: View?, useCaseTask: UseCaseTask, position: Int) {
+                dataPositionChanged = position
+                handleNavigation(useCaseTask)
             }
         })
     }
