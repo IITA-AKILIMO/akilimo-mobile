@@ -31,7 +31,7 @@ class WeedControlCostsActivity : BaseActivity() {
         setupObservers()
         setupListeners()
 
-        viewModel.loadInitialData()
+        viewModel.loadInitialData(useCaseId = 0)
         showCustomNotificationDialog()
     }
 
@@ -80,12 +80,14 @@ class WeedControlCostsActivity : BaseActivity() {
             viewModel.updateWeedControlMethod(method, checkedId, herbicide)
         }
 
-        binding.twoButtons.btnFinish.setOnClickListener {
-            validateAndSave()
-        }
+        binding.twoButtons.apply {
+            btnFinish.setOnClickListener {
+                validateAndSave()
+            }
 
-        binding.twoButtons.btnCancel.setOnClickListener {
-            closeActivity(false)
+            btnCancel.setOnClickListener {
+                closeActivity(false)
+            }
         }
     }
 
