@@ -223,7 +223,7 @@ abstract class BaseActivity : AppCompatActivity() {
             })
     }
 
-    protected fun processRecommendations(activity: Activity) {
+    protected fun launchRecommendationActivity(activity: Activity) {
         val intent = Intent(activity, DstRecommendationActivity::class.java)
         activity.startActivity(intent)
     }
