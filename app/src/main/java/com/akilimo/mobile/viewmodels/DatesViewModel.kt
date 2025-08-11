@@ -19,43 +19,42 @@ class DatesViewModel(
     private val dispatchers: IDispatcherProvider = DefaultDispatcherProvider()
 ) : AndroidViewModel(application) {
     private val _schedule = MutableLiveData<CropSchedule>()
-    val schedule: LiveData<CropSchedule> get() = _schedule
+    val schedule: LiveData<CropSchedule> = _schedule
 
     private val _plantingDate = MutableLiveData<String>()
-    val plantingDate: LiveData<String> get() = _plantingDate
+    val plantingDate: LiveData<String> = _plantingDate
 
     private val _harvestDate = MutableLiveData<String>()
-    val harvestDate: LiveData<String> get() = _harvestDate
+    val harvestDate: LiveData<String> = _harvestDate
     private val _plantingWindow = MutableLiveData(0)
-    val plantingWindow: LiveData<Int> get() = _plantingWindow
+    val plantingWindow: LiveData<Int> = _plantingWindow
     private val _harvestWindow = MutableLiveData(0)
-    val harvestWindow: LiveData<Int> get() = _harvestWindow
+    val harvestWindow: LiveData<Int> = _harvestWindow
     private val _alternativeDate = MutableLiveData(false)
-    val alternativeDate: LiveData<Boolean> get() = _alternativeDate
+    val alternativeDate: LiveData<Boolean> = _alternativeDate
     private val _alreadyPlanted = MutableLiveData(false)
-    val alreadyPlanted: LiveData<Boolean> get() = _alreadyPlanted
+    val alreadyPlanted: LiveData<Boolean> = _alreadyPlanted
 
     fun loadSchedule() {
         viewModelScope.launch(dispatchers.io) {
             val scheduleData = database.scheduleDateDao().findOne() ?: CropSchedule()
-            withContext(dispatchers.main) {
-                _schedule.value = scheduleData
-                _plantingDate.value = scheduleData.plantingDate
-                _harvestDate.value = scheduleData.harvestDate
-                _plantingWindow.value = scheduleData.plantingWindow
-                _harvestWindow.value = scheduleData.harvestWindow
-                _alternativeDate.value = scheduleData.alternativeDate
-                _alreadyPlanted.value = scheduleData.alreadyPlanted
-            }
+            _schedule.postValue(scheduleData)
+            _plantingDate.postValue(scheduleData.plantingDate)
+            _harvestDate.postValue(scheduleData.harvestDate)
+            _plantingWindow.postValue(scheduleData.plantingWindow)
+            _harvestWindow.postValue(scheduleData.harvestWindow)
+            _alternativeDate.postValue(scheduleData.alternativeDate)
+            _alreadyPlanted.postValue(scheduleData.alreadyPlanted)
         }
     }
 
     fun updatePlantingDate(date: String) {
-        _plantingDate.value = date
-        _harvestDate.value = ""
-        _alreadyPlanted.value = DateHelper.olderThanCurrent(date)
-        if (_alreadyPlanted.value == true) {
-            _plantingWindow.value = 0
+        val planted = DateHelper.olderThanCurrent(date)
+        _plantingDate.postValue(date)
+        _harvestDate.postValue("")
+        _alreadyPlanted.postValue(planted)
+        if (planted) {
+            _plantingWindow.postValue(0)
         }
     }
 
@@ -63,17 +62,37 @@ class DatesViewModel(
         _harvestDate.value = date
     }
 
+    fun setPlantingWindow(window: Int) {
+        _plantingWindow.postValue(window)
+    }
+
+    fun clearPlantingWindow() {
+        _plantingWindow.postValue(0)
+    }
+
+    fun setHarvestWindow(window: Int) {
+        _harvestWindow.postValue(window)
+    }
+
+    fun clearHarvestWindow() {
+        _harvestWindow.postValue(0)
+    }
+
+    fun setAlternativeDate(value: Boolean) {
+        _alternativeDate.postValue(value)
+    }
+
     fun saveSchedule(onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
         viewModelScope.launch(dispatchers.io) {
             try {
                 val cropSchedule = database.scheduleDateDao().findOne() ?: CropSchedule()
                 cropSchedule.apply {
-                    plantingDate = this@DatesViewModel._plantingDate.value.orEmpty()
-                    harvestDate = this@DatesViewModel._harvestDate.value.orEmpty()
-                    plantingWindow = this@DatesViewModel._plantingWindow.value ?: 0
-                    harvestWindow = this@DatesViewModel._harvestWindow.value ?: 0
-                    alternativeDate = this@DatesViewModel._alternativeDate.value ?: false
-                    alreadyPlanted = this@DatesViewModel._alreadyPlanted.value ?: false
+                    plantingDate = _plantingDate.value.orEmpty()
+                    harvestDate = _harvestDate.value.orEmpty()
+                    plantingWindow = _plantingWindow.value ?: 0
+                    harvestWindow = _harvestWindow.value ?: 0
+                    alternativeDate = _alternativeDate.value ?: false
+                    alreadyPlanted = _alreadyPlanted.value ?: false
                 }
                 database.scheduleDateDao().insert(cropSchedule)
                 withContext(dispatchers.main) { onSuccess() }
