@@ -101,15 +101,16 @@ class DatesActivity : BindBaseActivity<ActivityDatesBinding>() {
                 return@setOnCheckedChangeListener
             }
             rdgPlantingWindow.visibility = if (isChecked) View.VISIBLE else View.GONE
-            if (!isChecked) viewModel.plantingWindow.value = 0
+            if (!isChecked) viewModel.setPlantingWindow(0)
         }
 
         rdgPlantingWindow.setOnCheckedChangeListener { _, checkedId ->
-            viewModel.plantingWindow.value = when (checkedId) {
+            val plantingWindow = when (checkedId) {
                 R.id.rdPlantingOneMonth -> 1
                 R.id.rdPlantingTwoMonths -> 2
                 else -> 0
             }
+            viewModel.setPlantingWindow(plantingWindow)
         }
 
         btnPickPlantingDate.setOnClickListener {
@@ -120,15 +121,16 @@ class DatesActivity : BindBaseActivity<ActivityDatesBinding>() {
     private fun setupHarvestUI() = binding.cardHarvest.run {
         flexibleHarvest.setOnCheckedChangeListener { _, isChecked ->
             rdgHarvestWindow.visibility = if (isChecked) View.VISIBLE else View.GONE
-            if (!isChecked) viewModel.harvestWindow.value = 0
+            if (!isChecked) viewModel.setHarvestWindow(0)
         }
 
         rdgHarvestWindow.setOnCheckedChangeListener { _, checkedId ->
-            viewModel.harvestWindow.value = when (checkedId) {
+            val harvestWindow = when (checkedId) {
                 R.id.rdHarvestOneMonth -> 1
                 R.id.rdHarvestTwoMonths -> 2
                 else -> 0
             }
+            viewModel.setHarvestWindow(harvestWindow)
         }
 
         btnPickHarvestDate.setOnClickListener {
@@ -138,7 +140,7 @@ class DatesActivity : BindBaseActivity<ActivityDatesBinding>() {
 
     private fun setupAlternativeDateUI() {
         binding.rdgAlternativeDate.setOnCheckedChangeListener { _, checkedId ->
-            viewModel.alternativeDate.value = checkedId == R.id.rdYes
+            viewModel.setAlternativeDate(checkedId == R.id.rdYes)
         }
     }
 
