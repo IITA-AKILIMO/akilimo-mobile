@@ -27,7 +27,7 @@ class DatesActivity : BindBaseActivity<ActivityDatesBinding>() {
         super.onCreate(savedInstanceState)
 
         setupToolbar(binding.toolbar, R.string.lbl_planting_harvest_dates) { validate(true) }
-        observeViewModel()
+        setupObservers()
         setupUI()
     }
 
@@ -36,7 +36,7 @@ class DatesActivity : BindBaseActivity<ActivityDatesBinding>() {
         viewModel.loadSchedule()
     }
 
-    private fun observeViewModel() {
+    override fun setupObservers() {
         viewModel.plantingDate.observe(this) { updatePlantingDate(it) }
         viewModel.harvestDate.observe(this) { updateHarvestDate(it) }
         viewModel.alternativeDate.observe(this) { updateAlternativeDate(it) }
