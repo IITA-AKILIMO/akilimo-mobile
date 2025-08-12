@@ -8,196 +8,110 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
+import androidx.activity.viewModels
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ActivityInvestmentAmountBinding
 import com.akilimo.mobile.entities.InvestmentAmount
-import com.akilimo.mobile.entities.InvestmentAmountResponse
-import com.akilimo.mobile.inherit.BaseActivity
-import com.akilimo.mobile.interfaces.AkilimoApi
-import com.akilimo.mobile.utils.CurrencyCode
-import com.akilimo.mobile.utils.enums.EnumTask
-import io.sentry.Sentry
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.akilimo.mobile.inherit.BindBaseActivity
+import com.akilimo.mobile.viewmodels.InvestmentAmountViewModel
+import com.akilimo.mobile.viewmodels.factory.InvestmentAmountViewModelFactory
 
-class InvestmentAmountActivity : BaseActivity() {
+class InvestmentAmountActivity : BindBaseActivity<ActivityInvestmentAmountBinding>() {
 
-    private var _binding: ActivityInvestmentAmountBinding? = null
-    private val binding get() = _binding!!
-
-    private var isExactAmount = false
-    private var hasErrors = false
-
-    private var investmentAmountUSD = 0.0
-    private var investmentAmountLocal = 0.0
-    private var minimumAmountUSD = 0.0
-    private var minimumAmountLocal = 0.0
-    private var selectedPrice = INVALID_SELECTION
-
-    companion object {
-        private const val MIN_INVESTMENT_USD = 1.0
-        private const val INVALID_SELECTION = -1.0
+    private val viewModel: InvestmentAmountViewModel by viewModels {
+        InvestmentAmountViewModelFactory(application = this.application, mathHelper = mathHelper)
     }
+
+    override fun inflateBinding() = ActivityInvestmentAmountBinding.inflate(layoutInflater)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityInvestmentAmountBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
         setupToolbar(binding.toolbar, R.string.title_activity_investment_amount)
+        setupObservers()
         setupListeners()
-        updateLabels()
+    }
+
+    override fun setupObservers() {
+        viewModel.investmentAmounts.observe(this) { list ->
+            val label = getString(
+                R.string.lbl_investment_amount_label,
+                viewModel.fieldSize.toString(),
+                viewModel.areaUnitText
+            )
+            addRadioButtons(list, label)
+        }
+
+        viewModel.isExactAmount.observe(this) { isExact ->
+            binding.exactAmountInputLayout.visibility = if (isExact) View.VISIBLE else View.GONE
+        }
+
+        viewModel.selectedInvestmentAmount.observe(this) { selectedPrice ->
+            // Could update UI based on selection if needed
+        }
+
+        viewModel.minInvestmentLocal.observe(this) { minLocal ->
+            // Optional: update UI hints/errors based on min investment
+        }
     }
 
     private fun setupListeners() {
-        binding.investmentOptionsGroup.setOnCheckedChangeListener { group, _ ->
-            val selectedButton = findViewById<RadioButton>(group.checkedRadioButtonId)
+        binding.investmentOptionsGroup.setOnCheckedChangeListener { group, checkedId ->
+            val selectedButton =
+                findViewById<RadioButton>(checkedId) ?: return@setOnCheckedChangeListener
+            val tag = selectedButton.tag as? String ?: return@setOnCheckedChangeListener
+            val investment = database.investmentAmountDao().findOneByItemTag(tag)
                 ?: return@setOnCheckedChangeListener
-            val investment =
-                database.investmentAmountDao().findOneByItemTag(selectedButton.tag as String)
-                    ?: return@setOnCheckedChangeListener
-
-            isExactAmount = investment.sortOrder == 0L
-            investmentAmountLocal = investment.investmentAmount
-            binding.exactAmountInputLayout.visibility =
-                if (isExactAmount) View.VISIBLE else View.GONE
+            viewModel.onInvestmentOptionSelected(investment)
         }
 
         binding.exactAmountEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                validateInvestmentInput()
+                val valid = viewModel.validateInvestmentInput(s?.toString() ?: "")
+                binding.exactAmountInputLayout.error = if (valid) null else
+                    getString(
+                        R.string.lbl_investment_validation_msg,
+                        viewModel.minInvestmentLocal.value ?: 0.0,
+                        viewModel.currencyCode
+                    )
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                //do nothing
+                /** Do nothing**/
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                //do nothing
+                /** Do nothing **/
             }
         })
 
         binding.btnSubmitInvestment.setOnClickListener {
-            if (!validateInvestmentAmount()) {
-                val errorMsg = getString(
-                    R.string.lbl_investment_validation_msg,
-                    minimumAmountLocal,
-                    currencyCode
-                )
-                binding.exactAmountInputLayout.error = errorMsg
-                showCustomWarningDialog(getString(R.string.lbl_invalid_investment_amount), errorMsg)
-                return@setOnClickListener
+            if (viewModel.isExactAmount.value == true) {
+                val inputText = binding.exactAmountEditText.text.toString()
+                if (!viewModel.validateInvestmentInput(inputText)) {
+                    val errorMsg = getString(
+                        R.string.lbl_investment_validation_msg,
+                        viewModel.minInvestmentLocal.value ?: 0.0,
+                        viewModel.currencyCode
+                    )
+                    binding.exactAmountInputLayout.error = errorMsg
+                    showCustomWarningDialog(
+                        getString(R.string.lbl_invalid_investment_amount),
+                        errorMsg
+                    )
+                    return@setOnClickListener
+                }
             }
 
-            try {
-                val amountToInvestRaw = mathHelper.computeInvestmentForSpecifiedAreaUnit(
-                    investmentAmountLocal, fieldSize, areaUnit
-                )
-                val roundedAmount = mathHelper.roundToNDecimalPlaces(amountToInvestRaw, 2.0)
-
-                val investment = database.investmentAmountDao().findOne() ?: InvestmentAmount()
-                investment.investmentAmount = roundedAmount
-                investment.minInvestmentAmount = minimumAmountLocal
-                investment.fieldSize = fieldSizeAcre
-
-                database.investmentAmountDao().insert(investment)
-                database.adviceStatusDao()
-                    .insert(AdviceStatus(EnumTask.INVESTMENT_AMOUNT.name, true))
-
+            val success = viewModel.saveInvestmentAmount(viewModel.fieldSizeAcre)
+            // TODO: Track status of each activity
+//                database.adviceStatusDao()
+//                    .insert(AdviceStatus(EnumTask.INVESTMENT_AMOUNT.name, true))
+            if (success) {
                 closeActivity(false)
-            } catch (ex: Exception) {
-                Toast.makeText(this, ex.message, Toast.LENGTH_SHORT).show()
-                Sentry.captureException(ex)
+            } else {
+                Toast.makeText(this, "Failed to save investment", Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-    private fun updateLabels() {
-        database.profileInfoDao().findOne()?.let { profile ->
-            countryCode = profile.countryCode
-            currencyCode = profile.currencyCode
-        }
-
-        database.mandatoryInfoDao().findOne()?.let { info ->
-            fieldSize = info.areaSize
-            fieldSizeAcre = info.areaSize
-            areaUnit = info.areaUnit
-            areaUnitText = info.displayAreaUnit
-        }
-
-        database.investmentAmountDao().findOne()?.let {
-            selectedPrice = it.investmentAmount
-        }
-
-        val label =
-            getString(R.string.lbl_investment_amount_label, fieldSize.toString(), areaUnitText)
-        loadInvestmentAmounts(label)
-    }
-
-    private fun validateInvestmentInput() {
-        val amountText = binding.exactAmountEditText.text.toString()
-        if (amountText.isBlank()) {
-            binding.exactAmountInputLayout.error = getString(R.string.lbl_investment_amount_prompt)
-            return
-        }
-
-        investmentAmountLocal = amountText.toDoubleOrNull() ?: 0.0
-        investmentAmountUSD = mathHelper.convertToUSD(investmentAmountLocal, currencyCode)
-        minimumAmountUSD =
-            mathHelper.computeInvestmentAmount(MIN_INVESTMENT_USD, fieldSizeAcre, baseCurrency)
-        minimumAmountLocal = mathHelper.convertToLocalCurrency(minimumAmountUSD, currencyCode)
-
-        hasErrors = investmentAmountLocal < minimumAmountLocal
-        binding.exactAmountInputLayout.error = if (hasErrors) {
-            getString(R.string.lbl_investment_validation_msg, minimumAmountLocal, currencyCode)
-        } else {
-            null
-        }
-    }
-
-    private fun validateInvestmentAmount(): Boolean {
-        val amountText = binding.exactAmountEditText.text.toString()
-        if (isExactAmount) {
-            investmentAmountLocal = amountText.toDoubleOrNull() ?: return false
-        }
-
-        investmentAmountUSD = mathHelper.convertToUSD(investmentAmountLocal, currencyCode)
-        minimumAmountUSD =
-            mathHelper.computeInvestmentAmount(MIN_INVESTMENT_USD, fieldSizeAcre, baseCurrency)
-        minimumAmountLocal = mathHelper.convertToLocalCurrency(minimumAmountUSD, currencyCode)
-
-        return investmentAmountLocal >= minimumAmountLocal
-    }
-
-    private fun loadInvestmentAmounts(selectedFieldArea: String) {
-        AkilimoApi.apiService.getInvestmentAmounts(countryCode)
-            .enqueue(object : Callback<InvestmentAmountResponse> {
-                override fun onResponse(
-                    call: Call<InvestmentAmountResponse>,
-                    response: Response<InvestmentAmountResponse>
-                ) {
-                    if (response.isSuccessful) {
-                        val list = response.body()?.data ?: emptyList()
-                        if (list.isNotEmpty()) {
-                            database.investmentAmountDao().insertAll(list)
-                            addRadioButtons(list, selectedFieldArea)
-                        } else {
-                            Toast.makeText(
-                                this@InvestmentAmountActivity,
-                                getString(R.string.lbl_investment_amount_load_error),
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    }
-                }
-
-                override fun onFailure(call: Call<InvestmentAmountResponse>, t: Throwable) {
-                    Toast.makeText(this@InvestmentAmountActivity, t.message, Toast.LENGTH_SHORT)
-                        .show()
-                    Sentry.captureException(t)
-                }
-            })
     }
 
     private fun addRadioButtons(
@@ -206,10 +120,6 @@ class InvestmentAmountActivity : BaseActivity() {
     ) {
         binding.investmentOptionsGroup.removeAllViews()
 
-        CurrencyCode.getCurrencySymbol(currencyCode)?.let {
-            currencySymbol = it.symbol
-            currencyName = it.name
-        }
 
         val spacing = 30
         val params = RadioGroup.LayoutParams(
@@ -230,7 +140,6 @@ class InvestmentAmountActivity : BaseActivity() {
         val separator = getString(R.string.lbl_per_separator)
 
         investmentAmountList.forEach { item ->
-            minimumAmountLocal = item.minInvestmentAmount
             val price = item.investmentAmount
             val investment =
                 mathHelper.computeInvestmentForSpecifiedAreaUnit(price, fieldSize, areaUnit)
@@ -244,7 +153,10 @@ class InvestmentAmountActivity : BaseActivity() {
                 } else {
                     formatInvestmentLabel(investment, currencySymbol, fieldAreaLabel, separator)
                 }
-                isChecked = mathHelper.roundToNDecimalPlaces(investment) == selectedPrice
+//                isChecked = mathHelper.roundToNDecimalPlaces(investment) == selectedPrice
+                isChecked =
+                    viewModel.mathHelper.roundToNDecimalPlaces(investment) == (viewModel.selectedInvestmentAmount.value
+                        ?: -1.0)
             }
 
             binding.investmentOptionsGroup.addView(radioButton)
@@ -259,10 +171,5 @@ class InvestmentAmountActivity : BaseActivity() {
     ): String {
         val formatted = mathHelper.formatNumber(amount, currency)
         return "$formatted $separator $fieldArea"
-    }
-
-    override fun onDestroy() {
-        _binding = null
-        super.onDestroy()
     }
 }
