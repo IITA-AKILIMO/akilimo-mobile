@@ -16,6 +16,7 @@ import com.akilimo.mobile.rest.response.RecommendationResponse
 import com.akilimo.mobile.rest.retrofit.RetrofitManager
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -48,7 +49,7 @@ interface AkilimoService {
     suspend fun getInvestmentAmounts(@Path("country_code") countryCode: String): InvestmentAmountResponse
 
     @POST("v1/user-reviews")
-    suspend fun submitUserReview(@Body surveyRequest: SurveyRequest): Call<ResponseBody>
+    suspend fun submitUserReview(@Body surveyRequest: SurveyRequest): Response<ResponseBody>
 
     @POST("v1/recommendations/compute")
     fun computeRecommendations(@Body recommendationRequest: RecommendationRequest): Call<RecommendationResponse>
