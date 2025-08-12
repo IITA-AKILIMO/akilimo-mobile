@@ -3,103 +3,75 @@ package com.akilimo.mobile.views.activities
 import android.content.Intent
 import android.os.Bundle
 import android.widget.RadioButton
-import android.widget.Toast
+import androidx.activity.viewModels
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ActivityMySurveyBinding
-import com.akilimo.mobile.inherit.BaseActivity
-import com.akilimo.mobile.interfaces.AkilimoApi
-import com.akilimo.mobile.rest.request.SurveyRequest
-import com.akilimo.mobile.utils.LanguageManager
-import io.sentry.Sentry
-import okhttp3.ResponseBody
+import com.akilimo.mobile.inherit.BindBaseActivity
+import com.akilimo.mobile.utils.ui.SnackBarMessage
+import com.akilimo.mobile.viewmodels.MySurveyViewModel
+import com.akilimo.mobile.viewmodels.factory.MySurveyViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 
 
-class MySurveyActivity : BaseActivity() {
-
-    private lateinit var _binding: ActivityMySurveyBinding
-    private val binding get() = _binding
-
-    private var akilimoUsage: String = ""
-    private var akilimoRecRating: Int = 0
-    private var akilimoUsefulRating: Int = 0
-
+class MySurveyActivity : BindBaseActivity<ActivityMySurveyBinding>() {
     companion object {
         const val REQUEST_CODE: Int = 2
     }
 
+    private val viewModel: MySurveyViewModel by viewModels {
+        MySurveyViewModelFactory(application = this.application, preferenceManager = sessionManager)
+    }
+
+    override fun inflateBinding() = ActivityMySurveyBinding.inflate(layoutInflater)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityMySurveyBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        val rdgAkilimoUser = binding.rdgAkilimoUser
-        val rdgRecommend = binding.rdgRecommend
-        val rdgUseful = binding.rdgUseful
-        val btnFinish = binding.btnFinish
+        with(binding) {
+            rdgAkilimoUser.setOnCheckedChangeListener { _, checkedId ->
+                val radioButton: RadioButton = rdgAkilimoUser.findViewById(checkedId)
+                viewModel.setAkilimoUsage(radioButton.text.toString())
+            }
 
-        rdgAkilimoUser.setOnCheckedChangeListener { _, checkedId ->
-            val radioButton: RadioButton = rdgAkilimoUser.findViewById(checkedId)
-            akilimoUsage = radioButton.text.toString()
+            rdgRecommend.setOnCheckedChangeListener { _, checkedId ->
+                val radioButton: RadioButton = rdgRecommend.findViewById(checkedId)
+                viewModel.setRecRating(rdgRecommend.indexOfChild(radioButton) + 1)
+            }
+
+            rdgUseful.setOnCheckedChangeListener { _, checkedId ->
+                val radioButton: RadioButton = rdgUseful.findViewById(checkedId)
+                viewModel.setUsefulRating(rdgUseful.indexOfChild(radioButton) + 1)
+            }
+
+            btnFinish.setOnClickListener {
+                viewModel.submitSurvey()
+            }
+        }
+        setupObservers()
+    }
+
+    override fun setupObservers() {
+        viewModel.showSnackBarEvent.observe(this) { message ->
+            message?.let {
+                val message = when (it) {
+                    is SnackBarMessage.Text -> it.message
+                    is SnackBarMessage.Resource -> getString(it.resId)
+                }
+                Snackbar.make(binding.btnFinish, message, Snackbar.LENGTH_SHORT).show()
+                viewModel.clearSnackBarEvent()
+            }
         }
 
-        rdgRecommend.setOnCheckedChangeListener { _, checkedId ->
-            val radioButton: RadioButton = rdgRecommend.findViewById(checkedId)
-            val idx = rdgRecommend.indexOfChild(radioButton)
-            akilimoRecRating = idx + 1
-        }
-        rdgUseful.setOnCheckedChangeListener { _, checkedId ->
-            val radioButton: RadioButton = rdgUseful.findViewById(checkedId)
-            val idx = rdgUseful.indexOfChild(radioButton)
-            akilimoUsefulRating = idx + 1
-        }
-
-
-        //now we submit to the API
-        btnFinish.setOnClickListener {
-            //send data to REST api
-            val surveyRequest = SurveyRequest(
-                akilimoUsage = akilimoUsage,
-                akilimoRecRating = akilimoRecRating,
-                akilimoUsefulRating = akilimoUsefulRating,
-                language = LanguageManager.getLanguage(this@MySurveyActivity),
-                deviceToken = sessionManager.deviceToken
-            )
-
-            submitUserReview(surveyRequest = surveyRequest)
-            val intent = Intent()
-            intent.putExtra("MESSAGE", getString(R.string.lbl_thank_feedback_you))
-            setResult(2, intent)
+        viewModel.successEvent.observe(this) {
+            val intent = Intent().apply {
+                putExtra("MESSAGE", getString(R.string.lbl_thank_feedback_you))
+            }
+            setResult(REQUEST_CODE, intent)
             closeActivity(false)
         }
     }
 
-
     override fun validate(backPressed: Boolean) {
         closeActivity(backPressed)
-    }
-
-    private fun submitUserReview(surveyRequest: SurveyRequest) {
-        val call = AkilimoApi.apiService.submitUserReview(surveyRequest)
-        call.enqueue(object : retrofit2.Callback<ResponseBody> {
-            override fun onResponse(
-                call: retrofit2.Call<ResponseBody>,
-                response: retrofit2.Response<ResponseBody>
-            ) {
-                if (response.isSuccessful) {
-                    Toast.makeText(
-                        this@MySurveyActivity,
-                        "Feedback submitted successfully",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-
-            override fun onFailure(call: retrofit2.Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@MySurveyActivity, t.message, Toast.LENGTH_SHORT).show()
-                Sentry.captureException(t)
-            }
-
-        })
-
     }
 }
