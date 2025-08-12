@@ -90,6 +90,16 @@ class CassavaMarketActivity : BindBaseActivity<ActivityCassavaMarketBinding>() {
         btnUpM1.setOnClickListener { showUnitPriceDialog(EnumContext.UNIT_PRICE_M1) }
         btnUpM2.setOnClickListener { showUnitPriceDialog(EnumContext.UNIT_PRICE_M2) }
 
+        rdgStarchFactories.setOnCheckedChangeListener { _, checkedRadioButtonId ->
+            if (checkedRadioButtonId == -1) return@setOnCheckedChangeListener
+
+            val radioButton = findViewById<RadioButton>(checkedRadioButtonId)
+                ?: return@setOnCheckedChangeListener
+
+            val factoryNameCountry = radioButton.tag as? String ?: return@setOnCheckedChangeListener
+            viewModel.saveStarchFactory(factoryNameCountry)
+        }
+
         rdgUnitOfSale.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.rd_per_kg -> setUnitOfSale(EnumUnitOfSale.ONE_KG)
@@ -109,6 +119,7 @@ class CassavaMarketActivity : BindBaseActivity<ActivityCassavaMarketBinding>() {
             viewModel.produceType.value = EnumCassavaProduceType.ROOTS.name
         }
     }
+
     fun onRadioButtonClicked(radioButton: View?) {
         if (radioButton != null && radioButton.isPressed) {
             showUnitPriceDialog(EnumContext.UNIT_PRICE)
