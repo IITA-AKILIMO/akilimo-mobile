@@ -3,6 +3,7 @@ package com.akilimo.mobile.viewmodels
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.akilimo.mobile.R
 import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.entities.FieldYield
 import com.akilimo.mobile.entities.UseCase
@@ -12,6 +13,7 @@ import com.akilimo.mobile.interfaces.DefaultDispatcherProvider
 import com.akilimo.mobile.interfaces.IDispatcherProvider
 import com.akilimo.mobile.utils.enums.EnumAreaUnit
 import com.akilimo.mobile.utils.enums.EnumUseCase
+import com.akilimo.mobile.utils.ui.SingleLiveEvent
 import com.akilimo.mobile.viewmodels.base.BaseViewModel
 
 class RootYieldViewModel(
@@ -36,6 +38,7 @@ class RootYieldViewModel(
 
     private val _yieldOptions = MutableLiveData<List<FieldYield>>()
     val yieldOptions: LiveData<List<FieldYield>> = _yieldOptions
+    val closeScreenEvent = SingleLiveEvent<Unit>()
 
     init {
         loadInitialData()
@@ -73,6 +76,15 @@ class RootYieldViewModel(
             savedYield = updatedYield,
             selectedYieldAmount = updatedYield.yieldAmount
         )
+    }
+
+
+    fun validateAndFinish() {
+        if ((_yieldData.value?.selectedYieldAmount ?: 0.0) <= 0) {
+            showSnackBar(R.string.lbl_invalid_yield)
+            return
+        }
+        closeScreenEvent.call()
     }
 
     private fun generateYieldData(areaUnit: String): List<FieldYield> {

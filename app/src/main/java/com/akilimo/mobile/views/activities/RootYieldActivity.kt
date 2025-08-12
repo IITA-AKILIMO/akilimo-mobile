@@ -45,7 +45,7 @@ class RootYieldActivity : BindBaseActivity<ActivityRootYieldBinding>() {
             showImage = false,
             isItemSelected = { it.yieldAmount == viewModel.yieldData.value?.selectedYieldAmount },
         ) { _, fieldYield, position ->
-            val dialogFragment = RootYieldDialogFragment.newInstance(
+            RootYieldDialogFragment.newInstance(
                 selectedFieldYield = fieldYield,
                 onConfirmClick = {
                     viewModel.saveYieldSelection(fieldYield)
@@ -69,7 +69,7 @@ class RootYieldActivity : BindBaseActivity<ActivityRootYieldBinding>() {
 
         binding.twoButtons.apply {
             btnFinish.text = getString(R.string.lbl_finish)
-            btnFinish.setOnClickListener { validate(true) }
+            btnFinish.setOnClickListener { viewModel.validateAndFinish() }
             btnCancel.setOnClickListener { closeActivity(false) }
         }
 
@@ -82,6 +82,10 @@ class RootYieldActivity : BindBaseActivity<ActivityRootYieldBinding>() {
         }
         viewModel.yieldOptions.observe(this) { options ->
             mAdapter.submitList(options)
+        }
+
+        viewModel.closeScreenEvent.observe(this) {
+            closeActivity(false)
         }
     }
 
@@ -98,18 +102,5 @@ class RootYieldActivity : BindBaseActivity<ActivityRootYieldBinding>() {
         }
 
         binding.rootYieldTitle.text = getString(titleRes, unitLabel)
-    }
-
-    override fun validate(backPressed: Boolean) {
-        if ((viewModel.yieldData.value?.selectedYieldAmount ?: 0.0) <= 0) {
-            showCustomWarningDialog(
-                getString(R.string.lbl_invalid_yield),
-                getString(R.string.lbl_current_field_yield_prompt),
-                getString(R.string.lbl_ok)
-            )
-            return
-        }
-
-        closeActivity(false)
     }
 }
