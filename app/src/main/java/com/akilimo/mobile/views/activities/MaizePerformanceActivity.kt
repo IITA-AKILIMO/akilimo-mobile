@@ -19,18 +19,12 @@ import com.akilimo.mobile.views.fragments.dialog.MaizePerformanceDialogFragment
 import com.akilimo.mobile.widget.SpacingItemDecoration
 
 class MaizePerformanceActivity : BindBaseActivity<ActivityMaizePerformanceActivityBinding>() {
-    var poorSoil: String? = null
-    var richSoil: String? = null
 
     private lateinit var mAdapter: CropPerformanceAdapter
-
-
-    private var selectedPerformanceScore: Int = -1
 
     private val viewModel: MaizePerformanceViewModel by viewModels {
         MaizePerformanceViewFactory(application = this.application)
     }
-
 
     override fun inflateBinding() = ActivityMaizePerformanceActivityBinding.inflate(
         layoutInflater
@@ -38,8 +32,6 @@ class MaizePerformanceActivity : BindBaseActivity<ActivityMaizePerformanceActivi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
         setupToolbar(binding.toolbar, R.string.title_activity_maize_performance) {
             validate(false)
         }
