@@ -3,6 +3,7 @@ package com.akilimo.mobile.viewmodels
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.entities.InvestmentAmount
 import com.akilimo.mobile.interfaces.AkilimoApi
@@ -12,6 +13,7 @@ import com.akilimo.mobile.interfaces.IDispatcherProvider
 import com.akilimo.mobile.utils.CurrencyCode
 import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.viewmodels.base.BaseNetworkViewModel
+import kotlinx.coroutines.launch
 
 class InvestmentAmountViewModel(
     private val application: Application,
@@ -34,6 +36,9 @@ class InvestmentAmountViewModel(
     private val _isExactAmount = MutableLiveData<Boolean>(false)
     val isExactAmount: LiveData<Boolean> = _isExactAmount
 
+    private val _saveSuccessEvent = MutableLiveData<Boolean>()
+    val saveSuccessEvent: LiveData<Boolean> get() = _saveSuccessEvent
+
     private val _minInvestmentLocal = MutableLiveData<Double>(0.0)
     val minInvestmentLocal: LiveData<Double> = _minInvestmentLocal
 
@@ -54,33 +59,32 @@ class InvestmentAmountViewModel(
     private var investmentAmountUSD = 0.0
     private var minimumAmountUSD = 0.0
 
-    fun initializeData() {
-        // Load profile info
-        database.profileInfoDao().findOne()?.let { profile ->
-            countryCode = profile.countryCode
-            currencyCode = profile.currencyCode
-            CurrencyCode.getCurrencySymbol(currencyCode)?.let {
-                currencySymbol = it.symbol
-                currencyName = it.name
+    fun loadInitialData() {
+        viewModelScope.launch(dispatchers.io) {
+            database.profileInfoDao().findOne()?.let { profile ->
+                countryCode = profile.countryCode
+                currencyCode = profile.currencyCode
+                CurrencyCode.getCurrencySymbol(currencyCode)?.let {
+                    currencySymbol = it.symbol
+                    currencyName = it.name
+                }
             }
-        }
 
-        // Load mandatory info
-        database.mandatoryInfoDao().findOne()?.let { info ->
-            fieldSize = info.areaSize
-            fieldSizeAcre = info.areaSize
-            areaUnit = info.areaUnit
-            areaUnitText = info.displayAreaUnit
-        }
+            database.mandatoryInfoDao().findOne()?.let { info ->
+                fieldSize = info.areaSize
+                fieldSizeAcre = info.areaSize
+                areaUnit = info.areaUnit
+                areaUnitText = info.displayAreaUnit
+            }
 
-        // Load saved investment amount if any
-        database.investmentAmountDao().findOne()?.let {
-            _selectedInvestmentAmount.value = it.investmentAmount
+            database.investmentAmountDao().findOne()?.let {
+                _selectedInvestmentAmount.value = it.investmentAmount
+            }
         }
     }
 
 
-    fun loadInvestmentAmounts(selectedFieldArea: String) = launchWithState {
+    fun loadInvestmentAmounts() = launchWithState {
         val response = akilimoService.getInvestmentAmounts(countryCode)
         val investmentAmount = response.data
         if (investmentAmount.isNotEmpty()) {
@@ -117,8 +121,9 @@ class InvestmentAmountViewModel(
         } else null
     }
 
-    fun saveInvestmentAmount(fieldSizeAcre: Double): Boolean {
-        return try {
+
+    fun saveInvestmentAmount(fieldSizeAcre: Double) = launchWithState {
+        try {
             val amountToInvestRaw = mathHelper.computeInvestmentForSpecifiedAreaUnit(
                 investmentAmountLocal, fieldSize, areaUnit
             )
@@ -130,10 +135,11 @@ class InvestmentAmountViewModel(
             investment.fieldSize = fieldSizeAcre
 
             database.investmentAmountDao().insert(investment)
-            true
+            _saveSuccessEvent.postValue(true)
         } catch (ex: Exception) {
+            // In ViewModel, you can expose this error via LiveData instead of directly calling a UI method
             showSnackBar(ex.localizedMessage ?: "An unexpected error occurred")
-            false
+            _saveSuccessEvent.postValue(true)
         }
     }
 }
