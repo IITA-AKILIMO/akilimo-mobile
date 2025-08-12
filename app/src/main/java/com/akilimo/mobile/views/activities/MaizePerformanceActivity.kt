@@ -11,7 +11,6 @@ import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.ICropPerformanceListener
 import com.akilimo.mobile.utils.TheItemAnimation
 import com.akilimo.mobile.utils.Tools.dpToPx
-import com.akilimo.mobile.utils.enums.EnumTask
 import com.akilimo.mobile.utils.showDialogFragmentSafely
 import com.akilimo.mobile.views.fragments.dialog.MaizePerformanceDialogFragment
 import com.akilimo.mobile.widget.SpacingItemDecoration
@@ -196,8 +195,9 @@ class MaizePerformanceActivity : BaseActivity() {
             )
             return
         }
-        database.adviceStatusDao()
-            .insert(AdviceStatus(EnumTask.MAIZE_PERFORMANCE.name, true))
+        // TODO: Track status of each activity
+//        database.adviceStatusDao()
+//            .insert(AdviceStatus(EnumTask.MAIZE_PERFORMANCE.name, true))
         closeActivity(backPressed)
     }
 }
