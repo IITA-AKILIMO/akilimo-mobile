@@ -2,6 +2,7 @@ package com.akilimo.mobile.inherit
 
 import androidx.activity.viewModels
 import androidx.viewbinding.ViewBinding
+import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.enums.EnumOperation
 import com.akilimo.mobile.utils.enums.EnumOperationMethod
 import com.akilimo.mobile.viewmodels.OperationCostViewModel
@@ -11,7 +12,7 @@ import com.akilimo.mobile.viewmodels.factory.OperationCostViewModelFactory
 abstract class CostBaseActivity<T : ViewBinding> : BindBaseActivity<T>() {
 
     private val viewModel: OperationCostViewModel by viewModels {
-        OperationCostViewModelFactory(this.application)
+        OperationCostViewModelFactory(this.application, MathHelper())
     }
 
 
