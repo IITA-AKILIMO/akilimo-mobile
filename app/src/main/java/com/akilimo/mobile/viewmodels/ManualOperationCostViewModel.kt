@@ -7,7 +7,7 @@ import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.interfaces.AkilimoService
 
-class ManualTillageCostViewModel(
+class ManualOperationCostViewModel(
     private val application: Application,
     private val akilimoService: AkilimoService = AkilimoApi.apiService,
     private val db: AppDatabase = AppDatabase.getInstance(application),
