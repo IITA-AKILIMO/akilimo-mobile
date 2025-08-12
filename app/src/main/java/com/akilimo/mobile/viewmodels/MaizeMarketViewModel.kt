@@ -12,6 +12,7 @@ import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.interfaces.AkilimoService
 import com.akilimo.mobile.interfaces.DefaultDispatcherProvider
 import com.akilimo.mobile.interfaces.IDispatcherProvider
+import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.enums.EnumMaizeProduceType
 import com.akilimo.mobile.utils.enums.EnumUnitOfSale
 import com.akilimo.mobile.viewmodels.base.BaseNetworkViewModel
@@ -19,6 +20,7 @@ import com.akilimo.mobile.views.fragments.dialog.MaizePriceDialogFragment
 
 class MaizeMarketViewModel(
     private val application: Application,
+    private val mathHelper: MathHelper,
     private val dispatchers: IDispatcherProvider = DefaultDispatcherProvider(),
     private val akilimoService: AkilimoService = AkilimoApi.apiService,
     private val database: AppDatabase = AppDatabase.getInstance(application),
