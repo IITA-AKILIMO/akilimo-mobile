@@ -44,9 +44,9 @@ class MapBoxActivity : BaseLocationPicker<ActivityMapBoxBinding>() {
 
     @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         accessToken = sessionManager.mapBoxApiKey
         Mapbox.getInstance(this@MapBoxActivity, accessToken)
+        super.onCreate(savedInstanceState)
         binding.apply {
             toolbar = toolbarLayout.toolbar
             mapView = mapBox.mapView
