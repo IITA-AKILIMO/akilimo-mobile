@@ -5,7 +5,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ActivityWeedControlCostBinding
-import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.inherit.BindBaseActivity
 import com.akilimo.mobile.repo.DatabaseRepository
 import com.akilimo.mobile.utils.LanguageManager
 import com.akilimo.mobile.utils.enums.EnumWeedControlMethod
@@ -13,19 +13,19 @@ import com.akilimo.mobile.viewmodels.WeedControlCostsViewModel
 import com.akilimo.mobile.viewmodels.factory.WeedControlCostsViewModelFactory
 import io.sentry.Sentry
 
-class WeedControlCostsActivity : BaseActivity() {
+class WeedControlCostsActivity : BindBaseActivity<ActivityWeedControlCostBinding>() {
 
-    private lateinit var binding: ActivityWeedControlCostBinding
     private val viewModel: WeedControlCostsViewModel by viewModels {
         WeedControlCostsViewModelFactory(DatabaseRepository(database))
     }
 
     private val minCost = 1.0
 
+    override fun inflateBinding() = ActivityWeedControlCostBinding.inflate(layoutInflater)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityWeedControlCostBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+
 
         setupToolbar()
         setupObservers()
@@ -41,7 +41,7 @@ class WeedControlCostsActivity : BaseActivity() {
         }
     }
 
-    private fun setupObservers() {
+    override fun setupObservers() {
         viewModel.currencyName.observe(this) { updateCostLabels() }
         viewModel.fieldSize.observe(this) { updateCostLabels() }
         viewModel.currentPractice.observe(this) { practice ->
