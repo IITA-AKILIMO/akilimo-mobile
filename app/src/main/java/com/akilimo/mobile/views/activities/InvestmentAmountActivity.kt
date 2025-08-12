@@ -29,7 +29,7 @@ class InvestmentAmountActivity : BindBaseActivity<ActivityInvestmentAmountBindin
         setupToolbar(binding.toolbar, R.string.title_activity_investment_amount)
         setupObservers()
         setupListeners()
-        viewModel.initializeData()
+        viewModel.loadInitialData()
         viewModel.loadInvestmentAmounts()
     }
 
