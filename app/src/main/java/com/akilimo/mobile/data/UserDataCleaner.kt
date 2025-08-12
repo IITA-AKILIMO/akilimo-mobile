@@ -8,8 +8,8 @@ class UserDataCleaner(
 
     fun clearUserRelatedData() {
         with(database) {
-//            clearAllDao.clearAll()
-            clearAllTables()
+            clearAllDao().clearAll()
+//            clearAllTables()
         }
     }
 }
