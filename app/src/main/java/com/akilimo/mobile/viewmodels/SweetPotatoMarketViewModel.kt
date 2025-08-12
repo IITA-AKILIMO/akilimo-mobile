@@ -24,6 +24,9 @@ class SweetPotatoMarketViewModel(
     private val database: AppDatabase = AppDatabase.getInstance(application),
 ) :
     BaseNetworkViewModel(application, dispatchers) {
+
+    var countryCode: String = ""
+    var currencyCode: String = ""
     private val _closeEvent = MutableLiveData<Boolean>()
     val closeEvent: LiveData<Boolean> = _closeEvent
 
@@ -37,6 +40,14 @@ class SweetPotatoMarketViewModel(
     val unitPrice: LiveData<Double> = _unitPrice
 
     private var produceType = EnumPotatoProduceType.TUBERS.name.lowercase()
+
+    init {
+        database.profileInfoDao().findOne()?.let {
+            countryCode = it.countryCode
+            currencyCode = it.currencyCode
+        }
+        fetchPotatoPrices()
+    }
 
     // Called when a unit of sale radio is selected
     fun setUnitOfSale(enumUnitOfSale: EnumUnitOfSale) {
@@ -94,7 +105,7 @@ class SweetPotatoMarketViewModel(
         database.potatoMarketDao().insert(market)
     }
 
-    fun fetchPotatoPrices(countryCode: String) = launchWithState {
+    fun fetchPotatoPrices() = launchWithState {
         try {
             val response = akilimoService.getPotatoPrices(countryCode)
             val data = response.data
