@@ -10,14 +10,14 @@ import com.akilimo.mobile.utils.LanguageManager
 import com.akilimo.mobile.utils.enums.EnumOperation
 import com.akilimo.mobile.utils.enums.EnumOperationMethod
 import com.akilimo.mobile.utils.showDialogFragmentSafely
-import com.akilimo.mobile.viewmodels.ManualTillageCostViewModel
+import com.akilimo.mobile.viewmodels.ManualOperationCostViewModel
 import com.akilimo.mobile.viewmodels.factory.OperationCostViewModelFactory
 import com.akilimo.mobile.views.fragments.dialog.OperationCostsDialogFragment
 
 class ManualTillageCostActivity : CostBaseActivity<ActivityManualTillageCostBinding>() {
 
-    private val viewModel: ManualTillageCostViewModel by viewModels {
-        OperationCostViewModelFactory(this.application)
+    private val viewModel: ManualOperationCostViewModel by viewModels {
+        OperationCostViewModelFactory(this.application, mathHelper)
     }
 
     private var manualPloughCost = 0.0
@@ -114,12 +114,12 @@ class ManualTillageCostActivity : CostBaseActivity<ActivityManualTillageCostBind
     }
 
     private fun getCostText(resId: Int, cost: Double): String {
-        val field = mathHelper.removeLeadingZero(fieldSize)
+        val fieldSize = mathHelper.removeLeadingZero(this@ManualTillageCostActivity.fieldSize)
         val amount = mathHelper.removeLeadingZero(cost)
         return if (activeLanguage == "sw") {
-            getString(resId, finalTranslatedUnit, field, amount, currencySymbol)
+            getString(resId, finalTranslatedUnit, fieldSize, amount, currencySymbol)
         } else {
-            getString(resId, field, finalTranslatedUnit, amount, currencySymbol)
+            getString(resId, fieldSize, finalTranslatedUnit, amount, currencySymbol)
         }
     }
 
