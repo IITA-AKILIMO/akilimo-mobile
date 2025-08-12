@@ -2,7 +2,6 @@ package com.akilimo.mobile.views.activities
 
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.Observer
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ActivityMaizeMarketBinding
@@ -16,11 +15,6 @@ import com.akilimo.mobile.views.fragments.dialog.MaizePriceDialogFragment
 import com.google.android.material.snackbar.Snackbar
 
 class MaizeMarketActivity : BindBaseActivity<ActivityMaizeMarketBinding>() {
-
-
-    var btnFinish: AppCompatButton? = null
-    var btnCancel: AppCompatButton? = null
-
     private val viewModel: MaizeMarketViewModel by viewModels {
         MaizeMarketViewModelFactory(application = this.application, mathHelper = mathHelper)
     }
