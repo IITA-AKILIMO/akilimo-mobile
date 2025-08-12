@@ -22,11 +22,9 @@ import com.mapbox.mapboxsdk.style.layers.Property
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 
-class MapBoxActivity : BaseLocationPicker() {
+class MapBoxActivity : BaseLocationPicker<ActivityMapBoxBinding>() {
     var toolbar: Toolbar? = null
-    var snackbar: Snackbar? = null
-    private var _binding: ActivityMapBoxBinding? = null
-    private val binding get() = _binding!!
+    var snackBar: Snackbar? = null
 
 
     private var currentCoordinates: LatLng? = null
@@ -41,16 +39,14 @@ class MapBoxActivity : BaseLocationPicker() {
         const val PLACE_NAME: String = "PLACE_NAME"
     }
 
+    override fun inflateBinding(): ActivityMapBoxBinding =
+        ActivityMapBoxBinding.inflate(layoutInflater)
+
     @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         accessToken = sessionManager.mapBoxApiKey
         Mapbox.getInstance(this@MapBoxActivity, accessToken)
-
-        _binding = ActivityMapBoxBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-
         binding.apply {
             toolbar = toolbarLayout.toolbar
             mapView = mapBox.mapView
@@ -76,12 +72,12 @@ class MapBoxActivity : BaseLocationPicker() {
             initCurrentLocation()
         }
 
-        snackbar = Snackbar.make(
+        snackBar = Snackbar.make(
             binding.coordinatorLayout,
             getString(R.string.lbl_location_selected_prompt),
             Snackbar.LENGTH_INDEFINITE
         )
-        snackbar!!.setAction(getString(R.string.lbl_ok)) {
+        snackBar!!.setAction(getString(R.string.lbl_ok)) {
             processActivityResult()
         }
     }
@@ -127,9 +123,9 @@ class MapBoxActivity : BaseLocationPicker() {
                             currentCoordinates!!.latitude,
                             currentCoordinates!!.longitude
                         )
-                        if (snackbar != null) {
+                        if (snackBar != null) {
                             //                            snackbar.setText(coordinates);
-                            snackbar!!.show()
+                            snackBar!!.show()
                         }
                     }
                     style.getLayer(DROPPED_MARKER_LAYER_ID)!!
