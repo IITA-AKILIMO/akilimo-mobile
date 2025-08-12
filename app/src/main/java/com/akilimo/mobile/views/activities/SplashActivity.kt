@@ -3,6 +3,7 @@ package com.akilimo.mobile.views.activities
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
+import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.data.UserDataCleaner
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.DefaultDispatcherProvider
@@ -31,7 +32,7 @@ class SplashActivity(
     }
 
     private suspend fun launchAppFlow() {
-        val isInDevMode = false//BuildConfig.DEBUG
+        val isInDevMode = BuildConfig.DEBUG
 
         if (!isInDevMode) {
             withContext(dispatchers.io) {
@@ -43,13 +44,12 @@ class SplashActivity(
     }
 
     private fun navigateToNextActivity(isInDevMode: Boolean) {
-        val nextActivityClass = if (isInDevMode) {
-            UseCaseActivity::class.java
-        } else {
-            HomeStepperActivity::class.java
+        if (isInDevMode) {
+            openActivity(Intent(this, UseCaseActivity::class.java))
+            finish()
+            return
         }
-
-        openActivity(Intent(this, nextActivityClass))
+        openActivity(Intent(this, HomeStepperActivity::class.java))
         finish()
     }
 
