@@ -45,6 +45,10 @@ class FertilizersViewModel(
 
 
     init {
+        loadInitialData()
+    }
+
+    fun loadInitialData() = launchWithState {
         database.profileInfoDao().findOne()?.let {
             countryCode = it.countryCode
             currencyCode = it.currencyCode
