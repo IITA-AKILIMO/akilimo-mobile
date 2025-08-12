@@ -19,7 +19,7 @@ import io.sentry.Sentry
 class SweetPotatoMarketViewModel(
     private val application: Application,
     private val mathHelper: MathHelper,
-    private val dispatchers: IDispatcherProvider = DefaultDispatcherProvider(),
+    dispatchers: IDispatcherProvider = DefaultDispatcherProvider(),
     private val akilimoService: AkilimoService = AkilimoApi.apiService,
     private val database: AppDatabase = AppDatabase.getInstance(application),
 ) :
