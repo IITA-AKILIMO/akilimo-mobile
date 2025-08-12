@@ -7,14 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.RadioGroup
-import android.widget.Toast
 import androidx.activity.viewModels
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ActivityInvestmentAmountBinding
 import com.akilimo.mobile.entities.InvestmentAmount
 import com.akilimo.mobile.inherit.BindBaseActivity
+import com.akilimo.mobile.utils.ui.SnackBarMessage
 import com.akilimo.mobile.viewmodels.InvestmentAmountViewModel
 import com.akilimo.mobile.viewmodels.factory.InvestmentAmountViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 
 class InvestmentAmountActivity : BindBaseActivity<ActivityInvestmentAmountBinding>() {
 
@@ -54,6 +55,22 @@ class InvestmentAmountActivity : BindBaseActivity<ActivityInvestmentAmountBindin
         viewModel.minInvestmentLocal.observe(this) { minLocal ->
             // Optional: update UI hints/errors based on min investment
         }
+        viewModel.saveSuccessEvent.observe(this) { saveStatus ->
+            if (saveStatus) {
+                finish()
+            }
+        }
+
+        viewModel.showSnackBarEvent.observe(this) { message ->
+            message?.let {
+                val message = when (it) {
+                    is SnackBarMessage.Text -> it.message
+                    is SnackBarMessage.Resource -> getString(it.resId)
+                }
+                Snackbar.make(binding.investmentFormLayout, message, Snackbar.LENGTH_SHORT).show()
+                viewModel.clearSnackBarEvent()
+            }
+        }
     }
 
     private fun setupListeners() {
@@ -69,12 +86,11 @@ class InvestmentAmountActivity : BindBaseActivity<ActivityInvestmentAmountBindin
         binding.exactAmountEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val valid = viewModel.validateInvestmentInput(s?.toString() ?: "")
-                binding.exactAmountInputLayout.error = if (valid) null else
-                    getString(
-                        R.string.lbl_investment_validation_msg,
-                        viewModel.minInvestmentLocal.value ?: 0.0,
-                        viewModel.currencyCode
-                    )
+                binding.exactAmountInputLayout.error = if (valid) null else getString(
+                    R.string.lbl_investment_validation_msg,
+                    viewModel.minInvestmentLocal.value ?: 0.0,
+                    viewModel.currencyCode
+                )
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -97,28 +113,17 @@ class InvestmentAmountActivity : BindBaseActivity<ActivityInvestmentAmountBindin
                     )
                     binding.exactAmountInputLayout.error = errorMsg
                     showCustomWarningDialog(
-                        getString(R.string.lbl_invalid_investment_amount),
-                        errorMsg
+                        getString(R.string.lbl_invalid_investment_amount), errorMsg
                     )
                     return@setOnClickListener
                 }
             }
-
-            val success = viewModel.saveInvestmentAmount(viewModel.fieldSizeAcre)
-            // TODO: Track status of each activity
-//                database.adviceStatusDao()
-//                    .insert(AdviceStatus(EnumTask.INVESTMENT_AMOUNT.name, true))
-            if (success) {
-                closeActivity(false)
-            } else {
-                Toast.makeText(this, "Failed to save investment", Toast.LENGTH_SHORT).show()
-            }
+            viewModel.saveInvestmentAmount(viewModel.fieldSizeAcre)
         }
     }
 
     private fun addRadioButtons(
-        investmentAmountList: List<InvestmentAmount>,
-        fieldAreaLabel: String
+        investmentAmountList: List<InvestmentAmount>, fieldAreaLabel: String
     ) {
         binding.investmentOptionsGroup.removeAllViews()
 
@@ -166,10 +171,7 @@ class InvestmentAmountActivity : BindBaseActivity<ActivityInvestmentAmountBindin
     }
 
     private fun formatInvestmentLabel(
-        amount: Double,
-        currency: String,
-        fieldArea: String,
-        separator: String
+        amount: Double, currency: String, fieldArea: String, separator: String
     ): String {
         val formatted = mathHelper.formatNumber(amount, currency)
         return "$formatted $separator $fieldArea"
