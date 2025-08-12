@@ -18,7 +18,7 @@ import com.akilimo.mobile.utils.ui.SingleLiveEvent
 import io.sentry.Sentry
 
 
-class TractorOperationCostViewModel(
+class TractorAccessViewModel(
     private val application: Application,
     private val mathHelper: MathHelper,
     private val akilimoService: AkilimoService = AkilimoApi.apiService,

@@ -9,14 +9,14 @@ import com.akilimo.mobile.inherit.CostBaseActivity
 import com.akilimo.mobile.utils.enums.EnumOperation
 import com.akilimo.mobile.utils.enums.EnumOperationMethod
 import com.akilimo.mobile.utils.ui.SnackBarMessage
-import com.akilimo.mobile.viewmodels.TractorOperationCostViewModel
+import com.akilimo.mobile.viewmodels.TractorAccessViewModel
 import com.akilimo.mobile.viewmodels.factory.OperationCostViewModelFactory
 import com.akilimo.mobile.views.fragments.dialog.OperationCostsDialogFragment
 import com.google.android.material.snackbar.Snackbar
 
 class TractorAccessActivity : CostBaseActivity<ActivityTractorAccessBinding>() {
 
-    private val viewModel: TractorOperationCostViewModel by viewModels {
+    private val viewModel: TractorAccessViewModel by viewModels {
         OperationCostViewModelFactory(application = this.application, mathHelper = mathHelper)
     }
 
