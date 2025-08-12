@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.Toast
+import androidx.viewbinding.ViewBinding
 import com.akilimo.mobile.R
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.api.geocoding.v5.GeocodingCriteria
@@ -29,7 +30,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-abstract class BaseLocationPicker : BaseActivity(), OnMapReadyCallback {
+abstract class BaseLocationPicker<T : ViewBinding> : BindBaseActivity<T>(), OnMapReadyCallback {
 
     protected val TAG: String = BaseLocationPicker::class.java.simpleName
     protected val REQUEST_CODE_AUTOCOMPLETE = 1
