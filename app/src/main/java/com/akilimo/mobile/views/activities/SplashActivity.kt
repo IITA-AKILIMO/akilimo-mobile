@@ -3,7 +3,6 @@ package com.akilimo.mobile.views.activities
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
-import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.data.UserDataCleaner
 import com.akilimo.mobile.inherit.BaseActivity
 import com.akilimo.mobile.interfaces.DefaultDispatcherProvider
@@ -32,7 +31,7 @@ class SplashActivity(
     }
 
     private suspend fun launchAppFlow() {
-        val isInDevMode = BuildConfig.DEBUG
+        val isInDevMode = false//BuildConfig.DEBUG
 
         if (!isInDevMode) {
             withContext(dispatchers.io) {
