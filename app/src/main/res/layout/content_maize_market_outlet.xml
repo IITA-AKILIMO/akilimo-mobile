@@ -19,7 +19,6 @@
             android:id="@+id/produceTypeTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/starchFactoryCard"
             android:layout_marginTop="@dimen/spacing_medium"
             android:text="@string/lbl_maize_outlets"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
@@ -106,21 +105,18 @@
                         android:id="@+id/rd_per_kg"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:onClick="onGrainUnitRadioButtonClicked"
                         android:text="@string/per_kg_sale_unit" />
 
                     <RadioButton
                         android:id="@+id/rd_50_kg_bag"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:onClick="onGrainUnitRadioButtonClicked"
                         android:text="@string/per_50_kg_sale_unit" />
 
                     <RadioButton
                         android:id="@+id/rd_100_kg_bag"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:onClick="onGrainUnitRadioButtonClicked"
                         android:text="@string/per_100_kg_sale_unit" />
 
                 </RadioGroup>
