@@ -71,7 +71,7 @@ abstract class BaseFertilizersActivity(
 
         binding.twoButtons.btnFinish.setOnClickListener {
             val isMinSelected = viewModel.isMinSelected()
-            // TODO: TRack the state of the task
+            // TODO: Track the state of the task
 //            val adviceStatus = AdviceStatus(
 //                EnumTask.AVAILABLE_FERTILIZERS.name, isMinSelected
 //            )
