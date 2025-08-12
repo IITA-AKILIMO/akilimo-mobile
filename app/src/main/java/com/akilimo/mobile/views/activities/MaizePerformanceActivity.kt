@@ -2,111 +2,102 @@ package com.akilimo.mobile.views.activities
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.CropPerformanceAdapter
 import com.akilimo.mobile.databinding.ActivityMaizePerformanceActivityBinding
 import com.akilimo.mobile.entities.CropPerformance
-import com.akilimo.mobile.inherit.BaseActivity
+import com.akilimo.mobile.inherit.BindBaseActivity
 import com.akilimo.mobile.interfaces.ICropPerformanceListener
 import com.akilimo.mobile.utils.TheItemAnimation
 import com.akilimo.mobile.utils.Tools.dpToPx
 import com.akilimo.mobile.utils.showDialogFragmentSafely
+import com.akilimo.mobile.viewmodels.MaizePerformanceViewModel
+import com.akilimo.mobile.viewmodels.factory.MaizePerformanceViewFactory
 import com.akilimo.mobile.views.fragments.dialog.MaizePerformanceDialogFragment
 import com.akilimo.mobile.widget.SpacingItemDecoration
 
-class MaizePerformanceActivity : BaseActivity() {
+class MaizePerformanceActivity : BindBaseActivity<ActivityMaizePerformanceActivityBinding>() {
     var poorSoil: String? = null
     var richSoil: String? = null
 
     private lateinit var mAdapter: CropPerformanceAdapter
 
-    private var _binding: ActivityMaizePerformanceActivityBinding? = null
-    private val binding get() = _binding!!
-
 
     private var selectedPerformanceScore: Int = -1
 
-    private val performanceImages = arrayOf(
-        R.drawable.ic_maize_1,
-        R.drawable.ic_maize_2,
-        R.drawable.ic_maize_3,
-        R.drawable.ic_maize_4,
-        R.drawable.ic_maize_5,
+    private val viewModel: MaizePerformanceViewModel by viewModels {
+        MaizePerformanceViewFactory(application = this.application)
+    }
+
+
+    override fun inflateBinding() = ActivityMaizePerformanceActivityBinding.inflate(
+        layoutInflater
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityMaizePerformanceActivityBinding.inflate(
-            layoutInflater
-        )
-        setContentView(binding.root)
-
-
-        val cropPerformanceRecord = database.maizePerformanceDao().findOne()
-        if (cropPerformanceRecord != null) {
-            selectedPerformanceScore = cropPerformanceRecord.performanceScore
-        }
 
 
         setupToolbar(binding.toolbar, R.string.title_activity_maize_performance) {
             validate(false)
         }
 
-        poorSoil = getString(R.string.lbl_maize_performance_poor)
-        richSoil = getString(R.string.lbl_maize_performance_rich)
-
-
-        binding.twoButtons.btnFinish.setOnClickListener { _: View? -> validate(false) }
+        setupRecycler()
+        setupObservers()
+        binding.twoButtons.btnFinish.setOnClickListener { _: View? -> viewModel.validateSelection() }
         binding.twoButtons.btnCancel.setOnClickListener { _: View? -> closeActivity(false) }
 
-        val items: MutableList<CropPerformance> = ArrayList()
+    }
 
-        items.add(
-            createPerformanceObject(
-                performanceImages[0],
-                poorSoil,
-                1,
-                "50",
-                getString(R.string.lbl_knee_height)
-            )
-        )
-        items.add(
-            createPerformanceObject(
-                performanceImages[1],
-                null,
-                2,
-                "150",
-                getString(R.string.lbl_chest_height)
-            )
-        )
-        items.add(
-            createPerformanceObject(
-                performanceImages[2],
-                null,
-                3,
-                "yellow",
-                getString(R.string.lbl_yellowish_leaves)
-            )
-        )
-        items.add(
-            createPerformanceObject(
-                performanceImages[3],
-                null,
-                4,
-                "green",
-                getString(R.string.lbl_green_leaves)
-            )
-        )
-        items.add(
-            createPerformanceObject(
-                performanceImages[4],
-                richSoil,
-                5,
-                "dark green",
-                getString(R.string.lbl_dark_green_leaves)
-            )
-        )
+    override fun setupObservers() {
+        viewModel.items.observe(this) { list ->
+            mAdapter.updateItems(viewModel.selectedPerformanceScore.value ?: -1, list)
+        }
+
+        viewModel.selectedPerformanceScore.observe(this) { score ->
+            viewModel.items.value?.let { list ->
+                mAdapter.updateItems(score, list)
+            }
+        }
+
+        viewModel.showMessage.observe(this) { message ->
+            showCustomWarningDialog(getString(R.string.lbl_invalid_selection), message)
+        }
+
+        viewModel.closeEvent.observe(this) { backPressed ->
+            closeActivity(backPressed)
+        }
+    }
+
+    private fun setupRecycler() {
+        mAdapter =
+            CropPerformanceAdapter(TheItemAnimation.FADE_IN) { _, cropPerformance, position ->
+                val dialog = MaizePerformanceDialogFragment().apply {
+                    arguments = Bundle().apply {
+                        putParcelable(
+                            MaizePerformanceDialogFragment.PERFORMANCE_DATA,
+                            cropPerformance
+                        )
+                    }
+                    setOnDismissListener(object : ICropPerformanceListener {
+                        override fun onDismiss(
+                            cropPerformance: CropPerformance,
+                            performanceConfirmed: Boolean
+                        ) {
+                            if (performanceConfirmed) {
+                                viewModel.onPerformanceConfirmed(cropPerformance, position)
+                            }
+                        }
+                    })
+                }
+                showDialogFragmentSafely(
+                    supportFragmentManager,
+                    dialog,
+                    "MaizePerformanceDialogFragment"
+                )
+            }
 
         binding.rootYieldRecycler.apply {
             layoutManager = GridLayoutManager(this@MaizePerformanceActivity, 1)
@@ -120,84 +111,11 @@ class MaizePerformanceActivity : BaseActivity() {
             setHasFixedSize(true)
             adapter = mAdapter
         }
-
-        mAdapter =
-            CropPerformanceAdapter(TheItemAnimation.FADE_IN) { _, clickedCropPerformance, position ->
-                val arguments = Bundle()
-                arguments.putParcelable(
-                    MaizePerformanceDialogFragment.PERFORMANCE_DATA,
-                    clickedCropPerformance
-                )
-                val rootYieldDialogFragment = MaizePerformanceDialogFragment()
-                rootYieldDialogFragment.arguments = arguments
-                rootYieldDialogFragment.setOnDismissListener(object :
-                    ICropPerformanceListener {
-                    override fun onDismiss(
-                        cropPerformance: CropPerformance,
-                        performanceConfirmed: Boolean
-                    ) {
-                        if (performanceConfirmed) {
-                            val savedCropPerformance =
-                                database.maizePerformanceDao().findOne() ?: CropPerformance()
-
-                            val maizePerformance = cropPerformance.maizePerformance
-                            selectedPerformanceScore = cropPerformance.performanceScore
-                            savedCropPerformance.maizePerformance = maizePerformance
-                            savedCropPerformance.performanceScore = selectedPerformanceScore
-
-                            database.maizePerformanceDao().insert(savedCropPerformance)
-
-                            mAdapter.setActiveIndex(position)
-                            mAdapter.updateItems(selectedPerformanceScore, items, position)
-                        }
-                    }
-
-                })
-
-                showDialogFragmentSafely(
-                    fragmentManager = supportFragmentManager,
-                    dialogFragment = rootYieldDialogFragment,
-                    tag = "RootYieldDialogFragment"
-                )
-
-            }
-        mAdapter.updateItems(selectedPerformanceScore, items)
     }
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         super.onBackPressed()
         validate(true)
-    }
-
-
-    private fun createPerformanceObject(
-        yieldImage: Int,
-        performanceDesc: String?,
-        performanceValue: Int,
-        maizePerformanceDesc: String,
-        maizePerformanceLabel: String
-    ): CropPerformance {
-        val performance = CropPerformance()
-        performance.imageId = yieldImage
-        performance.maizePerformanceDesc = performanceDesc
-        performance.performanceScore = performanceValue
-        performance.maizePerformance = maizePerformanceDesc
-        performance.maizePerformanceLabel = maizePerformanceLabel
-        return performance
-    }
-
-    override fun validate(backPressed: Boolean) {
-        if (selectedPerformanceScore < 0) {
-            showCustomWarningDialog(
-                getString(R.string.lbl_invalid_selection),
-                getString(R.string.lbl_maize_performance_prompt)
-            )
-            return
-        }
-        // TODO: Track status of each activity
-//        database.adviceStatusDao()
-//            .insert(AdviceStatus(EnumTask.MAIZE_PERFORMANCE.name, true))
-        closeActivity(backPressed)
     }
 }
