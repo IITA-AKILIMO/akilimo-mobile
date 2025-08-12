@@ -2,7 +2,7 @@ package com.akilimo.mobile.viewmodels.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.akilimo.mobile.exceptions.UnknownViewModelClassException
+import com.akilimo.mobile.exceptions.ViewModelFactoryException
 
 abstract class BaseViewModelFactory<T : ViewModel> : ViewModelProvider.Factory {
 
@@ -13,7 +13,7 @@ abstract class BaseViewModelFactory<T : ViewModel> : ViewModelProvider.Factory {
         try {
             return createViewModel() as V
         } catch (e: Exception) {
-            throw UnknownViewModelClassException("Error creating ViewModel")
+            throw ViewModelFactoryException(e.message ?: "Error creating ViewModel")
         }
     }
 }

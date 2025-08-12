@@ -3,7 +3,7 @@ package com.akilimo.mobile.viewmodels.factory
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.akilimo.mobile.exceptions.UnknownViewModelClassException
+import com.akilimo.mobile.exceptions.ViewModelFactoryException
 import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.viewmodels.SummaryViewModel
 
@@ -21,6 +21,6 @@ class SummaryViewModelFactory(
                 mathHelper = mathHelper
             ) as T
         }
-        throw UnknownViewModelClassException("Unknown ViewModel class")
+        throw ViewModelFactoryException("Unknown ViewModel class")
     }
 }

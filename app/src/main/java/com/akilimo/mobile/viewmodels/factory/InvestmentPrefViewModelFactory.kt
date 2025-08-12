@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.akilimo.mobile.data.RiskOption
-import com.akilimo.mobile.exceptions.UnknownViewModelClassException
+import com.akilimo.mobile.exceptions.ViewModelFactoryException
 import com.akilimo.mobile.viewmodels.InvestmentPrefViewModel
 
 class InvestmentPrefViewModelFactory(
@@ -16,6 +16,6 @@ class InvestmentPrefViewModelFactory(
         if (modelClass.isAssignableFrom(InvestmentPrefViewModel::class.java)) {
             return InvestmentPrefViewModel(application, riskOptions) as T
         }
-        throw UnknownViewModelClassException("Unknown ViewModel class")
+        throw ViewModelFactoryException("Unknown ViewModel class")
     }
 }

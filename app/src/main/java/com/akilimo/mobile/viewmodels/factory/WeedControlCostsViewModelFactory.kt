@@ -2,7 +2,7 @@ package com.akilimo.mobile.viewmodels.factory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.akilimo.mobile.exceptions.UnknownViewModelClassException
+import com.akilimo.mobile.exceptions.ViewModelFactoryException
 import com.akilimo.mobile.repo.DatabaseRepository
 import com.akilimo.mobile.viewmodels.WeedControlCostsViewModel
 
@@ -14,6 +14,6 @@ class WeedControlCostsViewModelFactory(private val repository: DatabaseRepositor
         if (modelClass.isAssignableFrom(WeedControlCostsViewModel::class.java)) {
             return WeedControlCostsViewModel(repository) as T
         }
-        throw UnknownViewModelClassException("Unknown ViewModel class")
+        throw ViewModelFactoryException("Unknown ViewModel class")
     }
 }

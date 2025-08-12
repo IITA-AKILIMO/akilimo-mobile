@@ -3,7 +3,7 @@ package com.akilimo.mobile.viewmodels.factory
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.akilimo.mobile.exceptions.UnknownViewModelClassException
+import com.akilimo.mobile.exceptions.ViewModelFactoryException
 import com.akilimo.mobile.viewmodels.AreaUnitViewModel
 
 class AreaUnitViewModelFactory(
@@ -14,6 +14,6 @@ class AreaUnitViewModelFactory(
         if (modelClass.isAssignableFrom(AreaUnitViewModel::class.java)) {
             return AreaUnitViewModel(application) as T
         }
-        throw UnknownViewModelClassException("Unknown ViewModel class")
+        throw ViewModelFactoryException("Unknown ViewModel class")
     }
 }

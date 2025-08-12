@@ -3,7 +3,7 @@ package com.akilimo.mobile.viewmodels.factory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.akilimo.mobile.data.ConfigRepository
-import com.akilimo.mobile.exceptions.UnknownViewModelClassException
+import com.akilimo.mobile.exceptions.ViewModelFactoryException
 import com.akilimo.mobile.interfaces.FuelrodApi
 import com.akilimo.mobile.rest.retrofit.RetrofitManager
 import com.akilimo.mobile.viewmodels.HomeStepperViewModel
@@ -16,6 +16,6 @@ class HomeStepperViewModelFactory : ViewModelProvider.Factory {
             val repository = ConfigRepository(fuelrodApi)
             return HomeStepperViewModel(repository) as T
         }
-        throw UnknownViewModelClassException("Unknown ViewModel class")
+        throw ViewModelFactoryException("Unknown ViewModel class")
     }
 }
