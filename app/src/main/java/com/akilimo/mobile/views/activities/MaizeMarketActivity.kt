@@ -22,7 +22,7 @@ class MaizeMarketActivity : BindBaseActivity<ActivityMaizeMarketBinding>() {
     var btnCancel: AppCompatButton? = null
 
     private val viewModel: MaizeMarketViewModel by viewModels {
-        MaizeMarketViewModelFactory(application = this.application)
+        MaizeMarketViewModelFactory(application = this.application, mathHelper = mathHelper)
     }
 
 
