@@ -10,6 +10,7 @@ import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.interfaces.AkilimoService
 import com.akilimo.mobile.interfaces.DefaultDispatcherProvider
 import com.akilimo.mobile.interfaces.IDispatcherProvider
+import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.utils.enums.EnumOperation
 import com.akilimo.mobile.utils.enums.EnumOperationMethod
 import com.akilimo.mobile.viewmodels.base.BaseNetworkViewModel
@@ -17,6 +18,7 @@ import kotlinx.coroutines.launch
 
 open class OperationCostViewModel(
     private val application: Application,
+    private val mathHelper: MathHelper,
     private val akilimoService: AkilimoService = AkilimoApi.apiService,
     private val database: AppDatabase = AppDatabase.getInstance(application),
     private val dispatchers: IDispatcherProvider = DefaultDispatcherProvider()
@@ -55,3 +57,12 @@ open class OperationCostViewModel(
 
     }
 }
+
+data class OperationDialogParams(
+    val operation: EnumOperation,
+    val operationType: EnumOperationMethod,
+    val countryCode: String?,
+    val currencySymbol: String?,
+    val dialogTitle: String,
+    val hintText: String
+)
