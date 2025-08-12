@@ -2,68 +2,28 @@ package com.akilimo.mobile.views.activities
 
 import android.os.Bundle
 import android.view.View
-import android.widget.RadioGroup
-import android.widget.Toast
-import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.appcompat.widget.Toolbar
-import androidx.cardview.widget.CardView
+import androidx.activity.viewModels
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ActivitySweetPotatoMarketBinding
-import com.akilimo.mobile.entities.PotatoMarket
-import com.akilimo.mobile.entities.PotatoPrice
-import com.akilimo.mobile.entities.PotatoPriceResponse
-import com.akilimo.mobile.inherit.BaseActivity
-import com.akilimo.mobile.interfaces.AkilimoApi
-import com.akilimo.mobile.utils.enums.EnumTask
-import com.akilimo.mobile.utils.enums.EnumPotatoProduceType
+import com.akilimo.mobile.inherit.BindBaseActivity
 import com.akilimo.mobile.utils.enums.EnumUnitOfSale
 import com.akilimo.mobile.utils.showDialogFragmentSafely
+import com.akilimo.mobile.utils.ui.SnackBarMessage
+import com.akilimo.mobile.viewmodels.SweetPotatoMarketViewModel
+import com.akilimo.mobile.viewmodels.factory.SweetPotatoMarketViewModelFactory
 import com.akilimo.mobile.views.fragments.dialog.SweetPotatoPriceDialogFragment
-import io.sentry.Sentry
+import com.google.android.material.snackbar.Snackbar
 
-class SweetPotatoMarketActivity : BaseActivity() {
-    var toolbar: Toolbar? = null
-    var unitOfSalePotatoTitle: AppCompatTextView? = null
-    var unitOfSalePotatoCard: CardView? = null
-    var rdgPotatoProduceType: RadioGroup? = null
-    var rdgUnitOfSalePotato: RadioGroup? = null
+class SweetPotatoMarketActivity : BindBaseActivity<ActivitySweetPotatoMarketBinding>() {
 
-    var btnFinish: AppCompatButton? = null
-    var btnCancel: AppCompatButton? = null
+    private val viewModel: SweetPotatoMarketViewModel by viewModels {
+        SweetPotatoMarketViewModelFactory(application = this.application, mathHelper = mathHelper)
+    }
 
-    private var _binding: ActivitySweetPotatoMarketBinding? = null
-    private val binding get() = _binding!!
-    private var potatoMarket: PotatoMarket? = null
-    private var enumPotatoProduceType: String? = null
-    private var potatoPriceList: List<PotatoPrice>? = null
-    private val selectionMade = false
-
-    private var unitOfSale: String? = null
-    private var unitOfSaleEnum = EnumUnitOfSale.FIFTY_KG
-
-    private var produceTypeRadioIndex = 0
-    private var potatoUnitOfSaleRadioIndex = 0
-    private var potatoUnitPriceRadioIndex = 0
-
-
-    var unitPriceUSD: Double = 0.0
-    var unitPriceLocal: Double = 0.0
-    private var unitPrice = 0.0
-    private var unitWeight = 0.0
-
-    private val minAmountUSD = 5.00
-    private val maxAmountUSD = 500.00
-
-    private val dialogOpen = false
-
+    override fun inflateBinding() = ActivitySweetPotatoMarketBinding.inflate(layoutInflater)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivitySweetPotatoMarketBinding.inflate(
-            layoutInflater
-        )
-        setContentView(binding.root)
 
         val profileInfo = database.profileInfoDao().findOne()
         if (profileInfo != null) {
@@ -71,180 +31,90 @@ class SweetPotatoMarketActivity : BaseActivity() {
             currencyCode = profileInfo.currencyCode
         }
 
-        toolbar = binding.toolbar
-        unitOfSalePotatoTitle = binding.potatoMarket.unitOfSalePotatoTitle
-        unitOfSalePotatoCard = binding.potatoMarket.unitOfSalePotatoCard
-        rdgPotatoProduceType = binding.potatoMarket.rdgPotatoProduceType
-        rdgUnitOfSalePotato = binding.potatoMarket.rdgUnitOfSalePotato
-        btnFinish = binding.potatoMarket.twoButtons.btnFinish
-        btnCancel = binding.potatoMarket.twoButtons.btnCancel
 
         setupToolbar(binding.toolbar, R.string.lbl_sweet_potato_prices) {
-            validate(false)
+            viewModel.validateSelection(
+                binding.potatoMarket.rdgPotatoProduceType.checkedRadioButtonId,
+                viewModel.unitOfSale.value?.name,
+                viewModel.unitPrice.value,
+                true
+            )
         }
 
-        enumPotatoProduceType = EnumPotatoProduceType.TUBERS.name.lowercase()
-
-        val potatoMarket = database.potatoMarketDao().findOne()
-        if (potatoMarket != null) {
-            produceTypeRadioIndex = potatoMarket.produceTypeIdx
-            potatoUnitOfSaleRadioIndex = potatoMarket.potatoUnitOfSaleIdx
-            potatoUnitPriceRadioIndex = potatoMarket.potatoUnitPriceIdx
-
-            unitPrice = potatoMarket.unitPrice
-            unitOfSale = potatoMarket.unitOfSale
-            unitWeight = potatoMarket.unitWeight
-            rdgPotatoProduceType?.check(produceTypeRadioIndex)
-            if (unitWeight > 0) {
-                rdgUnitOfSalePotato?.check(potatoUnitOfSaleRadioIndex)
+        binding.potatoMarket.rdgUnitOfSalePotato.setOnCheckedChangeListener { _, id ->
+            when (id) {
+                R.id.rd_per_kg -> viewModel.setUnitOfSale(EnumUnitOfSale.ONE_KG)
+                R.id.rd_50_kg_bag -> viewModel.setUnitOfSale(EnumUnitOfSale.FIFTY_KG)
+                R.id.rd_100_kg_bag -> viewModel.setUnitOfSale(EnumUnitOfSale.HUNDRED_KG)
+                R.id.rd_1000_kg_bag -> viewModel.setUnitOfSale(EnumUnitOfSale.TONNE)
             }
         }
-
-        rdgUnitOfSalePotato!!.setOnCheckedChangeListener { group: RadioGroup?, radioIndex: Int ->
-            val context = this@SweetPotatoMarketActivity
-            when (radioIndex) {
-                R.id.rd_per_kg -> {
-                    unitOfSale = EnumUnitOfSale.ONE_KG.unitOfSale(context)
-                    unitOfSaleEnum = EnumUnitOfSale.ONE_KG
-                    unitWeight = EnumUnitOfSale.ONE_KG.unitWeight()
-                }
-
-                R.id.rd_50_kg_bag -> {
-                    unitOfSale = EnumUnitOfSale.FIFTY_KG.unitOfSale(context)
-                    unitOfSaleEnum = EnumUnitOfSale.FIFTY_KG
-                    unitWeight = EnumUnitOfSale.FIFTY_KG.unitWeight()
-                }
-
-                R.id.rd_100_kg_bag -> {
-                    unitOfSale = EnumUnitOfSale.HUNDRED_KG.unitOfSale(context)
-                    unitOfSaleEnum = EnumUnitOfSale.HUNDRED_KG
-                    unitWeight = EnumUnitOfSale.HUNDRED_KG.unitWeight()
-                }
-
-                R.id.rd_1000_kg_bag -> {
-                    unitOfSale = EnumUnitOfSale.TONNE.unitOfSale(context)
-                    unitOfSaleEnum = EnumUnitOfSale.TONNE
-                    unitWeight = EnumUnitOfSale.TONNE.unitWeight()
-                }
-            }
+        binding.potatoMarket.unitOfSalePotatoCard.setOnClickListener {
+            openPriceDialog()
         }
-        btnFinish!!.setOnClickListener { view: View? -> validate(false) }
-        btnCancel!!.setOnClickListener { view: View? -> closeActivity(false) }
+
+        binding.potatoMarket.twoButtons.apply {
+            btnFinish.setOnClickListener { view: View? -> validate(false) }
+            btnCancel.setOnClickListener { view: View? -> closeActivity(false) }
+        }
 
         showCustomNotificationDialog()
-        
-        processPotatoPrices()
+        setupObservers()
     }
 
-    override fun validate(backPressed: Boolean) {
-        produceTypeRadioIndex = rdgPotatoProduceType!!.checkedRadioButtonId
-        potatoUnitOfSaleRadioIndex = rdgUnitOfSalePotato!!.checkedRadioButtonId
-        if (enumPotatoProduceType == null) {
-            showCustomWarningDialog(
-                getString(R.string.lbl_invalid_produce),
-                getString(R.string.lbl_potato_produce_prompt)
-            )
-            return
-        }
-        if (unitOfSale.isNullOrEmpty()) {
-            showCustomWarningDialog(
-                getString(R.string.lbl_invalid_sale_unit),
-                getString(R.string.lbl_potato_sale_unit_prompt)
-            )
-            return
-        }
-
-        if (unitPrice <= 0) {
-            showCustomWarningDialog(
-                getString(R.string.lbl_invalid_tuber_price),
-                getString(R.string.lbl_tuber_price_prompt)
-            )
-            return
-        }
-
-        try {
-
-            val market = potatoMarket ?: PotatoMarket()
-            potatoMarket = market.apply {
-                produceType = enumPotatoProduceType!!
-                unitOfSale = this@SweetPotatoMarketActivity.unitOfSale
-                unitWeight = this@SweetPotatoMarketActivity.unitWeight
-                unitPrice = this@SweetPotatoMarketActivity.unitPrice
-                produceTypeIdx = this@SweetPotatoMarketActivity.produceTypeRadioIndex
-                potatoUnitPriceIdx = this@SweetPotatoMarketActivity.potatoUnitPriceRadioIndex
-                potatoUnitOfSaleIdx = this@SweetPotatoMarketActivity.potatoUnitOfSaleRadioIndex
+    override fun setupObservers() {
+        viewModel.showSnackBarEvent.observe(this) { message ->
+            message?.let {
+                val message = when (it) {
+                    is SnackBarMessage.Text -> it.message
+                    is SnackBarMessage.Resource -> getString(it.resId)
+                }
+                Snackbar.make(
+                    binding.potatoMarket.produceTypeCard,
+                    message,
+                    Snackbar.LENGTH_SHORT
+                ).show()
+                viewModel.clearSnackBarEvent()
             }
-
-            database.potatoMarketDao().insert(market)
-            database.adviceStatusDao()
-                .insert(AdviceStatus(EnumTask.MARKET_OUTLET_SWEET_POTATO.name, true))
-            closeActivity(backPressed)
-        } catch (ex: Exception) {
-            Toast.makeText(this@SweetPotatoMarketActivity, ex.message, Toast.LENGTH_SHORT).show()
-            Sentry.captureException(ex)
+        }
+        viewModel.closeEvent.observe(this) { shouldClose ->
+            if (shouldClose) closeActivity(false)
+        }
+        viewModel.unitPrice.observe(this) { price ->
+//            binding.potatoMarket.unitOfSalePotatoTitle.text = price
         }
     }
 
     fun onPotatoUnitRadioButtonClicked(radioButton: View?) {
         if (radioButton != null && radioButton.isPressed) {
-            showPotatoUnitPriceDialog()
+//            openPriceDialog()
         }
     }
 
-    private fun processPotatoPrices() {
-        potatoPriceList = database.potatoPriceDao().findAll()
-        if (potatoPriceList!!.isEmpty()) {
-            fetchPotatoPrices()
-        }
-    }
 
-    private fun fetchPotatoPrices() {
-        val call = AkilimoApi.apiService.getPotatoPrices(countryCode = countryCode)
-        call.enqueue(object : retrofit2.Callback<PotatoPriceResponse> {
-            override fun onResponse(
-                call: retrofit2.Call<PotatoPriceResponse>,
-                response: retrofit2.Response<PotatoPriceResponse>
-            ) {
-                if (response.isSuccessful) {
-                    potatoPriceList = response.body()!!.data
-                    database.potatoPriceDao().insertAll(potatoPriceList!!)
-                }
-            }
-
-            override fun onFailure(call: retrofit2.Call<PotatoPriceResponse>, t: Throwable) {
-                Sentry.captureException(t)
-                Toast.makeText(this@SweetPotatoMarketActivity, t.message, Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
-
-    private fun showPotatoUnitPriceDialog() {
-        val arguments = Bundle().apply {
+    private fun openPriceDialog() {
+        val args = Bundle().apply {
             putString(SweetPotatoPriceDialogFragment.CURRENCY_CODE, currencyCode)
             putString(SweetPotatoPriceDialogFragment.COUNTRY_CODE, countryCode)
-            putDouble(SweetPotatoPriceDialogFragment.SELECTED_PRICE, unitPrice)
-            putString(SweetPotatoPriceDialogFragment.UNIT_OF_SALE, unitOfSale)
+            putDouble(
+                SweetPotatoPriceDialogFragment.SELECTED_PRICE,
+                viewModel.unitPrice.value ?: 0.0
+            )
+            putString(SweetPotatoPriceDialogFragment.UNIT_OF_SALE, viewModel.unitOfSale.value?.name)
             putParcelable(
                 SweetPotatoPriceDialogFragment.ENUM_UNIT_OF_SALE,
-                unitOfSaleEnum
+                EnumUnitOfSale.FIFTY_KG
             )
         }
 
-        val priceDialogFragment = SweetPotatoPriceDialogFragment()
-        priceDialogFragment.arguments = arguments
-
-        priceDialogFragment.setOnDismissListener { selectedPrice: Double, isExactPrice: Boolean ->
-            unitPrice = if (isExactPrice) {
-                selectedPrice
-            } else {
-                mathHelper.convertToUnitWeightPrice(selectedPrice, unitWeight)
-            }
+        val dialog = SweetPotatoPriceDialogFragment()
+        dialog.arguments = args
+        dialog.setOnDismissListener { selectedPrice: Double, isExactPrice: Boolean ->
+            viewModel.setUnitPriceFromDialog(selectedPrice, isExactPrice)
         }
-
-
         showDialogFragmentSafely(
             supportFragmentManager,
-            priceDialogFragment,
+            dialog,
             SweetPotatoPriceDialogFragment.ARG_ITEM_ID
         )
     }
