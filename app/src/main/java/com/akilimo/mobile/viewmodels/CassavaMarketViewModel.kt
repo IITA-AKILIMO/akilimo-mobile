@@ -37,7 +37,9 @@ class CassavaMarketViewModel(
     val unitPriceM1 = MutableLiveData(0.0)
     val unitPriceM2 = MutableLiveData(0.0)
 
-    val selectedFactory = MutableLiveData<String?>()
+    private val _selectedFactory = MutableLiveData<String?>()
+    val selectedFactory: LiveData<String?> = _selectedFactory
+
     val produceType = MutableLiveData<String?>()
     val unitOfSale = MutableLiveData("NA")
     val unitWeight = MutableLiveData(0.0)
@@ -45,9 +47,11 @@ class CassavaMarketViewModel(
 
     fun loadInitialData(countryCode: String) {
         viewModelScope.launch(dispatchers.io) {
-            _cassavaMarket.value = database.cassavaMarketDao().findOne()
-            _starchFactories.value =
-                database.starchFactoryDao().findStarchFactoriesByCountry(countryCode)
+            val market = database.cassavaMarketDao().findOne()
+            val factories = database.starchFactoryDao().findStarchFactoriesByCountry(countryCode)
+            _cassavaMarket.postValue(market)
+            _starchFactories.postValue(factories)
+
 
             val scheduledDate = database.scheduleDateDao().findOne()
             harvestWindow.postValue(scheduledDate?.harvestWindow ?: 0)
@@ -58,8 +62,9 @@ class CassavaMarketViewModel(
         viewModelScope.launch(dispatchers.io) {
 
             val response = api.getStarchFactories(countryCode)
+            val factories = response.data
             database.starchFactoryDao().insertAll(response.data)
-            _starchFactories.value = response.data
+            _starchFactories.postValue(factories)
         }
     }
 
@@ -67,6 +72,13 @@ class CassavaMarketViewModel(
         viewModelScope.launch(dispatchers.io) {
             val response = api.getCassavaPrices(countryCode)
             database.cassavaPriceDao().insertAll(response.data)
+        }
+    }
+
+    fun saveStarchFactory(factoryName: String) {
+        viewModelScope.launch {
+            val sf = database.starchFactoryDao().findStarchFactoryByNameCountry(factoryName)
+            _selectedFactory.postValue(sf?.factoryName)
         }
     }
 
