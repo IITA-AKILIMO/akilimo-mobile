@@ -6,12 +6,14 @@ import com.akilimo.mobile.dao.AppDatabase
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.interfaces.AkilimoApi
 import com.akilimo.mobile.interfaces.AkilimoService
+import com.akilimo.mobile.utils.MathHelper
 
 class ManualOperationCostViewModel(
     private val application: Application,
+    private val mathHelper: MathHelper,
     private val akilimoService: AkilimoService = AkilimoApi.apiService,
     private val db: AppDatabase = AppDatabase.getInstance(application),
-) : OperationCostViewModel(application, akilimoService, db) {
+) : OperationCostViewModel(application, mathHelper, akilimoService, db) {
 
     private val _manualPloughCost = MutableLiveData(0.0)
     val manualPloughCost: MutableLiveData<Double> = _manualPloughCost
