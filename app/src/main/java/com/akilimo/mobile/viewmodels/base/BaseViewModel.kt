@@ -6,13 +6,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.utils.ui.SnackBarMessage
+import io.sentry.Sentry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @Suppress("PropertyName")
-open class BaseViewModel(application: Application) : AndroidViewModel(application) {
+abstract class BaseViewModel(application: Application) : AndroidViewModel(application) {
 
     protected val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> = _loading
@@ -31,13 +32,15 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
             try {
                 block()
             } catch (e: Exception) {
-                onError(e)
+                handleError(e)
             }
         }
     }
 
-    protected open fun onError(e: Exception) {
-        e.printStackTrace()
+    protected fun handleError(e: Exception) {
+        _error.postValue(true)
+        Sentry.captureException(e)
+        showSnackBar(e.message ?: "Unknown error")
     }
 
     protected fun showSnackBar(message: String) {
@@ -48,4 +51,7 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
         _showSnackBarEvent.postValue(SnackBarMessage.Resource(resId))
     }
 
+    fun clearSnackBarEvent() {
+        _showSnackBarEvent.postValue(null)
+    }
 }
