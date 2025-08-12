@@ -3,7 +3,6 @@ package com.akilimo.mobile.viewmodels.base
 import android.app.Application
 import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.interfaces.IDispatcherProvider
-import io.sentry.Sentry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
@@ -66,15 +65,5 @@ abstract class BaseNetworkViewModel(
 
     private fun resetFailureCount() {
         networkFailureCount = 0
-    }
-
-    private fun handleError(e: Exception) {
-        _error.postValue(true)
-        Sentry.captureException(e)
-        showSnackBar(e.message ?: "Unknown error")
-    }
-
-    fun clearSnackBarEvent() {
-        _showSnackBarEvent.postValue(null)
     }
 }
