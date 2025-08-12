@@ -10,7 +10,6 @@ import com.akilimo.mobile.entities.FieldYield
 import com.akilimo.mobile.entities.UseCase
 import com.akilimo.mobile.inherit.BindBaseActivity
 import com.akilimo.mobile.utils.Tools.dpToPx
-import com.akilimo.mobile.utils.enums.EnumTask
 import com.akilimo.mobile.utils.enums.EnumAreaUnit
 import com.akilimo.mobile.utils.enums.EnumUseCase
 import com.akilimo.mobile.utils.showDialogFragmentSafely
@@ -105,7 +104,7 @@ class RootYieldActivity : BindBaseActivity<ActivityRootYieldBinding>() {
         val areaUnit = database.mandatoryInfoDao().findOne()?.areaUnit.orEmpty()
         val countryCode = database.profileInfoDao().findOne()?.countryCode.orEmpty()
         val currencyCode = database.profileInfoDao().findOne()?.currencyCode.orEmpty()
-        val useCase = database.useCaseDao().findOne()
+        val useCase = database.useCaseDao().findOne(EnumUseCase.FR)
         val savedYield = database.fieldYieldDao().findOne()
         val selectedYieldAmount = savedYield?.yieldAmount ?: 0.0
 
@@ -127,7 +126,7 @@ class RootYieldActivity : BindBaseActivity<ActivityRootYieldBinding>() {
         }
 
         val titleRes = when (useCase?.useCase) {
-            EnumUseCase.FR.name -> R.string.lbl_typical_yield_question_fr
+            EnumUseCase.FR -> R.string.lbl_typical_yield_question_fr
             else -> R.string.lbl_typical_yield_question
         }
 
@@ -143,10 +142,6 @@ class RootYieldActivity : BindBaseActivity<ActivityRootYieldBinding>() {
             )
             return
         }
-
-        database.adviceStatusDao().insert(
-            AdviceStatus(EnumTask.CURRENT_CASSAVA_YIELD.name, true)
-        )
 
         closeActivity(false)
     }
