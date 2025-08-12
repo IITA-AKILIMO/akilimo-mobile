@@ -22,7 +22,6 @@ class ManualTillageCostActivity : CostBaseActivity<ActivityManualTillageCostBind
 
     private var manualPloughCost = 0.0
     private var manualRidgeCost = 0.0
-    private var dataValid = false
     private var dialogOpen = false
 
     private lateinit var activeLanguage: String
