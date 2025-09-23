@@ -71,21 +71,11 @@ jobs:
       - name: Set up Python 3.9
         uses: actions/setup-python@v2
 
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-
-      - name: Download pyproject.toml
-        run: curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/pyproject.toml -o pyproject.toml
-
-      - name: Download Tag fetching script
-        run: curl -L https://raw.githubusercontent.com/masgeek/py-github/develop/fetch-tags.py -o latest-tag.py
-
       - name: Install dependencies with Poetry
-        run: poetry install --no-root
+        run: pip install latest_tag
 
       - name: Fetch latest tag
-        run: poetry run python latest-tag.py
+        run: fetch-tag
 
       - name: Update release version
         run: echo "RELEASE_VERSION=$(cat $LATEST_TAG_FILE)" >> $GITHUB_ENV
