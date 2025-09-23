@@ -40,7 +40,7 @@ jobs:
         if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
 
   build_artifacts:
-    if: contains(github.ref, 'build') || contains(github.ref, 'main')
+    if: contains(github.ref, 'build') || contains(github.ref, 'main') || contains(github.ref, 'stable')
     needs: run_tests
     name: Build artifacts
     runs-on: ubuntu-latest
