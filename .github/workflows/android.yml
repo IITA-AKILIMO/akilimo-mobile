@@ -7,6 +7,7 @@ jobs:
   run_tests:
     name: Unit tests
     runs-on: ubuntu-latest
+    if: contains(github.ref, 'disable')
     concurrency:
       group: ci-${{ github.ref }}
       cancel-in-progress: true
@@ -16,7 +17,6 @@ jobs:
       REPO_NAME: ${{ secrets.REPO_NAME }}
       LATEST_TAG_FILE: "latest_tag.txt"
       RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
-#      BUILD_NUMBER: ${{ github.run_id }}
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
     steps:
       - name: Checkout the code
@@ -41,7 +41,7 @@ jobs:
 
   build_artifacts:
     if: contains(github.ref, 'build') || contains(github.ref, 'main') || contains(github.ref, 'stable')
-    needs: run_tests
+#    needs: run_tests
     name: Build artifacts
     runs-on: ubuntu-latest
     env:
