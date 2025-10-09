@@ -1,15 +1,25 @@
-name: Android CICD
+name: Android Builder
 on:
   push:
+    paths-ignore:
+      - '**.md'
+      - '**.txt'
+      - '**.yml'
+      - '**.yaml'
+      - '**.sh'
+      - '**.xml'
+      - 'docs/**'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/**'
+  workflow_dispatch:
 
 jobs:
 
-  run_tests:
-    name: Unit tests
+  unit-test:
     runs-on: ubuntu-latest
     if: contains(github.ref, 'disable')
     concurrency:
-      group: ci-${{ github.ref }}
+      group: ci-${{ github.head_ref || github.ref_name }}
       cancel-in-progress: true
 
     env:
@@ -17,6 +27,7 @@ jobs:
       REPO_NAME: ${{ secrets.REPO_NAME }}
       LATEST_TAG_FILE: "latest_tag.txt"
       RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
+      VERSION_CODE: ${{ secrets.GITHUB_RUN_ID }}
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
     steps:
       - name: Checkout the code
@@ -28,6 +39,11 @@ jobs:
           distribution: 'temurin'
           java-version: 21
 
+      - name: Get build version
+        run: |
+          VERSION_CODE=$(curl -s https://munywele.co.ke/app-releases/akilimo)
+          echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
+
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
@@ -35,9 +51,20 @@ jobs:
         run: ./gradlew testDebugUnitTest
         continue-on-error: false
 
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+
+      - name: Report
+        uses: FlickerSoul/android-test-report-actions@v1.2
+        if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
+
       - name: Make Unit test report
         uses: asadmansr/android-test-report-action@v1.2.0
-        if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
+        if: ${{ always() }}
 
   build_artifacts:
     if: contains(github.ref, 'build') || contains(github.ref, 'main') || contains(github.ref, 'stable')
@@ -48,13 +75,14 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       REPO_NAME: ${{ secrets.REPO_NAME }}
       BRANCH_NAME: ${{ github.head_ref }}
+      VERSION_CODE: ${{ secrets.GITHUB_RUN_ID }}
       LATEST_TAG_FILE: "latest_tag.txt"
       RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
       PACKAGE_NAME: ${{ secrets.APP_PACKAGE }}
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: set up JDK
         uses: actions/setup-java@v4
@@ -68,8 +96,13 @@ jobs:
       - name: Display current branch name
         run: echo ${BRANCH_NAME}
 
+      - name: Get build version
+        run: |
+          VERSION_CODE=$(curl -s https://munywele.co.ke/app-releases/akilimo)
+          echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
+
       - name: Set up Python 3.9
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
 
       - name: Install dependencies with Poetry
         run: pip install latest_tag
@@ -125,7 +158,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v5
-        name: Retreive artifacts
+        name: Retrieve artifacts
         with:
           name: app-release
           path: release
@@ -152,9 +185,13 @@ jobs:
           status: completed
           whatsNewDirectory: release/distribution/whatsnew
 
+      - name: Update build number
+        if: success()
+        run: curl -s https://munywele.co.ke/app-releases/akilimo/update
+
 
   upload_beta_artifacts:
-    if: contains(github.ref, 'beta')
+    if: success() && contains(github.ref, 'beta')
     needs: publish_to_playstore
     name: Upload to github beta
     runs-on: ubuntu-latest
@@ -184,7 +221,7 @@ jobs:
         uses: masgeek/github-action-ghr@v1.3.2
 
   upload_production_artifacts:
-    if: contains(github.ref, 'main')
+    if: success() && contains(github.ref, 'main')
     needs: publish_to_playstore
     name: Upload to github release
     runs-on: ubuntu-latest
