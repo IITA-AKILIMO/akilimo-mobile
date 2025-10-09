@@ -82,6 +82,12 @@ static def computeVersionName() {
     def versionMinor = LocalDateTime.now().getMonthValue()
     def buildNumber = LocalDateTime.now().getDayOfMonth()
 
+    def branch = System.env.BRANCH_NAME ?: "dev"
+    if (branch == "dev") {
+        buildNumber = 0
+        versionMinor = 0
+    }
+
     return String.format('%d.%d.%d', Integer.valueOf(System.env.VERSION_MAJOR ?: versionMajor),
             Integer.valueOf(System.env.VERSION_MINOR ?: versionMinor),
             Integer.valueOf(System.env.BUILD_NUMBER ?: buildNumber))
@@ -90,33 +96,15 @@ static def computeVersionName() {
 static def computeBuildNumber() {
     def newFile = new File("nextrelease.txt")
     newFile.createNewFile()
-
     def gitVersionTag = System.env.RELEASE_VERSION ?: computeVersionName()
-    def branch = System.env.BRANCH_NAME ?: "not-beta"
-    def buildNumber = System.env.BUILD_NUMBER ?: LocalDateTime.now().getDayOfMonth()
-
-    if (branch == "beta") {
-        def splitMe = gitVersionTag.split('\\.')
-        def versionMajor = splitMe[0]
-        def versionMinor = splitMe[1]
-        def versionPatchRaw = splitMe[2].split('-')
-        def versionPatch = versionPatchRaw[0].toInteger()
-        gitVersionTag = String.format('%d.%d.%d_beta_%d',
-                Integer.valueOf(versionMajor),
-                Integer.valueOf(versionMinor),
-                Integer.valueOf(versionPatch),
-                Integer.valueOf(buildNumber))
-
-    }
-
     println("This build tag is:" + gitVersionTag)
     newFile.write(gitVersionTag)
     return gitVersionTag
 }
 
 def computeVersionCode() {
-    long unixTimestamp = Instant.now().getEpochSecond()
-    def versionCode = System.env.RELEASE_VERSION ? unixTimestamp.intValue() : 1613040938
+    def versionCode = Integer.valueOf(System.env.VERSION_CODE ?: 1)
+    println("Version code is " + versionCode)
     return versionCode
 }
 
@@ -140,13 +128,11 @@ dependencies {
     implementation 'io.sentry:sentry-android:6.19.1'
 
     // google library ------------------------------------------------------------------------
-    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'com.google.android.material:material:1.12.0'
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
     implementation 'com.google.android.gms:play-services-places:17.0.0'
     implementation 'com.google.android.play:app-update:2.1.0'
     implementation 'com.google.android.play:app-update-ktx:2.1.0'
-
-
     implementation 'com.google.firebase:firebase-config:20.0.4'
     implementation 'com.google.firebase:firebase-analytics:18.0.3'
     implementation 'com.google.firebase:firebase-messaging:21.1.0' //for push notifications
@@ -156,16 +142,11 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.20'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
 
-    implementation "com.j256.ormlite:ormlite-android:5.1"
-    implementation 'com.j256.ormlite:ormlite-core:5.1'
-
     implementation "androidx.room:room-runtime:2.4.2"
 
 
     // mapbox implementation------------------------------------------------------------------------
-    implementation('com.mapbox.mapboxsdk:mapbox-android-sdk:9.6.2') {
-        // exclude group: 'group_name', module: 'module_name'
-    }
+    implementation('com.mapbox.mapboxsdk:mapbox-android-sdk:9.6.2')
     implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-annotation-v9:0.9.0'
     implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-places-v9:0.12.0'
 
