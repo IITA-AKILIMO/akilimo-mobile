@@ -13,7 +13,7 @@ on:
 
 jobs:
 
-  unit-test:
+  unit_test:
     runs-on: ubuntu-latest
     concurrency:
       group: ci-${{ github.head_ref || github.ref_name }}
@@ -64,7 +64,7 @@ jobs:
 
   build_artifacts:
     if: contains(github.ref, 'build') || contains(github.ref, 'main') || contains(github.ref, 'stable')
-    needs: run_tests
+    needs: unit_test
     name: Build artifacts
     runs-on: ubuntu-latest
     env:
