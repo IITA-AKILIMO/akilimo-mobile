@@ -65,7 +65,7 @@ jobs:
 
   build_artifacts:
     if: contains(github.ref, 'build') || contains(github.ref, 'main') || contains(github.ref, 'stable')
-#    needs: run_tests
+    needs: run_tests
     name: Build artifacts
     runs-on: ubuntu-latest
     env:
@@ -227,7 +227,7 @@ jobs:
           path: release
 
   publish_to_playstore:
-    if: github.ref == 'refs/heads/main'
+    if: contains(github.ref, 'main'))
     needs: build_artifacts
     name: Publish to Google PlayStore
     runs-on: ubuntu-latest
@@ -239,7 +239,7 @@ jobs:
           path: release
 
       - name: Upload Beta Release
-        if: contains(github.ref, 'beta')
+        if: contains(github.ref, 'beta'))
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
@@ -250,7 +250,7 @@ jobs:
           whatsNewDirectory: release/distribution/whatsnew
 
       - name: Upload Production Release
-        if: contains(github.ref, 'build') || contains(github.ref, 'main') || contains(github.ref, 'stable')
+        if: contains(github.ref, 'build') || contains(github.ref, 'main'))
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
@@ -317,9 +317,6 @@ jobs:
           cp release/distribution/whatsnew/* release
           rm -rf release/distribution
           ls release
-
-#      - name: Read latest tag from tag file
-#        run: echo "GHR_TAG=$(cat release/$LATEST_TAG_FILE)" >> $GITHUB_ENV
 
       - name: Upload release artifacts
         uses: masgeek/github-action-ghr@v1.3.2
