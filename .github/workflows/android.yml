@@ -142,7 +142,7 @@ jobs:
           whatsNewDirectory: release/distribution/whatsnew
 
       - name: Upload Production Release
-        if: contains(github.ref, 'main')
+        if: contains(github.ref, 'build') || contains(github.ref, 'main') || contains(github.ref, 'stable')
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
