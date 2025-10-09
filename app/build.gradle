@@ -78,7 +78,7 @@ android {
 }
 
 static def computeVersionName() {
-    def versionMajor = 22
+    def versionMajor = 28
     def versionMinor = LocalDateTime.now().getMonthValue()
     def buildNumber = LocalDateTime.now().getDayOfMonth()
 
