@@ -4,13 +4,10 @@ on:
     paths-ignore:
       - '**.md'
       - '**.txt'
-      - '**.yml'
-      - '**.yaml'
       - '**.sh'
       - '**.xml'
       - 'docs/**'
       - '.github/ISSUE_TEMPLATE/**'
-      - '.github/**'
   workflow_dispatch:
 
 jobs:
@@ -33,7 +30,7 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v4
 
-      - name: set up JDK
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
@@ -74,7 +71,6 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       REPO_NAME: ${{ secrets.REPO_NAME }}
-      BRANCH_NAME: ${{ github.head_ref }}
       VERSION_CODE: ${{ secrets.GITHUB_RUN_ID }}
       LATEST_TAG_FILE: "latest_tag.txt"
       RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
@@ -84,7 +80,7 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v4
 
-      - name: set up JDK
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
@@ -103,6 +99,8 @@ jobs:
 
       - name: Set up Python 3.9
         uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
 
       - name: Install dependencies with Poetry
         run: pip install latest_tag
@@ -113,20 +111,59 @@ jobs:
       - name: Update release version
         run: echo "RELEASE_VERSION=$(cat $LATEST_TAG_FILE)" >> $GITHUB_ENV
 
-      - name: Set branch name
-        run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
-
-      - name: Show branch name
-        run: echo $BRANCH_NAME
-
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
+        uses: android-actions/setup-android@v3
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Generate android AAB bundle
-        run: ./gradlew bundleRelease -x test
+      # Cache final APK & AAB outputs with more specific key
+      - name: Cache APK & AAB outputs
+        uses: actions/cache@v4
+        with:
+          path: |
+            app/build/outputs/apk/release/app-release-unsigned.apk
+            app/build/outputs/bundle/release/app-release.aab
+          key: build-artifacts-${{ runner.os }}-${{ env.VERSION_CODE }}-${{ hashFiles('**/*.gradle*', '**/gradle.properties', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', 'app/src/main/res/**', 'app/src/main/AndroidManifest.xml', 'app/proguard-rules.pro') }}
+          restore-keys: |
+            build-artifacts-${{ runner.os }}-${{ env.VERSION_CODE }}-
+            build-artifacts-${{ runner.os }}-
+
+      # Check if cached artifacts exist and are valid
+      - name: Check cached artifacts
+        id: check_cache
+        run: |
+          if [ -f "app/build/outputs/apk/release/app-release-unsigned.apk" ] && [ -f "app/build/outputs/bundle/release/app-release.aab" ]; then
+            echo "cached_artifacts_exist=true" >> $GITHUB_OUTPUT
+            echo "✅ Found cached APK and AAB artifacts"
+            ls -la app/build/outputs/apk/release/app-release-unsigned.apk
+            ls -la app/build/outputs/bundle/release/app-release.aab
+          else
+            echo "cached_artifacts_exist=false" >> $GITHUB_OUTPUT
+            echo "❌ Cached artifacts not found, will build from scratch"
+          fi
+
+      # Only build if cached artifacts don't exist or are invalid
+      - name: Generate android AAB and APK
+        if: steps.check_cache.outputs.cached_artifacts_exist != 'true'
+        run: |
+          echo "🔨 Building APK and AAB from source..."
+          ./gradlew bundleRelease assembleRelease -x test
+
+      # Verify build outputs exist
+      - name: Verify build outputs
+        run: |
+          if [ ! -f "app/build/outputs/apk/release/app-release-unsigned.apk" ]; then
+            echo "❌ APK not found after build!"
+            exit 1
+          fi
+          if [ ! -f "app/build/outputs/bundle/release/app-release.aab" ]; then
+            echo "❌ AAB not found after build!"
+            exit 1
+          fi
+          echo "✅ Build artifacts verified"
+          echo "APK size: $(du -h app/build/outputs/apk/release/app-release-unsigned.apk | cut -f1)"
+          echo "AAB size: $(du -h app/build/outputs/bundle/release/app-release.aab | cut -f1)"
 
       - name: Create release folder
         run: mkdir -p $GITHUB_WORKSPACE/release
@@ -150,9 +187,11 @@ jobs:
         with:
           name: app-release
           if-no-files-found: error
+          overwrite: true
           path: release
 
   publish_to_playstore:
+    if: github.ref == 'refs/heads/main'
     needs: build_artifacts
     name: Publish to Google PlayStore
     runs-on: ubuntu-latest

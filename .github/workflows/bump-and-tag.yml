@@ -1,17 +1,31 @@
-name: Bump version
+name: BumpVersion
 on:
   push:
+    paths-ignore:
+      - '**.md'
+      - '**.txt'
+      - '**.yml'
+      - '**.yaml'
+      - '**.sh'
+      - '**.xml'
+      - 'docs/**'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/**'
     branches:
-      - main
+      - 'main'
+  workflow_dispatch:
+
 jobs:
   bump-tag-version:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
     concurrency:
       cancel-in-progress: true
-      group: semver-${{ github.ref }}
+      group: bump-version-${{ github.ref }}
     steps:
-      - uses: actions/checkout@v3
-      - name: Bump version and push tag
+      - uses: actions/checkout@v4
+      - name: Generate Tag
         id: tag_version
         uses: masgeek/github-tag-action@release
         with:
@@ -22,8 +36,10 @@ jobs:
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.tag_version.outputs.new_tag }}
           name: Version ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
-          allowUpdates: true
           makeLatest: true
+          allowUpdates: true
+          skipIfReleaseExists: false
