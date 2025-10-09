@@ -97,12 +97,12 @@ jobs:
           VERSION_CODE=$(curl -s https://munywele.co.ke/app-releases/akilimo)
           echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
 
-      - name: Set up Python 3.9
+      - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.13'
 
-      - name: Install dependencies with Poetry
+      - name: Install tag fetcher
         run: pip install latest_tag
 
       - name: Fetch latest tag
