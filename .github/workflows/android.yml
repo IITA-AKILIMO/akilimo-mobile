@@ -106,8 +106,8 @@ jobs:
           -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }}
           app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEY_ALIAS }} --signedjar $GITHUB_WORKSPACE/release/app-release-signed.aab
 
-      - name: Copy release tag file
-        run: cp  $LATEST_TAG_FILE release
+#      - name: Copy release tag file
+#        run: cp  $LATEST_TAG_FILE release
 
       - name: Copy release notes
         run: cp -r distribution release
@@ -206,8 +206,8 @@ jobs:
           rm -rf release/distribution
           ls release
 
-      - name: Read latest tag from tag file
-        run: echo "GHR_TAG=$(cat release/$LATEST_TAG_FILE)" >> $GITHUB_ENV
+#      - name: Read latest tag from tag file
+#        run: echo "GHR_TAG=$(cat release/$LATEST_TAG_FILE)" >> $GITHUB_ENV
 
       - name: Upload release artifacts
         uses: masgeek/github-action-ghr@v1.3.2
