@@ -92,7 +92,7 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Generate android AAB
+      - name: Generate android AAB bundle
         run: ./gradlew bundleRelease -x test
 
       - name: Create release folder
