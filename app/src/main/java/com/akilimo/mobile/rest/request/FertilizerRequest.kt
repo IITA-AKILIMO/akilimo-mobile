@@ -4,23 +4,23 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-class FertilizerRequest {
+data class FertilizerRequest(
 
-    @Json(name = "name")
-    var name: String = "NA"
+    @param:Json(name = "name")
+    val name: String,
 
-    @Json(name = "key")
-    var key: String = "NA"
+    @param:Json(name = "key")
+    val key: String,
 
-    @Json(name = "fertilizer_type")
-    var fertilizerType: String = "NA"
+    @param:Json(name = "fertilizer_type")
+    val fertilizerType: String,
 
-    @Json(name = "weight")
-    var weight: Double = 0.0
+    @param:Json(name = "weight")
+    val weight: Double = 0.0,
 
-    @Json(name = "price")
-    var price: Double = 0.0
+    @param:Json(name = "price")
+    val price: Double = 0.0,
 
-    @Json(name = "selected")
-    var selected: Boolean = false
-}
+    @param:Json(name = "selected")
+    val selected: Boolean = false
+)

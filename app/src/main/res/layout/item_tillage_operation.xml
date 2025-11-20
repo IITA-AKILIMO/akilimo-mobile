@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/spacing_large"
+    android:paddingVertical="@dimen/spacing_medium">
+
+    <!-- Operation Checkbox -->
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/checkbox_operation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_medium"
+        android:text="@string/lbl_select_tillage_operation" />
+
+    <!-- Tillage Method Dropdown -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/lyt_tillage_method"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/lbl_tillage_method"
+        android:visibility="visible"
+        tools:visibility="visible">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/drop_tillage_method"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:inputType="none"
+            android:minHeight="?attr/listPreferredItemHeightSmall"
+            tools:text="@string/app_name" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+</LinearLayout>

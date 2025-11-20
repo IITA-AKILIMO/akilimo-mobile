@@ -14,10 +14,10 @@
     app:layout_scrollFlags="scroll|enterAlways|snap">
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnAction"
-        style="@style/Widget.MaterialComponents.Button"
+        android:id="@+id/btn_action"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_58"
+        android:layout_height="@dimen/dimen_48"
+        android:enabled="true"
         android:text="@string/lbl_get_recommendations"
         android:textAllCaps="false"
         app:cornerRadius="@dimen/dimen_5" />

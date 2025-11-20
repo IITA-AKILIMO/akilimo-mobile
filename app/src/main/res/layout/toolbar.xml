@@ -1,13 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.appbar.MaterialToolbar xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/app_bar_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/color_primary"
+    android:elevation="@dimen/dimen_4"
+    android:fitsSystemWindows="true">
+
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ToolbarTheme"
-        app:contentInsetStartWithNavigation="0dp"
-        app:title="@string/app_name"
-        app:navigationIcon="@drawable/ic_back"
-        app:layout_collapseMode="pin"
-        app:popupTheme="@style/ThemeOverlay.Material3.Light" />
+        android:background="@color/color_primary"
+        android:fitsSystemWindows="true"
+        app:contentInsetStartWithNavigation="@dimen/dimen_48"
+        app:menu="@menu/toolbar_menu"
+        app:navigationIcon="@drawable/ic_menu"
+        app:navigationIconTint="@color/color_on_primary"
+        app:subtitleTextColor="@color/color_on_primary"
+        app:title="Akilimo"
+        app:titleCentered="false"
+        app:popupTheme="@style/ThemeOverlay.Material3.Light"
+        app:titleTextAppearance="@style/TextAppearance.Akilimo.Toolbar.Title"
+        app:titleTextColor="@color/color_on_primary" />
+</com.google.android.material.appbar.AppBarLayout>

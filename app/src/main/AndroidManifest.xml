@@ -1,94 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-    <!-- Permissions -->
-    <uses-permission android:name="android.permission.INTERNET" />
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.akilimo.mobile">
+    <!-- let us add permissions here -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission
+        android:name="android.permission.FOREGROUND_SERVICE"
+        tools:ignore="ForegroundServicesPolicy" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
-        android:name=".Akilimo"
-        android:hardwareAccelerated="true"
-        android:networkSecurityConfig="@xml/network_security_config"
+        android:name=".AkilimoApp"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:allowBackup="false"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="false"
-        tools:ignore="DataExtractionRules,GoogleAppIndexingWarning"
-        tools:replace="android:icon,android:theme,android:label,android:allowBackup"
+        android:theme="@style/Theme.NewAkilimo"
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:replace="android:icon, android:theme, android:label"
         tools:targetApi="s">
-        <!-- Sentry Configuration -->
+        <activity
+            android:name=".ui.usecases.DatesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.usecases.WeedControlCostsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.usecases.TractorAccessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.usecases.ManualTillageCostActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.DstRecommendationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.usecases.CassavaMarketActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.usecases.CassavaYieldActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.usecases.InvestmentAmountActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.usecases.FertilizersActivity"
+            android:exported="false" />
+
         <meta-data
             android:name="io.sentry.dsn"
-            android:value="https://ab9bb55415aaf06a144320ef8fd57860@o212209.ingest.us.sentry.io/4509276157640704" />
-
-        <!-- Add data like request headers, user ip adress and device name, see https://docs.sentry.io/platforms/android/data-management/data-collected/ for more info -->
+            android:value="https://f82045e88773833962622996b32b9c8a@o212209.ingest.us.sentry.io/4510186632314885" /> <!-- Optional: Include user/device info in crash reports -->
         <meta-data
             android:name="io.sentry.send-default-pii"
-            android:value="true" />
-
-        <meta-data
-            android:name="io.sentry.traces.user-interaction.enable"
-            android:value="true" />
-        <meta-data
-            android:name="io.sentry.attach-screenshot"
-            android:value="true" />
-        <meta-data
-            android:name="io.sentry.attach-view-hierarchy"
-            android:value="true" />
-        <meta-data
-            android:name="io.sentry.traces.sample-rate"
-            android:value="1.0" />
-        <meta-data
-            android:name="io.sentry.traces.profiling.sample-rate"
-            android:value="1.0" /> <!-- Preloaded fonts (optimize app startup if fonts are used early) -->
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" /> <!-- Services -->
-        <service
-            android:name=".services.GPSTracker"
-            android:exported="false" /> <!-- Service shouldn't be exposed unless really needed -->
-        <!-- Activities -->
-        <activity android:name=".views.activities.HomeStepperActivity" />
-        <activity android:name=".views.activities.SweetPotatoMarketActivity" />
-        <activity android:name=".views.activities.TractorAccessActivity" />
-        <activity android:name=".views.activities.ManualTillageCostActivity" />
-        <activity android:name=".views.activities.CassavaMarketActivity" />
-        <activity android:name=".views.activities.MaizeMarketActivity" />
-        <activity android:name=".views.activities.FertilizersActivity" />
-        <activity android:name=".views.activities.InterCropFertilizersActivity" />
-        <activity android:name=".views.activities.DatesActivity" />
-        <activity android:name=".views.activities.RecommendationsActivity" />
-        <activity android:name=".views.activities.usecases.FertilizerRecActivity" />
-        <activity android:name=".views.activities.MapBoxActivity" />
-        <activity android:name=".views.activities.RootYieldActivity" />
-        <activity android:name=".views.activities.InvestmentAmountActivity" />
-        <activity android:name=".views.activities.DstRecommendationActivity" />
-        <activity android:name=".views.activities.WeedControlCostsActivity" />
-        <activity android:name=".views.activities.usecases.PlantingPracticesActivity" />
-        <activity android:name=".views.activities.usecases.ScheduledPlantingActivity" />
-        <activity android:name=".views.activities.MaizePerformanceActivity" />
-        <activity android:name=".views.activities.usecases.InterCropRecActivity" />
-        <activity android:name=".views.activities.MySurveyActivity" /> <!-- Splash Activity (Launcher) -->
+            android:value="true" /> <!-- end of sentry -->
         <activity
-            android:name=".views.activities.SplashActivity"
-            android:exported="true"
-            android:theme="@style/SplashTheme">
+            android:name=".ui.activities.HomeStepperActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.activities.MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.RecommendationsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.LocationPickerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.WeedManagementActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.IcSweetPotatoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.IcMaizeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.SphActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.BppActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.FrActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

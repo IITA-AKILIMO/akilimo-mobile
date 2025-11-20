@@ -1,19 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.stepstone.stepper.StepperLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/stepperLayout"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/AppTheme"
-    app:ms_backButtonBackground="@android:color/transparent"
-    app:ms_backButtonColor="@color/akilimoDarkGreen"
-    app:ms_backButtonText="@string/lbl_back"
-    app:ms_completeButtonColor="@color/pink_600"
-    app:ms_completeButtonText="@string/lbl_finish"
-    app:ms_nextButtonColor="@color/akilimoLightGreen"
-    app:ms_nextButtonText="@string/lbl_next"
-    app:ms_showErrorMessageEnabled="true"
-    app:ms_showErrorStateEnabled="true"
-    app:ms_stepperType="progress_bar"
-    tools:context="com.akilimo.mobile.views.activities.HomeStepperActivity" />
+    android:fitsSystemWindows="true"
+    tools:context=".ui.activities.HomeStepperActivity">
+
+
+    <!-- Network notification banner at the top -->
+    <com.akilimo.mobile.ui.components.NetworkNotificationView
+        android:id="@+id/networkNotificationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.stepstone.stepper.StepperLayout
+        android:id="@+id/stepperLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:ms_showBottomNavigation="true"
+        app:ms_showErrorState="true"
+        app:ms_stepperType="dots" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

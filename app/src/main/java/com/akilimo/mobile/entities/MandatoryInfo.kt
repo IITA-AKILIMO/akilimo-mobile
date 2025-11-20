@@ -1,6 +1,5 @@
 package com.akilimo.mobile.entities
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -8,27 +7,16 @@ import androidx.room.PrimaryKey
 open class MandatoryInfo {
 
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
     var id: Int? = null
-
-    @ColumnInfo(name = "place_name")
     var placeName: String? = null
-
-    @ColumnInfo(name = "address")
     var address: String? = null
 
-    @ColumnInfo(name = "area_unit")
-    var areaUnit: String = "acre"
+    var areaUnitRadioIndex: Int = 0
+    var fieldSizeRadioIndex: Int = 0
 
-    @ColumnInfo(name = "old_area_unit")
+    var areaUnit: String? = null
     var oldAreaUnit: String? = null
-
-    @ColumnInfo(name = "display_area_unit")
-    var displayAreaUnit: String = ""
-
-    @ColumnInfo(name = "area_size")
+    var displayAreaUnit: String? = null
     var areaSize: Double = 0.0
-
-    @ColumnInfo(name = "exact_area")
     var exactArea: Boolean = false
 }

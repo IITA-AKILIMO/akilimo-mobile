@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fab_save"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/spacing_large"
+    android:contentDescription="@string/lbl_save"
+    android:text="@string/lbl_save"
+    app:backgroundTint="?attr/colorOnPrimary"
+    app:icon="@drawable/ic_save"
+    app:iconPadding="@dimen/spacing_small"
+    app:iconSize="@dimen/dimen_36"
+    app:iconTint="@color/black"
+    app:srcCompat="@drawable/ic_save" />

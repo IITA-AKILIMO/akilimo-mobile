@@ -1,67 +1,48 @@
 package com.akilimo.mobile.entities
 
-import androidx.room.ColumnInfo
+
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
 
 
-@JsonClass(generateAdapter = true)
-data class PotatoPriceResponse(
-    @field:Json(name = "data") val data: List<PotatoPrice>
-)
 
-@JsonClass(generateAdapter = true)
-@Entity(tableName = "potato_prices")
-data class PotatoPrice(
+@Entity(tableName = "potato_price")
+open class PotatoPrice {
 
     @PrimaryKey(autoGenerate = false)
-    @field:Json(name = "id")
-    @ColumnInfo(name = "id")
-    val id: Long,
+    
+    var priceIndex: Long = 0
 
-    @ColumnInfo(name = "sort_order")
-    @field:Json(name = "sort_order")
-    var sortOrder: Int = 0,
+    
+    var priceId: Long = 0
 
-    @field:Json(name = "country_code")
-    @ColumnInfo(name = "country_code")
-    val countryCode: String? = null,
+    
+    var country: String? = null
 
-    @field:Json(name = "country_price")
-    @ColumnInfo(name = "country_price")
-    val countryPrice: String? = null,
+    
+    var countryPrice: String? = null
 
-    @field:Json(name = "min_local_price")
-    @ColumnInfo(name = "min_local_price")
-    val minLocalPrice: Double = 0.0,
+    
+    var minLocalPrice = 0.0
 
-    @field:Json(name = "max_local_price")
-    @ColumnInfo(name = "max_local_price")
-    val maxLocalPrice: Double = 0.0,
+    
+    var maxLocalPrice = 0.0
 
-    @ColumnInfo(name = "min_allowed_price")
-    @field:Json(name = "min_allowed_price")
-    var minAllowedPrice: Double = 0.0,
+    
+    var minUsd = 0.0
 
-    @ColumnInfo(name = "max_allowed_price")
-    @field:Json(name = "max_allowed_price")
-    var maxAllowedPrice: Double = 0.0,
+    
+    var maxUsd = 0.0
 
-    @ColumnInfo(name = "price_range")
-    @field:Json(name = "price_range")
-    var priceRange: String? = null,
+    
+    var active = false
 
-    @field:Json(name = "active")
-    @ColumnInfo(name = "active")
-    val active: Boolean = false,
+    
+    var averagePrice = 0.0
 
-    @field:Json(name = "average_price")
-    @ColumnInfo(name = "average_price")
-    val averagePrice: Double = 0.0,
-
-    @ColumnInfo(name = "description")
-    @field:Json(name = "description")
-    var description: String? = null
-)
+//    
+//    var createdAt: Date? = null
+//
+//    
+//    var updatedAt: Date? = null
+}

@@ -1,113 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/coordinatorLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        tools:context=".views.activities.FertilizersActivity">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    tools:context=".ui.usecases.FertilizersActivity">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/white"
-            android:orientation="vertical">
-
-        <include
-                android:id="@+id/toolbar_layout"
-                layout="@layout/toolbar" />
-
-        <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                    android:id="@+id/swipeRefreshLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/availableFertilizers"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/spacing_medium"
-                        android:clipToPadding="false"
-                        android:paddingBottom="@dimen/spacing_xxxlarge"
-                        android:scrollbars="none"
-                        android:visibility="visible"
-                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                        app:spanCount="2"
-                        tools:itemCount="4"
-                        tools:listitem="@layout/list_fertilizer_grid_row" />
-
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-            <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/errorImage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/ic_error" />
-
-            <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/errorLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/errorImage"
-                    android:layout_centerInParent="true"
-                    android:layout_margin="@dimen/spacing_large"
-                    android:text="@string/lbl_fertilizer_load_error"
-                    android:textColor="@color/red_500"
-                    android:visibility="gone" />
-
-
-            <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnRetry"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/errorLabel"
-                    app:backgroundTint="@android:color/transparent"
-                    android:layout_centerInParent="true"
-                    app:strokeColor="@color/colorAccentLight"
-                    android:paddingLeft="@dimen/spacing_xlarge"
-                    android:paddingRight="@dimen/spacing_xlarge"
-                    android:text="@string/lbl_retry"
-                    android:visibility="gone" />
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/lyt_progress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_margin="@dimen/spacing_medium"
-                    android:orientation="vertical"
-                    android:visibility="visible">
-
-                <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/spacing_medium"
-                        android:text="@string/lbl_loading_fertilizers"
-                        style="@style/TextAppearance.Material3.BodyMedium" />
-
-                <ProgressBar
-                        android:id="@+id/progress_indicator"
-                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:indeterminate="true" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-        </RelativeLayout>
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
+    <!-- Toolbar -->
     <include
-            android:id="@+id/two_buttons"
-            layout="@layout/bottom_two_buttons_layout" />
+        android:id="@+id/lyt_toolbar"
+        layout="@layout/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fertilizers_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingHorizontal="@dimen/spacing_xmedium"
+        android:paddingVertical="@dimen/spacing_xmedium"
+        android:scrollbars="vertical"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintBottom_toTopOf="@id/fab_refresh"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lyt_toolbar"
+        app:spanCount="2"
+        tools:itemCount="6"
+        tools:listitem="@layout/item_fertilizer_grid" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <!-- Empty state -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/empty_state"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="@dimen/spacing_large"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/fab_refresh"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lyt_toolbar"
+        tools:visibility="visible">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/empty_icon"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_empty"
+            app:tint="?attr/colorOnSurfaceVariant" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Progress indicator -->
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progress"
+        android:layout_width="0dp"
+        android:layout_height="4dp"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lyt_toolbar"
+        app:trackCornerRadius="@dimen/dimen_2"
+        tools:visibility="visible" />
+
+    <!-- Sync indicator -->
+    <ProgressBar
+        android:id="@+id/sync_indicator"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_medium"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lyt_toolbar"
+        tools:visibility="gone" />
+
+    <!-- FAB -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_medium"
+        android:layout_marginBottom="@dimen/spacing_medium"
+        android:contentDescription="@string/lbl_refresh"
+        android:src="@drawable/ic_refresh"
+        app:backgroundTint="?attr/colorPrimaryContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="?attr/colorOnPrimaryContainer" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

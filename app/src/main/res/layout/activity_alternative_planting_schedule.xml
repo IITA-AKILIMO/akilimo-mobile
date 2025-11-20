@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutPlantingDates"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.usecases.DatesActivity">
+
+    <!-- AppBarLayout to hold the toolbar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <include
+            android:id="@+id/lyt_toolbar"
+            layout="@layout/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Main content with scroll behavior -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_medium"
+            android:paddingBottom="80dp">
+
+            <!-- Alternative planting switch -->
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/switch_alternative_planting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:layout_marginBottom="@dimen/spacing_medium"
+                android:text="@string/lbl_consider_alternative_planting" />
+
+            <!-- Planting schedule section -->
+            <include
+                android:id="@+id/lyt_planting_section_activity"
+                layout="@layout/planting_schedule_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Floating Action Button with scroll behavior -->
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fab_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/spacing_large"
+        android:contentDescription="@string/lbl_save"
+        android:text="@string/lbl_save"
+        app:backgroundTint="?attr/colorOnPrimary"
+        app:icon="@drawable/ic_save"
+        app:iconPadding="@dimen/spacing_small"
+        app:iconSize="@dimen/dimen_36"
+        app:iconTint="@color/black"
+        app:layout_behavior="com.google.android.material.behavior.HideViewOnScrollBehavior" />
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

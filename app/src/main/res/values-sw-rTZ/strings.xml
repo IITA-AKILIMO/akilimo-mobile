@@ -28,12 +28,12 @@
     <string name="lbl_finish">Hifadhi</string>
     <string name="lbl_back">Rudi</string>
     <string name="lbl_next">Endelea</string>
-    <string name="lbl_country_location">Habari (%1$s).</string>
+    <string name="lbl_greetings_text">Habari (%1$s).</string>
     <string name="lbl_country_location_sub">Shamba lako liko katika nchi gani?</string>
     <string name="lbl_area_unit">Je? shamba lako la muhogo lina ukubwa wa ekari ngapi?</string>
     <string name="area_unit_acre">Kwa Ekari</string>
     <string name="area_unit_ha">Kwa Hekta</string>
-    <string name="area_unit_square_meter">Kwa mita za mraba (m \u00B2)</string>
+    <string name="area_unit_square_meter">mita za mraba (m \u00B2)</string>
     <string name="lbl_acre">ekari</string>
     <string name="lbl_ha">hekta</string>
     <string name="lbl_cassava_field_size_no_ph">Je? Shamba lako la muhogo lina ukubwa gani?</string>
@@ -80,9 +80,13 @@
     <string name="lbl_weed_management">Udhibiti wa magugu</string>
     <string name="lbl_available_fertilizers">Je? Ni mbolea zipi zinapatikana karibu na eneo lako?</string>
     <string name="lbl_fertilizer_costs">Gharama za mbolea</string>
-    <string name="lbl_planting_harvest">Je? Unataka kuzingatia upandaji mbadala na tarehe za mavuno?</string>
+    <string name="lbl_consider_alternative_planting">Je? Unataka kuzingatia upandaji mbadala na tarehe za mavuno?</string>
     <string name="lbl_investment_amount">Je? Uko tayari kuwekeza kiasi gani kwenye mbolea?</string>
     <string name="lbl_investment_amount_label">%2$s %1$s</string>
+    <string name="lbl_investment_amount_simple">{amount} {currency} kwa {unit}</string>
+    <string name="lbl_investment_per_area">{amount} {currency} kwa kila {size} {unit}</string>
+    <string name="lbl_per_unit">kwa {unit}</string>
+
     <string name="lbl_typical_yield">Je? Kwa kawaida shamba lako hutoa mavuno kiasi gani?</string>
     <string name="lbl_typical_yield_question">Mavuno ya kawaida ya mizizi ya mihogo ni %1$s. Je? Unatarajia mavuno kiasi gani kutoka kwenye shamba lako bila kutumia mbolea?</string>
     <string name="lbl_typical_yield_question_fr">Mavuno ya kawaida ya mizizi ya mihogo ni %1$s. Je? Unatarajia mavuno kiasi gani kutoka kwenye shamba lako bila kutumia mbolea?</string>
@@ -189,19 +193,19 @@
     <string name="lbl_unit_price_per">Kizio cha bei  katika %s kwa %s</string>
     <string name="lbl_grain_unit_price_per">Kizio cha bei ya sehemu ya nafaka kavu katika %s kwa %s</string>
     <string name="lbl_sweet_potato_tuber_unit_price_per">Kizio cha bei ya viazi vitamu katika %s kwa %s</string>
-    <string name="lbl_manual_tillage_cost">Je? Inagharimu kiasi gani kulima %s %s kutumia jembe la mkono?</string>
-    <string name="lbl_manual_ridge_cost">Je? Inagharimu kiasi gani kuweka matuta kwa %s %s? kutumia jembe la mkono</string>
-    <string name="lbl_manual_ridge_cost_hint">Gharama ya kuweka matuta katika %s %s kutumia jembe la mkono</string>
-    <string name="lbl_manual_tillage_cost_hint">Gharama ya kulima %s %s kutumia jembe la mkono</string>
-    <string name="lbl_tractor_plough_cost">Je? Inagharimu kiasi gani kulima %s %s kwa trekta?</string>
-    <string name="lbl_tractor_ridge_cost">Je? Inagharimu kiasi gani kuweka matuta %s %s kwa trekta?</string>
+    <string name="lbl_manual_tillage_cost">Je? Inagharimu kiasi gani kulima {size_unit} {farm_size} kutumia jembe la mkono?</string>
+    <string name="lbl_manual_ridge_cost">Je? Inagharimu kiasi gani kuweka matuta kwa {size_unit} {farm_size}? kutumia jembe la mkono</string>
+    <string name="lbl_manual_ridge_cost_hint">Gharama ya kuweka matuta katika {size_unit} {farm_size} kutumia jembe la mkono</string>
+    <string name="lbl_manual_tillage_cost_hint">Gharama ya kulima {size_unit} {farm_size} kutumia jembe la mkono</string>
+    <string name="lbl_tractor_plough_cost">Je? Inagharimu kiasi gani kulima {size_unit} {farm_size} kwa trekta?</string>
+    <string name="lbl_tractor_ridge_cost">Je? Inagharimu kiasi gani kuweka matuta {size_unit} {farm_size} kwa trekta?</string>
     <string name="lbl_tractor_plough_cost_hint">Gharama ya kulima %s %s kwa trekta</string>
-    <string name="lbl_tractor_ridge_cost_hint">Gharama ya kuweka matuta kwa %s %s kutumia trekta</string>
+    <string name="lbl_tractor_ridge_cost_hint">Gharama ya kuweka matuta kwa {size_unit} {farm_size} kutumia trekta</string>
 
     <string name="lbl_specify_my_cost">Nataka kutaja gharama zangu</string>
     <string name="lbl_exact_cost">Gharama halisi</string>
-    <string name="lbl_cost_of_first_weeding_operation">Taja gharama ya palizi ya kwanza kwa %s kwa %s %s</string>
-    <string name="lbl_cost_of_second_weeding_operation">Taja gharama ya palizi ya pili kwa %s kwa %s %s</string>
+    <string name="lbl_cost_of_first_weeding_operation">Taja gharama ya palizi ya kwanza kwa {farm_size} {size_unit}</string>
+    <string name="lbl_cost_of_second_weeding_operation">Taja gharama ya palizi ya pili kwa {farm_size} {size_unit}</string>
     <string name="lbl_valid_bag_price">Tafadhali toa bei halisi</string>
     <string name="lbl_ploughing_cost_text">Gharama ya kukatua %s %s ni %s %s</string>
     <string name="lbl_ridging_cost_text">Gharama ya kuweka matuta %s %s ni %s %s</string>
@@ -361,7 +365,7 @@
     <string name="lbl_invalid_cost">Kiasi cha gharama si sahihi</string>
     <string name="lbl_first_weeding_costs_prompt">Tafadhali taja gharama za palizi ya kwanza</string>
     <string name="lbl_second_weeding_cost_prompt">Tafadhali taja gharama za palizi ya pili</string>
-    <string name="lbl_field_size_prompt">Tafadhali ingiza ukubwa halisi wa shamba lako %s</string>
+    <string name="lbl_field_size_prompt">Chagua au ingiza ukubwa sahihi wa shamba kwa %s</string>
     <string name="lbl_area_unit_prompt">Tafadhali ingiza kipimo halisi cha eneo lako</string>
     <string name="lbl_per_separator">kwa</string>
     <string name="lbl_usd_currency">Dola</string>

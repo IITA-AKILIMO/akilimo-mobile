@@ -6,26 +6,24 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import androidx.room.Upsert
 import com.akilimo.mobile.entities.CurrentPractice
 
 @Dao
 interface CurrentPracticeDao {
 
-    @Query("SELECT * FROM current_practices")
-    fun listAll(): List<CurrentPractice>
+    @Query("SELECT * FROM current_practices WHERE user_id = :userId LIMIT 1")
+    fun getPracticeForUser(userId: Int): CurrentPractice?
 
-    @Query("SELECT * FROM current_practices LIMIT 1")
-    fun findOne(): CurrentPractice?
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun save(practice: CurrentPractice): Long
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(location: CurrentPractice)
+    @Upsert
+    fun upsert(practice: CurrentPractice)
 
     @Update
-    fun update(currentPractice: CurrentPractice)
+    fun update(practice: CurrentPractice)
 
     @Delete
-    fun delete(currentPractice: CurrentPractice?)
-    
-    @Query("DELETE FROM current_practices")
-    fun deleteAll()
+    fun delete(practice: CurrentPractice)
 }

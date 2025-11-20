@@ -2,6 +2,7 @@
     <string name="app_name" translatable="false">AKILIMO</string>
     <string name="hello_blank_fragment" translatable="false">Initialize fragments</string>
     <string name="empty_text" translatable="false" />
+    <string name="under_score" translatable="false">___</string>
     <string name="lbl_empty_space" translatable="false"> </string>
     <string name="dummy_coordinates" translatable="false">Lat:-1.567657567 Lon:35.47829734</string>
     <string name="ad_attribution" translatable="false">Ad</string>
@@ -44,7 +45,7 @@
     <string name="lbl_back">Back</string>
     <string name="lbl_next">Next</string>
 
-    <string name="lbl_country_location">Nice to meet you "%1$s".</string>
+    <string name="lbl_greetings_text">Nice to meet you "{full_name}".</string>
     <string name="lbl_country_location_sub">In which country is your farm located?</string>
 
 
@@ -56,7 +57,7 @@
     <string name="area_unit_acre">Acre (acre)</string>
     <string name="area_unit_ha">Hectare (ha)</string>
     <string name="area_unit_are">Are (are)</string>
-    <string name="area_unit_square_meter">in Square meter (m\u00B2)</string>
+    <string name="area_unit_square_meter">Square meter (m\u00B2)</string>
 
     <string name="lbl_acre">acre</string>
     <string name="lbl_ha">ha</string>
@@ -126,9 +127,13 @@
     <string name="lbl_available_fertilizers">Which fertilizers are available for you?</string>
     <string name="lbl_fertilizer_costs">Fertilizer costs</string>
 
-    <string name="lbl_planting_harvest">Do you want to consider alternative planting and harvest dates?</string>
+    <string name="lbl_consider_alternative_planting">Do you want to consider alternative planting and harvest dates?</string>
     <string name="lbl_investment_amount">How much are you willing to invest in fertilizers?</string>
     <string name="lbl_investment_amount_label">%1$s %2$s</string>
+    <string name="lbl_investment_amount_simple">{amount} {currency} per {unit}</string>
+    <string name="lbl_investment_per_area">{amount} {currency} per {size} {unit}</string>
+    <string name="lbl_per_unit">per {unit}</string>
+
     <string name="lbl_typical_yield">What is the typical cassava yield of your field?</string>
     <string name="lbl_typical_yield_question">A typical cassava root yield is %1$s. How much yield do you expect from your field?</string>
     <string name="lbl_typical_yield_question_fr">A typical cassava root yield is %1$s. How much yield do you expect from your field without fertilizer application?</string>
@@ -139,6 +144,7 @@
     <string name="lbl_maize_performance_poor">These are very poor soil conditions and not very common</string>
     <string name="lbl_maize_performance_rich">These are very rich soil conditions and not very common</string>
 
+    <string name="lbl_cassava_price">Cassava prices</string>
     <string name="lbl_market_outlet">What price do you expect for your cassava?</string>
     <string name="lbl_market_outlet_maize">What price do you expect for your maize at harvest?</string>
     <string name="lbl_tillage_operations">Tillage operations and related cost</string>
@@ -155,7 +161,10 @@
     <string name="lbl_change_harvest_date">Change harvest date</string>
     <string name="lbl_selected_harvest_date">Your selected harvest date was :</string>
     <string name="lbl_harvest_flexible">My harvest date is flexible by:</string>
-
+    <string name="lbl_flexible_dates">Are your dates flexible?</string>
+    <string name="lbl_planting_flex">Planting flexibility (months)</string>
+    <string name="lbl_harvest_flex">Harvest flexibility (months)</string>
+    <string name="lbl_no_flexibility">None</string>
     <string name="lbl_one_month_window">1 month</string>
     <string name="lbl_two_month_window">2 months</string>
 
@@ -226,6 +235,13 @@
     <string name="exact_sale_unit">I want to specify the exact weight of my unit of sale</string>
     <string name="exact_sale_unit_hint">Enter the size of your unit of sale i.e x kg</string>
 
+    <string-array name="cassava_units_of_sale">
+        <item>@string/per_kg_sale_unit</item>
+        <item>@string/per_50_kg_sale_unit</item>
+        <item>@string/per_100_kg_sale_unit</item>
+        <item>@string/per_tonne_sale_unit</item>
+    </string-array>
+
     <string name="lbl_price_per_bag">Price (%1$s per 50 kg bag) for %2$s</string>
 
     <string name="up_20_30_usd_per_tonne">20–30 USD per tonne</string>
@@ -258,7 +274,8 @@
     <string name="title_activity_dst_recommendation">Recommendation</string>
 
     <string name="lbl_get_recommendations">Get recommendations</string>
-    <string name="lbl_rec_header">We are ready to give you recommendationResp. If you want more customized advice answer the questions below otherwise hit the "Get recommendations" button at the bottom</string>
+    <string name="lbl_rec_header">We are ready to give you recommendations. If you want more customized advice answer the questions below otherwise hit the <b>"Get recommendations"</b> button at the bottom.
+    </string>
     <string name="lbl_compute_error">Unable to compute recommendations, please try again</string>
     <string name="lbl_compute_timeout_error">Unable to compute recommendations, please try again</string>
 
@@ -279,21 +296,23 @@
     <string name="lbl_grain_unit_price_per">Unit price of dry grain in %s per %s</string>
     <string name="lbl_sweet_potato_tuber_unit_price_per">Unit price of sweet potato tuber in %s per %s</string>
 
-    <string name="lbl_manual_tillage_cost">How much does it cost you to manually plough %s %s?</string>
-    <string name="lbl_manual_ridge_cost">How much does it cost you to manually ridge %s %s?</string>
-    <string name="lbl_manual_tillage_cost_hint">Cost to manually plough %s %s</string>
-    <string name="lbl_manual_ridge_cost_hint">Cost to manually ridge %s %s</string>
+    <string name="lbl_manual_tillage_cost">How much does it cost you to manually plough {farm_size} {size_unit}?</string>
+    <string name="lbl_manual_ridge_cost">How much does it cost you to manually ridge {farm_size} {size_unit}?</string>
+    <string name="lbl_manual_tillage_cost_hint">Cost to manually plough {farm_size} {size_unit}</string>
+    <string name="lbl_manual_ridge_cost_hint">Cost to manually ridge {farm_size} {size_unit}</string>
 
-    <string name="lbl_tractor_plough_cost">How much does it cost you to plough %s %s using a tractor?</string>
-    <string name="lbl_tractor_ridge_cost">How much does it cost you to ridge %s %s using a tractor?</string>
-    <string name="lbl_tractor_plough_cost_hint">Cost to plough %s %s using a tractor</string>
-    <string name="lbl_tractor_ridge_cost_hint">Cost to ridge %s %s using a tractor</string>
+    <string name="lbl_tractor_plough_cost">How much does it cost you to plough {farm_size} {size_unit} using a tractor?</string>
+    <string name="lbl_tractor_ridge_cost">How much does it cost you to ridge {farm_size} {size_unit} using a tractor?</string>
+    <string name="lbl_tractor_harrow_cost">How much does it cost you to harrow {farm_size} {size_unit} using a tractor?</string>
+    <string name="lbl_tractor_plough_cost_hint">Cost to plough {farm_size} {size_unit} using a tractor</string>
+    <string name="lbl_tractor_ridge_cost_hint">Cost to ridge {farm_size} {size_unit} using a tractor</string>
+    <string name="lbl_tractor_harrow_cost_hint">Cost to harrow {farm_size} {size_unit} using a tractor</string>
 
     <string name="lbl_specify_my_cost">I want to specify my costs</string>
     <string name="lbl_exact_cost">Exact cost</string>
 
-    <string name="lbl_cost_of_first_weeding_operation">Cost of first weeding operation in %s for %s %s</string>
-    <string name="lbl_cost_of_second_weeding_operation">Cost of second weeding operation in %s for %s %s</string>
+    <string name="lbl_cost_of_first_weeding_operation">Cost of first weeding operation for {farm_size} {size_unit}</string>
+    <string name="lbl_cost_of_second_weeding_operation">Cost of second weeding operation for {farm_size} {size_unit}</string>
 
     <string name="lbl_valid_bag_price">Provide a valid bag price</string>
     <string name="lbl_ploughing_cost_text">Cost of ploughing %s %s is %s %s</string>
@@ -382,6 +401,7 @@
     <string name="lbl_implements_access">Which implements do you have access to?</string>
     <string name="lbl_plough">Plough</string>
     <string name="lbl_ridger">Ridger</string>
+    <string name="lbl_harrow">Harrow</string>
     <string name="lbl_basic_tillage_op">How many basic tillage operations do you perform?</string>
     <string name="lbl_zero_tillage">None (zero-tillage)</string>
     <string name="lbl_single_plough_op">Single plough operation</string>
@@ -416,6 +436,11 @@
     <string name="lbl_how_do_you_sell_your_sweet_potato">How do you sell your sweet potato?</string>
     <string name="lbl_do_you_want_to_receive_recommendations_via_email_and_sms">We are ready to calculate your recommendationResp. You can choose also to receive the advice via email and SMS.</string>
     <string name="lbl_which_of_these_tillage_operations_do_you_perform">Which of these tillage operations do you perform?</string>
+    <string name="lbl_tillage_operation">Tillage operations</string>
+    <string name="lbl_tillage_method">Method used</string>
+    <string name="lbl_select_tillage_operation">Please select at least one operation</string>
+    <string name="lbl_select_tillage_method">Please select a method</string>
+
     <string name="lbl_dummy_fertilizer" translatable="false">NPK 20:10:10</string>
     <string name="lbl_options">Options</string>
     <string name="lbl_search">Search</string>
@@ -426,6 +451,9 @@
 
     <string name="lbl_ploughing">Ploughing</string>
     <string name="lbl_ridging">Ridging</string>
+    <string name="lbl_harrowing">Ridging</string>
+    <string name="lbl_weeding">Weeding</string>
+
     <string name="lbl_country">Country</string>
     <string name="lbl_risk_attitude">Investment preference</string>
     <string name="lbl_field">Field</string>
@@ -486,8 +514,9 @@
     <string name="lbl_invalid_cost">Invalid cost amount</string>
     <string name="lbl_first_weeding_costs_prompt">Specify cost for first weeding operation</string>
     <string name="lbl_second_weeding_cost_prompt">Specify cost for second weeding operation</string>
-    <string name="lbl_field_size_prompt">Select a valid field size in %s</string>
+    <string name="lbl_field_size_prompt">Select or input a valid field size in %s</string>
     <string name="lbl_area_unit_prompt">Select a valid area unit</string>
+    <string name="lbl_investment_pref_prompt">Select an investment preference</string>
 
     <string name="lbl_per_separator">per</string>
     <string name="lbl_usd_currency">USD</string>
@@ -506,7 +535,7 @@
     <string name="lbl_pick_your_country">Select country</string>
 
     <string name="lbl_already_planted_title">Already planted</string>
-    <string name="lbl_already_planted_text">It appears you have already planted, so you cannot set the flexibility</string>
+    <string name="lbl_already_planted_text">It appears you have already planted, so you cannot set the planting flexibility</string>
     <string name="lbl_agree_to_terms">I accept the terms and conditions of the application</string>
     <string name="lbl_agree_to_disclaimer">Please confirm you have read and understood this disclaimer.</string>
     <string name="lbl_accept_terms_prompt">Accept the terms and conditions before proceeding</string>
@@ -596,4 +625,11 @@
 
     <string name="label_ploughing_method">Ploughing method: %1$s</string>
     <string name="label_ridging_method">Ridging method: %1$s</string>
+    <string name="lbl_refresh">Refresh</string>
+    <string name="hint_search_fertilizers">Search fertilizers</string>
+    <string name="lbl_sync_failed">Fertilizer api sync failed</string>
+    <string name="fertilizers_synced">%1$d Fertilizers  synced</string>
+    <string name="lbl_toggle_layout">Toggle layout</string>
+    <string name="lbl_factories_synced">%1$d Factories Synced</string>
+    <string name="lbl_loading">Loading...</string>
 </resources>

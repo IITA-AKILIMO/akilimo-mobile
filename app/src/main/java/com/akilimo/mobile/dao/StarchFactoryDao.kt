@@ -6,44 +6,40 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.akilimo.mobile.entities.Fertilizer
 import com.akilimo.mobile.entities.StarchFactory
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface StarchFactoryDao {
 
-    @Query("SELECT * FROM starch_factories")
-    fun listAll(): List<StarchFactory>
+    @Query("SELECT * FROM starch_factories WHERE is_active = 1")
+    fun observeAll(): Flow<List<StarchFactory>>
 
-    @Query("SELECT * FROM starch_factories LIMIT 1")
+    @Query("SELECT * FROM starch_factories WHERE country_code = :countryCode AND is_active = 1 ORDER BY sort_order ASC")
+    fun observeAllByCountry(countryCode: String): Flow<List<StarchFactory>>
+
+
+    @Query("SELECT * FROM starch_factories WHERE is_active = 1 ")
+    fun getAll(): List<StarchFactory>
+
+    @Query("SELECT * FROM starch_factories WHERE is_active = 1  LIMIT 1")
     fun findOne(): StarchFactory?
 
-    @Query("SELECT * FROM starch_factories where country_code=:countryCode and factory_selected=1")
-    fun findOneByCountryCode(countryCode: String): StarchFactory?
 
-    @Query("SELECT * FROM starch_factories where factory_name=:factoryName LIMIT 1")
-    fun findStarchFactoryByName(factoryName: String): StarchFactory?
+    @Query("select * from starch_factories where country_code=:countryCode AND is_active = 1  limit 1")
+    fun findOneByCountry(countryCode: String): StarchFactory?
 
 
-    @Query("SELECT * FROM starch_factories where factory_name_country=:factoryNameCountry LIMIT 1")
-    fun findStarchFactoryByNameCountry(factoryNameCountry: String): StarchFactory?
+    @Query("SELECT * FROM starch_factories where country_code=:countryCode AND is_active = 1  ORDER BY sort_order ASC")
+    fun findAllByCountry(countryCode: String): List<StarchFactory>
 
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg starchFactories: StarchFactory)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(starchFactoriesList: List<StarchFactory>)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insert(starchFactory: StarchFactory): Long
 
     @Update
-    fun update(vararg starchFactories: StarchFactory)
+    fun update(starchFactory: StarchFactory)
 
     @Delete
-    fun delete(starchFactory: StarchFactory?)
-
-    @Query("select * from starch_factories where country_code=:countryCode")
-    fun findStarchFactoriesByCountry(countryCode: String): List<StarchFactory>
-
-    @Query("DELETE FROM starch_factories")
-    fun deleteAll()
-
+    fun delete(starchFactory: StarchFactory)
 }

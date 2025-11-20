@@ -28,12 +28,12 @@
     <string name="lbl_finish">Kurangiza</string>
     <string name="lbl_back">Inyuma</string>
     <string name="lbl_next">Ibikurikira</string>
-    <string name="lbl_country_location">Nishimiye guhura nawe "%1$s".</string>
+    <string name="lbl_greetings_text">Nishimiye guhura nawe "%1$s".</string>
     <string name="lbl_country_location_sub">NI hehe umurima wawe w\'imyumbati uherereye?</string>
     <string name="lbl_area_unit">Ni uruhe rugero ukoresha upima ubuso bw\'umurima wawe?</string>
     <string name="area_unit_acre">Are (are)</string>
     <string name="area_unit_ha">Hegitare (ha)</string>
-    <string name="area_unit_square_meter">muri metero kare (m\u00B2)</string>
+    <string name="area_unit_square_meter">metero kare (m\u00B2)</string>
     <string name="lbl_acre">are</string>
     <string name="lbl_ha">ha</string>
     <string name="lbl_cassava_field_size_no_ph">Ubuso bw\'umurima wawe w\'imyumbati bungana iki?</string>
@@ -81,9 +81,13 @@
 
     <string name="lbl_available_fertilizers">Ni ubuhe bwoko bw\'ifumbire ziboneka kuri wowe?</string>
     <string name="lbl_fertilizer_costs">Igiciro cy\'ifumbire</string>
-    <string name="lbl_planting_harvest">Urashaka kumenya ayandi matariki yo gutera no gusarura?</string>
+    <string name="lbl_consider_alternative_planting">Urashaka kumenya ayandi matariki yo gutera no gusarura?</string>
     <string name="lbl_investment_amount">Ni amafaranga angahe witeguye gushora mu ifumbire?</string>
     <string name="lbl_investment_amount_label">%1$s %2$s</string>
+    <string name="lbl_investment_amount_simple">{amount} {currency} kuri {unit}</string>
+    <string name="lbl_investment_per_area">{amount} {currency} kuri buri {size} {unit}</string>
+    <string name="lbl_per_unit">kuri {unit}</string>
+
     <string name="lbl_typical_yield">Ni uwuhe musaruro w\'imyumbati usanzwe ubona mu murima wawe?</string>
     <string name="lbl_typical_yield_question">Umusaruro w\'imyumbati usanzwe ubona ni %1$s. Ni uwuhe se musaruro wumva wabona mu murima wawe?</string>
     <string name="lbl_typical_yield_question_fr">Umusaruro w\'imyumbati ubona ni %1$s. Ni uwuhe se musaruro wumva wabona mu murima wawe udakoresheje ifumbire?</string>
@@ -200,18 +204,18 @@
     <string name="lbl_unit_price_per">Igiciro muri %s kuri %s</string>
     <string name="lbl_grain_unit_price_per">Igiciro cy\'ibyumye muri %s kuri %s</string>
     <string name="lbl_sweet_potato_tuber_unit_price_per">Igiciro cy\'ibijumba muri %s kuri %s</string>
-    <string name="lbl_manual_tillage_cost">Bisaba angahe guhinga bisanzwe %s %s?</string>
-    <string name="lbl_manual_ridge_cost">Bisaba angahe gukora imitabo/amabimba %s %s?</string>
-    <string name="lbl_manual_tillage_cost_hint">Igiciro cyo guhinga%s %s</string>
-    <string name="lbl_manual_ridge_cost_hint">Igiciro cyo gukora imitabo/amabimba %s %s</string>
-    <string name="lbl_tractor_plough_cost">Bisaba angahe guhinga %s %s ukoresheje taragiteri?</string>
-    <string name="lbl_tractor_ridge_cost">Bisaba angahe gukora imitabo/amabimba %s %s ukoresheje taragiteri?</string>
-    <string name="lbl_tractor_plough_cost_hint">Igiciro cyo guhinga %s %s ukoresheje taragiteri</string>
-    <string name="lbl_tractor_ridge_cost_hint">Igiciro cyo gukora amabimba/imitabo %s %s ukoresheje taragiteri</string>
+    <string name="lbl_manual_tillage_cost">Bisaba angahe guhinga bisanzwe {farm_size} {size_unit}?</string>
+    <string name="lbl_manual_ridge_cost">Bisaba angahe gukora imitabo/amabimba {farm_size} {size_unit}?</string>
+    <string name="lbl_manual_tillage_cost_hint">Igiciro cyo guhinga {farm_size} {size_unit}</string>
+    <string name="lbl_manual_ridge_cost_hint">Igiciro cyo gukora imitabo/amabimba {farm_size} {size_unit}</string>
+    <string name="lbl_tractor_plough_cost">Bisaba angahe guhinga {farm_size} {size_unit} ukoresheje taragiteri?</string>
+    <string name="lbl_tractor_ridge_cost">Bisaba angahe gukora imitabo/amabimba{farm_size} {size_unit} ukoresheje taragiteri?</string>
+    <string name="lbl_tractor_plough_cost_hint">Igiciro cyo guhinga {farm_size} {size_unit} ukoresheje taragiteri</string>
+    <string name="lbl_tractor_ridge_cost_hint">Igiciro cyo gukora amabimba/imitabo {farm_size} {size_unit} ukoresheje taragiteri</string>
     <string name="lbl_specify_my_cost">Ndashaka kwerekana ikiguzi cyanjye</string>
     <string name="lbl_exact_cost">Igiciro nyacyo</string>
-    <string name="lbl_cost_of_first_weeding_operation">Igiciro cyo kubagara bwa mbere muri %s kuri %s %s</string>
-    <string name="lbl_cost_of_second_weeding_operation">Igiciro cyo kubagara bwa kabiri muri %s kuri %s %s</string>
+    <string name="lbl_cost_of_first_weeding_operation">Igiciro cyo kubagara bwa mbere kuri {farm_size} {size_unit}</string>
+    <string name="lbl_cost_of_second_weeding_operation">Igiciro cyo kubagara bwa kabiri kuri {farm_size} {size_unit}</string>
     <string name="lbl_valid_bag_price">Tanga igiciro cyemewe</string>
     <string name="lbl_ploughing_cost_text">Igiciro cyo guhinga %s %s ni %s %s</string>
     <string name="lbl_ridging_cost_text">Igiciro cyo gukora imitabo %s %s ni %s %s</string>
@@ -373,7 +377,7 @@
     <string name="lbl_invalid_cost">Umubare w\'amafaranga utari wo</string>
     <string name="lbl_first_weeding_costs_prompt">Garagaza ikiguzi cyo kubagara bwa mbere</string>
     <string name="lbl_second_weeding_cost_prompt">Garagaza ikiguzi cyo kubagara bwa kabiri</string>
-    <string name="lbl_field_size_prompt">Hitamo ubuso nyabwo bw\'umurima wawe muri %s</string>
+    <string name="lbl_field_size_prompt">Hitamo cyangwa andika ubunini nyabwo bw\'umurima muri %s</string>
     <string name="lbl_area_unit_prompt">Hitamo ubwoko bw\'ubuso</string>
     <string name="lbl_per_separator">kuri</string>
     <string name="lbl_usd_currency">USD</string>

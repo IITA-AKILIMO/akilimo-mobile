@@ -1,7 +1,0 @@
-
-# check the current tags and existing releases of the repo
-github-release info -u masgeek -r akilimo-mobile
-
-GIT_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
-
-ghr GIT_TAG uploads/

@@ -1,0 +1,174 @@
+[versions]
+agp = "8.13.1"
+ksp = "2.2.20-2.0.4"
+kotlin = "2.2.20"
+coreKtx = "1.17.0"
+junit = "4.13.2"
+junitVersion = "1.3.0"
+espressoCore = "3.7.0"
+appcompat = "1.7.1"
+material = "1.13.0"
+activity = "1.11.0"
+constraintlayout = "2.2.1"
+navigation = "2.7.5"
+rxjava = "2.2.21"
+rxandroid = "2.1.1"
+room = "2.6.1"
+glide = "5.0.5"
+coil = "3.3.0"
+sentry = "8.23.0"
+sentry-gradle = "5.12.1"
+okhttp = "5.2.1"
+conscrypt-android = "2.5.2"
+retrofit = "3.0.0"
+jackson = "2.20.0"
+multidex = "2.0.1"
+env = "4.0.0"
+
+google-services = "4.4.0"
+firebase-bom = "32.7.0"
+firebase-installations = "18.0.0"
+firebase-crashlytics-plugin = "3.0.6"
+
+stetho = "1.6.0"
+
+stepper = "v4.3.1"
+mapbox-sdk = "9.6.2"
+mapbox-annotation = "0.9.0"
+mapbox-places = "0.12.0"
+
+applocale = "3.1.0"
+reword = "4.0.4"
+viewpump = "2.1.1"
+worldcountrydata = "1.5.3"
+phoenix = "3.0.0"
+
+joda = "2.13.1"
+moshi = "3.0.0"
+moshi-kotlin = "1.15.2"
+timber = "5.0.1"
+work = "2.10.5"
+threetenabp = "1.4.9"
+lifecycleRuntimeKtx = "2.9.4"
+activityCompose = "1.11.0"
+composeBom = "2025.10.00"
+
+country-code-picker = "2.7.3"
+
+sonar = "7.0.1.6134"
+detekt = "1.23.8"
+
+debug-db = "v1.0.6"
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-work = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }
+androidx-multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
+androidx-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigation" }
+androidx-navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigation" }
+
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
+#firebase-crashlytics-ndk = { module = "com.google.firebase:firebase-crashlytics-ndk" }
+#firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-installations = { group = "com.google.firebase", name = "firebase-installations", version.ref = "firebase-installations" }
+
+
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+
+#rxjava = { group = "io.reactivex.rxjava2", name = "rxjava", version.ref = "rxjava" }
+#rxandroid = { group = "io.reactivex.rxjava2", name = "rxandroid", version.ref = "rxandroid" }
+
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+
+
+#glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+#glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
+#
+#coil = { group = "io.coil-kt.coil3", name = "coil", version.ref = "coil" }
+#coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
+#
+#
+#sentry-android = { group = "io.sentry", name = "sentry-android", version.ref = "sentry" }
+
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+#okhttp-inteceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+#conscrypt = { group = "org.conscrypt", name = "conscrypt", version.ref = "conscrypt-android" }
+
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+moshi-converter = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "moshi" }
+moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi-kotlin" }
+moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi-kotlin" }
+
+
+#converter-jackson = { group = "com.squareup.retrofit2", name = "converter-jackson", version.ref = "retrofit" }
+#jackson-core = { group = "com.fasterxml.jackson.core", name = "jackson-core", version.ref = "jackson" }
+#jackson-annotations = { group = "com.fasterxml.jackson.core", name = "jackson-annotations", version.ref = "jackson" }
+#jackson-databind = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson" }
+#jackson-module-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version.ref = "jackson" }
+#
+
+
+material-stepper = { group = "com.github.stepstone-tech.android-material-stepper", name = "material-stepper", version.ref = "stepper" }
+
+mapbox-sdk = { group = "com.mapbox.mapboxsdk", name = "mapbox-android-sdk", version.ref = "mapbox-sdk" }
+mapbox-annotation = { group = "com.mapbox.mapboxsdk", name = "mapbox-android-plugin-annotation-v9", version.ref = "mapbox-annotation" }
+mapbox-places = { group = "com.mapbox.mapboxsdk", name = "mapbox-android-plugin-places-v9", version.ref = "mapbox-places" }
+
+applocale = { group = "dev.b3nedikt.applocale", name = "applocale", version.ref = "applocale" }
+reword = { group = "dev.b3nedikt.reword", name = "reword", version.ref = "reword" }
+viewpump = { group = "io.github.inflationx", name = "viewpump", version.ref = "viewpump" }
+worldcountrydata = { group = "com.github.blongho", name = "worldCountryData", version.ref = "worldcountrydata" }
+
+android-joda = { group = "net.danlew", name = "android.joda", version.ref = "joda" }
+
+process-phoenix = { group = "com.jakewharton", name = "process-phoenix", version.ref = "phoenix" }
+jakewharton-timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+jakewharton-threetenabp = { group = "com.jakewharton.threetenabp", name = "threetenabp", version.ref = "threetenabp" }
+
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+
+country-code-picker = { group = "com.hbb20", name = "ccp", version.ref = "country-code-picker" }
+
+debug-db = { group = "com.github.amitshekhariitbhu.Android-Debug-Database", name = "debug-db", version.ref = "debug-db" }
+
+stetho = { group = "com.facebook.stetho", name = "stetho", version.ref = "stetho" }
+stetho-okhttp = { group = "com.facebook.stetho", name = "stetho-okhttp3", version.ref = "stetho" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt" } # ✅ No version here
+kotlin-parcelize = { id = "kotlin-parcelize" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+#kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+sentry-gradle = { id = "io.sentry.android.gradle", version.ref = "sentry-gradle" }
+uzzu-env = { id = "co.uzzu.dotenv.gradle", version.ref = "env" }
+
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
+#firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-plugin" }
+
+sonarqube = { id = "org.sonarqube", version.ref = "sonar" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+
+
+[bundles]
+androidx-navigation = [
+    "androidx-navigation-fragment",
+    "androidx-navigation-ui"
+]

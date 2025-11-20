@@ -1,62 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tillage_scroll_view"
+    android:id="@+id/layoutPlantingDates"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:padding="@dimen/spacing_medium"
-    tools:context=".views.fragments.TillageOperationFragment">
+    android:padding="@dimen/spacing_large"
+    tools:context=".ui.fragments.TillageOperationFragment">
+
 
     <LinearLayout
-        android:id="@+id/tillage_root_layout"
+        android:id="@+id/lyt_tillage_operations"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/tillage_header_image"
-            android:layout_width="@dimen/dimen_250"
-            android:layout_height="@dimen/dimen_250"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:contentDescription="@string/app_name"
-            app:srcCompat="@drawable/ic_land_practices" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tillage_title_text"
+        <TextView
+            android:id="@+id/titleTillageOperation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_large"
             android:text="@string/lbl_which_of_these_tillage_operations_do_you_perform"
-            android:textAlignment="center"
-            android:textSize="@dimen/font_size_18" />
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant" />
 
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/tillage_operations_group"
+        <LinearLayout
+            android:id="@+id/container_tillage_operations"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
             android:orientation="vertical"
-            android:padding="@dimen/spacing_small"
-            app:selectionRequired="false"
-            app:singleSelection="false">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/tillage_btn_ploughing"
-                style="@style/AppMaterialButton.Outline"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/lbl_ploughing" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/tillage_btn_ridging"
-                style="@style/AppMaterialButton.Outline"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/lbl_ridging" />
-        </com.google.android.material.button.MaterialButtonToggleGroup>
+            android:padding="@dimen/spacing_medium" />
 
     </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+
+</ScrollView>

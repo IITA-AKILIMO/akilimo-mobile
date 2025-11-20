@@ -1,35 +1,21 @@
 package com.akilimo.mobile.entities
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.akilimo.mobile.utils.enums.EnumPotatoProduceType
+import com.akilimo.mobile.enums.EnumPotatoProduceType
 
-@Entity(tableName = "potato_markets")
-data class PotatoMarket(
+@Entity(tableName = "potato_market")
+open class PotatoMarket {
 
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
-    var id: Int? = null,
+    var id: Int? = null
+    var produceTypeRadioIndex = 0
+    var potatoUnitOfSaleRadioIndex = 0
+    var potatoUnitPriceRadioIndex = 0
 
-    @ColumnInfo(name = "unit_price")
-    var unitPrice: Double = 0.0,
+    var unitPrice = 0.0
+    var unitWeight: Int = 0
 
-    @ColumnInfo(name = "unit_weight")
-    var unitWeight: Double = 0.0,
-
-    @ColumnInfo(name = "produce_type")
-    var produceType: String = EnumPotatoProduceType.TUBERS.name.lowercase(),
-
-    @ColumnInfo(name = "unit_of_sale")
-    var unitOfSale: String? = null,
-
-    @ColumnInfo(name = "produce_type_idx")
-    var produceTypeIdx: Int = 0,
-
-    @ColumnInfo(name = "potato_unit_of_sale_idx")
-    var potatoUnitOfSaleIdx: Int = 0,
-
-    @ColumnInfo(name = "potato_unit_price_idx")
-    var potatoUnitPriceIdx: Int = 0
-)
+    var produceType: String = EnumPotatoProduceType.TUBERS.produce()
+    var unitOfSale: String? = null
+}
