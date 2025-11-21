@@ -3,7 +3,7 @@ package com.akilimo.mobile.ui.activities
 import android.os.Bundle
 import android.view.View
 import com.akilimo.mobile.base.BaseActivity
-import com.akilimo.mobile.databinding.ActivityDstRecommendationBinding
+import com.akilimo.mobile.databinding.ActivityGetRecommendationBinding
 import com.akilimo.mobile.databinding.BottomSheetFeedbackBinding
 import com.akilimo.mobile.ui.components.ToolbarHelper
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -12,9 +12,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class DstRecommendationActivity : BaseActivity<ActivityDstRecommendationBinding>() {
+class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>() {
 
-    override fun inflateBinding() = ActivityDstRecommendationBinding.inflate(layoutInflater)
+    override fun inflateBinding() = ActivityGetRecommendationBinding.inflate(layoutInflater)
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
         // Setup toolbar
@@ -22,11 +22,11 @@ class DstRecommendationActivity : BaseActivity<ActivityDstRecommendationBinding>
 
 
         // Initial load
-        fetchRecommendation(binding)
+        fetchRecommendation()
 
         // Retry button
         binding.btnRetry.setOnClickListener {
-            fetchRecommendation(binding)
+            fetchRecommendation()
         }
 
         // Feedback FAB
@@ -35,7 +35,7 @@ class DstRecommendationActivity : BaseActivity<ActivityDstRecommendationBinding>
         }
     }
 
-    private fun fetchRecommendation(binding: ActivityDstRecommendationBinding) {
+    private fun fetchRecommendation() {
         // Show loading
         binding.loadingIndicator.visibility = View.VISIBLE
         binding.recommendationCard.visibility = View.GONE
@@ -50,18 +50,17 @@ class DstRecommendationActivity : BaseActivity<ActivityDstRecommendationBinding>
                 val description = "This is a detailed recommendation paragraph fetched from the API."
 
                 withContext(Dispatchers.Main) {
-                    showRecommendation(binding, title, description)
+                    showRecommendation( title, description)
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    showError(binding)
+                    showError()
                 }
             }
         }
     }
 
     private fun showRecommendation(
-        binding: ActivityDstRecommendationBinding,
         title: String,
         description: String
     ) {
@@ -74,7 +73,7 @@ class DstRecommendationActivity : BaseActivity<ActivityDstRecommendationBinding>
         binding.recommendationDescription.text = description
     }
 
-    private fun showError(binding: ActivityDstRecommendationBinding) {
+    private fun showError() {
         binding.loadingIndicator.visibility = View.GONE
         binding.recommendationCard.visibility = View.GONE
         binding.errorState.visibility = View.VISIBLE
@@ -112,7 +111,7 @@ class DstRecommendationActivity : BaseActivity<ActivityDstRecommendationBinding>
                 delay(1000)
                 withContext(Dispatchers.Main) {
                     android.widget.Toast.makeText(
-                        this@DstRecommendationActivity,
+                        this@GetRecommendationActivity,
                         "Feedback submitted: $rating/5",
                         android.widget.Toast.LENGTH_SHORT
                     ).show()
@@ -120,7 +119,7 @@ class DstRecommendationActivity : BaseActivity<ActivityDstRecommendationBinding>
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     android.widget.Toast.makeText(
-                        this@DstRecommendationActivity,
+                        this@GetRecommendationActivity,
                         "Failed to submit feedback",
                         android.widget.Toast.LENGTH_SHORT
                     ).show()
