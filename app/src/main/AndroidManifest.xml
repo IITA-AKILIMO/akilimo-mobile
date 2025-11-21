@@ -2,18 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.akilimo.mobile">
-    <!-- let us add permissions here -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
-    <uses-permission
-        android:name="android.permission.FOREGROUND_SERVICE"
-        tools:ignore="ForegroundServicesPolicy" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"
+        tools:ignore="ForegroundServicesPolicy" />
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 
     <application
         android:name=".AkilimoApp"
@@ -28,79 +28,48 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:icon, android:theme, android:label"
         tools:targetApi="s">
-        <activity
-            android:name=".ui.usecases.InterCropFertilizersActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usecases.DatesActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usecases.WeedControlCostsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usecases.TractorAccessActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usecases.ManualTillageCostActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activities.GetRecommendationActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usecases.CassavaMarketActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usecases.CassavaYieldActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usecases.InvestmentAmountActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usecases.FertilizersActivity"
-            android:exported="false" />
 
+        <!-- Crash reporting (Sentry) -->
         <meta-data
             android:name="io.sentry.dsn"
-            android:value="https://f82045e88773833962622996b32b9c8a@o212209.ingest.us.sentry.io/4510186632314885" /> <!-- Optional: Include user/device info in crash reports -->
+            android:value="https://f82045e88773833962622996b32b9c8a@o212209.ingest.us.sentry.io/4510186632314885" />
         <meta-data
             android:name="io.sentry.send-default-pii"
-            android:value="true" /> <!-- end of sentry -->
+            android:value="true" />
+
+        <!-- Launcher Activity -->
         <activity
             android:name=".ui.activities.HomeStepperActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.activities.MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activities.RecommendationsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activities.LocationPickerActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activities.WeedManagementActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activities.IcSweetPotatoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activities.IcMaizeActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activities.SphActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activities.BppActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activities.FrActivity"
-            android:exported="false" />
-    </application>
 
+        <!-- Core Activities -->
+        <activity android:name=".ui.activities.MainActivity" android:exported="false" />
+        <activity android:name=".ui.activities.RecommendationsActivity" android:exported="false" />
+        <activity android:name=".ui.activities.GetRecommendationActivity" android:exported="false" />
+        <activity android:name=".ui.activities.LocationPickerActivity" android:exported="false" />
+        <activity android:name=".ui.activities.WeedManagementActivity" android:exported="false" />
+        <activity android:name=".ui.activities.IcSweetPotatoActivity" android:exported="false" />
+        <activity android:name=".ui.activities.IcMaizeActivity" android:exported="false" />
+        <activity android:name=".ui.activities.SphActivity" android:exported="false" />
+        <activity android:name=".ui.activities.BppActivity" android:exported="false" />
+        <activity android:name=".ui.activities.FrActivity" android:exported="false" />
+
+        <!-- Use Case Activities -->
+        <activity android:name=".ui.usecases.FertilizersActivity" android:exported="false" />
+        <activity android:name=".ui.usecases.InterCropFertilizersActivity" android:exported="false" />
+        <activity android:name=".ui.usecases.SweetPotatoInterCropFertilizersActivity" android:exported="false" />
+        <activity android:name=".ui.usecases.DatesActivity" android:exported="false" />
+        <activity android:name=".ui.usecases.WeedControlCostsActivity" android:exported="false" />
+        <activity android:name=".ui.usecases.TractorAccessActivity" android:exported="false" />
+        <activity android:name=".ui.usecases.ManualTillageCostActivity" android:exported="false" />
+        <activity android:name=".ui.usecases.CassavaMarketActivity" android:exported="false" />
+        <activity android:name=".ui.usecases.CassavaYieldActivity" android:exported="false" />
+        <activity android:name=".ui.usecases.InvestmentAmountActivity" android:exported="false" />
+
+    </application>
 </manifest>

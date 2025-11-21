@@ -10,10 +10,12 @@ import com.akilimo.mobile.enums.EnumUseCase
 import com.akilimo.mobile.ui.usecases.fertilizer.BaseFertilizerActivity
 import kotlinx.coroutines.flow.Flow
 
-class InterCropFertilizersActivity : BaseFertilizerActivity<ActivityFertilizersBinding>() {
+class SweetPotatoInterCropFertilizersActivity :
+    BaseFertilizerActivity<ActivityFertilizersBinding>() {
 
-    override val useCase = EnumUseCase.CIM
-    override val adviseTask: EnumAdviceTask = EnumAdviceTask.AVAILABLE_FERTILIZERS_CIM
+    override val useCase = EnumUseCase.CIS
+
+    override val adviseTask: EnumAdviceTask = EnumAdviceTask.AVAILABLE_FERTILIZERS_CIS
 
     override fun inflateBinding() = ActivityFertilizersBinding.inflate(layoutInflater)
 
