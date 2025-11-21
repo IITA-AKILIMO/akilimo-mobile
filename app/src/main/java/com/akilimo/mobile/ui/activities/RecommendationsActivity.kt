@@ -33,8 +33,10 @@ class RecommendationsActivity : BaseActivity<ActivityRecommendationsBinding>() {
         // Prepare dynamic recommendation list
         val adviceOptions = listOf(
 //            AdviceOption(EnumAdvice.FR),
-            AdviceOption(EnumAdvice.BPP),
-//            AdviceOption(EnumAdvice.SPH)
+//            AdviceOption(EnumAdvice.BPP),
+            AdviceOption(EnumAdvice.SPH),
+            AdviceOption(EnumAdvice.IC_MAIZE),
+            AdviceOption(EnumAdvice.IC_SWEET_POTATO),
         )
 
         // Setup RecyclerView
