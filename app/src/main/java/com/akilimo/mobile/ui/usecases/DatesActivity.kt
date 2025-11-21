@@ -212,16 +212,22 @@ class DatesActivity : BaseActivity<ActivityAlternativePlantingScheduleBinding>()
 
         safeScope.launch {
             val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
-            user.plantingDate = plantingDate
-            user.harvestDate = harvestDate
-            user.plantingFlex =
+            val plantingFlex =
                 flexOptions.find { it.displayLabel == dropPlantingFlex.text.toString() }?.valueOption
                     ?: 0
-            user.harvestFlex =
+            val harvestFlex =
                 flexOptions.find { it.displayLabel == dropHarvestFlex.text.toString() }?.valueOption
                     ?: 0
-            user.providedAlterNativeDate = alternativeDate
-            userRepo.saveOrUpdateUser(user, sessionManager.akilimoUser)
+
+            userRepo.saveOrUpdateUser(
+                user.copy(
+                    plantingDate = plantingDate,
+                    harvestDate = harvestDate,
+                    plantingFlex = plantingFlex,
+                    harvestFlex = harvestFlex,
+                    providedAlterNativeDate = alternativeDate
+                ), sessionManager.akilimoUser
+            )
 
             val completion =
                 AdviceCompletionDto(EnumAdviceTask.PLANTING_AND_HARVEST, EnumStepStatus.COMPLETED)

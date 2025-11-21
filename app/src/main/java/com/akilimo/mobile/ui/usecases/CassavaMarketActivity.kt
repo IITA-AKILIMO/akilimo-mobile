@@ -131,7 +131,7 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
                 val marketPrice = marketWithDetails?.marketPrice
                 val selectedMarket = marketWithDetails?.selectedCassavaMarket
 
-                val countryCode = user.farmCountry ?: return@launch
+                val countryCode = user.enumCountry ?: return@launch
                 val uos = EnumUnitOfSale.entries.find {
                     it.name.equals(unit.label, ignoreCase = true)
                 } ?: EnumUnitOfSale.NA

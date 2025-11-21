@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.akilimo.mobile.entities.Fertilizer
+import com.akilimo.mobile.enums.EnumCountry
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -17,7 +18,7 @@ interface FertilizerDao {
     fun observeAll(): Flow<List<Fertilizer>>
 
     @Query("SELECT * FROM fertilizers WHERE country_code = :countryCode AND available = 1 ORDER BY sort_order ASC")
-    fun observeAllByCountry(countryCode: String): Flow<List<Fertilizer>>
+    fun observeAllByCountry(countryCode: EnumCountry): Flow<List<Fertilizer>>
 
 
     @Query("SELECT * FROM fertilizers WHERE available = 1")
@@ -30,13 +31,13 @@ interface FertilizerDao {
     fun findByType(fertilizerType: String): Fertilizer?
 
     @Query("select * from fertilizers where type=:fertilizerType and country_code=:countryCode AND available = 1 limit 1")
-    fun findOneByTypeAndCountry(fertilizerType: String?, countryCode: String): Fertilizer?
+    fun findOneByTypeAndCountry(fertilizerType: String?, countryCode: EnumCountry): Fertilizer?
 
     @Query("SELECT * FROM fertilizers where country_code=:countryCode AND available = 1 ORDER BY sort_order ASC")
-    fun findAllSelectedByCountry(countryCode: String): List<Fertilizer>
+    fun findAllSelectedByCountry(countryCode: EnumCountry): List<Fertilizer>
 
     @Query("SELECT * FROM fertilizers where country_code=:countryCode AND available = 1 ORDER BY sort_order ASC")
-    fun findAllByCountry(countryCode: String): List<Fertilizer>
+    fun findAllByCountry(countryCode: EnumCountry): List<Fertilizer>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(fertilizer: Fertilizer): Long

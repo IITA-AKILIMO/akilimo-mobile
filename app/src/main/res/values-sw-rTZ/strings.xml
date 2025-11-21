@@ -75,7 +75,7 @@
     <string name="lbl_intercropping">Kilimo mchanganyiko</string>
     <string name="lbl_intercropping_maize">Kilimo mchanganyiko cha  muhogo na mahindi</string>
     <string name="lbl_intercropping_sweet_potato">Kilimo mchanganyiko cha  muhogo na viazi vitamu</string>
-    <string name="lbl_scheduled_planting_and_harvest">Utofauti wa kupanda na kuvuna</string>
+    <string name="lbl_scheduled_planting_and_high_starch">Upandaji uliopangwa na kiwango kikubwa cha wanga</string>
     <string name="lbl_best_planting_practices">Mbinu bora za kilimo</string>
     <string name="lbl_weed_management">Udhibiti wa magugu</string>
     <string name="lbl_available_fertilizers">Je? Ni mbolea zipi zinapatikana karibu na eneo lako?</string>

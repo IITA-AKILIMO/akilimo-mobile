@@ -10,8 +10,11 @@ class AkilimoUserRepo(private val dao: AkilimoUserDao) {
         if (existing != null) {
             dao.update(user)
         } else {
-            user.userName = userName
-            dao.insert(user)
+            dao.insert(
+                user.copy(
+                    userName = userName
+                )
+            )
         }
     }
 

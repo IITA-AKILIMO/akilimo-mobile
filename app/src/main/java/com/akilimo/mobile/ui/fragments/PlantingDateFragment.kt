@@ -103,6 +103,7 @@ class PlantingDateFragment : BaseStepFragment<FragmentPlantingDateBinding>() {
             }
         }.show()
     }
+
     private fun showHarvestDatePicker() {
         val planting = plantingDate ?: run {
             Toast.makeText(
@@ -188,12 +189,17 @@ class PlantingDateFragment : BaseStepFragment<FragmentPlantingDateBinding>() {
 
 
         safeScope.launch {
-            val user = userRepository.getUser(sessionManager.akilimoUser) ?: AkilimoUser()
-            user.plantingDate = plantingDate
-            user.harvestDate = harvestDate
-            user.plantingFlex = plantingFlex
-            user.harvestFlex = harvestFlex
-            userRepository.saveOrUpdateUser(user, sessionManager.akilimoUser)
+            val user = userRepository.getUser(sessionManager.akilimoUser) ?: AkilimoUser(
+                userName = sessionManager.akilimoUser
+            )
+            userRepository.saveOrUpdateUser(
+                user.copy(
+                    plantingDate = plantingDate,
+                    harvestDate = harvestDate,
+                    plantingFlex = plantingFlex,
+                    harvestFlex = harvestFlex
+                ), sessionManager.akilimoUser
+            )
         }
 
         return null

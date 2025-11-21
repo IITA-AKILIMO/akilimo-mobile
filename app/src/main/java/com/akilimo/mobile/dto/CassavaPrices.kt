@@ -1,6 +1,7 @@
 package com.akilimo.mobile.dto
 
 import com.akilimo.mobile.entities.CassavaMarketPrice
+import com.akilimo.mobile.enums.EnumCountry
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -28,7 +29,7 @@ data class CassavaPriceDto(
 ) {
     fun toEntity() = CassavaMarketPrice(
         id = this.id,
-        countryCode = this.countryCode,
+        countryCode = EnumCountry.fromCode(this.countryCode),
         currencyCode = currency?.currencyCode.orEmpty(),
         currencySymbol = currency?.currencySymbol.orEmpty(),
         minLocalPrice = this.minLocalPrice,

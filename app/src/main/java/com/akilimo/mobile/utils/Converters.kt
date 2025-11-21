@@ -6,6 +6,7 @@ import com.akilimo.mobile.enums.EnumAdvice
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.enums.EnumCassavaProduceType
+import com.akilimo.mobile.enums.EnumCountry
 import com.akilimo.mobile.enums.EnumStepStatus
 import com.akilimo.mobile.enums.EnumUnitOfSale
 import com.akilimo.mobile.enums.EnumWeedControlMethod
@@ -42,6 +43,15 @@ object EnumTillageConverters {
         return gson.fromJson(value, object : TypeToken<List<OperationEntry>>() {}.type)
     }
 
+}
+
+class EnumCountryConverter {
+    @TypeConverter
+    fun fromEnum(value: EnumCountry?): String? = EnumTypeConverter.fromEnum(value)
+
+    @TypeConverter
+    fun toEnum(value: String?): EnumCountry? =
+        EnumTypeConverter.toEnum(value, EnumCountry::class.java)
 }
 
 class EnumAreaUnitConverter {

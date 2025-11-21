@@ -102,12 +102,17 @@ class LocationFragment : BaseStepFragment<FragmentLocationBinding>() {
         val formatted = "Lat: %.5f, Lng: %.5f".format(lat, lng)
         binding.textLocationInfo.text = formatted
         lifecycleScope.launch {
-            val user = userRepository.getUser(sessionManager.akilimoUser) ?: AkilimoUser()
-            user.latitude = lat
-            user.longitude = lng
-            user.altitude = alt
-            user.zoomLevel = zoom
-            userRepository.saveOrUpdateUser(user, sessionManager.akilimoUser)
+            val user = userRepository.getUser(sessionManager.akilimoUser) ?: AkilimoUser(
+                userName = sessionManager.akilimoUser
+            )
+            userRepository.saveOrUpdateUser(
+                user.copy(
+                    latitude = lat,
+                    longitude = lng,
+                    altitude = alt,
+                    zoomLevel = zoom
+                ), sessionManager.akilimoUser
+            )
         }
 
     }

@@ -12,11 +12,18 @@ enum class EnumCountry(
 
     NG("Nigeria", "NGN"),
     TZ("Tanzania", "TZS"),
-//    KE("Kenya", "KES"),
     GH("Ghana", "GHS"),
     RW("Rwanda", "RWF"),
-    BI("Burundi", "BIF");
+    BI("Burundi", "BIF"),
+    Unsupported("", "");
 
 
     fun currencyName(): String = Currency.getInstance(currencyCode).displayName
+
+    companion object {
+        fun fromCode(code: String?): EnumCountry {
+            if (code.isNullOrBlank()) return Unsupported
+            return entries.firstOrNull { it.name.equals(code, ignoreCase = true) } ?: Unsupported
+        }
+    }
 }

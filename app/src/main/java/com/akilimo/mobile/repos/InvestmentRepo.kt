@@ -2,6 +2,7 @@ package com.akilimo.mobile.repos
 
 import com.akilimo.mobile.dao.InvestmentAmountDao
 import com.akilimo.mobile.entities.InvestmentAmount
+import com.akilimo.mobile.enums.EnumCountry
 import kotlinx.coroutines.flow.Flow
 
 class InvestmentRepo(private val dao: InvestmentAmountDao) {
@@ -9,7 +10,7 @@ class InvestmentRepo(private val dao: InvestmentAmountDao) {
         return dao.observeAll()
     }
 
-    fun observeAllByCountry(countryCode: String): Flow<List<InvestmentAmount>> {
+    fun observeAllByCountry(countryCode: EnumCountry): Flow<List<InvestmentAmount>> {
         return dao.observeAllByCountry(countryCode)
     }
 

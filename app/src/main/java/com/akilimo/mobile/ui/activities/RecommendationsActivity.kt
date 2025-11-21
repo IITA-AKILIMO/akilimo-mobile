@@ -8,7 +8,6 @@ import com.akilimo.mobile.adapters.RecommendationAdapter
 import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.databinding.ActivityRecommendationsBinding
 import com.akilimo.mobile.dto.AdviceOption
-import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.enums.EnumAdvice
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.ui.components.CollapsibleToolbarHelper
@@ -32,12 +31,16 @@ class RecommendationsActivity : BaseActivity<ActivityRecommendationsBinding>() {
 
         // Prepare dynamic recommendation list
         val adviceOptions = listOf(
-//            AdviceOption(EnumAdvice.FR),
-//            AdviceOption(EnumAdvice.BPP),
-            AdviceOption(EnumAdvice.SPH),
-            AdviceOption(EnumAdvice.IC_MAIZE),
-            AdviceOption(EnumAdvice.IC_SWEET_POTATO),
+            AdviceOption(EnumAdvice.FERTILIZER_RECOMMENDATIONS),
+            AdviceOption(EnumAdvice.BEST_PLANTING_PRACTICES),
+            AdviceOption(EnumAdvice.SCHEDULED_PLANTING_HIGH_STARCH),
+//            AdviceOption(EnumAdvice.INTERCROPPING_MAIZE),
+//            AdviceOption(EnumAdvice.INTERCROPPING_SWEET_POTATO),
         )
+
+        safeScope.launch {
+            val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
+        }
 
         // Setup RecyclerView
         val recAdapter = RecommendationAdapter<EnumAdvice>(
@@ -50,19 +53,29 @@ class RecommendationsActivity : BaseActivity<ActivityRecommendationsBinding>() {
                     .show()
 
                 val intent = when (selected.valueOption) {
-                    EnumAdvice.FR -> Intent(this, FrActivity::class.java)
-                    EnumAdvice.BPP -> Intent(this, BppActivity::class.java)
-                    EnumAdvice.SPH -> Intent(this, SphActivity::class.java)
-                    EnumAdvice.IC_MAIZE -> Intent(this, IcMaizeActivity::class.java)
-                    EnumAdvice.IC_SWEET_POTATO -> Intent(this, IcSweetPotatoActivity::class.java)
+                    EnumAdvice.FERTILIZER_RECOMMENDATIONS -> Intent(this, FrActivity::class.java)
+                    EnumAdvice.BEST_PLANTING_PRACTICES -> Intent(this, BppActivity::class.java)
+                    EnumAdvice.SCHEDULED_PLANTING_HIGH_STARCH -> Intent(
+                        this,
+                        SphActivity::class.java
+                    )
+
+                    EnumAdvice.INTERCROPPING_MAIZE -> Intent(this, IcMaizeActivity::class.java)
+                    EnumAdvice.INTERCROPPING_SWEET_POTATO -> Intent(
+                        this,
+                        IcSweetPotatoActivity::class.java
+                    )
+
                     else -> null
                 }
 
                 //track the active use case
                 safeScope.launch {
-                    val user = userRepo.getUser(sessionManager.akilimoUser) ?: AkilimoUser()
-                    user.activeAdvise = selected.valueOption
-                    userRepo.saveOrUpdateUser(user, sessionManager.akilimoUser)
+                    val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
+                    val updated = user.copy(
+                        activeAdvise = selected.valueOption
+                    )
+                    userRepo.saveOrUpdateUser(updated, sessionManager.akilimoUser)
                 }
 
                 intent?.let { openActivity(it) }

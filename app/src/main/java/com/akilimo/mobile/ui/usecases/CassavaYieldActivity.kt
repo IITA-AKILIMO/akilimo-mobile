@@ -89,7 +89,7 @@ class CassavaYieldActivity : BaseActivity<ActivityCassavaYieldBinding>() {
                 it == areaUnit
             } ?: EnumAreaUnit.ACRE
 
-            val useCase = user.activeAdvise ?: EnumAdvice.FR
+            val useCase = user.activeAdvise ?: EnumAdvice.FERTILIZER_RECOMMENDATIONS
 
             val tonnage = when (enumAreaUnit) {
                 EnumAreaUnit.ARE -> getString(R.string.lbl_are_yield)
@@ -98,7 +98,7 @@ class CassavaYieldActivity : BaseActivity<ActivityCassavaYieldBinding>() {
             }
 
             var title = getString(R.string.lbl_typical_yield_question, tonnage)
-            if (useCase == EnumAdvice.FR) {
+            if (useCase == EnumAdvice.FERTILIZER_RECOMMENDATIONS) {
                 title = getString(R.string.lbl_typical_yield_question_fr, tonnage)
             }
 

@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_medium"
                 android:gravity="center"
-                android:text="@string/lbl_scheduled_planting_and_harvest"
+                android:text="@string/lbl_scheduled_planting_and_high_starch"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

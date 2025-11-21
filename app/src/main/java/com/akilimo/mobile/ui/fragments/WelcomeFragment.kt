@@ -62,9 +62,15 @@ class WelcomeFragment : BaseStepFragment<FragmentWelcomeBinding>() {
                 ?: Locales.English.language
 
         safeScope.launch {
-            val user = userRepository.getUser(sessionManager.akilimoUser) ?: AkilimoUser()
-            user.languageCode = langCode
-            userRepository.saveOrUpdateUser(user, sessionManager.akilimoUser)
+            val user = userRepository.getUser(sessionManager.akilimoUser) ?: AkilimoUser(
+                userName = sessionManager.akilimoUser
+            )
+
+            userRepository.saveOrUpdateUser(
+                user.copy(
+                    languageCode = langCode
+                ), sessionManager.akilimoUser
+            )
         }
         return null
     }

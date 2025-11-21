@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.akilimo.mobile.entities.InvestmentAmount
+import com.akilimo.mobile.enums.EnumCountry
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -17,14 +18,14 @@ interface InvestmentAmountDao {
     fun observeAll(): Flow<List<InvestmentAmount>>
 
     @Query("SELECT * FROM investment_amounts WHERE country_code = :countryCode AND active = 1 ORDER BY sort_order ASC")
-    fun observeAllByCountry(countryCode: String): Flow<List<InvestmentAmount>>
+    fun observeAllByCountry(countryCode: EnumCountry): Flow<List<InvestmentAmount>>
 
 
     @Query("SELECT * FROM investment_amounts WHERE id = :id LIMIT 1")
     fun findOne(id: Int): InvestmentAmount?
 
     @Query("SELECT * FROM investment_amounts WHERE country_code = :countryCode ORDER BY sort_order ASC")
-    fun getByCountry(countryCode: String): List<InvestmentAmount>
+    fun getByCountry(countryCode: EnumCountry): List<InvestmentAmount>
 
     @Query("SELECT * FROM investment_amounts WHERE active = 1 ORDER BY sort_order ASC")
     fun getActive(): List<InvestmentAmount>

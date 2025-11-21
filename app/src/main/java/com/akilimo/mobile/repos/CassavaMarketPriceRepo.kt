@@ -2,6 +2,7 @@ package com.akilimo.mobile.repos
 
 import com.akilimo.mobile.dao.CassavaMarketPriceDao
 import com.akilimo.mobile.entities.CassavaMarketPrice
+import com.akilimo.mobile.enums.EnumCountry
 import kotlinx.coroutines.flow.Flow
 
 class CassavaMarketPriceRepo(
@@ -17,12 +18,12 @@ class CassavaMarketPriceRepo(
         }
     }
 
-    fun getPricesByCountry(countryCode: String): List<CassavaMarketPrice> {
+    fun getPricesByCountry(countryCode: EnumCountry): List<CassavaMarketPrice> {
         return dao.getPricesByCountry(countryCode)
     }
 
 
     fun observeAll(): Flow<List<CassavaMarketPrice>> = dao.observeAll()
-    fun observeByCountry(countryCode: String): Flow<List<CassavaMarketPrice>> =
+    fun observeByCountry(countryCode: EnumCountry): Flow<List<CassavaMarketPrice>> =
         dao.observeByCountry(countryCode)
 }

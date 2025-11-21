@@ -108,7 +108,7 @@
 
     <string name="lbl_intercropping_maize">Cassava maize intercrop</string>
     <string name="lbl_intercropping_sweet_potato">Cassava sweet potato intercrop</string>
-    <string name="lbl_scheduled_planting_and_harvest">Scheduled planting and harvest</string>
+    <string name="lbl_scheduled_planting_and_high_starch">Scheduled planting and high starch</string>
     <string name="lbl_best_planting_practices">Best planting practices</string>
     <string name="lbl_weed_management">Weed management</string>
 
@@ -117,7 +117,7 @@
         <item>@string/lbl_fertilizer_recommendations</item>
         <item>@string/lbl_intercropping_maize</item>
         <item>@string/lbl_intercropping_sweet_potato</item>
-        <item>@string/lbl_scheduled_planting_and_harvest</item>
+        <item>@string/lbl_scheduled_planting_and_high_starch</item>
         <item>@string/lbl_weed_management</item>
     </string-array>
     <string name="dummy_button" translatable="false">Dummy Button</string>

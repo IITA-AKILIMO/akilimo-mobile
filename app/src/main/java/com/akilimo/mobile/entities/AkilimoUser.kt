@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 import com.akilimo.mobile.dto.OperationEntry
 import com.akilimo.mobile.enums.EnumAdvice
 import com.akilimo.mobile.enums.EnumAreaUnit
+import com.akilimo.mobile.enums.EnumCountry
 import com.akilimo.mobile.enums.EnumInvestmentPref
 import java.time.LocalDate
 import java.util.Locale
@@ -15,105 +16,105 @@ import java.util.Locale
     tableName = "akilimo_users",
     indices = [Index(value = ["user_name"], unique = true)]
 )
-open class AkilimoUser {
+data class AkilimoUser(
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    var id: Int? = null
+    val id: Int? = null,
 
     @ColumnInfo(name = "device_token")
-    var deviceToken: String? = null
+    val deviceToken: String? = null,
 
     @ColumnInfo(name = "user_name")
-    var userName: String? = null
+    val userName: String,
 
     @ColumnInfo(name = "first_name")
-    var firstName: String? = null
+    val firstName: String? = null,
 
     @ColumnInfo(name = "last_name")
-    var lastName: String? = null
+    val lastName: String? = null,
 
     @ColumnInfo(name = "email")
-    var email: String? = null
+    val email: String? = null,
 
     @ColumnInfo(name = "mobile_number")
-    var mobileNumber: String? = null
+    val mobileNumber: String? = null,
 
     @ColumnInfo(name = "mobile_country_code")
-    var mobileCountryCode: String? = null
+    val mobileCountryCode: String? = null,
 
     @ColumnInfo(name = "farm_name")
-    var farmName: String? = null
+    val farmName: String? = null,
 
     @ColumnInfo(name = "farm_country")
-    var farmCountry: String? = null
+    val enumCountry: EnumCountry = EnumCountry.Unsupported,
 
     @ColumnInfo(name = "farm_size_unit")
-    var enumAreaUnit: EnumAreaUnit? = null
+    val enumAreaUnit: EnumAreaUnit = EnumAreaUnit.ACRE,
 
     @ColumnInfo(name = "farm_size")
-    var farmSize: Double? = null
+    val farmSize: Double = 1.0,
 
     @ColumnInfo(name = "custom_farm_size")
-    var customFarmSize: Boolean? = null
+    val customFarmSize: Boolean? = null,
 
     @ColumnInfo(name = "farm_description")
-    var farmDescription: String? = null
+    val farmDescription: String? = null,
 
     @ColumnInfo(name = "latitude")
-    var latitude: Double = 0.0
+    val latitude: Double = 0.0,
 
     @ColumnInfo(name = "longitude")
-    var longitude: Double = 0.0
+    val longitude: Double = 0.0,
 
     @ColumnInfo(name = "altitude")
-    var altitude: Double = 0.0
+    val altitude: Double = 0.0,
 
     @ColumnInfo(name = "zoom_level")
-    var zoomLevel: Double = 0.0
+    val zoomLevel: Double = 0.0,
 
     @ColumnInfo(name = "gender")
-    var gender: String? = null
+    val gender: String? = null,
 
     @ColumnInfo(name = "akilimo_interest")
-    var akilimoInterest: String? = null
+    val akilimoInterest: String? = null,
 
     @ColumnInfo(name = "send_email")
-    var sendEmail: Boolean = false
+    val sendEmail: Boolean = false,
 
     @ColumnInfo(name = "send_sms")
-    var sendSms: Boolean = false
+    val sendSms: Boolean = false,
 
     @ColumnInfo(name = "language_code")
-    var languageCode: String? = null
+    val languageCode: String? = null,
 
     @ColumnInfo(name = "risk_att")
-    var riskAtt: Int = 0
+    val riskAtt: Int = 0,
 
     @ColumnInfo(name = "planting_date")
-    var plantingDate: LocalDate? = null
+    val plantingDate: LocalDate? = null,
 
     @ColumnInfo(name = "harvest_date")
-    var harvestDate: LocalDate? = null
+    val harvestDate: LocalDate? = null,
 
     @ColumnInfo(name = "planting_flex")
-    var plantingFlex: Long = 0L
+    val plantingFlex: Long = 0L,
 
     @ColumnInfo(name = "harvest_flex")
-    var harvestFlex: Long = 0L
+    val harvestFlex: Long = 0L,
 
     @ColumnInfo(name = "provided_alternative_date")
-    var providedAlterNativeDate: Boolean = false
+    val providedAlterNativeDate: Boolean = false,
 
     @ColumnInfo(name = "tillage_operations")
-    var tillageOperations: List<OperationEntry> = emptyList()
+    val tillageOperations: List<OperationEntry> = emptyList(),
 
     @ColumnInfo(name = "investment_preferences")
-    var investmentPref: EnumInvestmentPref? = null
+    val investmentPref: EnumInvestmentPref? = null,
 
     @ColumnInfo(name = "active_use_case")
-    var activeAdvise: EnumAdvice? = null
-
+    val activeAdvise: EnumAdvice? = null
+) {
     fun getNames(): String {
         val f = firstName?.trim().orEmpty()
         val l = lastName?.trim().orEmpty()
@@ -124,5 +125,4 @@ open class AkilimoUser {
             else -> "Akilimo User"
         }
     }
-
 }

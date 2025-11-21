@@ -58,7 +58,7 @@ class InvestmentPrefFragment : BaseStepFragment<FragmentInvestmentPrefBinding>()
         val investmentPrefAdapter = ValueOptionAdapter(requireContext(), investmentPrefs)
         binding.dropInvestmentPref.setAdapter(investmentPrefAdapter)
         binding.dropInvestmentPref.setOnItemClickListener { _, _, position, _ ->
-            val selected = investmentPrefAdapter.getItem(position)?: return@setOnItemClickListener
+            val selected = investmentPrefAdapter.getItem(position) ?: return@setOnItemClickListener
             binding.dropInvestmentPref.setText(selected.displayLabel, false)
         }
     }
@@ -88,9 +88,14 @@ class InvestmentPrefFragment : BaseStepFragment<FragmentInvestmentPrefBinding>()
         }
 
         safeScope.launch {
-            val user = userRepository.getUser(sessionManager.akilimoUser) ?: AkilimoUser()
-            user.investmentPref = investmentPref
-            userRepository.saveOrUpdateUser(user, sessionManager.akilimoUser)
+            val user = userRepository.getUser(sessionManager.akilimoUser) ?: AkilimoUser(
+                userName = sessionManager.akilimoUser
+            )
+            userRepository.saveOrUpdateUser(
+                user.copy(
+                    investmentPref = investmentPref
+                ), sessionManager.akilimoUser
+            )
         }
 
         return null

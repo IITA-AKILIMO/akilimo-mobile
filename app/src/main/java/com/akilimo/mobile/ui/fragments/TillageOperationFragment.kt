@@ -77,13 +77,16 @@ class TillageOperationFragment : BaseStepFragment<FragmentTillageOperationBindin
 
         val methodAdapter = ValueOptionAdapter(requireContext(), allMethods)
         allOperations.forEach { operation ->
-            ItemTillageOperationBinding.inflate(layoutInflater, binding.containerTillageOperations, true)
+            ItemTillageOperationBinding.inflate(
+                layoutInflater,
+                binding.containerTillageOperations,
+                true
+            )
                 .also { row ->
                     operationBindings[operation.valueOption] = row
                     setupOperationRow(row, operation, methodAdapter)
                 }
         }
-
 
 
     }
@@ -146,9 +149,15 @@ class TillageOperationFragment : BaseStepFragment<FragmentTillageOperationBindin
         }
 
         safeScope.launch {
-            val user = userRepository.getUser(sessionManager.akilimoUser) ?: AkilimoUser()
-            user.tillageOperations = selectedEntries.values.toList()
-            userRepository.saveOrUpdateUser(user, sessionManager.akilimoUser)
+            val user = userRepository.getUser(sessionManager.akilimoUser) ?: AkilimoUser(
+                userName = sessionManager.akilimoUser
+            )
+
+            userRepository.saveOrUpdateUser(
+                user.copy(
+                    tillageOperations = selectedEntries.values.toList()
+                ), sessionManager.akilimoUser
+            )
         }
 
         return null

@@ -47,8 +47,8 @@ class SummaryFragment : BaseStepFragment<FragmentSummaryBinding>() {
 
             addSection("🏡 Farm Details") {
                 addRow("Farm Name", user.farmName)
-                addRow("Country", user.farmCountry)
-                addRow("Size", "${user.farmSize ?: 0.0} ${user.enumAreaUnit ?: ""}")
+                addRow("Country", user.enumCountry.countryName)
+                addRow("Size", "${user.farmSize} ${user.enumAreaUnit}")
                 addRow("Description", user.farmDescription)
                 addRow(
                     "Location",

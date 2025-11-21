@@ -111,7 +111,7 @@ class FertilizersActivity : BaseActivity<ActivityFertilizersBinding>() {
     private fun observeFertilizers() = safeScope.launch {
         val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
         val userId = user.id ?: return@launch
-        val country = user.farmCountry.orEmpty()
+        val country = user.enumCountry
 
         launch {
             fertilizerRepo.observeByCountry(country).collectLatest { fertilizers ->

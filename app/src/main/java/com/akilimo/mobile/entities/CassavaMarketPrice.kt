@@ -5,13 +5,14 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.akilimo.mobile.base.BaseEntity
+import com.akilimo.mobile.enums.EnumCountry
 
 
 @Entity(tableName = "cassava_market_prices")
 data class CassavaMarketPrice(
     @PrimaryKey
     @ColumnInfo(name = "id") val id: Int,
-    @ColumnInfo(name = "country_code") val countryCode: String,
+    @ColumnInfo(name = "country_code") val countryCode: EnumCountry,
     @ColumnInfo(name = "currency_code") val currencyCode: String,
     @ColumnInfo(name = "currency_symbol") val currencySymbol: String,
     @ColumnInfo(name = "min_local_price") val minLocalPrice: Double,

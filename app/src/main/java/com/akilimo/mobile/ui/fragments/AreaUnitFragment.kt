@@ -66,8 +66,8 @@ class AreaUnitFragment : BaseStepFragment<FragmentAreaUnitBinding>() {
         )
 
         safeScope.launch {
-            val user = userRepo.getUser(sessionManager.akilimoUser)
-            val countryCode = user?.farmCountry.orEmpty()
+            val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
+            val countryCode = user.enumCountry
 
             areaUnitOptions.add(
                 AreaUnitOption(
@@ -87,7 +87,7 @@ class AreaUnitFragment : BaseStepFragment<FragmentAreaUnitBinding>() {
                     EnumAreaUnit.M2
                 )
             )
-            if (countryCode == EnumCountry.RW.name) {
+            if (countryCode == EnumCountry.RW) {
                 areaUnitOptions.add(
                     AreaUnitOption(
                         getString(R.string.area_unit_are),
@@ -138,7 +138,12 @@ class AreaUnitFragment : BaseStepFragment<FragmentAreaUnitBinding>() {
             val areaUnit = user.enumAreaUnit
 
             val unit =
-                EnumAreaUnit.entries.firstOrNull { it.name.equals(areaUnit?.name, ignoreCase = true) }
+                EnumAreaUnit.entries.firstOrNull {
+                    it.name.equals(
+                        areaUnit?.name,
+                        ignoreCase = true
+                    )
+                }
 
 
             val options = convertFieldSizes(unit)
@@ -197,11 +202,13 @@ class AreaUnitFragment : BaseStepFragment<FragmentAreaUnitBinding>() {
 
     override fun verifyStep(): VerificationError? = with(binding) {
         val selectedUnitLabel = dropAreaUnit.text.toString()
-        val enumAreaUnits = areaUnitOptions.find { it.displayLabel == selectedUnitLabel }?.valueOption
+        val enumAreaUnits =
+            areaUnitOptions.find { it.displayLabel == selectedUnitLabel }?.valueOption
 
         val options = convertFieldSizes(enumAreaUnits)
         val selectedSizeLabel = dropFieldSizeOptions.text.toString()
-        val selectedFieldSize = options.find { it.displayLabel == selectedSizeLabel }?.valueOption ?: 0.0
+        val selectedFieldSize =
+            options.find { it.displayLabel == selectedSizeLabel }?.valueOption ?: 0.0
 
         val fieldSize = when (selectedFieldSize) {
             EnumFieldArea.EXACT_AREA.areaValue() -> inputCustomFieldSize.text?.toString()
@@ -234,11 +241,17 @@ class AreaUnitFragment : BaseStepFragment<FragmentAreaUnitBinding>() {
 
 
         safeScope.launch {
-            val user = userRepo.getUser(sessionManager.akilimoUser) ?: AkilimoUser()
-            user.enumAreaUnit = enumAreaUnits
-            user.farmSize = fieldSize
-            user.customFarmSize = exactFieldSize
-            userRepo.saveOrUpdateUser(user, sessionManager.akilimoUser)
+            val user = userRepo.getUser(sessionManager.akilimoUser) ?: AkilimoUser(
+                userName = sessionManager.akilimoUser
+            )
+            userRepo.saveOrUpdateUser(
+                user.copy(
+                    enumAreaUnit = enumAreaUnits,
+                    farmSize = fieldSize,
+                    customFarmSize = exactFieldSize
+                ),
+                sessionManager.akilimoUser
+            )
         }
 
         return null

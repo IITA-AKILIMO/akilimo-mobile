@@ -55,11 +55,11 @@ class InvestmentAmountActivity : BaseActivity<ActivityInvestmentAmountBinding>()
         safeScope.launch {
             val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
             val userId = user.id ?: 0
-            val country = user.farmCountry.orEmpty()
+            val country = user.enumCountry
             val enumAreaUnit = EnumAreaUnit.entries.firstOrNull {
                 it == user.enumAreaUnit
             } ?: EnumAreaUnit.ACRE
-            val farmSize = user.farmSize ?: 1.0 // fallback to 1 acre
+            val farmSize = user.farmSize
 
             launch {
                 investmentRepo.observeAllByCountry(countryCode = country).collectLatest { list ->

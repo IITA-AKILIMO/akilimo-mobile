@@ -62,13 +62,13 @@ class BioDataFragment : BaseStepFragment<FragmentBioDataBinding>() {
 
         binding.dropGender.setAdapter(genderAdapter)
         binding.dropGender.setOnItemClickListener { _, _, position, _ ->
-            val selected = genderAdapter.getItem(position)?: return@setOnItemClickListener
+            val selected = genderAdapter.getItem(position) ?: return@setOnItemClickListener
             binding.dropGender.setText(selected.displayLabel, false)
         }
 
         binding.dropInterest.setAdapter(interestAdapter)
         binding.dropInterest.setOnItemClickListener { _, _, position, _ ->
-            val selected = interestAdapter.getItem(position)?: return@setOnItemClickListener
+            val selected = interestAdapter.getItem(position) ?: return@setOnItemClickListener
             binding.dropInterest.setText(selected.displayLabel, false)
         }
     }
@@ -99,7 +99,8 @@ class BioDataFragment : BaseStepFragment<FragmentBioDataBinding>() {
         val interestLabel = dropInterest.text.toString()
 
         val gender = genderOptions.find { it.displayLabel == genderLabel }?.valueOption.orEmpty()
-        val interest = interestOptions.find { it.displayLabel == interestLabel }?.valueOption.orEmpty()
+        val interest =
+            interestOptions.find { it.displayLabel == interestLabel }?.valueOption.orEmpty()
 
         val firstName = edtFirstName.text.toString()
         val lastName = edtLastName.text.toString()
@@ -138,18 +139,24 @@ class BioDataFragment : BaseStepFragment<FragmentBioDataBinding>() {
         }
 
         safeScope.launch {
-            val existingUser = userRepository.getUser(sessionManager.akilimoUser) ?: AkilimoUser()
+            val existingUser = userRepository.getUser(sessionManager.akilimoUser) ?: AkilimoUser(
+                userName = sessionManager.akilimoUser
+            )
 
-            existingUser.firstName = firstName
-            existingUser.lastName = lastName
-            existingUser.email = email
-            existingUser.mobileNumber = phone
-            existingUser.mobileCountryCode = phoneCountryCode
-            existingUser.gender = gender
-            existingUser.akilimoInterest = interest
-            existingUser.deviceToken = sessionManager.deviceToken
 
-            userRepository.saveOrUpdateUser(existingUser, sessionManager.akilimoUser)
+
+            userRepository.saveOrUpdateUser(
+                existingUser.copy(
+                    firstName = firstName,
+                    lastName = lastName,
+                    email = email,
+                    mobileNumber = phone,
+                    mobileCountryCode = phoneCountryCode,
+                    gender = gender,
+                    akilimoInterest = interest,
+                    deviceToken = sessionManager.deviceToken
+                ), sessionManager.akilimoUser
+            )
         }
 
         return null

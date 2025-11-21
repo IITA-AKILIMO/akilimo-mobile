@@ -3,6 +3,7 @@ package com.akilimo.mobile.dto
 import com.akilimo.mobile.enums.EnumAdvice
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumAreaUnit
+import com.akilimo.mobile.enums.EnumCountry
 import com.akilimo.mobile.enums.EnumInvestmentPref
 import com.akilimo.mobile.enums.EnumOperationMethod
 import com.akilimo.mobile.enums.EnumOperationType
@@ -50,9 +51,9 @@ data class InterestOption(
 // Location Options
 data class CountryOption(
     override val displayLabel: String,
-    override val valueOption: String,
+    override val valueOption: EnumCountry,
     val currencyCode: String
-) : ValueOption<String>
+) : ValueOption<EnumCountry>
 
 // Language Options
 data class LanguageOption(
