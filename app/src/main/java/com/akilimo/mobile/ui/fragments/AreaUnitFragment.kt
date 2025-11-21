@@ -65,28 +65,27 @@ class AreaUnitFragment : BaseStepFragment<FragmentAreaUnitBinding>() {
             )
         )
 
+        areaUnitOptions.add(
+            AreaUnitOption(
+                getString(R.string.area_unit_acre),
+                EnumAreaUnit.ACRE
+            )
+        )
+        areaUnitOptions.add(
+            AreaUnitOption(
+                getString(R.string.area_unit_ha),
+                EnumAreaUnit.HA
+            )
+        )
+        areaUnitOptions.add(
+            AreaUnitOption(
+                getString(R.string.area_unit_square_meter),
+                EnumAreaUnit.M2
+            )
+        )
         safeScope.launch {
             val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
             val countryCode = user.enumCountry
-
-            areaUnitOptions.add(
-                AreaUnitOption(
-                    getString(R.string.area_unit_acre),
-                    EnumAreaUnit.ACRE
-                )
-            )
-            areaUnitOptions.add(
-                AreaUnitOption(
-                    getString(R.string.area_unit_ha),
-                    EnumAreaUnit.HA
-                )
-            )
-            areaUnitOptions.add(
-                AreaUnitOption(
-                    getString(R.string.area_unit_square_meter),
-                    EnumAreaUnit.M2
-                )
-            )
             if (countryCode == EnumCountry.RW) {
                 areaUnitOptions.add(
                     AreaUnitOption(
@@ -140,7 +139,7 @@ class AreaUnitFragment : BaseStepFragment<FragmentAreaUnitBinding>() {
             val unit =
                 EnumAreaUnit.entries.firstOrNull {
                     it.name.equals(
-                        areaUnit?.name,
+                        areaUnit.name,
                         ignoreCase = true
                     )
                 }
