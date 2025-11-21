@@ -90,7 +90,7 @@ class BppActivity : BaseActivity<ActivityRecommendationUseCaseBinding>() {
         }
 
         binding.frButton.btnAction.setOnClickListener {
-            val intent = Intent(this@BppActivity, DstRecommendationActivity::class.java)
+            val intent = Intent(this@BppActivity, GetRecommendationActivity::class.java)
             startActivity(intent)
         }
         // Collect completion statuses from Room and update adapter
