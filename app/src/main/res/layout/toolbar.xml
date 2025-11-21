@@ -5,21 +5,55 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/colorSurface"
-    android:fitsSystemWindows="true"
-    app:elevation="0dp">
+    android:elevation="@dimen/zero"
+    android:fitsSystemWindows="true">
+
+    <!--    <com.google.android.material.appbar.MaterialToolbar-->
+    <!--        android:id="@+id/toolbar"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="?attr/actionBarSize"-->
+    <!--        android:background="@color/color_primary"-->
+    <!--        android:fitsSystemWindows="true"-->
+    <!--        app:contentInsetStartWithNavigation="@dimen/dimen_48"-->
+    <!--        app:menu="@menu/toolbar_menu"-->
+    <!--        app:navigationIcon="@drawable/ic_menu"-->
+    <!--        app:navigationIconTint="@color/color_on_primary"-->
+    <!--        app:popupTheme="@style/ThemeOverlay.Material3.Light"-->
+    <!--        app:subtitleTextColor="@color/color_on_primary"-->
+    <!--        app:title="@string/app_name"-->
+    <!--        app:titleCentered="true"-->
+    <!--        app:titleTextAppearance="@style/TextAppearance.Akilimo.Toolbar.Title"-->
+    <!--        app:titleTextColor="@color/color_on_primary" />-->
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        app:menu="@menu/toolbar_menu"
         android:background="?attr/colorSurface"
-        android:fitsSystemWindows="true"
-        android:paddingStart="@dimen/spacing_small"
-        android:paddingEnd="@dimen/spacing_small"
-        app:menu="@null"
         app:navigationIcon="@drawable/ic_arrow_back"
-        app:popupTheme="@style/ThemeOverlay.Material3.Toolbar.Surface"
+        app:popupTheme="@style/ThemeOverlay.Material3.Light"
+        app:title="@string/app_name"
         app:titleCentered="true"
         app:titleTextAppearance="@style/TextAppearance.Material3.TitleLarge" />
 
+
 </com.google.android.material.appbar.AppBarLayout>
+
+
+    <!--    <com.google.android.material.appbar.AppBarLayout-->
+    <!--        android:id="@+id/appBarLayout"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:background="?attr/colorSurface"-->
+    <!--        app:elevation="0dp">-->
+
+    <!--            <com.google.android.material.appbar.MaterialToolbar-->
+    <!--                android:id="@+id/toolbar"-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="?attr/actionBarSize"-->
+    <!--                app:navigationIcon="@drawable/ic_arrow_back"-->
+    <!--                app:title="Sell Your Maize"-->
+    <!--                app:titleTextAppearance="@style/TextAppearance.Material3.TitleLarge" />-->
+
+    <!--    </com.google.android.material.appbar.AppBarLayout>-->

@@ -7,21 +7,20 @@
     android:layout_height="match_parent"
     android:background="?attr/colorSurface"
     android:fitsSystemWindows="true"
-    android:paddingBottom="@dimen/spacing_large"
     tools:context=".ui.usecases.MaizeMarketActivity">
 
     <include
         android:id="@+id/lyt_toolbar"
-        layout="@layout/toolbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        layout="@layout/toolbar" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
         android:fillViewport="true"
+        android:paddingBottom="?attr/actionBarSize"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -218,38 +217,23 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Spacer to push button down -->
-            <View
-                android:id="@+id/spacer"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toTopOf="@id/submitButton"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/marketHintCard"
-                app:layout_constraintVertical_bias="1.0" />
-
-            <!-- Submit Button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/submitButton"
-                style="@style/Widget.Material3.Button"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_marginTop="@dimen/spacing_xlarge"
-                android:enabled="false"
-                android:text="List for Sale"
-                android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
-                app:cornerRadius="12dp"
-                app:icon="@drawable/ic_check"
-                app:iconGravity="textStart"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/marketHintCard"
-                app:layout_constraintVertical_bias="1.0" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/submitButton"
+        style="@style/Widget.Material3.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="@dimen/spacing_large"
+        android:layout_marginEnd="@dimen/spacing_large"
+        android:layout_marginBottom="@dimen/spacing_large"
+        android:enabled="false"
+        android:text="List for Sale"
+        android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+        app:cornerRadius="@dimen/dimen_5"
+        app:icon="@drawable/ic_check"
+        app:iconGravity="textStart" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -15,7 +15,7 @@ class MaizeMarketActivity : BaseActivity<ActivityMaizeMarketBinding>() {
     override fun onBindingReady(savedInstanceState: Bundle?) {
 
         ToolbarHelper(this, binding.lytToolbar.toolbar)
-            .setTitle(getString(R.string.lbl_maize_market))
+//            .setTitle(getString(R.string.lbl_maize_market))
             .onNavigationClick { finish() }.build()
 
         setupProduceTypeToggle()
