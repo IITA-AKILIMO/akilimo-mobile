@@ -81,7 +81,7 @@ class FrActivity : BaseActivity<ActivityRecommendationUseCaseBinding>() {
         }
 
         binding.frButton.btnAction.setOnClickListener {
-            val intent = Intent(this@FrActivity, DstRecommendationActivity::class.java)
+            val intent = Intent(this@FrActivity, GetRecommendationActivity::class.java)
             startActivity(intent)
         }
         // Collect completion statuses from Room and update adapter
