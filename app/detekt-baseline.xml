@@ -34,11 +34,11 @@
     <ID>MagicNumber:DatesActivity.kt$DatesActivity$16</ID>
     <ID>MagicNumber:DatesActivity.kt$DatesActivity$4</ID>
     <ID>MagicNumber:DatesActivity.kt$DatesActivity$8</ID>
-    <ID>MagicNumber:DstRecommendationActivity.kt$DstRecommendationActivity$1000</ID>
-    <ID>MagicNumber:DstRecommendationActivity.kt$DstRecommendationActivity$2000</ID>
-    <ID>MagicNumber:DstRecommendationActivity.kt$DstRecommendationActivity$3</ID>
-    <ID>MagicNumber:DstRecommendationActivity.kt$DstRecommendationActivity$4</ID>
-    <ID>MagicNumber:DstRecommendationActivity.kt$DstRecommendationActivity$5</ID>
+    <ID>MagicNumber:GetRecommendationActivity.kt$DstRecommendationActivity$1000</ID>
+    <ID>MagicNumber:GetRecommendationActivity.kt$DstRecommendationActivity$2000</ID>
+    <ID>MagicNumber:GetRecommendationActivity.kt$DstRecommendationActivity$3</ID>
+    <ID>MagicNumber:GetRecommendationActivity.kt$DstRecommendationActivity$4</ID>
+    <ID>MagicNumber:GetRecommendationActivity.kt$DstRecommendationActivity$5</ID>
     <ID>MagicNumber:EnumUnitOfSale.kt$EnumUnitOfSale.FIFTY_KG$50</ID>
     <ID>MagicNumber:EnumUnitOfSale.kt$EnumUnitOfSale.FRESH_COB$1000</ID>
     <ID>MagicNumber:EnumUnitOfSale.kt$EnumUnitOfSale.HUNDRED_KG$100</ID>
@@ -159,14 +159,14 @@
     <ID>SpreadOperator:WorkerExtensions.kt$(resId, *args)</ID>
     <ID>SwallowedException:BaseApiWorker.kt$BaseApiWorker$e: CancellationException</ID>
     <ID>SwallowedException:CassavaYieldAdapter.kt$CassavaYieldAdapter.OriginalViewHolder$e: Exception</ID>
-    <ID>SwallowedException:DstRecommendationActivity.kt$DstRecommendationActivity$e: Exception</ID>
+    <ID>SwallowedException:GetRecommendationActivity.kt$DstRecommendationActivity$e: Exception</ID>
     <ID>SwallowedException:NetworkUtils.kt$NetworkUtils$e: Exception</ID>
     <ID>SwallowedException:NetworkUtils.kt$e: Exception</ID>
     <ID>SwallowedException:SafePagedWorker.kt$SafePagedWorker$ce: kotlinx.coroutines.CancellationException</ID>
     <ID>TooGenericExceptionCaught:ApiClient.kt$ApiClient$e: Exception</ID>
     <ID>TooGenericExceptionCaught:BaseApiWorker.kt$BaseApiWorker$e: Exception</ID>
     <ID>TooGenericExceptionCaught:CassavaYieldAdapter.kt$CassavaYieldAdapter.OriginalViewHolder$e: Exception</ID>
-    <ID>TooGenericExceptionCaught:DstRecommendationActivity.kt$DstRecommendationActivity$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:GetRecommendationActivity.kt$DstRecommendationActivity$e: Exception</ID>
     <ID>TooGenericExceptionCaught:MainActivity.kt$MainActivity$e: Exception</ID>
     <ID>TooGenericExceptionCaught:NetworkUtils.kt$NetworkUtils$e: Exception</ID>
     <ID>TooGenericExceptionCaught:NetworkUtils.kt$e: Exception</ID>
