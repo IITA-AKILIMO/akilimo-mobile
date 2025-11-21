@@ -41,7 +41,7 @@
             android:name=".ui.usecases.ManualTillageCostActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.DstRecommendationActivity"
+            android:name=".ui.activities.GetRecommendationActivity"
             android:exported="false" />
         <activity
             android:name=".ui.usecases.CassavaMarketActivity"
