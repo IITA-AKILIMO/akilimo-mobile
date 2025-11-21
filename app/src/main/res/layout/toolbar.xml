@@ -18,10 +18,10 @@
         app:menu="@menu/toolbar_menu"
         app:navigationIcon="@drawable/ic_menu"
         app:navigationIconTint="@color/color_on_primary"
+        app:popupTheme="@style/ThemeOverlay.Material3.Light"
         app:subtitleTextColor="@color/color_on_primary"
         app:title="Akilimo"
-        app:titleCentered="false"
-        app:popupTheme="@style/ThemeOverlay.Material3.Light"
+        app:titleCentered="true"
         app:titleTextAppearance="@style/TextAppearance.Akilimo.Toolbar.Title"
         app:titleTextColor="@color/color_on_primary" />
 </com.google.android.material.appbar.AppBarLayout>
