@@ -260,7 +260,7 @@
     <string name="lbl_dry_grain">Ibigori byumye (impungure)</string>
     <string name="lbl_maize_sale_unit">Aho kugurishiriza impungure z\'ibigori</string>
     <string name="lbl_fresh_cob_price">Ni ikihe giciro uteganya kugurishirizaho ikigori kibisi?</string>
-    <string name="lbl_price_per_cob_in_currency_unit">Ni ikihe giciro uteganya kugurishirizaho ikigori kibisi muri %s?</string>
+    <string name="lbl_price_per_cob_in_currency_unit">Ni ikihe giciro uteganya kugurishirizaho ikigori kibisi muri {currency}?</string>
     <string name="lbl_price_per_cob">Hitamo igiciro ku kigori</string>
     <string name="lbl_maize_outlets">Ni gute ushobora kugurisha umusaruro w\'ibigori byawe?</string>
     <string name="lbl_add_ploughing_cost">Ongeraho ikiguzi cyo guhinga</string>

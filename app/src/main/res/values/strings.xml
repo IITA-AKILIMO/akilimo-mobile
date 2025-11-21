@@ -146,6 +146,7 @@
 
     <string name="lbl_cassava_price">Cassava prices</string>
     <string name="lbl_market_outlet">What price do you expect for your cassava?</string>
+    <string name="lbl_maize_market">Sell your Maize</string>
     <string name="lbl_market_outlet_maize">What price do you expect for your maize at harvest?</string>
     <string name="lbl_tillage_operations">Tillage operations and related cost</string>
     <string name="lbl_cost_of_manual_tillage">What is the cost of manual tillage?</string>
@@ -375,7 +376,7 @@
     <string name="lbl_dry_grain">Dry grain</string>
     <string name="lbl_maize_sale_unit">Unit of sale of maize grain</string>
     <string name="lbl_fresh_cob_price">At what price do you expect to sell 1 fresh cob?</string>
-    <string name="lbl_price_per_cob_in_currency_unit">At what price do you expect to sell 1 fresh cob in %s?</string>
+    <string name="lbl_price_per_cob_in_currency_unit">At what price do you expect to sell 1 fresh cob in {currency}?</string>
     <string name="lbl_price_per_cob">Select price per cob</string>
     <string name="lbl_maize_outlets">How do you sell your maize produce?</string>
     <string name="lbl_add_ploughing_cost">Add ploughing cost</string>

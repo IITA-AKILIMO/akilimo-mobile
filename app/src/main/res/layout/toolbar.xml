@@ -4,24 +4,22 @@
     android:id="@+id/app_bar_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/color_primary"
-    android:elevation="@dimen/dimen_4"
-    android:fitsSystemWindows="true">
+    android:background="?attr/colorSurface"
+    android:fitsSystemWindows="true"
+    app:elevation="0dp">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/color_primary"
+        android:background="?attr/colorSurface"
         android:fitsSystemWindows="true"
-        app:contentInsetStartWithNavigation="@dimen/dimen_48"
-        app:menu="@menu/toolbar_menu"
-        app:navigationIcon="@drawable/ic_menu"
-        app:navigationIconTint="@color/color_on_primary"
-        app:popupTheme="@style/ThemeOverlay.Material3.Light"
-        app:subtitleTextColor="@color/color_on_primary"
-        app:title="Akilimo"
+        android:paddingStart="@dimen/spacing_small"
+        android:paddingEnd="@dimen/spacing_small"
+        app:menu="@null"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:popupTheme="@style/ThemeOverlay.Material3.Toolbar.Surface"
         app:titleCentered="true"
-        app:titleTextAppearance="@style/TextAppearance.Akilimo.Toolbar.Title"
-        app:titleTextColor="@color/color_on_primary" />
+        app:titleTextAppearance="@style/TextAppearance.Material3.TitleLarge" />
+
 </com.google.android.material.appbar.AppBarLayout>

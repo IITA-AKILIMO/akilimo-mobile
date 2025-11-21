@@ -423,7 +423,7 @@
     <string name="lbl_provide_feedback">Toa maoni</string>
     <string name="lbl_thank_feedback_you">Asante kwa maoni yako</string>
     <string name="lbl_fresh_cob_price">Je? Unatarajia kuuza hindi moja mbichi kwa bei gani?</string>
-    <string name="lbl_price_per_cob_in_currency_unit">Je? Unatarajia kuuza hindi moja mbichi kwa %s?</string>
+    <string name="lbl_price_per_cob_in_currency_unit">Je? Unatarajia kuuza hindi moja mbichi kwa {currency}?</string>
 
     <string name="lbl_unit_price_p1">Bei mwezi 1 kabla ya mavuno</string>
     <string name="lbl_unit_price_m1">Bei mwezi 1 baada ya mavuno</string>

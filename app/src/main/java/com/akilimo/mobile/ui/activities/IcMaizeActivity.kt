@@ -7,6 +7,7 @@ import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.ui.usecases.CassavaMarketActivity
 import com.akilimo.mobile.ui.usecases.DatesActivity
 import com.akilimo.mobile.ui.usecases.InterCropFertilizersActivity
+import com.akilimo.mobile.ui.usecases.MaizeMarketActivity
 
 class IcMaizeActivity : AbstractRecommendationActivity() {
 
@@ -34,7 +35,7 @@ class IcMaizeActivity : AbstractRecommendationActivity() {
         )
 
         EnumAdviceTask.MAIZE_MARKET_OUTLET -> Intent(
-            this, CassavaMarketActivity::class.java
+            this, MaizeMarketActivity::class.java
         )
 
         EnumAdviceTask.MAIZE_PERFORMANCE -> Intent(
