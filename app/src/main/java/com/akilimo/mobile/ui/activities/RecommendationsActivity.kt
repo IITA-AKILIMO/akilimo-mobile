@@ -9,6 +9,7 @@ import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.databinding.ActivityRecommendationsBinding
 import com.akilimo.mobile.dto.AdviceOption
 import com.akilimo.mobile.enums.EnumAdvice
+import com.akilimo.mobile.enums.EnumCountry
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.ui.components.CollapsibleToolbarHelper
 import kotlinx.coroutines.launch
@@ -30,16 +31,19 @@ class RecommendationsActivity : BaseActivity<ActivityRecommendationsBinding>() {
         userRepo = AkilimoUserRepo(database.akilimoUserDao())
 
         // Prepare dynamic recommendation list
-        val adviceOptions = listOf(
+        val adviceOptions = mutableListOf(
             AdviceOption(EnumAdvice.FERTILIZER_RECOMMENDATIONS),
             AdviceOption(EnumAdvice.BEST_PLANTING_PRACTICES),
             AdviceOption(EnumAdvice.SCHEDULED_PLANTING_HIGH_STARCH),
-//            AdviceOption(EnumAdvice.INTERCROPPING_MAIZE),
-//            AdviceOption(EnumAdvice.INTERCROPPING_SWEET_POTATO),
         )
 
         safeScope.launch {
             val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
+            when (user.enumCountry) {
+                EnumCountry.NG -> adviceOptions.add(AdviceOption(EnumAdvice.INTERCROPPING_MAIZE))
+                EnumCountry.TZ -> adviceOptions.add(AdviceOption(EnumAdvice.INTERCROPPING_SWEET_POTATO))
+                else -> {}
+            }
         }
 
         // Setup RecyclerView
@@ -86,7 +90,7 @@ class RecommendationsActivity : BaseActivity<ActivityRecommendationsBinding>() {
             layoutManager = LinearLayoutManager(this@RecommendationsActivity)
             adapter = recAdapter
         }
-        recAdapter.submitList(adviceOptions)
+        recAdapter.submitList(adviceOptions.toList())
 
     }
 

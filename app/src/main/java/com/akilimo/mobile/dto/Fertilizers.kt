@@ -1,6 +1,7 @@
 package com.akilimo.mobile.dto
 
 import com.akilimo.mobile.entities.Fertilizer
+import com.akilimo.mobile.enums.EnumUseCase
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -27,16 +28,16 @@ data class FertilizerDto(
     @param:Json(name = "updated_at") val updatedAt: String?
 ) {
     fun toEntity(): Fertilizer {
-        return Fertilizer().apply {
-            id = this@FertilizerDto.id
-            key = this@FertilizerDto.fertilizerKey
-            name = this@FertilizerDto.name
-            type = this@FertilizerDto.fertilizerType
-            weight = this@FertilizerDto.weight ?: 0.0
-            sortOrder = this@FertilizerDto.sortOrder ?: 0
-            countryCode = this@FertilizerDto.countryCode
-            useCase = this@FertilizerDto.useCase
-            available = this@FertilizerDto.available ?: false
-        }
+        return Fertilizer(
+            id = id,
+            key = fertilizerKey,
+            name = name,
+            type = fertilizerType,
+            weight = weight ?: 0.0,
+            sortOrder = sortOrder ?: 0,
+            countryCode = countryCode,
+            useCase = EnumUseCase.fromCode(useCase),
+            available = available ?: false
+        )
     }
 }

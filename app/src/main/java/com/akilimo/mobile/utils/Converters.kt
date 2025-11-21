@@ -9,6 +9,7 @@ import com.akilimo.mobile.enums.EnumCassavaProduceType
 import com.akilimo.mobile.enums.EnumCountry
 import com.akilimo.mobile.enums.EnumStepStatus
 import com.akilimo.mobile.enums.EnumUnitOfSale
+import com.akilimo.mobile.enums.EnumUseCase
 import com.akilimo.mobile.enums.EnumWeedControlMethod
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -52,6 +53,15 @@ class EnumCountryConverter {
     @TypeConverter
     fun toEnum(value: String?): EnumCountry? =
         EnumTypeConverter.toEnum(value, EnumCountry::class.java)
+}
+
+class EnumUseCaseConverter {
+    @TypeConverter
+    fun fromEnum(value: EnumUseCase?): String? = EnumTypeConverter.fromEnum(value)
+
+    @TypeConverter
+    fun toEnum(value: String?): EnumUseCase? =
+        EnumTypeConverter.toEnum(value, EnumUseCase::class.java)
 }
 
 class EnumAreaUnitConverter {

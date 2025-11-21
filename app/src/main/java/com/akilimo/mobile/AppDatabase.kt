@@ -40,6 +40,7 @@ import com.akilimo.mobile.utils.EnumAreaUnitConverter
 import com.akilimo.mobile.utils.EnumCountryConverter
 import com.akilimo.mobile.utils.EnumStepStatusConverter
 import com.akilimo.mobile.utils.EnumTillageConverters
+import com.akilimo.mobile.utils.EnumUseCaseConverter
 import com.akilimo.mobile.utils.EnumWeedControlConverter
 
 @Database(
@@ -65,6 +66,7 @@ import com.akilimo.mobile.utils.EnumWeedControlConverter
 @TypeConverters(
     Converters::class,
     EnumTillageConverters::class,
+    EnumUseCaseConverter::class,
     EnumCountryConverter::class,
     EnumAreaUnitConverter::class,
     EnumAdviseConverter::class,

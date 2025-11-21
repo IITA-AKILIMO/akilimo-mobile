@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.akilimo.mobile.entities.Fertilizer
 import com.akilimo.mobile.enums.EnumCountry
+import com.akilimo.mobile.enums.EnumUseCase
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -19,6 +20,12 @@ interface FertilizerDao {
 
     @Query("SELECT * FROM fertilizers WHERE country_code = :countryCode AND available = 1 ORDER BY sort_order ASC")
     fun observeAllByCountry(countryCode: EnumCountry): Flow<List<Fertilizer>>
+
+    @Query("SELECT * FROM fertilizers WHERE country_code = :countryCode AND use_case=:useCase AND available = 1 ORDER BY sort_order ASC")
+    fun observeAllByCountryAndUseCase(
+        countryCode: EnumCountry,
+        useCase: EnumUseCase
+    ): Flow<List<Fertilizer>>
 
 
     @Query("SELECT * FROM fertilizers WHERE available = 1")

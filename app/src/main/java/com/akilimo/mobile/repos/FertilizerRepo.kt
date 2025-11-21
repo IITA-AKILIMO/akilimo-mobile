@@ -3,6 +3,7 @@ package com.akilimo.mobile.repos
 import com.akilimo.mobile.dao.FertilizerDao
 import com.akilimo.mobile.entities.Fertilizer
 import com.akilimo.mobile.enums.EnumCountry
+import com.akilimo.mobile.enums.EnumUseCase
 import kotlinx.coroutines.flow.Flow
 
 class FertilizerRepo(private val dao: FertilizerDao) {
@@ -20,7 +21,7 @@ class FertilizerRepo(private val dao: FertilizerDao) {
         dao.findAllByCountry(countryCode)
 
     suspend fun getAllFertilizers(): List<Fertilizer> {
-        return  dao.getAll()
+        return dao.getAll()
     }
 
     fun observeAll(): Flow<List<Fertilizer>> =
@@ -28,6 +29,12 @@ class FertilizerRepo(private val dao: FertilizerDao) {
 
     fun observeByCountry(countryCode: EnumCountry): Flow<List<Fertilizer>> =
         dao.observeAllByCountry(countryCode)
+
+    fun observeByCountryAndUseCase(
+        countryCode: EnumCountry,
+        useCase: EnumUseCase
+    ): Flow<List<Fertilizer>> =
+        dao.observeAllByCountryAndUseCase(countryCode, useCase)
 
 
 }
