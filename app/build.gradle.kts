@@ -73,7 +73,7 @@ android {
         applicationId = "com.akilimo.mobile"
         minSdk = 21
         targetSdk = 36
-        versionCode = 29
+        versionCode = 30
         versionName = "30.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
