@@ -11,6 +11,7 @@ import com.akilimo.mobile.databinding.ActivityMaizeMarketBinding
 import com.akilimo.mobile.dto.UnitOfSaleOption
 import com.akilimo.mobile.entities.MaizeMarket
 import com.akilimo.mobile.enums.EnumMaizeProduceType
+import com.akilimo.mobile.enums.EnumMarketType
 import com.akilimo.mobile.enums.EnumUnitOfSale
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.MaizeMarketRepo
@@ -95,6 +96,7 @@ class MaizeMarketActivity : BaseActivity<ActivityMaizeMarketBinding>() {
                     .replace("{currency}", currencyCode)
                     .replace("{price}", entry.unitPrice.toString())
                     .replace("{unit_of_sale}", unitOfSale.unitOfSale(this@MaizeMarketActivity))
+                marketHintCard.visibility = View.VISIBLE
             }
         }
     }
@@ -152,6 +154,7 @@ class MaizeMarketActivity : BaseActivity<ActivityMaizeMarketBinding>() {
             val entry = MaizeMarket(
                 userId = userId,
                 unitPrice = price,
+                marketType = EnumMarketType.MAIZE_MARKET,
                 produceType = produceType,
                 unitOfSale = unit
             )

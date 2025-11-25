@@ -41,6 +41,7 @@ import com.akilimo.mobile.utils.EnumAdviseTaskConverter
 import com.akilimo.mobile.utils.EnumAreaUnitConverter
 import com.akilimo.mobile.utils.EnumCountryConverter
 import com.akilimo.mobile.utils.EnumMaizeProduceTypeConverter
+import com.akilimo.mobile.utils.EnumMarketTypeConverter
 import com.akilimo.mobile.utils.EnumPotatoProduceTypeConverter
 import com.akilimo.mobile.utils.EnumStepStatusConverter
 import com.akilimo.mobile.utils.EnumTillageConverters
@@ -81,7 +82,8 @@ import com.akilimo.mobile.utils.EnumWeedControlConverter
     EnumWeedControlConverter::class,
     EnumUnitOfSaleConverter::class,
     EnumPotatoProduceTypeConverter::class,
-    EnumMaizeProduceTypeConverter::class
+    EnumMaizeProduceTypeConverter::class,
+    EnumMarketTypeConverter::class
 )
 abstract class AppDatabase : RoomDatabase() {
 

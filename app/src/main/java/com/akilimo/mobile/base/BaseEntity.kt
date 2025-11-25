@@ -5,7 +5,7 @@ import androidx.room.Ignore
 
 open class BaseEntity {
     @ColumnInfo(name = "created_at")
-    open var createdAt: Long = System.currentTimeMillis()
+    open var createdAt: Long? = null   // nullable, defaults to null
 
     @ColumnInfo(name = "updated_at")
     open var updatedAt: Long = System.currentTimeMillis()

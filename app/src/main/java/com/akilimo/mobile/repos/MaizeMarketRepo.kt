@@ -7,8 +7,23 @@ import com.akilimo.mobile.enums.EnumMaizeProduceType
 class MaizeMarketRepo(private val dao: MaizeMarketDao) {
 
     suspend fun saveMarketEntry(entry: MaizeMarket) {
-        dao.upsert(entry)
+        val existing = dao.findOne(entry.userId, entry.marketType)
+        if (existing != null) {
+            val updated = existing.copy(
+                marketType = entry.marketType,
+                produceType = entry.produceType,
+                unitPrice = entry.unitPrice,
+                unitOfSale = entry.unitOfSale,
+            ).apply {
+                createdAt = existing.createdAt
+                updatedAt = System.currentTimeMillis()
+            }
+            dao.update(updated)
+        } else {
+            dao.insert(entry)
+        }
     }
+
 
     suspend fun getLastEntryForUser(userId: Int): MaizeMarket? {
         return dao.getLastEntryForUser(userId)

@@ -8,6 +8,7 @@ import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.enums.EnumCassavaProduceType
 import com.akilimo.mobile.enums.EnumCountry
 import com.akilimo.mobile.enums.EnumMaizeProduceType
+import com.akilimo.mobile.enums.EnumMarketType
 import com.akilimo.mobile.enums.EnumPotatoProduceType
 import com.akilimo.mobile.enums.EnumStepStatus
 import com.akilimo.mobile.enums.EnumUnitOfSale
@@ -144,6 +145,15 @@ class EnumStepStatusConverter {
     @TypeConverter
     fun toEnum(value: String?): EnumStepStatus? =
         EnumTypeConverter.toEnum(value, EnumStepStatus::class.java)
+}
+
+class EnumMarketTypeConverter {
+    @TypeConverter
+    fun fromEnum(value: EnumMarketType?): String? = EnumTypeConverter.fromEnum(value)
+
+    @TypeConverter
+    fun toEnum(value: String?): EnumMarketType? =
+        EnumTypeConverter.toEnum(value, EnumMarketType::class.java)
 }
 
 
