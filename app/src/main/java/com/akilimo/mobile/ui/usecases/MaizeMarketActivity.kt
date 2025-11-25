@@ -156,6 +156,7 @@ class MaizeMarketActivity : BaseActivity<ActivityMaizeMarketBinding>() {
                 unitOfSale = unit
             )
             marketRepo.saveMarketEntry(entry)
+            finish()
         }
     }
 }
