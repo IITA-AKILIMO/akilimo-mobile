@@ -134,7 +134,7 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
                 val countryCode = user.enumCountry
                 val uos = EnumUnitOfSale.entries.find {
                     it.name.equals(unit.label, ignoreCase = true)
-                } ?: EnumUnitOfSale.NA
+                }
 
                 val prices = priceRepo.getPricesByCountry(countryCode)
                 val updatedPriceList: List<CassavaMarketPrice> = prices.map {
@@ -340,7 +340,7 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
 
         val unitOfSaleEnum = EnumUnitOfSale.entries.find {
             it.name.equals(unit.label, ignoreCase = true)
-        } ?: EnumUnitOfSale.NA
+        } ?: EnumUnitOfSale.THOUSAND_KG
 
         safeScope.launch(Dispatchers.IO) {
             withContext(Dispatchers.Main) {

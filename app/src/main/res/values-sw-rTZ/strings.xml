@@ -404,14 +404,20 @@
     <string name="lbl_rarely">Nadra</string>
     <string name="lbl_about">Karibu %1$s</string>
     <string name="lbl_min_fert_price">Tafadhali taja bei halisi ya kiroba kati ya %s na %s</string>
-    <string name="lbl_one_kg_bag_unit">kiroba ya kilo 1</string>
-    <string name="lbl_50_kg_bag_unit">kiroba ya kilo 50</string>
-    <string name="lbl_100_kg_bag_unit">kiroba ya kilo 100</string>
+
+    <!-- Bag units -->
+    <string name="lbl_one_kg_bag_unit">kiroba cha kilo 1</string>
+    <string name="lbl_50_kg_bag_unit">kiroba cha kilo 50</string>
+    <string name="lbl_100_kg_bag_unit">kiroba cha kilo 100</string>
     <string name="lbl_1000_kg_bag_unit">tani 1</string>
-    <string name="lbl_one_kg_unit">kilo</string>
-    <string name="lbl_50_kg_unit">kiroba ya kilo 50</string>
-    <string name="lbl_100_kg_unit">kiroba ya kilo 100</string>
-    <string name="lbl_1000_kg_unit">tani</string>
+
+    <!-- Unit labels -->
+    <string name="lbl_one_kg_unit">kilo 1</string>
+    <string name="lbl_50_kg_unit">kiroba cha kilo 50</string>
+    <string name="lbl_100_kg_unit">kiroba cha kilo 100</string>
+    <string name="lbl_1000_kg_unit">tani 1</string>
+
+
     <string name="lbl_operation_cost_label">Karibu %s %s</string>
     <string name="lbl_describe_tool_use">Je? Unaweza kuelezeaje matumizi yako ya chombo cha AKILIMO?</string>
     <string name="lbl_advice_usefulness_scale">Kwa kipimo cha 1 hadi 5, je ushauri uliopewa na AKILIMO una manufaa kwako??</string>

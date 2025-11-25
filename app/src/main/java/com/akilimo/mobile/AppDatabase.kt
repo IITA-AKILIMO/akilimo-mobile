@@ -15,6 +15,7 @@ import com.akilimo.mobile.dao.FertilizerDao
 import com.akilimo.mobile.dao.FertilizerPriceDao
 import com.akilimo.mobile.dao.FieldOperationCostDao
 import com.akilimo.mobile.dao.InvestmentAmountDao
+import com.akilimo.mobile.dao.MaizeMarketDao
 import com.akilimo.mobile.dao.SelectedCassavaMarketDao
 import com.akilimo.mobile.dao.SelectedFertilizerDao
 import com.akilimo.mobile.dao.SelectedInvestmentDao
@@ -29,6 +30,7 @@ import com.akilimo.mobile.entities.Fertilizer
 import com.akilimo.mobile.entities.FertilizerPrice
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.entities.InvestmentAmount
+import com.akilimo.mobile.entities.MaizeMarket
 import com.akilimo.mobile.entities.SelectedCassavaMarket
 import com.akilimo.mobile.entities.SelectedFertilizer
 import com.akilimo.mobile.entities.SelectedInvestment
@@ -38,8 +40,11 @@ import com.akilimo.mobile.utils.EnumAdviseConverter
 import com.akilimo.mobile.utils.EnumAdviseTaskConverter
 import com.akilimo.mobile.utils.EnumAreaUnitConverter
 import com.akilimo.mobile.utils.EnumCountryConverter
+import com.akilimo.mobile.utils.EnumMaizeProduceTypeConverter
+import com.akilimo.mobile.utils.EnumPotatoProduceTypeConverter
 import com.akilimo.mobile.utils.EnumStepStatusConverter
 import com.akilimo.mobile.utils.EnumTillageConverters
+import com.akilimo.mobile.utils.EnumUnitOfSaleConverter
 import com.akilimo.mobile.utils.EnumUseCaseConverter
 import com.akilimo.mobile.utils.EnumWeedControlConverter
 
@@ -54,6 +59,7 @@ import com.akilimo.mobile.utils.EnumWeedControlConverter
         StarchFactory::class,
         CassavaMarketPrice::class,
         SelectedCassavaMarket::class,
+        MaizeMarket::class,
         CassavaUnit::class,
         CassavaYield::class,
         AdviceCompletion::class,
@@ -72,7 +78,10 @@ import com.akilimo.mobile.utils.EnumWeedControlConverter
     EnumAdviseConverter::class,
     EnumAdviseTaskConverter::class,
     EnumStepStatusConverter::class,
-    EnumWeedControlConverter::class
+    EnumWeedControlConverter::class,
+    EnumUnitOfSaleConverter::class,
+    EnumPotatoProduceTypeConverter::class,
+    EnumMaizeProduceTypeConverter::class
 )
 abstract class AppDatabase : RoomDatabase() {
 
@@ -100,9 +109,11 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun currentPracticeDao(): CurrentPracticeDao
 
+    abstract fun maizeMarketDao(): MaizeMarketDao
+
 
     companion object {
-        private const val DATABASE_NAME = "AKILIMO_18_NOV_2025"
+        private const val DATABASE_NAME = "AKILIMO_25_NOV_2025"
 
         @Volatile
         private var INSTANCE: AppDatabase? = null

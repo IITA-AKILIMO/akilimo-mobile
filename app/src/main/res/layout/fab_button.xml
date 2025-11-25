@@ -4,6 +4,7 @@
     android:id="@+id/fab_save"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_gravity="bottom|end"
     android:layout_margin="@dimen/spacing_large"
     android:contentDescription="@string/lbl_save"
     android:text="@string/lbl_save"
@@ -12,4 +13,5 @@
     app:iconPadding="@dimen/spacing_small"
     app:iconSize="@dimen/dimen_36"
     app:iconTint="@color/black"
+    app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
     app:srcCompat="@drawable/ic_save" />

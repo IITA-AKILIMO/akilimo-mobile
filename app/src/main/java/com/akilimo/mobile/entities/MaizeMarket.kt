@@ -1,25 +1,43 @@
 package com.akilimo.mobile.entities
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.akilimo.mobile.base.BaseEntity
 import com.akilimo.mobile.enums.EnumMaizeProduceType
+import com.akilimo.mobile.enums.EnumUnitOfSale
 
-@Entity(tableName = "maize_market")
-open class MaizeMarket {
-
+@Entity(
+    tableName = "maize_markets",
+    foreignKeys = [
+        ForeignKey(
+            entity = AkilimoUser::class,
+            parentColumns = ["id"],
+            childColumns = ["user_id"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index(value = ["user_id"]),
+        Index(value = ["user_id", "produce_type"], unique = true)
+    ]
+)
+data class MaizeMarket(
     @PrimaryKey(autoGenerate = true)
-    var id: Int? = null
-    var produceRadioIndex = 0
-    var grainUnitRadioIndex = 0
-    var grainUnitPriceRadioIndex = 0
-    var exactPrice: Double = 0.0
-    var averagePrice = 0.0
+    @ColumnInfo(name = "id")
+    val id: Int = 0,
 
-    @Deprecated("To be removed in subsequent releases")
-    var unitPrice: Double = 0.0
-    var unitWeight: Int = 0
+    @ColumnInfo(name = "user_id")
+    val userId: Int,
 
+    @ColumnInfo(name = "unit_price")
+    val unitPrice: Double,
 
-    var produceType: String = EnumMaizeProduceType.GRAIN.name
-    var unitOfSale: String? = null
-}
+    @ColumnInfo(name = "produce_type")
+    val produceType: EnumMaizeProduceType,
+
+    @ColumnInfo(name = "unit_of_sale")
+    val unitOfSale: EnumUnitOfSale
+) : BaseEntity()

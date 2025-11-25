@@ -419,14 +419,20 @@
     <string name="lbl_rarely">Ubuhamya</string>
     <string name="lbl_about">Hafi ya %1$s</string>
     <string name="lbl_min_fert_price">Nyamuneka tanga igiciro cyemewe cy\'umufuka hagati ya %s na %s</string>
-    <string name="lbl_one_kg_bag_unit">umufuka wa kg 1</string>
-    <string name="lbl_50_kg_bag_unit">umufuka wa kg 50</string>
-    <string name="lbl_100_kg_bag_unit">umufuka wa kg 100</string>
-    <string name="lbl_1000_kg_bag_unit">Toni 1</string>
-    <string name="lbl_one_kg_unit">kg</string>
-    <string name="lbl_50_kg_unit">Umufuka wa kg 50</string>
-    <string name="lbl_100_kg_unit">Umufuka wa kg 100</string>
-    <string name="lbl_1000_kg_unit">tonne</string>
+
+    <!-- Bag units -->
+    <string name="lbl_one_kg_bag_unit">umufuka wa 1 kg</string>
+    <string name="lbl_50_kg_bag_unit">umufuka wa 50 kg</string>
+    <string name="lbl_100_kg_bag_unit">umufuka wa 100 kg</string>
+    <string name="lbl_1000_kg_bag_unit">toni 1</string>
+
+    <!-- Unit labels -->
+    <string name="lbl_one_kg_unit">1 kg</string>
+    <string name="lbl_50_kg_unit">umufuka wa 50 kg</string>
+    <string name="lbl_100_kg_unit">umufuka wa 100 kg</string>
+    <string name="lbl_1000_kg_unit">toni 1</string>
+
+
     <string name="lbl_operation_cost_label">Hafi ya %s %s</string>
     <string name="lbl_describe_tool_use">Ni gute wasobanura neza imikoreshereze yawe ya AKILIMO?</string>
     <string name="lbl_advice_usefulness_scale">Ku gipimo cya 1 kugeza 5,  ni gute wabonye AKILIMO ikugira inama?</string>

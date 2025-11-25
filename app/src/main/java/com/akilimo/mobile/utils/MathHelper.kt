@@ -16,9 +16,7 @@ object MathHelper {
 
     fun computeUnitPrice(avgPrice: Double, unitOfSaleEnum: EnumUnitOfSale): Double {
         return when (unitOfSaleEnum) {
-            EnumUnitOfSale.NA,
             EnumUnitOfSale.FRESH_COB -> avgPrice
-
             else -> (avgPrice * unitOfSaleEnum.unitWeight()) / 1000
         }
     }

@@ -3,28 +3,55 @@ package com.akilimo.mobile.enums
 import android.content.Context
 import android.os.Parcelable
 import com.akilimo.mobile.R
+import com.akilimo.mobile.interfaces.ILabelProvider
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 enum class EnumUnitOfSale(
     val weight: Int,
-    private val labelRes: Int?,
-    private val textRes: Int?,
-    private val plainLabel: String? = null
-) : Parcelable {
+    val isUniversal: Boolean,
+    private val labelRes: Int,
+    private val textRes: Int
+) : Parcelable, ILabelProvider {
+    // Crop-specific unit (only maize fresh cob)
+    FRESH_COB(
+        weight = 1,
+        isUniversal = false,
+        labelRes = R.string.lbl_fresh_cob,
+        textRes = R.string.lbl_fresh_cob
+    ),
 
-    NA(0, null, null, "NA"),
-    FRESH_COB(1000, null, R.string.lbl_fresh_cob, "fresh cob"),
-    ONE_KG(1, R.string.lbl_one_kg_unit, R.string.lbl_one_kg_bag_unit),
-    FIFTY_KG(50, R.string.lbl_50_kg_unit, R.string.lbl_50_kg_bag_unit),
-    HUNDRED_KG(100, R.string.lbl_100_kg_unit, R.string.lbl_100_kg_bag_unit),
-    THOUSAND_KG(1000, R.string.lbl_1000_kg_unit, R.string.lbl_1000_kg_bag_unit);
+    // Universal units (apply to all produce types)
+    ONE_KG(
+        weight = 1,
+        isUniversal = true,
+        labelRes = R.string.lbl_one_kg_unit,
+        textRes = R.string.lbl_one_kg_bag_unit
+    ),
+    FIFTY_KG(
+        weight = 50,
+        isUniversal = true,
+        labelRes = R.string.lbl_50_kg_unit,
+        textRes = R.string.lbl_50_kg_bag_unit
+    ),
+    HUNDRED_KG(
+        weight = 100,
+        isUniversal = true,
+        labelRes = R.string.lbl_100_kg_unit,
+        textRes = R.string.lbl_100_kg_bag_unit
+    ),
+    THOUSAND_KG(
+        weight = 1000,
+        isUniversal = true,
+        labelRes = R.string.lbl_1000_kg_unit,
+        textRes = R.string.lbl_1000_kg_bag_unit
+    );
 
-    fun unitWeight() = weight
+    fun unitWeight(): Int = weight
 
     fun unitOfSale(context: Context): String =
-        plainLabel ?: labelRes?.let(context::getString) ?: "N/A"
+        labelRes.let(context::getString)
 
-    fun unitOfSaleText(context: Context): String =
-        plainLabel ?: textRes?.let(context::getString) ?: "N/A"
+    override fun label(context: Context): String =
+        textRes.let(context::getString)
 }

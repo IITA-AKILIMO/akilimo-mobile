@@ -574,15 +574,18 @@
     <string name="lbl_about">About %1$s</string>
     <string name="lbl_min_fert_price">Please provide a valid bag price between %s and %s</string>
 
-    <string name="lbl_one_kg_bag_unit">a 1 kg bag</string>
-    <string name="lbl_50_kg_bag_unit">a 50 kg bag</string>
-    <string name="lbl_100_kg_bag_unit">a 100 kg bag</string>
-    <string name="lbl_1000_kg_bag_unit">1 tonne</string>
+    <!-- Bag units (conversational) -->
+    <string name="lbl_one_kg_bag_unit">a 1-kg bag</string>
+    <string name="lbl_50_kg_bag_unit">a 50-kg bag</string>
+    <string name="lbl_100_kg_bag_unit">a 100-kg bag</string>
+    <string name="lbl_1000_kg_bag_unit">a 1-tonne bag</string>
 
-    <string name="lbl_one_kg_unit">kg</string>
-    <string name="lbl_50_kg_unit">50 kg bag</string>
-    <string name="lbl_100_kg_unit">100 kg bag</string>
-    <string name="lbl_1000_kg_unit">tonne</string>
+    <!-- Unit labels (conversational but concise) -->
+    <string name="lbl_one_kg_unit">1 kilo</string>
+    <string name="lbl_50_kg_unit">50-kg bag</string>
+    <string name="lbl_100_kg_unit">100-kg bag</string>
+    <string name="lbl_1000_kg_unit">1 tonne</string>
+
 
     <string name="lbl_operation_cost_label">About %s %s</string>
 
@@ -633,4 +636,6 @@
     <string name="lbl_toggle_layout">Toggle layout</string>
     <string name="lbl_factories_synced">%1$d Factories Synced</string>
     <string name="lbl_loading">Loading...</string>
+    <string name="lbl_selling_hint">Farmers nearby are selling around {currency} {price} per {unit_of_sale}. Does your price fit in?</string>
+    <string name="lbl_price_per_kg_bag">Price per kg/bag</string>
 </resources>

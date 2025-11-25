@@ -16,6 +16,6 @@ open class PotatoMarket {
     var unitPrice = 0.0
     var unitWeight: Int = 0
 
-    var produceType: String = EnumPotatoProduceType.TUBERS.produce()
+    var produceType: EnumPotatoProduceType = EnumPotatoProduceType.TUBERS
     var unitOfSale: String? = null
 }

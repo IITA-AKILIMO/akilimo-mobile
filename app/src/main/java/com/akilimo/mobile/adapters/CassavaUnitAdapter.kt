@@ -20,10 +20,8 @@ class CassavaUnitAdapter : ListAdapter<CassavaUnit, CassavaUnitAdapter.UnitViewH
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: CassavaUnit) {
             val ctx = binding.root.context
-            val uos =
-                EnumUnitOfSale.entries.find { it.name == item.label } ?: EnumUnitOfSale.NA
-
-            binding.tvUnitLabel.text = uos.unitOfSaleText(ctx)
+            val uos = EnumUnitOfSale.entries.find { it.name == item.label }
+            uos.let { binding.tvUnitLabel.text = it?.label(ctx) }
 
 
             val bgColor = if (item.isSelected)

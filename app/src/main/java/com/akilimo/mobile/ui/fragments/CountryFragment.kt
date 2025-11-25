@@ -59,7 +59,7 @@ class CountryFragment : BaseStepFragment<FragmentCountryBinding>() {
                 val label =
                     countries.find { it.valueOption == user.enumCountry }?.displayLabel.orEmpty()
 
-                user.enumCountry?.let { countryCode ->
+                user.enumCountry.let { countryCode ->
                     binding.countryName.text = label
                     binding.countryImage.setImageResource(World.getFlagOf(countryCode.name))
                 }
