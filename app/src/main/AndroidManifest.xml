@@ -29,9 +29,11 @@
         tools:replace="android:icon, android:theme, android:label"
         tools:targetApi="s">
         <activity
-            android:name=".ui.usecases.MaizeMarketActivity"
+            android:name=".ui.usecases.MaizePerformanceActivity"
             android:exported="false" />
-        <!-- Crash reporting (Sentry) -->
+        <activity
+            android:name=".ui.usecases.MaizeMarketActivity"
+            android:exported="false" /> <!-- Crash reporting (Sentry) -->
         <meta-data
             android:name="io.sentry.dsn"
             android:value="https://f82045e88773833962622996b32b9c8a@o212209.ingest.us.sentry.io/4510186632314885" />

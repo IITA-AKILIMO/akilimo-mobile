@@ -5,6 +5,7 @@ import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.enums.EnumCountry
 import com.akilimo.mobile.enums.EnumInvestmentPref
+import com.akilimo.mobile.enums.EnumMaizePerformance
 import com.akilimo.mobile.enums.EnumOperationMethod
 import com.akilimo.mobile.enums.EnumOperationType
 import com.akilimo.mobile.enums.EnumStepStatus
@@ -113,3 +114,8 @@ data class UnitOfSaleOption(
 data class WeedControlOption(
     override val valueOption: EnumWeedControlMethod,
 ) : BaseValueOption<EnumWeedControlMethod>
+
+data class MaizePerfOption(
+    override val valueOption: EnumMaizePerformance,
+    val isSelected: Boolean = false
+) : BaseValueOption<EnumMaizePerformance>

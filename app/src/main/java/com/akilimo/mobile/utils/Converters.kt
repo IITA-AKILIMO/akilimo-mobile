@@ -7,6 +7,7 @@ import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.enums.EnumCassavaProduceType
 import com.akilimo.mobile.enums.EnumCountry
+import com.akilimo.mobile.enums.EnumMaizePerformance
 import com.akilimo.mobile.enums.EnumMaizeProduceType
 import com.akilimo.mobile.enums.EnumMarketType
 import com.akilimo.mobile.enums.EnumPotatoProduceType
@@ -102,6 +103,7 @@ class EnumPotatoProduceTypeConverter {
     fun toEnum(value: String?): EnumPotatoProduceType? =
         EnumTypeConverter.toEnum(value, EnumPotatoProduceType::class.java)
 }
+
 class EnumMaizeProduceTypeConverter {
     @TypeConverter
     fun fromEnum(value: EnumMaizeProduceType?): String? = EnumTypeConverter.fromEnum(value)
@@ -154,6 +156,15 @@ class EnumMarketTypeConverter {
     @TypeConverter
     fun toEnum(value: String?): EnumMarketType? =
         EnumTypeConverter.toEnum(value, EnumMarketType::class.java)
+}
+
+class EnumMaizePerfConverter {
+    @TypeConverter
+    fun fromEnum(value: EnumMaizePerformance?): String? = EnumTypeConverter.fromEnum(value)
+
+    @TypeConverter
+    fun toEnum(value: String?): EnumMaizePerformance? =
+        EnumTypeConverter.toEnum(value, EnumMaizePerformance::class.java)
 }
 
 

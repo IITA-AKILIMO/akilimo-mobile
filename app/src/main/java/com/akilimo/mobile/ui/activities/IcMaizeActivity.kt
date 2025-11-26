@@ -8,13 +8,14 @@ import com.akilimo.mobile.ui.usecases.CassavaMarketActivity
 import com.akilimo.mobile.ui.usecases.DatesActivity
 import com.akilimo.mobile.ui.usecases.InterCropFertilizersActivity
 import com.akilimo.mobile.ui.usecases.MaizeMarketActivity
+import com.akilimo.mobile.ui.usecases.MaizePerformanceActivity
 
 class IcMaizeActivity : AbstractRecommendationActivity() {
 
     override fun getAdviceOptions() = listOf(
-        UseCaseOption(EnumAdviceTask.AVAILABLE_FERTILIZERS_CIM),
-        UseCaseOption(EnumAdviceTask.PLANTING_AND_HARVEST),
-        UseCaseOption(EnumAdviceTask.CASSAVA_MARKET_OUTLET),
+//        UseCaseOption(EnumAdviceTask.AVAILABLE_FERTILIZERS_CIM),
+//        UseCaseOption(EnumAdviceTask.PLANTING_AND_HARVEST),
+//        UseCaseOption(EnumAdviceTask.CASSAVA_MARKET_OUTLET),
         UseCaseOption(EnumAdviceTask.MAIZE_MARKET_OUTLET),
         UseCaseOption(EnumAdviceTask.MAIZE_PERFORMANCE),
     )
@@ -39,7 +40,7 @@ class IcMaizeActivity : AbstractRecommendationActivity() {
         )
 
         EnumAdviceTask.MAIZE_PERFORMANCE -> Intent(
-            this, CassavaMarketActivity::class.java
+            this, MaizePerformanceActivity::class.java
         )
 
         else -> null

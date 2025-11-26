@@ -1,50 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/rec_img_root"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rec_img_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackgroundBorderless"
-    android:orientation="vertical">
+    android:layout_margin="@dimen/spacing_small"
+    app:cardCornerRadius="@dimen/dimen_5"
+    app:cardElevation="@dimen/dimen_4"
+    app:rippleColor="?attr/colorControlHighlight"
+    app:strokeWidth="0dp">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/rec_img_card"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/spacing_medium"
-        android:layout_marginVertical="@dimen/spacing_small"
-        android:clickable="true"
-        android:focusable="true"
-        app:cardCornerRadius="@dimen/dimen_5"
-        app:cardElevation="@dimen/dimen_2"
-        app:rippleColor="?attr/colorControlHighlight"
-        app:strokeColor="@color/color_outline"
-        app:strokeWidth="1dp">
+        android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/rec_img_content"
-            android:layout_width="match_parent"
+        <!-- Image with gradient overlay -->
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/rec_img_image"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:padding="@dimen/spacing_large">
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/title_activity_cassava_root_yield"
+            android:maxHeight="250dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_maize_2" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/rec_img_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/title_activity_cassava_root_yield"
-                app:srcCompat="@drawable/yield_less_than_7point5" />
+        <!-- Gradient overlay for better text readability -->
+        <View
+            android:id="@+id/gradient_overlay"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:background="@drawable/gradient_overlay"
+            app:layout_constraintBottom_toBottomOf="@id/rec_img_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/rec_img_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_medium"
-                android:gravity="center"
-                android:text="@string/lbl_scheduled_planting_and_high_starch"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+        <!-- Subtitle on image -->
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/rec_img_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="12dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:shadowColor="#80000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="3"
+            android:text="@string/lbl_chest_height"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_size_12"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="@id/rec_img_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Chest Height Measurement" />
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

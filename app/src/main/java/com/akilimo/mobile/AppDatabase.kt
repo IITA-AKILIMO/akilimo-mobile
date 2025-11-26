@@ -16,6 +16,7 @@ import com.akilimo.mobile.dao.FertilizerPriceDao
 import com.akilimo.mobile.dao.FieldOperationCostDao
 import com.akilimo.mobile.dao.InvestmentAmountDao
 import com.akilimo.mobile.dao.MaizeMarketDao
+import com.akilimo.mobile.dao.MaizePerformanceDao
 import com.akilimo.mobile.dao.SelectedCassavaMarketDao
 import com.akilimo.mobile.dao.SelectedFertilizerDao
 import com.akilimo.mobile.dao.SelectedInvestmentDao
@@ -31,6 +32,7 @@ import com.akilimo.mobile.entities.FertilizerPrice
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.entities.InvestmentAmount
 import com.akilimo.mobile.entities.MaizeMarket
+import com.akilimo.mobile.entities.MaizePerformance
 import com.akilimo.mobile.entities.SelectedCassavaMarket
 import com.akilimo.mobile.entities.SelectedFertilizer
 import com.akilimo.mobile.entities.SelectedInvestment
@@ -40,6 +42,7 @@ import com.akilimo.mobile.utils.EnumAdviseConverter
 import com.akilimo.mobile.utils.EnumAdviseTaskConverter
 import com.akilimo.mobile.utils.EnumAreaUnitConverter
 import com.akilimo.mobile.utils.EnumCountryConverter
+import com.akilimo.mobile.utils.EnumMaizePerfConverter
 import com.akilimo.mobile.utils.EnumMaizeProduceTypeConverter
 import com.akilimo.mobile.utils.EnumMarketTypeConverter
 import com.akilimo.mobile.utils.EnumPotatoProduceTypeConverter
@@ -65,7 +68,8 @@ import com.akilimo.mobile.utils.EnumWeedControlConverter
         CassavaYield::class,
         AdviceCompletion::class,
         FieldOperationCost::class,
-        CurrentPractice::class
+        CurrentPractice::class,
+        MaizePerformance::class
     ],
     version = 1,
     exportSchema = false
@@ -83,7 +87,8 @@ import com.akilimo.mobile.utils.EnumWeedControlConverter
     EnumUnitOfSaleConverter::class,
     EnumPotatoProduceTypeConverter::class,
     EnumMaizeProduceTypeConverter::class,
-    EnumMarketTypeConverter::class
+    EnumMarketTypeConverter::class,
+    EnumMaizePerfConverter::class
 )
 abstract class AppDatabase : RoomDatabase() {
 
@@ -112,6 +117,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun currentPracticeDao(): CurrentPracticeDao
 
     abstract fun maizeMarketDao(): MaizeMarketDao
+    abstract fun maizePerformanceDao(): MaizePerformanceDao
 
 
     companion object {
@@ -132,8 +138,8 @@ abstract class AppDatabase : RoomDatabase() {
                 AppDatabase::class.java,
                 DATABASE_NAME
             )
-                .fallbackToDestructiveMigration()
-                .allowMainThreadQueries()
+//                .fallbackToDestructiveMigration()
+                .allowMainThreadQueries() //@TODO: remove this line when we are ready to go live
 
 
             return builder.build()

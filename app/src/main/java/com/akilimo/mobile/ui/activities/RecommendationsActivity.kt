@@ -33,8 +33,8 @@ class RecommendationsActivity : BaseActivity<ActivityRecommendationsBinding>() {
         // Prepare dynamic recommendation list
         val adviceOptions = mutableListOf(
             AdviceOption(EnumAdvice.FERTILIZER_RECOMMENDATIONS),
-            AdviceOption(EnumAdvice.BEST_PLANTING_PRACTICES),
-            AdviceOption(EnumAdvice.SCHEDULED_PLANTING_HIGH_STARCH),
+//            AdviceOption(EnumAdvice.BEST_PLANTING_PRACTICES),
+//            AdviceOption(EnumAdvice.SCHEDULED_PLANTING_HIGH_STARCH),
         )
 
         safeScope.launch {

@@ -32,11 +32,11 @@ class CassavaYieldAdapter() :
             recImgImage.setImageDrawable(drawableRes)
 
             val bgColor = if (item.isSelected)
-                ContextCompat.getColor(ctx, R.color.color_focus)
+                ContextCompat.getColor(ctx, R.color.color_accent_3)
             else
                 Color.TRANSPARENT
 
-            recImgContent.setBackgroundColor(bgColor)
+            recImgTitle.setBackgroundColor(bgColor)
             recImgCard.setOnClickListener { onItemClick?.invoke(item) }
         }
     }

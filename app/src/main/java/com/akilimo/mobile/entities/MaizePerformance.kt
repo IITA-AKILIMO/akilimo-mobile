@@ -1,26 +1,32 @@
 package com.akilimo.mobile.entities
 
-import android.os.Parcelable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
-import kotlinx.android.parcel.Parcelize
+import com.akilimo.mobile.base.BaseEntity
+import com.akilimo.mobile.enums.EnumMaizePerformance
 
-@Parcelize
-@Entity(tableName = "maize_performance")
-open class MaizePerformance : Parcelable {
+@Entity(
+    tableName = "maize_performance",
+    indices = [Index(value = ["user_id"], unique = true)],
+    foreignKeys = [
+        ForeignKey(
+            entity = AkilimoUser::class,
+            parentColumns = ["id"],
+            childColumns = ["user_id"],
+            onDelete = ForeignKey.CASCADE
+        ),
+    ]
+)
+data class MaizePerformance(
 
     @PrimaryKey(autoGenerate = true)
-    var id: Int? = null
-    var performanceRadioIndex = 0
-    var maizePerformance: String? = null
-    var performanceValue: String? = null
-
-    @Transient
-    var maizePerformanceDesc: String? = null
-
-    @Transient
-    var maizePerformanceLabel: String? = null
-
-    @Transient
-    var imageId = 0
-}
+    @ColumnInfo(name = "id")
+    val id: Int? = null,
+    @ColumnInfo(name = "user_id")
+    val userId: Int,
+    @ColumnInfo(name = "maize_performance")
+    val maizePerformance: EnumMaizePerformance,
+) : BaseEntity()
