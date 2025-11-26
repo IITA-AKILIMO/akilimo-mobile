@@ -69,7 +69,8 @@
     <!-- Interactive states -->
     <color name="color_ripple">#1F000000</color>
     <color name="color_hover">#0A000000</color>
-    <color name="color_focus">#1F006B4E</color>
+    <color name="color_focus">#3DA8D42E</color>
+    <color name="color_focus_outline">#006B4E</color>
     <color name="color_pressed">#29000000</color>
 
     <!-- Brand accent variations (for data visualization, charts, etc.) -->
@@ -84,7 +85,7 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="transparent">#00000000</color>
-<!--    <color name="transparent_overlay">#80000000</color>-->
+    <!--    <color name="transparent_overlay">#80000000</color>-->
     <color name="transparent_overlay">#A301573F</color>
 
     <!-- ============================================ -->
@@ -149,6 +150,7 @@
     <!-- Dark interactive states -->
     <color name="color_dark_ripple">#1FFFFFFF</color>
     <color name="color_dark_hover">#0AFFFFFF</color>
-    <color name="color_dark_focus">#1F009970</color>
+    <color name="color_dark_focus">#4DA8D42E</color>
+    <color name="color_dark_focus_outline">#009970</color>
     <color name="color_dark_pressed">#29FFFFFF</color>
 </resources>
