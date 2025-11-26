@@ -10,7 +10,6 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ItemCardRecommendationImageBinding
 import com.akilimo.mobile.entities.CassavaYield
 import com.akilimo.mobile.utils.animateCardBackground
-import com.akilimo.mobile.utils.animateTextColor
 
 class CassavaYieldAdapter() :
     ListAdapter<CassavaYield, CassavaYieldAdapter.OriginalViewHolder>(CassavaYieldDiffCallback()) {
@@ -37,13 +36,7 @@ class CassavaYieldAdapter() :
             else
                 ContextCompat.getColor(ctx, R.color.transparent)
 
-            val targetText = if (item.isSelected)
-                ContextCompat.getColor(ctx, R.color.color_on_primary)
-            else
-                ContextCompat.getColor(ctx, R.color.black)
-
             recImgCard.animateCardBackground(targetBg)
-            recImgTitle.animateTextColor(targetText)
 
             recImgCard.setOnClickListener { onItemClick?.invoke(item) }
         }

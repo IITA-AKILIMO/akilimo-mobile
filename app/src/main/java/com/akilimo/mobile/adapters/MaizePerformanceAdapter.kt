@@ -11,7 +11,6 @@ import com.akilimo.mobile.databinding.ItemCardRecommendationImageBinding
 import com.akilimo.mobile.dto.MaizePerfOption
 import com.akilimo.mobile.enums.EnumMaizePerformance
 import com.akilimo.mobile.utils.animateCardBackground
-import com.akilimo.mobile.utils.animateTextColor
 
 class MaizePerformanceAdapter() :
     ListAdapter<MaizePerfOption, MaizePerformanceAdapter.OriginalViewHolder>(MaizePerfDiffCallback()) {
@@ -35,13 +34,7 @@ class MaizePerformanceAdapter() :
             else
                 ContextCompat.getColor(ctx, R.color.transparent)
 
-            val targetText = if (item.isSelected)
-                ContextCompat.getColor(ctx, R.color.color_on_primary)
-            else
-                ContextCompat.getColor(ctx, R.color.black)
-
             recImgCard.animateCardBackground(targetBg)
-            recImgTitle.animateTextColor(targetText)
 
             recImgCard.setOnClickListener { onItemClick?.invoke(item.valueOption) }
         }
