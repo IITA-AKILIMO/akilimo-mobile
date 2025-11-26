@@ -92,7 +92,7 @@
     <string name="lbl_typical_yield_question">Umusaruro w\'imyumbati usanzwe ubona ni %1$s. Ni uwuhe se musaruro wumva wabona mu murima wawe?</string>
     <string name="lbl_typical_yield_question_fr">Umusaruro w\'imyumbati ubona ni %1$s. Ni uwuhe se musaruro wumva wabona mu murima wawe udakoresheje ifumbire?</string>
     <string name="lbl_maize_performance">Uburebure busanzwe bw\'ibigori iyo bihinzwe nta fumbire</string>
-    <string name="lbl_sweet_potato_prices">Ni ikihe giciro uteganya kugurisha ibijumba byawe mu gihe cyo gusarura?</string>
+    <string name="lbl_market_outlet_sweet_potato">Ni ikihe giciro uteganya kugurisha ibijumba byawe mu gihe cyo gusarura?</string>
     <string name="lbl_height_of_maize_at_tasseling">Ibigori bidafite ifumbire mubisanzwe bigera ku burebure bwa cm 150. Ni ubuhe burebure bw\'ibigori bigeze mu gihe cyo guheka mu murima wawe mu gihe nta fumbire washyizemo?</string>
     <string name="lbl_maize_performance_poor">Ubu butaka ni bubi kandi ntibisanzwe</string>
     <string name="lbl_maize_performance_rich">Ubu butaka ni bwiza kandi ntibisanzwe</string>
@@ -309,7 +309,7 @@
     <string name="lbl_manual">Intoki</string>
     <string name="lbl_operation_type_validation_message">Hitamo ubwoko bw\'umurimo ukorwa</string>
     <string name="lbl_bag_price">Igiciro cy\'umufuka</string>
-    <string name="lbl_how_do_you_sell_your_sweet_potato">Ni gute ugurisha ibijumba byawe?</string>
+    <string name="lbl_sweet_potato_outlets">Ni gute ugurisha ibijumba byawe?</string>
     <string name="lbl_do_you_want_to_receive_recommendations_via_email_and_sms">Twiteguye kubaha inama mwakoresha. Ushobora guhitamo kwakira inama ukoresheje imeri na SMS.</string>
     <string name="lbl_which_of_these_tillage_operations_do_you_perform">Niki muri ibi bikorwa byo guhinga ukora?</string>
     <string name="lbl_options">Amahitamo</string>

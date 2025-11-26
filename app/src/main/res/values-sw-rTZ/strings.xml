@@ -91,7 +91,7 @@
     <string name="lbl_typical_yield_question">Mavuno ya kawaida ya mizizi ya mihogo ni %1$s. Je? Unatarajia mavuno kiasi gani kutoka kwenye shamba lako bila kutumia mbolea?</string>
     <string name="lbl_typical_yield_question_fr">Mavuno ya kawaida ya mizizi ya mihogo ni %1$s. Je? Unatarajia mavuno kiasi gani kutoka kwenye shamba lako bila kutumia mbolea?</string>
     <string name="lbl_maize_performance">Urefu wa kawaida wa mahindi ukipandwa bila kuwekewa mbolea</string>
-    <string name="lbl_sweet_potato_prices">Unatarajia kuuza bei gani viazi vitamu wakati wa mavuno?</string>
+    <string name="lbl_market_outlet_sweet_potato">Unatarajia kuuza bei gani viazi vitamu wakati wa mavuno?</string>
     <string name="lbl_height_of_maize_at_tasseling">Mahindi bila mbolea kawaida hufikia urefu wa kifua karibu 150cm. Je? Ni urefu gani wa mazao yako ya mahindi kwenye shamba lako ukiwa bila mbolea</string>
     <string name="lbl_maize_performance_poor">Hizi ni dalili za udongo usio na rutuba lakini sio za kawaida</string>
     <string name="lbl_maize_performance_rich">Hizi ni dalili za udongo wenye rutuba lakini sio za kawaida</string>
@@ -297,7 +297,7 @@
     <string name="lbl_manual">Kwa jembe la mkono</string>
     <string name="lbl_operation_type_validation_message">Tafadhali chagua namna shughuli za shamba zinavyofanywa</string>
     <string name="lbl_bag_price">Bei ya kiroba</string>
-    <string name="lbl_how_do_you_sell_your_sweet_potato">Unauzaje viazi vitamu vyako</string>
+    <string name="lbl_sweet_potato_outlets">Unauzaje viazi vitamu vyako</string>
     <string name="lbl_do_you_want_to_receive_recommendations_via_email_and_sms">Tuko tayari kuhesabu mapendekezo yako. Unaweza kuchagua pia kupokea ushauri kupitia barua pepe na SMS.</string>
     <string name="lbl_which_of_these_tillage_operations_do_you_perform">Shughuli zipi za uandaaji wa shamba kati ya hizi utafanya?</string>
     <string name="lbl_options">Chaguzi</string>

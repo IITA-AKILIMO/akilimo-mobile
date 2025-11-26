@@ -138,7 +138,7 @@
     <string name="lbl_typical_yield_question">A typical cassava root yield is %1$s. How much yield do you expect from your field?</string>
     <string name="lbl_typical_yield_question_fr">A typical cassava root yield is %1$s. How much yield do you expect from your field without fertilizer application?</string>
     <string name="lbl_maize_performance">The typical height of maize when grown without fertilizer</string>
-    <string name="lbl_sweet_potato_prices">What price do you expect to sell your sweet potatoes at  harvest?</string>
+    <string name="lbl_market_outlet_sweet_potato">What price do you expect to sell your sweet potatoes at  harvest?</string>
     <string name="lbl_height_of_maize_at_tasseling">Maize without fertilizer usually reaches up to chest height about 150cm. What is the height of your maize crop in your field at tasseling without fertilizer</string>
 
     <string name="lbl_maize_performance_poor">These are very poor soil conditions and not very common</string>
@@ -148,6 +148,7 @@
     <string name="lbl_market_outlet">What price do you expect for your cassava?</string>
     <string name="lbl_maize_market">Sell your Maize</string>
     <string name="lbl_market_outlet_maize">What price do you expect for your maize at harvest?</string>
+
     <string name="lbl_tillage_operations">Tillage operations and related cost</string>
     <string name="lbl_cost_of_manual_tillage">What is the cost of manual tillage?</string>
     <string name="lbl_tractor_access">What operation can the tractor perform?</string>
@@ -434,7 +435,7 @@
     <string name="lbl_manual">Manually</string>
     <string name="lbl_operation_type_validation_message">Select a proper operation type</string>
     <string name="lbl_bag_price">Bag price</string>
-    <string name="lbl_how_do_you_sell_your_sweet_potato">How do you sell your sweet potato?</string>
+    <string name="lbl_sweet_potato_outlets">How do you sell your sweet potato?</string>
     <string name="lbl_do_you_want_to_receive_recommendations_via_email_and_sms">We are ready to calculate your recommendationResp. You can choose also to receive the advice via email and SMS.</string>
     <string name="lbl_which_of_these_tillage_operations_do_you_perform">Which of these tillage operations do you perform?</string>
     <string name="lbl_tillage_operation">Tillage operations</string>
