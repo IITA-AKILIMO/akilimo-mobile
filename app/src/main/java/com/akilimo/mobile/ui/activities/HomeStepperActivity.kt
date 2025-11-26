@@ -55,7 +55,7 @@ class HomeStepperActivity : BaseActivity<ActivityHomeStepperBinding>(),
         add(CountryFragment.newInstance())
 //        add(LocationFragment.newInstance())
         if (!sessionManager.rememberAreaUnit) add(AreaUnitFragment.newInstance())
-        add(PlantingDateFragment.newInstance())
+//        add(PlantingDateFragment.newInstance())
 //        add(TillageOperationFragment.newInstance())
 //        add(InvestmentPrefFragment.newInstance())
 //        add(SummaryFragment.newInstance())
