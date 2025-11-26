@@ -6,12 +6,12 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.akilimo.mobile.base.BaseEntity
-import com.akilimo.mobile.enums.EnumMaizeProduceType
+import com.akilimo.mobile.enums.EnumProduceType
 import com.akilimo.mobile.enums.EnumMarketType
 import com.akilimo.mobile.enums.EnumUnitOfSale
 
 @Entity(
-    tableName = "maize_markets",
+    tableName = "produce_markets",
     foreignKeys = [ForeignKey(
         entity = AkilimoUser::class,
         parentColumns = ["id"],
@@ -20,7 +20,7 @@ import com.akilimo.mobile.enums.EnumUnitOfSale
     )],
     indices = [Index(value = ["user_id"]), Index(value = ["user_id", "market_type"], unique = true)]
 )
-data class MaizeMarket(
+data class ProduceMarket(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Int = 0,
 
     @ColumnInfo(name = "user_id") val userId: Int,
@@ -29,7 +29,7 @@ data class MaizeMarket(
 
     @ColumnInfo(name = "market_type") val marketType: EnumMarketType,
 
-    @ColumnInfo(name = "produce_type") val produceType: EnumMaizeProduceType,
+    @ColumnInfo(name = "produce_type") val produceType: EnumProduceType,
 
     @ColumnInfo(name = "unit_of_sale") val unitOfSale: EnumUnitOfSale
 ) : BaseEntity()

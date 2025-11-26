@@ -8,9 +8,8 @@ import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.enums.EnumCassavaProduceType
 import com.akilimo.mobile.enums.EnumCountry
 import com.akilimo.mobile.enums.EnumMaizePerformance
-import com.akilimo.mobile.enums.EnumMaizeProduceType
+import com.akilimo.mobile.enums.EnumProduceType
 import com.akilimo.mobile.enums.EnumMarketType
-import com.akilimo.mobile.enums.EnumPotatoProduceType
 import com.akilimo.mobile.enums.EnumStepStatus
 import com.akilimo.mobile.enums.EnumUnitOfSale
 import com.akilimo.mobile.enums.EnumUseCase
@@ -95,22 +94,14 @@ class EnumCassProduceTypeConverter {
         EnumTypeConverter.toEnum(value, EnumCassavaProduceType::class.java)
 }
 
-class EnumPotatoProduceTypeConverter {
+
+class EnumProduceTypeConverter {
     @TypeConverter
-    fun fromEnum(value: EnumPotatoProduceType?): String? = EnumTypeConverter.fromEnum(value)
+    fun fromEnum(value: EnumProduceType?): String? = EnumTypeConverter.fromEnum(value)
 
     @TypeConverter
-    fun toEnum(value: String?): EnumPotatoProduceType? =
-        EnumTypeConverter.toEnum(value, EnumPotatoProduceType::class.java)
-}
-
-class EnumMaizeProduceTypeConverter {
-    @TypeConverter
-    fun fromEnum(value: EnumMaizeProduceType?): String? = EnumTypeConverter.fromEnum(value)
-
-    @TypeConverter
-    fun toEnum(value: String?): EnumMaizeProduceType? =
-        EnumTypeConverter.toEnum(value, EnumMaizeProduceType::class.java)
+    fun toEnum(value: String?): EnumProduceType? =
+        EnumTypeConverter.toEnum(value, EnumProduceType::class.java)
 }
 
 class EnumUnitOfSaleConverter {

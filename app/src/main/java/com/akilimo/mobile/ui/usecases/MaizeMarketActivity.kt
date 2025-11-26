@@ -7,20 +7,20 @@ import androidx.core.widget.addTextChangedListener
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.BaseValueOptionAdapter
 import com.akilimo.mobile.base.BaseActivity
+import com.akilimo.mobile.dao.ProduceMarketRepo
 import com.akilimo.mobile.databinding.ActivityMaizeMarketBinding
 import com.akilimo.mobile.dto.UnitOfSaleOption
-import com.akilimo.mobile.entities.MaizeMarket
-import com.akilimo.mobile.enums.EnumMaizeProduceType
+import com.akilimo.mobile.entities.ProduceMarket
 import com.akilimo.mobile.enums.EnumMarketType
+import com.akilimo.mobile.enums.EnumProduceType
 import com.akilimo.mobile.enums.EnumUnitOfSale
 import com.akilimo.mobile.repos.AkilimoUserRepo
-import com.akilimo.mobile.repos.MaizeMarketRepo
 import com.akilimo.mobile.ui.components.ToolbarHelper
 import kotlinx.coroutines.launch
 
 class MaizeMarketActivity : BaseActivity<ActivityMaizeMarketBinding>() {
     private val userRepo by lazy { AkilimoUserRepo(database.akilimoUserDao()) }
-    private val marketRepo by lazy { MaizeMarketRepo(database.maizeMarketDao()) }
+    private val marketRepo by lazy { ProduceMarketRepo(database.produceMarketDao()) }
 
     private var currencyCode = ""
 
@@ -71,7 +71,7 @@ class MaizeMarketActivity : BaseActivity<ActivityMaizeMarketBinding>() {
 
     private fun prefillFromEntity() = safeScope.launch {
         val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
-        val maizeMarket = marketRepo.getLastEntryForUser(user.id ?: 0)
+        val maizeMarket = marketRepo.getLastEntryForUser(user.id ?: 0, EnumMarketType.MAIZE_MARKET)
         val currency = user.enumCountry
         currencyCode = currency.currencyCode
         binding.apply {
@@ -82,11 +82,11 @@ class MaizeMarketActivity : BaseActivity<ActivityMaizeMarketBinding>() {
 
         maizeMarket?.let { entry ->
             when (entry.produceType) {
-                EnumMaizeProduceType.FRESH_COB -> binding.freshCobsOption.isChecked = true
-                EnumMaizeProduceType.GRAIN -> binding.dryGrainOption.isChecked = true
+                EnumProduceType.MAIZE_FRESH_COB -> binding.freshCobsOption.isChecked = true
+                EnumProduceType.MAIZE_GRAIN -> binding.dryGrainOption.isChecked = true
                 else -> Unit
             }
-            val isFreshCob = entry.produceType == EnumMaizeProduceType.FRESH_COB
+            val isFreshCob = entry.produceType == EnumProduceType.MAIZE_FRESH_COB
             val unitOfSale = entry.unitOfSale
             updateUnits(isFreshCob)
             binding.apply {
@@ -144,14 +144,14 @@ class MaizeMarketActivity : BaseActivity<ActivityMaizeMarketBinding>() {
         }
 
         val produceType = when {
-            binding.freshCobsOption.isChecked -> EnumMaizeProduceType.FRESH_COB
-            binding.dryGrainOption.isChecked -> EnumMaizeProduceType.GRAIN
-            else -> EnumMaizeProduceType.UNKNOWN
+            binding.freshCobsOption.isChecked -> EnumProduceType.MAIZE_FRESH_COB
+            binding.dryGrainOption.isChecked -> EnumProduceType.MAIZE_GRAIN
+            else -> EnumProduceType.UNKNOWN
         }
 
         safeScope.launch {
             val userId = userRepo.getUser(sessionManager.akilimoUser)?.id ?: return@launch
-            val entry = MaizeMarket(
+            val entry = ProduceMarket(
                 userId = userId,
                 unitPrice = price,
                 marketType = EnumMarketType.MAIZE_MARKET,

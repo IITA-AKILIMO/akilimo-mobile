@@ -1,19 +1,5 @@
 import com.akilimo.mobile.AppDatabase
-import com.akilimo.mobile.enums.EnumAreaUnit
-import com.akilimo.mobile.enums.EnumCassavaProduceType
-import com.akilimo.mobile.enums.EnumMaizeProduceType
-import com.akilimo.mobile.enums.EnumPotatoProduceType
-import com.akilimo.mobile.enums.EnumUseCase
 import com.akilimo.mobile.helper.SessionManager
-import com.akilimo.mobile.repos.AkilimoUserRepo
-import com.akilimo.mobile.repos.CassavaYieldRepo
-import com.akilimo.mobile.repos.FertilizerRepo
-import com.akilimo.mobile.repos.InvestmentRepo
-import com.akilimo.mobile.repos.SelectedCassavaMarketRepo
-import com.akilimo.mobile.repos.SelectedFertilizerRepo
-import com.akilimo.mobile.repos.SelectedInvestmentRepo
-import com.akilimo.mobile.rest.request.*
-import java.time.LocalDate
 
 class RecommendationBuilder(
     private val database: AppDatabase,
