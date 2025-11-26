@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rec_img_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/spacing_small"
     app:cardCornerRadius="@dimen/dimen_5"
-    app:cardElevation="@dimen/dimen_4"
+    app:cardElevation="@dimen/dimen_2"
     app:rippleColor="?attr/colorControlHighlight"
     app:strokeWidth="0dp">
 
@@ -42,25 +41,18 @@
         <!-- Subtitle on image -->
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/rec_img_title"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="12dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:shadowColor="#80000000"
-            android:shadowDx="0"
-            android:shadowDy="1"
-            android:shadowRadius="3"
+            android:layout_marginStart="@dimen/spacing_medium"
+            android:layout_marginEnd="@dimen/spacing_medium"
+            android:layout_marginBottom="@dimen/spacing_large"
+            android:ellipsize="none"
             android:text="@string/lbl_chest_height"
-            android:textColor="@android:color/white"
+            android:textColor="@color/color_on_primary"
             android:textSize="@dimen/font_size_12"
-            android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="@id/rec_img_image"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="Chest Height Measurement" />
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
