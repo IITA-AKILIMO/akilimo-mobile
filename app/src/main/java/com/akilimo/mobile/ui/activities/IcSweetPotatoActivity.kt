@@ -13,8 +13,7 @@ class IcSweetPotatoActivity : AbstractRecommendationActivity() {
         UseCaseOption(EnumAdviceTask.AVAILABLE_FERTILIZERS_CIS),
         UseCaseOption(EnumAdviceTask.PLANTING_AND_HARVEST),
         UseCaseOption(EnumAdviceTask.CASSAVA_MARKET_OUTLET),
-        UseCaseOption(EnumAdviceTask.MAIZE_MARKET_OUTLET),
-        UseCaseOption(EnumAdviceTask.MAIZE_PERFORMANCE),
+        UseCaseOption(EnumAdviceTask.SWEET_POTATO_MARKET_OUTLET),
     )
 
     override fun mapTaskToIntent(task: EnumAdviceTask): Intent? = when (task) {
@@ -25,8 +24,7 @@ class IcSweetPotatoActivity : AbstractRecommendationActivity() {
 
         EnumAdviceTask.PLANTING_AND_HARVEST -> Intent(this, DatesActivity::class.java)
         EnumAdviceTask.CASSAVA_MARKET_OUTLET -> Intent(this, CassavaMarketActivity::class.java)
-        EnumAdviceTask.MAIZE_MARKET_OUTLET -> Intent(this, CassavaMarketActivity::class.java)
-        EnumAdviceTask.MAIZE_PERFORMANCE -> Intent(this, CassavaMarketActivity::class.java)
+        EnumAdviceTask.SWEET_POTATO_MARKET_OUTLET -> Intent(this, CassavaMarketActivity::class.java)
 
         else -> null
     }
