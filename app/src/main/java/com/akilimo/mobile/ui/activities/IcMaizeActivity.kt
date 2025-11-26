@@ -13,9 +13,9 @@ import com.akilimo.mobile.ui.usecases.MaizePerformanceActivity
 class IcMaizeActivity : AbstractRecommendationActivity() {
 
     override fun getAdviceOptions() = listOf(
-//        UseCaseOption(EnumAdviceTask.AVAILABLE_FERTILIZERS_CIM),
-//        UseCaseOption(EnumAdviceTask.PLANTING_AND_HARVEST),
-//        UseCaseOption(EnumAdviceTask.CASSAVA_MARKET_OUTLET),
+        UseCaseOption(EnumAdviceTask.AVAILABLE_FERTILIZERS_CIM),
+        UseCaseOption(EnumAdviceTask.PLANTING_AND_HARVEST),
+        UseCaseOption(EnumAdviceTask.CASSAVA_MARKET_OUTLET),
         UseCaseOption(EnumAdviceTask.MAIZE_MARKET_OUTLET),
         UseCaseOption(EnumAdviceTask.MAIZE_PERFORMANCE),
     )
