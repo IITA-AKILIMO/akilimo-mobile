@@ -22,24 +22,29 @@ class MaizePerformanceAdapter() :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: MaizePerfOption, position: Int) = with(binding) {
             val ctx = binding.root.context
+            val drawableRes = try {
+                ContextCompat.getDrawable(ctx, item.valueOption.imageRes)
+            } catch (_: Exception) {
+                ContextCompat.getDrawable(ctx, R.drawable.ic_akilimo_logo)
+            }
+            recImgImage.setImageDrawable(drawableRes)
             recImgTitle.text = ctx.getString(item.valueOption.label)
 
             val targetBg = if (item.isSelected)
-                ContextCompat.getColor(ctx, R.color.color_accent_1)
+                ContextCompat.getColor(ctx, R.color.color_focus)
             else
-                ContextCompat.getColor(ctx, R.color.white)
+                ContextCompat.getColor(ctx, R.color.transparent)
 
             val targetText = if (item.isSelected)
-                ContextCompat.getColor(ctx, R.color.white)
+                ContextCompat.getColor(ctx, R.color.color_on_primary)
             else
                 ContextCompat.getColor(ctx, R.color.black)
 
             recImgCard.animateCardBackground(targetBg)
-//            recImgTitle.animateTextColor(targetText)
+            recImgTitle.animateTextColor(targetText)
 
             recImgCard.setOnClickListener { onItemClick?.invoke(item.valueOption) }
         }
-
 
 
     }

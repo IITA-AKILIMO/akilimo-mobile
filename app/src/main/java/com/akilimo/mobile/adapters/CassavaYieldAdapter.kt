@@ -1,6 +1,5 @@
 package com.akilimo.mobile.adapters
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -10,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.ItemCardRecommendationImageBinding
 import com.akilimo.mobile.entities.CassavaYield
+import com.akilimo.mobile.utils.animateCardBackground
+import com.akilimo.mobile.utils.animateTextColor
 
 class CassavaYieldAdapter() :
     ListAdapter<CassavaYield, CassavaYieldAdapter.OriginalViewHolder>(CassavaYieldDiffCallback()) {
@@ -21,22 +22,29 @@ class CassavaYieldAdapter() :
 
         fun bind(item: CassavaYield, position: Int) = with(binding) {
             val ctx = binding.root.context
-            recImgTitle.text = item.yieldLabel
-
             val drawableRes = try {
                 ContextCompat.getDrawable(ctx, item.imageRes)
             } catch (e: Exception) {
                 ContextCompat.getDrawable(ctx, R.drawable.ic_akilimo_logo)
             }
 
+
+            recImgTitle.text = item.yieldLabel
             recImgImage.setImageDrawable(drawableRes)
 
-            val bgColor = if (item.isSelected)
-                ContextCompat.getColor(ctx, R.color.color_accent_3)
+            val targetBg = if (item.isSelected)
+                ContextCompat.getColor(ctx, R.color.color_focus)
             else
-                Color.TRANSPARENT
+                ContextCompat.getColor(ctx, R.color.transparent)
 
-            recImgTitle.setBackgroundColor(bgColor)
+            val targetText = if (item.isSelected)
+                ContextCompat.getColor(ctx, R.color.color_on_primary)
+            else
+                ContextCompat.getColor(ctx, R.color.black)
+
+            recImgCard.animateCardBackground(targetBg)
+            recImgTitle.animateTextColor(targetText)
+
             recImgCard.setOnClickListener { onItemClick?.invoke(item) }
         }
     }
