@@ -29,6 +29,9 @@
         tools:replace="android:icon, android:theme, android:label"
         tools:targetApi="s">
         <activity
+            android:name=".ui.usecases.SweetPotatoMarketActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.usecases.MaizePerformanceActivity"
             android:exported="false" />
         <activity
