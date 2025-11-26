@@ -18,7 +18,7 @@ enum class EnumAdviceTask(private val labelResId: Int) : ILabelProvider, Parcela
     MAIZE_PERFORMANCE(R.string.lbl_maize_performance),
     CASSAVA_MARKET_OUTLET(R.string.lbl_market_outlet),
     MAIZE_MARKET_OUTLET(R.string.lbl_market_outlet_maize),
-    SWEET_POTATO_MARKET_OUTLET(R.string.lbl_sweet_potato_prices),
+    SWEET_POTATO_MARKET_OUTLET(R.string.lbl_market_outlet_sweet_potato),
     TILLAGE_OPERATIONS(R.string.lbl_tillage_operations),
     COST_OF_WEED_CONTROL(R.string.lbl_cost_of_weed_control),
     MANUAL_TILLAGE_COST(R.string.lbl_cost_of_manual_tillage),
