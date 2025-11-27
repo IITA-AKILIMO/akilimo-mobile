@@ -7,6 +7,7 @@ import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.ui.usecases.CassavaMarketActivity
 import com.akilimo.mobile.ui.usecases.DatesActivity
 import com.akilimo.mobile.ui.usecases.InterCropFertilizersActivity
+import com.akilimo.mobile.ui.usecases.SweetPotatoMarketActivity
 
 class IcSweetPotatoActivity : AbstractRecommendationActivity() {
     override fun getAdviceOptions() = listOf(
@@ -24,7 +25,7 @@ class IcSweetPotatoActivity : AbstractRecommendationActivity() {
 
         EnumAdviceTask.PLANTING_AND_HARVEST -> Intent(this, DatesActivity::class.java)
         EnumAdviceTask.CASSAVA_MARKET_OUTLET -> Intent(this, CassavaMarketActivity::class.java)
-        EnumAdviceTask.SWEET_POTATO_MARKET_OUTLET -> Intent(this, CassavaMarketActivity::class.java)
+        EnumAdviceTask.SWEET_POTATO_MARKET_OUTLET -> Intent(this, SweetPotatoMarketActivity::class.java)
 
         else -> null
     }

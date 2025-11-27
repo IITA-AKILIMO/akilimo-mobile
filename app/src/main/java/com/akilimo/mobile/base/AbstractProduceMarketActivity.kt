@@ -54,7 +54,7 @@ abstract class AbstractProduceMarketActivity<T : ViewBinding>(
     }
 
     /** Hook for subclasses to setup produce type selection */
-    protected open fun setupProduceTypeSelection() = Unit
+    protected abstract fun setupProduceTypeSelection()
 
     /** --- Prefill --- */
     private fun prefillFromEntity() = safeScope.launch {
@@ -80,12 +80,13 @@ abstract class AbstractProduceMarketActivity<T : ViewBinding>(
                     false
                 )
 
-                marketHintText.text = getString(
-                    R.string.lbl_selling_hint,
-                    currencyCode,
-                    entry.unitPrice,
-                    entry.unitOfSale.unitOfSale(this@AbstractProduceMarketActivity)
-                )
+                marketHintText.text = getString(R.string.lbl_selling_hint)
+                    .replace("{currency}", currencyCode)
+                    .replace("{price}", entry.unitPrice.toString())
+                    .replace(
+                        "{unit_of_sale}",
+                        entry.unitOfSale.unitOfSale(this@AbstractProduceMarketActivity)
+                    )
                 marketHintCard.isVisible = true
             }
         }

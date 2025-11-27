@@ -147,6 +147,7 @@
     <string name="lbl_cassava_price">Cassava prices</string>
     <string name="lbl_market_outlet">What price do you expect for your cassava?</string>
     <string name="lbl_maize_market">Sell your Maize</string>
+    <string name="lbl_sweet_potato_market">Sell your Sweet Potatoes</string>
     <string name="lbl_market_outlet_maize">What price do you expect for your maize at harvest?</string>
 
     <string name="lbl_tillage_operations">Tillage operations and related cost</string>

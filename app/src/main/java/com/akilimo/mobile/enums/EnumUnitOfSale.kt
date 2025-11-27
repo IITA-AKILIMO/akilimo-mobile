@@ -26,25 +26,31 @@ enum class EnumUnitOfSale(
         weight = 1,
         isUniversal = true,
         labelRes = R.string.lbl_one_kg_unit,
-        textRes = R.string.lbl_one_kg_bag_unit
+        textRes = R.string.per_kg_sale_unit
     ),
     FIFTY_KG(
         weight = 50,
         isUniversal = true,
         labelRes = R.string.lbl_50_kg_unit,
-        textRes = R.string.lbl_50_kg_bag_unit
+        textRes = R.string.per_50_kg_sale_unit
     ),
     HUNDRED_KG(
         weight = 100,
         isUniversal = true,
         labelRes = R.string.lbl_100_kg_unit,
-        textRes = R.string.lbl_100_kg_bag_unit
+        textRes = R.string.per_100_kg_sale_unit
     ),
     THOUSAND_KG(
         weight = 1000,
         isUniversal = true,
         labelRes = R.string.lbl_1000_kg_unit,
-        textRes = R.string.lbl_1000_kg_bag_unit
+        textRes = R.string.per_tonne_sale_unit
+    ),
+    PICKUP_LOAD(
+        weight = 1,
+        isUniversal = false,
+        labelRes = R.string.per_pick_up_load_sale_unit,
+        textRes = R.string.per_pick_up_load_sale_unit
     );
 
     fun unitWeight(): Int = weight
