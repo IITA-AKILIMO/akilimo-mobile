@@ -1,56 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/lyt_scroll_biodata"
+    android:id="@+id/scroll_biodata"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".views.fragments.BioDataFragment">
+    tools:context=".ui.fragments.BioDataFragment">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/lyt_biodata_container"
+    <LinearLayout
+        android:id="@+id/container_biodata"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:padding="@dimen/spacing_medium">
+        android:padding="@dimen/spacing_large"
+        android:gravity="center_horizontal">
 
-        <!-- Title -->
+        <!-- Header -->
         <TextView
-            android:id="@+id/txt_title_biodata"
-            style="@style/TextAppearance.MaterialComponents.Headline6"
+            android:id="@+id/txt_biodata_title"
+            style="?attr/textAppearanceHeadlineMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/spacing_medium"
-            android:text="@string/lbl_self_intro"
             android:textAlignment="center"
-            android:textColor="@color/akilimoDarkGreen"
-            android:textStyle="bold" />
+            android:text="@string/lbl_self_intro"
+            android:textStyle="bold"
+            android:paddingBottom="@dimen/spacing_large" />
 
-        <!-- Personal Info Card -->
+        <!-- PERSONAL INFO -->
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_personal_info"
+            android:id="@+id/card_personal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_medium"
-            app:cardCornerRadius="@dimen/dimen_5"
-            app:cardElevation="@dimen/spacing_small">
+            android:layout_marginBottom="@dimen/spacing_large"
+            app:cardElevation="1dp"
+            app:shapeAppearance="?attr/shapeAppearanceMediumComponent"
+            app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/lyt_personal_info"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="@dimen/spacing_medium">
+                android:padding="@dimen/spacing_large">
 
-                <!-- First Name -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/lyt_first_name"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_medium"
                     android:hint="@string/lbl_first_name">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -60,10 +58,9 @@
                         android:inputType="textPersonName" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Last Name -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/lyt_last_name"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_medium"
@@ -76,51 +73,45 @@
                         android:inputType="textPersonName" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Gender -->
-                <TextView
-                    android:id="@+id/txt_gender_label"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_large"
-                    android:text="@string/lbl_gender"
-                    android:textColor="@color/grey_40" />
-
-                <Spinner
-                    android:id="@+id/spn_gender"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_small"
-                    android:minWidth="@dimen/img_width"
-                    android:minHeight="@dimen/dimen_36"
-                    android:paddingHorizontal="@dimen/spacing_medium"
-                    android:paddingVertical="@dimen/spacing_small"
-                    android:spinnerMode="dialog" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Contact Info Card -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_contact_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_medium"
-            app:cardCornerRadius="@dimen/dimen_5"
-            app:cardElevation="@dimen/spacing_small">
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/lyt_contact_info"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_medium">
-
-                <!-- Email -->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/lyt_email"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:id="@+id/lyt_gender"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_medium"
+                    android:hint="@string/lbl_gender">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/drop_gender"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="?attr/listPreferredItemHeightSmall"
+                        android:inputType="none" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- CONTACT INFO -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_contact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_large"
+            app:cardElevation="1dp"
+            app:shapeAppearance="?attr/shapeAppearanceMediumComponent"
+            app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_large">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/lyt_email"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:hint="@string/lbl_email_address">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -130,36 +121,23 @@
                         android:inputType="textEmailAddress" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Phone Label -->
-                <TextView
-                    android:id="@+id/txt_phone_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_large"
-                    android:text="@string/lbl_phone_number"
-                    android:textColor="@color/grey_40" />
-
-                <!-- Country Picker -->
                 <com.hbb20.CountryCodePicker
                     android:id="@+id/ccp_country"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_large"
-                    android:paddingHorizontal="@dimen/spacing_medium"
-                    android:paddingVertical="@dimen/spacing_small"
                     app:ccp_autoDetectCountry="true"
                     app:ccp_countryPreference="NG,TZ"
                     app:ccp_showFlag="true"
                     app:ccp_showPhoneCode="true"
                     app:ccp_textGravity="LEFT" />
 
-                <!-- Phone Input -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/lyt_phone"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_small"
+                    android:layout_marginTop="@dimen/spacing_medium"
                     android:hint="@string/lbl_phone_number">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -168,47 +146,40 @@
                         android:layout_height="wrap_content"
                         android:inputType="phone" />
                 </com.google.android.material.textfield.TextInputLayout>
-            </androidx.appcompat.widget.LinearLayoutCompat>
+            </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Interest Card -->
+        <!-- INTEREST -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_interest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_medium"
-            app:cardCornerRadius="@dimen/dimen_5"
-            app:cardElevation="@dimen/spacing_small">
+            app:cardElevation="1dp"
+            app:shapeAppearance="?attr/shapeAppearanceMediumComponent"
+            app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/lyt_interest"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="@dimen/spacing_medium">
+                android:padding="@dimen/spacing_large">
 
-                <!-- Interest Label -->
-                <TextView
-                    android:id="@+id/txt_interest_label"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/lyt_interest"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_medium"
-                    android:text="@string/lbl_akilimo_interest"
-                    android:textColor="@color/grey_40" />
+                    android:hint="@string/lbl_akilimo_interest">
 
-                <!-- Interest Spinner -->
-                <Spinner
-                    android:id="@+id/spn_interest"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_medium"
-                    android:minWidth="@dimen/img_width"
-                    android:minHeight="@dimen/dimen_36"
-                    android:paddingHorizontal="@dimen/spacing_medium"
-                    android:paddingVertical="@dimen/spacing_small"
-                    android:spinnerMode="dialog" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/drop_interest"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="?attr/listPreferredItemHeightSmall"
+                        android:inputType="none" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+    </LinearLayout>
 </androidx.core.widget.NestedScrollView>

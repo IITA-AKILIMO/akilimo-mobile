@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/values/arrays.xml -->
+<resources>
+    <!-- Dry grain units -->
+    <string-array name="units_grain">
+        <item>1 kg</item>
+        <item>50 kg bag</item>
+        <item>100 kg bag</item>
+    </string-array>
+
+    <!-- Fresh cobs units -->
+    <string-array name="units_cobs">
+        <item>per cob</item>
+    </string-array>
+</resources>

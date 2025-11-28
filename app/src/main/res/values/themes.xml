@@ -1,0 +1,164 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base Akilimo app theme -->
+    <style name="Base.Theme.NewAkilimo" parent="Theme.Material3.DayNight.NoActionBar">
+
+        <!-- Typography - Global Font -->
+        <item name="fontFamily">@font/google_sans</item>
+        <item name="android:fontFamily">@font/google_sans</item>
+
+
+        <!-- Primary brand colors -->
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorOnPrimary">@color/color_on_primary</item>
+        <item name="colorPrimaryContainer">@color/color_primary_light</item>
+        <item name="colorOnPrimaryContainer">@color/color_primary_variant</item>
+
+        <!-- Secondary brand colors -->
+        <item name="colorSecondary">@color/color_secondary</item>
+        <item name="colorOnSecondary">@color/color_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/color_secondary_light</item>
+        <item name="colorOnSecondaryContainer">@color/color_secondary_variant</item>
+
+        <!-- Tertiary (optional accent) -->
+        <item name="colorTertiary">@color/color_accent_5</item>
+        <item name="colorOnTertiary">@color/white</item>
+        <item name="colorTertiaryContainer">@color/color_info_container</item>
+        <item name="colorOnTertiaryContainer">@color/color_on_info_container</item>
+
+        <!-- Surface and background -->
+        <item name="android:colorBackground">@color/color_background</item>
+        <item name="colorOnBackground">@color/color_on_background</item>
+
+        <item name="colorSurface">@color/color_surface</item>
+        <item name="colorOnSurface">@color/color_on_surface</item>
+        <item name="colorSurfaceVariant">@color/color_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/color_on_surface_variant</item>
+
+        <!-- Error colors -->
+        <item name="colorError">@color/color_error</item>
+        <item name="colorOnError">@color/color_on_error</item>
+        <item name="colorErrorContainer">@color/color_error_container</item>
+        <item name="colorOnErrorContainer">@color/color_on_error_container</item>
+
+        <!-- Outline and borders -->
+        <item name="colorOutline">@color/color_outline</item>
+        <item name="colorOutlineVariant">@color/color_outline_variant</item>
+
+        <!-- Surface tints and overlays -->
+        <item name="android:colorControlHighlight">@color/color_ripple</item>
+
+        <!-- Typography -->
+        <item name="android:textColorPrimary">@color/color_text_primary</item>
+        <item name="android:textColorSecondary">@color/color_text_secondary</item>
+        <item name="android:textColorTertiary">@color/color_text_tertiary</item>
+        <item name="android:textColorHint">@color/color_text_disabled</item>
+
+        <!-- System bars -->
+        <item name="android:statusBarColor">@color/color_primary</item>
+        <item name="android:navigationBarColor">@color/color_surface</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+
+        <!-- Window background -->
+        <item name="android:windowBackground">@color/color_background</item>
+
+        <!-- Material components -->
+        <item name="elevationOverlayEnabled">true</item>
+
+        <!-- Divider -->
+        <item name="materialDividerStyle">@style/Widget.Material3.MaterialDivider</item>
+
+
+        <!-- Text Appearances with Google Sans -->
+        <item name="textAppearanceDisplayLarge">@style/TextAppearance.Akilimo.DisplayLarge</item>
+        <item name="textAppearanceDisplayMedium">@style/TextAppearance.Akilimo.DisplayMedium</item>
+        <item name="textAppearanceDisplaySmall">@style/TextAppearance.Akilimo.DisplaySmall</item>
+
+        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.Akilimo.HeadlineLarge</item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.Akilimo.HeadlineMedium
+        </item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.Akilimo.HeadlineSmall</item>
+
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.Akilimo.TitleLarge</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.Akilimo.TitleMedium</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.Akilimo.TitleSmall</item>
+
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.Akilimo.BodyLarge</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.Akilimo.BodyMedium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.Akilimo.BodySmall</item>
+
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.Akilimo.LabelLarge</item>
+        <item name="textAppearanceLabelMedium">@style/TextAppearance.Akilimo.LabelMedium</item>
+        <item name="textAppearanceLabelSmall">@style/TextAppearance.Akilimo.LabelSmall</item>
+    </style>
+
+    <!-- Main app theme -->
+    <style name="Theme.NewAkilimo" parent="Base.Theme.NewAkilimo" />
+
+    <!-- Splash screen theme (if needed) -->
+    <style name="Theme.NewAkilimo.Splash" parent="Theme.NewAkilimo">
+        <item name="android:windowBackground">@color/color_primary</item>
+        <item name="android:statusBarColor">@color/color_primary</item>
+        <item name="android:navigationBarColor">@color/color_primary</item>
+    </style>
+
+    <!-- Transparent system bars variant (for edge-to-edge) -->
+    <style name="Theme.NewAkilimo.EdgeToEdge" parent="Theme.NewAkilimo">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        <item name="android:enforceNavigationBarContrast" tools:targetApi="q">false</item>
+        <item name="android:enforceStatusBarContrast" tools:targetApi="q">false</item>
+    </style>
+
+
+    <!-- Toolbar Text Appearances -->
+    <style name="TextAppearance.Akilimo.Toolbar.Title" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/color_on_primary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="TextAppearance.Akilimo.Toolbar.Subtitle" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/color_on_primary</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:alpha">0.87</item>
+    </style>
+
+    <!-- Toolbar with Secondary Color Variant -->
+    <style name="Widget.Akilimo.Toolbar.Secondary" parent="Widget.Material3.Toolbar">
+        <item name="android:background">@color/color_secondary</item>
+        <item name="titleTextColor">@color/color_on_secondary</item>
+        <item name="subtitleTextColor">@color/color_on_secondary</item>
+        <item name="navigationIconTint">@color/color_on_secondary</item>
+    </style>
+
+    <!-- Collapsing Toolbar -->
+    <style name="Widget.Akilimo.CollapsingToolbar" parent="Widget.Material3.CollapsingToolbar.Large">
+        <item name="contentScrim">@color/color_primary</item>
+        <item name="statusBarScrim">@color/color_primary_variant</item>
+        <item name="collapsedTitleTextColor">@color/color_on_primary</item>
+        <item name="expandedTitleTextColor">@color/color_on_primary</item>
+        <item name="expandedTitleTextAppearance">
+            @style/TextAppearance.Akilimo.Toolbar.Title.Expanded
+        </item>
+    </style>
+
+    <style name="TextAppearance.Akilimo.Toolbar.Title.Expanded" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:textSize">32sp</item>
+        <item name="android:textColor">@color/color_on_primary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <!-- Toolbar Menu Items -->
+    <style name="Widget.Akilimo.Toolbar.Menu" parent="Widget.Material3.Toolbar">
+        <item name="android:textColorPrimary">@color/color_on_primary</item>
+        <item name="android:textColorSecondary">@color/color_on_primary</item>
+        <item name="actionMenuTextColor">@color/color_on_primary</item>
+        <item name="iconTint">@color/color_on_primary</item>
+    </style>
+</resources>

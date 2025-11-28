@@ -2,45 +2,33 @@ package com.akilimo.mobile.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import com.akilimo.mobile.base.BaseEntity
 
-@JsonClass(generateAdapter = true)
-data class StarchFactoryResponse(
-    @Json(name = "data")
-    var data: List<StarchFactory>
+@Entity(
+    tableName = "starch_factories",
+    indices = [
+        Index(value = ["factory_name", "country_code"], unique = true)
+    ]
 )
-
-@JsonClass(generateAdapter = true)
-@Entity(tableName = "starch_factories")
 data class StarchFactory(
-    @Json(name = "id")
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "id")
-    var id: Int,
+    var id: Int? = null,
 
-    @Json(name = "factory_name")
     @ColumnInfo(name = "factory_name")
-    var factoryName: String? = null,
+    var name: String? = null,
 
-    @Json(name = "factory_label")
     @ColumnInfo(name = "factory_label")
-    var factoryLabel: String? = null,
+    var label: String? = null,
 
-    @Json(name = "factory_name_country")
-    @ColumnInfo(name = "factory_name_country")
-    var factoryNameCountry: String? = null,
-
-    @Json(name = "country_code")
     @ColumnInfo(name = "country_code")
     var countryCode: String? = null,
 
-    @Json(name = "factory_active")
-    @ColumnInfo(name = "factory_active")
-    var factoryActive: Boolean = false,
+    @ColumnInfo(name = "is_active")
+    var isActive: Boolean = false,
 
-    @Json(name = "factory_selected")
-    @ColumnInfo(name = "factory_selected")
-    var factorySelected: Boolean = false
-)
+    @ColumnInfo(name = "sort_order")
+    var sortOrder: Int = 0
+) : BaseEntity()

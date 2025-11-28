@@ -1,83 +1,107 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/lyt_area_unit"
+    android:id="@+id/scroll_area_unit"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/spacing_medium"
-    tools:context=".views.fragments.AreaUnitFragment">
+    android:fillViewport="true">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/img_area_unit"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_marginTop="@dimen/spacing_mxlarge"
-        android:contentDescription="@string/app_name"
-        android:padding="@dimen/spacing_small"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.MaterialComponents.MediumComponent"
-        app:srcCompat="@drawable/ic_young_cassava" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/txt_area_unit_title"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/container_area_unit"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_large"
-        android:text="@string/lbl_area_unit"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img_area_unit" />
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_large">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/txt_area_unit_subtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_large"
-        android:lineSpacingExtra="@dimen/dimen_5"
-        android:text="@string/lbl_area_unit_subtitle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_area_unit_title" />
-
-    <RadioGroup
-        android:id="@+id/rdg_area_unit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_medium"
-        android:padding="@dimen/spacing_medium"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_area_unit_subtitle">
-
-        <com.google.android.material.radiobutton.MaterialRadioButton
-            android:id="@+id/rb_unit_acre"
-            android:layout_width="wrap_content"
+        <!-- Title -->
+        <TextView
+            android:id="@+id/txt_area_unit_title"
+            style="?attr/textAppearanceHeadlineMedium"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/area_unit_acre" />
+            android:paddingBottom="@dimen/spacing_small"
+            android:text="@string/lbl_area_unit"
+            android:textAlignment="center"
+            android:textStyle="bold" />
 
-        <com.google.android.material.radiobutton.MaterialRadioButton
-            android:id="@+id/rb_unit_ha"
-            android:layout_width="wrap_content"
+        <!-- Subtitle -->
+        <TextView
+            android:id="@+id/txt_area_unit_subtitle"
+            style="?attr/textAppearanceBodyMedium"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/area_unit_ha" />
+            android:paddingBottom="@dimen/spacing_medium"
+            android:text="@string/lbl_area_unit_subtitle"
+            android:textAlignment="center" />
 
-        <com.google.android.material.radiobutton.MaterialRadioButton
-            android:id="@+id/rb_unit_are"
-            android:layout_width="wrap_content"
+        <!-- Area Unit Input Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_area_unit"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/area_unit_are"
-            android:visibility="gone" />
+            app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
+            app:cardElevation="1dp"
+            app:shapeAppearance="?attr/shapeAppearanceMediumComponent">
 
-        <com.google.android.material.radiobutton.MaterialRadioButton
-            android:id="@+id/rb_unit_sqm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/area_unit_square_meter"
-            android:visibility="gone" />
-    </RadioGroup>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_large">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/lyt_area_unit"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/lbl_area_unit_prompt"
+                    app:endIconMode="dropdown_menu">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/drop_area_unit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Predefined Field Size Dropdown -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/lyt_field_size_options"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_medium"
+                    android:hint="@string/lbl_cassava_field_size_no_ph"
+                    app:endIconMode="dropdown_menu">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/drop_field_size_options"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Custom Field Size Input -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/lyt_custom_field_size"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_medium"
+                    android:hint="@string/exact_field_area">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_custom_field_size"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <include
+                    android:id="@+id/lyt_remember_area"
+                    layout="@layout/remember_details" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

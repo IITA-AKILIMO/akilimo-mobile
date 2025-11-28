@@ -1,0 +1,86 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Dark theme for Akilimo app -->
+    <style name="Base.Theme.NewAkilimo" parent="Theme.Material3.DayNight.NoActionBar">
+
+        <!-- Primary brand colors -->
+        <item name="colorPrimary">@color/color_primary_light</item>
+        <item name="colorOnPrimary">@color/color_primary_variant</item>
+        <item name="colorPrimaryContainer">@color/color_primary_variant</item>
+        <item name="colorOnPrimaryContainer">@color/color_primary_light</item>
+
+        <!-- Secondary brand colors -->
+        <item name="colorSecondary">@color/color_secondary_light</item>
+        <item name="colorOnSecondary">@color/color_secondary_variant</item>
+        <item name="colorSecondaryContainer">@color/color_secondary_variant</item>
+        <item name="colorOnSecondaryContainer">@color/color_secondary_light</item>
+
+        <!-- Tertiary (optional accent) -->
+        <item name="colorTertiary">@color/color_accent_5</item>
+        <item name="colorOnTertiary">@color/color_primary_variant</item>
+        <item name="colorTertiaryContainer">@color/color_on_info_container</item>
+        <item name="colorOnTertiaryContainer">@color/color_info_container</item>
+
+        <!-- Surface and background -->
+        <item name="android:colorBackground">@color/color_dark_background</item>
+        <item name="colorOnBackground">@color/color_dark_on_background</item>
+
+        <item name="colorSurface">@color/color_dark_surface</item>
+        <item name="colorOnSurface">@color/color_dark_on_surface</item>
+        <item name="colorSurfaceVariant">@color/color_dark_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/color_dark_on_surface_variant</item>
+
+        <!-- Error colors -->
+        <item name="colorError">@color/color_dark_error</item>
+        <item name="colorOnError">@color/color_dark_on_error</item>
+        <item name="colorErrorContainer">@color/color_dark_error_container</item>
+        <item name="colorOnErrorContainer">@color/color_dark_on_error_container</item>
+
+        <!-- Outline and borders -->
+        <item name="colorOutline">@color/color_dark_outline</item>
+        <item name="colorOutlineVariant">@color/color_dark_outline_variant</item>
+
+        <!-- Surface tints and overlays -->
+        <item name="android:colorControlHighlight">@color/color_dark_ripple</item>
+
+        <!-- Typography -->
+        <item name="android:textColorPrimary">@color/color_dark_text_primary</item>
+        <item name="android:textColorSecondary">@color/color_dark_text_secondary</item>
+        <item name="android:textColorTertiary">@color/color_dark_text_tertiary</item>
+        <item name="android:textColorHint">@color/color_dark_text_disabled</item>
+
+        <!-- System bars -->
+        <item name="android:statusBarColor">@color/color_dark_background</item>
+        <item name="android:navigationBarColor">@color/color_dark_surface</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
+
+        <!-- Window background -->
+        <item name="android:windowBackground">@color/color_dark_background</item>
+
+        <!-- Material components -->
+        <item name="elevationOverlayEnabled">true</item>
+
+    </style>
+
+    <!-- Main dark theme -->
+    <style name="Theme.NewAkilimo" parent="Base.Theme.NewAkilimo" />
+
+    <!-- Dark splash screen theme -->
+    <style name="Theme.NewAkilimo.Splash" parent="Theme.NewAkilimo">
+        <item name="android:windowBackground">@color/color_dark_background</item>
+        <item name="android:statusBarColor">@color/color_dark_background</item>
+        <item name="android:navigationBarColor">@color/color_dark_background</item>
+    </style>
+
+    <!-- Dark edge-to-edge variant -->
+    <style name="Theme.NewAkilimo.EdgeToEdge" parent="Theme.NewAkilimo">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
+        <item name="android:enforceNavigationBarContrast" tools:targetApi="q">true</item>
+        <item name="android:enforceStatusBarContrast" tools:targetApi="q">true</item>
+    </style>
+
+</resources>

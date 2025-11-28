@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!-- Planting Date Card -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_planting_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_medium"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="@dimen/dimen_2"
+        app:cardElevation="@dimen/zero"
+        app:strokeWidth="@dimen/zero">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/lyt_planting_date"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/lbl_planting_date"
+            android:padding="@dimen/spacing_small">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_planting_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Harvest Date Card -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_harvest_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_medium"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="@dimen/dimen_2"
+        app:cardElevation="@dimen/zero"
+        app:strokeWidth="@dimen/zero">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/lyt_harvest_date"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/lbl_harvesting_date"
+            android:padding="@dimen/spacing_small">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_harvest_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Flexible Dates Switch -->
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/switch_flexible_dates"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:text="@string/lbl_flexible_dates" />
+
+    <!-- Flexibility Options Card -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_flex_options"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="@dimen/dimen_2"
+        app:cardElevation="@dimen/zero"
+        app:strokeWidth="@dimen/zero"
+        tools:visibility="visible">
+
+        <LinearLayout
+            android:id="@+id/layout_flex_options"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_small">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/lyt_planting_flex"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/lbl_planting_flex">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/drop_planting_flex"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:minHeight="?attr/listPreferredItemHeightSmall" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/lyt_harvest_flex"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:hint="@string/lbl_harvest_flex">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/drop_harvest_flex"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:minHeight="?attr/listPreferredItemHeightSmall" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

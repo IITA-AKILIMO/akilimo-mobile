@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutPlantingDates"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:padding="@dimen/spacing_medium"
+    tools:context=".ui.fragments.PlantingDateFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Page Title -->
+        <TextView
+            android:id="@+id/title_planting_dates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/title_planting_harvest"
+            android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+            android:textColor="?attr/colorOnBackground" />
+
+        <!-- Subtitle -->
+        <TextView
+            android:id="@+id/subtitle_planting_schedule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_large"
+            android:layout_marginBottom="@dimen/spacing_large"
+            android:text="@string/title_planting_harvest_subtitle"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant" />
+
+        <!-- Reuse the whole section -->
+        <include
+            android:id="@+id/lyt_planting_section_fragment"
+            layout="@layout/planting_schedule_section" />
+
+        <!-- Add other unique elements here if needed -->
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

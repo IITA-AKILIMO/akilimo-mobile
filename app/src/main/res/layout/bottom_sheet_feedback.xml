@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_medium">
+
+    <TextView
+        android:id="@+id/feedback_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/spacing_medium"
+        android:text="How do you rate this recommendation?"
+        android:textSize="@dimen/font_size_16"
+        android:textStyle="bold" />
+
+    <!-- Emoji scale row -->
+    <LinearLayout
+        android:id="@+id/emoji_scale"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/spacing_medium">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_rating_1"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="😡" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_rating_2"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="😕" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_rating_3"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="😐" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_rating_4"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🙂" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_rating_5"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="😍" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/selected_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Selected: none" />
+</LinearLayout>

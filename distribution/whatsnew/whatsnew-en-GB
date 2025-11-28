@@ -1,9 +1,0 @@
-Changed
- rewrote code to be more readable
- optimized fragment view class
- deleted deprecated fieldinfo fragment class
- removed dead code
- switched to TextUtils
-
-Features
- reducd code complexity for the switch case
