@@ -2,7 +2,6 @@ package com.akilimo.mobile.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.akilimo.mobile.adapters.RecommendationAdapter
 import com.akilimo.mobile.base.BaseActivity
@@ -33,8 +32,8 @@ class RecommendationsActivity : BaseActivity<ActivityRecommendationsBinding>() {
         // Prepare dynamic recommendation list
         val adviceOptions = mutableListOf(
             AdviceOption(EnumAdvice.FERTILIZER_RECOMMENDATIONS),
-//            AdviceOption(EnumAdvice.BEST_PLANTING_PRACTICES),
-//            AdviceOption(EnumAdvice.SCHEDULED_PLANTING_HIGH_STARCH),
+            AdviceOption(EnumAdvice.BEST_PLANTING_PRACTICES),
+            AdviceOption(EnumAdvice.SCHEDULED_PLANTING_HIGH_STARCH),
         )
 
         safeScope.launch {
@@ -42,20 +41,17 @@ class RecommendationsActivity : BaseActivity<ActivityRecommendationsBinding>() {
             when (user.enumCountry) {
                 EnumCountry.NG -> adviceOptions.add(AdviceOption(EnumAdvice.INTERCROPPING_MAIZE))
                 EnumCountry.TZ -> adviceOptions.add(AdviceOption(EnumAdvice.INTERCROPPING_SWEET_POTATO))
-                else -> {}
+                else -> Unit
             }
         }
 
         // Setup RecyclerView
         val recAdapter = RecommendationAdapter<EnumAdvice>(
             context = this,
-            hideIcon = true,
+            showIcon = false,
             getLabel = { it.label(this) },
             getId = { it.name },
             onClick = { selected ->
-                Toast.makeText(this, "Selected: ${selected.valueOption.name}", Toast.LENGTH_SHORT)
-                    .show()
-
                 val intent = when (selected.valueOption) {
                     EnumAdvice.FERTILIZER_RECOMMENDATIONS -> Intent(this, FrActivity::class.java)
                     EnumAdvice.BEST_PLANTING_PRACTICES -> Intent(this, BppActivity::class.java)
@@ -69,8 +65,6 @@ class RecommendationsActivity : BaseActivity<ActivityRecommendationsBinding>() {
                         this,
                         IcSweetPotatoActivity::class.java
                     )
-
-                    else -> null
                 }
 
                 //track the active use case
