@@ -42,8 +42,8 @@ class HomeStepperActivity : BaseActivity<ActivityHomeStepperBinding>(),
 
     override fun handleBackPressed(): Boolean {
         AlertDialog.Builder(this)
-            .setTitle("Exit Application")
-            .setMessage("Are you sure you want to exit?")
+            .setTitle(getString(R.string.lbl_exit_application))
+            .setMessage(getString(R.string.lbl_confirm_app_exit))
             .setPositiveButton(getString(R.string.lbl_yes)) { _, _ ->
                 finish()
                 System.gc()

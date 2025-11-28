@@ -640,4 +640,6 @@
     <string name="lbl_loading">Loading...</string>
     <string name="lbl_selling_hint">Farmers nearby are selling around {currency} {price} per {unit_of_sale}. Does your price fit in?</string>
     <string name="lbl_price_per_kg_bag">Price per kg/bag</string>
+    <string name="lbl_exit_application">Exit Application</string>
+    <string name="lbl_confirm_app_exit">Are you sure you want to exit?</string>
 </resources>
