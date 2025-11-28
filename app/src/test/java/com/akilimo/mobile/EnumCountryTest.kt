@@ -13,7 +13,7 @@ class EnumCountryTest {
 
     @Test
     fun `TZ maps to TANZANIA`() {
-        assertEquals(EnumCountry.NG, EnumCountry.fromCode("TZ"))
+        assertEquals(EnumCountry.TZ, EnumCountry.fromCode("TZ"))
     }
 
 
