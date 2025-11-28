@@ -24,7 +24,7 @@ import com.akilimo.mobile.enums.EnumStepStatus
  */
 class RecommendationAdapter<BV : Any>(
     private val context: Context,
-    private val hideIcon: Boolean = false,
+    private val showIcon: Boolean = false,
     private val getLabel: (BV) -> String,
     private val getId: (BV) -> Any,
     private val stepStatus: (BV) -> EnumStepStatus = { EnumStepStatus.NOT_STARTED },
@@ -41,7 +41,9 @@ class RecommendationAdapter<BV : Any>(
 
             binding.recommendationTitle.text = getLabel(value)
             binding.root.setOnClickListener { onClick(item) }
-            updateCompletionBadge(binding.completionBadgeIcon, stepStatus)
+            if (showIcon) {
+                updateCompletionBadge(binding.completionBadgeIcon, stepStatus)
+            }
         }
 
     }
