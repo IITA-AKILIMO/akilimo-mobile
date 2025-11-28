@@ -76,8 +76,7 @@ class RecommendationsActivity : BaseActivity<ActivityRecommendationsBinding>() {
                     userRepo.saveOrUpdateUser(updated, sessionManager.akilimoUser)
                 }
 
-                intent?.let { openActivity(it) }
-
+                openActivity(intent)
             }
         )
         binding.recommendationList.apply {

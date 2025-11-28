@@ -3,6 +3,7 @@ package com.akilimo.mobile.adapters
 import android.content.Context
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
@@ -41,8 +42,9 @@ class RecommendationAdapter<BV : Any>(
 
             binding.recommendationTitle.text = getLabel(value)
             binding.root.setOnClickListener { onClick(item) }
+            updateCompletionBadge(binding.completionBadgeIcon, stepStatus)
             if (showIcon) {
-                updateCompletionBadge(binding.completionBadgeIcon, stepStatus)
+                binding.completionBadgeContainer.visibility = View.VISIBLE
             }
         }
 
@@ -79,14 +81,14 @@ class RecommendationAdapter<BV : Any>(
         val context = iconView.context
 
         val (iconRes, tintColor) = when (status) {
-            EnumStepStatus.COMPLETED -> Triple(R.drawable.ic_check, R.color.color_accent_2, true)
-            EnumStepStatus.IN_PROGRESS -> Triple(R.drawable.ic_alert, R.color.color_accent_4, true)
-            EnumStepStatus.NOT_STARTED -> Triple(R.drawable.ic_schedule, R.color.transparent, false)
+            EnumStepStatus.COMPLETED -> Pair(R.drawable.ic_check, R.color.color_accent_2,)
+            EnumStepStatus.IN_PROGRESS -> Pair(R.drawable.ic_alert, R.color.color_accent_4)
+            EnumStepStatus.NOT_STARTED -> Pair(R.drawable.ic_schedule, R.color.transparent)
         }
 
         iconView.setImageResource(iconRes)
-        iconView.backgroundTintList =
-            ColorStateList.valueOf(ContextCompat.getColor(context, tintColor))
+//        iconView.backgroundTintList =
+//            ColorStateList.valueOf(ContextCompat.getColor(context, tintColor))
     }
 
 
