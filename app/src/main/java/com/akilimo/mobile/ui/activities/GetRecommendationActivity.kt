@@ -3,9 +3,15 @@ package com.akilimo.mobile.ui.activities
 import android.os.Bundle
 import android.view.View
 import com.akilimo.mobile.base.BaseActivity
+import com.akilimo.mobile.config.AppConfig
 import com.akilimo.mobile.databinding.ActivityGetRecommendationBinding
 import com.akilimo.mobile.databinding.BottomSheetFeedbackBinding
+import com.akilimo.mobile.enums.EnumServiceType
+import com.akilimo.mobile.enums.EnumUseCase
+import com.akilimo.mobile.network.AkilimoApi
+import com.akilimo.mobile.network.ApiClient
 import com.akilimo.mobile.ui.components.ToolbarHelper
+import com.akilimo.mobile.utils.RecommendationBuilder
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -21,15 +27,10 @@ class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>
         ToolbarHelper(this, binding.lytToolbar.toolbar).onNavigationClick { finish() }.build()
 
 
-        // Initial load
         fetchRecommendation()
-
-        // Retry button
         binding.btnRetry.setOnClickListener {
             fetchRecommendation()
         }
-
-        // Feedback FAB
         binding.fabFeedback.setOnClickListener {
             showFeedbackBottomSheet()
         }
@@ -44,13 +45,29 @@ class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>
 
         safeScope.launch(Dispatchers.IO) {
             try {
-                // Simulate API call (replace with real network request)
-                delay(2000) // pretend network latency
+                val builder = RecommendationBuilder(
+                    database = database,
+                    session = sessionManager,
+                    useCase = EnumUseCase.FR
+                )
+                val payload = builder.build()   // suspend, but lightweight
+
+                val base = AppConfig.resolveBaseUrlFor(
+                    applicationContext, EnumServiceType.AKILIMO
+                )
+                val client =
+                    ApiClient.createService<AkilimoApi>(this@GetRecommendationActivity, base)
+                payload?.let { recRequest ->
+                    val result = client.computeRecommendations(recRequest)
+
+                }
+
                 val title = "DST Recommendation"
-                val description = "This is a detailed recommendation paragraph fetched from the API."
+                val description =
+                    "This is a detailed recommendation paragraph fetched from the API."
 
                 withContext(Dispatchers.Main) {
-                    showRecommendation( title, description)
+                    showRecommendation(title, description)
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
@@ -61,8 +78,7 @@ class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>
     }
 
     private fun showRecommendation(
-        title: String,
-        description: String
+        title: String, description: String
     ) {
         binding.loadingIndicator.visibility = View.GONE
         binding.errorState.visibility = View.GONE
