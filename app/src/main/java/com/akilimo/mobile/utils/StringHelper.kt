@@ -14,3 +14,7 @@ object StringHelper {
             .replace("{size_unit}", sizeUnit)
     }
 }
+
+fun String?.orUnavailable(default: String): String {
+    return this?.takeIf { it.isNotBlank() } ?: default
+}
