@@ -9,29 +9,32 @@ data class UserInfo(
     var deviceToken: String,
 
     @param:Json(name = "phone_number")
-    var phoneNumber: String = "NA",
+    var phoneNumber: String,
 
     @param:Json(name = "user_name")
-    var userName: String = "akilimo",
+    var userName: String,
 
     @param:Json(name = "first_name")
-    var firstName: String = "akilimo",
+    var firstName: String,
 
     @param:Json(name = "last_name")
-    var lastName: String = "user",
+    var lastName: String,
 
     @param:Json(name = "gender")
-    var gender: String = "NA",
+    var gender: String,
 
     @param:Json(name = "email_address")
-    var emailAddress: String = "na@mail.com",
+    var emailAddress: String,
 
     @param:Json(name = "farm_name")
-    var farmName: String = "my_farm",
+    var farmName: String,
 
     @param:Json(name = "send_sms")
-    var sendSms: Boolean = false,
+    var sendSms: Boolean,
 
     @param:Json(name = "send_email")
-    var sendEmail: Boolean = false
+    var sendEmail: Boolean,
+
+    @param:Json(name = "risk_attitude")
+    val riskAttitude: Int = 0
 )
