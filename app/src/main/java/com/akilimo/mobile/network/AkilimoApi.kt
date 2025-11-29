@@ -6,9 +6,13 @@ import com.akilimo.mobile.dto.FertilizerPriceResponse
 import com.akilimo.mobile.dto.FertilizerResponse
 import com.akilimo.mobile.dto.InvestmentAmountResponse
 import com.akilimo.mobile.dto.MaizePriceResponse
+import com.akilimo.mobile.dto.RecommendationResponse
 import com.akilimo.mobile.dto.StarchFactoryResponse
+import com.akilimo.mobile.rest.request.RecommendationRequest
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -77,4 +81,8 @@ interface AkilimoApi {
         @Query("page") page: Int = DEFAULT_PAGE,
         @Query("per_page") perPage: Int = DEFAULT_PER_PAGE
     ): MaizePriceResponse
+
+    @Headers(CLIENT_ID_HEADER)
+    @POST("v1/recommendations/compute")
+    suspend fun computeRecommendations(@Body payload: RecommendationRequest): RecommendationResponse
 }
