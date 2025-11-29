@@ -59,7 +59,7 @@ class WeedControlCostsActivity : BaseActivity<ActivityWeedControlCostsBinding>()
         safeScope.launch {
             val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
             val userId = user.id ?: 0
-            val sizeUnitLabel = user.enumAreaUnit?.label(this@WeedControlCostsActivity).orEmpty()
+            val sizeUnitLabel = user.enumAreaUnit.label(this@WeedControlCostsActivity).orEmpty()
             val firstWeedingText = formatWithLandSize(
                 R.string.lbl_cost_of_first_weeding_operation,
                 user.farmSize,
