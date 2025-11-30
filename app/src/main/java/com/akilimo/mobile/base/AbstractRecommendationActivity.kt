@@ -2,6 +2,7 @@ package com.akilimo.mobile.base
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.IntentCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +15,7 @@ import com.akilimo.mobile.entities.AdviceCompletionDto
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumRecyclerLayout
 import com.akilimo.mobile.enums.EnumStepStatus
+import com.akilimo.mobile.enums.EnumUseCase
 import com.akilimo.mobile.repos.AdviceCompletionRepo
 import com.akilimo.mobile.ui.activities.GetRecommendationActivity
 import com.akilimo.mobile.ui.components.ToolbarHelper
@@ -34,7 +36,7 @@ import kotlinx.coroutines.launch
  *  [1] Provide list of advice options via [getAdviceOptions]
  *  [2] Map tasks to activity Intents via [mapTaskToIntent]
  */
-abstract class AbstractRecommendationActivity :
+abstract class AbstractRecommendationActivity(private val enumUseCase: EnumUseCase) :
     BaseActivity<ActivityRecommendationUseCaseBinding>() {
 
     protected var currentLayout: EnumRecyclerLayout = EnumRecyclerLayout.LIST
@@ -58,7 +60,9 @@ abstract class AbstractRecommendationActivity :
 
         // ---- Bottom Action Button ----
         binding.frButton.btnAction.setOnClickListener {
-            startActivity(Intent(this, GetRecommendationActivity::class.java))
+            val intent = Intent(this, GetRecommendationActivity::class.java)
+            intent.putExtra(GetRecommendationActivity.EXTRA_USE_CASE, enumUseCase as Parcelable)
+            startActivity(intent)
         }
 
         // ---- Observe and Update Recommendation States ----
