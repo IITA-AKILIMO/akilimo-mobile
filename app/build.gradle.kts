@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.time.LocalDateTime
 
 plugins {
     alias(libs.plugins.android.application)
@@ -66,6 +67,9 @@ sonar {
     }
 }
 android {
+    val releaseVersionName = computeBuildNumber()
+    val appVersionCode = computeVersionCode()
+
     namespace = "com.akilimo.mobile"
     compileSdk = 36
 
@@ -73,8 +77,8 @@ android {
         applicationId = "com.akilimo.mobile"
         minSdk = 21
         targetSdk = 36
-        versionCode = 30
-        versionName = "30.0.0"
+        versionCode = appVersionCode
+        versionName = releaseVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -131,6 +135,43 @@ android {
 //    kotlinOptions {
 //        jvmTarget = "17"
 //    }
+}
+
+
+fun computeVersionName(): String {
+    val now = LocalDateTime.now()
+
+    val defaultMajor = 30
+    var defaultMinor = now.monthValue
+    var defaultBuild = now.dayOfMonth
+
+    val branch = System.getenv("BRANCH_NAME") ?: "dev"
+    if (branch == "dev") {
+        defaultMinor = 0
+        defaultBuild = 0
+    }
+
+    val major = System.getenv("VERSION_MAJOR")?.toIntOrNull() ?: defaultMajor
+    val minor = System.getenv("VERSION_MINOR")?.toIntOrNull() ?: defaultMinor
+    val build = System.getenv("BUILD_NUMBER")?.toIntOrNull() ?: defaultBuild
+
+    return "%d.%d.%d".format(major, minor, build)
+}
+
+fun computeBuildNumber(): String {
+    val file = File("nextrelease.txt").apply { createNewFile() }
+
+    val tag = System.getenv("RELEASE_VERSION") ?: computeVersionName()
+    println("This build tag is: $tag")
+
+    file.writeText(tag)
+    return tag
+}
+
+fun computeVersionCode(): Int {
+    val code = System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1
+    println("Version code is $code")
+    return code
 }
 
 dependencies {
