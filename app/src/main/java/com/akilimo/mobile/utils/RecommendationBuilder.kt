@@ -112,8 +112,8 @@ class RecommendationBuilder(
             ),
             interCropping = ComputeRequest.InterCropping(
                 interCroppedCrop = "maize", //TODO evaluate according to country
-                interCroppingMaizeRec = false, //TODO evaluate according to country
-                interCroppingPotatoRec = false,//TODO evaluate according to country
+                interCroppingMaizeRec = useCase == EnumUseCase.CIM,
+                interCroppingPotatoRec = useCase == EnumUseCase.CIS
             ),
             recommendations = ComputeRequest.Recommendations(
                 fertilizerRec = true,
