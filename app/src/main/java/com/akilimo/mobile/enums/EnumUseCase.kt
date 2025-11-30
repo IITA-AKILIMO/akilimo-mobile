@@ -1,6 +1,10 @@
 package com.akilimo.mobile.enums
 
-enum class EnumUseCase {
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+enum class EnumUseCase : Parcelable {
     FR,
     SP,
     PP,

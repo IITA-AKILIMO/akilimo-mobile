@@ -8,7 +8,6 @@ import java.time.LocalDate
 
 @JsonClass(generateAdapter = true)
 data class ComputeRequest(
-    val farmLocation: FarmLocation,
     val farmInformation: FarmInformation,
     val interCropping: InterCropping,
     val recommendations: Recommendations,
@@ -23,12 +22,11 @@ data class ComputeRequest(
     val cassava: CropInfo,
     val maize: CropInfo,
     val sweetPotato: CropInfo,
-    val maxInvestment: Double,
-    val riskAttitude: Int
+    val maxInvestment: Double
 ) {
 
     @JsonClass(generateAdapter = true)
-    data class FarmLocation(
+    data class FarmInformation(
         @param:Json(name = "country_code")
         val countryCode: String,
         @param:Json(name = "use_case")
@@ -38,11 +36,7 @@ data class ComputeRequest(
         @param:Json(name = "map_lat")
         val mapLat: Double,
         @param:Json(name = "map_long")
-        val mapLong: Double
-    )
-
-    @JsonClass(generateAdapter = true)
-    data class FarmInformation(
+        val mapLong: Double,
         @param:Json(name = "field_size")
         val fieldSize: Double,
         @param:Json(name = "area_unit")
@@ -78,9 +72,9 @@ data class ComputeRequest(
         @param:Json(name = "harvest_date")
         val harvestDate: LocalDate,
         @param:Json(name = "planting_date_window")
-        val plantingDateWindow: Int,
+        val plantingDateWindow: Long,
         @param:Json(name = "harvest_date_window")
-        val harvestDateWindow: Int
+        val harvestDateWindow: Long
     )
 
     @JsonClass(generateAdapter = true)
@@ -96,11 +90,11 @@ data class ComputeRequest(
     @JsonClass(generateAdapter = true)
     data class TractorCosts(
         @param:Json(name = "tractor_plough")
-        val tractorPlough: Boolean,
+        val hasTractorPlough: Boolean,
         @param:Json(name = "tractor_harrow")
-        val tractorHarrow: Boolean,
+        val hasTractorHarrow: Boolean,
         @param:Json(name = "tractor_ridger")
-        val tractorRidger: Boolean,
+        val hasTractorRidger: Boolean,
         @param:Json(name = "cost_lmo_area_basis")
         val costLmoAreaBasis: String = "areaUnit",
         @param:Json(name = "cost_tractor_ploughing")
@@ -171,13 +165,13 @@ data class ComputeRequest(
         val unitWeight: Double,
         @param:Json(name = "unit_price")
         val unitPrice: Double = 0.0,
-        @param:Json(name = "unit_price_maize_1")
+        @param:Json(name = "unit_price_maize1")
         val upM1: Double = 0.0,
-        @param:Json(name = "unit_price_maize_2")
+        @param:Json(name = "unit_price_maize2")
         val upM2: Double = 0.0,
-        @param:Json(name = "unit_price_potato_1")
+        @param:Json(name = "unit_price_potato1")
         val upP1: Double = 0.0,
-        @param:Json(name = "unit_price_potato_2")
+        @param:Json(name = "unit_price_potato2")
         val upP2: Double = 0.0
     )
 }

@@ -4,13 +4,16 @@ import android.content.Intent
 import com.akilimo.mobile.base.AbstractRecommendationActivity
 import com.akilimo.mobile.dto.UseCaseOption
 import com.akilimo.mobile.enums.EnumAdviceTask
+import com.akilimo.mobile.enums.EnumUseCase
 import com.akilimo.mobile.ui.usecases.CassavaMarketActivity
 import com.akilimo.mobile.ui.usecases.DatesActivity
 import com.akilimo.mobile.ui.usecases.InterCropFertilizersActivity
 import com.akilimo.mobile.ui.usecases.MaizeMarketActivity
 import com.akilimo.mobile.ui.usecases.MaizePerformanceActivity
 
-class IcMaizeActivity : AbstractRecommendationActivity() {
+class IcMaizeActivity : AbstractRecommendationActivity(
+    enumUseCase = EnumUseCase.CIM
+) {
 
     override fun getAdviceOptions() = listOf(
         UseCaseOption(EnumAdviceTask.AVAILABLE_FERTILIZERS_CIM),

@@ -98,6 +98,15 @@
             android:text="@string/lbl_no_recommendations"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
+        <TextView
+            android:id="@+id/empty_state_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/spacing_medium"
+            android:text="@string/lbl_no_recommendations"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            tools:text="Try refreshing or check your connection" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_retry"
             style="@style/Widget.MaterialComponents.Button.TextButton"

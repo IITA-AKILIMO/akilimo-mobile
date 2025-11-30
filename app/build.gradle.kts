@@ -77,6 +77,13 @@ android {
         versionName = "30.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val fuelrodBaseUrl =
+            env.FUELROD_BASE_URL.orElse("https://akilimo.fuelrod.com")
+        val akilimoBaseUrl = env.AKILIMO_BASE_URL.orElse("https://api.akilimo.org")
+
+        buildConfigField("String", "AKILIMO_BASE_URL", q(akilimoBaseUrl))
+        buildConfigField("String", "FUELROD_BASE_URL", q(fuelrodBaseUrl))
     }
 
     lint {
@@ -97,19 +104,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-
-            val fuelrodBaseUrl =
-                env.FUELROD_BASE_URL.orElse("https://akilimo.fuelrod.com")
-            val akilimoBaseUrl = env.AKILIMO_BASE_URL.orElse("https://api.akilimo.org")
-
-            buildConfigField("String", "AKILIMO_BASE_URL", q(akilimoBaseUrl))
-            buildConfigField("String", "FUELROD_BASE_URL", q(fuelrodBaseUrl))
         }
 
         debug {
             isDebuggable = true
-            buildConfigField("String", "AKILIMO_BASE_URL", q(env.AKILIMO_BASE_URL.orNull()))
-            buildConfigField("String", "FUELROD_BASE_URL", q(env.FUELROD_BASE_URL.orNull()))
             resValue("string", "PORT_NUMBER", "9085")
         }
     }

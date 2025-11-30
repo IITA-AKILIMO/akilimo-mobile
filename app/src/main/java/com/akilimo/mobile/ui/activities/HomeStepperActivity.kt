@@ -9,18 +9,25 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.StepperAdapter
 import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.databinding.ActivityHomeStepperBinding
-import com.akilimo.mobile.helper.SessionManager
+import com.akilimo.mobile.ui.components.SimpleStepperListener
 import com.akilimo.mobile.ui.fragments.AreaUnitFragment
+import com.akilimo.mobile.ui.fragments.BioDataFragment
 import com.akilimo.mobile.ui.fragments.CountryFragment
+import com.akilimo.mobile.ui.fragments.DisclaimerFragment
+import com.akilimo.mobile.ui.fragments.InvestmentPrefFragment
 import com.akilimo.mobile.ui.fragments.LocationFragment
 import com.akilimo.mobile.ui.fragments.PlantingDateFragment
+import com.akilimo.mobile.ui.fragments.SummaryFragment
+import com.akilimo.mobile.ui.fragments.TermsFragment
+import com.akilimo.mobile.ui.fragments.TillageOperationFragment
+import com.akilimo.mobile.ui.fragments.WelcomeFragment
 import com.stepstone.stepper.Step
 import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.VerificationError
 import kotlin.system.exitProcess
 
 class HomeStepperActivity : BaseActivity<ActivityHomeStepperBinding>(),
-    StepperLayout.StepperListener {
+    StepperLayout.StepperListener by SimpleStepperListener() {
 
     override fun inflateBinding() = ActivityHomeStepperBinding.inflate(layoutInflater)
 
@@ -35,8 +42,8 @@ class HomeStepperActivity : BaseActivity<ActivityHomeStepperBinding>(),
 
     override fun handleBackPressed(): Boolean {
         AlertDialog.Builder(this)
-            .setTitle("Exit Application")
-            .setMessage("Are you sure you want to exit?")
+            .setTitle(getString(R.string.lbl_exit_application))
+            .setMessage(getString(R.string.lbl_confirm_app_exit))
             .setPositiveButton(getString(R.string.lbl_yes)) { _, _ ->
                 finish()
                 System.gc()
@@ -48,19 +55,18 @@ class HomeStepperActivity : BaseActivity<ActivityHomeStepperBinding>(),
     }
 
     private fun buildStepList(): List<Step> = buildList {
-//        add(WelcomeFragment.newInstance())
-//        if (!session.disclaimerRead) add(DisclaimerFragment.newInstance())
-//        if (!session.termsAccepted) add(TermsFragment.newInstance())
-//        add(BioDataFragment.newInstance())
+        add(WelcomeFragment.newInstance())
+        if (!sessionManager.disclaimerRead) add(DisclaimerFragment.newInstance())
+        if (!sessionManager.termsAccepted) add(TermsFragment.newInstance())
+        add(BioDataFragment.newInstance())
         add(CountryFragment.newInstance())
-//        add(LocationFragment.newInstance())
+        add(LocationFragment.newInstance())
         if (!sessionManager.rememberAreaUnit) add(AreaUnitFragment.newInstance())
-//        add(PlantingDateFragment.newInstance())
-//        add(TillageOperationFragment.newInstance())
-//        add(InvestmentPrefFragment.newInstance())
-//        add(SummaryFragment.newInstance())
+        add(PlantingDateFragment.newInstance())
+        add(TillageOperationFragment.newInstance())
+        add(InvestmentPrefFragment.newInstance())
+        add(SummaryFragment.newInstance())
     }
-
 
     override fun onCompleted(completeButton: View?) {
         openActivity(Intent(this@HomeStepperActivity, RecommendationsActivity::class.java))
@@ -68,10 +74,6 @@ class HomeStepperActivity : BaseActivity<ActivityHomeStepperBinding>(),
 
     override fun onError(verificationError: VerificationError?) {
         Toast.makeText(this, verificationError?.errorMessage, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onStepSelected(newStepPosition: Int) {
-        // Not yet implemented
     }
 
     override fun onReturn() {

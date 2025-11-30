@@ -31,6 +31,7 @@ object ApiClient {
         timeoutSeconds: Long
     ): Retrofit {
         val moshi = Moshi.Builder()
+            .add(LocalDateAdapter())
             .add(KotlinJsonAdapterFactory())
             .build()
 

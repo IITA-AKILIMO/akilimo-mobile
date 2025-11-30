@@ -2,6 +2,7 @@ package com.akilimo.mobile.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.IntentCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +14,7 @@ import com.akilimo.mobile.dto.WrappedValueOption
 import com.akilimo.mobile.entities.AdviceCompletionDto
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumStepStatus
+import com.akilimo.mobile.enums.EnumUseCase
 import com.akilimo.mobile.repos.AdviceCompletionRepo
 import com.akilimo.mobile.ui.components.ToolbarHelper
 import com.akilimo.mobile.ui.usecases.CassavaMarketActivity
@@ -69,7 +71,8 @@ class SphActivity : BaseActivity<ActivityRecommendationUseCaseBinding>() {
             adapter = recAdapter
         }
         binding.frButton.btnAction.setOnClickListener {
-            val intent = Intent(this@SphActivity, GetRecommendationActivity::class.java)
+            val intent = Intent(this, GetRecommendationActivity::class.java)
+            intent.putExtra(GetRecommendationActivity.EXTRA_USE_CASE, EnumUseCase.SP as Parcelable)
             startActivity(intent)
         }
         safeScope.launch {

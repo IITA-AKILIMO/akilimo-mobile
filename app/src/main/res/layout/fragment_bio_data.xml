@@ -34,9 +34,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_large"
-            app:cardElevation="1dp"
-            app:shapeAppearance="?attr/shapeAppearanceMediumComponent"
-            app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+           app:cardBackgroundColor="?attr/colorSurfaceVariant"
+            app:cardElevation="@dimen/dimen_2"
+            app:shapeAppearance="?attr/shapeAppearanceMediumComponent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -97,9 +97,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_large"
-            app:cardElevation="1dp"
-            app:shapeAppearance="?attr/shapeAppearanceMediumComponent"
-            app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+           app:cardBackgroundColor="?attr/colorSurfaceVariant"
+            app:cardElevation="@dimen/dimen_2"
+            app:shapeAppearance="?attr/shapeAppearanceMediumComponent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -154,9 +154,9 @@
             android:id="@+id/card_interest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardElevation="1dp"
-            app:shapeAppearance="?attr/shapeAppearanceMediumComponent"
-            app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+           app:cardBackgroundColor="?attr/colorSurfaceVariant"
+            app:cardElevation="@dimen/dimen_2"
+            app:shapeAppearance="?attr/shapeAppearanceMediumComponent">
 
             <LinearLayout
                 android:layout_width="match_parent"
