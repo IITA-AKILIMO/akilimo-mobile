@@ -2,6 +2,7 @@ package com.akilimo.mobile.ui.activities
 
 import android.os.Bundle
 import android.view.View
+import com.akilimo.mobile.R
 import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.config.AppConfig
 import com.akilimo.mobile.databinding.ActivityGetRecommendationBinding
@@ -43,6 +44,7 @@ class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>
 
     private fun setupToolbar() {
         ToolbarHelper(this, binding.lytToolbar.toolbar)
+            .setTitle(getString(R.string.lbl_recommendations))
             .onNavigationClick { finish() }
             .build()
     }
@@ -91,10 +93,17 @@ class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>
                         val resp = result.body()
                         if (resp != null) {
 
-                            // Extract actual data from response
-                            val title = resp.recType ?: "DST Recommendation"
+                            val title = when (resp.recType) {
+                                "FR" -> getString(R.string.lbl_fertilizer_rec)
+                                "IC" -> getString(R.string.lbl_intercrop_rec)
+                                "PP" -> getString(R.string.lbl_planting_practices_rec)
+                                "SP" -> getString(R.string.lbl_scheduled_planting_rec)
+                                else -> getString(R.string.lbl_no_recommendations_prompt)
+                            }
+
+
                             val description = resp.recommendation
-                                ?: "No recommendation details available"
+                                ?: getString(R.string.lbl_no_recommendations_prompt)
 
                             showRecommendation(title, description)
                         } else {
