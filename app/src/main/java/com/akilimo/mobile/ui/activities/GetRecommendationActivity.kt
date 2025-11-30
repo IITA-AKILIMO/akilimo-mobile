@@ -16,10 +16,8 @@ import com.akilimo.mobile.ui.components.ToolbarHelper
 import com.akilimo.mobile.utils.RecommendationBuilder
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import io.sentry.Sentry
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>() {
 
@@ -61,7 +59,7 @@ class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>
     private fun fetchRecommendation() {
         showLoading()
 
-        safeScope.launch(Dispatchers.IO) {
+        safeScope.launch {
             try {
                 val builder = RecommendationBuilder(
                     database = database,
@@ -71,9 +69,7 @@ class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>
                 val payload = builder.build()
 
                 if (payload == null) {
-                    withContext(Dispatchers.Main) {
-                        showError("Unable to build recommendation request")
-                    }
+                    showError("Unable to build recommendation request")
                     return@launch
                 }
 
@@ -86,46 +82,42 @@ class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>
                     base
                 )
 
+                // Direct suspend call
                 val result = client.computeRecommendations(payload)
 
-                withContext(Dispatchers.Main) {
-                    if (result.isSuccessful) {
-                        val resp = result.body()
-                        if (resp != null) {
-
-                            val title = when (resp.recType) {
-                                "FR" -> getString(R.string.lbl_fertilizer_rec)
-                                "IC" -> getString(R.string.lbl_intercrop_rec)
-                                "PP" -> getString(R.string.lbl_planting_practices_rec)
-                                "SP" -> getString(R.string.lbl_scheduled_planting_rec)
-                                else -> getString(R.string.lbl_no_recommendations_prompt)
-                            }
-
-
-                            val description = resp.recommendation
-                                ?: getString(R.string.lbl_no_recommendations_prompt)
-
-                            showRecommendation(title, description)
-                        } else {
-                            showError("Empty response from server")
+                if (result.isSuccessful) {
+                    val resp = result.body()
+                    if (resp != null) {
+                        val title = when (resp.recType) {
+                            "FR" -> getString(R.string.lbl_fertilizer_rec)
+                            "IC" -> getString(R.string.lbl_intercrop_rec)
+                            "PP" -> getString(R.string.lbl_planting_practices_rec)
+                            "SP" -> getString(R.string.lbl_scheduled_planting_rec)
+                            else -> getString(R.string.lbl_no_recommendations_prompt)
                         }
-                    } else {
-                        val error = result.parseError()
-                        val errorDetail = error?.error ?: "Failed to fetch recommendation"
-                        binding.emptyState.text = errorDetail
-                        Sentry.captureMessage(errorDetail)
-                        showError(error?.message ?: "Failed to fetch recommendation")
-                    }
-                }
 
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Sentry.captureException(e)
-                    showError(e.message ?: "An unexpected error occurred")
+                        val description = resp.recommendation
+                            ?: getString(R.string.lbl_no_recommendations_prompt)
+
+                        showRecommendation(title, description)
+                    } else {
+                        showError("Empty response from server")
+                    }
+                } else {
+                    val error = result.parseError()
+                    val errorDetail = error?.error ?: "Failed to fetch recommendation"
+                    binding.emptyState.text = errorDetail
+                    Sentry.captureMessage(errorDetail)
+                    showError(error?.message ?: "Failed to fetch recommendation")
                 }
+            } catch (e: Exception) {
+                Sentry.captureException(e)
+                showError(e.message ?: "An unexpected error occurred")
             }
         }
     }
+
+
 
     private fun showLoading() = with(binding) {
         loadingIndicator.visibility = View.VISIBLE
@@ -183,7 +175,7 @@ class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>
     }
 
     private fun submitFeedback(rating: Int) {
-        safeScope.launch(Dispatchers.IO) {
+        safeScope.launch {
             try {
                 // TODO: Replace with actual API call
                 // Example:
@@ -195,22 +187,20 @@ class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>
 
                 delay(1000) // Simulating API call
 
-                withContext(Dispatchers.Main) {
-                    android.widget.Toast.makeText(
-                        this@GetRecommendationActivity,
-                        "Thank you for your feedback: $rating/5",
-                        android.widget.Toast.LENGTH_SHORT
-                    ).show()
-                }
+                // Already on Main thread here
+                android.widget.Toast.makeText(
+                    this@GetRecommendationActivity,
+                    "Thank you for your feedback: $rating/5",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
             } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    android.widget.Toast.makeText(
-                        this@GetRecommendationActivity,
-                        "Failed to submit feedback: ${e.message}",
-                        android.widget.Toast.LENGTH_SHORT
-                    ).show()
-                }
+                android.widget.Toast.makeText(
+                    this@GetRecommendationActivity,
+                    "Failed to submit feedback: ${e.message}",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
+
 }
