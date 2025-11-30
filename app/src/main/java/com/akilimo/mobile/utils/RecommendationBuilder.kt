@@ -116,10 +116,10 @@ class RecommendationBuilder(
                 interCroppingPotatoRec = useCase == EnumUseCase.CIS
             ),
             recommendations = ComputeRequest.Recommendations(
-                fertilizerRec = true,
-                plantingPracticesRec = true,
-                scheduledPlantingRec = true,
-                scheduledHarvestRec = true
+                fertilizerRec =  useCase == EnumUseCase.FR,
+                plantingPracticesRec =  useCase == EnumUseCase.PP,
+                scheduledPlantingRec =  useCase == EnumUseCase.SP,
+                scheduledHarvestRec = false
             ),
             planting = ComputeRequest.Planting(
                 plantingDate = profile.plantingDate ?: LocalDate.ofEpochDay(0),
