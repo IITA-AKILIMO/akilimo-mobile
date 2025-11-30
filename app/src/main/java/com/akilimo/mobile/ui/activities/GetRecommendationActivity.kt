@@ -10,9 +10,11 @@ import com.akilimo.mobile.enums.EnumServiceType
 import com.akilimo.mobile.enums.EnumUseCase
 import com.akilimo.mobile.network.AkilimoApi
 import com.akilimo.mobile.network.ApiClient
+import com.akilimo.mobile.network.parseError
 import com.akilimo.mobile.ui.components.ToolbarHelper
 import com.akilimo.mobile.utils.RecommendationBuilder
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import io.sentry.Sentry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -20,14 +22,32 @@ import kotlinx.coroutines.withContext
 
 class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>() {
 
+    companion object {
+        const val EXTRA_USE_CASE = "extra_use_case"
+    }
+
+    private lateinit var useCase: EnumUseCase
+
     override fun inflateBinding() = ActivityGetRecommendationBinding.inflate(layoutInflater)
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
-        // Setup toolbar
-        ToolbarHelper(this, binding.lytToolbar.toolbar).onNavigationClick { finish() }.build()
+        // Get the use case from intent extras
+        @Suppress("DEPRECATION")
+        useCase = intent.getParcelableExtra(EXTRA_USE_CASE)
+            ?: return showError("No use case specified")
 
-
+        setupToolbar()
+        setupClickListeners()
         fetchRecommendation()
+    }
+
+    private fun setupToolbar() {
+        ToolbarHelper(this, binding.lytToolbar.toolbar)
+            .onNavigationClick { finish() }
+            .build()
+    }
+
+    private fun setupClickListeners() {
         binding.btnRetry.setOnClickListener {
             fetchRecommendation()
         }
@@ -37,62 +57,89 @@ class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>
     }
 
     private fun fetchRecommendation() {
-        // Show loading
-        binding.loadingIndicator.visibility = View.VISIBLE
-        binding.recommendationCard.visibility = View.GONE
-        binding.errorState.visibility = View.GONE
-        binding.fabFeedback.visibility = View.GONE
+        showLoading()
 
         safeScope.launch(Dispatchers.IO) {
             try {
                 val builder = RecommendationBuilder(
                     database = database,
                     session = sessionManager,
-                    useCase = EnumUseCase.FR
+                    useCase = useCase
                 )
-                val payload = builder.build()   // suspend, but lightweight
+                val payload = builder.build()
+
+                if (payload == null) {
+                    withContext(Dispatchers.Main) {
+                        showError("Unable to build recommendation request")
+                    }
+                    return@launch
+                }
 
                 val base = AppConfig.resolveBaseUrlFor(
-                    applicationContext, EnumServiceType.AKILIMO
+                    applicationContext,
+                    EnumServiceType.AKILIMO
                 )
-                val client =
-                    ApiClient.createService<AkilimoApi>(this@GetRecommendationActivity, base)
-                payload?.let { recRequest ->
-                    val result = client.computeRecommendations(recRequest)
+                val client = ApiClient.createService<AkilimoApi>(
+                    this@GetRecommendationActivity,
+                    base
+                )
 
-                }
-
-                val title = "DST Recommendation"
-                val description =
-                    "This is a detailed recommendation paragraph fetched from the API."
+                val result = client.computeRecommendations(payload)
 
                 withContext(Dispatchers.Main) {
-                    showRecommendation(title, description)
+                    if (result.isSuccessful) {
+                        val resp = result.body()
+                        if (resp != null) {
+
+                            // Extract actual data from response
+                            val title = resp.recType ?: "DST Recommendation"
+                            val description = resp.recommendation
+                                ?: "No recommendation details available"
+
+                            showRecommendation(title, description)
+                        } else {
+                            showError("Empty response from server")
+                        }
+                    } else {
+                        val error = result.parseError()
+                        val errorDetail = error?.error ?: "Failed to fetch recommendation"
+                        binding.emptyState.text = errorDetail
+                        Sentry.captureMessage(errorDetail)
+                        showError(error?.message ?: "Failed to fetch recommendation")
+                    }
                 }
+
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    showError()
+                    Sentry.captureException(e)
+                    showError(e.message ?: "An unexpected error occurred")
                 }
             }
         }
     }
 
-    private fun showRecommendation(
-        title: String, description: String
-    ) {
-        binding.loadingIndicator.visibility = View.GONE
-        binding.errorState.visibility = View.GONE
-        binding.recommendationCard.visibility = View.VISIBLE
-        binding.fabFeedback.visibility = View.VISIBLE
-
-        binding.recommendationTitle.text = title
-        binding.recommendationDescription.text = description
+    private fun showLoading() = with(binding) {
+        loadingIndicator.visibility = View.VISIBLE
+        recommendationCard.visibility = View.GONE
+        errorState.visibility = View.GONE
+        fabFeedback.visibility = View.GONE
     }
 
-    private fun showError() {
+    private fun showRecommendation(title: String, description: String) = with(binding) {
+        loadingIndicator.visibility = View.GONE
+        errorState.visibility = View.GONE
+        recommendationCard.visibility = View.VISIBLE
+        fabFeedback.visibility = View.VISIBLE
+
+        recommendationTitle.text = title
+        recommendationDescription.text = description
+    }
+
+    private fun showError(error: String) {
         binding.loadingIndicator.visibility = View.GONE
         binding.recommendationCard.visibility = View.GONE
         binding.errorState.visibility = View.VISIBLE
+        binding.emptyStateSubtitle.text = error
         binding.fabFeedback.visibility = View.GONE
     }
 
@@ -111,9 +158,15 @@ class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>
 
         ratingButtons.forEach { (button, rating) ->
             button.setOnClickListener {
-                sheetBinding.selectedRating.text = "Selected: $rating"
-                bottomSheetDialog.dismiss()
-                submitFeedback(rating)
+                sheetBinding.selectedRating.apply {
+                    visibility = View.VISIBLE
+                    text = "Thank you for rating: $rating/5"
+                }
+                // Delay dismissal slightly for user to see confirmation
+                binding.root.postDelayed({
+                    bottomSheetDialog.dismiss()
+                    submitFeedback(rating)
+                }, 500)
             }
         }
 
@@ -123,12 +176,20 @@ class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>
     private fun submitFeedback(rating: Int) {
         safeScope.launch(Dispatchers.IO) {
             try {
-                // Replace with real API call
-                delay(1000)
+                // TODO: Replace with actual API call
+                // Example:
+                // val feedbackRequest = FeedbackRequest(
+                //     recommendationId = currentRecommendationId,
+                //     rating = rating
+                // )
+                // val result = client.submitFeedback(feedbackRequest)
+
+                delay(1000) // Simulating API call
+
                 withContext(Dispatchers.Main) {
                     android.widget.Toast.makeText(
                         this@GetRecommendationActivity,
-                        "Feedback submitted: $rating/5",
+                        "Thank you for your feedback: $rating/5",
                         android.widget.Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -136,12 +197,11 @@ class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>
                 withContext(Dispatchers.Main) {
                     android.widget.Toast.makeText(
                         this@GetRecommendationActivity,
-                        "Failed to submit feedback",
+                        "Failed to submit feedback: ${e.message}",
                         android.widget.Toast.LENGTH_SHORT
                     ).show()
                 }
             }
         }
     }
-
 }

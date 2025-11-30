@@ -642,4 +642,12 @@
     <string name="lbl_price_per_kg_bag">Price per kg/bag</string>
     <string name="lbl_exit_application">Exit Application</string>
     <string name="lbl_confirm_app_exit">Are you sure you want to exit?</string>
+
+    <string name="rate_recommendation_title">Rate This Recommendation</string>
+    <string name="rate_recommendation_subtitle">Your feedback helps us improve</string>
+    <string name="rating_very_poor">Very Poor</string>
+    <string name="rating_poor">Poor</string>
+    <string name="rating_okay">Okay</string>
+    <string name="rating_good">Good</string>
+    <string name="rating_excellent">Excellent</string>
 </resources>

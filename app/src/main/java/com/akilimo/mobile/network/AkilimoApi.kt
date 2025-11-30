@@ -9,6 +9,7 @@ import com.akilimo.mobile.dto.MaizePriceResponse
 import com.akilimo.mobile.dto.RecommendationResponse
 import com.akilimo.mobile.dto.StarchFactoryResponse
 import com.akilimo.mobile.rest.request.RecommendationRequest
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -84,5 +85,5 @@ interface AkilimoApi {
 
     @Headers(CLIENT_ID_HEADER)
     @POST("v1/recommendations/compute")
-    suspend fun computeRecommendations(@Body payload: RecommendationRequest): RecommendationResponse
+    suspend fun computeRecommendations(@Body payload: RecommendationRequest): Response<RecommendationResponse>
 }
