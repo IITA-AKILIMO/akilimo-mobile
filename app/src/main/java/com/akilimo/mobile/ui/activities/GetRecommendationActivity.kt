@@ -2,6 +2,7 @@ package com.akilimo.mobile.ui.activities
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import com.akilimo.mobile.R
 import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.config.AppConfig
@@ -188,16 +189,16 @@ class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>
                 delay(1000) // Simulating API call
 
                 // Already on Main thread here
-                android.widget.Toast.makeText(
+                Toast.makeText(
                     this@GetRecommendationActivity,
                     "Thank you for your feedback: $rating/5",
-                    android.widget.Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT
                 ).show()
             } catch (e: Exception) {
-                android.widget.Toast.makeText(
+                Toast.makeText(
                     this@GetRecommendationActivity,
                     "Failed to submit feedback: ${e.message}",
-                    android.widget.Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT
                 ).show()
             }
         }
