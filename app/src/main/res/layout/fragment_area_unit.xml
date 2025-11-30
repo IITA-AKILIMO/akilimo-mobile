@@ -39,8 +39,8 @@
             android:id="@+id/card_area_unit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
-            app:cardElevation="1dp"
+            app:cardBackgroundColor="@color/transparent"
+            app:cardElevation="@dimen/dimen_2"
             app:shapeAppearance="?attr/shapeAppearanceMediumComponent">
 
             <LinearLayout
