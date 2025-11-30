@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_large"
-            app:cardBackgroundColor="@color/transparent"
+           app:cardBackgroundColor="?attr/colorSurfaceVariant"
             app:cardElevation="@dimen/dimen_2"
             app:shapeAppearance="?attr/shapeAppearanceMediumComponent">
 
@@ -97,7 +97,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_large"
-            app:cardBackgroundColor="@color/transparent"
+           app:cardBackgroundColor="?attr/colorSurfaceVariant"
             app:cardElevation="@dimen/dimen_2"
             app:shapeAppearance="?attr/shapeAppearanceMediumComponent">
 
@@ -154,7 +154,7 @@
             android:id="@+id/card_interest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/transparent"
+           app:cardBackgroundColor="?attr/colorSurfaceVariant"
             app:cardElevation="@dimen/dimen_2"
             app:shapeAppearance="?attr/shapeAppearanceMediumComponent">
 
