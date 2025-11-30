@@ -15,8 +15,8 @@ import com.akilimo.mobile.dao.FertilizerDao
 import com.akilimo.mobile.dao.FertilizerPriceDao
 import com.akilimo.mobile.dao.FieldOperationCostDao
 import com.akilimo.mobile.dao.InvestmentAmountDao
-import com.akilimo.mobile.dao.ProduceMarketDao
 import com.akilimo.mobile.dao.MaizePerformanceDao
+import com.akilimo.mobile.dao.ProduceMarketDao
 import com.akilimo.mobile.dao.SelectedCassavaMarketDao
 import com.akilimo.mobile.dao.SelectedFertilizerDao
 import com.akilimo.mobile.dao.SelectedInvestmentDao
@@ -31,8 +31,8 @@ import com.akilimo.mobile.entities.Fertilizer
 import com.akilimo.mobile.entities.FertilizerPrice
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.entities.InvestmentAmount
-import com.akilimo.mobile.entities.ProduceMarket
 import com.akilimo.mobile.entities.MaizePerformance
+import com.akilimo.mobile.entities.ProduceMarket
 import com.akilimo.mobile.entities.SelectedCassavaMarket
 import com.akilimo.mobile.entities.SelectedFertilizer
 import com.akilimo.mobile.entities.SelectedInvestment
@@ -43,8 +43,8 @@ import com.akilimo.mobile.utils.EnumAdviseTaskConverter
 import com.akilimo.mobile.utils.EnumAreaUnitConverter
 import com.akilimo.mobile.utils.EnumCountryConverter
 import com.akilimo.mobile.utils.EnumMaizePerfConverter
-import com.akilimo.mobile.utils.EnumProduceTypeConverter
 import com.akilimo.mobile.utils.EnumMarketTypeConverter
+import com.akilimo.mobile.utils.EnumProduceTypeConverter
 import com.akilimo.mobile.utils.EnumStepStatusConverter
 import com.akilimo.mobile.utils.EnumTillageConverters
 import com.akilimo.mobile.utils.EnumUnitOfSaleConverter
@@ -135,9 +135,7 @@ abstract class AppDatabase : RoomDatabase() {
                 context.applicationContext,
                 AppDatabase::class.java,
                 DATABASE_NAME
-            )
-//                .fallbackToDestructiveMigration()
-                .allowMainThreadQueries() //@TODO: remove this line when we are ready to go live
+            ).allowMainThreadQueries() //@TODO: remove this line when we are ready to go live
 
 
             return builder.build()
