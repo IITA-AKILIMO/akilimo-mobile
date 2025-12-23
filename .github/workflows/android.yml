@@ -50,7 +50,32 @@ jobs:
         with:
           cache-read-only: false
 
+      # Cache unit test results
+      - name: Cache unit test results
+        id: cache_tests
+        uses: actions/cache@v4
+        with:
+          path: |
+            app/build/test-results
+            app/build/reports/tests
+          key: unit-tests-${{ runner.os }}-${{ hashFiles('app/src/test/**/*.kt', 'app/src/test/**/*.java', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', '**/*.gradle*', '**/gradle.properties') }}
+          restore-keys: |
+            unit-tests-${{ runner.os }}-
+
+      # Check if we can skip tests
+      - name: Check if tests can be skipped
+        id: check_tests
+        run: |
+          if [ "${{ steps.cache_tests.outputs.cache-hit }}" == "true" ]; then
+            echo "skip_tests=true" >> $GITHUB_OUTPUT
+            echo "✅ Unit tests haven't changed, using cached results"
+          else
+            echo "skip_tests=false" >> $GITHUB_OUTPUT
+            echo "🧪 Running unit tests (code has changed)"
+          fi
+
       - name: Run Unit tests
+        if: steps.check_tests.outputs.skip_tests != 'true'
         run: ./gradlew testDebugUnitTest
         continue-on-error: false
 
