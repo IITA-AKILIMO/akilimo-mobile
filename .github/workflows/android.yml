@@ -107,6 +107,16 @@ jobs:
       - name: Fetch latest tag
         run: fetch-tag
 
+      - name: Ensure latest tag file exists
+        run: |
+          if [ ! -f "$LATEST_TAG_FILE" ]; then
+            echo "⚠️  $LATEST_TAG_FILE not found, creating with default value"
+            echo "v1.0.0" > $LATEST_TAG_FILE
+          else
+            echo "✅ $LATEST_TAG_FILE exists"
+            cat $LATEST_TAG_FILE
+          fi
+
       - name: Update release version
         run: echo "RELEASE_VERSION=$(cat $LATEST_TAG_FILE)" >> $GITHUB_ENV
 
@@ -209,7 +219,14 @@ jobs:
           done
 
       - name: Copy release tag file
-        run: cp $LATEST_TAG_FILE release
+        run: |
+          if [ -f "$LATEST_TAG_FILE" ]; then
+            cp $LATEST_TAG_FILE release
+            echo "✅ Copied $LATEST_TAG_FILE to release folder"
+          else
+            echo "⚠️  $LATEST_TAG_FILE not found, creating default in release folder"
+            echo "v1.0.0" > release/$LATEST_TAG_FILE
+          fi
 
       - name: Generate release notes
         run: python .github/scripts/generate_release_notes.py
