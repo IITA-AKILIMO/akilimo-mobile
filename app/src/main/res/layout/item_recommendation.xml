@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/spacing_medium"
+    android:layout_marginBottom="@dimen/spacing_large"
+    android:clickable="true"
+    android:clipChildren="false"
+    android:focusable="true"
+    android:stateListAnimator="@animator/card_elevation_animator"
+    app:cardCornerRadius="@dimen/dimen_5"
+    app:cardElevation="@dimen/dimen_4"
+    app:strokeWidth="0dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipChildren="false">
+
+        <!-- Gradient Background Overlay -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_card_gradient" />
+
+        <!-- Accent Strip (Left Edge) -->
+        <View
+            android:id="@+id/accent_strip"
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:background="?attr/colorPrimary" />
+
+        <!-- Main Content Container -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/spacing_large"
+            android:paddingTop="@dimen/spacing_large"
+            android:paddingEnd="@dimen/spacing_small"
+            android:paddingBottom="@dimen/spacing_large">
+
+            <!-- Text Content -->
+            <LinearLayout
+                android:id="@+id/text_container"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/spacing_small"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/action_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/recommendation_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/google_sans_medium"
+                    android:letterSpacing="0.01"
+                    android:maxLines="2"
+                    android:text="@string/lbl_recommendations"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="@dimen/font_size_16" />
+
+                <TextView
+                    android:id="@+id/recommendation_subtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xsmall"
+                    android:alpha="0.65"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/google_sans"
+                    android:maxLines="1"
+                    android:text="Tap to explore insights"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="@dimen/font_size_12"
+                    tools:visibility="visible" />
+            </LinearLayout>
+
+            <!-- Action Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/action_button"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:contentDescription="@string/app_name"
+                app:icon="@drawable/ic_arrow_forward"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="20dp"
+                app:iconTint="?attr/colorPrimary"
+                app:layout_constraintBottom_toBottomOf="@id/text_container"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/text_container" />
+
+            <!-- Progress Indicator (Optional) -->
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progress_indicator"
+                android:layout_width="0dp"
+                android:layout_height="3dp"
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:visibility="gone"
+                app:indicatorColor="?attr/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_container"
+                app:trackColor="?attr/colorSurfaceVariant"
+                app:trackCornerRadius="2dp"
+                tools:progress="65"
+                tools:visibility="visible" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Completion Badge (Animated) -->
+        <FrameLayout
+            android:id="@+id/completion_badge_container"
+            android:layout_width="@dimen/dimen_24"
+            android:layout_height="@dimen/dimen_24"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:clipChildren="false"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <!-- Badge Background with Pulse Effect -->
+            <View
+                android:id="@+id/badge_pulse"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alpha="0.3"
+                android:background="@drawable/bg_completion_badge"
+                android:backgroundTint="?attr/colorPrimary" />
+
+            <ImageView
+                android:id="@+id/completion_badge_icon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_completion_badge"
+                android:backgroundTint="?attr/colorPrimary"
+                android:contentDescription="@string/app_name"
+                android:elevation="6dp"
+                android:padding="6dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_check"
+                app:tint="@color/color_on_background" />
+        </FrameLayout>
+
+        <!-- Shimmer Effect Overlay (for loading state) -->
+        <View
+            android:id="@+id/shimmer_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_shimmer"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+    </FrameLayout>
+
+</com.google.android.material.card.MaterialCardView>

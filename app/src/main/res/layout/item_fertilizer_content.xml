@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackgroundBorderless"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_medium">
+
+    <!-- Selection Indicator -->
+    <FrameLayout
+        android:id="@+id/selection_indicator_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <!-- Fertilizer icon -->
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/fertilizer_icon"
+            android:layout_width="@dimen/dimen_48"
+            android:layout_height="@dimen/dimen_48"
+            android:layout_gravity="center"
+            android:contentDescription="@string/lbl_available_fertilizers"
+            android:src="@drawable/ic_fertilizer_bag"
+            android:tint="@color/color_primary" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/fertilizer_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:text="NPK 15:15:15"
+        android:textAlignment="center"
+        android:textAppearance="?attr/textAppearanceBody2"
+        android:textColor="@color/color_on_background" />
+
+    <TextView
+        android:id="@+id/fertilizer_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:text="@string/under_score"
+        android:textAppearance="?attr/textAppearanceBodySmall"
+        android:textColor="@color/color_primary" />
+</LinearLayout>

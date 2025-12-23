@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutCassavaMarketInput"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <EditText
+        android:id="@+id/inputUnitWeight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Unit Weight (kg)"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/inputUnitPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Unit Price"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/inputFactoryName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Factory Name" />
+
+    <EditText
+        android:id="@+id/inputLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Location" />
+
+    <Button
+        android:id="@+id/btnSaveMarket"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save" />
+</LinearLayout>

@@ -1,188 +1,177 @@
 package com.akilimo.mobile.rest.request
 
+import com.akilimo.mobile.enums.EnumAreaUnit
+import com.akilimo.mobile.enums.EnumUseCase
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.time.LocalDate
 
 @JsonClass(generateAdapter = true)
-class ComputeRequest {
+data class ComputeRequest(
+    val farmInformation: FarmInformation,
+    val interCropping: InterCropping,
+    val recommendations: Recommendations,
+    val planting: Planting,
+    val fallow: Fallow,
+    val tractorCosts: TractorCosts,
+    val manualCosts: ManualCosts,
+    val weedingCosts: WeedingCosts,
+    val operationsDone: OperationsDone,
+    val methods: Methods,
+    val yieldInfo: YieldInfo,
+    val cassava: CropInfo,
+    val maize: CropInfo,
+    val sweetPotato: CropInfo,
+    val maxInvestment: Double
+) {
 
-    @Json(name = "country_code")
-    var countryCode: String? = null
+    @JsonClass(generateAdapter = true)
+    data class FarmInformation(
+        @param:Json(name = "country_code")
+        val countryCode: String,
+        @param:Json(name = "use_case")
+        val useCase: EnumUseCase,
+        @param:Json(name = "currency_code")
+        val currencyCode: String? = null,
+        @param:Json(name = "map_lat")
+        val mapLat: Double,
+        @param:Json(name = "map_long")
+        val mapLong: Double,
+        @param:Json(name = "field_size")
+        val fieldSize: Double,
+        @param:Json(name = "area_unit")
+        val areaUnit: EnumAreaUnit
+    )
 
-    @Json(name = "use_case")
-    var useCase: String? = null
+    @JsonClass(generateAdapter = true)
+    data class InterCropping(
+        @param:Json(name = "inter_cropped_crop")
+        val interCroppedCrop: String,
+        @param:Json(name = "inter_cropping_maize_rec")
+        val interCroppingMaizeRec: Boolean,
+        @param:Json(name = "inter_cropping_potato_rec")
+        val interCroppingPotatoRec: Boolean
+    )
 
-    @Json(name = "currency_code")
-    var currencyCode: String? = null
+    @JsonClass(generateAdapter = true)
+    data class Recommendations(
+        @param:Json(name = "fertilizer_rec")
+        val fertilizerRec: Boolean,
+        @param:Json(name = "planting_practices_rec")
+        val plantingPracticesRec: Boolean,
+        @param:Json(name = "scheduled_planting_rec")
+        val scheduledPlantingRec: Boolean,
+        @param:Json(name = "scheduled_harvest_rec")
+        val scheduledHarvestRec: Boolean
+    )
 
-    @Json(name = "map_lat")
-    var mapLat: Double = 0.0
+    @JsonClass(generateAdapter = true)
+    data class Planting(
+        @param:Json(name = "planting_date")
+        val plantingDate: LocalDate,
+        @param:Json(name = "harvest_date")
+        val harvestDate: LocalDate,
+        @param:Json(name = "planting_date_window")
+        val plantingDateWindow: Long,
+        @param:Json(name = "harvest_date_window")
+        val harvestDateWindow: Long
+    )
 
-    @Json(name = "map_long")
-    var mapLong: Double = 0.0
+    @JsonClass(generateAdapter = true)
+    data class Fallow(
+        @param:Json(name = "fallow_type")
+        val fallowType: String,
+        @param:Json(name = "fallow_height")
+        val fallowHeight: Int,
+        @param:Json(name = "fallow_green")
+        val fallowGreen: Boolean
+    )
 
-    @Json(name = "field_size")
-    var fieldSize: Double = 0.0
+    @JsonClass(generateAdapter = true)
+    data class TractorCosts(
+        @param:Json(name = "tractor_plough")
+        val hasTractorPlough: Boolean,
+        @param:Json(name = "tractor_harrow")
+        val hasTractorHarrow: Boolean,
+        @param:Json(name = "tractor_ridger")
+        val hasTractorRidger: Boolean,
+        @param:Json(name = "cost_lmo_area_basis")
+        val costLmoAreaBasis: String = "areaUnit",
+        @param:Json(name = "cost_tractor_ploughing")
+        val costPloughing: Double,
+        @param:Json(name = "cost_tractor_harrowing")
+        val costHarrowing: Double,
+        @param:Json(name = "cost_tractor_ridging")
+        val costRidging: Double
+    )
 
-    @Json(name = "area_unit")
-    var areaUnit: String = "acre"
+    @JsonClass(generateAdapter = true)
+    data class ManualCosts(
+        @param:Json(name = "cost_manual_ploughing")
+        val costPloughing: Double,
+        @param:Json(name = "cost_manual_harrowing")
+        val costHarrowing: Double,
+        @param:Json(name = "cost_manual_ridging")
+        val costRidging: Double
+    )
 
-    @Json(name = "inter_cropped_crop")
-    var interCroppedCrop: String = "NA"
+    @JsonClass(generateAdapter = true)
+    data class WeedingCosts(
+        @param:Json(name = "cost_weeding_one")
+        val costOne: Double,
+        @param:Json(name = "cost_weeding_two")
+        val costTwo: Double
+    )
 
-    @Json(name = "inter_cropping_maize_rec")
-    var interCroppingMaizeRec: Boolean = false
+    @JsonClass(generateAdapter = true)
+    data class OperationsDone(
+        @param:Json(name = "ploughing_done")
+        val ploughingDone: Boolean,
+        @param:Json(name = "harrowing_done")
+        val harrowingDone: Boolean,
+        @param:Json(name = "ridging_done")
+        val ridgingDone: Boolean
+    )
 
-    @Json(name = "inter_cropping_potato_rec")
-    var interCroppingPotatoRec: Boolean = false
+    @JsonClass(generateAdapter = true)
+    data class Methods(
+        @param:Json(name = "method_ploughing")
+        val methodPloughing: String,
+        @param:Json(name = "method_harrowing")
+        val methodHarrowing: String,
+        @param:Json(name = "method_ridging")
+        val methodRidging: String,
+        @param:Json(name = "method_weeding")
+        val methodWeeding: String
+    )
 
-    @Json(name = "fertilizer_rec")
-    var fertilizerRec: Boolean = false
+    @JsonClass(generateAdapter = true)
+    data class YieldInfo(
+        @param:Json(name = "current_field_yield")
+        val currentFieldYield: Double,
+        @param:Json(name = "current_maize_performance")
+        val currentMaizePerformance: Int,
+        @param:Json(name = "sell_to_starch_factory")
+        val sellToStarchFactory: Boolean,
+        @param:Json(name = "starch_factory_name")
+        val starchFactoryName: String
+    )
 
-    @Json(name = "planting_practices_rec")
-    var plantingPracticesRec: Boolean = false
-
-    @Json(name = "scheduled_planting_rec")
-    var scheduledPlantingRec: Boolean = false
-
-    @Json(name = "scheduled_harvest_rec")
-    var scheduledHarvestRec: Boolean = false
-
-    @Json(name = "planting_date")
-    var plantingDate: String? = null
-
-    @Json(name = "harvest_date")
-    var harvestDate: String? = null
-
-    @Json(name = "planting_date_window")
-    var plantingDateWindow: Int = 0
-
-    @Json(name = "harvest_date_window")
-    var harvestDateWindow: Int = 0
-
-    @Json(name = "fallow_type")
-    var fallowType: String = "none"
-
-    @Json(name = "fallow_height")
-    var fallowHeight: Int = 100
-
-    @Json(name = "fallow_green")
-    var fallowGreen: Boolean = false
-
-    @Json(name = "problem_weeds")
-    var problemWeeds: Boolean = false
-
-    @Json(name = "tractor_plough")
-    var tractorPlough: Boolean = false
-
-    @Json(name = "tractor_harrow")
-    var tractorHarrow: Boolean = false
-
-    @Json(name = "tractor_ridger")
-    var tractorRidger: Boolean = false
-
-    @Json(name = "cost_lmo_area_basis")
-    var costLmoAreaBasis: String = "areaUnit"
-
-    @Json(name = "cost_tractor_ploughing")
-    var costTractorPloughing: Double = 0.0
-
-    @Json(name = "cost_tractor_harrowing")
-    var costTractorHarrowing: Double = 0.0
-
-    @Json(name = "cost_tractor_ridging")
-    var costTractorRidging: Double = 0.0
-
-    @Json(name = "cost_manual_ploughing")
-    var costManualPloughing: Double = 0.0
-
-    @Json(name = "cost_manual_harrowing")
-    var costManualHarrowing: Double = 0.0
-
-    @Json(name = "cost_manual_ridging")
-    var costManualRidging: Double = 0.0
-
-    @Json(name = "cost_weeding_one")
-    var costWeedingOne: Double = 0.0
-
-    @Json(name = "cost_weeding_two")
-    var costWeedingTwo: Double = 0.0
-
-    @Json(name = "ploughing_done")
-    var ploughingDone: Boolean = false
-
-    @Json(name = "harrowing_done")
-    var harrowingDone: Boolean = false
-
-    @Json(name = "ridging_done")
-    var ridgingDone: Boolean = false
-
-    @Json(name = "method_ploughing")
-    var methodPloughing: String? = null
-
-    @Json(name = "method_harrowing")
-    var methodHarrowing: String? = null
-
-    @Json(name = "method_ridging")
-    var methodRidging: String? = null
-
-    @Json(name = "method_weeding")
-    var methodWeeding: String? = null
-
-    @Json(name = "current_field_yield")
-    var currentFieldYield: Double = 0.0
-
-    @Json(name = "current_maize_performance")
-    var currentMaizePerformance: Int = 0
-
-    @Json(name = "sell_to_starch_factory")
-    var sellToStarchFactory: Boolean = false
-
-    @Json(name = "starch_factory_name")
-    var starchFactoryName: String = "NA"
-
-    @Json(name = "cassava_produce_type")
-    var cassavaProduceType: String = "roots"
-
-    @Json(name = "cassava_unit_weight")
-    var cassavaUnitWeight: Int = 1000
-
-    @Json(name = "cassava_unit_price")
-    var cassavaUnitPrice: Double = 0.0
-
-    @Json(name = "cass_up_m1")
-    var cassUpM1: Double = 0.0
-
-    @Json(name = "cass_up_m2")
-    var cassUpM2: Double = 0.0
-
-    @Json(name = "cass_up_p1")
-    var cassUpP1: Double = 0.0
-
-    @Json(name = "cass_up_p2")
-    var cassUpP2: Double = 0.0
-
-    @Json(name = "maize_produce_type")
-    var maizeProduceType: String = "fresh_cob"
-
-    @Json(name = "maize_unit_weight")
-    var maizeUnitWeight: Double = 1.0
-
-    @Json(name = "maize_unit_price")
-    var maizeUnitPrice: Double = 230.0
-
-    @Json(name = "sweet_potato_produce_type")
-    var sweetPotatoProduceType: String = "tubers"
-
-    @Json(name = "sweet_potato_unit_weight")
-    var sweetPotatoUnitWeight: Double = 1000.0
-
-    @Json(name = "sweet_potato_unit_price")
-    var sweetPotatoUnitPrice: Double = 120000.0
-
-    @Json(name = "max_investment")
-    var maxInvestment: Double = 0.0
-
-    @Json(name = "risk_attitude")
-    var riskAttitude: Int = 1
+    @JsonClass(generateAdapter = true)
+    data class CropInfo(
+        @param:Json(name = "produce_type")
+        val produceType: String,
+        @param:Json(name = "unit_weight")
+        val unitWeight: Double,
+        @param:Json(name = "unit_price")
+        val unitPrice: Double = 0.0,
+        @param:Json(name = "unit_price_maize1")
+        val upM1: Double = 0.0,
+        @param:Json(name = "unit_price_maize2")
+        val upM2: Double = 0.0,
+        @param:Json(name = "unit_price_potato1")
+        val upP1: Double = 0.0,
+        @param:Json(name = "unit_price_potato2")
+        val upP2: Double = 0.0
+    )
 }

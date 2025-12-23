@@ -2,57 +2,107 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.akilimo.mobile.views.activities.ManualTillageCostActivity">
+    android:paddingBottom="@dimen/spacing_large"
+    tools:context=".ui.usecases.ManualTillageCostActivity">
 
+    <!-- App Bar with Toolbar -->
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/app_bar_height"
-        android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/toolbar_layout"
+        <include
+            android:id="@+id/lyt_toolbar"
+            layout="@layout/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:toolbarId="@+id/toolbar">
+            android:layout_height="?attr/actionBarSize" />
 
-            <ImageView
-                android:id="@+id/image_header"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/app_name"
-                android:fitsSystemWindows="true"
-                android:scaleType="centerCrop"
-                app:layout_collapseMode="parallax"
-                app:srcCompat="@drawable/bg_header_faded_logo" />
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:theme="@style/ToolbarTheme"
-                app:contentInsetStartWithNavigation="0dp"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
+    <!-- Main Content -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/spacing_medium"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <!-- Display Land Size -->
+        <!-- Display Land Size as Header -->
+        <TextView
+            android:id="@+id/tv_manual_ridge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/lbl_manual_tillage_cost"
+            android:textColor="?android:attr/textColorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/lbl_manual_ridge_cost" />
+
+        <!-- Input: Riding Cost -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_ridging_cost"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:hint="@string/lbl_manual_ridge_cost_hint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_manual_ridge">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_riding_cost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Input: Ploughing Cost -->
+        <TextView
+            android:id="@+id/tv_manual_plough"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:text="@string/lbl_manual_tillage_cost"
+            android:textColor="?android:attr/textColorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/til_ridging_cost"
+            tools:text="@string/lbl_manual_tillage_cost" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_ploughing_cost"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:hint="@string/lbl_manual_tillage_cost_hint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_manual_plough">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_ploughing_cost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Floating Action Button anchored at bottom -->
     <include
-        android:id="@+id/manual_tillage"
-        layout="@layout/content_manual_tillage_cost" />
-
-
-    <include
-        android:id="@+id/two_buttons"
-        layout="@layout/bottom_two_buttons_layout" />
-
+        android:id="@+id/lyt_fab_button"
+        layout="@layout/fab_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/spacing_large" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,75 +1,63 @@
 package com.akilimo.mobile.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
 import com.akilimo.mobile.entities.Fertilizer
+import com.akilimo.mobile.enums.EnumCountry
+import com.akilimo.mobile.enums.EnumUseCase
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FertilizerDao {
 
+    // Observable queries
     @Query("SELECT * FROM fertilizers")
-    fun listAll(): MutableList<Fertilizer>
+    fun observeAll(): Flow<List<Fertilizer>>
+
+    @Query("SELECT * FROM fertilizers WHERE country_code = :countryCode AND available = 1 ORDER BY sort_order ASC")
+    fun observeAllByCountry(countryCode: EnumCountry): Flow<List<Fertilizer>>
+
+    @Query("SELECT * FROM fertilizers WHERE country_code = :countryCode AND use_case=:useCase AND available = 1 ORDER BY sort_order ASC")
+    fun observeAllByCountryAndUseCase(
+        countryCode: EnumCountry,
+        useCase: EnumUseCase
+    ): Flow<List<Fertilizer>>
+
+
+    @Query("SELECT * FROM fertilizers WHERE available = 1")
+    fun getAll(): List<Fertilizer>
 
     @Query("SELECT * FROM fertilizers LIMIT 1")
     fun findOne(): Fertilizer?
 
-    @Query("select * FROM fertilizers where fertilizer_key=:fertilizerKey")
-    fun findByKey(fertilizerKey: String?): Fertilizer?
+    @Query("select * from fertilizers where type=:fertilizerType AND available = 1")
+    fun findByType(fertilizerType: String): Fertilizer?
 
-    @Query("select * FROM fertilizers where type=:fertilizerType")
-    fun findByType(fertilizerType: String?): Fertilizer?
+    @Query("select * from fertilizers where type=:fertilizerType and country_code=:countryCode AND available = 1 limit 1")
+    fun findOneByTypeAndCountry(fertilizerType: String?, countryCode: EnumCountry): Fertilizer?
 
-    @Query("select * FROM fertilizers where type=:fertilizerType and country_code=:countryCode limit 1")
-    fun findOneByTypeAndCountry(fertilizerType: String, countryCode: String): Fertilizer?
+    @Query("SELECT * FROM fertilizers where country_code=:countryCode AND available = 1 ORDER BY sort_order ASC")
+    fun findAllSelectedByCountry(countryCode: EnumCountry): List<Fertilizer>
 
-    @Query("SELECT * FROM fertilizers where country_code=:countryCode and selected=1")
-    fun findAllSelectedByCountry(countryCode: String): MutableList<Fertilizer>
+    @Query("SELECT * FROM fertilizers where country_code=:countryCode AND available = 1 ORDER BY sort_order ASC")
+    fun findAllByCountry(countryCode: EnumCountry): List<Fertilizer>
 
-    @Query("SELECT * FROM fertilizers where country_code=:countryCode")
-    fun findAllByCountry(countryCode: String): MutableList<Fertilizer>
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insert(fertilizer: Fertilizer): Long
 
 
-    @Query("SELECT * FROM fertilizers where country_code=:countryCode and use_case=:useCase")
-    fun findAllByCountryAndUseCase(
-        countryCode: String,
-        useCase: String
-    ): MutableList<Fertilizer>
-
-    @Query("SELECT * FROM fertilizers where country_code=:countryCode and use_case=:useCase and selected=1")
-    fun findAllSelectedByCountryAndUseCase(
-        countryCode: String,
-        useCase: String
-    ): MutableList<Fertilizer>
-
-    @Query("SELECT * FROM fertilizers WHERE country_code = :countryCode AND use_case IN (:useCases) AND selected = 1")
-    fun findAllSelectedByCountryAndUseCases(
-        countryCode: String,
-        useCases: List<String>
-    ): List<Fertilizer>
-
-    @Query("SELECT * FROM fertilizers where type=:fertilizerType and country_code=:countryCode and use_case=:useCase")
-    fun findOneByTypeCountryAndUseCase(
-        fertilizerType: String,
-        countryCode: String,
-        useCase: String
-    ): Fertilizer?
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(fertilizer: Fertilizer)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAll(availableFertilizersList: List<Fertilizer>)
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updateSelected(selectedList: List<Fertilizer>)
-
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun update(fertilizer: Fertilizer?)
+    @Update
+    fun update(fertilizer: Fertilizer)
 
     @Delete
-    fun delete(fertilizer: Fertilizer?)
-
-    @Delete
-    fun deleteFertilizerByList(fertilizerList: List<Fertilizer>)
+    fun delete(fertilizer: Fertilizer)
 
     @Query("DELETE FROM fertilizers")
     fun deleteAll()

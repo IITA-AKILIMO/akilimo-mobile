@@ -2,65 +2,78 @@ package com.akilimo.mobile.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.akilimo.mobile.utils.enums.EnumOperationMethod
-import com.akilimo.mobile.utils.enums.EnumWeedControlMethod
+import com.akilimo.mobile.enums.EnumWeedControlMethod
 
-@Entity(tableName = "current_practices")
-open class CurrentPractice {
+@Entity(
+    tableName = "current_practices",
+    foreignKeys = [
+        ForeignKey(
+            entity = AkilimoUser::class,              // assuming you have an AkilimoUser entity
+            parentColumns = ["id"],                   // parent PK column
+            childColumns = ["user_id"],               // FK column in this table
+            onDelete = ForeignKey.CASCADE             // delete practices if user is deleted
+        )
+    ]
+)
+data class CurrentPractice(
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    var id: Long? = null
+    val id: Int? = null,
+
+    @ColumnInfo(name = "user_id", index = true)
+    val userId: Int,
 
     @ColumnInfo(name = "weed_radio_index")
-    var weedRadioIndex: Int = -1
+    val weedRadioIndex: Int = 0,
 
     @ColumnInfo(name = "weed_control_method")
-    var weedControlMethod: EnumWeedControlMethod = EnumWeedControlMethod.NONE
+    val weedControlMethod: EnumWeedControlMethod? = null,
 
     @ColumnInfo(name = "plough_operations")
-    var ploughOperations: String? = null
+    val ploughOperations: String? = null,
 
     @ColumnInfo(name = "ridge_operations")
-    var ridgeOperations: String? = null
+    val ridgeOperations: String? = null,
 
     @ColumnInfo(name = "harrow_operations")
-    var harrowOperations: String? = null
+    val harrowOperations: String? = null,
 
     @ColumnInfo(name = "weed_control_operations")
-    var weedControlOperations: String? = null
+    val weedControlOperations: String? = null,
 
     @ColumnInfo(name = "ploughing_method")
-    var ploughingMethod: EnumOperationMethod = EnumOperationMethod.NONE
+    val ploughingMethod: String? = null,
 
     @ColumnInfo(name = "ridging_method")
-    var ridgingMethod: EnumOperationMethod = EnumOperationMethod.NONE
+    val ridgingMethod: String? = null,
 
     @ColumnInfo(name = "harrowing_method")
-    var harrowingMethod: EnumOperationMethod = EnumOperationMethod.NONE
+    val harrowingMethod: String? = null,
 
     @ColumnInfo(name = "tractor_available")
-    var tractorAvailable = false
+    val tractorAvailable: Boolean = false,
 
     @ColumnInfo(name = "tractor_plough")
-    var tractorPlough = false
+    val tractorPlough: Boolean = false,
 
     @ColumnInfo(name = "tractor_harrow")
-    var tractorHarrow = false
+    val tractorHarrow: Boolean = false,
 
     @ColumnInfo(name = "tractor_ridger")
-    var tractorRidger = false
+    val tractorRidger: Boolean = false,
 
     @ColumnInfo(name = "uses_herbicide")
-    var usesHerbicide = false
+    val usesHerbicide: Boolean = false,
 
     @ColumnInfo(name = "perform_ploughing")
-    var performPloughing = false
+    val performPloughing: Boolean = false,
 
     @ColumnInfo(name = "perform_harrowing")
-    var performHarrowing = false
+    val performHarrowing: Boolean = false,
 
     @ColumnInfo(name = "perform_ridging")
-    var performRidging = false
-}
+    val performRidging: Boolean = false
+)

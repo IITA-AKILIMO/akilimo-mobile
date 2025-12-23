@@ -1,58 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_investment_preferences"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey_5"
-    android:padding="@dimen/spacing_medium"
-    tools:context=".views.fragments.InvestmentPrefFragment">
+    tools:context=".ui.fragments.InvestmentPrefFragment">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/img_risk_attitude"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_marginTop="@dimen/spacing_medium"
-        android:contentDescription="@string/app_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.MaterialComponents.MediumComponent"
-        app:srcCompat="@drawable/ic_risk_att" />
-
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/txt_risk_attitude_title"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/container_investment_pref"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_large"
-        android:text="@string/lbl_investment_pref"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img_risk_attitude" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/txt_risk_attitude_subtitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_medium"
-        android:text="@string/lbl_investment_pref_sub"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_risk_attitude_title" />
-
-
-    <RadioGroup
-        android:id="@+id/rdg_risk_attitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_large"
+        android:gravity="center_horizontal"
         android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_risk_attitude_subtitle"/>
+        android:padding="@dimen/spacing_large">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txt_biodata_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/lbl_investment_pref"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txt_risk_attitude_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_large"
+            android:text="@string/lbl_investment_pref_sub" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_personal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_large"
+            app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
+            app:cardElevation="1dp"
+            app:shapeAppearance="?attr/shapeAppearanceMediumComponent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_large">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/lyt_investment_pref"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_medium"
+                    android:hint="@string/lbl_investment_pref">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/drop_investment_pref"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:minHeight="?attr/listPreferredItemHeightSmall" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>
