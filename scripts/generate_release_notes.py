@@ -37,17 +37,19 @@ class ConversationalReleaseNotesGenerator:
     ]
 
     def __init__(self, changelog_path: str = None, use_ai: bool = True):
-        """Initialize the generator."""
         if changelog_path is None:
             script_dir = Path(__file__).parent
             changelog_path = script_dir / '..' / 'CHANGELOG.md'
 
         self.changelog_path = Path(changelog_path)
         self.use_ai = use_ai
-        self.output_dir = Path('distribution/whatsnew')
+
+        # place output dir at same level as changelog file
+        self.output_dir = self.changelog_path.parent / 'release/distribution/whatsnew'
 
         if not self.changelog_path.exists():
             raise FileNotFoundError(f"Changelog not found: {changelog_path}")
+
 
     def read_changelog(self) -> str:
         """Read the changelog file."""
