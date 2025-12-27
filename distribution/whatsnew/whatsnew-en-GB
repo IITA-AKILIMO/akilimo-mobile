@@ -1,0 +1,91 @@
+Bug Fixes
+- **tests**: Correct EnumCountry mapping for TZ test
+
+Code Refactoring
+- **tillage**: Use EnumOperation enum directly
+- **MandatoryInfo**: Remove unused radio index fields
+- **navigation**: Update intent in FrActivity
+- **recommendation**: Rename DstRecommendationActivity to GetRecommendationActivity
+- Remove unused SPH activity layout
+- **recommendation**: Implement use case screen
+- **ui**: Animate selection state in adapters
+- **ui**: Remove text color animation from adapters
+- **theme**: Update gradient overlay color
+- **recommendations**: Tweak recommendation card image layout
+- **recommendation**: Update intercropping with sweet potato use cases
+- **ui**: Adjust window insets handling in BaseActivity
+- **recommendation**: Invert icon visibility logic
+- **recommendations**: Clean up and enable recommendation options
+- **ui**: Re-enable stepper fragments and integrate `SimpleStepperListener`
+- **ui**: Use string resources for exit dialog text in `HomeStepperActivity`
+- **ui**: Simplify `sizeUnitLabel` retrieval in `WeedControlCostsActivity`
+- **db**: Re-order imports and cleanup in `AppDatabase`
+
+Features
+- **security**: Update network security configuration
+- **SplashActivity**: Initialize Retrofit with context
+- **security**: Add network security configuration
+- Migration to git history
+- **recommendations**: Add more advice options
+- **recommendations**: Enable more advice options for IC Maize
+- **build**: Define base URLs in default config and remove from release/debug
+- **build**: Automate `versionName` and `versionCode` generation
+
+Fix
+- Correct repeatOnLifecycle state for viewModel observation
+
+Miscellaneous Tasks
+- **Akilimo**: Remove comment from AndroidThreeTen initialization
+- Commit save point
+- Commit save point
+- Commit save point
+- Commit save point
+- Commit save point
+- Commit save point
+- Commit save point
+- Commit save point
+- Update focus colors
+- **strings**: Update string resource keys for sweet potato
+- **enums**: Update string resource key for sweet potato market outlet
+- **manifest**: Add SweetPotatoMarketActivity to AndroidManifest
+- Commit save point
+- Commit save point
+- Commit save point
+- **enums**: Comment out weed management advice
+- Commit save point
+- **ci**: Temporarily disable actor check in PR automation workflow
+- **ui**: Add `SimpleStepperListener` base implementation for stepper events
+- **network**: Add `LocalDateAdapter` for JSON (de)serialization with Moshi
+- **utils**: Add `NumberHelper` with null-safe Double extensions
+- **utils**: Add `orUnavailable` extension for null-safe default strings
+- **network**: Add `LocalDateAdapter` to Moshi instance in `ApiClient`
+- **network**: Add POST endpoint for computing recommendations in `AkilimoApi`
+- **enum**: Add `produce` function to `EnumProduceType` for mapping produce types
+- **enum**: Update `EnumUnitOfSale` weights to `Double` type for precision adjustments
+- **model**: Remove default values in `UserInfo` properties and add `riskAttitude` field
+- **utils**: Refactor `RecommendationBuilder` to improve readability and modularize logic
+- **ui**: Integrate `RecommendationBuilder` and `AkilimoApi` in `GetRecommendationActivity` for API-based recommendations
+- **model**: Refactor `ComputeRequest` structure and field types for improved consistency and clarity
+- Commit save point
+- **ui**: Add `EnumUseCase` handling in various activities for improved use case specificity
+- **ui**: Update `GetRecommendationActivity` to set toolbar title and enhance recommendation handling logic
+- **ui**: Pass `EnumUseCase` as Parcelable to `GetRecommendationActivity` for enhanced intent handling
+- **utils**: Update `RecommendationBuilder` to set intercrop recommendations based on `EnumUseCase`
+- **ui**: Refactor coroutine scope usage in `GetRecommendationActivity` for streamlined thread handling and error management
+- **ui**: Update card background and elevation styles in `fragment_area_unit.xml` for layout consistency
+- **ui**: Update card elevation and background styles in `fragment_bio_data.xml` for visual consistency
+- **utils**: Update `RecommendationBuilder` logic to conditionally set recommendations based on `EnumUseCase`
+- **ui**: Simplify `Toast` usage in `GetRecommendationActivity` by removing fully qualified references
+- **ui**: Update card background styles across layouts to use `?attr/colorSurfaceVariant` for consistency
+- **release**: Bump version to `30.0.0` in `nextrelease.txt`
+
+Refactor
+- Rename `EnumOperationType` to `EnumOperationMethod`
+- Rename email validation function and add empty check
+- Remove unused function and add TODO for encryption
+
+✨feat
+- **inherit**: Remove deprecated properties and update annotations [**BREAKING**]
+
+💄fix
+- **flow**: Always show area unit and investment preference fragments
