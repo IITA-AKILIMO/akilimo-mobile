@@ -197,7 +197,7 @@ def main():
     default_changelog = script_dir / '..' / '..' / 'CHANGELOG.md'
 
     changelog_path = os.getenv('CHANGELOG_PATH', str(default_changelog))
-    output_dir = os.getenv('WHATSNEW_DIR', 'distribution/whatsnew')
+    output_dir = os.getenv('WHATSNEW_DIR', 'release/distribution/whatsnew')
 
     try:
         generator = ReleaseNotesGenerator(changelog_path, output_dir)
