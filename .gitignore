@@ -11,3 +11,4 @@ local.properties
 sentry-wizard.exe
 .env
 /.kotlin/
+.venv

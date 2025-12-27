@@ -254,7 +254,7 @@ jobs:
           fi
 
 #      - name: Generate release notes
-#        run: python .github/scripts/generate_release_notes.py
+#        run: python scripts/generate_release_notes.py
 #
 #      - name: Copy release notes
 #        run: cp -r distribution release

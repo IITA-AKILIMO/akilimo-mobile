@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **config**: Update git-cliff configuration for AKILIMO
 
 
-## [28.1.0] - 2025-12-23
+## [28.1.0] - 2025-11-30
 
 ### Bug Fixes
 
@@ -86,22 +86,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Akilimo**: Remove comment from AndroidThreeTen initialization
 
-- Commit save point
-
-- Commit save point
-
-- Commit save point
-
-- Commit save point
-
-- Commit save point
-
-- Commit save point
-
-- Commit save point
-
-- Commit save point
-
 - Update focus colors
 
 - **strings**: Update string resource keys for sweet potato
@@ -110,15 +94,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **manifest**: Add SweetPotatoMarketActivity to AndroidManifest
 
-- Commit save point
-
-- Commit save point
-
-- Commit save point
-
 - **enums**: Comment out weed management advice
-
-- Commit save point
 
 - **ci**: Temporarily disable actor check in PR automation workflow
 
@@ -145,8 +121,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **ui**: Integrate `RecommendationBuilder` and `AkilimoApi` in `GetRecommendationActivity` for API-based recommendations
 
 - **model**: Refactor `ComputeRequest` structure and field types for improved consistency and clarity
-
-- Commit save point
 
 - **ui**: Add `EnumUseCase` handling in various activities for improved use case specificity
 
