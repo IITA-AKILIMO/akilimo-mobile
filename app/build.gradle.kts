@@ -162,7 +162,8 @@ fun computeBuildNumber(): String {
     val file = File("nextrelease.txt").apply { createNewFile() }
 
     val tag = System.getenv("RELEASE_VERSION") ?: computeVersionName()
-    println("This build tag is: $tag")
+
+    println("Current build tag is: $tag")
 
     file.writeText(tag)
     return tag
