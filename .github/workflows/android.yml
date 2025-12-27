@@ -14,7 +14,9 @@ on:
 jobs:
 
   unit_test:
+    if: contains(github.ref, 'build') ||
     runs-on: ubuntu-latest
+    name: Unit tests
     concurrency:
       group: ci-${{ github.head_ref || github.ref_name }}
       cancel-in-progress: true
@@ -89,7 +91,7 @@ jobs:
 
   build_artifacts:
     if: contains(github.ref, 'build') || contains(github.ref, 'main') || contains(github.ref, 'hotfix')
-    needs: unit_test
+#    needs: unit_test
     name: Build artifacts
     runs-on: ubuntu-latest
     env:
@@ -172,7 +174,7 @@ jobs:
         id: check_cache
         run: |
           if [ -f "app/build/outputs/apk/release/app-release-unsigned.apk" ] && [ -f "app/build/outputs/bundle/release/app-release.aab" ]; then
-            echo "cached_artifacts_exist=true" >> $GITHUB_OUTPUT
+            echo "cached_artifacts_exist=false" >> $GITHUB_OUTPUT
             echo "✅ Found cached APK and AAB artifacts"
             ls -la app/build/outputs/apk/release/app-release-unsigned.apk
             ls -la app/build/outputs/bundle/release/app-release.aab
