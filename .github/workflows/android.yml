@@ -14,7 +14,7 @@ on:
 jobs:
 
   unit_test:
-    if: contains(github.ref, 'build') ||
+    if: contains(github.ref, 'build')
     runs-on: ubuntu-latest
     name: Unit tests
     concurrency:
