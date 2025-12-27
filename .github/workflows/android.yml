@@ -1,4 +1,4 @@
-name: Android Builder
+name: Android CI
 
 on:
   push:
