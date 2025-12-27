@@ -1,16 +1,5 @@
 name: BumpVersion
 on:
-  push:
-    paths-ignore:
-      - '**.md'
-      - '**.txt'
-      - '**.yml'
-      - '**.yaml'
-      - '**.sh'
-      - '**.xml'
-      - 'docs/**'
-      - '.github/ISSUE_TEMPLATE/**'
-      - '.github/**'
 #    branches:
 #      - 'main'
   workflow_dispatch:
