@@ -286,6 +286,7 @@ jobs:
 
       - name: Upload Beta Release
         if: contains(github.ref, 'beta')
+        id: upload_beta
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
@@ -296,6 +297,7 @@ jobs:
           whatsNewDirectory: release/distribution/whatsnew
 
       - name: Upload Production Release
+        id: upload_prod
         if: contains(github.ref, 'build') || contains(github.ref, 'mains') || contains(github.ref, 'hotfix')
         uses: r0adkll/upload-google-play@v1
         with:
@@ -306,9 +308,13 @@ jobs:
           status: completed
           whatsNewDirectory: release/distribution/whatsnew
 
+
       - name: Update build number
-        if: success()
-        run: curl -s https://munywele.co.ke/app-releases/akilimo/update
+        if: >
+          steps.upload_beta.outcome == 'success' ||
+          steps.upload_prod.outcome == 'success'
+        run: |
+          curl -s https://munywele.co.ke/app-releases/akilimo/update
 
 
   upload_beta_artifacts:
