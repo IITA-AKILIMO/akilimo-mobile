@@ -365,7 +365,7 @@ jobs:
           ls release
 
       - name: Read latest tag from tag file
-        run: echo "GHR_TAG=$(cat release/$LATEST_TAG_FILE)-beta" >> $GITHUB_ENV
+        run: echo "GHR_TAG=$(cat release/$LATEST_TAG_FILE)" >> $GITHUB_ENV
 
       - name: Upload production artifacts
         uses: masgeek/github-action-ghr@v1.3.2
