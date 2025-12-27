@@ -11,8 +11,8 @@ on:
       - 'docs/**'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/**'
-    branches:
-      - 'main'
+#    branches:
+#      - 'main'
   workflow_dispatch:
 
 jobs:
