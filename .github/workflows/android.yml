@@ -121,26 +121,30 @@ jobs:
           VERSION_CODE=$(curl -s https://munywele.co.ke/app-releases/akilimo)
           echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
 
-      - name: Set up Python 3.12
+      - name: Set up Python 3.xx
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+
+      - name: Ensure latest tag file exists
+        run: |
+          if [ ! -f "$LATEST_TAG_FILE" ]; then
+          echo "⚠️  $LATEST_TAG_FILE not found, creating with default value"
+          echo "1.0.0" > $LATEST_TAG_FILE
+          else
+          echo "✅ $LATEST_TAG_FILE exists"
+          echo "Latest tag is:"
+          cat $LATEST_TAG_FILE
+          fi
 
       - name: Install tag fetcher
         run: pip install latest_tag
 
       - name: Fetch latest tag
-        run: fetch-tag
-
-      - name: Ensure latest tag file exists
         run: |
-          if [ ! -f "$LATEST_TAG_FILE" ]; then
-            echo "⚠️  $LATEST_TAG_FILE not found, creating with default value"
-            echo "v1.0.0" > $LATEST_TAG_FILE
-          else
-            echo "✅ $LATEST_TAG_FILE exists"
-            cat $LATEST_TAG_FILE
-          fi
+          fetch-tag > $LATEST_TAG_FILE
+
+
 
       - name: Update release version
         run: echo "RELEASE_VERSION=$(cat $LATEST_TAG_FILE)" >> $GITHUB_ENV
@@ -253,11 +257,11 @@ jobs:
             echo "v1.0.0" > release/$LATEST_TAG_FILE
           fi
 
-#      - name: Generate release notes
-#        run: python scripts/generate_release_notes.py
-#
-#      - name: Copy release notes
-#        run: cp -r distribution release
+      #      - name: Generate release notes
+      #        run: python scripts/generate_release_notes.py
+      #
+      #      - name: Copy release notes
+      #        run: cp -r distribution release
 
       - uses: actions/upload-artifact@v4
         name: Upload artifact
@@ -291,7 +295,7 @@ jobs:
           whatsNewDirectory: release/distribution/whatsnew
 
       - name: Upload Production Release
-        if: contains(github.ref, 'build') || contains(github.ref, 'main') || contains(github.ref, 'hotfix')
+        if: contains(github.ref, 'build') || contains(github.ref, 'mains') || contains(github.ref, 'hotfix')
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
