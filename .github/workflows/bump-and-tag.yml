@@ -1,19 +1,35 @@
 name: BumpVersion
+
 on:
-#    branches:
-#      - 'main'
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
   bump-tag-version:
+    # Only run when merging a PR (not direct push)
+    if: |
+      github.event_name == 'push' && 
+      github.ref == 'refs/heads/main' &&
+      (
+        contains(github.event.head_commit.message, 'Merge pull request') ||
+        contains(github.event.head_commit.message, 'Merge branch') ||
+        contains(github.event.head_commit.message, 'Merged PR')
+      )
+
     runs-on: ubuntu-24.04
     permissions:
       contents: write
     concurrency:
       cancel-in-progress: true
       group: bump-version-${{ github.ref }}
+
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Generate Tag
         id: tag_version
         uses: masgeek/github-tag-action@release
