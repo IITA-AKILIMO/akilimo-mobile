@@ -188,10 +188,10 @@ jobs:
           path: |
             app/build/outputs/apk/release/app-release-unsigned.apk
             app/build/outputs/bundle/release/app-release.aab
-          key: build-artifacts-${{ runner.os }}-${{ env.VERSION_CODE }}-${{ hashFiles('**/*.gradle*', '**/gradle.properties', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', 'app/src/main/res/**', 'app/src/main/AndroidManifest.xml', 'app/proguard-rules.pro') }}
+          key: akilimo-builds-${{ runner.os }}-${{ env.VERSION_CODE }}-${{ hashFiles('**/*.gradle*', '**/gradle.properties', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', 'app/src/main/res/**', 'app/src/main/AndroidManifest.xml', 'app/proguard-rules.pro') }}
           restore-keys: |
-            build-artifacts-${{ runner.os }}-${{ env.VERSION_CODE }}-
-            build-artifacts-${{ runner.os }}-
+            akilimo-builds-${{ runner.os }}-${{ env.VERSION_CODE }}-
+            akilimo-builds-${{ runner.os }}-
 
       # Check if cached artifacts exist and are valid
       - name: Check cached artifacts
