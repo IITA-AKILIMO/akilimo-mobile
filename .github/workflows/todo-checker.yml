@@ -2,7 +2,7 @@ name: TODO
 on:
   push:
     branches:
-      - develop
+      - develops
   workflow_dispatch:
 jobs:
   check-todo:
