@@ -2,7 +2,7 @@ name: TODO
 on:
   push:
     branches:
-      - develop
+      - develops
   workflow_dispatch:
 jobs:
   check-todo:
@@ -20,3 +20,4 @@ jobs:
           SHA: ${{ github.sha }}
           REF: ${{ github.ref }}
           LABEL: "todo-tasks"
+          INCLUDE_PATTERN: "\\.(kt|kts)$"
