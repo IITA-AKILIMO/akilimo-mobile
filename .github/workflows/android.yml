@@ -298,7 +298,7 @@ jobs:
 
       - name: Upload Production Release
         id: upload_prod
-        if: contains(github.ref, 'build') || contains(github.ref, 'mains') || contains(github.ref, 'hotfix')
+        if: contains(github.ref, 'build') || contains(github.ref, 'main') || contains(github.ref, 'hotfix')
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
