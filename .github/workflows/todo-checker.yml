@@ -20,3 +20,4 @@ jobs:
           SHA: ${{ github.sha }}
           REF: ${{ github.ref }}
           LABEL: "todo-tasks"
+          INCLUDE_PATTERN: "\\.(kt|kts)$"
