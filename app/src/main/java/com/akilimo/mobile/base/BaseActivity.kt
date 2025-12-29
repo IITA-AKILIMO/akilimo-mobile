@@ -2,17 +2,13 @@ package com.akilimo.mobile.base
 
 import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -24,8 +20,8 @@ import com.akilimo.mobile.helper.SessionManager
 import com.akilimo.mobile.interfaces.DefaultDispatcherProvider
 import com.akilimo.mobile.interfaces.IDispatcherProvider
 import com.akilimo.mobile.ui.components.NetworkNotificationView
+import com.akilimo.mobile.utils.PermissionHelper
 import kotlinx.coroutines.launch
-
 
 abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
 
@@ -35,18 +31,24 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     }
 
     protected val dispatcherProvider: IDispatcherProvider = DefaultDispatcherProvider()
-
     protected val sessionManager: SessionManager by lazy { SessionManager(this@BaseActivity) }
     protected val database: AppDatabase by lazy { AppDatabase.getDatabase(this@BaseActivity) }
+    protected lateinit var permissionHelper: PermissionHelper
 
     protected var networkNotificationView: NetworkNotificationView? = null
     private var wasConnected: Boolean? = null
-
 
     private val locationPermissions = arrayOf(
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION
     )
+
+    // Modern permission launcher for location permissions
+    private val locationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        handleLocationPermissionResult(permissions)
+    }
 
     // ✅ Lifecycle-safe coroutine scope tied to view
     protected val safeScope get() = lifecycleScope
@@ -54,7 +56,6 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     private var _binding: VB? = null
     protected val binding
         get() = _binding ?: throw IllegalStateException("Binding is not initialized yet.")
-
 
     /**
      * Override this in child classes to handle back press.
@@ -77,20 +78,12 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        if (!hasLocationPermissions()) {
-            ActivityCompat.requestPermissions(
-                this,
-                locationPermissions,
-                REQUEST_CODE_LOCATION_PERMISSION
-            )
-        }
+
+        initializePermissionHelper()
+
         _binding = inflateBinding()
         setContentView(binding.root)
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-//            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-//            insets
-//        }
+
         // Setup back press dispatcher
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -103,12 +96,106 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         onBindingReady(savedInstanceState)
         observeSyncWorker()
         observeNetworkChanges()
+        checkLocationPermissions()
+    }
+
+    private fun initializePermissionHelper() {
+        permissionHelper = PermissionHelper()
+    }
+
+    private fun checkLocationPermissions() {
+        if (!permissionHelper.hasLocationPermission(this)) {
+            requestLocationPermissionIfNeeded()
+        }
+    }
+
+    protected fun requestLocationPermissionIfNeeded() {
+        if (permissionHelper.hasLocationPermission(this)) {
+            return
+        }
+
+        if (shouldShowLocationPermissionRationale()) {
+            showLocationPermissionRationale()
+        } else {
+            requestLocationPermission()
+        }
+    }
+
+    protected fun requestLocationPermission() {
+        locationPermissionLauncher.launch(locationPermissions)
+    }
+
+    protected fun shouldShowLocationPermissionRationale(): Boolean {
+        return permissionHelper.shouldShowPermissionRationale(
+            this,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) || permissionHelper.shouldShowPermissionRationale(
+            this,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+    }
+
+    protected fun showLocationPermissionRationale() {
+        // Show a custom rationale dialog or use a Snackbar
+        // For now, just request the permission
+        requestLocationPermission()
+    }
+
+    private fun handleLocationPermissionResult(permissions: Map<String, Boolean>) {
+        val allGranted = permissions.all { it.value }
+
+        if (!allGranted) {
+            onLocationPermissionDenied()
+        } else {
+            onLocationPermissionGranted()
+        }
+    }
+
+    /**
+     * Override this method to handle when location permissions are granted
+     */
+    protected open fun onLocationPermissionGranted() {
+        // Override in child activities if needed
+    }
+
+    /**
+     * Override this method to handle when location permissions are denied
+     */
+    protected open fun onLocationPermissionDenied() {
+        Toast.makeText(this, "Location permissions are required", Toast.LENGTH_LONG).show()
+    }
+
+    /**
+     * Check if all required location permissions are granted
+     */
+    protected fun hasLocationPermissions(): Boolean {
+        return permissionHelper.hasLocationPermission(this)
+    }
+
+    /**
+     * Check if fine location permission is granted
+     */
+    protected fun hasFineLocationPermission(): Boolean {
+        return permissionHelper.hasFineLocationPermission(this)
+    }
+
+    /**
+     * Check if coarse location permission is granted
+     */
+    protected fun hasCoarseLocationPermission(): Boolean {
+        return permissionHelper.hasCoarseLocationPermission(this)
+    }
+
+    /**
+     * Check if background location permission is granted (Android 10+)
+     */
+    protected fun hasBackgroundLocationPermission(): Boolean {
+        return permissionHelper.isBackgroundLocationPermissionGranted(this)
     }
 
     protected fun openActivity(intent: Intent?) {
         intent?.let {
             startActivity(it)
-//            Animatoo.animateSlideRight(this@BaseActivity)
         }
     }
 
@@ -119,28 +206,6 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     protected open fun observeSyncWorker() {
         // Override in subclasses
     }
-
-    private fun hasLocationPermissions(): Boolean {
-        return locationPermissions.all {
-            ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode == 1001) {
-            val granted = grantResults.all { it == PackageManager.PERMISSION_GRANTED }
-            if (!granted) {
-                Toast.makeText(this, "Location permissions are required", Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
 
     private fun observeNetworkChanges() {
         lifecycleScope.launch {
