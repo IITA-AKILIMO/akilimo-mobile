@@ -60,7 +60,7 @@ class SessionManager(context: Context) {
         set(value) = pref.edit { putString(KEY_MAPBOX, value) }
 
     var locationIqToken: String
-        get() = pref.getString(KEY_LOCATION_IQ, "").orEmpty()
+        get() = pref.getString(KEY_LOCATION_IQ, "pk.2e825998b141366ea93c856dfc352010").orEmpty()
         set(value) = pref.edit { putString(KEY_LOCATION_IQ, value) }
 
     var isFirstRun: Boolean
