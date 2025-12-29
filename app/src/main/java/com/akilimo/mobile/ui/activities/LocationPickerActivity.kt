@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.databinding.ActivityLocationPickerBinding
@@ -26,6 +27,7 @@ import com.mapbox.maps.plugin.gestures.addOnMapClickListener
 import com.mapbox.maps.plugin.locationcomponent.location
 import io.sentry.Sentry
 import kotlinx.coroutines.launch
+import com.akilimo.mobile.R
 
 class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
 
@@ -94,6 +96,7 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
                 .zoom(zoom)
                 .build()
         )
+
 
         mapboxMap.loadStyle(Style.SATELLITE_STREETS) { style ->
             setupAnnotations()
