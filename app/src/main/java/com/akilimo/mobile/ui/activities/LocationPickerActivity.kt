@@ -47,6 +47,7 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
         private const val MARKER_ICON_ID = "custom-marker-icon"
     }
 
+    private var isStyleLoaded = false
     private lateinit var mapboxMap: MapboxMap
     private var selectedPoint: Point? = null
     private lateinit var pointAnnotationManager: PointAnnotationManager
@@ -103,10 +104,11 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
                 .build()
         )
 
-        mapboxMap.loadStyle(Style.SATELLITE_STREETS) { style ->
+        mapboxMap.loadStyle(Style.STANDARD_SATELLITE) { style ->
             addCustomMarkerToStyle(style)
             setupAnnotations()
             setupMapClickListener()
+            isStyleLoaded = true
         }
     }
 
@@ -171,6 +173,7 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
     }
 
     private fun fetchAndUseCurrentLocation() {
+        if (!isStyleLoaded) return
         lifecycleScope.launch {
             when (val locationResult =
                 locationHelper.getCurrentLocation(this@LocationPickerActivity)) {
@@ -251,6 +254,9 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
     }
 
     private fun updateMarker(point: Point) {
+        if (!::pointAnnotationManager.isInitialized) {
+            setupAnnotations()
+        }
         pointAnnotationManager.deleteAll()
 
         val pointAnnotationOptions = PointAnnotationOptions()
@@ -356,9 +362,5 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
 
     private fun isValidLocation(lat: Double, lng: Double): Boolean {
         return lat != 0.0 || lng != 0.0
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 }
