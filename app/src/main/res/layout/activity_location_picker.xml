@@ -12,17 +12,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!-- Location + Weather Card -->
+    <!-- Address Card -->
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/locationInfoCard"
+        android:id="@+id/addressCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:layout_gravity="top"
-        android:visibility="gone"
         app:cardCornerRadius="20dp"
         app:cardElevation="6dp"
-        app:strokeWidth="0dp"
         tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,17 +28,15 @@
             android:layout_height="wrap_content"
             android:padding="16dp">
 
-            <!-- Location Icon -->
             <ImageView
                 android:id="@+id/ivLocation"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_location_plus"
                 app:tint="?attr/colorPrimary"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Address -->
             <TextView
                 android:id="@+id/tvAddress"
                 android:layout_width="0dp"
@@ -55,31 +51,38 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/ivLocation" />
 
-            <!-- Divider -->
-            <View
-                android:id="@+id/divider"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_marginTop="12dp"
-                android:background="?android:attr/listDivider"
-                android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/tvAddress"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:visibility="visible" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Weather Card -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/weatherCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="88dp"
+        android:layout_gravity="top"
+        android:visibility="gone"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="6dp"
+        tools:visibility="visible">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
 
             <!-- Temperature -->
             <TextView
                 android:id="@+id/tvTemperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:text="25°"
                 android:textSize="42sp"
                 android:textStyle="bold"
                 android:textColor="?android:textColorPrimary"
-                app:layout_constraintTop_toBottomOf="@id/divider"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tvUnit"
@@ -91,7 +94,7 @@
                 app:layout_constraintBaseline_toBaselineOf="@id/tvTemperature"
                 app:layout_constraintStart_toEndOf="@id/tvTemperature" />
 
-            <!-- Weather Description -->
+            <!-- Description -->
             <TextView
                 android:id="@+id/tvWeatherDescription"
                 android:layout_width="0dp"
@@ -99,7 +102,6 @@
                 android:layout_marginStart="16dp"
                 android:text="CLEAR SKY"
                 android:textStyle="bold"
-                android:textSize="16sp"
                 android:textAllCaps="true"
                 app:layout_constraintStart_toEndOf="@id/tvTemperature"
                 app:layout_constraintTop_toTopOf="@id/tvTemperature"
@@ -116,7 +118,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tvWeatherDescription"
                 app:layout_constraintEnd_toEndOf="parent" />
 
-            <!-- Weather Stats -->
+            <!-- Stats -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -148,8 +150,8 @@
                     android:layout_height="wrap_content"
                     android:text="3.5 m/s"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -187,7 +189,6 @@
             android:layout_height="56dp"
             android:layout_marginTop="16dp"
             android:text="Confirm Location"
-            android:textStyle="bold"
             app:cornerRadius="28dp"
             app:icon="@drawable/ic_check"
             app:iconGravity="textStart" />
