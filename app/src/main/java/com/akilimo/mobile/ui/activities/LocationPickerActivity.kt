@@ -62,7 +62,6 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
     private var selectedPoint: Point? = null
     private lateinit var pointAnnotationManager: PointAnnotationManager
     private lateinit var locationHelper: LocationHelper
-    private var geocoder: Geocoder? = null
 
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -93,7 +92,6 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
     private fun initializeHelpers() {
         permissionHelper = PermissionHelper()
         locationHelper = LocationHelper()
-        geocoder = if (Geocoder.isPresent()) Geocoder(this, Locale.getDefault()) else null
     }
 
     private fun setupMap() {
@@ -186,16 +184,16 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
 
     private fun fetchAndUseCurrentLocation() {
         if (!isStyleLoaded) return
+
         lifecycleScope.launch {
-            when (val locationResult =
-                locationHelper.getCurrentLocation(this@LocationPickerActivity)) {
+            when (val result = locationHelper.getCurrentLocation(this@LocationPickerActivity)) {
                 is LocationHelper.LocationResult.Success -> {
-                    val location = locationResult.location
-                    val currentPoint = Point.fromLngLat(location.longitude, location.latitude)
+                    val loc = result.location
+                    val point = Point.fromLngLat(loc.longitude, loc.latitude)
 
                     mapboxMap.flyTo(
                         CameraOptions.Builder()
-                            .center(currentPoint)
+                            .center(point)
                             .zoom(DEFAULT_ZOOM_LEVEL)
                             .build(),
                         com.mapbox.maps.plugin.animation.MapAnimationOptions.mapAnimationOptions {
@@ -203,38 +201,25 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
                         }
                     )
 
-                    selectedPoint = currentPoint
-                    updateMarker(currentPoint)
+                    selectedPoint = point
+                    updateMarker(point)
                     enableMapboxLocationComponent()
-
-                    // Fetch address and weather
-                    fetchLocationDetails(currentPoint)
-
-                    Toast.makeText(
-                        this@LocationPickerActivity,
-                        "Location updated to your current position",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    fetchLocationDetails(point)
                 }
 
-                is LocationHelper.LocationResult.Error -> {
-                    Toast.makeText(
-                        this@LocationPickerActivity,
-                        locationResult.message,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-                is LocationHelper.LocationResult.LocationDisabled -> {
+                is LocationHelper.LocationResult.LocationDisabled ->
                     showLocationServicesDialog()
-                }
 
-                is LocationHelper.LocationResult.PermissionDenied -> {
+                is LocationHelper.LocationResult.PermissionDenied ->
                     requestLocationPermission()
-                }
+
+                is LocationHelper.LocationResult.Error ->
+                    Toast.makeText(this@LocationPickerActivity, result.message, Toast.LENGTH_SHORT)
+                        .show()
             }
         }
     }
+
 
     private fun setupAnnotations() {
         val annotationApi = binding.mapView.annotations
@@ -245,120 +230,111 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
         mapboxMap.addOnMapClickListener { point ->
             selectedPoint = point
             updateMarker(point)
-
-            // Fetch address and weather for selected location
             fetchLocationDetails(point)
 
-            Toast.makeText(
-                this,
-                "Location selected: ${String.format("%.6f", point.latitude())}, " +
-                        String.format("%.6f", point.longitude()),
-                Toast.LENGTH_SHORT
-            ).show()
-
             mapboxMap.flyTo(
-                CameraOptions.Builder()
-                    .center(point)
-                    .build(),
+                CameraOptions.Builder().center(point).build(),
                 com.mapbox.maps.plugin.animation.MapAnimationOptions.mapAnimationOptions {
                     duration(1000)
                 }
             )
-
             true
         }
     }
 
-    private fun fetchLocationDetails(point: Point) {
-        // Show loading state
-        binding.locationInfoCard.visibility = View.VISIBLE
-        binding.tvAddress.text = "Loading address..."
 
-        // Fetch both address and weather
+    private fun fetchLocationDetails(point: Point) {
+        // Address card is always relevant
+        binding.addressCard.visibility = View.GONE
+        // Weather is optional
+        binding.weatherCard.visibility = View.GONE
+
         fetchAddress(point)
         fetchWeather(point)
     }
 
+
     private fun fetchAddress(point: Point) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val addresses = geocoder?.getFromLocation(point.latitude(), point.longitude(), 1)
+                // Build LocationIQ reverse geocoding URL
+                val key = sessionManager.locationIqToken
+                val url = "https://eu1.locationiq.com/v1/reverse?" +
+                        "key=$key" +
+                        "&lat=${point.latitude()}" +
+                        "&lon=${point.longitude()}" +
+                        "&format=json"
+
+                val response = URL(url).readText()
+                val json = JSONObject(response)
+                val addressObj = json.getJSONObject("address")
+
+                val addressText = buildString {
+                    addressObj.optString("road").takeIf { it.isNotEmpty() }?.let { append(it) }
+                    addressObj.optString("suburb").takeIf { it.isNotEmpty() }
+                        ?.let { append(", $it") }
+                    addressObj.optString("city").takeIf { it.isNotEmpty() }?.let { append(", $it") }
+                    addressObj.optString("state").takeIf { it.isNotEmpty() }
+                        ?.let { append(", $it") }
+                    addressObj.optString("country").takeIf { it.isNotEmpty() }
+                        ?.let { append(", $it") }
+                }.ifEmpty {
+                    "Lat: ${String.format("%.6f", point.latitude())}, " +
+                            "Lon: ${String.format("%.6f", point.longitude())}"
+                }
 
                 withContext(Dispatchers.Main) {
-                    if (!addresses.isNullOrEmpty()) {
-                        val address = addresses[0]
-                        val addressText = buildString {
-                            address.thoroughfare?.let { append(it) }
-                            if (address.subLocality != null || address.locality != null) {
-                                if (isNotEmpty()) append(", ")
-                                append(address.subLocality ?: address.locality)
-                            }
-                            if (address.adminArea != null) {
-                                if (isNotEmpty()) append(", ")
-                                append(address.adminArea)
-                            }
-                            if (address.countryName != null) {
-                                if (isNotEmpty()) append(", ")
-                                append(address.countryName)
-                            }
-                        }
-
-                        binding.tvAddress.text = addressText.ifEmpty {
-                            "Lat: ${String.format("%.6f", point.latitude())}, " +
-                                    "Lon: ${String.format("%.6f", point.longitude())}"
-                        }
-                    } else {
-                        binding.tvAddress.text = "Address not found"
-                    }
+                    binding.tvAddress.text = addressText
+                    binding.addressCard.visibility = View.VISIBLE
                 }
+
             } catch (e: Exception) {
                 Sentry.captureException(e)
                 withContext(Dispatchers.Main) {
                     binding.tvAddress.text = "Unable to fetch address"
+                    binding.addressCard.visibility = View.VISIBLE
                 }
             }
         }
     }
+
 
     private fun fetchWeather(point: Point) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                // WeatherAPI.com - Simple and feature-rich
-                val url = "https://api.weatherapi.com/v1/current.json?" +
-                        "key=$WEATHER_API_KEY" +
+                val url = "https://api.weatherapi.com/v1/current.json" +
+                        "?key=$WEATHER_API_KEY" +
                         "&q=${point.latitude()},${point.longitude()}" +
                         "&aqi=no"
 
-                val response = URL(url).readText()
-                val json = JSONObject(response)
+                val json = JSONObject(URL(url).readText())
                 val current = json.getJSONObject("current")
 
                 val temp = current.getDouble("temp_c")
+                val feelsLike = current.getDouble("feelslike_c")
                 val condition = current.getJSONObject("condition").getString("text")
                 val humidity = current.getInt("humidity")
-                val windSpeed = current.getDouble("wind_kph") / 3.6 // Convert kph to m/s
-                val feelsLike = current.getDouble("feelslike_c")
+                val windSpeed = current.getDouble("wind_kph") / 3.6
 
                 withContext(Dispatchers.Main) {
-                    binding.locationInfoCard.visibility = View.VISIBLE
-                    binding.tvTemperature.text = "${temp.toInt()}°C"
-                    binding.tvWeatherDescription.text = condition
-                    binding.tvHumidity.text = "💧 $humidity%"
-                    binding.tvWindSpeed.text = "💨 ${String.format("%.1f", windSpeed)} m/s"
+                    binding.weatherCard.visibility = View.VISIBLE
 
-                    // Optional: Show "feels like" temperature
-                    if (feelsLike != temp) {
-                        binding.tvWeatherDescription.text = "$condition • Feels like ${feelsLike.toInt()}°C"
-                    }
+                    binding.tvTemperature.text = "${temp.toInt()}°"
+                    binding.tvWeatherDescription.text = condition
+                    binding.tvFeelsLike.text = "Feels like ${feelsLike.toInt()}°C"
+                    binding.tvHumidity.text = "$humidity%"
+                    binding.tvWindSpeed.text = String.format("%.1f m/s", windSpeed)
                 }
+
             } catch (e: Exception) {
                 Sentry.captureException(e)
                 withContext(Dispatchers.Main) {
-                    binding.locationInfoCard.visibility = View.GONE
+                    binding.weatherCard.visibility = View.GONE
                 }
             }
         }
     }
+
 
     private fun updateMarker(point: Point) {
         if (!::pointAnnotationManager.isInitialized) {
