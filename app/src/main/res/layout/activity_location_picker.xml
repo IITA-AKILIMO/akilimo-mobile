@@ -10,12 +10,10 @@
     tools:context=".ui.activities.LocationPickerActivity">
 
 
-    <com.mapbox.mapboxsdk.maps.MapView
+    <com.mapbox.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        mapbox:mapbox_cameraZoom="15"
-        mapbox:mapbox_uiRotateGestures="false" />
+        android:layout_height="match_parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnConfirmLocation"
