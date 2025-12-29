@@ -3,27 +3,31 @@ package com.akilimo.mobile.ui.activities
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresPermission
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
 import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.databinding.ActivityLocationPickerBinding
 import com.akilimo.mobile.helper.SessionManager
-import com.mapbox.android.core.permissions.PermissionsManager
-import com.mapbox.mapboxsdk.Mapbox
-import com.mapbox.mapboxsdk.annotations.MarkerOptions
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
-import com.mapbox.mapboxsdk.geometry.LatLng
-import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
-import com.mapbox.mapboxsdk.location.modes.CameraMode
-import com.mapbox.mapboxsdk.location.modes.RenderMode
-import com.mapbox.mapboxsdk.maps.MapboxMap
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
-import com.mapbox.mapboxsdk.maps.Style
+import com.akilimo.mobile.utils.LocationHelper
+import com.akilimo.mobile.utils.PermissionHelper
+import com.mapbox.geojson.Point
+import com.mapbox.maps.CameraOptions
+import com.mapbox.maps.MapboxMap
+import com.mapbox.maps.Style
+import com.mapbox.maps.plugin.annotation.annotations
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
+import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
+import com.mapbox.maps.plugin.gestures.addOnMapClickListener
+import com.mapbox.maps.plugin.locationcomponent.location
+import io.sentry.Sentry
+import kotlinx.coroutines.launch
 
-class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>(), OnMapReadyCallback {
+class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
 
     companion object {
         const val LAT: String = "LAT"
@@ -31,113 +35,271 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>(), On
         const val ALT: String = "ALT"
         const val ZOOM: String = "ZOOM"
         const val PLACE_NAME: String = "PLACE_NAME"
+
+        private const val DEFAULT_ZOOM_LEVEL = 15.0
     }
 
     private lateinit var mapboxMap: MapboxMap
-    private var selectedLatLng: LatLng? = null
+    private var selectedPoint: Point? = null
+    private lateinit var pointAnnotationManager: PointAnnotationManager
+    private lateinit var locationHelper: LocationHelper
+
+    private val locationPermissionRequest = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        handlePermissionResult(permissions)
+    }
 
     override fun attachBaseContext(newBase: Context) {
-        val session = SessionManager(newBase)
-        Mapbox.getInstance(newBase, session.mapBoxApiKey)
         super.attachBaseContext(newBase)
+        val session = SessionManager(newBase)
+        com.mapbox.common.MapboxOptions.accessToken = session.mapBoxApiKey
     }
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
-        super.onCreate(savedInstanceState, persistentState)
+        super.onCreate(savedInstanceState)
     }
-
 
     override fun inflateBinding() = ActivityLocationPickerBinding.inflate(layoutInflater)
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
-        binding.mapView.onCreate(null)
-        binding.mapView.getMapAsync(this)
-
-        binding.btnConfirmLocation.setOnClickListener {
-            val cameraPosition = mapboxMap.cameraPosition
-            val zoom = cameraPosition.zoom
-            if (selectedLatLng != null) {
-                val resultIntent = Intent().apply {
-                    putExtra(LAT, selectedLatLng?.latitude)
-                    putExtra(LON, selectedLatLng?.longitude)
-                    putExtra(ALT, selectedLatLng?.altitude)
-                    putExtra(ZOOM, zoom)
-                }
-                setResult(RESULT_OK, resultIntent)
-                finish()
-            } else {
-                Toast.makeText(this, "Please select a location on the map", Toast.LENGTH_SHORT)
-                    .show()
-            }
-        }
+        initializeHelpers()
+        setupMap()
+        setupListeners()
+        checkAndRequestLocationPermission()
     }
 
-    @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
-    override fun onMapReady(mapboxMap: MapboxMap) {
-        this.mapboxMap = mapboxMap
+    private fun initializeHelpers() {
+        permissionHelper = PermissionHelper()
+        locationHelper = LocationHelper()
+    }
+
+    private fun setupMap() {
+        mapboxMap = binding.mapView.mapboxMap
 
         val lat = intent.getDoubleExtra(LAT, 0.0)
         val lng = intent.getDoubleExtra(LON, 0.0)
         val zoom = intent.getDoubleExtra(ZOOM, 12.0)
-        val initialLatLng = if (lat != 0.0 || lng != 0.0) {
-            LatLng(lat, lng)
+
+        val initialPoint = if (isValidLocation(lat, lng)) {
+            Point.fromLngLat(lng, lat)
         } else {
-            LatLng(-1.2921, 36.8219) // Default to Nairobi
+            Point.fromLngLat(36.8219, -1.2921) // Default to Nairobi
         }
 
-        mapboxMap.setStyle(Style.SATELLITE_STREETS) { style ->
-            enableLocationComponent(style, initialLatLng, zoom)
+        mapboxMap.setCamera(
+            CameraOptions.Builder()
+                .center(initialPoint)
+                .zoom(zoom)
+                .build()
+        )
 
-            mapboxMap.addOnMapClickListener { point ->
-                selectedLatLng = point
-                mapboxMap.clear()
-                mapboxMap.addMarker(MarkerOptions().position(point))
-                true
+        mapboxMap.loadStyle(Style.SATELLITE_STREETS) { style ->
+            setupAnnotations()
+            setupMapClickListener()
+        }
+    }
+
+    private fun setupListeners() {
+        binding.btnConfirmLocation.setOnClickListener {
+            handleLocationConfirmation()
+        }
+    }
+
+    private fun handleLocationConfirmation() {
+        selectedPoint?.let { point ->
+            val cameraState = mapboxMap.cameraState
+            val resultIntent = Intent().apply {
+                putExtra(LAT, point.latitude())
+                putExtra(LON, point.longitude())
+                putExtra(ALT, point.altitude().takeUnless { it.isNaN() } ?: 0.0)
+                putExtra(ZOOM, cameraState.zoom)
+            }
+            setResult(RESULT_OK, resultIntent)
+            finish()
+        } ?: run {
+            Toast.makeText(this, "Please select a location on the map", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun fetchAndUseCurrentLocation() {
+        lifecycleScope.launch {
+            when (val locationResult =
+                locationHelper.getCurrentLocation(this@LocationPickerActivity)) {
+                is LocationHelper.LocationResult.Success -> {
+                    val location = locationResult.location
+                    val currentPoint = Point.fromLngLat(location.longitude, location.latitude)
+
+                    // Center map on current location
+                    mapboxMap.setCamera(
+                        CameraOptions.Builder()
+                            .center(currentPoint)
+                            .zoom(DEFAULT_ZOOM_LEVEL)
+                            .build()
+                    )
+
+                    // Set as selected point
+                    selectedPoint = currentPoint
+
+                    // Update marker
+                    updateMarker(currentPoint)
+
+                    // Enable Mapbox location component
+                    enableMapboxLocationComponent()
+
+                    Toast.makeText(
+                        this@LocationPickerActivity,
+                        "Location updated to your current position",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                is LocationHelper.LocationResult.Error -> {
+                    Toast.makeText(
+                        this@LocationPickerActivity,
+                        locationResult.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                is LocationHelper.LocationResult.LocationDisabled -> {
+                    showLocationServicesDialog()
+                }
+
+                is LocationHelper.LocationResult.PermissionDenied -> {
+                    requestLocationPermission()
+                }
             }
         }
     }
 
-    @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
-    private fun enableLocationComponent(style: Style, initialLatLng: LatLng, zoom: Double) {
-        if (PermissionsManager.areLocationPermissionsGranted(this)) {
-            val locationComponent = mapboxMap.locationComponent
-            locationComponent.activateLocationComponent(
-                LocationComponentActivationOptions.builder(this, style).build()
+    private fun setupAnnotations() {
+        val annotationApi = binding.mapView.annotations
+        pointAnnotationManager = annotationApi.createPointAnnotationManager()
+    }
+
+    private fun setupMapClickListener() {
+        mapboxMap.addOnMapClickListener { point ->
+            selectedPoint = point
+            updateMarker(point)
+
+            Toast.makeText(
+                this,
+                "Location selected: ${String.format("%.6f", point.latitude())}, " +
+                        String.format("%.6f", point.longitude()),
+                Toast.LENGTH_SHORT
+            ).show()
+
+            mapboxMap.setCamera(
+                CameraOptions.Builder()
+                    .center(point)
+                    .build()
             )
-            locationComponent.isLocationComponentEnabled = true
-            locationComponent.cameraMode = CameraMode.TRACKING
-            locationComponent.renderMode = RenderMode.COMPASS
 
-            locationComponent.lastKnownLocation?.let {
-                mapboxMap.animateCamera(CameraUpdateFactory.newLatLngZoom(initialLatLng, zoom))
+            true
+        }
+    }
+
+    private fun updateMarker(point: Point) {
+        pointAnnotationManager.deleteAll()
+
+        val pointAnnotationOptions = PointAnnotationOptions()
+            .withIconImage("marker-icon")
+            .withIconSize(1.0)
+            .withPoint(point)
+        pointAnnotationManager.create(pointAnnotationOptions)
+    }
+
+    private fun checkAndRequestLocationPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            enableMapboxLocationComponent()
+            return
+        }
+
+        when {
+            permissionHelper.hasLocationPermission(this) -> {
+                enableMapboxLocationComponent()
+                fetchAndUseCurrentLocation()
+            }
+
+            permissionHelper.shouldShowPermissionRationale(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) -> {
+                showPermissionRationale()
+            }
+
+            else -> {
+                requestLocationPermission()
             }
         }
     }
 
-    // Forward lifecycle events to MapView
-    override fun onStart() {
-        super.onStart()
-        binding.mapView.onStart()
+    private fun showPermissionRationale() {
+        Toast.makeText(
+            this,
+            "Location permission is needed to show your current location",
+            Toast.LENGTH_LONG
+        ).show()
+        requestLocationPermission()
     }
 
-    override fun onResume() {
-        super.onResume()
-        binding.mapView.onResume()
+//    override fun requestLocationPermission() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            locationPermissionRequest.launch(
+//                arrayOf(
+//                    Manifest.permission.ACCESS_FINE_LOCATION,
+//                    Manifest.permission.ACCESS_COARSE_LOCATION
+//                )
+//            )
+//        } else {
+//            enableMapboxLocationComponent()
+//        }
+//    }
+
+    private fun handlePermissionResult(permissions: Map<String, Boolean>) {
+        if (permissions.any { it.value }) {
+            enableMapboxLocationComponent()
+            fetchAndUseCurrentLocation()
+        } else {
+            Toast.makeText(
+                this,
+                "Location permission denied. You can still select a location manually.",
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 
-    override fun onPause() {
-        binding.mapView.onPause()
-        super.onPause()
+    private fun enableMapboxLocationComponent() {
+        if (!permissionHelper.hasLocationPermission(this)) {
+            return
+        }
+
+        try {
+            val locationPlugin = binding.mapView.location
+            locationPlugin.updateSettings {
+                enabled = true
+                pulsingEnabled = true
+            }
+        } catch (e: Exception) {
+            Sentry.captureException(e)
+        }
     }
 
-    override fun onStop() {
-        binding.mapView.onStop()
-        super.onStop()
+    private fun showLocationServicesDialog() {
+        Toast.makeText(
+            this,
+            "Please enable location services to use this feature",
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
+    private fun isValidLocation(lat: Double, lng: Double): Boolean {
+        return lat != 0.0 || lng != 0.0
     }
 
     override fun onDestroy() {
-        binding.mapView.onDestroy()
         super.onDestroy()
     }
 }
