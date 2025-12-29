@@ -106,8 +106,7 @@ class LocationFragment : BaseStepFragment<FragmentLocationBinding>() {
                     val location = locationResult.location
                     updateLocationInfo(
                         lat = location.latitude,
-                        lng = location.longitude,
-                        alt = location.altitude
+                        lng = location.longitude
                     )
                 }
 
@@ -166,20 +165,23 @@ class LocationFragment : BaseStepFragment<FragmentLocationBinding>() {
         data?.let {
             val lat = it.getDoubleExtra(LocationPickerActivity.LAT, 0.0)
             val lng = it.getDoubleExtra(LocationPickerActivity.LON, 0.0)
-            val alt = it.getDoubleExtra(LocationPickerActivity.ALT, 0.0)
             val zoom = it.getDoubleExtra(LocationPickerActivity.ZOOM, 12.0)
 
             if (isValidLocation(lat, lng)) {
-                updateLocationInfo(lat, lng, alt, zoom)
+                updateLocationInfo(lat, lng, zoom)
             } else {
                 showToast("Invalid location coordinates")
             }
         }
     }
 
-    private fun updateLocationInfo(lat: Double, lng: Double, alt: Double, zoom: Double = 12.0) {
+    private fun updateLocationInfo(
+        lat: Double,
+        lng: Double,
+        zoom: Double = 12.0
+    ) {
         displayLocationText(lat, lng)
-        saveUserLocation(lat, lng, alt, zoom)
+        saveUserLocation(lat, lng, zoom)
     }
 
     private fun displayLocationText(lat: Double, lng: Double) {
@@ -192,13 +194,12 @@ class LocationFragment : BaseStepFragment<FragmentLocationBinding>() {
         }
     }
 
-    private fun saveUserLocation(lat: Double, lng: Double, alt: Double, zoom: Double) {
+    private fun saveUserLocation(lat: Double, lng: Double, zoom: Double) {
         safeScope.launch {
             val user = userRepository.getUser(sessionManager.akilimoUser) ?: createNewUser()
             val updatedUser = user.copy(
                 latitude = lat,
                 longitude = lng,
-                altitude = alt,
                 zoomLevel = zoom
             )
             userRepository.saveOrUpdateUser(updatedUser, sessionManager.akilimoUser)
