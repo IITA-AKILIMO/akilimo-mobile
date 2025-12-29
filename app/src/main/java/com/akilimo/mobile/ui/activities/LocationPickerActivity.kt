@@ -3,6 +3,8 @@ package com.akilimo.mobile.ui.activities
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
@@ -39,6 +41,7 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
         const val PLACE_NAME: String = "PLACE_NAME"
 
         private const val DEFAULT_ZOOM_LEVEL = 15.0
+        private const val MARKER_ICON_ID = "custom-marker-icon"
     }
 
     private lateinit var mapboxMap: MapboxMap
@@ -97,10 +100,48 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
                 .build()
         )
 
-
         mapboxMap.loadStyle(Style.SATELLITE_STREETS) { style ->
+            addCustomMarkerToStyle(style)
             setupAnnotations()
             setupMapClickListener()
+        }
+    }
+
+    private fun addCustomMarkerToStyle(style: Style) {
+        try {
+            // Convert vector drawable to bitmap
+            val markerBitmap = bitmapFromDrawableRes(
+                this,
+                R.drawable.ic_location_pin // Replace with your vector drawable resource
+            )
+
+            markerBitmap?.let {
+                style.addImage(MARKER_ICON_ID, it)
+            }
+        } catch (e: Exception) {
+            Sentry.captureException(e)
+            Toast.makeText(this, "Failed to load marker icon", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun bitmapFromDrawableRes(context: Context, resourceId: Int): Bitmap? {
+        return try {
+            val drawable = ContextCompat.getDrawable(context, resourceId) ?: return null
+
+            val bitmap = Bitmap.createBitmap(
+                drawable.intrinsicWidth,
+                drawable.intrinsicHeight,
+                Bitmap.Config.ARGB_8888
+            )
+
+            val canvas = Canvas(bitmap)
+            drawable.setBounds(0, 0, canvas.width, canvas.height)
+            drawable.draw(canvas)
+
+            bitmap
+        } catch (e: Exception) {
+            Sentry.captureException(e)
+            null
         }
     }
 
@@ -134,7 +175,6 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
                     val location = locationResult.location
                     val currentPoint = Point.fromLngLat(location.longitude, location.latitude)
 
-                    // Center map on current location
                     mapboxMap.setCamera(
                         CameraOptions.Builder()
                             .center(currentPoint)
@@ -142,13 +182,8 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
                             .build()
                     )
 
-                    // Set as selected point
                     selectedPoint = currentPoint
-
-                    // Update marker
                     updateMarker(currentPoint)
-
-                    // Enable Mapbox location component
                     enableMapboxLocationComponent()
 
                     Toast.makeText(
@@ -208,9 +243,10 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
         pointAnnotationManager.deleteAll()
 
         val pointAnnotationOptions = PointAnnotationOptions()
-            .withIconImage("marker-icon")
-            .withIconSize(1.0)
+            .withIconImage(MARKER_ICON_ID)
+            .withIconSize(1.5) // Adjust size as needed
             .withPoint(point)
+
         pointAnnotationManager.create(pointAnnotationOptions)
     }
 
@@ -247,19 +283,6 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
         ).show()
         requestLocationPermission()
     }
-
-//    override fun requestLocationPermission() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            locationPermissionRequest.launch(
-//                arrayOf(
-//                    Manifest.permission.ACCESS_FINE_LOCATION,
-//                    Manifest.permission.ACCESS_COARSE_LOCATION
-//                )
-//            )
-//        } else {
-//            enableMapboxLocationComponent()
-//        }
-//    }
 
     private fun handlePermissionResult(permissions: Map<String, Boolean>) {
         if (permissions.any { it.value }) {
