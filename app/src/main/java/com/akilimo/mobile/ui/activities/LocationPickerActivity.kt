@@ -32,6 +32,7 @@ import com.mapbox.maps.plugin.locationcomponent.location
 import io.sentry.Sentry
 import kotlinx.coroutines.launch
 import com.akilimo.mobile.R
+import com.mapbox.maps.plugin.animation.flyTo
 
 class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
 
@@ -177,11 +178,15 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
                     val location = locationResult.location
                     val currentPoint = Point.fromLngLat(location.longitude, location.latitude)
 
-                    mapboxMap.setCamera(
+                    // Smooth camera animation to current location
+                    mapboxMap.flyTo(
                         CameraOptions.Builder()
                             .center(currentPoint)
                             .zoom(DEFAULT_ZOOM_LEVEL)
-                            .build()
+                            .build(),
+                        com.mapbox.maps.plugin.animation.MapAnimationOptions.mapAnimationOptions {
+                            duration(1500)
+                        }
                     )
 
                     selectedPoint = currentPoint
@@ -231,10 +236,14 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
                 Toast.LENGTH_SHORT
             ).show()
 
-            mapboxMap.setCamera(
+            // Smooth camera animation
+            mapboxMap.flyTo(
                 CameraOptions.Builder()
                     .center(point)
-                    .build()
+                    .build(),
+                com.mapbox.maps.plugin.animation.MapAnimationOptions.mapAnimationOptions {
+                    duration(1000)
+                }
             )
 
             true
