@@ -4,20 +4,19 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.akilimo.mobile.base.BaseStepFragment
 import com.akilimo.mobile.databinding.FragmentLocationBinding
 import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.ui.activities.LocationPickerActivity
+import com.akilimo.mobile.utils.LocationHelper
+import com.akilimo.mobile.utils.PermissionHelper
 import kotlinx.coroutines.launch
 
 /**
@@ -28,116 +27,219 @@ import kotlinx.coroutines.launch
 class LocationFragment : BaseStepFragment<FragmentLocationBinding>() {
 
     companion object {
+        private const val LOCATION_FORMAT = "Lat: %.5f, Lng: %.5f"
+        private const val LOCATION_PICKER_REQUEST = 1001
+
         fun newInstance() = LocationFragment()
     }
 
     private lateinit var userRepository: AkilimoUserRepo
+    private lateinit var locationHelper: LocationHelper
+    private lateinit var permissionHelper: PermissionHelper
 
     private val locationPickerLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val lat = result.data?.getDoubleExtra(LocationPickerActivity.LAT, 0.0)
-                val lng = result.data?.getDoubleExtra(LocationPickerActivity.LON, 0.0)
-                val alt = result.data?.getDoubleExtra(LocationPickerActivity.ALT, 0.0)
-                val zoom = result.data?.getDoubleExtra(LocationPickerActivity.ZOOM, 12.0)
-                if (lat != null && lng != null && alt != null && zoom != null) {
-                    updateLocationInfo(lat, lng, alt, zoom)
-                }
+                handleLocationPickerResult(result.data)
             }
         }
 
+    private val locationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        if (permissions.all { it.value }) {
+            fetchCurrentLocation()
+        } else {
+            showLocationPermissionDenied()
+        }
+    }
 
     override fun inflateBinding(
         inflater: LayoutInflater, container: ViewGroup?
     ): FragmentLocationBinding = FragmentLocationBinding.inflate(inflater, container, false)
 
-    /**
-     * Subclasses must implement this. Called after binding is safely initialized.
-     */
     override fun onBindingReady(savedInstanceState: Bundle?) {
+        initializeDependencies()
+        setupViewListeners()
+        prefillFromEntity()
+    }
+
+    private fun initializeDependencies() {
         userRepository = AkilimoUserRepo(database.akilimoUserDao())
+        locationHelper = LocationHelper()
+        permissionHelper = PermissionHelper()
+    }
+
+    private fun setupViewListeners() {
         binding.btnUseCurrentLocation.setOnClickListener {
-            getCurrentLocation()
+            handleCurrentLocationClick()
         }
 
         binding.btnSelectLocationManually.setOnClickListener {
-            lifecycleScope.launch {
-
-                val user = userRepository.getUser(sessionManager.akilimoUser)
-                val intent = Intent(requireContext(), LocationPickerActivity::class.java)
-
-                user?.let {
-                    val lat = it.latitude
-                    val lng = it.longitude
-                    val alt = it.altitude
-                    val zoom = it.zoomLevel
-                    intent.putExtra(LocationPickerActivity.LAT, lat)
-                    intent.putExtra(LocationPickerActivity.LON, lng)
-                    intent.putExtra(LocationPickerActivity.ZOOM, zoom)
-                    intent.putExtra(LocationPickerActivity.ALT, alt)
-                }
-                locationPickerLauncher.launch(intent)
-            }
+            launchLocationPicker()
         }
 
         binding.btnSelectFarmName.setOnClickListener {
-            showToast("Farm name selection coming soon")
+            showFarmNameFeature()
         }
     }
-
 
     override fun prefillFromEntity() {
         safeScope.launch {
             val user = userRepository.getUser(sessionManager.akilimoUser)
-            user?.let {
-                val lat = it.latitude
-                val lng = it.longitude
-                val formatted = "Lat: %.5f, Lng: %.5f".format(lat, lng)
-                binding.textLocationInfo.text = formatted
+            user?.let { displayUserLocation(it) }
+        }
+    }
+
+    private fun handleCurrentLocationClick() {
+        if (permissionHelper.hasLocationPermission(requireContext())) {
+            fetchCurrentLocation()
+        } else {
+            requestLocationPermission()
+        }
+    }
+
+    private fun fetchCurrentLocation() {
+        safeScope.launch {
+            when (val locationResult = locationHelper.getCurrentLocation(requireContext())) {
+                is LocationHelper.LocationResult.Success -> {
+                    val location = locationResult.location
+                    updateLocationInfo(
+                        lat = location.latitude,
+                        lng = location.longitude,
+                        alt = location.altitude
+                    )
+                }
+
+                is LocationHelper.LocationResult.Error -> {
+                    showToast(locationResult.message)
+                    handleLocationError()
+                }
+
+                is LocationHelper.LocationResult.LocationDisabled -> {
+                    showLocationServicesDialog()
+                }
+
+                LocationHelper.LocationResult.PermissionDenied -> {
+                    showLocationPermissionDenied()
+                }
+            }
+        }
+    }
+
+    private fun requestLocationPermission() {
+        if (shouldShowPermissionRationale()) {
+            showPermissionRationaleDialog {
+                locationPermissionLauncher.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
+                )
+            }
+        } else {
+            locationPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+    }
+
+    private fun launchLocationPicker() {
+        safeScope.launch {
+            val user = userRepository.getUser(sessionManager.akilimoUser)
+            val intent = Intent(requireContext(), LocationPickerActivity::class.java).apply {
+                user?.let {
+                    putExtra(LocationPickerActivity.LAT, it.latitude)
+                    putExtra(LocationPickerActivity.LON, it.longitude)
+                    putExtra(LocationPickerActivity.ZOOM, it.zoomLevel)
+                    putExtra(LocationPickerActivity.ALT, it.altitude)
+                }
+            }
+            locationPickerLauncher.launch(intent)
+        }
+    }
+
+    private fun handleLocationPickerResult(data: Intent?) {
+        data?.let {
+            val lat = it.getDoubleExtra(LocationPickerActivity.LAT, 0.0)
+            val lng = it.getDoubleExtra(LocationPickerActivity.LON, 0.0)
+            val alt = it.getDoubleExtra(LocationPickerActivity.ALT, 0.0)
+            val zoom = it.getDoubleExtra(LocationPickerActivity.ZOOM, 12.0)
+
+            if (isValidLocation(lat, lng)) {
+                updateLocationInfo(lat, lng, alt, zoom)
+            } else {
+                showToast("Invalid location coordinates")
             }
         }
     }
 
     private fun updateLocationInfo(lat: Double, lng: Double, alt: Double, zoom: Double = 12.0) {
-        val formatted = "Lat: %.5f, Lng: %.5f".format(lat, lng)
-        binding.textLocationInfo.text = formatted
-        lifecycleScope.launch {
-            val user = userRepository.getUser(sessionManager.akilimoUser) ?: AkilimoUser(
-                userName = sessionManager.akilimoUser
-            )
-            userRepository.saveOrUpdateUser(
-                user.copy(
-                    latitude = lat,
-                    longitude = lng,
-                    altitude = alt,
-                    zoomLevel = zoom
-                ), sessionManager.akilimoUser
-            )
-        }
-
+        displayLocationText(lat, lng)
+        saveUserLocation(lat, lng, alt, zoom)
     }
 
+    private fun displayLocationText(lat: Double, lng: Double) {
+        binding.textLocationInfo.text = LOCATION_FORMAT.format(lat, lng)
+    }
 
-    private fun getCurrentLocation() {
-        val locationManager =
-            requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1001
-            )
-            return
-        }
-
-        val provider = LocationManager.GPS_PROVIDER
-        val location = locationManager.getLastKnownLocation(provider)
-        if (location != null) {
-            updateLocationInfo(location.latitude, location.longitude, location.altitude)
-        } else {
-            showToast("Unable to get current location")
+    private fun displayUserLocation(user: AkilimoUser) {
+        if (isValidLocation(user.latitude, user.longitude)) {
+            displayLocationText(user.latitude, user.longitude)
         }
     }
 
+    private fun saveUserLocation(lat: Double, lng: Double, alt: Double, zoom: Double) {
+        safeScope.launch {
+            val user = userRepository.getUser(sessionManager.akilimoUser) ?: createNewUser()
+            val updatedUser = user.copy(
+                latitude = lat,
+                longitude = lng,
+                altitude = alt,
+                zoomLevel = zoom
+            )
+            userRepository.saveOrUpdateUser(updatedUser, sessionManager.akilimoUser)
+        }
+    }
+
+    private fun createNewUser(): AkilimoUser {
+        return AkilimoUser(userName = sessionManager.akilimoUser)
+    }
+
+    private fun isValidLocation(lat: Double, lng: Double): Boolean {
+        return lat != 0.0 || lng != 0.0
+    }
+
+    private fun shouldShowPermissionRationale(): Boolean {
+        return permissionHelper.shouldShowPermissionRationale(
+            requireActivity(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+    }
+
+    private fun showPermissionRationaleDialog(onContinue: () -> Unit) {
+        // Show a dialog explaining why location permission is needed
+        // For now, just continue with permission request
+        onContinue()
+    }
+
+    private fun showLocationServicesDialog() {
+        // Show dialog to enable location services
+        showToast("Please enable location services")
+    }
+
+    private fun showLocationPermissionDenied() {
+        showToast("Location permission is required to use this feature")
+    }
+
+    private fun showFarmNameFeature() {
+        showToast("Farm name selection coming soon")
+    }
+
+    private fun handleLocationError() {
+        binding.textLocationInfo.text = "Location unavailable"
+    }
 }
