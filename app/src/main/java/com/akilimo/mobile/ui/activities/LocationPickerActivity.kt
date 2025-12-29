@@ -6,8 +6,10 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.location.Geocoder
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.view.animation.BounceInterpolator
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -30,9 +32,14 @@ import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
 import com.mapbox.maps.plugin.gestures.addOnMapClickListener
 import com.mapbox.maps.plugin.locationcomponent.location
 import io.sentry.Sentry
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import com.akilimo.mobile.R
 import com.mapbox.maps.plugin.animation.flyTo
+import org.json.JSONObject
+import java.net.URL
+import java.util.Locale
 
 class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
 
@@ -45,6 +52,9 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
 
         private const val DEFAULT_ZOOM_LEVEL = 15.0
         private const val MARKER_ICON_ID = "custom-marker-icon"
+
+        // Get your free API key from https://www.weatherapi.com/
+        private const val WEATHER_API_KEY = "4538add05d16412f80a222914252912"
     }
 
     private var isStyleLoaded = false
@@ -52,6 +62,7 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
     private var selectedPoint: Point? = null
     private lateinit var pointAnnotationManager: PointAnnotationManager
     private lateinit var locationHelper: LocationHelper
+    private var geocoder: Geocoder? = null
 
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -82,6 +93,7 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
     private fun initializeHelpers() {
         permissionHelper = PermissionHelper()
         locationHelper = LocationHelper()
+        geocoder = if (Geocoder.isPresent()) Geocoder(this, Locale.getDefault()) else null
     }
 
     private fun setupMap() {
@@ -114,10 +126,9 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
 
     private fun addCustomMarkerToStyle(style: Style) {
         try {
-            // Convert vector drawable to bitmap
             val markerBitmap = bitmapFromDrawableRes(
                 this,
-                R.drawable.ic_location_pin // Replace with your vector drawable resource
+                R.drawable.ic_location_pin
             )
 
             markerBitmap?.let {
@@ -164,6 +175,7 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
                 putExtra(LON, point.longitude())
                 putExtra(ALT, point.altitude().takeUnless { it.isNaN() } ?: 0.0)
                 putExtra(ZOOM, cameraState.zoom)
+                putExtra(PLACE_NAME, binding.tvAddress.text.toString())
             }
             setResult(RESULT_OK, resultIntent)
             finish()
@@ -181,7 +193,6 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
                     val location = locationResult.location
                     val currentPoint = Point.fromLngLat(location.longitude, location.latitude)
 
-                    // Smooth camera animation to current location
                     mapboxMap.flyTo(
                         CameraOptions.Builder()
                             .center(currentPoint)
@@ -195,6 +206,9 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
                     selectedPoint = currentPoint
                     updateMarker(currentPoint)
                     enableMapboxLocationComponent()
+
+                    // Fetch address and weather
+                    fetchLocationDetails(currentPoint)
 
                     Toast.makeText(
                         this@LocationPickerActivity,
@@ -232,6 +246,9 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
             selectedPoint = point
             updateMarker(point)
 
+            // Fetch address and weather for selected location
+            fetchLocationDetails(point)
+
             Toast.makeText(
                 this,
                 "Location selected: ${String.format("%.6f", point.latitude())}, " +
@@ -239,7 +256,6 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
                 Toast.LENGTH_SHORT
             ).show()
 
-            // Smooth camera animation
             mapboxMap.flyTo(
                 CameraOptions.Builder()
                     .center(point)
@@ -253,6 +269,98 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
         }
     }
 
+    private fun fetchLocationDetails(point: Point) {
+        // Show loading state
+        binding.locationInfoCard.visibility = View.VISIBLE
+        binding.tvAddress.text = "Loading address..."
+        binding.weatherInfo.visibility = View.GONE
+
+        // Fetch both address and weather
+        fetchAddress(point)
+        fetchWeather(point)
+    }
+
+    private fun fetchAddress(point: Point) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val addresses = geocoder?.getFromLocation(point.latitude(), point.longitude(), 1)
+
+                withContext(Dispatchers.Main) {
+                    if (!addresses.isNullOrEmpty()) {
+                        val address = addresses[0]
+                        val addressText = buildString {
+                            address.thoroughfare?.let { append(it) }
+                            if (address.subLocality != null || address.locality != null) {
+                                if (isNotEmpty()) append(", ")
+                                append(address.subLocality ?: address.locality)
+                            }
+                            if (address.adminArea != null) {
+                                if (isNotEmpty()) append(", ")
+                                append(address.adminArea)
+                            }
+                            if (address.countryName != null) {
+                                if (isNotEmpty()) append(", ")
+                                append(address.countryName)
+                            }
+                        }
+
+                        binding.tvAddress.text = addressText.ifEmpty {
+                            "Lat: ${String.format("%.6f", point.latitude())}, " +
+                                    "Lon: ${String.format("%.6f", point.longitude())}"
+                        }
+                    } else {
+                        binding.tvAddress.text = "Address not found"
+                    }
+                }
+            } catch (e: Exception) {
+                Sentry.captureException(e)
+                withContext(Dispatchers.Main) {
+                    binding.tvAddress.text = "Unable to fetch address"
+                }
+            }
+        }
+    }
+
+    private fun fetchWeather(point: Point) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                // WeatherAPI.com - Simple and feature-rich
+                val url = "https://api.weatherapi.com/v1/current.json?" +
+                        "key=$WEATHER_API_KEY" +
+                        "&q=${point.latitude()},${point.longitude()}" +
+                        "&aqi=no"
+
+                val response = URL(url).readText()
+                val json = JSONObject(response)
+                val current = json.getJSONObject("current")
+
+                val temp = current.getDouble("temp_c")
+                val condition = current.getJSONObject("condition").getString("text")
+                val humidity = current.getInt("humidity")
+                val windSpeed = current.getDouble("wind_kph") / 3.6 // Convert kph to m/s
+                val feelsLike = current.getDouble("feelslike_c")
+
+                withContext(Dispatchers.Main) {
+                    binding.weatherInfo.visibility = View.VISIBLE
+                    binding.tvTemperature.text = "${temp.toInt()}°C"
+                    binding.tvWeatherDescription.text = condition
+                    binding.tvHumidity.text = "💧 $humidity%"
+                    binding.tvWindSpeed.text = "💨 ${String.format("%.1f", windSpeed)} m/s"
+
+                    // Optional: Show "feels like" temperature
+                    if (feelsLike != temp) {
+                        binding.tvWeatherDescription.text = "$condition • Feels like ${feelsLike.toInt()}°C"
+                    }
+                }
+            } catch (e: Exception) {
+                Sentry.captureException(e)
+                withContext(Dispatchers.Main) {
+                    binding.weatherInfo.visibility = View.GONE
+                }
+            }
+        }
+    }
+
     private fun updateMarker(point: Point) {
         if (!::pointAnnotationManager.isInitialized) {
             setupAnnotations()
@@ -261,12 +369,10 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
 
         val pointAnnotationOptions = PointAnnotationOptions()
             .withIconImage(MARKER_ICON_ID)
-            .withIconSize(1.5) // Adjust size as needed
+            .withIconSize(1.5)
             .withPoint(point)
 
-        val annotation = pointAnnotationManager.create(pointAnnotationOptions)
-
-        // Animate the marker with a bounce effect
+        pointAnnotationManager.create(pointAnnotationOptions)
         animateMarker()
     }
 
@@ -277,9 +383,8 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
 
         animator.addUpdateListener { animation ->
             val animatedValue = animation.animatedValue as Float
-            val scale = 0.5f + (animatedValue * 1.0f) // Scale from 0.5 to 1.5
+            val scale = 0.5f + (animatedValue * 1.0f)
 
-            // Update all annotations (we only have one after deleteAll())
             pointAnnotationManager.annotations.forEach { annotation ->
                 annotation.iconSize = scale * 1.5
                 pointAnnotationManager.update(annotation)
