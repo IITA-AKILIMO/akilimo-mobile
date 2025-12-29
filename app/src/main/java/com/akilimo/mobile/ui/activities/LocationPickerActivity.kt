@@ -1,12 +1,14 @@
 package com.akilimo.mobile.ui.activities
 
 import android.Manifest
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Build
 import android.os.Bundle
+import android.view.animation.BounceInterpolator
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -247,7 +249,29 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
             .withIconSize(1.5) // Adjust size as needed
             .withPoint(point)
 
-        pointAnnotationManager.create(pointAnnotationOptions)
+        val annotation = pointAnnotationManager.create(pointAnnotationOptions)
+
+        // Animate the marker with a bounce effect
+        animateMarker()
+    }
+
+    private fun animateMarker() {
+        val animator = ValueAnimator.ofFloat(0f, 1f)
+        animator.duration = 600
+        animator.interpolator = BounceInterpolator()
+
+        animator.addUpdateListener { animation ->
+            val animatedValue = animation.animatedValue as Float
+            val scale = 0.5f + (animatedValue * 1.0f) // Scale from 0.5 to 1.5
+
+            // Update all annotations (we only have one after deleteAll())
+            pointAnnotationManager.annotations.forEach { annotation ->
+                annotation.iconSize = scale * 1.5
+                pointAnnotationManager.update(annotation)
+            }
+        }
+
+        animator.start()
     }
 
     private fun checkAndRequestLocationPermission() {
