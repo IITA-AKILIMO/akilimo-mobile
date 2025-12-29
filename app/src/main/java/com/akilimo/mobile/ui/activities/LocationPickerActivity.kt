@@ -273,7 +273,6 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
         // Show loading state
         binding.locationInfoCard.visibility = View.VISIBLE
         binding.tvAddress.text = "Loading address..."
-        binding.weatherInfo.visibility = View.GONE
 
         // Fetch both address and weather
         fetchAddress(point)
@@ -341,7 +340,7 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
                 val feelsLike = current.getDouble("feelslike_c")
 
                 withContext(Dispatchers.Main) {
-                    binding.weatherInfo.visibility = View.VISIBLE
+                    binding.locationInfoCard.visibility = View.VISIBLE
                     binding.tvTemperature.text = "${temp.toInt()}°C"
                     binding.tvWeatherDescription.text = condition
                     binding.tvHumidity.text = "💧 $humidity%"
@@ -355,7 +354,7 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
             } catch (e: Exception) {
                 Sentry.captureException(e)
                 withContext(Dispatchers.Main) {
-                    binding.weatherInfo.visibility = View.GONE
+                    binding.locationInfoCard.visibility = View.GONE
                 }
             }
         }
