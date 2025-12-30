@@ -194,11 +194,11 @@ jobs:
           path: |
             app/build/outputs/apk/release/app-release-unsigned.apk
             app/build/outputs/bundle/release/app-release.aab
-          key: akilimo-builds-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ env.BRANCH_NAME }}-${{ hashFiles('**/*.gradle*', '**/gradle.properties', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', 'app/src/main/res/**', 'app/src/main/AndroidManifest.xml', 'app/proguard-rules.pro') }}
+          key: akilimo-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ env.BRANCH_NAME }}-${{ hashFiles('**/*.gradle*', '**/gradle.properties', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', 'app/src/main/res/**', 'app/src/main/AndroidManifest.xml', 'app/proguard-rules.pro') }}
           restore-keys: |
-            akilimo-builds-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ env.BRANCH_NAME }}-
-            akilimo-builds-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-
-            akilimo-builds-${{ runner.os }}-
+            akilimo-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ env.BRANCH_NAME }}-
+            akilimo-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-
+            akilimo-artifacts-${{ runner.os }}-
 
       # Check if cached artifacts exist and are valid
       - name: Check cached artifacts
