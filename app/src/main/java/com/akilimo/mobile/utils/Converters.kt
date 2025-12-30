@@ -8,8 +8,8 @@ import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.enums.EnumCassavaProduceType
 import com.akilimo.mobile.enums.EnumCountry
 import com.akilimo.mobile.enums.EnumMaizePerformance
-import com.akilimo.mobile.enums.EnumProduceType
 import com.akilimo.mobile.enums.EnumMarketType
+import com.akilimo.mobile.enums.EnumProduceType
 import com.akilimo.mobile.enums.EnumStepStatus
 import com.akilimo.mobile.enums.EnumUnitOfSale
 import com.akilimo.mobile.enums.EnumUseCase

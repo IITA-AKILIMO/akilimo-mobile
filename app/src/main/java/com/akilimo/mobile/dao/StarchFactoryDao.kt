@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.akilimo.mobile.entities.Fertilizer
 import com.akilimo.mobile.entities.StarchFactory
 import kotlinx.coroutines.flow.Flow
 
