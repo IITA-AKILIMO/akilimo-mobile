@@ -5,7 +5,40 @@ All notable changes to AKILIMO will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [29.0.0] - 2025-12-30
+## [Unreleased]
+
+### Code Refactoring
+
+- **location**: Migrate to mapbox maps sdk v10
+
+- **permissions**: Modernize permission handling logic
+
+- **permissions**: Abstract location permission checks
+
+- **maps**: Migrate LocationPickerActivity to Mapbox SDK v11
+
+- **location**: Modernize location fetching logic
+
+
+### Features
+
+- **deps**: Update mapbox sdk and add new dependencies [**BREAKING**]
+
+- **res**: Add location pin icon
+
+- **deps**: Integrate swipe-to-refresh and location services
+
+- **location**: Add location helper utility
+
+- **permissions**: Add permission helper class
+
+
+### Revert
+
+- **release**: Set next version to 28.0.0
+
+
+## [28.1.0] - 2025-12-28
 
 ### Bug Fixes
 
@@ -50,16 +83,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **db**: Re-order imports and cleanup in `AppDatabase`
 
-- **location**: Migrate to mapbox maps sdk v10
-
-- **permissions**: Modernize permission handling logic
-
-- **permissions**: Abstract location permission checks
-
-- **maps**: Migrate LocationPickerActivity to Mapbox SDK v11
-
-- **location**: Modernize location fetching logic
-
 
 ### Features
 
@@ -78,16 +101,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **build**: Define base URLs in default config and remove from release/debug
 
 - **build**: Automate `versionName` and `versionCode` generation
-
-- **deps**: Update mapbox sdk and add new dependencies [**BREAKING**]
-
-- **res**: Add location pin icon
-
-- **deps**: Integrate swipe-to-refresh and location services
-
-- **location**: Add location helper utility
-
-- **permissions**: Add permission helper class
 
 
 ### Fix
@@ -167,11 +180,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rename email validation function and add empty check
 
 - Remove unused function and add TODO for encryption
-
-
-### Revert
-
-- **release**: Set next version to 28.0.0
 
 
 ### ✨feat
