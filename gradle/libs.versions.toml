@@ -102,7 +102,7 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 #sentry-android = { group = "io.sentry", name = "sentry-android", version.ref = "sentry" }
 
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
-#okhttp-inteceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+okhttp-inteceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 #conscrypt = { group = "org.conscrypt", name = "conscrypt", version.ref = "conscrypt-android" }
 
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
