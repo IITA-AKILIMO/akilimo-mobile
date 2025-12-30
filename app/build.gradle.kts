@@ -141,7 +141,7 @@ android {
 fun computeVersionName(): String {
     val now = LocalDateTime.now()
 
-    val defaultMajor = 30
+    val defaultMajor = 28
     var defaultMinor = now.monthValue
     var defaultBuild = now.dayOfMonth
 
@@ -182,11 +182,14 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.multidex)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.work)
 
+    //Region: Google services
+    implementation(libs.play.services.location)
     //Region: Firebase
     implementation(libs.firebase.bom)
     implementation(libs.firebase.installations)
@@ -204,6 +207,7 @@ dependencies {
 
     // Region: Networking
     implementation(libs.okhttp)
+    implementation(libs.okhttp.inteceptor)
     implementation(libs.retrofit)
     implementation(libs.moshi.converter)
     implementation(libs.moshi.kotlin)
@@ -211,8 +215,8 @@ dependencies {
 
     // Region: Mapbox
     implementation(libs.mapbox.sdk)
-    implementation(libs.mapbox.annotation)
-    implementation(libs.mapbox.places)
+//    implementation(libs.mapbox.annotation)
+//    implementation(libs.mapbox.places)
 
     // Region: Utility Libraries
     implementation(libs.applocale)
