@@ -7,12 +7,12 @@ on:
       - '**.txt'
       - '**.sh'
       - '**.xml'
+      - '**.yml'
       - 'docs/**'
       - '.github/ISSUE_TEMPLATE/**'
   workflow_dispatch:
 
 jobs:
-
   unit_test:
     runs-on: ubuntu-latest
     name: Unit tests
@@ -25,8 +25,8 @@ jobs:
       REPO_NAME: ${{ secrets.REPO_NAME }}
       LATEST_TAG_FILE: "latest_tag.txt"
       RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
-      VERSION_CODE: ${{ secrets.GITHUB_RUN_ID }}
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+
     steps:
       - name: Checkout the code
         uses: actions/checkout@v4
@@ -37,10 +37,14 @@ jobs:
           distribution: 'temurin'
           java-version: 21
 
+      # Get VERSION_CODE before caching
       - name: Get build version
+        id: get_version
         run: |
-          VERSION_CODE=$(curl -s https://munywele.co.ke/app-releases/akilimo)
+          VERSION_CODE=$(curl -s https://munywele.co.ke/app-releases/akilimo || echo ${{ github.run_number }})
           echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
+          echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
+          echo "Using VERSION_CODE: $VERSION_CODE"
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
@@ -51,7 +55,7 @@ jobs:
         with:
           cache-read-only: false
 
-      # Cache unit test results
+      # Cache unit test results with VERSION_CODE in key
       - name: Cache unit test results
         id: cache_tests
         uses: actions/cache@v4
@@ -59,8 +63,9 @@ jobs:
           path: |
             app/build/test-results
             app/build/reports/tests
-          key: unit-tests-${{ runner.os }}-${{ hashFiles('app/src/test/**/*.kt', 'app/src/test/**/*.java', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', '**/*.gradle*', '**/gradle.properties') }}
+          key: unit-tests-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ hashFiles('app/src/test/**/*.kt', 'app/src/test/**/*.java', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', '**/*.gradle*', '**/gradle.properties') }}
           restore-keys: |
+            unit-tests-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-
             unit-tests-${{ runner.os }}-
 
       # Check if we can skip tests
@@ -121,11 +126,11 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       REPO_NAME: ${{ secrets.REPO_NAME }}
-      VERSION_CODE: ${{ secrets.GITHUB_RUN_ID }}
       LATEST_TAG_FILE: "latest_tag.txt"
       RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
       PACKAGE_NAME: ${{ secrets.APP_PACKAGE }}
+
     steps:
       - name: Checkout the code
         uses: actions/checkout@v4
@@ -142,10 +147,14 @@ jobs:
       - name: Display current branch name
         run: echo ${BRANCH_NAME}
 
+      # ⭐ FETCH VERSION_CODE BEFORE CACHING
       - name: Get build version
+        id: get_version
         run: |
-          VERSION_CODE=$(curl -s https://munywele.co.ke/app-releases/akilimo)
+          VERSION_CODE=$(curl -s https://munywele.co.ke/app-releases/akilimo || echo ${{ github.run_number }})
           echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
+          echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
+          echo "Using VERSION_CODE: $VERSION_CODE"
 
       - name: Set up Python 3.xx
         uses: actions/setup-python@v5
@@ -155,12 +164,12 @@ jobs:
       - name: Ensure latest tag file exists
         run: |
           if [ ! -f "$LATEST_TAG_FILE" ]; then
-          echo "⚠️  $LATEST_TAG_FILE not found, creating with default value"
-          echo "1.0.0" > $LATEST_TAG_FILE
+            echo "⚠️  $LATEST_TAG_FILE not found, creating with default value"
+            echo "1.0.0" > $LATEST_TAG_FILE
           else
-          echo "✅ $LATEST_TAG_FILE exists"
-          echo "Latest tag is:"
-          cat $LATEST_TAG_FILE
+            echo "✅ $LATEST_TAG_FILE exists"
+            echo "Latest tag is:"
+            cat $LATEST_TAG_FILE
           fi
 
       - name: Install tag fetcher
@@ -169,8 +178,6 @@ jobs:
       - name: Fetch latest tag
         run: |
           fetch-tag > $LATEST_TAG_FILE
-
-
 
       - name: Update release version
         run: echo "RELEASE_VERSION=$(cat $LATEST_TAG_FILE)" >> $GITHUB_ENV
@@ -181,16 +188,17 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      # Cache final APK & AAB outputs with more specific key
+      # ⭐ UPDATED CACHE KEY WITH VERSION_CODE FROM STEP OUTPUT
       - name: Cache APK & AAB outputs
         uses: actions/cache@v4
         with:
           path: |
             app/build/outputs/apk/release/app-release-unsigned.apk
             app/build/outputs/bundle/release/app-release.aab
-          key: akilimo-builds-${{ runner.os }}-${{ env.VERSION_CODE }}-${{ hashFiles('**/*.gradle*', '**/gradle.properties', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', 'app/src/main/res/**', 'app/src/main/AndroidManifest.xml', 'app/proguard-rules.pro') }}
+          key: akilimo-builds-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ env.BRANCH_NAME }}-${{ hashFiles('**/*.gradle*', '**/gradle.properties', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', 'app/src/main/res/**', 'app/src/main/AndroidManifest.xml', 'app/proguard-rules.pro') }}
           restore-keys: |
-            akilimo-builds-${{ runner.os }}-${{ env.VERSION_CODE }}-
+            akilimo-builds-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ env.BRANCH_NAME }}-
+            akilimo-builds-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-
             akilimo-builds-${{ runner.os }}-
 
       # Check if cached artifacts exist and are valid
@@ -212,6 +220,8 @@ jobs:
         if: steps.check_cache.outputs.cached_artifacts_exist != 'true'
         run: |
           echo "🔨 Building APK and AAB from source..."
+          echo "Using VERSION_CODE: $VERSION_CODE"
+          echo "Using RELEASE_VERSION: $RELEASE_VERSION"
           ./gradlew bundleRelease assembleRelease -x test
 
       # Verify build outputs exist
@@ -237,7 +247,6 @@ jobs:
 
       - name: Sign AAB
         uses: ilharp/sign-android-release@v2
-        # ID used to access action output
         id: sign_aab
         with:
           releaseDir: app/build/outputs/bundle/release
@@ -283,12 +292,6 @@ jobs:
             echo "v1.0.0" > release/$LATEST_TAG_FILE
           fi
 
-      #      - name: Generate release notes
-      #        run: python scripts/generate_release_notes.py
-      #
-      #      - name: Copy release notes
-      #        run: cp -r distribution release
-
       - uses: actions/upload-artifact@v4
         name: Upload artifact
         with:
@@ -333,15 +336,12 @@ jobs:
           status: completed
           whatsNewDirectory: release/distribution/whatsnew
 
-
       - name: Update build number
         if: >
           steps.upload_beta.outcome == 'success' ||
           steps.upload_prod.outcome == 'success'
         run: |
           curl -s https://munywele.co.ke/app-releases/akilimo/update
-
-
 
   upload_beta_artifacts:
     if: success() && contains(github.ref, 'beta')
