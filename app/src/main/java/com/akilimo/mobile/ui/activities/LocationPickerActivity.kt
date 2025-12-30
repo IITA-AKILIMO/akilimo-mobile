@@ -65,13 +65,7 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(newBase)
-        val session = SessionManager(newBase)
-        com.mapbox.common.MapboxOptions.accessToken = session.mapBoxApiKey
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
-        super.onCreate(savedInstanceState)
+        com.mapbox.common.MapboxOptions.accessToken = sessionManager.mapBoxApiKey
     }
 
     override fun inflateBinding() = ActivityLocationPickerBinding.inflate(layoutInflater)
