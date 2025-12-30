@@ -207,6 +207,7 @@ dependencies {
 
     // Region: Networking
     implementation(libs.okhttp)
+    implementation(libs.okhttp.inteceptor)
     implementation(libs.retrofit)
     implementation(libs.moshi.converter)
     implementation(libs.moshi.kotlin)
