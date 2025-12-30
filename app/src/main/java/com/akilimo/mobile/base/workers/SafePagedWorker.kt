@@ -2,7 +2,6 @@ package com.akilimo.mobile.base.workers
 
 import android.content.Context
 import androidx.work.WorkerParameters
-import androidx.work.workDataOf
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import timber.log.Timber

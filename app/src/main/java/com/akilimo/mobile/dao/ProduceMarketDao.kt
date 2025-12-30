@@ -5,8 +5,8 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.akilimo.mobile.entities.ProduceMarket
-import com.akilimo.mobile.enums.EnumProduceType
 import com.akilimo.mobile.enums.EnumMarketType
+import com.akilimo.mobile.enums.EnumProduceType
 
 @Dao
 interface ProduceMarketDao {

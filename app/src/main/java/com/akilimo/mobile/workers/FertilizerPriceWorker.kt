@@ -3,7 +3,6 @@ package com.akilimo.mobile.workers
 import android.content.Context
 import androidx.work.WorkerParameters
 import com.akilimo.mobile.base.workers.SafePagedWorker
-import com.akilimo.mobile.config.AppConfig
 import com.akilimo.mobile.entities.FertilizerPrice
 import com.akilimo.mobile.enums.EnumServiceType
 import com.akilimo.mobile.network.AkilimoApi

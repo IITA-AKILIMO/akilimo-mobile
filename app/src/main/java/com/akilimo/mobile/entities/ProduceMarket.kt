@@ -6,8 +6,8 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.akilimo.mobile.base.BaseEntity
-import com.akilimo.mobile.enums.EnumProduceType
 import com.akilimo.mobile.enums.EnumMarketType
+import com.akilimo.mobile.enums.EnumProduceType
 import com.akilimo.mobile.enums.EnumUnitOfSale
 
 @Entity(
