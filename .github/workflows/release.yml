@@ -31,15 +31,19 @@ jobs:
           OUTPUT: CHANGELOG.md
           GITHUB_REPO: ${{ github.repository }}
 
-      - name: Commit
+      - name: Commit changelog
         run: |
-#          git checkout changelog
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
-          set +e
+          git config --local user.name 'github-actions[bot]'
+          git config --local user.email 'github-actions[bot]@users.noreply.github.com'
+          git checkout -B changelog
           git add CHANGELOG.md
-          git commit -m "docs:update changelog"
-          git push https://${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git changelog
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "docs: update changelog"
+            git push https://${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git HEAD:changelog
+          fi
+
 
       - name: Detect relevant change count
         id: diff_check
