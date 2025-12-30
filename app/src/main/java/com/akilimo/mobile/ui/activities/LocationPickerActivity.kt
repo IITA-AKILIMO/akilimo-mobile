@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.location.Geocoder
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -16,15 +15,19 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.akilimo.mobile.R
 import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.databinding.ActivityLocationPickerBinding
 import com.akilimo.mobile.helper.SessionManager
+import com.akilimo.mobile.utils.GeocodingService
 import com.akilimo.mobile.utils.LocationHelper
 import com.akilimo.mobile.utils.PermissionHelper
+import com.akilimo.mobile.utils.WeatherService
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapboxMap
 import com.mapbox.maps.Style
+import com.mapbox.maps.plugin.animation.flyTo
 import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
@@ -34,12 +37,6 @@ import com.mapbox.maps.plugin.locationcomponent.location
 import io.sentry.Sentry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import com.akilimo.mobile.R
-import com.mapbox.maps.plugin.animation.flyTo
-import org.json.JSONObject
-import java.net.URL
-import java.util.Locale
 
 class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
 
@@ -52,9 +49,6 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
 
         private const val DEFAULT_ZOOM_LEVEL = 15.0
         private const val MARKER_ICON_ID = "custom-marker-icon"
-
-        // Get your free API key from https://www.weatherapi.com/
-        private const val WEATHER_API_KEY = "4538add05d16412f80a222914252912"
     }
 
     private var isStyleLoaded = false
@@ -255,86 +249,62 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
 
 
     private fun fetchAddress(point: Point) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                // Build LocationIQ reverse geocoding URL
-                val key = sessionManager.locationIqToken
-                val url = "https://eu1.locationiq.com/v1/reverse?" +
-                        "key=$key" +
-                        "&lat=${point.latitude()}" +
-                        "&lon=${point.longitude()}" +
-                        "&format=json"
+        val geocodingService =
+            GeocodingService(
+                this@LocationPickerActivity,
+                sessionManager.locationIqToken
+            )
+        lifecycleScope.launch {
+            geocodingService.fetchAddressFlow(point.latitude(), point.longitude())
+                .collect { result ->
+                    when (result) {
+                        is GeocodingService.GeocodingResult.Success -> {
+                            updateAddressUI(result.data.formattedAddress)
+                        }
 
-                val response = URL(url).readText()
-                val json = JSONObject(response)
-                val addressObj = json.getJSONObject("address")
-
-                val addressText = buildString {
-                    addressObj.optString("road").takeIf { it.isNotEmpty() }?.let { append(it) }
-                    addressObj.optString("suburb").takeIf { it.isNotEmpty() }
-                        ?.let { append(", $it") }
-                    addressObj.optString("city").takeIf { it.isNotEmpty() }?.let { append(", $it") }
-                    addressObj.optString("state").takeIf { it.isNotEmpty() }
-                        ?.let { append(", $it") }
-                    addressObj.optString("country").takeIf { it.isNotEmpty() }
-                        ?.let { append(", $it") }
-                }.ifEmpty {
-                    "Lat: ${String.format("%.6f", point.latitude())}, " +
-                            "Lon: ${String.format("%.6f", point.longitude())}"
+                        is GeocodingService.GeocodingResult.Error -> {
+                            updateAddressUI(result.fallbackMessage)
+                        }
+                    }
                 }
-
-                withContext(Dispatchers.Main) {
-                    binding.tvAddress.text = addressText
-                    binding.addressCard.visibility = View.VISIBLE
-                }
-
-            } catch (e: Exception) {
-                Sentry.captureException(e)
-                withContext(Dispatchers.Main) {
-                    binding.tvAddress.text = "Unable to fetch address"
-                    binding.addressCard.visibility = View.VISIBLE
-                }
-            }
         }
     }
 
 
     private fun fetchWeather(point: Point) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                val url = "https://api.weatherapi.com/v1/current.json" +
-                        "?key=$WEATHER_API_KEY" +
-                        "&q=${point.latitude()},${point.longitude()}" +
-                        "&aqi=no"
+        val weatherService = WeatherService(this@LocationPickerActivity)
 
-                val json = JSONObject(URL(url).readText())
-                val current = json.getJSONObject("current")
+        lifecycleScope.launch {
+            weatherService.fetchWeatherFlow(point.latitude(), point.longitude())
+                .collect { result ->
+                    when (result) {
+                        is WeatherService.WeatherResult.Success -> {
+                            updateWeatherUI(result.data)
+                            binding.weatherCard.visibility = View.VISIBLE
+                        }
 
-                val temp = current.getDouble("temp_c")
-                val feelsLike = current.getDouble("feelslike_c")
-                val condition = current.getJSONObject("condition").getString("text")
-                val humidity = current.getInt("humidity")
-                val windSpeed = current.getDouble("wind_kph") / 3.6
-
-                withContext(Dispatchers.Main) {
-                    binding.weatherCard.visibility = View.VISIBLE
-
-                    binding.tvTemperature.text = "${temp.toInt()}°"
-                    binding.tvWeatherDescription.text = condition
-                    binding.tvFeelsLike.text = "Feels like ${feelsLike.toInt()}°C"
-                    binding.tvHumidity.text = "$humidity%"
-                    binding.tvWindSpeed.text = String.format("%.1f m/s", windSpeed)
+                        is WeatherService.WeatherResult.Error -> {
+                            binding.weatherCard.visibility = View.GONE
+                        }
+                    }
                 }
-
-            } catch (e: Exception) {
-                Sentry.captureException(e)
-                withContext(Dispatchers.Main) {
-                    binding.weatherCard.visibility = View.GONE
-                }
-            }
         }
     }
 
+
+    private fun updateAddressUI(addressText: String) = with(binding) {
+        tvAddress.text = addressText
+        addressCard.visibility = View.VISIBLE
+    }
+
+    private fun updateWeatherUI(weather: WeatherService.WeatherData) = with(binding) {
+        weatherCard.visibility = View.VISIBLE
+        tvTemperature.text = "${weather.temperature.toInt()}°"
+        tvWeatherDescription.text = weather.condition
+        tvFeelsLike.text = "Feels like ${weather.feelsLike.toInt()}°C"
+        tvHumidity.text = "${weather.humidity}%"
+        tvWindSpeed.text = String.format("%.1f m/s", weather.windSpeed)
+    }
 
     private fun updateMarker(point: Point) {
         if (!::pointAnnotationManager.isInitialized) {
