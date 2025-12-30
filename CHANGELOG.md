@@ -7,12 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Miscellaneous Tasks
+### Code Refactoring
 
-- **config**: Update git-cliff configuration for AKILIMO
+- **location**: Migrate to mapbox maps sdk v10
+
+- **permissions**: Modernize permission handling logic
+
+- **permissions**: Abstract location permission checks
+
+- **maps**: Migrate LocationPickerActivity to Mapbox SDK v11
+
+- **location**: Modernize location fetching logic
 
 
-## [28.1.0] - 2025-11-30
+### Features
+
+- **deps**: Update mapbox sdk and add new dependencies [**BREAKING**]
+
+- **res**: Add location pin icon
+
+- **deps**: Integrate swipe-to-refresh and location services
+
+- **location**: Add location helper utility
+
+- **permissions**: Add permission helper class
+
+
+### Revert
+
+- **release**: Set next version to 28.0.0
+
+
+## [28.1.0] - 2025-12-28
 
 ### Bug Fixes
 
@@ -143,6 +169,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **ui**: Update card background styles across layouts to use `?attr/colorSurfaceVariant` for consistency
 
 - **release**: Bump version to `30.0.0` in `nextrelease.txt`
+
+- **config**: Update git-cliff configuration for AKILIMO
 
 
 ### Refactor
