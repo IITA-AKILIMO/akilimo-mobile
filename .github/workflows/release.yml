@@ -1,22 +1,13 @@
 name: GitHub Release
 
 on:
-  workflow_run:
-    workflows: ["Android CI"]
-    types:
-      - completed
-
-  workflow_dispatch: # manual trigger
+  push:
+    branches:
+      - main   # only run on pushes to main
+  workflow_dispatch: # still allow manual trigger
 
 jobs:
   release:
-    # Either triggered by workflow_run OR manual dispatch
-    if: >
-      github.event_name == 'workflow_run' && 
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_branch == 'main' ||
-      github.event_name == 'workflow_dispatch'
-
     runs-on: ubuntu-24.04
     name: Create release tag
 
@@ -25,7 +16,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
 
       - name: Fetch tags
         run: git fetch --tags
