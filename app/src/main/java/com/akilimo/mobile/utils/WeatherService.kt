@@ -4,10 +4,10 @@ import android.content.Context
 import com.akilimo.mobile.network.ApiClient
 import com.akilimo.mobile.network.WeatherApi
 import io.sentry.Sentry
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.Dispatchers
 
 class WeatherService(
     context: Context

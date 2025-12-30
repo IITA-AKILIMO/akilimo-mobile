@@ -1,10 +1,7 @@
 package com.akilimo.mobile.base
 
-import android.os.Bundle
 import android.widget.Toast
 import androidx.viewbinding.ViewBinding
-import com.akilimo.mobile.AppDatabase
-import com.akilimo.mobile.helper.SessionManager
 import com.stepstone.stepper.Step
 import com.stepstone.stepper.VerificationError
 

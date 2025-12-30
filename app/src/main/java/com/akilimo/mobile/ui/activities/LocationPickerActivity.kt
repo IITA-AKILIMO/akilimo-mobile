@@ -11,14 +11,12 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.BounceInterpolator
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.akilimo.mobile.R
 import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.databinding.ActivityLocationPickerBinding
-import com.akilimo.mobile.helper.SessionManager
 import com.akilimo.mobile.utils.GeocodingService
 import com.akilimo.mobile.utils.LocationHelper
 import com.akilimo.mobile.utils.PermissionHelper
@@ -35,7 +33,6 @@ import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
 import com.mapbox.maps.plugin.gestures.addOnMapClickListener
 import com.mapbox.maps.plugin.locationcomponent.location
 import io.sentry.Sentry
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {

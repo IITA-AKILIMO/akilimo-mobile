@@ -1,7 +1,5 @@
 package com.akilimo.mobile.ui.components
 
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
