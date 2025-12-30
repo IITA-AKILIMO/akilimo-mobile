@@ -11,6 +11,8 @@ material = "1.13.0"
 activity = "1.11.0"
 constraintlayout = "2.2.1"
 navigation = "2.7.5"
+swiperefreshlayout = "1.2.0"
+
 rxjava = "2.2.21"
 rxandroid = "2.1.1"
 room = "2.6.1"
@@ -26,6 +28,7 @@ multidex = "2.0.1"
 env = "4.0.0"
 
 google-services = "4.4.0"
+play-services-location = "21.3.0"
 firebase-bom = "32.7.0"
 firebase-installations = "18.0.0"
 firebase-crashlytics-plugin = "3.0.6"
@@ -33,7 +36,7 @@ firebase-crashlytics-plugin = "3.0.6"
 stetho = "1.6.0"
 
 stepper = "v4.3.1"
-mapbox-sdk = "9.6.2"
+mapbox-sdk = "11.17.1"
 mapbox-annotation = "0.9.0"
 mapbox-places = "0.12.0"
 
@@ -71,12 +74,13 @@ androidx-work = { group = "androidx.work", name = "work-runtime-ktx", version.re
 androidx-multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
 androidx-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigation" }
 androidx-navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigation" }
+androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
 
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 #firebase-crashlytics-ndk = { module = "com.google.firebase:firebase-crashlytics-ndk" }
 #firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-installations = { group = "com.google.firebase", name = "firebase-installations", version.ref = "firebase-installations" }
-
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "play-services-location" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 
@@ -98,7 +102,7 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 #sentry-android = { group = "io.sentry", name = "sentry-android", version.ref = "sentry" }
 
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
-#okhttp-inteceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+okhttp-inteceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 #conscrypt = { group = "org.conscrypt", name = "conscrypt", version.ref = "conscrypt-android" }
 
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
@@ -117,7 +121,7 @@ moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-code
 
 material-stepper = { group = "com.github.stepstone-tech.android-material-stepper", name = "material-stepper", version.ref = "stepper" }
 
-mapbox-sdk = { group = "com.mapbox.mapboxsdk", name = "mapbox-android-sdk", version.ref = "mapbox-sdk" }
+mapbox-sdk = { group = "com.mapbox.maps", name = "android-ndk27", version.ref = "mapbox-sdk" }
 mapbox-annotation = { group = "com.mapbox.mapboxsdk", name = "mapbox-android-plugin-annotation-v9", version.ref = "mapbox-annotation" }
 mapbox-places = { group = "com.mapbox.mapboxsdk", name = "mapbox-android-plugin-places-v9", version.ref = "mapbox-places" }
 
