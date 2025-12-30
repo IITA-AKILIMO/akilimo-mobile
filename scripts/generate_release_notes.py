@@ -51,6 +51,21 @@ class ConversationalReleaseNotesGenerator:
             raise FileNotFoundError(f"Changelog not found: {changelog_path}")
 
 
+    def truncate_text(self, text: str, max_length: int) -> str:
+        """
+        Truncate text to `max_length` characters.
+        Attempts to cut at a sentence boundary for readability.
+        """
+        if len(text) <= max_length:
+            return text
+
+        # Try to cut at last full stop before max_length
+        cutoff = text.rfind('.', 0, max_length)
+        if cutoff == -1:
+            # No full stop found, just hard cut
+            return text[:max_length - 3] + "..."
+        return text[:cutoff + 1]
+
     def read_changelog(self) -> str:
         """Read the changelog file."""
         with open(self.changelog_path, 'r', encoding='utf-8') as f:
@@ -235,7 +250,6 @@ Requirements:
 - Focus on what users care about
 - Write in flowing sentences, NOT bullet points
 - Natural and enthusiastic
-- Start with "Toleo la {version} lina maboresho haya:"
 
 Changes:
 {summary_text}
