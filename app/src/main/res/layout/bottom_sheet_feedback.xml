@@ -55,7 +55,8 @@
             android:layout_weight="1"
             android:text="😡"
             android:textSize="28sp"
-            app:cornerRadius="12dp"
+            app:backgroundTint="@color/rating_background_selector"
+            app:cornerRadius="@dimen/dimen_5"
             app:rippleColor="?attr/colorPrimary"
             app:strokeColor="@color/rating_stroke_selector"
             app:strokeWidth="2dp" />
@@ -69,7 +70,8 @@
             android:layout_weight="1"
             android:text="😕"
             android:textSize="28sp"
-            app:cornerRadius="12dp"
+            app:backgroundTint="@color/rating_background_selector"
+            app:cornerRadius="@dimen/dimen_5"
             app:rippleColor="?attr/colorPrimary"
             app:strokeColor="@color/rating_stroke_selector"
             app:strokeWidth="2dp" />
@@ -83,7 +85,8 @@
             android:layout_weight="1"
             android:text="😐"
             android:textSize="28sp"
-            app:cornerRadius="12dp"
+            app:backgroundTint="@color/rating_background_selector"
+            app:cornerRadius="@dimen/dimen_5"
             app:rippleColor="?attr/colorPrimary"
             app:strokeColor="@color/rating_stroke_selector"
             app:strokeWidth="2dp" />
@@ -97,7 +100,8 @@
             android:layout_weight="1"
             android:text="🙂"
             android:textSize="28sp"
-            app:cornerRadius="12dp"
+            app:backgroundTint="@color/rating_background_selector"
+            app:cornerRadius="@dimen/dimen_5"
             app:rippleColor="?attr/colorPrimary"
             app:strokeColor="@color/rating_stroke_selector"
             app:strokeWidth="2dp" />
@@ -111,7 +115,8 @@
             android:layout_weight="1"
             android:text="😍"
             android:textSize="28sp"
-            app:cornerRadius="12dp"
+            app:backgroundTint="@color/rating_background_selector"
+            app:cornerRadius="@dimen/dimen_5"
             app:rippleColor="?attr/colorPrimary"
             app:strokeColor="@color/rating_stroke_selector"
             app:strokeWidth="2dp" />
@@ -181,5 +186,279 @@
         android:textSize="@dimen/font_size_14"
         android:textStyle="bold"
         android:visibility="gone" />
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginVertical="@dimen/spacing_large"
+        android:background="?android:attr/listDivider" />
+
+    <!-- Recommendation section -->
+    <TextView
+        android:id="@+id/recommendation_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="@dimen/spacing_small"
+        android:text="@string/recommendation_title"
+        android:textColor="?android:textColorPrimary"
+        android:textSize="@dimen/font_size_16"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/recommendation_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="@dimen/spacing_medium"
+        android:text="@string/recommendation_subtitle"
+        android:textColor="?android:textColorSecondary"
+        android:textSize="@dimen/font_size_14" />
+
+    <!-- Number scale (0-10) -->
+    <LinearLayout
+        android:id="@+id/number_scale"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_small"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_nps_0"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="1dp"
+            android:layout_weight="1"
+            android:minWidth="0dp"
+            android:paddingHorizontal="0dp"
+            android:text="0"
+            android:textSize="14sp"
+            app:backgroundTint="@color/rating_background_selector"
+            app:cornerRadius="8dp"
+            app:rippleColor="?attr/colorPrimary"
+            app:strokeColor="@color/rating_stroke_selector"
+            app:strokeWidth="1dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_nps_1"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="1dp"
+            android:layout_weight="1"
+            android:minWidth="0dp"
+            android:paddingHorizontal="0dp"
+            android:text="1"
+            android:textSize="14sp"
+            app:backgroundTint="@color/rating_background_selector"
+            app:cornerRadius="8dp"
+            app:rippleColor="?attr/colorPrimary"
+            app:strokeColor="@color/rating_stroke_selector"
+            app:strokeWidth="1dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_nps_2"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="1dp"
+            android:layout_weight="1"
+            android:minWidth="0dp"
+            android:paddingHorizontal="0dp"
+            android:text="2"
+            android:textSize="14sp"
+            app:backgroundTint="@color/rating_background_selector"
+            app:cornerRadius="8dp"
+            app:rippleColor="?attr/colorPrimary"
+            app:strokeColor="@color/rating_stroke_selector"
+            app:strokeWidth="1dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_nps_3"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="1dp"
+            android:layout_weight="1"
+            android:minWidth="0dp"
+            android:paddingHorizontal="0dp"
+            android:text="3"
+            android:textSize="14sp"
+            app:backgroundTint="@color/rating_background_selector"
+            app:cornerRadius="8dp"
+            app:rippleColor="?attr/colorPrimary"
+            app:strokeColor="@color/rating_stroke_selector"
+            app:strokeWidth="1dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_nps_4"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="1dp"
+            android:layout_weight="1"
+            android:minWidth="0dp"
+            android:paddingHorizontal="0dp"
+            android:text="4"
+            android:textSize="14sp"
+            app:backgroundTint="@color/rating_background_selector"
+            app:cornerRadius="8dp"
+            app:rippleColor="?attr/colorPrimary"
+            app:strokeColor="@color/rating_stroke_selector"
+            app:strokeWidth="1dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_nps_5"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="1dp"
+            android:layout_weight="1"
+            android:minWidth="0dp"
+            android:paddingHorizontal="0dp"
+            android:text="5"
+            android:textSize="14sp"
+            app:backgroundTint="@color/rating_background_selector"
+            app:cornerRadius="8dp"
+            app:rippleColor="?attr/colorPrimary"
+            app:strokeColor="@color/rating_stroke_selector"
+            app:strokeWidth="1dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_nps_6"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="1dp"
+            android:layout_weight="1"
+            android:minWidth="0dp"
+            android:paddingHorizontal="0dp"
+            android:text="6"
+            android:textSize="14sp"
+            app:backgroundTint="@color/rating_background_selector"
+            app:cornerRadius="8dp"
+            app:rippleColor="?attr/colorPrimary"
+            app:strokeColor="@color/rating_stroke_selector"
+            app:strokeWidth="1dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_nps_7"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="1dp"
+            android:layout_weight="1"
+            android:minWidth="0dp"
+            android:paddingHorizontal="0dp"
+            android:text="7"
+            android:textSize="14sp"
+            app:backgroundTint="@color/rating_background_selector"
+            app:cornerRadius="8dp"
+            app:rippleColor="?attr/colorPrimary"
+            app:strokeColor="@color/rating_stroke_selector"
+            app:strokeWidth="1dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_nps_8"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="1dp"
+            android:layout_weight="1"
+            android:minWidth="0dp"
+            android:paddingHorizontal="0dp"
+            android:text="8"
+            android:textSize="14sp"
+            app:backgroundTint="@color/rating_background_selector"
+            app:cornerRadius="8dp"
+            app:rippleColor="?attr/colorPrimary"
+            app:strokeColor="@color/rating_stroke_selector"
+            app:strokeWidth="1dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_nps_9"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="1dp"
+            android:layout_weight="1"
+            android:minWidth="0dp"
+            android:paddingHorizontal="0dp"
+            android:text="9"
+            android:textSize="14sp"
+            app:backgroundTint="@color/rating_background_selector"
+            app:cornerRadius="8dp"
+            app:rippleColor="?attr/colorPrimary"
+            app:strokeColor="@color/rating_stroke_selector"
+            app:strokeWidth="1dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_nps_10"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="1dp"
+            android:layout_weight="1"
+            android:minWidth="0dp"
+            android:paddingHorizontal="0dp"
+            android:text="10"
+            android:textSize="14sp"
+            app:backgroundTint="@color/rating_background_selector"
+            app:cornerRadius="8dp"
+            app:rippleColor="?attr/colorPrimary"
+            app:strokeColor="@color/rating_stroke_selector"
+            app:strokeWidth="1dp" />
+    </LinearLayout>
+
+    <!-- NPS scale labels -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_medium"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:text="@string/nps_not_likely"
+            android:textColor="?android:textColorTertiary"
+            android:textSize="@dimen/font_size_12" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="@string/nps_very_likely"
+            android:textColor="?android:textColorTertiary"
+            android:textSize="@dimen/font_size_12" />
+    </LinearLayout>
+
+    <!-- Selected NPS feedback (hidden by default) -->
+    <TextView
+        android:id="@+id/selected_nps"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingVertical="@dimen/spacing_small"
+        android:textColor="?attr/colorPrimary"
+        android:textSize="@dimen/font_size_14"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <!-- Submit button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_submit_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:enabled="false"
+        android:text="@string/submit_feedback"
+        app:cornerRadius="@dimen/dimen_5" />
 
 </LinearLayout>
