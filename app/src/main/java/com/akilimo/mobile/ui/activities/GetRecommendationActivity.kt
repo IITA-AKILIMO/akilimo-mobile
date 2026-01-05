@@ -14,6 +14,7 @@ import com.akilimo.mobile.enums.EnumUseCase
 import com.akilimo.mobile.network.AkilimoApi
 import com.akilimo.mobile.network.ApiClient
 import com.akilimo.mobile.network.parseError
+import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.ui.components.ToolbarHelper
 import com.akilimo.mobile.utils.RecommendationBuilder
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -28,6 +29,7 @@ class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>
     }
 
     private lateinit var useCase: EnumUseCase
+    private lateinit var userRepo: AkilimoUserRepo
 
     override fun inflateBinding() = ActivityGetRecommendationBinding.inflate(layoutInflater)
 
@@ -36,6 +38,7 @@ class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>
         useCase = intent.getParcelableExtra(EXTRA_USE_CASE)
             ?: return showError(getString(R.string.error_no_use_case))
 
+        userRepo = AkilimoUserRepo(database.akilimoUserDao())
         setupToolbar()
         setupClickListeners()
         fetchRecommendation()
@@ -263,11 +266,15 @@ class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>
                     base
                 )
 
+                val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
                 val feedbackDto = RecommendationFeedback(
                     satisfactionRating = rating,
                     npsScore = npsScore,
                     useCase = useCase.name,
-                    timestamp = System.currentTimeMillis()
+                    akilimoUsage = user.akilimoInterest.orEmpty(),
+                    userType = user.akilimoInterest.orEmpty(),
+                    deviceToken = user.deviceToken.orEmpty(),
+                    deviceLanguage = user.languageCode.orEmpty()
                 )
 
                 val result = client.submitRecommendationFeedback(feedbackDto)
