@@ -8,7 +8,7 @@ import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.config.AppConfig
 import com.akilimo.mobile.databinding.ActivityGetRecommendationBinding
 import com.akilimo.mobile.databinding.BottomSheetFeedbackBinding
-import com.akilimo.mobile.dto.RecommendationFeedback
+import com.akilimo.mobile.dto.UserFeedBackRequest
 import com.akilimo.mobile.enums.EnumServiceType
 import com.akilimo.mobile.enums.EnumUseCase
 import com.akilimo.mobile.network.AkilimoApi
@@ -267,7 +267,7 @@ class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>
                 )
 
                 val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
-                val feedbackDto = RecommendationFeedback(
+                val feedbackDto = UserFeedBackRequest(
                     satisfactionRating = rating,
                     npsScore = npsScore,
                     useCase = useCase.name,
@@ -277,13 +277,12 @@ class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>
                     deviceLanguage = user.languageCode.orEmpty()
                 )
 
-                val result = client.submitRecommendationFeedback(feedbackDto)
+                val result = client.submitUserFeedback(feedbackDto)
 
                 if (result.isSuccessful) {
-                    val response = result.body()
                     Toast.makeText(
                         this@GetRecommendationActivity,
-                        response?.message ?: getString(R.string.feedback_success),
+                        getString(R.string.feedback_success),
                         Toast.LENGTH_SHORT
                     ).show()
                 } else {
