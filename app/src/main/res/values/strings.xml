@@ -643,11 +643,50 @@
     <string name="lbl_exit_application">Exit Application</string>
     <string name="lbl_confirm_app_exit">Are you sure you want to exit?</string>
 
-    <string name="rate_recommendation_title">Rate This Recommendation</string>
-    <string name="rate_recommendation_subtitle">Your feedback helps us improve</string>
+    <!-- Main feedback section -->
+    <string name="rate_recommendation_title">How was your experience?</string>
+    <string name="rate_recommendation_subtitle">Let us know what you think</string>
+
+    <!-- Rating labels -->
     <string name="rating_very_poor">Very Poor</string>
     <string name="rating_poor">Poor</string>
     <string name="rating_okay">Okay</string>
     <string name="rating_good">Good</string>
     <string name="rating_excellent">Excellent</string>
+
+    <!-- Recommendation section -->
+    <string name="recommendation_title">Would you recommend AKILIMO to a friend?</string>
+    <string name="recommendation_subtitle">0 means not at all, 10 means absolutely!</string>
+
+    <!-- NPS labels -->
+    <string name="nps_not_likely">Not at all</string>
+    <string name="nps_very_likely">Absolutely!</string>
+
+    <!-- Submit button -->
+    <string name="submit_feedback">Share my feedback</string>
+
+
+    <!-- Error messages -->
+    <string name="error_no_use_case">No use case specified</string>
+    <string name="error_build_request">Unable to build recommendation request</string>
+    <string name="error_empty_response">Empty response from server</string>
+    <string name="error_fetch_recommendation">Failed to fetch recommendation</string>
+    <string name="error_unexpected">An unexpected error occurred</string>
+
+    <!-- Feedback labels -->
+    <string name="feedback_very_poor">Very poor</string>
+    <string name="feedback_poor">Poor</string>
+    <string name="feedback_okay">Okay</string>
+    <string name="feedback_good">Good</string>
+    <string name="feedback_excellent">Excellent</string>
+
+    <!-- NPS feedback labels -->
+    <string name="feedback_nps_low">Thanks for being honest with us</string>
+    <string name="feedback_nps_medium">Thanks for your feedback</string>
+    <string name="feedback_nps_high">Awesome! Thanks for the love</string>
+
+    <!-- Feedback submission -->
+    <string name="feedback_success">Thanks for sharing your feedback!</string>
+    <string name="feedback_error">Failed to submit feedback</string>
+    <string name="feedback_error_exception">Failed to submit feedback: %s</string>
 </resources>
