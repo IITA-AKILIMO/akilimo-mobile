@@ -1,5 +1,6 @@
 package com.akilimo.mobile.ui.activities
 
+import android.net.http.HttpException
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -8,6 +9,7 @@ import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.config.AppConfig
 import com.akilimo.mobile.databinding.ActivityGetRecommendationBinding
 import com.akilimo.mobile.databinding.BottomSheetFeedbackBinding
+import com.akilimo.mobile.dto.ApiErrorResponse
 import com.akilimo.mobile.dto.UserFeedBackRequest
 import com.akilimo.mobile.enums.EnumServiceType
 import com.akilimo.mobile.enums.EnumUseCase
@@ -20,7 +22,10 @@ import com.akilimo.mobile.utils.RecommendationBuilder
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import io.sentry.Sentry
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.IOException
 
 class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>() {
 
@@ -255,7 +260,7 @@ class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>
     }
 
     private fun submitFeedback(rating: Int, npsScore: Int) {
-        safeScope.launch {
+        safeScope.launch(dispatcherProvider.io) {
             try {
                 val base = AppConfig.resolveBaseUrlFor(
                     applicationContext,
@@ -272,35 +277,42 @@ class GetRecommendationActivity : BaseActivity<ActivityGetRecommendationBinding>
                     npsScore = npsScore,
                     useCase = useCase.name,
                     akilimoUsage = user.akilimoInterest.orEmpty(),
-                    userType = user.akilimoInterest.orEmpty(),
+                    userType = user.akilimoInterest.orEmpty(), // differentiate properly
                     deviceToken = user.deviceToken.orEmpty(),
                     deviceLanguage = user.languageCode.orEmpty()
                 )
 
                 val result = client.submitUserFeedback(feedbackDto)
 
-                if (result.isSuccessful) {
-                    Toast.makeText(
-                        this@GetRecommendationActivity,
-                        getString(R.string.feedback_success),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else {
-                    val error = result.parseError()
-                    Toast.makeText(
-                        this@GetRecommendationActivity,
-                        error?.message ?: getString(R.string.feedback_error),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                withContext(dispatcherProvider.main) {
+                    if (result.isSuccessful) {
+                        showToast(getString(R.string.feedback_success))
+                    } else {
+                        val error = result.parseError()
+                        showToast(error?.message ?: getString(R.string.feedback_error))
+                    }
                 }
+            } catch (e: IOException) {
+                handleError("Network error", e)
             } catch (e: Exception) {
                 Sentry.captureException(e)
-                Toast.makeText(
-                    this@GetRecommendationActivity,
-                    getString(R.string.feedback_error_exception, e.message),
-                    Toast.LENGTH_SHORT
-                ).show()
+                handleError("Unexpected error", e)
             }
         }
     }
+
+    private fun showToast(messageRes: String) {
+        Toast.makeText(this, messageRes, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun handleError(message: String, e: Exception) {
+        safeScope.launch(dispatcherProvider.main) {
+            Toast.makeText(
+                this@GetRecommendationActivity,
+                "$message: ${e.message}",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
 }
