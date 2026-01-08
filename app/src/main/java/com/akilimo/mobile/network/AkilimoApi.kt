@@ -7,7 +7,7 @@ import com.akilimo.mobile.dto.FertilizerPriceResponse
 import com.akilimo.mobile.dto.FertilizerResponse
 import com.akilimo.mobile.dto.InvestmentAmountResponse
 import com.akilimo.mobile.dto.MaizePriceResponse
-import com.akilimo.mobile.dto.RecommendationFeedback
+import com.akilimo.mobile.dto.UserFeedBackRequest
 import com.akilimo.mobile.dto.RecommendationResponse
 import com.akilimo.mobile.dto.StarchFactoryResponse
 import com.akilimo.mobile.rest.request.RecommendationRequest
@@ -89,8 +89,8 @@ interface AkilimoApi {
     @POST("v1/recommendations/compute")
     suspend fun computeRecommendations(@Body payload: RecommendationRequest): Response<RecommendationResponse>
 
-    @POST("v1/recommendations/feedback")
-    suspend fun submitRecommendationFeedback(
-        @Body feedback: RecommendationFeedback
+    @POST("v1/user-feedback")
+    suspend fun submitUserFeedback(
+        @Body userFeedback: UserFeedBackRequest
     ): Response<FeedbackResponse>
 }
