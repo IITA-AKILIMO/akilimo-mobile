@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rec_img_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/spacing_small"
-    app:cardCornerRadius="@dimen/dimen_5"
-    app:cardElevation="@dimen/dimen_2"
+    android:clipToOutline="true"
+    app:cardCornerRadius="@dimen/dimen_8"
+    app:cardElevation="@dimen/dimen_4"
     app:rippleColor="?attr/colorControlHighlight"
     app:strokeWidth="0dp">
 
@@ -14,45 +16,70 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Image with gradient overlay -->
+        <!-- Image -->
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/rec_img_image"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="200dp"
             android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
             android:contentDescription="@string/title_activity_cassava_root_yield"
-            android:maxHeight="250dp"
-            android:scaleType="fitCenter"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_maize_2" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/yield_less_than_7point5" />
 
-        <!-- Gradient overlay for better text readability -->
+        <!-- Semi-transparent selection overlay -->
+        <View
+            android:id="@+id/selection_overlay"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/color_focus"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@id/rec_img_image"
+            app:layout_constraintBottom_toBottomOf="@id/rec_img_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/selection_indicator"
+            android:layout_width="@dimen/dimen_36"
+            android:layout_height="@dimen/dimen_36"
+            android:layout_margin="@dimen/spacing_medium"
+            android:src="@drawable/ic_check"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+
+        <!-- Gradient overlay for text readability -->
         <View
             android:id="@+id/gradient_overlay"
             android:layout_width="0dp"
             android:layout_height="80dp"
             android:background="@drawable/gradient_overlay"
             app:layout_constraintBottom_toBottomOf="@id/rec_img_image"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Subtitle on image -->
+        <!-- Title text -->
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/rec_img_title"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"
             android:layout_marginEnd="@dimen/spacing_medium"
-            android:layout_marginBottom="@dimen/spacing_large"
-            android:ellipsize="none"
+            android:layout_marginBottom="@dimen/spacing_medium"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:text="@string/lbl_chest_height"
             android:textColor="@color/color_on_primary"
-            android:textSize="@dimen/font_size_12"
+            android:textSize="@dimen/font_size_14"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@id/rec_img_image"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
