@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### CI
+
+- Automate changelog generation in release workflow
+
+
+### Miscellaneous Tasks
+
+- **workflow**: Fix changelog commit message format
+
+- Improve changelog generation workflow
+
+
+## [29.0.0] - 2025-12-30
+
 ### Code Refactoring
 
 - **location**: Migrate to mapbox maps sdk v10
@@ -31,6 +45,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **location**: Add location helper utility
 
 - **permissions**: Add permission helper class
+
+
+### Miscellaneous Tasks
+
+- Trigger release workflow on push to main
 
 
 ### Revert
