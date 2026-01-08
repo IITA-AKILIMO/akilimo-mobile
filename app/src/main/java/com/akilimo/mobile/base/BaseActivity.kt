@@ -25,7 +25,6 @@ import kotlinx.coroutines.launch
 abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
 
     companion object {
-        const val REQUEST_CODE_LOCATION_PERMISSION = 1001
         const val COMPLETED_TASK = "completed_task"
     }
 
