@@ -1,102 +1,15 @@
-name: Android CI
+name: Android Build and Release
 
 on:
   push:
-    paths-ignore:
-      - '**.md'
-      - '**.txt'
-      - '**.sh'
-      - '**.xml'
-      - 'docs/**'
-      - '.github/ISSUE_TEMPLATE/**'
+    tags:
+      - '*'
   workflow_dispatch:
 
 jobs:
-  unit_test:
-    runs-on: ubuntu-latest
-    name: Unit tests
-    concurrency:
-      group: ci-${{ github.head_ref || github.ref_name }}
-      cancel-in-progress: true
-
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      REPO_NAME: ${{ secrets.REPO_NAME }}
-      LATEST_TAG_FILE: "latest_tag.txt"
-      RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
-      MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
-
-    steps:
-      - name: Checkout the code
-        uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: 21
-
-      # Get VERSION_CODE before caching
-      - name: Get build version
-        id: get_version
-        run: |
-          VERSION_CODE=$(curl -s https://munywele.co.ke/app-releases/akilimo || echo ${{ github.run_number }})
-          echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
-          echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
-          echo "Using VERSION_CODE: $VERSION_CODE"
-
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
-
-      # Enhanced Gradle caching for unit tests
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          cache-read-only: false
-
-      # Cache unit test results with VERSION_CODE in key
-      - name: Cache unit test results
-        id: cache_tests
-        uses: actions/cache@v4
-        with:
-          path: |
-            app/build/test-results
-            app/build/reports/tests
-          key: unit-tests-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ hashFiles('app/src/test/**/*.kt', 'app/src/test/**/*.java', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', '**/*.gradle*', '**/gradle.properties') }}
-          restore-keys: |
-            unit-tests-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-
-            unit-tests-${{ runner.os }}-
-
-      # Check if we can skip tests
-      - name: Check if tests can be skipped
-        id: check_tests
-        run: |
-          if [ "${{ steps.cache_tests.outputs.cache-hit }}" == "true" ]; then
-            echo "skip_tests=true" >> $GITHUB_OUTPUT
-            echo "✅ Unit tests haven't changed, using cached results"
-          else
-            echo "skip_tests=false" >> $GITHUB_OUTPUT
-            echo "🧪 Running unit tests (code has changed)"
-          fi
-
-      - name: Run Unit tests
-        if: steps.check_tests.outputs.skip_tests != 'true'
-        run: ./gradlew testDebugUnitTest
-        continue-on-error: false
-
-      - name: Report
-        uses: FlickerSoul/android-test-report-actions@v1.2
-        if: ${{ always() }}
-
-      - name: Make Unit test report
-        uses: asadmansr/android-test-report-action@v1.2.0
-        if: ${{ always() }}
-
   build_artifacts:
-    if: contains(github.ref, 'build') || contains(github.ref, 'main') || contains(github.ref, 'hotfix')
-    needs: unit_test
-    name: Build artifacts
     runs-on: ubuntu-latest
+    name: Build artifacts
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       REPO_NAME: ${{ secrets.REPO_NAME }}
@@ -177,10 +90,10 @@ jobs:
           path: |
             app/build/outputs/apk/release/app-release-unsigned.apk
             app/build/outputs/bundle/release/app-release.aab
-          key: akilimo-build-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ env.BRANCH_NAME }}-${{ steps.cache_timestamp.outputs.timestamp }}-${{ hashFiles('**/*.gradle*', '**/gradle.properties', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', 'app/src/main/res/**', 'app/src/main/AndroidManifest.xml', 'app/proguard-rules.pro') }}
+          key: akilimo-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ env.BRANCH_NAME }}-${{ steps.cache_timestamp.outputs.timestamp }}-${{ hashFiles('**/*.gradle*', '**/gradle.properties', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', 'app/src/main/res/**', 'app/src/main/AndroidManifest.xml', 'app/proguard-rules.pro') }}
           restore-keys: |
-            akilimo-build-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ env.BRANCH_NAME }}-${{ steps.cache_timestamp.outputs.timestamp }}-
-            akilimo-build-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ env.BRANCH_NAME }}-
+            akilimo-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ env.BRANCH_NAME }}-${{ steps.cache_timestamp.outputs.timestamp }}-
+            akilimo-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ env.BRANCH_NAME }}-
 
       # Check if cached artifacts exist and are valid
       - name: Check cached artifacts
