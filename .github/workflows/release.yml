@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main   # only run on pushes to main
+      - develop
   workflow_dispatch: # still allow manual trigger
 
 jobs:
@@ -38,7 +39,7 @@ jobs:
           set +e
           git add CHANGELOG.md
           git commit -m "docs: update changelog" || echo "No changes to commit"
-          git push "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" changelog
+          git push origin HEAD:changelog
 
 
       - name: Detect relevant change count
