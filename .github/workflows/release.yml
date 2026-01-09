@@ -23,7 +23,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          # Use the App Token for checkout so the local git config is pre-authenticated
           token: ${{ steps.app-token.outputs.token }}
           ref: ${{ github.sha }}
 
@@ -34,7 +33,6 @@ jobs:
         uses: orhun/git-cliff-action@v4
         with:
           config: cliff.toml
-#          args: --verbose
         env:
           OUTPUT: CHANGELOG.md
           GITHUB_REPO: ${{ github.repository }}
@@ -44,12 +42,14 @@ jobs:
           git config user.name "munywele-sonar[bot]"
           git config user.email "munywele-sonar[bot]@users.noreply.github.com"
           
+          # Pull latest changes first to avoid push rejection
+          git pull --rebase origin main
+          
           git add CHANGELOG.md
           # Only commit and push if there are changes
           if ! git diff --cached --exit-code; then
             git commit -m "docs: update changelog"
-            # Use the token in the push URL for guaranteed access
-            git push https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}.git HEAD:main
+            git push origin HEAD:main
           else
             echo "No changes to commit"
           fi
@@ -57,7 +57,9 @@ jobs:
       - name: Detect relevant change count
         id: diff_check
         run: |
-          # Use the newly pushed commit if we just updated the changelog
+          # Fetch latest to ensure we have updated refs
+          git fetch origin main
+          
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
           
           if [ -z "$LAST_TAG" ]; then
@@ -79,7 +81,6 @@ jobs:
         id: tag_version
         uses: masgeek/github-tag-action@release
         with:
-          # Use App Token here to ensure tag creation permissions
           github_token: ${{ steps.app-token.outputs.token }}
           tag_prefix: ""
           create_annotated_tag: true
@@ -88,7 +89,6 @@ jobs:
         if: steps.diff_check.outputs.should_release == 'true'
         uses: ncipollo/release-action@v1.15.0
         with:
-          # Use App Token here as well
           token: ${{ steps.app-token.outputs.token }}
           tag: ${{ steps.tag_version.outputs.new_tag }}
           name: Version ${{ steps.tag_version.outputs.new_tag }}
