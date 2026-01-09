@@ -1,6 +1,14 @@
 name: GitHub Release
 
 on:
+  push:
+    paths-ignore:
+      - '**.md'
+      - '**.txt'
+      - '**.sh'
+      - '**.xml'
+      - 'docs/**'
+      - '.github/ISSUE_TEMPLATE/**'
   pull_request:
     branches:
       - main
