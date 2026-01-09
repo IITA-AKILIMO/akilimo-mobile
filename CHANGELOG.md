@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- Update changelog 
+
+
+### Miscellaneous Tasks
+
+- **workflow**: Update git push command in release
+
+
+## [29.0.1] - 2025-12-30
+
 ### CI
 
 - Automate changelog generation in release workflow
