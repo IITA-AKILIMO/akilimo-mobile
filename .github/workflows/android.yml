@@ -29,9 +29,6 @@ jobs:
     steps:
       - name: Checkout the code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Fetch all history for git-cliff to work properly
-
 
       - name: Set up JDK
         uses: actions/setup-java@v4
