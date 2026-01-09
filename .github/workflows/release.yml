@@ -44,13 +44,17 @@ jobs:
           
           # Check if CHANGELOG.md has changes
           if ! git diff --quiet CHANGELOG.md; then
-            # Stage the changes first
-            git add CHANGELOG.md
+            # Stash the changes
+            git stash push -m "changelog changes" CHANGELOG.md
           
-            # Pull with rebase (now that changes are staged)
+            # Pull latest from remote
             git pull --rebase origin main
           
-            # Commit the changes
+            # Apply stashed changes
+            git stash pop
+          
+            # Stage and commit
+            git add CHANGELOG.md
             git commit -m "docs: update changelog"
           
             # Push to remote
