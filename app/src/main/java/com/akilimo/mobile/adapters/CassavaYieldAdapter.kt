@@ -1,6 +1,7 @@
 package com.akilimo.mobile.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
@@ -31,12 +32,16 @@ class CassavaYieldAdapter() :
             recImgTitle.text = item.yieldLabel
             recImgImage.setImageDrawable(drawableRes)
 
-            val targetBg = if (item.isSelected)
-                ContextCompat.getColor(ctx, R.color.color_focus)
-            else
-                ContextCompat.getColor(ctx, R.color.transparent)
+            selectionOverlay.visibility = if (item.isSelected) View.VISIBLE else View.GONE
+            selectionIndicator.visibility = if (item.isSelected) View.VISIBLE else View.GONE
 
-            recImgCard.animateCardBackground(targetBg)
+
+//            val targetBg = if (item.isSelected)
+//                ContextCompat.getColor(ctx, R.color.color_focus)
+//            else
+//                ContextCompat.getColor(ctx, R.color.transparent)
+
+//            recImgCard.animateCardBackground(targetBg)
 
             recImgCard.setOnClickListener { onItemClick?.invoke(item) }
         }
