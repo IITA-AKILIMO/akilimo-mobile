@@ -133,6 +133,14 @@ jobs:
           echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
           echo "Using VERSION_CODE: $VERSION_CODE"
 
+      # Generate timestamp for cache expiration (20 minutes = 1200 seconds)
+      - name: Generate cache timestamp
+        id: cache_timestamp
+        run: |
+          TIMESTAMP=$(( $(date +%s) / 1200 ))
+          echo "timestamp=$TIMESTAMP" >> $GITHUB_OUTPUT
+          echo "Cache timestamp (20min bucket): $TIMESTAMP"
+
       - name: Set up Python 3.xx
         uses: actions/setup-python@v5
         with:
@@ -165,18 +173,17 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      # ⭐ UPDATED CACHE KEY WITH VERSION_CODE FROM STEP OUTPUT
+      # ⭐ UPDATED CACHE KEY WITH TIMESTAMP FOR 20-MINUTE EXPIRATION
       - name: Cache APK & AAB outputs
         uses: actions/cache@v4
         with:
           path: |
             app/build/outputs/apk/release/app-release-unsigned.apk
             app/build/outputs/bundle/release/app-release.aab
-          key: akilimo-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ env.BRANCH_NAME }}-${{ hashFiles('**/*.gradle*', '**/gradle.properties', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', 'app/src/main/res/**', 'app/src/main/AndroidManifest.xml', 'app/proguard-rules.pro') }}
+          key: akilimo-build-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ env.BRANCH_NAME }}-${{ steps.cache_timestamp.outputs.timestamp }}-${{ hashFiles('**/*.gradle*', '**/gradle.properties', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', 'app/src/main/res/**', 'app/src/main/AndroidManifest.xml', 'app/proguard-rules.pro') }}
           restore-keys: |
-            akilimo-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ env.BRANCH_NAME }}-
-            akilimo-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-
-            akilimo-artifacts-${{ runner.os }}-
+            akilimo-build-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ env.BRANCH_NAME }}-${{ steps.cache_timestamp.outputs.timestamp }}-
+            akilimo-build-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ env.BRANCH_NAME }}-
 
       # Check if cached artifacts exist and are valid
       - name: Check cached artifacts
