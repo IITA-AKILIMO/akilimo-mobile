@@ -1,0 +1,101 @@
+name: Android Unit Tests
+
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+      - '**.txt'
+      - '**.sh'
+      - '**.xml'
+      - 'docs/**'
+      - '.github/ISSUE_TEMPLATE/**'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - '**.txt'
+      - '**.sh'
+      - '**.xml'
+      - 'docs/**'
+      - '.github/ISSUE_TEMPLATE/**'
+  workflow_dispatch:
+
+jobs:
+  unit_test:
+    runs-on: ubuntu-latest
+    name: Unit tests
+    concurrency:
+      group: unit-tests-${{ github.head_ref || github.ref_name }}
+      cancel-in-progress: true
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO_NAME: ${{ secrets.REPO_NAME }}
+      MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for git-cliff to work properly
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 21
+
+      # Get VERSION_CODE before caching
+      - name: Get build version
+        id: get_version
+        run: |
+          VERSION_CODE=$(curl -s https://munywele.co.ke/app-releases/akilimo || echo ${{ github.run_number }})
+          echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
+          echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
+          echo "Using VERSION_CODE: $VERSION_CODE"
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      # Enhanced Gradle caching for unit tests
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-read-only: false
+
+      # Cache unit test results with VERSION_CODE in key
+      - name: Cache unit test results
+        id: cache_tests
+        uses: actions/cache@v4
+        with:
+          path: |
+            app/build/test-results
+            app/build/reports/tests
+          key: unit-tests-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ hashFiles('app/src/test/**/*.kt', 'app/src/test/**/*.java', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', '**/*.gradle*', '**/gradle.properties') }}
+          restore-keys: |
+            unit-tests-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-
+            unit-tests-${{ runner.os }}-
+
+      # Check if we can skip tests
+      - name: Check if tests can be skipped
+        id: check_tests
+        run: |
+          if [ "${{ steps.cache_tests.outputs.cache-hit }}" == "true" ]; then
+            echo "skip_tests=true" >> $GITHUB_OUTPUT
+            echo "✅ Unit tests haven't changed, using cached results"
+          else
+            echo "skip_tests=false" >> $GITHUB_OUTPUT
+            echo "🧪 Running unit tests (code has changed)"
+          fi
+
+      - name: Run Unit tests
+        if: steps.check_tests.outputs.skip_tests != 'true'
+        run: ./gradlew testDebugUnitTest
+        continue-on-error: false
+
+      - name: Report
+        uses: FlickerSoul/android-test-report-actions@v1.2
+        if: ${{ always() }}
+
+      - name: Make Unit test report
+        uses: asadmansr/android-test-report-action@v1.2.0
+        if: ${{ always() }}
