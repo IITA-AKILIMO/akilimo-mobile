@@ -38,7 +38,7 @@ jobs:
           set +e
           git add CHANGELOG.md
           git commit -m "docs: update changelog" || echo "No changes to commit"
-          git push "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" changelog
+          git push "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" HEAD:main
 
 
       - name: Detect relevant change count
