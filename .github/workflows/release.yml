@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main   # only run on pushes to main
-      - develop
   workflow_dispatch: # still allow manual trigger
 
 jobs:
