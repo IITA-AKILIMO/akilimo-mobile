@@ -2,83 +2,108 @@ name: GitHub Release
 
 on:
   push:
+    paths-ignore:
+      - '**.md'
+      - '**.txt'
+      - '**.sh'
+      - '**.xml'
+      - 'docs/**'
+      - '.github/ISSUE_TEMPLATE/**'
+  pull_request:
     branches:
-      - main   # only run on pushes to main
-  workflow_dispatch: # still allow manual trigger
+      - main
+    types: [closed]
+  workflow_dispatch: # Keep this for manual testing
 
 jobs:
   release:
+    # This ensures the job ONLY runs if the PR was actually merged, not just closed
+    concurrency:
+      group: release-${{ github.head_ref || github.ref_name }}
+      cancel-in-progress: true
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true)
     runs-on: ubuntu-24.04
     name: Create release tag
-
     steps:
+      - name: Create GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Checkout commit
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+          token: ${{ steps.app-token.outputs.token }}
+          ref: ${{ github.sha }}
 
       - name: Fetch tags
         run: git fetch --tags
-
 
       - name: Generate changelog
         uses: orhun/git-cliff-action@v4
         with:
           config: cliff.toml
-          args: --verbose
         env:
           OUTPUT: CHANGELOG.md
           GITHUB_REPO: ${{ github.repository }}
 
-      - name: Commit changelog
+      - name: Commit and Push changelog
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          set +e
-          git add CHANGELOG.md
-          git commit -m "docs: update changelog" || echo "No changes to commit"
-          git push "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" HEAD:main
-
+          git config user.name "munywele-sonar[bot]"
+          git config user.email "munywele-sonar[bot]@users.noreply.github.com"
+          
+          # Check if CHANGELOG.md has changes
+          if ! git diff --quiet CHANGELOG.md; then
+            # Stash the changes
+            git stash push -m "changelog changes" CHANGELOG.md
+          
+            # Pull latest from remote
+            git pull --rebase origin main
+          
+            # Apply stashed changes
+            git stash pop
+          
+            # Stage and commit
+            git add CHANGELOG.md
+            git commit -m "docs: update changelog"
+          
+            # Push to remote
+            git push origin HEAD:main
+          else
+            echo "No changes to commit"
+          fi
 
       - name: Detect relevant change count
         id: diff_check
         run: |
+          # Fetch latest to ensure we have updated refs
+          git fetch origin main
+          
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
           
           if [ -z "$LAST_TAG" ]; then
-            echo "⚠️ No previous tag found — treating as first release"
             FILES=$(git diff --name-only HEAD)
           else
             FILES=$(git diff --name-only "$LAST_TAG"..HEAD)
           fi
 
-          echo "Changed files:"
-          echo "$FILES"
+          RELEVANT_COUNT=$(echo "$FILES" | grep -E '\.(kt|kts|xml|gradle|gradle\.kts)$|^gradlew(\.bat)?$' | wc -l || echo 0)
 
-          RELEVANT_COUNT=$(echo "$FILES" | grep -E '\.(kt|kts|xml|gradle|gradle\.kts)$|^gradlew(\.bat)?$' | wc -l)
-
-          echo "Relevant change count: $RELEVANT_COUNT"
-
-          # Manual override: if triggered manually, allow release even with <2 changes
           if [ "$RELEVANT_COUNT" -lt 2 ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
             echo "should_release=false" >> $GITHUB_OUTPUT
           else
             echo "should_release=true" >> $GITHUB_OUTPUT
           fi
 
-      - name: Skip release if not enough relevant changes
-        if: steps.diff_check.outputs.should_release != 'true'
-        run: |
-          echo "❌ Less than 2 relevant file changes. Skipping release."
-          exit 0
-
       - name: Generate Tag
         if: steps.diff_check.outputs.should_release == 'true'
         id: tag_version
         uses: masgeek/github-tag-action@release
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ steps.app-token.outputs.token }}
           tag_prefix: ""
           create_annotated_tag: true
 
@@ -86,10 +111,9 @@ jobs:
         if: steps.diff_check.outputs.should_release == 'true'
         uses: ncipollo/release-action@v1.15.0
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
           tag: ${{ steps.tag_version.outputs.new_tag }}
           name: Version ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
           makeLatest: true
           allowUpdates: true
-          skipIfReleaseExists: false

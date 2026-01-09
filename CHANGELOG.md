@@ -7,6 +7,157 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+
+## [29.0.2] - 2026-01-09
+
+### Documentation
+
+- Update changelog 
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+- Update changelog
+
+
+### Miscellaneous Tasks
+
+- **workflow**: Update git push command in release
+
+
+## [29.0.1] - 2025-12-30
+
 ### CI
 
 - Automate changelog generation in release workflow
