@@ -42,13 +42,18 @@ jobs:
           git config user.name "munywele-sonar[bot]"
           git config user.email "munywele-sonar[bot]@users.noreply.github.com"
           
-          # Pull latest changes first to avoid push rejection
-          git pull --rebase origin main
+          # Check if CHANGELOG.md has changes
+          if ! git diff --quiet CHANGELOG.md; then
+            # Stage the changes first
+            git add CHANGELOG.md
           
-          git add CHANGELOG.md
-          # Only commit and push if there are changes
-          if ! git diff --cached --exit-code; then
+            # Pull with rebase (now that changes are staged)
+            git pull --rebase origin main
+          
+            # Commit the changes
             git commit -m "docs: update changelog"
+          
+            # Push to remote
             git push origin HEAD:main
           else
             echo "No changes to commit"
