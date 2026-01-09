@@ -18,6 +18,9 @@ on:
 jobs:
   release:
     # This ensures the job ONLY runs if the PR was actually merged, not just closed
+    concurrency:
+      group: release-${{ github.head_ref || github.ref_name }}
+      cancel-in-progress: true
     if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true)
     runs-on: ubuntu-24.04
     name: Create release tag
