@@ -8,9 +8,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.akilimo.mobile.adapters.GenericSelectableAdapter
 import com.akilimo.mobile.databinding.BottomSheetPriceSelectionBinding
-import com.akilimo.mobile.entities.Fertilizer
-import com.akilimo.mobile.entities.FertilizerPrice
-import com.akilimo.mobile.enums.EnumCountry
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.akilimo.mobile.R
 import com.akilimo.mobile.entities.CassavaMarketPrice
@@ -69,7 +66,7 @@ class CassavaPriceSelectionBottomSheet(
         binding.priceRecycler.adapter = adapter
         adapter.updateItems(prices)
 
-        binding.saveButton.setOnClickListener {
+        binding.btnSave.setOnClickListener {
             val finalPrice = customPriceValue ?: selectedMarketPrice?.averagePrice
             if (finalPrice != null && finalPrice > 0.0) {
                 val updated = selectedMarketPrice?.copy(
@@ -81,8 +78,8 @@ class CassavaPriceSelectionBottomSheet(
             dismiss()
         }
 
-        binding.cancelButton.setOnClickListener { dismiss() }
-        binding.removeSelectionButton.setOnClickListener {
+        binding.btnCancel.setOnClickListener { dismiss() }
+        binding.btnRemove.setOnClickListener {
             onPriceSelected(null, unitOfSaleEnum)
             dismiss()
         }

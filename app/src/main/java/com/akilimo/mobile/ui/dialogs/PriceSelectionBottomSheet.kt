@@ -55,7 +55,7 @@ class PriceSelectionBottomSheet(
         binding.priceRecycler.adapter = adapter
         adapter.updateItems(prices)
 
-        binding.saveButton.setOnClickListener {
+        binding.btnSave.setOnClickListener {
             val finalPrice = customPriceValue ?: selectedPrice?.pricePerBag
             if (finalPrice != null && finalPrice > 0.0) {
                 val displayPrice = if (customPriceValue != null) {
@@ -67,8 +67,8 @@ class PriceSelectionBottomSheet(
             dismiss()
         }
 
-        binding.cancelButton.setOnClickListener { dismiss() }
-        binding.removeSelectionButton.setOnClickListener {
+        binding.btnCancel.setOnClickListener { dismiss() }
+        binding.btnRemove.setOnClickListener {
             onSelectionChanged(fertilizer.id ?: 0, 0.0, null, false)
             dismiss()
         }
