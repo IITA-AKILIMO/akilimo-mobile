@@ -689,4 +689,5 @@
     <string name="feedback_success">Thanks for sharing your feedback!</string>
     <string name="feedback_error">Failed to submit feedback</string>
     <string name="feedback_error_exception">Failed to submit feedback: %s</string>
+    <string name="lbl_price_selection">Select price</string>
 </resources>
