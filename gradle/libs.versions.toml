@@ -78,7 +78,8 @@ androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "s
 
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 #firebase-crashlytics-ndk = { module = "com.google.firebase:firebase-crashlytics-ndk" }
-#firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 firebase-installations = { group = "com.google.firebase", name = "firebase-installations", version.ref = "firebase-installations" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "play-services-location" }
 
@@ -165,7 +166,7 @@ sentry-gradle = { id = "io.sentry.android.gradle", version.ref = "sentry-gradle"
 uzzu-env = { id = "co.uzzu.dotenv.gradle", version.ref = "env" }
 
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
-#firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-plugin" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-plugin" }
 
 sonarqube = { id = "org.sonarqube", version.ref = "sonar" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

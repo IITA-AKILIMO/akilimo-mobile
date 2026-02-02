@@ -16,6 +16,7 @@ import com.akilimo.mobile.workers.InvestmentAmountWorker
 import com.akilimo.mobile.workers.WorkConstants
 import com.akilimo.mobile.workers.WorkerScheduler
 import com.blongho.country_data.World
+import com.google.firebase.analytics.FirebaseAnalytics
 import dev.b3nedikt.app_locale.AppLocale
 import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository
 
@@ -27,6 +28,7 @@ class AkilimoApp : MultiDexApplication() {
 
     companion object {
         private lateinit var _instance: AkilimoApp
+        private lateinit var analytics: FirebaseAnalytics
         val instance: AkilimoApp
             get() = _instance
     }
@@ -39,7 +41,13 @@ class AkilimoApp : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
         _instance = this
+        analytics = FirebaseAnalytics.getInstance(this)
         networkMonitor.startMonitoring()
+
+        analytics.setAnalyticsCollectionEnabled(true)
+        analytics.setUserProperty("app_version", BuildConfig.VERSION_NAME)
+        analytics.setUserProperty("app_name", BuildConfig.APPLICATION_ID)
+
         initLocale()
         initVectorSupport()
         initTimeAndCountry()

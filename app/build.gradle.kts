@@ -191,8 +191,9 @@ dependencies {
     //Region: Google services
     implementation(libs.play.services.location)
     //Region: Firebase
-    implementation(libs.firebase.bom)
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.installations)
+    implementation(libs.firebase.analytics)
 
     // Region: Non-Compose UI
     implementation(libs.material)
