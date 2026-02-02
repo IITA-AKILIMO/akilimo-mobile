@@ -9,21 +9,16 @@ jobs:
     permissions:
       pull-requests: write
       contents: read
-    # Only run for bot PRs or specific users (uncomment as needed)
-    if: |
-      github.event.pull_request.user.login == 'dependabot[bot]' ||
-      github.event.pull_request.user.login == 'github-actions[bot]'
     steps:
-      - name: Debug Info
-        run: |
-          echo "Event: ${{ github.event_name }}"
-          echo "Action: ${{ github.event.action }}"
-          echo "PR Author: ${{ github.event.pull_request.user.login }}"
-          echo "Base Branch: ${{ github.event.pull_request.base.ref }}"
-          echo "Head Branch: ${{ github.event.pull_request.head.ref }}"
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
       - name: Auto approve PR
         uses: hmarr/auto-approve-action@v4
         with:
           review-message: "Auto approved automated PR"
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          github-token: "${{ steps.generate-token.outputs.token }}"
