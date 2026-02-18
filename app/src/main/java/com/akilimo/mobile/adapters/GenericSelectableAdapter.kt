@@ -40,8 +40,7 @@ class GenericSelectableAdapter<T : Any>(
     private var selectedId: Int? = null
 
     init {
-        // Enable stable IDs for better performance
-        setHasStableIds(true)
+        setHasStableIds(true) // Enable stable IDs for better performance
     }
 
     inner class ViewHolder(private val binding: ItemPriceOptionBinding) :
@@ -61,9 +60,11 @@ class GenericSelectableAdapter<T : Any>(
             binding.priceInput.setText(
                 if (exactValue != null && exactValue > 0.0) exactValue.toString() else ""
             )
-            if (!isExact) {
-                updateSelectionState(isSelectedItem)
-            }
+
+            // Update highlight state
+            updateSelectionState(isSelectedItem)
+
+            // Show input only if this is the custom price option and selected
             binding.priceInputLayout.visibility =
                 if (isSelectedItem && isExact) View.VISIBLE else View.GONE
 
@@ -136,13 +137,10 @@ class GenericSelectableAdapter<T : Any>(
 
     /**
      * Updates the list with new items and preserves or updates selection.
-     * Uses DiffUtil for efficient updates.
      */
     fun updateItems(newItems: List<T>) {
-        // Update selected ID based on new items if not already set
-        if (selectedId == null) {
-            selectedId = newItems.firstOrNull { isSelected(it) }?.let { getId(it) }
-        }
+        // Always refresh selectedId based on items flagged as selected
+        selectedId = newItems.firstOrNull { isSelected(it) }?.let { getId(it) } ?: selectedId
         submitList(newItems)
     }
 
@@ -153,13 +151,8 @@ class GenericSelectableAdapter<T : Any>(
         val previousSelectedId = selectedId
         selectedId = id
 
-        // Notify only affected items
-        currentList.indexOfFirst { getId(it) == previousSelectedId }.takeIf { it != -1 }?.let {
-            notifyItemChanged(it)
-        }
-        currentList.indexOfFirst { getId(it) == id }.takeIf { it != -1 }?.let {
-            notifyItemChanged(it)
-        }
+        notifyItemChangedIfExists(previousSelectedId)
+        notifyItemChangedIfExists(id)
     }
 
     /**
@@ -173,26 +166,26 @@ class GenericSelectableAdapter<T : Any>(
     fun clearSelection() {
         selectedId?.let { id ->
             selectedId = null
-            currentList.indexOfFirst { getId(it) == id }.takeIf { it != -1 }?.let {
-                notifyItemChanged(it)
-            }
+            notifyItemChangedIfExists(id)
         }
     }
 
-    /**
-     * DiffUtil callback for efficient list updates.
-     */
+    private fun notifyItemChangedIfExists(id: Int?) {
+        id?.let { itemId ->
+            val position = currentList.indexOfFirst { getId(it) == itemId }
+            if (position != -1) notifyItemChanged(position)
+        }
+    }
+
     private class GenericDiffCallback<T : Any>(
         private val getId: (T) -> Int,
         private val getLabel: (T) -> String
     ) : DiffUtil.ItemCallback<T>() {
 
-        override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
-            return getId(oldItem) == getId(newItem)
-        }
+        override fun areItemsTheSame(oldItem: T, newItem: T): Boolean =
+            getId(oldItem) == getId(newItem)
 
-        override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
-            return getLabel(oldItem) == getLabel(newItem)
-        }
+        override fun areContentsTheSame(oldItem: T, newItem: T): Boolean =
+            getLabel(oldItem) == getLabel(newItem)
     }
 }
