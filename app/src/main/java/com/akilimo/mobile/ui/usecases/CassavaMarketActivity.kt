@@ -3,17 +3,13 @@ package com.akilimo.mobile.ui.usecases
 
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.CassavaUnitAdapter
-import com.akilimo.mobile.adapters.GenericSelectableAdapter
 import com.akilimo.mobile.adapters.StarchFactoryAdapter
 import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.databinding.ActivityCassavaMarketBinding
-import com.akilimo.mobile.databinding.DialogPriceSelectionBinding
 import com.akilimo.mobile.entities.CassavaMarketPrice
 import com.akilimo.mobile.entities.CassavaUnit
 import com.akilimo.mobile.entities.SelectedCassavaMarket
@@ -28,6 +24,7 @@ import com.akilimo.mobile.repos.CassavaUnitRepo
 import com.akilimo.mobile.repos.SelectedCassavaMarketRepo
 import com.akilimo.mobile.repos.StarchFactoryRepo
 import com.akilimo.mobile.ui.components.ToolbarHelper
+import com.akilimo.mobile.ui.dialogs.CassavaPriceSelectionBottomSheet
 import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.workers.CassavaUnitWorker
 import com.akilimo.mobile.workers.StarchFactoryWorker
@@ -145,7 +142,7 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
                     }
                 }
 
-                showUnitPriceDialog(unit, selectedMarket, updatedPriceList)
+                showUnitPriceBottomSheet(unit, selectedMarket, updatedPriceList)
             }
         }
 
@@ -218,7 +215,8 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
                         name = it.name,
                         label = it.label
                     ).apply {
-                        isSelected = it.id == marketWithDetails?.selectedCassavaMarket?.starchFactoryId
+                        isSelected =
+                            it.id == marketWithDetails?.selectedCassavaMarket?.starchFactoryId
                     }
                 }
                 factoryAdapter.submitList(mapped)
@@ -235,7 +233,8 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
                         label = unit.label,
                         description = unit.description,
                     ).apply {
-                        isSelected = unit.id == marketWithDetails?.selectedCassavaMarket?.cassavaUnitId
+                        isSelected =
+                            unit.id == marketWithDetails?.selectedCassavaMarket?.cassavaUnitId
                     }
                 }
                 cassavaUnitAdapter.submitList(mapped)
@@ -328,68 +327,21 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
             }
         }
 
-    private fun showUnitPriceDialog(
+    private fun showUnitPriceBottomSheet(
         unit: CassavaUnit,
         selectedMarket: SelectedCassavaMarket?,
         prices: List<CassavaMarketPrice>
     ) {
-        val binding = DialogPriceSelectionBinding.inflate(layoutInflater)
-        val recyclerView = binding.priceRecycler.apply {
-            layoutManager = LinearLayoutManager(this@CassavaMarketActivity)
-        }
-
-        val unitOfSaleEnum = EnumUnitOfSale.entries.find {
-            it.name.equals(unit.label, ignoreCase = true)
-        } ?: EnumUnitOfSale.THOUSAND_KG
-
-        safeScope.launch(Dispatchers.IO) {
-            withContext(Dispatchers.Main) {
-                var selectedMarketPrice: CassavaMarketPrice? = null
-                val unitPriceAdapter = GenericSelectableAdapter<CassavaMarketPrice>(
-                    scope = lifecycleScope,
-                    getId = { it.id },
-                    getLabel = {
-                        val computedPrice =
-                            MathHelper.computeUnitPrice(it.averagePrice, unitOfSaleEnum)
-                        when {
-                            it.averagePrice == 0.0 -> getString(R.string.lbl_do_not_know)
-                            it.averagePrice < 0.0 -> getString(R.string.lbl_exact_price_x_per_unit_of_sale)
-                            else -> "$computedPrice ${it.currencySymbol}"
-                        }
-                    },
-                    isSelected = { it.isSelected },
-                    isExactPrice = { it.exactPrice },
-                    getExactPrice = {
-                        val matches = (selectedMarket?.marketPriceId ?: -1) == it.id
-                        when {
-                            matches -> selectedMarket?.unitPrice
-                            else -> null
-                        }
-                    },
-                    onItemClick = { selectedPrice ->
-                        selectedMarketPrice = selectedPrice
-                    },
-                    onExactAmount = { selectedPrice, amount ->
-                        selectedMarketPrice =
-                            selectedPrice.copy(exactPrice = true, averagePrice = amount)
-                    }
-                )
-                recyclerView.adapter = unitPriceAdapter
-                unitPriceAdapter.updateItems(prices)
-
-                AlertDialog.Builder(this@CassavaMarketActivity)
-                    .setTitle("Select Price for ${unitOfSaleEnum.unitOfSale(this@CassavaMarketActivity)}")
-                    .setView(binding.root)
-                    .setPositiveButton(getString(R.string.lbl_save)) { _, _ ->
-                        if (selectedMarketPrice == null) return@setPositiveButton
-                        saveSelectedPrice(unitOfSaleEnum, unit, selectedMarketPrice)
-                    }
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .create()
-                    .show()
+        CassavaPriceSelectionBottomSheet(
+            unit = unit,
+            selectedMarket = selectedMarket,
+            prices = prices,
+            onPriceSelected = { selectedPrice, uos ->
+                saveSelectedPrice(uos, unit, selectedPrice)
             }
-        }
+        ).show(supportFragmentManager, "CassavaPriceSelectionBottomSheet")
     }
+
 
     private fun saveSelectedPrice(
         uos: EnumUnitOfSale,

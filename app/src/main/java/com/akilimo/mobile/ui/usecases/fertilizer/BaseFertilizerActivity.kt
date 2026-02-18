@@ -31,10 +31,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-/**
- * Base activity for fertilizer-related screens.
- * Subclasses only need to override [fetchFertilizers] to customize data source.
- */
 abstract class BaseFertilizerActivity<VB : ViewBinding> : BaseActivity<VB>() {
 
     protected lateinit var userRepo: AkilimoUserRepo
@@ -47,22 +43,12 @@ abstract class BaseFertilizerActivity<VB : ViewBinding> : BaseActivity<VB>() {
 
     protected val gridSpanCount by lazy { resources.getInteger(R.integer.grid_span_count_default) }
 
-    // ========== Abstract members to override ==========
-
-    /** The advice task type for completion tracking */
     abstract val adviseTask: EnumAdviceTask
     abstract val useCase: EnumUseCase
 
-    /** Toolbar menu resource (null for no menu) */
     open val toolbarMenuRes: Int? = R.menu.menu_fertilizers
-
-    /** Whether layout toggle is enabled */
     open val enableLayoutToggle: Boolean = true
-
-    /** Whether refresh FAB is enabled */
     open val enableRefreshFab: Boolean = true
-
-    // ========== View accessors (override in subclass) ==========
 
     abstract fun getToolbar(): androidx.appcompat.widget.Toolbar
     abstract fun getRecyclerView(): RecyclerView
@@ -71,17 +57,9 @@ abstract class BaseFertilizerActivity<VB : ViewBinding> : BaseActivity<VB>() {
     open fun getSyncIndicator(): View? = null
     open fun getRefreshFab(): View? = null
 
-    // ========== Data fetching (THE MAIN OVERRIDE POINT) ==========
-
-    /**
-     * Override this to customize how fertilizers are fetched.
-     * Default implementation fetches by country.
-     */
     open fun fetchFertilizers(country: EnumCountry): Flow<List<Fertilizer>> {
         return fertilizerRepo.observeByCountry(country)
     }
-
-    // ========== Lifecycle ==========
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
         initRepositories()
@@ -136,7 +114,7 @@ abstract class BaseFertilizerActivity<VB : ViewBinding> : BaseActivity<VB>() {
     private fun setupRecycler() {
         listManager.initialize(
             initialGridMode = sessionManager.isFertilizerGrid,
-            onItemClick = { fertilizer -> showPriceDialog(fertilizer) }
+            onItemClick = { fertilizer -> showPriceBottomSheet(fertilizer) }
         )
     }
 
@@ -156,7 +134,6 @@ abstract class BaseFertilizerActivity<VB : ViewBinding> : BaseActivity<VB>() {
         val userId = user.id ?: return@launch
         val country = user.enumCountry
 
-        // Observe fertilizers using the overridable fetchFertilizers method
         launch {
             fetchFertilizers(country).collectLatest { fertilizers ->
                 val selectedList = selectedRepo.getSelectedSync(userId)
@@ -166,7 +143,6 @@ abstract class BaseFertilizerActivity<VB : ViewBinding> : BaseActivity<VB>() {
             }
         }
 
-        // Observe selection changes
         launch {
             selectedRepo.observeSelected(userId).collectLatest { selectedList ->
                 val selectedIds = selectedList.map { it.fertilizerId }.toSet()
@@ -192,13 +168,15 @@ abstract class BaseFertilizerActivity<VB : ViewBinding> : BaseActivity<VB>() {
         }
     }
 
-    private fun showPriceDialog(fertilizer: Fertilizer) = safeScope.launch {
+    /** Launch bottom sheet instead of alert dialog */
+    private fun showPriceBottomSheet(fertilizer: Fertilizer) = safeScope.launch {
         val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
         val userId = user.id ?: return@launch
 
-        selectionHelper.showPriceDialog(
+        selectionHelper.showPriceBottomSheet(
             fertilizer = fertilizer,
             userId = userId,
+            fragmentManager = supportFragmentManager,
             onSelectionChanged = { fertilizerId, price, displayPrice, isSelected ->
                 listManager.updateItemSelection(fertilizerId, price, displayPrice, isSelected)
             }
@@ -209,8 +187,6 @@ abstract class BaseFertilizerActivity<VB : ViewBinding> : BaseActivity<VB>() {
         getEmptyStateView()?.isVisible = isEmpty
         getRecyclerView().isVisible = !isEmpty
     }
-
-    // ========== Sync Worker ==========
 
     override fun observeSyncWorker() {
         WorkManager.getInstance(this)
@@ -233,7 +209,6 @@ abstract class BaseFertilizerActivity<VB : ViewBinding> : BaseActivity<VB>() {
                     Snackbar.LENGTH_SHORT
                 ).show()
             }
-
             else -> {
                 showSyncIndicator(false)
                 getRefreshFab()?.isEnabled = true
@@ -244,8 +219,6 @@ abstract class BaseFertilizerActivity<VB : ViewBinding> : BaseActivity<VB>() {
     private fun showSyncIndicator(visible: Boolean) {
         getSyncIndicator()?.isVisible = visible
     }
-
-    // ========== Back Navigation ==========
 
     override fun handleBackPressed(): Boolean {
         handleBackNavigation()
