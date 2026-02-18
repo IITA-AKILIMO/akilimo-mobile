@@ -54,6 +54,11 @@ class PriceSelectionBottomSheet(
         binding.priceRecycler.layoutManager = LinearLayoutManager(requireContext())
         binding.priceRecycler.adapter = adapter
         adapter.updateItems(prices)
+// Highlight the last selected item
+        val preselectedId = prices.firstOrNull { it.isSelected }?.id ?: -1
+        if (preselectedId != -1) {
+            adapter.setSelectedItem(preselectedId)
+        }
 
         binding.btnSave.setOnClickListener {
             val finalPrice = customPriceValue ?: selectedPrice?.pricePerBag
