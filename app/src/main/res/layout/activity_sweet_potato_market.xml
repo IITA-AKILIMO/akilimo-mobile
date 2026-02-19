@@ -121,7 +121,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/unitInputLayout"
-                app:prefixText="KES ">
+                app:suffixText="@string/empty_text">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/input_price"
@@ -178,5 +178,9 @@
     <include
         android:id="@+id/lyt_fab"
         layout="@layout/fab_button"
-        android:layout_gravity="bottom|end" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/spacing_large"
+        android:layout_marginBottom="@dimen/spacing_large" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

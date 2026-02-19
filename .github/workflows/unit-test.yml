@@ -6,7 +6,6 @@ on:
       - '**.md'
       - '**.txt'
       - '**.sh'
-      - '**.xml'
       - 'docs/**'
       - '.github/ISSUE_TEMPLATE/**'
   pull_request:
@@ -14,7 +13,6 @@ on:
       - '**.md'
       - '**.txt'
       - '**.sh'
-      - '**.xml'
       - 'docs/**'
       - '.github/ISSUE_TEMPLATE/**'
   workflow_dispatch:
