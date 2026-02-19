@@ -12,3 +12,5 @@ sentry-wizard.exe
 .env
 /.kotlin/
 .venv
+langtool.jar
+translations.xls*
