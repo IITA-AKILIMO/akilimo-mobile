@@ -166,7 +166,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/unitInputLayout"
-                app:prefixText="KES ">
+                app:prefixText="@string/empty_text">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/input_price"
