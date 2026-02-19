@@ -119,7 +119,7 @@ abstract class AppDatabase : RoomDatabase() {
 
 
     companion object {
-        private const val DATABASE_NAME = "AKILIMO_08_JAN_2026"
+        private const val DATABASE_NAME = "AKILIMO_19_FEB_2026"
 
         @Volatile
         private var INSTANCE: AppDatabase? = null
