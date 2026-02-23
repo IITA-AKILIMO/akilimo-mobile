@@ -10,9 +10,11 @@ import androidx.work.workDataOf
 import com.akilimo.mobile.network.NetworkMonitor
 import com.akilimo.mobile.utils.StartupManager
 import com.akilimo.mobile.workers.CassavaPriceWorker
+import com.akilimo.mobile.workers.CassavaUnitWorker
 import com.akilimo.mobile.workers.FertilizerPriceWorker
 import com.akilimo.mobile.workers.FertilizerWorker
 import com.akilimo.mobile.workers.InvestmentAmountWorker
+import com.akilimo.mobile.workers.StarchFactoryWorker
 import com.akilimo.mobile.workers.WorkConstants
 import com.akilimo.mobile.workers.WorkerScheduler
 import com.blongho.country_data.World
@@ -62,6 +64,18 @@ class AkilimoApp : MultiDexApplication() {
         WorkerScheduler.scheduleOneTimeWorker<CassavaPriceWorker>(
             context = this,
             workName = WorkConstants.CASSAVA_MARKET_PRICES_WORK_NAME,
+            inputData = workDataOf("perPage" to 100)
+        )
+
+        WorkerScheduler.scheduleOneTimeWorker<CassavaUnitWorker>(
+            context = this,
+            workName = WorkConstants.CASSAVA_UNITS_WORK_NAME,
+            inputData = workDataOf("perPage" to 100)
+        )
+
+        WorkerScheduler.scheduleOneTimeWorker<StarchFactoryWorker>(
+            context = this,
+            workName = WorkConstants.STARCH_FACTORY_WORK_NAME,
             inputData = workDataOf("perPage" to 100)
         )
 

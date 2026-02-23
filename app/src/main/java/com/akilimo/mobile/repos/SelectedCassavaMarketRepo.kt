@@ -3,6 +3,7 @@ package com.akilimo.mobile.repos
 import com.akilimo.mobile.dao.SelectedCassavaMarketDao
 import com.akilimo.mobile.entities.SelectedCassavaMarket
 import com.akilimo.mobile.entities.relations.SelectedCassavaMarketWithDetails
+import com.akilimo.mobile.enums.EnumUnitOfSale
 import kotlinx.coroutines.flow.Flow
 
 class SelectedCassavaMarketRepo(private val dao: SelectedCassavaMarketDao) {
@@ -71,6 +72,7 @@ class SelectedCassavaMarketRepo(private val dao: SelectedCassavaMarketDao) {
         factoryId: Int
     ): Flow<SelectedCassavaMarketWithDetails?> =
         dao.observeByUserAndFactory(userId, factoryId)
+    
 
 
 }

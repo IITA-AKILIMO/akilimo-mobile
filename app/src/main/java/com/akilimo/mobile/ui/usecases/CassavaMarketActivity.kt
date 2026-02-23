@@ -41,7 +41,7 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
     private lateinit var userRepo: AkilimoUserRepo
     private lateinit var factoryRepo: StarchFactoryRepo
     private lateinit var selectedCassavaMarketRepo: SelectedCassavaMarketRepo
-    private lateinit var priceRepo: CassavaMarketPriceRepo
+    private lateinit var cassavaMarketPriceRepo: CassavaMarketPriceRepo
     private lateinit var cassavaUnitRepo: CassavaUnitRepo
 
     private lateinit var factoryAdapter: StarchFactoryAdapter
@@ -64,7 +64,7 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
         userRepo = AkilimoUserRepo(database.akilimoUserDao())
         factoryRepo = StarchFactoryRepo(database.starchFactoryDao())
         selectedCassavaMarketRepo = SelectedCassavaMarketRepo(database.selectedCassavaMarketDao())
-        priceRepo = CassavaMarketPriceRepo(database.cassavaMarketPriceDao())
+        cassavaMarketPriceRepo = CassavaMarketPriceRepo(database.cassavaMarketPriceDao())
         cassavaUnitRepo = CassavaUnitRepo(database.cassavaUnitDao())
     }
 
@@ -133,7 +133,7 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
                     it.name.equals(unit.label, ignoreCase = true)
                 }
 
-                val prices = priceRepo.getPricesByCountry(countryCode)
+                val prices = cassavaMarketPriceRepo.getPricesByCountry(countryCode)
                 val updatedPriceList: List<CassavaMarketPrice> = prices.map {
                     val shouldSelect =
                         (it.id == marketPrice?.id) && (selectedMarket?.unitOfSale == uos)
