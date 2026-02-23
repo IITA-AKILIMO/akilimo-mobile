@@ -133,6 +133,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Update changelog
 
+- Update changelog
+
+
+### Build
+
+- **gradle**: Configure jvm for gradle daemon
+
 
 ## [29.0.2] - 2026-01-09
 
@@ -165,47 +172,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Miscellaneous Tasks
 
+- Update release workflow commit message
+
 - **workflow**: Fix changelog commit message format
 
 - Improve changelog generation workflow
 
 
+### Styling
+
+- **database**: Fix typo in todo comment
+
+
 ## [29.0.0] - 2025-12-30
-
-### Code Refactoring
-
-- **location**: Migrate to mapbox maps sdk v10
-
-- **permissions**: Modernize permission handling logic
-
-- **permissions**: Abstract location permission checks
-
-- **maps**: Migrate LocationPickerActivity to Mapbox SDK v11
-
-- **location**: Modernize location fetching logic
-
-
-### Features
-
-- **deps**: Update mapbox sdk and add new dependencies [**BREAKING**]
-
-- **res**: Add location pin icon
-
-- **deps**: Integrate swipe-to-refresh and location services
-
-- **location**: Add location helper utility
-
-- **permissions**: Add permission helper class
-
 
 ### Miscellaneous Tasks
 
 - Trigger release workflow on push to main
-
-
-### Revert
-
-- **release**: Set next version to 28.0.0
 
 
 ## [28.1.0] - 2025-12-28
@@ -253,6 +236,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **db**: Re-order imports and cleanup in `AppDatabase`
 
+- **location**: Migrate to mapbox maps sdk v10
+
+- **permissions**: Modernize permission handling logic
+
+- **permissions**: Abstract location permission checks
+
+- **maps**: Migrate LocationPickerActivity to Mapbox SDK v11
+
+- **location**: Modernize location fetching logic
+
 
 ### Features
 
@@ -271,6 +264,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **build**: Define base URLs in default config and remove from release/debug
 
 - **build**: Automate `versionName` and `versionCode` generation
+
+- **deps**: Update mapbox sdk and add new dependencies [**BREAKING**]
+
+- **res**: Add location pin icon
+
+- **deps**: Integrate swipe-to-refresh and location services
+
+- **location**: Add location helper utility
+
+- **permissions**: Add permission helper class
 
 
 ### Fix
@@ -342,6 +345,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **config**: Update git-cliff configuration for AKILIMO
 
+- **release**: Automate changelog generation
+
 
 ### Refactor
 
@@ -350,6 +355,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rename email validation function and add empty check
 
 - Remove unused function and add TODO for encryption
+
+
+### Revert
+
+- **release**: Set next version to 28.0.0
+
+
+### Styling
+
+- Remove unused imports
+
+
+### Build
+
+- **gradle**: Update android gradle plugin to 8.13.2
 
 
 ### ✨feat
