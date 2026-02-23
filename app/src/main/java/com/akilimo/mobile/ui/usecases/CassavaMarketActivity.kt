@@ -162,14 +162,12 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
                 R.id.rb_sell_to_factory -> {
                     swipeRefreshFactories.visibility = View.VISIBLE
                     swipeRefreshUnits.visibility = View.GONE
-                    // load factories without swipe indicator (initial/background)
                     loadFactories(isSwipe = false)
                 }
 
                 R.id.rb_sell_to_market -> {
                     swipeRefreshFactories.visibility = View.GONE
                     swipeRefreshUnits.visibility = View.VISIBLE
-                    // load units without swipe indicator (initial/background)
                     loadCassavaUnits(isSwipe = false)
                 }
             }
@@ -177,18 +175,20 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
     }
 
     private fun observeData() = safeScope.launch {
-        val userId = userRepo.getUser(sessionManager.akilimoUser)?.id ?: return@launch
+        val user = userRepo.getUser(sessionManager.akilimoUser) ?: run {
+            return@launch
+        }
 
-        // Fetch persisted selected market for this user (synchronous DB call in coroutine)
+        val userId = user.id ?: run {
+            return@launch
+        }
+
         val marketDetails = selectedCassavaMarketRepo.getSelectedByUser(userId)
         val selectedMarket = marketDetails?.selectedCassavaMarket
 
-
-        // Ensure UI reflects the saved selection when the view is loaded
         with(binding) {
             when {
                 selectedMarket?.starchFactoryId != null -> {
-                    // select factory radio and show factories container
                     rgMarketChoice.check(R.id.rb_sell_to_factory)
                     swipeRefreshFactories.visibility = View.VISIBLE
                     swipeRefreshUnits.visibility = View.GONE
@@ -196,34 +196,37 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
                 }
 
                 selectedMarket?.cassavaUnitId != null -> {
-                    // select unit radio and show units container
                     rgMarketChoice.check(R.id.rb_sell_to_market)
                     swipeRefreshFactories.visibility = View.GONE
                     swipeRefreshUnits.visibility = View.VISIBLE
                     loadCassavaUnits(isSwipe = false)
                 }
+
+                else -> {
+                    rgMarketChoice.check(R.id.rb_sell_to_factory)
+                    swipeRefreshFactories.visibility = View.VISIBLE
+                    swipeRefreshUnits.visibility = View.GONE
+                    loadFactories(isSwipe = false)
+                }
             }
         }
 
-        // Observe factories and update adapter
+        // Observe factories for live DB changes
         launch {
-            factoryRepo.observeAll().collectLatest { factories ->
+            factoryRepo.observeByCountry(user.enumCountry.name).collectLatest { factories ->
                 val marketWithDetails = selectedCassavaMarketRepo.getSelectedByUser(userId)
                 val mapped = factories.map {
-                    StarchFactory(
-                        id = it.id,
-                        name = it.name,
-                        label = it.label
-                    ).apply {
+                    StarchFactory(id = it.id, name = it.name, label = it.label).apply {
                         isSelected =
                             it.id == marketWithDetails?.selectedCassavaMarket?.starchFactoryId
                     }
                 }
                 factoryAdapter.submitList(mapped)
+                showLoading(false, isSwipe = false, isFactories = true)
             }
         }
 
-        // Observe cassava units and update adapter
+        // Observe cassava units for live DB changes
         launch {
             cassavaUnitRepo.observeAll().collectLatest { cassavaUnits ->
                 val marketWithDetails = selectedCassavaMarketRepo.getSelectedByUser(userId)
@@ -231,13 +234,14 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
                     CassavaUnit(
                         id = unit.id,
                         label = unit.label,
-                        description = unit.description,
+                        description = unit.description
                     ).apply {
                         isSelected =
                             unit.id == marketWithDetails?.selectedCassavaMarket?.cassavaUnitId
                     }
                 }
                 cassavaUnitAdapter.submitList(mapped)
+                showLoading(false, isSwipe = false, isFactories = false)
             }
         }
     }
@@ -249,29 +253,25 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
      */
     private fun loadFactories(isSwipe: Boolean) {
         showLoading(true, isSwipe, isFactories = true)
-        WorkerScheduler.scheduleOneTimeWorker<StarchFactoryWorker>(
-            context = this@CassavaMarketActivity,
-            workName = WorkConstants.STARCH_FACTORY_WORK_NAME
-        )
-        WorkStateMapper.observeWorkAsStatus(
-            this@CassavaMarketActivity,
-            this,
-            WorkConstants.STARCH_FACTORY_WORK_NAME
-        ) { status ->
-            when (status) {
-                WorkStatus.Running -> showLoading(true, isSwipe, isFactories = true)
-                is WorkStatus.Failed -> {
-                    showSnackBar(status.payload.toText(this@CassavaMarketActivity))
-                    showLoading(false, isSwipe, isFactories = true)
-                }
-
-                is WorkStatus.Success -> {
-                    showSnackBar(status.payload.toText(this@CassavaMarketActivity))
-                    showLoading(false, isSwipe, isFactories = true)
-                }
-
-                else -> Unit
+        safeScope.launch {
+            val user = userRepo.getUser(sessionManager.akilimoUser) ?: run {
+                showLoading(false, isSwipe, isFactories = true)
+                return@launch
             }
+
+            val userId = user.id ?: run {
+                showLoading(false, isSwipe, isFactories = true)
+                return@launch
+            }
+
+            val marketWithDetails = selectedCassavaMarketRepo.getSelectedByUser(userId)
+            val factories = factoryRepo.findAllByCountry(user.enumCountry.name).map {
+                StarchFactory(id = it.id, name = it.name, label = it.label).apply {
+                    isSelected = it.id == marketWithDetails?.selectedCassavaMarket?.starchFactoryId
+                }
+            }
+            factoryAdapter.submitList(factories)
+            showLoading(false, isSwipe, isFactories = true)
         }
     }
 
@@ -281,29 +281,23 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
      */
     private fun loadCassavaUnits(isSwipe: Boolean) {
         showLoading(true, isSwipe, isFactories = false)
-        WorkerScheduler.scheduleOneTimeWorker<CassavaUnitWorker>(
-            context = this@CassavaMarketActivity,
-            workName = WorkConstants.CASSAVA_UNITS_WORK_NAME
-        )
-        WorkStateMapper.observeWorkAsStatus(
-            this@CassavaMarketActivity,
-            this,
-            WorkConstants.CASSAVA_UNITS_WORK_NAME
-        ) { status ->
-            when (status) {
-                WorkStatus.Running -> showLoading(true, isSwipe, isFactories = false)
-                is WorkStatus.Failed -> {
-                    showSnackBar(status.payload.toText(this@CassavaMarketActivity))
-                    showLoading(false, isSwipe, isFactories = false)
-                }
-
-                is WorkStatus.Success -> {
-                    showSnackBar(status.payload.toText(this@CassavaMarketActivity))
-                    showLoading(false, isSwipe, isFactories = false)
-                }
-
-                else -> Unit
+        safeScope.launch {
+            val userId = userRepo.getUser(sessionManager.akilimoUser)?.id ?: run {
+                showLoading(false, isSwipe, isFactories = false)
+                return@launch
             }
+            val marketWithDetails = selectedCassavaMarketRepo.getSelectedByUser(userId)
+            val units = cassavaUnitRepo.getAll().map { unit ->
+                CassavaUnit(
+                    id = unit.id,
+                    label = unit.label,
+                    description = unit.description
+                ).apply {
+                    isSelected = unit.id == marketWithDetails?.selectedCassavaMarket?.cassavaUnitId
+                }
+            }
+            cassavaUnitAdapter.submitList(units)
+            showLoading(false, isSwipe, isFactories = false)
         }
     }
 

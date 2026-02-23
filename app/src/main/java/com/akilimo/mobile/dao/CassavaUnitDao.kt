@@ -17,6 +17,8 @@ interface CassavaUnitDao {
     @Query("SELECT * FROM cassava_units WHERE id = :unitId LIMIT 1")
     fun getById(unitId: Int): CassavaUnit?
 
+    @Query("SELECT * FROM cassava_units ORDER BY sort_order ASC")
+    fun getAll(): List<CassavaUnit>
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(unit: CassavaUnit): Long
 
