@@ -690,6 +690,7 @@
     <string name="feedback_error">Failed to submit feedback</string>
     <string name="feedback_error_exception">Failed to submit feedback: %s</string>
     <string name="lbl_price_selection">Select price</string>
+    <string name="lbl_select_price_hint">Select price</string>
 
     <string name="error_generic">Something went wrong. Please try again.</string>
     <string name="error_saving_selection">Failed to save your selection. Please try again.</string>
