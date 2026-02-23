@@ -25,6 +25,6 @@ class InterCropFertilizersActivity : BaseFertilizerActivity<ActivityFertilizersB
     override fun getRefreshFab(): View = binding.fabRefresh
 
     override fun fetchFertilizers(country: EnumCountry): Flow<List<Fertilizer>> {
-        return fertilizerRepo.observeByCountryAndUseCase(country, useCase)
+        return fertilizerRepo.observeByCountry(country)
     }
 }
