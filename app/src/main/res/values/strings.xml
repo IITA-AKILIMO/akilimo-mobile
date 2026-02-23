@@ -698,6 +698,7 @@
     <string name="error_loading_units">Failed to load cassava units. Please try again.</string>
 
     <string name="lbl_restart_required">Restart Required</string>
+    <string name="language_change_requires_restart">Changing the language will restart the app</string>
     <string name="lbl_restart_language_message">The language change will take effect after restarting the app. Would you like to restart now?</string>
     <string name="lbl_restart_now">Restart Now</string>
     <string name="lbl_restart_later">Later</string>
