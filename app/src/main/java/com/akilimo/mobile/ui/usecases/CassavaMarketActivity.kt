@@ -98,6 +98,13 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
         }
 
         factoryAdapter.onItemClick = { factory ->
+
+            // Update UI immediately for instant feedback
+            val updatedList = factoryAdapter.currentList.map {
+                it.copy().apply { isSelected = it.id == factory.id }
+            }
+            factoryAdapter.submitList(updatedList)
+
             safeScope.launch(Dispatchers.IO) {
                 try {
                     val userId = currentUser?.id ?: return@launch
