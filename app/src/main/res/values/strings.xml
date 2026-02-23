@@ -542,7 +542,6 @@
     <string name="lbl_agree_to_terms">I accept the terms and conditions of the application</string>
     <string name="lbl_agree_to_disclaimer">Please confirm you have read and understood this disclaimer.</string>
     <string name="lbl_accept_terms_prompt">Accept the terms and conditions before proceeding</string>
-    <string name="lbl_restart_app_prompt">Restart the app in order to apply translations to the navigation buttons?</string>
     <string name="lbl_optional">(Optional)</string>
     <string name="lbl_country_supported">Currently AKILIMO gives advice for farms located in Nigeria, Tanzania, Rwanda, Burundi and Ghana. Your selected area does not match your country selection</string>
     <string name="lbl_unsupported_country">Unsupported country: %s</string>
@@ -697,4 +696,10 @@
     <string name="error_loading_prices">Failed to load prices. Please try again.</string>
     <string name="error_loading_factories">Failed to load factories. Please try again.</string>
     <string name="error_loading_units">Failed to load cassava units. Please try again.</string>
+
+    <string name="lbl_restart_required">Restart Required</string>
+    <string name="language_change_requires_restart">Changing the language will restart the app</string>
+    <string name="lbl_restart_language_message">The language change will take effect after restarting the app. Would you like to restart now?</string>
+    <string name="lbl_restart_now">Restart Now</string>
+    <string name="lbl_restart_later">Later</string>
 </resources>

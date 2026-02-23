@@ -2,18 +2,18 @@ package com.akilimo.mobile.helper
 
 import android.content.Context
 import androidx.core.content.edit
-import com.akilimo.mobile.BuildConfig
+import com.akilimo.mobile.Locales
 import com.akilimo.mobile.utils.DateHelper
 import io.sentry.Sentry
 import java.util.UUID
 
-class SessionManager(context: Context) {
-
-    private val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+class SessionManager private constructor(private val pref: android.content.SharedPreferences) {
 
     companion object {
         private const val PREF_NAME = "new-akilimo-config"
 
+        // FIXED: removed trailing space
+        private const val KEY_LANG_CODE = "languageCode"
         private const val KEY_DEFAULT_USER = "userName"
         private const val KEY_API_RESOURCE = "apiResource"
         private const val KEY_FUELROD_RESOURCE = "fuelrodResource"
@@ -33,7 +33,44 @@ class SessionManager(context: Context) {
             "pk.eyJ1IjoibWFzZ2VlayIsImEiOiJjanp0bm43ZmwwNm9jM29udjJod3V6dzB1In0.MevkJtANWZ8Wl9abnLu1Uw"
         private const val DEFAULT_TERMS_URL =
             "https://akilimo.org/index.php/akilimo-privacy-policy"
+
+        @Volatile
+        private var INSTANCE: SessionManager? = null
+
+        /** Lazily initialize and return a singleton backed by applicationContext prefs. */
+        fun get(context: Context?): SessionManager {
+            // Prefer the provided context; fall back to application singleton if null
+            val appContext = context?.applicationContext ?: run {
+                // If you have an Application singleton, use it here:
+                // AkilimoApp.instance?.applicationContext
+                throw IllegalArgumentException("Context must not be null when obtaining SessionManager")
+            }
+
+            val existing = INSTANCE
+            if (existing != null) return existing
+
+            return synchronized(this) {
+                val again = INSTANCE
+                if (again != null) again
+                else {
+                    val prefs = appContext.applicationContext.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+                    val created = SessionManager(prefs)
+                    INSTANCE = created
+                    created
+                }
+            }
+        }
+
+        /** Non-singleton helper for tests or short-lived usage. */
+        fun from(context: Context): SessionManager {
+            val prefs = context.applicationContext.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+            return SessionManager(prefs)
+        }
     }
+
+    var languageCode: String
+        get() = pref.getString(KEY_LANG_CODE, Locales.English.language).orEmpty()
+        set(value) = pref.edit { putString(KEY_LANG_CODE, value) }
 
     var akilimoUser: String
         get() = pref.getString(KEY_DEFAULT_USER, DEFAULT_USER).orEmpty()
@@ -102,19 +139,18 @@ class SessionManager(context: Context) {
         get() = pref.getBoolean("rememberAreaUnit", false)
         set(value) = pref.edit { putBoolean("rememberAreaUnit", value) }
 
-
     fun decrementNotificationCount() {
         val current = notificationCount
         if (current > 0) notificationCount = current - 1
     }
 
     fun getAppVersionInfo(): String = buildString {
-        append("Version: ${BuildConfig.VERSION_NAME}\n")
+        append("Version: ${com.akilimo.mobile.BuildConfig.VERSION_NAME}\n")
         append("Release date: ${getAppBuildDate()}")
     }
 
     private fun getAppBuildDate(): String = try {
-        val unixTimestamp = BuildConfig.VERSION_CODE * 1000L
+        val unixTimestamp = com.akilimo.mobile.BuildConfig.VERSION_CODE * 1000L
         DateHelper.unixTimeStampToDateTime(unixTimestamp).toString()
     } catch (ex: Exception) {
         Sentry.captureException(ex)

@@ -1,6 +1,7 @@
 package com.akilimo.mobile.base
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -15,6 +16,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import com.akilimo.mobile.AkilimoApp
 import com.akilimo.mobile.AppDatabase
+import com.akilimo.mobile.Locales
+import com.akilimo.mobile.helper.LocaleHelper
 import com.akilimo.mobile.helper.SessionManager
 import com.akilimo.mobile.interfaces.DefaultDispatcherProvider
 import com.akilimo.mobile.interfaces.IDispatcherProvider
@@ -29,7 +32,10 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     }
 
     protected val dispatcherProvider: IDispatcherProvider = DefaultDispatcherProvider()
-    protected val sessionManager: SessionManager by lazy { SessionManager(this@BaseActivity) }
+    protected val sessionManager: SessionManager by lazy {
+        SessionManager.get(applicationContext)
+    }
+
     protected val database: AppDatabase by lazy { AppDatabase.getDatabase(this@BaseActivity) }
     protected lateinit var permissionHelper: PermissionHelper
 
@@ -71,6 +77,13 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
      * Called once during onCreate.
      */
     protected abstract fun onBindingReady(savedInstanceState: Bundle?)
+
+    override fun attachBaseContext(newBase: Context) {
+        val session = SessionManager.get(newBase) // safe: newBase is non-null
+        val savedLang = session.languageCode.takeIf { it.isNotBlank() } ?: "en"
+        val wrapped = LocaleHelper.wrap(newBase, savedLang)
+        super.attachBaseContext(wrapped)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
