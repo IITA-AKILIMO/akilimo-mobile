@@ -26,4 +26,7 @@ class CassavaUnitRepo(
 
     /** Clear all units */
     suspend fun clear() = dao.clear()
+
+    /** One-shot fetch of all units */
+    suspend fun getAll(): List<CassavaUnit> = dao.getAll()
 }
