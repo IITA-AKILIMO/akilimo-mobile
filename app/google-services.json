@@ -1,14 +1,13 @@
 {
   "project_info": {
-    "project_number": "530681337655",
-    "firebase_url": "https://fertilizerestimate.firebaseio.com",
-    "project_id": "fertilizerestimate",
-    "storage_bucket": "fertilizerestimate.firebasestorage.app"
+    "project_number": "677179036017",
+    "project_id": "akilimo-dst-tools",
+    "storage_bucket": "akilimo-dst-tools.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:530681337655:android:a44dc9b13971b3aa022cb2",
+        "mobilesdk_app_id": "1:677179036017:android:bd4961082f90360d0de6d0",
         "android_client_info": {
           "package_name": "com.akilimo.mobile"
         }
@@ -16,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBrL3vtT4E3MDDCUsdOsmOpHdAHkYZqBF4"
+          "current_key": "AIzaSyCTr3eFDPzUNNj4-YB1YQYZ82J8HN-Dqv8"
         }
       ],
       "services": {

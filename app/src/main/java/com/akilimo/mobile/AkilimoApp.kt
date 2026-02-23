@@ -10,12 +10,15 @@ import androidx.work.workDataOf
 import com.akilimo.mobile.network.NetworkMonitor
 import com.akilimo.mobile.utils.StartupManager
 import com.akilimo.mobile.workers.CassavaPriceWorker
+import com.akilimo.mobile.workers.CassavaUnitWorker
 import com.akilimo.mobile.workers.FertilizerPriceWorker
 import com.akilimo.mobile.workers.FertilizerWorker
 import com.akilimo.mobile.workers.InvestmentAmountWorker
+import com.akilimo.mobile.workers.StarchFactoryWorker
 import com.akilimo.mobile.workers.WorkConstants
 import com.akilimo.mobile.workers.WorkerScheduler
 import com.blongho.country_data.World
+import com.google.firebase.analytics.FirebaseAnalytics
 import dev.b3nedikt.app_locale.AppLocale
 import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository
 
@@ -27,6 +30,7 @@ class AkilimoApp : MultiDexApplication() {
 
     companion object {
         private lateinit var _instance: AkilimoApp
+        private lateinit var analytics: FirebaseAnalytics
         val instance: AkilimoApp
             get() = _instance
     }
@@ -39,7 +43,13 @@ class AkilimoApp : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
         _instance = this
+        analytics = FirebaseAnalytics.getInstance(this)
         networkMonitor.startMonitoring()
+
+        analytics.setAnalyticsCollectionEnabled(true)
+        analytics.setUserProperty("app_version", BuildConfig.VERSION_NAME)
+        analytics.setUserProperty("app_name", BuildConfig.APPLICATION_ID)
+
         initLocale()
         initVectorSupport()
         initTimeAndCountry()
@@ -54,6 +64,18 @@ class AkilimoApp : MultiDexApplication() {
         WorkerScheduler.scheduleOneTimeWorker<CassavaPriceWorker>(
             context = this,
             workName = WorkConstants.CASSAVA_MARKET_PRICES_WORK_NAME,
+            inputData = workDataOf("perPage" to 100)
+        )
+
+        WorkerScheduler.scheduleOneTimeWorker<CassavaUnitWorker>(
+            context = this,
+            workName = WorkConstants.CASSAVA_UNITS_WORK_NAME,
+            inputData = workDataOf("perPage" to 100)
+        )
+
+        WorkerScheduler.scheduleOneTimeWorker<StarchFactoryWorker>(
+            context = this,
+            workName = WorkConstants.STARCH_FACTORY_WORK_NAME,
             inputData = workDataOf("perPage" to 100)
         )
 

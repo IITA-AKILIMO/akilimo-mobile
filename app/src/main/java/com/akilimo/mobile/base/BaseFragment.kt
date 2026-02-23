@@ -46,7 +46,7 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
 
         // Safe initialization after view is created
         context?.let {
-            sessionManager = SessionManager(it)
+            sessionManager = SessionManager.get(it)
             database = AppDatabase.getDatabase(it)
         } ?: throw IllegalStateException("Context is not available for initialization")
 

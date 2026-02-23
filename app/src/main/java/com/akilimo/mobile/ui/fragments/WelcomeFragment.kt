@@ -4,14 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.akilimo.mobile.Locales
+import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.ValueOptionAdapter
 import com.akilimo.mobile.base.BaseStepFragment
 import com.akilimo.mobile.databinding.FragmentWelcomeBinding
 import com.akilimo.mobile.dto.LanguageOption
 import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.repos.AkilimoUserRepo
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.stepstone.stepper.VerificationError
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class WelcomeFragment : BaseStepFragment<FragmentWelcomeBinding>() {
 
@@ -38,8 +42,21 @@ class WelcomeFragment : BaseStepFragment<FragmentWelcomeBinding>() {
         binding.dropLanguage.setOnItemClickListener { _, _, position, _ ->
             val selected = languageOptions[position]
             binding.dropLanguage.setText(selected.displayLabel, false)
-        }
+            safeScope.launch {
+                val user = userRepository.getUser(sessionManager.akilimoUser) ?: AkilimoUser(
+                    userName = sessionManager.akilimoUser
+                )
+                userRepository.saveOrUpdateUser(
+                    user.copy(languageCode = selected.valueOption),
+                    sessionManager.akilimoUser
+                )
+                sessionManager.languageCode = selected.valueOption
 
+                withContext(Dispatchers.Main) {
+                    promptRestart()
+                }
+            }
+        }
     }
 
     override fun prefillFromEntity() {
@@ -52,26 +69,29 @@ class WelcomeFragment : BaseStepFragment<FragmentWelcomeBinding>() {
                 ?: languageOptions.find { it.valueOption == Locales.English.language }
                 ?: languageOptions.first()
 
-            binding.dropLanguage.setText(selectedOption.displayLabel, false)
+            withContext(Dispatchers.Main) {
+                binding.dropLanguage.setText(selectedOption.displayLabel, false)
+            }
         }
     }
 
-    override fun verifyStep(): VerificationError? = with(binding) {
-        val langCode =
-            languageOptions.find { it.displayLabel == dropLanguage.text.toString() }?.valueOption
-                ?: Locales.English.language
-
-        safeScope.launch {
-            val user = userRepository.getUser(sessionManager.akilimoUser) ?: AkilimoUser(
-                userName = sessionManager.akilimoUser
-            )
-
-            userRepository.saveOrUpdateUser(
-                user.copy(
-                    languageCode = langCode
-                ), sessionManager.akilimoUser
-            )
-        }
-        return null
+    private fun promptRestart() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.lbl_restart_required)
+            .setMessage(R.string.lbl_restart_language_message)
+            .setCancelable(false)
+            .setPositiveButton(R.string.lbl_restart_now) { _, _ ->
+                val intent = requireActivity().packageManager
+                    .getLaunchIntentForPackage(requireActivity().packageName)
+                    ?.apply { addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK or android.content.Intent.FLAG_ACTIVITY_NEW_TASK) }
+                requireActivity().finish()
+                if (intent != null) {
+                    startActivity(intent)
+                }
+            }
+            .setNegativeButton(R.string.lbl_restart_later) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 }

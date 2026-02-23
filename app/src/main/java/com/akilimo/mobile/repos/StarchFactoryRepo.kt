@@ -20,4 +20,8 @@ class StarchFactoryRepo(private val dao: StarchFactoryDao) {
 
     fun observeByCountry(countryCode: String): Flow<List<StarchFactory>> =
         dao.observeAllByCountry(countryCode)
+
+    /** One-shot fetch of all factories by country */
+    suspend fun findAllByCountry(countryCode: String): List<StarchFactory> =
+        dao.findAllByCountry(countryCode)
 }

@@ -6,7 +6,6 @@ on:
       - '**.md'
       - '**.txt'
       - '**.sh'
-      - '**.xml'
       - 'docs/**'
       - '.github/ISSUE_TEMPLATE/**'
   pull_request:
@@ -14,7 +13,6 @@ on:
       - '**.md'
       - '**.txt'
       - '**.sh'
-      - '**.xml'
       - 'docs/**'
       - '.github/ISSUE_TEMPLATE/**'
   workflow_dispatch:
@@ -24,8 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Unit tests
     concurrency:
-      group: unit-tests-${{ github.head_ref || github.ref_name }}
-      cancel-in-progress: true
+      # Use commit SHA for concurrency to skip duplicate work across branches
+      group: unit-tests-${{ github.sha }}
+      cancel-in-progress: false  # Don't cancel - let it finish so cache is saved
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -36,7 +35,7 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch all history for git-cliff to work properly
+          fetch-depth: 0
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -44,7 +43,6 @@ jobs:
           distribution: 'temurin'
           java-version: 21
 
-      # Get VERSION_CODE before caching
       - name: Get build version
         id: get_version
         run: |
@@ -56,13 +54,12 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      # Enhanced Gradle caching for unit tests
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
         with:
           cache-read-only: false
 
-      # Cache unit test results with VERSION_CODE in key
+      # Cache based on commit SHA and test file hashes
       - name: Cache unit test results
         id: cache_tests
         uses: actions/cache@v4
@@ -70,21 +67,22 @@ jobs:
           path: |
             app/build/test-results
             app/build/reports/tests
-          key: unit-tests-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ hashFiles('app/src/test/**/*.kt', 'app/src/test/**/*.java', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', '**/*.gradle*', '**/gradle.properties') }}
+          # Primary key: commit SHA + test code hash
+          key: unit-tests-${{ runner.os }}-${{ github.sha }}-${{ hashFiles('app/src/test/**/*.kt', 'app/src/test/**/*.java', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', '**/*.gradle*', '**/gradle.properties') }}
           restore-keys: |
-            unit-tests-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-
+            unit-tests-${{ runner.os }}-${{ github.sha }}-
             unit-tests-${{ runner.os }}-
 
-      # Check if we can skip tests
+      # Skip if exact commit + code hash found in cache
       - name: Check if tests can be skipped
         id: check_tests
         run: |
           if [ "${{ steps.cache_tests.outputs.cache-hit }}" == "true" ]; then
             echo "skip_tests=true" >> $GITHUB_OUTPUT
-            echo "✅ Unit tests haven't changed, using cached results"
+            echo "✅ Tests already run for commit ${{ github.sha }} - using cached results"
           else
             echo "skip_tests=false" >> $GITHUB_OUTPUT
-            echo "🧪 Running unit tests (code has changed)"
+            echo "🧪 Running unit tests for commit ${{ github.sha }}"
           fi
 
       - name: Run Unit tests
