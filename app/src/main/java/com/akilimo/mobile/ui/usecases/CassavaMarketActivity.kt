@@ -382,7 +382,10 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
                 val unitPrice = if (selectedPrice?.exactPrice == true) {
                     selectedPrice.averagePrice
                 } else {
-                    MathHelper.computeUnitPrice(selectedPrice?.averagePrice ?: 0.0, uos)
+                    MathHelper.computeUnitPrice(
+                        avgPrice = selectedPrice?.averagePrice ?: 0.0,
+                        unitOfSaleEnum = uos
+                    )
                 }
                 val selected = SelectedCassavaMarket(
                     userId = userId,
@@ -392,10 +395,17 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
                     marketPriceId = selectedPrice?.id
                 )
                 selectedCassavaMarketRepo.select(selected)
-                // No manual adapter update — the observer will react automatically
+
+                withContext(Dispatchers.Main) {
+                    // Only update the adapter after a valid price has been saved
+                    val updatedList = cassavaUnitAdapter.currentList.map {
+                        it.copy().apply { isSelected = it.id == unit.id }
+                    }
+                    cassavaUnitAdapter.submitList(updatedList)
+                }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    showSnackBar(e.localizedMessage ?: getString(R.string.error_generic))
+                    showSnackBar(e.localizedMessage ?: getString(R.string.error_saving_selection))
                 }
             }
         }
