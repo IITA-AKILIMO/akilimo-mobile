@@ -12,8 +12,8 @@ object Locales {
 
     val supportedLocales: List<Locale> = listOf(
         english,
-        french,
         swahili,
-        kinyarwanda
+        kinyarwanda,
+        french
     )
 }
