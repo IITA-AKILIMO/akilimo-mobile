@@ -11,7 +11,9 @@ import com.akilimo.mobile.base.BaseStepFragment
 import com.akilimo.mobile.databinding.FragmentBioDataBinding
 import com.akilimo.mobile.dto.InterestOption
 import com.akilimo.mobile.entities.AkilimoUser
+import com.akilimo.mobile.entities.UserPreferences
 import com.akilimo.mobile.repos.AkilimoUserRepo
+import com.akilimo.mobile.repos.UserPreferencesRepo
 import com.stepstone.stepper.VerificationError
 import kotlinx.coroutines.launch
 
@@ -31,6 +33,7 @@ class BioDataFragment : BaseStepFragment<FragmentBioDataBinding>() {
     private var interestOptions: List<InterestOption> = emptyList()
 
     private lateinit var userRepository: AkilimoUserRepo
+    private lateinit var prefsRepo: UserPreferencesRepo
 
     override fun inflateBinding(
         inflater: LayoutInflater,
@@ -39,6 +42,7 @@ class BioDataFragment : BaseStepFragment<FragmentBioDataBinding>() {
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
         userRepository = AkilimoUserRepo(database.akilimoUserDao())
+        prefsRepo = UserPreferencesRepo(database.userPreferencesDao())
         genderOptions = listOf(
             InterestOption(getString(R.string.lbl_gender_prompt), ""),
             InterestOption(getString(R.string.lbl_female), "F"),
@@ -76,18 +80,33 @@ class BioDataFragment : BaseStepFragment<FragmentBioDataBinding>() {
     override fun prefillFromEntity() {
         safeScope.launch {
             val user = userRepository.getUser(sessionManager.akilimoUser)
-            user?.let {
-                binding.edtFirstName.setText(it.firstName)
-                binding.edtLastName.setText(it.lastName)
-                binding.edtEmail.setText(it.email)
-                binding.ccpCountry.fullNumber = it.mobileNumber
-                binding.edtPhone.setText(it.mobileNumber)
+            val prefs = prefsRepo.getOrDefault()
+
+            if (user != null) {
+                binding.edtFirstName.setText(user.firstName)
+                binding.edtLastName.setText(user.lastName)
+                binding.edtEmail.setText(user.email)
+                binding.ccpCountry.fullNumber = user.mobileNumber
+                binding.edtPhone.setText(user.mobileNumber)
                 binding.dropGender.setText(
-                    genderOptions.find { opt -> opt.valueOption == it.gender }?.displayLabel,
+                    genderOptions.find { opt -> opt.valueOption == user.gender }?.displayLabel,
                     false
                 )
                 binding.dropInterest.setText(
-                    interestOptions.find { opt -> opt.valueOption == it.akilimoInterest }?.displayLabel,
+                    interestOptions.find { opt -> opt.valueOption == user.akilimoInterest }?.displayLabel,
+                    false
+                )
+            } else {
+                //Fall back to user preferences
+                binding.edtFirstName.setText(prefs.firstName)
+                binding.edtLastName.setText(prefs.lastName)
+                binding.edtEmail.setText(prefs.email)
+                prefs.phoneNumber?.let {
+                    binding.ccpCountry.fullNumber = it
+                    binding.edtPhone.setText(it)
+                }
+                binding.dropGender.setText(
+                    genderOptions.find { opt -> opt.valueOption == prefs.gender }?.displayLabel,
                     false
                 )
             }

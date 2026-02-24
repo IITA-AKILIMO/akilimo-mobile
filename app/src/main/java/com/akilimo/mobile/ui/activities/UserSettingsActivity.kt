@@ -13,9 +13,11 @@ import com.akilimo.mobile.dto.AreaUnitOption
 import com.akilimo.mobile.dto.CountryOption
 import com.akilimo.mobile.dto.InterestOption
 import com.akilimo.mobile.dto.findByValue
+import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.entities.UserPreferences
 import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.enums.EnumCountry
+import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.UserPreferencesRepo
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.processphoenix.ProcessPhoenix
@@ -25,6 +27,7 @@ import timber.log.Timber
 class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
 
     private lateinit var prefsRepo: UserPreferencesRepo
+    private lateinit var userRepo: AkilimoUserRepo
 
     // Dropdown option lists
     private lateinit var genderOptions: List<InterestOption>
@@ -37,6 +40,7 @@ class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
         prefsRepo = UserPreferencesRepo(database.userPreferencesDao())
+        userRepo = AkilimoUserRepo(database.akilimoUserDao())
 
         setupToolbar()
         setupDropdownOptions()
@@ -230,6 +234,25 @@ class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
 
         lifecycleScope.launch {
             prefsRepo.save(preferences)
+
+            // Sync to AkilimoUser for recommendation API consistency
+            val akilimoUser = userRepo.getUser(sessionManager.akilimoUser) ?: AkilimoUser(
+                userName = sessionManager.akilimoUser
+            )
+            val updatedAkilimoUser = akilimoUser.copy(
+                firstName = preferences.firstName,
+                lastName = preferences.lastName,
+                email = preferences.email,
+                mobileNumber = preferences.phoneNumber,
+                mobileCountryCode = preferences.phoneCountryCode,
+                gender = preferences.gender,
+                enumCountry = preferences.country,
+                enumAreaUnit = preferences.preferredAreaUnit,
+                languageCode = preferences.languageCode,
+                sendEmail = preferences.notifyByEmail,
+                sendSms = preferences.notifyBySms
+            )
+            userRepo.saveOrUpdateUser(updatedAkilimoUser, sessionManager.akilimoUser)
 
             // Sync language to SessionManager
             sessionManager.languageCode = langCode
