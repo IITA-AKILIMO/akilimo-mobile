@@ -151,7 +151,7 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
         swipeRefreshUnits.setOnRefreshListener {
             WorkerScheduler.scheduleOneTimeWorker<CassavaUnitWorker>(
                 context = this@CassavaMarketActivity,
-                workName = WorkConstants.CASSAVA_UNIT_WORK_NAME
+                workName = WorkConstants.CASSAVA_UNITS_WORK_NAME
             )
         }
     }
@@ -174,7 +174,7 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
                     swipeRefreshUnits.isVisible = true
                     WorkerScheduler.scheduleOneTimeWorker<CassavaUnitWorker>(
                         context = this@CassavaMarketActivity,
-                        workName = WorkConstants.CASSAVA_UNIT_WORK_NAME
+                        workName = WorkConstants.CASSAVA_UNITS_WORK_NAME
                     )
                 }
             }
