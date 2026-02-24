@@ -12,7 +12,6 @@ import com.akilimo.mobile.dto.LanguageOption
 import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.stepstone.stepper.VerificationError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -63,10 +62,10 @@ class WelcomeFragment : BaseStepFragment<FragmentWelcomeBinding>() {
         safeScope.launch {
             val user = userRepository.getUser(sessionManager.akilimoUser)
             val currentLangCode =
-                user?.languageCode?.takeIf { it.isNotBlank() } ?: Locales.English.language
+                user?.languageCode?.takeIf { it.isNotBlank() } ?: Locales.english.language
 
             val selectedOption = languageOptions.find { it.valueOption == currentLangCode }
-                ?: languageOptions.find { it.valueOption == Locales.English.language }
+                ?: languageOptions.find { it.valueOption == Locales.english.language }
                 ?: languageOptions.first()
 
             withContext(Dispatchers.Main) {
