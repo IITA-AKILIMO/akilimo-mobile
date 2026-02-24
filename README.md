@@ -8,10 +8,12 @@
 ## Overview
 
 AKILIMO Mobile is an Android-based decision support tool developed by the International Institute of
-Tropical Agriculture (IITA) under the African Cassava Agronomy Initiative (ACAI). 
+Tropical Agriculture (IITA) under the African Cassava Agronomy Initiative (ACAI).
 
-The app provides site-specific agronomic advice tailored to farmers in sub-Saharan Africa, enabling them to optimize fertilizer
-use, improve yields, and make informed farming decisions for crops including cassava, maize, and sweet potato.
+The app provides site-specific agronomic advice tailored to farmers in sub-Saharan Africa, enabling
+them to optimize fertilizer
+use, improve yields, and make informed farming decisions for crops including cassava, maize, and
+sweet potato.
 
 ## Features
 
@@ -25,7 +27,8 @@ use, improve yields, and make informed farming decisions for crops including cas
 - **Multi-Channel Delivery**: Provides recommendations directly within the app, via SMS, or through
   email.
 
-- **Location-Based Advice**: Uses GPS and mapping technology to provide site-specific recommendations.
+- **Location-Based Advice**: Uses GPS and mapping technology to provide site-specific
+  recommendations.
 
 - **Multi-Country Support**: Available for farmers in Tanzania, Rwanda, Ghana, and Burundi.
 
@@ -55,8 +58,8 @@ To build and run the AKILIMO Mobile app locally:
 2. Open the project in Android Studio.
 
 3. Configure your local.properties file with required API keys:
-   - Mapbox API key
-   - Firebase configuration
+    - Mapbox API key
+    - Firebase configuration
 
 4. Build the project:
 
@@ -119,7 +122,8 @@ For UI tests:
 
 ## Release Process
 
-The project uses GitHub Actions for automated releases to the Google Play Store. The workflow is defined in `.github/workflows/android.yml`.
+The project uses GitHub Actions for automated releases to the Google Play Store. The workflow is
+defined in `.github/workflows/android.yml`.
 
 ### Release Notes Generation
 
@@ -127,9 +131,9 @@ Release notes are automatically generated during the build process:
 
 1. Update the `CHANGELOG.md` file with details of your changes following the established format
 2. The GitHub Actions workflow will:
-   - Extract the latest version information from `CHANGELOG.md`
-   - Generate release notes in English and Swahili
-   - Include these notes in both the Google Play Store release and GitHub release
+    - Extract the latest version information from `CHANGELOG.md`
+    - Generate release notes in English and Swahili
+    - Include these notes in both the Google Play Store release and GitHub release
 
 ### Manual Release
 
@@ -139,7 +143,12 @@ If you need to manually generate release notes:
 python .github/scripts/generate_release_notes.py
 ```
 
-This will create release notes files in the `distribution/whatsnew/` directory based on the latest entry in `CHANGELOG.md`.
+This will create release notes files in the `distribution/whatsnew/` directory based on the latest
+entry in `CHANGELOG.md`.
+
+## Tools
+
+- https://pypi.org/project/ai-gen-commit/
 
 ## Contributing
 
@@ -157,6 +166,8 @@ This project is licensed under the terms specified in the [LICENSE.md](LICENSE.m
 
 ## Contact
 
-International Institute of Tropical Agriculture (IITA) - [https://www.iita.org/](https://www.iita.org/)
+International Institute of Tropical Agriculture (
+IITA) - [https://www.iita.org/](https://www.iita.org/)
 
-Project Link: [https://github.com/IITA-AKILIMO/akilimo-mobile](https://github.com/IITA-AKILIMO/akilimo-mobile)
+Project
+Link: [https://github.com/IITA-AKILIMO/akilimo-mobile](https://github.com/IITA-AKILIMO/akilimo-mobile)
