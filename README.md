@@ -1,173 +1,264 @@
 # AKILIMO Mobile
 
 [![Android CI](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/android.yml/badge.svg)](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/android.yml)
-[![Quality gate](https://sonar.munywele.co.ke/api/project_badges/quality_gate?project=IITA-AKILIMO_akilimo-mobile_abcb50d1-1abd-4e32-bd76-b385f65cfc5d&token=sqb_31a18546176db4735c7afc45a9561b931d046803)](https://sonar.munywele.co.ke/dashboard?id=IITA-AKILIMO_akilimo-mobile_abcb50d1-1abd-4e32-bd76-b385f65cfc5d)
-[![Security Issues](https://sonar.munywele.co.ke/api/project_badges/measure?project=IITA-AKILIMO_akilimo-mobile_abcb50d1-1abd-4e32-bd76-b385f65cfc5d&metric=software_quality_security_issues&token=sqb_31a18546176db4735c7afc45a9561b931d046803)](https://sonar.munywele.co.ke/dashboard?id=IITA-AKILIMO_akilimo-mobile_abcb50d1-1abd-4e32-bd76-b385f65cfc5d)
-[![Maintainability Rating](https://sonar.munywele.co.ke/api/project_badges/measure?project=IITA-AKILIMO_akilimo-mobile_abcb50d1-1abd-4e32-bd76-b385f65cfc5d&metric=software_quality_maintainability_rating&token=sqb_31a18546176db4735c7afc45a9561b931d046803)](https://sonar.munywele.co.ke/dashboard?id=IITA-AKILIMO_akilimo-mobile_abcb50d1-1abd-4e32-bd76-b385f65cfc5d)
 
-## Overview
+AKILIMO Mobile is an Android application for delivering site-specific agronomic recommendations to farmers and extension agents. The app combines location-aware data collection, crop/use-case workflows, and remote recommendation APIs with offline-friendly local storage.
 
-AKILIMO Mobile is an Android-based decision support tool developed by the International Institute of
-Tropical Agriculture (IITA) under the African Cassava Agronomy Initiative (ACAI).
+---
 
-The app provides site-specific agronomic advice tailored to farmers in sub-Saharan Africa, enabling
-them to optimize fertilizer
-use, improve yields, and make informed farming decisions for crops including cassava, maize, and
-sweet potato.
+## Table of Contents
 
-## Features
+- [What this app does](#what-this-app-does)
+- [Current technical baseline](#current-technical-baseline)
+- [Project structure](#project-structure)
+- [Getting started](#getting-started)
+- [Configuration and secrets](#configuration-and-secrets)
+- [Build and run](#build-and-run)
+- [Testing and quality checks](#testing-and-quality-checks)
+- [Release workflow](#release-workflow)
+- [Troubleshooting](#troubleshooting)
+- [Documentation index](#documentation-index)
 
-- **Customized Fertilizer Recommendations**: Offers tailored advice on fertilizer application based
-  on user inputs such as location, yield targets, and input prices.
+---
 
-- **Intercropping Support**: Provides recommendations for intercropping systems (cassava-maize).
+## What this app does
 
-- **Planting Practices**: Guidance on optimal planting times and methods.
+AKILIMO Mobile supports agronomy decision workflows such as:
 
-- **Multi-Channel Delivery**: Provides recommendations directly within the app, via SMS, or through
-  email.
+- Fertilizer recommendation flows (including intercropping variants)
+- Produce market and yield-related flows (cassava, maize, sweet potato)
+- Tillage and weed-management related cost flows
+- Location-aware recommendations via on-device location + map-assisted picking
+- Multi-language UX support (English, Swahili, Kinyarwanda, French)
+- Background synchronization of reference datasets (e.g., fertilizer catalog/prices, market data)
 
-- **Location-Based Advice**: Uses GPS and mapping technology to provide site-specific
-  recommendations.
+From current source configuration, the app includes country support for:
 
-- **Multi-Country Support**: Available for farmers in Tanzania, Rwanda, Ghana, and Burundi.
+- Nigeria (`NG`)
+- Tanzania (`TZ`)
+- Ghana (`GH`)
+- Rwanda (`RW`)
+- Burundi (`BI`)
 
-- **Multilingual Interface**: Supports English, Kiswahili, and Kinyarwanda.
+---
 
-- **User-Friendly Interface**: Designed with simplicity in mind to cater to farmers with varying
-  levels of digital literacy.
+## Current technical baseline
 
-## Supported Countries
-
-- Tanzania
-- Rwanda
-- Ghana
-- Burundi
-
-## Installation
-
-To build and run the AKILIMO Mobile app locally:
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/IITA-AKILIMO/akilimo-mobile.git
-   cd akilimo-mobile
-   ```
-
-2. Open the project in Android Studio.
-
-3. Configure your local.properties file with required API keys:
-    - Mapbox API key
-    - Firebase configuration
-
-4. Build the project:
-
-   ```bash
-   ./gradlew build
-   ```
-
-5. Run the app on an emulator or physical device:
-
-   ```bash
-   ./gradlew installDebug
-   ```
-
-## Technology Stack
-
+- **Platform**: Android app (`:app` single-module project)
 - **Language**: Kotlin
-- **Minimum SDK**: 19 (Android 4.4 KitKat)
-- **Target SDK**: 34 (Android 14)
-- **Architecture**: MVVM (Model-View-ViewModel)
-- **Database**: Room Persistence Library
-- **Networking**: Retrofit, OkHttp
-- **JSON Parsing**: Jackson
-- **Mapping**: Mapbox
-- **UI Components**: Material Design, RecyclerView, CardView
-- **Error Tracking**: Sentry
-- **Analytics**: Firebase Analytics
-- **Push Notifications**: Firebase Cloud Messaging
-- **Remote Config**: Firebase Remote Config
-- **CI/CD**: GitHub Actions
+- **Build system**: Gradle (Kotlin DSL + Version Catalog)
+- **JDK target**: 17
+- **Android SDKs**:
+  - `minSdk = 21`
+  - `targetSdk = 36`
+  - `compileSdk = 36`
+- **UI**: XML views + ViewBinding (Compose currently disabled)
+- **Local persistence**: Room
+- **Background jobs**: WorkManager
+- **Networking**: Retrofit + OkHttp + Moshi
+- **Observability/analytics**: Sentry + Firebase Analytics
+- **Mapping/geospatial integrations**: Mapbox + Location services
+- **Quality tooling**: Android Lint, Detekt, SonarQube
 
-## Development
+---
+
+## Project structure
+
+```text
+.
+├── app/                         # Android application module
+│   ├── src/main/java/com/akilimo/mobile/
+│   │   ├── ui/                  # Activities, fragments, dialogs, reusable UI components
+│   │   ├── workers/             # Domain sync/background workers and scheduling
+│   │   ├── base/                # Base classes and worker abstractions
+│   │   ├── repos/               # Repository layer over DAOs / local entities
+│   │   ├── dao/, entities/      # Room DAOs and entity models
+│   │   ├── network/, rest/      # API clients, DTOs, request/response models
+│   │   └── config/              # Runtime configuration helpers
+│   └── src/main/res/            # Android resources (layouts, strings, themes, drawables)
+├── docs/                        # Project documentation
+├── scripts/                     # Utility scripts (release notes generation)
+├── release/distribution/        # WhatsNew assets for Play Store release notes
+└── .github/workflows/           # CI/CD pipelines
+```
+
+---
+
+## Getting started
 
 ### Prerequisites
 
-- Android Studio Arctic Fox (2021.3.1) or newer
-- JDK 17
-- Android SDK 34
+- **Android Studio**: latest stable recommended
+- **JDK**: 17
+- **Android SDK**: API 36 platform + build tools
+- **Git**
 
-### Code Quality
-
-This project uses several tools to maintain code quality:
-
-- **SonarQube**: For code quality analysis
-- **Detekt**: For Kotlin static code analysis
-- **JaCoCo**: For code coverage reporting
-
-### Testing
-
-Run the tests with:
+### Clone
 
 ```bash
-./gradlew test
+git clone https://github.com/IITA-AKILIMO/akilimo-mobile.git
+cd akilimo-mobile
 ```
 
-For UI tests:
+### Open in Android Studio
+
+1. Open the project root in Android Studio.
+2. Let Gradle sync.
+3. Ensure the IDE is using JDK 17.
+
+---
+
+## Configuration and secrets
+
+This project relies on a combination of Gradle properties, environment variables, and service JSON files.
+
+### 1) Gradle properties
+
+The build expects `MAPBOX_DOWNLOADS_TOKEN` for Mapbox Maven dependency resolution.
+
+Recommended approach:
+
+- Put secrets in `~/.gradle/gradle.properties` (preferred for local development), not in committed files.
+
+```properties
+MAPBOX_DOWNLOADS_TOKEN=<your-mapbox-download-token>
+```
+
+### 2) BuildConfig base URLs (optional overrides)
+
+`app/build.gradle.kts` reads optional environment variables:
+
+- `AKILIMO_BASE_URL`
+- `FUELROD_BASE_URL`
+
+If unset, default values are used.
+
+Example local override for a shell session:
 
 ```bash
-./gradlew connectedAndroidTest
+export AKILIMO_BASE_URL="https://api.akilimo.org"
+export FUELROD_BASE_URL="https://akilimo.fuelrod.com"
 ```
 
-## Release Process
+### 3) Firebase config
 
-The project uses GitHub Actions for automated releases to the Google Play Store. The workflow is
-defined in `.github/workflows/android.yml`.
+The app uses `app/google-services.json` for Firebase services.
 
-### Release Notes Generation
+If using a different Firebase project, replace with your environment-appropriate config.
 
-Release notes are automatically generated during the build process:
+### 4) Signing credentials (release builds)
 
-1. Update the `CHANGELOG.md` file with details of your changes following the established format
-2. The GitHub Actions workflow will:
-    - Extract the latest version information from `CHANGELOG.md`
-    - Generate release notes in English and Swahili
-    - Include these notes in both the Google Play Store release and GitHub release
+CI handles release signing via GitHub secrets. For local release signing, configure a local keystore and matching signing settings/workflow inputs.
 
-### Manual Release
+---
 
-If you need to manually generate release notes:
+## Build and run
+
+### Debug build
 
 ```bash
-python .github/scripts/generate_release_notes.py
+./gradlew assembleDebug
 ```
 
-This will create release notes files in the `distribution/whatsnew/` directory based on the latest
-entry in `CHANGELOG.md`.
+### Install to connected device/emulator
 
-## Tools
+```bash
+./gradlew installDebug
+```
 
-- https://pypi.org/project/ai-gen-commit/
+### Release artifacts (unsigned/signed depending on env)
 
-## Contributing
+```bash
+./gradlew assembleRelease bundleRelease
+```
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+---
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+## Testing and quality checks
 
-## License
+### Unit tests
 
-This project is licensed under the terms specified in the [LICENSE.md](LICENSE.md) file.
+```bash
+./gradlew testDebugUnitTest
+```
 
-## Contact
+### Instrumented tests (requires emulator/device)
 
-International Institute of Tropical Agriculture (
-IITA) - [https://www.iita.org/](https://www.iita.org/)
+```bash
+./gradlew connectedDebugAndroidTest
+```
 
-Project
-Link: [https://github.com/IITA-AKILIMO/akilimo-mobile](https://github.com/IITA-AKILIMO/akilimo-mobile)
+### Lint + static analysis
+
+```bash
+./gradlew lintDebug detekt
+```
+
+### Sonar task (depends on lint + detekt per Gradle setup)
+
+```bash
+./gradlew sonar
+```
+
+---
+
+## Release workflow
+
+The GitHub Actions workflow in `.github/workflows/android.yml` covers:
+
+1. Version/tag derivation
+2. Build APK/AAB
+3. Signing
+4. Artifact packaging
+5. Play Store publish (beta/production track logic)
+6. Post-publish build number update
+
+Release note source files are under:
+
+- `release/distribution/whatsnew/`
+
+Changelog history is maintained in:
+
+- `CHANGELOG.md`
+
+For script details, see `scripts/README.md`.
+
+---
+
+## Troubleshooting
+
+### Gradle cannot resolve Mapbox artifacts
+
+- Ensure `MAPBOX_DOWNLOADS_TOKEN` is set in a Gradle properties file available to Gradle.
+
+### Build runs with wrong Java version
+
+- Confirm Android Studio and/or `JAVA_HOME` points to JDK 17.
+
+### API endpoint confusion in debug builds
+
+- Verify environment variables for `AKILIMO_BASE_URL` and `FUELROD_BASE_URL`.
+- Check runtime configuration behavior in `AppConfig` and session overrides.
+
+### Slow UI operations involving DB
+
+- The current Room setup still allows main-thread queries for compatibility during migration phases. Prefer refactoring data access paths toward background/coroutine execution where possible.
+
+---
+
+## Documentation index
+
+- [Developer Guide](docs/DEVELOPMENT.md)
+- [Architecture Notes](docs/ARCHITECTURE.md)
+- [Technical Evaluation](docs/TECHNICAL_EVALUATION.md)
+- [Release Script Notes](scripts/README.md)
+- [Changelog](CHANGELOG.md)
+
+---
+
+## Maintainers and organization
+
+This project is maintained by/for AKILIMO under IITA initiatives.
+
+- IITA: <https://www.iita.org/>
+- Repository: <https://github.com/IITA-AKILIMO/akilimo-mobile>
