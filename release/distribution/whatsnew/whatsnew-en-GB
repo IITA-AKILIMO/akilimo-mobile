@@ -1,1 +1,3 @@
-You can now get even more tailored advice for your crops—especially IC Maize—and explore new recommendation options right in the app. We’ve added fresh guidance for sweet potatoes, improved how we show stepper progress, and made the interface smoother with better animations. Your data stays safer thanks to updated network security settings. Plus, we fixed a few bugs that made life easier when you view or edit your plans. Enjoy the new features!
+Enhanced Release Notes Experience with Improved Changelog Parsing
+
+Our new release notes generator now leverages the Ollama API, significantly improving performance and conversion impact. This means you'll see cleaner, more concise notes that are easier to scan. Additionally, we've enhanced language support for Swahili (Kiswahili) and English (UK), making our content more accessible. A new advertising ID permission has also been added to ensure seamless updates.
