@@ -26,7 +26,7 @@ class PlayStoreReleaseNotesGeneratorGit:
                 "Be warm, specific, and concise. "
                 "Lead with the single most exciting change. "
                 "Write in flowing sentences — no bullet points, no markdown. "
-                "Never mention git or github related changes. "
+                "Never mention ollama, git or github related changes. "
                 "Never start with 'This update' or 'We'. "
                 "Stay under {max_length} characters."
             ),
@@ -48,7 +48,7 @@ class PlayStoreReleaseNotesGeneratorGit:
             "system": (
                 "Unaandika maelezo ya toleo jipya kwa Kiswahili cha asili. "
                 "Kuwa mfupi, wa kirafiki, na kueleza faida kwa mtumiaji. "
-                "Usiongelee git ama github "
+                "Usiongelee ollama, git ama github "
                 "Sentensi mfululizo — si pointi wala markdown. "
                 "Usianze na 'Sasisho hili' au 'Tumefanya'. "
                 "Usiepite maneno {max_length}."
