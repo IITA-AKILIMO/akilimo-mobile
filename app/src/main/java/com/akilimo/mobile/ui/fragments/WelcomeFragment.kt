@@ -10,7 +10,9 @@ import com.akilimo.mobile.base.BaseStepFragment
 import com.akilimo.mobile.databinding.FragmentWelcomeBinding
 import com.akilimo.mobile.dto.LanguageOption
 import com.akilimo.mobile.entities.AkilimoUser
+import com.akilimo.mobile.entities.UserPreferences
 import com.akilimo.mobile.repos.AkilimoUserRepo
+import com.akilimo.mobile.repos.UserPreferencesRepo
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,6 +25,7 @@ class WelcomeFragment : BaseStepFragment<FragmentWelcomeBinding>() {
     }
 
     private lateinit var userRepository: AkilimoUserRepo
+    private lateinit var prefsRepo: UserPreferencesRepo
 
     private val languageOptions: List<LanguageOption> by lazy {
         Locales.supportedLocales.map {
@@ -36,6 +39,7 @@ class WelcomeFragment : BaseStepFragment<FragmentWelcomeBinding>() {
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
         userRepository = AkilimoUserRepo(database.akilimoUserDao())
+        prefsRepo = UserPreferencesRepo(database.userPreferencesDao())
         val languageAdapter = ValueOptionAdapter(requireContext(), languageOptions)
         binding.dropLanguage.setAdapter(languageAdapter)
         binding.dropLanguage.setOnItemClickListener { _, _, position, _ ->
@@ -61,8 +65,10 @@ class WelcomeFragment : BaseStepFragment<FragmentWelcomeBinding>() {
     override fun prefillFromEntity() {
         safeScope.launch {
             val user = userRepository.getUser(sessionManager.akilimoUser)
+            val prefs = prefsRepo.getOrDefault()
+
             val currentLangCode =
-                user?.languageCode?.takeIf { it.isNotBlank() } ?: Locales.english.language
+                user?.languageCode?.takeIf { it.isNotBlank() } ?: prefs.languageCode
 
             val selectedOption = languageOptions.find { it.valueOption == currentLangCode }
                 ?: languageOptions.find { it.valueOption == Locales.english.language }

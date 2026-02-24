@@ -12,7 +12,7 @@
 
     <!-- Network notification banner at the top -->
     <com.akilimo.mobile.ui.components.NetworkNotificationView
-        android:id="@+id/networkNotificationView"
+        android:id="@+id/network_notification_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="4dp"
@@ -21,12 +21,23 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.stepstone.stepper.StepperLayout
-        android:id="@+id/stepperLayout"
+        android:id="@+id/stepper_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:ms_showBottomNavigation="true"
         app:ms_showErrorState="true"
         app:ms_stepperType="dots" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_large"
+        android:contentDescription="@string/lbl_settings"
+        android:src="@android:drawable/ic_menu_preferences"
+        app:fabSize="mini"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/network_notification_view" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

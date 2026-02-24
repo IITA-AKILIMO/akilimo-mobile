@@ -9,8 +9,10 @@ import com.akilimo.mobile.base.BaseStepFragment
 import com.akilimo.mobile.databinding.FragmentCountryBinding
 import com.akilimo.mobile.dto.CountryOption
 import com.akilimo.mobile.entities.AkilimoUser
+import com.akilimo.mobile.entities.UserPreferences
 import com.akilimo.mobile.enums.EnumCountry
 import com.akilimo.mobile.repos.AkilimoUserRepo
+import com.akilimo.mobile.repos.UserPreferencesRepo
 import com.akilimo.mobile.repos.SelectedFertilizerRepo
 import com.blongho.country_data.World
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -24,6 +26,7 @@ class CountryFragment : BaseStepFragment<FragmentCountryBinding>() {
     }
 
     private lateinit var userRepository: AkilimoUserRepo
+    private lateinit var prefsRepo: UserPreferencesRepo
     private lateinit var selectedFertilizerRepo: SelectedFertilizerRepo
 
     private val countries: List<CountryOption> by lazy {
@@ -43,6 +46,7 @@ class CountryFragment : BaseStepFragment<FragmentCountryBinding>() {
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
         userRepository = AkilimoUserRepo(database.akilimoUserDao())
+        prefsRepo = UserPreferencesRepo(database.userPreferencesDao())
         selectedFertilizerRepo = SelectedFertilizerRepo(database.selectedFertilizerDao())
         binding.countryBtnPickCountry.setOnClickListener { showCountryPicker() }
 
@@ -50,7 +54,10 @@ class CountryFragment : BaseStepFragment<FragmentCountryBinding>() {
 
     override fun prefillFromEntity() {
         safeScope.launch {
-            userRepository.getUser(sessionManager.akilimoUser)?.let { user ->
+            val user = userRepository.getUser(sessionManager.akilimoUser)
+            val prefs = prefsRepo.getOrDefault()
+
+            if (user != null && user.enumCountry != EnumCountry.Unsupported) {
                 binding.greetingTitle.visibility = View.VISIBLE
                 binding.greetingTitle.text = getString(
                     R.string.lbl_greetings_text
@@ -60,6 +67,19 @@ class CountryFragment : BaseStepFragment<FragmentCountryBinding>() {
                     countries.find { it.valueOption == user.enumCountry }?.displayLabel.orEmpty()
 
                 user.enumCountry.let { countryCode ->
+                    binding.countryName.text = label
+                    binding.countryImage.setImageResource(World.getFlagOf(countryCode.name))
+                }
+            } else if (prefs.country != EnumCountry.Unsupported) {
+                binding.greetingTitle.visibility = View.VISIBLE
+                binding.greetingTitle.text = getString(
+                    R.string.lbl_greetings_text
+                ).replace("{full_name}", prefs.firstName ?: "User")
+
+                val label =
+                    countries.find { it.valueOption == prefs.country }?.displayLabel.orEmpty()
+
+                prefs.country.let { countryCode ->
                     binding.countryName.text = label
                     binding.countryImage.setImageResource(World.getFlagOf(countryCode.name))
                 }
