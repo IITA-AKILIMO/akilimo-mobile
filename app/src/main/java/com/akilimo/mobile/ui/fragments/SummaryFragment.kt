@@ -8,7 +8,9 @@ import android.widget.TextView
 import com.akilimo.mobile.base.BaseStepFragment
 import com.akilimo.mobile.databinding.FragmentSummaryBinding
 import com.akilimo.mobile.databinding.ItemSummaryRowBinding
+import com.akilimo.mobile.entities.UserPreferences
 import com.akilimo.mobile.repos.AkilimoUserRepo
+import com.akilimo.mobile.repos.UserPreferencesRepo
 import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -22,6 +24,7 @@ class SummaryFragment : BaseStepFragment<FragmentSummaryBinding>() {
     }
 
     private lateinit var userRepository: AkilimoUserRepo
+    private lateinit var prefsRepo: UserPreferencesRepo
 
     override fun inflateBinding(
         inflater: LayoutInflater,
@@ -30,19 +33,21 @@ class SummaryFragment : BaseStepFragment<FragmentSummaryBinding>() {
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
         userRepository = AkilimoUserRepo(database.akilimoUserDao())
+        prefsRepo = UserPreferencesRepo(database.userPreferencesDao())
     }
 
     override fun prefillFromEntity() {
         safeScope.launch {
             val user = userRepository.getUser(sessionManager.akilimoUser) ?: return@launch
+            val prefs = prefsRepo.getOrDefault()
             binding.containerSummary.removeAllViews()
 
             addSection("👤 Personal Info") {
-                addRow("Name", user.getNames())
-                addRow("Email", user.email)
-                addRow("Phone", "${user.mobileCountryCode ?: ""} ${user.mobileNumber ?: ""}")
-                addRow("Gender", user.gender)
-                addRow("Language", user.languageCode)
+                addRow("Name", user.getNames().ifBlank { "${prefs.firstName ?: ""} ${prefs.lastName ?: ""}".trim() })
+                addRow("Email", user.email ?: prefs.email)
+                addRow("Phone", if (!user.mobileNumber.isNullOrBlank()) "${user.mobileCountryCode ?: ""} ${user.mobileNumber ?: ""}" else "${prefs.phoneCountryCode ?: ""} ${prefs.phoneNumber ?: ""}")
+                addRow("Gender", user.gender ?: prefs.gender)
+                addRow("Language", user.languageCode ?: prefs.languageCode)
             }
 
             addSection("🏡 Farm Details") {

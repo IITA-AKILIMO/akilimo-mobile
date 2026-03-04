@@ -21,6 +21,7 @@ import com.akilimo.mobile.dao.SelectedCassavaMarketDao
 import com.akilimo.mobile.dao.SelectedFertilizerDao
 import com.akilimo.mobile.dao.SelectedInvestmentDao
 import com.akilimo.mobile.dao.StarchFactoryDao
+import com.akilimo.mobile.dao.UserPreferencesDao
 import com.akilimo.mobile.entities.AdviceCompletion
 import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.entities.CassavaMarketPrice
@@ -37,6 +38,7 @@ import com.akilimo.mobile.entities.SelectedCassavaMarket
 import com.akilimo.mobile.entities.SelectedFertilizer
 import com.akilimo.mobile.entities.SelectedInvestment
 import com.akilimo.mobile.entities.StarchFactory
+import com.akilimo.mobile.entities.UserPreferences
 import com.akilimo.mobile.utils.Converters
 import com.akilimo.mobile.utils.EnumAdviseConverter
 import com.akilimo.mobile.utils.EnumAdviseTaskConverter
@@ -68,9 +70,10 @@ import com.akilimo.mobile.utils.EnumWeedControlConverter
         AdviceCompletion::class,
         FieldOperationCost::class,
         CurrentPractice::class,
-        MaizePerformance::class
+        MaizePerformance::class,
+        UserPreferences::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(
@@ -116,6 +119,7 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun produceMarketDao(): ProduceMarketDao
     abstract fun maizePerformanceDao(): MaizePerformanceDao
+    abstract fun userPreferencesDao(): UserPreferencesDao
 
 
     companion object {
@@ -136,6 +140,7 @@ abstract class AppDatabase : RoomDatabase() {
                 AppDatabase::class.java,
                 DATABASE_NAME
             ).allowMainThreadQueries() // TODO remove this line when we are ready to go live
+                .fallbackToDestructiveMigration()
 
 
             return builder.build()

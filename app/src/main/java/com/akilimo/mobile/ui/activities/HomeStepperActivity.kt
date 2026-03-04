@@ -38,6 +38,10 @@ class HomeStepperActivity : BaseActivity<ActivityHomeStepperBinding>(),
         binding.stepperLayout.setListener(this@HomeStepperActivity)
 
         networkNotificationView = binding.networkNotificationView
+
+        binding.fabSettings.setOnClickListener {
+            openActivity(Intent(this, UserSettingsActivity::class.java))
+        }
     }
 
     override fun handleBackPressed(): Boolean {

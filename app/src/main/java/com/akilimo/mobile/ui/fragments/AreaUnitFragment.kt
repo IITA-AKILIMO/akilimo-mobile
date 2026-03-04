@@ -12,10 +12,12 @@ import com.akilimo.mobile.databinding.FragmentAreaUnitBinding
 import com.akilimo.mobile.dto.AreaUnitOption
 import com.akilimo.mobile.dto.FieldSizeOption
 import com.akilimo.mobile.entities.AkilimoUser
+import com.akilimo.mobile.entities.UserPreferences
 import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.enums.EnumCountry
 import com.akilimo.mobile.enums.EnumFieldArea
 import com.akilimo.mobile.repos.AkilimoUserRepo
+import com.akilimo.mobile.repos.UserPreferencesRepo
 import com.akilimo.mobile.utils.MathHelper
 import com.stepstone.stepper.VerificationError
 import kotlinx.coroutines.launch
@@ -27,6 +29,7 @@ class AreaUnitFragment : BaseStepFragment<FragmentAreaUnitBinding>() {
     }
 
     private lateinit var userRepo: AkilimoUserRepo
+    private lateinit var prefsRepo: UserPreferencesRepo
     val areaUnitOptions = mutableListOf<AreaUnitOption>()
     private lateinit var baseFieldSizes: List<FieldSizeOption>
 
@@ -38,6 +41,7 @@ class AreaUnitFragment : BaseStepFragment<FragmentAreaUnitBinding>() {
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
         userRepo = AkilimoUserRepo(database.akilimoUserDao())
+        prefsRepo = UserPreferencesRepo(database.userPreferencesDao())
         baseFieldSizes = listOf(
             FieldSizeOption(
                 getString(R.string.quarter_acre),
@@ -119,8 +123,20 @@ class AreaUnitFragment : BaseStepFragment<FragmentAreaUnitBinding>() {
     override fun prefillFromEntity() {
         safeScope.launch {
             val user = userRepo.getUser(sessionManager.akilimoUser)
+            val prefs = prefsRepo.getOrDefault()
+
             if (user == null) {
-                populateFieldSizeDropdown(EnumAreaUnit.ACRE)
+                //Fall back to user preferences for the area unit
+                val areaUnit = prefs.preferredAreaUnit
+                areaUnitOptions.find { it.valueOption == areaUnit }?.let { option ->
+                    populateFieldSizeDropdown(option.valueOption)
+                    binding.dropAreaUnit.setText(option.displayLabel, false)
+                    binding.lytCustomFieldSize.hint =
+                        getString(
+                            R.string.lbl_cassava_field_size,
+                            option.valueOption.label(requireContext())
+                        )
+                }
                 return@launch
             }
 

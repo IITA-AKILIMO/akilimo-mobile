@@ -702,4 +702,21 @@
     <string name="lbl_restart_language_message">The language change will take effect after restarting the app. Would you like to restart now?</string>
     <string name="lbl_restart_now">Restart Now</string>
     <string name="lbl_restart_later">Later</string>
+    <!-- User Settings screen -->
+    <string name="title_user_settings">Settings</string>
+    <string name="lbl_profile_section">Profile</string>
+    <string name="lbl_contact_section">Contact Information</string>
+    <string name="lbl_preferences_section">App Preferences</string>
+    <string name="lbl_notifications_section">Notifications</string>
+    <string name="lbl_display_section">Display</string>
+    <string name="lbl_bio">About me</string>
+    <string name="lbl_bio_hint">Tell us a little about yourself</string>
+    <string name="lbl_dark_mode">Dark mode</string>
+    <string name="lbl_preferred_area_unit">Preferred area unit</string>
+    <string name="lbl_language">Language</string>
+    <string name="lbl_notify_email">Receive email notifications</string>
+    <string name="lbl_notify_sms">Receive SMS notifications</string>
+    <string name="lbl_settings_saved">Settings saved successfully</string>
+    <string name="lbl_select_language">Select language</string>
+    <string name="lbl_select_area_unit">Select area unit</string>
 </resources>

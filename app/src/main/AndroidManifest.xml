@@ -112,6 +112,9 @@
         <activity
             android:name=".ui.usecases.InvestmentAmountActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.activities.UserSettingsActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
