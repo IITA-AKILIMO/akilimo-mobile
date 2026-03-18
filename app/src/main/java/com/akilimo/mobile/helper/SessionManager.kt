@@ -29,8 +29,7 @@ class SessionManager private constructor(private val pref: android.content.Share
         private const val KEY_DISCLAIMER_READ = "disclaimerRead"
 
         private const val DEFAULT_USER = "akilimo_user"
-        private const val DEFAULT_MAPBOX_KEY =
-            "pk.eyJ1IjoibWFzZ2VlayIsImEiOiJjanp0bm43ZmwwNm9jM29udjJod3V6dzB1In0.MevkJtANWZ8Wl9abnLu1Uw"
+        private val DEFAULT_MAPBOX_KEY get() = com.akilimo.mobile.BuildConfig.MAPBOX_RUNTIME_TOKEN
         private const val DEFAULT_TERMS_URL =
             "https://akilimo.org/index.php/akilimo-privacy-policy"
 
@@ -97,7 +96,7 @@ class SessionManager private constructor(private val pref: android.content.Share
         set(value) = pref.edit { putString(KEY_MAPBOX, value) }
 
     var locationIqToken: String
-        get() = pref.getString(KEY_LOCATION_IQ, "pk.2e825998b141366ea93c856dfc352010").orEmpty()
+        get() = pref.getString(KEY_LOCATION_IQ, com.akilimo.mobile.BuildConfig.LOCATION_IQ_TOKEN).orEmpty()
         set(value) = pref.edit { putString(KEY_LOCATION_IQ, value) }
 
     var isFirstRun: Boolean
