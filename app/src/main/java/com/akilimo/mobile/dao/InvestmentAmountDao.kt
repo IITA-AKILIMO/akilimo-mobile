@@ -5,8 +5,8 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
 import androidx.room.Update
+import androidx.room.Upsert
 import com.akilimo.mobile.entities.InvestmentAmount
 import com.akilimo.mobile.enums.EnumCountry
 import kotlinx.coroutines.flow.Flow
@@ -33,13 +33,8 @@ interface InvestmentAmountDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(item: InvestmentAmount): Long
 
-    @Transaction
-    suspend fun upsert(item: InvestmentAmount) {
-        val updated = update(item)
-        if (updated == 0) {
-            insert(item)
-        }
-    }
+    @Upsert
+    suspend fun upsert(item: InvestmentAmount)
 
     @Update
     suspend fun update(item: InvestmentAmount): Int
