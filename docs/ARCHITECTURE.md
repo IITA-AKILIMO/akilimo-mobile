@@ -224,13 +224,66 @@ No `ViewModel` classes exist. Configuration changes (rotation) trigger full relo
 
 ## 10. Known Technical Debt
 
-| Item | Location | Risk |
-|------|----------|------|
-| `allowMainThreadQueries()` | `AppDatabase.kt` | ANR risk |
-| `fallbackToDestructiveMigration()` | `AppDatabase.kt` | Data loss on schema change |
-| No ViewModel classes | All fragments | State lost on configuration change |
-| Dark mode forced off | `BaseActivity.kt:89` | `UserPreferences.darkMode` ignored |
-| API keys hardcoded in source | `SessionManager.kt:32,99` | Exposed in APK without obfuscation |
-| `isMinifyEnabled = false` in release | `app/build.gradle.kts` | No code shrinking or obfuscation |
-| No Jetpack NavGraph | All | Deep links impossible; navigation untestable |
-| No DI framework | All | Manual repo instantiation; untestable |
+| Item | Location | Risk | Status |
+|------|----------|------|--------|
+| `allowMainThreadQueries()` | `AppDatabase.kt` | ANR risk | ⬜ Open |
+| `fallbackToDestructiveMigration()` | `AppDatabase.kt` | Data loss on schema change | ⬜ Open |
+| No ViewModel classes | All fragments/activities | State lost on configuration change | ⬜ Open |
+| API keys hardcoded in source | `SessionManager.kt` | Exposed in APK without obfuscation | ⬜ Open |
+| `isMinifyEnabled = false` in release | `app/build.gradle.kts` | No code shrinking or obfuscation | ⬜ Open |
+| No Jetpack NavGraph | All | Deep links impossible; navigation untestable | ⬜ Open |
+| No DI framework | All | Manual repo instantiation; untestable | ⬜ Open |
+| Dual SharedPrefs locale sources | `SessionManager` + `AppLocale` | Potential sync drift on cold start | ⬜ Open |
+
+---
+
+## 11. Target Architecture (Post-Compose Migration)
+
+The long-term target replaces the View layer entirely with Jetpack Compose.
+The repository, DAO, and network layers are **unchanged** — only the presentation layer
+and its wiring change.
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    PRESENTATION (Compose + NavGraph)                 │
+│  MainActivity (@AndroidEntryPoint, single-Activity host)            │
+│    └─ NavHost (AppNavGraph.kt)                                       │
+│         ├─ OnboardingGraph  → WelcomeScreen … SummaryScreen         │
+│         ├─ RecommendationGraph → RecommendationUseCaseScreen, …     │
+│         └─ SettingsGraph   → UserSettingsScreen                      │
+│  Each screen: @Composable fun receiving state from @HiltViewModel   │
+└──────────────────────────┬──────────────────────────────────────────┘
+                            │ StateFlow<UiState> / SharedFlow<NavEvent>
+┌──────────────────────────▼──────────────────────────────────────────┐
+│                       VIEWMODEL LAYER (Hilt)                         │
+│  @HiltViewModel — one per screen                                     │
+│  State: UiState data class exposed as StateFlow                      │
+│  Navigation: NavEvent sealed interface exposed as SharedFlow         │
+│  Injected: repos, SessionManager (via Hilt), DataStore              │
+└──────────────────────────┬──────────────────────────────────────────┘
+                            │ suspend / Flow (unchanged)
+┌──────────────────────────▼──────────────────────────────────────────┐
+│                  REPOSITORY LAYER (unchanged)                        │
+│  All 15 repos remain; constructor-injected via Hilt                  │
+└──────────────────────────┬──────────────────────────────────────────┘
+                            │
+┌──────────────────────────▼──────────────────────────────────────────┐
+│  LOCAL (Room)  │  REMOTE (Retrofit/OkHttp/Moshi)  │  DATASTORE      │
+│  DB v2+        │  AkilimoApi, FuelrodApi           │  language, prefs│
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+**Design system in Compose:**
+
+| View system | Compose equivalent |
+|------------|-------------------|
+| `values/colors.xml` | `ui/theme/AkilimoColors.kt` — `LightColorScheme` / `DarkColorScheme` |
+| `values/themes.xml` | `ui/theme/AkilimoTheme.kt` — `MaterialTheme` wrapper |
+| `values/type.xml` | `ui/theme/AkilimoTypography.kt` — `AkilimoTypography` |
+| `ShapeAppearance.Akilimo.*` | `ui/theme/AkilimoShapes.kt` — `AkilimoShapes` |
+| `Widget.Akilimo.Button` | `AkilimoButton.kt` composable (extraLarge = pill shape) |
+| `Widget.Akilimo.CardView` | `AkilimoCard.kt` composable (medium = 12dp rounded) |
+| `Widget.Akilimo.TextInputLayout` | `AkilimoTextField.kt` composable (small = 8dp rounded) |
+
+See `docs/COMPOSE_MIGRATION.md` for the full migration plan, phase schedule,
+screen-by-screen conversion map, and library removal checklist.

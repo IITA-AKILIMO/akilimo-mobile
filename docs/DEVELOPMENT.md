@@ -58,10 +58,15 @@ Main package: `com.akilimo.mobile`
 | `helper/` | `SessionManager` (SharedPrefs singleton), `LocaleHelper` (locale context wrapper) |
 | `enums/` | Domain enums: `EnumCountry`, `EnumAreaUnit`, `EnumAdvice`, etc. |
 
-**When adding a new screen:**
+**When adding a new screen (current View system):**
 1. Create Activity extending `BaseActivity<VB>` — implement `inflateBinding()` and `onBindingReady()`.
 2. Create a typed Repo class in `repos/` backed by a DAO.
-3. Launch via explicit `Intent` (no NavGraph currently).
+3. Launch via explicit `Intent` (NavGraph not yet active).
+
+> **⚠️ Compose migration in progress.** Once Hilt and NavGraph are active (ROADMAP #9, #12),
+> all new screens must be written as `@Composable` functions with a `@HiltViewModel`.
+> Do not add new activities after Phase 1 of the migration begins.
+> See `docs/COMPOSE_MIGRATION.md` for conventions.
 
 **When adding a new stepper step:**
 1. Create Fragment extending `BaseStepFragment<VB>`.
@@ -103,7 +108,67 @@ Room DB version: **2** — `fallbackToDestructiveMigration()` is active. When ch
 - Release note assets: `release/distribution/whatsnew/`
 - Script docs: `scripts/README.md`
 
-## 9. Known active bugs
+## 9. Compose development conventions
+
+These apply once the Compose migration begins (ROADMAP items 13–17).
+
+### File layout for a Compose screen
+
+```
+ui/
+├── screens/
+│   └── settings/
+│       ├── UserSettingsScreen.kt        @Composable screen root
+│       ├── UserSettingsViewModel.kt     @HiltViewModel
+│       └── UserSettingsUiState.kt       data class + sealed NavEvent
+├── components/
+│   └── compose/
+│       ├── AkilimoButton.kt
+│       ├── AkilimoCard.kt
+│       ├── AkilimoTextField.kt
+│       └── NetworkBanner.kt
+└── theme/
+    ├── AkilimoTheme.kt
+    ├── AkilimoColors.kt
+    ├── AkilimoTypography.kt
+    └── AkilimoShapes.kt
+```
+
+### State conventions
+
+- Every screen has exactly one `UiState` data class.
+- ViewModels expose `StateFlow<UiState>` — never `LiveData`, never raw mutable state.
+- One-shot navigation events use `SharedFlow<NavEvent>` collected via `LaunchedEffect(Unit)`.
+- Screens are **stateless** — they receive state and callbacks only.
+
+### Theming
+
+- Always wrap screen content in `AkilimoTheme { }`.
+- Use `MaterialTheme.colorScheme.*`, `MaterialTheme.typography.*`, `MaterialTheme.shapes.*` — never hardcode colours or sizes.
+- Dark mode is driven by `isSystemInDarkTheme()` passed from the host activity.
+
+### Previews
+
+Every composable must have a `@Preview` with both light and dark variants:
+
+```kotlin
+@Preview(name = "Light", showBackground = true)
+@Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun UserSettingsScreenPreview() {
+    AkilimoTheme { UserSettingsScreen(uiState = UserSettingsUiState(), onEvent = {}) }
+}
+```
+
+### No-go list during migration
+
+- ❌ Do not use `LiveData` — use `StateFlow`.
+- ❌ Do not use `findViewById` in migrated screens.
+- ❌ Do not mix ViewBinding and Compose in the same screen after migration.
+- ❌ Do not call `startActivity()` from a Compose screen — use `navController.navigate()`.
+- ❌ Do not access `SessionManager` directly from a composable — inject via ViewModel.
+
+## 10. Known active bugs
 
 | Ticket | Status | Description | Files |
 |--------|--------|-------------|-------|

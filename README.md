@@ -252,6 +252,7 @@ For script details, see `scripts/README.md`.
 - [Architecture](docs/ARCHITECTURE.md)
 - [Product Requirements](docs/PRD.md)
 - [Implementation Roadmap](docs/ROADMAP.md)
+- [Compose Migration Guide](docs/COMPOSE_MIGRATION.md)
 - [User Guide](docs/USER_GUIDE.md)
 - [Technical Evaluation](docs/TECHNICAL_EVALUATION.md)
 - [Release Script Notes](scripts/README.md)
