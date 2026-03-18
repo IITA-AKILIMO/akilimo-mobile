@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
+import androidx.work.Configuration
 import androidx.work.workDataOf
 import com.akilimo.mobile.helper.SessionManager
 import com.akilimo.mobile.network.NetworkMonitor
@@ -25,9 +26,14 @@ import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository
 
 
 @SuppressLint("LogNotTimber")
-class AkilimoApp : MultiDexApplication() {
+class AkilimoApp : MultiDexApplication(), Configuration.Provider {
 
     val networkMonitor: NetworkMonitor by lazy { NetworkMonitor(this) }
+
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setMinimumLoggingLevel(if (BuildConfig.DEBUG) Log.DEBUG else Log.ERROR)
+            .build()
 
     companion object {
         private lateinit var _instance: AkilimoApp
