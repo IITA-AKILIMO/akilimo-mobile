@@ -262,7 +262,8 @@ class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
                 ?: Locales.english
             AppLocale.desiredLocale = selectedLocale
 
-            // Apply dark mode
+            // Persist dark mode to SessionManager so AkilimoApp can read it on next start
+            sessionManager.darkMode = preferences.darkMode
             AppCompatDelegate.setDefaultNightMode(
                 if (preferences.darkMode) AppCompatDelegate.MODE_NIGHT_YES
                 else AppCompatDelegate.MODE_NIGHT_NO

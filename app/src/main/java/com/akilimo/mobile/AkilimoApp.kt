@@ -58,6 +58,7 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
         analytics.setUserProperty("app_name", BuildConfig.APPLICATION_ID)
 
         initLocale()
+        initDarkMode()
         initVectorSupport()
         initTimeAndCountry()
         runStartupTasks()
@@ -135,6 +136,14 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
         Log.d("Akilimo", "Locale initialized to: $locale")
     }
 
+
+    private fun initDarkMode() {
+        val darkMode = SessionManager.get(this).darkMode
+        AppCompatDelegate.setDefaultNightMode(
+            if (darkMode) AppCompatDelegate.MODE_NIGHT_YES
+            else AppCompatDelegate.MODE_NIGHT_NO
+        )
+    }
 
     private fun initVectorSupport() {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
