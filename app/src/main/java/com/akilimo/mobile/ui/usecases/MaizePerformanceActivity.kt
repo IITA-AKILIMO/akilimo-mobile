@@ -1,39 +1,34 @@
 package com.akilimo.mobile.ui.usecases
 
 import android.os.Bundle
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.akilimo.mobile.adapters.MaizePerformanceAdapter
 import com.akilimo.mobile.base.BaseActivity
-import com.akilimo.mobile.dao.MaizePerformanceRepo
 import com.akilimo.mobile.databinding.ActivityMaizePerformanceBinding
-import com.akilimo.mobile.dto.MaizePerfOption
-import com.akilimo.mobile.entities.MaizePerformance
-import com.akilimo.mobile.enums.EnumMaizePerformance
-import com.akilimo.mobile.repos.AkilimoUserRepo
+import com.akilimo.mobile.ui.viewmodels.MaizePerformanceViewModel
 import kotlinx.coroutines.launch
 
 class MaizePerformanceActivity : BaseActivity<ActivityMaizePerformanceBinding>() {
 
-    private val userRepo by lazy { AkilimoUserRepo(database.akilimoUserDao()) }
-    private val maizeRepo by lazy { MaizePerformanceRepo(database.maizePerformanceDao()) }
-    private lateinit var maizePerformanceAdapter: MaizePerformanceAdapter
+    private val viewModel: MaizePerformanceViewModel by lazy {
+        ViewModelProvider(
+            this,
+            MaizePerformanceViewModel.factory(database)
+        )[MaizePerformanceViewModel::class.java]
+    }
 
-    val maizePerfOptions = EnumMaizePerformance.entries.map { MaizePerfOption(valueOption = it) }
+    private lateinit var maizePerformanceAdapter: MaizePerformanceAdapter
 
     override fun inflateBinding() = ActivityMaizePerformanceBinding.inflate(layoutInflater)
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
         maizePerformanceAdapter = MaizePerformanceAdapter().apply {
             onItemClick = { selected ->
-                safeScope.launch {
-                    val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
-                    val entity = MaizePerformance(
-                        userId = user.id ?: 0,
-                        maizePerformance = selected,
-                    )
-
-                    maizeRepo.saveOrUpdatePerformance(entity)
-                }
+                viewModel.saveSelection(sessionManager.akilimoUser, selected)
             }
         }
 
@@ -42,13 +37,17 @@ class MaizePerformanceActivity : BaseActivity<ActivityMaizePerformanceBinding>()
             adapter = maizePerformanceAdapter
             setHasFixedSize(true)
         }
-        safeScope.launch {
-            val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
-            maizeRepo.observeByUserId(user.id ?: 0).collect { savedPerf ->
-                val options = maizePerfOptions.map { option ->
-                    option.copy(isSelected = option.valueOption == savedPerf?.maizePerformance)
+
+        observeViewModel()
+        viewModel.loadOptions(sessionManager.akilimoUser)
+    }
+
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    maizePerformanceAdapter.submitList(state.options)
                 }
-                maizePerformanceAdapter.submitList(options)
             }
         }
     }
