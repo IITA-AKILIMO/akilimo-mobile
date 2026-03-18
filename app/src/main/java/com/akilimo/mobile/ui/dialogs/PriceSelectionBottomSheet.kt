@@ -10,9 +10,10 @@ import com.akilimo.mobile.adapters.GenericSelectableAdapter
 import com.akilimo.mobile.databinding.BottomSheetPriceSelectionBinding
 import com.akilimo.mobile.entities.Fertilizer
 import com.akilimo.mobile.entities.FertilizerPrice
-import com.akilimo.mobile.enums.EnumCountry
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.akilimo.mobile.R
+import com.akilimo.mobile.enums.EnumCountry
+import java.text.NumberFormat
 
 class PriceSelectionBottomSheet(
     private val fertilizer: Fertilizer,
@@ -63,8 +64,10 @@ class PriceSelectionBottomSheet(
         binding.btnSave.setOnClickListener {
             val finalPrice = customPriceValue ?: selectedPrice?.pricePerBag
             if (finalPrice != null && finalPrice > 0.0) {
+                val currencySymbol = selectedPrice?.currencySymbol
+                    ?: EnumCountry.fromCode(fertilizer.countryCode).currencyCode
                 val displayPrice = if (customPriceValue != null) {
-                    "$finalPrice ${EnumCountry.fromCode(fertilizer.countryCode).currencyName()}"
+                    "${NumberFormat.getInstance().format(finalPrice)} $currencySymbol"
                 } else selectedPrice?.priceRange
 
                 onSelectionChanged(
