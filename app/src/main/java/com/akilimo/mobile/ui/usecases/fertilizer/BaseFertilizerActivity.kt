@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import androidx.work.WorkInfo
@@ -14,33 +17,20 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.entities.AdviceCompletionDto
 import com.akilimo.mobile.entities.Fertilizer
-import com.akilimo.mobile.entities.SelectedFertilizer
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumCountry
 import com.akilimo.mobile.enums.EnumStepStatus
 import com.akilimo.mobile.enums.EnumUseCase
-import com.akilimo.mobile.repos.AkilimoUserRepo
-import com.akilimo.mobile.repos.FertilizerPriceRepo
-import com.akilimo.mobile.repos.FertilizerRepo
-import com.akilimo.mobile.repos.SelectedFertilizerRepo
 import com.akilimo.mobile.ui.components.ToolbarHelper
+import com.akilimo.mobile.ui.viewmodels.FertilizerViewModel
 import com.akilimo.mobile.workers.FertilizerWorker
 import com.akilimo.mobile.workers.WorkConstants
 import com.akilimo.mobile.workers.WorkerScheduler
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 abstract class BaseFertilizerActivity<VB : ViewBinding> : BaseActivity<VB>() {
-
-    protected lateinit var userRepo: AkilimoUserRepo
-    protected lateinit var fertilizerRepo: FertilizerRepo
-    protected lateinit var selectedRepo: SelectedFertilizerRepo
-    protected lateinit var priceRepo: FertilizerPriceRepo
-
-    protected lateinit var listManager: FertilizerListManager
-    protected lateinit var selectionHelper: FertilizerSelectionHelper
 
     protected val gridSpanCount by lazy { resources.getInteger(R.integer.grid_span_count_default) }
 
@@ -58,38 +48,42 @@ abstract class BaseFertilizerActivity<VB : ViewBinding> : BaseActivity<VB>() {
     open fun getSyncIndicator(): View? = null
     open fun getRefreshFab(): View? = null
 
-    open fun fetchFertilizers(country: EnumCountry): Flow<List<Fertilizer>> {
-        return fertilizerRepo.observeByCountry(country)
+    /** Override to supply a custom fertilizer flow (e.g. filtered by type). */
+    open fun fetchFertilizersFlow(country: EnumCountry): Flow<List<Fertilizer>>? = null
+
+    protected lateinit var listManager: FertilizerListManager
+    protected lateinit var selectionHelper: FertilizerSelectionHelper
+
+    protected val viewModel: FertilizerViewModel by lazy {
+        ViewModelProvider(
+            this,
+            FertilizerViewModel.factory(
+                db = database,
+                userName = sessionManager.akilimoUser,
+                fetchFlow = fetchFertilizersFlow(EnumCountry.Unsupported)
+                    ?.let { flow -> { _: EnumCountry -> flow } }
+                    ?: { country -> FertilizerViewModel.defaultFlow(database, country) }
+            )
+        )[FertilizerViewModel::class.java]
     }
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
-        initRepositories()
         initHelpers()
         setupToolbar()
         setupRecycler()
         setupRefreshFab()
-        observeData()
-    }
-
-    private fun initRepositories() {
-        userRepo = AkilimoUserRepo(database.akilimoUserDao())
-        fertilizerRepo = FertilizerRepo(database.fertilizerDao())
-        selectedRepo = SelectedFertilizerRepo(database.selectedFertilizerDao())
-        priceRepo = FertilizerPriceRepo(database.fertilizerPriceDao())
+        observeViewModel()
     }
 
     private fun initHelpers() {
         listManager = FertilizerListManager(
             recyclerView = getRecyclerView(),
-            fertilizerRepo = fertilizerRepo,
-            selectedRepo = selectedRepo,
             gridSpanCount = gridSpanCount
         )
         selectionHelper = FertilizerSelectionHelper(
-            context = this,
             lifecycleScope = lifecycleScope,
-            priceRepo = priceRepo,
-            selectedRepo = selectedRepo
+            priceRepo = viewModel.priceRepo,
+            selectedRepo = viewModel.selectedRepo
         )
     }
 
@@ -130,71 +124,29 @@ abstract class BaseFertilizerActivity<VB : ViewBinding> : BaseActivity<VB>() {
         }
     }
 
-    private fun observeData() = safeScope.launch {
-        val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
-        val userId = user.id ?: return@launch
-        val country = user.enumCountry
-
-        launch {
-            fetchFertilizers(country).collectLatest { fertilizers ->
-                val selectedList = selectedRepo.getSelectedSync(userId)
-                val mapped = mapFertilizersWithSelection(fertilizers, selectedList)
-                listManager.adapter.submitList(mapped)
-                showEmptyState(mapped.isEmpty())
-            }
-        }
-
-        launch {
-            selectedRepo.observeSelected(userId).collectLatest { selectedList ->
-                val selectedIds = selectedList.map { it.fertilizerId }.toSet()
-                listManager.adapter.updateSelection(selectedIds)
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    listManager.adapter.submitList(state.fertilizers)
+                    listManager.adapter.updateSelection(state.selectedIds)
+                    showEmptyState(state.isEmpty)
+                }
             }
         }
     }
 
-    private fun mapFertilizersWithSelection(
-        fertilizers: List<Fertilizer>,
-        selectedList: List<com.akilimo.mobile.entities.SelectedFertilizer>
-    ): List<Fertilizer> {
-        val selectedIds = selectedList.map { it.fertilizerId }.toSet()
-        val selectedMap = selectedList.associateBy { it.fertilizerId }
-
-        return fertilizers.map { fertilizer ->
-            fertilizer.apply {
-                val selected = selectedMap[id]
-                isSelected = selectedIds.contains(id)
-                displayPrice = selected?.displayPrice.orEmpty()
-                selectedPrice = if (isSelected) selected?.fertilizerPrice ?: 0.0 else 0.0
-            }
-        }
-    }
-
-    /** Launch bottom sheet instead of alert dialog */
-    private fun showPriceBottomSheet(fertilizer: Fertilizer) = safeScope.launch {
-        val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
-        val userId = user.id ?: return@launch
-
+    private fun showPriceBottomSheet(fertilizer: Fertilizer) {
         selectionHelper.showPriceBottomSheet(
             fertilizer = fertilizer,
-            userId = userId,
+            userId = viewModel.uiState.value.userId,
             fragmentManager = supportFragmentManager,
             onSelectionChanged = { fertilizerId, fertilizerPriceId, price, displayPrice, isSelected, isExactPrice ->
                 listManager.updateItemSelection(fertilizerId, price, displayPrice, isSelected)
-                safeScope.launch {
-                    if (isSelected) {
-                        selectedRepo.select(
-                            SelectedFertilizer(
-                                userId = userId,
-                                fertilizerId = fertilizerId,
-                                fertilizerPriceId = fertilizerPriceId,
-                                fertilizerPrice = price ?: 0.0,
-                                displayPrice = displayPrice,
-                                isExactPrice = isExactPrice
-                            )
-                        )
-                    } else {
-                        selectedRepo.deselect(userId, fertilizerId)
-                    }
+                if (isSelected) {
+                    viewModel.selectFertilizer(fertilizerId, fertilizerPriceId, price, displayPrice, isExactPrice)
+                } else {
+                    viewModel.deselectFertilizer(fertilizerId)
                 }
             }
         )
@@ -242,20 +194,13 @@ abstract class BaseFertilizerActivity<VB : ViewBinding> : BaseActivity<VB>() {
         return true
     }
 
-    private fun handleBackNavigation() = safeScope.launch {
-        val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
-        val userId = user.id ?: 0
-
-        val selected = selectedRepo.getSelectedSync(userId)
-        val isCompleted = selected.isNotEmpty()
-
-        val completion = AdviceCompletionDto(
-            taskName = adviseTask,
-            stepStatus = if (isCompleted) EnumStepStatus.COMPLETED else EnumStepStatus.IN_PROGRESS
-        )
-
-        val data = Intent().putExtra(COMPLETED_TASK, completion)
-        setResult(RESULT_OK, data)
-        finish()
+    private fun handleBackNavigation() {
+        safeScope.launch {
+            val status = viewModel.getStepStatus()
+            val completion = AdviceCompletionDto(taskName = adviseTask, stepStatus = status)
+            val data = Intent().putExtra(COMPLETED_TASK, completion)
+            setResult(RESULT_OK, data)
+            finish()
+        }
     }
 }
