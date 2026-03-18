@@ -4,11 +4,15 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -102,6 +106,7 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         })
 
         onBindingReady(savedInstanceState)
+        injectNetworkBannerIfNeeded()
         observeSyncWorker()
         observeNetworkChanges()
         checkLocationPermissions()
@@ -213,6 +218,37 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
      */
     protected open fun observeSyncWorker() {
         // Override in subclasses
+    }
+
+    /**
+     * Programmatically add the network banner to every activity that hasn't already
+     * wired one via its layout XML. The banner is added to the window's content FrameLayout
+     * (android.R.id.content) so it overlays all content at the top of the screen without
+     * requiring each layout to declare it. A window-inset listener offsets it below the
+     * status bar so it is always fully visible in edge-to-edge mode.
+     *
+     * Activities that explicitly assign networkNotificationView in onBindingReady()
+     * (e.g. HomeStepperActivity which has it in its XML layout) are skipped.
+     */
+    private fun injectNetworkBannerIfNeeded() {
+        if (networkNotificationView != null) return
+
+        val contentFrame = window.decorView.findViewById<FrameLayout>(android.R.id.content)
+        val banner = NetworkNotificationView(this)
+        val lp = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            Gravity.TOP
+        )
+        contentFrame.addView(banner, lp)
+
+        ViewCompat.setOnApplyWindowInsetsListener(banner) { view, insets ->
+            val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            view.setPadding(0, statusBarHeight, 0, 0)
+            insets
+        }
+
+        networkNotificationView = banner
     }
 
     private fun observeNetworkChanges() {
