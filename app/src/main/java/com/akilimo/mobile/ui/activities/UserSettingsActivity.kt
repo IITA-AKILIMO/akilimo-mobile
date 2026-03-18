@@ -5,6 +5,7 @@ import android.util.Patterns
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
+import com.akilimo.mobile.Locales
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.ValueOptionAdapter
 import com.akilimo.mobile.base.BaseActivity
@@ -21,6 +22,7 @@ import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.UserPreferencesRepo
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.processphoenix.ProcessPhoenix
+import dev.b3nedikt.app_locale.AppLocale
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -67,11 +69,9 @@ class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
             InterestOption(getString(R.string.lbl_prefer_not_to_say), "NA")
         )
 
-        languageOptions = listOf(
-            InterestOption("English", "en"),
-            InterestOption("Kiswahili", "sw"),
-            InterestOption("Kinyarwanda", "rw")
-        )
+        languageOptions = Locales.supportedLocales.map {
+            InterestOption(it.getDisplayLanguage(it), it.toLanguageTag())
+        }
 
         countryOptions = EnumCountry.entries
             .filter { it != EnumCountry.Unsupported }
@@ -204,7 +204,8 @@ class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
         val gender = genderOptions.find { it.displayLabel == genderLabel }?.valueOption.orEmpty()
 
         val langLabel = dropLanguage.text.toString()
-        val langCode = languageOptions.find { it.displayLabel == langLabel }?.valueOption ?: "en"
+        val langCode = languageOptions.find { it.displayLabel == langLabel }?.valueOption
+            ?: Locales.english.toLanguageTag()
 
         val countryLabel = dropCountry.text.toString()
         val country = countryOptions.find { it.displayLabel == countryLabel }?.valueOption
@@ -254,10 +255,15 @@ class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
             )
             userRepo.saveOrUpdateUser(updatedAkilimoUser, sessionManager.akilimoUser)
 
-            // Sync language to SessionManager
+            // Sync language to SessionManager and AppLocale library
             sessionManager.languageCode = langCode
+            val selectedLocale = Locales.supportedLocales
+                .find { it.toLanguageTag() == langCode }
+                ?: Locales.english
+            AppLocale.desiredLocale = selectedLocale
 
-            // Apply dark mode
+            // Persist dark mode to SessionManager so AkilimoApp can read it on next start
+            sessionManager.darkMode = preferences.darkMode
             AppCompatDelegate.setDefaultNightMode(
                 if (preferences.darkMode) AppCompatDelegate.MODE_NIGHT_YES
                 else AppCompatDelegate.MODE_NIGHT_NO

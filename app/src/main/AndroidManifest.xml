@@ -28,6 +28,19 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:icon, android:theme, android:label"
         tools:targetApi="s">
+
+        <!-- Remove the auto-initializer so WorkManager uses the on-demand
+             Configuration.Provider path implemented in AkilimoApp instead. -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
         <activity
             android:name=".ui.usecases.SweetPotatoMarketActivity"
             android:exported="false" />
