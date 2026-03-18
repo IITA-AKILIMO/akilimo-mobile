@@ -29,36 +29,36 @@ interface FertilizerDao {
 
 
     @Query("SELECT * FROM fertilizers WHERE available = 1")
-    fun getAll(): List<Fertilizer>
+    suspend fun getAll(): List<Fertilizer>
 
     @Query("SELECT * FROM fertilizers LIMIT 1")
-    fun findOne(): Fertilizer?
+    suspend fun findOne(): Fertilizer?
 
     @Query("select * from fertilizers where type=:fertilizerType AND available = 1")
-    fun findByType(fertilizerType: String): Fertilizer?
+    suspend fun findByType(fertilizerType: String): Fertilizer?
 
     @Query("select * from fertilizers where type=:fertilizerType and country_code=:countryCode AND available = 1 limit 1")
-    fun findOneByTypeAndCountry(fertilizerType: String?, countryCode: EnumCountry): Fertilizer?
+    suspend fun findOneByTypeAndCountry(fertilizerType: String?, countryCode: EnumCountry): Fertilizer?
 
     @Query("SELECT * FROM fertilizers where country_code=:countryCode AND available = 1 ORDER BY sort_order ASC")
-    fun findAllSelectedByCountry(countryCode: EnumCountry): List<Fertilizer>
+    suspend fun findAllSelectedByCountry(countryCode: EnumCountry): List<Fertilizer>
 
     @Query("SELECT * FROM fertilizers where country_code=:countryCode AND available = 1 ORDER BY sort_order ASC")
-    fun findAllByCountry(countryCode: EnumCountry): List<Fertilizer>
+    suspend fun findAllByCountry(countryCode: EnumCountry): List<Fertilizer>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(fertilizer: Fertilizer): Long
+    suspend fun insert(fertilizer: Fertilizer): Long
 
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertAll(availableFertilizersList: List<Fertilizer>)
+    suspend fun insertAll(availableFertilizersList: List<Fertilizer>)
 
     @Update
-    fun update(fertilizer: Fertilizer)
+    suspend fun update(fertilizer: Fertilizer)
 
     @Delete
-    fun delete(fertilizer: Fertilizer)
+    suspend fun delete(fertilizer: Fertilizer)
 
     @Query("DELETE FROM fertilizers")
-    fun deleteAll()
+    suspend fun deleteAll()
 }

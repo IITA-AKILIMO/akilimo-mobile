@@ -15,7 +15,7 @@ class InvestmentRepo(private val dao: InvestmentAmountDao) {
     }
 
 
-    fun saveAll(investmentAmounts: List<InvestmentAmount>) {
+    suspend fun saveAll(investmentAmounts: List<InvestmentAmount>) {
         investmentAmounts.forEach { f ->
             val rowId = dao.insert(f)
             if (rowId == -1L) {

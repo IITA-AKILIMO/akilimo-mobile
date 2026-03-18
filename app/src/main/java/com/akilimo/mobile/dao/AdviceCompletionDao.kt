@@ -13,11 +13,11 @@ interface AdviceCompletionDao {
     fun getAllFlow(): Flow<List<AdviceCompletion>>
 
     @Query("SELECT * FROM advice_completions WHERE task_name = :taskName")
-    fun getAdviceByTask(taskName: EnumAdviceTask): AdviceCompletion?
+    suspend fun getAdviceByTask(taskName: EnumAdviceTask): AdviceCompletion?
 
     @Upsert
-    fun upsert(entity: AdviceCompletion)
+    suspend fun upsert(entity: AdviceCompletion)
 
     @Query("DELETE FROM advice_completions WHERE task_name = :taskName")
-    fun delete(taskName: EnumAdviceTask)
+    suspend fun delete(taskName: EnumAdviceTask)
 }

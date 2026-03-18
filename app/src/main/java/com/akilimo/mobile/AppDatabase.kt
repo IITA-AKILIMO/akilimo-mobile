@@ -139,8 +139,7 @@ abstract class AppDatabase : RoomDatabase() {
                 context.applicationContext,
                 AppDatabase::class.java,
                 DATABASE_NAME
-            ).allowMainThreadQueries() // TODO remove this line when we are ready to go live
-                .fallbackToDestructiveMigration()
+            ).fallbackToDestructiveMigration(dropAllTables = true)
 
 
             return builder.build()

@@ -13,30 +13,30 @@ import kotlinx.coroutines.flow.Flow
 interface SelectedFertilizerDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(selected: SelectedFertilizer): Long
+    suspend fun insert(selected: SelectedFertilizer): Long
 
     @Update
-    fun update(selectedFertilizer: SelectedFertilizer)
+    suspend fun update(selectedFertilizer: SelectedFertilizer)
 
     @Upsert
-    fun upsert(selectedFertilizer: SelectedFertilizer)
+    suspend fun upsert(selectedFertilizer: SelectedFertilizer)
 
     @Query("SELECT * FROM selected_fertilizers WHERE user_id = :userId")
-    fun getSelectedByUser(userId: Int): List<SelectedFertilizer>
+    suspend fun getSelectedByUser(userId: Int): List<SelectedFertilizer>
 
     @Query("SELECT * FROM selected_fertilizers WHERE fertilizer_id = :fertilizerId")
-    fun getSelectedByFertilizer(fertilizerId: Int): SelectedFertilizer?
+    suspend fun getSelectedByFertilizer(fertilizerId: Int): SelectedFertilizer?
 
     @Query("DELETE FROM selected_fertilizers WHERE user_id = :userId and fertilizer_id = :fertilizerId")
-    fun deleteSelected(userId: Int, fertilizerId: Int)
+    suspend fun deleteSelected(userId: Int, fertilizerId: Int)
 
 
     @Query("SELECT * FROM selected_fertilizers WHERE user_id = :userId")
     fun observeByUser(userId: Int): Flow<List<SelectedFertilizer>>
 
     @Query("SELECT COUNT(*) FROM selected_fertilizers WHERE user_id = :userId AND fertilizer_id = :fertilizerId")
-    fun isSelected(userId: Int, fertilizerId: Int): Int
+    suspend fun isSelected(userId: Int, fertilizerId: Int): Int
 
     @Query("DELETE FROM selected_fertilizers WHERE user_id = :userId")
-    fun deleteAllByUser(userId: Int)
+    suspend fun deleteAllByUser(userId: Int)
 }

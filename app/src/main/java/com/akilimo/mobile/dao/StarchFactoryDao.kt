@@ -20,25 +20,25 @@ interface StarchFactoryDao {
 
 
     @Query("SELECT * FROM starch_factories WHERE is_active = 1 ")
-    fun getAll(): List<StarchFactory>
+    suspend fun getAll(): List<StarchFactory>
 
     @Query("SELECT * FROM starch_factories WHERE is_active = 1  LIMIT 1")
-    fun findOne(): StarchFactory?
+    suspend fun findOne(): StarchFactory?
 
 
     @Query("select * from starch_factories where country_code=:countryCode AND is_active = 1  limit 1")
-    fun findOneByCountry(countryCode: String): StarchFactory?
+    suspend fun findOneByCountry(countryCode: String): StarchFactory?
 
 
     @Query("SELECT * FROM starch_factories where country_code=:countryCode AND is_active = 1  ORDER BY sort_order ASC")
-    fun findAllByCountry(countryCode: String): List<StarchFactory>
+    suspend fun findAllByCountry(countryCode: String): List<StarchFactory>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(starchFactory: StarchFactory): Long
+    suspend fun insert(starchFactory: StarchFactory): Long
 
     @Update
-    fun update(starchFactory: StarchFactory)
+    suspend fun update(starchFactory: StarchFactory)
 
     @Delete
-    fun delete(starchFactory: StarchFactory)
+    suspend fun delete(starchFactory: StarchFactory)
 }

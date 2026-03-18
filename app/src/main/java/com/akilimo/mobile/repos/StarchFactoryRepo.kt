@@ -9,7 +9,7 @@ class StarchFactoryRepo(private val dao: StarchFactoryDao) {
         return dao.observeAll()
     }
 
-    fun saveAll(starchFactories: List<StarchFactory>) {
+    suspend fun saveAll(starchFactories: List<StarchFactory>) {
         starchFactories.forEach { f ->
             val rowId = dao.insert(f)
             if (rowId == -1L) {

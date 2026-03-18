@@ -12,7 +12,7 @@ class SelectedCassavaMarketRepo(private val dao: SelectedCassavaMarketDao) {
      * Insert a selection and return true when insert succeeded.
      * This method does not read or update existing rows; it only inserts.
      */
-    fun saveOrUpdate(selectedInvestment: SelectedCassavaMarket) {
+    suspend fun saveOrUpdate(selectedInvestment: SelectedCassavaMarket) {
         val existing = dao.getSelectedByUser(selectedInvestment.userId)
         val selectedCassavaMarket = existing?.selectedCassavaMarket
         selectedInvestment.createdAt =
@@ -53,10 +53,10 @@ class SelectedCassavaMarketRepo(private val dao: SelectedCassavaMarketDao) {
     suspend fun getSelectedByUser(userId: Int): SelectedCassavaMarketWithDetails? =
         dao.getSelectedByUser(userId)
 
-    fun getSelectedByMarketPriceId(marketPriceId: Int): SelectedCassavaMarket? =
+    suspend fun getSelectedByMarketPriceId(marketPriceId: Int): SelectedCassavaMarket? =
         dao.getSelectedByMarketPriceId(marketPriceId)
 
-    fun getSelectedByStarchFactoryId(starchFactoryId: Int): SelectedCassavaMarket? =
+    suspend fun getSelectedByStarchFactoryId(starchFactoryId: Int): SelectedCassavaMarket? =
         dao.getSelectedByStarchFactoryId(starchFactoryId)
 
     fun observeSelected(userId: Int): Flow<SelectedCassavaMarketWithDetails?> =
