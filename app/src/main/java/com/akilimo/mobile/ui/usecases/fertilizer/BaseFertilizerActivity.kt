@@ -48,8 +48,11 @@ abstract class BaseFertilizerActivity<VB : ViewBinding> : BaseActivity<VB>() {
     open fun getSyncIndicator(): View? = null
     open fun getRefreshFab(): View? = null
 
-    /** Override to supply a custom fertilizer flow (e.g. filtered by type). */
-    open fun fetchFertilizersFlow(country: EnumCountry): Flow<List<Fertilizer>>? = null
+    /**
+     * Override to supply a custom fertilizer flow factory filtered by use case.
+     * Return null to use the default country-based flow.
+     */
+    open fun fertilizerFlowFactory(): ((EnumCountry) -> Flow<List<Fertilizer>>)? = null
 
     protected lateinit var listManager: FertilizerListManager
     protected lateinit var selectionHelper: FertilizerSelectionHelper
@@ -60,8 +63,7 @@ abstract class BaseFertilizerActivity<VB : ViewBinding> : BaseActivity<VB>() {
             FertilizerViewModel.factory(
                 db = database,
                 userName = sessionManager.akilimoUser,
-                fetchFlow = fetchFertilizersFlow(EnumCountry.Unsupported)
-                    ?.let { flow -> { _: EnumCountry -> flow } }
+                fetchFlow = fertilizerFlowFactory()
                     ?: { country -> FertilizerViewModel.defaultFlow(database, country) }
             )
         )[FertilizerViewModel::class.java]
