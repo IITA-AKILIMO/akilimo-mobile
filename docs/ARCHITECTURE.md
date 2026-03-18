@@ -229,7 +229,7 @@ No `ViewModel` classes exist. Configuration changes (rotation) trigger full relo
 | `allowMainThreadQueries()` | `AppDatabase.kt` | ANR risk | ✅ Fixed |
 | `fallbackToDestructiveMigration()` | `AppDatabase.kt` | Data loss on schema change | ⬜ Open |
 | No ViewModel classes | All fragments/activities | State lost on configuration change | ⬜ Open |
-| API keys hardcoded in source | `SessionManager.kt` | Exposed in APK without obfuscation | ⬜ Open |
+| API keys hardcoded in source | `SessionManager.kt` | Exposed in APK without obfuscation | ✅ Fixed |
 | `isMinifyEnabled = false` in release | `app/build.gradle.kts` | No code shrinking or obfuscation | ⬜ Open |
 | No Jetpack NavGraph | All | Deep links impossible; navigation untestable | ⬜ Open |
 | No DI framework | All | Manual repo instantiation; untestable | ⬜ Open |
