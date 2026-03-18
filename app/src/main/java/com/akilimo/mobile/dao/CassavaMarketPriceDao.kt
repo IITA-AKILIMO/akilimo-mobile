@@ -18,11 +18,11 @@ interface CassavaMarketPriceDao {
     fun observeByCountry(countryCode: EnumCountry): Flow<List<CassavaMarketPrice>>
 
     @Query("SELECT * FROM cassava_market_prices WHERE country_code = :countryCode")
-    fun getPricesByCountry(countryCode: EnumCountry): List<CassavaMarketPrice>
+    suspend fun getPricesByCountry(countryCode: EnumCountry): List<CassavaMarketPrice>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(price: CassavaMarketPrice): Long
+    suspend fun insert(price: CassavaMarketPrice): Long
 
     @Update
-    fun update(price: CassavaMarketPrice)
+    suspend fun update(price: CassavaMarketPrice)
 }

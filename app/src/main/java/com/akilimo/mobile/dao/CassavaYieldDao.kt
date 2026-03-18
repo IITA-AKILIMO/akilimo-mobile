@@ -14,13 +14,13 @@ interface CassavaYieldDao {
     fun observeAll(): Flow<List<CassavaYield>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertAll(items: List<CassavaYield>)
+    suspend fun insertAll(items: List<CassavaYield>)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(item: CassavaYield): Long
+    suspend fun insert(item: CassavaYield): Long
 
     @Update
-    fun update(item: CassavaYield)
+    suspend fun update(item: CassavaYield)
 
 //    @Query("UPDATE cassava_yields SET is_selected = CASE WHEN id = :selectedId THEN 1 ELSE 0 END, updated_at = :now WHERE id IN (SELECT id FROM cassava_yields)")
 //    suspend fun setSingleSelected(selectedId: Long, now: Long = System.currentTimeMillis())
@@ -31,5 +31,5 @@ interface CassavaYieldDao {
 //    )
 
     @Query("DELETE FROM cassava_yields")
-    fun clearAll()
+    suspend fun clearAll()
 }

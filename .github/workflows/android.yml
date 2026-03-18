@@ -16,6 +16,8 @@ jobs:
       LATEST_TAG_FILE: "latest_tag.txt"
       RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+      MAPBOX_RUNTIME_TOKEN: ${{ secrets.MAPBOX_RUNTIME_TOKEN }}
+      LOCATION_IQ_TOKEN: ${{ secrets.LOCATION_IQ_TOKEN }}
       PACKAGE_NAME: ${{ secrets.APP_PACKAGE }}
 
     steps:

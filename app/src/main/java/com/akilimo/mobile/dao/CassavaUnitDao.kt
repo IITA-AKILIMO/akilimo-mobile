@@ -15,16 +15,16 @@ interface CassavaUnitDao {
     fun observeAll(): Flow<List<CassavaUnit>>
 
     @Query("SELECT * FROM cassava_units WHERE id = :unitId LIMIT 1")
-    fun getById(unitId: Int): CassavaUnit?
+    suspend fun getById(unitId: Int): CassavaUnit?
 
     @Query("SELECT * FROM cassava_units ORDER BY sort_order ASC")
-    fun getAll(): List<CassavaUnit>
+    suspend fun getAll(): List<CassavaUnit>
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(unit: CassavaUnit): Long
+    suspend fun insert(unit: CassavaUnit): Long
 
     @Update
-    fun update(unit: CassavaUnit)
+    suspend fun update(unit: CassavaUnit)
 
     @Query("DELETE FROM cassava_units")
-    fun clear()
+    suspend fun clear()
 }

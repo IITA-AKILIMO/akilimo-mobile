@@ -14,6 +14,7 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.entities.AdviceCompletionDto
 import com.akilimo.mobile.entities.Fertilizer
+import com.akilimo.mobile.entities.SelectedFertilizer
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumCountry
 import com.akilimo.mobile.enums.EnumStepStatus
@@ -177,8 +178,24 @@ abstract class BaseFertilizerActivity<VB : ViewBinding> : BaseActivity<VB>() {
             fertilizer = fertilizer,
             userId = userId,
             fragmentManager = supportFragmentManager,
-            onSelectionChanged = { fertilizerId, price, displayPrice, isSelected ->
+            onSelectionChanged = { fertilizerId, fertilizerPriceId, price, displayPrice, isSelected, isExactPrice ->
                 listManager.updateItemSelection(fertilizerId, price, displayPrice, isSelected)
+                safeScope.launch {
+                    if (isSelected) {
+                        selectedRepo.select(
+                            SelectedFertilizer(
+                                userId = userId,
+                                fertilizerId = fertilizerId,
+                                fertilizerPriceId = fertilizerPriceId,
+                                fertilizerPrice = price ?: 0.0,
+                                displayPrice = displayPrice,
+                                isExactPrice = isExactPrice
+                            )
+                        )
+                    } else {
+                        selectedRepo.deselect(userId, fertilizerId)
+                    }
+                }
             }
         )
     }

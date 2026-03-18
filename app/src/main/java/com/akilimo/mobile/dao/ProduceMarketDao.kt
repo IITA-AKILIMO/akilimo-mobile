@@ -12,19 +12,19 @@ import com.akilimo.mobile.enums.EnumProduceType
 interface ProduceMarketDao {
 
     @Query("SELECT * FROM produce_markets WHERE user_id=:userId  and market_type=:marketType LIMIT 1")
-    fun findOne(userId: Int, marketType: EnumMarketType): ProduceMarket?
+    suspend fun findOne(userId: Int, marketType: EnumMarketType): ProduceMarket?
 
     @Insert
-    fun insert(produceMarket: ProduceMarket): Long
+    suspend fun insert(produceMarket: ProduceMarket): Long
 
     @Update
-    fun update(produceMarket: ProduceMarket)
+    suspend fun update(produceMarket: ProduceMarket)
 
     @Query("SELECT * FROM produce_markets WHERE user_id = :userId AND produce_type = :produceType LIMIT 1")
-    fun getUserMarket(userId: Int, produceType: EnumProduceType): ProduceMarket?
+    suspend fun getUserMarket(userId: Int, produceType: EnumProduceType): ProduceMarket?
 
     @Query("SELECT * FROM produce_markets WHERE user_id = :userId and market_type =:marketType ORDER BY id DESC LIMIT 1")
-    fun getLastEntryForUser(userId: Int,marketType: EnumMarketType): ProduceMarket?
+    suspend fun getLastEntryForUser(userId: Int,marketType: EnumMarketType): ProduceMarket?
 }
 
 class ProduceMarketRepo(private val dao: ProduceMarketDao) {

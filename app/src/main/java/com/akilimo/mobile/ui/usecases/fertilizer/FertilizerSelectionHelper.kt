@@ -21,7 +21,7 @@ class FertilizerSelectionHelper(
         fertilizer: Fertilizer,
         userId: Int,
         fragmentManager: androidx.fragment.app.FragmentManager,
-        onSelectionChanged: (fertilizerId: Int, price: Double?, displayPrice: String?, isSelected: Boolean) -> Unit
+        onSelectionChanged: (fertilizerId: Int, fertilizerPriceId: Int?, price: Double?, displayPrice: String?, isSelected: Boolean, isExactPrice: Boolean) -> Unit
     ) = lifecycleScope.launch {
         val prices = priceRepo.getByFertilizerKey(fertilizer.key.orEmpty())
         if (prices.isEmpty()) return@launch

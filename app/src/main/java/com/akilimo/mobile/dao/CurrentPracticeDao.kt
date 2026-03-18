@@ -13,17 +13,17 @@ import com.akilimo.mobile.entities.CurrentPractice
 interface CurrentPracticeDao {
 
     @Query("SELECT * FROM current_practices WHERE user_id = :userId LIMIT 1")
-    fun getPracticeForUser(userId: Int): CurrentPractice?
+    suspend fun getPracticeForUser(userId: Int): CurrentPractice?
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun save(practice: CurrentPractice): Long
+    suspend fun save(practice: CurrentPractice): Long
 
     @Upsert
-    fun upsert(practice: CurrentPractice)
+    suspend fun upsert(practice: CurrentPractice)
 
     @Update
-    fun update(practice: CurrentPractice)
+    suspend fun update(practice: CurrentPractice)
 
     @Delete
-    fun delete(practice: CurrentPractice)
+    suspend fun delete(practice: CurrentPractice)
 }

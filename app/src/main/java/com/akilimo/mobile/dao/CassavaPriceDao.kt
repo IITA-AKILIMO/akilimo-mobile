@@ -19,9 +19,9 @@ interface CassavaPriceDao {
 
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(price: CassavaMarketPrice): Long
+    suspend fun insert(price: CassavaMarketPrice): Long
 
     @Update
-    fun update(price: CassavaMarketPrice)
+    suspend fun update(price: CassavaMarketPrice)
 
 }

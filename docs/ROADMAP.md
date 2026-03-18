@@ -16,7 +16,7 @@ These are fixes to active bugs and security issues. All are self-contained with 
 | 2c | ✅ Done | **Fix dropdown options empty after restart** — `BaseSpinnerAdapter.getFilter()` overridden with no-op filter; `ArrayFilter` was filtering by `toString()` against prefilled text causing empty popups after `ProcessPhoenix` rebirth | `BaseSpinnerAdapter.kt` | S | Critical |
 | 2d | ✅ Done | **Network banner in all activities** — programmatic injection in `BaseActivity.injectNetworkBannerIfNeeded()` after `onBindingReady()`; status bar inset applied; theme-aware colors; string resources; safe `Runnable` cancellation | `BaseActivity.kt`, `NetworkNotificationView.kt`, `strings.xml` | S | UX |
 | 3 | ✅ Done | **Remove `allowMainThreadQueries()`** — all DB calls confirmed in coroutines; removed from `buildDatabase()` | `AppDatabase.kt` | S | High |
-| 4 | ⬜ | **Move API keys to BuildConfig** — Mapbox runtime key and LocationIQ token out of source | `SessionManager.kt`, `app/build.gradle.kts`, `local.properties` | S | Security |
+| 4 | ✅ Done | **Move API keys to BuildConfig** — Mapbox runtime key and LocationIQ token sourced from env vars via `BuildConfig`; defaults removed from source | `SessionManager.kt`, `app/build.gradle.kts`, `.env.template` | S | Security |
 | 5 | ⬜ | **Enable R8 minification** — `isMinifyEnabled = true` in release build type + baseline proguard rules | `app/build.gradle.kts` | S | Security |
 
 ---

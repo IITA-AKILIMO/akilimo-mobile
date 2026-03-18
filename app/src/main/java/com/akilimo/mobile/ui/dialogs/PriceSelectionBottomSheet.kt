@@ -10,15 +10,16 @@ import com.akilimo.mobile.adapters.GenericSelectableAdapter
 import com.akilimo.mobile.databinding.BottomSheetPriceSelectionBinding
 import com.akilimo.mobile.entities.Fertilizer
 import com.akilimo.mobile.entities.FertilizerPrice
-import com.akilimo.mobile.enums.EnumCountry
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.akilimo.mobile.R
+import com.akilimo.mobile.enums.EnumCountry
+import java.text.NumberFormat
 
 class PriceSelectionBottomSheet(
     private val fertilizer: Fertilizer,
     private val prices: List<FertilizerPrice>,
     private val userId: Int,
-    private val onSelectionChanged: (fertilizerId: Int, price: Double?, displayPrice: String?, isSelected: Boolean) -> Unit
+    private val onSelectionChanged: (fertilizerId: Int, fertilizerPriceId: Int?, price: Double?, displayPrice: String?, isSelected: Boolean, isExactPrice: Boolean) -> Unit
 ) : BottomSheetDialogFragment() {
 
     private lateinit var binding: BottomSheetPriceSelectionBinding
@@ -63,18 +64,27 @@ class PriceSelectionBottomSheet(
         binding.btnSave.setOnClickListener {
             val finalPrice = customPriceValue ?: selectedPrice?.pricePerBag
             if (finalPrice != null && finalPrice > 0.0) {
+                val currencySymbol = selectedPrice?.currencySymbol
+                    ?: EnumCountry.fromCode(fertilizer.countryCode).currencyCode
                 val displayPrice = if (customPriceValue != null) {
-                    "$finalPrice ${EnumCountry.fromCode(fertilizer.countryCode).currencyName()}"
+                    "${NumberFormat.getInstance().format(finalPrice)} $currencySymbol"
                 } else selectedPrice?.priceRange
 
-                onSelectionChanged(fertilizer.id ?: 0, finalPrice, displayPrice, true)
+                onSelectionChanged(
+                    fertilizer.id ?: 0,
+                    selectedPrice?.id,
+                    finalPrice,
+                    displayPrice,
+                    true,
+                    customPriceValue != null
+                )
             }
             dismiss()
         }
 
         binding.btnCancel.setOnClickListener { dismiss() }
         binding.btnRemove.setOnClickListener {
-            onSelectionChanged(fertilizer.id ?: 0, 0.0, null, false)
+            onSelectionChanged(fertilizer.id ?: 0, null, 0.0, null, false, false)
             dismiss()
         }
 

@@ -17,26 +17,26 @@ interface SelectedCassavaMarketDao {
     fun observeAll(): Flow<List<SelectedCassavaMarketWithDetails>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(selected: SelectedCassavaMarket): Long
+    suspend fun insert(selected: SelectedCassavaMarket): Long
 
     @Update
-    fun update(selected: SelectedCassavaMarket)
+    suspend fun update(selected: SelectedCassavaMarket)
 
     @Upsert
-    fun upsert(selectedMarket: SelectedCassavaMarket)
+    suspend fun upsert(selectedMarket: SelectedCassavaMarket)
 
 
     @Query("SELECT * FROM selected_cassava_markets WHERE user_id = :userId LIMIT 1")
-    fun getSelectedByUser(userId: Int): SelectedCassavaMarketWithDetails?
+    suspend fun getSelectedByUser(userId: Int): SelectedCassavaMarketWithDetails?
 
     @Query("SELECT * FROM selected_cassava_markets WHERE market_price_id = :marketPriceId LIMIT 1")
-    fun getSelectedByMarketPriceId(marketPriceId: Int): SelectedCassavaMarket?
+    suspend fun getSelectedByMarketPriceId(marketPriceId: Int): SelectedCassavaMarket?
 
     @Query("SELECT * FROM selected_cassava_markets WHERE starch_factory_id = :starchFactoryId LIMIT 1")
-    fun getSelectedByStarchFactoryId(starchFactoryId: Int): SelectedCassavaMarket?
+    suspend fun getSelectedByStarchFactoryId(starchFactoryId: Int): SelectedCassavaMarket?
 
     @Query("DELETE FROM selected_cassava_markets WHERE user_id = :userId")
-    fun deleteSelected(userId: Int)
+    suspend fun deleteSelected(userId: Int)
 
     @Query("SELECT * FROM selected_cassava_markets WHERE user_id = :userId")
     fun observeByUser(userId: Int): Flow<SelectedCassavaMarketWithDetails?>
@@ -54,9 +54,9 @@ interface SelectedCassavaMarketDao {
     ): Flow<SelectedCassavaMarketWithDetails?>
 
     @Query("SELECT COUNT(*) FROM selected_cassava_markets WHERE user_id = :userId AND market_price_id=:marketPriceId")
-    fun isMarketSelected(userId: Int, marketPriceId: Int): Int
+    suspend fun isMarketSelected(userId: Int, marketPriceId: Int): Int
 
     @Query("SELECT COUNT(*) FROM selected_cassava_markets WHERE user_id = :userId AND starch_factory_id=:factoryId")
-    fun isFactorySelected(userId: Int, factoryId: Int): Int
+    suspend fun isFactorySelected(userId: Int, factoryId: Int): Int
 
 }

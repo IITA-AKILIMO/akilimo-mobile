@@ -10,7 +10,7 @@ class SelectedInvestmentRepo(private val dao: SelectedInvestmentDao) {
      * Insert a selection and return true when insert succeeded.
      * This method does not read or update existing rows; it only inserts.
      */
-    fun saveOrUpdate(selectedInvestment: SelectedInvestment) {
+    suspend fun saveOrUpdate(selectedInvestment: SelectedInvestment) {
         val existing = dao.getSelectedByUser(selectedInvestment.id)
         selectedInvestment.createdAt = existing?.createdAt ?: System.currentTimeMillis()
         selectedInvestment.updatedAt = System.currentTimeMillis()

@@ -85,9 +85,13 @@ android {
         val fuelrodBaseUrl =
             env.FUELROD_BASE_URL.orElse("https://akilimo.fuelrod.com")
         val akilimoBaseUrl = env.AKILIMO_BASE_URL.orElse("https://api.akilimo.org")
+        val mapboxRuntimeToken = env.MAPBOX_RUNTIME_TOKEN.orElse("")
+        val locationIqToken = env.LOCATION_IQ_TOKEN.orElse("")
 
         buildConfigField("String", "AKILIMO_BASE_URL", q(akilimoBaseUrl))
         buildConfigField("String", "FUELROD_BASE_URL", q(fuelrodBaseUrl))
+        buildConfigField("String", "MAPBOX_RUNTIME_TOKEN", q(mapboxRuntimeToken))
+        buildConfigField("String", "LOCATION_IQ_TOKEN", q(locationIqToken))
     }
 
     lint {
@@ -98,6 +102,15 @@ android {
         checkReleaseBuilds = false
         baseline = file("lint-baseline.xml")
         xmlOutput = layout.buildDirectory.file("/reports/custom-lint-results.xml").get().asFile
+    }
+
+    bundle {
+        language {
+            // Disable per-language APK splits so all locale resources (sw-rTZ, rw-rRW, etc.)
+            // are included in every install. Without this, Play Store strips languages that
+            // don't match the device locale, breaking in-app language switching.
+            enableSplit = false
+        }
     }
 
     buildTypes {

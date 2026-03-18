@@ -12,16 +12,16 @@ import kotlinx.coroutines.flow.Flow
 interface FertilizerPriceDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(price: FertilizerPrice): Long
+    suspend fun insert(price: FertilizerPrice): Long
 
     @Update
-    fun update(price: FertilizerPrice)
+    suspend fun update(price: FertilizerPrice)
 
     @Query("SELECT * FROM fertilizer_prices WHERE fertilizer_key = :key AND country_code = :country ORDER BY sort_order ASC")
-    fun getByKeyAndCountry(key: String, country: String): FertilizerPrice?
+    suspend fun getByKeyAndCountry(key: String, country: String): FertilizerPrice?
 
     @Query("SELECT * FROM fertilizer_prices WHERE fertilizer_key = :key ORDER BY sort_order ASC")
-    fun getByKey(key: String): List<FertilizerPrice>
+    suspend fun getByKey(key: String): List<FertilizerPrice>
 
     @Query("SELECT * FROM fertilizer_prices ORDER BY sort_order ASC")
     fun observeAll(): Flow<List<FertilizerPrice>>
