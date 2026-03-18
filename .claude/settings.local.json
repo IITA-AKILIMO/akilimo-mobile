@@ -20,7 +20,10 @@
       "Bash(grep -v \"suspend\\\\|Flow\\\\|//\")",
       "Bash(do)",
       "Bash(echo \"=== $f ===\")",
-      "Bash(grep -v \"Flow\\\\|suspend\\\\|//\")"
+      "Bash(grep -v \"Flow\\\\|suspend\\\\|//\")",
+      "Bash(xargs cat:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
