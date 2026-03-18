@@ -18,7 +18,7 @@ class PriceSelectionBottomSheet(
     private val fertilizer: Fertilizer,
     private val prices: List<FertilizerPrice>,
     private val userId: Int,
-    private val onSelectionChanged: (fertilizerId: Int, price: Double?, displayPrice: String?, isSelected: Boolean) -> Unit
+    private val onSelectionChanged: (fertilizerId: Int, fertilizerPriceId: Int?, price: Double?, displayPrice: String?, isSelected: Boolean, isExactPrice: Boolean) -> Unit
 ) : BottomSheetDialogFragment() {
 
     private lateinit var binding: BottomSheetPriceSelectionBinding
@@ -67,14 +67,21 @@ class PriceSelectionBottomSheet(
                     "$finalPrice ${EnumCountry.fromCode(fertilizer.countryCode).currencyName()}"
                 } else selectedPrice?.priceRange
 
-                onSelectionChanged(fertilizer.id ?: 0, finalPrice, displayPrice, true)
+                onSelectionChanged(
+                    fertilizer.id ?: 0,
+                    selectedPrice?.id,
+                    finalPrice,
+                    displayPrice,
+                    true,
+                    customPriceValue != null
+                )
             }
             dismiss()
         }
 
         binding.btnCancel.setOnClickListener { dismiss() }
         binding.btnRemove.setOnClickListener {
-            onSelectionChanged(fertilizer.id ?: 0, 0.0, null, false)
+            onSelectionChanged(fertilizer.id ?: 0, null, 0.0, null, false, false)
             dismiss()
         }
 
