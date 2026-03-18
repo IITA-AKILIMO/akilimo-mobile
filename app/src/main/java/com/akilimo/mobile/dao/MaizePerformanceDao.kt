@@ -13,19 +13,19 @@ interface MaizePerformanceDao {
 
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(performance: MaizePerformance): Long
+    suspend fun insert(performance: MaizePerformance): Long
 
     @Update
-    fun update(performance: MaizePerformance)
+    suspend fun update(performance: MaizePerformance)
 
     @Query("SELECT * FROM maize_performance WHERE user_id = :userId LIMIT 1")
-    fun getByUserId(userId: Int): MaizePerformance?
+    suspend fun getByUserId(userId: Int): MaizePerformance?
 
     @Query("SELECT * FROM maize_performance WHERE user_id = :userId LIMIT 1")
     fun observeByUserId(userId: Int): Flow<MaizePerformance?>
 
     @Query("DELETE FROM maize_performance WHERE user_id = :userId")
-    fun deleteByUserId(userId: Int)
+    suspend fun deleteByUserId(userId: Int)
 }
 
 class MaizePerformanceRepo(

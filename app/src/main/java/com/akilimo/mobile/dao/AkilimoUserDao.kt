@@ -11,14 +11,14 @@ import com.akilimo.mobile.entities.AkilimoUser
 interface AkilimoUserDao {
 
     @Query("SELECT * FROM akilimo_users")
-    fun listAll(): List<AkilimoUser>
+    suspend fun listAll(): List<AkilimoUser>
 
     @Query("SELECT * FROM akilimo_users WHERE user_name=:userName LIMIT 1")
-    fun findOne(userName: String): AkilimoUser?
+    suspend fun findOne(userName: String): AkilimoUser?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(profile: AkilimoUser)
+    suspend fun insert(profile: AkilimoUser)
 
     @Update
-    fun update(profile: AkilimoUser)
+    suspend fun update(profile: AkilimoUser)
 }

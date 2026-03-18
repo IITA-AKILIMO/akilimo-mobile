@@ -10,8 +10,8 @@ import com.akilimo.mobile.entities.UserPreferences
 interface UserPreferencesDao {
 
     @Query("SELECT * FROM user_preferences WHERE id = 1 LIMIT 1")
-    fun getPreferences(): UserPreferences?
+    suspend fun getPreferences(): UserPreferences?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertOrReplace(preferences: UserPreferences)
+    suspend fun insertOrReplace(preferences: UserPreferences)
 }

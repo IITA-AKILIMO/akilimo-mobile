@@ -18,7 +18,7 @@ class CassavaMarketPriceRepo(
         }
     }
 
-    fun getPricesByCountry(countryCode: EnumCountry): List<CassavaMarketPrice> {
+    suspend fun getPricesByCountry(countryCode: EnumCountry): List<CassavaMarketPrice> {
         return dao.getPricesByCountry(countryCode)
     }
 
