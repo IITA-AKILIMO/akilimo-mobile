@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/lbl_valid_amount_prompt"
         app:boxBackgroundMode="outline"
-        app:boxStrokeColor="@color/color_primary"
+        app:boxStrokeColor="?attr/colorPrimary"
         app:counterEnabled="true"
         app:counterMaxLength="10"
         app:errorEnabled="true"

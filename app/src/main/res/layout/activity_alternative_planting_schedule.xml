@@ -73,7 +73,7 @@
         app:icon="@drawable/ic_save"
         app:iconPadding="@dimen/spacing_small"
         app:iconSize="@dimen/dimen_36"
-        app:iconTint="@color/black"
+        app:iconTint="?attr/colorPrimary"
         app:layout_behavior="com.google.android.material.behavior.HideViewOnScrollBehavior" />
 
 
