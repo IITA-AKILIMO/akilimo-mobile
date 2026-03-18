@@ -226,7 +226,7 @@ No `ViewModel` classes exist. Configuration changes (rotation) trigger full relo
 
 | Item | Location | Risk | Status |
 |------|----------|------|--------|
-| `allowMainThreadQueries()` | `AppDatabase.kt` | ANR risk | ⬜ Open |
+| `allowMainThreadQueries()` | `AppDatabase.kt` | ANR risk | ✅ Fixed |
 | `fallbackToDestructiveMigration()` | `AppDatabase.kt` | Data loss on schema change | ⬜ Open |
 | No ViewModel classes | All fragments/activities | State lost on configuration change | ⬜ Open |
 | API keys hardcoded in source | `SessionManager.kt` | Exposed in APK without obfuscation | ⬜ Open |

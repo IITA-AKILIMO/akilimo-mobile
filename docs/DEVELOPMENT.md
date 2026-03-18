@@ -82,7 +82,7 @@ Main package: `com.akilimo.mobile`
 
 ## 5. Database and threading
 
-`AppDatabase` currently uses `allowMainThreadQueries()` as a transitional behavior. **Do not add new main-thread DB calls.** All repository methods should be `suspend` functions called from `safeScope.launch { }` or a background dispatcher.
+All repository methods are `suspend` functions called from `safeScope.launch { }` or a background dispatcher. Do not add main-thread DB calls — `allowMainThreadQueries()` has been removed.
 
 Room DB version: **2** — `fallbackToDestructiveMigration()` is active. When changing entity schema, write a proper `Migration` object to avoid wiping user data.
 
@@ -175,6 +175,6 @@ private fun UserSettingsScreenPreview() {
 | MUN-16 | ✅ Fixed | Language selection did not persist — short codes, missing AppLocale sync, wrong restart method | `WelcomeFragment.kt`, `UserSettingsActivity.kt`, `AkilimoApp.kt`, `SessionManager.kt` |
 | — | ✅ Fixed | WorkManager `IllegalStateException` on app start — missing `Configuration.Provider` | `AkilimoApp.kt`, `AndroidManifest.xml` |
 | — | ✅ Fixed | Dark mode setting saved but never applied — `MODE_NIGHT_NO` override removed; now driven by `SessionManager.darkMode` in `AkilimoApp` | `BaseActivity.kt`, `AkilimoApp.kt`, `SessionManager.kt` |
-| — | ⬜ Open | `allowMainThreadQueries()` — ANR risk on slow devices | `AppDatabase.kt` |
+| — | ✅ Fixed | `allowMainThreadQueries()` removed — all DB calls confirmed in coroutines | `AppDatabase.kt` |
 
 See `docs/ARCHITECTURE.md §10` for the full technical debt register and `docs/ROADMAP.md` for prioritised fix order.
