@@ -10,8 +10,8 @@ These are fixes to active bugs and security issues. All are self-contained with 
 |---|--------|------|-------|--------|--------|
 | 1 | ✅ Done | **Fix MUN-16: Language persistence** — full BCP-47 tags, AppLocale sync, ProcessPhoenix in WelcomeFragment, save to UserPreferences | `WelcomeFragment.kt`, `UserSettingsActivity.kt`, `AkilimoApp.kt`, `SessionManager.kt` | S | Critical |
 | 1a | ✅ Done | **Fix WorkManager initialization** — implement `Configuration.Provider` in `AkilimoApp`; remove `WorkManagerInitializer` from startup | `AkilimoApp.kt`, `AndroidManifest.xml` | S | Critical |
-| 2 | ⬜ Next | **Fix dark mode** — remove `MODE_NIGHT_NO` override in `BaseActivity.onCreate():89`, read `UserPreferences.darkMode` on startup | `BaseActivity.kt` | S | High |
-| 3 | ⬜ | **Remove `allowMainThreadQueries()`** — all DB calls are already in coroutines | `AppDatabase.kt` | S | High |
+| 2 | ✅ Done | **Fix dark mode** — removed `MODE_NIGHT_NO` override; `AkilimoApp` applies night mode from `SessionManager.darkMode`; fixed StepperLayout bottom bar, welcome card, terms WebView background, and three hardcoded-black icon tints | `BaseActivity.kt`, `AkilimoApp.kt`, `SessionManager.kt`, `UserSettingsActivity.kt`, `activity_home_stepper.xml`, `fragment_welcome.xml`, `fragment_terms.xml`, `ic_*.xml` | S | High |
+| 3 | ⬜ Next | **Remove `allowMainThreadQueries()`** — all DB calls are already in coroutines | `AppDatabase.kt` | S | High |
 | 4 | ⬜ | **Move API keys to BuildConfig** — Mapbox runtime key and LocationIQ token out of source | `SessionManager.kt`, `app/build.gradle.kts`, `local.properties` | S | Security |
 | 5 | ⬜ | **Enable R8 minification** — `isMinifyEnabled = true` in release build type + baseline proguard rules | `app/build.gradle.kts` | S | Security |
 | 6 | ⬜ | **Wire NetworkNotificationView** in activities that need it but currently have a null reference | All domain activities | S | UX |
