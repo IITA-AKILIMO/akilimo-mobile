@@ -2,7 +2,15 @@
   "permissions": {
     "allow": [
       "Bash(grep -r \"tint=#000000\\\\|tint=#000\\\\|tint=#FFFFFF\\\\|tint=#fff\" /d/Dev/android/akilimo-mobile/app/src/main/res/drawable/*.xml)",
-      "Bash(grep -v \"\\\\.xml:#$\")"
+      "Bash(grep -v \"\\\\.xml:#$\")",
+      "WebFetch(domain:www.iita.org)",
+      "WebFetch(domain:www.akilimo.org)",
+      "Bash(cp /d/Dev/android/akilimo-mobile/app/src/main/res/values/strings.xml /tmp/strings.xml)",
+      "Read(//tmp/**)",
+      "Bash(find D:Devandroidakilimo-mobile -name *.xml -path */layout* -type f)",
+      "Bash(find D:Devandroidakilimo-mobile/app/src/main/res/layout* -name *.xml -type f)",
+      "Bash(grep -r \"@color/white\\\\|@color/black\" D:Devandroidakilimo-mobile/app/src/main/res/layout --include=*.xml)",
+      "Bash(grep -r \"@color/color_primary\\\\|@color/color_secondary\" D:Devandroidakilimo-mobile/app/src/main/res/layout --include=*.xml)"
     ]
   }
 }
