@@ -69,7 +69,7 @@ class SessionManager private constructor(private val pref: android.content.Share
     }
 
     var languageCode: String
-        get() = pref.getString(KEY_LANG_CODE, Locales.english.language).orEmpty()
+        get() = pref.getString(KEY_LANG_CODE, Locales.english.toLanguageTag()).orEmpty()
         set(value) = pref.edit { putString(KEY_LANG_CODE, value) }
 
     var akilimoUser: String
@@ -134,6 +134,10 @@ class SessionManager private constructor(private val pref: android.content.Share
             } else saved
         }
         set(value) = pref.edit { putString(KEY_DEVICE_TOKEN, value) }
+
+    var darkMode: Boolean
+        get() = pref.getBoolean("darkMode", false)
+        set(value) = pref.edit { putBoolean("darkMode", value) }
 
     var rememberAreaUnit: Boolean
         get() = pref.getBoolean("rememberAreaUnit", false)

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Filter
 import androidx.core.content.ContextCompat
 import com.akilimo.mobile.R
 import com.akilimo.mobile.databinding.CustomSpinnerBinding
@@ -19,6 +20,29 @@ abstract class BaseSpinnerAdapter<T, O : BaseValueOption<T>>(
 
     private val inflater = LayoutInflater.from(context)
     private var selectedValue: T? = null
+
+    /**
+     * Return a no-op filter so that calling setText() to prefill the field (e.g. on
+     * screen restore or after ProcessPhoenix restart) never clears the dropdown list.
+     *
+     * ArrayAdapter's default ArrayFilter runs performFiltering(currentText) when the
+     * dropdown is opened, so a prefilled value like "English" would be used as a
+     * search constraint against item.toString() — returning zero matches and showing
+     * an empty popup. These dropdowns are exposed-dropdown-menus (not search fields),
+     * so all items must always be visible regardless of the current text value.
+     */
+    private val noOpFilter = object : Filter() {
+        override fun performFiltering(constraint: CharSequence?) = FilterResults().apply {
+            values = options
+            count = options.size
+        }
+
+        override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+            notifyDataSetChanged()
+        }
+    }
+
+    override fun getFilter(): Filter = noOpFilter
 
     fun setSelectedValue(value: T?) {
         selectedValue = value

@@ -175,7 +175,8 @@
     <string name="lbl_no">No</string>
     <string name="lbl_yes">Yes</string>
     <string name="lbl_planting_harvest_dates">Planting and harvest dates</string>
-    <string name="lbl_no_internet">No internet!</string>
+    <string name="lbl_no_internet">No internet connection</string>
+    <string name="lbl_network_connected">Connected</string>
     <string name="lbl_retry">Retry</string>
     <string name="lbl_close" translatable="false">x</string>
 

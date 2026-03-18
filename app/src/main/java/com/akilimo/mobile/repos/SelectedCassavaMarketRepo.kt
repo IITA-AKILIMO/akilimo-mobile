@@ -31,6 +31,7 @@ class SelectedCassavaMarketRepo(private val dao: SelectedCassavaMarketDao) {
         val selectedCassavaMarket = existing?.selectedCassavaMarket
 
         val updated = selectedCassavaMarket?.copy(
+            yieldId = selected.yieldId,
             starchFactoryId = selected.starchFactoryId,
             cassavaUnitId = selected.cassavaUnitId,
             unitOfSale = selected.unitOfSale,

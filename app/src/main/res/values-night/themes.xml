@@ -1,30 +1,34 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Dark theme for Akilimo app -->
+    <!-- ============================================================ -->
+    <!-- Dark Theme — AKILIMO brand on dark surfaces                 -->
+    <!-- Primary:   #9DD768 (lightened AKILIMO green for dark bg)   -->
+    <!-- Secondary: #BFCA6A (warm lime)                             -->
+    <!-- Tertiary:  #FFB3B4 (AKILIMO red softened for dark)         -->
+    <!-- ============================================================ -->
     <style name="Base.Theme.NewAkilimo" parent="Theme.Material3.DayNight.NoActionBar">
 
-        <!-- Primary brand colors -->
-        <item name="colorPrimary">@color/color_primary_light</item>
-        <item name="colorOnPrimary">@color/color_primary_variant</item>
-        <item name="colorPrimaryContainer">@color/color_primary_variant</item>
-        <item name="colorOnPrimaryContainer">@color/color_primary_light</item>
+        <!-- Primary (bright green readable on dark bg) -->
+        <item name="colorPrimary">@color/color_dark_primary</item>
+        <item name="colorOnPrimary">@color/color_dark_on_primary</item>
+        <item name="colorPrimaryContainer">@color/color_dark_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/color_dark_on_primary_container</item>
 
-        <!-- Secondary brand colors -->
-        <item name="colorSecondary">@color/color_secondary_light</item>
-        <item name="colorOnSecondary">@color/color_secondary_variant</item>
-        <item name="colorSecondaryContainer">@color/color_secondary_variant</item>
-        <item name="colorOnSecondaryContainer">@color/color_secondary_light</item>
+        <!-- Secondary (warm lime on dark) -->
+        <item name="colorSecondary">@color/color_dark_secondary</item>
+        <item name="colorOnSecondary">@color/color_dark_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/color_dark_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/color_dark_on_secondary_container</item>
 
-        <!-- Tertiary (optional accent) -->
-        <item name="colorTertiary">@color/color_accent_5</item>
-        <item name="colorOnTertiary">@color/color_primary_variant</item>
-        <item name="colorTertiaryContainer">@color/color_on_info_container</item>
-        <item name="colorOnTertiaryContainer">@color/color_info_container</item>
+        <!-- Tertiary (AKILIMO red softened) -->
+        <item name="colorTertiary">@color/color_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/color_dark_on_tertiary</item>
+        <item name="colorTertiaryContainer">@color/color_dark_tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/color_dark_on_tertiary_container</item>
 
-        <!-- Surface and background -->
+        <!-- Surface and background (deep warm-dark green) -->
         <item name="android:colorBackground">@color/color_dark_background</item>
         <item name="colorOnBackground">@color/color_dark_on_background</item>
-
         <item name="colorSurface">@color/color_dark_surface</item>
         <item name="colorOnSurface">@color/color_dark_on_surface</item>
         <item name="colorSurfaceVariant">@color/color_dark_surface_variant</item>
@@ -40,25 +44,25 @@
         <item name="colorOutline">@color/color_dark_outline</item>
         <item name="colorOutlineVariant">@color/color_dark_outline_variant</item>
 
-        <!-- Surface tints and overlays -->
+        <!-- Ripple / control highlight -->
         <item name="android:colorControlHighlight">@color/color_dark_ripple</item>
 
-        <!-- Typography -->
+        <!-- Typography color roles -->
         <item name="android:textColorPrimary">@color/color_dark_text_primary</item>
         <item name="android:textColorSecondary">@color/color_dark_text_secondary</item>
         <item name="android:textColorTertiary">@color/color_dark_text_tertiary</item>
         <item name="android:textColorHint">@color/color_dark_text_disabled</item>
 
-        <!-- System bars -->
+        <!-- System bars — match dark background -->
         <item name="android:statusBarColor">@color/color_dark_background</item>
         <item name="android:navigationBarColor">@color/color_dark_surface</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
 
-        <!-- Window background -->
+        <!-- Window -->
         <item name="android:windowBackground">@color/color_dark_background</item>
 
-        <!-- Material components -->
+        <!-- Material3 elevation overlays -->
         <item name="elevationOverlayEnabled">true</item>
 
     </style>
@@ -66,7 +70,7 @@
     <!-- Main dark theme -->
     <style name="Theme.NewAkilimo" parent="Base.Theme.NewAkilimo" />
 
-    <!-- Dark splash screen theme -->
+    <!-- Dark splash screen -->
     <style name="Theme.NewAkilimo.Splash" parent="Theme.NewAkilimo">
         <item name="android:windowBackground">@color/color_dark_background</item>
         <item name="android:statusBarColor">@color/color_dark_background</item>

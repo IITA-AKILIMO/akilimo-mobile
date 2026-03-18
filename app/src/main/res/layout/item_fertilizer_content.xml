@@ -22,7 +22,7 @@
             android:layout_gravity="center"
             android:contentDescription="@string/lbl_available_fertilizers"
             android:src="@drawable/ic_fertilizer_bag"
-            android:tint="@color/color_primary" />
+            android:tint="?attr/colorPrimary" />
     </FrameLayout>
 
     <TextView
@@ -42,5 +42,5 @@
         android:layout_marginTop="@dimen/spacing_medium"
         android:text="@string/under_score"
         android:textAppearance="?attr/textAppearanceBodySmall"
-        android:textColor="@color/color_primary" />
+        android:textColor="?attr/colorPrimary" />
 </LinearLayout>

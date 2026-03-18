@@ -14,6 +14,8 @@ import com.akilimo.mobile.entities.UserPreferences
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.UserPreferencesRepo
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.jakewharton.processphoenix.ProcessPhoenix
+import dev.b3nedikt.app_locale.AppLocale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -29,7 +31,7 @@ class WelcomeFragment : BaseStepFragment<FragmentWelcomeBinding>() {
 
     private val languageOptions: List<LanguageOption> by lazy {
         Locales.supportedLocales.map {
-            LanguageOption(it.getDisplayLanguage(it), it.language, it.language)
+            LanguageOption(it.getDisplayLanguage(it), it.toLanguageTag(), it.toLanguageTag())
         }
     }
 
@@ -53,7 +55,18 @@ class WelcomeFragment : BaseStepFragment<FragmentWelcomeBinding>() {
                     user.copy(languageCode = selected.valueOption),
                     sessionManager.akilimoUser
                 )
+
+                // Also persist to UserPreferences so prefillFromEntity() reads consistently
+                val currentPrefs = prefsRepo.getOrDefault()
+                prefsRepo.save(currentPrefs.copy(languageCode = selected.valueOption))
+
                 sessionManager.languageCode = selected.valueOption
+
+                // Sync AppLocale library so Reword string replacement uses the correct locale
+                val selectedLocale = Locales.supportedLocales
+                    .find { it.toLanguageTag() == selected.valueOption }
+                    ?: Locales.english
+                AppLocale.desiredLocale = selectedLocale
 
                 withContext(Dispatchers.Main) {
                     promptRestart()
@@ -71,7 +84,7 @@ class WelcomeFragment : BaseStepFragment<FragmentWelcomeBinding>() {
                 user?.languageCode?.takeIf { it.isNotBlank() } ?: prefs.languageCode
 
             val selectedOption = languageOptions.find { it.valueOption == currentLangCode }
-                ?: languageOptions.find { it.valueOption == Locales.english.language }
+                ?: languageOptions.find { it.valueOption == Locales.english.toLanguageTag() }
                 ?: languageOptions.first()
 
             withContext(Dispatchers.Main) {
@@ -86,13 +99,9 @@ class WelcomeFragment : BaseStepFragment<FragmentWelcomeBinding>() {
             .setMessage(R.string.lbl_restart_language_message)
             .setCancelable(false)
             .setPositiveButton(R.string.lbl_restart_now) { _, _ ->
-                val intent = requireActivity().packageManager
-                    .getLaunchIntentForPackage(requireActivity().packageName)
-                    ?.apply { addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK or android.content.Intent.FLAG_ACTIVITY_NEW_TASK) }
-                requireActivity().finish()
-                if (intent != null) {
-                    startActivity(intent)
-                }
+                // Full process restart ensures AkilimoApp.initLocale() re-runs and
+                // all Activity contexts are rebuilt with the new locale configuration.
+                ProcessPhoenix.triggerRebirth(requireContext())
             }
             .setNegativeButton(R.string.lbl_restart_later) { dialog, _ ->
                 dialog.dismiss()

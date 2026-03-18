@@ -6,7 +6,9 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
+import androidx.work.Configuration
 import androidx.work.workDataOf
+import com.akilimo.mobile.helper.SessionManager
 import com.akilimo.mobile.network.NetworkMonitor
 import com.akilimo.mobile.utils.StartupManager
 import com.akilimo.mobile.workers.CassavaPriceWorker
@@ -24,9 +26,14 @@ import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository
 
 
 @SuppressLint("LogNotTimber")
-class AkilimoApp : MultiDexApplication() {
+class AkilimoApp : MultiDexApplication(), Configuration.Provider {
 
     val networkMonitor: NetworkMonitor by lazy { NetworkMonitor(this) }
+
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setMinimumLoggingLevel(if (BuildConfig.DEBUG) Log.DEBUG else Log.ERROR)
+            .build()
 
     companion object {
         private lateinit var _instance: AkilimoApp
@@ -51,6 +58,7 @@ class AkilimoApp : MultiDexApplication() {
         analytics.setUserProperty("app_name", BuildConfig.APPLICATION_ID)
 
         initLocale()
+        initDarkMode()
         initVectorSupport()
         initTimeAndCountry()
         runStartupTasks()
@@ -110,15 +118,32 @@ class AkilimoApp : MultiDexApplication() {
     private fun initLocale() {
         AppLocale.supportedLocales = Locales.supportedLocales
 
-        val prefs = SharedPrefsAppLocaleRepository(this)
-        AppLocale.appLocaleRepository = prefs
+        val appLocaleRepo = SharedPrefsAppLocaleRepository(this)
+        AppLocale.appLocaleRepository = appLocaleRepo
 
-        prefs.desiredLocale?.also { desiredLocale ->
-            AppLocale.desiredLocale = desiredLocale
-            Log.d("Akilimo", "Locale set to: $desiredLocale")
-        } ?: Log.w("Akilimo", "No desired locale found; using default.")
+        // Prefer the locale stored by the AppLocale library; fall back to the value
+        // saved by SessionManager so the two sources stay in sync after a language change.
+        val locale = appLocaleRepo.desiredLocale
+            ?: run {
+                val savedTag = SessionManager.get(this).languageCode
+                    .takeIf { it.isNotBlank() }
+                    ?: Locales.english.toLanguageTag()
+                Locales.supportedLocales.find { it.toLanguageTag() == savedTag }
+                    ?: Locales.english
+            }
+
+        AppLocale.desiredLocale = locale
+        Log.d("Akilimo", "Locale initialized to: $locale")
     }
 
+
+    private fun initDarkMode() {
+        val darkMode = SessionManager.get(this).darkMode
+        AppCompatDelegate.setDefaultNightMode(
+            if (darkMode) AppCompatDelegate.MODE_NIGHT_YES
+            else AppCompatDelegate.MODE_NIGHT_NO
+        )
+    }
 
     private fun initVectorSupport() {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
