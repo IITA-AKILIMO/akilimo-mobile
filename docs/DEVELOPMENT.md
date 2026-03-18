@@ -105,10 +105,11 @@ Room DB version: **2** — `fallbackToDestructiveMigration()` is active. When ch
 
 ## 9. Known active bugs
 
-| Ticket | Description | Files |
-|--------|-------------|-------|
-| MUN-16 | Language selection does not persist | `WelcomeFragment.kt`, `UserSettingsActivity.kt`, `AkilimoApp.kt`, `SessionManager.kt` |
-| — | Dark mode setting saved but never applied (`MODE_NIGHT_NO` forced) | `BaseActivity.kt:89` |
-| — | `allowMainThreadQueries()` — ANR risk | `AppDatabase.kt` |
+| Ticket | Status | Description | Files |
+|--------|--------|-------------|-------|
+| MUN-16 | ✅ Fixed | Language selection did not persist — short codes, missing AppLocale sync, wrong restart method | `WelcomeFragment.kt`, `UserSettingsActivity.kt`, `AkilimoApp.kt`, `SessionManager.kt` |
+| — | ✅ Fixed | WorkManager `IllegalStateException` on app start — missing `Configuration.Provider` | `AkilimoApp.kt`, `AndroidManifest.xml` |
+| — | ⬜ Open | Dark mode setting saved but never applied (`MODE_NIGHT_NO` forced in `BaseActivity.onCreate():89`) | `BaseActivity.kt` |
+| — | ⬜ Open | `allowMainThreadQueries()` — ANR risk on slow devices | `AppDatabase.kt` |
 
-See `docs/ARCHITECTURE.md §10` for the full technical debt register.
+See `docs/ARCHITECTURE.md §10` for the full technical debt register and `docs/ROADMAP.md` for prioritised fix order.

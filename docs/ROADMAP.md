@@ -6,14 +6,15 @@
 
 These are fixes to active bugs and security issues. All are self-contained with no architectural prerequisites.
 
-| # | Task | Files | Effort | Impact |
-|---|------|-------|--------|--------|
-| 1 | **Fix MUN-16: Language persistence** — use full BCP-47 tags, sync AppLocale, use ProcessPhoenix in WelcomeFragment, save to UserPreferences | `WelcomeFragment.kt`, `UserSettingsActivity.kt`, `AkilimoApp.kt`, `SessionManager.kt` | S | Critical |
-| 2 | **Fix dark mode** — remove `MODE_NIGHT_NO` override in `BaseActivity.onCreate()`, read `UserPreferences.darkMode` on startup | `BaseActivity.kt` | S | High |
-| 3 | **Remove `allowMainThreadQueries()`** — all DB calls are already in coroutines | `AppDatabase.kt` | S | High |
-| 4 | **Move API keys to BuildConfig** — Mapbox runtime key and LocationIQ token out of source | `SessionManager.kt`, `app/build.gradle.kts`, `local.properties` | S | Security |
-| 5 | **Enable R8 minification** — `isMinifyEnabled = true` in release build type + baseline proguard rules | `app/build.gradle.kts` | S | Security |
-| 6 | **Wire NetworkNotificationView** in activities that need it but currently have a null reference | All domain activities | S | UX |
+| # | Status | Task | Files | Effort | Impact |
+|---|--------|------|-------|--------|--------|
+| 1 | ✅ Done | **Fix MUN-16: Language persistence** — full BCP-47 tags, AppLocale sync, ProcessPhoenix in WelcomeFragment, save to UserPreferences | `WelcomeFragment.kt`, `UserSettingsActivity.kt`, `AkilimoApp.kt`, `SessionManager.kt` | S | Critical |
+| 1a | ✅ Done | **Fix WorkManager initialization** — implement `Configuration.Provider` in `AkilimoApp`; remove `WorkManagerInitializer` from startup | `AkilimoApp.kt`, `AndroidManifest.xml` | S | Critical |
+| 2 | ⬜ Next | **Fix dark mode** — remove `MODE_NIGHT_NO` override in `BaseActivity.onCreate():89`, read `UserPreferences.darkMode` on startup | `BaseActivity.kt` | S | High |
+| 3 | ⬜ | **Remove `allowMainThreadQueries()`** — all DB calls are already in coroutines | `AppDatabase.kt` | S | High |
+| 4 | ⬜ | **Move API keys to BuildConfig** — Mapbox runtime key and LocationIQ token out of source | `SessionManager.kt`, `app/build.gradle.kts`, `local.properties` | S | Security |
+| 5 | ⬜ | **Enable R8 minification** — `isMinifyEnabled = true` in release build type + baseline proguard rules | `app/build.gradle.kts` | S | Security |
+| 6 | ⬜ | **Wire NetworkNotificationView** in activities that need it but currently have a null reference | All domain activities | S | UX |
 
 ---
 
@@ -51,7 +52,7 @@ Strategic modernization. High effort; should be planned as dedicated milestones.
 ## Milestone Summary
 
 ```
-Week 1-4:   MUN-16 fix + dark mode + security hardening (items 1–6)
+Week 1-4:   MUN-16 fix ✅ + WorkManager fix ✅ + dark mode + security hardening (items 1–6)
 Month 2:    ViewModels + Room migrations + Hilt setup (items 7–9)
 Month 3:    DataStore migration + unit tests + offline UX (items 10–12)
 Month 4-6:  NavGraph + Compose + deep links + offline cache (items 13–17)
