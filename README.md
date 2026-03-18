@@ -29,7 +29,7 @@ AKILIMO Mobile supports agronomy decision workflows such as:
 - Produce market and yield-related flows (cassava, maize, sweet potato)
 - Tillage and weed-management related cost flows
 - Location-aware recommendations via on-device location + map-assisted picking
-- Multi-language UX support (English, Swahili, Kinyarwanda, French)
+- Multi-language UX support (English, Swahili/sw-TZ, Kinyarwanda/rw-RW)
 - Background synchronization of reference datasets (e.g., fertilizer catalog/prices, market data)
 
 From current source configuration, the app includes country support for:
@@ -249,7 +249,10 @@ For script details, see `scripts/README.md`.
 ## Documentation index
 
 - [Developer Guide](docs/DEVELOPMENT.md)
-- [Architecture Notes](docs/ARCHITECTURE.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Product Requirements](docs/PRD.md)
+- [Implementation Roadmap](docs/ROADMAP.md)
+- [User Guide](docs/USER_GUIDE.md)
 - [Technical Evaluation](docs/TECHNICAL_EVALUATION.md)
 - [Release Script Notes](scripts/README.md)
 - [Changelog](CHANGELOG.md)
