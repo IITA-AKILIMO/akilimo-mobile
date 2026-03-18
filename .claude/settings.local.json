@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -r \"tint=#000000\\\\|tint=#000\\\\|tint=#FFFFFF\\\\|tint=#fff\" /d/Dev/android/akilimo-mobile/app/src/main/res/drawable/*.xml)",
+      "Bash(grep -v \"\\\\.xml:#$\")"
+    ]
+  }
+}
