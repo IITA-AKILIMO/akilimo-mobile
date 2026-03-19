@@ -35,7 +35,9 @@ class CassavaMarketViewModel @Inject constructor(
 
     data class UiState(
         val factories: List<StarchFactory> = emptyList(),
+        val selectedFactoryId: Int? = null,
         val cassavaUnits: List<CassavaUnit> = emptyList(),
+        val selectedUnitId: Int? = null,
         val factoriesRefreshing: Boolean = false,
         val unitsRefreshing: Boolean = false,
         val userId: Int = 0,
@@ -73,13 +75,15 @@ class CassavaMarketViewModel @Inject constructor(
                 factoryRepo.observeAll(),
                 selectedRepo.observeSelected(userId)
             ) { factories, details ->
-                factories.map {
-                    StarchFactory(id = it.id, name = it.name, label = it.label).apply {
-                        isSelected = it.id == details?.selectedCassavaMarket?.starchFactoryId
-                    }
+                Pair(factories, details?.selectedCassavaMarket?.starchFactoryId)
+            }.collectLatest { (factories, selectedId) ->
+                _uiState.update {
+                    it.copy(
+                        factories = factories,
+                        selectedFactoryId = selectedId,
+                        factoriesRefreshing = false
+                    )
                 }
-            }.collectLatest { mapped ->
-                _uiState.update { it.copy(factories = mapped, factoriesRefreshing = false) }
             }
         }
 
@@ -88,13 +92,15 @@ class CassavaMarketViewModel @Inject constructor(
                 cassavaUnitRepo.observeAll(),
                 selectedRepo.observeSelected(userId)
             ) { units, details ->
-                units.map { unit ->
-                    CassavaUnit(id = unit.id, label = unit.label, description = unit.description).apply {
-                        isSelected = unit.id == details?.selectedCassavaMarket?.cassavaUnitId
-                    }
+                Pair(units, details?.selectedCassavaMarket?.cassavaUnitId)
+            }.collectLatest { (units, selectedId) ->
+                _uiState.update {
+                    it.copy(
+                        cassavaUnits = units,
+                        selectedUnitId = selectedId,
+                        unitsRefreshing = false
+                    )
                 }
-            }.collectLatest { mapped ->
-                _uiState.update { it.copy(cassavaUnits = mapped, unitsRefreshing = false) }
             }
         }
     }
@@ -102,13 +108,7 @@ class CassavaMarketViewModel @Inject constructor(
     fun selectFactory(factory: StarchFactory) = viewModelScope.launch {
         val userId = _uiState.value.userId
         selectedRepo.select(SelectedCassavaMarket(userId = userId, starchFactoryId = factory.id))
-        _uiState.update { state ->
-            state.copy(
-                factories = state.factories.map { f ->
-                    f.copy().apply { isSelected = f.id == factory.id }
-                }
-            )
-        }
+        _uiState.update { it.copy(selectedFactoryId = factory.id) }
     }
 
     fun saveSelectedPrice(
