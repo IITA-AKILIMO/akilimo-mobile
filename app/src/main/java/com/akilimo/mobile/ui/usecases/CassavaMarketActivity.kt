@@ -37,6 +37,7 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
     private lateinit var cassavaUnitAdapter: CassavaUnitAdapter
 
     private var isGridLayout = false
+    private var initialChoiceApplied = false
     private val gridSpanCount by lazy { resources.getInteger(R.integer.grid_span_count_default) }
 
     override fun inflateBinding() = ActivityCassavaMarketBinding.inflate(layoutInflater)
@@ -85,6 +86,10 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
 
         factoryAdapter.onItemClick = { factory ->
             viewModel.selectFactory(factory)
+            val updatedList = factoryAdapter.currentList.map { item ->
+                item.copy().apply { isSelected = item.id == factory.id }
+            }
+            factoryAdapter.submitList(updatedList)
         }
 
         cassavaUnitAdapter.onItemClick = { unit ->
@@ -153,13 +158,19 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
                     binding.swipeRefreshFactories.isRefreshing = state.factoriesRefreshing
                     binding.swipeRefreshUnits.isRefreshing = state.unitsRefreshing
 
-                    // Apply initial radio selection once (only when choice is known)
-                    when (state.initialMarketChoice) {
-                        CassavaMarketViewModel.MarketChoice.FACTORY ->
-                            binding.rgMarketChoice.check(R.id.rb_sell_to_factory)
-                        CassavaMarketViewModel.MarketChoice.MARKET ->
-                            binding.rgMarketChoice.check(R.id.rb_sell_to_market)
-                        CassavaMarketViewModel.MarketChoice.NONE -> Unit
+                    // Apply initial radio selection exactly once
+                    if (!initialChoiceApplied) {
+                        when (state.initialMarketChoice) {
+                            CassavaMarketViewModel.MarketChoice.FACTORY -> {
+                                binding.rgMarketChoice.check(R.id.rb_sell_to_factory)
+                                initialChoiceApplied = true
+                            }
+                            CassavaMarketViewModel.MarketChoice.MARKET -> {
+                                binding.rgMarketChoice.check(R.id.rb_sell_to_market)
+                                initialChoiceApplied = true
+                            }
+                            CassavaMarketViewModel.MarketChoice.NONE -> Unit
+                        }
                     }
                 }
             }
