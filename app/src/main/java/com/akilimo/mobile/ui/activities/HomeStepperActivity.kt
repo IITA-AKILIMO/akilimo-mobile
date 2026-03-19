@@ -57,7 +57,11 @@ class HomeStepperActivity : BaseActivity<ActivityHomeStepperBinding>() {
         }
 
         updateNavBar(0)
-        wizardAdapter.getStep(0).onSelected()
+        // Defer onSelected() until ViewPager2 has attached the fragment —
+        // calling it synchronously here crashes with "detached fragment".
+        binding.viewPager.post {
+            wizardAdapter.getStep(0).onSelected()
+        }
     }
 
     override fun handleBackPressed(): Boolean {
