@@ -16,10 +16,11 @@ import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumRecyclerLayout
 import com.akilimo.mobile.enums.EnumStepStatus
 import com.akilimo.mobile.enums.EnumUseCase
-import com.akilimo.mobile.repos.AdviceCompletionRepo
 import com.akilimo.mobile.ui.activities.GetRecommendationActivity
 import com.akilimo.mobile.ui.components.ToolbarHelper
+import com.akilimo.mobile.ui.viewmodels.AdviceCompletionViewModel
 import com.google.android.material.appbar.MaterialToolbar
+import androidx.activity.viewModels
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,7 +46,7 @@ abstract class AbstractRecommendationActivity(private val enumUseCase: EnumUseCa
 
     protected val gridSpanCount by lazy { resources.getInteger(R.integer.grid_span_count_default) }
 
-    protected val repo by lazy { AdviceCompletionRepo(database.adviceCompletionDao()) }
+    protected val adviceViewModel: AdviceCompletionViewModel by viewModels()
 
     override fun inflateBinding() = ActivityRecommendationUseCaseBinding.inflate(layoutInflater)
 
@@ -69,7 +70,7 @@ abstract class AbstractRecommendationActivity(private val enumUseCase: EnumUseCa
 
         // ---- Observe and Update Recommendation States ----
         safeScope.launch {
-            repo.getAllCompletions().collectLatest { completions ->
+            adviceViewModel.completions.collectLatest { completions ->
 
                 val updatedList = getAdviceOptions()
                     .map { option ->
@@ -97,7 +98,7 @@ abstract class AbstractRecommendationActivity(private val enumUseCase: EnumUseCa
             }
 
             completionDto?.let { dto ->
-                safeScope.launch { repo.updateStatus(dto) }
+                adviceViewModel.updateStatus(dto)
             }
         }
 
@@ -148,7 +149,7 @@ abstract class AbstractRecommendationActivity(private val enumUseCase: EnumUseCa
 
         // Re-submit current list
         safeScope.launch {
-            repo.getAllCompletions().collectLatest { completions ->
+            adviceViewModel.completions.collectLatest { completions ->
                 val updatedList = getAdviceOptions()
                     .map { option ->
                         val status = completions[option.valueOption.name]?.stepStatus

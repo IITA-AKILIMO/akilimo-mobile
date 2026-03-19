@@ -5,14 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.ValueOptionAdapter
 import com.akilimo.mobile.base.BaseStepFragment
 import com.akilimo.mobile.databinding.FragmentPlantingDateBinding
 import com.akilimo.mobile.dto.PlantingFlexOption
 import com.akilimo.mobile.entities.AkilimoUser
-import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.ui.components.CustomDatePicker
+import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
 import com.akilimo.mobile.utils.DateHelper
 import com.akilimo.mobile.utils.DateHelper.olderThanCurrent
 import com.akilimo.mobile.wizard.ValidationError
@@ -27,11 +28,9 @@ class PlantingDateFragment : BaseStepFragment<FragmentPlantingDateBinding>() {
         fun newInstance() = PlantingDateFragment()
     }
 
-    private lateinit var userRepository: AkilimoUserRepo
+    private val onboardingViewModel: OnboardingViewModel by activityViewModels()
     private var plantingDate: LocalDate? = null
     private var harvestDate: LocalDate? = null
-
-
     private var flexOptions: List<PlantingFlexOption> = emptyList()
 
     override fun inflateBinding(
@@ -40,8 +39,6 @@ class PlantingDateFragment : BaseStepFragment<FragmentPlantingDateBinding>() {
     ) = FragmentPlantingDateBinding.inflate(inflater, container, false)
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
-        userRepository = AkilimoUserRepo(database.akilimoUserDao())
-
         flexOptions = listOf(
             PlantingFlexOption(getString(R.string.lbl_no_flexibility), 0),
             PlantingFlexOption(getString(R.string.lbl_one_month_window), 1),
@@ -96,8 +93,7 @@ class PlantingDateFragment : BaseStepFragment<FragmentPlantingDateBinding>() {
                 dropPlantingFlex.isEnabled = !alreadyPlanted
                 if (alreadyPlanted) {
                     dropPlantingFlex.setText(
-                        flexOptions.first { it.valueOption == 0L }.displayLabel,
-                        false
+                        flexOptions.first { it.valueOption == 0L }.displayLabel, false
                     )
                 }
                 inputHarvestDate.text = null
@@ -139,7 +135,7 @@ class PlantingDateFragment : BaseStepFragment<FragmentPlantingDateBinding>() {
 
     override fun prefillFromEntity() {
         safeScope.launch {
-            userRepository.getUser(sessionManager.akilimoUser)?.let { user ->
+            onboardingViewModel.getUser(sessionManager.akilimoUser)?.let { user ->
                 binding.lytPlantingSectionFragment.apply {
                     user.plantingDate?.let {
                         plantingDate = it
@@ -161,7 +157,6 @@ class PlantingDateFragment : BaseStepFragment<FragmentPlantingDateBinding>() {
 
                     dropPlantingFlex.setText(plantingFlexLabel, false)
                     dropHarvestFlex.setText(harvestFlexLabel, false)
-
                 }
             }
         }
@@ -186,15 +181,12 @@ class PlantingDateFragment : BaseStepFragment<FragmentPlantingDateBinding>() {
         val harvestFlex = flexOptions.find { it.displayLabel == harvestFlexLabel }?.valueOption ?: 0
 
         val plantingFlexLabel = dropPlantingFlex.text.toString()
-        val plantingFlex =
-            flexOptions.find { it.displayLabel == plantingFlexLabel }?.valueOption ?: 0
-
+        val plantingFlex = flexOptions.find { it.displayLabel == plantingFlexLabel }?.valueOption ?: 0
 
         safeScope.launch {
-            val user = userRepository.getUser(sessionManager.akilimoUser) ?: AkilimoUser(
-                userName = sessionManager.akilimoUser
-            )
-            userRepository.saveOrUpdateUser(
+            val user = onboardingViewModel.getUser(sessionManager.akilimoUser)
+                ?: AkilimoUser(userName = sessionManager.akilimoUser)
+            onboardingViewModel.saveUser(
                 user.copy(
                     plantingDate = plantingDate,
                     harvestDate = harvestDate,

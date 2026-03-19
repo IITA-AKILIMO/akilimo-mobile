@@ -1,18 +1,19 @@
 package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.akilimo.mobile.AppDatabase
 import com.akilimo.mobile.entities.Fertilizer
 import com.akilimo.mobile.entities.SelectedFertilizer
-import com.akilimo.mobile.enums.EnumCountry
+import com.akilimo.mobile.enums.EnumFertilizerFlow
 import com.akilimo.mobile.enums.EnumStepStatus
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.FertilizerPriceRepo
 import com.akilimo.mobile.repos.FertilizerRepo
 import com.akilimo.mobile.repos.SelectedFertilizerRepo
-import kotlinx.coroutines.flow.Flow
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,14 +21,20 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class FertilizerViewModel(
+@HiltViewModel(assistedFactory = FertilizerViewModel.Factory::class)
+class FertilizerViewModel @AssistedInject constructor(
     private val fertilizerRepo: FertilizerRepo,
     val selectedRepo: SelectedFertilizerRepo,
     private val userRepo: AkilimoUserRepo,
     val priceRepo: FertilizerPriceRepo,
-    private val userName: String,
-    private val fetchFlow: (EnumCountry) -> Flow<List<Fertilizer>>
+    @Assisted private val userName: String,
+    @Assisted private val fertilizerFlow: EnumFertilizerFlow
 ) : ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(userName: String, fertilizerFlow: EnumFertilizerFlow): FertilizerViewModel
+    }
 
     data class UiState(
         val fertilizers: List<Fertilizer> = emptyList(),
@@ -51,7 +58,12 @@ class FertilizerViewModel(
         _uiState.update { it.copy(userId = userId) }
 
         launch {
-            fetchFlow(country).collectLatest { fertilizers ->
+            val flow = when (fertilizerFlow) {
+                EnumFertilizerFlow.DEFAULT -> fertilizerRepo.observeByCountry(country)
+                EnumFertilizerFlow.CIM -> fertilizerRepo.observeByCimAvailable(country)
+                EnumFertilizerFlow.CIS -> fertilizerRepo.observeByCisAvailable(country)
+            }
+            flow.collectLatest { fertilizers ->
                 val selectedList = selectedRepo.getSelectedSync(userId)
                 val selectedIds = selectedList.map { it.fertilizerId }.toSet()
                 val selectedMap = selectedList.associateBy { it.fertilizerId }
@@ -107,30 +119,5 @@ class FertilizerViewModel(
         val userId = _uiState.value.userId
         val selected = selectedRepo.getSelectedSync(userId)
         return if (selected.isNotEmpty()) EnumStepStatus.COMPLETED else EnumStepStatus.IN_PROGRESS
-    }
-
-    companion object {
-        fun defaultFlow(db: AppDatabase, country: EnumCountry): Flow<List<Fertilizer>> =
-            FertilizerRepo(db.fertilizerDao()).observeByCountry(country)
-
-        fun factory(
-            db: AppDatabase,
-            userName: String,
-            fetchFlow: (EnumCountry) -> Flow<List<Fertilizer>> = { country ->
-                defaultFlow(db, country)
-            }
-        ) = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                @Suppress("UNCHECKED_CAST")
-                return FertilizerViewModel(
-                    fertilizerRepo = FertilizerRepo(db.fertilizerDao()),
-                    selectedRepo = SelectedFertilizerRepo(db.selectedFertilizerDao()),
-                    userRepo = AkilimoUserRepo(db.akilimoUserDao()),
-                    priceRepo = FertilizerPriceRepo(db.fertilizerPriceDao()),
-                    userName = userName,
-                    fetchFlow = fetchFlow
-                ) as T
-            }
-        }
     }
 }

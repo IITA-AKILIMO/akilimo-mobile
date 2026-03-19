@@ -1,13 +1,14 @@
 package com.akilimo.mobile.base
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
+import dagger.hilt.android.lifecycle.withCreationCallback
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.BaseValueOptionAdapter
 import com.akilimo.mobile.dto.UnitOfSaleOption
@@ -25,12 +26,13 @@ abstract class AbstractProduceMarketActivity<T : ViewBinding>(
     private val titleRes: Int
 ) : BaseActivity<T>() {
 
-    protected val viewModel: ProduceMarketViewModel by lazy {
-        ViewModelProvider(
-            this,
-            ProduceMarketViewModel.factory(database, marketType)
-        )[ProduceMarketViewModel::class.java]
-    }
+    protected val viewModel: ProduceMarketViewModel by viewModels(
+        extrasProducer = {
+            defaultViewModelCreationExtras.withCreationCallback<ProduceMarketViewModel.Factory> { factory ->
+                factory.create(marketType)
+            }
+        }
+    )
 
     protected var currencyCode: String = ""
 

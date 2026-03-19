@@ -4,16 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import com.akilimo.mobile.R
 import com.akilimo.mobile.base.BaseStepFragment
 import com.akilimo.mobile.databinding.FragmentCountryBinding
 import com.akilimo.mobile.dto.CountryOption
 import com.akilimo.mobile.entities.AkilimoUser
-import com.akilimo.mobile.entities.UserPreferences
 import com.akilimo.mobile.enums.EnumCountry
-import com.akilimo.mobile.repos.AkilimoUserRepo
-import com.akilimo.mobile.repos.UserPreferencesRepo
-import com.akilimo.mobile.repos.SelectedFertilizerRepo
+import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
 import com.blongho.country_data.World
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.akilimo.mobile.wizard.ValidationError
@@ -27,9 +25,7 @@ class CountryFragment : BaseStepFragment<FragmentCountryBinding>() {
         fun newInstance() = CountryFragment()
     }
 
-    private lateinit var userRepository: AkilimoUserRepo
-    private lateinit var prefsRepo: UserPreferencesRepo
-    private lateinit var selectedFertilizerRepo: SelectedFertilizerRepo
+    private val onboardingViewModel: OnboardingViewModel by activityViewModels()
 
     private val countries: List<CountryOption> by lazy {
         EnumCountry.entries.map { country ->
@@ -47,17 +43,13 @@ class CountryFragment : BaseStepFragment<FragmentCountryBinding>() {
     ) = FragmentCountryBinding.inflate(inflater, container, false)
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
-        userRepository = AkilimoUserRepo(database.akilimoUserDao())
-        prefsRepo = UserPreferencesRepo(database.userPreferencesDao())
-        selectedFertilizerRepo = SelectedFertilizerRepo(database.selectedFertilizerDao())
         binding.countryBtnPickCountry.setOnClickListener { showCountryPicker() }
-
     }
 
     override fun prefillFromEntity() {
         safeScope.launch {
-            val user = userRepository.getUser(sessionManager.akilimoUser)
-            val prefs = prefsRepo.getOrDefault()
+            val user = onboardingViewModel.getUser(sessionManager.akilimoUser)
+            val prefs = onboardingViewModel.getPreferences()
 
             if (user != null && user.enumCountry != EnumCountry.Unsupported) {
                 binding.greetingTitle.visibility = View.VISIBLE
@@ -102,16 +94,13 @@ class CountryFragment : BaseStepFragment<FragmentCountryBinding>() {
                 binding.countryImage.setImageResource(World.getFlagOf(countryCode.name))
 
                 safeScope.launch {
-                    val user = userRepository.getUser(sessionManager.akilimoUser) ?: AkilimoUser(
-                        userName = sessionManager.akilimoUser
-                    )
-                    userRepository.saveOrUpdateUser(
-                        user.copy(
-                            enumCountry = countryCode
-                        ), sessionManager.akilimoUser
+                    val user = onboardingViewModel.getUser(sessionManager.akilimoUser)
+                        ?: AkilimoUser(userName = sessionManager.akilimoUser)
+                    onboardingViewModel.saveUser(
+                        user.copy(enumCountry = countryCode), sessionManager.akilimoUser
                     )
                     if (user.id != null) {
-                        selectedFertilizerRepo.deleteByUserId(user.id)
+                        onboardingViewModel.deleteSelectedFertilizersByUser(user.id)
                     }
                 }
             }
@@ -128,13 +117,10 @@ class CountryFragment : BaseStepFragment<FragmentCountryBinding>() {
         }
 
         safeScope.launch {
-            val user = userRepository.getUser(sessionManager.akilimoUser) ?: AkilimoUser(
-                userName = sessionManager.akilimoUser
-            )
-            userRepository.saveOrUpdateUser(
-                user.copy(
-                    enumCountry = selectedCountry
-                ), sessionManager.akilimoUser
+            val user = onboardingViewModel.getUser(sessionManager.akilimoUser)
+                ?: AkilimoUser(userName = sessionManager.akilimoUser)
+            onboardingViewModel.saveUser(
+                user.copy(enumCountry = selectedCountry), sessionManager.akilimoUser
             )
         }
 

@@ -13,6 +13,11 @@ import com.akilimo.mobile.repos.InvestmentRepo
 import com.akilimo.mobile.repos.SelectedCassavaMarketRepo
 import com.akilimo.mobile.repos.SelectedInvestmentRepo
 import com.akilimo.mobile.repos.StarchFactoryRepo
+import com.akilimo.mobile.dao.ProduceMarketRepo
+import com.akilimo.mobile.repos.AdviceCompletionRepo
+import com.akilimo.mobile.repos.FertilizerPriceRepo
+import com.akilimo.mobile.repos.FertilizerRepo
+import com.akilimo.mobile.repos.SelectedFertilizerRepo
 import com.akilimo.mobile.repos.UserPreferencesRepo
 import dagger.Module
 import dagger.Provides
@@ -89,4 +94,29 @@ object AppModule {
     @Singleton
     fun provideCurrentPracticeRepo(db: AppDatabase): CurrentPracticeRepo =
         CurrentPracticeRepo(db.currentPracticeDao())
+
+    @Provides
+    @Singleton
+    fun provideAdviceCompletionRepo(db: AppDatabase): AdviceCompletionRepo =
+        AdviceCompletionRepo(db.adviceCompletionDao())
+
+    @Provides
+    @Singleton
+    fun provideFertilizerRepo(db: AppDatabase): FertilizerRepo =
+        FertilizerRepo(db.fertilizerDao())
+
+    @Provides
+    @Singleton
+    fun provideSelectedFertilizerRepo(db: AppDatabase): SelectedFertilizerRepo =
+        SelectedFertilizerRepo(db.selectedFertilizerDao())
+
+    @Provides
+    @Singleton
+    fun provideFertilizerPriceRepo(db: AppDatabase): FertilizerPriceRepo =
+        FertilizerPriceRepo(db.fertilizerPriceDao())
+
+    @Provides
+    @Singleton
+    fun provideProduceMarketRepo(db: AppDatabase): ProduceMarketRepo =
+        ProduceMarketRepo(db.produceMarketDao())
 }
