@@ -45,8 +45,6 @@ class WelcomeFragment : BaseStepFragment<FragmentWelcomeBinding>() {
             val selected = languageOptions[position]
             binding.dropLanguage.setText(selected.displayLabel, false)
 
-            sessionManager.languageCode = selected.valueOption
-
             val selectedLocale = Locales.supportedLocales
                 .find { it.toLanguageTag() == selected.valueOption }
                 ?: Locales.english

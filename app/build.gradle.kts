@@ -216,6 +216,9 @@ dependencies {
     // Region: Navigation
     implementation(libs.bundles.androidx.navigation)
 
+    // Region: DataStore
+    implementation(libs.datastore.preferences)
+
     // Region: Room
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)

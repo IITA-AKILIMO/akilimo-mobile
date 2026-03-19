@@ -19,6 +19,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import com.akilimo.mobile.AkilimoApp
 import com.akilimo.mobile.AppDatabase
+import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.helper.LocaleHelper
 import com.akilimo.mobile.helper.SessionManager
 import com.akilimo.mobile.interfaces.DefaultDispatcherProvider
@@ -81,9 +82,8 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     protected abstract fun onBindingReady(savedInstanceState: Bundle?)
 
     override fun attachBaseContext(newBase: Context) {
-        val session = SessionManager.get(newBase) // safe: newBase is non-null
-        val savedLang = session.languageCode.takeIf { it.isNotBlank() } ?: "en"
-        val wrapped = LocaleHelper.wrap(newBase, savedLang)
+        val langTag = AppSettingsDataStore.readLanguageTagSync(newBase)
+        val wrapped = LocaleHelper.wrap(newBase, langTag)
         super.attachBaseContext(wrapped)
     }
 

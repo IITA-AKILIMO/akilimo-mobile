@@ -113,10 +113,6 @@ class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
                         Snackbar.make(binding.root, R.string.lbl_settings_saved, Snackbar.LENGTH_SHORT).show()
                         Timber.d("User preferences saved")
 
-                        // Sync side effects that need Android context
-                        sessionManager.languageCode = state.newLanguageCode
-                        sessionManager.darkMode = state.preferences?.darkMode ?: false
-
                         val selectedLocale = Locales.supportedLocales
                             .find { it.toLanguageTag() == state.newLanguageCode }
                             ?: Locales.english
@@ -235,6 +231,6 @@ class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
             darkMode = switchDarkMode.isChecked
         )
 
-        viewModel.savePreferences(preferences, sessionManager.akilimoUser, sessionManager.languageCode)
+        viewModel.savePreferences(preferences, sessionManager.akilimoUser)
     }
 }

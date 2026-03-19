@@ -2,7 +2,6 @@ package com.akilimo.mobile.helper
 
 import android.content.Context
 import androidx.core.content.edit
-import com.akilimo.mobile.Locales
 import com.akilimo.mobile.utils.DateHelper
 import io.sentry.Sentry
 import java.util.UUID
@@ -13,7 +12,6 @@ class SessionManager private constructor(private val pref: android.content.Share
         private const val PREF_NAME = "new-akilimo-config"
 
         // FIXED: removed trailing space
-        private const val KEY_LANG_CODE = "languageCode"
         private const val KEY_DEFAULT_USER = "userName"
         private const val KEY_API_RESOURCE = "apiResource"
         private const val KEY_FUELROD_RESOURCE = "fuelrodResource"
@@ -66,10 +64,6 @@ class SessionManager private constructor(private val pref: android.content.Share
             return SessionManager(prefs)
         }
     }
-
-    var languageCode: String
-        get() = pref.getString(KEY_LANG_CODE, Locales.english.toLanguageTag()).orEmpty()
-        set(value) = pref.edit { putString(KEY_LANG_CODE, value) }
 
     var akilimoUser: String
         get() = pref.getString(KEY_DEFAULT_USER, DEFAULT_USER).orEmpty()
@@ -133,10 +127,6 @@ class SessionManager private constructor(private val pref: android.content.Share
             } else saved
         }
         set(value) = pref.edit { putString(KEY_DEVICE_TOKEN, value) }
-
-    var darkMode: Boolean
-        get() = pref.getBoolean("darkMode", false)
-        set(value) = pref.edit { putBoolean("darkMode", value) }
 
     var rememberAreaUnit: Boolean
         get() = pref.getBoolean("rememberAreaUnit", false)

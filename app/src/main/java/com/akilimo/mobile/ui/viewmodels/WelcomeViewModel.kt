@@ -3,6 +3,7 @@ package com.akilimo.mobile.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.Locales
+import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.dto.LanguageOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -18,7 +19,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class WelcomeViewModel @Inject constructor(
     private val userRepo: AkilimoUserRepo,
-    private val prefsRepo: UserPreferencesRepo
+    private val prefsRepo: UserPreferencesRepo,
+    private val appSettings: AppSettingsDataStore
 ) : ViewModel() {
 
     data class UiState(val currentLanguageCode: String = "en")
@@ -39,6 +41,8 @@ class WelcomeViewModel @Inject constructor(
 
         val currentPrefs = prefsRepo.getOrDefault()
         prefsRepo.save(currentPrefs.copy(languageCode = selected.valueOption))
+
+        appSettings.setLanguageTag(selected.valueOption)
 
         _uiState.update { it.copy(currentLanguageCode = selected.valueOption) }
     }

@@ -3,12 +3,14 @@ package com.akilimo.mobile.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.Locales
+import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.entities.AkilimoUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import com.akilimo.mobile.entities.UserPreferences
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.UserPreferencesRepo
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,11 +20,13 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class UserSettingsViewModel @Inject constructor(
     private val prefsRepo: UserPreferencesRepo,
-    private val userRepo: AkilimoUserRepo
+    private val userRepo: AkilimoUserRepo,
+    private val appSettings: AppSettingsDataStore
 ) : ViewModel() {
 
     data class UiState(
         val preferences: UserPreferences? = null,
+        val previousLanguageCode: String = "",
         val saved: Boolean = false,
         val languageChanged: Boolean = false,
         val newLanguageCode: String = ""
@@ -34,10 +38,11 @@ class UserSettingsViewModel @Inject constructor(
     fun loadPreferences() = viewModelScope.launch {
         val prefs = prefsRepo.getOrDefault()
         val normalized = prefs.copy(languageCode = Locales.normalize(prefs.languageCode))
-        _uiState.update { it.copy(preferences = normalized) }
+        val currentLangTag = appSettings.languageTagFlow.first()
+        _uiState.update { it.copy(preferences = normalized, previousLanguageCode = currentLangTag) }
     }
 
-    fun savePreferences(preferences: UserPreferences, userName: String, previousLangCode: String) =
+    fun savePreferences(preferences: UserPreferences, userName: String) =
         viewModelScope.launch {
             prefsRepo.save(preferences)
 
@@ -58,6 +63,10 @@ class UserSettingsViewModel @Inject constructor(
                 ),
                 userName
             )
+
+            val previousLangCode = _uiState.value.previousLanguageCode
+            appSettings.setLanguageTag(preferences.languageCode)
+            appSettings.setDarkMode(preferences.darkMode)
 
             _uiState.update {
                 it.copy(
