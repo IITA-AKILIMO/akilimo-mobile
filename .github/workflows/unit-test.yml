@@ -1,48 +1,45 @@
-name: Android Unit Tests
+name: Android Unit Tests (Extreme)
 
 on:
-  pull_request:
-    paths:
-      - 'app/src/**'
-      - '**/*.gradle*'
-      - 'gradle.properties'
-  workflow_dispatch:
-
-concurrency:
-  group: unit-tests-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
+  workflow_run:
+    workflows: [ "CI Gate" ]
+    types:
+      - completed
 
 jobs:
   unit_test:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+
+    concurrency:
+      group: unit-tests-${{ github.event.workflow_run.pull_requests[0].number }}
+      cancel-in-progress: true
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1   # 🚀 big speedup (no full history)
+          fetch-depth: 1
 
-      - name: Setup JDK
+      # ⚡ MASSIVE SPEED BOOST: Gradle cache + dependency cache
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
-          cache: gradle   # 🚀 dependency cache
+          cache: gradle
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
         with:
           cache-read-only: false
 
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
-
-      - name: Run Unit Tests (only debug)
-        run: ./gradlew testDebugUnitTest --build-cache --daemon --parallel
-
-      - name: Upload test reports (only if failure)
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-reports
-          path: app/build/reports/tests/
+      # ⚡ AVOID CONFIGURATION OVERHEAD
+      - name: Run only affected tests
+        run: |
+          ./gradlew testDebugUnitTest \
+            --build-cache \
+            --configuration-cache \
+            --parallel \
+            --max-workers=4 \
+            --daemon
