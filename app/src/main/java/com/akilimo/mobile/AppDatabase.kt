@@ -74,7 +74,7 @@ import com.akilimo.mobile.utils.EnumWeedControlConverter
         MaizePerformance::class,
         UserPreferences::class
     ],
-    version = 3,
+    version = 4,
     exportSchema = true
 )
 @TypeConverters(
@@ -141,7 +141,10 @@ abstract class AppDatabase : RoomDatabase() {
                 AppDatabase::class.java,
                 DATABASE_NAME
             )
-                .addMigrations(DatabaseMigrations.MIGRATION_2_3)
+                .addMigrations(
+                    DatabaseMigrations.MIGRATION_2_3,
+                    DatabaseMigrations.MIGRATION_3_4
+                )
                 // Safety net for installs older than v2 that have no migration path.
                 .fallbackToDestructiveMigration(dropAllTables = true)
                 .build()

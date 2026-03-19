@@ -17,4 +17,14 @@ object DatabaseMigrations {
             // This migration exists to establish the proper migration chain.
         }
     }
+
+    /**
+     * v3 → v4: Add last_sync_at column to akilimo_users.
+     * Tracks when the user's profile was last synced with the remote API.
+     */
+    val MIGRATION_3_4 = object : Migration(3, 4) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE akilimo_users ADD COLUMN last_sync_at INTEGER DEFAULT NULL")
+        }
+    }
 }
