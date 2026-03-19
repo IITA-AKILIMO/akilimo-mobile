@@ -5,14 +5,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.akilimo.mobile.Locales
-import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.ValueOptionAdapter
 import com.akilimo.mobile.base.BaseStepFragment
 import com.akilimo.mobile.databinding.FragmentWelcomeBinding
 import com.akilimo.mobile.dto.LanguageOption
 import com.akilimo.mobile.ui.viewmodels.WelcomeViewModel
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.jakewharton.processphoenix.ProcessPhoenix
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import dev.b3nedikt.app_locale.AppLocale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -45,15 +44,22 @@ class WelcomeFragment : BaseStepFragment<FragmentWelcomeBinding>() {
             val selected = languageOptions[position]
             binding.dropLanguage.setText(selected.displayLabel, false)
 
-            sessionManager.languageCode = selected.valueOption
-
             val selectedLocale = Locales.supportedLocales
                 .find { it.toLanguageTag() == selected.valueOption }
                 ?: Locales.english
             AppLocale.desiredLocale = selectedLocale
 
+            // DB writes (user entity + prefs) can run async — they don't block recreation
             viewModel.saveLanguage(selected, sessionManager.akilimoUser)
-            promptRestart()
+
+            // DataStore MUST be written before setApplicationLocales() triggers recreation,
+            // otherwise attachBaseContext() reads the old locale from DataStore.
+            safeScope.launch {
+                appSettings.setLanguageTag(selected.valueOption)
+                AppCompatDelegate.setApplicationLocales(
+                    LocaleListCompat.forLanguageTags(selected.valueOption)
+                )
+            }
         }
     }
 
@@ -71,17 +77,4 @@ class WelcomeFragment : BaseStepFragment<FragmentWelcomeBinding>() {
         }
     }
 
-    private fun promptRestart() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.lbl_restart_required)
-            .setMessage(R.string.lbl_restart_language_message)
-            .setCancelable(false)
-            .setPositiveButton(R.string.lbl_restart_now) { _, _ ->
-                ProcessPhoenix.triggerRebirth(requireContext())
-            }
-            .setNegativeButton(R.string.lbl_restart_later) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
-    }
 }

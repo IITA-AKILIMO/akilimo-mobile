@@ -2,9 +2,9 @@ package com.akilimo.mobile.ui.activities
 
 import android.os.Bundle
 import android.util.Patterns
-import androidx.appcompat.app.AlertDialog
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -22,7 +22,6 @@ import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.enums.EnumCountry
 import com.akilimo.mobile.ui.viewmodels.UserSettingsViewModel
 import com.google.android.material.snackbar.Snackbar
-import com.jakewharton.processphoenix.ProcessPhoenix
 import dev.b3nedikt.app_locale.AppLocale
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -113,10 +112,6 @@ class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
                         Snackbar.make(binding.root, R.string.lbl_settings_saved, Snackbar.LENGTH_SHORT).show()
                         Timber.d("User preferences saved")
 
-                        // Sync side effects that need Android context
-                        sessionManager.languageCode = state.newLanguageCode
-                        sessionManager.darkMode = state.preferences?.darkMode ?: false
-
                         val selectedLocale = Locales.supportedLocales
                             .find { it.toLanguageTag() == state.newLanguageCode }
                             ?: Locales.english
@@ -128,14 +123,9 @@ class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
                         )
 
                         if (state.languageChanged) {
-                            AlertDialog.Builder(this@UserSettingsActivity)
-                                .setTitle(R.string.lbl_restart_required)
-                                .setMessage(R.string.lbl_restart_language_message)
-                                .setPositiveButton(R.string.lbl_restart_now) { _, _ ->
-                                    ProcessPhoenix.triggerRebirth(this@UserSettingsActivity)
-                                }
-                                .setNegativeButton(R.string.lbl_restart_later, null)
-                                .show()
+                            AppCompatDelegate.setApplicationLocales(
+                                LocaleListCompat.forLanguageTags(state.newLanguageCode)
+                            )
                         }
 
                         viewModel.onSaveHandled()
@@ -235,6 +225,6 @@ class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
             darkMode = switchDarkMode.isChecked
         )
 
-        viewModel.savePreferences(preferences, sessionManager.akilimoUser, sessionManager.languageCode)
+        viewModel.savePreferences(preferences, sessionManager.akilimoUser)
     }
 }

@@ -216,6 +216,9 @@ dependencies {
     // Region: Navigation
     implementation(libs.bundles.androidx.navigation)
 
+    // Region: DataStore
+    implementation(libs.datastore.preferences)
+
     // Region: Room
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
@@ -243,7 +246,6 @@ dependencies {
     implementation(libs.reword)
     implementation(libs.viewpump)
     implementation(libs.worldcountrydata)
-    implementation(libs.process.phoenix)
     implementation(libs.jakewharton.timber)
 
     implementation(libs.country.code.picker)

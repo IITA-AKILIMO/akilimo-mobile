@@ -8,7 +8,6 @@ import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import androidx.work.Configuration
 import androidx.work.workDataOf
-import com.akilimo.mobile.helper.SessionManager
 import com.akilimo.mobile.network.NetworkMonitor
 import com.akilimo.mobile.utils.StartupManager
 import com.akilimo.mobile.workers.CassavaPriceWorker
@@ -19,16 +18,19 @@ import com.akilimo.mobile.workers.InvestmentAmountWorker
 import com.akilimo.mobile.workers.StarchFactoryWorker
 import com.akilimo.mobile.workers.WorkConstants
 import com.akilimo.mobile.workers.WorkerScheduler
+import com.akilimo.mobile.data.AppSettingsDataStore
 import com.blongho.country_data.World
 import dagger.hilt.android.HiltAndroidApp
 import com.google.firebase.analytics.FirebaseAnalytics
 import dev.b3nedikt.app_locale.AppLocale
-import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository
+import javax.inject.Inject
 
 
 @HiltAndroidApp
 @SuppressLint("LogNotTimber")
 class AkilimoApp : MultiDexApplication(), Configuration.Provider {
+
+    @Inject lateinit var appSettings: AppSettingsDataStore
 
     val networkMonitor: NetworkMonitor by lazy { NetworkMonitor(this) }
 
@@ -119,26 +121,14 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
 
     private fun initLocale() {
         AppLocale.supportedLocales = Locales.supportedLocales
-
-        val appLocaleRepo = SharedPrefsAppLocaleRepository(this)
-        AppLocale.appLocaleRepository = appLocaleRepo
-
-        // Prefer the locale stored by the AppLocale library; fall back to the value
-        // saved by SessionManager so the two sources stay in sync after a language change.
-        val locale = appLocaleRepo.desiredLocale
-            ?: run {
-                val savedTag = Locales.normalize(SessionManager.get(this).languageCode)
-                Locales.supportedLocales.find { it.toLanguageTag() == savedTag }
-                    ?: Locales.english
-            }
-
+        val tag = appSettings.getLanguageTagSync()
+        val locale = Locales.supportedLocales.find { it.toLanguageTag() == tag } ?: Locales.english
         AppLocale.desiredLocale = locale
         Log.d("Akilimo", "Locale initialized to: $locale")
     }
 
-
     private fun initDarkMode() {
-        val darkMode = SessionManager.get(this).darkMode
+        val darkMode = appSettings.getDarkModeSync()
         AppCompatDelegate.setDefaultNightMode(
             if (darkMode) AppCompatDelegate.MODE_NIGHT_YES
             else AppCompatDelegate.MODE_NIGHT_NO

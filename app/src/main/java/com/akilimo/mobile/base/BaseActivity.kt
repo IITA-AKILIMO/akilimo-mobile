@@ -19,9 +19,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import com.akilimo.mobile.AkilimoApp
 import com.akilimo.mobile.AppDatabase
+import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.helper.LocaleHelper
-import com.akilimo.mobile.helper.SessionManager
 import com.akilimo.mobile.interfaces.DefaultDispatcherProvider
+import javax.inject.Inject
 import com.akilimo.mobile.interfaces.IDispatcherProvider
 import com.akilimo.mobile.ui.components.NetworkNotificationView
 import com.akilimo.mobile.utils.PermissionHelper
@@ -33,10 +34,12 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         const val COMPLETED_TASK = "completed_task"
     }
 
+    @Inject lateinit var appSettings: AppSettingsDataStore
+
+    /** Backward-compatible alias — all existing call sites keep working unchanged. */
+    protected val sessionManager get() = appSettings
+
     protected val dispatcherProvider: IDispatcherProvider = DefaultDispatcherProvider()
-    protected val sessionManager: SessionManager by lazy {
-        SessionManager.get(applicationContext)
-    }
 
     protected val database: AppDatabase by lazy { AppDatabase.getDatabase(this@BaseActivity) }
     protected lateinit var permissionHelper: PermissionHelper
@@ -81,9 +84,8 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     protected abstract fun onBindingReady(savedInstanceState: Bundle?)
 
     override fun attachBaseContext(newBase: Context) {
-        val session = SessionManager.get(newBase) // safe: newBase is non-null
-        val savedLang = session.languageCode.takeIf { it.isNotBlank() } ?: "en"
-        val wrapped = LocaleHelper.wrap(newBase, savedLang)
+        val langTag = AppSettingsDataStore.readLanguageTagSync(newBase)
+        val wrapped = LocaleHelper.wrap(newBase, langTag)
         super.attachBaseContext(wrapped)
     }
 

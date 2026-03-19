@@ -1,0 +1,27 @@
+name: CI Gate
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+
+    outputs:
+      app: ${{ steps.filter.outputs.app }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Detect changes
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            app:
+              - 'app/src/**'
+              - '**/*.gradle*'
+              - 'gradle.properties'

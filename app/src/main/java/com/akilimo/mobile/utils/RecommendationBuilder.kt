@@ -6,7 +6,7 @@ import com.akilimo.mobile.enums.EnumCassavaProduceType
 import com.akilimo.mobile.enums.EnumMarketType
 import com.akilimo.mobile.enums.EnumProduceType
 import com.akilimo.mobile.enums.EnumUseCase
-import com.akilimo.mobile.helper.SessionManager
+import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.CassavaYieldRepo
 import com.akilimo.mobile.repos.CurrentPracticeRepo
@@ -24,7 +24,7 @@ import java.time.LocalDate
 
 class RecommendationBuilder(
     private val database: AppDatabase,
-    private val session: SessionManager,
+    private val session: AppSettingsDataStore,
     private val useCase: EnumUseCase
 ) {
 

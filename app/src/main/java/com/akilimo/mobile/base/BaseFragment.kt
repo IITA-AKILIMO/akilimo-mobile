@@ -12,15 +12,20 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.akilimo.mobile.AppDatabase
-import com.akilimo.mobile.helper.SessionManager
+import com.akilimo.mobile.data.AppSettingsDataStore
 import timber.log.Timber
+import javax.inject.Inject
 
 abstract class BaseFragment<VB : ViewBinding> : Fragment() {
 
     private var _binding: VB? = null
     protected val binding get() = _binding!!
 
-    protected lateinit var sessionManager: SessionManager
+    @Inject lateinit var appSettings: AppSettingsDataStore
+
+    /** Backward-compatible alias — all existing call sites keep working unchanged. */
+    protected val sessionManager get() = appSettings
+
     protected lateinit var database: AppDatabase
 
     // ✅ Lifecycle-safe coroutine scope tied to view
@@ -45,7 +50,6 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
 
         // Safe initialization after view is created
         context?.let {
-            sessionManager = SessionManager.get(it)
             database = AppDatabase.getDatabase(it)
         } ?: throw IllegalStateException("Context is not available for initialization")
 
