@@ -62,7 +62,7 @@ country-code-picker = "2.7.3"
 sonar = "7.0.1.6134"
 detekt = "1.23.8"
 
-debug-db = "v1.0.6"
+debug-db = "v1.0.7"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
