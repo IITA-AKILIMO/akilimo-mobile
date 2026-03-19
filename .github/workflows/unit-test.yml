@@ -1,13 +1,6 @@
 name: Android Unit Tests
 
 on:
-  push:
-    paths-ignore:
-      - '**.md'
-      - '**.txt'
-      - '**.sh'
-      - 'docs/**'
-      - '.github/ISSUE_TEMPLATE/**'
   pull_request:
     paths-ignore:
       - '**.md'
@@ -17,83 +10,47 @@ on:
       - '.github/ISSUE_TEMPLATE/**'
   workflow_dispatch:
 
+concurrency:
+  group: unit-tests-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
 jobs:
   unit_test:
     runs-on: ubuntu-latest
-    name: Unit tests
-    concurrency:
-      # Use commit SHA for concurrency to skip duplicate work across branches
-      group: unit-tests-${{ github.sha }}
-      cancel-in-progress: false  # Don't cancel - let it finish so cache is saved
-
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      REPO_NAME: ${{ secrets.REPO_NAME }}
-      MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
 
     steps:
-      - name: Checkout the code
+      - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Detect relevant changes
+        uses: dorny/paths-filter@v3
+        id: changes
         with:
-          fetch-depth: 0
+          filters: |
+            tests:
+              - 'app/src/**'
+              - '**/*.gradle*'
+              - '**/gradle.properties'
+
+      - name: Skip if no relevant changes
+        if: steps.changes.outputs.tests != 'true'
+        run: echo "No test-relevant changes. Skipping."
 
       - name: Set up JDK
+        if: steps.changes.outputs.tests == 'true'
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: 21
 
-      - name: Get build version
-        id: get_version
-        run: |
-          VERSION_CODE=$(curl -s https://munywele.co.ke/app-releases/akilimo || echo ${{ github.run_number }})
-          echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
-          echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
-          echo "Using VERSION_CODE: $VERSION_CODE"
-
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
-
       - name: Setup Gradle
+        if: steps.changes.outputs.tests == 'true'
         uses: gradle/actions/setup-gradle@v3
-        with:
-          cache-read-only: false
-
-      # Cache based on commit SHA and test file hashes
-      - name: Cache unit test results
-        id: cache_tests
-        uses: actions/cache@v4
-        with:
-          path: |
-            app/build/test-results
-            app/build/reports/tests
-          # Primary key: commit SHA + test code hash
-          key: unit-tests-${{ runner.os }}-${{ github.sha }}-${{ hashFiles('app/src/test/**/*.kt', 'app/src/test/**/*.java', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', '**/*.gradle*', '**/gradle.properties') }}
-          restore-keys: |
-            unit-tests-${{ runner.os }}-${{ github.sha }}-
-            unit-tests-${{ runner.os }}-
-
-      # Skip if exact commit + code hash found in cache
-      - name: Check if tests can be skipped
-        id: check_tests
-        run: |
-          if [ "${{ steps.cache_tests.outputs.cache-hit }}" == "true" ]; then
-            echo "skip_tests=true" >> $GITHUB_OUTPUT
-            echo "✅ Tests already run for commit ${{ github.sha }} - using cached results"
-          else
-            echo "skip_tests=false" >> $GITHUB_OUTPUT
-            echo "🧪 Running unit tests for commit ${{ github.sha }}"
-          fi
 
       - name: Run Unit tests
-        if: steps.check_tests.outputs.skip_tests != 'true'
+        if: steps.changes.outputs.tests == 'true'
         run: ./gradlew testDebugUnitTest
-        continue-on-error: false
 
       - name: Report
+        if: always()
         uses: FlickerSoul/android-test-report-actions@v1.2
-        if: ${{ always() }}
-
-      - name: Make Unit test report
-        uses: asadmansr/android-test-report-action@v1.2.0
-        if: ${{ always() }}
