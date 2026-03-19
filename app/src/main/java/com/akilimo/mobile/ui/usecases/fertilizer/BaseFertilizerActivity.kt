@@ -4,9 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +18,7 @@ import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.entities.AdviceCompletionDto
 import com.akilimo.mobile.entities.Fertilizer
 import com.akilimo.mobile.enums.EnumAdviceTask
-import com.akilimo.mobile.enums.EnumCountry
+import com.akilimo.mobile.enums.EnumFertilizerFlow
 import com.akilimo.mobile.enums.EnumStepStatus
 import com.akilimo.mobile.enums.EnumUseCase
 import com.akilimo.mobile.ui.components.ToolbarHelper
@@ -27,7 +27,7 @@ import com.akilimo.mobile.workers.FertilizerWorker
 import com.akilimo.mobile.workers.WorkConstants
 import com.akilimo.mobile.workers.WorkerScheduler
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.flow.Flow
+import dagger.hilt.android.lifecycle.withCreationCallback
 import kotlinx.coroutines.launch
 
 abstract class BaseFertilizerActivity<VB : ViewBinding> : BaseActivity<VB>() {
@@ -48,26 +48,19 @@ abstract class BaseFertilizerActivity<VB : ViewBinding> : BaseActivity<VB>() {
     open fun getSyncIndicator(): View? = null
     open fun getRefreshFab(): View? = null
 
-    /**
-     * Override to supply a custom fertilizer flow factory filtered by use case.
-     * Return null to use the default country-based flow.
-     */
-    open fun fertilizerFlowFactory(): ((EnumCountry) -> Flow<List<Fertilizer>>)? = null
+    /** Override to supply a custom fertilizer flow type. Defaults to DEFAULT. */
+    open val fertilizerFlow: EnumFertilizerFlow get() = EnumFertilizerFlow.DEFAULT
 
     protected lateinit var listManager: FertilizerListManager
     protected lateinit var selectionHelper: FertilizerSelectionHelper
 
-    protected val viewModel: FertilizerViewModel by lazy {
-        ViewModelProvider(
-            this,
-            FertilizerViewModel.factory(
-                db = database,
-                userName = sessionManager.akilimoUser,
-                fetchFlow = fertilizerFlowFactory()
-                    ?: { country -> FertilizerViewModel.defaultFlow(database, country) }
-            )
-        )[FertilizerViewModel::class.java]
-    }
+    protected val viewModel: FertilizerViewModel by viewModels(
+        extrasProducer = {
+            defaultViewModelCreationExtras.withCreationCallback<FertilizerViewModel.Factory> { factory ->
+                factory.create(sessionManager.akilimoUser, fertilizerFlow)
+            }
+        }
+    )
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
         initHelpers()

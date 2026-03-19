@@ -5,15 +5,14 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.ValueOptionAdapter
 import com.akilimo.mobile.base.BaseStepFragment
 import com.akilimo.mobile.databinding.FragmentBioDataBinding
 import com.akilimo.mobile.dto.InterestOption
 import com.akilimo.mobile.entities.AkilimoUser
-import com.akilimo.mobile.entities.UserPreferences
-import com.akilimo.mobile.repos.AkilimoUserRepo
-import com.akilimo.mobile.repos.UserPreferencesRepo
+import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
 import com.akilimo.mobile.wizard.ValidationError
 import kotlinx.coroutines.launch
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,16 +25,14 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class BioDataFragment : BaseStepFragment<FragmentBioDataBinding>() {
 
-
     companion object {
         fun newInstance() = BioDataFragment()
     }
 
+    private val onboardingViewModel: OnboardingViewModel by activityViewModels()
+
     private var genderOptions: List<InterestOption> = emptyList()
     private var interestOptions: List<InterestOption> = emptyList()
-
-    private lateinit var userRepository: AkilimoUserRepo
-    private lateinit var prefsRepo: UserPreferencesRepo
 
     override fun inflateBinding(
         inflater: LayoutInflater,
@@ -43,8 +40,6 @@ class BioDataFragment : BaseStepFragment<FragmentBioDataBinding>() {
     ): FragmentBioDataBinding = FragmentBioDataBinding.inflate(inflater, container, false)
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
-        userRepository = AkilimoUserRepo(database.akilimoUserDao())
-        prefsRepo = UserPreferencesRepo(database.userPreferencesDao())
         genderOptions = listOf(
             InterestOption(getString(R.string.lbl_gender_prompt), ""),
             InterestOption(getString(R.string.lbl_female), "F"),
@@ -81,8 +76,8 @@ class BioDataFragment : BaseStepFragment<FragmentBioDataBinding>() {
 
     override fun prefillFromEntity() {
         safeScope.launch {
-            val user = userRepository.getUser(sessionManager.akilimoUser)
-            val prefs = prefsRepo.getOrDefault()
+            val user = onboardingViewModel.getUser(sessionManager.akilimoUser)
+            val prefs = onboardingViewModel.getPreferences()
 
             if (user != null) {
                 binding.edtFirstName.setText(user.firstName)
@@ -130,7 +125,6 @@ class BioDataFragment : BaseStepFragment<FragmentBioDataBinding>() {
         val phone = if (hasUserInput) ccpCountry.fullNumber else ""
         val phoneCountryCode = if (hasUserInput) ccpCountry.selectedCountryCodeWithPlus else ""
 
-
         val validations = listOf(
             Triple(firstName.isBlank(), lytFirstName, R.string.lbl_first_name_req),
             Triple(lastName.isBlank(), lytLastName, R.string.lbl_last_name_req),
@@ -148,7 +142,6 @@ class BioDataFragment : BaseStepFragment<FragmentBioDataBinding>() {
             Triple(interest.isBlank(), lytInterest, R.string.lbl_akilimo_interest_prompt),
         )
 
-
         // Clear all errors
         validations.forEach { (_, layout, _) -> layout.error = null }
 
@@ -160,13 +153,9 @@ class BioDataFragment : BaseStepFragment<FragmentBioDataBinding>() {
         }
 
         safeScope.launch {
-            val existingUser = userRepository.getUser(sessionManager.akilimoUser) ?: AkilimoUser(
-                userName = sessionManager.akilimoUser
-            )
-
-
-
-            userRepository.saveOrUpdateUser(
+            val existingUser = onboardingViewModel.getUser(sessionManager.akilimoUser)
+                ?: AkilimoUser(userName = sessionManager.akilimoUser)
+            onboardingViewModel.saveUser(
                 existingUser.copy(
                     firstName = firstName,
                     lastName = lastName,

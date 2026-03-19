@@ -3,13 +3,10 @@ package com.akilimo.mobile.ui.usecases
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.databinding.ActivityFertilizersBinding
-import com.akilimo.mobile.entities.Fertilizer
 import com.akilimo.mobile.enums.EnumAdviceTask
-import com.akilimo.mobile.enums.EnumCountry
+import com.akilimo.mobile.enums.EnumFertilizerFlow
 import com.akilimo.mobile.enums.EnumUseCase
-import com.akilimo.mobile.repos.FertilizerRepo
 import com.akilimo.mobile.ui.usecases.fertilizer.BaseFertilizerActivity
-import kotlinx.coroutines.flow.Flow
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -17,6 +14,7 @@ class InterCropFertilizersActivity : BaseFertilizerActivity<ActivityFertilizersB
 
     override val useCase = EnumUseCase.CIM
     override val adviseTask: EnumAdviceTask = EnumAdviceTask.AVAILABLE_FERTILIZERS_CIM
+    override val fertilizerFlow = EnumFertilizerFlow.CIM
 
     override fun inflateBinding() = ActivityFertilizersBinding.inflate(layoutInflater)
 
@@ -26,7 +24,4 @@ class InterCropFertilizersActivity : BaseFertilizerActivity<ActivityFertilizersB
     override fun getEmptyStateView(): View = binding.emptyState
     override fun getSyncIndicator(): View = binding.syncIndicator
     override fun getRefreshFab(): View = binding.fabRefresh
-
-    override fun fertilizerFlowFactory(): (EnumCountry) -> Flow<List<Fertilizer>> =
-        { country -> FertilizerRepo(database.fertilizerDao()).observeByCimAvailable(country) }
 }

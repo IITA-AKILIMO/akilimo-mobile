@@ -1,23 +1,16 @@
 package com.akilimo.mobile.ui.activities
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.akilimo.mobile.R
+import com.akilimo.mobile.base.BaseActivity
+import com.akilimo.mobile.databinding.ActivityWeedManagementBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class WeedManagementActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_weed_management)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+class WeedManagementActivity : BaseActivity<ActivityWeedManagementBinding>() {
+
+    override fun inflateBinding() = ActivityWeedManagementBinding.inflate(layoutInflater)
+
+    override fun onBindingReady(savedInstanceState: Bundle?) {
+        // TODO: implement weed management UI
     }
 }
