@@ -34,7 +34,9 @@ import com.mapbox.maps.plugin.gestures.addOnMapClickListener
 import com.mapbox.maps.plugin.locationcomponent.location
 import io.sentry.Sentry
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
 
     companion object {

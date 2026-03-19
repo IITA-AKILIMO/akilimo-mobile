@@ -21,7 +21,9 @@ import com.akilimo.mobile.repos.UserPreferencesRepo
 import com.akilimo.mobile.utils.MathHelper
 import com.akilimo.mobile.wizard.ValidationError
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AreaUnitFragment : BaseStepFragment<FragmentAreaUnitBinding>() {
 
     companion object {

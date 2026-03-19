@@ -12,12 +12,14 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.base.BaseStepFragment
 import com.akilimo.mobile.databinding.FragmentTermsBinding
 import com.akilimo.mobile.wizard.ValidationError
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * A simple [Fragment] subclass.
  * Use the [TermsFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 class TermsFragment : BaseStepFragment<FragmentTermsBinding>() {
     companion object {
         fun newInstance() = TermsFragment()

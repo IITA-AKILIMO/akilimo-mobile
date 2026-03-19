@@ -18,7 +18,9 @@ import com.blongho.country_data.World
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.akilimo.mobile.wizard.ValidationError
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CountryFragment : BaseStepFragment<FragmentCountryBinding>() {
 
     companion object {

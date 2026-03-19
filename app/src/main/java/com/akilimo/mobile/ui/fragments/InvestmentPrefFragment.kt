@@ -14,12 +14,14 @@ import com.akilimo.mobile.enums.EnumInvestmentPref
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.wizard.ValidationError
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * A simple [Fragment] subclass.
  * Use the [InvestmentPrefFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 class InvestmentPrefFragment : BaseStepFragment<FragmentInvestmentPrefBinding>() {
     companion object {
         fun newInstance() = InvestmentPrefFragment()

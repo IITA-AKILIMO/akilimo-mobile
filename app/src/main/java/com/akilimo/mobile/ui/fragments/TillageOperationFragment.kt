@@ -18,6 +18,7 @@ import com.akilimo.mobile.enums.EnumOperationType
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.wizard.ValidationError
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
 
 /**
@@ -25,6 +26,7 @@ import kotlinx.coroutines.launch
  * Use the [TillageOperationFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 class TillageOperationFragment : BaseStepFragment<FragmentTillageOperationBinding>() {
     companion object {
         fun newInstance() = TillageOperationFragment()

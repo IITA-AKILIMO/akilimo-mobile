@@ -9,12 +9,14 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.base.BaseStepFragment
 import com.akilimo.mobile.databinding.FragmentDisclaimerBinding
 import com.akilimo.mobile.wizard.ValidationError
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * A simple [Fragment] subclass.
  * Use the [DisclaimerFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 class DisclaimerFragment : BaseStepFragment<FragmentDisclaimerBinding>() {
     companion object {
         fun newInstance() = DisclaimerFragment()

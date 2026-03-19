@@ -9,7 +9,9 @@ import com.akilimo.mobile.ui.usecases.CassavaMarketActivity
 import com.akilimo.mobile.ui.usecases.DatesActivity
 import com.akilimo.mobile.ui.usecases.InterCropFertilizersActivity
 import com.akilimo.mobile.ui.usecases.SweetPotatoMarketActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class IcSweetPotatoActivity : AbstractRecommendationActivity(
     enumUseCase = EnumUseCase.CIS
 ) {

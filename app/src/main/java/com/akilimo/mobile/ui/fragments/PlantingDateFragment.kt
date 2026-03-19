@@ -18,7 +18,9 @@ import com.akilimo.mobile.utils.DateHelper.olderThanCurrent
 import com.akilimo.mobile.wizard.ValidationError
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PlantingDateFragment : BaseStepFragment<FragmentPlantingDateBinding>() {
 
     companion object {
