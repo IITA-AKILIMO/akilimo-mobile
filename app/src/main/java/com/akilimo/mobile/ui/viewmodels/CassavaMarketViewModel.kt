@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -68,25 +69,31 @@ class CassavaMarketViewModel @Inject constructor(
         }
 
         launch {
-            factoryRepo.observeAll().collectLatest { factories ->
-                val details = selectedRepo.getSelectedByUser(userId)
-                val mapped = factories.map {
+            combine(
+                factoryRepo.observeAll(),
+                selectedRepo.observeSelected(userId)
+            ) { factories, details ->
+                factories.map {
                     StarchFactory(id = it.id, name = it.name, label = it.label).apply {
                         isSelected = it.id == details?.selectedCassavaMarket?.starchFactoryId
                     }
                 }
+            }.collectLatest { mapped ->
                 _uiState.update { it.copy(factories = mapped, factoriesRefreshing = false) }
             }
         }
 
         launch {
-            cassavaUnitRepo.observeAll().collectLatest { units ->
-                val details = selectedRepo.getSelectedByUser(userId)
-                val mapped = units.map { unit ->
+            combine(
+                cassavaUnitRepo.observeAll(),
+                selectedRepo.observeSelected(userId)
+            ) { units, details ->
+                units.map { unit ->
                     CassavaUnit(id = unit.id, label = unit.label, description = unit.description).apply {
                         isSelected = unit.id == details?.selectedCassavaMarket?.cassavaUnitId
                     }
                 }
+            }.collectLatest { mapped ->
                 _uiState.update { it.copy(cassavaUnits = mapped, unitsRefreshing = false) }
             }
         }
@@ -95,6 +102,13 @@ class CassavaMarketViewModel @Inject constructor(
     fun selectFactory(factory: StarchFactory) = viewModelScope.launch {
         val userId = _uiState.value.userId
         selectedRepo.select(SelectedCassavaMarket(userId = userId, starchFactoryId = factory.id))
+        _uiState.update { state ->
+            state.copy(
+                factories = state.factories.map { f ->
+                    f.copy().apply { isSelected = f.id == factory.id }
+                }
+            )
+        }
     }
 
     fun saveSelectedPrice(

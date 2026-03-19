@@ -20,12 +20,13 @@ import androidx.viewbinding.ViewBinding
 import com.akilimo.mobile.AkilimoApp
 import com.akilimo.mobile.AppDatabase
 import com.akilimo.mobile.data.AppSettingsDataStore
+import com.akilimo.mobile.data.AppSettingsEntryPoint
 import com.akilimo.mobile.helper.LocaleHelper
 import com.akilimo.mobile.interfaces.DefaultDispatcherProvider
-import javax.inject.Inject
 import com.akilimo.mobile.interfaces.IDispatcherProvider
 import com.akilimo.mobile.ui.components.NetworkNotificationView
 import com.akilimo.mobile.utils.PermissionHelper
+import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.launch
 
 abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
@@ -34,10 +35,14 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         const val COMPLETED_TASK = "completed_task"
     }
 
-    @Inject lateinit var appSettings: AppSettingsDataStore
+    /** Accessed via Hilt EntryPoint so base classes need no @Inject and have no lateinit timing risk. */
+    protected val sessionManager: AppSettingsDataStore by lazy {
+        EntryPointAccessors.fromApplication(applicationContext, AppSettingsEntryPoint::class.java)
+            .appSettings()
+    }
 
-    /** Backward-compatible alias — all existing call sites keep working unchanged. */
-    protected val sessionManager get() = appSettings
+    /** Alias kept so call sites that reference appSettings directly still compile. */
+    protected val appSettings get() = sessionManager
 
     protected val dispatcherProvider: IDispatcherProvider = DefaultDispatcherProvider()
 
