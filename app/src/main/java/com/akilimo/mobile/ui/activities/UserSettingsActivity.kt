@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.util.Patterns
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.akilimo.mobile.Locales
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.ValueOptionAdapter
@@ -14,12 +17,10 @@ import com.akilimo.mobile.dto.AreaUnitOption
 import com.akilimo.mobile.dto.CountryOption
 import com.akilimo.mobile.dto.InterestOption
 import com.akilimo.mobile.dto.findByValue
-import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.entities.UserPreferences
 import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.enums.EnumCountry
-import com.akilimo.mobile.repos.AkilimoUserRepo
-import com.akilimo.mobile.repos.UserPreferencesRepo
+import com.akilimo.mobile.ui.viewmodels.UserSettingsViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.processphoenix.ProcessPhoenix
 import dev.b3nedikt.app_locale.AppLocale
@@ -28,10 +29,13 @@ import timber.log.Timber
 
 class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
 
-    private lateinit var prefsRepo: UserPreferencesRepo
-    private lateinit var userRepo: AkilimoUserRepo
+    private val viewModel: UserSettingsViewModel by lazy {
+        ViewModelProvider(
+            this,
+            UserSettingsViewModel.factory(database)
+        )[UserSettingsViewModel::class.java]
+    }
 
-    // Dropdown option lists
     private lateinit var genderOptions: List<InterestOption>
     private lateinit var languageOptions: List<InterestOption>
     private lateinit var countryOptions: List<CountryOption>
@@ -41,25 +45,19 @@ class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
         ActivityUserSettingsBinding.inflate(layoutInflater)
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
-        prefsRepo = UserPreferencesRepo(database.userPreferencesDao())
-        userRepo = AkilimoUserRepo(database.akilimoUserDao())
-
         setupToolbar()
         setupDropdownOptions()
         setupDropdownAdapters()
         setupSaveButton()
-        loadPreferences()
+        observeViewModel()
+        viewModel.loadPreferences()
     }
-
-    // ── Toolbar ──────────────────────────────────────────────────────────
 
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.toolbar.setNavigationOnClickListener { finish() }
     }
-
-    // ── Dropdown Data ────────────────────────────────────────────────────
 
     private fun setupDropdownOptions() {
         genderOptions = listOf(
@@ -83,49 +81,70 @@ class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
     }
 
     private fun setupDropdownAdapters() {
-        // Gender
         val genderAdapter = ValueOptionAdapter(this, genderOptions)
         binding.dropGender.setAdapter(genderAdapter)
         binding.dropGender.setOnItemClickListener { _, _, position, _ ->
-            genderAdapter.getItem(position)?.let {
-                binding.dropGender.setText(it.displayLabel, false)
-            }
+            genderAdapter.getItem(position)?.let { binding.dropGender.setText(it.displayLabel, false) }
         }
 
-        // Language
         val languageAdapter = ValueOptionAdapter(this, languageOptions)
         binding.dropLanguage.setAdapter(languageAdapter)
         binding.dropLanguage.setOnItemClickListener { _, _, position, _ ->
-            languageAdapter.getItem(position)?.let {
-                binding.dropLanguage.setText(it.displayLabel, false)
-            }
+            languageAdapter.getItem(position)?.let { binding.dropLanguage.setText(it.displayLabel, false) }
         }
 
-        // Country
         val countryAdapter = ValueOptionAdapter(this, countryOptions)
         binding.dropCountry.setAdapter(countryAdapter)
         binding.dropCountry.setOnItemClickListener { _, _, position, _ ->
-            countryAdapter.getItem(position)?.let {
-                binding.dropCountry.setText(it.displayLabel, false)
-            }
+            countryAdapter.getItem(position)?.let { binding.dropCountry.setText(it.displayLabel, false) }
         }
 
-        // Area unit
         val areaUnitAdapter = ValueOptionAdapter(this, areaUnitOptions)
         binding.dropAreaUnit.setAdapter(areaUnitAdapter)
         binding.dropAreaUnit.setOnItemClickListener { _, _, position, _ ->
-            areaUnitAdapter.getItem(position)?.let {
-                binding.dropAreaUnit.setText(it.displayLabel, false)
-            }
+            areaUnitAdapter.getItem(position)?.let { binding.dropAreaUnit.setText(it.displayLabel, false) }
         }
     }
 
-    // ── Load ─────────────────────────────────────────────────────────────
-
-    private fun loadPreferences() {
+    private fun observeViewModel() {
         lifecycleScope.launch {
-            val prefs = prefsRepo.getOrDefault()
-            populateForm(prefs)
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    state.preferences?.let { populateForm(it) }
+
+                    if (state.saved) {
+                        Snackbar.make(binding.root, R.string.lbl_settings_saved, Snackbar.LENGTH_SHORT).show()
+                        Timber.d("User preferences saved")
+
+                        // Sync side effects that need Android context
+                        sessionManager.languageCode = state.newLanguageCode
+                        sessionManager.darkMode = state.preferences?.darkMode ?: false
+
+                        val selectedLocale = Locales.supportedLocales
+                            .find { it.toLanguageTag() == state.newLanguageCode }
+                            ?: Locales.english
+                        AppLocale.desiredLocale = selectedLocale
+
+                        AppCompatDelegate.setDefaultNightMode(
+                            if (state.preferences?.darkMode == true) AppCompatDelegate.MODE_NIGHT_YES
+                            else AppCompatDelegate.MODE_NIGHT_NO
+                        )
+
+                        if (state.languageChanged) {
+                            AlertDialog.Builder(this@UserSettingsActivity)
+                                .setTitle(R.string.lbl_restart_required)
+                                .setMessage(R.string.lbl_restart_language_message)
+                                .setPositiveButton(R.string.lbl_restart_now) { _, _ ->
+                                    ProcessPhoenix.triggerRebirth(this@UserSettingsActivity)
+                                }
+                                .setNegativeButton(R.string.lbl_restart_later, null)
+                                .show()
+                        }
+
+                        viewModel.onSaveHandled()
+                    }
+                }
+            }
         }
     }
 
@@ -136,7 +155,6 @@ class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
         edtEmail.setText(prefs.email)
         edtPhone.setText(prefs.phoneNumber)
 
-        // Phone country code picker
         prefs.phoneCountryCode?.let { code ->
             if (code.isNotBlank()) {
                 ccpCountry.setCountryForPhoneCode(
@@ -146,38 +164,29 @@ class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
         }
         ccpCountry.registerCarrierNumberEditText(edtPhone)
 
-        // Dropdowns
         dropGender.setText(
-            genderOptions.find { it.valueOption == prefs.gender }?.displayLabel ?: "",
-            false
+            genderOptions.find { it.valueOption == prefs.gender }?.displayLabel ?: "", false
         )
         dropLanguage.setText(
-            languageOptions.find { it.valueOption == prefs.languageCode }?.displayLabel ?: "",
-            false
+            languageOptions.find { it.valueOption == prefs.languageCode }?.displayLabel ?: "", false
         )
         dropCountry.setText(
-            countryOptions.findByValue(prefs.country)?.displayLabel ?: "",
-            false
+            countryOptions.findByValue(prefs.country)?.displayLabel ?: "", false
         )
         dropAreaUnit.setText(
-            areaUnitOptions.findByValue(prefs.preferredAreaUnit)?.displayLabel ?: "",
-            false
+            areaUnitOptions.findByValue(prefs.preferredAreaUnit)?.displayLabel ?: "", false
         )
 
-        // Toggles
         switchNotifyEmail.isChecked = prefs.notifyByEmail
         switchNotifySms.isChecked = prefs.notifyBySms
         switchDarkMode.isChecked = prefs.darkMode
     }
-
-    // ── Save ─────────────────────────────────────────────────────────────
 
     private fun setupSaveButton() {
         binding.btnSaveSettings.setOnClickListener { validateAndSave() }
     }
 
     private fun validateAndSave() = with(binding) {
-        // Clear previous errors
         lytFirstName.error = null
         lytEmail.error = null
         lytPhone.error = null
@@ -189,7 +198,6 @@ class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
         val phone = if (hasPhoneInput) ccpCountry.fullNumber else ""
         val phoneCountryCode = if (hasPhoneInput) ccpCountry.selectedCountryCodeWithPlus else ""
 
-        // Validation
         if (email.isNotBlank() && !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             lytEmail.error = getString(R.string.lbl_valid_email_req)
             return@with
@@ -199,7 +207,6 @@ class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
             return@with
         }
 
-        // Resolve dropdown values
         val genderLabel = dropGender.text.toString()
         val gender = genderOptions.find { it.displayLabel == genderLabel }?.valueOption.orEmpty()
 
@@ -214,8 +221,6 @@ class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
         val areaLabel = dropAreaUnit.text.toString()
         val areaUnit = areaUnitOptions.find { it.displayLabel == areaLabel }?.valueOption
             ?: EnumAreaUnit.ACRE
-
-        val previousLangCode = sessionManager.languageCode
 
         val preferences = UserPreferences(
             languageCode = langCode,
@@ -233,57 +238,6 @@ class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
             darkMode = switchDarkMode.isChecked
         )
 
-        lifecycleScope.launch {
-            prefsRepo.save(preferences)
-
-            // Sync to AkilimoUser for recommendation API consistency
-            val akilimoUser = userRepo.getUser(sessionManager.akilimoUser) ?: AkilimoUser(
-                userName = sessionManager.akilimoUser
-            )
-            val updatedAkilimoUser = akilimoUser.copy(
-                firstName = preferences.firstName,
-                lastName = preferences.lastName,
-                email = preferences.email,
-                mobileNumber = preferences.phoneNumber,
-                mobileCountryCode = preferences.phoneCountryCode,
-                gender = preferences.gender,
-                enumCountry = preferences.country,
-                enumAreaUnit = preferences.preferredAreaUnit,
-                languageCode = preferences.languageCode,
-                sendEmail = preferences.notifyByEmail,
-                sendSms = preferences.notifyBySms
-            )
-            userRepo.saveOrUpdateUser(updatedAkilimoUser, sessionManager.akilimoUser)
-
-            // Sync language to SessionManager and AppLocale library
-            sessionManager.languageCode = langCode
-            val selectedLocale = Locales.supportedLocales
-                .find { it.toLanguageTag() == langCode }
-                ?: Locales.english
-            AppLocale.desiredLocale = selectedLocale
-
-            // Persist dark mode to SessionManager so AkilimoApp can read it on next start
-            sessionManager.darkMode = preferences.darkMode
-            AppCompatDelegate.setDefaultNightMode(
-                if (preferences.darkMode) AppCompatDelegate.MODE_NIGHT_YES
-                else AppCompatDelegate.MODE_NIGHT_NO
-            )
-
-            Timber.d("User preferences saved: $preferences")
-
-            Snackbar.make(root, R.string.lbl_settings_saved, Snackbar.LENGTH_SHORT).show()
-
-            // Restart app if language changed
-            if (langCode != previousLangCode) {
-                AlertDialog.Builder(this@UserSettingsActivity)
-                    .setTitle(R.string.lbl_restart_required)
-                    .setMessage(R.string.lbl_restart_language_message)
-                    .setPositiveButton(R.string.lbl_restart_now) { _, _ ->
-                        ProcessPhoenix.triggerRebirth(this@UserSettingsActivity)
-                    }
-                    .setNegativeButton(R.string.lbl_restart_later, null)
-                    .show()
-            }
-        }
+        viewModel.savePreferences(preferences, sessionManager.akilimoUser, sessionManager.languageCode)
     }
 }

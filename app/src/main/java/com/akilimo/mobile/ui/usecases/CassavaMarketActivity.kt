@@ -3,6 +3,10 @@ package com.akilimo.mobile.ui.usecases
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.akilimo.mobile.R
@@ -13,33 +17,24 @@ import com.akilimo.mobile.databinding.ActivityCassavaMarketBinding
 import com.akilimo.mobile.entities.CassavaMarketPrice
 import com.akilimo.mobile.entities.CassavaUnit
 import com.akilimo.mobile.entities.SelectedCassavaMarket
-import com.akilimo.mobile.entities.StarchFactory
 import com.akilimo.mobile.enums.EnumUnitOfSale
-import com.akilimo.mobile.repos.AkilimoUserRepo
-import com.akilimo.mobile.repos.CassavaMarketPriceRepo
-import com.akilimo.mobile.repos.CassavaUnitRepo
-import com.akilimo.mobile.repos.SelectedCassavaMarketRepo
-import com.akilimo.mobile.repos.StarchFactoryRepo
 import com.akilimo.mobile.ui.components.ToolbarHelper
 import com.akilimo.mobile.ui.dialogs.CassavaPriceSelectionBottomSheet
-import com.akilimo.mobile.utils.MathHelper
+import com.akilimo.mobile.ui.viewmodels.CassavaMarketViewModel
 import com.akilimo.mobile.workers.CassavaUnitWorker
 import com.akilimo.mobile.workers.StarchFactoryWorker
 import com.akilimo.mobile.workers.WorkConstants
 import com.akilimo.mobile.workers.WorkerScheduler
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
 
-    private lateinit var userRepo: AkilimoUserRepo
-    private lateinit var factoryRepo: StarchFactoryRepo
-    private lateinit var selectedCassavaMarketRepo: SelectedCassavaMarketRepo
-    private lateinit var cassavaMarketPriceRepo: CassavaMarketPriceRepo
-    private lateinit var cassavaUnitRepo: CassavaUnitRepo
+    private val viewModel: CassavaMarketViewModel by lazy {
+        ViewModelProvider(
+            this,
+            CassavaMarketViewModel.factory(database)
+        )[CassavaMarketViewModel::class.java]
+    }
 
     private lateinit var factoryAdapter: StarchFactoryAdapter
     private lateinit var cassavaUnitAdapter: CassavaUnitAdapter
@@ -50,19 +45,11 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
     override fun inflateBinding() = ActivityCassavaMarketBinding.inflate(layoutInflater)
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
-        initRepositories()
         setupToolbar()
         setupRecyclerViews()
         setupListeners()
-        observeData()
-    }
-
-    private fun initRepositories() {
-        userRepo = AkilimoUserRepo(database.akilimoUserDao())
-        factoryRepo = StarchFactoryRepo(database.starchFactoryDao())
-        selectedCassavaMarketRepo = SelectedCassavaMarketRepo(database.selectedCassavaMarketDao())
-        cassavaMarketPriceRepo = CassavaMarketPriceRepo(database.cassavaMarketPriceDao())
-        cassavaUnitRepo = CassavaUnitRepo(database.cassavaUnitDao())
+        observeViewModel()
+        viewModel.loadData(sessionManager.akilimoUser)
     }
 
     private fun setupToolbar() {
@@ -100,48 +87,29 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
         }
 
         factoryAdapter.onItemClick = { factory ->
-            safeScope.launch {
-                val userId = userRepo.getUser(sessionManager.akilimoUser)?.id ?: return@launch
-                val selected = SelectedCassavaMarket(userId = userId, starchFactoryId = factory.id)
-                selectedCassavaMarketRepo.select(selected)
-
-                val updatedList = factoryAdapter.currentList.map {
-                    it.copy().apply {
-                        isSelected = it.id == factory.id
-                    }
-                }
-                factoryAdapter.submitList(updatedList)
-            }
+            viewModel.selectFactory(factory)
         }
 
         cassavaUnitAdapter.onItemClick = { unit ->
             safeScope.launch {
-                val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
-                val userId = user.id ?: return@launch
-                val marketWithDetails =
-                    selectedCassavaMarketRepo.getSelectedByUser(userId = userId)
+                val userId = viewModel.uiState.value.userId
+                val country = viewModel.uiState.value.userCountry
+                val marketWithDetails = viewModel.selectedRepo.getSelectedByUser(userId)
                 val marketPrice = marketWithDetails?.marketPrice
                 val selectedMarket = marketWithDetails?.selectedCassavaMarket
 
-                val countryCode = user.enumCountry
-                val uos = EnumUnitOfSale.entries.find {
-                    it.name.equals(unit.label, ignoreCase = true)
-                }
+                val uos = EnumUnitOfSale.entries.find { it.name.equals(unit.label, ignoreCase = true) }
 
-                val prices = cassavaMarketPriceRepo.getPricesByCountry(countryCode)
-                val updatedPriceList: List<CassavaMarketPrice> = prices.map {
-                    val shouldSelect =
-                        (it.id == marketPrice?.id) && (selectedMarket?.unitOfSale == uos)
-                    it.copy().apply {
-                        isSelected = shouldSelect
-                    }
+                val prices = viewModel.priceRepo.getPricesByCountry(country)
+                val updatedPriceList = prices.map {
+                    val shouldSelect = (it.id == marketPrice?.id) && (selectedMarket?.unitOfSale == uos)
+                    it.copy().apply { isSelected = shouldSelect }
                 }
 
                 showUnitPriceBottomSheet(unit, selectedMarket, updatedPriceList)
             }
         }
 
-        // Swipe-to-refresh handlers for each container
         swipeRefreshFactories.setOnRefreshListener {
             WorkerScheduler.scheduleOneTimeWorker<StarchFactoryWorker>(
                 context = this@CassavaMarketActivity,
@@ -157,7 +125,6 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
     }
 
     private fun setupListeners() = with(binding) {
-        // Toggle the swipe container visibility
         rgMarketChoice.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.rb_sell_to_factory -> {
@@ -168,7 +135,6 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
                         workName = WorkConstants.STARCH_FACTORY_WORK_NAME
                     )
                 }
-
                 R.id.rb_sell_to_market -> {
                     swipeRefreshFactories.isVisible = false
                     swipeRefreshUnits.isVisible = true
@@ -181,69 +147,26 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
         }
     }
 
-    private fun observeData() = safeScope.launch {
-        val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
-        val userId = user.id ?: return@launch
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    factoryAdapter.submitList(state.factories)
+                    cassavaUnitAdapter.submitList(state.cassavaUnits)
+                    binding.swipeRefreshFactories.isRefreshing = state.factoriesRefreshing
+                    binding.swipeRefreshUnits.isRefreshing = state.unitsRefreshing
 
-        // Fetch persisted selected market for this user
-        val marketDetails = selectedCassavaMarketRepo.getSelectedByUser(userId)
-        val selectedMarket = marketDetails?.selectedCassavaMarket
-
-        // Ensure UI reflects the saved selection when the view is loaded
-        with(binding) {
-            when {
-                selectedMarket?.starchFactoryId != null -> {
-                    rgMarketChoice.check(R.id.rb_sell_to_factory)
-                }
-
-                selectedMarket?.cassavaUnitId != null -> {
-                    rgMarketChoice.check(R.id.rb_sell_to_market)
-                }
-            }
-        }
-
-        // Observe factories and update adapter
-        launch {
-            factoryRepo.observeAll().collectLatest { factories ->
-                val marketWithDetails = selectedCassavaMarketRepo.getSelectedByUser(userId)
-                val mapped = factories.map {
-                    StarchFactory(
-                        id = it.id,
-                        name = it.name,
-                        label = it.label
-                    ).apply {
-                        isSelected =
-                            it.id == marketWithDetails?.selectedCassavaMarket?.starchFactoryId
+                    // Apply initial radio selection once (only when choice is known)
+                    when (state.initialMarketChoice) {
+                        CassavaMarketViewModel.MarketChoice.FACTORY ->
+                            binding.rgMarketChoice.check(R.id.rb_sell_to_factory)
+                        CassavaMarketViewModel.MarketChoice.MARKET ->
+                            binding.rgMarketChoice.check(R.id.rb_sell_to_market)
+                        CassavaMarketViewModel.MarketChoice.NONE -> Unit
                     }
                 }
-                factoryAdapter.submitList(mapped)
-                binding.swipeRefreshFactories.isRefreshing = false
             }
         }
-
-        // Observe cassava units and update adapter
-        launch {
-            cassavaUnitRepo.observeAll().collectLatest { cassavaUnits ->
-                val marketWithDetails = selectedCassavaMarketRepo.getSelectedByUser(userId)
-                val mapped = cassavaUnits.map { unit ->
-                    CassavaUnit(
-                        id = unit.id,
-                        label = unit.label,
-                        description = unit.description,
-                    ).apply {
-                        isSelected =
-                            unit.id == marketWithDetails?.selectedCassavaMarket?.cassavaUnitId
-                    }
-                }
-                cassavaUnitAdapter.submitList(mapped)
-                binding.swipeRefreshUnits.isRefreshing = false
-            }
-        }
-    }
-
-
-    private fun showSnackBar(string: String) {
-        Snackbar.make(binding.root, string, Snackbar.LENGTH_LONG).show()
     }
 
     private fun showUnitPriceBottomSheet(
@@ -256,51 +179,12 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
             selectedMarket = selectedMarket,
             prices = prices,
             onPriceSelected = { selectedPrice, uos ->
-                saveSelectedPrice(uos, unit, selectedPrice)
-            }
-        ).show(supportFragmentManager, "CassavaPriceSelectionBottomSheet")
-    }
-
-
-    private fun saveSelectedPrice(
-        uos: EnumUnitOfSale,
-        unit: CassavaUnit,
-        selectedPrice: CassavaMarketPrice?
-    ) {
-        safeScope.launch(Dispatchers.IO) {
-            val userId =
-                userRepo.getUser(sessionManager.akilimoUser)?.id ?: return@launch
-
-            val exactPrice = selectedPrice?.exactPrice ?: false
-            val unitPrice = when {
-                exactPrice -> {
-                    selectedPrice.averagePrice
-                }
-
-                else -> {
-                    MathHelper.computeUnitPrice(selectedPrice?.averagePrice ?: 0.0, uos)
-                }
-            }
-
-
-            val selected = SelectedCassavaMarket(
-                userId = userId,
-                cassavaUnitId = unit.id,
-                unitOfSale = uos,
-                unitPrice = unitPrice,
-                marketPriceId = selectedPrice?.id
-            )
-            selectedCassavaMarketRepo.select(selected)
-
-            withContext(Dispatchers.Main) {
+                viewModel.saveSelectedPrice(sessionManager.akilimoUser, unit, uos, selectedPrice)
                 val updatedList = cassavaUnitAdapter.currentList.map {
-                    it.copy().apply {
-                        isSelected = it.id == unit.id
-                    }
+                    it.copy().apply { isSelected = it.id == unit.id }
                 }
                 cassavaUnitAdapter.submitList(updatedList)
             }
-        }
+        ).show(supportFragmentManager, "CassavaPriceSelectionBottomSheet")
     }
-
 }

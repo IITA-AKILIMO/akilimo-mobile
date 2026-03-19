@@ -3,37 +3,39 @@ package com.akilimo.mobile.ui.usecases
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.BaseValueOptionAdapter
 import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.databinding.ActivityWeedControlCostsBinding
 import com.akilimo.mobile.dto.WeedControlOption
 import com.akilimo.mobile.entities.AdviceCompletionDto
-import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumStepStatus
 import com.akilimo.mobile.enums.EnumWeedControlMethod
-import com.akilimo.mobile.repos.AkilimoUserRepo
-import com.akilimo.mobile.repos.CurrentPracticeRepo
-import com.akilimo.mobile.repos.FieldOperationCostsRepo
+import com.akilimo.mobile.ui.components.ToolbarHelper
+import com.akilimo.mobile.ui.viewmodels.WeedControlCostsViewModel
 import com.akilimo.mobile.utils.StringHelper.formatWithLandSize
 import kotlinx.coroutines.launch
 
 class WeedControlCostsActivity : BaseActivity<ActivityWeedControlCostsBinding>() {
 
-    private lateinit var userRepo: AkilimoUserRepo
-    private lateinit var fieldOperationCostsRepo: FieldOperationCostsRepo
-
-    private lateinit var currentPracticeRepo: CurrentPracticeRepo
+    private val viewModel: WeedControlCostsViewModel by lazy {
+        ViewModelProvider(
+            this,
+            WeedControlCostsViewModel.factory(database)
+        )[WeedControlCostsViewModel::class.java]
+    }
 
     private val weedControlOptions = mutableListOf<WeedControlOption>()
 
     override fun inflateBinding() = ActivityWeedControlCostsBinding.inflate(layoutInflater)
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
-        userRepo = AkilimoUserRepo(database.akilimoUserDao())
-        fieldOperationCostsRepo = FieldOperationCostsRepo(database.fieldOperationCostsDao())
-        currentPracticeRepo = CurrentPracticeRepo(database.currentPracticeDao())
+        ToolbarHelper(this, binding.lytToolbar.toolbar).onNavigationClick { finish() }.build()
 
         weedControlOptions.add(WeedControlOption(EnumWeedControlMethod.MANUAL))
         weedControlOptions.add(WeedControlOption(EnumWeedControlMethod.HERBICIDE))
@@ -47,121 +49,90 @@ class WeedControlCostsActivity : BaseActivity<ActivityWeedControlCostsBinding>()
         binding.apply {
             dropWeedControl.setAdapter(areaUnitAdapter)
             dropWeedControl.setOnItemClickListener { _, _, position, _ ->
-                val selected =
-                    weedControlOptions.getOrNull(position) ?: return@setOnItemClickListener
+                val selected = weedControlOptions.getOrNull(position) ?: return@setOnItemClickListener
                 dropWeedControl.setText(
                     selected.valueOption.label(this@WeedControlCostsActivity), false
                 )
             }
-
-        }
-
-        safeScope.launch {
-            val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
-            val userId = user.id ?: 0
-            val sizeUnitLabel = user.enumAreaUnit.label(this@WeedControlCostsActivity).orEmpty()
-            val firstWeedingText = formatWithLandSize(
-                R.string.lbl_cost_of_first_weeding_operation,
-                user.farmSize,
-                sizeUnitLabel
-            )
-            val secondWeedingText = formatWithLandSize(
-                R.string.lbl_cost_of_second_weeding_operation,
-                user.farmSize,
-                sizeUnitLabel
-            )
-            binding.apply {
-                tilFirstWeedingCost.helperText = firstWeedingText
-                tilSecondWeedingCost.helperText = secondWeedingText
-            }
-
-            val operationCosts = fieldOperationCostsRepo.getCostForUser(userId)
-            val currentPractice = currentPracticeRepo.getPracticeForUser(userId)
-            operationCosts?.let { cost ->
-                val firstWeedingCosts = cost.firstWeedingOperationCost
-                val secondWeedingCosts = cost.secondWeedingOperationCost
-                binding.etFirstWeedingCost.setText(firstWeedingCosts.toString())
-                binding.etSecondWeedingCost.setText(secondWeedingCosts.toString())
-            }
-
-            currentPractice?.let { practice ->
-                val controlMethod =
-                    EnumWeedControlMethod.entries.firstOrNull { it == practice.weedControlMethod }
-
-                binding.dropWeedControl.setText(
-                    controlMethod?.label(this@WeedControlCostsActivity),
-                    false
-                )
-            }
-        }
-
-        binding.apply {
             lytFabButton.fabSave.setOnClickListener {
-                val firstCost = binding.etFirstWeedingCost.text?.toString()?.toDoubleOrNull()
-                val secondCost = binding.etSecondWeedingCost.text?.toString()?.toDoubleOrNull()
-                saveOperationCosts(firstCost, secondCost)
+                val firstCost = etFirstWeedingCost.text?.toString()?.toDoubleOrNull()
+                val secondCost = etSecondWeedingCost.text?.toString()?.toDoubleOrNull()
+                viewModel.saveCosts(firstCost, secondCost)
             }
             etFirstWeedingCost.addTextChangedListener { toggleFab() }
             etSecondWeedingCost.addTextChangedListener { toggleFab() }
             lytFabButton.fabSave.hide()
         }
-        binding.lytFabButton.fabSave.hide()
+
+        observeViewModel()
+        viewModel.loadData(sessionManager.akilimoUser)
     }
 
-    private fun saveOperationCosts(
-        firstCost: Double?,
-        secondCost: Double?,
-    ) {
-        safeScope.launch {
-            val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
-            val userId = user.id ?: return@launch
-            val newCosts = FieldOperationCost(
-                userId = userId,
-                firstWeedingOperationCost = firstCost ?: 0.0,
-                secondWeedingOperationCost = secondCost ?: 0.0
-            )
-            val existing = fieldOperationCostsRepo.getCostForUser(userId)
-            val merged = existing?.copy(
-                manualRidgeCost = if (firstCost != null) newCosts.firstWeedingOperationCost else existing.firstWeedingOperationCost,
-                manualPloughCost = if (secondCost != null) newCosts.secondWeedingOperationCost else existing.secondWeedingOperationCost,
-            ) ?: newCosts
-            fieldOperationCostsRepo.saveCost(cost = merged)
-            val completion =
-                AdviceCompletionDto(EnumAdviceTask.COST_OF_WEED_CONTROL, EnumStepStatus.COMPLETED)
-            setResult(RESULT_OK, Intent().putExtra(COMPLETED_TASK, completion))
-            finish()
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    if (state.saved) {
+                        val completion = AdviceCompletionDto(
+                            EnumAdviceTask.COST_OF_WEED_CONTROL, EnumStepStatus.COMPLETED
+                        )
+                        setResult(RESULT_OK, Intent().putExtra(COMPLETED_TASK, completion))
+                        viewModel.onSaveHandled()
+                        finish()
+                        return@collect
+                    }
+
+                    if (state.userId == 0) return@collect
+
+                    val sizeUnitLabel = state.enumAreaUnit.label(this@WeedControlCostsActivity).orEmpty()
+                    binding.apply {
+                        tilFirstWeedingCost.helperText = formatWithLandSize(
+                            R.string.lbl_cost_of_first_weeding_operation, state.farmSize, sizeUnitLabel
+                        )
+                        tilSecondWeedingCost.helperText = formatWithLandSize(
+                            R.string.lbl_cost_of_second_weeding_operation, state.farmSize, sizeUnitLabel
+                        )
+
+                        if (etFirstWeedingCost.text.isNullOrEmpty()) {
+                            etFirstWeedingCost.setText(state.firstWeedingCost.toString())
+                        }
+                        if (etSecondWeedingCost.text.isNullOrEmpty()) {
+                            etSecondWeedingCost.setText(state.secondWeedingCost.toString())
+                        }
+
+                        state.weedControlMethod?.let { method ->
+                            dropWeedControl.setText(method.label(this@WeedControlCostsActivity), false)
+                        }
+                    }
+                    toggleFab()
+                }
+            }
         }
     }
 
+    private fun hasFormChanged(): Boolean {
+        val state = viewModel.uiState.value
+        if (state.userId == 0) return false
 
-    private fun hasFormChanged(cost: FieldOperationCost) = with(binding) {
         fun parseNonNegativeDouble(text: CharSequence?): Double? {
             val value = text?.toString()?.toDoubleOrNull()
             return if (value != null && value >= 0) value else null
         }
 
-        val firstWeeding = parseNonNegativeDouble(etFirstWeedingCost.text)
-        val secondWeeding = parseNonNegativeDouble(etSecondWeedingCost.text)
+        val firstWeeding = parseNonNegativeDouble(binding.etFirstWeedingCost.text)
+        val secondWeeding = parseNonNegativeDouble(binding.etSecondWeedingCost.text)
 
-        val firstCostChanged =
-            firstWeeding != null && firstWeeding != cost.firstWeedingOperationCost
-        val secondCostChanged =
-            secondWeeding != null && secondWeeding != cost.secondWeedingOperationCost
+        val firstCostChanged = firstWeeding != null && firstWeeding != state.firstWeedingCost
+        val secondCostChanged = secondWeeding != null && secondWeeding != state.secondWeedingCost
 
-        firstCostChanged || secondCostChanged
+        return firstCostChanged || secondCostChanged
     }
 
-
-    private fun toggleFab() = safeScope.launch {
-        userRepo.getUser(sessionManager.akilimoUser)?.let { user ->
-            val operationCost = fieldOperationCostsRepo.getCostForUser(user.id ?: 0)
-            val shouldShowFab = when {
-                operationCost == null -> true
-                else -> hasFormChanged(operationCost)
-            }
-            binding.lytFabButton.fabSave.apply {
-                takeIf { shouldShowFab }?.show() ?: hide()
-            }
+    private fun toggleFab() {
+        val state = viewModel.uiState.value
+        val shouldShow = state.userId != 0 && (state.firstWeedingCost == 0.0 || hasFormChanged())
+        binding.lytFabButton.fabSave.apply {
+            if (shouldShow) show() else hide()
         }
     }
 }

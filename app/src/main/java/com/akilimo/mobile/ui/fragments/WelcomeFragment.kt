@@ -3,16 +3,14 @@ package com.akilimo.mobile.ui.fragments
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import com.akilimo.mobile.Locales
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.ValueOptionAdapter
 import com.akilimo.mobile.base.BaseStepFragment
 import com.akilimo.mobile.databinding.FragmentWelcomeBinding
 import com.akilimo.mobile.dto.LanguageOption
-import com.akilimo.mobile.entities.AkilimoUser
-import com.akilimo.mobile.entities.UserPreferences
-import com.akilimo.mobile.repos.AkilimoUserRepo
-import com.akilimo.mobile.repos.UserPreferencesRepo
+import com.akilimo.mobile.ui.viewmodels.WelcomeViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.jakewharton.processphoenix.ProcessPhoenix
 import dev.b3nedikt.app_locale.AppLocale
@@ -26,8 +24,9 @@ class WelcomeFragment : BaseStepFragment<FragmentWelcomeBinding>() {
         fun newInstance() = WelcomeFragment()
     }
 
-    private lateinit var userRepository: AkilimoUserRepo
-    private lateinit var prefsRepo: UserPreferencesRepo
+    private val viewModel: WelcomeViewModel by lazy {
+        ViewModelProvider(this, WelcomeViewModel.factory(database))[WelcomeViewModel::class.java]
+    }
 
     private val languageOptions: List<LanguageOption> by lazy {
         Locales.supportedLocales.map {
@@ -40,55 +39,34 @@ class WelcomeFragment : BaseStepFragment<FragmentWelcomeBinding>() {
     ): FragmentWelcomeBinding = FragmentWelcomeBinding.inflate(inflater, container, false)
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
-        userRepository = AkilimoUserRepo(database.akilimoUserDao())
-        prefsRepo = UserPreferencesRepo(database.userPreferencesDao())
         val languageAdapter = ValueOptionAdapter(requireContext(), languageOptions)
         binding.dropLanguage.setAdapter(languageAdapter)
         binding.dropLanguage.setOnItemClickListener { _, _, position, _ ->
             val selected = languageOptions[position]
             binding.dropLanguage.setText(selected.displayLabel, false)
-            safeScope.launch {
-                val user = userRepository.getUser(sessionManager.akilimoUser) ?: AkilimoUser(
-                    userName = sessionManager.akilimoUser
-                )
-                userRepository.saveOrUpdateUser(
-                    user.copy(languageCode = selected.valueOption),
-                    sessionManager.akilimoUser
-                )
 
-                // Also persist to UserPreferences so prefillFromEntity() reads consistently
-                val currentPrefs = prefsRepo.getOrDefault()
-                prefsRepo.save(currentPrefs.copy(languageCode = selected.valueOption))
+            sessionManager.languageCode = selected.valueOption
 
-                sessionManager.languageCode = selected.valueOption
+            val selectedLocale = Locales.supportedLocales
+                .find { it.toLanguageTag() == selected.valueOption }
+                ?: Locales.english
+            AppLocale.desiredLocale = selectedLocale
 
-                // Sync AppLocale library so Reword string replacement uses the correct locale
-                val selectedLocale = Locales.supportedLocales
-                    .find { it.toLanguageTag() == selected.valueOption }
-                    ?: Locales.english
-                AppLocale.desiredLocale = selectedLocale
-
-                withContext(Dispatchers.Main) {
-                    promptRestart()
-                }
-            }
+            viewModel.saveLanguage(selected, sessionManager.akilimoUser)
+            promptRestart()
         }
     }
 
     override fun prefillFromEntity() {
+        viewModel.loadLanguage(sessionManager.akilimoUser)
         safeScope.launch {
-            val user = userRepository.getUser(sessionManager.akilimoUser)
-            val prefs = prefsRepo.getOrDefault()
-
-            val currentLangCode =
-                user?.languageCode?.takeIf { it.isNotBlank() } ?: prefs.languageCode
-
-            val selectedOption = languageOptions.find { it.valueOption == currentLangCode }
-                ?: languageOptions.find { it.valueOption == Locales.english.toLanguageTag() }
-                ?: languageOptions.first()
-
-            withContext(Dispatchers.Main) {
-                binding.dropLanguage.setText(selectedOption.displayLabel, false)
+            viewModel.uiState.collect { state ->
+                val selected = languageOptions.find { it.valueOption == state.currentLanguageCode }
+                    ?: languageOptions.find { it.valueOption == Locales.english.toLanguageTag() }
+                    ?: languageOptions.first()
+                withContext(Dispatchers.Main) {
+                    binding.dropLanguage.setText(selected.displayLabel, false)
+                }
             }
         }
     }
@@ -99,8 +77,6 @@ class WelcomeFragment : BaseStepFragment<FragmentWelcomeBinding>() {
             .setMessage(R.string.lbl_restart_language_message)
             .setCancelable(false)
             .setPositiveButton(R.string.lbl_restart_now) { _, _ ->
-                // Full process restart ensures AkilimoApp.initLocale() re-runs and
-                // all Activity contexts are rebuilt with the new locale configuration.
                 ProcessPhoenix.triggerRebirth(requireContext())
             }
             .setNegativeButton(R.string.lbl_restart_later) { dialog, _ ->

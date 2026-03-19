@@ -27,6 +27,12 @@ interface FertilizerDao {
         useCase: EnumUseCase
     ): Flow<List<Fertilizer>>
 
+    @Query("SELECT * FROM fertilizers WHERE country_code = :countryCode AND cim_available = 1 AND available = 1 ORDER BY sort_order ASC")
+    fun observeAllByCimAvailable(countryCode: EnumCountry): Flow<List<Fertilizer>>
+
+    @Query("SELECT * FROM fertilizers WHERE country_code = :countryCode AND cis_available = 1 AND available = 1 ORDER BY sort_order ASC")
+    fun observeAllByCisAvailable(countryCode: EnumCountry): Flow<List<Fertilizer>>
+
 
     @Query("SELECT * FROM fertilizers WHERE available = 1")
     suspend fun getAll(): List<Fertilizer>

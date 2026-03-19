@@ -199,6 +199,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.multidex)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.work)
 
     //Region: Google services
