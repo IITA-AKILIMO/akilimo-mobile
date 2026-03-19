@@ -2,6 +2,7 @@ package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.akilimo.mobile.Locales
 import com.akilimo.mobile.dto.LanguageOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -28,8 +29,8 @@ class WelcomeViewModel @Inject constructor(
     fun loadLanguage(userName: String) = viewModelScope.launch {
         val user = userRepo.getUser(userName)
         val prefs = prefsRepo.getOrDefault()
-        val code = user?.languageCode?.takeIf { it.isNotBlank() } ?: prefs.languageCode
-        _uiState.update { it.copy(currentLanguageCode = code) }
+        val raw = user?.languageCode?.takeIf { it.isNotBlank() } ?: prefs.languageCode
+        _uiState.update { it.copy(currentLanguageCode = Locales.normalize(raw)) }
     }
 
     fun saveLanguage(selected: LanguageOption, userName: String) = viewModelScope.launch {

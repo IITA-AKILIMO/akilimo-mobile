@@ -14,7 +14,7 @@ data class UserPreferences(
     val id: Int = 1,
 
     @ColumnInfo(name = "language_code")
-    val languageCode: String = "en",
+    val languageCode: String = "en-US",
 
     @ColumnInfo(name = "first_name")
     val firstName: String? = null,

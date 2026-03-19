@@ -127,9 +127,7 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
         // saved by SessionManager so the two sources stay in sync after a language change.
         val locale = appLocaleRepo.desiredLocale
             ?: run {
-                val savedTag = SessionManager.get(this).languageCode
-                    .takeIf { it.isNotBlank() }
-                    ?: Locales.english.toLanguageTag()
+                val savedTag = Locales.normalize(SessionManager.get(this).languageCode)
                 Locales.supportedLocales.find { it.toLanguageTag() == savedTag }
                     ?: Locales.english
             }
