@@ -155,7 +155,7 @@ android {
 fun computeVersionName(): String {
     val now = LocalDateTime.now()
 
-    val defaultMajor = 29
+    val defaultMajor = 30
     var defaultMinor = now.monthValue
     var defaultBuild = now.dayOfMonth
 
