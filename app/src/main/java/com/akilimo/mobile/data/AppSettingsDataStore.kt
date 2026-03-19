@@ -64,7 +64,7 @@ private object Keys {
 
 @Singleton
 class AppSettingsDataStore @Inject constructor(
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) {
     companion object {
         private const val DEFAULT_USER = "akilimo_user"
