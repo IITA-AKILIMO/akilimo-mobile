@@ -32,7 +32,8 @@
       "Bash(./gradlew dependencies:*)",
       "Bash(./gradlew assembleDebug --no-configuration-cache)",
       "Bash(./gradlew --no-configuration-cache checkJetifier)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(gh pr:*)"
     ]
   }
 }
