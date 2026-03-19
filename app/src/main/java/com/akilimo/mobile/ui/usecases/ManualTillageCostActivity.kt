@@ -2,9 +2,9 @@ package com.akilimo.mobile.ui.usecases
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.akilimo.mobile.R
@@ -17,15 +17,12 @@ import com.akilimo.mobile.ui.components.ToolbarHelper
 import com.akilimo.mobile.ui.viewmodels.ManualTillageCostViewModel
 import com.akilimo.mobile.utils.StringHelper.formatWithLandSize
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ManualTillageCostActivity : BaseActivity<ActivityManualTillageCostBinding>() {
 
-    private val viewModel: ManualTillageCostViewModel by lazy {
-        ViewModelProvider(
-            this,
-            ManualTillageCostViewModel.factory(database)
-        )[ManualTillageCostViewModel::class.java]
-    }
+    private val viewModel: ManualTillageCostViewModel by viewModels()
 
     override fun inflateBinding() = ActivityManualTillageCostBinding.inflate(layoutInflater)
 

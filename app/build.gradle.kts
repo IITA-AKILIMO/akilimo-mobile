@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
     alias(libs.plugins.sentry.gradle)
     alias(libs.plugins.google.services)
     alias(libs.plugins.sonarqube)
@@ -219,6 +220,10 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
+
+    // Region: Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
 
     // Region: Networking
     implementation(libs.okhttp)

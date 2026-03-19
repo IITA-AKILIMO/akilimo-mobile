@@ -1,10 +1,10 @@
 package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.akilimo.mobile.AppDatabase
 import com.akilimo.mobile.entities.CassavaMarketPrice
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import com.akilimo.mobile.entities.CassavaUnit
 import com.akilimo.mobile.entities.SelectedCassavaMarket
 import com.akilimo.mobile.entities.StarchFactory
@@ -23,7 +23,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class CassavaMarketViewModel(
+@HiltViewModel
+class CassavaMarketViewModel @Inject constructor(
     private val userRepo: AkilimoUserRepo,
     private val factoryRepo: StarchFactoryRepo,
     val selectedRepo: SelectedCassavaMarketRepo,
@@ -122,18 +123,4 @@ class CassavaMarketViewModel(
         )
     }
 
-    companion object {
-        fun factory(db: AppDatabase) = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                @Suppress("UNCHECKED_CAST")
-                return CassavaMarketViewModel(
-                    AkilimoUserRepo(db.akilimoUserDao()),
-                    StarchFactoryRepo(db.starchFactoryDao()),
-                    SelectedCassavaMarketRepo(db.selectedCassavaMarketDao()),
-                    CassavaMarketPriceRepo(db.cassavaMarketPriceDao()),
-                    CassavaUnitRepo(db.cassavaUnitDao())
-                ) as T
-            }
-        }
-    }
 }

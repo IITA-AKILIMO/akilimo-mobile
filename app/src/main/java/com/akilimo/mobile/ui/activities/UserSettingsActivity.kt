@@ -3,9 +3,9 @@ package com.akilimo.mobile.ui.activities
 import android.os.Bundle
 import android.util.Patterns
 import androidx.appcompat.app.AlertDialog
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.akilimo.mobile.Locales
@@ -26,15 +26,12 @@ import com.jakewharton.processphoenix.ProcessPhoenix
 import dev.b3nedikt.app_locale.AppLocale
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
 
-    private val viewModel: UserSettingsViewModel by lazy {
-        ViewModelProvider(
-            this,
-            UserSettingsViewModel.factory(database)
-        )[UserSettingsViewModel::class.java]
-    }
+    private val viewModel: UserSettingsViewModel by viewModels()
 
     private lateinit var genderOptions: List<InterestOption>
     private lateinit var languageOptions: List<InterestOption>

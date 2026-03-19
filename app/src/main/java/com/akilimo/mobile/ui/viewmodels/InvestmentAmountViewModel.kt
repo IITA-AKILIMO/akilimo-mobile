@@ -1,10 +1,10 @@
 package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.akilimo.mobile.AppDatabase
 import com.akilimo.mobile.entities.InvestmentAmount
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import com.akilimo.mobile.entities.SelectedInvestment
 import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.repos.AkilimoUserRepo
@@ -18,7 +18,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class InvestmentAmountViewModel(
+@HiltViewModel
+class InvestmentAmountViewModel @Inject constructor(
     private val userRepo: AkilimoUserRepo,
     private val investmentRepo: InvestmentRepo,
     private val selectedInvestmentRepo: SelectedInvestmentRepo
@@ -77,16 +78,4 @@ class InvestmentAmountViewModel(
             selectedInvestmentRepo.saveOrUpdate(investment)
         }
 
-    companion object {
-        fun factory(db: AppDatabase) = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                @Suppress("UNCHECKED_CAST")
-                return InvestmentAmountViewModel(
-                    AkilimoUserRepo(db.akilimoUserDao()),
-                    InvestmentRepo(db.investmentAmountDao()),
-                    SelectedInvestmentRepo(db.selectedInvestmentDao())
-                ) as T
-            }
-        }
-    }
 }

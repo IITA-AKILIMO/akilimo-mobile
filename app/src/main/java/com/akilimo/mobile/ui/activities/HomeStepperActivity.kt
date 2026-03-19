@@ -25,7 +25,9 @@ import com.stepstone.stepper.Step
 import com.stepstone.stepper.StepperLayout
 import com.stepstone.stepper.VerificationError
 import kotlin.system.exitProcess
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeStepperActivity : BaseActivity<ActivityHomeStepperBinding>(),
     StepperLayout.StepperListener by SimpleStepperListener() {
 

@@ -1,10 +1,10 @@
 package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.akilimo.mobile.AppDatabase
 import com.akilimo.mobile.dao.MaizePerformanceRepo
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import com.akilimo.mobile.dto.MaizePerfOption
 import com.akilimo.mobile.entities.MaizePerformance
 import com.akilimo.mobile.enums.EnumMaizePerformance
@@ -15,7 +15,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class MaizePerformanceViewModel(
+@HiltViewModel
+class MaizePerformanceViewModel @Inject constructor(
     private val userRepo: AkilimoUserRepo,
     private val maizeRepo: MaizePerformanceRepo
 ) : ViewModel() {
@@ -43,15 +44,4 @@ class MaizePerformanceViewModel(
         )
     }
 
-    companion object {
-        fun factory(db: AppDatabase) = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                @Suppress("UNCHECKED_CAST")
-                return MaizePerformanceViewModel(
-                    AkilimoUserRepo(db.akilimoUserDao()),
-                    MaizePerformanceRepo(db.maizePerformanceDao())
-                ) as T
-            }
-        }
-    }
 }

@@ -1,10 +1,10 @@
 package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.akilimo.mobile.AppDatabase
 import com.akilimo.mobile.dto.LanguageOption
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.UserPreferencesRepo
@@ -14,7 +14,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class WelcomeViewModel(
+@HiltViewModel
+class WelcomeViewModel @Inject constructor(
     private val userRepo: AkilimoUserRepo,
     private val prefsRepo: UserPreferencesRepo
 ) : ViewModel() {
@@ -41,15 +42,4 @@ class WelcomeViewModel(
         _uiState.update { it.copy(currentLanguageCode = selected.valueOption) }
     }
 
-    companion object {
-        fun factory(db: AppDatabase) = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                @Suppress("UNCHECKED_CAST")
-                return WelcomeViewModel(
-                    AkilimoUserRepo(db.akilimoUserDao()),
-                    UserPreferencesRepo(db.userPreferencesDao())
-                ) as T
-            }
-        }
-    }
 }

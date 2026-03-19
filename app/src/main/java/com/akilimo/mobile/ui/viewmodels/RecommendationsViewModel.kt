@@ -1,10 +1,10 @@
 package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.akilimo.mobile.AppDatabase
 import com.akilimo.mobile.dto.AdviceOption
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import com.akilimo.mobile.enums.EnumAdvice
 import com.akilimo.mobile.enums.EnumCountry
 import com.akilimo.mobile.repos.AkilimoUserRepo
@@ -14,7 +14,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class RecommendationsViewModel(
+@HiltViewModel
+class RecommendationsViewModel @Inject constructor(
     private val userRepo: AkilimoUserRepo
 ) : ViewModel() {
 
@@ -46,12 +47,4 @@ class RecommendationsViewModel(
         userRepo.saveOrUpdateUser(user.copy(activeAdvise = selected), userName)
     }
 
-    companion object {
-        fun factory(db: AppDatabase) = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                @Suppress("UNCHECKED_CAST")
-                return RecommendationsViewModel(AkilimoUserRepo(db.akilimoUserDao())) as T
-            }
-        }
-    }
 }

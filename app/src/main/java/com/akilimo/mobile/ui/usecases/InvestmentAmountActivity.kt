@@ -2,8 +2,8 @@ package com.akilimo.mobile.ui.usecases
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,15 +13,12 @@ import com.akilimo.mobile.databinding.ActivityInvestmentAmountBinding
 import com.akilimo.mobile.ui.components.ToolbarHelper
 import com.akilimo.mobile.ui.viewmodels.InvestmentAmountViewModel
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class InvestmentAmountActivity : BaseActivity<ActivityInvestmentAmountBinding>() {
 
-    private val viewModel: InvestmentAmountViewModel by lazy {
-        ViewModelProvider(
-            this,
-            InvestmentAmountViewModel.factory(database)
-        )[InvestmentAmountViewModel::class.java]
-    }
+    private val viewModel: InvestmentAmountViewModel by viewModels()
 
     private lateinit var adapter: InvestmentAmountAdapter
 

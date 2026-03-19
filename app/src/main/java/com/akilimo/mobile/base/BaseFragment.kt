@@ -15,7 +15,6 @@ import com.akilimo.mobile.AppDatabase
 import com.akilimo.mobile.helper.SessionManager
 import timber.log.Timber
 
-
 abstract class BaseFragment<VB : ViewBinding> : Fragment() {
 
     private var _binding: VB? = null

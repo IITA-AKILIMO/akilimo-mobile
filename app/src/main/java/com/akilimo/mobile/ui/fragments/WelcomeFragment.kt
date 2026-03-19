@@ -3,7 +3,7 @@ package com.akilimo.mobile.ui.fragments
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import com.akilimo.mobile.Locales
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.ValueOptionAdapter
@@ -17,16 +17,16 @@ import dev.b3nedikt.app_locale.AppLocale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class WelcomeFragment : BaseStepFragment<FragmentWelcomeBinding>() {
 
     companion object {
         fun newInstance() = WelcomeFragment()
     }
 
-    private val viewModel: WelcomeViewModel by lazy {
-        ViewModelProvider(this, WelcomeViewModel.factory(database))[WelcomeViewModel::class.java]
-    }
+    private val viewModel: WelcomeViewModel by viewModels()
 
     private val languageOptions: List<LanguageOption> by lazy {
         Locales.supportedLocales.map {

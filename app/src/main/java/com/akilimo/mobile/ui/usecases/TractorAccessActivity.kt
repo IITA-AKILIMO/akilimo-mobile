@@ -3,9 +3,9 @@ package com.akilimo.mobile.ui.usecases
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.akilimo.mobile.R
@@ -18,15 +18,12 @@ import com.akilimo.mobile.ui.components.ToolbarHelper
 import com.akilimo.mobile.ui.viewmodels.TractorAccessViewModel
 import com.akilimo.mobile.utils.StringHelper.formatWithLandSize
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class TractorAccessActivity : BaseActivity<ActivityTractorAccessBinding>() {
 
-    private val viewModel: TractorAccessViewModel by lazy {
-        ViewModelProvider(
-            this,
-            TractorAccessViewModel.factory(database)
-        )[TractorAccessViewModel::class.java]
-    }
+    private val viewModel: TractorAccessViewModel by viewModels()
 
     override fun inflateBinding() = ActivityTractorAccessBinding.inflate(layoutInflater)
 

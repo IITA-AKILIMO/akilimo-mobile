@@ -16,6 +16,7 @@ swiperefreshlayout = "1.2.0"
 rxjava = "2.2.21"
 rxandroid = "2.1.1"
 room = "2.7.1"
+hilt = "2.56.1"
 glide = "5.0.5"
 coil = "3.3.0"
 sentry = "8.23.0"
@@ -91,6 +92,8 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 
 
 #glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
@@ -162,6 +165,7 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt" } # ✅ No version here
 kotlin-parcelize = { id = "kotlin-parcelize" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 #kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 sentry-gradle = { id = "io.sentry.android.gradle", version.ref = "sentry-gradle" }
 uzzu-env = { id = "co.uzzu.dotenv.gradle", version.ref = "env" }
