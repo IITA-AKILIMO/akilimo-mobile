@@ -15,10 +15,12 @@ import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.ui.components.CustomDatePicker
 import com.akilimo.mobile.utils.DateHelper
 import com.akilimo.mobile.utils.DateHelper.olderThanCurrent
-import com.stepstone.stepper.VerificationError
+import com.akilimo.mobile.wizard.ValidationError
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PlantingDateFragment : BaseStepFragment<FragmentPlantingDateBinding>() {
 
     companion object {
@@ -165,19 +167,19 @@ class PlantingDateFragment : BaseStepFragment<FragmentPlantingDateBinding>() {
         }
     }
 
-    override fun verifyStep(): VerificationError? = with(binding.lytPlantingSectionFragment) {
+    override fun verifyStep(): ValidationError? = with(binding.lytPlantingSectionFragment) {
         lytPlantingDate.error = null
         lytHarvestDate.error = null
 
         if (plantingDate == null) {
             val message = getString(R.string.lbl_planting_date_prompt)
             lytPlantingDate.error = message
-            return VerificationError(message)
+            return ValidationError(message)
         }
         if (harvestDate == null) {
             val message = getString(R.string.lbl_harvest_date_prompt)
             lytHarvestDate.error = message
-            return VerificationError(message)
+            return ValidationError(message)
         }
 
         val harvestFlexLabel = dropHarvestFlex.text.toString()

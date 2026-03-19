@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
     alias(libs.plugins.sentry.gradle)
     alias(libs.plugins.google.services)
     alias(libs.plugins.sonarqube)
@@ -154,7 +155,7 @@ android {
 fun computeVersionName(): String {
     val now = LocalDateTime.now()
 
-    val defaultMajor = 29
+    val defaultMajor = 30
     var defaultMinor = now.monthValue
     var defaultBuild = now.dayOfMonth
 
@@ -220,6 +221,10 @@ dependencies {
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
 
+    // Region: Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+
     // Region: Networking
     implementation(libs.okhttp)
     implementation(libs.okhttp.inteceptor)
@@ -243,8 +248,7 @@ dependencies {
 
     implementation(libs.country.code.picker)
 
-    // Region: Stepper UI
-    implementation(libs.material.stepper)
+    implementation(libs.viewpager2)
 
     // Region: Testing
     testImplementation(libs.junit)

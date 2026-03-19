@@ -1,10 +1,10 @@
 package com.akilimo.mobile.ui.usecases
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,7 +17,9 @@ import com.akilimo.mobile.enums.EnumAdvice
 import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.ui.viewmodels.CassavaYieldViewModel
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CassavaYieldActivity : BaseActivity<ActivityCassavaYieldBinding>() {
 
     private val yieldImages = arrayOf(
@@ -28,12 +30,7 @@ class CassavaYieldActivity : BaseActivity<ActivityCassavaYieldBinding>() {
         R.drawable.yield_more_than_30,
     )
 
-    private val viewModel: CassavaYieldViewModel by lazy {
-        ViewModelProvider(
-            this,
-            CassavaYieldViewModel.factory(database)
-        )[CassavaYieldViewModel::class.java]
-    }
+    private val viewModel: CassavaYieldViewModel by viewModels()
 
     private lateinit var cassavaYieldAdapter: CassavaYieldAdapter
 

@@ -6,7 +6,9 @@ import com.akilimo.mobile.databinding.ActivitySweetPotatoMarketBinding
 import com.akilimo.mobile.enums.EnumMarketType
 import com.akilimo.mobile.enums.EnumProduceType
 import com.akilimo.mobile.ui.components.ProduceMarketViews
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SweetPotatoMarketActivity : AbstractProduceMarketActivity<ActivitySweetPotatoMarketBinding>(
     marketType = EnumMarketType.SWEET_POTATO_MARKET,
     titleRes = R.string.lbl_sweet_potato_market

@@ -1,10 +1,10 @@
 package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.akilimo.mobile.AppDatabase
 import com.akilimo.mobile.entities.AkilimoUser
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import com.akilimo.mobile.entities.UserPreferences
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.UserPreferencesRepo
@@ -14,7 +14,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class UserSettingsViewModel(
+@HiltViewModel
+class UserSettingsViewModel @Inject constructor(
     private val prefsRepo: UserPreferencesRepo,
     private val userRepo: AkilimoUserRepo
 ) : ViewModel() {
@@ -67,15 +68,4 @@ class UserSettingsViewModel(
 
     fun onSaveHandled() = _uiState.update { it.copy(saved = false, languageChanged = false) }
 
-    companion object {
-        fun factory(db: AppDatabase) = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                @Suppress("UNCHECKED_CAST")
-                return UserSettingsViewModel(
-                    UserPreferencesRepo(db.userPreferencesDao()),
-                    AkilimoUserRepo(db.akilimoUserDao())
-                ) as T
-            }
-        }
-    }
 }

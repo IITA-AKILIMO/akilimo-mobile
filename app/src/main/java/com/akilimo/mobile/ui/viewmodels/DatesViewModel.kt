@@ -1,10 +1,10 @@
 package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.akilimo.mobile.AppDatabase
 import com.akilimo.mobile.entities.AkilimoUser
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +13,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-class DatesViewModel(private val userRepo: AkilimoUserRepo) : ViewModel() {
+@HiltViewModel
+class DatesViewModel @Inject constructor(private val userRepo: AkilimoUserRepo) : ViewModel() {
 
     data class UiState(
         val user: AkilimoUser? = null,
@@ -65,12 +66,4 @@ class DatesViewModel(private val userRepo: AkilimoUserRepo) : ViewModel() {
 
     fun onSaveHandled() = _uiState.update { it.copy(saved = false) }
 
-    companion object {
-        fun factory(db: AppDatabase) = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                @Suppress("UNCHECKED_CAST")
-                return DatesViewModel(AkilimoUserRepo(db.akilimoUserDao())) as T
-            }
-        }
-    }
 }

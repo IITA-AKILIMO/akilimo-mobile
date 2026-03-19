@@ -1,10 +1,10 @@
 package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.akilimo.mobile.AppDatabase
 import com.akilimo.mobile.entities.CassavaYield
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import com.akilimo.mobile.enums.EnumAdvice
 import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.repos.AkilimoUserRepo
@@ -17,7 +17,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class CassavaYieldViewModel(
+@HiltViewModel
+class CassavaYieldViewModel @Inject constructor(
     private val userRepo: AkilimoUserRepo,
     private val yieldRepo: CassavaYieldRepo,
     private val selectedRepo: SelectedCassavaMarketRepo
@@ -77,16 +78,4 @@ class CassavaYieldViewModel(
         selectedRepo.select(updated)
     }
 
-    companion object {
-        fun factory(db: AppDatabase) = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                @Suppress("UNCHECKED_CAST")
-                return CassavaYieldViewModel(
-                    AkilimoUserRepo(db.akilimoUserDao()),
-                    CassavaYieldRepo(db.cassavaYieldDao()),
-                    SelectedCassavaMarketRepo(db.selectedCassavaMarketDao())
-                ) as T
-            }
-        }
-    }
 }

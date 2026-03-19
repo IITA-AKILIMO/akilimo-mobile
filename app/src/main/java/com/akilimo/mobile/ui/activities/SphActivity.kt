@@ -22,7 +22,9 @@ import com.akilimo.mobile.ui.usecases.CassavaYieldActivity
 import com.akilimo.mobile.ui.usecases.DatesActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SphActivity : BaseActivity<ActivityRecommendationUseCaseBinding>() {
     private var lastStartedTask: EnumAdviceTask? = null
 

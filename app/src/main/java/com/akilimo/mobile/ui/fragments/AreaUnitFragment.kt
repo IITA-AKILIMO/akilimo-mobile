@@ -19,9 +19,11 @@ import com.akilimo.mobile.enums.EnumFieldArea
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.UserPreferencesRepo
 import com.akilimo.mobile.utils.MathHelper
-import com.stepstone.stepper.VerificationError
+import com.akilimo.mobile.wizard.ValidationError
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AreaUnitFragment : BaseStepFragment<FragmentAreaUnitBinding>() {
 
     companion object {
@@ -215,7 +217,7 @@ class AreaUnitFragment : BaseStepFragment<FragmentAreaUnitBinding>() {
         }
     }
 
-    override fun verifyStep(): VerificationError? = with(binding) {
+    override fun verifyStep(): ValidationError? = with(binding) {
         val selectedUnitLabel = dropAreaUnit.text.toString()
         val enumAreaUnits =
             areaUnitOptions.find { it.displayLabel == selectedUnitLabel }?.valueOption
@@ -240,7 +242,7 @@ class AreaUnitFragment : BaseStepFragment<FragmentAreaUnitBinding>() {
         if (enumAreaUnits?.name.isNullOrEmpty()) {
             val message = getString(R.string.lbl_area_unit_prompt)
             lytAreaUnit.error = message
-            return VerificationError(message)
+            return ValidationError(message)
         }
 
         if (fieldSize <= 0.0) {
@@ -251,7 +253,7 @@ class AreaUnitFragment : BaseStepFragment<FragmentAreaUnitBinding>() {
             } else {
                 lytFieldSizeOptions.error = message
             }
-            return VerificationError(message)
+            return ValidationError(message)
         }
 
 

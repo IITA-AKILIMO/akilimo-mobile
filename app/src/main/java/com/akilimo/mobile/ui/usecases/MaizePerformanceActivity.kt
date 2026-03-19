@@ -1,8 +1,8 @@
 package com.akilimo.mobile.ui.usecases
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
@@ -11,15 +11,12 @@ import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.databinding.ActivityMaizePerformanceBinding
 import com.akilimo.mobile.ui.viewmodels.MaizePerformanceViewModel
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MaizePerformanceActivity : BaseActivity<ActivityMaizePerformanceBinding>() {
 
-    private val viewModel: MaizePerformanceViewModel by lazy {
-        ViewModelProvider(
-            this,
-            MaizePerformanceViewModel.factory(database)
-        )[MaizePerformanceViewModel::class.java]
-    }
+    private val viewModel: MaizePerformanceViewModel by viewModels()
 
     private lateinit var maizePerformanceAdapter: MaizePerformanceAdapter
 

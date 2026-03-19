@@ -6,11 +6,13 @@ import com.akilimo.mobile.databinding.ActivityFertilizersBinding
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumUseCase
 import com.akilimo.mobile.ui.usecases.fertilizer.BaseFertilizerActivity
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Default fertilizer selection activity.
  * Uses country-based fertilizer fetching from the base class.
  */
+@AndroidEntryPoint
 class FertilizersActivity : BaseFertilizerActivity<ActivityFertilizersBinding>() {
 
     override val useCase = EnumUseCase.FR

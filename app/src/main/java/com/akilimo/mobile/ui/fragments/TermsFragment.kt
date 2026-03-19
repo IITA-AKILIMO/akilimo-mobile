@@ -11,13 +11,15 @@ import androidx.fragment.app.Fragment
 import com.akilimo.mobile.R
 import com.akilimo.mobile.base.BaseStepFragment
 import com.akilimo.mobile.databinding.FragmentTermsBinding
-import com.stepstone.stepper.VerificationError
+import com.akilimo.mobile.wizard.ValidationError
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * A simple [Fragment] subclass.
  * Use the [TermsFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 class TermsFragment : BaseStepFragment<FragmentTermsBinding>() {
     companion object {
         fun newInstance() = TermsFragment()
@@ -65,9 +67,9 @@ class TermsFragment : BaseStepFragment<FragmentTermsBinding>() {
         binding.webView.loadUrl(sessionManager.termsLink)
     }
 
-    override fun verifyStep(): VerificationError? {
+    override fun verifyStep(): ValidationError? {
         if (!sessionManager.termsAccepted) {
-            return VerificationError(getString(R.string.lbl_accept_terms_prompt))
+            return ValidationError(getString(R.string.lbl_accept_terms_prompt))
         }
         return null
     }

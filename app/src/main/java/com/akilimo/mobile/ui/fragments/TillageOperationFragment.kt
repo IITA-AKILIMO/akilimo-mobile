@@ -16,8 +16,9 @@ import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.enums.EnumOperationMethod
 import com.akilimo.mobile.enums.EnumOperationType
 import com.akilimo.mobile.repos.AkilimoUserRepo
-import com.stepstone.stepper.VerificationError
+import com.akilimo.mobile.wizard.ValidationError
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
 
 /**
@@ -25,6 +26,7 @@ import kotlinx.coroutines.launch
  * Use the [TillageOperationFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 class TillageOperationFragment : BaseStepFragment<FragmentTillageOperationBinding>() {
     companion object {
         fun newInstance() = TillageOperationFragment()
@@ -142,10 +144,10 @@ class TillageOperationFragment : BaseStepFragment<FragmentTillageOperationBindin
         }
     }
 
-    override fun verifyStep(): VerificationError? {
+    override fun verifyStep(): ValidationError? {
         val missing = allOperations.filter { !selectedEntries.containsKey(it.valueOption) }
         if (missing.isNotEmpty()) {
-            return VerificationError(getString(R.string.lbl_select_tillage_method))
+            return ValidationError(getString(R.string.lbl_select_tillage_method))
         }
 
         safeScope.launch {

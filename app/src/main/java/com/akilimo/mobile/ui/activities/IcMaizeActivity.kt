@@ -10,7 +10,9 @@ import com.akilimo.mobile.ui.usecases.DatesActivity
 import com.akilimo.mobile.ui.usecases.InterCropFertilizersActivity
 import com.akilimo.mobile.ui.usecases.MaizeMarketActivity
 import com.akilimo.mobile.ui.usecases.MaizePerformanceActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class IcMaizeActivity : AbstractRecommendationActivity(
     enumUseCase = EnumUseCase.CIM
 ) {

@@ -2,9 +2,9 @@ package com.akilimo.mobile.ui.usecases
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
@@ -26,15 +26,12 @@ import com.akilimo.mobile.workers.StarchFactoryWorker
 import com.akilimo.mobile.workers.WorkConstants
 import com.akilimo.mobile.workers.WorkerScheduler
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
 
-    private val viewModel: CassavaMarketViewModel by lazy {
-        ViewModelProvider(
-            this,
-            CassavaMarketViewModel.factory(database)
-        )[CassavaMarketViewModel::class.java]
-    }
+    private val viewModel: CassavaMarketViewModel by viewModels()
 
     private lateinit var factoryAdapter: StarchFactoryAdapter
     private lateinit var cassavaUnitAdapter: CassavaUnitAdapter

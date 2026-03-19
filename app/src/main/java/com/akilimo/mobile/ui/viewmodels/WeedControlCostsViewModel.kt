@@ -1,22 +1,23 @@
 package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.akilimo.mobile.AppDatabase
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.enums.EnumWeedControlMethod
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.CurrentPracticeRepo
 import com.akilimo.mobile.repos.FieldOperationCostsRepo
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class WeedControlCostsViewModel(
+@HiltViewModel
+class WeedControlCostsViewModel @Inject constructor(
     private val userRepo: AkilimoUserRepo,
     private val costsRepo: FieldOperationCostsRepo,
     private val currentPracticeRepo: CurrentPracticeRepo
@@ -70,16 +71,4 @@ class WeedControlCostsViewModel(
 
     fun onSaveHandled() = _uiState.update { it.copy(saved = false) }
 
-    companion object {
-        fun factory(db: AppDatabase) = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                @Suppress("UNCHECKED_CAST")
-                return WeedControlCostsViewModel(
-                    AkilimoUserRepo(db.akilimoUserDao()),
-                    FieldOperationCostsRepo(db.fieldOperationCostsDao()),
-                    CurrentPracticeRepo(db.currentPracticeDao())
-                ) as T
-            }
-        }
-    }
 }

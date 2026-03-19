@@ -22,6 +22,7 @@ import com.akilimo.mobile.ui.components.ToolbarHelper
 import com.google.android.material.appbar.MaterialToolbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Base screen for recommendation-related activities.
@@ -36,6 +37,7 @@ import kotlinx.coroutines.launch
  *  [1] Provide list of advice options via [getAdviceOptions]
  *  [2] Map tasks to activity Intents via [mapTaskToIntent]
  */
+@AndroidEntryPoint
 abstract class AbstractRecommendationActivity(private val enumUseCase: EnumUseCase) :
     BaseActivity<ActivityRecommendationUseCaseBinding>() {
 

@@ -23,7 +23,9 @@ import com.akilimo.mobile.ui.usecases.FertilizersActivity
 import com.akilimo.mobile.ui.usecases.InvestmentAmountActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FrActivity : BaseActivity<ActivityRecommendationUseCaseBinding>() {
 
     private var lastStartedTask: EnumAdviceTask? = null

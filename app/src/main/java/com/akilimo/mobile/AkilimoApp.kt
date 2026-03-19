@@ -20,11 +20,13 @@ import com.akilimo.mobile.workers.StarchFactoryWorker
 import com.akilimo.mobile.workers.WorkConstants
 import com.akilimo.mobile.workers.WorkerScheduler
 import com.blongho.country_data.World
+import dagger.hilt.android.HiltAndroidApp
 import com.google.firebase.analytics.FirebaseAnalytics
 import dev.b3nedikt.app_locale.AppLocale
 import dev.b3nedikt.app_locale.SharedPrefsAppLocaleRepository
 
 
+@HiltAndroidApp
 @SuppressLint("LogNotTimber")
 class AkilimoApp : MultiDexApplication(), Configuration.Provider {
 

@@ -4,9 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.akilimo.mobile.R
@@ -26,15 +26,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DatesActivity : BaseActivity<ActivityAlternativePlantingScheduleBinding>() {
 
-    private val viewModel: DatesViewModel by lazy {
-        ViewModelProvider(
-            this,
-            DatesViewModel.factory(database)
-        )[DatesViewModel::class.java]
-    }
+    private val viewModel: DatesViewModel by viewModels()
 
     private var plantingDate: LocalDate? = null
     private var harvestDate: LocalDate? = null

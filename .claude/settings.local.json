@@ -22,8 +22,18 @@
       "Bash(echo \"=== $f ===\")",
       "Bash(grep -v \"Flow\\\\|suspend\\\\|//\")",
       "Bash(xargs cat:*)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(gh repo:*)",
+      "Bash(gh label:*)",
+      "Bash(./gradlew compileDebugKotlin)",
+      "Bash(git fetch:*)",
+      "Bash(git checkout:*)",
+      "Bash(./gradlew compileDebugKotlin --no-configuration-cache)",
+      "Bash(grep:*)",
+      "Bash(./gradlew dependencies:*)",
+      "Bash(./gradlew assembleDebug --no-configuration-cache)",
+      "Bash(./gradlew --no-configuration-cache checkJetifier)",
+      "Bash(python3:*)",
+      "Bash(gh pr:*)"
     ]
   }
 }

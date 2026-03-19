@@ -16,12 +16,14 @@ import com.akilimo.mobile.ui.activities.LocationPickerActivity
 import com.akilimo.mobile.utils.LocationHelper
 import com.akilimo.mobile.utils.PermissionHelper
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * A simple [Fragment] subclass.
  * Use the [LocationFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 class LocationFragment : BaseStepFragment<FragmentLocationBinding>() {
 
     companion object {

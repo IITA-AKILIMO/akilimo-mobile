@@ -10,7 +10,9 @@ import com.akilimo.mobile.enums.EnumUseCase
 import com.akilimo.mobile.repos.FertilizerRepo
 import com.akilimo.mobile.ui.usecases.fertilizer.BaseFertilizerActivity
 import kotlinx.coroutines.flow.Flow
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SweetPotatoInterCropFertilizersActivity :
     BaseFertilizerActivity<ActivityFertilizersBinding>() {
 

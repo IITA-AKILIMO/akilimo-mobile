@@ -25,7 +25,9 @@ import com.akilimo.mobile.ui.usecases.TractorAccessActivity
 import com.akilimo.mobile.ui.usecases.WeedControlCostsActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class BppActivity : BaseActivity<ActivityRecommendationUseCaseBinding>() {
     private var lastStartedTask: EnumAdviceTask? = null
 

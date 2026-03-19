@@ -13,8 +13,10 @@ import com.akilimo.mobile.enums.EnumProduceType
 import com.akilimo.mobile.enums.EnumUnitOfSale
 import com.akilimo.mobile.ui.components.ProduceMarketViews
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class MaizeMarketActivity : AbstractProduceMarketActivity<ActivityMaizeMarketBinding>(
     marketType = EnumMarketType.MAIZE_MARKET,
     titleRes = R.string.lbl_maize_market

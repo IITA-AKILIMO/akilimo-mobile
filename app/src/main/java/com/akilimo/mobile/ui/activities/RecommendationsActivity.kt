@@ -2,8 +2,8 @@ package com.akilimo.mobile.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,15 +15,12 @@ import com.akilimo.mobile.enums.EnumAdvice
 import com.akilimo.mobile.ui.components.CollapsibleToolbarHelper
 import com.akilimo.mobile.ui.viewmodels.RecommendationsViewModel
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RecommendationsActivity : BaseActivity<ActivityRecommendationsBinding>() {
 
-    private val viewModel: RecommendationsViewModel by lazy {
-        ViewModelProvider(
-            this,
-            RecommendationsViewModel.factory(database)
-        )[RecommendationsViewModel::class.java]
-    }
+    private val viewModel: RecommendationsViewModel by viewModels()
 
     private lateinit var recAdapter: RecommendationAdapter<EnumAdvice>
 

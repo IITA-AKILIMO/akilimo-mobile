@@ -16,7 +16,9 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SummaryFragment : BaseStepFragment<FragmentSummaryBinding>() {
 
     companion object {
