@@ -1,18 +1,39 @@
 name: Unit Tests
 
 on:
-  workflow_run:
-    workflows: [ "CI Gate" ]
-    types:
-      - completed
+  push:
+    branches:
+      - '**'
+  pull_request:
+  workflow_dispatch:
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      app: ${{ steps.filter.outputs.app }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Detect changes
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            app:
+              - 'app/src/**'
+              - '**/*.gradle*'
+              - 'gradle.properties'
+
   unit_test:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    needs: changes
+    if: ${{ needs.changes.outputs.app == 'true' }}
     runs-on: ubuntu-latest
 
     concurrency:
-      group: unit-tests-${{ github.event.workflow_run.pull_requests[0].number }}
+      group: unit-tests-${{ github.ref }}
       cancel-in-progress: true
 
     steps:
@@ -21,7 +42,6 @@ jobs:
         with:
           fetch-depth: 1
 
-      # ⚡ MASSIVE SPEED BOOST: Gradle cache + dependency cache
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -37,8 +57,7 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      # ⚡ AVOID CONFIGURATION OVERHEAD
-      - name: Run only affected tests
+      - name: Run unit tests
         run: |
           ./gradlew testDebugUnitTest \
             --build-cache \
@@ -46,3 +65,11 @@ jobs:
             --parallel \
             --max-workers=4 \
             --daemon
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-results
+          path: app/build/reports/tests/testDebugUnitTest/
+          retention-days: 7
