@@ -37,6 +37,12 @@ class LocationFragment : BaseStepFragment<FragmentLocationBinding>() {
     private lateinit var locationHelper: LocationHelper
     private lateinit var permissionHelper: PermissionHelper
 
+    // Cached from prefillFromEntity() so launchLocationPicker() can run synchronously
+    private var cachedLat: Double = 0.0
+    private var cachedLng: Double = 0.0
+    private var cachedZoom: Double = 12.0
+    private var cachedAlt: Double = 0.0
+
     private val locationPickerLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -82,7 +88,13 @@ class LocationFragment : BaseStepFragment<FragmentLocationBinding>() {
     override fun prefillFromEntity() {
         safeScope.launch {
             val user = onboardingViewModel.getUser(sessionManager.akilimoUser)
-            user?.let { displayUserLocation(it) }
+            user?.let {
+                cachedLat = it.latitude
+                cachedLng = it.longitude
+                cachedZoom = it.zoomLevel
+                cachedAlt = it.altitude
+                displayUserLocation(it)
+            }
         }
     }
 
@@ -136,18 +148,13 @@ class LocationFragment : BaseStepFragment<FragmentLocationBinding>() {
     }
 
     private fun launchLocationPicker() {
-        safeScope.launch {
-            val user = onboardingViewModel.getUser(sessionManager.akilimoUser)
-            val intent = Intent(requireContext(), LocationPickerActivity::class.java).apply {
-                user?.let {
-                    putExtra(LocationPickerActivity.LAT, it.latitude)
-                    putExtra(LocationPickerActivity.LON, it.longitude)
-                    putExtra(LocationPickerActivity.ZOOM, it.zoomLevel)
-                    putExtra(LocationPickerActivity.ALT, it.altitude)
-                }
-            }
-            locationPickerLauncher.launch(intent)
+        val intent = Intent(requireContext(), LocationPickerActivity::class.java).apply {
+            putExtra(LocationPickerActivity.LAT, cachedLat)
+            putExtra(LocationPickerActivity.LON, cachedLng)
+            putExtra(LocationPickerActivity.ZOOM, cachedZoom)
+            putExtra(LocationPickerActivity.ALT, cachedAlt)
         }
+        locationPickerLauncher.launch(intent)
     }
 
     private fun handleLocationPickerResult(data: Intent?) {
