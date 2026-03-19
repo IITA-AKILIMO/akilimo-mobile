@@ -2,16 +2,14 @@ name: Android Unit Tests
 
 on:
   pull_request:
-    paths-ignore:
-      - '**.md'
-      - '**.txt'
-      - '**.sh'
-      - 'docs/**'
-      - '.github/ISSUE_TEMPLATE/**'
+    paths:
+      - 'app/src/**'
+      - '**/*.gradle*'
+      - 'gradle.properties'
   workflow_dispatch:
 
 concurrency:
-  group: unit-tests-${{ github.event.pull_request.number || github.sha }}
+  group: unit-tests-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
@@ -21,36 +19,30 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Detect relevant changes
-        uses: dorny/paths-filter@v3
-        id: changes
         with:
-          filters: |
-            tests:
-              - 'app/src/**'
-              - '**/*.gradle*'
-              - '**/gradle.properties'
+          fetch-depth: 1   # 🚀 big speedup (no full history)
 
-      - name: Skip if no relevant changes
-        if: steps.changes.outputs.tests != 'true'
-        run: echo "No test-relevant changes. Skipping."
-
-      - name: Set up JDK
-        if: steps.changes.outputs.tests == 'true'
+      - name: Setup JDK
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
+          cache: gradle   # 🚀 dependency cache
 
       - name: Setup Gradle
-        if: steps.changes.outputs.tests == 'true'
         uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-read-only: false
 
-      - name: Run Unit tests
-        if: steps.changes.outputs.tests == 'true'
-        run: ./gradlew testDebugUnitTest
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
 
-      - name: Report
-        if: always()
-        uses: FlickerSoul/android-test-report-actions@v1.2
+      - name: Run Unit Tests (only debug)
+        run: ./gradlew testDebugUnitTest --build-cache --daemon --parallel
+
+      - name: Upload test reports (only if failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: app/build/reports/tests/
