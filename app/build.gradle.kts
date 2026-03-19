@@ -246,7 +246,6 @@ dependencies {
     implementation(libs.reword)
     implementation(libs.viewpump)
     implementation(libs.worldcountrydata)
-    implementation(libs.process.phoenix)
     implementation(libs.jakewharton.timber)
 
     implementation(libs.country.code.picker)
