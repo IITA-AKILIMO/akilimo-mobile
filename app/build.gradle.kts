@@ -248,8 +248,7 @@ dependencies {
 
     implementation(libs.country.code.picker)
 
-    // Region: Stepper UI
-    implementation(libs.material.stepper)
+    implementation(libs.viewpager2)
 
     // Region: Testing
     testImplementation(libs.junit)

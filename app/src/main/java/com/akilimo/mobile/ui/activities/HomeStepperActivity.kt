@@ -2,14 +2,13 @@ package com.akilimo.mobile.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
+import androidx.viewpager2.widget.ViewPager2
 import com.akilimo.mobile.R
-import com.akilimo.mobile.adapters.StepperAdapter
+import com.akilimo.mobile.adapters.WizardAdapter
 import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.databinding.ActivityHomeStepperBinding
-import com.akilimo.mobile.ui.components.SimpleStepperListener
 import com.akilimo.mobile.ui.fragments.AreaUnitFragment
 import com.akilimo.mobile.ui.fragments.BioDataFragment
 import com.akilimo.mobile.ui.fragments.CountryFragment
@@ -21,32 +20,51 @@ import com.akilimo.mobile.ui.fragments.SummaryFragment
 import com.akilimo.mobile.ui.fragments.TermsFragment
 import com.akilimo.mobile.ui.fragments.TillageOperationFragment
 import com.akilimo.mobile.ui.fragments.WelcomeFragment
-import com.stepstone.stepper.Step
-import com.stepstone.stepper.StepperLayout
-import com.stepstone.stepper.VerificationError
-import kotlin.system.exitProcess
+import com.akilimo.mobile.wizard.WizardStep
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.system.exitProcess
 
 @AndroidEntryPoint
-class HomeStepperActivity : BaseActivity<ActivityHomeStepperBinding>(),
-    StepperLayout.StepperListener by SimpleStepperListener() {
+class HomeStepperActivity : BaseActivity<ActivityHomeStepperBinding>() {
+
+    private lateinit var wizardAdapter: WizardAdapter
+
+    private val currentPosition get() = binding.viewPager.currentItem
+    private val lastPosition get() = wizardAdapter.itemCount - 1
 
     override fun inflateBinding() = ActivityHomeStepperBinding.inflate(layoutInflater)
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
-        val steps = buildStepList()
-        val stepperAdapter = StepperAdapter(supportFragmentManager, this, steps)
-        binding.stepperLayout.adapter = stepperAdapter
-        binding.stepperLayout.setListener(this@HomeStepperActivity)
-
         networkNotificationView = binding.networkNotificationView
 
+        val steps = buildStepList()
+        wizardAdapter = WizardAdapter(this, steps)
+        binding.viewPager.apply {
+            adapter = wizardAdapter
+            isUserInputEnabled = false
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    updateNavBar(position)
+                    wizardAdapter.getStep(position).onSelected()
+                }
+            })
+        }
+
+        binding.btnNext.setOnClickListener { onNextClicked() }
+        binding.btnBack.setOnClickListener { onBackClicked() }
         binding.fabSettings.setOnClickListener {
             openActivity(Intent(this, UserSettingsActivity::class.java))
         }
+
+        updateNavBar(0)
+        wizardAdapter.getStep(0).onSelected()
     }
 
     override fun handleBackPressed(): Boolean {
+        if (currentPosition > 0) {
+            binding.viewPager.currentItem = currentPosition - 1
+            return true
+        }
         AlertDialog.Builder(this)
             .setTitle(getString(R.string.lbl_exit_application))
             .setMessage(getString(R.string.lbl_confirm_app_exit))
@@ -60,7 +78,40 @@ class HomeStepperActivity : BaseActivity<ActivityHomeStepperBinding>(),
         return true
     }
 
-    private fun buildStepList(): List<Step> = buildList {
+    private fun onNextClicked() {
+        val error = currentStep().verifyStep()
+        if (error != null) {
+            currentStep().onError(error)
+            return
+        }
+        if (currentPosition == lastPosition) {
+            openActivity(Intent(this, RecommendationsActivity::class.java))
+        } else {
+            binding.viewPager.currentItem = currentPosition + 1
+        }
+    }
+
+    private fun onBackClicked() {
+        if (currentPosition > 0) {
+            binding.viewPager.currentItem = currentPosition - 1
+        } else {
+            finish()
+        }
+    }
+
+    private fun updateNavBar(position: Int) {
+        binding.btnBack.isVisible = position > 0
+        binding.tvStepCounter.text = "${position + 1} / ${wizardAdapter.itemCount}"
+        binding.btnNext.text = if (position == lastPosition) {
+            getString(R.string.lbl_finish)
+        } else {
+            getString(R.string.lbl_next)
+        }
+    }
+
+    private fun currentStep(): WizardStep = wizardAdapter.getStep(currentPosition)
+
+    private fun buildStepList(): List<WizardStep> = buildList {
         add(WelcomeFragment.newInstance())
         if (!sessionManager.disclaimerRead) add(DisclaimerFragment.newInstance())
         if (!sessionManager.termsAccepted) add(TermsFragment.newInstance())
@@ -72,17 +123,5 @@ class HomeStepperActivity : BaseActivity<ActivityHomeStepperBinding>(),
         add(TillageOperationFragment.newInstance())
         add(InvestmentPrefFragment.newInstance())
         add(SummaryFragment.newInstance())
-    }
-
-    override fun onCompleted(completeButton: View?) {
-        openActivity(Intent(this@HomeStepperActivity, RecommendationsActivity::class.java))
-    }
-
-    override fun onError(verificationError: VerificationError?) {
-        Toast.makeText(this, verificationError?.errorMessage, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onReturn() {
-        finish()
     }
 }

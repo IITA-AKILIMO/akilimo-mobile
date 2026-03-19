@@ -16,7 +16,7 @@ import com.akilimo.mobile.repos.UserPreferencesRepo
 import com.akilimo.mobile.repos.SelectedFertilizerRepo
 import com.blongho.country_data.World
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.stepstone.stepper.VerificationError
+import com.akilimo.mobile.wizard.ValidationError
 import kotlinx.coroutines.launch
 
 class CountryFragment : BaseStepFragment<FragmentCountryBinding>() {
@@ -116,13 +116,13 @@ class CountryFragment : BaseStepFragment<FragmentCountryBinding>() {
             .show()
     }
 
-    override fun verifyStep(): VerificationError? {
+    override fun verifyStep(): ValidationError? {
         val selectedLabel = binding.countryName.text.toString()
         val selectedCountry = countries.find { it.displayLabel == selectedLabel }?.valueOption
 
         if (selectedCountry == null || selectedCountry == EnumCountry.Unsupported) {
             val message = getString(R.string.lbl_pick_your_country)
-            return VerificationError(message)
+            return ValidationError(message)
         }
 
         safeScope.launch {

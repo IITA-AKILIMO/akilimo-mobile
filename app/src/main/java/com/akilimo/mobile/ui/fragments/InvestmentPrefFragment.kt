@@ -12,7 +12,7 @@ import com.akilimo.mobile.dto.InvestmentPrefOption
 import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.enums.EnumInvestmentPref
 import com.akilimo.mobile.repos.AkilimoUserRepo
-import com.stepstone.stepper.VerificationError
+import com.akilimo.mobile.wizard.ValidationError
 import kotlinx.coroutines.launch
 
 /**
@@ -75,7 +75,7 @@ class InvestmentPrefFragment : BaseStepFragment<FragmentInvestmentPrefBinding>()
         }
     }
 
-    override fun verifyStep(): VerificationError? = with(binding) {
+    override fun verifyStep(): ValidationError? = with(binding) {
         val selectedLabel = binding.dropInvestmentPref.text.toString()
         val investmentPref = investmentPrefs
             .firstOrNull { it.displayLabel.equals(selectedLabel, ignoreCase = true) }?.valueOption
@@ -84,7 +84,7 @@ class InvestmentPrefFragment : BaseStepFragment<FragmentInvestmentPrefBinding>()
         if (investmentPref.riskLevel() < 0) {
             val message = getString(R.string.lbl_investment_pref_prompt)
             binding.lytInvestmentPref.error = message
-            return VerificationError(message)
+            return ValidationError(message)
         }
 
         safeScope.launch {

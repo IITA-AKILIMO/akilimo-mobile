@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import com.akilimo.mobile.R
 import com.akilimo.mobile.base.BaseStepFragment
 import com.akilimo.mobile.databinding.FragmentDisclaimerBinding
-import com.stepstone.stepper.VerificationError
+import com.akilimo.mobile.wizard.ValidationError
 
 /**
  * A simple [Fragment] subclass.
@@ -33,9 +33,9 @@ class DisclaimerFragment : BaseStepFragment<FragmentDisclaimerBinding>() {
         }
     }
 
-    override fun verifyStep(): VerificationError? {
+    override fun verifyStep(): ValidationError? {
         if (!sessionManager.disclaimerRead) {
-            return VerificationError(getString(R.string.lbl_agree_to_disclaimer))
+            return ValidationError(getString(R.string.lbl_agree_to_disclaimer))
         }
         return null
     }

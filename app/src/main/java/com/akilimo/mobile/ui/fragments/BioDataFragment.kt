@@ -14,7 +14,7 @@ import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.entities.UserPreferences
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.UserPreferencesRepo
-import com.stepstone.stepper.VerificationError
+import com.akilimo.mobile.wizard.ValidationError
 import kotlinx.coroutines.launch
 
 /**
@@ -113,7 +113,7 @@ class BioDataFragment : BaseStepFragment<FragmentBioDataBinding>() {
         }
     }
 
-    override fun verifyStep(): VerificationError? = with(binding) {
+    override fun verifyStep(): ValidationError? = with(binding) {
         val genderLabel = dropGender.text.toString()
         val interestLabel = dropInterest.text.toString()
 
@@ -154,7 +154,7 @@ class BioDataFragment : BaseStepFragment<FragmentBioDataBinding>() {
         validations.firstOrNull { it.first }?.let { (_, layout, msgRes) ->
             val message = getString(msgRes)
             layout.error = message
-            return VerificationError(message)
+            return ValidationError(message)
         }
 
         safeScope.launch {
