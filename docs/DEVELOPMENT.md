@@ -55,7 +55,9 @@ Main package: `com.akilimo.mobile`
 | `dao/` + `entities/` | Room `@Dao` interfaces and `@Entity` data classes |
 | `workers/` | WorkManager `CoroutineWorker` subclasses + `WorkerScheduler` |
 | `network/` + `rest/` | Retrofit service interfaces, `ApiClient`, request/response models |
-| `helper/` | `SessionManager` (SharedPrefs singleton), `LocaleHelper` (locale context wrapper) |
+| `data/` | `AppSettingsDataStore.kt` — Preferences DataStore for all 17 settings keys (replaces deleted `SessionManager`) |
+| `helper/` | `LocaleHelper` (locale context wrapper); `SessionManager` has been deleted |
+| `ui/viewmodels/` | `WelcomeViewModel`, `UserSettingsViewModel` (key screens); expand as more screens are migrated |
 | `enums/` | Domain enums: `EnumCountry`, `EnumAreaUnit`, `EnumAdvice`, etc. |
 
 **When adding a new screen (current View system):**
@@ -63,9 +65,9 @@ Main package: `com.akilimo.mobile`
 2. Create a typed Repo class in `repos/` backed by a DAO.
 3. Launch via explicit `Intent` (NavGraph not yet active).
 
-> **⚠️ Compose migration in progress.** Once Hilt and NavGraph are active (ROADMAP #9, #12),
-> all new screens must be written as `@Composable` functions with a `@HiltViewModel`.
-> Do not add new activities after Phase 1 of the migration begins.
+> **⚠️ Compose migration in progress.** Hilt is now active (ROADMAP #9 ✅ Done).
+> Once NavGraph is active (ROADMAP #12), all new screens must be written as `@Composable`
+> functions with a `@HiltViewModel`. Do not add new activities after Phase 1 of the migration begins.
 > See `docs/COMPOSE_MIGRATION.md` for conventions.
 
 **When adding a new stepper step:**
@@ -77,7 +79,15 @@ Main package: `com.akilimo.mobile`
 **Language/locale changes:**
 - Always save language as a full BCP-47 tag (e.g., `"sw-TZ"`, not `"sw"`).
 - Use `Locales.supportedLocales` as the single source of supported locales.
-- After saving, set `AppLocale.desiredLocale` and call `ProcessPhoenix.triggerRebirth()`.
+- Write to DataStore **before** calling `setApplicationLocales()` to prevent a stale locale read during activity recreation (race condition fix):
+  ```kotlin
+  safeScope.launch {
+      appSettings.setLanguageTag(tag)
+      AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(tag))
+      AppLocale.desiredLocale = …   // secondary step for Reword string-replacement library
+  }
+  ```
+- `ProcessPhoenix` has been removed — `AppCompatDelegate.setApplicationLocales()` recreates activities in-process.
 - See `docs/ARCHITECTURE.md §5` for the full locale system.
 
 ## 5. Database and threading
@@ -166,15 +176,18 @@ private fun UserSettingsScreenPreview() {
 - ❌ Do not use `findViewById` in migrated screens.
 - ❌ Do not mix ViewBinding and Compose in the same screen after migration.
 - ❌ Do not call `startActivity()` from a Compose screen — use `navController.navigate()`.
-- ❌ Do not access `SessionManager` directly from a composable — inject via ViewModel.
+- ❌ Do not access `AppSettingsDataStore` directly from a composable — inject via `@HiltViewModel`.
 
 ## 10. Known active bugs
 
 | Ticket | Status | Description | Files |
 |--------|--------|-------------|-------|
-| MUN-16 | ✅ Fixed | Language selection did not persist — short codes, missing AppLocale sync, wrong restart method | `WelcomeFragment.kt`, `UserSettingsActivity.kt`, `AkilimoApp.kt`, `SessionManager.kt` |
+| MUN-16 | ✅ Fixed | Language selection did not persist — short codes, missing AppLocale sync, race condition on activity recreation | `WelcomeFragment.kt`, `UserSettingsActivity.kt`, `AkilimoApp.kt`, `AppSettingsDataStore.kt` |
+| MUN-22 | ✅ Fixed | Hilt `@AndroidEntryPoint` missing on concrete Activities/Fragments — covered all 25+ entry points | All activity/fragment files |
+| feat/#475 | ✅ Fixed | DataStore migration — `SessionManager.kt` deleted; `AppSettingsDataStore` covers all 17 settings keys with `SharedPreferencesMigration` | `data/AppSettingsDataStore.kt`, `BaseActivity.kt`, `BaseFragment.kt` |
+| — | ✅ Fixed | Language race condition — DataStore write now happens inside `safeScope.launch` before `setApplicationLocales()` call | `WelcomeFragment.kt` |
 | — | ✅ Fixed | WorkManager `IllegalStateException` on app start — missing `Configuration.Provider` | `AkilimoApp.kt`, `AndroidManifest.xml` |
-| — | ✅ Fixed | Dark mode setting saved but never applied — `MODE_NIGHT_NO` override removed; now driven by `SessionManager.darkMode` in `AkilimoApp` | `BaseActivity.kt`, `AkilimoApp.kt`, `SessionManager.kt` |
+| — | ✅ Fixed | Dark mode setting saved but never applied — `MODE_NIGHT_NO` override removed; now driven by `AppSettingsDataStore.darkMode` in `AkilimoApp` | `BaseActivity.kt`, `AkilimoApp.kt` |
 | — | ✅ Fixed | `allowMainThreadQueries()` removed — all DB calls confirmed in coroutines | `AppDatabase.kt` |
 
 See `docs/ARCHITECTURE.md §10` for the full technical debt register and `docs/ROADMAP.md` for prioritised fix order.

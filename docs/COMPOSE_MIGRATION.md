@@ -50,12 +50,12 @@ ROADMAP as items 3–14.
 | P3 | Enable R8 minification | Compose compiler generates significant bytecode; minification is required for release APK size | #5 |
 | P4 | Introduce ViewModels | Compose `collectAsStateWithLifecycle()` needs a ViewModel as the state holder; all screen state moves there | #7 |
 | P5 | Proper Room migrations | Schema changes during migration must not wipe user data | #8 |
-| P6 | **Introduce Hilt** | `hiltViewModel()` in composables; `@HiltAndroidApp`, `@AndroidEntryPoint` on host activities | #9 |
-| P7 | Consolidate language to DataStore | `rememberUpdatedState` needs a single reactive source; dual SharedPrefs causes recomposition race | #10 |
+| P6 | **Introduce Hilt** ✅ Done | `hiltViewModel()` in composables; `@HiltAndroidApp`, `@AndroidEntryPoint` on host activities | #9 |
+| P7 | Consolidate language + all settings to DataStore ✅ Done | `rememberUpdatedState` needs a single reactive source; dual SharedPrefs causes recomposition race | #10 |
 | P8 | Jetpack NavGraph | `NavHost` + `composable { }` destinations replace `startActivity()` calls | #13 |
 
-Do not skip P6 (Hilt) or P8 (NavGraph). Compose screens without Hilt require manual DI threading
-via CompositionLocals, which creates more tech debt than it removes.
+P6 (Hilt) is complete. Do not skip P8 (NavGraph). Compose screens without NavGraph require manual
+`startActivity()` calls from composables, which creates navigation debt.
 
 ---
 
@@ -70,12 +70,13 @@ The Compose BOM, `activity-compose`, and all core UI/Material3 compose library a
 **already present** in the catalog. The following entries are missing and must be added before
 Phase 1 begins.
 
-#### `[versions]` — add these three lines
+#### `[versions]` — current state and what still needs adding
+
+Hilt is already in the catalog at version `"2.57.1"`. The Compose BOM is already present at `"2025.10.00"`.
 
 ```toml
-# Compose / Hilt additions
+# Still missing — add these:
 navigationCompose      = "2.8.5"   # navigation-compose (separate from view-based navigation = "2.7.5")
-hilt                   = "2.54"
 hiltNavigationCompose  = "1.2.0"
 ```
 
@@ -86,22 +87,25 @@ hiltNavigationCompose  = "1.2.0"
 androidx-compose-material3-window    = { group = "androidx.compose.material3",   name = "material3-window-size-class" }
 androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle",            name = "lifecycle-viewmodel-compose",  version.ref = "lifecycleRuntimeKtx" }
 androidx-lifecycle-runtime-compose   = { group = "androidx.lifecycle",            name = "lifecycle-runtime-compose",    version.ref = "lifecycleRuntimeKtx" }
+# navigation-compose and hilt-navigation-compose are NOT yet in the catalog — add before Phase 1:
 androidx-navigation-compose          = { group = "androidx.navigation",           name = "navigation-compose",           version.ref = "navigationCompose" }
-hilt-android                         = { group = "com.google.dagger",             name = "hilt-android",                 version.ref = "hilt" }
-hilt-compiler                        = { group = "com.google.dagger",             name = "hilt-android-compiler",        version.ref = "hilt" }
 hilt-navigation-compose              = { group = "androidx.hilt",                 name = "hilt-navigation-compose",      version.ref = "hiltNavigationCompose" }
 ```
 
-#### `[plugins]` — uncomment `kotlin-compose` and add `hilt-android`
+> Note: `hilt-android` and `hilt-compiler` are already in the catalog (used by the current `kapt`-based Hilt integration).
+
+#### `[plugins]` — `kotlin-compose` still needs to be uncommented; `hilt` is already present
 
 ```toml
-# Change this line (currently commented out):
+# kotlin-compose is still commented out in the catalog — uncomment before Phase 1:
 #kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-# to:
+# change to:
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
-# Add this line:
-hilt-android   = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+# hilt plugin is already in the catalog as:
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+# and is applied in app/build.gradle.kts as:
+# alias(libs.plugins.hilt)
 ```
 
 #### `[bundles]` — optional convenience bundle (add alongside `androidx-navigation`)
@@ -126,10 +130,10 @@ compose-core = [
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)   // ← add (was commented out in catalog)
+    alias(libs.plugins.kotlin.compose)   // ← add when catalog entry is uncommented (Phase 1)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt.android)     // ← add (requires prerequisite #9)
+    alias(libs.plugins.hilt)             // ← already active (was libs.plugins.hilt.android in old docs; correct alias is libs.plugins.hilt)
     // … existing plugins unchanged
 }
 ```
@@ -177,10 +181,10 @@ dependencies {
     // ── Navigation Compose ────────────────────────────────────────────────────
     implementation(libs.androidx.navigation.compose)            // ← new catalog entry
 
-    // ── Hilt (prerequisite #9) ────────────────────────────────────────────────
-    implementation(libs.hilt.android)                           // ← new catalog entry
-    ksp(libs.hilt.compiler)                                     // ← new catalog entry
-    implementation(libs.hilt.navigation.compose)                // ← new catalog entry
+    // ── Hilt (already integrated — prerequisite #9 ✅ Done) ──────────────────
+    implementation(libs.hilt.android)                           // already in build.gradle.kts
+    kapt(libs.hilt.compiler)                                    // uses kapt (not ksp) for Hilt compiler
+    implementation(libs.hilt.navigation.compose)                // ← new catalog entry (add before Phase 1)
 
     // ── Debug / test ─────────────────────────────────────────────────────────
     debugImplementation(libs.androidx.compose.ui.tooling)
@@ -464,7 +468,7 @@ data class UserSettingsUiState(
 @HiltViewModel
 class UserSettingsViewModel @Inject constructor(
     private val prefsRepo: UserPreferencesRepo,
-    private val sessionManager: SessionManager,
+    private val appSettings: AppSettingsDataStore,   // SessionManager is deleted; inject DataStore
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UserSettingsUiState())
@@ -572,25 +576,18 @@ fun MapboxMapView(modifier: Modifier = Modifier) {
 
 Use this for `LocationPickerActivity`'s Mapbox map during Phase 3.
 
-### 6.3 Provide SessionManager and Database via CompositionLocal (pre-Hilt)
+### 6.3 CompositionLocal bridge — Hilt is now active, use @HiltViewModel
 
-If Hilt isn't integrated yet when a screen migrates, thread dependencies through
-CompositionLocals as a temporary measure:
+> **Hilt is fully integrated (prerequisite #9 ✅ Done).** The CompositionLocal bridging
+> pattern described here is no longer needed for `AppSettingsDataStore` or any repository.
+> All dependencies must be provided through `@HiltViewModel` constructor injection.
+>
+> Do **not** create `staticCompositionLocalOf<AppSettingsDataStore>` or similar —
+> use `@Inject constructor(private val appSettings: AppSettingsDataStore)` in the ViewModel.
 
-```kotlin
-val LocalSessionManager = staticCompositionLocalOf<SessionManager> {
-    error("SessionManager not provided")
-}
-
-// In the Activity bridge host:
-binding.composeContainer.setContent {
-    CompositionLocalProvider(LocalSessionManager provides sessionManager) {
-        AkilimoTheme { SomeScreen() }
-    }
-}
-```
-
-Remove all CompositionLocal bridges once Hilt is active.
+If a rare third-party View-only dependency has no Hilt binding, the `CompositionLocal`
+technique remains available as a last resort for that specific case only. Remove it
+once a proper Hilt module is in place.
 
 ---
 
@@ -602,14 +599,14 @@ Complete before writing any `@Composable` production code.
 
 | Task | Owner note |
 |------|------------|
-| Remove `allowMainThreadQueries()` | AppDatabase.kt |
-| Move API keys to BuildConfig | build.gradle.kts + local.properties |
-| Enable R8 minification | build.gradle.kts release config |
-| Add ViewModels to all existing activities/fragments | one ViewModel per screen |
-| Proper Room migrations | AppDatabase.kt Migration objects |
-| Integrate Hilt | @HiltAndroidApp, @AndroidEntryPoint, @HiltViewModel everywhere |
-| DataStore for language + dark mode | replace SessionManager SharedPrefs |
-| Jetpack NavGraph (View-based first) | replace startActivity() calls |
+| ✅ Remove `allowMainThreadQueries()` | AppDatabase.kt — done |
+| ✅ Move API keys to BuildConfig | build.gradle.kts + local.properties — done |
+| ⬜ Enable R8 minification | build.gradle.kts release config |
+| 🔄 Add ViewModels to all activities/fragments | WelcomeViewModel + UserSettingsViewModel done; all others remain |
+| ⬜ Proper Room migrations | AppDatabase.kt Migration objects |
+| ✅ Integrate Hilt | @HiltAndroidApp on AkilimoApp; @AndroidEntryPoint on 25+ Activities/Fragments; @HiltViewModel on ViewModels; version 2.57.1, kapt — done |
+| ✅ DataStore for ALL 17 settings keys | AppSettingsDataStore replaces deleted SessionManager.kt; SharedPreferencesMigration from "new-akilimo-config" — done |
+| ⬜ Jetpack NavGraph (View-based first) | replace startActivity() calls |
 
 ---
 
@@ -727,8 +724,8 @@ fun OnboardingFlow(onComplete: () -> Unit) {
 | `PlantingDateFragment` | `PlantingDateStepContent` | `OnboardingViewModel.loadDates()` |
 | `TillageOperationFragment` | `TillageStepContent` | `OnboardingViewModel.loadTillage()` |
 | `InvestmentPrefFragment` | `InvestmentPrefStepContent` | `OnboardingViewModel.loadInvestmentPref()` |
-| `DisclaimerFragment` | `DisclaimerStepContent` | shown once; gated by `sessionManager.disclaimerRead` |
-| `TermsFragment` | `TermsStepContent` | shown once; gated by `sessionManager.termsAccepted` |
+| `DisclaimerFragment` | `DisclaimerStepContent` | shown once; gated by `appSettings.disclaimerRead` |
+| `TermsFragment` | `TermsStepContent` | shown once; gated by `appSettings.termsAccepted` |
 | `SummaryFragment` | `SummaryStepContent` | `OnboardingViewModel.buildSummary()` |
 
 ---
@@ -759,7 +756,7 @@ fun AppNavGraph(navController: NavHostController = rememberNavController()) {
 - [ ] Delete all `app/src/main/res/layout/*.xml` files
 - [ ] Delete `base/BaseFragment.kt`, `base/BaseStepFragment.kt`
 - [ ] Remove `StepperLayout`, `ViewPump`, `Reword`, `AppLocale` (replace with Compose locale + DataStore)
-- [ ] Remove `ProcessPhoenix` (no longer needed — Compose recomposes on locale change via `CompositionLocal`)
+- [x] ~~Remove `ProcessPhoenix`~~ — already removed; locale changes use `AppCompatDelegate.setApplicationLocales()`
 - [ ] Remove `CountryCodePicker` view library — replace with Compose version
 - [ ] Keep `BaseActivity` only as a thin Hilt host (`@AndroidEntryPoint` + edge-to-edge setup)
 
@@ -848,8 +845,15 @@ fun CassavaYieldCard(item: CassavaYield, onSelect: (Int) -> Unit) {
 
 ## 10. Stepper Replacement Strategy
 
-The existing `StepperLayout` library (com.stepstone.stepper) drives `HomeStepperActivity`.
-It has no Compose port and must be fully replaced.
+> **Partial migration already done.** `HomeStepperActivity` has been migrated from the
+> `StepperLayout` library (com.stepstone.stepper) to **ViewPager2 + a custom `WizardAdapter`**
+> with a `WizardStep` interface, `BaseStepFragment`, and a `pendingOnSelected` pattern.
+> Phase 4 now replaces the ViewPager2-based wizard with a `HorizontalPager` Compose
+> implementation. The `com.stepstone.stepper` dependency may still be present in
+> `app/build.gradle.kts` but it is no longer driving the UI.
+
+The existing `WizardAdapter` (ViewPager2) drives `HomeStepperActivity` after the View-layer
+migration. It has no Compose equivalent and must be fully replaced in Phase 4.
 
 ### Replacing `verifyStep()` validation
 
@@ -878,8 +882,8 @@ In Compose, drive this through ViewModel state:
 
 ```kotlin
 val steps: StateFlow<List<OnboardingStep>> = combine(
-    sessionManager.disclaimerRead,
-    sessionManager.termsAccepted,
+    appSettings.disclaimerRead,   // AppSettingsDataStore Flow<Boolean>
+    appSettings.termsAccepted,    // AppSettingsDataStore Flow<Boolean>
 ) { disclaimerRead, termsAccepted ->
     buildList {
         add(OnboardingStep.Welcome)
@@ -916,15 +920,15 @@ val steps: StateFlow<List<OnboardingStep>> = combine(
 
 These dependencies become redundant after full migration and must be removed in Phase 5:
 
-| Library | Replacement |
-|---------|-------------|
-| `com.stepstone.stepper` | Custom `HorizontalPager` `OnboardingFlow` |
-| `dev.b3nedikt.app_locale` + `reword` + `viewpump` | Compose `CompositionLocalProvider(LocalContext)` + `AppCompatDelegate` |
-| `com.jakewharton.processphoenix` | Compose recomposition on locale `CompositionLocal` change |
-| `io.github.chaosleung:pinview` (if present) | Compose `BasicTextField` |
-| `hbb20:ccp` (Country Code Picker) | Compose `ExposedDropdownMenuBox` |
-| `androidx.viewbinding` (buildFeature) | All ViewBinding generated classes removed |
-| `io.github.chuckerteam:chucker` (if debug) | OkHttp logging interceptor |
+| Library | Replacement | Status |
+|---------|-------------|--------|
+| `com.stepstone.stepper` | Custom `HorizontalPager` `OnboardingFlow` | ⬜ Still needed (ViewPager2 wizard is interim; replace in Phase 4) |
+| `dev.b3nedikt.app_locale` + `reword` + `viewpump` | Compose `CompositionLocalProvider(LocalContext)` + `AppCompatDelegate` | ⬜ Remove in Phase 5 |
+| `com.jakewharton.processphoenix` | `AppCompatDelegate.setApplicationLocales()` — in-process locale change | ✅ Already removed from `app/build.gradle.kts` |
+| `io.github.chaosleung:pinview` (if present) | Compose `BasicTextField` | ⬜ Remove in Phase 5 |
+| `hbb20:ccp` (Country Code Picker) | Compose `ExposedDropdownMenuBox` | ⬜ Remove in Phase 5 |
+| `androidx.viewbinding` (buildFeature) | All ViewBinding generated classes removed | ⬜ Remove in Phase 5 final cleanup |
+| `io.github.chuckerteam:chucker` (if debug) | OkHttp logging interceptor | ⬜ Remove in Phase 5 |
 
 **Do not** remove `retrofit`, `okhttp`, `room`, `hilt`, `moshi`, `firebase`, `mapbox`, `timber`,
 `sentry`, or `workmanager` — all survive the Compose migration.
