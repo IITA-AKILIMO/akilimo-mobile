@@ -66,6 +66,13 @@ jobs:
             --max-workers=4 \
             --daemon
 
+      - name: Check Room schema drift
+        run: |
+          if ! git diff --exit-code app/schemas/; then
+            echo "::error::Room schema files changed without a version bump or uncommitted schema export. Run ./gradlew testDebugUnitTest locally, commit the updated files under app/schemas/, and add a Migration object in DatabaseMigrations.kt."
+            exit 1
+          fi
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4

@@ -145,8 +145,7 @@ abstract class AppDatabase : RoomDatabase() {
                     DatabaseMigrations.MIGRATION_2_3,
                     DatabaseMigrations.MIGRATION_3_4
                 )
-                // Safety net for installs older than v2 that have no migration path.
-                .fallbackToDestructiveMigration(dropAllTables = true)
+                .fallbackToDestructiveMigrationOnDowngrade(dropAllTables = true)
                 .build()
         }
     }
