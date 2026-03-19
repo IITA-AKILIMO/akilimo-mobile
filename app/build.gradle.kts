@@ -256,3 +256,7 @@ dependencies {
     debugImplementation(libs.stetho)
     debugImplementation(libs.stetho.okhttp)
 }
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
