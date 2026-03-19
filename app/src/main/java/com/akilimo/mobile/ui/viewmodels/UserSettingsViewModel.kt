@@ -2,6 +2,7 @@ package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.akilimo.mobile.Locales
 import com.akilimo.mobile.entities.AkilimoUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -32,7 +33,8 @@ class UserSettingsViewModel @Inject constructor(
 
     fun loadPreferences() = viewModelScope.launch {
         val prefs = prefsRepo.getOrDefault()
-        _uiState.update { it.copy(preferences = prefs) }
+        val normalized = prefs.copy(languageCode = Locales.normalize(prefs.languageCode))
+        _uiState.update { it.copy(preferences = normalized) }
     }
 
     fun savePreferences(preferences: UserPreferences, userName: String, previousLangCode: String) =
