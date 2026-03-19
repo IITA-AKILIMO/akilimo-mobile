@@ -35,6 +35,7 @@ import com.mapbox.maps.plugin.locationcomponent.location
 import io.sentry.Sentry
 import kotlinx.coroutines.launch
 import dagger.hilt.android.AndroidEntryPoint
+import com.akilimo.mobile.BuildConfig
 
 @AndroidEntryPoint
 class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
@@ -64,7 +65,9 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(newBase)
-        com.mapbox.common.MapboxOptions.accessToken = sessionManager.mapBoxApiKey
+        // Use the build-time token here — Hilt is not yet injected in attachBaseContext.
+        // sessionManager.mapBoxApiKey falls back to this same value anyway.
+        com.mapbox.common.MapboxOptions.accessToken = BuildConfig.MAPBOX_RUNTIME_TOKEN
     }
 
     override fun inflateBinding() = ActivityLocationPickerBinding.inflate(layoutInflater)
