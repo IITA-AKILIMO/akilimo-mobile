@@ -8,7 +8,6 @@ import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import androidx.work.Configuration
 import androidx.work.workDataOf
-import com.akilimo.mobile.helper.SessionManager
 import com.akilimo.mobile.network.NetworkMonitor
 import com.akilimo.mobile.utils.StartupManager
 import com.akilimo.mobile.workers.CassavaPriceWorker
