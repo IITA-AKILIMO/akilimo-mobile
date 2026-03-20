@@ -1,80 +1,55 @@
 name: Unit Tests
 
 on:
-#  push:
-#    branches:
-#      - '**'
   pull_request:
     paths:
       - 'app/src/**'
       - '**/*.gradle*'
       - 'gradle.properties'
-
   workflow_dispatch:
 
 jobs:
-  changes:
+  unit_test:
     runs-on: ubuntu-latest
-    outputs:
-      app: ${{ steps.filter.outputs.app }}
+    concurrency:
+      group: unit-tests-${{ github.head_ref || github.ref_name }}
+      cancel-in-progress: true
+
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: Detect changes
-        id: filter
-        uses: dorny/paths-filter@v3
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
         with:
-          filters: |
-            app:
-              - 'app/src/**'
-              - '**/*.gradle*'
-              - 'gradle.properties'
+          path: ~/.gradle/caches
+          key: gradle-deps-${{ runner.os }}-${{ hashFiles('**/*.gradle*', 'gradle.properties') }}
+          restore-keys: gradle-deps-${{ runner.os }}-
 
-  unit_test:
-    needs: changes
-    if: ${{ needs.changes.outputs.app == 'true' }}
-    runs-on: ubuntu-latest
-
-    concurrency:
-      group: unit-tests-${{ github.ref }}
-      cancel-in-progress: true
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Cache Gradle build cache
+        uses: actions/cache@v4
         with:
-          fetch-depth: 1
+          path: ~/.gradle/caches/build-cache-*
+          key: gradle-build-${{ runner.os }}-${{ github.sha }}
+          restore-keys: gradle-build-${{ runner.os }}-
 
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
-          cache: gradle
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          cache-read-only: false
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
       - name: Run unit tests
-        run: |
-          ./gradlew testDebugUnitTest \
-            --build-cache \
-            --configuration-cache \
-            --parallel \
-            --max-workers=4 \
-            --daemon
+        run: ./gradlew testDebugUnitTest --build-cache --configuration-cache --parallel --max-workers=4 --daemon
 
       - name: Check Room schema drift
         run: |
           if ! git diff --exit-code app/schemas/; then
-            echo "::error::Room schema files changed without a version bump or uncommitted schema export. Run ./gradlew testDebugUnitTest locally, commit the updated files under app/schemas/, and add a Migration object in DatabaseMigrations.kt."
+            echo "::error::Room schema files changed without a version bump or uncommitted schema export."
             exit 1
           fi
 
