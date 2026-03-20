@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -26,6 +27,7 @@ class CassavaYieldViewModel @Inject constructor(
 
     data class UiState(
         val yields: List<CassavaYield> = emptyList(),
+        val selectedYieldId: Int? = null,
         /** Non-null when DB is empty and the Activity must supply a seed list. */
         val seedRequest: EnumAreaUnit? = null,
         val areaUnit: EnumAreaUnit = EnumAreaUnit.ACRE,
@@ -41,18 +43,22 @@ class CassavaYieldViewModel @Inject constructor(
         val areaUnit = EnumAreaUnit.entries.firstOrNull { it == user.enumAreaUnit } ?: EnumAreaUnit.ACRE
         val useCase = user.activeAdvise ?: EnumAdvice.FERTILIZER_RECOMMENDATIONS
 
-        val yieldId = selectedRepo.getSelectedByUser(userId)?.selectedCassavaMarket?.yieldId
-
         _uiState.update { it.copy(areaUnit = areaUnit, useCase = useCase) }
 
-        yieldRepo.observeAll().collectLatest { repoList ->
+        combine(
+            yieldRepo.observeAll(),
+            selectedRepo.observeSelected(userId)
+        ) { repoList, details ->
+            Pair(repoList, details?.selectedCassavaMarket?.yieldId)
+        }.collectLatest { (repoList, selectedYieldId) ->
             if (repoList.isEmpty()) {
                 // Signal the Activity to produce the seed list (requires getString context)
                 _uiState.update { it.copy(seedRequest = areaUnit) }
             } else {
                 _uiState.update {
                     it.copy(
-                        yields = repoList.map { y -> y.apply { isSelected = (y.id == yieldId) } },
+                        yields = repoList,
+                        selectedYieldId = selectedYieldId,
                         seedRequest = null
                     )
                 }
@@ -76,6 +82,7 @@ class CassavaYieldViewModel @Inject constructor(
                 yieldId = cassavaYield.id
             )
         selectedRepo.select(updated)
+        _uiState.update { it.copy(selectedYieldId = cassavaYield.id) }
     }
 
 }

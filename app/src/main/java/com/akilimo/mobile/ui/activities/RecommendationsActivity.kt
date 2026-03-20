@@ -1,16 +1,16 @@
 package com.akilimo.mobile.ui.activities
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
+import com.akilimo.mobile.R
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.fragment.NavHostFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.akilimo.mobile.adapters.RecommendationAdapter
 import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.databinding.ActivityRecommendationsBinding
-import com.akilimo.mobile.dto.AdviceOption
 import com.akilimo.mobile.enums.EnumAdvice
 import com.akilimo.mobile.ui.components.CollapsibleToolbarHelper
 import com.akilimo.mobile.ui.viewmodels.RecommendationsViewModel
@@ -35,21 +35,25 @@ class RecommendationsActivity : BaseActivity<ActivityRecommendationsBinding>() {
     }
 
     private fun setupAdapter() {
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_recommendations) as NavHostFragment
+        val navController = navHostFragment.navController
+
         recAdapter = RecommendationAdapter<EnumAdvice>(
             context = this,
             showIcon = false,
             getLabel = { it.label(this) },
             getId = { it.name },
             onClick = { selected ->
-                val intent = when (selected.valueOption) {
-                    EnumAdvice.FERTILIZER_RECOMMENDATIONS -> Intent(this, FrActivity::class.java)
-                    EnumAdvice.BEST_PLANTING_PRACTICES -> Intent(this, BppActivity::class.java)
-                    EnumAdvice.SCHEDULED_PLANTING_HIGH_STARCH -> Intent(this, SphActivity::class.java)
-                    EnumAdvice.INTERCROPPING_MAIZE -> Intent(this, IcMaizeActivity::class.java)
-                    EnumAdvice.INTERCROPPING_SWEET_POTATO -> Intent(this, IcSweetPotatoActivity::class.java)
+                val destId = when (selected.valueOption) {
+                    EnumAdvice.FERTILIZER_RECOMMENDATIONS -> R.id.frActivity
+                    EnumAdvice.BEST_PLANTING_PRACTICES -> R.id.bppActivity
+                    EnumAdvice.SCHEDULED_PLANTING_HIGH_STARCH -> R.id.sphActivity
+                    EnumAdvice.INTERCROPPING_MAIZE -> R.id.icMaizeActivity
+                    EnumAdvice.INTERCROPPING_SWEET_POTATO -> R.id.icSweetPotatoActivity
                 }
                 viewModel.trackActiveAdvice(sessionManager.akilimoUser, selected.valueOption)
-                openActivity(intent)
+                navController.navigate(destId)
             }
         )
         binding.recommendationList.apply {

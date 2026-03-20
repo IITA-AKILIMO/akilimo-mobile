@@ -1,44 +1,30 @@
 name: Unit Tests
 
 on:
-  push:
-    branches:
-      - '**'
+#  push:
+#    branches: ['**']
+#    paths:
+#      - 'app/src/**'
+#      - '**/*.gradle*'
+#      - 'gradle.properties'
+#      - 'gradle/libs.versions.toml'
   pull_request:
+    paths:
+      - 'app/src/**'
+      - '**/*.gradle*'
+      - 'gradle.properties'
+      - 'gradle/libs.versions.toml'
   workflow_dispatch:
 
 jobs:
-  changes:
-    runs-on: ubuntu-latest
-    outputs:
-      app: ${{ steps.filter.outputs.app }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
-      - name: Detect changes
-        id: filter
-        uses: dorny/paths-filter@v3
-        with:
-          filters: |
-            app:
-              - 'app/src/**'
-              - '**/*.gradle*'
-              - 'gradle.properties'
-
   unit_test:
-    needs: changes
-    if: ${{ needs.changes.outputs.app == 'true' }}
     runs-on: ubuntu-latest
-
     concurrency:
-      group: unit-tests-${{ github.ref }}
+      group: unit-tests-${{ github.head_ref || github.ref_name }}
       cancel-in-progress: true
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
@@ -47,29 +33,30 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-          cache: gradle
 
+      # Replaces manual cache steps. Caches: Gradle wrapper distribution,
+      # dependency jars, AAR transforms, kapt/ksp outputs, and local build
+      # cache — all with correct content-addressed keys.
+      # cache-read-only: feature branches read from cache but never write,
+      # so only the develop branch keeps the shared cache warm.
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
-          cache-read-only: false
+          cache-read-only: ${{ github.ref != 'refs/heads/develop' }}
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      # --no-daemon: daemons have no benefit on ephemeral CI runners and
+      # waste memory. All other flags (--build-cache, --configuration-cache,
+      # --parallel) are already set in gradle.properties.
       - name: Run unit tests
-        run: |
-          ./gradlew testDebugUnitTest \
-            --build-cache \
-            --configuration-cache \
-            --parallel \
-            --max-workers=4 \
-            --daemon
+        run: ./gradlew testDebugUnitTest --no-daemon
 
       - name: Check Room schema drift
         run: |
           if ! git diff --exit-code app/schemas/; then
-            echo "::error::Room schema files changed without a version bump or uncommitted schema export. Run ./gradlew testDebugUnitTest locally, commit the updated files under app/schemas/, and add a Migration object in DatabaseMigrations.kt."
+            echo "::error::Room schema files changed without a version bump or uncommitted schema export."
             exit 1
           fi
 
@@ -79,4 +66,4 @@ jobs:
         with:
           name: unit-test-results
           path: app/build/reports/tests/testDebugUnitTest/
-          retention-days: 7
+          retention-days: 1

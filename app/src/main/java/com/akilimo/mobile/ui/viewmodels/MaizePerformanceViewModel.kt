@@ -38,6 +38,9 @@ class MaizePerformanceViewModel @Inject constructor(
     }
 
     fun saveSelection(userName: String, selected: EnumMaizePerformance) = viewModelScope.launch {
+        _uiState.update { state ->
+            state.copy(options = state.options.map { it.copy(isSelected = it.valueOption == selected) })
+        }
         val user = userRepo.getUser(userName) ?: return@launch
         maizeRepo.saveOrUpdatePerformance(
             MaizePerformance(userId = user.id ?: 0, maizePerformance = selected)

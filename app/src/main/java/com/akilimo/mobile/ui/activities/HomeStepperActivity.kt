@@ -1,10 +1,10 @@
 package com.akilimo.mobile.ui.activities
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.viewpager2.widget.ViewPager2
+import androidx.navigation.fragment.NavHostFragment
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.WizardAdapter
 import com.akilimo.mobile.base.BaseActivity
@@ -53,7 +53,7 @@ class HomeStepperActivity : BaseActivity<ActivityHomeStepperBinding>() {
         binding.btnNext.setOnClickListener { onNextClicked() }
         binding.btnBack.setOnClickListener { onBackClicked() }
         binding.fabSettings.setOnClickListener {
-            openActivity(Intent(this, UserSettingsActivity::class.java))
+            startActivity(android.content.Intent(this, UserSettingsActivity::class.java))
         }
 
         updateNavBar(0)
@@ -89,7 +89,9 @@ class HomeStepperActivity : BaseActivity<ActivityHomeStepperBinding>() {
             return
         }
         if (currentPosition == lastPosition) {
-            openActivity(Intent(this, RecommendationsActivity::class.java))
+            val navHostFragment = supportFragmentManager
+                .findFragmentById(R.id.nav_host_home) as NavHostFragment
+            navHostFragment.navController.navigate(R.id.recommendationsActivity)
         } else {
             binding.viewPager.currentItem = currentPosition + 1
         }
