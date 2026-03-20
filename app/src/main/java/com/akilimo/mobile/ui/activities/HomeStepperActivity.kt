@@ -91,7 +91,7 @@ class HomeStepperActivity : BaseActivity<ActivityHomeStepperBinding>() {
         if (currentPosition == lastPosition) {
             val navHostFragment = supportFragmentManager
                 .findFragmentById(R.id.nav_host_home) as NavHostFragment
-            navHostFragment.navController.navigate(R.id.recommendationsFragment)
+            navHostFragment.navController.navigate(R.id.recommendationsActivity)
         } else {
             binding.viewPager.currentItem = currentPosition + 1
         }
