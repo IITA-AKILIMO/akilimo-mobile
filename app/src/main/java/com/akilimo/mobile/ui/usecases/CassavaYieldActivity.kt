@@ -75,7 +75,10 @@ class CassavaYieldActivity : BaseActivity<ActivityCassavaYieldBinding>() {
                     }
 
                     if (state.yields.isNotEmpty()) {
-                        cassavaYieldAdapter.submitList(state.yields)
+                        val enriched = state.yields.map { y ->
+                            y.copyWithSelection(y.id == state.selectedYieldId)
+                        }
+                        cassavaYieldAdapter.submitList(enriched)
                     }
                 }
             }
