@@ -1,11 +1,19 @@
 name: Unit Tests
 
 on:
+  push:
+    branches: ['**']
+    paths:
+      - 'app/src/**'
+      - '**/*.gradle*'
+      - 'gradle.properties'
+      - 'gradle/libs.versions.toml'
   pull_request:
     paths:
       - 'app/src/**'
       - '**/*.gradle*'
       - 'gradle.properties'
+      - 'gradle/libs.versions.toml'
   workflow_dispatch:
 
 jobs:
@@ -20,31 +28,30 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Cache Gradle dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.gradle/caches
-          key: gradle-deps-${{ runner.os }}-${{ hashFiles('**/*.gradle*', 'gradle.properties') }}
-          restore-keys: gradle-deps-${{ runner.os }}-
-
-      - name: Cache Gradle build cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.gradle/caches/build-cache-*
-          key: gradle-build-${{ runner.os }}-${{ github.sha }}
-          restore-keys: gradle-build-${{ runner.os }}-
-
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
 
+      # Replaces manual cache steps. Caches: Gradle wrapper distribution,
+      # dependency jars, AAR transforms, kapt/ksp outputs, and local build
+      # cache — all with correct content-addressed keys.
+      # cache-read-only: feature branches read from cache but never write,
+      # so only the develop branch keeps the shared cache warm.
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/develop' }}
+
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      # --no-daemon: daemons have no benefit on ephemeral CI runners and
+      # waste memory. All other flags (--build-cache, --configuration-cache,
+      # --parallel) are already set in gradle.properties.
       - name: Run unit tests
-        run: ./gradlew testDebugUnitTest --build-cache --configuration-cache --parallel --max-workers=4 --daemon
+        run: ./gradlew testDebugUnitTest --no-daemon
 
       - name: Check Room schema drift
         run: |
