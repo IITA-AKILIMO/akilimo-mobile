@@ -1,4 +1,4 @@
-name: Create next release PV
+name: Release Branch PR
 on:
   push:
     branches:
