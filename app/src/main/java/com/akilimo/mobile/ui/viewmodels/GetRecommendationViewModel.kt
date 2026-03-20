@@ -3,7 +3,7 @@ package com.akilimo.mobile.ui.viewmodels
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.akilimo.mobile.AppDatabase
+import com.akilimo.mobile.database.AppDatabase
 import com.akilimo.mobile.config.AppConfig
 import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.dto.UserFeedBackRequest

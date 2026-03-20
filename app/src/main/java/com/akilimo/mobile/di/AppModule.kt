@@ -1,7 +1,7 @@
 package com.akilimo.mobile.di
 
 import android.content.Context
-import com.akilimo.mobile.AppDatabase
+import com.akilimo.mobile.database.AppDatabase
 import com.akilimo.mobile.dao.MaizePerformanceRepo
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.CassavaMarketPriceRepo

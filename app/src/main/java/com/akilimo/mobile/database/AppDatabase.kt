@@ -1,11 +1,10 @@
-package com.akilimo.mobile
+package com.akilimo.mobile.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.akilimo.mobile.database.DatabaseMigrations
 import com.akilimo.mobile.dao.AdviceCompletionDao
 import com.akilimo.mobile.dao.AkilimoUserDao
 import com.akilimo.mobile.dao.CassavaMarketPriceDao
