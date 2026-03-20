@@ -13,37 +13,41 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 #do not shallow clone the repository`
+          fetch-depth: 0 # full history required for blame/new-code detection
 
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: 21
 
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
+      # Handles wrapper, dependency jars, AAR transforms, and local build
+      # cache with correct content-addressed keys.
+      # This job runs on develop, so cache-read-only is false — it writes
+      # the shared cache that PR builds will restore from.
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
 
+      # Sonar analysis artefacts (rule sets, plugins) — separate from Gradle.
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
+          key: sonar-${{ runner.os }}
+          restore-keys: sonar-${{ runner.os }}
 
-      - name: Cache Gradle packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: ${{ runner.os }}-gradle
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
 
+      # --no-configuration-cache: the Sonar Gradle plugin does not support it.
+      # --no-daemon: no warm-up benefit on ephemeral runners.
       - name: Run Sonar Analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: ./gradlew sonar --no-configuration-cache
-
+        run: ./gradlew sonar --no-configuration-cache --no-daemon
 
       - name: SonarQube Quality Gate check
         id: sonarqube-quality-gate-check
