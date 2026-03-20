@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - develop
-
 jobs:
   next-release-pr:
     runs-on: ubuntu-24.04
@@ -13,16 +12,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Create or update release PR
-        uses: peter-evans/create-pull-request@v6
+      - name: Create pull request
+        uses: devops-infra/action-pull-request@v0.5.5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: release/next
-          base: main
-          title: "Next release"
-          body: |
-            Automated release PR from develop.
-            Latest commit: ${{ github.event.head_commit.message }}
-          labels: release
-          assignees: ${{ github.actor }}
-          reviewers: ${{ github.actor }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          title: 'Next release'
+          reviewer: ${{ github.actor }}
+          assignee: ${{ github.actor }}
+          target_branch: main
+          label: release
+          old_string: "**Write you description here**"
+          body: "${{ github.event.head_commit.message }}"
+          new_string: "${{ github.event.head_commit.message }}"
+          get_diff: false
