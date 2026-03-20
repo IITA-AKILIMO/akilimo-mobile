@@ -113,7 +113,10 @@ data class AkilimoUser(
     val investmentPref: EnumInvestmentPref? = null,
 
     @ColumnInfo(name = "active_use_case")
-    val activeAdvise: EnumAdvice? = null
+    val activeAdvise: EnumAdvice? = null,
+
+    @ColumnInfo(name = "last_sync_at")
+    val lastSyncAt: Long? = null
 ) {
     fun getNames(): String {
         val f = firstName?.trim().orEmpty()

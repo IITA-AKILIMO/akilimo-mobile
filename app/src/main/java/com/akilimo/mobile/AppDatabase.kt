@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.akilimo.mobile.database.DatabaseMigrations
 import com.akilimo.mobile.dao.AdviceCompletionDao
 import com.akilimo.mobile.dao.AkilimoUserDao
 import com.akilimo.mobile.dao.CassavaMarketPriceDao
@@ -73,8 +74,8 @@ import com.akilimo.mobile.utils.EnumWeedControlConverter
         MaizePerformance::class,
         UserPreferences::class
     ],
-    version = 2,
-    exportSchema = false
+    version = 4,
+    exportSchema = true
 )
 @TypeConverters(
     Converters::class,
@@ -123,7 +124,7 @@ abstract class AppDatabase : RoomDatabase() {
 
 
     companion object {
-        private const val DATABASE_NAME = "AKILIMO_19_FEB_2026"
+        private const val DATABASE_NAME = "AKILIMO_MOBILE"
 
         @Volatile
         private var INSTANCE: AppDatabase? = null
@@ -135,14 +136,17 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         private fun buildDatabase(context: Context): AppDatabase {
-            val builder = Room.databaseBuilder(
+            return Room.databaseBuilder(
                 context.applicationContext,
                 AppDatabase::class.java,
                 DATABASE_NAME
-            ).fallbackToDestructiveMigration(dropAllTables = true)
-
-
-            return builder.build()
+            )
+                .addMigrations(
+                    DatabaseMigrations.MIGRATION_2_3,
+                    DatabaseMigrations.MIGRATION_3_4
+                )
+                .fallbackToDestructiveMigrationOnDowngrade(dropAllTables = true)
+                .build()
         }
     }
 }

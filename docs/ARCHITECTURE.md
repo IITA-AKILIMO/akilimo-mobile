@@ -6,16 +6,16 @@ This document describes the architecture implemented in the Android codebase.
 
 ## 1. High-Level Architecture
 
-The app follows a layered MVVM-adjacent architecture. There are no explicit `ViewModel` classes — fragment/activity classes interact directly with repositories through coroutine scopes.
+The app follows a layered MVVM-adjacent architecture. ViewModels exist for key screens (`WelcomeViewModel`, `UserSettingsViewModel`); remaining fragments/activities still interact directly with repositories through coroutine scopes.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                        PRESENTATION LAYER                        │
 │  HomeStepperActivity  UserSettingsActivity  [20+ Activities]     │
-│   └─ StepperAdapter → [WelcomeFragment … SummaryFragment]        │
+│   └─ WizardAdapter (ViewPager2) → [WelcomeFragment … Summary]   │
 │  BaseActivity<VB>  →  attachBaseContext  →  LocaleHelper.wrap()  │
 │  BaseFragment<VB>  →  safeScope (lifecycleScope)                 │
-│  BaseStepFragment<VB>  →  Step interface  →  prefillFromEntity() │
+│  BaseStepFragment<VB>  →  WizardStep interface → prefillFromEntity() │
 └────────────────────────────┬────────────────────────────────────┘
                              │ suspend / safeScope.launch
 ┌────────────────────────────▼────────────────────────────────────┐
@@ -36,7 +36,10 @@ The app follows a layered MVVM-adjacent architecture. There are no explicit `Vie
            │
 ┌──────────▼─────────────────────────────────────────────────────┐
 │                      CROSS-CUTTING                              │
-│  SessionManager  — SharedPrefs singleton ("new-akilimo-config") │
+│  AppSettingsDataStore — Preferences DataStore, 17 keys,        │
+│    migrated from SharedPrefs ("new-akilimo-config")             │
+│  Hilt DI (2.57.1) — @HiltAndroidApp / @AndroidEntryPoint /    │
+│    @HiltViewModel; kapt for Hilt compiler                       │
 │  NetworkMonitor  — StateFlow<Boolean> connectivity              │
 │  WorkManager     — FertilizerWorker, CassavaPriceWorker, etc.   │
 │  Sentry 8.23 + Firebase Analytics — observability              │
@@ -50,19 +53,21 @@ The app follows a layered MVVM-adjacent architecture. There are no explicit `Vie
 
 ```
 com.akilimo.mobile/
-├── AkilimoApp.kt             Application: locale init, WorkManager, NetworkMonitor
+├── AkilimoApp.kt             Application: @HiltAndroidApp, locale init, WorkManager, NetworkMonitor
 ├── AppDatabase.kt            Room singleton (17 entities, v2, KSP)
 ├── Locales.kt                Supported locales: en-US, sw-TZ, rw-RW
 ├── base/
-│   ├── BaseActivity.kt       attachBaseContext → LocaleHelper, network/permission setup
-│   ├── BaseFragment.kt       safeScope, DB, SessionManager access
-│   └── BaseStepFragment.kt   Step interface; onSelected() → prefillFromEntity()
+│   ├── BaseActivity.kt       attachBaseContext → AppSettingsDataStore.readLanguageTagSync(); network/permission setup
+│   ├── BaseFragment.kt       safeScope, DB, appSettings (AppSettingsDataStore) access
+│   └── BaseStepFragment.kt   WizardStep interface; onSelected() → prefillFromEntity()
+├── data/
+│   └── AppSettingsDataStore.kt  Preferences DataStore; 17 settings keys; SharedPreferencesMigration from "new-akilimo-config"
 ├── helper/
-│   ├── SessionManager.kt     SharedPrefs singleton, languageCode, tokens, flags
 │   └── LocaleHelper.kt       createConfigurationContext() wrapper for locale application
 ├── ui/
 │   ├── activities/           HomeStepperActivity (launcher), UserSettingsActivity, 18+ domain activities
-│   └── fragments/            WelcomeFragment … SummaryFragment (11 stepper steps)
+│   ├── fragments/            WelcomeFragment … SummaryFragment (11 stepper steps)
+│   └── viewmodels/           WelcomeViewModel, UserSettingsViewModel (key screens)
 ├── repos/                    Typed repository classes wrapping Room DAOs
 ├── dao/                      Room @Dao interfaces
 ├── entities/                 Room @Entity data classes
@@ -83,7 +88,7 @@ com.akilimo.mobile/
 `AkilimoApp.onCreate()` runs on process start in this order:
 
 1. `networkMonitor.startMonitoring()` — begins StateFlow connectivity tracking
-2. `initLocale()` — reads saved locale from `SharedPrefsAppLocaleRepository`; falls back to `SessionManager.languageCode`; sets `AppLocale.desiredLocale`
+2. `initLocale()` — reads saved locale tag via `appSettings.getLanguageTagSync()`; sets `AppLocale.desiredLocale` and `AppCompatDelegate.setApplicationLocales()`
 3. `initVectorSupport()` — enables vector drawables on pre-21 (compatibility)
 4. `initTimeAndCountry()` — initializes `World` (country data library)
 5. `runStartupTasks()` — `StartupManager.runHousekeeping()`
@@ -91,8 +96,8 @@ com.akilimo.mobile/
 7. Schedules chained workers: `FertilizerWorker` → `FertilizerPriceWorker`
 
 Each `Activity.onCreate()`:
-1. `attachBaseContext()` called first — reads `SessionManager.languageCode`, wraps context via `LocaleHelper.wrap()`
-2. `AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)` — forces light mode
+1. `attachBaseContext()` called first — reads locale tag via `AppSettingsDataStore.readLanguageTagSync(newBase)` (companion static), wraps context via `LocaleHelper.wrap()`
+2. `AppCompatDelegate.setDefaultNightMode()` — driven by `appSettings.darkMode`
 3. View binding inflated, `setContentView()` called
 4. `observeNetworkChanges()` — collects `NetworkMonitor.isConnected` via `repeatOnLifecycle(STARTED)`
 
@@ -130,29 +135,41 @@ SummaryFragment / GetRecommendationActivity
 
 ## 5. Locale / i18n System
 
-Three components work together:
+`AppSettingsDataStore` is the single source of truth for the user's language selection. `SessionManager` has been deleted.
 
-| Component | Role | SharedPrefs File |
-|-----------|------|-----------------|
-| `SessionManager.languageCode` | Persists user's language choice | `new-akilimo-config` |
-| `AppLocale.appLocaleRepository` (`SharedPrefsAppLocaleRepository`) | AppLocale library's own locale store | AppLocale internal |
-| `LocaleHelper.wrap(context, langTag)` | Applies locale to Activity context via `createConfigurationContext()` | — |
+| Component | Role |
+|-----------|------|
+| `AppSettingsDataStore.languageTag` | Persists BCP-47 language tag in Preferences DataStore (migrated from `"new-akilimo-config"` SharedPrefs) |
+| `AppCompatDelegate.setApplicationLocales(LocaleListCompat)` | Applies locale at runtime; recreates activities in-process — no process kill required |
+| `AppLocale.desiredLocale` | Set as a secondary step for the AppLocale string-replacement library |
+| `LocaleHelper.wrap(context, langTag)` | Applies locale to Activity context via `createConfigurationContext()` during `attachBaseContext()` |
 
 **Application flow on startup:**
 
 ```
 AkilimoApp.initLocale()
-  → reads SharedPrefsAppLocaleRepository.desiredLocale
-  → if null: falls back to SessionManager.languageCode
-  → sets AppLocale.desiredLocale
+  → appSettings.getLanguageTagSync()       → e.g. "sw-TZ"
+  → AppLocale.desiredLocale = …
+  → AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("sw-TZ"))
 
 BaseActivity.attachBaseContext(newBase)
-  → SessionManager.get(newBase).languageCode  → e.g. "sw-TZ"
+  → AppSettingsDataStore.readLanguageTagSync(newBase)   → e.g. "sw-TZ"
   → LocaleHelper.wrap(newBase, "sw-TZ")
        → Locale.Builder().setLanguageTag("sw-TZ").build()
        → config.setLocales(LocaleList(locale))
        → newBase.createConfigurationContext(config)
        → resolves values-sw-rTZ/strings.xml ✓
+```
+
+**Runtime language change (WelcomeFragment / UserSettingsActivity):**
+
+```
+safeScope.launch {
+    appSettings.setLanguageTag(tag)          // write to DataStore first (fixes race condition)
+    AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(tag))
+    AppLocale.desiredLocale = …              // secondary step for Reword library
+}
+// setApplicationLocales() triggers in-process activity recreation — no ProcessPhoenix needed
 ```
 
 **Supported locales** (defined in `Locales.kt`):
@@ -171,7 +188,7 @@ Navigation is purely intent-based — there is no Jetpack NavGraph.
 
 ```
 HomeStepperActivity (launcher)
-  └─ StepperAdapter → 11 step fragments (sequential)
+  └─ WizardAdapter (ViewPager2) → 11 step fragments (sequential, pendingOnSelected pattern)
        └─ SummaryFragment → startActivity(RecommendationsActivity)
   └─ FAB → startActivity(UserSettingsActivity)
 
@@ -204,7 +221,7 @@ Workers read from the network API and upsert data into Room using the repository
 - Timeout: 60 seconds (configurable per call site)
 
 Base URLs resolved via `AppConfig`:
-1. Session override (`SessionManager.akilimoEndpoint` / `fuelrodEndpoint`) if set
+1. DataStore override (`AppSettingsDataStore.readEndpointSync()` — `akilimoEndpoint` / `fuelrodEndpoint` keys) if set
 2. `BuildConfig.AKILIMO_BASE_URL` / `FUELROD_BASE_URL` as fallback
 
 ---
@@ -213,12 +230,12 @@ Base URLs resolved via `AppConfig`:
 
 | Mechanism | Scope | Usage |
 |-----------|-------|-------|
-| `SessionManager` (SharedPrefs) | Process lifetime | Language, tokens, flags, device ID |
+| `AppSettingsDataStore` (Preferences DataStore) | Process lifetime | Language tag, dark mode, tokens, flags, device ID, endpoints — 17 keys total |
 | Room entities | Persistent | User profile, preferences, reference data |
 | `NetworkMonitor.isConnected: StateFlow<Boolean>` | Process lifetime | Connectivity banner in BaseActivity |
 | `safeScope` (`lifecycleScope`) | Activity/Fragment lifecycle | All coroutine launches in UI layer |
 
-No `ViewModel` classes exist. Configuration changes (rotation) trigger full reload from Room/SharedPrefs.
+`AppSettingsDataStore` is injected via Hilt (`@Inject lateinit var appSettings: AppSettingsDataStore`) in `BaseActivity` and `BaseFragment`. A `protected val sessionManager get() = appSettings` alias exists for backward compatibility. ViewModels exist for key screens (`WelcomeViewModel`, `UserSettingsViewModel`); remaining screens still load directly from repositories.
 
 ---
 
@@ -228,12 +245,12 @@ No `ViewModel` classes exist. Configuration changes (rotation) trigger full relo
 |------|----------|------|--------|
 | `allowMainThreadQueries()` | `AppDatabase.kt` | ANR risk | ✅ Fixed |
 | `fallbackToDestructiveMigration()` | `AppDatabase.kt` | Data loss on schema change | ⬜ Open |
-| No ViewModel classes | All fragments/activities | State lost on configuration change | ⬜ Open |
-| API keys hardcoded in source | `SessionManager.kt` | Exposed in APK without obfuscation | ✅ Fixed |
+| No ViewModel classes (partial) | Most fragments/activities | State lost on configuration change | 🔄 Partial — key screens done |
+| API keys hardcoded in source | `app/build.gradle.kts`, `BuildConfig` | Exposed in APK without obfuscation | ✅ Fixed |
 | `isMinifyEnabled = false` in release | `app/build.gradle.kts` | No code shrinking or obfuscation | ⬜ Open |
 | No Jetpack NavGraph | All | Deep links impossible; navigation untestable | ⬜ Open |
-| No DI framework | All | Manual repo instantiation; untestable | ⬜ Open |
-| Dual SharedPrefs locale sources | `SessionManager` + `AppLocale` | Potential sync drift on cold start | ⬜ Open |
+| No DI framework | All | Manual repo instantiation; untestable | ✅ Fixed — Hilt 2.57.1 |
+| Dual SharedPrefs locale sources | `SessionManager` + `AppLocale` | Potential sync drift on cold start | ✅ Fixed — DataStore is sole source |
 
 ---
 
@@ -259,7 +276,7 @@ and its wiring change.
 │  @HiltViewModel — one per screen                                     │
 │  State: UiState data class exposed as StateFlow                      │
 │  Navigation: NavEvent sealed interface exposed as SharedFlow         │
-│  Injected: repos, SessionManager (via Hilt), DataStore              │
+│  Injected: repos, AppSettingsDataStore (via Hilt)                   │
 └──────────────────────────┬──────────────────────────────────────────┘
                             │ suspend / Flow (unchanged)
 ┌──────────────────────────▼──────────────────────────────────────────┐

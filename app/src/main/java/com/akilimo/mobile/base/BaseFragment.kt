@@ -12,16 +12,25 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.akilimo.mobile.AppDatabase
-import com.akilimo.mobile.helper.SessionManager
+import com.akilimo.mobile.data.AppSettingsDataStore
+import com.akilimo.mobile.data.AppSettingsEntryPoint
+import dagger.hilt.android.EntryPointAccessors
 import timber.log.Timber
-
 
 abstract class BaseFragment<VB : ViewBinding> : Fragment() {
 
     private var _binding: VB? = null
     protected val binding get() = _binding!!
 
-    protected lateinit var sessionManager: SessionManager
+    /** Accessed via Hilt EntryPoint so base classes need no @Inject and have no lateinit timing risk. */
+    protected val sessionManager: AppSettingsDataStore by lazy {
+        EntryPointAccessors.fromApplication(requireContext().applicationContext, AppSettingsEntryPoint::class.java)
+            .appSettings()
+    }
+
+    /** Alias kept so call sites that reference appSettings directly still compile. */
+    protected val appSettings get() = sessionManager
+
     protected lateinit var database: AppDatabase
 
     // ✅ Lifecycle-safe coroutine scope tied to view
@@ -46,7 +55,6 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
 
         // Safe initialization after view is created
         context?.let {
-            sessionManager = SessionManager.get(it)
             database = AppDatabase.getDatabase(it)
         } ?: throw IllegalStateException("Context is not available for initialization")
 

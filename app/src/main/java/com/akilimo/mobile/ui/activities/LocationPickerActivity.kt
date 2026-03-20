@@ -12,12 +12,15 @@ import android.view.View
 import android.view.animation.BounceInterpolator
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.akilimo.mobile.R
 import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.databinding.ActivityLocationPickerBinding
-import com.akilimo.mobile.utils.GeocodingService
+import com.akilimo.mobile.ui.viewmodels.LocationPickerViewModel
 import com.akilimo.mobile.utils.LocationHelper
 import com.akilimo.mobile.utils.PermissionHelper
 import com.akilimo.mobile.utils.WeatherService
@@ -34,7 +37,10 @@ import com.mapbox.maps.plugin.gestures.addOnMapClickListener
 import com.mapbox.maps.plugin.locationcomponent.location
 import io.sentry.Sentry
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
+import com.akilimo.mobile.BuildConfig
 
+@AndroidEntryPoint
 class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
 
     companion object {
@@ -47,6 +53,8 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
         private const val DEFAULT_ZOOM_LEVEL = 15.0
         private const val MARKER_ICON_ID = "custom-marker-icon"
     }
+
+    private val viewModel: LocationPickerViewModel by viewModels()
 
     private var isStyleLoaded = false
     private lateinit var mapboxMap: MapboxMap
@@ -62,21 +70,55 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(newBase)
-        com.mapbox.common.MapboxOptions.accessToken = sessionManager.mapBoxApiKey
+        // Use the build-time token here — Hilt is not yet injected in attachBaseContext.
+        // sessionManager.mapBoxApiKey falls back to this same value anyway.
+        com.mapbox.common.MapboxOptions.accessToken = BuildConfig.MAPBOX_RUNTIME_TOKEN
     }
 
     override fun inflateBinding() = ActivityLocationPickerBinding.inflate(layoutInflater)
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
-        initializeHelpers()
+        permissionHelper = PermissionHelper()
+        locationHelper = LocationHelper()
         setupMap()
         setupListeners()
+        observeViewModel()
         checkAndRequestLocationPermission()
     }
 
-    private fun initializeHelpers() {
-        permissionHelper = PermissionHelper()
-        locationHelper = LocationHelper()
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    state.addressText?.let { updateAddressUI(it) }
+                    state.weatherData?.let { updateWeatherUI(it) }
+                    if (state.weatherData == null) binding.weatherCard.visibility = View.GONE
+                    state.locationResult?.let { handleLocationResult(it) }
+                }
+            }
+        }
+    }
+
+    private fun handleLocationResult(result: LocationHelper.LocationResult) {
+        when (result) {
+            is LocationHelper.LocationResult.Success -> {
+                val loc = result.location
+                val point = Point.fromLngLat(loc.longitude, loc.latitude)
+                mapboxMap.flyTo(
+                    CameraOptions.Builder().center(point).zoom(DEFAULT_ZOOM_LEVEL).build(),
+                    com.mapbox.maps.plugin.animation.MapAnimationOptions.mapAnimationOptions {
+                        duration(1500)
+                    }
+                )
+                selectedPoint = point
+                updateMarker(point)
+                enableMapboxLocationComponent()
+            }
+            is LocationHelper.LocationResult.LocationDisabled -> showLocationServicesDialog()
+            is LocationHelper.LocationResult.PermissionDenied -> requestLocationPermission()
+            is LocationHelper.LocationResult.Error ->
+                Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setupMap() {
@@ -169,40 +211,7 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
 
     private fun fetchAndUseCurrentLocation() {
         if (!isStyleLoaded) return
-
-        lifecycleScope.launch {
-            when (val result = locationHelper.getCurrentLocation(this@LocationPickerActivity)) {
-                is LocationHelper.LocationResult.Success -> {
-                    val loc = result.location
-                    val point = Point.fromLngLat(loc.longitude, loc.latitude)
-
-                    mapboxMap.flyTo(
-                        CameraOptions.Builder()
-                            .center(point)
-                            .zoom(DEFAULT_ZOOM_LEVEL)
-                            .build(),
-                        com.mapbox.maps.plugin.animation.MapAnimationOptions.mapAnimationOptions {
-                            duration(1500)
-                        }
-                    )
-
-                    selectedPoint = point
-                    updateMarker(point)
-                    enableMapboxLocationComponent()
-                    fetchLocationDetails(point)
-                }
-
-                is LocationHelper.LocationResult.LocationDisabled ->
-                    showLocationServicesDialog()
-
-                is LocationHelper.LocationResult.PermissionDenied ->
-                    requestLocationPermission()
-
-                is LocationHelper.LocationResult.Error ->
-                    Toast.makeText(this@LocationPickerActivity, result.message, Toast.LENGTH_SHORT)
-                        .show()
-            }
-        }
+        viewModel.fetchCurrentLocation()
     }
 
 
@@ -240,46 +249,11 @@ class LocationPickerActivity : BaseActivity<ActivityLocationPickerBinding>() {
 
 
     private fun fetchAddress(point: Point) {
-        val geocodingService =
-            GeocodingService(
-                this@LocationPickerActivity,
-                sessionManager.locationIqToken
-            )
-        lifecycleScope.launch {
-            geocodingService.fetchAddressFlow(point.latitude(), point.longitude())
-                .collect { result ->
-                    when (result) {
-                        is GeocodingService.GeocodingResult.Success -> {
-                            updateAddressUI(result.data.formattedAddress)
-                        }
-
-                        is GeocodingService.GeocodingResult.Error -> {
-                            updateAddressUI(result.fallbackMessage)
-                        }
-                    }
-                }
-        }
+        viewModel.fetchAddress(point.latitude(), point.longitude())
     }
 
-
     private fun fetchWeather(point: Point) {
-        val weatherService = WeatherService(this@LocationPickerActivity)
-
-        lifecycleScope.launch {
-            weatherService.fetchWeatherFlow(point.latitude(), point.longitude())
-                .collect { result ->
-                    when (result) {
-                        is WeatherService.WeatherResult.Success -> {
-                            updateWeatherUI(result.data)
-                            binding.weatherCard.visibility = View.VISIBLE
-                        }
-
-                        is WeatherService.WeatherResult.Error -> {
-                            binding.weatherCard.visibility = View.GONE
-                        }
-                    }
-                }
-        }
+        viewModel.fetchWeather(point.latitude(), point.longitude())
     }
 
 

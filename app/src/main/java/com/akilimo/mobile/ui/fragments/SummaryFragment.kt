@@ -5,26 +5,26 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.fragment.app.activityViewModels
 import com.akilimo.mobile.base.BaseStepFragment
 import com.akilimo.mobile.databinding.FragmentSummaryBinding
 import com.akilimo.mobile.databinding.ItemSummaryRowBinding
-import com.akilimo.mobile.entities.UserPreferences
-import com.akilimo.mobile.repos.AkilimoUserRepo
-import com.akilimo.mobile.repos.UserPreferencesRepo
+import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
 import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SummaryFragment : BaseStepFragment<FragmentSummaryBinding>() {
 
     companion object {
         fun newInstance() = SummaryFragment()
     }
 
-    private lateinit var userRepository: AkilimoUserRepo
-    private lateinit var prefsRepo: UserPreferencesRepo
+    private val onboardingViewModel: OnboardingViewModel by activityViewModels()
 
     override fun inflateBinding(
         inflater: LayoutInflater,
@@ -32,14 +32,13 @@ class SummaryFragment : BaseStepFragment<FragmentSummaryBinding>() {
     ) = FragmentSummaryBinding.inflate(inflater, container, false)
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
-        userRepository = AkilimoUserRepo(database.akilimoUserDao())
-        prefsRepo = UserPreferencesRepo(database.userPreferencesDao())
+        // No setup needed; data loaded in prefillFromEntity
     }
 
     override fun prefillFromEntity() {
         safeScope.launch {
-            val user = userRepository.getUser(sessionManager.akilimoUser) ?: return@launch
-            val prefs = prefsRepo.getOrDefault()
+            val user = onboardingViewModel.getUser(sessionManager.akilimoUser) ?: return@launch
+            val prefs = onboardingViewModel.getPreferences()
             binding.containerSummary.removeAllViews()
 
             addSection("👤 Personal Info") {
@@ -55,10 +54,7 @@ class SummaryFragment : BaseStepFragment<FragmentSummaryBinding>() {
                 addRow("Country", user.enumCountry.countryName)
                 addRow("Size", "${user.farmSize} ${user.enumAreaUnit}")
                 addRow("Description", user.farmDescription)
-                addRow(
-                    "Location",
-                    "Lat: ${user.latitude}, Lng: ${user.longitude}, Alt: ${user.altitude}"
-                )
+                addRow("Location", "Lat: ${user.latitude}, Lng: ${user.longitude}, Alt: ${user.altitude}")
             }
 
             addSection("📅 Planting & Harvest") {
@@ -125,7 +121,6 @@ class SummaryFragment : BaseStepFragment<FragmentSummaryBinding>() {
         val formatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.getDefault())
         return date.format(formatter)
     }
-
 
     private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
 }

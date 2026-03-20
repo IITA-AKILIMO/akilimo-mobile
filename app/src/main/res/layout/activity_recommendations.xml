@@ -55,4 +55,14 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.core.widget.NestedScrollView>
+
+    <!-- Zero-size NavHostFragment — provides navController for recommendation routing -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_recommendations"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:defaultNavHost="false"
+        app:navGraph="@navigation/nav_graph" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

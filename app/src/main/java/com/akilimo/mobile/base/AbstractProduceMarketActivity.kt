@@ -1,20 +1,24 @@
 package com.akilimo.mobile.base
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
+import dagger.hilt.android.lifecycle.withCreationCallback
 import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.BaseValueOptionAdapter
-import com.akilimo.mobile.dao.ProduceMarketRepo
 import com.akilimo.mobile.dto.UnitOfSaleOption
 import com.akilimo.mobile.entities.ProduceMarket
 import com.akilimo.mobile.enums.EnumMarketType
 import com.akilimo.mobile.enums.EnumProduceType
 import com.akilimo.mobile.enums.EnumUnitOfSale
-import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.ui.components.ProduceMarketViews
 import com.akilimo.mobile.ui.components.ToolbarHelper
+import com.akilimo.mobile.ui.viewmodels.ProduceMarketViewModel
 import kotlinx.coroutines.launch
 
 abstract class AbstractProduceMarketActivity<T : ViewBinding>(
@@ -22,21 +26,73 @@ abstract class AbstractProduceMarketActivity<T : ViewBinding>(
     private val titleRes: Int
 ) : BaseActivity<T>() {
 
-    protected val userRepo by lazy { AkilimoUserRepo(database.akilimoUserDao()) }
-    protected val marketRepo by lazy { ProduceMarketRepo(database.produceMarketDao()) }
+    protected val viewModel: ProduceMarketViewModel by viewModels(
+        extrasProducer = {
+            defaultViewModelCreationExtras.withCreationCallback<ProduceMarketViewModel.Factory> { factory ->
+                factory.create(marketType)
+            }
+        }
+    )
 
     protected var currencyCode: String = ""
 
     protected abstract val views: ProduceMarketViews
-
 
     /** --- Lifecycle --- */
     override fun onBindingReady(savedInstanceState: Bundle?) {
         setupToolbar()
         setupInitialVisibility()
         setupProduceTypeSelection()
-        prefillFromEntity()
+        observeViewModel()
+        viewModel.loadData(sessionManager.akilimoUser)
     }
+
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    if (state.saved) {
+                        viewModel.onSaveHandled()
+                        finish()
+                        return@collect
+                    }
+
+                    if (state.userId == 0) return@collect
+
+                    currencyCode = state.currencyCode
+                    views.priceInputLayout.prefixText = "$currencyCode "
+
+                    state.lastEntry?.let { entry ->
+                        updateUnits { unit ->
+                            if (entry.produceType == EnumProduceType.MAIZE_FRESH_COB)
+                                unit == EnumUnitOfSale.FRESH_COB
+                            else
+                                unit.isUniversal
+                        }
+                        views.apply {
+                            inputPrice.setText(entry.unitPrice.toString())
+                            unitSpinner.setText(
+                                entry.unitOfSale.unitOfSale(this@AbstractProduceMarketActivity),
+                                false
+                            )
+                            marketHintText.text = getString(R.string.lbl_selling_hint)
+                                .replace("{currency}", currencyCode)
+                                .replace("{price}", entry.unitPrice.toString())
+                                .replace(
+                                    "{unit_of_sale}",
+                                    entry.unitOfSale.unitOfSale(this@AbstractProduceMarketActivity)
+                                )
+                            marketHintCard.isVisible = true
+                        }
+                        onEntryPrefilled(entry)
+                    }
+                }
+            }
+        }
+    }
+
+    /** Hook for subclasses to react after a saved entry is prefilled */
+    protected open fun onEntryPrefilled(entry: ProduceMarket) = Unit
 
     /** --- UI Setup --- */
     private fun setupToolbar() {
@@ -46,7 +102,6 @@ abstract class AbstractProduceMarketActivity<T : ViewBinding>(
             .build()
     }
 
-
     private fun setupInitialVisibility() = with(views) {
         fabSave.isVisible = false
         unitLabel.isVisible = true
@@ -55,42 +110,6 @@ abstract class AbstractProduceMarketActivity<T : ViewBinding>(
 
     /** Hook for subclasses to setup produce type selection */
     protected abstract fun setupProduceTypeSelection()
-
-    /** --- Prefill --- */
-    private fun prefillFromEntity() = safeScope.launch {
-        val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
-        val lastEntry = marketRepo.getLastEntryForUser(user.id ?: 0, marketType)
-
-        currencyCode = user.enumCountry.currencyCode
-        views.priceInputLayout.prefixText = "$currencyCode "
-
-        lastEntry?.let { entry ->
-            updateUnits { unit ->
-                if (entry.produceType == EnumProduceType.MAIZE_FRESH_COB)
-                    unit == EnumUnitOfSale.FRESH_COB
-                else
-                    unit.isUniversal
-            }
-
-            views.apply {
-                inputPrice.setText(entry.unitPrice.toString())
-
-                unitSpinner.setText(
-                    entry.unitOfSale.unitOfSale(this@AbstractProduceMarketActivity),
-                    false
-                )
-
-                marketHintText.text = getString(R.string.lbl_selling_hint)
-                    .replace("{currency}", currencyCode)
-                    .replace("{price}", entry.unitPrice.toString())
-                    .replace(
-                        "{unit_of_sale}",
-                        entry.unitOfSale.unitOfSale(this@AbstractProduceMarketActivity)
-                    )
-                marketHintCard.isVisible = true
-            }
-        }
-    }
 
     /** --- Units --- */
     protected fun updateUnits(filter: (EnumUnitOfSale) -> Boolean) {
@@ -132,19 +151,16 @@ abstract class AbstractProduceMarketActivity<T : ViewBinding>(
         val price = enteredPrice ?: return showPriceError()
         val unit = selectedUnit() ?: return showUnitError()
 
-        safeScope.launch {
-            val userId = userRepo.getUser(sessionManager.akilimoUser)?.id ?: return@launch
-            marketRepo.saveMarketEntry(
-                ProduceMarket(
-                    userId = userId,
-                    unitPrice = price,
-                    marketType = marketType,
-                    produceType = resolveProduceType(),
-                    unitOfSale = unit
-                )
+        val userId = viewModel.uiState.value.userId.takeIf { it != 0 } ?: return
+        viewModel.saveMarketEntry(
+            ProduceMarket(
+                userId = userId,
+                unitPrice = price,
+                marketType = marketType,
+                produceType = resolveProduceType(),
+                unitOfSale = unit
             )
-            finish()
-        }
+        )
     }
 
     private fun selectedUnit(): EnumUnitOfSale? =

@@ -8,32 +8,40 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.akilimo.mobile.base.BaseStepFragment
 import com.akilimo.mobile.databinding.FragmentLocationBinding
 import com.akilimo.mobile.entities.AkilimoUser
-import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.ui.activities.LocationPickerActivity
+import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
 import com.akilimo.mobile.utils.LocationHelper
 import com.akilimo.mobile.utils.PermissionHelper
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * A simple [Fragment] subclass.
  * Use the [LocationFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 class LocationFragment : BaseStepFragment<FragmentLocationBinding>() {
 
     companion object {
         private const val LOCATION_FORMAT = "Lat: %.5f, Lng: %.5f"
-        private const val LOCATION_PICKER_REQUEST = 1001
 
         fun newInstance() = LocationFragment()
     }
 
-    private lateinit var userRepository: AkilimoUserRepo
+    private val onboardingViewModel: OnboardingViewModel by activityViewModels()
     private lateinit var locationHelper: LocationHelper
     private lateinit var permissionHelper: PermissionHelper
+
+    // Cached from prefillFromEntity() so launchLocationPicker() can run synchronously
+    private var cachedLat: Double = 0.0
+    private var cachedLng: Double = 0.0
+    private var cachedZoom: Double = 12.0
+    private var cachedAlt: Double = 0.0
 
     private val locationPickerLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -57,15 +65,10 @@ class LocationFragment : BaseStepFragment<FragmentLocationBinding>() {
     ): FragmentLocationBinding = FragmentLocationBinding.inflate(inflater, container, false)
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
-        initializeDependencies()
-        setupViewListeners()
-        prefillFromEntity()
-    }
-
-    private fun initializeDependencies() {
-        userRepository = AkilimoUserRepo(database.akilimoUserDao())
         locationHelper = LocationHelper()
         permissionHelper = PermissionHelper()
+        setupViewListeners()
+        prefillFromEntity()
     }
 
     private fun setupViewListeners() {
@@ -84,8 +87,14 @@ class LocationFragment : BaseStepFragment<FragmentLocationBinding>() {
 
     override fun prefillFromEntity() {
         safeScope.launch {
-            val user = userRepository.getUser(sessionManager.akilimoUser)
-            user?.let { displayUserLocation(it) }
+            val user = onboardingViewModel.getUser(sessionManager.akilimoUser)
+            user?.let {
+                cachedLat = it.latitude
+                cachedLng = it.longitude
+                cachedZoom = it.zoomLevel
+                cachedAlt = it.altitude
+                displayUserLocation(it)
+            }
         }
     }
 
@@ -102,21 +111,15 @@ class LocationFragment : BaseStepFragment<FragmentLocationBinding>() {
             when (val locationResult = locationHelper.getCurrentLocation(requireContext())) {
                 is LocationHelper.LocationResult.Success -> {
                     val location = locationResult.location
-                    updateLocationInfo(
-                        lat = location.latitude,
-                        lng = location.longitude
-                    )
+                    updateLocationInfo(lat = location.latitude, lng = location.longitude)
                 }
-
                 is LocationHelper.LocationResult.Error -> {
                     showToast(locationResult.message)
                     handleLocationError()
                 }
-
                 is LocationHelper.LocationResult.LocationDisabled -> {
                     showLocationServicesDialog()
                 }
-
                 LocationHelper.LocationResult.PermissionDenied -> {
                     showLocationPermissionDenied()
                 }
@@ -145,18 +148,13 @@ class LocationFragment : BaseStepFragment<FragmentLocationBinding>() {
     }
 
     private fun launchLocationPicker() {
-        safeScope.launch {
-            val user = userRepository.getUser(sessionManager.akilimoUser)
-            val intent = Intent(requireContext(), LocationPickerActivity::class.java).apply {
-                user?.let {
-                    putExtra(LocationPickerActivity.LAT, it.latitude)
-                    putExtra(LocationPickerActivity.LON, it.longitude)
-                    putExtra(LocationPickerActivity.ZOOM, it.zoomLevel)
-                    putExtra(LocationPickerActivity.ALT, it.altitude)
-                }
-            }
-            locationPickerLauncher.launch(intent)
+        val intent = Intent(requireContext(), LocationPickerActivity::class.java).apply {
+            putExtra(LocationPickerActivity.LAT, cachedLat)
+            putExtra(LocationPickerActivity.LON, cachedLng)
+            putExtra(LocationPickerActivity.ZOOM, cachedZoom)
+            putExtra(LocationPickerActivity.ALT, cachedAlt)
         }
+        locationPickerLauncher.launch(intent)
     }
 
     private fun handleLocationPickerResult(data: Intent?) {
@@ -173,11 +171,7 @@ class LocationFragment : BaseStepFragment<FragmentLocationBinding>() {
         }
     }
 
-    private fun updateLocationInfo(
-        lat: Double,
-        lng: Double,
-        zoom: Double = 12.0
-    ) {
+    private fun updateLocationInfo(lat: Double, lng: Double, zoom: Double = 12.0) {
         displayLocationText(lat, lng)
         saveUserLocation(lat, lng, zoom)
     }
@@ -194,23 +188,16 @@ class LocationFragment : BaseStepFragment<FragmentLocationBinding>() {
 
     private fun saveUserLocation(lat: Double, lng: Double, zoom: Double) {
         safeScope.launch {
-            val user = userRepository.getUser(sessionManager.akilimoUser) ?: createNewUser()
-            val updatedUser = user.copy(
-                latitude = lat,
-                longitude = lng,
-                zoomLevel = zoom
+            val user = onboardingViewModel.getUser(sessionManager.akilimoUser)
+                ?: AkilimoUser(userName = sessionManager.akilimoUser)
+            onboardingViewModel.saveUser(
+                user.copy(latitude = lat, longitude = lng, zoomLevel = zoom),
+                sessionManager.akilimoUser
             )
-            userRepository.saveOrUpdateUser(updatedUser, sessionManager.akilimoUser)
         }
     }
 
-    private fun createNewUser(): AkilimoUser {
-        return AkilimoUser(userName = sessionManager.akilimoUser)
-    }
-
-    private fun isValidLocation(lat: Double, lng: Double): Boolean {
-        return lat != 0.0 || lng != 0.0
-    }
+    private fun isValidLocation(lat: Double, lng: Double): Boolean = lat != 0.0 || lng != 0.0
 
     private fun shouldShowPermissionRationale(): Boolean {
         return permissionHelper.shouldShowPermissionRationale(
@@ -220,13 +207,10 @@ class LocationFragment : BaseStepFragment<FragmentLocationBinding>() {
     }
 
     private fun showPermissionRationaleDialog(onContinue: () -> Unit) {
-        // Show a dialog explaining why location permission is needed
-        // For now, just continue with permission request
         onContinue()
     }
 
     private fun showLocationServicesDialog() {
-        // Show dialog to enable location services
         showToast("Please enable location services")
     }
 

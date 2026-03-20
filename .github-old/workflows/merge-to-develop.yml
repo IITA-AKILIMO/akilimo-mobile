@@ -2,11 +2,11 @@ name: Create PR to develop
 
 on:
   workflow_dispatch:
-  push:
-    branches-ignore:
-      - main
-      - develop
-      - android-19
+#  push:
+#    branches-ignore:
+#      - main
+#      - develop
+#      - android-19
 
 jobs:
   pr-to-develop:

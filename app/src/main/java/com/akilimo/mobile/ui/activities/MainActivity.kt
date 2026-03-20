@@ -21,7 +21,9 @@ import io.sentry.Sentry
 import io.sentry.SentryLevel
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     private lateinit var adapter: FertilizerAdapter
@@ -32,8 +34,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
     }
 
     override fun onBindingReady(savedInstanceState: Bundle?) {

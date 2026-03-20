@@ -16,6 +16,7 @@ swiperefreshlayout = "1.2.0"
 rxjava = "2.2.21"
 rxandroid = "2.1.1"
 room = "2.7.1"
+hilt = "2.57.1"
 glide = "5.0.5"
 coil = "3.3.0"
 sentry = "8.23.0"
@@ -35,7 +36,8 @@ firebase-crashlytics-plugin = "3.0.6"
 
 stetho = "1.6.0"
 
-stepper = "v4.3.1"
+viewpager2 = "1.1.0"
+datastore = "1.1.4"
 mapbox-sdk = "11.17.1"
 mapbox-annotation = "0.9.0"
 mapbox-places = "0.12.0"
@@ -61,7 +63,11 @@ country-code-picker = "2.7.3"
 sonar = "7.0.1.6134"
 detekt = "1.23.8"
 
-debug-db = "v1.0.6"
+coroutines = "1.9.0"
+turbine = "1.2.0"
+mockk = "1.13.14"
+
+debug-db = "v1.0.7"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
@@ -84,6 +90,9 @@ firebase-installations = { group = "com.google.firebase", name = "firebase-insta
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "play-services-location" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 
 #rxjava = { group = "io.reactivex.rxjava2", name = "rxjava", version.ref = "rxjava" }
 #rxandroid = { group = "io.reactivex.rxjava2", name = "rxandroid", version.ref = "rxandroid" }
@@ -91,6 +100,8 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 
 
 #glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
@@ -120,7 +131,8 @@ moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-code
 #
 
 
-material-stepper = { group = "com.github.stepstone-tech.android-material-stepper", name = "material-stepper", version.ref = "stepper" }
+viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "viewpager2" }
+datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 mapbox-sdk = { group = "com.mapbox.maps", name = "android-ndk27", version.ref = "mapbox-sdk" }
 mapbox-annotation = { group = "com.mapbox.mapboxsdk", name = "mapbox-android-plugin-annotation-v9", version.ref = "mapbox-annotation" }
@@ -138,6 +150,7 @@ jakewharton-timber = { group = "com.jakewharton.timber", name = "timber", versio
 jakewharton-threetenabp = { group = "com.jakewharton.threetenabp", name = "threetenabp", version.ref = "threetenabp" }
 
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
@@ -161,6 +174,7 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt" } # ✅ No version here
 kotlin-parcelize = { id = "kotlin-parcelize" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 #kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 sentry-gradle = { id = "io.sentry.android.gradle", version.ref = "sentry-gradle" }
 uzzu-env = { id = "co.uzzu.dotenv.gradle", version.ref = "env" }

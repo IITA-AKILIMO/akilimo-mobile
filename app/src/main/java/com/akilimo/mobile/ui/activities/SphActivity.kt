@@ -15,18 +15,21 @@ import com.akilimo.mobile.entities.AdviceCompletionDto
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumStepStatus
 import com.akilimo.mobile.enums.EnumUseCase
-import com.akilimo.mobile.repos.AdviceCompletionRepo
+import androidx.activity.viewModels
 import com.akilimo.mobile.ui.components.ToolbarHelper
 import com.akilimo.mobile.ui.usecases.CassavaMarketActivity
 import com.akilimo.mobile.ui.usecases.CassavaYieldActivity
 import com.akilimo.mobile.ui.usecases.DatesActivity
+import com.akilimo.mobile.ui.viewmodels.AdviceCompletionViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SphActivity : BaseActivity<ActivityRecommendationUseCaseBinding>() {
     private var lastStartedTask: EnumAdviceTask? = null
 
-    private val repo by lazy { AdviceCompletionRepo(database.adviceCompletionDao()) }
+    private val viewModel: AdviceCompletionViewModel by viewModels()
 
     override fun inflateBinding() = ActivityRecommendationUseCaseBinding.inflate(layoutInflater)
 
@@ -76,7 +79,7 @@ class SphActivity : BaseActivity<ActivityRecommendationUseCaseBinding>() {
             startActivity(intent)
         }
         safeScope.launch {
-            repo.getAllCompletions().collectLatest { completionsMap ->
+            viewModel.completions.collectLatest { completionsMap ->
                 val updatedList = adviceOptions.map { option ->
                     val completed = completionsMap[option.valueOption.name]?.stepStatus
                         ?: EnumStepStatus.NOT_STARTED
@@ -95,9 +98,7 @@ class SphActivity : BaseActivity<ActivityRecommendationUseCaseBinding>() {
             }
 
             resultDto?.let {
-                safeScope.launch {
-                    repo.updateStatus(it)
-                }
+                viewModel.updateStatus(it)
             }
         }
 }

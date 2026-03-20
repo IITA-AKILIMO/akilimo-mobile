@@ -2,48 +2,43 @@ package com.akilimo.mobile.ui.usecases
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.akilimo.mobile.adapters.InvestmentAmountAdapter
 import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.databinding.ActivityInvestmentAmountBinding
-import com.akilimo.mobile.entities.InvestmentAmount
-import com.akilimo.mobile.entities.SelectedInvestment
-import com.akilimo.mobile.enums.EnumAreaUnit
-import com.akilimo.mobile.repos.AkilimoUserRepo
-import com.akilimo.mobile.repos.InvestmentRepo
-import com.akilimo.mobile.repos.SelectedInvestmentRepo
 import com.akilimo.mobile.ui.components.ToolbarHelper
-import com.akilimo.mobile.utils.MathHelper
-import kotlinx.coroutines.flow.collectLatest
+import com.akilimo.mobile.ui.viewmodels.InvestmentAmountViewModel
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class InvestmentAmountActivity : BaseActivity<ActivityInvestmentAmountBinding>() {
 
-    private lateinit var userRepo: AkilimoUserRepo
-    private lateinit var investmentRepo: InvestmentRepo
-    private lateinit var selectedInvestmentRepo: SelectedInvestmentRepo
+    private val viewModel: InvestmentAmountViewModel by viewModels()
+
     private lateinit var adapter: InvestmentAmountAdapter
 
     override fun inflateBinding() = ActivityInvestmentAmountBinding.inflate(layoutInflater)
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
-        userRepo = AkilimoUserRepo(database.akilimoUserDao())
-        investmentRepo = InvestmentRepo(database.investmentAmountDao())
-        selectedInvestmentRepo = SelectedInvestmentRepo(database.selectedInvestmentDao())
-
         ToolbarHelper(this, binding.lytToolbar.toolbar)
             .showBackButton(true)
             .onNavigationClick { finish() }
             .build()
 
         setupRecycler()
+        observeViewModel()
+        viewModel.loadData(sessionManager.akilimoUser)
     }
 
     private fun setupRecycler() {
         adapter = InvestmentAmountAdapter { selected, amount ->
-            saveInvestment(selected, amount)
+            viewModel.saveInvestment(sessionManager.akilimoUser, selected, amount)
         }
-
         binding.rvInvestments.apply {
             layoutManager = LinearLayoutManager(this@InvestmentAmountActivity)
             adapter = this@InvestmentAmountActivity.adapter
@@ -51,58 +46,23 @@ class InvestmentAmountActivity : BaseActivity<ActivityInvestmentAmountBinding>()
         }
     }
 
-    override fun observeSyncWorker() {
-        safeScope.launch {
-            val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
-            val userId = user.id ?: 0
-            val country = user.enumCountry
-            val enumAreaUnit = EnumAreaUnit.entries.firstOrNull {
-                it == user.enumAreaUnit
-            } ?: EnumAreaUnit.ACRE
-            val farmSize = user.farmSize
-
-            launch {
-                investmentRepo.observeAllByCountry(countryCode = country).collectLatest { list ->
-                    val computedList = list.map { item ->
-                        val base = MathHelper.convertFromAcres(farmSize, enumAreaUnit)
-                        val investmentAmount = base * item.investmentAmount
-                        item.copy(investmentAmount = investmentAmount)
-                    }
-
-                    adapter.submitList(computedList)
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    adapter.submitList(state.investments)
                     binding.rvInvestments.visibility =
-                        if (computedList.isEmpty()) View.GONE else View.VISIBLE
-                }
-            }
+                        if (state.investments.isEmpty()) View.GONE else View.VISIBLE
 
-            launch {
-                selectedInvestmentRepo.observeSelected(userId).collectLatest { selected ->
-                    if (selected == null) return@collectLatest
-                    adapter.updateSelection(
-                        investment = selected,
-                        enumAreaUnit = enumAreaUnit,
-                        farmSize = farmSize
-                    )
+                    state.selectedInvestment?.let { selected ->
+                        adapter.updateSelection(
+                            investment = selected,
+                            enumAreaUnit = state.enumAreaUnit,
+                            farmSize = state.farmSize
+                        )
+                    }
                 }
             }
         }
     }
-
-    private fun saveInvestment(investmentAmount: InvestmentAmount, selectedAmount: Double) =
-        safeScope.launch {
-            val user = userRepo.getUser(sessionManager.akilimoUser) ?: return@launch
-            val userId = user.id ?: return@launch
-            val investment = selectedInvestmentRepo.getSelectedSync(userId)?.copy(
-                investmentId = investmentAmount.id,
-                chosenAmount = selectedAmount,
-                isExactAmount = investmentAmount.exactAmount,
-            ) ?: SelectedInvestment(
-                userId = userId,
-                investmentId = investmentAmount.id,
-                chosenAmount = selectedAmount,
-                isExactAmount = investmentAmount.exactAmount,
-            )
-
-            selectedInvestmentRepo.saveOrUpdate(investment)
-        }
 }

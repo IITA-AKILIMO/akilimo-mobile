@@ -19,12 +19,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import com.akilimo.mobile.AkilimoApp
 import com.akilimo.mobile.AppDatabase
+import com.akilimo.mobile.data.AppSettingsDataStore
+import com.akilimo.mobile.data.AppSettingsEntryPoint
 import com.akilimo.mobile.helper.LocaleHelper
-import com.akilimo.mobile.helper.SessionManager
 import com.akilimo.mobile.interfaces.DefaultDispatcherProvider
 import com.akilimo.mobile.interfaces.IDispatcherProvider
 import com.akilimo.mobile.ui.components.NetworkNotificationView
 import com.akilimo.mobile.utils.PermissionHelper
+import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.launch
 
 abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
@@ -33,10 +35,16 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         const val COMPLETED_TASK = "completed_task"
     }
 
-    protected val dispatcherProvider: IDispatcherProvider = DefaultDispatcherProvider()
-    protected val sessionManager: SessionManager by lazy {
-        SessionManager.get(applicationContext)
+    /** Accessed via Hilt EntryPoint so base classes need no @Inject and have no lateinit timing risk. */
+    protected val sessionManager: AppSettingsDataStore by lazy {
+        EntryPointAccessors.fromApplication(applicationContext, AppSettingsEntryPoint::class.java)
+            .appSettings()
     }
+
+    /** Alias kept so call sites that reference appSettings directly still compile. */
+    protected val appSettings get() = sessionManager
+
+    protected val dispatcherProvider: IDispatcherProvider = DefaultDispatcherProvider()
 
     protected val database: AppDatabase by lazy { AppDatabase.getDatabase(this@BaseActivity) }
     protected lateinit var permissionHelper: PermissionHelper
@@ -81,9 +89,8 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     protected abstract fun onBindingReady(savedInstanceState: Bundle?)
 
     override fun attachBaseContext(newBase: Context) {
-        val session = SessionManager.get(newBase) // safe: newBase is non-null
-        val savedLang = session.languageCode.takeIf { it.isNotBlank() } ?: "en"
-        val wrapped = LocaleHelper.wrap(newBase, savedLang)
+        val langTag = AppSettingsDataStore.readLanguageTagSync(newBase)
+        val wrapped = LocaleHelper.wrap(newBase, langTag)
         super.attachBaseContext(wrapped)
     }
 

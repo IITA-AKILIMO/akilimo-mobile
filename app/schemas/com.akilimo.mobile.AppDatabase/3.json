@@ -1,0 +1,1818 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 3,
+    "identityHash": "7c20a27350c3aa1a9d5779647d4ac978",
+    "entities": [
+      {
+        "tableName": "fertilizers",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `key` TEXT, `name` TEXT, `type` TEXT, `weight` REAL NOT NULL, `sort_order` INTEGER NOT NULL, `price` REAL NOT NULL, `use_case` TEXT, `country_code` TEXT, `k_content` INTEGER NOT NULL, `n_content` INTEGER NOT NULL, `p_content` INTEGER NOT NULL, `available` INTEGER NOT NULL, `cim_available` INTEGER NOT NULL, `cis_available` INTEGER NOT NULL, `created_at` INTEGER, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "key",
+            "columnName": "key",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "weight",
+            "columnName": "weight",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sortOrder",
+            "columnName": "sort_order",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "price",
+            "columnName": "price",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "useCase",
+            "columnName": "use_case",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "countryCode",
+            "columnName": "country_code",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "kContent",
+            "columnName": "k_content",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nContent",
+            "columnName": "n_content",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pContent",
+            "columnName": "p_content",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "available",
+            "columnName": "available",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cimAvailable",
+            "columnName": "cim_available",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cisAvailable",
+            "columnName": "cis_available",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_fertilizers_key_country_code",
+            "unique": true,
+            "columnNames": [
+              "key",
+              "country_code"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_fertilizers_key_country_code` ON `${TABLE_NAME}` (`key`, `country_code`)"
+          }
+        ]
+      },
+      {
+        "tableName": "fertilizer_prices",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `fertilizer_key` TEXT NOT NULL, `fertilizer_country` TEXT NOT NULL, `country_code` TEXT NOT NULL, `currency_code` TEXT NOT NULL, `currency_symbol` TEXT NOT NULL, `sort_order` INTEGER NOT NULL, `min_local_price` REAL NOT NULL, `max_local_price` REAL NOT NULL, `min_allowed_price` REAL NOT NULL, `max_allowed_price` REAL NOT NULL, `price_per_bag` REAL NOT NULL, `price_range` TEXT NOT NULL, `active` INTEGER NOT NULL, `description` TEXT, `created_at` INTEGER, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fertilizerKey",
+            "columnName": "fertilizer_key",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fertilizerCountry",
+            "columnName": "fertilizer_country",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "countryCode",
+            "columnName": "country_code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currencyCode",
+            "columnName": "currency_code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currencySymbol",
+            "columnName": "currency_symbol",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sortOrder",
+            "columnName": "sort_order",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "minLocalPrice",
+            "columnName": "min_local_price",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "maxLocalPrice",
+            "columnName": "max_local_price",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "minAllowedPrice",
+            "columnName": "min_allowed_price",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "maxAllowedPrice",
+            "columnName": "max_allowed_price",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pricePerBag",
+            "columnName": "price_per_bag",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "priceRange",
+            "columnName": "price_range",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isActive",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "selected_fertilizers",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `user_id` INTEGER NOT NULL, `fertilizer_id` INTEGER NOT NULL, `fertilizer_price_id` INTEGER, `fertilizer_price` REAL NOT NULL, `display_price` TEXT, `exact_price` INTEGER NOT NULL, `created_at` INTEGER, `updated_at` INTEGER NOT NULL, FOREIGN KEY(`user_id`) REFERENCES `akilimo_users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`fertilizer_id`) REFERENCES `fertilizers`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`fertilizer_price_id`) REFERENCES `fertilizer_prices`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fertilizerId",
+            "columnName": "fertilizer_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fertilizerPriceId",
+            "columnName": "fertilizer_price_id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "fertilizerPrice",
+            "columnName": "fertilizer_price",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "displayPrice",
+            "columnName": "display_price",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "isExactPrice",
+            "columnName": "exact_price",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_selected_fertilizers_user_id",
+            "unique": false,
+            "columnNames": [
+              "user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_selected_fertilizers_user_id` ON `${TABLE_NAME}` (`user_id`)"
+          },
+          {
+            "name": "index_selected_fertilizers_fertilizer_id",
+            "unique": false,
+            "columnNames": [
+              "fertilizer_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_selected_fertilizers_fertilizer_id` ON `${TABLE_NAME}` (`fertilizer_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "akilimo_users",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "fertilizers",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "fertilizer_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "fertilizer_prices",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "fertilizer_price_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "akilimo_users",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `device_token` TEXT, `user_name` TEXT NOT NULL, `first_name` TEXT, `last_name` TEXT, `email` TEXT, `mobile_number` TEXT, `mobile_country_code` TEXT, `farm_name` TEXT, `farm_country` TEXT NOT NULL, `farm_size_unit` TEXT NOT NULL, `farm_size` REAL NOT NULL, `custom_farm_size` INTEGER, `farm_description` TEXT, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `altitude` REAL NOT NULL, `zoom_level` REAL NOT NULL, `gender` TEXT, `akilimo_interest` TEXT, `send_email` INTEGER NOT NULL, `send_sms` INTEGER NOT NULL, `language_code` TEXT, `risk_att` INTEGER NOT NULL, `planting_date` TEXT, `harvest_date` TEXT, `planting_flex` INTEGER NOT NULL, `harvest_flex` INTEGER NOT NULL, `provided_alternative_date` INTEGER NOT NULL, `tillage_operations` TEXT NOT NULL, `investment_preferences` TEXT, `active_use_case` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "deviceToken",
+            "columnName": "device_token",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "userName",
+            "columnName": "user_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "firstName",
+            "columnName": "first_name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "lastName",
+            "columnName": "last_name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "email",
+            "columnName": "email",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "mobileNumber",
+            "columnName": "mobile_number",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "mobileCountryCode",
+            "columnName": "mobile_country_code",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "farmName",
+            "columnName": "farm_name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "enumCountry",
+            "columnName": "farm_country",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "enumAreaUnit",
+            "columnName": "farm_size_unit",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "farmSize",
+            "columnName": "farm_size",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "customFarmSize",
+            "columnName": "custom_farm_size",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "farmDescription",
+            "columnName": "farm_description",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "altitude",
+            "columnName": "altitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "zoomLevel",
+            "columnName": "zoom_level",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gender",
+            "columnName": "gender",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "akilimoInterest",
+            "columnName": "akilimo_interest",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sendEmail",
+            "columnName": "send_email",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sendSms",
+            "columnName": "send_sms",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "languageCode",
+            "columnName": "language_code",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "riskAtt",
+            "columnName": "risk_att",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "plantingDate",
+            "columnName": "planting_date",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "harvestDate",
+            "columnName": "harvest_date",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "plantingFlex",
+            "columnName": "planting_flex",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "harvestFlex",
+            "columnName": "harvest_flex",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "providedAlterNativeDate",
+            "columnName": "provided_alternative_date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tillageOperations",
+            "columnName": "tillage_operations",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "investmentPref",
+            "columnName": "investment_preferences",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "activeAdvise",
+            "columnName": "active_use_case",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_akilimo_users_user_name",
+            "unique": true,
+            "columnNames": [
+              "user_name"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_akilimo_users_user_name` ON `${TABLE_NAME}` (`user_name`)"
+          }
+        ]
+      },
+      {
+        "tableName": "investment_amounts",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `country_code` TEXT NOT NULL, `currency_code` TEXT NOT NULL, `currency_symbol` TEXT NOT NULL, `investment_amount` REAL NOT NULL, `exact_amount` INTEGER NOT NULL, `active` INTEGER NOT NULL, `area_unit` TEXT NOT NULL, `sort_order` INTEGER NOT NULL, `is_custom` INTEGER NOT NULL, `created_at` INTEGER, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "countryCode",
+            "columnName": "country_code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currencyCode",
+            "columnName": "currency_code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currencySymbol",
+            "columnName": "currency_symbol",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "investmentAmount",
+            "columnName": "investment_amount",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "exactAmount",
+            "columnName": "exact_amount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "areaUnit",
+            "columnName": "area_unit",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sortOrder",
+            "columnName": "sort_order",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isCustom",
+            "columnName": "is_custom",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "selected_investments",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `user_id` INTEGER NOT NULL, `investment_id` INTEGER NOT NULL, `chosen_amount` REAL NOT NULL, `exact_amount` INTEGER NOT NULL, `created_at` INTEGER, `updated_at` INTEGER NOT NULL, FOREIGN KEY(`user_id`) REFERENCES `akilimo_users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`investment_id`) REFERENCES `investment_amounts`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "investmentId",
+            "columnName": "investment_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "chosenAmount",
+            "columnName": "chosen_amount",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isExactAmount",
+            "columnName": "exact_amount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_selected_investments_user_id",
+            "unique": false,
+            "columnNames": [
+              "user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_selected_investments_user_id` ON `${TABLE_NAME}` (`user_id`)"
+          },
+          {
+            "name": "index_selected_investments_investment_id",
+            "unique": false,
+            "columnNames": [
+              "investment_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_selected_investments_investment_id` ON `${TABLE_NAME}` (`investment_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "akilimo_users",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "investment_amounts",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "investment_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "starch_factories",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `factory_name` TEXT, `factory_label` TEXT, `country_code` TEXT, `is_active` INTEGER NOT NULL, `sort_order` INTEGER NOT NULL, `created_at` INTEGER, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "factory_name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "label",
+            "columnName": "factory_label",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "countryCode",
+            "columnName": "country_code",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "isActive",
+            "columnName": "is_active",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sortOrder",
+            "columnName": "sort_order",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_starch_factories_factory_name_country_code",
+            "unique": true,
+            "columnNames": [
+              "factory_name",
+              "country_code"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_starch_factories_factory_name_country_code` ON `${TABLE_NAME}` (`factory_name`, `country_code`)"
+          }
+        ]
+      },
+      {
+        "tableName": "cassava_market_prices",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `country_code` TEXT NOT NULL, `currency_code` TEXT NOT NULL, `currency_symbol` TEXT NOT NULL, `min_local_price` REAL NOT NULL, `max_local_price` REAL NOT NULL, `average_price` REAL NOT NULL, `exact_price` INTEGER NOT NULL, `item_tag` TEXT NOT NULL, `min_allowed_price` REAL NOT NULL, `max_allowed_price` REAL NOT NULL, `active` INTEGER NOT NULL, `sort_order` INTEGER NOT NULL, `created_at` INTEGER, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "countryCode",
+            "columnName": "country_code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currencyCode",
+            "columnName": "currency_code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currencySymbol",
+            "columnName": "currency_symbol",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "minLocalPrice",
+            "columnName": "min_local_price",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "maxLocalPrice",
+            "columnName": "max_local_price",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "averagePrice",
+            "columnName": "average_price",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "exactPrice",
+            "columnName": "exact_price",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "itemTag",
+            "columnName": "item_tag",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "minAllowedPrice",
+            "columnName": "min_allowed_price",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "maxAllowedPrice",
+            "columnName": "max_allowed_price",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sortOrder",
+            "columnName": "sort_order",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "selected_cassava_markets",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `user_id` INTEGER NOT NULL, `market_price_id` INTEGER, `starch_factory_id` INTEGER, `cassava_unit_id` INTEGER, `yield_id` INTEGER, `produce_type` TEXT NOT NULL, `unit_of_sale` TEXT NOT NULL, `unit_price` REAL NOT NULL, `unit_price_p1` REAL NOT NULL, `unit_price_p2` REAL NOT NULL, `unit_price_m1` REAL NOT NULL, `unit_price_m2` REAL NOT NULL, `created_at` INTEGER, `updated_at` INTEGER NOT NULL, FOREIGN KEY(`user_id`) REFERENCES `akilimo_users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`market_price_id`) REFERENCES `cassava_market_prices`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`cassava_unit_id`) REFERENCES `cassava_units`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`starch_factory_id`) REFERENCES `starch_factories`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`yield_id`) REFERENCES `cassava_yields`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "marketPriceId",
+            "columnName": "market_price_id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "starchFactoryId",
+            "columnName": "starch_factory_id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "cassavaUnitId",
+            "columnName": "cassava_unit_id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "yieldId",
+            "columnName": "yield_id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "produceType",
+            "columnName": "produce_type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unitOfSale",
+            "columnName": "unit_of_sale",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unitPrice",
+            "columnName": "unit_price",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unitPriceP1",
+            "columnName": "unit_price_p1",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unitPriceP2",
+            "columnName": "unit_price_p2",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unitPriceM1",
+            "columnName": "unit_price_m1",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unitPriceM2",
+            "columnName": "unit_price_m2",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_selected_cassava_markets_user_id",
+            "unique": false,
+            "columnNames": [
+              "user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_selected_cassava_markets_user_id` ON `${TABLE_NAME}` (`user_id`)"
+          },
+          {
+            "name": "index_selected_cassava_markets_starch_factory_id",
+            "unique": false,
+            "columnNames": [
+              "starch_factory_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_selected_cassava_markets_starch_factory_id` ON `${TABLE_NAME}` (`starch_factory_id`)"
+          },
+          {
+            "name": "index_selected_cassava_markets_market_price_id",
+            "unique": false,
+            "columnNames": [
+              "market_price_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_selected_cassava_markets_market_price_id` ON `${TABLE_NAME}` (`market_price_id`)"
+          },
+          {
+            "name": "index_selected_cassava_markets_cassava_unit_id",
+            "unique": false,
+            "columnNames": [
+              "cassava_unit_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_selected_cassava_markets_cassava_unit_id` ON `${TABLE_NAME}` (`cassava_unit_id`)"
+          },
+          {
+            "name": "index_selected_cassava_markets_yield_id",
+            "unique": false,
+            "columnNames": [
+              "yield_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_selected_cassava_markets_yield_id` ON `${TABLE_NAME}` (`yield_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "akilimo_users",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "cassava_market_prices",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "market_price_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "cassava_units",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "cassava_unit_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "starch_factories",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "starch_factory_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "cassava_yields",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "yield_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "produce_markets",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `user_id` INTEGER NOT NULL, `unit_price` REAL NOT NULL, `market_type` TEXT NOT NULL, `produce_type` TEXT NOT NULL, `unit_of_sale` TEXT NOT NULL, `created_at` INTEGER, `updated_at` INTEGER NOT NULL, FOREIGN KEY(`user_id`) REFERENCES `akilimo_users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unitPrice",
+            "columnName": "unit_price",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "marketType",
+            "columnName": "market_type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "produceType",
+            "columnName": "produce_type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unitOfSale",
+            "columnName": "unit_of_sale",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_produce_markets_user_id",
+            "unique": false,
+            "columnNames": [
+              "user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_produce_markets_user_id` ON `${TABLE_NAME}` (`user_id`)"
+          },
+          {
+            "name": "index_produce_markets_user_id_market_type",
+            "unique": true,
+            "columnNames": [
+              "user_id",
+              "market_type"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_produce_markets_user_id_market_type` ON `${TABLE_NAME}` (`user_id`, `market_type`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "akilimo_users",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "cassava_units",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `unit_weight` REAL NOT NULL, `sort_order` INTEGER NOT NULL, `label` TEXT NOT NULL, `description` TEXT, `is_active` INTEGER NOT NULL, `created_at` INTEGER, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unitWeight",
+            "columnName": "unit_weight",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sortOrder",
+            "columnName": "sort_order",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "label",
+            "columnName": "label",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "isActive",
+            "columnName": "is_active",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "cassava_yields",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `yield_amount` REAL NOT NULL, `image_res` INTEGER NOT NULL, `yield_label` TEXT NOT NULL, `sort_order` INTEGER NOT NULL, `created_at` INTEGER, `updated_at` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "yieldAmount",
+            "columnName": "yield_amount",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imageRes",
+            "columnName": "image_res",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "yieldLabel",
+            "columnName": "yield_label",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sortOrder",
+            "columnName": "sort_order",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_cassava_yields_yield_label",
+            "unique": true,
+            "columnNames": [
+              "yield_label"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_cassava_yields_yield_label` ON `${TABLE_NAME}` (`yield_label`)"
+          }
+        ]
+      },
+      {
+        "tableName": "advice_completions",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`task_name` TEXT NOT NULL, `step_status` TEXT NOT NULL, `competed_at` INTEGER, `created_at` INTEGER, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`task_name`))",
+        "fields": [
+          {
+            "fieldPath": "taskName",
+            "columnName": "task_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stepStatus",
+            "columnName": "step_status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "completedAtMillis",
+            "columnName": "competed_at",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "task_name"
+          ]
+        }
+      },
+      {
+        "tableName": "field_operation_costs",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER NOT NULL, `cost_lmo_area_basis` TEXT NOT NULL, `manual_plough_cost` REAL NOT NULL, `manual_ridge_cost` REAL NOT NULL, `manual_harrow_cost` REAL NOT NULL, `exact_manual_plough_price` INTEGER NOT NULL, `exact_manual_ridge_price` INTEGER NOT NULL, `exact_manual_harrow_price` INTEGER NOT NULL, `tractor_available` INTEGER NOT NULL, `tractor_plough_cost` REAL NOT NULL, `tractor_ridge_cost` REAL NOT NULL, `tractor_harrow_cost` REAL NOT NULL, `exact_tractor_plough_price` INTEGER NOT NULL, `exact_tractor_ridge_price` INTEGER NOT NULL, `exact_tractor_harrow_price` INTEGER NOT NULL, `first_weeding_operation_cost` REAL NOT NULL, `second_weeding_operation_cost` REAL NOT NULL, `exact_first_weeding_price` INTEGER NOT NULL, `exact_second_weeding_price` INTEGER NOT NULL, `created_at` INTEGER, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`user_id`), FOREIGN KEY(`user_id`) REFERENCES `akilimo_users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "costLmoAreaBasis",
+            "columnName": "cost_lmo_area_basis",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "manualPloughCost",
+            "columnName": "manual_plough_cost",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "manualRidgeCost",
+            "columnName": "manual_ridge_cost",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "manualHarrowCost",
+            "columnName": "manual_harrow_cost",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "exactManualPloughPrice",
+            "columnName": "exact_manual_plough_price",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "exactManualRidgePrice",
+            "columnName": "exact_manual_ridge_price",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "exactManualHarrowPrice",
+            "columnName": "exact_manual_harrow_price",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tractorAvailable",
+            "columnName": "tractor_available",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tractorPloughCost",
+            "columnName": "tractor_plough_cost",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tractorRidgeCost",
+            "columnName": "tractor_ridge_cost",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tractorHarrowCost",
+            "columnName": "tractor_harrow_cost",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "exactTractorPloughPrice",
+            "columnName": "exact_tractor_plough_price",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "exactTractorRidgePrice",
+            "columnName": "exact_tractor_ridge_price",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "exactTractorHarrowPrice",
+            "columnName": "exact_tractor_harrow_price",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "firstWeedingOperationCost",
+            "columnName": "first_weeding_operation_cost",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "secondWeedingOperationCost",
+            "columnName": "second_weeding_operation_cost",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "exactFirstWeedingPrice",
+            "columnName": "exact_first_weeding_price",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "exactSecondWeedingPrice",
+            "columnName": "exact_second_weeding_price",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "user_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_field_operation_costs_user_id",
+            "unique": false,
+            "columnNames": [
+              "user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_field_operation_costs_user_id` ON `${TABLE_NAME}` (`user_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "akilimo_users",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "current_practices",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `user_id` INTEGER NOT NULL, `weed_radio_index` INTEGER NOT NULL, `weed_control_method` TEXT, `plough_operations` TEXT, `ridge_operations` TEXT, `harrow_operations` TEXT, `weed_control_operations` TEXT, `ploughing_method` TEXT, `ridging_method` TEXT, `harrowing_method` TEXT, `tractor_available` INTEGER NOT NULL, `tractor_plough` INTEGER NOT NULL, `tractor_harrow` INTEGER NOT NULL, `tractor_ridger` INTEGER NOT NULL, `uses_herbicide` INTEGER NOT NULL, `perform_ploughing` INTEGER NOT NULL, `perform_harrowing` INTEGER NOT NULL, `perform_ridging` INTEGER NOT NULL, FOREIGN KEY(`user_id`) REFERENCES `akilimo_users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weedRadioIndex",
+            "columnName": "weed_radio_index",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weedControlMethod",
+            "columnName": "weed_control_method",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "ploughOperations",
+            "columnName": "plough_operations",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "ridgeOperations",
+            "columnName": "ridge_operations",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "harrowOperations",
+            "columnName": "harrow_operations",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "weedControlOperations",
+            "columnName": "weed_control_operations",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "ploughingMethod",
+            "columnName": "ploughing_method",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "ridgingMethod",
+            "columnName": "ridging_method",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "harrowingMethod",
+            "columnName": "harrowing_method",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "tractorAvailable",
+            "columnName": "tractor_available",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tractorPlough",
+            "columnName": "tractor_plough",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tractorHarrow",
+            "columnName": "tractor_harrow",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tractorRidger",
+            "columnName": "tractor_ridger",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "usesHerbicide",
+            "columnName": "uses_herbicide",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "performPloughing",
+            "columnName": "perform_ploughing",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "performHarrowing",
+            "columnName": "perform_harrowing",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "performRidging",
+            "columnName": "perform_ridging",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_current_practices_user_id",
+            "unique": false,
+            "columnNames": [
+              "user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_current_practices_user_id` ON `${TABLE_NAME}` (`user_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "akilimo_users",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "maize_performance",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `user_id` INTEGER NOT NULL, `maize_performance` TEXT NOT NULL, `created_at` INTEGER, `updated_at` INTEGER NOT NULL, FOREIGN KEY(`user_id`) REFERENCES `akilimo_users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "maizePerformance",
+            "columnName": "maize_performance",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_maize_performance_user_id",
+            "unique": true,
+            "columnNames": [
+              "user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_maize_performance_user_id` ON `${TABLE_NAME}` (`user_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "akilimo_users",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "user_preferences",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `language_code` TEXT NOT NULL, `first_name` TEXT, `last_name` TEXT, `email` TEXT, `phone_number` TEXT, `phone_country_code` TEXT, `gender` TEXT, `country` TEXT NOT NULL, `bio` TEXT, `notify_by_email` INTEGER NOT NULL, `notify_by_sms` INTEGER NOT NULL, `preferred_area_unit` TEXT NOT NULL, `dark_mode` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "languageCode",
+            "columnName": "language_code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "firstName",
+            "columnName": "first_name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "lastName",
+            "columnName": "last_name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "email",
+            "columnName": "email",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "phoneNumber",
+            "columnName": "phone_number",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "phoneCountryCode",
+            "columnName": "phone_country_code",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "gender",
+            "columnName": "gender",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "country",
+            "columnName": "country",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bio",
+            "columnName": "bio",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "notifyByEmail",
+            "columnName": "notify_by_email",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notifyBySms",
+            "columnName": "notify_by_sms",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "preferredAreaUnit",
+            "columnName": "preferred_area_unit",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "darkMode",
+            "columnName": "dark_mode",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7c20a27350c3aa1a9d5779647d4ac978')"
+    ]
+  }
+}

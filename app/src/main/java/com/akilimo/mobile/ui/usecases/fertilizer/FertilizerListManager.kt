@@ -5,22 +5,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.akilimo.mobile.adapters.FertilizerAdapter
 import com.akilimo.mobile.entities.Fertilizer
-import com.akilimo.mobile.entities.SelectedFertilizer
-import com.akilimo.mobile.enums.EnumCountry
-import com.akilimo.mobile.repos.FertilizerRepo
-import com.akilimo.mobile.repos.SelectedFertilizerRepo
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 /**
- * Manages fertilizer list display, layout toggling, and selection state.
- * Provides a clean API for observing and updating fertilizer data.
+ * Manages fertilizer list display and layout toggling.
+ * Data is supplied by FertilizerViewModel via submitList/updateSelection.
  */
 class FertilizerListManager(
     private val recyclerView: RecyclerView,
-    private val fertilizerRepo: FertilizerRepo,
-    private val selectedRepo: SelectedFertilizerRepo,
     private val gridSpanCount: Int = 2
 ) {
     val adapter = FertilizerAdapter()
@@ -59,50 +50,6 @@ class FertilizerListManager(
             GridLayoutManager(recyclerView.context, gridSpanCount)
         } else {
             LinearLayoutManager(recyclerView.context)
-        }
-    }
-
-    /**
-     * Observes fertilizer data and selection state.
-     * Call this from a coroutine scope (e.g., lifecycleScope or safeScope).
-     */
-    fun observeFertilizers(
-        scope: CoroutineScope,
-        country: EnumCountry,
-        userId: Int,
-        onDataChanged: (isEmpty: Boolean) -> Unit
-    ) {
-        scope.launch {
-            fertilizerRepo.observeByCountry(country).collectLatest { fertilizers ->
-                val selectedList = selectedRepo.getSelectedSync(userId)
-                val mapped = mapFertilizersWithSelection(fertilizers, selectedList)
-                adapter.submitList(mapped)
-                onDataChanged(mapped.isEmpty())
-            }
-        }
-
-        scope.launch {
-            selectedRepo.observeSelected(userId).collectLatest { selectedList ->
-                val selectedIds = selectedList.map { it.fertilizerId }.toSet()
-                adapter.updateSelection(selectedIds)
-            }
-        }
-    }
-
-    private fun mapFertilizersWithSelection(
-        fertilizers: List<Fertilizer>,
-        selectedList: List<SelectedFertilizer>
-    ): List<Fertilizer> {
-        val selectedIds = selectedList.map { it.fertilizerId }.toSet()
-        val selectedMap = selectedList.associateBy { it.fertilizerId }
-
-        return fertilizers.map { fertilizer ->
-            fertilizer.apply {
-                val selected = selectedMap[id]
-                isSelected = selectedIds.contains(id)
-                displayPrice = selected?.displayPrice.orEmpty()
-                selectedPrice = if (isSelected) selected?.fertilizerPrice ?: 0.0 else 0.0
-            }
         }
     }
 

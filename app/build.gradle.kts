@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
     alias(libs.plugins.sentry.gradle)
     alias(libs.plugins.google.services)
     alias(libs.plugins.sonarqube)
@@ -154,7 +155,7 @@ android {
 fun computeVersionName(): String {
     val now = LocalDateTime.now()
 
-    val defaultMajor = 29
+    val defaultMajor = 30
     var defaultMinor = now.monthValue
     var defaultBuild = now.dayOfMonth
 
@@ -199,6 +200,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.multidex)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.work)
 
     //Region: Google services
@@ -214,10 +216,17 @@ dependencies {
     // Region: Navigation
     implementation(libs.bundles.androidx.navigation)
 
+    // Region: DataStore
+    implementation(libs.datastore.preferences)
+
     // Region: Room
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
+
+    // Region: Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
 
     // Region: Networking
     implementation(libs.okhttp)
@@ -237,16 +246,17 @@ dependencies {
     implementation(libs.reword)
     implementation(libs.viewpump)
     implementation(libs.worldcountrydata)
-    implementation(libs.process.phoenix)
     implementation(libs.jakewharton.timber)
 
     implementation(libs.country.code.picker)
 
-    // Region: Stepper UI
-    implementation(libs.material.stepper)
+    implementation(libs.viewpager2)
 
     // Region: Testing
     testImplementation(libs.junit)
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.turbine)
+    testImplementation(libs.mockk)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
@@ -254,4 +264,8 @@ dependencies {
     debugImplementation(libs.debug.db)
     debugImplementation(libs.stetho)
     debugImplementation(libs.stetho.okhttp)
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }

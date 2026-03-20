@@ -8,7 +8,7 @@ These are fixes to active bugs and security issues. All are self-contained with 
 
 | # | Status | Task | Files | Effort | Impact |
 |---|--------|------|-------|--------|--------|
-| 1 | ✅ Done | **Fix MUN-16: Language persistence** — full BCP-47 tags, AppLocale sync, ProcessPhoenix in WelcomeFragment, save to UserPreferences | `WelcomeFragment.kt`, `UserSettingsActivity.kt`, `AkilimoApp.kt`, `SessionManager.kt` | S | Critical |
+| 1 | ✅ Done | **Fix MUN-16: Language persistence** — full BCP-47 tags, DataStore write before `setApplicationLocales()` (race fix), `AppCompatDelegate` in-process locale change replaces ProcessPhoenix | `WelcomeFragment.kt`, `UserSettingsActivity.kt`, `AkilimoApp.kt`, `AppSettingsDataStore.kt` | S | Critical |
 | 1a | ✅ Done | **Fix WorkManager initialization** — implement `Configuration.Provider` in `AkilimoApp`; remove `WorkManagerInitializer` from startup | `AkilimoApp.kt`, `AndroidManifest.xml` | S | Critical |
 | 2 | ✅ Done | **Fix dark mode** — removed `MODE_NIGHT_NO` override; `AkilimoApp` applies night mode from `SessionManager.darkMode`; fixed StepperLayout bottom bar, welcome card, terms WebView background, and three hardcoded-black icon tints | `BaseActivity.kt`, `AkilimoApp.kt`, `SessionManager.kt`, `UserSettingsActivity.kt`, `activity_home_stepper.xml`, `fragment_welcome.xml`, `fragment_terms.xml`, `ic_*.xml` | S | High |
 | 2a | ✅ Done | **Consistent image-tap selection UX** — animated card highlight, 2dp primary stroke border, selectionOverlay + selectionIndicator on tap; fixed `SelectedCassavaMarketRepo.select()` not persisting `yieldId`; fixed `DiffCallback.areItemsTheSame` in both adapters; aligned `MaizePerformanceAdapter` to same pattern | `CassavaYieldAdapter.kt`, `MaizePerformanceAdapter.kt`, `SelectedCassavaMarketRepo.kt`, `item_card_recommendation_image.xml` | S | UX |
@@ -28,12 +28,12 @@ See `docs/COMPOSE_MIGRATION.md §2` for why each one is required.
 
 | # | Task | Files | Effort | Impact | Compose dependency |
 |---|------|-------|--------|--------|-------------------|
-| 7 | **Introduce ViewModels** — one per screen; expose `StateFlow<UiState>`; move all DB/SharedPrefs calls out of Activity/Fragment | `ui/activities/`, `ui/fragments/` | M | Architecture | Required — `collectAsStateWithLifecycle()` needs a ViewModel |
-| 8 | **Proper Room migrations** — replace `fallbackToDestructiveMigration()` with `Migration` objects | `AppDatabase.kt` | M | Data integrity | Required — schema changes during migration must not wipe data |
-| 9 | **Introduce Hilt** — `@HiltAndroidApp` on `AkilimoApp`; `@AndroidEntryPoint` on all activities; `@HiltViewModel` on all ViewModels; inject repos via constructor | All | L | Maintainability | Required — `hiltViewModel()` in composables |
-| 10 | **Consolidate language + dark mode to DataStore** — single reactive source replaces dual SharedPrefs; expose as `Flow<String>` and `Flow<Boolean>` | `SessionManager.kt`, `AkilimoApp.kt`, `BaseActivity.kt` | M | Reliability | Required — Compose observes `DataStore` via `collectAsState()` |
-| 11 | **Unit test coverage for repos and locale logic** — `UserPreferencesRepo`, `LocaleHelper`, `SessionManager`, all ViewModels | `test/` | M | Quality | Required — ViewModel unit tests validate `UiState` transitions |
-| 12 | **Jetpack NavGraph (View-based first)** — replace all `startActivity()` / `Intent` navigation with typed `NavGraph` destinations; enables `navigation-compose` in Phase 5 | All activities | L | Architecture | Required — `NavHost` is the Compose navigation backbone |
+| 7 | 🔄 Partial | **Introduce ViewModels** — one per screen; expose `StateFlow<UiState>`; move all DB/DataStore calls out of Activity/Fragment. `WelcomeViewModel` and `UserSettingsViewModel` done; remaining screens still load directly from repos | `ui/activities/`, `ui/fragments/`, `ui/viewmodels/` | M | Architecture | Required — `collectAsStateWithLifecycle()` needs a ViewModel |
+| 8 | ⬜ | **Proper Room migrations** — replace `fallbackToDestructiveMigration()` with `Migration` objects | `AppDatabase.kt` | M | Data integrity | Required — schema changes during migration must not wipe data |
+| 9 | ✅ Done | **Introduce Hilt** — `@HiltAndroidApp` on `AkilimoApp`; `@AndroidEntryPoint` on all 25+ concrete Activities/Fragments; `@HiltViewModel` on ViewModels; inject repos via constructor. Version: `hilt = "2.57.1"`, uses `kapt` | All | L | Maintainability | Required — `hiltViewModel()` in composables |
+| 10 | ✅ Done | **Consolidate ALL settings to DataStore** — `AppSettingsDataStore` covers all 17 keys (language, darkMode, akilimoUser, termsAccepted, disclaimerRead, rememberAreaUnit, isFertilizerGrid, deviceToken, apiToken, apiRefreshToken, mapBoxApiKey, locationIqToken, isFirstRun, notificationCount, termsLink, akilimoEndpoint, fuelrodEndpoint); `SessionManager.kt` deleted; `SharedPreferencesMigration` from `"new-akilimo-config"` | `data/AppSettingsDataStore.kt`, `AkilimoApp.kt`, `BaseActivity.kt`, `BaseFragment.kt` | M | Reliability | Required — Compose observes `DataStore` via `collectAsState()` |
+| 11 | ⬜ | **Unit test coverage for repos and locale logic** — `UserPreferencesRepo`, `LocaleHelper`, `AppSettingsDataStore`, all ViewModels | `test/` | M | Quality | Required — ViewModel unit tests validate `UiState` transitions |
+| 12 | ⬜ | **Jetpack NavGraph (View-based first)** — replace all `startActivity()` / `Intent` navigation with typed `NavGraph` destinations; enables `navigation-compose` in Phase 5 | All activities | L | Architecture | Required — `NavHost` is the Compose navigation backbone |
 
 ---
 
@@ -59,12 +59,14 @@ Full migration to Jetpack Compose. Executed in five phases as detailed in
 ## Milestone Summary
 
 ```
-Week 1-4:    Bug fixes + security hardening (items 1–5)         ← mostly done ✅
-Month 2:     ViewModels + Room migrations + Hilt (items 7–9)
-Month 3:     DataStore + NavGraph + unit tests (items 10–12)
+Week 1-4:    Bug fixes + security hardening (items 1–5)         ← done ✅
+Month 2–3:   Hilt (#9) ✅ + DataStore (#10) ✅ — completed ahead of schedule
+             ViewModels (#7) 🔄 Partial — key screens done; all screens remaining
+             Room migrations (#8) + NavGraph (#12) + unit tests (#11) — still open
 Month 4:     Compose infrastructure + leaf screens (items 13–14)
 Month 5–6:   Domain screens migration (item 15)
 Month 7–8:   Stepper replacement + onboarding flow (item 16)
+             Note: HomeStepperActivity already migrated from StepperLayout → ViewPager2 + WizardAdapter
 Month 9–10:  NavGraph consolidation + library cleanup (item 17)
 Month 11–12: Deep links + offline cache + accessibility (items 18–21)
 ```
