@@ -48,7 +48,9 @@
       "Bash(find D:/Dev/android/akilimo-mobile/app/build/reports/tests/testDebugUnitTest/classes -name *.html)",
       "Bash(./gradlew testDebugUnitTest)",
       "Bash(./gradlew testDebugUnitTest --tests \"com.akilimo.mobile.ui.viewmodels.CassavaMarketViewModelTest\")",
-      "Bash(./gradlew assembleDebug)"
+      "Bash(./gradlew assembleDebug)",
+      "Bash(cd:*)",
+      "Bash(./gradlew :app:compileDebugKotlin --no-daemon)"
     ]
   }
 }
