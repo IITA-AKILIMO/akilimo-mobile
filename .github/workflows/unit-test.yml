@@ -84,4 +84,4 @@ jobs:
         with:
           name: unit-test-results
           path: app/build/reports/tests/testDebugUnitTest/
-          retention-days: 7
+          retention-days: 1
