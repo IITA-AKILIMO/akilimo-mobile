@@ -1,58 +1,57 @@
-package com.akilimo.mobile.ui.activities
+package com.akilimo.mobile.ui.fragments
 
-import android.content.Intent
 import android.os.Bundle
-import androidx.activity.viewModels
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.akilimo.mobile.R
 import com.akilimo.mobile.adapters.RecommendationAdapter
-import com.akilimo.mobile.base.BaseActivity
-import com.akilimo.mobile.databinding.ActivityRecommendationsBinding
+import com.akilimo.mobile.base.BaseFragment
+import com.akilimo.mobile.databinding.FragmentRecommendationsBinding
 import com.akilimo.mobile.enums.EnumAdvice
 import com.akilimo.mobile.ui.components.CollapsibleToolbarHelper
 import com.akilimo.mobile.ui.viewmodels.RecommendationsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-/**
- * Legacy entry point for the recommendations screen.
- * Superseded by [com.akilimo.mobile.ui.fragments.RecommendationsFragment] (NavGraph Option B).
- * To be removed in Option C.
- */
 @AndroidEntryPoint
-class RecommendationsActivity : BaseActivity<ActivityRecommendationsBinding>() {
+class RecommendationsFragment : BaseFragment<FragmentRecommendationsBinding>() {
 
     private val viewModel: RecommendationsViewModel by viewModels()
 
     private lateinit var recAdapter: RecommendationAdapter<EnumAdvice>
 
-    override fun inflateBinding() = ActivityRecommendationsBinding.inflate(layoutInflater)
+    override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?) =
+        FragmentRecommendationsBinding.inflate(inflater, container, false)
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
-        CollapsibleToolbarHelper(this, binding.lytToolbar).build()
+        CollapsibleToolbarHelper(requireActivity() as androidx.appcompat.app.AppCompatActivity, binding.lytToolbar).build()
 
         recAdapter = RecommendationAdapter<EnumAdvice>(
-            context = this,
+            context = requireContext(),
             showIcon = false,
-            getLabel = { it.label(this) },
+            getLabel = { it.label(requireContext()) },
             getId = { it.name },
             onClick = { selected ->
                 viewModel.trackActiveAdvice(sessionManager.akilimoUser, selected.valueOption)
-                val intent = when (selected.valueOption) {
-                    EnumAdvice.FERTILIZER_RECOMMENDATIONS -> Intent(this, FrActivity::class.java)
-                    EnumAdvice.BEST_PLANTING_PRACTICES -> Intent(this, BppActivity::class.java)
-                    EnumAdvice.SCHEDULED_PLANTING_HIGH_STARCH -> Intent(this, SphActivity::class.java)
-                    EnumAdvice.INTERCROPPING_MAIZE -> Intent(this, IcMaizeActivity::class.java)
-                    EnumAdvice.INTERCROPPING_SWEET_POTATO -> Intent(this, IcSweetPotatoActivity::class.java)
+                val destId = when (selected.valueOption) {
+                    EnumAdvice.FERTILIZER_RECOMMENDATIONS -> R.id.frFragment
+                    EnumAdvice.BEST_PLANTING_PRACTICES -> R.id.bppFragment
+                    EnumAdvice.SCHEDULED_PLANTING_HIGH_STARCH -> R.id.sphFragment
+                    EnumAdvice.INTERCROPPING_MAIZE -> R.id.icMaizeFragment
+                    EnumAdvice.INTERCROPPING_SWEET_POTATO -> R.id.icSweetPotatoFragment
                 }
-                startActivity(intent)
+                findNavController().navigate(destId)
             }
         )
 
         binding.recommendationList.apply {
-            layoutManager = LinearLayoutManager(this@RecommendationsActivity)
+            layoutManager = LinearLayoutManager(requireContext())
             adapter = recAdapter
         }
 
