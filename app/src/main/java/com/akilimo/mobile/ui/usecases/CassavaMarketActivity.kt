@@ -86,10 +86,6 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
 
         factoryAdapter.onItemClick = { factory ->
             viewModel.selectFactory(factory)
-            val updatedList = factoryAdapter.currentList.map { item ->
-                item.copy().apply { isSelected = item.id == factory.id }
-            }
-            factoryAdapter.submitList(updatedList)
         }
 
         cassavaUnitAdapter.onItemClick = { unit ->
@@ -153,8 +149,14 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
-                    factoryAdapter.submitList(state.factories)
-                    cassavaUnitAdapter.submitList(state.cassavaUnits)
+                    val factories = state.factories.map { f ->
+                        f.copy().apply { isSelected = f.id == state.selectedFactoryId }
+                    }
+                    factoryAdapter.submitList(factories)
+                    val units = state.cassavaUnits.map { u ->
+                        u.copy().apply { isSelected = u.id == state.selectedUnitId }
+                    }
+                    cassavaUnitAdapter.submitList(units)
                     binding.swipeRefreshFactories.isRefreshing = state.factoriesRefreshing
                     binding.swipeRefreshUnits.isRefreshing = state.unitsRefreshing
 
@@ -188,10 +190,6 @@ class CassavaMarketActivity : BaseActivity<ActivityCassavaMarketBinding>() {
             prices = prices,
             onPriceSelected = { selectedPrice, uos ->
                 viewModel.saveSelectedPrice(sessionManager.akilimoUser, unit, uos, selectedPrice)
-                val updatedList = cassavaUnitAdapter.currentList.map {
-                    it.copy().apply { isSelected = it.id == unit.id }
-                }
-                cassavaUnitAdapter.submitList(updatedList)
             }
         ).show(supportFragmentManager, "CassavaPriceSelectionBottomSheet")
     }

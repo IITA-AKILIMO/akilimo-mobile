@@ -63,6 +63,10 @@ country-code-picker = "2.7.3"
 sonar = "7.0.1.6134"
 detekt = "1.23.8"
 
+coroutines = "1.9.0"
+turbine = "1.2.0"
+mockk = "1.13.14"
+
 debug-db = "v1.0.7"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -86,6 +90,9 @@ firebase-installations = { group = "com.google.firebase", name = "firebase-insta
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "play-services-location" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 
 #rxjava = { group = "io.reactivex.rxjava2", name = "rxjava", version.ref = "rxjava" }
 #rxandroid = { group = "io.reactivex.rxjava2", name = "rxandroid", version.ref = "rxandroid" }
