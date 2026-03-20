@@ -1,4 +1,4 @@
-name: Create next release
+name: Create next release PV
 on:
   push:
     branches:
@@ -13,13 +13,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Create or update release PR
+      - name: Create or update release PR-PV
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: release/next
           base: main
-          title: "Next release"
+          title: "Upcoming release"
           body: |
             Automated release PR from develop.
             Latest commit: ${{ github.event.head_commit.message }}
