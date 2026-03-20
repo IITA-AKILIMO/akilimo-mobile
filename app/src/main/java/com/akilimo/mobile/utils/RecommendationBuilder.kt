@@ -1,6 +1,6 @@
 package com.akilimo.mobile.utils
 
-import com.akilimo.mobile.AppDatabase
+import com.akilimo.mobile.database.AppDatabase
 import com.akilimo.mobile.dao.MaizePerformanceRepo
 import com.akilimo.mobile.enums.EnumCassavaProduceType
 import com.akilimo.mobile.enums.EnumMarketType
