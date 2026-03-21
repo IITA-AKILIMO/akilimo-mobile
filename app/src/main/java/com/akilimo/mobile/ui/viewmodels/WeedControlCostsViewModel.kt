@@ -2,6 +2,7 @@ package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.enums.EnumWeedControlMethod
@@ -53,7 +54,7 @@ class WeedControlCostsViewModel @Inject constructor(
         }
     }
 
-    fun saveCosts(firstCost: Double?, secondCost: Double?) = viewModelScope.launch {
+    fun saveCosts(firstCost: Double?, secondCost: Double?, method: EnumWeedControlMethod?) = viewModelScope.launch {
         val userId = _uiState.value.userId.takeIf { it != 0 } ?: return@launch
         val newCosts = FieldOperationCost(
             userId = userId,
@@ -66,6 +67,15 @@ class WeedControlCostsViewModel @Inject constructor(
             secondWeedingOperationCost = if (secondCost != null) newCosts.secondWeedingOperationCost else existing.secondWeedingOperationCost,
         ) ?: newCosts
         costsRepo.saveCost(merged)
+
+        if (method != null) {
+            val practice = currentPracticeRepo.getPracticeForUser(userId)
+            val updatedPractice = practice?.copy(weedControlMethod = method)
+                ?: CurrentPractice(userId = userId, weedControlMethod = method)
+            currentPracticeRepo.savePractice(updatedPractice)
+            _uiState.update { it.copy(weedControlMethod = method) }
+        }
+
         _uiState.update { it.copy(saved = true) }
     }
 

@@ -1,14 +1,10 @@
 package com.akilimo.mobile.ui.fragments
 
-import android.content.Intent
+import com.akilimo.mobile.R
 import com.akilimo.mobile.base.AbstractRecommendationFragment
 import com.akilimo.mobile.dto.UseCaseOption
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumUseCase
-import com.akilimo.mobile.ui.usecases.CassavaMarketActivity
-import com.akilimo.mobile.ui.usecases.CassavaYieldActivity
-import com.akilimo.mobile.ui.usecases.FertilizersActivity
-import com.akilimo.mobile.ui.usecases.InvestmentAmountActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,11 +19,11 @@ class FrFragment : AbstractRecommendationFragment() {
         UseCaseOption(EnumAdviceTask.CURRENT_CASSAVA_YIELD)
     )
 
-    override fun mapTaskToIntent(task: EnumAdviceTask): Intent? = when (task) {
-        EnumAdviceTask.AVAILABLE_FERTILIZERS -> Intent(requireContext(), FertilizersActivity::class.java)
-        EnumAdviceTask.INVESTMENT_AMOUNT -> Intent(requireContext(), InvestmentAmountActivity::class.java)
-        EnumAdviceTask.CASSAVA_MARKET_OUTLET -> Intent(requireContext(), CassavaMarketActivity::class.java)
-        EnumAdviceTask.CURRENT_CASSAVA_YIELD -> Intent(requireContext(), CassavaYieldActivity::class.java)
+    override fun mapTaskToDestination(task: EnumAdviceTask): Int? = when (task) {
+        EnumAdviceTask.AVAILABLE_FERTILIZERS -> R.id.fertilizerFragment
+        EnumAdviceTask.INVESTMENT_AMOUNT -> R.id.investmentAmountFragment
+        EnumAdviceTask.CASSAVA_MARKET_OUTLET -> R.id.cassavaMarketFragment
+        EnumAdviceTask.CURRENT_CASSAVA_YIELD -> R.id.cassavaYieldFragment
         else -> null
     }
 }
