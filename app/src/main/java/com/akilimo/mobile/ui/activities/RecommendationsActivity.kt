@@ -1,6 +1,8 @@
 package com.akilimo.mobile.ui.activities
 
 import android.os.Bundle
+import androidx.navigation.findNavController
+import com.akilimo.mobile.R
 import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.databinding.ActivityRecommendationsBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,4 +19,12 @@ class RecommendationsActivity : BaseActivity<ActivityRecommendationsBinding>() {
     override fun onBindingReady(savedInstanceState: Bundle?) {
         // NavHostFragment in the layout auto-starts RecommendationsFragment
     }
+
+    /**
+     * Delegate back presses to the NavController so that system back navigates
+     * within the recommendations graph instead of finishing the Activity.
+     * Returns false (→ finish()) only when the back stack is exhausted.
+     */
+    override fun handleBackPressed(): Boolean =
+        findNavController(R.id.nav_host_recommendations).popBackStack()
 }

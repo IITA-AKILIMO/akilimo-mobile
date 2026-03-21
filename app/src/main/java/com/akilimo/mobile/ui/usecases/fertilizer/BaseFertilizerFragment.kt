@@ -3,6 +3,7 @@ package com.akilimo.mobile.ui.usecases.fertilizer
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -58,6 +59,12 @@ abstract class BaseFertilizerFragment<VB : ViewBinding> : BaseFragment<VB>() {
     )
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() = handleBackNavigation()
+            }
+        )
         initHelpers()
         setupToolbar()
         setupRecycler()
