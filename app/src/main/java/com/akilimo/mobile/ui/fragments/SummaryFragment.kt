@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import com.akilimo.mobile.base.BaseStepFragment
 import com.akilimo.mobile.databinding.FragmentSummaryBinding
 import com.akilimo.mobile.databinding.ItemSummaryRowBinding
+import com.akilimo.mobile.enums.EnumOperationType
 import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
 import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.launch
@@ -67,6 +68,9 @@ class SummaryFragment : BaseStepFragment<FragmentSummaryBinding>() {
             addSection("🚜 Tillage Operations") {
                 user.tillageOperations.forEach {
                     addRow(it.operation.displayLabel, it.method.displayLabel)
+                }
+                user.weedControlMethod?.let {
+                    addRow(EnumOperationType.WEEDING.label(requireContext()), it.label(requireContext()))
                 }
             }
 

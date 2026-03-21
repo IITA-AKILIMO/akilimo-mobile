@@ -29,6 +29,7 @@ class WeedControlCostsFragment : BaseFragment<ActivityWeedControlCostsBinding>()
 
     private val viewModel: WeedControlCostsViewModel by viewModels()
     private val weedControlOptions = mutableListOf<WeedControlOption>()
+    private var selectedWeedControlMethod: EnumWeedControlMethod? = null
 
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?) =
         ActivityWeedControlCostsBinding.inflate(inflater, container, false)
@@ -49,12 +50,13 @@ class WeedControlCostsFragment : BaseFragment<ActivityWeedControlCostsBinding>()
             dropWeedControl.setAdapter(adapter)
             dropWeedControl.setOnItemClickListener { _, _, position, _ ->
                 val selected = weedControlOptions.getOrNull(position) ?: return@setOnItemClickListener
+                selectedWeedControlMethod = selected.valueOption
                 dropWeedControl.setText(selected.valueOption.label(requireContext()), false)
             }
             lytFabButton.fabSave.setOnClickListener {
                 val firstCost = etFirstWeedingCost.text?.toString()?.toDoubleOrNull()
                 val secondCost = etSecondWeedingCost.text?.toString()?.toDoubleOrNull()
-                viewModel.saveCosts(firstCost, secondCost)
+                viewModel.saveCosts(firstCost, secondCost, selectedWeedControlMethod)
             }
             etFirstWeedingCost.addTextChangedListener { toggleFab() }
             etSecondWeedingCost.addTextChangedListener { toggleFab() }
@@ -88,7 +90,10 @@ class WeedControlCostsFragment : BaseFragment<ActivityWeedControlCostsBinding>()
                         tilSecondWeedingCost.helperText = with(requireContext()) { StringHelper.run { formatWithLandSize(R.string.lbl_cost_of_second_weeding_operation, state.farmSize, sizeUnitLabel) } }
                         if (etFirstWeedingCost.text.isNullOrEmpty()) etFirstWeedingCost.setText(state.firstWeedingCost.toString())
                         if (etSecondWeedingCost.text.isNullOrEmpty()) etSecondWeedingCost.setText(state.secondWeedingCost.toString())
-                        state.weedControlMethod?.let { dropWeedControl.setText(it.label(requireContext()), false) }
+                        state.weedControlMethod?.let {
+                        if (selectedWeedControlMethod == null) selectedWeedControlMethod = it
+                        dropWeedControl.setText(it.label(requireContext()), false)
+                    }
                     }
                     toggleFab()
                 }

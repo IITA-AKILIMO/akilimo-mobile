@@ -28,6 +28,7 @@ class WeedControlCostsActivity : BaseActivity<ActivityWeedControlCostsBinding>()
     private val viewModel: WeedControlCostsViewModel by viewModels()
 
     private val weedControlOptions = mutableListOf<WeedControlOption>()
+    private var selectedWeedControlMethod: EnumWeedControlMethod? = null
 
     override fun inflateBinding() = ActivityWeedControlCostsBinding.inflate(layoutInflater)
 
@@ -47,6 +48,7 @@ class WeedControlCostsActivity : BaseActivity<ActivityWeedControlCostsBinding>()
             dropWeedControl.setAdapter(areaUnitAdapter)
             dropWeedControl.setOnItemClickListener { _, _, position, _ ->
                 val selected = weedControlOptions.getOrNull(position) ?: return@setOnItemClickListener
+                selectedWeedControlMethod = selected.valueOption
                 dropWeedControl.setText(
                     selected.valueOption.label(this@WeedControlCostsActivity), false
                 )
@@ -54,7 +56,7 @@ class WeedControlCostsActivity : BaseActivity<ActivityWeedControlCostsBinding>()
             lytFabButton.fabSave.setOnClickListener {
                 val firstCost = etFirstWeedingCost.text?.toString()?.toDoubleOrNull()
                 val secondCost = etSecondWeedingCost.text?.toString()?.toDoubleOrNull()
-                viewModel.saveCosts(firstCost, secondCost)
+                viewModel.saveCosts(firstCost, secondCost, selectedWeedControlMethod)
             }
             etFirstWeedingCost.addTextChangedListener { toggleFab() }
             etSecondWeedingCost.addTextChangedListener { toggleFab() }
@@ -98,6 +100,7 @@ class WeedControlCostsActivity : BaseActivity<ActivityWeedControlCostsBinding>()
                         }
 
                         state.weedControlMethod?.let { method ->
+                            if (selectedWeedControlMethod == null) selectedWeedControlMethod = method
                             dropWeedControl.setText(method.label(this@WeedControlCostsActivity), false)
                         }
                     }

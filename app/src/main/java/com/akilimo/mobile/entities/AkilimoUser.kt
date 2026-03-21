@@ -9,6 +9,7 @@ import com.akilimo.mobile.enums.EnumAdvice
 import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.enums.EnumCountry
 import com.akilimo.mobile.enums.EnumInvestmentPref
+import com.akilimo.mobile.enums.EnumWeedControlMethod
 import java.time.LocalDate
 import java.util.Locale
 
@@ -108,6 +109,9 @@ data class AkilimoUser(
 
     @ColumnInfo(name = "tillage_operations")
     val tillageOperations: List<OperationEntry> = emptyList(),
+
+    @ColumnInfo(name = "weed_control_method")
+    val weedControlMethod: EnumWeedControlMethod? = null,
 
     @ColumnInfo(name = "investment_preferences")
     val investmentPref: EnumInvestmentPref? = null,
