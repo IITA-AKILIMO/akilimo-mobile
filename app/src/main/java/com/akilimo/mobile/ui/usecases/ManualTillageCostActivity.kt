@@ -10,6 +10,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.akilimo.mobile.R
 import com.akilimo.mobile.base.BaseActivity
 import com.akilimo.mobile.databinding.ActivityManualTillageCostBinding
+import androidx.core.view.isVisible
 import com.akilimo.mobile.entities.AdviceCompletionDto
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumStepStatus
@@ -31,8 +32,9 @@ class ManualTillageCostActivity : BaseActivity<ActivityManualTillageCostBinding>
 
         binding.apply {
             lytFabButton.fabSave.setOnClickListener {
-                val ridingCost = etRidingCost.text?.toString()?.toDoubleOrNull()
-                val ploughingCost = etPloughingCost.text?.toString()?.toDoubleOrNull()
+                val state = viewModel.uiState.value
+                val ridingCost = if (state.performRidging) etRidingCost.text?.toString()?.toDoubleOrNull() else null
+                val ploughingCost = if (state.performPloughing) etPloughingCost.text?.toString()?.toDoubleOrNull() else null
                 viewModel.saveCosts(ridingCost, ploughingCost)
             }
             etPloughingCost.addTextChangedListener { toggleFab() }
@@ -62,24 +64,20 @@ class ManualTillageCostActivity : BaseActivity<ActivityManualTillageCostBinding>
 
                     val sizeUnitLabel = state.enumAreaUnit.label(this@ManualTillageCostActivity).orEmpty()
                     binding.apply {
-                        tvManualPlough.text = formatWithLandSize(
-                            R.string.lbl_manual_tillage_cost, state.farmSize, sizeUnitLabel
-                        )
-                        tilPloughingCost.hint = formatWithLandSize(
-                            R.string.lbl_manual_tillage_cost_hint, state.farmSize, sizeUnitLabel
-                        )
-                        tvManualRidge.text = formatWithLandSize(
-                            R.string.lbl_manual_ridge_cost, state.farmSize, sizeUnitLabel
-                        )
-                        tilRidgingCost.hint = formatWithLandSize(
-                            R.string.lbl_manual_ridge_cost_hint, state.farmSize, sizeUnitLabel
-                        )
+                        tvManualRidge.isVisible = state.performRidging
+                        tilRidgingCost.isVisible = state.performRidging
+                        tvManualPlough.isVisible = state.performPloughing
+                        tilPloughingCost.isVisible = state.performPloughing
 
-                        if (state.manualRidgeCost != null && etRidingCost.text.isNullOrEmpty()) {
-                            etRidingCost.setText(state.manualRidgeCost.toString())
+                        if (state.performPloughing) {
+                            tvManualPlough.text = formatWithLandSize(R.string.lbl_manual_tillage_cost, state.farmSize, sizeUnitLabel)
+                            tilPloughingCost.hint = formatWithLandSize(R.string.lbl_manual_tillage_cost_hint, state.farmSize, sizeUnitLabel)
+                            if (state.manualPloughCost != null && etPloughingCost.text.isNullOrEmpty()) etPloughingCost.setText(state.manualPloughCost.toString())
                         }
-                        if (state.manualPloughCost != null && etPloughingCost.text.isNullOrEmpty()) {
-                            etPloughingCost.setText(state.manualPloughCost.toString())
+                        if (state.performRidging) {
+                            tvManualRidge.text = formatWithLandSize(R.string.lbl_manual_ridge_cost, state.farmSize, sizeUnitLabel)
+                            tilRidgingCost.hint = formatWithLandSize(R.string.lbl_manual_ridge_cost_hint, state.farmSize, sizeUnitLabel)
+                            if (state.manualRidgeCost != null && etRidingCost.text.isNullOrEmpty()) etRidingCost.setText(state.manualRidgeCost.toString())
                         }
                     }
                     toggleFab()
@@ -100,14 +98,17 @@ class ManualTillageCostActivity : BaseActivity<ActivityManualTillageCostBinding>
         val ploughInput = parseNonNegativeDouble(binding.etPloughingCost.text)
         val ridgeInput = parseNonNegativeDouble(binding.etRidingCost.text)
 
-        val ploughChanged = ploughInput != null && ploughInput != (state.manualPloughCost ?: 0.0)
-        val ridgeChanged = ridgeInput != null && ridgeInput != (state.manualRidgeCost ?: 0.0)
+        val ploughChanged = state.performPloughing && ploughInput != null && ploughInput != (state.manualPloughCost ?: 0.0)
+        val ridgeChanged = state.performRidging && ridgeInput != null && ridgeInput != (state.manualRidgeCost ?: 0.0)
 
         return ploughChanged || ridgeChanged
     }
 
     private fun toggleFab() {
-        val shouldShow = viewModel.uiState.value.let { it.userId != 0 && (it.manualPloughCost == null || hasFormChanged()) }
+        val state = viewModel.uiState.value
+        val costMissing = (state.performPloughing && state.manualPloughCost == null) ||
+                          (state.performRidging && state.manualRidgeCost == null)
+        val shouldShow = state.userId != 0 && (costMissing || hasFormChanged())
         binding.lytFabButton.fabSave.apply {
             if (shouldShow) show() else hide()
         }

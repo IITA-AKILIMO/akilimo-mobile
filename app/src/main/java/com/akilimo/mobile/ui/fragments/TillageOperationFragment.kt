@@ -17,6 +17,7 @@ import com.akilimo.mobile.dto.OperationTypeOption
 import com.akilimo.mobile.dto.WeedControlOption
 import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.entities.CurrentPractice
+import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumOperationMethod
 import com.akilimo.mobile.enums.EnumOperationType
 import com.akilimo.mobile.enums.EnumWeedControlMethod
@@ -197,6 +198,12 @@ class TillageOperationFragment : BaseStepFragment<FragmentTillageOperationBindin
                     weedControlMethod = weedMethod
                 )
                 onboardingViewModel.saveCurrentPractice(updated)
+
+                val hasManual = selectedEntries.values.any { it.method.valueOption == EnumOperationMethod.MANUAL }
+                val hasTractor = selectedEntries.values.any { it.method.valueOption == EnumOperationMethod.TRACTOR }
+                if (hasManual) onboardingViewModel.markStepInProgress(EnumAdviceTask.MANUAL_TILLAGE_COST)
+                if (hasTractor) onboardingViewModel.markStepInProgress(EnumAdviceTask.TRACTOR_ACCESS)
+                if (weedMethod != null) onboardingViewModel.markStepInProgress(EnumAdviceTask.COST_OF_WEED_CONTROL)
             }
         }
 
