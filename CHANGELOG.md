@@ -7,6 +7,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- Docs: update changelog
+
+
+### Features
+
+- Feat: pre-fill BPP screens from onboarding tillage selections
+
+- TillageOperationFragment.verifyStep() now also writes to CurrentPractice
+  (performPloughing, ploughingMethod, performRidging, ridgingMethod,
+  weedControlMethod) so RecommendationBuilder has correct values
+  even before the user completes any BPP use-case screen
+- OnboardingViewModel: inject CurrentPracticeRepo and expose
+  saveCurrentPractice() / getCurrentPractice() for use during onboarding
+- TractorAccessViewModel.loadData(): pre-fill tractorAvailable=true when
+  AkilimoUser.tillageOperations shows TRACTOR was selected in onboarding
+  (falls back gracefully if BPP has already been filled)
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+- Feat: pre-fill BPP screens from onboarding tillage selections 
+
+- Feat: context-aware BPP screens and onboarding step status pre-fill
+
+- ManualTillageCostViewModel: load CurrentPractice to expose
+  performPloughing/performRidging in UiState
+- ManualTillageCostFragment + Activity: show/hide ploughing and ridging
+  sections based on what the user opted into during onboarding — if the
+  user said no ploughing, the ploughing cost field is hidden
+- AdviceCompletionRepo: add markInProgressIfNotCompleted() to safely
+  set a step to IN_PROGRESS without downgrading COMPLETED steps
+- OnboardingViewModel: inject AdviceCompletionRepo and expose
+  markStepInProgress()
+- TillageOperationFragment.verifyStep(): after writing CurrentPractice,
+  mark MANUAL_TILLAGE_COST, TRACTOR_ACCESS, and COST_OF_WEED_CONTROL
+  as IN_PROGRESS on the BPP screen based on the user's onboarding
+  selections, so the step badges reflect pre-filled data
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+- Feat: context-aware BPP screens and onboarding step status pre-fill 
+
+
+## [31.1.0] - 2026-03-21
+
 ### Bug Fixes
 
 - Fix/ui 
