@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.repos.AkilimoUserRepo
+import com.akilimo.mobile.repos.CurrentPracticeRepo
 import com.akilimo.mobile.repos.FieldOperationCostsRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -17,7 +18,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class ManualTillageCostViewModel @Inject constructor(
     private val userRepo: AkilimoUserRepo,
-    private val costsRepo: FieldOperationCostsRepo
+    private val costsRepo: FieldOperationCostsRepo,
+    private val currentPracticeRepo: CurrentPracticeRepo
 ) : ViewModel() {
 
     data class UiState(
@@ -26,6 +28,8 @@ class ManualTillageCostViewModel @Inject constructor(
         val enumAreaUnit: EnumAreaUnit = EnumAreaUnit.ACRE,
         val manualPloughCost: Double? = null,
         val manualRidgeCost: Double? = null,
+        val performPloughing: Boolean = true,
+        val performRidging: Boolean = true,
         val saved: Boolean = false
     )
 
@@ -36,13 +40,16 @@ class ManualTillageCostViewModel @Inject constructor(
         val user = userRepo.getUser(userName) ?: return@launch
         val userId = user.id ?: return@launch
         val cost = costsRepo.getCostForUser(userId)
+        val practice = currentPracticeRepo.getPracticeForUser(userId)
         _uiState.update {
             it.copy(
                 userId = userId,
                 farmSize = user.farmSize,
                 enumAreaUnit = user.enumAreaUnit,
                 manualPloughCost = cost?.manualPloughCost,
-                manualRidgeCost = cost?.manualRidgeCost
+                manualRidgeCost = cost?.manualRidgeCost,
+                performPloughing = practice?.performPloughing ?: true,
+                performRidging = practice?.performRidging ?: true
             )
         }
     }
