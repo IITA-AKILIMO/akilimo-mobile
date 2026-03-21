@@ -16,6 +16,8 @@ import com.akilimo.mobile.dto.OperationMethodOption
 import com.akilimo.mobile.dto.OperationTypeOption
 import com.akilimo.mobile.dto.WeedControlOption
 import com.akilimo.mobile.entities.AkilimoUser
+import com.akilimo.mobile.entities.CurrentPractice
+import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumOperationMethod
 import com.akilimo.mobile.enums.EnumOperationType
 import com.akilimo.mobile.enums.EnumWeedControlMethod
@@ -162,16 +164,47 @@ class TillageOperationFragment : BaseStepFragment<FragmentTillageOperationBindin
             return ValidationError(getString(R.string.lbl_select_tillage_method))
         }
 
+        val weedMethod = if (weedingRowBinding.checkboxOperation.isChecked) selectedWeedingMethod else null
+        val ploughingEntry = selectedEntries[EnumOperationType.PLOUGHING]
+        val ridgingEntry = selectedEntries[EnumOperationType.RIDGING]
+
         safeScope.launch {
             val user = onboardingViewModel.getUser(sessionManager.akilimoUser)
                 ?: AkilimoUser(userName = sessionManager.akilimoUser)
+            val userId = user.id
+
             onboardingViewModel.saveUser(
                 user.copy(
                     tillageOperations = selectedEntries.values.toList(),
-                    weedControlMethod = if (weedingRowBinding.checkboxOperation.isChecked) selectedWeedingMethod else null
+                    weedControlMethod = weedMethod
                 ),
                 sessionManager.akilimoUser
             )
+
+            if (userId != null) {
+                val existing = onboardingViewModel.getCurrentPractice(userId)
+                val updated = existing?.copy(
+                    performPloughing = ploughingEntry != null,
+                    ploughingMethod = ploughingEntry?.method?.valueOption?.name,
+                    performRidging = ridgingEntry != null,
+                    ridgingMethod = ridgingEntry?.method?.valueOption?.name,
+                    weedControlMethod = weedMethod ?: existing.weedControlMethod
+                ) ?: CurrentPractice(
+                    userId = userId,
+                    performPloughing = ploughingEntry != null,
+                    ploughingMethod = ploughingEntry?.method?.valueOption?.name,
+                    performRidging = ridgingEntry != null,
+                    ridgingMethod = ridgingEntry?.method?.valueOption?.name,
+                    weedControlMethod = weedMethod
+                )
+                onboardingViewModel.saveCurrentPractice(updated)
+
+                val hasManual = selectedEntries.values.any { it.method.valueOption == EnumOperationMethod.MANUAL }
+                val hasTractor = selectedEntries.values.any { it.method.valueOption == EnumOperationMethod.TRACTOR }
+                if (hasManual) onboardingViewModel.markStepInProgress(EnumAdviceTask.MANUAL_TILLAGE_COST)
+                if (hasTractor) onboardingViewModel.markStepInProgress(EnumAdviceTask.TRACTOR_ACCESS)
+                if (weedMethod != null) onboardingViewModel.markStepInProgress(EnumAdviceTask.COST_OF_WEED_CONTROL)
+            }
         }
 
         return null

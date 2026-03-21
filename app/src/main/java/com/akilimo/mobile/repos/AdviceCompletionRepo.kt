@@ -4,6 +4,7 @@ import com.akilimo.mobile.dao.AdviceCompletionDao
 import com.akilimo.mobile.entities.AdviceCompletion
 import com.akilimo.mobile.entities.AdviceCompletionDto
 import com.akilimo.mobile.enums.EnumAdviceTask
+import com.akilimo.mobile.enums.EnumStepStatus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.Date
@@ -25,5 +26,12 @@ class AdviceCompletionRepo(private val dao: AdviceCompletionDao) {
 
     suspend fun clearCompleted(task: EnumAdviceTask) {
         dao.delete(task)
+    }
+
+    suspend fun markInProgressIfNotCompleted(task: EnumAdviceTask) {
+        val existing = dao.getAdviceByTask(task)
+        if (existing?.stepStatus != EnumStepStatus.COMPLETED) {
+            dao.upsert(AdviceCompletion(taskName = task, stepStatus = EnumStepStatus.IN_PROGRESS))
+        }
     }
 }
