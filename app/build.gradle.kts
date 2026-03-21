@@ -81,7 +81,7 @@ android {
         versionCode = appVersionCode
         versionName = releaseVersionName
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.akilimo.mobile.HiltTestRunner"
 
         val fuelrodBaseUrl =
             env.FUELROD_BASE_URL.orElse("https://akilimo.fuelrod.com")
@@ -259,6 +259,12 @@ dependencies {
     testImplementation(libs.mockk)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.hilt.testing)
+    androidTestImplementation(libs.navigation.testing)
+    androidTestImplementation(libs.mockk.android)
+    androidTestImplementation(libs.room.testing)
+    androidTestImplementation(libs.coroutines.test)
+    kaptAndroidTest(libs.hilt.compiler)
 
     // Region: Debug Tools
     debugImplementation(libs.debug.db)

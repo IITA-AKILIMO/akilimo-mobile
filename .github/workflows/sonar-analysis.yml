@@ -1,4 +1,4 @@
-name: Sonar Checks
+name: Sonar Analysis
 
 on:
   push:

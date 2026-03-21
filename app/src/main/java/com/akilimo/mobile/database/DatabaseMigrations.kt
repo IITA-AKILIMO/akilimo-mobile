@@ -27,4 +27,15 @@ object DatabaseMigrations {
             db.execSQL("ALTER TABLE akilimo_users ADD COLUMN last_sync_at INTEGER DEFAULT NULL")
         }
     }
+
+    /**
+     * v4 → v5: Add weed_control_method column to akilimo_users.
+     * Captures the weeding method selected during onboarding so it
+     * pre-fills the BPP weed-control use-case screen.
+     */
+    val MIGRATION_4_5 = object : Migration(4, 5) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE akilimo_users ADD COLUMN weed_control_method TEXT DEFAULT NULL")
+        }
+    }
 }

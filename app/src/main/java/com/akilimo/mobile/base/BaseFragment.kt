@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
-import com.akilimo.mobile.AppDatabase
+import com.akilimo.mobile.database.AppDatabase
 import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.data.AppSettingsEntryPoint
 import dagger.hilt.android.EntryPointAccessors

@@ -1,0 +1,239 @@
+package com.akilimo.mobile.ui.fragments.usecases
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.os.bundleOf
+import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
+import com.akilimo.mobile.R
+import com.akilimo.mobile.adapters.ValueOptionAdapter
+import com.akilimo.mobile.base.BaseFragment
+import com.akilimo.mobile.databinding.ActivityAlternativePlantingScheduleBinding
+import com.akilimo.mobile.dto.PlantingFlexOption
+import com.akilimo.mobile.entities.AdviceCompletionDto
+import com.akilimo.mobile.enums.EnumAdviceTask
+import com.akilimo.mobile.enums.EnumStepStatus
+import com.akilimo.mobile.ui.components.CustomDatePicker
+import com.akilimo.mobile.ui.viewmodels.DatesViewModel
+import com.akilimo.mobile.utils.DateHelper
+import com.akilimo.mobile.utils.DateHelper.olderThanCurrent
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+
+@AndroidEntryPoint
+class DatesFragment : BaseFragment<ActivityAlternativePlantingScheduleBinding>() {
+
+    private val viewModel: DatesViewModel by viewModels()
+
+    private var plantingDate: LocalDate? = null
+    private var harvestDate: LocalDate? = null
+    private var alternativeDate = false
+    private var alreadyPlanted = false
+    private var flexOptions: List<PlantingFlexOption> = emptyList()
+
+    override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?) =
+        ActivityAlternativePlantingScheduleBinding.inflate(inflater, container, false)
+
+    override fun onBindingReady(savedInstanceState: Bundle?) {
+        flexOptions = listOf(
+            PlantingFlexOption(getString(R.string.lbl_no_flexibility), 0),
+            PlantingFlexOption(getString(R.string.lbl_one_month_window), 1),
+            PlantingFlexOption(getString(R.string.lbl_two_month_window), 2),
+        )
+
+        setupUI()
+        observeViewModel()
+        binding.fabSave.hide()
+        viewModel.loadData(sessionManager.akilimoUser)
+    }
+
+    private fun setupUI() = with(binding.lytPlantingSectionActivity) {
+        binding.switchAlternativePlanting.setOnCheckedChangeListener { _, isChecked ->
+            alternativeDate = isChecked
+            root.visibility = if (isChecked) View.VISIBLE else View.GONE
+            toggleFab()
+        }
+
+        binding.fabSave.setOnClickListener {
+            savePlantingSchedule()
+            toggleFab()
+        }
+
+        setupFlexSpinner(dropPlantingFlex)
+        setupFlexSpinner(dropHarvestFlex)
+
+        switchFlexibleDates.setOnCheckedChangeListener { _, isChecked ->
+            cardFlexOptions.visibility = if (isChecked) View.VISIBLE else View.GONE
+        }
+
+        inputPlantingDate.setOnClickListener { showPlantingDatePicker() }
+        inputHarvestDate.setOnClickListener { showHarvestDatePicker() }
+        inputPlantingDate.addTextChangedListener { toggleFab() }
+        inputHarvestDate.addTextChangedListener { toggleFab() }
+    }
+
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    if (state.saved) {
+                        val completion = AdviceCompletionDto(
+                            EnumAdviceTask.PLANTING_AND_HARVEST, EnumStepStatus.COMPLETED
+                        )
+                        parentFragmentManager.setFragmentResult(
+                            UseCaseResults.ADVICE_COMPLETION,
+                            bundleOf(UseCaseResults.ADVICE_COMPLETION_DTO to completion)
+                        )
+                        viewModel.onSaveHandled()
+                        findNavController().popBackStack()
+                        return@collect
+                    }
+
+                    state.user ?: return@collect
+                    populateUserData(state)
+                }
+            }
+        }
+    }
+
+    private fun populateUserData(state: DatesViewModel.UiState) =
+        with(binding.lytPlantingSectionActivity) {
+            val user = state.user ?: return@with
+            binding.switchAlternativePlanting.isChecked =
+                user.providedAlterNativeDate.also { alternativeDate = it }
+            plantingDate =
+                user.plantingDate?.also { inputPlantingDate.setText(DateHelper.formatToString(it)) }
+            harvestDate =
+                user.harvestDate?.also { inputHarvestDate.setText(DateHelper.formatToString(it)) }
+            alreadyPlanted = olderThanCurrent(plantingDate)
+
+            if (user.plantingFlex > 0 || user.harvestFlex > 0) {
+                switchFlexibleDates.isChecked = true
+                layoutFlexOptions.visibility = View.VISIBLE
+            }
+
+            dropPlantingFlex.setText(
+                flexOptions.find { it.valueOption == user.plantingFlex }?.displayLabel.orEmpty(), false
+            )
+            dropHarvestFlex.setText(
+                flexOptions.find { it.valueOption == user.harvestFlex }?.displayLabel.orEmpty(), false
+            )
+        }
+
+    private fun setupFlexSpinner(spinnerInput: MaterialAutoCompleteTextView) {
+        val adapter = ValueOptionAdapter(requireContext(), flexOptions)
+        spinnerInput.setAdapter(adapter)
+        spinnerInput.setOnItemClickListener { _, _, position, _ ->
+            val selected = adapter.getItem(position) ?: return@setOnItemClickListener
+            if (alreadyPlanted && spinnerInput == binding.lytPlantingSectionActivity.dropPlantingFlex) {
+                val defaultOption = flexOptions.first { it.valueOption == 0L }
+                spinnerInput.setText(defaultOption.displayLabel, false)
+                val snackBar = Snackbar.make(
+                    binding.root, getString(R.string.lbl_already_planted_text), Snackbar.LENGTH_INDEFINITE
+                )
+                snackBar.setAction(getString(R.string.lbl_ok)) { snackBar.dismiss() }
+                snackBar.show()
+            } else {
+                spinnerInput.setText(selected.displayLabel, false)
+            }
+            toggleFab()
+        }
+    }
+
+    private fun showPlantingDatePicker() {
+        val selectedFlexLabel = binding.lytPlantingSectionActivity.dropPlantingFlex.text.toString()
+        val flex = flexOptions.find { it.displayLabel == selectedFlexLabel }?.valueOption ?: 0
+        val minDate = LocalDate.now().minusMonths(4 + flex)
+        val maxDate = LocalDate.now().plusMonths(12 + flex)
+
+        CustomDatePicker(
+            context = requireContext(),
+            fragmentManager = childFragmentManager,
+            title = getString(R.string.lbl_planting_date),
+            minDate = minDate,
+            maxDate = maxDate,
+            initialDate = plantingDate
+        ) { selected ->
+            plantingDate = selected
+            alreadyPlanted = olderThanCurrent(selected)
+            binding.lytPlantingSectionActivity.apply {
+                inputPlantingDate.setText(DateHelper.formatToString(selected))
+                dropPlantingFlex.isEnabled = !alreadyPlanted
+                if (alreadyPlanted) {
+                    dropPlantingFlex.setText(flexOptions.first { it.valueOption == 0L }.displayLabel, false)
+                }
+                inputHarvestDate.text = null
+                harvestDate = null
+            }
+            toggleFab()
+        }.show()
+    }
+
+    private fun showHarvestDatePicker() {
+        val planting = plantingDate ?: run {
+            Toast.makeText(requireContext(), getString(R.string.lbl_planting_date_prompt), Toast.LENGTH_SHORT).show()
+            return
+        }
+        val selectedFlexLabel = binding.lytPlantingSectionActivity.dropHarvestFlex.text.toString()
+        val flex = flexOptions.find { it.displayLabel == selectedFlexLabel }?.valueOption ?: 0
+        val minDate = planting.plusMonths(8 - flex)
+        val maxDate = planting.plusMonths(16 + flex)
+
+        CustomDatePicker(
+            context = requireContext(),
+            fragmentManager = childFragmentManager,
+            title = getString(R.string.lbl_harvesting_date),
+            minDate = minDate,
+            maxDate = maxDate,
+            initialDate = harvestDate
+        ) { selected ->
+            harvestDate = selected
+            binding.lytPlantingSectionActivity.inputHarvestDate.setText(DateHelper.formatToString(selected))
+            toggleFab()
+        }.show()
+    }
+
+    private fun savePlantingSchedule() = with(binding.lytPlantingSectionActivity) {
+        lytPlantingDate.error = null
+        lytHarvestDate.error = null
+        if (plantingDate == null) { lytPlantingDate.error = getString(R.string.lbl_planting_date_prompt); return@with }
+        if (harvestDate == null) { lytHarvestDate.error = getString(R.string.lbl_harvest_date_prompt); return@with }
+        val plantingFlex = flexOptions.find { it.displayLabel == dropPlantingFlex.text.toString() }?.valueOption ?: 0
+        val harvestFlex = flexOptions.find { it.displayLabel == dropHarvestFlex.text.toString() }?.valueOption ?: 0
+        viewModel.saveSchedule(
+            userName = sessionManager.akilimoUser,
+            plantingDate = plantingDate!!,
+            harvestDate = harvestDate!!,
+            plantingFlex = plantingFlex,
+            harvestFlex = harvestFlex,
+            alternativeDate = alternativeDate
+        )
+    }
+
+    private fun hasFormChanged(): Boolean {
+        val state = viewModel.uiState.value
+        val user = state.user ?: return false
+        return with(binding.lytPlantingSectionActivity) {
+            val plantingFlexLabel = flexOptions.find { it.valueOption == user.plantingFlex }?.displayLabel.orEmpty()
+            val harvestFlexLabel = flexOptions.find { it.valueOption == user.harvestFlex }?.displayLabel.orEmpty()
+            plantingDate != user.plantingDate || harvestDate != user.harvestDate ||
+                    alternativeDate != user.providedAlterNativeDate ||
+                    dropPlantingFlex.text.toString() != plantingFlexLabel ||
+                    dropHarvestFlex.text.toString() != harvestFlexLabel
+        }
+    }
+
+    private fun toggleFab() {
+        if (hasFormChanged()) binding.fabSave.show() else binding.fabSave.hide()
+    }
+}

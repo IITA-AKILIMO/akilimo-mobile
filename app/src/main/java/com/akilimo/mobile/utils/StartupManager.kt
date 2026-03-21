@@ -3,7 +3,7 @@ package com.akilimo.mobile.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import com.akilimo.mobile.AppDatabase
+import com.akilimo.mobile.database.AppDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

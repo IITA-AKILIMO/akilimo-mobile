@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Top-level navigation graph (Option A — Activity destinations).
-  Each host activity inflates this graph in a zero-size NavHostFragment so it
-  can call navController.navigate() without scattered Intent construction.
+  Top-level navigation graph.
+  HomeStepperActivity hosts a zero-size NavHostFragment and uses this graph
+  to navigate to RecommendationsActivity (which hosts its own sub-graph).
 
-  Option B: convert recommendation screens (FrActivity, BppActivity, …) to Fragments.
   Option C: full single-Activity migration including the onboarding wizard.
 -->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
@@ -14,39 +13,15 @@
 
     <!--
       Zero-size placeholder fragment used as startDestination so the NavHostFragment
-      does not auto-launch any Activity on initialisation.
+      does not auto-launch any destination on initialisation.
     -->
     <fragment
         android:id="@+id/navRouterFragment"
         android:name="com.akilimo.mobile.ui.fragments.NavRouterFragment"
         android:label="NavRouter" />
 
-    <!-- ── Top-level destinations ────────────────────────────────────────── -->
-
     <activity
         android:id="@+id/recommendationsActivity"
         android:name="com.akilimo.mobile.ui.activities.RecommendationsActivity" />
-
-    <!-- ── Recommendation destinations (launched from RecommendationsActivity) ── -->
-
-    <activity
-        android:id="@+id/frActivity"
-        android:name="com.akilimo.mobile.ui.activities.FrActivity" />
-
-    <activity
-        android:id="@+id/bppActivity"
-        android:name="com.akilimo.mobile.ui.activities.BppActivity" />
-
-    <activity
-        android:id="@+id/sphActivity"
-        android:name="com.akilimo.mobile.ui.activities.SphActivity" />
-
-    <activity
-        android:id="@+id/icMaizeActivity"
-        android:name="com.akilimo.mobile.ui.activities.IcMaizeActivity" />
-
-    <activity
-        android:id="@+id/icSweetPotatoActivity"
-        android:name="com.akilimo.mobile.ui.activities.IcSweetPotatoActivity" />
 
 </navigation>

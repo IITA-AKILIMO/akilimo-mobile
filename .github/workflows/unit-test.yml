@@ -1,19 +1,19 @@
 name: Unit Tests
 
 on:
-#  push:
-#    branches: ['**']
-#    paths:
-#      - 'app/src/**'
-#      - '**/*.gradle*'
-#      - 'gradle.properties'
-#      - 'gradle/libs.versions.toml'
-  pull_request:
+  push:
+    branches: ['**']
     paths:
       - 'app/src/**'
       - '**/*.gradle*'
       - 'gradle.properties'
       - 'gradle/libs.versions.toml'
+#  pull_request:
+#    paths:
+#      - 'app/src/**'
+#      - '**/*.gradle*'
+#      - 'gradle.properties'
+#      - 'gradle/libs.versions.toml'
   workflow_dispatch:
 
 jobs:

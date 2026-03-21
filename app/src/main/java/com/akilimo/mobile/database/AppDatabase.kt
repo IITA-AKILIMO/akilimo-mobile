@@ -1,11 +1,10 @@
-package com.akilimo.mobile
+package com.akilimo.mobile.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.akilimo.mobile.database.DatabaseMigrations
 import com.akilimo.mobile.dao.AdviceCompletionDao
 import com.akilimo.mobile.dao.AkilimoUserDao
 import com.akilimo.mobile.dao.CassavaMarketPriceDao
@@ -74,7 +73,7 @@ import com.akilimo.mobile.utils.EnumWeedControlConverter
         MaizePerformance::class,
         UserPreferences::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = true
 )
 @TypeConverters(
@@ -143,7 +142,8 @@ abstract class AppDatabase : RoomDatabase() {
             )
                 .addMigrations(
                     DatabaseMigrations.MIGRATION_2_3,
-                    DatabaseMigrations.MIGRATION_3_4
+                    DatabaseMigrations.MIGRATION_3_4,
+                    DatabaseMigrations.MIGRATION_4_5
                 )
                 .fallbackToDestructiveMigrationOnDowngrade(dropAllTables = true)
                 .build()

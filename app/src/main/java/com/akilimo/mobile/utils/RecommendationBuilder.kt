@@ -1,6 +1,6 @@
 package com.akilimo.mobile.utils
 
-import com.akilimo.mobile.AppDatabase
+import com.akilimo.mobile.database.AppDatabase
 import com.akilimo.mobile.dao.MaizePerformanceRepo
 import com.akilimo.mobile.enums.EnumCassavaProduceType
 import com.akilimo.mobile.enums.EnumMarketType
@@ -73,11 +73,12 @@ class RecommendationBuilder(
             costRidging = fieldOperations?.manualRidgeCost ?: 0.0
         )
         val practice = currentPracticeRepo.getPracticeForUser(profile.id ?: 0)
+        val weedMethod = practice?.weedControlMethod ?: profile.weedControlMethod
         val operationMethods = ComputeRequest.Methods(
             methodPloughing = practice?.ploughingMethod.orUnavailable(DEFAULT_UNAVAILABLE),
             methodHarrowing = practice?.harrowingMethod.orUnavailable(DEFAULT_UNAVAILABLE),
             methodRidging = practice?.ridgingMethod.orUnavailable(DEFAULT_UNAVAILABLE),
-            methodWeeding = practice?.weedControlMethod?.name.orUnavailable(DEFAULT_UNAVAILABLE),
+            methodWeeding = weedMethod?.name.orUnavailable(DEFAULT_UNAVAILABLE),
         )
 
 

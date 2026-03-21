@@ -3,7 +3,7 @@ package com.akilimo.mobile.base.workers
 import android.content.Context
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.akilimo.mobile.AppDatabase
+import com.akilimo.mobile.database.AppDatabase
 import com.akilimo.mobile.config.AppConfig
 import com.akilimo.mobile.enums.EnumServiceType
 import com.akilimo.mobile.interfaces.DefaultDispatcherProvider

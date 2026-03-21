@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Recommendations sub-graph (Option B).
+  Hosted by RecommendationsActivity in a full-size NavHostFragment.
+  RecommendationsFragment is the entry point; sub-fragments handle each use case.
+-->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_recommendations"
+    app:startDestination="@id/recommendationsFragment">
+
+    <fragment
+        android:id="@+id/recommendationsFragment"
+        android:name="com.akilimo.mobile.ui.fragments.RecommendationsFragment"
+        android:label="Recommendations">
+
+        <action
+            android:id="@+id/action_recommendations_to_fr"
+            app:destination="@id/frFragment" />
+        <action
+            android:id="@+id/action_recommendations_to_bpp"
+            app:destination="@id/bppFragment" />
+        <action
+            android:id="@+id/action_recommendations_to_sph"
+            app:destination="@id/sphFragment" />
+        <action
+            android:id="@+id/action_recommendations_to_icMaize"
+            app:destination="@id/icMaizeFragment" />
+        <action
+            android:id="@+id/action_recommendations_to_icSweetPotato"
+            app:destination="@id/icSweetPotatoFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/frFragment"
+        android:name="com.akilimo.mobile.ui.fragments.FrFragment"
+        android:label="Fertilizer Recommendations" />
+
+    <fragment
+        android:id="@+id/bppFragment"
+        android:name="com.akilimo.mobile.ui.fragments.BppFragment"
+        android:label="Best Planting Practices" />
+
+    <fragment
+        android:id="@+id/sphFragment"
+        android:name="com.akilimo.mobile.ui.fragments.SphFragment"
+        android:label="Scheduled Planting High Starch" />
+
+    <fragment
+        android:id="@+id/icMaizeFragment"
+        android:name="com.akilimo.mobile.ui.fragments.IcMaizeFragment"
+        android:label="Intercropping Maize" />
+
+    <fragment
+        android:id="@+id/icSweetPotatoFragment"
+        android:name="com.akilimo.mobile.ui.fragments.IcSweetPotatoFragment"
+        android:label="Intercropping Sweet Potato" />
+
+    <!-- Use-case fragments navigated to from recommendation sub-screens -->
+
+    <fragment
+        android:id="@+id/fertilizerFragment"
+        android:name="com.akilimo.mobile.ui.fragments.usecases.FertilizersFragment"
+        android:label="Fertilizers" />
+
+    <fragment
+        android:id="@+id/interCropFertilizersFragment"
+        android:name="com.akilimo.mobile.ui.fragments.usecases.InterCropFertilizersFragment"
+        android:label="Intercrop Fertilizers" />
+
+    <fragment
+        android:id="@+id/sweetPotatoInterCropFertilizersFragment"
+        android:name="com.akilimo.mobile.ui.fragments.usecases.SweetPotatoInterCropFertilizersFragment"
+        android:label="Sweet Potato Intercrop Fertilizers" />
+
+    <fragment
+        android:id="@+id/investmentAmountFragment"
+        android:name="com.akilimo.mobile.ui.fragments.usecases.InvestmentAmountFragment"
+        android:label="Investment Amount" />
+
+    <fragment
+        android:id="@+id/cassavaMarketFragment"
+        android:name="com.akilimo.mobile.ui.fragments.usecases.CassavaMarketFragment"
+        android:label="Cassava Market" />
+
+    <fragment
+        android:id="@+id/cassavaYieldFragment"
+        android:name="com.akilimo.mobile.ui.fragments.usecases.CassavaYieldFragment"
+        android:label="Cassava Yield" />
+
+    <fragment
+        android:id="@+id/datesFragment"
+        android:name="com.akilimo.mobile.ui.fragments.usecases.DatesFragment"
+        android:label="Planting and Harvest Dates" />
+
+    <fragment
+        android:id="@+id/manualTillageCostFragment"
+        android:name="com.akilimo.mobile.ui.fragments.usecases.ManualTillageCostFragment"
+        android:label="Manual Tillage Cost" />
+
+    <fragment
+        android:id="@+id/tractorAccessFragment"
+        android:name="com.akilimo.mobile.ui.fragments.usecases.TractorAccessFragment"
+        android:label="Tractor Access" />
+
+    <fragment
+        android:id="@+id/weedControlCostsFragment"
+        android:name="com.akilimo.mobile.ui.fragments.usecases.WeedControlCostsFragment"
+        android:label="Weed Control Costs" />
+
+    <fragment
+        android:id="@+id/maizeMarketFragment"
+        android:name="com.akilimo.mobile.ui.fragments.usecases.MaizeMarketFragment"
+        android:label="Maize Market" />
+
+    <fragment
+        android:id="@+id/maizePerformanceFragment"
+        android:name="com.akilimo.mobile.ui.fragments.usecases.MaizePerformanceFragment"
+        android:label="Maize Performance" />
+
+    <fragment
+        android:id="@+id/sweetPotatoMarketFragment"
+        android:name="com.akilimo.mobile.ui.fragments.usecases.SweetPotatoMarketFragment"
+        android:label="Sweet Potato Market" />
+
+    <fragment
+        android:id="@+id/getRecommendationFragment"
+        android:name="com.akilimo.mobile.ui.fragments.usecases.GetRecommendationFragment"
+        android:label="Get Recommendation" />
+
+</navigation>
