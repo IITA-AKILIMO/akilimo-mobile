@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.enums.EnumAreaUnit
+import com.akilimo.mobile.enums.EnumOperationMethod
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.FieldOperationCostsRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,12 +39,19 @@ class TractorAccessViewModel @Inject constructor(
         val user = userRepo.getUser(userName) ?: return@launch
         val userId = user.id ?: return@launch
         val cost = costsRepo.getCostForUser(userId)
+
+        // Pre-fill tractorAvailable from onboarding if not yet set in BPP
+        val tractorFromOnboarding = user.tillageOperations.any {
+            it.method.valueOption == EnumOperationMethod.TRACTOR
+        }
+        val tractorAvailable = cost?.tractorAvailable ?: tractorFromOnboarding
+
         _uiState.update {
             it.copy(
                 userId = userId,
                 farmSize = user.farmSize,
                 enumAreaUnit = user.enumAreaUnit,
-                tractorAvailable = cost?.tractorAvailable ?: false,
+                tractorAvailable = tractorAvailable,
                 tractorPloughCost = cost?.tractorPloughCost ?: 0.0,
                 tractorRidgeCost = cost?.tractorRidgeCost ?: 0.0,
                 tractorHarrowCost = cost?.tractorHarrowCost ?: 0.0
