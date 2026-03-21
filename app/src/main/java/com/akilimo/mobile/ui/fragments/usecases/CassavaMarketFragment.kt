@@ -20,6 +20,7 @@ import com.akilimo.mobile.entities.CassavaMarketPrice
 import com.akilimo.mobile.entities.CassavaUnit
 import com.akilimo.mobile.entities.SelectedCassavaMarket
 import com.akilimo.mobile.enums.EnumUnitOfSale
+import androidx.navigation.fragment.findNavController
 import com.akilimo.mobile.ui.components.ToolbarHelper
 import com.akilimo.mobile.ui.dialogs.CassavaPriceSelectionBottomSheet
 import com.akilimo.mobile.ui.viewmodels.CassavaMarketViewModel
@@ -50,7 +51,7 @@ class CassavaMarketFragment : BaseFragment<ActivityCassavaMarketBinding>() {
             .showBackButton(true)
             .setTitle(getString(R.string.lbl_cassava_price))
             .inflateMenu(R.menu.menu_fertilizers) { item -> onMenuItemClicked(item) }
-            .onNavigationClick { requireActivity().onBackPressedDispatcher.onBackPressed() }
+            .onNavigationClick { findNavController().popBackStack() }
             .build()
 
         setupRecyclerViews()

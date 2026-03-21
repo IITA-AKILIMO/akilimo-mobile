@@ -55,7 +55,7 @@ abstract class AbstractRecommendationFragment :
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
         ToolbarHelper(requireActivity() as androidx.appcompat.app.AppCompatActivity, binding.lytToolbar.toolbar)
-            .onNavigationClick { requireActivity().onBackPressedDispatcher.onBackPressed() }
+            .onNavigationClick { findNavController().popBackStack() }
             .build()
 
         val recAdapter = createRecommendationAdapter()

@@ -7,6 +7,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.akilimo.mobile.adapters.MaizePerformanceAdapter
 import com.akilimo.mobile.base.BaseFragment
@@ -27,7 +28,7 @@ class MaizePerformanceFragment : BaseFragment<ActivityMaizePerformanceBinding>()
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
         binding.toolbarLayout.toolbar.setNavigationOnClickListener {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+            findNavController().popBackStack()
         }
 
         maizePerformanceAdapter = MaizePerformanceAdapter().apply {
