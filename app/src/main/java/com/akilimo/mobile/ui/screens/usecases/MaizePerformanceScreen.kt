@@ -2,23 +2,15 @@ package com.akilimo.mobile.ui.screens.usecases
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,13 +26,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.akilimo.mobile.R
 import com.akilimo.mobile.dto.MaizePerfOption
-import com.akilimo.mobile.entities.AdviceCompletionDto
 import com.akilimo.mobile.enums.EnumAdviceTask
-import com.akilimo.mobile.enums.EnumStepStatus
+import com.akilimo.mobile.ui.components.compose.BackTopAppBar
+import com.akilimo.mobile.ui.components.compose.SaveBottomBar
 import com.akilimo.mobile.ui.components.compose.SelectionCard
+import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.MaizePerformanceViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MaizePerformanceScreen(
     navController: NavHostController,
@@ -53,16 +45,9 @@ fun MaizePerformanceScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.lbl_maize_performance)) },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.lbl_back)
-                        )
-                    }
-                },
+            BackTopAppBar(
+                title = stringResource(R.string.lbl_maize_performance),
+                onBack = { navController.popBackStack() },
                 actions = {
                     IconButton(onClick = { isGridLayout = !isGridLayout }) {
                         Icon(
@@ -76,27 +61,16 @@ fun MaizePerformanceScreen(
             )
         },
         bottomBar = {
-            Surface(shadowElevation = 4.dp) {
-                Button(
-                    onClick = {
-                        val option = selectedOption ?: return@Button
+            SaveBottomBar(
+                label = stringResource(R.string.lbl_save),
+                enabled = selectedOption != null,
+                onClick = {
+                    selectedOption?.let { option ->
                         viewModel.saveSelection(option.valueOption)
-                        navController.previousBackStackEntry
-                            ?.savedStateHandle
-                            ?.set(
-                                "completed_task",
-                                AdviceCompletionDto(EnumAdviceTask.MAIZE_PERFORMANCE, EnumStepStatus.COMPLETED)
-                            )
-                        navController.popBackStack()
-                    },
-                    enabled = selectedOption != null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    Text(stringResource(R.string.lbl_save))
+                        navController.completeTask(EnumAdviceTask.MAIZE_PERFORMANCE)
+                    }
                 }
-            }
+            )
         }
     ) { padding ->
         if (isGridLayout) {

@@ -13,22 +13,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,7 +33,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -47,13 +40,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.akilimo.mobile.R
-import com.akilimo.mobile.entities.AdviceCompletionDto
 import com.akilimo.mobile.entities.CassavaMarketPrice
 import com.akilimo.mobile.entities.CassavaUnit
 import com.akilimo.mobile.enums.EnumAdviceTask
-import com.akilimo.mobile.enums.EnumStepStatus
 import com.akilimo.mobile.enums.EnumUnitOfSale
 import com.akilimo.mobile.ui.components.compose.AkilimoTextField
+import com.akilimo.mobile.ui.components.compose.BackTopAppBar
+import com.akilimo.mobile.ui.components.compose.SaveBottomBar
+import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.CassavaMarketViewModel
 import com.akilimo.mobile.utils.MathHelper
 import kotlinx.coroutines.launch
@@ -92,48 +86,25 @@ fun CassavaMarketScreen(
         showPriceSheet = true
     }
 
+    val canConfirm = when (marketChoice) {
+        CassavaMarketViewModel.MarketChoice.FACTORY -> state.selectedFactoryId != null
+        CassavaMarketViewModel.MarketChoice.MARKET -> state.selectedUnitId != null
+        CassavaMarketViewModel.MarketChoice.NONE -> false
+    }
+
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.lbl_cassava_price)) },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.lbl_back)
-                        )
-                    }
-                }
+            BackTopAppBar(
+                title = stringResource(R.string.lbl_cassava_price),
+                onBack = { navController.popBackStack() }
             )
         },
         bottomBar = {
-            val canConfirm = when (marketChoice) {
-                CassavaMarketViewModel.MarketChoice.FACTORY -> state.selectedFactoryId != null
-                CassavaMarketViewModel.MarketChoice.MARKET -> state.selectedUnitId != null
-                CassavaMarketViewModel.MarketChoice.NONE -> false
-            }
-            Surface(shadowElevation = 4.dp) {
-                Button(
-                    onClick = {
-                        navController.previousBackStackEntry
-                            ?.savedStateHandle
-                            ?.set(
-                                "completed_task",
-                                AdviceCompletionDto(
-                                    EnumAdviceTask.CASSAVA_MARKET_OUTLET,
-                                    EnumStepStatus.COMPLETED
-                                )
-                            )
-                        navController.popBackStack()
-                    },
-                    enabled = canConfirm,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    Text(stringResource(R.string.lbl_confirm))
-                }
-            }
+            SaveBottomBar(
+                label = stringResource(R.string.lbl_confirm),
+                enabled = canConfirm,
+                onClick = { navController.completeTask(EnumAdviceTask.CASSAVA_MARKET_OUTLET) }
+            )
         }
     ) { padding ->
         Column(

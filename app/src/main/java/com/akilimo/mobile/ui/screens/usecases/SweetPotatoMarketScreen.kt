@@ -1,23 +1,13 @@
 package com.akilimo.mobile.ui.screens.usecases
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,18 +23,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.akilimo.mobile.R
-import com.akilimo.mobile.entities.AdviceCompletionDto
 import com.akilimo.mobile.entities.ProduceMarket
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumMarketType
 import com.akilimo.mobile.enums.EnumProduceType
-import com.akilimo.mobile.enums.EnumStepStatus
 import com.akilimo.mobile.enums.EnumUnitOfSale
 import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
 import com.akilimo.mobile.ui.components.compose.AkilimoTextField
+import com.akilimo.mobile.ui.components.compose.BackTopAppBar
+import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
+import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.ProduceMarketViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SweetPotatoMarketScreen(
     navController: NavHostController,
@@ -68,16 +58,7 @@ fun SweetPotatoMarketScreen(
 
     LaunchedEffect(state.saved) {
         if (state.saved) {
-            navController.previousBackStackEntry
-                ?.savedStateHandle
-                ?.set(
-                    "completed_task",
-                    AdviceCompletionDto(
-                        EnumAdviceTask.SWEET_POTATO_MARKET_OUTLET,
-                        EnumStepStatus.COMPLETED
-                    )
-                )
-            navController.popBackStack()
+            navController.completeTask(EnumAdviceTask.SWEET_POTATO_MARKET_OUTLET)
             viewModel.onSaveHandled()
         }
     }
@@ -86,26 +67,13 @@ fun SweetPotatoMarketScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.lbl_market_outlet_sweet_potato)) },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.lbl_back)
-                        )
-                    }
-                }
+            BackTopAppBar(
+                title = stringResource(R.string.lbl_market_outlet_sweet_potato),
+                onBack = { navController.popBackStack() }
             )
         }
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 16.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
+        ScrollableFormColumn(padding = padding) {
             Spacer(modifier = Modifier.height(8.dp))
 
             AkilimoDropdown(
@@ -114,7 +82,6 @@ fun SweetPotatoMarketScreen(
                 selectedOption = selectedUnit,
                 onOptionSelected = { selectedUnit = it },
                 displayText = { context.getString(it.labelRes) }
-
             )
 
             Spacer(modifier = Modifier.height(8.dp))

@@ -1,26 +1,13 @@
 package com.akilimo.mobile.ui.screens.recommendations
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -43,10 +30,11 @@ import com.akilimo.mobile.navigation.SweetPotatoInterCropFertilizersRoute
 import com.akilimo.mobile.navigation.SweetPotatoMarketRoute
 import com.akilimo.mobile.navigation.TractorAccessRoute
 import com.akilimo.mobile.navigation.WeedControlCostsRoute
+import com.akilimo.mobile.ui.components.compose.BackTopAppBar
+import com.akilimo.mobile.ui.components.compose.SaveBottomBar
 import com.akilimo.mobile.ui.viewmodels.AdviceCompletionViewModel
 import kotlinx.coroutines.flow.collectLatest
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UseCaseScreen(
     useCase: EnumUseCase,
@@ -99,29 +87,16 @@ fun UseCaseScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.lbl_recommendations)) },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.lbl_back),
-                        )
-                    }
-                }
+            BackTopAppBar(
+                title = stringResource(R.string.lbl_recommendations),
+                onBack = { navController.popBackStack() }
             )
         },
         bottomBar = {
-            Surface(shadowElevation = 4.dp) {
-                Button(
-                    onClick = { navController.navigate(GetRecommendationRoute(useCase.name)) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                ) {
-                    Text(stringResource(R.string.lbl_get_recommendations))
-                }
-            }
+            SaveBottomBar(
+                label = stringResource(R.string.lbl_get_recommendations),
+                onClick = { navController.navigate(GetRecommendationRoute(useCase.name)) }
+            )
         }
     ) { padding ->
         LazyColumn(contentPadding = padding) {

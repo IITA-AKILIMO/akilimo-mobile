@@ -19,8 +19,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -32,9 +30,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -53,13 +49,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.akilimo.mobile.R
-import com.akilimo.mobile.entities.AdviceCompletionDto
 import com.akilimo.mobile.entities.Fertilizer
 import com.akilimo.mobile.entities.FertilizerPrice
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumFertilizerFlow
-import com.akilimo.mobile.enums.EnumStepStatus
 import com.akilimo.mobile.ui.components.compose.AkilimoTextField
+import com.akilimo.mobile.ui.components.compose.BackTopAppBar
+import com.akilimo.mobile.ui.components.compose.SaveBottomBar
+import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.FertilizerViewModel
 import kotlinx.coroutines.launch
 
@@ -99,16 +96,9 @@ fun FertilizerScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(titleRes)) },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.lbl_back)
-                        )
-                    }
-                },
+            BackTopAppBar(
+                title = stringResource(titleRes),
+                onBack = { navController.popBackStack() },
                 actions = {
                     IconButton(onClick = { viewModel.toggleLayout() }) {
                         Icon(
@@ -122,25 +112,11 @@ fun FertilizerScreen(
             )
         },
         bottomBar = {
-            Surface(shadowElevation = 4.dp) {
-                Button(
-                    onClick = {
-                        navController.previousBackStackEntry
-                            ?.savedStateHandle
-                            ?.set(
-                                "completed_task",
-                                AdviceCompletionDto(adviceTask, EnumStepStatus.COMPLETED)
-                            )
-                        navController.popBackStack()
-                    },
-                    enabled = state.selectedIds.isNotEmpty(),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    Text(stringResource(R.string.lbl_finish))
-                }
-            }
+            SaveBottomBar(
+                label = stringResource(R.string.lbl_finish),
+                enabled = state.selectedIds.isNotEmpty(),
+                onClick = { navController.completeTask(adviceTask) }
+            )
         }
     ) { padding ->
         if (state.isGridLayout) {
