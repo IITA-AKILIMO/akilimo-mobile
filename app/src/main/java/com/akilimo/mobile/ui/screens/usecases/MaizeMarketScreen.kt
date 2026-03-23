@@ -76,7 +76,10 @@ fun MaizeMarketScreen(
                 ?.savedStateHandle
                 ?.set(
                     "completed_task",
-                    AdviceCompletionDto(EnumAdviceTask.MAIZE_MARKET_OUTLET, EnumStepStatus.COMPLETED)
+                    AdviceCompletionDto(
+                        EnumAdviceTask.MAIZE_MARKET_OUTLET,
+                        EnumStepStatus.COMPLETED
+                    )
                 )
             navController.popBackStack()
             viewModel.onSaveHandled()
@@ -137,17 +140,15 @@ fun MaizeMarketScreen(
                     label = { Text(stringResource(R.string.lbl_dry_grain)) }
                 )
             }
-
             Spacer(modifier = Modifier.height(8.dp))
-
             AkilimoDropdown(
                 label = stringResource(R.string.lbl_unit_price),
                 options = unitOptions,
                 selectedOption = selectedUnit,
                 onOptionSelected = { selectedUnit = it },
-                displayText = { it.unitOfSale(context) }
-            )
+                displayText = { context.getString(it.labelRes) }
 
+            )
             Spacer(modifier = Modifier.height(8.dp))
 
             AkilimoTextField(
@@ -166,7 +167,8 @@ fun MaizeMarketScreen(
                 onClick = {
                     val unit = selectedUnit ?: return@Button
                     val priceValue = price.toDoubleOrNull() ?: return@Button
-                    val produceType = if (isFreshCob) EnumProduceType.MAIZE_FRESH_COB else EnumProduceType.MAIZE_GRAIN
+                    val produceType =
+                        if (isFreshCob) EnumProduceType.MAIZE_FRESH_COB else EnumProduceType.MAIZE_GRAIN
                     viewModel.saveMarketEntry(
                         ProduceMarket(
                             userId = state.userId,

@@ -203,8 +203,6 @@ fun CassavaMarketScreen(
                 }
 
                 CassavaMarketViewModel.MarketChoice.MARKET -> {
-                    val context = LocalContext.current
-
                     LazyColumn(modifier = Modifier.weight(1f)) {
                         items(state.cassavaUnits, key = { it.id }) { unit ->
                             Card(
@@ -222,7 +220,7 @@ fun CassavaMarketScreen(
                                 Text(
                                     text = EnumUnitOfSale.entries
                                         .find { it.name == unit.label }
-                                        ?.label(context) ?: unit.label,   // pass context here
+                                        ?.let { stringResource(it.labelRes) } ?: unit.label,
                                     modifier = Modifier.padding(16.dp),
                                     style = MaterialTheme.typography.bodyMedium
                                 )

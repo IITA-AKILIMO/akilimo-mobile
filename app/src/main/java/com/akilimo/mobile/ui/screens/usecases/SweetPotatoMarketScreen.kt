@@ -72,7 +72,10 @@ fun SweetPotatoMarketScreen(
                 ?.savedStateHandle
                 ?.set(
                     "completed_task",
-                    AdviceCompletionDto(EnumAdviceTask.SWEET_POTATO_MARKET_OUTLET, EnumStepStatus.COMPLETED)
+                    AdviceCompletionDto(
+                        EnumAdviceTask.SWEET_POTATO_MARKET_OUTLET,
+                        EnumStepStatus.COMPLETED
+                    )
                 )
             navController.popBackStack()
             viewModel.onSaveHandled()
@@ -110,7 +113,8 @@ fun SweetPotatoMarketScreen(
                 options = unitOptions,
                 selectedOption = selectedUnit,
                 onOptionSelected = { selectedUnit = it },
-                displayText = { it.unitOfSale(context) }
+                displayText = { context.getString(it.labelRes) }
+
             )
 
             Spacer(modifier = Modifier.height(8.dp))
