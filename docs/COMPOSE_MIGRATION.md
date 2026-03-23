@@ -521,35 +521,33 @@ fun AkilimoNavHost(
 
 ## 7. Phased Migration Plan
 
-### Phase 0 — Enable Compose (1 day)
+### Phase 0 — Enable Compose ✅ Complete
 
 No user-visible changes.
 
-| Task |
-|---|
-| Uncomment `kotlin-compose` plugin in `libs.versions.toml` |
-| Add missing catalog entries (§3.1) |
-| Set `compose = true` and add Compose dependencies in `app/build.gradle.kts` |
-| Create `AkilimoTheme`, `AkilimoColors`, `AkilimoTypography`, `AkilimoShapes` |
-| Verify build passes — no screens changed yet |
+| Task | Status |
+|---|---|
+| Uncomment `kotlin-compose` plugin in `libs.versions.toml` | ✅ |
+| Add missing catalog entries (§3.1) | ✅ |
+| Set `compose = true` and add Compose dependencies in `app/build.gradle.kts` | ✅ |
+| Create `AkilimoTheme`, `AkilimoColors`, `AkilimoTypography`, `AkilimoShapes` | ✅ |
+| Verify build passes — no screens changed yet | ✅ |
 
 Branch: `feature/compose-foundation`
 
 ---
 
-### Phase 1 — Navigation Shell (1–2 days)
+### Phase 1 — Navigation Shell ✅ Complete
 
-Replace `HomeStepperActivity` as the launcher with `MainActivity`. Wire `AkilimoNavHost`.
-All legacy screens are still launched via the legacy path — this phase only establishes the
-entry point and navigation skeleton.
+`MainActivity` is the active Compose entry point. `AkilimoNavHost` wires all Phase 3 screens.
 
-| Task |
-|---|
-| Create `MainActivity.kt` with `setContent { AkilimoTheme { AkilimoNavHost() } }` |
-| Create `navigation/Route.kt` with all routes declared upfront |
-| Create `navigation/AkilimoNavHost.kt` — initially all destinations are `TODO()` placeholders |
-| Update `AndroidManifest.xml` — `MainActivity` as launcher, keep all legacy Activities |
-| Build and verify app launches |
+| Task | Status |
+|---|---|
+| Create `MainActivity.kt` with `setContent { AkilimoTheme { AkilimoNavHost() } }` | ✅ |
+| Create `navigation/Route.kt` with all routes declared upfront | ✅ |
+| Create `navigation/AkilimoNavHost.kt` | ✅ |
+| Update `AndroidManifest.xml` — `MainActivity` as launcher, keep all legacy Activities | ✅ |
+| Build and verify app launches | ✅ |
 
 Branch: `feature/compose-foundation` (same branch as Phase 0)
 
@@ -574,31 +572,29 @@ Branch: `feature/compose-onboarding`
 
 ---
 
-### Phase 3 — Recommendations & Use-Case Screens (1 week)
+### Phase 3 — Recommendations & Use-Case Screens ✅ Complete
 
-Work through screens in dependency order (outermost shell first):
+All use-case and recommendations screens are live in Compose. Shared components (`BackTopAppBar`, `SaveBottomBar`, `ScrollableFormColumn`, `NavExtensions.completeTask`) extracted to `ui/components/compose/` (see `docs/COMPOSE_COMPONENT_REFACTOR.md`).
 
-1. `RecommendationsScreen` — list of advice cards
-2. `FrScreen`, `BppScreen`, `SphScreen`, `IcMaizeScreen`, `IcSweetPotatoScreen`
-3. Use-case forms: `ManualTillageCostScreen`, `TractorAccessScreen`, `WeedControlCostsScreen`
-4. Data screens: `CassavaMarketScreen`, `CassavaYieldScreen`, `DatesScreen`, `InvestmentAmountScreen`
-5. Fertilizer screens: `FertilizersScreen`, `InterCropFertilizersScreen`, `SweetPotatoInterCropFertilizersScreen`
-6. `GetRecommendationScreen` (final step before showing results)
-
-For each screen: port ViewModel UiState to Event/Effect pattern → create `*Screen.kt` +
-`*Content` composable → wire into NavHost → delete Fragment/Activity + XML layout.
+| Screen | Status |
+|---|---|
+| `RecommendationsScreen`, `UseCaseScreen` | ✅ |
+| `ManualTillageCostScreen`, `TractorAccessScreen`, `WeedControlCostsScreen` | ✅ |
+| `CassavaMarketScreen`, `CassavaYieldScreen`, `DatesScreen`, `InvestmentAmountScreen` | ✅ |
+| `FertilizerScreen` (DEFAULT / CIM / CIS flows) | ✅ |
+| `MaizeMarketScreen`, `MaizePerformanceScreen`, `SweetPotatoMarketScreen` | ✅ |
+| `GetRecommendationScreen` | ✅ |
 
 Branch: `feature/compose-recommendations`
 
 ---
 
-### Phase 4 — Settings & Misc (2–3 days)
+### Phase 4 — Settings & Misc ✅ Complete
 
-| Task |
-|---|
-| `UserSettingsScreen` — settings form |
-| `LocationPickerScreen` — `AndroidView` wrapper for Mapbox (if no Compose SDK available) |
-| Any remaining dialogs or utility screens |
+| Task | Status |
+|---|---|
+| `UserSettingsScreen` — settings form | ✅ |
+| `LocationPickerScreen` — `AndroidView` wrapper for Mapbox | ✅ |
 
 Branch: `feature/compose-settings`
 

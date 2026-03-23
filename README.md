@@ -52,7 +52,7 @@ From current source configuration, the app includes country support for:
   - `minSdk = 21`
   - `targetSdk = 36`
   - `compileSdk = 36`
-- **UI**: XML views + ViewBinding (Compose currently disabled)
+- **UI**: Jetpack Compose (active) + XML/ViewBinding (legacy screens, in-migration)
 - **Local persistence**: Room
 - **Background jobs**: WorkManager
 - **Networking**: Retrofit + OkHttp + Moshi

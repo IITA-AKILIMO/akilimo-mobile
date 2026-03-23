@@ -67,7 +67,12 @@ com.akilimo.mobile/
 ├── ui/
 │   ├── activities/           HomeStepperActivity (launcher), UserSettingsActivity, 18+ domain activities
 │   ├── fragments/            WelcomeFragment … SummaryFragment (11 stepper steps)
-│   └── viewmodels/           WelcomeViewModel, UserSettingsViewModel (key screens)
+│   ├── screens/              Compose screens grouped by feature (usecases/, settings/, recommendations/)
+│   ├── viewmodels/           @HiltViewModel per screen; key ones: FertilizerViewModel, TractorAccessViewModel,
+│   │                         RecommendationsViewModel, CassavaMarketViewModel, UserSettingsViewModel, WelcomeViewModel
+│   └── components/compose/   Shared Compose primitives: BackTopAppBar, SaveBottomBar,
+│                             ScrollableFormColumn, NavExtensions (completeTask), AkilimoTextField,
+│                             AkilimoDropdown, SelectionCard, WizardBottomBar
 ├── repos/                    Typed repository classes wrapping Room DAOs
 ├── dao/                      Room @Dao interfaces
 ├── entities/                 Room @Entity data classes
@@ -184,20 +189,21 @@ safeScope.launch {
 
 ## 6. Navigation
 
-**Current state (View-based):** Navigation is purely intent-based — there is no Jetpack NavGraph.
+**Current state (Compose active):** `MainActivity` is the single-Activity host with a `NavHost`. Legacy `HomeStepperActivity` still exists for onboarding (pre-migration). Phase 3 use-case and settings screens are Compose.
 
 ```
-HomeStepperActivity (launcher)
-  └─ WizardAdapter (ViewPager2) → 11 step fragments (sequential, pendingOnSelected pattern)
-       └─ SummaryFragment → startActivity(RecommendationsActivity)
-  └─ FAB → startActivity(UserSettingsActivity)
+MainActivity (Compose NavHost — active launcher for Recommendations flow)
+  └─ AkilimoNavHost → RecommendationsScreen, UseCaseScreen, FertilizerScreen,
+       TractorAccessScreen, ManualTillageCostScreen, WeedControlCostsScreen,
+       DatesScreen, CassavaMarketScreen, CassavaYieldScreen, MaizeMarketScreen,
+       MaizePerformanceScreen, SweetPotatoMarketScreen, InvestmentAmountScreen,
+       GetRecommendationScreen, UserSettingsScreen, …
 
-Domain activities launched from recommendations:
-  FertilizersActivity, DatesActivity, WeedManagementActivity,
-  IcMaizeActivity, IcSweetPotatoActivity, SphActivity, BppActivity, …
+HomeStepperActivity (legacy launcher — pending Phase 2 Compose migration)
+  └─ WizardAdapter (ViewPager2) → 11 step fragments
 ```
 
-**Target state (Compose — in progress):** Pure Compose `NavHost` with `@Serializable` routes.
+**Target state (Compose — onboarding migration pending):** Pure Compose `NavHost` with `@Serializable` routes replaces `HomeStepperActivity` in Phase 2.
 No intermediate View-based NavGraph step — migrating directly to `navigation-compose`.
 
 ```
@@ -260,7 +266,7 @@ Base URLs resolved via `AppConfig`:
 |------|----------|------|--------|
 | `allowMainThreadQueries()` | `AppDatabase.kt` | ANR risk | ✅ Fixed |
 | `fallbackToDestructiveMigration()` | `AppDatabase.kt` | Data loss on schema change | ⬜ Open |
-| No ViewModel classes (partial) | Most fragments/activities | State lost on configuration change | 🔄 Partial — key screens done |
+| No ViewModel classes (partial) | Legacy fragments/activities | State lost on configuration change | 🔄 Partial — all Compose screens have @HiltViewModel; legacy onboarding pending |
 | API keys hardcoded in source | `app/build.gradle.kts`, `BuildConfig` | Exposed in APK without obfuscation | ✅ Fixed |
 | `isMinifyEnabled = false` in release | `app/build.gradle.kts` | No code shrinking or obfuscation | ⬜ Open |
 | No Jetpack NavGraph | All | Deep links impossible; navigation untestable | 🔄 Planned — replacing directly with `navigation-compose` (Phase 1, see COMPOSE_MIGRATION.md) |

@@ -370,11 +370,11 @@ fun LabeledTextField(
 
 ## Execution checklist
 
-### Phase 1
-- [ ] Create `BackTopAppBar.kt` and update 18 screens
-- [ ] Create `SaveBottomBar.kt` and update 9 screens
-- [ ] Create `ScrollableFormColumn.kt` and update 14 screens
-- [ ] Create `NavExtensions.kt` with `completeTask` and update 12 screens
+### Phase 1 ✅ Complete
+- [x] Create `BackTopAppBar.kt` and update 18 screens
+- [x] Create `SaveBottomBar.kt` and update 9 screens
+- [x] Create `ScrollableFormColumn.kt` and update 14 screens
+- [x] Create `NavExtensions.kt` with `completeTask` and update 12 screens
 
 ### Phase 2
 - [ ] Create `RadioButtonRow.kt` and update 5 screens
