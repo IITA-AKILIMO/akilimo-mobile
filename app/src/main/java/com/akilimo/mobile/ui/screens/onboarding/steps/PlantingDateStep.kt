@@ -9,25 +9,34 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.FragmentManager
 import com.akilimo.mobile.R
-import com.akilimo.mobile.ui.components.CustomDatePicker
 import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
 import com.akilimo.mobile.ui.components.compose.AkilimoTextField
 import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
 import com.akilimo.mobile.utils.DateHelper
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlantingDateStep(
     plantingDate: LocalDate?,
@@ -37,7 +46,6 @@ fun PlantingDateStep(
     showFlexOptions: Boolean,
     errors: Map<String, String>,
     onEvent: (OnboardingViewModel.Event) -> Unit,
-    fragmentManager: FragmentManager,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -48,6 +56,9 @@ fun PlantingDateStep(
             context.getString(R.string.lbl_two_month_window) to 2L,
         )
     }
+
+    var showPlantingPicker by remember { mutableStateOf(false) }
+    var showHarvestPicker by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -66,22 +77,36 @@ fun PlantingDateStep(
             modifier = Modifier.fillMaxWidth(),
         )
         Button(
-            onClick = {
-                val minDate = LocalDate.now().minusMonths(4 + plantingFlex)
-                val maxDate = LocalDate.now().plusMonths(12 + plantingFlex)
-                CustomDatePicker(
-                    context = context,
-                    fragmentManager = fragmentManager,
-                    title = context.getString(R.string.lbl_planting_date),
-                    minDate = minDate,
-                    maxDate = maxDate,
-                    initialDate = plantingDate,
-                ) { selected ->
-                    onEvent(OnboardingViewModel.Event.PlantingDateSelected(selected))
-                }.show()
-            },
+            onClick = { showPlantingPicker = true },
             modifier = Modifier.fillMaxWidth(),
         ) { Text(stringResource(R.string.lbl_pick_planting_date)) }
+
+        if (showPlantingPicker) {
+            val datePickerState = rememberDatePickerState(
+                initialSelectedDateMillis = plantingDate
+                    ?.atStartOfDay(ZoneId.systemDefault())?.toInstant()?.toEpochMilli()
+            )
+            DatePickerDialog(
+                onDismissRequest = { showPlantingPicker = false },
+                confirmButton = {
+                    TextButton(onClick = {
+                        datePickerState.selectedDateMillis?.let { millis ->
+                            val date = Instant.ofEpochMilli(millis)
+                                .atZone(ZoneId.systemDefault()).toLocalDate()
+                            onEvent(OnboardingViewModel.Event.PlantingDateSelected(date))
+                        }
+                        showPlantingPicker = false
+                    }) { Text(stringResource(R.string.lbl_ok)) }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showPlantingPicker = false }) {
+                        Text(stringResource(R.string.lbl_cancel))
+                    }
+                }
+            ) {
+                DatePicker(state = datePickerState)
+            }
+        }
 
         AkilimoTextField(
             value = DateHelper.formatToString(harvestDate),
@@ -91,25 +116,37 @@ fun PlantingDateStep(
             error = errors["harvestDate"],
         )
         Button(
-            onClick = {
-                if (plantingDate == null) return@Button
-                val flex = harvestFlex
-                val minDate = plantingDate.plusMonths(8 - flex)
-                val maxDate = plantingDate.plusMonths(16 + flex)
-                CustomDatePicker(
-                    context = context,
-                    fragmentManager = fragmentManager,
-                    title = context.getString(R.string.lbl_harvesting_date),
-                    minDate = minDate,
-                    maxDate = maxDate,
-                    initialDate = harvestDate,
-                ) { selected ->
-                    onEvent(OnboardingViewModel.Event.HarvestDateSelected(selected))
-                }.show()
-            },
+            onClick = { showHarvestPicker = true },
             enabled = plantingDate != null,
             modifier = Modifier.fillMaxWidth(),
         ) { Text(stringResource(R.string.lbl_pick_harvest_date)) }
+
+        if (showHarvestPicker) {
+            val datePickerState = rememberDatePickerState(
+                initialSelectedDateMillis = harvestDate
+                    ?.atStartOfDay(ZoneId.systemDefault())?.toInstant()?.toEpochMilli()
+            )
+            DatePickerDialog(
+                onDismissRequest = { showHarvestPicker = false },
+                confirmButton = {
+                    TextButton(onClick = {
+                        datePickerState.selectedDateMillis?.let { millis ->
+                            val date = Instant.ofEpochMilli(millis)
+                                .atZone(ZoneId.systemDefault()).toLocalDate()
+                            onEvent(OnboardingViewModel.Event.HarvestDateSelected(date))
+                        }
+                        showHarvestPicker = false
+                    }) { Text(stringResource(R.string.lbl_ok)) }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showHarvestPicker = false }) {
+                        Text(stringResource(R.string.lbl_cancel))
+                    }
+                }
+            ) {
+                DatePicker(state = datePickerState)
+            }
+        }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Switch(

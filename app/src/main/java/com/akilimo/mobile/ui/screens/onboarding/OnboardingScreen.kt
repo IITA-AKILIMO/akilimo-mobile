@@ -23,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.os.LocaleListCompat
-import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -197,7 +196,6 @@ fun OnboardingScreen(
                     showFlexOptions = state.showFlexOptions,
                     errors = state.errors,
                     onEvent = viewModel::onEvent,
-                    fragmentManager = (context as FragmentActivity).supportFragmentManager,
                 )
                 OnboardingStep.TILLAGE -> TillageStep(
                     tillageOperations = state.tillageOperations,
