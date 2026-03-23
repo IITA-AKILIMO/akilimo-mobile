@@ -58,7 +58,7 @@ class UserSettingsViewModelTest {
             viewModel.uiState.test {
                 awaitItem() // initial
 
-                viewModel.savePreferences(newPrefs, "user1")
+                viewModel.savePreferences(newPrefs)
 
                 val saved = awaitItem()
                 assertTrue(saved.saved)
@@ -79,7 +79,7 @@ class UserSettingsViewModelTest {
         viewModel.loadPreferences()
 
         val sameLanguagePrefs = UserPreferences(languageCode = "en-US")
-        viewModel.savePreferences(sameLanguagePrefs, "user1")
+        viewModel.savePreferences(sameLanguagePrefs)
 
         assertFalse(viewModel.uiState.value.languageChanged)
     }
@@ -89,7 +89,7 @@ class UserSettingsViewModelTest {
         coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
         coEvery { userRepo.getUser("user1") } returns AkilimoUser(userName = "user1")
 
-        viewModel.savePreferences(UserPreferences(languageCode = "sw-TZ"), "user1")
+        viewModel.savePreferences(UserPreferences(languageCode = "sw-TZ"))
         assertTrue(viewModel.uiState.value.saved)
 
         viewModel.onSaveHandled()
