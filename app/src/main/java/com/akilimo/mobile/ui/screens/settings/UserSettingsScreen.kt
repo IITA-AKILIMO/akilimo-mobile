@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -44,6 +45,7 @@ import com.akilimo.mobile.ui.components.compose.SwitchRow
 import com.akilimo.mobile.ui.viewmodels.UserSettingsViewModel
 import dev.b3nedikt.app_locale.AppLocale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserSettingsScreen(navController: NavHostController) {
     val context = LocalContext.current

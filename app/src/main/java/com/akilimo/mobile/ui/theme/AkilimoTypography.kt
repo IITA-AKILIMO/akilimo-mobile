@@ -40,23 +40,23 @@ val AkilimoTypography = Typography(
     ),
     headlineLarge = TextStyle(
         fontFamily = GoogleSans,
-        fontWeight = FontWeight.Medium,
-        fontSize = 32.sp,
-        lineHeight = 40.sp,
+        fontWeight = FontWeight.Medium,  // was Normal
+        fontSize = 28.sp,                // was 32sp
+        lineHeight = 36.sp,              // was 40sp
         letterSpacing = 0.sp,
     ),
     headlineMedium = TextStyle(
         fontFamily = GoogleSans,
         fontWeight = FontWeight.Medium,
-        fontSize = 28.sp,
-        lineHeight = 36.sp,
+        fontSize = 24.sp,                // was 28sp
+        lineHeight = 32.sp,              // was 36sp
         letterSpacing = 0.sp,
     ),
     headlineSmall = TextStyle(
         fontFamily = GoogleSans,
         fontWeight = FontWeight.Medium,
-        fontSize = 24.sp,
-        lineHeight = 32.sp,
+        fontSize = 20.sp,                // was 24sp
+        lineHeight = 28.sp,              // was 32sp
         letterSpacing = 0.sp,
     ),
     titleLarge = TextStyle(
@@ -69,8 +69,8 @@ val AkilimoTypography = Typography(
     titleMedium = TextStyle(
         fontFamily = GoogleSans,
         fontWeight = FontWeight.Medium,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
+        fontSize = 18.sp,                // Increased from 16.sp
+        lineHeight = 26.sp,              // Increased from 24.sp
         letterSpacing = 0.15.sp,
     ),
     titleSmall = TextStyle(
@@ -84,14 +84,14 @@ val AkilimoTypography = Typography(
         fontFamily = GoogleSans,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.25.sp, // reduced for balance
+        lineHeight = 26.sp,              // was 24sp
+        letterSpacing = 0.3.sp,          // was 0.5.sp
     ),
     bodyMedium = TextStyle(
         fontFamily = GoogleSans,
         fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
+        fontSize = 14.sp,                // Reverted from 15.sp to increase contrast with titleMedium
+        lineHeight = 20.sp,              // Reverted from 22.sp
         letterSpacing = 0.25.sp,
     ),
     bodySmall = TextStyle(
@@ -110,9 +110,9 @@ val AkilimoTypography = Typography(
     ),
     labelMedium = TextStyle(
         fontFamily = GoogleSans,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.SemiBold, // was Medium
         fontSize = 12.sp,
-        lineHeight = 18.sp, // improved spacing
+        lineHeight = 16.sp,
         letterSpacing = 0.4.sp,
     ),
     labelSmall = TextStyle(

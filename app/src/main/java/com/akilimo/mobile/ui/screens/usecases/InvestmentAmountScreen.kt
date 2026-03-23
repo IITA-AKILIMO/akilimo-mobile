@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
@@ -34,6 +35,7 @@ import com.akilimo.mobile.ui.components.compose.SaveBottomBar
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.InvestmentAmountViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InvestmentAmountScreen(
     navController: NavHostController,
