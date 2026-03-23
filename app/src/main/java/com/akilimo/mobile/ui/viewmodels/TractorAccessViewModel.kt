@@ -72,20 +72,13 @@ class TractorAccessViewModel @Inject constructor(
         harrowingCost: Double?
     ) = viewModelScope.launch {
         val userId = _uiState.value.userId.takeIf { it != 0 } ?: return@launch
-        val newCosts = FieldOperationCost(
-            userId = userId,
-            tractorAvailable = tractorAvailable,
-            tractorRidgeCost = if (tractorAvailable) (ridingCost ?: 0.0) else 0.0,
-            tractorPloughCost = if (tractorAvailable) (ploughingCost ?: 0.0) else 0.0,
-            tractorHarrowCost = if (tractorAvailable) (harrowingCost ?: 0.0) else 0.0
-        )
         val existing = costsRepo.getCostForUser(userId)
-        val merged = existing?.copy(
-            tractorAvailable = newCosts.tractorAvailable,
-            tractorRidgeCost = newCosts.tractorRidgeCost,
-            tractorPloughCost = newCosts.tractorPloughCost,
-            tractorHarrowCost = newCosts.tractorHarrowCost
-        ) ?: newCosts
+        val merged = (existing ?: FieldOperationCost(userId = userId)).copy(
+            tractorAvailable = tractorAvailable,
+            tractorRidgeCost = if (tractorAvailable) (ridingCost ?: existing?.tractorRidgeCost ?: 0.0) else 0.0,
+            tractorPloughCost = if (tractorAvailable) (ploughingCost ?: existing?.tractorPloughCost ?: 0.0) else 0.0,
+            tractorHarrowCost = if (tractorAvailable) (harrowingCost ?: existing?.tractorHarrowCost ?: 0.0) else 0.0
+        )
         costsRepo.saveCost(merged)
         _uiState.update { it.copy(saved = true) }
     }
