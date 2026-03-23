@@ -3,17 +3,21 @@ package com.akilimo.mobile.ui.screens.usecases
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -30,11 +34,16 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -55,6 +64,7 @@ fun CassavaYieldScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    var isGridLayout by remember { mutableStateOf(true) }
 
     LaunchedEffect(state.seedRequest) {
         val areaUnit = state.seedRequest ?: return@LaunchedEffect
@@ -70,6 +80,16 @@ fun CassavaYieldScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.lbl_back)
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { isGridLayout = !isGridLayout }) {
+                        Icon(
+                            painter = painterResource(
+                                if (isGridLayout) R.drawable.ic_list else R.drawable.ic_grid
+                            ),
+                            contentDescription = null
                         )
                     }
                 }
@@ -97,32 +117,51 @@ fun CassavaYieldScreen(
             }
         }
     ) { padding ->
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            contentPadding = padding,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 8.dp)
-        ) {
-            items(state.yields, key = { it.id }) { yield ->
-                YieldCard(
-                    yield = yield,
-                    isSelected = state.selectedYieldId == yield.id,
-                    onClick = { viewModel.selectYield(yield) }
-                )
+        if (isGridLayout) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                contentPadding = padding,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 8.dp)
+            ) {
+                items(state.yields, key = { it.id }) { yield ->
+                    YieldGridCard(
+                        yield = yield,
+                        isSelected = state.selectedYieldId == yield.id,
+                        onClick = { viewModel.selectYield(yield) }
+                    )
+                }
+            }
+        } else {
+            LazyColumn(
+                contentPadding = padding,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 8.dp)
+            ) {
+                items(state.yields, key = { it.id }) { yield ->
+                    YieldListCard(
+                        yield = yield,
+                        isSelected = state.selectedYieldId == yield.id,
+                        onClick = { viewModel.selectYield(yield) }
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-private fun YieldCard(
+private fun YieldGridCard(
     yield: CassavaYield,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
+    val imageRes = yield.imageRes.takeIf { it != 0 } ?: yieldImageByOrder(yield.sortOrder)
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -134,39 +173,89 @@ private fun YieldCard(
                 MaterialTheme.colorScheme.surface
         )
     ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            if (imageRes != 0) {
+                Image(
+                    painter = painterResource(imageRes),
+                    contentDescription = yield.yieldLabel,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f)
+                        .padding(12.dp)
+                )
+            }
+            Text(
+                text = yield.yieldLabel,
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+            )
+            if (yield.amountLabel != null) {
+                Text(
+                    text = yield.amountLabel!!,
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
+}
+
+@Composable
+private fun YieldListCard(
+    yield: CassavaYield,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    val imageRes = yield.imageRes.takeIf { it != 0 } ?: yieldImageByOrder(yield.sortOrder)
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected)
+                MaterialTheme.colorScheme.primaryContainer
+            else
+                MaterialTheme.colorScheme.surface
+        )
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(12.dp)
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                val imageRes = yield.imageRes.takeIf { it != 0 }
-                    ?: yieldImageByOrder(yield.sortOrder)
-                if (imageRes != 0) {
-                    Image(
-                        painter = painterResource(imageRes),
-                        contentDescription = yield.yieldLabel,
-                        modifier = Modifier.size(64.dp)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
+            if (imageRes != 0) {
+                Image(
+                    painter = painterResource(imageRes),
+                    contentDescription = yield.yieldLabel,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.size(88.dp)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+            }
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = yield.yieldLabel,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyLarge
                 )
                 if (yield.amountLabel != null) {
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = yield.amountLabel!!,
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
                 if (yield.description != null) {
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = yield.description!!,
-                        style = MaterialTheme.typography.labelSmall
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
             }
