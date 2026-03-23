@@ -52,7 +52,11 @@ import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.RadioButtonRow
 import com.akilimo.mobile.ui.components.compose.SaveBottomBar
 import com.akilimo.mobile.ui.components.compose.SelectionCard
+import com.akilimo.mobile.ui.components.compose.InfoCard
+import com.akilimo.mobile.ui.components.compose.InfoCardType
+import com.akilimo.mobile.ui.components.compose.SectionHeader
 import com.akilimo.mobile.ui.components.compose.completeTask
+import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.viewmodels.FertilizerViewModel
 import kotlinx.coroutines.launch
 
@@ -94,6 +98,7 @@ fun FertilizerScreen(
         topBar = {
             BackTopAppBar(
                 title = stringResource(titleRes),
+                subtitle = stringResource(R.string.lbl_available_fertilizers_subtitle),
                 onBack = { navController.popBackStack() },
                 actions = {
                     IconButton(onClick = { viewModel.toggleLayout() }) {
@@ -101,7 +106,8 @@ fun FertilizerScreen(
                             painter = painterResource(
                                 if (state.isGridLayout) R.drawable.ic_list else R.drawable.ic_grid
                             ),
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                 }
@@ -115,54 +121,64 @@ fun FertilizerScreen(
             )
         }
     ) { padding ->
-        if (state.isGridLayout) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = padding,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 8.dp)
-            ) {
-                items(state.fertilizers, key = { it.id ?: 0 }) { fertilizer ->
-                    val isSelected = state.selectedIds.contains(fertilizer.id)
-                    SelectionCard(
-                        imageRes = R.drawable.ic_fertilizer_bag,
-                        title = fertilizer.name.orEmpty(),
-                        subtitle = if (isSelected && !fertilizer.displayPrice.isNullOrEmpty())
-                            fertilizer.displayPrice
-                        else
-                            stringResource(R.string.under_score),
-                        isSelected = isSelected,
-                        isGridLayout = true,
-                        onClick = {
-                            if (isSelected) fertilizer.id?.let { viewModel.deselectFertilizer(it) }
-                            else openSheet(fertilizer)
-                        },
-                        imageColorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
-                    )
+        Column(modifier = Modifier.padding(padding)) {
+            SectionHeader(
+                title = stringResource(R.string.lbl_select_fertilizers),
+                modifier = Modifier.padding(horizontal = AkilimoSpacing.md)
+            )
+            
+            if (state.isGridLayout) {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    horizontalArrangement = Arrangement.spacedBy(AkilimoSpacing.xs),
+                    verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.xs),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = AkilimoSpacing.xs)
+                ) {
+                    items(state.fertilizers, key = { it.id ?: 0 }) { fertilizer ->
+                        val isSelected = state.selectedIds.contains(fertilizer.id)
+                        SelectionCard(
+                            imageRes = R.drawable.ic_fertilizer_bag,
+                            title = fertilizer.name.orEmpty(),
+                            subtitle = if (isSelected && !fertilizer.displayPrice.isNullOrEmpty())
+                                fertilizer.displayPrice
+                            else
+                                stringResource(R.string.under_score),
+                            isSelected = isSelected,
+                            isGridLayout = true,
+                            onClick = {
+                                if (isSelected) fertilizer.id?.let { viewModel.deselectFertilizer(it) }
+                                else openSheet(fertilizer)
+                            },
+                            imageColorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+                        )
+                    }
                 }
-            }
-        } else {
-            LazyColumn(contentPadding = padding) {
-                items(state.fertilizers, key = { it.id ?: 0 }) { fertilizer ->
-                    val isSelected = state.selectedIds.contains(fertilizer.id)
-                    SelectionCard(
-                        imageRes = R.drawable.ic_fertilizer_bag,
-                        title = fertilizer.name.orEmpty(),
-                        subtitle = if (isSelected && !fertilizer.displayPrice.isNullOrEmpty())
-                            fertilizer.displayPrice
-                        else
-                            stringResource(R.string.under_score),
-                        isSelected = isSelected,
-                        isGridLayout = false,
-                        onClick = {
-                            if (isSelected) fertilizer.id?.let { viewModel.deselectFertilizer(it) }
-                            else openSheet(fertilizer)
-                        },
-                        imageColorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
-                    )
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.xxs)
+                ) {
+                    items(state.fertilizers, key = { it.id ?: 0 }) { fertilizer ->
+                        val isSelected = state.selectedIds.contains(fertilizer.id)
+                        SelectionCard(
+                            imageRes = R.drawable.ic_fertilizer_bag,
+                            title = fertilizer.name.orEmpty(),
+                            subtitle = if (isSelected && !fertilizer.displayPrice.isNullOrEmpty())
+                                fertilizer.displayPrice
+                            else
+                                stringResource(R.string.under_score),
+                            isSelected = isSelected,
+                            isGridLayout = false,
+                            onClick = {
+                                if (isSelected) fertilizer.id?.let { viewModel.deselectFertilizer(it) }
+                                else openSheet(fertilizer)
+                            },
+                            imageColorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                            modifier = Modifier.padding(horizontal = AkilimoSpacing.xs)
+                        )
+                    }
                 }
             }
         }

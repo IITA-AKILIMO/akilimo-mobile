@@ -8,7 +8,11 @@
     <string name="ad_attribution" translatable="false">Ad</string>
 
     <string name="welcome_title">Are you growing cassava? And looking to become a pro? AKILIMO can help you!</string>
+    <string name="welcome_subtitle">AKILIMO helps you increase yield and maximise profit in your cassava farm. Let’s get started!</string>
+    <string name="msg_language_selection_impact">The selected language will be used throughout the app for all advice and recommendations.</string>
     <string name="welcome_instructions">Whether you need fertilizer recommendations, planting schemes, or advice on tillage, weeding and intercropping,we’ve got you covered.\n\nAKILIMO will help you increase yield and maximise profit in your cassava farm. Let’s get started!</string>
+    <string name="lbl_available_fertilizers_subtitle">Select the fertilizers that you can find at your local dealer.</string>
+    <string name="lbl_select_fertilizers">Select Fertilizers</string>
     <string name="important_instructions_title">IMPORTANT INFORMATION</string>
     <string name="important_instructions">Please note that the advice provided by AKILIMO is intended to provide helpful guidance only, and does not offer any guarantees. Success in any endeavour depends on a range of factors outside of our control, including user behaviour, how the advice is implemented and external circumstances. Therefore, we encourage you to use our app as a tool to inform your decisions, but always to exercise your best judgment and seek additional advice as needed.</string>
     <string name="important_instructions_b">The AKILIMO app collects essential information such as your location, field size and planting date to provide customised recommendations. To ensure the best results, please enter accurate and complete information. Properly measuring your field size is crucial to avoid underestimating the resources required to achieve optimal yields and maximize profits. Inaccurate measurements may result in unnecessary expenses and will impact your returns.</string>

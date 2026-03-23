@@ -36,7 +36,9 @@ import com.akilimo.mobile.enums.EnumUseCase
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.viewmodels.GetRecommendationViewModel
 import androidx.compose.material.icons.Icons
+import androidx.compose.material3.ExperimentalMaterial3Api
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostController) {
     val viewModel = hiltViewModel<GetRecommendationViewModel>()
