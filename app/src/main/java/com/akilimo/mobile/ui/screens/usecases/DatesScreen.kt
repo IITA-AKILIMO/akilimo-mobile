@@ -167,8 +167,8 @@ fun DatesScreen(
             }
         }
         val datePickerState = rememberDatePickerState(
-            initialSelectedDateMillis = harvestDate
-                ?.atStartOfDay(ZoneOffset.UTC)?.toInstant()?.toEpochMilli(),
+            initialSelectedDateMillis = (harvestDate ?: hMin)
+                .atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli(),
             selectableDates = harvestSelectableDates,
         )
         DatePickerDialog(
