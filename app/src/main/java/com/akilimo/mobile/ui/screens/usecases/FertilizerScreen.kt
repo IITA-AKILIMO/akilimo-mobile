@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,13 +23,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +48,7 @@ import androidx.navigation.NavHostController
 import com.akilimo.mobile.R
 import com.akilimo.mobile.entities.AdviceCompletionDto
 import com.akilimo.mobile.entities.Fertilizer
+import com.akilimo.mobile.entities.FertilizerPrice
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumFertilizerFlow
 import com.akilimo.mobile.enums.EnumStepStatus
@@ -68,8 +70,9 @@ fun FertilizerScreen(
 
     var showPriceSheet by remember { mutableStateOf(false) }
     var selectedFertilizer by remember { mutableStateOf<Fertilizer?>(null) }
-    var priceInput by remember { mutableStateOf("") }
-    var isExactPrice by remember { mutableStateOf(false) }
+    var prices by remember { mutableStateOf<List<FertilizerPrice>>(emptyList()) }
+    var selectedPriceId by remember { mutableStateOf<Int?>(null) }
+    var exactPriceInput by remember { mutableStateOf("") }
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
 
@@ -77,6 +80,14 @@ fun FertilizerScreen(
         EnumAdviceTask.AVAILABLE_FERTILIZERS_CIM,
         EnumAdviceTask.AVAILABLE_FERTILIZERS_CIS -> R.string.lbl_available_fertilizers
         else -> R.string.lbl_available_fertilizers
+    }
+
+    fun openSheet(fertilizer: Fertilizer) {
+        selectedFertilizer = fertilizer
+        prices = emptyList()
+        selectedPriceId = null
+        exactPriceInput = ""
+        showPriceSheet = true
     }
 
     Scaffold(
@@ -122,18 +133,7 @@ fun FertilizerScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 4.dp)
-                        .clickable {
-                            if (isSelected) {
-                                fertilizer.id?.let { viewModel.deselectFertilizer(it) }
-                            } else {
-                                selectedFertilizer = fertilizer
-                                priceInput = fertilizer.selectedPrice
-                                    .takeIf { it > 0 }
-                                    ?.toString() ?: ""
-                                isExactPrice = false
-                                showPriceSheet = true
-                            }
-                        },
+                        .clickable { openSheet(fertilizer) },
                     colors = CardDefaults.cardColors(
                         containerColor = if (isSelected)
                             MaterialTheme.colorScheme.primaryContainer
@@ -148,16 +148,8 @@ fun FertilizerScreen(
                         Checkbox(
                             checked = isSelected,
                             onCheckedChange = { checked ->
-                                if (checked) {
-                                    selectedFertilizer = fertilizer
-                                    priceInput = fertilizer.selectedPrice
-                                        .takeIf { it > 0 }
-                                        ?.toString() ?: ""
-                                    isExactPrice = false
-                                    showPriceSheet = true
-                                } else {
-                                    fertilizer.id?.let { viewModel.deselectFertilizer(it) }
-                                }
+                                if (checked) openSheet(fertilizer)
+                                else fertilizer.id?.let { viewModel.deselectFertilizer(it) }
                             }
                         )
                         Column(modifier = Modifier.padding(start = 8.dp)) {
@@ -179,6 +171,20 @@ fun FertilizerScreen(
     }
 
     if (showPriceSheet && selectedFertilizer != null) {
+        val fert = selectedFertilizer!!
+
+        LaunchedEffect(fert.id) {
+            prices = viewModel.priceRepo.getByFertilizerKey(fert.key.orEmpty())
+            val preSelected = viewModel.selectedRepo.getSelectedByFertilizer(fert.id ?: 0)
+            selectedPriceId = preSelected?.fertilizerPriceId
+        }
+
+        val selectedPriceItem = prices.find { it.id == selectedPriceId }
+        val isExactSelected = selectedPriceItem?.pricePerBag?.let { it < 0.0 } == true
+        val isConfirmEnabled = selectedPriceItem != null &&
+                (selectedPriceItem.pricePerBag > 0.0 ||
+                        (isExactSelected && exactPriceInput.toDoubleOrNull()?.let { it > 0.0 } == true))
+
         ModalBottomSheet(
             onDismissRequest = { showPriceSheet = false },
             sheetState = sheetState
@@ -186,55 +192,93 @@ fun FertilizerScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(horizontal = 16.dp)
                     .verticalScroll(rememberScrollState())
             ) {
                 Text(
-                    text = selectedFertilizer!!.name.orEmpty(),
+                    text = fert.name.orEmpty(),
                     style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                AkilimoTextField(
-                    value = priceInput,
-                    onValueChange = { priceInput = it },
-                    label = stringResource(R.string.lbl_fertilizer_price),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = stringResource(R.string.lbl_exact_price),
-                        modifier = Modifier.weight(1f)
-                    )
-                    Switch(
-                        checked = isExactPrice,
-                        onCheckedChange = { isExactPrice = it }
-                    )
+
+                prices.forEach { price ->
+                    val label = when {
+                        price.pricePerBag == 0.0 -> stringResource(R.string.lbl_do_not_know)
+                        price.pricePerBag < 0.0 -> stringResource(R.string.lbl_exact_price)
+                        else -> price.priceRange
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { selectedPriceId = price.id }
+                    ) {
+                        RadioButton(
+                            selected = selectedPriceId == price.id,
+                            onClick = { selectedPriceId = price.id }
+                        )
+                        Text(label, modifier = Modifier.weight(1f))
+                    }
+                    if (price.pricePerBag < 0.0 && selectedPriceId == price.id) {
+                        AkilimoTextField(
+                            value = exactPriceInput,
+                            onValueChange = { exactPriceInput = it },
+                            label = stringResource(R.string.lbl_fertilizer_price),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 48.dp)
+                        )
+                    }
                 }
+
                 Spacer(modifier = Modifier.height(8.dp))
+
                 Button(
                     onClick = {
-                        val fert = selectedFertilizer ?: return@Button
-                        val price = priceInput.toDoubleOrNull()
-                        val displayPrice = if (price != null) priceInput else ""
-                        viewModel.selectFertilizer(
-                            fertilizerId = fert.id ?: return@Button,
-                            fertilizerPriceId = null,
-                            price = price,
-                            displayPrice = displayPrice,
-                            isExactPrice = isExactPrice
-                        )
-                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            showPriceSheet = false
+                        val finalPrice: Double? = when {
+                            isExactSelected -> exactPriceInput.toDoubleOrNull()
+                            else -> selectedPriceItem?.pricePerBag
+                        }
+                        if (finalPrice != null && finalPrice > 0.0) {
+                            val currencySymbol = selectedPriceItem?.currencySymbol.orEmpty()
+                            val displayPrice: String = when {
+                                isExactSelected -> "$exactPriceInput $currencySymbol"
+                                else -> selectedPriceItem?.priceRange.orEmpty()
+                            }
+                            viewModel.selectFertilizer(
+                                fertilizerId = fert.id ?: return@Button,
+                                fertilizerPriceId = selectedPriceItem?.id,
+                                price = finalPrice,
+                                displayPrice = displayPrice,
+                                isExactPrice = isExactSelected
+                            )
+                            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                showPriceSheet = false
+                            }
                         }
                     },
+                    enabled = isConfirmEnabled,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(stringResource(R.string.lbl_confirm))
                 }
+
+                if (state.selectedIds.contains(fert.id)) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedButton(
+                        onClick = {
+                            fert.id?.let { viewModel.deselectFertilizer(it) }
+                            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                showPriceSheet = false
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(stringResource(R.string.lbl_remove))
+                    }
+                }
+
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
