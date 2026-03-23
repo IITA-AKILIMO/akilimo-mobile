@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -39,8 +38,8 @@ import com.akilimo.mobile.entities.UserPreferences
 import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.enums.EnumCountry
 import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
-import com.akilimo.mobile.ui.components.compose.AkilimoTextField
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
+import com.akilimo.mobile.ui.components.compose.LabeledTextField
 import com.akilimo.mobile.ui.components.compose.SwitchRow
 import com.akilimo.mobile.ui.viewmodels.UserSettingsViewModel
 import dev.b3nedikt.app_locale.AppLocale
@@ -153,65 +152,34 @@ fun UserSettingsScreen(navController: NavHostController) {
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState()),
         ) {
-            Text(
-                text = stringResource(R.string.lbl_first_name),
-                style = MaterialTheme.typography.labelMedium,
-            )
-            AkilimoTextField(
+            LabeledTextField(
+                sectionLabel = stringResource(R.string.lbl_first_name),
                 value = firstName,
-                onValueChange = { firstName = it },
-                label = stringResource(R.string.lbl_first_name),
-                modifier = Modifier.fillMaxWidth(),
+                onValueChange = { firstName = it }
             )
-            Spacer(Modifier.height(8.dp))
-
-            Text(
-                text = stringResource(R.string.lbl_last_name),
-                style = MaterialTheme.typography.labelMedium,
-            )
-            AkilimoTextField(
+            LabeledTextField(
+                sectionLabel = stringResource(R.string.lbl_last_name),
                 value = lastName,
-                onValueChange = { lastName = it },
-                label = stringResource(R.string.lbl_last_name),
-                modifier = Modifier.fillMaxWidth(),
+                onValueChange = { lastName = it }
             )
-            Spacer(Modifier.height(8.dp))
-
-            Text(
-                text = stringResource(R.string.lbl_bio),
-                style = MaterialTheme.typography.labelMedium,
-            )
-            AkilimoTextField(
+            LabeledTextField(
+                sectionLabel = stringResource(R.string.lbl_bio),
                 value = bio,
                 onValueChange = { bio = it },
-                label = stringResource(R.string.lbl_bio_hint),
-                modifier = Modifier.fillMaxWidth(),
+                hint = stringResource(R.string.lbl_bio_hint)
             )
-            Spacer(Modifier.height(8.dp))
-
-            Text(
-                text = stringResource(R.string.lbl_email_address),
-                style = MaterialTheme.typography.labelMedium,
-            )
-            AkilimoTextField(
+            LabeledTextField(
+                sectionLabel = stringResource(R.string.lbl_email_address),
                 value = email,
                 onValueChange = { email = it; emailError = null },
-                label = stringResource(R.string.lbl_email_address_hint),
-                error = emailError,
-                modifier = Modifier.fillMaxWidth(),
+                hint = stringResource(R.string.lbl_email_address_hint),
+                error = emailError
             )
-            Spacer(Modifier.height(8.dp))
-
-            Text(
-                text = stringResource(R.string.lbl_phone_number),
-                style = MaterialTheme.typography.labelMedium,
-            )
-            AkilimoTextField(
+            LabeledTextField(
+                sectionLabel = stringResource(R.string.lbl_phone_number),
                 value = phone,
                 onValueChange = { phone = it; phoneError = null },
-                label = stringResource(R.string.lbl_phone_number),
-                error = phoneError,
-                modifier = Modifier.fillMaxWidth(),
+                error = phoneError
             )
             Spacer(Modifier.height(12.dp))
 

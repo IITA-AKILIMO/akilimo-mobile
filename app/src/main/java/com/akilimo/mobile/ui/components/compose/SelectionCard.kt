@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -37,7 +38,8 @@ fun SelectionCard(
     isSelected: Boolean,
     isGridLayout: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    imageColorFilter: ColorFilter? = null
 ) {
     Card(
         modifier = modifier
@@ -51,9 +53,9 @@ fun SelectionCard(
         )
     ) {
         if (isGridLayout) {
-            GridContent(imageRes, title, subtitle, description)
+            GridContent(imageRes, title, subtitle, description, imageColorFilter)
         } else {
-            ListContent(imageRes, title, subtitle, description)
+            ListContent(imageRes, title, subtitle, description, imageColorFilter)
         }
     }
 }
@@ -63,13 +65,15 @@ private fun GridContent(
     imageRes: Int,
     title: String,
     subtitle: String?,
-    description: String?
+    description: String?,
+    imageColorFilter: ColorFilter? = null
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Image(
             painter = painterResource(imageRes),
             contentDescription = title,
             contentScale = ContentScale.Fit,
+            colorFilter = imageColorFilter,
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
@@ -112,7 +116,8 @@ private fun ListContent(
     imageRes: Int,
     title: String,
     subtitle: String?,
-    description: String?
+    description: String?,
+    imageColorFilter: ColorFilter? = null
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -122,6 +127,7 @@ private fun ListContent(
             painter = painterResource(imageRes),
             contentDescription = title,
             contentScale = ContentScale.Fit,
+            colorFilter = imageColorFilter,
             modifier = Modifier.size(88.dp)
         )
         Spacer(modifier = Modifier.width(12.dp))

@@ -381,9 +381,9 @@ fun LabeledTextField(
 - [x] Create `BinaryToggleChips.kt` and update screens (TractorAccessScreen Yes/No, MaizeMarketScreen)
 - [x] Promote `SwitchRow` to shared and update screens (UserSettingsScreen, DatesScreen)
 
-### Phase 3
-- [ ] Replace `FertilizerCard` with `SelectionCard` in `FertilizerScreen.kt`
-- [ ] Create `LabeledTextField.kt` and update 2 screens
+### Phase 3 ✅ Complete
+- [x] Replace `FertilizerCard` with `SelectionCard` in `FertilizerScreen.kt` (extended SelectionCard with optional `imageColorFilter`)
+- [x] Create `LabeledTextField.kt` and update `UserSettingsScreen.kt` (5 text fields; BioDataStep uses AkilimoTextField directly without section labels — not updated)
 
 ---
 
