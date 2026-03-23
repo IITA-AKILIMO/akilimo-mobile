@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,7 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.akilimo.mobile.R
 import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
-import com.akilimo.mobile.ui.components.compose.AkilimoTextField
+import com.akilimo.mobile.ui.components.compose.DateInputField
 import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
 import com.akilimo.mobile.utils.DateHelper
 import java.time.Instant
@@ -68,18 +68,14 @@ fun PlantingDateStep(
     ) {
         Text(stringResource(R.string.lbl_planting_harvest_dates), style = MaterialTheme.typography.headlineMedium)
 
-        AkilimoTextField(
+        DateInputField(
             value = DateHelper.formatToString(plantingDate),
-            onValueChange = {},
             label = stringResource(R.string.lbl_planting_date),
-            readOnly = true,
+            placeholder = stringResource(R.string.lbl_pick_planting_date),
+            onClick = { showPlantingPicker = true },
             error = errors["plantingDate"],
             modifier = Modifier.fillMaxWidth(),
         )
-        Button(
-            onClick = { showPlantingPicker = true },
-            modifier = Modifier.fillMaxWidth(),
-        ) { Text(stringResource(R.string.lbl_pick_planting_date)) }
 
         if (showPlantingPicker) {
             val datePickerState = rememberDatePickerState(
@@ -88,6 +84,7 @@ fun PlantingDateStep(
             )
             DatePickerDialog(
                 onDismissRequest = { showPlantingPicker = false },
+                shape = RoundedCornerShape(28.dp),
                 confirmButton = {
                     TextButton(onClick = {
                         datePickerState.selectedDateMillis?.let { millis ->
@@ -104,22 +101,19 @@ fun PlantingDateStep(
                     }
                 }
             ) {
-                DatePicker(state = datePickerState)
+                DatePicker(state = datePickerState, modifier = Modifier.weight(1f, fill = false))
             }
         }
 
-        AkilimoTextField(
+        DateInputField(
             value = DateHelper.formatToString(harvestDate),
-            onValueChange = {},
             label = stringResource(R.string.lbl_harvesting_date),
-            readOnly = true,
-            error = errors["harvestDate"],
-        )
-        Button(
-            onClick = { showHarvestPicker = true },
+            placeholder = stringResource(R.string.lbl_pick_harvest_date),
+            onClick = { if (plantingDate != null) showHarvestPicker = true },
             enabled = plantingDate != null,
+            error = errors["harvestDate"],
             modifier = Modifier.fillMaxWidth(),
-        ) { Text(stringResource(R.string.lbl_pick_harvest_date)) }
+        )
 
         if (showHarvestPicker) {
             val datePickerState = rememberDatePickerState(
@@ -128,6 +122,7 @@ fun PlantingDateStep(
             )
             DatePickerDialog(
                 onDismissRequest = { showHarvestPicker = false },
+                shape = RoundedCornerShape(28.dp),
                 confirmButton = {
                     TextButton(onClick = {
                         datePickerState.selectedDateMillis?.let { millis ->
@@ -144,7 +139,7 @@ fun PlantingDateStep(
                     }
                 }
             ) {
-                DatePicker(state = datePickerState)
+                DatePicker(state = datePickerState, modifier = Modifier.weight(1f, fill = false))
             }
         }
 

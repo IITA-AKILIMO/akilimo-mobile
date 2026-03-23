@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -17,7 +18,6 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.SnackbarHost
@@ -47,6 +47,7 @@ import com.akilimo.mobile.entities.AdviceCompletionDto
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumStepStatus
 import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
+import com.akilimo.mobile.ui.components.compose.DateInputField
 import com.akilimo.mobile.ui.viewmodels.DatesViewModel
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -128,6 +129,7 @@ fun DatesScreen(
         )
         DatePickerDialog(
             onDismissRequest = { showPlantingDatePicker = false },
+            shape = RoundedCornerShape(28.dp),
             confirmButton = {
                 TextButton(onClick = {
                     datePickerState.selectedDateMillis?.let { millis ->
@@ -146,7 +148,7 @@ fun DatesScreen(
                     Text(stringResource(R.string.lbl_cancel))
                 }
             }
-        ) { DatePicker(state = datePickerState) }
+        ) { DatePicker(state = datePickerState, modifier = Modifier.weight(1f, fill = false)) }
     }
 
     // Harvest date: [planting + (8−flex), planting + (16+flex)]
@@ -171,6 +173,7 @@ fun DatesScreen(
         )
         DatePickerDialog(
             onDismissRequest = { showHarvestDatePicker = false },
+            shape = RoundedCornerShape(28.dp),
             confirmButton = {
                 TextButton(onClick = {
                     datePickerState.selectedDateMillis?.let { millis ->
@@ -185,7 +188,7 @@ fun DatesScreen(
                     Text(stringResource(R.string.lbl_cancel))
                 }
             }
-        ) { DatePicker(state = datePickerState) }
+        ) { DatePicker(state = datePickerState, modifier = Modifier.weight(1f, fill = false)) }
     }
 
     Scaffold(
@@ -229,22 +232,21 @@ fun DatesScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            OutlinedButton(
+            DateInputField(
+                value = plantingDate?.format(dateFormatter) ?: "",
+                label = stringResource(R.string.lbl_planting_date),
+                placeholder = stringResource(R.string.lbl_pick_planting_date),
                 onClick = { showPlantingDatePicker = true },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = if (plantingDate != null)
-                        stringResource(R.string.lbl_planting_date) + ": " + plantingDate!!.format(dateFormatter)
-                    else
-                        stringResource(R.string.lbl_pick_planting_date)
-                )
-            }
+                modifier = Modifier.fillMaxWidth(),
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             val noPlantingMsg = stringResource(R.string.lbl_planting_date_prompt)
-            OutlinedButton(
+            DateInputField(
+                value = harvestDate?.format(dateFormatter) ?: "",
+                label = stringResource(R.string.lbl_harvesting_date),
+                placeholder = stringResource(R.string.lbl_pick_harvest_date),
                 onClick = {
                     if (plantingDate == null) {
                         scope.launch { snackbarHostState.showSnackbar(noPlantingMsg) }
@@ -252,15 +254,8 @@ fun DatesScreen(
                         showHarvestDatePicker = true
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = if (harvestDate != null)
-                        stringResource(R.string.lbl_harvesting_date) + ": " + harvestDate!!.format(dateFormatter)
-                    else
-                        stringResource(R.string.lbl_pick_harvest_date)
-                )
-            }
+                modifier = Modifier.fillMaxWidth(),
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
