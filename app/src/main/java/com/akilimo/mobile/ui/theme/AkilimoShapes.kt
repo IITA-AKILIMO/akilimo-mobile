@@ -13,6 +13,6 @@ val AkilimoShapes = Shapes(
     medium = RoundedCornerShape(12.dp),
     // Large — bottom sheets, dialogs (matches ShapeAppearance.Akilimo.Large = 24dp)
     large = RoundedCornerShape(24.dp),
-    // ExtraLarge — full pill buttons (50%)
-    extraLarge = RoundedCornerShape(50),
+    // ExtraLarge — dialogs, bottom sheets (matches M3 default 28dp)
+    extraLarge = RoundedCornerShape(28.dp),
 )

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -98,7 +97,6 @@ fun PlantingDateStep(
             )
             DatePickerDialog(
                 onDismissRequest = { showPlantingPicker = false },
-                shape = RoundedCornerShape(28.dp),
                 confirmButton = {
                     TextButton(onClick = {
                         datePickerState.selectedDateMillis?.let { millis ->
@@ -150,7 +148,6 @@ fun PlantingDateStep(
             )
             DatePickerDialog(
                 onDismissRequest = { showHarvestPicker = false },
-                shape = RoundedCornerShape(28.dp),
                 confirmButton = {
                     TextButton(onClick = {
                         datePickerState.selectedDateMillis?.let { millis ->
