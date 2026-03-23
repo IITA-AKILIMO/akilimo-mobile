@@ -47,12 +47,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.akilimo.mobile.R
 import com.akilimo.mobile.entities.AdviceCompletionDto
+import com.akilimo.mobile.entities.CassavaMarketPrice
 import com.akilimo.mobile.entities.CassavaUnit
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumStepStatus
 import com.akilimo.mobile.enums.EnumUnitOfSale
 import com.akilimo.mobile.ui.components.compose.AkilimoTextField
 import com.akilimo.mobile.ui.viewmodels.CassavaMarketViewModel
+import com.akilimo.mobile.utils.MathHelper
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -66,7 +68,9 @@ fun CassavaMarketScreen(
     var marketChoice by remember { mutableStateOf(CassavaMarketViewModel.MarketChoice.NONE) }
     var showPriceSheet by remember { mutableStateOf(false) }
     var selectedUnit by remember { mutableStateOf<CassavaUnit?>(null) }
-    var customPrice by remember { mutableStateOf("") }
+    var prices by remember { mutableStateOf<List<CassavaMarketPrice>>(emptyList()) }
+    var selectedPriceId by remember { mutableStateOf<Int?>(null) }
+    var exactPriceInput by remember { mutableStateOf("") }
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
 
@@ -77,6 +81,14 @@ fun CassavaMarketScreen(
         ) {
             marketChoice = state.initialMarketChoice
         }
+    }
+
+    fun openUnitSheet(unit: CassavaUnit) {
+        selectedUnit = unit
+        prices = emptyList()
+        selectedPriceId = null
+        exactPriceInput = ""
+        showPriceSheet = true
     }
 
     Scaffold(
@@ -106,7 +118,10 @@ fun CassavaMarketScreen(
                             ?.savedStateHandle
                             ?.set(
                                 "completed_task",
-                                AdviceCompletionDto(EnumAdviceTask.CASSAVA_MARKET_OUTLET, EnumStepStatus.COMPLETED)
+                                AdviceCompletionDto(
+                                    EnumAdviceTask.CASSAVA_MARKET_OUTLET,
+                                    EnumStepStatus.COMPLETED
+                                )
                             )
                         navController.popBackStack()
                     },
@@ -160,7 +175,6 @@ fun CassavaMarketScreen(
                 )
             }
 
-            // Content based on choice
             when (marketChoice) {
                 CassavaMarketViewModel.MarketChoice.FACTORY -> {
                     LazyColumn(modifier = Modifier.weight(1f)) {
@@ -186,6 +200,7 @@ fun CassavaMarketScreen(
                         }
                     }
                 }
+
                 CassavaMarketViewModel.MarketChoice.MARKET -> {
                     LazyColumn(modifier = Modifier.weight(1f)) {
                         items(state.cassavaUnits, key = { it.id }) { unit ->
@@ -193,11 +208,7 @@ fun CassavaMarketScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(horizontal = 16.dp, vertical = 4.dp)
-                                    .clickable {
-                                        selectedUnit = unit
-                                        customPrice = ""
-                                        showPriceSheet = true
-                                    },
+                                    .clickable { openUnitSheet(unit) },
                                 colors = CardDefaults.cardColors(
                                     containerColor = if (state.selectedUnitId == unit.id)
                                         MaterialTheme.colorScheme.primaryContainer
@@ -214,6 +225,7 @@ fun CassavaMarketScreen(
                         }
                     }
                 }
+
                 CassavaMarketViewModel.MarketChoice.NONE -> {
                     Spacer(modifier = Modifier.weight(1f))
                 }
@@ -222,6 +234,32 @@ fun CassavaMarketScreen(
     }
 
     if (showPriceSheet && selectedUnit != null) {
+        val unit = selectedUnit!!
+        val uos = remember(unit.label) {
+            EnumUnitOfSale.entries.find { it.name.equals(unit.label, ignoreCase = true) }
+                ?: EnumUnitOfSale.THOUSAND_KG
+        }
+
+        LaunchedEffect(unit.id) {
+            prices = viewModel.priceRepo.getPricesByCountry(state.userCountry)
+            val mkt = viewModel.selectedRepo.getSelectedByUser(state.userId)
+            selectedPriceId = mkt?.marketPrice?.id
+            // Pre-fill exact price input if the saved selection was an exact-price entry
+            val saved = mkt?.selectedCassavaMarket
+            if (saved?.marketPriceId != null && saved.marketPriceId == selectedPriceId) {
+                val savedPrice = prices.find { it.id == selectedPriceId }
+                if (savedPrice?.exactPrice == true) {
+                    exactPriceInput = saved.unitPrice.takeIf { it > 0 }?.toString() ?: ""
+                }
+            }
+        }
+
+        val selectedPriceItem = prices.find { it.id == selectedPriceId }
+        val isExactSelected = selectedPriceItem?.exactPrice == true
+        val isConfirmEnabled = selectedPriceItem != null &&
+                (selectedPriceItem.averagePrice > 0.0 && !isExactSelected ||
+                        (isExactSelected && exactPriceInput.toDoubleOrNull()?.let { it > 0.0 } == true))
+
         ModalBottomSheet(
             onDismissRequest = { showPriceSheet = false },
             sheetState = sheetState
@@ -229,36 +267,87 @@ fun CassavaMarketScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(horizontal = 16.dp)
                     .verticalScroll(rememberScrollState())
             ) {
                 Text(
-                    text = selectedUnit!!.label,
+                    text = unit.label,
                     style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                AkilimoTextField(
-                    value = customPrice,
-                    onValueChange = { customPrice = it },
-                    label = stringResource(R.string.lbl_unit_price),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-                )
+
+                prices.forEach { price ->
+                    val computedPrice = MathHelper.computeUnitPrice(price.averagePrice, uos)
+                    val label = when {
+                        price.averagePrice == 0.0 -> stringResource(R.string.lbl_do_not_know)
+                        price.exactPrice -> stringResource(R.string.lbl_exact_price)
+                        else -> "${MathHelper.format(computedPrice)} ${price.currencySymbol}"
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { selectedPriceId = price.id }
+                    ) {
+                        RadioButton(
+                            selected = selectedPriceId == price.id,
+                            onClick = { selectedPriceId = price.id }
+                        )
+                        Text(label, modifier = Modifier.weight(1f))
+                    }
+                    if (price.exactPrice && selectedPriceId == price.id) {
+                        AkilimoTextField(
+                            value = exactPriceInput,
+                            onValueChange = { exactPriceInput = it },
+                            label = stringResource(R.string.lbl_unit_price) +
+                                    if (price.currencySymbol.isNotEmpty()) " (${price.currencySymbol})" else "",
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 48.dp)
+                        )
+                    }
+                }
+
                 Spacer(modifier = Modifier.height(8.dp))
+
                 Button(
                     onClick = {
-                        val unit = selectedUnit ?: return@Button
-                        val uos = EnumUnitOfSale.entries.find {
-                            it.name.equals(unit.label, ignoreCase = true)
-                        } ?: EnumUnitOfSale.ONE_KG
-                        viewModel.saveSelectedPrice(unit, uos, null)
+                        val priceToSave: CassavaMarketPrice? = when {
+                            isExactSelected -> {
+                                val amount = exactPriceInput.toDoubleOrNull() ?: return@Button
+                                selectedPriceItem?.copy(averagePrice = amount)
+                            }
+                            selectedPriceItem != null && selectedPriceItem.averagePrice > 0.0 ->
+                                selectedPriceItem
+                            else -> return@Button
+                        }
+                        viewModel.saveSelectedPrice(unit, uos, priceToSave)
                         scope.launch { sheetState.hide() }.invokeOnCompletion {
                             showPriceSheet = false
                         }
                     },
+                    enabled = isConfirmEnabled,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(stringResource(R.string.lbl_confirm))
                 }
+
+                if (state.selectedUnitId == unit.id) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedButton(
+                        onClick = {
+                            viewModel.saveSelectedPrice(unit, uos, null)
+                            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                showPriceSheet = false
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(stringResource(R.string.lbl_remove))
+                    }
+                }
+
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
