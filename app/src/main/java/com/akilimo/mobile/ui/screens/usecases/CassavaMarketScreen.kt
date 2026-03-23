@@ -39,6 +39,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -74,7 +75,7 @@ fun CassavaMarketScreen(
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
 
-    // Apply initial market choice once
+    // Apply the initial market choice once
     LaunchedEffect(state.initialMarketChoice) {
         if (marketChoice == CassavaMarketViewModel.MarketChoice.NONE &&
             state.initialMarketChoice != CassavaMarketViewModel.MarketChoice.NONE
@@ -202,6 +203,8 @@ fun CassavaMarketScreen(
                 }
 
                 CassavaMarketViewModel.MarketChoice.MARKET -> {
+                    val context = LocalContext.current
+
                     LazyColumn(modifier = Modifier.weight(1f)) {
                         items(state.cassavaUnits, key = { it.id }) { unit ->
                             Card(
@@ -217,7 +220,9 @@ fun CassavaMarketScreen(
                                 )
                             ) {
                                 Text(
-                                    text = unit.label,
+                                    text = EnumUnitOfSale.entries
+                                        .find { it.name == unit.label }
+                                        ?.label(context) ?: unit.label,   // pass context here
                                     modifier = Modifier.padding(16.dp),
                                     style = MaterialTheme.typography.bodyMedium
                                 )
@@ -258,7 +263,8 @@ fun CassavaMarketScreen(
         val isExactSelected = selectedPriceItem?.exactPrice == true
         val isConfirmEnabled = selectedPriceItem != null &&
                 (selectedPriceItem.averagePrice > 0.0 && !isExactSelected ||
-                        (isExactSelected && exactPriceInput.toDoubleOrNull()?.let { it > 0.0 } == true))
+                        (isExactSelected && exactPriceInput.toDoubleOrNull()
+                            ?.let { it > 0.0 } == true))
 
         ModalBottomSheet(
             onDismissRequest = { showPriceSheet = false },
@@ -316,10 +322,12 @@ fun CassavaMarketScreen(
                         val priceToSave: CassavaMarketPrice? = when {
                             isExactSelected -> {
                                 val amount = exactPriceInput.toDoubleOrNull() ?: return@Button
-                                selectedPriceItem?.copy(averagePrice = amount)
+                                selectedPriceItem.copy(averagePrice = amount)
                             }
+
                             selectedPriceItem != null && selectedPriceItem.averagePrice > 0.0 ->
                                 selectedPriceItem
+
                             else -> return@Button
                         }
                         viewModel.saveSelectedPrice(unit, uos, priceToSave)

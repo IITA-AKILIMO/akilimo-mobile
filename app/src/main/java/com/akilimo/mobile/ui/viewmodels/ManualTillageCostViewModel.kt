@@ -3,6 +3,7 @@ package com.akilimo.mobile.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.data.AppSettingsDataStore
+import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.repos.AkilimoUserRepo
@@ -60,8 +61,14 @@ class ManualTillageCostViewModel @Inject constructor(
         }
     }
 
-    fun saveCosts(ridingCost: Double?, ploughingCost: Double?) = viewModelScope.launch {
+    fun saveCosts(
+        ridingCost: Double?,
+        ploughingCost: Double?,
+        performPloughing: Boolean,
+        performRidging: Boolean
+    ) = viewModelScope.launch {
         val userId = _uiState.value.userId.takeIf { it != 0 } ?: return@launch
+
         val newCosts = FieldOperationCost(
             userId = userId,
             manualRidgeCost = ridingCost ?: 0.0,
@@ -69,10 +76,22 @@ class ManualTillageCostViewModel @Inject constructor(
         )
         val existing = costsRepo.getCostForUser(userId)
         val merged = existing?.copy(
-            manualRidgeCost = if (ridingCost != null) newCosts.manualRidgeCost else existing.manualRidgeCost,
-            manualPloughCost = if (ploughingCost != null) newCosts.manualPloughCost else existing.manualPloughCost,
+            manualRidgeCost = newCosts.manualRidgeCost,
+            manualPloughCost = newCosts.manualPloughCost
         ) ?: newCosts
         costsRepo.saveCost(merged)
+
+        val existingPractice = currentPracticeRepo.getPracticeForUser(userId)
+        val updatedPractice = existingPractice?.copy(
+            performPloughing = performPloughing,
+            performRidging = performRidging
+        ) ?: CurrentPractice(
+            userId = userId,
+            performPloughing = performPloughing,
+            performRidging = performRidging
+        )
+        currentPracticeRepo.savePractice(updatedPractice)
+
         _uiState.update { it.copy(saved = true) }
     }
 

@@ -1,13 +1,20 @@
 package com.akilimo.mobile.ui.screens.usecases
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -17,7 +24,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,6 +45,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -101,6 +108,16 @@ fun FertilizerScreen(
                             contentDescription = stringResource(R.string.lbl_back)
                         )
                     }
+                },
+                actions = {
+                    IconButton(onClick = { viewModel.toggleLayout() }) {
+                        Icon(
+                            painter = painterResource(
+                                if (state.isGridLayout) R.drawable.ic_list else R.drawable.ic_grid
+                            ),
+                            contentDescription = null
+                        )
+                    }
                 }
             )
         },
@@ -126,45 +143,34 @@ fun FertilizerScreen(
             }
         }
     ) { padding ->
-        LazyColumn(contentPadding = padding) {
-            items(state.fertilizers, key = { it.id ?: 0 }) { fertilizer ->
-                val isSelected = state.selectedIds.contains(fertilizer.id)
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 4.dp)
-                        .clickable { openSheet(fertilizer) },
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (isSelected)
-                            MaterialTheme.colorScheme.primaryContainer
-                        else
-                            MaterialTheme.colorScheme.surface
+        if (state.isGridLayout) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                contentPadding = padding,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 8.dp)
+            ) {
+                items(state.fertilizers, key = { it.id ?: 0 }) { fertilizer ->
+                    FertilizerCard(
+                        fertilizer = fertilizer,
+                        isSelected = state.selectedIds.contains(fertilizer.id),
+                        onClick = { openSheet(fertilizer) },
+                        onDeselect = { fertilizer.id?.let { viewModel.deselectFertilizer(it) } }
                     )
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(8.dp)
-                    ) {
-                        Checkbox(
-                            checked = isSelected,
-                            onCheckedChange = { checked ->
-                                if (checked) openSheet(fertilizer)
-                                else fertilizer.id?.let { viewModel.deselectFertilizer(it) }
-                            }
-                        )
-                        Column(modifier = Modifier.padding(start = 8.dp)) {
-                            Text(
-                                text = fertilizer.name.orEmpty(),
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            if (isSelected && !fertilizer.displayPrice.isNullOrEmpty()) {
-                                Text(
-                                    text = fertilizer.displayPrice!!,
-                                    style = MaterialTheme.typography.bodySmall
-                                )
-                            }
-                        }
-                    }
+                }
+            }
+        } else {
+            LazyColumn(contentPadding = padding) {
+                items(state.fertilizers, key = { it.id ?: 0 }) { fertilizer ->
+                    FertilizerCard(
+                        fertilizer = fertilizer,
+                        isSelected = state.selectedIds.contains(fertilizer.id),
+                        onClick = { openSheet(fertilizer) },
+                        onDeselect = { fertilizer.id?.let { viewModel.deselectFertilizer(it) } }
+                    )
                 }
             }
         }
@@ -281,6 +287,57 @@ fun FertilizerScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
             }
+        }
+    }
+}
+
+@Composable
+private fun FertilizerCard(
+    fertilizer: Fertilizer,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    onDeselect: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = if (isSelected) onDeselect else onClick),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected)
+                MaterialTheme.colorScheme.primaryContainer
+            else
+                MaterialTheme.colorScheme.surface
+        )
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp)
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_fertilizer_bag),
+                contentDescription = null,
+                colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                modifier = Modifier.size(64.dp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = fertilizer.name.orEmpty(),
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = if (isSelected && !fertilizer.displayPrice.isNullOrEmpty())
+                    fertilizer.displayPrice!!
+                else
+                    stringResource(R.string.under_score),
+                style = MaterialTheme.typography.bodySmall,
+                color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
+                        else MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            )
         }
     }
 }

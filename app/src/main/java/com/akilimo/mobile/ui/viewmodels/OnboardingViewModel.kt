@@ -252,8 +252,11 @@ class OnboardingViewModel @Inject constructor(
                 viewModelScope.launch {
                     val userName = appSettings.akilimoUser
                     val user = userRepo.getUser(userName) ?: AkilimoUser(userName = userName)
+                    val countryChanged = user.enumCountry != event.country
                     userRepo.saveOrUpdateUser(user.copy(enumCountry = event.country), userName)
-                    user.id?.let { selectedFertilizerRepo.deleteByUserId(it) }
+                    if (countryChanged) {
+                        user.id?.let { selectedFertilizerRepo.deleteByUserId(it) }
+                    }
                 }
             }
             is Event.LocationUpdated -> _state.update {
@@ -384,8 +387,11 @@ class OnboardingViewModel @Inject constructor(
                 }
                 OnboardingStep.COUNTRY -> {
                     val user = userRepo.getUser(userName) ?: AkilimoUser(userName = userName)
+                    val countryChanged = user.enumCountry != s.country
                     userRepo.saveOrUpdateUser(user.copy(enumCountry = s.country), userName)
-                    user.id?.let { selectedFertilizerRepo.deleteByUserId(it) }
+                    if (countryChanged) {
+                        user.id?.let { selectedFertilizerRepo.deleteByUserId(it) }
+                    }
                 }
                 OnboardingStep.LOCATION -> {
                     val user = userRepo.getUser(userName) ?: AkilimoUser(userName = userName)

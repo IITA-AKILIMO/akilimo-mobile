@@ -28,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -48,6 +49,7 @@ fun TractorAccessScreen(
     viewModel: TractorAccessViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     var tractorAvailable by remember { mutableStateOf(false) }
     var usePlough by remember { mutableStateOf(false) }
@@ -82,7 +84,7 @@ fun TractorAccessScreen(
         }
     }
 
-    val areaUnitLabel = state.enumAreaUnit.name.lowercase()
+    val areaUnitLabel = state.enumAreaUnit.label(context)
     val farmSize = state.farmSize
 
     Scaffold(
@@ -212,9 +214,9 @@ fun TractorAccessScreen(
                 onClick = {
                     viewModel.saveCosts(
                         tractorAvailable = tractorAvailable,
-                        ploughingCost = if (usePlough) ploughCost.toDoubleOrNull() else null,
-                        ridingCost = if (useRidge) ridgeCost.toDoubleOrNull() else null,
-                        harrowingCost = if (useHarrow) harrowCost.toDoubleOrNull() else null
+                        ploughingCost = if (usePlough) ploughCost.toDoubleOrNull() else 0.0,
+                        ridingCost = if (useRidge) ridgeCost.toDoubleOrNull() else 0.0,
+                        harrowingCost = if (useHarrow) harrowCost.toDoubleOrNull() else 0.0
                     )
                 },
                 modifier = Modifier.fillMaxWidth()
