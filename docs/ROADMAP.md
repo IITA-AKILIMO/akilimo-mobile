@@ -33,26 +33,29 @@ See `docs/COMPOSE_MIGRATION.md §2` for why each one is required.
 | 9 | ✅ Done | **Introduce Hilt** — `@HiltAndroidApp` on `AkilimoApp`; `@AndroidEntryPoint` on all 25+ concrete Activities/Fragments; `@HiltViewModel` on ViewModels; inject repos via constructor. Version: `hilt = "2.57.1"`, uses `kapt` | All | L | Maintainability | Required — `hiltViewModel()` in composables |
 | 10 | ✅ Done | **Consolidate ALL settings to DataStore** — `AppSettingsDataStore` covers all 17 keys (language, darkMode, akilimoUser, termsAccepted, disclaimerRead, rememberAreaUnit, isFertilizerGrid, deviceToken, apiToken, apiRefreshToken, mapBoxApiKey, locationIqToken, isFirstRun, notificationCount, termsLink, akilimoEndpoint, fuelrodEndpoint); `SessionManager.kt` deleted; `SharedPreferencesMigration` from `"new-akilimo-config"` | `data/AppSettingsDataStore.kt`, `AkilimoApp.kt`, `BaseActivity.kt`, `BaseFragment.kt` | M | Reliability | Required — Compose observes `DataStore` via `collectAsState()` |
 | 11 | ⬜ | **Unit test coverage for repos and locale logic** — `UserPreferencesRepo`, `LocaleHelper`, `AppSettingsDataStore`, all ViewModels | `test/` | M | Quality | Required — ViewModel unit tests validate `UiState` transitions |
-| 12 | ⬜ | **Jetpack NavGraph (View-based first)** — replace all `startActivity()` / `Intent` navigation with typed `NavGraph` destinations; enables `navigation-compose` in Phase 5 | All activities | L | Architecture | Required — `NavHost` is the Compose navigation backbone |
 
 ---
 
 ## Long-Term (3–12 months) — Compose Migration
 
-Full migration to Jetpack Compose. Executed in five phases as detailed in
-`docs/COMPOSE_MIGRATION.md`. Items 13–17 are internal sub-phases of the migration.
+Full migration to Jetpack Compose. Executed in six phases as detailed in
+`docs/COMPOSE_MIGRATION.md §7`. Items 12–17 are the migration phases.
 
-| # | Task | Effort | Impact | Dependency |
-|---|------|--------|--------|------------|
-| 13 | **Phase 1 — Compose infrastructure** — enable Compose in build; create `AkilimoTheme`, `AkilimoColors`, `AkilimoTypography`, `AkilimoShapes`; create reusable atom composables (`AkilimoButton`, `AkilimoCard`, `AkilimoTextField`, `NetworkBanner`) | M | Foundation | #9 (Hilt), #12 (NavGraph) |
-| 14 | **Phase 2 — Leaf screens** — migrate `UserSettingsActivity`, `RecommendationsActivity`, `GetRecommendationActivity`, `MainActivity` to Compose via `ComposeView` bridge host; each gets a `*ViewModel` + `*Screen.kt` | L | UX modernisation | #13 |
-| 15 | **Phase 3 — Domain screens** — migrate all 15 domain activities to Compose; replace all RecyclerView adapters with `LazyColumn` / `LazyVerticalGrid`; replace `AutoCompleteTextView` with `ExposedDropdownMenuBox` | XL | Core UX | #14 |
-| 16 | **Phase 4 — Stepper replacement** — replace `StepperLayout` library with `HorizontalPager`-based `OnboardingFlow`; migrate all 11 step fragments to composables; introduce `OnboardingViewModel` with step validation | XL | Architecture | #15 |
-| 17 | **Phase 5 — NavGraph migration and final cleanup** — consolidate all Compose destinations into `AppNavGraph`; remove ViewBinding, all XML layouts, all legacy View libraries (`StepperLayout`, `ViewPump`, `Reword`, `AppLocale`, `ProcessPhoenix`) | L | Architecture | #16 |
-| 18 | **Deep link support** — `<intent-filter>` for recommendation sharing URLs | M | UX | #17 |
-| 19 | **Offline recommendation cache** — store last recommendation per crop; display stale data when offline | L | Offline UX | #8 |
-| 20 | **Push notification delivery** — FCM integration for email/SMS notification prefs | L | Product | None |
-| 21 | **Accessibility audit** — TalkBack, font scaling, content descriptions, Compose semantics | M | Compliance | #16 |
+**Note:** No View-based NavGraph prerequisite — the app goes directly to pure Compose
+`NavHost` with `@Serializable` routes from Phase 1. See `COMPOSE_MIGRATION.md §2` for rationale.
+
+| # | Task | Effort | Impact | Branch | Dependency |
+|---|------|--------|--------|--------|------------|
+| 12 | **Phase 0 — Enable Compose (1 day)** — uncomment `kotlin-compose` plugin; add missing catalog entries (`navigation-compose`, `hilt-navigation-compose`, lifecycle-compose); set `compose = true` in `build.gradle.kts`; create `AkilimoTheme`, `AkilimoColors`, `AkilimoTypography`, `AkilimoShapes`; verify build passes | S | Foundation | `feature/compose-foundation` | #9 (Hilt), #10 (DataStore) |
+| 13 | **Phase 1 — Navigation Shell (1–2 days)** — create `MainActivity` with `setContent { AkilimoTheme { AkilimoNavHost() } }`; declare all routes in `navigation/Route.kt`; create `AkilimoNavHost` with `TODO()` placeholders; set `MainActivity` as launcher in `AndroidManifest.xml`; keep all legacy Activities | S | Architecture | `feature/compose-foundation` | #12 |
+| 14 | **Phase 2 — Onboarding Wizard (3–5 days)** — **pattern-setting phase**; create reusable atoms (`AkilimoTextField`, `AkilimoDropdown`, `WizardBottomBar`, `ExitConfirmDialog`); implement `OnboardingViewModel` with full UiState/Event/Effect; implement `OnboardingScreen` with `AnimatedContent` step transitions; migrate all 11 wizard step fragments to composables; wire into NavHost; delete `HomeStepperActivity`, `WizardAdapter`, all wizard Fragment classes, `BaseStepFragment`, and wizard XML layouts | L | Core UX | `feature/compose-onboarding` | #13 |
+| 15 | **Phase 3 — Recommendations & Use-Case Screens (1 week)** — work outermost-shell-first: `RecommendationsScreen` → advice sub-screens → use-case forms → data screens → fertilizer screens → `GetRecommendationScreen`; for each: port ViewModel to Event/Effect → create `*Screen.kt` + `*Content` composable → wire into NavHost → delete Fragment/Activity + XML layout | XL | Core UX | `feature/compose-recommendations` | #14 |
+| 16 | **Phase 4 — Settings & Misc (2–3 days)** — `UserSettingsScreen`; `LocationPickerScreen` (`AndroidView` wrapper for Mapbox if no Compose SDK available); any remaining dialogs or utility screens | M | UX | `feature/compose-settings` | #15 |
+| 17 | **Phase 5 — Final Cleanup (1–2 days)** — `viewBinding = false`; delete all `res/layout/*.xml`; delete `BaseFragment`, `BaseStepFragment`; thin `BaseActivity` to lifecycle/permission helpers only; remove View-only libraries (`AppLocale`/`Reword`/`ViewPump`, `hbb20:ccp`, `StepperLayout`); remove `navigation-fragment` and `navigation-ui-ktx`; delete `nav_graph.xml` and `nav_recommendations.xml`; final build verification | M | Cleanup | `feature/compose-cleanup` | #16 |
+| 18 | **Deep link support** — `<intent-filter>` for recommendation sharing URLs | M | UX | — | #17 |
+| 19 | **Offline recommendation cache** — store last recommendation per crop; display stale data when offline | L | Offline UX | — | #8 |
+| 20 | **Push notification delivery** — FCM integration for email/SMS notification prefs | L | Product | — | None |
+| 21 | **Accessibility audit** — TalkBack, font scaling, content descriptions, Compose semantics | M | Compliance | — | #16 |
 
 ---
 
@@ -61,14 +64,15 @@ Full migration to Jetpack Compose. Executed in five phases as detailed in
 ```
 Week 1-4:    Bug fixes + security hardening (items 1–5)         ← done ✅
 Month 2–3:   Hilt (#9) ✅ + DataStore (#10) ✅ — completed ahead of schedule
-             ViewModels (#7) 🔄 Partial — key screens done; all screens remaining
-             Room migrations (#8) + NavGraph (#12) + unit tests (#11) — still open
-Month 4:     Compose infrastructure + leaf screens (items 13–14)
-Month 5–6:   Domain screens migration (item 15)
-Month 7–8:   Stepper replacement + onboarding flow (item 16)
-             Note: HomeStepperActivity already migrated from StepperLayout → ViewPager2 + WizardAdapter
-Month 9–10:  NavGraph consolidation + library cleanup (item 17)
-Month 11–12: Deep links + offline cache + accessibility (items 18–21)
+             ViewModels (#7) 🔄 Partial — key screens done; remaining screens open
+             Room migrations (#8) + unit tests (#11) — still open
+Month 4:     Phase 0 + 1: enable Compose, theme system, MainActivity + NavHost shell (#12, #13)
+Month 4–5:   Phase 2: onboarding wizard in Compose — pattern-setting phase (#14)
+             Note: HomeStepperActivity already migrated StepperLayout → ViewPager2 + WizardAdapter (pre-existing)
+Month 5–6:   Phase 3: recommendations + all use-case screens (#15)
+Month 7:     Phase 4: settings + misc screens (#16)
+Month 7–8:   Phase 5: delete all XML layouts, ViewBinding, legacy libraries (#17)
+Month 9–12:  Deep links + offline cache + push notifications + accessibility (items 18–21)
 ```
 
 > Full Compose migration specification: `docs/COMPOSE_MIGRATION.md`

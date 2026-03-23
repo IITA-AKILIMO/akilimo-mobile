@@ -3,6 +3,7 @@ package com.akilimo.mobile.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.dao.ProduceMarketRepo
+import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.entities.ProduceMarket
 import com.akilimo.mobile.enums.EnumMarketType
 import com.akilimo.mobile.repos.AkilimoUserRepo
@@ -20,6 +21,7 @@ import kotlinx.coroutines.launch
 class ProduceMarketViewModel @AssistedInject constructor(
     private val userRepo: AkilimoUserRepo,
     private val marketRepo: ProduceMarketRepo,
+    private val appSettings: AppSettingsDataStore,
     @Assisted private val marketType: EnumMarketType
 ) : ViewModel() {
 
@@ -37,6 +39,10 @@ class ProduceMarketViewModel @AssistedInject constructor(
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch { loadData(appSettings.akilimoUser) }
+    }
 
     fun loadData(userName: String) = viewModelScope.launch {
         val user = userRepo.getUser(userName) ?: return@launch

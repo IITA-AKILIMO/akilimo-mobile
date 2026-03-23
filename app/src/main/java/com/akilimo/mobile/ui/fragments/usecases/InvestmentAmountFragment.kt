@@ -27,7 +27,7 @@ class InvestmentAmountFragment : BaseFragment<ActivityInvestmentAmountBinding>()
 
     override fun onBindingReady(savedInstanceState: Bundle?) {
         adapter = InvestmentAmountAdapter { selected, amount ->
-            viewModel.saveInvestment(sessionManager.akilimoUser, selected, amount)
+            viewModel.saveInvestment(selected, amount)
         }
 
         binding.rvInvestments.apply {

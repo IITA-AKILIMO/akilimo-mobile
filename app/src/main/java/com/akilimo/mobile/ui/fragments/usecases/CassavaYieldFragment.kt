@@ -41,7 +41,7 @@ class CassavaYieldFragment : BaseFragment<ActivityCassavaYieldBinding>() {
     override fun onBindingReady(savedInstanceState: Bundle?) {
         cassavaYieldAdapter = CassavaYieldAdapter().apply {
             onItemClick = { cassavaYield ->
-                viewModel.selectYield(sessionManager.akilimoUser, cassavaYield)
+                viewModel.selectYield(cassavaYield)
             }
         }
 

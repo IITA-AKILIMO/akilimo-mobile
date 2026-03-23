@@ -211,7 +211,6 @@ class DatesFragment : BaseFragment<ActivityAlternativePlantingScheduleBinding>()
         val plantingFlex = flexOptions.find { it.displayLabel == dropPlantingFlex.text.toString() }?.valueOption ?: 0
         val harvestFlex = flexOptions.find { it.displayLabel == dropHarvestFlex.text.toString() }?.valueOption ?: 0
         viewModel.saveSchedule(
-            userName = sessionManager.akilimoUser,
             plantingDate = plantingDate!!,
             harvestDate = harvestDate!!,
             plantingFlex = plantingFlex,

@@ -2,6 +2,7 @@ package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.entities.Fertilizer
 import com.akilimo.mobile.entities.SelectedFertilizer
 import com.akilimo.mobile.enums.EnumFertilizerFlow
@@ -27,13 +28,13 @@ class FertilizerViewModel @AssistedInject constructor(
     val selectedRepo: SelectedFertilizerRepo,
     private val userRepo: AkilimoUserRepo,
     val priceRepo: FertilizerPriceRepo,
-    @Assisted private val userName: String,
+    private val appSettings: AppSettingsDataStore,
     @Assisted private val fertilizerFlow: EnumFertilizerFlow
 ) : ViewModel() {
 
     @AssistedFactory
     interface Factory {
-        fun create(userName: String, fertilizerFlow: EnumFertilizerFlow): FertilizerViewModel
+        fun create(fertilizerFlow: EnumFertilizerFlow): FertilizerViewModel
     }
 
     data class UiState(
@@ -47,10 +48,11 @@ class FertilizerViewModel @AssistedInject constructor(
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
     init {
-        loadData()
+        viewModelScope.launch { loadData() }
     }
 
     private fun loadData() = viewModelScope.launch {
+        val userName = appSettings.akilimoUser
         val user = userRepo.getUser(userName) ?: return@launch
         val userId = user.id ?: return@launch
         val country = user.enumCountry

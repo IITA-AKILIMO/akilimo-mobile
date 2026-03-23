@@ -211,8 +211,7 @@ class UserSettingsFragment : BaseFragment<ActivityUserSettingsBinding>() {
                 notifyBySms = switchNotifySms.isChecked,
                 preferredAreaUnit = areaUnit,
                 darkMode = switchDarkMode.isChecked
-            ),
-            sessionManager.akilimoUser
+            )
         )
     }
 }

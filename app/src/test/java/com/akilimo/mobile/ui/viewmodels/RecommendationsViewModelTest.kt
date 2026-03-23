@@ -1,5 +1,6 @@
 package com.akilimo.mobile.ui.viewmodels
 
+import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.enums.EnumAdvice
 import com.akilimo.mobile.enums.EnumCountry
@@ -7,6 +8,7 @@ import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.rules.TestDispatcherRule
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -22,21 +24,21 @@ class RecommendationsViewModelTest {
     val dispatcherRule = TestDispatcherRule()
 
     private val userRepo: AkilimoUserRepo = mockk(relaxed = true)
+    private val appSettings: AppSettingsDataStore = mockk(relaxed = true)
     private lateinit var viewModel: RecommendationsViewModel
 
     @Before
     fun setUp() {
-        viewModel = RecommendationsViewModel(userRepo)
+        every { appSettings.akilimoUser } returns "user1"
+        viewModel = RecommendationsViewModel(userRepo, appSettings)
     }
 
     private fun userFor(country: EnumCountry) =
         AkilimoUser(id = 1, userName = "user1", enumCountry = country)
 
     @Test
-    fun `loadAdviceOptions for NG includes intercropping maize and not sweet potato`() = runTest {
+    fun `loads intercropping maize for NG country`() = runTest {
         coEvery { userRepo.getUser("user1") } returns userFor(EnumCountry.NG)
-
-        viewModel.loadAdviceOptions("user1")
         advanceUntilIdle()
 
         val options = viewModel.uiState.value.adviceOptions.map { it.valueOption }
@@ -45,10 +47,8 @@ class RecommendationsViewModelTest {
     }
 
     @Test
-    fun `loadAdviceOptions for TZ includes intercropping sweet potato and not maize`() = runTest {
+    fun `loads intercropping sweet potato for TZ country`() = runTest {
         coEvery { userRepo.getUser("user1") } returns userFor(EnumCountry.TZ)
-
-        viewModel.loadAdviceOptions("user1")
         advanceUntilIdle()
 
         val options = viewModel.uiState.value.adviceOptions.map { it.valueOption }
@@ -57,21 +57,16 @@ class RecommendationsViewModelTest {
     }
 
     @Test
-    fun `loadAdviceOptions for unsupported country has only 3 base options`() = runTest {
+    fun `loads only 3 base options for unsupported country`() = runTest {
         coEvery { userRepo.getUser("user1") } returns userFor(EnumCountry.Unsupported)
-
-        viewModel.loadAdviceOptions("user1")
         advanceUntilIdle()
 
-        val options = viewModel.uiState.value.adviceOptions
-        assertEquals(3, options.size)
+        assertEquals(3, viewModel.uiState.value.adviceOptions.size)
     }
 
     @Test
-    fun `loadAdviceOptions always includes the 3 base recommendations`() = runTest {
+    fun `always includes 3 base recommendations`() = runTest {
         coEvery { userRepo.getUser("user1") } returns userFor(EnumCountry.NG)
-
-        viewModel.loadAdviceOptions("user1")
         advanceUntilIdle()
 
         val options = viewModel.uiState.value.adviceOptions.map { it.valueOption }
@@ -81,10 +76,8 @@ class RecommendationsViewModelTest {
     }
 
     @Test
-    fun `loadAdviceOptions does nothing when user not found`() = runTest {
-        coEvery { userRepo.getUser("unknown") } returns null
-
-        viewModel.loadAdviceOptions("unknown")
+    fun `does nothing when user not found`() = runTest {
+        coEvery { userRepo.getUser("user1") } returns null
         advanceUntilIdle()
 
         assertTrue(viewModel.uiState.value.adviceOptions.isEmpty())
@@ -95,7 +88,7 @@ class RecommendationsViewModelTest {
         val user = userFor(EnumCountry.NG)
         coEvery { userRepo.getUser("user1") } returns user
 
-        viewModel.trackActiveAdvice("user1", EnumAdvice.FERTILIZER_RECOMMENDATIONS)
+        viewModel.trackActiveAdvice(EnumAdvice.FERTILIZER_RECOMMENDATIONS)
         advanceUntilIdle()
 
         coVerify {
@@ -108,9 +101,9 @@ class RecommendationsViewModelTest {
 
     @Test
     fun `trackActiveAdvice does nothing when user not found`() = runTest {
-        coEvery { userRepo.getUser("unknown") } returns null
+        coEvery { userRepo.getUser("user1") } returns null
 
-        viewModel.trackActiveAdvice("unknown", EnumAdvice.FERTILIZER_RECOMMENDATIONS)
+        viewModel.trackActiveAdvice(EnumAdvice.FERTILIZER_RECOMMENDATIONS)
         advanceUntilIdle()
 
         coVerify(exactly = 0) { userRepo.saveOrUpdateUser(any(), any()) }

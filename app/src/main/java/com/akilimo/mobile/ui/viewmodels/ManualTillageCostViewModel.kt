@@ -2,6 +2,7 @@ package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.repos.AkilimoUserRepo
@@ -19,7 +20,8 @@ import kotlinx.coroutines.launch
 class ManualTillageCostViewModel @Inject constructor(
     private val userRepo: AkilimoUserRepo,
     private val costsRepo: FieldOperationCostsRepo,
-    private val currentPracticeRepo: CurrentPracticeRepo
+    private val currentPracticeRepo: CurrentPracticeRepo,
+    private val appSettings: AppSettingsDataStore
 ) : ViewModel() {
 
     data class UiState(
@@ -35,6 +37,10 @@ class ManualTillageCostViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch { loadData(appSettings.akilimoUser) }
+    }
 
     fun loadData(userName: String) = viewModelScope.launch {
         val user = userRepo.getUser(userName) ?: return@launch

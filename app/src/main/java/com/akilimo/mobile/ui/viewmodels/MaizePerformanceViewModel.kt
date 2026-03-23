@@ -3,6 +3,7 @@ package com.akilimo.mobile.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.dao.MaizePerformanceRepo
+import com.akilimo.mobile.data.AppSettingsDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import com.akilimo.mobile.dto.MaizePerfOption
@@ -18,13 +19,18 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class MaizePerformanceViewModel @Inject constructor(
     private val userRepo: AkilimoUserRepo,
-    private val maizeRepo: MaizePerformanceRepo
+    private val maizeRepo: MaizePerformanceRepo,
+    private val appSettings: AppSettingsDataStore
 ) : ViewModel() {
 
     data class UiState(val options: List<MaizePerfOption> = emptyList())
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch { loadOptions(appSettings.akilimoUser) }
+    }
 
     fun loadOptions(userName: String) = viewModelScope.launch {
         val user = userRepo.getUser(userName) ?: return@launch
@@ -37,11 +43,11 @@ class MaizePerformanceViewModel @Inject constructor(
         }
     }
 
-    fun saveSelection(userName: String, selected: EnumMaizePerformance) = viewModelScope.launch {
+    fun saveSelection(selected: EnumMaizePerformance) = viewModelScope.launch {
         _uiState.update { state ->
             state.copy(options = state.options.map { it.copy(isSelected = it.valueOption == selected) })
         }
-        val user = userRepo.getUser(userName) ?: return@launch
+        val user = userRepo.getUser(appSettings.akilimoUser) ?: return@launch
         maizeRepo.saveOrUpdatePerformance(
             MaizePerformance(userId = user.id ?: 0, maizePerformance = selected)
         )

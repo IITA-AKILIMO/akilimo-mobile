@@ -20,8 +20,5 @@
         android:name="com.akilimo.mobile.ui.fragments.NavRouterFragment"
         android:label="NavRouter" />
 
-    <activity
-        android:id="@+id/recommendationsActivity"
-        android:name="com.akilimo.mobile.ui.activities.RecommendationsActivity" />
 
 </navigation>

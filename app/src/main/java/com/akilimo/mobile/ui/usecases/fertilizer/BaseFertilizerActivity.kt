@@ -57,7 +57,7 @@ abstract class BaseFertilizerActivity<VB : ViewBinding> : BaseActivity<VB>() {
     protected val viewModel: FertilizerViewModel by viewModels(
         extrasProducer = {
             defaultViewModelCreationExtras.withCreationCallback<FertilizerViewModel.Factory> { factory ->
-                factory.create(sessionManager.akilimoUser, fertilizerFlow)
+                factory.create(fertilizerFlow)
             }
         }
     )

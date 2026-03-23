@@ -1,8 +1,8 @@
 # AKILIMO Mobile — Jetpack Compose Migration Guide
 
 This document is the authoritative plan for migrating the entire AKILIMO Android app from
-View-based XML + ViewBinding to Jetpack Compose. It defines prerequisites, a phased screen
-migration order, interoperability patterns, design-system bridging, and a screen-by-screen
+View-based XML + ViewBinding to Jetpack Compose. It covers architecture decisions, build
+configuration, design-system bridging, phased migration order, and a screen-by-screen
 conversion map.
 
 ---
@@ -10,52 +10,50 @@ conversion map.
 ## Table of Contents
 
 1. [Migration Philosophy](#1-migration-philosophy)
-2. [Prerequisites](#2-prerequisites)
+2. [Key Decisions](#2-key-decisions)
 3. [Build Configuration](#3-build-configuration)
 4. [Design System Bridge](#4-design-system-bridge)
-5. [Architecture in the Compose World](#5-architecture-in-the-compose-world)
-6. [Interoperability Patterns](#6-interoperability-patterns)
+5. [Target Architecture](#5-target-architecture)
+6. [Navigation](#6-navigation)
 7. [Phased Migration Plan](#7-phased-migration-plan)
-8. [Screen-by-Screen Conversion Map](#8-screen-by-screen-conversion-map)
-9. [Adapter → LazyLayout Equivalents](#9-adapter--lazylayout-equivalents)
-10. [Stepper Replacement Strategy](#10-stepper-replacement-strategy)
+8. [Onboarding Wizard — Pattern Reference](#8-onboarding-wizard--pattern-reference)
+9. [Screen-by-Screen Conversion Map](#9-screen-by-screen-conversion-map)
+10. [Adapter → LazyLayout Equivalents](#10-adapter--lazylayout-equivalents)
 11. [Testing Strategy](#11-testing-strategy)
-12. [Library Removals at Completion](#12-library-removals-at-completion)
+12. [Common Pitfalls](#12-common-pitfalls)
+13. [Library Removals at Completion](#13-library-removals-at-completion)
 
 ---
 
 ## 1. Migration Philosophy
 
-**Strangler-fig migration**: never rewrite from scratch. Replace one screen at a time, keeping
-the app releasable at every commit. Each screen migrates as a self-contained unit:
-`Activity` → `ComposeActivity` (still extending `BaseActivity`) → eventually a `NavGraph`
-destination.
+**Full migration — no permanent hybrid UI.** Every Fragment and Activity is replaced with a
+Jetpack Compose equivalent. No `ComposeView` bridges or `AndroidView` wrappers remain after
+Phase 5 (except where a third-party View-only SDK, e.g. Mapbox, has no Compose alternative).
 
-**Rule of thumb for migration order:**
-1. No ViewModel, no state (display-only) screens first.
-2. Screens that already have a ViewModel when we add them.
-3. Complex stateful flows (stepper) last — these need NavGraph and SavedStateHandle ready.
+**Onboarding-first.** The onboarding wizard is implemented first and serves as the
+architectural pattern reference for all subsequent screens. Getting the wizard right —
+state management, validation, navigation, theming — means every screen that follows is
+mechanical work.
+
+**Single-Activity from day one.** `MainActivity` replaces `HomeStepperActivity` as the sole
+entry point. A single `NavHost` replaces all `startActivity()` / `Intent` calls from the
+first commit of Phase 1.
 
 ---
 
-## 2. Prerequisites
+## 2. Key Decisions
 
-These must be completed **before** any screen migration begins. They are captured in the
-ROADMAP as items 3–14.
-
-| # | Prerequisite | Why Compose needs it | ROADMAP ref |
-|---|---|---|---|
-| P1 | Remove `allowMainThreadQueries()` | Compose LaunchedEffect + StateFlow collectors will surface ANRs that were previously hidden | #3 |
-| P2 | Move API keys to `BuildConfig` | R8 minification (P3) strips class names; keys embedded in strings survive but need proper BuildConfig pattern first | #4 |
-| P3 | Enable R8 minification | Compose compiler generates significant bytecode; minification is required for release APK size | #5 |
-| P4 | Introduce ViewModels | Compose `collectAsStateWithLifecycle()` needs a ViewModel as the state holder; all screen state moves there | #7 |
-| P5 | Proper Room migrations | Schema changes during migration must not wipe user data | #8 |
-| P6 | **Introduce Hilt** ✅ Done | `hiltViewModel()` in composables; `@HiltAndroidApp`, `@AndroidEntryPoint` on host activities | #9 |
-| P7 | Consolidate language + all settings to DataStore ✅ Done | `rememberUpdatedState` needs a single reactive source; dual SharedPrefs causes recomposition race | #10 |
-| P8 | Jetpack NavGraph | `NavHost` + `composable { }` destinations replace `startActivity()` calls | #13 |
-
-P6 (Hilt) is complete. Do not skip P8 (NavGraph). Compose screens without NavGraph require manual
-`startActivity()` calls from composables, which creates navigation debt.
+| Decision | Choice | Rationale |
+|---|---|---|
+| Migration scope | Full — all Fragments and Activities replaced | No long-term hybrid debt |
+| Navigation | Pure Compose `NavHost` with `@Serializable` routes | Type-safe, no NavHostFragment, testable |
+| Hybrid strategy | None — direct replacement per phase | ComposeView bridges introduce double maintenance |
+| State container | ViewModel + `StateFlow<UiState>` | Consistent with existing ViewModels; survives config change |
+| One-shot effects | `Channel<Effect>` collected in `LaunchedEffect` | Prevents re-delivery on recomposition |
+| DI | Hilt (already integrated) — `hiltViewModel()` in composables | No change to injection setup |
+| Starting screen | Onboarding wizard | Most complex flow; sets patterns for all others |
+| Theme | `AkilimoTheme` wrapping `MaterialTheme` (Material 3) | Port existing XML tokens directly |
 
 ---
 
@@ -66,63 +64,27 @@ coordinate strings to `build.gradle.kts` — always go through the version catal
 
 ### 3.1 Additions required in `gradle/libs.versions.toml`
 
-The Compose BOM, `activity-compose`, and all core UI/Material3 compose library aliases are
-**already present** in the catalog. The following entries are missing and must be added before
-Phase 1 begins.
-
-#### `[versions]` — current state and what still needs adding
-
-Hilt is already in the catalog at version `"2.57.1"`. The Compose BOM is already present at `"2025.10.00"`.
+The Compose BOM, `activity-compose`, and core UI/Material3 library aliases are
+**already present** in the catalog. The following are missing and must be added before
+Phase 0 begins.
 
 ```toml
-# Still missing — add these:
-navigationCompose      = "2.8.5"   # navigation-compose (separate from view-based navigation = "2.7.5")
+[versions]
+# Add these — currently missing:
+navigationCompose      = "2.9.0"
 hiltNavigationCompose  = "1.2.0"
-```
 
-#### `[libraries]` — add after the existing `androidx-compose-material3` line
+[libraries]
+# Add after the existing compose entries:
+androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose",  version.ref = "lifecycleRuntimeKtx" }
+androidx-lifecycle-runtime-compose   = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose",    version.ref = "lifecycleRuntimeKtx" }
+androidx-navigation-compose          = { group = "androidx.navigation", name = "navigation-compose",          version.ref = "navigationCompose" }
+hilt-navigation-compose              = { group = "androidx.hilt",       name = "hilt-navigation-compose",     version.ref = "hiltNavigationCompose" }
 
-```toml
-# Compose extras (BOM manages versions for ui/material3 entries; explicit for the rest)
-androidx-compose-material3-window    = { group = "androidx.compose.material3",   name = "material3-window-size-class" }
-androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle",            name = "lifecycle-viewmodel-compose",  version.ref = "lifecycleRuntimeKtx" }
-androidx-lifecycle-runtime-compose   = { group = "androidx.lifecycle",            name = "lifecycle-runtime-compose",    version.ref = "lifecycleRuntimeKtx" }
-# navigation-compose and hilt-navigation-compose are NOT yet in the catalog — add before Phase 1:
-androidx-navigation-compose          = { group = "androidx.navigation",           name = "navigation-compose",           version.ref = "navigationCompose" }
-hilt-navigation-compose              = { group = "androidx.hilt",                 name = "hilt-navigation-compose",      version.ref = "hiltNavigationCompose" }
-```
-
-> Note: `hilt-android` and `hilt-compiler` are already in the catalog (used by the current `kapt`-based Hilt integration).
-
-#### `[plugins]` — `kotlin-compose` still needs to be uncommented; `hilt` is already present
-
-```toml
-# kotlin-compose is still commented out in the catalog — uncomment before Phase 1:
-#kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-# change to:
+[plugins]
+# Uncomment this line (currently commented out):
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-
-# hilt plugin is already in the catalog as:
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-# and is applied in app/build.gradle.kts as:
-# alias(libs.plugins.hilt)
 ```
-
-#### `[bundles]` — optional convenience bundle (add alongside `androidx-navigation`)
-
-```toml
-compose-core = [
-    "androidx-compose-ui",
-    "androidx-compose-ui-graphics",
-    "androidx-compose-ui-tooling-preview",
-    "androidx-compose-material3",
-    "androidx-activity-compose",
-    "androidx-lifecycle-viewmodel-compose",
-    "androidx-lifecycle-runtime-compose",
-]
-```
-
----
 
 ### 3.2 `app/build.gradle.kts` — plugin block
 
@@ -130,89 +92,63 @@ compose-core = [
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)   // ← add when catalog entry is uncommented (Phase 1)
+    alias(libs.plugins.kotlin.compose)   // ← add (Phase 0)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)             // ← already active (was libs.plugins.hilt.android in old docs; correct alias is libs.plugins.hilt)
-    // … existing plugins unchanged
+    alias(libs.plugins.hilt)
 }
 ```
 
----
-
-### 3.3 `android {}` block — enable Compose
+### 3.3 `android {}` block
 
 ```kotlin
 android {
     buildFeatures {
-        compose      = true
-        viewBinding  = true   // keep until Phase 5 migration complete
-        buildConfig  = true
+        compose     = true   // ← change from false
+        viewBinding = true   // keep until Phase 5 cleanup
+        buildConfig = true
     }
     // No composeOptions.kotlinCompilerExtensionVersion needed —
-    // the kotlin.plugin.compose plugin (3.1 Build Configuration) manages it automatically.
+    // kotlin.plugin.compose manages it automatically.
 }
 ```
 
----
-
-### 3.4 `dependencies {}` block — using catalog aliases
+### 3.4 `dependencies {}` block
 
 ```kotlin
 dependencies {
-    // ── Compose BOM (already in catalog, already used for activity-compose) ──
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
-    // ── Core Compose UI (versions managed by BOM) ────────────────────────────
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.material3.window)      // ← new catalog entry
-
-    // ── Activity + Lifecycle integration (already in catalog) ────────────────
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)   // ← new catalog entry
-    implementation(libs.androidx.lifecycle.runtime.compose)     // ← new catalog entry
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.hilt.navigation.compose)
 
-    // ── Navigation Compose ────────────────────────────────────────────────────
-    implementation(libs.androidx.navigation.compose)            // ← new catalog entry
-
-    // ── Hilt (already integrated — prerequisite #9 ✅ Done) ──────────────────
-    implementation(libs.hilt.android)                           // already in build.gradle.kts
-    kapt(libs.hilt.compiler)                                    // uses kapt (not ksp) for Hilt compiler
-    implementation(libs.hilt.navigation.compose)                // ← new catalog entry (add before Phase 1)
-
-    // ── Debug / test ─────────────────────────────────────────────────────────
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 }
 ```
 
-Entries marked **← new catalog entry** require the `[libraries]` additions from §3.1 first.
-All others are already present in `gradle/libs.versions.toml`.
-
----
-
-### 3.5 Keep `viewBinding = true` until Phase 5
-
-Do **not** disable ViewBinding mid-migration. Every un-migrated activity still uses it.
-Remove it — along with all remaining XML layout references — in the final cleanup commit
-of Phase 5.
+Keep `viewBinding = true` and all existing ViewBinding dependencies until Phase 5.
+Every un-migrated screen still uses them.
 
 ---
 
 ## 4. Design System Bridge
 
-The app already has a well-defined Material3 colour palette (`values/colors.xml`,
-`values/themes.xml`). Bridge it directly into Compose so the visual identity is identical on
-both the old and new screens during the transition.
+The app already has a well-defined Material 3 colour palette in `values/colors.xml` and
+`values/themes.xml`. These are ported directly into Compose so both the old and new screens
+are visually identical during the transition.
 
-### 4.1 Create `ui/theme/AkilimoColors.kt`
+### 4.1 `ui/theme/AkilimoColors.kt`
 
 ```kotlin
 package com.akilimo.mobile.ui.theme
@@ -221,22 +157,18 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
-// ── Brand palette (mirrors values/colors.xml) ──────────────────────
 val AkilimoPrimaryGreen        = Color(0xFF3D7600)
 val AkilimoPrimaryContainer    = Color(0xFFBAEE82)
 val AkilimoOnPrimary           = Color(0xFFFFFFFF)
 val AkilimoOnPrimaryContainer  = Color(0xFF0D2100)
-
 val AkilimoSecondaryOlive      = Color(0xFF586200)
 val AkilimoSecondaryContainer  = Color(0xFFDCE87A)
 val AkilimoOnSecondary         = Color(0xFFFFFFFF)
 val AkilimoOnSecondaryContainer = Color(0xFF181D00)
-
 val AkilimoTertiaryRed         = Color(0xFFB5162A)
 val AkilimoTertiaryContainer   = Color(0xFFFFDADC)
 val AkilimoOnTertiary          = Color(0xFFFFFFFF)
 val AkilimoOnTertiaryContainer = Color(0xFF40000D)
-
 val AkilimoBackground          = Color(0xFFF5FCE9)
 val AkilimoSurface             = Color(0xFFF5FCE9)
 val AkilimoSurfaceVariant      = Color(0xFFDCE6C8)
@@ -244,11 +176,10 @@ val AkilimoOnBackground        = Color(0xFF181D12)
 val AkilimoOnSurface           = Color(0xFF181D12)
 val AkilimoOnSurfaceVariant    = Color(0xFF424940)
 val AkilimoOutline             = Color(0xFF72796A)
-val AkilimoOutlineVariant      = Color(0xFFC1C9B2)
 val AkilimoError               = Color(0xFFBA1A1A)
 val AkilimoErrorContainer      = Color(0xFFFFDAD6)
 
-// ── Dark variants ───────────────────────────────────────────────────
+// Dark variants
 val AkilimoDarkPrimary               = Color(0xFF9DD768)
 val AkilimoDarkOnPrimary             = Color(0xFF1C3A00)
 val AkilimoDarkPrimaryContainer      = Color(0xFF2C5900)
@@ -290,7 +221,6 @@ val LightColorScheme = lightColorScheme(
     surfaceVariant       = AkilimoSurfaceVariant,
     onSurfaceVariant     = AkilimoOnSurfaceVariant,
     outline              = AkilimoOutline,
-    outlineVariant       = AkilimoOutlineVariant,
     error                = AkilimoError,
     errorContainer       = AkilimoErrorContainer,
 )
@@ -319,20 +249,9 @@ val DarkColorScheme = darkColorScheme(
 )
 ```
 
-### 4.2 Create `ui/theme/AkilimoTypography.kt`
+### 4.2 `ui/theme/AkilimoTypography.kt`
 
 ```kotlin
-package com.akilimo.mobile.ui.theme
-
-import androidx.compose.material3.Typography
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
-import com.akilimo.mobile.R
-
 val GoogleSans = FontFamily(
     Font(R.font.google_sans_regular, FontWeight.Normal),
     Font(R.font.google_sans_medium,  FontWeight.Medium),
@@ -341,60 +260,31 @@ val GoogleSans = FontFamily(
 )
 
 val AkilimoTypography = Typography(
-    displayLarge  = TextStyle(fontFamily = GoogleSans, fontWeight = FontWeight.Normal, fontSize = 57.sp, lineHeight = 64.sp),
-    displayMedium = TextStyle(fontFamily = GoogleSans, fontWeight = FontWeight.Normal, fontSize = 45.sp, lineHeight = 52.sp),
-    displaySmall  = TextStyle(fontFamily = GoogleSans, fontWeight = FontWeight.Normal, fontSize = 36.sp, lineHeight = 44.sp),
-    headlineLarge  = TextStyle(fontFamily = GoogleSans, fontWeight = FontWeight.Normal, fontSize = 32.sp, lineHeight = 40.sp),
-    headlineMedium = TextStyle(fontFamily = GoogleSans, fontWeight = FontWeight.Normal, fontSize = 28.sp, lineHeight = 36.sp),
-    headlineSmall  = TextStyle(fontFamily = GoogleSans, fontWeight = FontWeight.Normal, fontSize = 24.sp, lineHeight = 32.sp),
-    titleLarge  = TextStyle(fontFamily = GoogleSans, fontWeight = FontWeight.Medium, fontSize = 22.sp, lineHeight = 28.sp),
-    titleMedium = TextStyle(fontFamily = GoogleSans, fontWeight = FontWeight.Medium, fontSize = 16.sp, lineHeight = 24.sp),
-    titleSmall  = TextStyle(fontFamily = GoogleSans, fontWeight = FontWeight.Medium, fontSize = 14.sp, lineHeight = 20.sp),
-    bodyLarge  = TextStyle(fontFamily = GoogleSans, fontWeight = FontWeight.Normal, fontSize = 16.sp, lineHeight = 24.sp),
-    bodyMedium = TextStyle(fontFamily = GoogleSans, fontWeight = FontWeight.Normal, fontSize = 14.sp, lineHeight = 20.sp),
-    bodySmall  = TextStyle(fontFamily = GoogleSans, fontWeight = FontWeight.Normal, fontSize = 12.sp, lineHeight = 16.sp),
-    labelLarge  = TextStyle(fontFamily = GoogleSans, fontWeight = FontWeight.Medium, fontSize = 14.sp, lineHeight = 20.sp),
-    labelMedium = TextStyle(fontFamily = GoogleSans, fontWeight = FontWeight.Medium, fontSize = 12.sp, lineHeight = 16.sp),
-    labelSmall  = TextStyle(fontFamily = GoogleSans, fontWeight = FontWeight.Medium, fontSize = 11.sp, lineHeight = 16.sp),
+    displayLarge   = TextStyle(fontFamily = GoogleSans, fontWeight = FontWeight.Normal,  fontSize = 57.sp, lineHeight = 64.sp),
+    headlineMedium = TextStyle(fontFamily = GoogleSans, fontWeight = FontWeight.Normal,  fontSize = 28.sp, lineHeight = 36.sp),
+    titleLarge     = TextStyle(fontFamily = GoogleSans, fontWeight = FontWeight.Medium,  fontSize = 22.sp, lineHeight = 28.sp),
+    bodyLarge      = TextStyle(fontFamily = GoogleSans, fontWeight = FontWeight.Normal,  fontSize = 16.sp, lineHeight = 24.sp),
+    bodyMedium     = TextStyle(fontFamily = GoogleSans, fontWeight = FontWeight.Normal,  fontSize = 14.sp, lineHeight = 20.sp),
+    labelLarge     = TextStyle(fontFamily = GoogleSans, fontWeight = FontWeight.Medium,  fontSize = 14.sp, lineHeight = 20.sp),
+    labelSmall     = TextStyle(fontFamily = GoogleSans, fontWeight = FontWeight.Medium,  fontSize = 11.sp, lineHeight = 16.sp),
 )
 ```
 
-### 4.3 Create `ui/theme/AkilimoShapes.kt`
+### 4.3 `ui/theme/AkilimoShapes.kt`
 
 ```kotlin
-package com.akilimo.mobile.ui.theme
-
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Shapes
-import androidx.compose.ui.unit.dp
-
 val AkilimoShapes = Shapes(
-    // extraSmall — chips, small badges
-    extraSmall = RoundedCornerShape(4.dp),
-    // small — text fields
-    small      = RoundedCornerShape(8.dp),
-    // medium — cards (12dp matches ShapeAppearance.Akilimo.Card)
-    medium     = RoundedCornerShape(12.dp),
-    // large — bottom sheets (24dp matches ShapeAppearance.Akilimo.Large)
-    large      = RoundedCornerShape(24.dp),
-    // extraLarge — pill buttons (50% = full rounding)
-    extraLarge = RoundedCornerShape(50),
+    extraSmall = RoundedCornerShape(4.dp),   // chips
+    small      = RoundedCornerShape(8.dp),   // text fields
+    medium     = RoundedCornerShape(12.dp),  // cards
+    large      = RoundedCornerShape(24.dp),  // bottom sheets
+    extraLarge = RoundedCornerShape(50),     // pill buttons
 )
 ```
 
-### 4.4 Create `ui/theme/AkilimoTheme.kt`
+### 4.4 `ui/theme/AkilimoTheme.kt`
 
 ```kotlin
-package com.akilimo.mobile.ui.theme
-
-import android.app.Activity
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
-
 @Composable
 fun AkilimoTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -422,477 +312,591 @@ fun AkilimoTheme(
 }
 ```
 
+**Rule:** Never hardcode colours in composables. Always reference `MaterialTheme.colorScheme.*`.
+
 ---
 
-## 5. Architecture in the Compose World
+## 5. Target Architecture
 
-### 5.1 Target state per layer
+### 5.1 Layer diagram
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                       PRESENTATION (Compose)                         │
-│  NavHost (AppNavGraph.kt)                                            │
-│    ├─ OnboardingGraph  →  WelcomeScreen, BioDataScreen, …           │
-│    ├─ RecommendationGraph → RecommendationUseCaseScreen, …          │
-│    └─ SettingsGraph    →  UserSettingsScreen                         │
-│  Each screen: @Composable fun + @HiltViewModel                       │
-│  State: UiState data class + StateFlow in ViewModel                  │
-└──────────────────────────┬──────────────────────────────────────────┘
-                            │ StateFlow / SharedFlow
-┌──────────────────────────▼──────────────────────────────────────────┐
-│                          VIEWMODEL LAYER                             │
-│  @HiltViewModel — one per screen or logical group                    │
-│  Holds: UiState (data), UiEvent (one-shot), UserInput (form fields)  │
-│  Exposes: StateFlow<ScreenState>, SharedFlow<NavigationEvent>        │
-└──────────────────────────┬──────────────────────────────────────────┘
-                            │ suspend / Flow
-┌──────────────────────────▼──────────────────────────────────────────┐
-│                       REPOSITORY LAYER (unchanged)                   │
-│  All repos remain — Hilt provides them via constructor injection     │
-└─────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│                     PRESENTATION (Compose)                        │
+│  MainActivity (@AndroidEntryPoint)                               │
+│    └─ AkilimoNavHost (NavHost with @Serializable routes)         │
+│         ├─ OnboardingScreen   → WelcomeStep, BioDataStep, …     │
+│         ├─ RecommendationsScreen → FrScreen, BppScreen, …       │
+│         └─ SettingsScreen                                         │
+│  Per screen: @Composable fun + @HiltViewModel                    │
+│  State contract: UiState / Event / Effect (see §5.2)             │
+└──────────────────────────┬───────────────────────────────────────┘
+                            │ StateFlow<UiState> / Flow<Effect>
+┌──────────────────────────▼───────────────────────────────────────┐
+│                     VIEWMODEL LAYER (Hilt)                        │
+│  @HiltViewModel — one per screen or logical group                 │
+│  _uiState: MutableStateFlow<UiState>                             │
+│  _effect:  Channel<Effect> (one-shot side effects)               │
+│  onEvent(Event) — single entry point for all user actions        │
+└──────────────────────────┬───────────────────────────────────────┘
+                            │ suspend / Flow (unchanged)
+┌──────────────────────────▼───────────────────────────────────────┐
+│                  REPOSITORY LAYER (unchanged)                     │
+│  All 15+ repos remain; constructor-injected via Hilt             │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
-### 5.2 ViewModel state pattern (use consistently)
+### 5.2 Per-screen contract (UiState / Event / Effect)
+
+Every screen defines three types:
 
 ```kotlin
-// ── UiState ───────────────────────────────────────────────────────
-data class UserSettingsUiState(
+// What the UI renders — must be a data class, always has defaults
+data class FooUiState(
     val isLoading: Boolean = false,
-    val firstName: String = "",
-    val languageCode: String = "en-US",
-    val darkMode: Boolean = false,
-    // … other fields
+    val items: List<Item> = emptyList(),
+    val nameError: String? = null,
 )
 
-// ── ViewModel ─────────────────────────────────────────────────────
+// What the user does — sealed interface, one object per action
+sealed interface FooEvent {
+    data class NameChanged(val value: String) : FooEvent
+    data object SaveClicked : FooEvent
+}
+
+// One-shot side effects (navigate, show snackbar) — NOT in StateFlow
+// Delivered via Channel so they survive exactly once
+sealed interface FooEffect {
+    data object NavigateBack : FooEffect
+    data class ShowError(val message: String) : FooEffect
+}
+```
+
+### 5.3 ViewModel shape
+
+```kotlin
 @HiltViewModel
-class UserSettingsViewModel @Inject constructor(
-    private val prefsRepo: UserPreferencesRepo,
-    private val appSettings: AppSettingsDataStore,   // SessionManager is deleted; inject DataStore
+class FooViewModel @Inject constructor(
+    private val repo: FooRepo
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(UserSettingsUiState())
-    val uiState: StateFlow<UserSettingsUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(FooUiState())
+    val uiState: StateFlow<FooUiState> = _uiState.asStateFlow()
 
-    init { loadPreferences() }
+    // Channel — delivers each effect exactly once regardless of recompositions
+    private val _effect = Channel<FooEffect>(Channel.BUFFERED)
+    val effect: Flow<FooEffect> = _effect.receiveAsFlow()
 
-    private fun loadPreferences() {
-        viewModelScope.launch {
-            val prefs = prefsRepo.getOrDefault()
-            _uiState.update { it.copy(firstName = prefs.firstName ?: "", …) }
-        }
-    }
-
-    fun onFirstNameChange(value: String) =
-        _uiState.update { it.copy(firstName = value) }
-
-    fun save() { /* validate → persist → emit navigation event */ }
-}
-
-// ── Screen ────────────────────────────────────────────────────────
-@Composable
-fun UserSettingsScreen(
-    viewModel: UserSettingsViewModel = hiltViewModel(),
-    onNavigateBack: () -> Unit,
-) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    // … compose UI
-}
-```
-
-### 5.3 Navigation events (one-shot)
-
-```kotlin
-// In ViewModel
-private val _navEvents = MutableSharedFlow<NavEvent>()
-val navEvents = _navEvents.asSharedFlow()
-
-sealed interface NavEvent {
-    data object NavigateBack : NavEvent
-    data class NavigateTo(val route: String) : NavEvent
-}
-
-// In Screen
-LaunchedEffect(Unit) {
-    viewModel.navEvents.collect { event ->
+    fun onEvent(event: FooEvent) {
         when (event) {
-            NavEvent.NavigateBack -> onNavigateBack()
-            is NavEvent.NavigateTo -> navController.navigate(event.route)
+            is FooEvent.NameChanged -> _uiState.update { it.copy(name = event.value) }
+            FooEvent.SaveClicked    -> save()
         }
+    }
+
+    private fun save() = viewModelScope.launch {
+        // validate, persist
+        _effect.send(FooEffect.NavigateBack)
     }
 }
 ```
 
----
-
-## 6. Interoperability Patterns
-
-During the transition, View-based and Compose-based code must coexist.
-
-### 6.1 Embed a Compose screen inside an existing Activity (bridge host)
-
-Use this pattern for Phase 2 screens before NavGraph is ready.
+### 5.4 Screen shape
 
 ```kotlin
-// In a migrated activity that still extends BaseActivity
-class UserSettingsActivity : BaseActivity<ActivityUserSettingsBinding>() {
+@Composable
+fun FooScreen(
+    onNavigateBack: () -> Unit,
+    viewModel: FooViewModel = hiltViewModel()
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    override fun inflateBinding() = ActivityUserSettingsBinding.inflate(layoutInflater)
-
-    override fun onBindingReady(savedInstanceState: Bundle?) {
-        // Replace the entire content with a ComposeView
-        binding.composeContainer.setContent {
-            AkilimoTheme {
-                UserSettingsScreen(onNavigateBack = { finish() })
+    // Effects are collected once — LaunchedEffect(Unit) prevents re-collection on recomposition
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                FooEffect.NavigateBack        -> onNavigateBack()
+                is FooEffect.ShowError        -> { /* show snackbar */ }
             }
         }
     }
+
+    FooContent(state = state, onEvent = viewModel::onEvent)
+}
+
+// Stateless content composable — easy to preview and test
+@Composable
+private fun FooContent(state: FooUiState, onEvent: (FooEvent) -> Unit) {
+    // UI layout
+}
+
+@Preview
+@Composable
+private fun FooContentPreview() {
+    AkilimoTheme { FooContent(state = FooUiState(), onEvent = {}) }
 }
 ```
 
-`activity_user_settings.xml` reduces to a single `ComposeView`:
+**Why separate `FooScreen` and `FooContent`:**
+- `FooScreen` owns ViewModel and effect collection — not previewable
+- `FooContent` is stateless and always previewable with arbitrary state
 
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.compose.ui.platform.ComposeView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/compose_container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" />
-```
+---
 
-### 6.2 Embed a View inside Compose (for complex Views not yet migrated)
+## 6. Navigation
+
+### 6.1 Route definition
+
+Use `@Serializable` objects and data classes (Kotlin Serialization + Navigation 2.8+):
 
 ```kotlin
-@Composable
-fun MapboxMapView(modifier: Modifier = Modifier) {
-    AndroidView(
-        factory = { context -> MapboxMapView(context) },
-        modifier = modifier,
-        update = { view -> /* update map state */ }
-    )
+// navigation/Route.kt
+sealed interface Route {
+    @Serializable data object Onboarding       : Route
+    @Serializable data object Recommendations  : Route
+    @Serializable data object Bpp              : Route
+    @Serializable data object Fr               : Route
+    @Serializable data object Sph              : Route
+    @Serializable data object IcMaize          : Route
+    @Serializable data object IcSweetPotato    : Route
+    @Serializable data class  ManualTillageCost(val userId: Int) : Route
+    @Serializable data class  TractorAccess(val userId: Int)     : Route
+    @Serializable data class  WeedControlCosts(val userId: Int)  : Route
+    @Serializable data object Dates            : Route
+    @Serializable data object CassavaMarket    : Route
+    @Serializable data object CassavaYield     : Route
+    @Serializable data object InvestmentAmount : Route
+    @Serializable data object Fertilizers      : Route
+    @Serializable data object Settings         : Route
+    @Serializable data object LocationPicker   : Route
 }
 ```
 
-Use this for `LocationPickerActivity`'s Mapbox map during Phase 3.
+### 6.2 NavHost
 
-### 6.3 CompositionLocal bridge — Hilt is now active, use @HiltViewModel
+```kotlin
+// navigation/AkilimoNavHost.kt
+@Composable
+fun AkilimoNavHost(
+    navController: NavHostController = rememberNavController()
+) {
+    NavHost(navController, startDestination = Route.Onboarding) {
 
-> **Hilt is fully integrated (prerequisite #9 ✅ Done).** The CompositionLocal bridging
-> pattern described here is no longer needed for `AppSettingsDataStore` or any repository.
-> All dependencies must be provided through `@HiltViewModel` constructor injection.
->
-> Do **not** create `staticCompositionLocalOf<AppSettingsDataStore>` or similar —
-> use `@Inject constructor(private val appSettings: AppSettingsDataStore)` in the ViewModel.
+        composable<Route.Onboarding> {
+            OnboardingScreen(
+                onFinish = {
+                    navController.navigate(Route.Recommendations) {
+                        popUpTo<Route.Onboarding> { inclusive = true }
+                    }
+                }
+            )
+        }
 
-If a rare third-party View-only dependency has no Hilt binding, the `CompositionLocal`
-technique remains available as a last resort for that specific case only. Remove it
-once a proper Hilt module is in place.
+        composable<Route.Recommendations> {
+            RecommendationsScreen(
+                onNavigate = { navController.navigate(it) },
+                onBack = navController::popBackStack
+            )
+        }
+
+        composable<Route.ManualTillageCost> { back ->
+            val route = back.toRoute<Route.ManualTillageCost>()
+            ManualTillageCostScreen(userId = route.userId, onBack = navController::popBackStack)
+        }
+
+        // ... all other destinations
+    }
+}
+```
+
+### 6.3 Navigation rules
+
+- Pass only **IDs and primitives** in routes — never full entity objects
+- Load entity data in the destination ViewModel using the ID from the route
+- Use `popUpTo<Route.Onboarding> { inclusive = true }` only when intentionally clearing the back stack (e.g. after completing onboarding)
+- Call `navController.navigate()` only from screen composables or `LaunchedEffect` — never from inside a ViewModel
+- `navigateSingleTop = true` for tab-style top-level destinations
 
 ---
 
 ## 7. Phased Migration Plan
 
-### Phase 0 — Foundation (prerequisite, aligns with ROADMAP #3–14)
+### Phase 0 — Enable Compose (1 day)
 
-Complete before writing any `@Composable` production code.
+No user-visible changes.
 
-| Task | Owner note |
-|------|------------|
-| ✅ Remove `allowMainThreadQueries()` | AppDatabase.kt — done |
-| ✅ Move API keys to BuildConfig | build.gradle.kts + local.properties — done |
-| ⬜ Enable R8 minification | build.gradle.kts release config |
-| 🔄 Add ViewModels to all activities/fragments | WelcomeViewModel + UserSettingsViewModel done; all others remain |
-| ⬜ Proper Room migrations | AppDatabase.kt Migration objects |
-| ✅ Integrate Hilt | @HiltAndroidApp on AkilimoApp; @AndroidEntryPoint on 25+ Activities/Fragments; @HiltViewModel on ViewModels; version 2.57.1, kapt — done |
-| ✅ DataStore for ALL 17 settings keys | AppSettingsDataStore replaces deleted SessionManager.kt; SharedPreferencesMigration from "new-akilimo-config" — done |
-| ⬜ Jetpack NavGraph (View-based first) | replace startActivity() calls |
+| Task |
+|---|
+| Uncomment `kotlin-compose` plugin in `libs.versions.toml` |
+| Add missing catalog entries (§3.1) |
+| Set `compose = true` and add Compose dependencies in `app/build.gradle.kts` |
+| Create `AkilimoTheme`, `AkilimoColors`, `AkilimoTypography`, `AkilimoShapes` |
+| Verify build passes — no screens changed yet |
 
----
-
-### Phase 1 — Compose Infrastructure
-
-Deliver the theme, no user-visible changes.
-
-| Task | Files to create |
-|------|----------------|
-| Enable Compose in build.gradle.kts | `app/build.gradle.kts` |
-| Create `AkilimoTheme` + color/type/shape files | `ui/theme/AkilimoColors.kt`, `AkilimoTypography.kt`, `AkilimoShapes.kt`, `AkilimoTheme.kt` |
-| Create common composable atoms | `ui/components/compose/AkilimoButton.kt`, `AkilimoCard.kt`, `AkilimoTextField.kt`, `NetworkBanner.kt` |
-| Create `ComposeBaseActivity` extending `BaseActivity` | `base/ComposeBaseActivity.kt` |
-| Add screenshot / composable preview tests | `ui/theme/AkilimoThemePreview.kt` |
+Branch: `feature/compose-foundation`
 
 ---
 
-### Phase 2 — Leaf Screens (no deep state, isolated)
+### Phase 1 — Navigation Shell (1–2 days)
 
-Each screen: create `*Screen.kt` composable + `*ViewModel` → wire via `ComposeView` bridge in
-existing activity → delete XML layout → delete ViewBinding reference.
+Replace `HomeStepperActivity` as the launcher with `MainActivity`. Wire `AkilimoNavHost`.
+All legacy screens are still launched via the legacy path — this phase only establishes the
+entry point and navigation skeleton.
 
-| Screen | Current class | New composable | ViewModel |
-|--------|--------------|----------------|-----------|
-| User Settings | `UserSettingsActivity.kt` | `UserSettingsScreen.kt` | `UserSettingsViewModel.kt` |
-| Get Recommendation | `GetRecommendationActivity.kt` | `GetRecommendationScreen.kt` | `GetRecommendationViewModel.kt` |
-| Recommendations display | `RecommendationsActivity.kt` | `RecommendationsScreen.kt` | `RecommendationsViewModel.kt` |
-| Main / splash | `MainActivity.kt` | `SplashScreen.kt` | — |
+| Task |
+|---|
+| Create `MainActivity.kt` with `setContent { AkilimoTheme { AkilimoNavHost() } }` |
+| Create `navigation/Route.kt` with all routes declared upfront |
+| Create `navigation/AkilimoNavHost.kt` — initially all destinations are `TODO()` placeholders |
+| Update `AndroidManifest.xml` — `MainActivity` as launcher, keep all legacy Activities |
+| Build and verify app launches |
 
----
-
-### Phase 3 — Domain Screens (RecyclerViews → LazyLayouts)
-
-Each adapter-backed RecyclerView becomes a `LazyColumn` or `LazyVerticalGrid`.
-See §9 for the full adapter equivalents table.
-
-| Screen | Current class | New composable | Key change |
-|--------|--------------|----------------|------------|
-| Cassava Yield | `CassavaYieldActivity.kt` | `CassavaYieldScreen.kt` | `LazyVerticalGrid` + `CassavaYieldCard` |
-| Maize Performance | `MaizePerformanceActivity.kt` | `MaizePerformanceScreen.kt` | `LazyVerticalGrid` + `MaizePerformanceCard` |
-| Cassava Market | `CassavaMarketActivity.kt` | `CassavaMarketScreen.kt` | `LazyColumn` |
-| Maize Market | `MaizeMarketActivity.kt` (verify name) | `MaizeMarketScreen.kt` | `LazyColumn` |
-| Sweet Potato Market | `IcSweetPotatoActivity.kt` | `SweetPotatoMarketScreen.kt` | `LazyColumn` |
-| Fertilizers | `FertilizersActivity.kt` | `FertilizersScreen.kt` | `LazyVerticalGrid` toggle |
-| Investment Amount | `InvestmentAmountActivity.kt` | `InvestmentAmountScreen.kt` | `LazyVerticalGrid` |
-| Weed Management | `WeedManagementActivity.kt` | `WeedManagementScreen.kt` | `LazyColumn` |
-| Weed Control Costs | `WeedControlCostsActivity.kt` | `WeedControlCostsScreen.kt` | Form fields |
-| Manual Tillage Cost | `ManualTillageCostActivity.kt` | `ManualTillageCostScreen.kt` | Form fields |
-| Tractor Access | `TractorAccessActivity.kt` | `TractorAccessScreen.kt` | Toggle + form |
-| Recommendation Use Case | `RecommendationUseCaseActivity.kt` | `RecommendationUseCaseScreen.kt` | `LazyColumn` |
-| Location Picker | `LocationPickerActivity.kt` | `LocationPickerScreen.kt` | `AndroidView` (Mapbox) |
-| Alternative Planting Schedule | `BppActivity.kt` / `SphActivity.kt` | `PlantingScheduleScreen.kt` | Display only |
-| IC Maize | `IcMaizeActivity.kt` | `IcMaizeScreen.kt` | Form + list |
+Branch: `feature/compose-foundation` (same branch as Phase 0)
 
 ---
 
-### Phase 4 — Onboarding Stepper Replacement
+### Phase 2 — Onboarding Wizard (3–5 days)
 
-The `StepperLayout` library (com.stepstone.stepper) has no Compose equivalent.
-Replace with a custom `OnboardingPager` built on `HorizontalPager`.
+**Pattern-setting phase.** The architecture established here is the template for every
+subsequent screen. See §8 for full implementation detail.
 
-**Target structure:**
+| Task |
+|---|
+| Create reusable components: `AkilimoTextField`, `AkilimoDropdown`, `WizardBottomBar`, `ExitConfirmDialog` |
+| Adapt `OnboardingViewModel` — full UiState covering all steps, Event, Effect |
+| Implement `OnboardingScreen` container with `AnimatedContent` step transitions |
+| Implement each step composable: `WelcomeStep`, `DisclaimerStep`, `TermsStep`, `BioDataStep`, `CountryStep`, `LocationStep`, `AreaUnitStep`, `PlantingDateStep`, `TillageStep`, `InvestmentPrefStep`, `SummaryStep` |
+| Wire `OnboardingScreen` into `AkilimoNavHost` |
+| Delete `HomeStepperActivity`, `WizardAdapter`, all wizard Fragment classes, `BaseStepFragment` |
+| Remove wizard XML layouts |
+
+Branch: `feature/compose-onboarding`
+
+---
+
+### Phase 3 — Recommendations & Use-Case Screens (1 week)
+
+Work through screens in dependency order (outermost shell first):
+
+1. `RecommendationsScreen` — list of advice cards
+2. `FrScreen`, `BppScreen`, `SphScreen`, `IcMaizeScreen`, `IcSweetPotatoScreen`
+3. Use-case forms: `ManualTillageCostScreen`, `TractorAccessScreen`, `WeedControlCostsScreen`
+4. Data screens: `CassavaMarketScreen`, `CassavaYieldScreen`, `DatesScreen`, `InvestmentAmountScreen`
+5. Fertilizer screens: `FertilizersScreen`, `InterCropFertilizersScreen`, `SweetPotatoInterCropFertilizersScreen`
+6. `GetRecommendationScreen` (final step before showing results)
+
+For each screen: port ViewModel UiState to Event/Effect pattern → create `*Screen.kt` +
+`*Content` composable → wire into NavHost → delete Fragment/Activity + XML layout.
+
+Branch: `feature/compose-recommendations`
+
+---
+
+### Phase 4 — Settings & Misc (2–3 days)
+
+| Task |
+|---|
+| `UserSettingsScreen` — settings form |
+| `LocationPickerScreen` — `AndroidView` wrapper for Mapbox (if no Compose SDK available) |
+| Any remaining dialogs or utility screens |
+
+Branch: `feature/compose-settings`
+
+---
+
+### Phase 5 — Final Cleanup (1–2 days)
+
+| Task |
+|---|
+| `viewBinding = false` in `build.gradle.kts` |
+| Delete all `app/src/main/res/layout/*.xml` files |
+| Delete `base/BaseFragment.kt`, `base/BaseStepFragment.kt` |
+| Simplify `base/BaseActivity.kt` to a thin `@AndroidEntryPoint` host (only lifecycle/permission helpers remain) |
+| Remove View-only libraries: `AppLocale`/`Reword`/`ViewPump`, `hbb20:ccp`, `StepperLayout` (already replaced in Phase 2) |
+| Remove `androidx.navigation:navigation-fragment` and `navigation-ui-ktx` (replaced by `navigation-compose`) |
+| Remove all XML navigation graphs (`nav_graph.xml`, `nav_recommendations.xml`) |
+| Final build verification — no ViewBinding generated classes, no XML layouts |
+
+Branch: `feature/compose-cleanup`
+
+---
+
+### Branch Strategy
+
+```
+develop
+  └── feature/compose-foundation       ← Phase 0 + 1: Compose enabled, theme, NavHost
+        └── feature/compose-onboarding ← Phase 2: wizard (merge before starting Phase 3)
+              └── feature/compose-recs ← Phase 3: recommendations
+                    └── feature/compose-settings  ← Phase 4: settings
+                          └── feature/compose-cleanup ← Phase 5: delete all legacy
+```
+
+Merge each branch to `develop` before starting the next phase. This keeps each PR
+reviewable in isolation and the app always in a buildable state.
+
+---
+
+## 8. Onboarding Wizard — Pattern Reference
+
+This section defines the canonical implementation that all other screens follow.
+
+### 8.1 UiState
+
+The wizard ViewModel owns ALL step data in a single flat state object. Sub-states for each
+step are nested data classes:
 
 ```kotlin
-// AppNavGraph.kt
-composable("onboarding") {
-    OnboardingFlow(onComplete = { navController.navigate("recommendations") })
+data class OnboardingUiState(
+    val currentStep: Int = 0,
+    val steps: List<OnboardingStep> = emptyList(),  // driven by appSettings flags
+    val bioData: BioDataState = BioDataState(),
+    val country: CountryState = CountryState(),
+    val location: LocationState = LocationState(),
+    val plantingDate: PlantingDateState = PlantingDateState(),
+    val tillageOps: TillageOpsState = TillageOpsState(),
+    val investmentPref: InvestmentPrefState = InvestmentPrefState(),
+    val isLoading: Boolean = false,
+    val stepError: String? = null,
+)
+
+data class BioDataState(
+    val firstName: String = "",
+    val lastName: String = "",
+    val farmSize: String = "",
+    val firstNameError: String? = null,
+    val farmSizeError: String? = null,
+)
+// ... similar for CountryState, LocationState, etc.
+```
+
+### 8.2 Conditional steps (replaces `buildStepList()`)
+
+Drive the step list from DataStore flows so it reacts to state changes:
+
+```kotlin
+val steps: StateFlow<List<OnboardingStep>> = combine(
+    appSettings.disclaimerRead,
+    appSettings.termsAccepted,
+    appSettings.rememberAreaUnit,
+) { disclaimerRead, termsAccepted, rememberAreaUnit ->
+    buildList {
+        add(OnboardingStep.WELCOME)
+        if (!disclaimerRead)   add(OnboardingStep.DISCLAIMER)
+        if (!termsAccepted)    add(OnboardingStep.TERMS)
+        add(OnboardingStep.BIO_DATA)
+        add(OnboardingStep.COUNTRY)
+        add(OnboardingStep.LOCATION)
+        if (!rememberAreaUnit) add(OnboardingStep.AREA_UNIT)
+        add(OnboardingStep.PLANTING_DATE)
+        add(OnboardingStep.TILLAGE)
+        add(OnboardingStep.INVESTMENT_PREF)
+        add(OnboardingStep.SUMMARY)
+    }
+}.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+```
+
+### 8.3 Validation (replaces `verifyStep()`)
+
+```kotlin
+private fun validateCurrentStep(): String? {
+    val state = _uiState.value
+    return when (state.steps.getOrNull(state.currentStep)) {
+        OnboardingStep.BIO_DATA -> validateBioData(state.bioData)
+        OnboardingStep.COUNTRY  -> if (state.country.selected == null) "Select a country" else null
+        else                    -> null
+    }
 }
 
-// OnboardingFlow.kt
-@Composable
-fun OnboardingFlow(onComplete: () -> Unit) {
-    val viewModel: OnboardingViewModel = hiltViewModel()
-    val state by viewModel.state.collectAsStateWithLifecycle()
+private fun validateBioData(s: BioDataState): String? = when {
+    s.firstName.isBlank() -> "First name is required"
+    s.farmSize.toDoubleOrNull() == null -> "Enter a valid farm size"
+    else -> null
+}
+```
 
-    val pagerState = rememberPagerState(pageCount = { state.steps.size })
+### 8.4 Screen container
+
+```kotlin
+@Composable
+fun OnboardingScreen(
+    onFinish: () -> Unit,
+    viewModel: OnboardingViewModel = hiltViewModel()
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                OnboardingEffect.Finish -> onFinish()
+            }
+        }
+    }
+
+    // Handle system back: go to previous step or show exit dialog
+    var showExitDialog by rememberSaveable { mutableStateOf(false) }
+    BackHandler(enabled = true) {
+        if (state.currentStep > 0) viewModel.onEvent(OnboardingEvent.Back)
+        else showExitDialog = true
+    }
+
+    if (showExitDialog) {
+        ExitConfirmDialog(
+            onConfirm = { exitProcess(0) },
+            onDismiss = { showExitDialog = false }
+        )
+    }
 
     Scaffold(
         bottomBar = {
-            OnboardingNavBar(
-                currentStep = pagerState.currentPage,
-                totalSteps = state.steps.size,
-                canProceed = state.currentStepValid,
-                onBack = { /* scroll pager back */ },
-                onNext = { viewModel.validateAndAdvance(pagerState) },
+            WizardBottomBar(
+                currentStep  = state.currentStep,
+                stepCount    = state.steps.size,
+                onBack       = { viewModel.onEvent(OnboardingEvent.Back) },
+                onNext       = { viewModel.onEvent(OnboardingEvent.Next) },
             )
         }
     ) { padding ->
-        HorizontalPager(state = pagerState, userScrollEnabled = false) { page ->
-            when (state.steps[page]) {
-                OnboardingStep.Welcome       -> WelcomeStepContent(viewModel)
-                OnboardingStep.BioData       -> BioDataStepContent(viewModel)
-                OnboardingStep.Country       -> CountryStepContent(viewModel)
-                OnboardingStep.Location      -> LocationStepContent(viewModel)
-                OnboardingStep.AreaUnit      -> AreaUnitStepContent(viewModel)
-                OnboardingStep.PlantingDate  -> PlantingDateStepContent(viewModel)
-                OnboardingStep.Tillage       -> TillageStepContent(viewModel)
-                OnboardingStep.InvestmentPref -> InvestmentPrefStepContent(viewModel)
-                OnboardingStep.Summary       -> SummaryStepContent(viewModel, onComplete)
+        AnimatedContent(
+            targetState = state.currentStep,
+            transitionSpec = {
+                val forward = targetState > initialState
+                (slideInHorizontally { if (forward) it else -it } + fadeIn()) togetherWith
+                (slideOutHorizontally { if (forward) -it else it } + fadeOut())
+            },
+            modifier = Modifier.padding(padding),
+            label = "WizardStep"
+        ) { stepIndex ->
+            when (state.steps.getOrNull(stepIndex)) {
+                OnboardingStep.WELCOME       -> WelcomeStep()
+                OnboardingStep.DISCLAIMER    -> DisclaimerStep(onEvent = viewModel::onEvent)
+                OnboardingStep.TERMS         -> TermsStep(onEvent = viewModel::onEvent)
+                OnboardingStep.BIO_DATA      -> BioDataStep(state.bioData, viewModel::onEvent)
+                OnboardingStep.COUNTRY       -> CountryStep(state.country, viewModel::onEvent)
+                OnboardingStep.LOCATION      -> LocationStep(state.location, viewModel::onEvent)
+                OnboardingStep.AREA_UNIT     -> AreaUnitStep(state.areaUnit, viewModel::onEvent)
+                OnboardingStep.PLANTING_DATE -> PlantingDateStep(state.plantingDate, viewModel::onEvent)
+                OnboardingStep.TILLAGE       -> TillageStep(state.tillageOps, viewModel::onEvent)
+                OnboardingStep.INVESTMENT_PREF -> InvestmentPrefStep(state.investmentPref, viewModel::onEvent)
+                OnboardingStep.SUMMARY       -> SummaryStep(state, viewModel::onEvent)
+                else                         -> {}
             }
         }
     }
 }
 ```
 
-**Fragment-to-composable mapping for the stepper:**
+### 8.5 Individual step
 
-| Fragment | Step composable | `prefillFromEntity()` equivalent |
-|----------|----------------|----------------------------------|
-| `WelcomeFragment` | `WelcomeStepContent` | `OnboardingViewModel.init { }` loads locale from repo |
-| `BioDataFragment` | `BioDataStepContent` | `OnboardingViewModel.loadBioData()` |
-| `CountryFragment` | `CountryStepContent` | `OnboardingViewModel.loadCountry()` |
-| `LocationFragment` | `LocationStepContent` | `OnboardingViewModel.loadLocation()` |
-| `AreaUnitFragment` | `AreaUnitStepContent` | `OnboardingViewModel.loadAreaUnit()` |
-| `PlantingDateFragment` | `PlantingDateStepContent` | `OnboardingViewModel.loadDates()` |
-| `TillageOperationFragment` | `TillageStepContent` | `OnboardingViewModel.loadTillage()` |
-| `InvestmentPrefFragment` | `InvestmentPrefStepContent` | `OnboardingViewModel.loadInvestmentPref()` |
-| `DisclaimerFragment` | `DisclaimerStepContent` | shown once; gated by `appSettings.disclaimerRead` |
-| `TermsFragment` | `TermsStepContent` | shown once; gated by `appSettings.termsAccepted` |
-| `SummaryFragment` | `SummaryStepContent` | `OnboardingViewModel.buildSummary()` |
-
----
-
-### Phase 5 — NavGraph Migration and Final Cleanup
-
-Consolidate all Compose destinations into a single `NavHost`. Remove all
-`startActivity()` / `Intent` navigation, delete all XML layout files, disable
-`viewBinding`.
+Steps are **stateless composables** — they receive state and dispatch events. They never
+call `hiltViewModel()` or hold local mutable state (use `rememberSaveable` only for
+transient UI state like keyboard focus, not for form values):
 
 ```kotlin
-// AppNavGraph.kt — full nav graph
 @Composable
-fun AppNavGraph(navController: NavHostController = rememberNavController()) {
-    NavHost(navController, startDestination = "onboarding") {
-        composable("onboarding") { OnboardingFlow(onComplete = { navController.navigate("recommendations") }) }
-        composable("recommendations") { RecommendationsScreen(onNavigate = { navController.navigate(it) }) }
-        composable("settings") { UserSettingsScreen(onNavigateBack = { navController.popBackStack() }) }
-        composable("cassava_yield") { CassavaYieldScreen(onNavigateBack = { navController.popBackStack() }) }
-        composable("fertilizers") { FertilizersScreen(onNavigateBack = { navController.popBackStack() }) }
-        // … all other destinations
+fun BioDataStep(
+    state: BioDataState,
+    onEvent: (OnboardingEvent) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp, vertical = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        AkilimoTextField(
+            value       = state.firstName,
+            onValueChange = { onEvent(OnboardingEvent.BioDataChanged(BioDataField.FIRST_NAME, it)) },
+            label       = stringResource(R.string.lbl_first_name),
+            error       = state.firstNameError,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        )
+        AkilimoTextField(
+            value       = state.farmSize,
+            onValueChange = { onEvent(OnboardingEvent.BioDataChanged(BioDataField.FARM_SIZE, it)) },
+            label       = stringResource(R.string.lbl_farm_size),
+            error       = state.farmSizeError,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Decimal,
+                imeAction    = ImeAction.Done
+            ),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun BioDataStepPreview() {
+    AkilimoTheme {
+        BioDataStep(
+            state   = BioDataState(firstNameError = "Required"),
+            onEvent = {}
+        )
     }
 }
 ```
 
-**Final cleanup checklist:**
-- [ ] `viewBinding = false` in `build.gradle.kts`
-- [ ] Delete all `app/src/main/res/layout/*.xml` files
-- [ ] Delete `base/BaseFragment.kt`, `base/BaseStepFragment.kt`
-- [ ] Remove `StepperLayout`, `ViewPump`, `Reword`, `AppLocale` (replace with Compose locale + DataStore)
-- [x] ~~Remove `ProcessPhoenix`~~ — already removed; locale changes use `AppCompatDelegate.setApplicationLocales()`
-- [ ] Remove `CountryCodePicker` view library — replace with Compose version
-- [ ] Keep `BaseActivity` only as a thin Hilt host (`@AndroidEntryPoint` + edge-to-edge setup)
+---
+
+## 9. Screen-by-Screen Conversion Map
+
+| Current class | Compose screen | Phase |
+|---|---|---|
+| `HomeStepperActivity` + 11 wizard Fragments | `OnboardingScreen` + `*Step` composables | 2 |
+| `RecommendationsFragment` | `RecommendationsScreen` | 3 |
+| `FrFragment` + `FrActivity` | `FrScreen` | 3 |
+| `BppFragment` + `BppActivity` | `BppScreen` | 3 |
+| `SphFragment` + `SphActivity` | `SphScreen` | 3 |
+| `IcMaizeFragment` + `IcMaizeActivity` | `IcMaizeScreen` | 3 |
+| `IcSweetPotatoFragment` + `IcSweetPotatoActivity` | `IcSweetPotatoScreen` | 3 |
+| `ManualTillageCostFragment` + `ManualTillageCostActivity` | `ManualTillageCostScreen` | 3 |
+| `TractorAccessFragment` + `TractorAccessActivity` | `TractorAccessScreen` | 3 |
+| `WeedControlCostsFragment` + `WeedControlCostsActivity` | `WeedControlCostsScreen` | 3 |
+| `DatesFragment` + `DatesActivity` | `DatesScreen` | 3 |
+| `CassavaMarketFragment` + `CassavaMarketActivity` | `CassavaMarketScreen` | 3 |
+| `CassavaYieldFragment` + `CassavaYieldActivity` | `CassavaYieldScreen` | 3 |
+| `InvestmentAmountFragment` + `InvestmentAmountActivity` | `InvestmentAmountScreen` | 3 |
+| `FertilizersFragment` + `FertilizersActivity` | `FertilizersScreen` | 3 |
+| `InterCropFertilizersFragment` + activity | `InterCropFertilizersScreen` | 3 |
+| `SweetPotatoInterCropFertilizersFragment` + activity | `SweetPotatoInterCropFertilizersScreen` | 3 |
+| `GetRecommendationFragment` + `GetRecommendationActivity` | `GetRecommendationScreen` | 3 |
+| `MaizeMarketActivity` | `MaizeMarketScreen` | 3 |
+| `MaizePerformanceActivity` | `MaizePerformanceScreen` | 3 |
+| `SweetPotatoMarketActivity` | `SweetPotatoMarketScreen` | 3 |
+| `WeedManagementActivity` | `WeedManagementScreen` | 3 |
+| `UserSettingsActivity` | `UserSettingsScreen` | 4 |
+| `LocationPickerActivity` | `LocationPickerScreen` (AndroidView for Mapbox) | 4 |
+| `MainActivity` (splash) | integrated into `AkilimoNavHost` start logic | 1 |
 
 ---
 
-## 8. Screen-by-Screen Conversion Map
+## 10. Adapter → LazyLayout Equivalents
 
-| Current Activity | XML Layout | Compose Screen | Phase |
-|---|---|---|---|
-| `MainActivity` | `activity_main.xml` | `SplashScreen.kt` | 2 |
-| `HomeStepperActivity` | `activity_home_stepper.xml` | `OnboardingFlow.kt` | 4 |
-| `UserSettingsActivity` | `activity_user_settings.xml` | `UserSettingsScreen.kt` | 2 |
-| `RecommendationsActivity` | `activity_recommendations.xml` | `RecommendationsScreen.kt` | 2 |
-| `GetRecommendationActivity` | `activity_get_recommendation.xml` | `GetRecommendationScreen.kt` | 2 |
-| `RecommendationUseCaseActivity` | `activity_recommendation_use_case.xml` | `RecommendationUseCaseScreen.kt` | 3 |
-| `CassavaYieldActivity` | `activity_cassava_yield.xml` | `CassavaYieldScreen.kt` | 3 |
-| `CassavaMarketActivity` | `activity_cassava_market.xml` | `CassavaMarketScreen.kt` | 3 |
-| `MaizePerformanceActivity` | `activity_maize_performance.xml` | `MaizePerformanceScreen.kt` | 3 |
-| `MaizeMarketActivity` | `activity_maize_market.xml` | `MaizeMarketScreen.kt` | 3 |
-| `IcSweetPotatoActivity` | `activity_ic_sweet_potato.xml` | `SweetPotatoMarketScreen.kt` | 3 |
-| `FertilizersActivity` | `activity_fertilizers.xml` | `FertilizersScreen.kt` | 3 |
-| `InvestmentAmountActivity` | `activity_investment_amount.xml` | `InvestmentAmountScreen.kt` | 3 |
-| `WeedManagementActivity` | `activity_weed_management.xml` | `WeedManagementScreen.kt` | 3 |
-| `WeedControlCostsActivity` | `activity_weed_control_costs.xml` | `WeedControlCostsScreen.kt` | 3 |
-| `ManualTillageCostActivity` | `activity_manual_tillage_cost.xml` | `ManualTillageCostScreen.kt` | 3 |
-| `TractorAccessActivity` | `activity_tractor_access.xml` | `TractorAccessScreen.kt` | 3 |
-| `LocationPickerActivity` | `activity_location_picker.xml` | `LocationPickerScreen.kt` | 3 |
-| `BppActivity` | `activity_alternative_planting_schedule.xml` | `PlantingScheduleScreen.kt` | 3 |
-| `SphActivity` | _(shares layout)_ | _(merged into PlantingScheduleScreen)_ | 3 |
-| `IcMaizeActivity` | — | `IcMaizeScreen.kt` | 3 |
+| Adapter | Compose equivalent |
+|---|---|
+| `CassavaYieldAdapter` (2-col grid, tap select) | `LazyVerticalGrid(Fixed(2))` + `CassavaYieldCard` |
+| `MaizePerformanceAdapter` (2-col grid, tap select) | `LazyVerticalGrid(Fixed(2))` + `MaizePerformanceCard` |
+| `FertilizerAdapter` (toggle + checkbox list) | `LazyColumn` + `FertilizerItem` |
+| `CassavaMarketPriceAdapter` (single-select list) | `LazyColumn` + `MarketPriceItem` |
+| `InvestmentAmountAdapter` (grid) | `LazyVerticalGrid` + `InvestmentAmountCard` |
+| `RecommendationAdapter` (expandable list) | `LazyColumn` + `RecommendationCard(expanded, onToggle)` |
+| `BaseSpinnerAdapter` / `ValueOptionAdapter` (dropdown) | `ExposedDropdownMenuBox` + `DropdownMenuItem` |
 
-Fragment-to-composable mapping covered in §10.
-
----
-
-## 9. Adapter → LazyLayout Equivalents
-
-| Adapter | Pattern | Compose equivalent |
-|---------|---------|-------------------|
-| `CassavaYieldAdapter` | `RecyclerView` 2-col grid, image tap select | `LazyVerticalGrid(columns = Fixed(2))` + `CassavaYieldCard(item, onSelect)` |
-| `MaizePerformanceAdapter` | `RecyclerView` 2-col grid, image tap select | `LazyVerticalGrid(columns = Fixed(2))` + `MaizePerformanceCard(item, onSelect)` |
-| `FertilizerAdapter` | `RecyclerView` toggle + checkbox list | `LazyColumn` + `FertilizerItem(item, onToggle)` |
-| `CassavaMarketPriceAdapter` | `RecyclerView` single-select list | `LazyColumn` + `MarketPriceItem(item, selected, onSelect)` |
-| `CassavaUnitAdapter` | `RecyclerView` single-select list | `LazyColumn` + `CassavaUnitItem` |
-| `StarchFactoryAdapter` | `RecyclerView` single-select | `LazyColumn` + `StarchFactoryItem` |
-| `InvestmentAmountAdapter` | `RecyclerView` grid | `LazyVerticalGrid` + `InvestmentAmountCard` |
-| `RecommendationAdapter` | `RecyclerView` expandable | `LazyColumn` + `RecommendationCard(expanded, onToggle)` |
-| `GenericSelectableAdapter` | `RecyclerView` single-select | `LazyColumn` + `SelectableItem` |
-| `BaseSpinnerAdapter` / `ValueOptionAdapter` | `AutoCompleteTextView` dropdown | `ExposedDropdownMenuBox` + `DropdownMenuItem` |
-
-**Selection state pattern for image-grid screens:**
+**Selection state for image-grid screens:**
 
 ```kotlin
 // In ViewModel
-private val _selectedId = MutableStateFlow<Int?>(null)
-
-fun select(id: Int) {
-    _selectedId.value = id
-    // persist via repo
-}
-
-val items: StateFlow<List<CassavaYield>> = /* from repo */
-    .combine(_selectedId) { list, selectedId ->
-        list.map { it.copy(isSelected = it.id == selectedId) }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+val items: StateFlow<List<CassavaYield>> = combine(repo.items, _selectedId) { list, id ->
+    list.map { it.copy(isSelected = it.id == id) }
+}.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
 // In composable
-@Composable
-fun CassavaYieldCard(item: CassavaYield, onSelect: (Int) -> Unit) {
-    val interactionSource = remember { MutableInteractionSource() }
-    Card(
-        onClick = { onSelect(item.id) },
-        border = if (item.isSelected) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null,
-        colors = CardDefaults.cardColors(
-            containerColor = if (item.isSelected)
-                MaterialTheme.colorScheme.primaryContainer
-            else MaterialTheme.colorScheme.surface
-        )
-    ) {
-        // image + overlay + checkmark
-    }
-}
-```
-
----
-
-## 10. Stepper Replacement Strategy
-
-> **Partial migration already done.** `HomeStepperActivity` has been migrated from the
-> `StepperLayout` library (com.stepstone.stepper) to **ViewPager2 + a custom `WizardAdapter`**
-> with a `WizardStep` interface, `BaseStepFragment`, and a `pendingOnSelected` pattern.
-> Phase 4 now replaces the ViewPager2-based wizard with a `HorizontalPager` Compose
-> implementation. The `com.stepstone.stepper` dependency may still be present in
-> `app/build.gradle.kts` but it is no longer driving the UI.
-
-The existing `WizardAdapter` (ViewPager2) drives `HomeStepperActivity` after the View-layer
-migration. It has no Compose equivalent and must be fully replaced in Phase 4.
-
-### Replacing `verifyStep()` validation
-
-```kotlin
-// In OnboardingViewModel
-data class StepValidation(val isValid: Boolean, val errorMessage: String? = null)
-
-private val _stepValidations = MutableStateFlow(mapOf<OnboardingStep, StepValidation>())
-
-fun validateCurrentStep(step: OnboardingStep): Boolean {
-    val result = when (step) {
-        OnboardingStep.BioData -> validateBioData(uiState.value)
-        OnboardingStep.Country -> validateCountry(uiState.value)
-        // …
-        else -> StepValidation(isValid = true)
-    }
-    _stepValidations.update { it + (step to result) }
-    return result.isValid
-}
-```
-
-### Replacing conditional steps
-
-`HomeStepperActivity.buildStepList()` conditionally includes Disclaimer and Terms steps.
-In Compose, drive this through ViewModel state:
-
-```kotlin
-val steps: StateFlow<List<OnboardingStep>> = combine(
-    appSettings.disclaimerRead,   // AppSettingsDataStore Flow<Boolean>
-    appSettings.termsAccepted,    // AppSettingsDataStore Flow<Boolean>
-) { disclaimerRead, termsAccepted ->
-    buildList {
-        add(OnboardingStep.Welcome)
-        if (!disclaimerRead) add(OnboardingStep.Disclaimer)
-        if (!termsAccepted)  add(OnboardingStep.Terms)
-        add(OnboardingStep.BioData)
-        // …
-    }
-}.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+Card(
+    onClick = { onEvent(CassavaYieldEvent.Select(item.id)) },
+    border = if (item.isSelected) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null,
+)
 ```
 
 ---
@@ -900,35 +904,71 @@ val steps: StateFlow<List<OnboardingStep>> = combine(
 ## 11. Testing Strategy
 
 ### Unit tests (ViewModels)
-- Test `UiState` transitions: given initial state + user action → expected state.
-- No Compose runtime needed — pure Kotlin with `kotlinx-coroutines-test` and `Turbine`.
 
-### Composable preview tests
-- Create `@Preview` composables for every screen and component.
-- Use `paparazzi` for screenshot regression without a device.
+Test `UiState` transitions and Effect emission using `kotlinx-coroutines-test` and Turbine:
 
-### Integration tests
-- `ComposeTestRule` + `hiltRule` for each screen: launch screen → interact → assert state.
+```kotlin
+@Test
+fun `next on last step emits Finish effect`() = runTest {
+    val vm = OnboardingViewModel(/* fakes */)
+    vm.effect.test {
+        vm.onEvent(OnboardingEvent.Next) // at last step
+        assertEquals(OnboardingEffect.Finish, awaitItem())
+    }
+}
+```
 
-### End-to-end
-- Keep existing Espresso tests running on View screens until they are migrated.
-- Add Compose UI tests incrementally: one per migrated screen.
+### Composable tests
+
+`@Preview` for every screen and component. Use Paparazzi for screenshot regression without
+a device.
+
+### Instrumented / integration tests
+
+`ComposeTestRule` + Hilt test runner per screen:
+
+```kotlin
+@HiltAndroidTest
+class BioDataStepTest {
+    @get:Rule val composeRule = createAndroidComposeRule<MainActivity>()
+
+    @Test
+    fun emptyFirstName_showsError() {
+        composeRule.onNodeWithText("Next").performClick()
+        composeRule.onNodeWithText("Required").assertIsDisplayed()
+    }
+}
+```
 
 ---
 
-## 12. Library Removals at Completion
+## 12. Common Pitfalls
 
-These dependencies become redundant after full migration and must be removed in Phase 5:
+| Pitfall | Correct approach |
+|---|---|
+| `remember` for form values | Use `rememberSaveable` — `remember` is lost on rotation |
+| Navigation state in `UiState` (e.g. `navigateNext: Boolean`) | Use `Channel<Effect>` — StateFlow replays on recomposition, re-triggering navigation |
+| One ViewModel per wizard step | One shared ViewModel for the whole wizard scoped to `OnboardingScreen` |
+| `LaunchedEffect(state.someValue)` for effects | `LaunchedEffect(Unit)` collecting from `viewModel.effect` — stable key, no re-triggers |
+| Calling `hiltViewModel()` in a step composable | Pass state and callbacks as parameters; only call `hiltViewModel()` in screen-level composables |
+| Blocking the main thread | All suspend/IO work in ViewModel `viewModelScope.launch` — never in composables |
+| Skipping `@Preview` | Every content composable must have a preview — they catch bugs at design time |
+| Deep object graphs in routes | Pass only primitive IDs in routes; load full objects in the destination ViewModel |
 
-| Library | Replacement | Status |
-|---------|-------------|--------|
-| `com.stepstone.stepper` | Custom `HorizontalPager` `OnboardingFlow` | ⬜ Still needed (ViewPager2 wizard is interim; replace in Phase 4) |
-| `dev.b3nedikt.app_locale` + `reword` + `viewpump` | Compose `CompositionLocalProvider(LocalContext)` + `AppCompatDelegate` | ⬜ Remove in Phase 5 |
-| `com.jakewharton.processphoenix` | `AppCompatDelegate.setApplicationLocales()` — in-process locale change | ✅ Already removed from `app/build.gradle.kts` |
-| `io.github.chaosleung:pinview` (if present) | Compose `BasicTextField` | ⬜ Remove in Phase 5 |
-| `hbb20:ccp` (Country Code Picker) | Compose `ExposedDropdownMenuBox` | ⬜ Remove in Phase 5 |
-| `androidx.viewbinding` (buildFeature) | All ViewBinding generated classes removed | ⬜ Remove in Phase 5 final cleanup |
-| `io.github.chuckerteam:chucker` (if debug) | OkHttp logging interceptor | ⬜ Remove in Phase 5 |
+---
 
-**Do not** remove `retrofit`, `okhttp`, `room`, `hilt`, `moshi`, `firebase`, `mapbox`, `timber`,
-`sentry`, or `workmanager` — all survive the Compose migration.
+## 13. Library Removals at Completion
+
+Removed during Phase 5 cleanup:
+
+| Library | Replacement | Notes |
+|---|---|---|
+| `androidx.navigation:navigation-fragment` + `navigation-ui-ktx` | `navigation-compose` | Already replaced in Phase 1 |
+| `dev.b3nedikt.app_locale` + `reword` + `viewpump` | `AppCompatDelegate.setApplicationLocales()` + Compose `stringResource` | AppLocale string replacement no longer needed |
+| `com.jakewharton.processphoenix` | — | ✅ Already removed |
+| `hbb20:ccp` (Country Code Picker) | `ExposedDropdownMenuBox` | Replace in Phase 2 (CountryStep) |
+| `androidx.viewbinding` | — | Remove in Phase 5 |
+| `com.stepstone.stepper` | `AnimatedContent` wizard | ✅ Already replaced by ViewPager2 (interim); remove in Phase 2 |
+
+**Do not remove:** `retrofit`, `okhttp`, `room`, `hilt`, `moshi`, `firebase`, `mapbox`,
+`timber`, `sentry`, `workmanager` — all survive the Compose migration unchanged.

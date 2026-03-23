@@ -187,7 +187,7 @@ class CassavaMarketFragment : BaseFragment<ActivityCassavaMarketBinding>() {
             selectedMarket = selectedMarket,
             prices = prices,
             onPriceSelected = { selectedPrice, uos ->
-                viewModel.saveSelectedPrice(sessionManager.akilimoUser, unit, uos, selectedPrice)
+                viewModel.saveSelectedPrice(unit, uos, selectedPrice)
             }
         ).show(childFragmentManager, "CassavaPriceSelectionBottomSheet")
     }

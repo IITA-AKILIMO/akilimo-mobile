@@ -42,10 +42,11 @@ class UserSettingsViewModel @Inject constructor(
         _uiState.update { it.copy(preferences = normalized, previousLanguageCode = currentLangTag) }
     }
 
-    fun savePreferences(preferences: UserPreferences, userName: String) =
+    fun savePreferences(preferences: UserPreferences) =
         viewModelScope.launch {
             prefsRepo.save(preferences)
 
+            val userName = appSettings.akilimoUser
             val akilimoUser = userRepo.getUser(userName) ?: AkilimoUser(userName = userName)
             userRepo.saveOrUpdateUser(
                 akilimoUser.copy(

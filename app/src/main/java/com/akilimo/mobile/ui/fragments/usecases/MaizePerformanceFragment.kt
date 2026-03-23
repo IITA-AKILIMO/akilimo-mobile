@@ -33,7 +33,7 @@ class MaizePerformanceFragment : BaseFragment<ActivityMaizePerformanceBinding>()
 
         maizePerformanceAdapter = MaizePerformanceAdapter().apply {
             onItemClick = { selected ->
-                viewModel.saveSelection(sessionManager.akilimoUser, selected)
+                viewModel.saveSelection(selected)
             }
         }
 

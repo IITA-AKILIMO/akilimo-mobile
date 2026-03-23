@@ -184,7 +184,7 @@ safeScope.launch {
 
 ## 6. Navigation
 
-Navigation is purely intent-based — there is no Jetpack NavGraph.
+**Current state (View-based):** Navigation is purely intent-based — there is no Jetpack NavGraph.
 
 ```
 HomeStepperActivity (launcher)
@@ -196,6 +196,21 @@ Domain activities launched from recommendations:
   FertilizersActivity, DatesActivity, WeedManagementActivity,
   IcMaizeActivity, IcSweetPotatoActivity, SphActivity, BppActivity, …
 ```
+
+**Target state (Compose — in progress):** Pure Compose `NavHost` with `@Serializable` routes.
+No intermediate View-based NavGraph step — migrating directly to `navigation-compose`.
+
+```
+MainActivity (single-Activity host, launcher)
+  └─ AkilimoNavHost (NavHost)
+       ├─ OnboardingRoute → OnboardingScreen (replaces HomeStepperActivity + all wizard fragments)
+       ├─ RecommendationsRoute → RecommendationsScreen
+       │    ├─ FrRoute, BppRoute, SphRoute, IcMaizeRoute, IcSweetPotatoRoute
+       │    └─ use-case routes: fertilizers, dates, market, yield, tillage, …
+       └─ UserSettingsRoute → UserSettingsScreen
+```
+
+See `docs/COMPOSE_MIGRATION.md §6` for route definitions and `§7` for the phased plan.
 
 ---
 
@@ -248,7 +263,7 @@ Base URLs resolved via `AppConfig`:
 | No ViewModel classes (partial) | Most fragments/activities | State lost on configuration change | 🔄 Partial — key screens done |
 | API keys hardcoded in source | `app/build.gradle.kts`, `BuildConfig` | Exposed in APK without obfuscation | ✅ Fixed |
 | `isMinifyEnabled = false` in release | `app/build.gradle.kts` | No code shrinking or obfuscation | ⬜ Open |
-| No Jetpack NavGraph | All | Deep links impossible; navigation untestable | ⬜ Open |
+| No Jetpack NavGraph | All | Deep links impossible; navigation untestable | 🔄 Planned — replacing directly with `navigation-compose` (Phase 1, see COMPOSE_MIGRATION.md) |
 | No DI framework | All | Manual repo instantiation; untestable | ✅ Fixed — Hilt 2.57.1 |
 | Dual SharedPrefs locale sources | `SessionManager` + `AppLocale` | Potential sync drift on cold start | ✅ Fixed — DataStore is sole source |
 
