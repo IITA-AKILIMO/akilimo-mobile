@@ -104,8 +104,8 @@ plugins {
 ```kotlin
 android {
     buildFeatures {
-        compose     = true   // ← change from false
-        viewBinding = true   // keep until Phase 5 cleanup
+        compose     = true
+        viewBinding = false  // removed in Phase 5
         buildConfig = true
     }
     // No composeOptions.kotlinCompilerExtensionVersion needed —
@@ -137,8 +137,7 @@ dependencies {
 }
 ```
 
-Keep `viewBinding = true` and all existing ViewBinding dependencies until Phase 5.
-Every un-migrated screen still uses them.
+ViewBinding has been removed (`viewBinding = false`) as of Phase 5 completion.
 
 ---
 
@@ -553,22 +552,17 @@ Branch: `feature/compose-foundation` (same branch as Phase 0)
 
 ---
 
-### Phase 2 — Onboarding Wizard (3–5 days)
+### Phase 2 — Onboarding Wizard ✅ Complete
 
-**Pattern-setting phase.** The architecture established here is the template for every
-subsequent screen. See §8 for full implementation detail.
-
-| Task |
-|---|
-| Create reusable components: `AkilimoTextField`, `AkilimoDropdown`, `WizardBottomBar`, `ExitConfirmDialog` |
-| Adapt `OnboardingViewModel` — full UiState covering all steps, Event, Effect |
-| Implement `OnboardingScreen` container with `AnimatedContent` step transitions |
-| Implement each step composable: `WelcomeStep`, `DisclaimerStep`, `TermsStep`, `BioDataStep`, `CountryStep`, `LocationStep`, `AreaUnitStep`, `PlantingDateStep`, `TillageStep`, `InvestmentPrefStep`, `SummaryStep` |
-| Wire `OnboardingScreen` into `AkilimoNavHost` |
-| Delete `HomeStepperActivity`, `WizardAdapter`, all wizard Fragment classes, `BaseStepFragment` |
-| Remove wizard XML layouts |
-
-Branch: `feature/compose-onboarding`
+| Task | Status |
+|---|---|
+| Create reusable components: `AkilimoTextField`, `AkilimoDropdown`, `WizardBottomBar`, `ExitConfirmDialog` | ✅ |
+| Implement `OnboardingViewModel` — full UiState covering all steps, Event, Effect | ✅ |
+| Implement `OnboardingScreen` container with `AnimatedContent` step transitions | ✅ |
+| Implement each step composable: `WelcomeStep`, `DisclaimerStep`, `TermsStep`, `BioDataStep`, `CountryStep`, `LocationStep`, `AreaUnitStep`, `PlantingDateStep`, `TillageStep`, `InvestmentPrefStep`, `SummaryStep` | ✅ |
+| Wire `OnboardingScreen` into `AkilimoNavHost` | ✅ |
+| Delete `HomeStepperActivity`, `WizardAdapter`, all wizard Fragment classes, `BaseStepFragment` | ✅ |
+| Remove wizard XML layouts | ✅ |
 
 ---
 
@@ -600,20 +594,18 @@ Branch: `feature/compose-settings`
 
 ---
 
-### Phase 5 — Final Cleanup (1–2 days)
+### Phase 5 — Final Cleanup ✅ Complete
 
-| Task |
-|---|
-| `viewBinding = false` in `build.gradle.kts` |
-| Delete all `app/src/main/res/layout/*.xml` files |
-| Delete `base/BaseFragment.kt`, `base/BaseStepFragment.kt` |
-| Simplify `base/BaseActivity.kt` to a thin `@AndroidEntryPoint` host (only lifecycle/permission helpers remain) |
-| Remove View-only libraries: `AppLocale`/`Reword`/`ViewPump`, `hbb20:ccp`, `StepperLayout` (already replaced in Phase 2) |
-| Remove `androidx.navigation:navigation-fragment` and `navigation-ui-ktx` (replaced by `navigation-compose`) |
-| Remove all XML navigation graphs (`nav_graph.xml`, `nav_recommendations.xml`) |
-| Final build verification — no ViewBinding generated classes, no XML layouts |
-
-Branch: `feature/compose-cleanup`
+| Task | Status |
+|---|---|
+| `viewBinding = false` in `build.gradle.kts` | ✅ |
+| Delete all `app/src/main/res/layout/*.xml` files | ✅ |
+| Delete `base/BaseFragment.kt`, `base/BaseStepFragment.kt` | ✅ |
+| Simplify `base/BaseActivity.kt` to a thin `@AndroidEntryPoint` host | ✅ |
+| Remove View-only libraries: `AppLocale`/`Reword`/`ViewPump`, `hbb20:ccp`, `StepperLayout` | ✅ |
+| Remove `androidx.navigation:navigation-fragment` and `navigation-ui-ktx` | ✅ |
+| Remove XML navigation graphs (`nav_graph.xml`, `nav_recommendations.xml`) | ✅ |
+| Final build verification — no ViewBinding generated classes, no XML layouts | ✅ |
 
 ---
 
@@ -953,18 +945,18 @@ class BioDataStepTest {
 
 ---
 
-## 13. Library Removals at Completion
+## 13. Library Removals
 
-Removed during Phase 5 cleanup:
+All View-only libraries removed during Phase 5:
 
-| Library | Replacement | Notes |
+| Library | Replacement | Status |
 |---|---|---|
-| `androidx.navigation:navigation-fragment` + `navigation-ui-ktx` | `navigation-compose` | Already replaced in Phase 1 |
-| `dev.b3nedikt.app_locale` + `reword` + `viewpump` | `AppCompatDelegate.setApplicationLocales()` + Compose `stringResource` | AppLocale string replacement no longer needed |
-| `com.jakewharton.processphoenix` | — | ✅ Already removed |
-| `hbb20:ccp` (Country Code Picker) | `ExposedDropdownMenuBox` | Replace in Phase 2 (CountryStep) |
-| `androidx.viewbinding` | — | Remove in Phase 5 |
-| `com.stepstone.stepper` | `AnimatedContent` wizard | ✅ Already replaced by ViewPager2 (interim); remove in Phase 2 |
+| `androidx.navigation:navigation-fragment` + `navigation-ui-ktx` | `navigation-compose` | ✅ Removed |
+| `dev.b3nedikt.app_locale` + `reword` + `viewpump` | `AppCompatDelegate.setApplicationLocales()` + Compose `stringResource` | ✅ Removed |
+| `com.jakewharton.processphoenix` | — | ✅ Removed |
+| `hbb20:ccp` (Country Code Picker) | `ExposedDropdownMenuBox` | ✅ Removed |
+| `androidx.viewbinding` | — | ✅ Removed |
+| `com.stepstone.stepper` | `AnimatedContent` wizard | ✅ Removed |
 
 **Do not remove:** `retrofit`, `okhttp`, `room`, `hilt`, `moshi`, `firebase`, `mapbox`,
 `timber`, `sentry`, `workmanager` — all survive the Compose migration unchanged.
