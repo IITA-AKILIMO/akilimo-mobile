@@ -720,4 +720,15 @@
     <string name="lbl_settings_saved">Settings saved successfully</string>
     <string name="lbl_select_language">Select language</string>
     <string name="lbl_select_area_unit">Select area unit</string>
+
+    <string name="lbl_list">List</string>
+    <string name="lbl_grid">Grid</string>
+    <string name="lbl_choose_fertilizer">Choose fertilizer</string>
+    <string name="lbl_selected">Selected</string>
+    <string name="lbl_tap_to_select_fertilizer">Tap a fertilizer to choose its price.</string>
+    <string name="lbl_grid_layout_hint">Grid view helps you compare options quickly.</string>
+    <string name="lbl_list_layout_hint">List view shows each option with more detail.</string>
+    <string name="lbl_tap_to_add_price">Tap to add price</string>
+    <string name="lbl_tap_to_select_and_set_price">Tap to select and set price</string>
+    <string name="lbl_select_price">Select the price that matches your area.</string>
 </resources>
