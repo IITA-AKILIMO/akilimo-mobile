@@ -376,10 +376,10 @@ fun LabeledTextField(
 - [x] Create `ScrollableFormColumn.kt` and update 14 screens
 - [x] Create `NavExtensions.kt` with `completeTask` and update 12 screens
 
-### Phase 2
-- [ ] Create `RadioButtonRow.kt` and update 5 screens
-- [ ] Create `BinaryToggleChips.kt` and update 5 screens
-- [ ] Promote `SwitchRow` to shared and update 3 screens
+### Phase 2 ✅ Complete
+- [x] Create `RadioButtonRow.kt` and update screens (CassavaMarketScreen, FertilizerScreen)
+- [x] Create `BinaryToggleChips.kt` and update screens (TractorAccessScreen Yes/No, MaizeMarketScreen)
+- [x] Promote `SwitchRow` to shared and update screens (UserSettingsScreen, DatesScreen)
 
 ### Phase 3
 - [ ] Replace `FertilizerCard` with `SelectionCard` in `FertilizerScreen.kt`

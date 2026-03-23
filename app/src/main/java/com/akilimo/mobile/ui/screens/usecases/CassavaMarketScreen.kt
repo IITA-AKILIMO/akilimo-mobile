@@ -2,7 +2,6 @@ package com.akilimo.mobile.ui.screens.usecases
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,7 +19,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -31,7 +29,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -46,6 +43,7 @@ import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumUnitOfSale
 import com.akilimo.mobile.ui.components.compose.AkilimoTextField
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
+import com.akilimo.mobile.ui.components.compose.RadioButtonRow
 import com.akilimo.mobile.ui.components.compose.SaveBottomBar
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.CassavaMarketViewModel
@@ -113,39 +111,18 @@ fun CassavaMarketScreen(
                 .padding(padding)
         ) {
             // Market choice radio buttons
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { marketChoice = CassavaMarketViewModel.MarketChoice.FACTORY }
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-            ) {
-                RadioButton(
-                    selected = marketChoice == CassavaMarketViewModel.MarketChoice.FACTORY,
-                    onClick = { marketChoice = CassavaMarketViewModel.MarketChoice.FACTORY }
-                )
-                Text(
-                    text = stringResource(R.string.lbl_starch_factory),
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { marketChoice = CassavaMarketViewModel.MarketChoice.MARKET }
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-            ) {
-                RadioButton(
-                    selected = marketChoice == CassavaMarketViewModel.MarketChoice.MARKET,
-                    onClick = { marketChoice = CassavaMarketViewModel.MarketChoice.MARKET }
-                )
-                Text(
-                    text = stringResource(R.string.lbl_regular_market),
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
+            RadioButtonRow(
+                label = stringResource(R.string.lbl_starch_factory),
+                selected = marketChoice == CassavaMarketViewModel.MarketChoice.FACTORY,
+                onClick = { marketChoice = CassavaMarketViewModel.MarketChoice.FACTORY },
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            )
+            RadioButtonRow(
+                label = stringResource(R.string.lbl_regular_market),
+                selected = marketChoice == CassavaMarketViewModel.MarketChoice.MARKET,
+                onClick = { marketChoice = CassavaMarketViewModel.MarketChoice.MARKET },
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            )
 
             when (marketChoice) {
                 CassavaMarketViewModel.MarketChoice.FACTORY -> {
@@ -258,18 +235,11 @@ fun CassavaMarketScreen(
                         price.exactPrice -> stringResource(R.string.lbl_exact_price)
                         else -> "${MathHelper.format(computedPrice)} ${price.currencySymbol}"
                     }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { selectedPriceId = price.id }
-                    ) {
-                        RadioButton(
-                            selected = selectedPriceId == price.id,
-                            onClick = { selectedPriceId = price.id }
-                        )
-                        Text(label, modifier = Modifier.weight(1f))
-                    }
+                    RadioButtonRow(
+                        label = label,
+                        selected = selectedPriceId == price.id,
+                        onClick = { selectedPriceId = price.id }
+                    )
                     if (price.exactPrice && selectedPriceId == price.id) {
                         AkilimoTextField(
                             value = exactPriceInput,

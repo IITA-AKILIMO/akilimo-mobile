@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,7 +27,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -55,6 +53,7 @@ import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumFertilizerFlow
 import com.akilimo.mobile.ui.components.compose.AkilimoTextField
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
+import com.akilimo.mobile.ui.components.compose.RadioButtonRow
 import com.akilimo.mobile.ui.components.compose.SaveBottomBar
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.FertilizerViewModel
@@ -189,18 +188,11 @@ fun FertilizerScreen(
                         price.pricePerBag < 0.0 -> stringResource(R.string.lbl_exact_price)
                         else -> price.priceRange
                     }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { selectedPriceId = price.id }
-                    ) {
-                        RadioButton(
-                            selected = selectedPriceId == price.id,
-                            onClick = { selectedPriceId = price.id }
-                        )
-                        Text(label, modifier = Modifier.weight(1f))
-                    }
+                    RadioButtonRow(
+                        label = label,
+                        selected = selectedPriceId == price.id,
+                        onClick = { selectedPriceId = price.id }
+                    )
                     if (price.pricePerBag < 0.0 && selectedPriceId == price.id) {
                         AkilimoTextField(
                             value = exactPriceInput,

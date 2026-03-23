@@ -1,6 +1,5 @@
 package com.akilimo.mobile.ui.screens.usecases
 
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,7 +11,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
@@ -24,7 +22,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -37,6 +34,7 @@ import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.DateInputField
 import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
+import com.akilimo.mobile.ui.components.compose.SwitchRow
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.DatesViewModel
 import kotlinx.coroutines.launch
@@ -185,19 +183,11 @@ fun DatesScreen(
         ScrollableFormColumn(padding = padding) {
             Spacer(modifier = Modifier.height(8.dp))
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(R.string.lbl_consider_alternative_planting),
-                    modifier = Modifier.weight(1f)
-                )
-                Switch(
-                    checked = alternativeDate,
-                    onCheckedChange = { alternativeDate = it }
-                )
-            }
+            SwitchRow(
+                label = stringResource(R.string.lbl_consider_alternative_planting),
+                checked = alternativeDate,
+                onCheckedChange = { alternativeDate = it }
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -228,19 +218,11 @@ fun DatesScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(R.string.lbl_flexible_dates),
-                    modifier = Modifier.weight(1f)
-                )
-                Switch(
-                    checked = useFlexDates,
-                    onCheckedChange = { useFlexDates = it }
-                )
-            }
+            SwitchRow(
+                label = stringResource(R.string.lbl_flexible_dates),
+                checked = useFlexDates,
+                onCheckedChange = { useFlexDates = it }
+            )
 
             if (useFlexDates) {
                 Spacer(modifier = Modifier.height(8.dp))

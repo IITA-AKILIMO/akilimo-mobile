@@ -1,13 +1,11 @@
 package com.akilimo.mobile.ui.screens.usecases
 
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,6 +31,7 @@ import com.akilimo.mobile.enums.EnumUnitOfSale
 import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
 import com.akilimo.mobile.ui.components.compose.AkilimoTextField
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
+import com.akilimo.mobile.ui.components.compose.BinaryToggleChips
 import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.ProduceMarketViewModel
@@ -95,19 +94,13 @@ fun MaizeMarketScreen(
         ScrollableFormColumn(padding = padding) {
             Spacer(modifier = Modifier.height(8.dp))
 
-            Row {
-                FilterChip(
-                    selected = isFreshCob,
-                    onClick = { isFreshCob = true },
-                    label = { Text(stringResource(R.string.lbl_fresh_cob)) },
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                FilterChip(
-                    selected = !isFreshCob,
-                    onClick = { isFreshCob = false },
-                    label = { Text(stringResource(R.string.lbl_dry_grain)) }
-                )
-            }
+            BinaryToggleChips(
+                labelA = stringResource(R.string.lbl_fresh_cob),
+                labelB = stringResource(R.string.lbl_dry_grain),
+                selectedA = isFreshCob,
+                onSelectA = { isFreshCob = true },
+                onSelectB = { isFreshCob = false }
+            )
             Spacer(modifier = Modifier.height(8.dp))
             AkilimoDropdown(
                 label = stringResource(R.string.lbl_unit_price),

@@ -29,6 +29,7 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.ui.components.compose.AkilimoTextField
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
+import com.akilimo.mobile.ui.components.compose.BinaryToggleChips
 import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.TractorAccessViewModel
@@ -88,23 +89,17 @@ fun TractorAccessScreen(
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Row {
-                FilterChip(
-                    selected = tractorAvailable,
-                    onClick = { tractorAvailable = true },
-                    label = { Text(stringResource(R.string.lbl_yes)) },
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                FilterChip(
-                    selected = !tractorAvailable,
-                    onClick = {
-                        tractorAvailable = false
-                        usePlough = false; useRidge = false; useHarrow = false
-                        ploughCost = ""; ridgeCost = ""; harrowCost = ""
-                    },
-                    label = { Text(stringResource(R.string.lbl_no)) }
-                )
-            }
+            BinaryToggleChips(
+                labelA = stringResource(R.string.lbl_yes),
+                labelB = stringResource(R.string.lbl_no),
+                selectedA = tractorAvailable,
+                onSelectA = { tractorAvailable = true },
+                onSelectB = {
+                    tractorAvailable = false
+                    usePlough = false; useRidge = false; useHarrow = false
+                    ploughCost = ""; ridgeCost = ""; harrowCost = ""
+                }
+            )
 
             if (tractorAvailable) {
                 Spacer(modifier = Modifier.height(12.dp))
