@@ -13,6 +13,7 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -34,7 +35,7 @@ import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
 import com.akilimo.mobile.utils.DateHelper
 import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneId
+import java.time.ZoneOffset
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,9 +79,22 @@ fun PlantingDateStep(
         )
 
         if (showPlantingPicker) {
+            val pMin = LocalDate.now().minusMonths(4 + plantingFlex)
+            val pMax = LocalDate.now().plusMonths(12 + plantingFlex)
+            val plantingSelectableDates = remember(pMin, pMax) {
+                object : SelectableDates {
+                    override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                        val d = Instant.ofEpochMilli(utcTimeMillis)
+                            .atOffset(ZoneOffset.UTC).toLocalDate()
+                        return !d.isBefore(pMin) && !d.isAfter(pMax)
+                    }
+                    override fun isSelectableYear(year: Int) = year in pMin.year..pMax.year
+                }
+            }
             val datePickerState = rememberDatePickerState(
                 initialSelectedDateMillis = plantingDate
-                    ?.atStartOfDay(ZoneId.systemDefault())?.toInstant()?.toEpochMilli()
+                    ?.atStartOfDay(ZoneOffset.UTC)?.toInstant()?.toEpochMilli(),
+                selectableDates = plantingSelectableDates,
             )
             DatePickerDialog(
                 onDismissRequest = { showPlantingPicker = false },
@@ -89,7 +103,7 @@ fun PlantingDateStep(
                     TextButton(onClick = {
                         datePickerState.selectedDateMillis?.let { millis ->
                             val date = Instant.ofEpochMilli(millis)
-                                .atZone(ZoneId.systemDefault()).toLocalDate()
+                                .atOffset(ZoneOffset.UTC).toLocalDate()
                             onEvent(OnboardingViewModel.Event.PlantingDateSelected(date))
                         }
                         showPlantingPicker = false
@@ -116,9 +130,23 @@ fun PlantingDateStep(
         )
 
         if (showHarvestPicker) {
+            val pDate = plantingDate!! // only shown when plantingDate != null
+            val hMin = pDate.plusMonths(8L - harvestFlex)
+            val hMax = pDate.plusMonths(16L + harvestFlex)
+            val harvestSelectableDates = remember(hMin, hMax) {
+                object : SelectableDates {
+                    override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                        val d = Instant.ofEpochMilli(utcTimeMillis)
+                            .atOffset(ZoneOffset.UTC).toLocalDate()
+                        return !d.isBefore(hMin) && !d.isAfter(hMax)
+                    }
+                    override fun isSelectableYear(year: Int) = year in hMin.year..hMax.year
+                }
+            }
             val datePickerState = rememberDatePickerState(
                 initialSelectedDateMillis = harvestDate
-                    ?.atStartOfDay(ZoneId.systemDefault())?.toInstant()?.toEpochMilli()
+                    ?.atStartOfDay(ZoneOffset.UTC)?.toInstant()?.toEpochMilli(),
+                selectableDates = harvestSelectableDates,
             )
             DatePickerDialog(
                 onDismissRequest = { showHarvestPicker = false },
@@ -127,7 +155,7 @@ fun PlantingDateStep(
                     TextButton(onClick = {
                         datePickerState.selectedDateMillis?.let { millis ->
                             val date = Instant.ofEpochMilli(millis)
-                                .atZone(ZoneId.systemDefault()).toLocalDate()
+                                .atOffset(ZoneOffset.UTC).toLocalDate()
                             onEvent(OnboardingViewModel.Event.HarvestDateSelected(date))
                         }
                         showHarvestPicker = false
