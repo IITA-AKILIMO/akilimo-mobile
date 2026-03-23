@@ -40,21 +40,21 @@ val AkilimoTypography = Typography(
     ),
     headlineLarge = TextStyle(
         fontFamily = GoogleSans,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Medium,
         fontSize = 32.sp,
         lineHeight = 40.sp,
         letterSpacing = 0.sp,
     ),
     headlineMedium = TextStyle(
         fontFamily = GoogleSans,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Medium,
         fontSize = 28.sp,
         lineHeight = 36.sp,
         letterSpacing = 0.sp,
     ),
     headlineSmall = TextStyle(
         fontFamily = GoogleSans,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Medium,
         fontSize = 24.sp,
         lineHeight = 32.sp,
         letterSpacing = 0.sp,
@@ -85,7 +85,7 @@ val AkilimoTypography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
-        letterSpacing = 0.5.sp,
+        letterSpacing = 0.25.sp, // reduced for balance
     ),
     bodyMedium = TextStyle(
         fontFamily = GoogleSans,
@@ -98,7 +98,7 @@ val AkilimoTypography = Typography(
         fontFamily = GoogleSans,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
-        lineHeight = 16.sp,
+        lineHeight = 18.sp, // slightly taller for readability
         letterSpacing = 0.4.sp,
     ),
     labelLarge = TextStyle(
@@ -112,14 +112,14 @@ val AkilimoTypography = Typography(
         fontFamily = GoogleSans,
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp,
+        lineHeight = 18.sp, // improved spacing
+        letterSpacing = 0.4.sp,
     ),
     labelSmall = TextStyle(
         fontFamily = GoogleSans,
         fontWeight = FontWeight.Medium,
         fontSize = 11.sp,
         lineHeight = 16.sp,
-        letterSpacing = 0.5.sp,
+        letterSpacing = 0.4.sp,
     ),
 )
