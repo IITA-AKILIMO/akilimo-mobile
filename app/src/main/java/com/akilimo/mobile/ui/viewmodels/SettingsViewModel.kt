@@ -3,7 +3,11 @@ package com.akilimo.mobile.ui.viewmodels
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.akilimo.mobile.Locales
 import com.akilimo.mobile.data.AppSettingsDataStore
+import com.akilimo.mobile.entities.AkilimoUser
+import com.akilimo.mobile.repos.AkilimoUserRepo
+import com.akilimo.mobile.repos.UserPreferencesRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -18,16 +22,20 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val appSettings: AppSettingsDataStore,
+    private val userRepo: AkilimoUserRepo,
+    private val prefsRepo: UserPreferencesRepo,
 ) : ViewModel() {
 
     data class UiState(
         val darkMode: Boolean = false,
+        val languageTag: String = Locales.english.toLanguageTag(),
         val rememberAreaUnit: Boolean = false,
         val fertilizerGrid: Boolean = false,
         val lockAppLanguage: Boolean = false,
     )
 
     sealed interface Effect {
+        data class LanguageChanged(val languageTag: String) : Effect
         data class LockAppLanguageChanged(val locked: Boolean, val languageTag: String) : Effect
     }
 
@@ -41,6 +49,11 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             appSettings.darkModeFlow.collect { dark ->
                 _uiState.update { it.copy(darkMode = dark) }
+            }
+        }
+        viewModelScope.launch {
+            appSettings.languageTagFlow.collect { tag ->
+                _uiState.update { it.copy(languageTag = tag) }
             }
         }
         viewModelScope.launch {
@@ -67,6 +80,18 @@ class SettingsViewModel @Inject constructor(
                 if (enabled) AppCompatDelegate.MODE_NIGHT_YES
                 else AppCompatDelegate.MODE_NIGHT_NO
             )
+        }
+    }
+
+    fun setLanguage(tag: String) {
+        viewModelScope.launch {
+            val userName = appSettings.akilimoUser
+            val user = userRepo.getUser(userName) ?: AkilimoUser(userName = userName)
+            userRepo.saveOrUpdateUser(user.copy(languageCode = tag), userName)
+            val currentPrefs = prefsRepo.getOrDefault()
+            prefsRepo.save(currentPrefs.copy(languageCode = tag))
+            appSettings.setLanguageTag(tag)
+            _effect.send(Effect.LanguageChanged(tag))
         }
     }
 

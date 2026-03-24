@@ -38,6 +38,7 @@ import com.akilimo.mobile.Locales
 import com.akilimo.mobile.R
 import com.akilimo.mobile.navigation.OnboardingRoute
 import com.akilimo.mobile.navigation.WebViewRoute
+import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
@@ -57,6 +58,14 @@ fun SettingsScreen(
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
+                is SettingsViewModel.Effect.LanguageChanged -> {
+                    AppCompatDelegate.setApplicationLocales(
+                        LocaleListCompat.forLanguageTags(effect.languageTag),
+                    )
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                        (context as? Activity)?.recreate()
+                    }
+                }
                 is SettingsViewModel.Effect.LockAppLanguageChanged -> {
                     if (effect.locked) {
                         AppLocale.supportedLocales = Locales.supportedLocales
@@ -157,6 +166,17 @@ fun SettingsScreen(
                     horizontal = AkilimoSpacing.md,
                     vertical = AkilimoSpacing.sm,
                 ),
+            )
+            AkilimoDropdown(
+                label = stringResource(R.string.lbl_select_language),
+                options = Locales.supportedLocales,
+                selectedOption = Locales.supportedLocales
+                    .find { it.toLanguageTag() == state.languageTag } ?: Locales.english,
+                onOptionSelected = { locale -> viewModel.setLanguage(locale.toLanguageTag()) },
+                displayText = { locale ->
+                    locale.getDisplayLanguage(locale).replaceFirstChar { it.uppercaseChar() }
+                },
+                modifier = Modifier.padding(horizontal = AkilimoSpacing.md),
             )
             ListItem(
                 headlineContent = { Text(stringResource(R.string.lbl_lock_app_language)) },
