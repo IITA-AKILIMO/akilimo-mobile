@@ -2,7 +2,6 @@ package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.akilimo.mobile.Locales
 import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.dto.OperationEntry
 import com.akilimo.mobile.dto.OperationMethodOption
@@ -47,9 +46,6 @@ class OnboardingViewModel @Inject constructor(
     data class UiState(
         val isLoading: Boolean = true,
         val visibleSections: List<OnboardingSection> = emptyList(),
-        // Welcome
-        val languageCode: String = Locales.english.toLanguageTag(),
-        val lockAppLanguage: Boolean = false,
         // Disclaimer
         val disclaimerRead: Boolean = false,
         // Terms
@@ -91,9 +87,6 @@ class OnboardingViewModel @Inject constructor(
     )
 
     sealed interface Event {
-        // Welcome
-        data class LanguageSelected(val code: String) : Event
-        data class LockAppLanguageToggled(val locked: Boolean) : Event
         // Disclaimer
         data class DisclaimerChecked(val checked: Boolean) : Event
         // Terms
@@ -139,8 +132,6 @@ class OnboardingViewModel @Inject constructor(
         data object NavigateToRecommendations : Effect
         data object ExitApp : Effect
         data class ShowSnackbar(val message: String) : Effect
-        data class LanguageChangeRequested(val languageTag: String) : Effect
-        data class LockAppLanguageChanged(val locked: Boolean, val languageTag: String) : Effect
     }
 
     private val _state = MutableStateFlow(UiState())
@@ -162,8 +153,6 @@ class OnboardingViewModel @Inject constructor(
             val termsAccepted = appSettings.termsAccepted
             val rememberAreaUnit = appSettings.rememberAreaUnit
             val termsUrl = appSettings.termsLink
-            val languageCode = appSettings.languageTag
-            val lockAppLanguage = appSettings.lockAppLanguage
 
             val visibleSteps = buildList {
                 add(OnboardingSection.WELCOME)
@@ -181,8 +170,6 @@ class OnboardingViewModel @Inject constructor(
                 s.copy(
                     isLoading = false,
                     visibleSections = visibleSteps,
-                    languageCode = languageCode,
-                    lockAppLanguage = lockAppLanguage,
                     disclaimerRead = disclaimerRead,
                     termsAccepted = termsAccepted,
                     rememberAreaUnit = rememberAreaUnit,
@@ -220,25 +207,6 @@ class OnboardingViewModel @Inject constructor(
 
     fun onEvent(event: Event) {
         when (event) {
-            is Event.LanguageSelected -> {
-                _state.update { it.copy(languageCode = event.code) }
-                viewModelScope.launch {
-                    val userName = appSettings.akilimoUser
-                    val user = userRepo.getUser(userName) ?: AkilimoUser(userName = userName)
-                    userRepo.saveOrUpdateUser(user.copy(languageCode = event.code), userName)
-                    val currentPrefs = prefsRepo.getOrDefault()
-                    prefsRepo.save(currentPrefs.copy(languageCode = event.code))
-                    appSettings.setLanguageTag(event.code)
-                    _effect.send(Effect.LanguageChangeRequested(event.code))
-                }
-            }
-            is Event.LockAppLanguageToggled -> {
-                _state.update { it.copy(lockAppLanguage = event.locked) }
-                viewModelScope.launch {
-                    appSettings.setLockAppLanguage(event.locked)
-                    _effect.send(Effect.LockAppLanguageChanged(event.locked, _state.value.languageCode))
-                }
-            }
             is Event.DisclaimerChecked -> {
                 _state.update { it.copy(disclaimerRead = event.checked) }
                 appSettings.disclaimerRead = event.checked

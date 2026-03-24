@@ -1,7 +1,4 @@
-import android.app.Activity
-import android.os.Build
 import androidx.activity.compose.BackHandler
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,11 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.akilimo.mobile.Locales
 import com.akilimo.mobile.R
 import com.akilimo.mobile.navigation.RecommendationsRoute
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
@@ -52,7 +47,6 @@ import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
 import androidx.compose.material.icons.filled.ArrowBack
 import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.wizard.OnboardingSection
-import dev.b3nedikt.app_locale.AppLocale
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.system.exitProcess
 
@@ -83,25 +77,6 @@ fun OnboardingScreen(
                         }
                     }
                 is OnboardingViewModel.Effect.ExitApp -> showExitDialog = true
-                is OnboardingViewModel.Effect.LanguageChangeRequested -> {
-                    AppCompatDelegate.setApplicationLocales(
-                        LocaleListCompat.forLanguageTags(effect.languageTag),
-                    )
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                        (context as? Activity)?.recreate()
-                    }
-                }
-                is OnboardingViewModel.Effect.LockAppLanguageChanged -> {
-                    if (effect.locked) {
-                        AppLocale.supportedLocales = Locales.supportedLocales
-                        AppLocale.desiredLocale = Locales.supportedLocales
-                            .find { it.toLanguageTag() == effect.languageTag } ?: Locales.english
-                    } else {
-                        // Reset to system default so AppLocale.wrap becomes a pass-through
-                        AppLocale.desiredLocale = java.util.Locale.getDefault()
-                    }
-                    (context as? Activity)?.recreate()
-                }
                 else -> Unit
             }
         }
@@ -187,11 +162,7 @@ fun OnboardingScreen(
                 .verticalScroll(scrollState),
         ) {
             // Welcome Section
-            WelcomeStep(
-                languageCode = state.languageCode,
-                lockAppLanguage = state.lockAppLanguage,
-                onEvent = viewModel::onEvent,
-            )
+            WelcomeStep()
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
