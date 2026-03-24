@@ -1,5 +1,7 @@
 package com.akilimo.mobile.ui.screens.settings
 
+import android.app.Activity
+import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -130,6 +132,10 @@ fun UserSettingsScreen(navController: NavHostController) {
             AppCompatDelegate.setApplicationLocales(
                 LocaleListCompat.forLanguageTags(state.newLanguageCode)
             )
+            // setApplicationLocales only auto-recreates on API 33+; recreate manually below that.
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                (context as? Activity)?.recreate()
+            }
         }
 
         viewModel.onSaveHandled()

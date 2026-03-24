@@ -1,5 +1,7 @@
 package com.akilimo.mobile.ui.screens.onboarding
 
+import android.app.Activity
+import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.AnimatedContent
@@ -92,6 +94,9 @@ fun OnboardingScreen(
                     AppCompatDelegate.setApplicationLocales(
                         LocaleListCompat.forLanguageTags(effect.languageTag),
                     )
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                        (context as? Activity)?.recreate()
+                    }
                 }
                 else -> Unit
             }
