@@ -113,6 +113,15 @@ class AppSettingsDataStore @Inject constructor(
     val darkModeFlow: Flow<Boolean> =
         dataStore.data.map { prefs -> prefs[Keys.DARK_MODE] ?: false }
 
+    val rememberAreaUnitFlow: Flow<Boolean> =
+        dataStore.data.map { prefs -> prefs[Keys.REMEMBER_AREA_UNIT] ?: false }
+
+    val fertilizerGridFlow: Flow<Boolean> =
+        dataStore.data.map { prefs -> prefs[Keys.FERTILIZER_GRID] ?: false }
+
+    val lockAppLanguageFlow: Flow<Boolean> =
+        dataStore.data.map { prefs -> prefs[Keys.LOCK_APP_LANGUAGE] ?: false }
+
     // ── Synchronous property accessors ────────────────────────────────────────
     // After the first DataStore read (done in AkilimoApp.onCreate via getLanguageTagSync /
     // getDarkModeSync), subsequent data.first() calls are served from DataStore's in-memory
@@ -232,5 +241,13 @@ class AppSettingsDataStore @Inject constructor(
 
     suspend fun setLockAppLanguage(locked: Boolean) {
         dataStore.edit { it[Keys.LOCK_APP_LANGUAGE] = locked }
+    }
+
+    suspend fun setRememberAreaUnit(value: Boolean) {
+        dataStore.edit { it[Keys.REMEMBER_AREA_UNIT] = value }
+    }
+
+    suspend fun setFertilizerGrid(value: Boolean) {
+        dataStore.edit { it[Keys.FERTILIZER_GRID] = value }
     }
 }

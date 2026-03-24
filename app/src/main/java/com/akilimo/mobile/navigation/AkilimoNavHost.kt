@@ -23,6 +23,7 @@ import com.akilimo.mobile.ui.screens.recommendations.RecommendationsScreen
 import com.akilimo.mobile.ui.screens.recommendations.UseCaseScreen
 import com.akilimo.mobile.ui.screens.settings.LocationPickerScreen
 import com.akilimo.mobile.ui.screens.settings.SettingsScreen
+import com.akilimo.mobile.ui.screens.settings.WebViewScreen
 import com.akilimo.mobile.ui.screens.usecases.CassavaMarketScreen
 import com.akilimo.mobile.ui.screens.usecases.CassavaYieldScreen
 import com.akilimo.mobile.ui.screens.usecases.DatesScreen
@@ -214,6 +215,11 @@ fun AkilimoNavHost(
 
         composable<SettingsRoute> {
             SettingsScreen(navController = navController)
+        }
+
+        composable<WebViewRoute> { backStackEntry ->
+            val route = backStackEntry.toRoute<WebViewRoute>()
+            WebViewScreen(route = route, navController = navController)
         }
 
         composable<LocationPickerRoute> { backStackEntry ->
