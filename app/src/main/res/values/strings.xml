@@ -733,6 +733,11 @@
     <string name="lbl_preferences_section">App Preferences</string>
     <string name="lbl_notifications_section">Notifications</string>
     <string name="lbl_display_section">Display</string>
+    <string name="lbl_fertilizer_grid">Show fertilizers as grid</string>
+    <string name="lbl_remember_area_unit">Remember area unit</string>
+    <string name="lbl_app_version">Version</string>
+    <string name="lbl_privacy_policy">Privacy policy</string>
+    <string name="lbl_about_section">About</string>
     <string name="lbl_bio">About me</string>
     <string name="lbl_bio_hint">Tell us a little about yourself</string>
     <string name="lbl_dark_mode">Dark mode</string>
