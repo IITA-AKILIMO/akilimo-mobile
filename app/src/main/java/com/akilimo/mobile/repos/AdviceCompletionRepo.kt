@@ -28,6 +28,10 @@ class AdviceCompletionRepo(private val dao: AdviceCompletionDao) {
         dao.delete(task)
     }
 
+    suspend fun clearAll() {
+        dao.deleteAll()
+    }
+
     suspend fun markInProgressIfNotCompleted(task: EnumAdviceTask) {
         val existing = dao.getAdviceByTask(task)
         if (existing?.stepStatus != EnumStepStatus.COMPLETED) {
