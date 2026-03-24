@@ -9,23 +9,33 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForwardIos
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.AspectRatio
+import androidx.compose.material.icons.outlined.CleaningServices
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.outlined.NotificationsNone
 import androidx.compose.material.icons.outlined.PrivacyTip
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -45,6 +55,7 @@ import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.viewmodels.SettingsViewModel
 import dev.b3nedikt.app_locale.AppLocale
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,6 +65,13 @@ fun SettingsScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    var showClearRecsDialog by remember { mutableStateOf(false) }
+    var showResetBadgeDialog by remember { mutableStateOf(false) }
+
+    val clearedMessage = stringResource(R.string.msg_recommendations_cleared)
+    val badgeResetMessage = stringResource(R.string.msg_badge_reset)
 
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
@@ -81,8 +99,49 @@ fun SettingsScreen(
                         (context as? Activity)?.recreate()
                     }
                 }
+                is SettingsViewModel.Effect.ShowSnackbar -> {
+                    scope.launch { snackbarHostState.showSnackbar(effect.message) }
+                }
             }
         }
+    }
+
+    if (showClearRecsDialog) {
+        AlertDialog(
+            onDismissRequest = { showClearRecsDialog = false },
+            title = { Text(stringResource(R.string.lbl_clear_recommendations)) },
+            text = { Text(stringResource(R.string.msg_clear_recommendations_confirm)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    showClearRecsDialog = false
+                    viewModel.clearRecommendations(clearedMessage)
+                }) { Text(stringResource(R.string.lbl_confirm)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showClearRecsDialog = false }) {
+                    Text(stringResource(R.string.lbl_cancel))
+                }
+            },
+        )
+    }
+
+    if (showResetBadgeDialog) {
+        AlertDialog(
+            onDismissRequest = { showResetBadgeDialog = false },
+            title = { Text(stringResource(R.string.lbl_reset_notification_badge)) },
+            text = { Text(stringResource(R.string.msg_reset_badge_confirm)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    showResetBadgeDialog = false
+                    viewModel.resetNotificationCount(badgeResetMessage)
+                }) { Text(stringResource(R.string.lbl_confirm)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showResetBadgeDialog = false }) {
+                    Text(stringResource(R.string.lbl_cancel))
+                }
+            },
+        )
     }
 
     Scaffold(
@@ -92,6 +151,7 @@ fun SettingsScreen(
                 onBack = { navController.popBackStack() },
             )
         },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { paddingValues ->
         ScrollableFormColumn(padding = paddingValues) {
 
@@ -275,6 +335,47 @@ fun SettingsScreen(
                         )
                     )
                 },
+            )
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = AkilimoSpacing.sm))
+
+            // ── Data & Storage ────────────────────────────────────────────
+            Text(
+                text = stringResource(R.string.lbl_data_storage),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(
+                    horizontal = AkilimoSpacing.md,
+                    vertical = AkilimoSpacing.sm,
+                ),
+            )
+            ListItem(
+                headlineContent = { Text(stringResource(R.string.lbl_clear_recommendations)) },
+                supportingContent = { Text(stringResource(R.string.lbl_clear_recommendations_desc)) },
+                leadingContent = {
+                    Icon(imageVector = Icons.Outlined.CleaningServices, contentDescription = null)
+                },
+                trailingContent = {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable { showClearRecsDialog = true },
+            )
+            ListItem(
+                headlineContent = { Text(stringResource(R.string.lbl_reset_notification_badge)) },
+                supportingContent = { Text(stringResource(R.string.lbl_reset_notification_badge_desc)) },
+                leadingContent = {
+                    Icon(imageVector = Icons.Outlined.NotificationsNone, contentDescription = null)
+                },
+                trailingContent = {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable { showResetBadgeDialog = true },
             )
         }
     }
