@@ -1,10 +1,11 @@
 package com.akilimo.mobile.ui.screens.settings
 
 import android.Manifest
+import android.animation.ValueAnimator
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.os.Parcelable
 import android.view.animation.BounceInterpolator
-import android.animation.ValueAnimator
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
@@ -28,7 +29,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -42,8 +42,6 @@ import com.akilimo.mobile.navigation.LocationPickerRoute
 import com.akilimo.mobile.ui.viewmodels.LocationPickerViewModel
 import com.akilimo.mobile.utils.LocationHelper
 import com.akilimo.mobile.utils.PermissionHelper
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import com.mapbox.common.MapboxOptions
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
@@ -58,6 +56,7 @@ import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
 import com.mapbox.maps.plugin.gestures.addOnMapClickListener
 import com.mapbox.maps.plugin.locationcomponent.location
 import io.sentry.Sentry
+import kotlinx.parcelize.Parcelize
 
 private const val DEFAULT_ZOOM = 15.0
 private const val MARKER_ICON_ID = "custom-marker"
@@ -78,10 +77,11 @@ fun LocationPickerScreen(
     route: LocationPickerRoute,
     navController: NavHostController,
 ) {
-    val context = LocalContext.current
     val viewModel = hiltViewModel<LocationPickerViewModel>()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val permissionHelper = remember { PermissionHelper() }
+    val weatherSummaryFormat = stringResource(R.string.lbl_weather_summary)
+    val weatherFeelsLikeFormat = stringResource(R.string.lbl_weather_feels_like)
 
     // Mapbox Map references managed via remember
     var mapView by remember { mutableStateOf<MapView?>(null) }
@@ -143,7 +143,9 @@ fun LocationPickerScreen(
                                 val drawable = ContextCompat.getDrawable(ctx, R.drawable.ic_location_pin)
                                 if (drawable != null) {
                                     val bmp = Bitmap.createBitmap(
-                                        drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888
+                                        drawable.intrinsicWidth,
+                                        drawable.intrinsicHeight,
+                                        Bitmap.Config.ARGB_8888
                                     )
                                     val canvas = Canvas(bmp)
                                     drawable.setBounds(0, 0, canvas.width, canvas.height)
@@ -220,8 +222,20 @@ fun LocationPickerScreen(
                         .padding(start = 16.dp, end = 16.dp, top = if (state.addressText != null) 90.dp else 16.dp),
                 ) {
                     Column(modifier = Modifier.padding(12.dp)) {
-                        Text("${weather.temperature.toInt()}° — ${weather.condition}", style = MaterialTheme.typography.bodySmall)
-                        Text("Feels like ${weather.feelsLike.toInt()}°C · ${weather.humidity}% humidity", style = MaterialTheme.typography.bodySmall)
+                        Text(
+                            text = weatherSummaryFormat.format(
+                                weather.temperature.toInt(),
+                                weather.condition,
+                            ),
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                        Text(
+                            text = weatherFeelsLikeFormat.format(
+                                weather.feelsLike.toInt(),
+                                weather.humidity,
+                            ),
+                            style = MaterialTheme.typography.bodySmall,
+                        )
                     }
                 }
             }
