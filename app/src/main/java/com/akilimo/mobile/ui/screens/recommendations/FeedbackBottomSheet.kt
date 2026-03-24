@@ -41,7 +41,7 @@ fun FeedbackBottomSheet(
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = "How satisfied are you?",
+                text = stringResource(R.string.lbl_how_satisfied),
                 style = MaterialTheme.typography.titleMedium,
             )
             Spacer(Modifier.height(12.dp))
@@ -84,7 +84,7 @@ fun FeedbackBottomSheet(
             }
             Spacer(Modifier.height(16.dp))
             Text(
-                text = "How likely are you to recommend us? (0-10)",
+                text = stringResource(R.string.lbl_nps_prompt),
                 style = MaterialTheme.typography.titleMedium,
             )
             Spacer(Modifier.height(8.dp))
@@ -130,7 +130,7 @@ fun FeedbackBottomSheet(
                 enabled = selectedRating != null && selectedNps != null,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("Submit Feedback")
+                Text(stringResource(R.string.lbl_submit_feedback))
             }
             Spacer(Modifier.height(16.dp))
         }

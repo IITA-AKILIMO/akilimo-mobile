@@ -46,6 +46,8 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val noRecsLabel = stringResource(R.string.lbl_no_recommendations_prompt)
     val errorLabel = stringResource(R.string.error_fetch_recommendation)
+    val feedbackSuccessMessage = stringResource(R.string.msg_feedback_submit_success)
+    val feedbackFailureMessage = stringResource(R.string.msg_feedback_submit_failure)
     var showFeedback by remember { mutableStateOf(false) }
 
     LaunchedEffect(useCase) {
@@ -56,7 +58,7 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
     LaunchedEffect(Unit) {
         viewModel.feedbackResult.collect { success ->
             snackbarHostState.showSnackbar(
-                if (success) "Thank you for your feedback!" else "Failed to submit feedback"
+                if (success) feedbackSuccessMessage else feedbackFailureMessage
             )
         }
     }
@@ -71,7 +73,7 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
         floatingActionButton = {
             if (state is GetRecommendationViewModel.UiState.Success) {
                 FloatingActionButton(onClick = { showFeedback = true }) {
-                    Icon(Icons.Default.StarRate, contentDescription = "Feedback")
+                    Icon(Icons.Default.StarRate, contentDescription = stringResource(R.string.lbl_feedback))
                 }
             }
         },
@@ -115,7 +117,7 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
                                 viewModel.fetchRecommendation(useCase, noRecsLabel, errorLabel)
                             }
                         ) {
-                            Text("Retry")
+                            Text(stringResource(R.string.lbl_retry))
                         }
                     }
                 }
