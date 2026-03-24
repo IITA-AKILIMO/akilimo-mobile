@@ -1,7 +1,7 @@
 package com.akilimo.mobile.ui.screens.recommendations
 
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -102,10 +102,11 @@ fun UseCaseScreen(
         }
     ) { padding ->
         LazyColumn(contentPadding = padding) {
-            items(taskItems, key = { it.first.name }) { (task, status) ->
+            itemsIndexed(taskItems, key = { _, item -> item.first.name }) { index, (task, status) ->
                 TaskItemCard(
                     label = task.label(context),
                     status = status,
+                    stepNumber = index + 1,
                     onClick = { navigateToTask(task) }
                 )
             }

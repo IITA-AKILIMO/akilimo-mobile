@@ -6,27 +6,27 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
 // ── Light palette ────────────────────────────────────────────────────────────
-private val Primary = Color(0xFF2E5900) // Deepened for sunlight contrast (was 0xFF3D7600)
+private val Primary = Color(0xFF2E5900)
 private val OnPrimary = Color(0xFFFFFFFF)
-private val PrimaryContainer = Color(0xFFC8E68A) // Warmer, less neon (was 0xFFBAEE82)
-private val OnPrimaryContainer = Color(0xFF0E2400) // Match deeper primary (was 0xFF0D2100)
+private val PrimaryContainer = Color(0xFFD3EABC) // Refined for better vibrancy
+private val OnPrimaryContainer = Color(0xFF0E2400)
 
-private val Secondary = Color(0xFF4A5200) // Muted olive-earth (was 0xFF586200)
+private val Secondary = Color(0xFF58624E) // Neutral olive
 private val OnSecondary = Color(0xFFFFFFFF)
-private val SecondaryContainer = Color(0xFFD4E175) // Less saturated (was 0xFFDCE87A)
-private val OnSecondaryContainer = Color(0xFF161900) // Adjusted
+private val SecondaryContainer = Color(0xFFDCE6CF)
+private val OnSecondaryContainer = Color(0xFF151E0F)
 
 private val Tertiary = Color(0xFFB5162A)
 private val OnTertiary = Color(0xFFFFFFFF)
 private val TertiaryContainer = Color(0xFFFFDADC)
 private val OnTertiaryContainer = Color(0xFF40000D)
 
-private val Background = Color(0xFFF8FBF4) // Softer green-white (was 0xFFF5FCE9)
-private val OnBackground = Color(0xFF1C1F16) // Deeper charcoal-green (was 0xFF181D12)
-private val Surface = Color(0xFFF8FBF4) // Match background (was 0xFFF5FCE9)
-private val OnSurface = Color(0xFF1C1F16) // Match (was 0xFF181D12)
-private val SurfaceVariant = Color(0xFFE3E8D8) // Neutral gray-green (was 0xFFDCE6C8)
-private val OnSurfaceVariant = Color(0xFF424940)
+private val Background = Color(0xFFFDFDF6) // Lighter background
+private val OnBackground = Color(0xFF1A1C18)
+private val Surface = Color(0xFFFDFDF6)
+private val OnSurface = Color(0xFF1A1C18)
+private val SurfaceVariant = Color(0xFFE1E4D5)
+private val OnSurfaceVariant = Color(0xFF44483E)
 
 private val Error = Color(0xFFBA1A1A)
 private val OnError = Color(0xFFFFFFFF)

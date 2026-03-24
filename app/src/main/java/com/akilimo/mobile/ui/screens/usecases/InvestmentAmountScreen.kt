@@ -15,7 +15,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,11 +48,16 @@ fun InvestmentAmountScreen(
 
     var selectedItem by remember { mutableStateOf<InvestmentAmount?>(null) }
 
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             BackTopAppBar(
                 title = stringResource(R.string.lbl_investment_amount),
-                onBack = { navController.popBackStack() }
+                collapsedTitle = stringResource(R.string.lbl_investment),
+                scrollBehavior = scrollBehavior,
+                onBack = { navController.popBackStack() },
             )
         },
         bottomBar = {

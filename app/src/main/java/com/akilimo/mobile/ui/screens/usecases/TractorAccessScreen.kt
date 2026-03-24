@@ -12,7 +12,10 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -74,11 +77,16 @@ fun TractorAccessScreen(
     val areaUnitLabel = state.enumAreaUnit.label(context)
     val farmSize = state.farmSize
 
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             BackTopAppBar(
                 title = stringResource(R.string.lbl_tractor_access),
-                onBack = { navController.popBackStack() }
+                collapsedTitle = stringResource(R.string.lbl_tractor_access_title),
+                scrollBehavior = scrollBehavior,
+                onBack = { navController.popBackStack() },
             )
         }
     ) { padding ->

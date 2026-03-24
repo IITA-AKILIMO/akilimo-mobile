@@ -1,19 +1,18 @@
 package com.akilimo.mobile.ui.screens.settings
 
+import android.app.Activity
+import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -24,7 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -41,7 +39,9 @@ import com.akilimo.mobile.enums.EnumCountry
 import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.LabeledTextField
+import com.akilimo.mobile.ui.components.compose.SaveBottomBar
 import com.akilimo.mobile.ui.components.compose.SwitchRow
+import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.viewmodels.UserSettingsViewModel
 import dev.b3nedikt.app_locale.AppLocale
 
@@ -132,6 +132,10 @@ fun UserSettingsScreen(navController: NavHostController) {
             AppCompatDelegate.setApplicationLocales(
                 LocaleListCompat.forLanguageTags(state.newLanguageCode)
             )
+            // setApplicationLocales only auto-recreates on API 33+; recreate manually below that.
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                (context as? Activity)?.recreate()
+            }
         }
 
         viewModel.onSaveHandled()
@@ -147,12 +151,44 @@ fun UserSettingsScreen(navController: NavHostController) {
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
+        bottomBar = {
+            SaveBottomBar(
+                label = stringResource(R.string.lbl_save),
+                onClick = {
+                    val validEmail = android.util.Patterns.EMAIL_ADDRESS
+                    val validPhone = android.util.Patterns.PHONE
+                    if (email.isNotBlank() && !validEmail.matcher(email).matches()) {
+                        emailError = context.getString(R.string.lbl_valid_email_req)
+                    } else if (phone.isNotBlank() && !validPhone.matcher(phone).matches()) {
+                        phoneError = context.getString(R.string.lbl_valid_number_req)
+                    } else {
+                        val prefs = UserPreferences(
+                            languageCode = selectedLanguage?.valueOption
+                                ?: Locales.english.toLanguageTag(),
+                            firstName = firstName.trim().ifBlank { null },
+                            lastName = lastName.trim().ifBlank { null },
+                            email = email.trim().ifBlank { null },
+                            phoneNumber = phone.trim().ifBlank { null },
+                            gender = selectedGender?.valueOption?.ifBlank { null },
+                            country = selectedCountry?.valueOption ?: EnumCountry.Unsupported,
+                            bio = bio.trim().ifBlank { null },
+                            notifyByEmail = notifyEmail,
+                            notifyBySms = notifySms,
+                            preferredAreaUnit = selectedAreaUnit?.valueOption ?: EnumAreaUnit.ACRE,
+                            darkMode = darkMode,
+                        )
+                        viewModel.savePreferences(prefs)
+                    }
+                }
+            )
+        }
     ) { padding ->
         Column(
             modifier = Modifier
                 .padding(padding)
-                .padding(16.dp)
+                .padding(horizontal = AkilimoSpacing.md)
                 .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.xs),
         ) {
             LabeledTextField(
                 sectionLabel = stringResource(R.string.lbl_first_name),
@@ -183,7 +219,6 @@ fun UserSettingsScreen(navController: NavHostController) {
                 onValueChange = { phone = it; phoneError = null },
                 error = phoneError
             )
-            Spacer(Modifier.height(12.dp))
 
             AkilimoDropdown(
                 label = stringResource(R.string.lbl_gender),
@@ -193,8 +228,6 @@ fun UserSettingsScreen(navController: NavHostController) {
                 displayText = { it.displayLabel },
                 modifier = Modifier.fillMaxWidth(),
             )
-            Spacer(Modifier.height(8.dp))
-
             AkilimoDropdown(
                 label = stringResource(R.string.lbl_language),
                 options = languageOptions,
@@ -203,8 +236,6 @@ fun UserSettingsScreen(navController: NavHostController) {
                 displayText = { it.displayLabel },
                 modifier = Modifier.fillMaxWidth(),
             )
-            Spacer(Modifier.height(8.dp))
-
             AkilimoDropdown(
                 label = stringResource(R.string.lbl_country),
                 options = countryOptions,
@@ -213,8 +244,6 @@ fun UserSettingsScreen(navController: NavHostController) {
                 displayText = { it.displayLabel },
                 modifier = Modifier.fillMaxWidth(),
             )
-            Spacer(Modifier.height(8.dp))
-
             AkilimoDropdown(
                 label = stringResource(R.string.lbl_area_unit),
                 options = areaUnitOptions,
@@ -223,7 +252,6 @@ fun UserSettingsScreen(navController: NavHostController) {
                 displayText = { it.displayLabel },
                 modifier = Modifier.fillMaxWidth(),
             )
-            Spacer(Modifier.height(12.dp))
 
             SwitchRow(
                 label = stringResource(R.string.lbl_notify_email),
@@ -240,44 +268,6 @@ fun UserSettingsScreen(navController: NavHostController) {
                 checked = darkMode,
                 onCheckedChange = { darkMode = it },
             )
-
-            Spacer(Modifier.height(16.dp))
-
-            Button(
-                onClick = {
-                    val validEmail = android.util.Patterns.EMAIL_ADDRESS
-                    val validPhone = android.util.Patterns.PHONE
-
-                    if (email.isNotBlank() && !validEmail.matcher(email).matches()) {
-                        emailError = context.getString(R.string.lbl_valid_email_req)
-                        return@Button
-                    }
-                    if (phone.isNotBlank() && !validPhone.matcher(phone).matches()) {
-                        phoneError = context.getString(R.string.lbl_valid_number_req)
-                        return@Button
-                    }
-
-                    val prefs = UserPreferences(
-                        languageCode = selectedLanguage?.valueOption ?: Locales.english.toLanguageTag(),
-                        firstName = firstName.trim().ifBlank { null },
-                        lastName = lastName.trim().ifBlank { null },
-                        email = email.trim().ifBlank { null },
-                        phoneNumber = phone.trim().ifBlank { null },
-                        gender = selectedGender?.valueOption?.ifBlank { null },
-                        country = selectedCountry?.valueOption ?: EnumCountry.Unsupported,
-                        bio = bio.trim().ifBlank { null },
-                        notifyByEmail = notifyEmail,
-                        notifyBySms = notifySms,
-                        preferredAreaUnit = selectedAreaUnit?.valueOption ?: EnumAreaUnit.ACRE,
-                        darkMode = darkMode,
-                    )
-                    viewModel.savePreferences(prefs)
-                },
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(stringResource(R.string.lbl_save))
-            }
         }
     }
 }
-

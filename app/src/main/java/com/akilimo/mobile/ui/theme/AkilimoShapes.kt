@@ -8,11 +8,11 @@ val AkilimoShapes = Shapes(
     // ExtraSmall — chips, compact inputs
     extraSmall = RoundedCornerShape(4.dp),
     // Small — text fields, small cards
-    small = RoundedCornerShape(8.dp),
+    small = RoundedCornerShape(12.dp),
     // Medium — cards (matches ShapeAppearance.Akilimo.Card = 12dp)
-    medium = RoundedCornerShape(12.dp),
+    medium = RoundedCornerShape(20.dp),
     // Large — bottom sheets, dialogs (matches ShapeAppearance.Akilimo.Large = 24dp)
-    large = RoundedCornerShape(24.dp),
+    large = RoundedCornerShape(32.dp),
     // ExtraLarge — dialogs, bottom sheets (matches M3 default 28dp)
-    extraLarge = RoundedCornerShape(28.dp),
+    extraLarge = RoundedCornerShape(40.dp),
 )

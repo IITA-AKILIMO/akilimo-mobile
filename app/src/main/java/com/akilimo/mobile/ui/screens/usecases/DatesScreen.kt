@@ -14,7 +14,10 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -171,11 +174,16 @@ fun DatesScreen(
         ) { DatePicker(state = datePickerState, modifier = Modifier.weight(1f, fill = false)) }
     }
 
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             BackTopAppBar(
                 title = stringResource(R.string.lbl_consider_alternative_planting),
-                onBack = { navController.popBackStack() }
+                collapsedTitle = stringResource(R.string.lbl_dates),
+                scrollBehavior = scrollBehavior,
+                onBack = { navController.popBackStack() },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
