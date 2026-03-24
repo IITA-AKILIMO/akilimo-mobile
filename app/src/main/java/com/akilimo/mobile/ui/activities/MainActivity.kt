@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.remember
+import androidx.appcompat.app.AppCompatActivity
 import com.akilimo.mobile.data.AppSettingsDataStore
 import javax.inject.Inject
 import androidx.compose.ui.platform.LocalContext
@@ -17,7 +17,6 @@ import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
 import com.akilimo.mobile.ui.theme.AkilimoTheme
 import dagger.hilt.android.AndroidEntryPoint
-import dev.b3nedikt.app_locale.AppLocale
 
 /**
  * Single-Activity host for the AKILIMO app.
@@ -31,10 +30,6 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var appSettings: AppSettingsDataStore
-
-    override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(AppLocale.wrap(newBase))
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import androidx.work.Configuration
@@ -22,7 +23,6 @@ import com.akilimo.mobile.data.AppSettingsDataStore
 import com.blongho.country_data.World
 import dagger.hilt.android.HiltAndroidApp
 import com.google.firebase.analytics.FirebaseAnalytics
-import dev.b3nedikt.app_locale.AppLocale
 import javax.inject.Inject
 
 
@@ -120,11 +120,11 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
     }
 
     private fun initLocale() {
-        AppLocale.supportedLocales = Locales.supportedLocales
         val tag = appSettings.getLanguageTagSync()
-        val locale = Locales.supportedLocales.find { it.toLanguageTag() == tag } ?: Locales.english
-        AppLocale.desiredLocale = locale
-        Log.d("Akilimo", "Locale initialized to: $locale")
+        AppCompatDelegate.setApplicationLocales(
+            LocaleListCompat.forLanguageTags(tag)
+        )
+        Log.d("Akilimo", "Locale initialized to: $tag")
     }
 
     private fun initDarkMode() {
