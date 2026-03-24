@@ -1,7 +1,9 @@
 package com.akilimo.mobile.ui.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.akilimo.mobile.R
 import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.dto.OperationEntry
 import com.akilimo.mobile.dto.OperationMethodOption
@@ -22,6 +24,7 @@ import com.akilimo.mobile.repos.SelectedFertilizerRepo
 import com.akilimo.mobile.repos.UserPreferencesRepo
 import com.akilimo.mobile.wizard.OnboardingSection
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,6 +44,7 @@ class OnboardingViewModel @Inject constructor(
     private val selectedFertilizerRepo: SelectedFertilizerRepo,
     private val currentPracticeRepo: CurrentPracticeRepo,
     private val adviceCompletionRepo: AdviceCompletionRepo,
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
     data class UiState(
@@ -289,31 +293,31 @@ class OnboardingViewModel @Inject constructor(
         val errs = mutableMapOf<String, String>()
 
         // BioData
-        if (s.firstName.isBlank()) errs["firstName"] = "First name is required"
-        if (s.lastName.isBlank()) errs["lastName"] = "Last name is required"
-        if (s.gender.isBlank()) errs["gender"] = "Please select a gender"
-        if (s.interest.isBlank()) errs["interest"] = "Please select your interest"
+        if (s.firstName.isBlank()) errs["firstName"] = context.getString(R.string.error_first_name_required)
+        if (s.lastName.isBlank()) errs["lastName"] = context.getString(R.string.error_last_name_required)
+        if (s.gender.isBlank()) errs["gender"] = context.getString(R.string.error_gender_required)
+        if (s.interest.isBlank()) errs["interest"] = context.getString(R.string.error_interest_required)
         if (s.email.isNotBlank() && !android.util.Patterns.EMAIL_ADDRESS.matcher(s.email).matches())
-            errs["email"] = "Please enter a valid email address"
+            errs["email"] = context.getString(R.string.error_email_invalid)
 
         // Country
-        if (s.country == EnumCountry.Unsupported) errs["country"] = "Please select your country"
+        if (s.country == EnumCountry.Unsupported) errs["country"] = context.getString(R.string.error_country_required)
 
         // Area Unit
         if (s.visibleSections.contains(OnboardingSection.AREA_UNIT) && s.farmSize <= 0.0) {
-            errs["farmSize"] = "Please enter a valid farm size"
+            errs["farmSize"] = context.getString(R.string.error_farm_size_invalid)
         }
 
         // Planting Date
-        if (s.plantingDate == null) errs["plantingDate"] = "Please select a planting date"
-        if (s.harvestDate == null) errs["harvestDate"] = "Please select a harvest date"
+        if (s.plantingDate == null) errs["plantingDate"] = context.getString(R.string.error_planting_date_required)
+        if (s.harvestDate == null) errs["harvestDate"] = context.getString(R.string.error_harvest_date_required)
 
         // Tillage
         if (s.weedControlEnabled && s.weedControlMethod == null)
-            errs["weedControl"] = "Please select a weed control method"
+            errs["weedControl"] = context.getString(R.string.error_weed_control_required)
 
         // Investment
-        if (s.investmentPref.riskLevel() < 0) errs["investmentPref"] = "Please select an investment preference"
+        if (s.investmentPref.riskLevel() < 0) errs["investmentPref"] = context.getString(R.string.error_investment_preference_required)
 
         return errs
     }
