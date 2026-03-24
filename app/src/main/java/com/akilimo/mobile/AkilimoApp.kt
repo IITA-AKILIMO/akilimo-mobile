@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
+import dev.b3nedikt.app_locale.AppLocale
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import androidx.work.Configuration
@@ -121,10 +122,13 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
 
     private fun initLocale() {
         val tag = appSettings.getLanguageTagSync()
-        AppCompatDelegate.setApplicationLocales(
-            LocaleListCompat.forLanguageTags(tag)
-        )
-        Log.d("Akilimo", "Locale initialized to: $tag")
+        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(tag))
+        if (appSettings.lockAppLanguage) {
+            AppLocale.supportedLocales = Locales.supportedLocales
+            AppLocale.desiredLocale = Locales.supportedLocales
+                .find { it.toLanguageTag() == tag } ?: Locales.english
+        }
+        Log.d("Akilimo", "Locale initialized to: $tag (locked=${appSettings.lockAppLanguage})")
     }
 
     private fun initDarkMode() {

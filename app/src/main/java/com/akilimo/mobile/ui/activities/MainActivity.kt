@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.akilimo.mobile.data.AppSettingsDataStore
+import dev.b3nedikt.app_locale.AppLocale
 import javax.inject.Inject
 import androidx.compose.ui.platform.LocalContext
 import com.akilimo.mobile.navigation.AkilimoNavHost
@@ -30,6 +31,10 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var appSettings: AppSettingsDataStore
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLocale.wrap(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()

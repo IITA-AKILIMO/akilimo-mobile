@@ -60,6 +60,7 @@ private object Keys {
     val TERMS_LINK = stringPreferencesKey("termsLink")
     val FERTILIZER_GRID = booleanPreferencesKey("isFertilizerGrid")
     val REMEMBER_AREA_UNIT = booleanPreferencesKey("rememberAreaUnit")
+    val LOCK_APP_LANGUAGE = booleanPreferencesKey("lockAppLanguage")
 }
 
 @Singleton
@@ -186,6 +187,10 @@ class AppSettingsDataStore @Inject constructor(
         get() = syncGet(Keys.FERTILIZER_GRID, false)
         set(value) = asyncSet(Keys.FERTILIZER_GRID, value)
 
+    var lockAppLanguage: Boolean
+        get() = syncGet(Keys.LOCK_APP_LANGUAGE, false)
+        set(value) = asyncSet(Keys.LOCK_APP_LANGUAGE, value)
+
     var notificationCount: Int
         get() = syncGet(Keys.NOTIFICATION_COUNT, 3)
         set(value) = asyncSet(Keys.NOTIFICATION_COUNT, value)
@@ -222,5 +227,9 @@ class AppSettingsDataStore @Inject constructor(
 
     suspend fun setDarkMode(enabled: Boolean) {
         dataStore.edit { it[Keys.DARK_MODE] = enabled }
+    }
+
+    suspend fun setLockAppLanguage(locked: Boolean) {
+        dataStore.edit { it[Keys.LOCK_APP_LANGUAGE] = locked }
     }
 }
