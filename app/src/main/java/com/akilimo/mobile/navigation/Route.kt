@@ -76,6 +76,8 @@ data class GetRecommendationRoute(val useCaseCode: String)
 
 // ── Settings ─────────────────────────────────────────────────────────────────
 
+@Serializable
+object SettingsRoute
 
 @Serializable
 data class LocationPickerRoute(val lat: Double = 0.0, val lon: Double = 0.0, val zoom: Double = 12.0)

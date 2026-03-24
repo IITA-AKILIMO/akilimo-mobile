@@ -22,6 +22,7 @@ import com.akilimo.mobile.ui.screens.recommendations.GetRecommendationScreen
 import com.akilimo.mobile.ui.screens.recommendations.RecommendationsScreen
 import com.akilimo.mobile.ui.screens.recommendations.UseCaseScreen
 import com.akilimo.mobile.ui.screens.settings.LocationPickerScreen
+import com.akilimo.mobile.ui.screens.settings.SettingsScreen
 import com.akilimo.mobile.ui.screens.usecases.CassavaMarketScreen
 import com.akilimo.mobile.ui.screens.usecases.CassavaYieldScreen
 import com.akilimo.mobile.ui.screens.usecases.DatesScreen
@@ -209,6 +210,10 @@ fun AkilimoNavHost(
         }
         composable<SweetPotatoMarketRoute> {
             SweetPotatoMarketScreen(navController = navController)
+        }
+
+        composable<SettingsRoute> {
+            SettingsScreen(navController = navController)
         }
 
         composable<LocationPickerRoute> { backStackEntry ->
