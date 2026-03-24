@@ -125,8 +125,7 @@ fun RecommendationsScreen(navController: NavHostController) {
             LazyColumn(
                 state = listState,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .navigationBarsPadding(),
+                    .fillMaxSize(),
             ) {
                 item(key = "hero") {
                     Box(

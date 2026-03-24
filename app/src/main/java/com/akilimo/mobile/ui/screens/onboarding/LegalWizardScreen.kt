@@ -3,6 +3,7 @@ package com.akilimo.mobile.ui.screens.onboarding
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.WindowInsets as LayoutWindowInsets
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -90,9 +91,10 @@ fun LegalWizardScreen(
                     }
                 }
             )
-        }
+        },
+        contentWindowInsets = LayoutWindowInsets(0, 0, 0, 0)
     ) { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues)) {
+        Box(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
             when (currentStepIndex) {
                 0 -> DisclaimerStep(
                     disclaimerRead = state.disclaimerRead,
