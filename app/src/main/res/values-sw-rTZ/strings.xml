@@ -476,7 +476,6 @@
     <string name="hint_search_fertilizers">Tafuta mbolea</string>
     <string name="lbl_sync_failed">Usawazishaji wa api ya mbolea umeshindwa</string>
     <string name="fertilizers_synced">Mbolea %1$d zimesawazishwa</string>
-    <string name="lbl_toggle_layout">Badilisha mpangilio</string>
     <string name="lbl_factories_synced">Viwanda %1$d Vimesawazishwa</string>
     <string name="lbl_loading">Inapakia...</string>
     <string name="lbl_selling_hint">Wakulima walio karibu wanauza karibu {currency} {price} kwa kila {unit_of_sale}. Je, bei yako inaendana?</string>

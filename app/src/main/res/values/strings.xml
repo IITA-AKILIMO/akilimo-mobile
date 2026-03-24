@@ -658,7 +658,6 @@
     <string name="hint_search_fertilizers">Search fertilizers</string>
     <string name="lbl_sync_failed">Fertilizer api sync failed</string>
     <string name="fertilizers_synced">%1$d Fertilizers  synced</string>
-    <string name="lbl_toggle_layout">Toggle layout</string>
     <string name="lbl_factories_synced">%1$d Factories Synced</string>
     <string name="lbl_loading">Loading...</string>
     <string name="lbl_selling_hint">Farmers nearby are selling around {currency} {price} per {unit_of_sale}. Does your price fit in?</string>

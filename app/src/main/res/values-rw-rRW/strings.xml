@@ -476,7 +476,6 @@
     <string name="hint_search_fertilizers">Shaka ifumbire</string>
     <string name="lbl_sync_failed">Guhuza ifumbire na api byananiwe</string>
     <string name="fertilizers_synced">Ifumbire mvaruganda %1$d zahujwe</string>
-    <string name="lbl_toggle_layout">Hindura imiterere</string>
     <string name="lbl_factories_synced">Inganda %1$d zahujwe</string>
     <string name="lbl_loading">Irimo gupakira...</string>
     <string name="lbl_selling_hint">Abahinzi bari hafi aho bagurisha hafi {currency} {price} kuri {unit_of_sale}. Ese igiciro cyawe kirahuye?</string>
