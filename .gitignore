@@ -15,3 +15,5 @@ sentry-wizard.exe
 langtool.jar
 translations.xls*
 .claude
+.junie
+.output.txt

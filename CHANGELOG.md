@@ -7,10 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Documentation
+### Added
 
-- Docs: update changelog
+- **Full Jetpack Compose Migration**: Eliminated all legacy XML layouts and View-based Fragments/Activities in favor of a 100% Compose-driven UI.
+- **Material 3 Redesign**: Complete application overhaul using Material 3 design system, featuring custom themes, typography, and Jetsnack-inspired UI patterns.
+- **Hilt Dependency Injection**: Introduced Hilt (Dagger 2.57.1) for modern dependency injection across all ViewModels, repositories, and activities.
+- **Single-Activity Architecture**: Migrated to a single-Activity host (`MainActivity`) using Jetpack Compose Navigation with type-safe `@Serializable` routes.
+- **Preferences DataStore**: Replaced all legacy `SharedPreferences` with `androidx.datastore:datastore-preferences`, providing a reactive, `Flow`-based single source of truth for app settings.
+- **Proper Room Migrations**: Replaced `fallbackToDestructiveMigration()` with manual, safe SQL migrations and bumped database versioning to preserve user data during schema changes.
+- **Native Locale APIs**: Replaced third-party libraries (`AppLocale`, `Reword`) with native `AppCompatDelegate.setApplicationLocales()` and Compose `stringResource`.
+- **Enhanced Edge-to-Edge**: Implemented modern `enableEdgeToEdge()` with proper `navigationBarsPadding` and `contentWindowInsets` handling across all screens.
 
+### Changed
+
+- **Onboarding Redesign**: Replaced the legacy step-based wizard with a modern, single-scrollable form UX in the onboarding flow.
+- **ViewModel Standardization**: Every screen now uses an `@HiltViewModel` exposing a single `StateFlow<UiState>` and a `Flow<Effect>` for one-shot side effects.
+- **Repository Pattern**: Standardized all data access through the repository layer, removing direct DAO calls from UI components.
+- **Navigation Flow**: Standardized navigation to pass only primitive IDs in routes, with ViewModels loading full entities from repositories.
+
+### Removed
+
+- **Legacy Libraries**: Removed `material-stepper`, `reword`, `app-locale`, `viewpump`, `ProcessPhoenix`, and `country-code-picker`.
+- **Legacy Components**: Deleted all XML layouts, ViewBinding-generated classes, and legacy `BaseFragment`/`BaseStepFragment`.
+- **Redundant Navigation**: Removed XML-based NavGraphs (`nav_graph.xml`, `nav_recommendations.xml`).
 
 ## [30.0.1] - 2026-03-04
 
