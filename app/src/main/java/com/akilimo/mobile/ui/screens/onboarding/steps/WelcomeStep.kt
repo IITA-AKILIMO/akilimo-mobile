@@ -29,7 +29,7 @@ fun WelcomeStep(
     val locales = Locales.supportedLocales
     val selectedLocale = locales.find { it.toLanguageTag() == languageCode } ?: Locales.english
 
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(modifier = modifier) {
         BrandHeader(
             title = stringResource(R.string.welcome_title),
             subtitle = stringResource(R.string.welcome_subtitle),
@@ -37,8 +37,6 @@ fun WelcomeStep(
 
         Column(
             modifier = Modifier
-                .weight(1f)
-                .verticalScroll(rememberScrollState())
                 .padding(AkilimoSpacing.md),
             verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.md),
         ) {

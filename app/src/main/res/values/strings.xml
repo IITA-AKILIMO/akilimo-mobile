@@ -738,4 +738,8 @@
     <string name="lbl_settings_saved">Settings saved successfully</string>
     <string name="lbl_select_language">Select language</string>
     <string name="lbl_select_area_unit">Select area unit</string>
+    <string name="lbl_initial_onboarding">Initial Onboarding</string>
+    <string name="lbl_complete_onboarding">Complete Onboarding</string>
+    <string name="lbl_disclaimer_agreement_required">Please read and agree to the disclaimer</string>
+    <string name="lbl_terms_agreement_required">Please read and accept the terms and conditions</string>
 </resources>

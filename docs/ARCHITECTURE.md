@@ -213,7 +213,7 @@ MainActivity (single-Activity host, launcher)
        ├─ RecommendationsRoute → RecommendationsScreen
        │    ├─ FrRoute, BppRoute, SphRoute, IcMaizeRoute, IcSweetPotatoRoute
        │    └─ use-case routes: fertilizers, dates, market, yield, tillage, …
-       └─ UserSettingsRoute → UserSettingsScreen
+       └─ OnboardingRoute → OnboardingScreen (combined with settings)
 ```
 
 See `docs/COMPOSE_MIGRATION.md §6` for route definitions and `§7` for the phased plan.

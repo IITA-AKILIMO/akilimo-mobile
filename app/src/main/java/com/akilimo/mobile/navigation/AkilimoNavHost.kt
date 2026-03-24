@@ -1,5 +1,13 @@
 package com.akilimo.mobile.navigation
 
+import com.akilimo.mobile.data.AppSettingsEntryPoint
+import com.akilimo.mobile.ui.screens.onboarding.LegalWizardScreen
+import OnboardingScreen
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -10,12 +18,10 @@ import androidx.navigation.toRoute
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumFertilizerFlow
 import com.akilimo.mobile.enums.EnumUseCase
-import com.akilimo.mobile.ui.screens.onboarding.OnboardingScreen
 import com.akilimo.mobile.ui.screens.recommendations.GetRecommendationScreen
 import com.akilimo.mobile.ui.screens.recommendations.RecommendationsScreen
 import com.akilimo.mobile.ui.screens.recommendations.UseCaseScreen
 import com.akilimo.mobile.ui.screens.settings.LocationPickerScreen
-import com.akilimo.mobile.ui.screens.settings.UserSettingsScreen
 import com.akilimo.mobile.ui.screens.usecases.CassavaMarketScreen
 import com.akilimo.mobile.ui.screens.usecases.CassavaYieldScreen
 import com.akilimo.mobile.ui.screens.usecases.DatesScreen
@@ -42,14 +48,28 @@ fun AkilimoNavHost(
     navController: NavHostController = rememberNavController(),
     startDestination: Any = OnboardingRoute,
 ) {
+    val context = LocalContext.current
+    val appSettings = remember {
+        EntryPointAccessors.fromApplication(context, AppSettingsEntryPoint::class.java)
+            .appSettings()
+    }
+
     NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier,
     ) {
         // ── Phase 2: Onboarding ───────────────────────────────────────────────
+        composable<LegalWizardRoute> {
+            LegalWizardScreen(
+                navController = navController,
+            )
+        }
         composable<OnboardingRoute> {
-            OnboardingScreen(navController = navController)
+            OnboardingScreen(
+                navController = navController,
+                appSettings = appSettings,
+            )
         }
 
         // ── Phase 3: Recommendations list ─────────────────────────────────────
@@ -191,10 +211,6 @@ fun AkilimoNavHost(
             SweetPotatoMarketScreen(navController = navController)
         }
 
-        // ── Phase 4: Settings ─────────────────────────────────────────────────
-        composable<UserSettingsRoute> {
-            UserSettingsScreen(navController = navController)
-        }
         composable<LocationPickerRoute> { backStackEntry ->
             val route = backStackEntry.toRoute<LocationPickerRoute>()
             LocationPickerScreen(route = route, navController = navController)

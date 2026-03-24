@@ -41,9 +41,7 @@ fun SummaryStep(
     val context = LocalContext.current
 
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+        modifier = modifier,
     ) {
         // Completion header — full-width, no horizontal padding
         Surface(
