@@ -84,6 +84,8 @@
     <string name="msg_clear_recommendations_confirm">This will reset all completed recommendation tasks. This action cannot be undone.</string>
     <string name="msg_recommendations_cleared">Recommendation history cleared</string>
     <string name="msg_reset_badge_confirm">Reset the notification badge count to its default value?</string>
+    <string name="msg_feedback_submit_success">Thank you for your feedback!</string>
+    <string name="msg_feedback_submit_failure">Failed to submit feedback</string>
 
     <!-- ═══════════════════════════════════════════════
          LOCATION &amp; FIELD
@@ -268,6 +270,8 @@
     <string name="lbl_market_outlet_sweet_potato">What price do you expect to sell your sweet potatoes at  harvest</string>
     <string name="lbl_unit_price">Unit price</string>
     <string name="lbl_exact_price">Exact price</string>
+    <string name="lbl_weather_summary">%1$d° - %2$s</string>
+    <string name="lbl_weather_feels_like">Feels like %1$d°C - %2$d%% humidity</string>
     <!-- Sale units -->
     <string name="per_tonne_sale_unit">Per tonne</string>
     <string name="per_kg_sale_unit">Per kg</string>
@@ -296,6 +300,17 @@
     <string name="lbl_scheduled_planting_rec">Scheduled Planting</string>
     <string name="lbl_no_recommendations_prompt">No recommendations, provide more information to help us get better predictions</string>
     <string name="error_fetch_recommendation">Failed to fetch recommendation</string>
+    <string name="error_first_name_required">First name is required</string>
+    <string name="error_last_name_required">Last name is required</string>
+    <string name="error_gender_required">Please select a gender</string>
+    <string name="error_interest_required">Please select your interest</string>
+    <string name="error_email_invalid">Please enter a valid email address</string>
+    <string name="error_country_required">Please select your country</string>
+    <string name="error_farm_size_invalid">Please enter a valid farm size</string>
+    <string name="error_planting_date_required">Please select a planting date</string>
+    <string name="error_harvest_date_required">Please select a harvest date</string>
+    <string name="error_weed_control_required">Please select a weed control method</string>
+    <string name="error_investment_preference_required">Please select an investment preference</string>
 
     <!-- ═══════════════════════════════════════════════
          FEEDBACK
@@ -315,5 +330,27 @@
     <string name="lbl_remember_pref">Remember my preference and skip next time</string>
     <string name="lbl_confirm_app_exit">Are you sure you want to exit?</string>
     <string name="lbl_exit_application">Exit Application</string>
+
+    <!-- ═══════════════════════════════════════════════
+         FEEDBACK &amp; RATINGS
+         ═══════════════════════════════════════════════ -->
+    <string name="lbl_feedback">Feedback</string>
+    <string name="lbl_how_satisfied">How satisfied are you?</string>
+    <string name="lbl_nps_prompt">How likely are you to recommend us? (0-10)</string>
+    <string name="lbl_submit_feedback">Submit Feedback</string>
+    <string name="lbl_retry">Retry</string>
+    <string name="msg_items_processed">%1$d items processed</string>
+    <string name="msg_operation_failed">Operation failed</string>
+    <string name="msg_operation_failed_with_code">Operation failed (Code: %1$s)</string>
+
+    <!-- ═══════════════════════════════════════════════
+         MISC UI
+         ═══════════════════════════════════════════════ -->
+    <string name="lbl_selected">Selected</string>
+    <string name="lbl_maize_perf_50">50</string>
+    <string name="lbl_maize_perf_150">150</string>
+    <string name="lbl_maize_perf_yellow">yellow</string>
+    <string name="lbl_maize_perf_green">green</string>
+    <string name="lbl_maize_perf_dark_green">dark green</string>
 
 </resources>
