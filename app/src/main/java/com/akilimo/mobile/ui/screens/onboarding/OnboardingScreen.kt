@@ -1,24 +1,20 @@
-package com.akilimo.mobile.ui.screens.onboarding
-
 import android.app.Activity
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -31,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -40,21 +37,21 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.navigation.RecommendationsRoute
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.ExitConfirmDialog
-import com.akilimo.mobile.ui.components.compose.WizardBottomBar
+import com.akilimo.mobile.ui.components.compose.SaveBottomBar
 import com.akilimo.mobile.ui.screens.onboarding.steps.AreaUnitStep
 import com.akilimo.mobile.ui.screens.onboarding.steps.BioDataStep
 import com.akilimo.mobile.ui.screens.onboarding.steps.CountryStep
-import com.akilimo.mobile.ui.screens.onboarding.steps.DisclaimerStep
 import com.akilimo.mobile.ui.screens.onboarding.steps.InvestmentPrefStep
 import com.akilimo.mobile.ui.screens.onboarding.steps.LocationStep
 import com.akilimo.mobile.ui.screens.onboarding.steps.PlantingDateStep
 import com.akilimo.mobile.ui.screens.onboarding.steps.SummaryStep
-import com.akilimo.mobile.ui.screens.onboarding.steps.TermsStep
 import com.akilimo.mobile.ui.screens.onboarding.steps.TillageStep
 import com.akilimo.mobile.ui.screens.onboarding.steps.WelcomeStep
 import com.akilimo.mobile.ui.screens.settings.LocationResult
 import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
-import com.akilimo.mobile.wizard.OnboardingStep
+import androidx.compose.material.icons.filled.ArrowBack
+import com.akilimo.mobile.data.AppSettingsDataStore
+import com.akilimo.mobile.wizard.OnboardingSection
 import dev.b3nedikt.app_locale.AppLocale
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.system.exitProcess
@@ -64,39 +61,46 @@ import kotlin.system.exitProcess
 fun OnboardingScreen(
     navController: NavHostController,
     viewModel: OnboardingViewModel = hiltViewModel(),
+    appSettings: AppSettingsDataStore,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var showExitDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val scrollState = rememberScrollState()
 
-    val stepProgress by animateFloatAsState(
-        targetValue = if (state.visibleSteps.isNotEmpty())
-            (state.currentStepIndex + 1f) / state.visibleSteps.size
-        else 0f,
-        animationSpec = tween(durationMillis = 300),
-        label = "OnboardingProgress",
-    )
+    val isEditMode = remember { !appSettings.isFirstRun }
 
     // Collect one-shot effects
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 is OnboardingViewModel.Effect.NavigateToRecommendations ->
-                    navController.navigate(RecommendationsRoute) {
-                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                    if (isEditMode) {
+                        navController.popBackStack()
+                    } else {
+                        navController.navigate(RecommendationsRoute) {
+                            popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        }
                     }
                 is OnboardingViewModel.Effect.ExitApp -> showExitDialog = true
                 is OnboardingViewModel.Effect.LanguageChangeRequested -> {
-                    val locale = Locales.supportedLocales
-                        .find { it.toLanguageTag() == effect.languageTag }
-                        ?: Locales.english
-                    AppLocale.desiredLocale = locale
                     AppCompatDelegate.setApplicationLocales(
                         LocaleListCompat.forLanguageTags(effect.languageTag),
                     )
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
                         (context as? Activity)?.recreate()
                     }
+                }
+                is OnboardingViewModel.Effect.LockAppLanguageChanged -> {
+                    if (effect.locked) {
+                        AppLocale.supportedLocales = Locales.supportedLocales
+                        AppLocale.desiredLocale = Locales.supportedLocales
+                            .find { it.toLanguageTag() == effect.languageTag } ?: Locales.english
+                    } else {
+                        // Reset to system default so AppLocale.wrap becomes a pass-through
+                        AppLocale.desiredLocale = java.util.Locale.getDefault()
+                    }
+                    (context as? Activity)?.recreate()
                 }
                 else -> Unit
             }
@@ -119,7 +123,11 @@ fun OnboardingScreen(
     }
 
     BackHandler {
-        viewModel.onEvent(OnboardingViewModel.Event.BackClicked)
+        if (isEditMode) {
+            navController.popBackStack()
+        } else {
+            viewModel.onEvent(OnboardingViewModel.Event.BackClicked)
+        }
     }
 
     if (showExitDialog) {
@@ -135,7 +143,7 @@ fun OnboardingScreen(
     }
 
     if (state.isLoading) {
-        androidx.compose.foundation.layout.Box(
+        Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
@@ -146,82 +154,82 @@ fun OnboardingScreen(
 
     Scaffold(
         topBar = {
-            if (state.currentStep != OnboardingStep.WELCOME) {
-                Column {
-                    BackTopAppBar(
-                        title = stepTitle(state.currentStep),
-                        onBack = { viewModel.onEvent(OnboardingViewModel.Event.BackClicked) },
-                    )
-                    LinearProgressIndicator(
-                        progress = { stepProgress },
-                        modifier = Modifier.fillMaxWidth(),
-                        color = MaterialTheme.colorScheme.primary,
-                        trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                    )
+            BackTopAppBar(
+                title = if (isEditMode) {
+                    stringResource(R.string.lbl_settings)
+                } else {
+                    stringResource(R.string.lbl_initial_onboarding)
+                },
+                onBack = {
+                    if (isEditMode) {
+                        navController.popBackStack()
+                    } else {
+                        viewModel.onEvent(OnboardingViewModel.Event.BackClicked)
+                    }
                 }
-            }
+            )
         },
         bottomBar = {
-            WizardBottomBar(
-                currentStep = state.currentStepIndex,
-                totalSteps = state.visibleSteps.size,
-                isFirstStep = state.isFirstStep,
-                isLastStep = state.isLastStep,
-                onBack = { viewModel.onEvent(OnboardingViewModel.Event.BackClicked) },
-                onNext = { viewModel.onEvent(OnboardingViewModel.Event.NextClicked) },
+            SaveBottomBar(
+                label = if (isEditMode) {
+                    stringResource(R.string.lbl_save)
+                } else {
+                    stringResource(R.string.lbl_complete_onboarding)
+                },
+                onClick = { viewModel.onEvent(OnboardingViewModel.Event.SubmitClicked) },
             )
         },
     ) { paddingValues ->
-        AnimatedContent(
-            targetState = state.currentStep,
-            transitionSpec = {
-                slideInHorizontally { it } + fadeIn() togetherWith slideOutHorizontally { -it } + fadeOut()
-            },
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
-            label = "WizardStep",
-        ) { step ->
-            when (step) {
-                OnboardingStep.WELCOME -> WelcomeStep(
-                    languageCode = state.languageCode,
-                    onEvent = viewModel::onEvent,
-                )
-                OnboardingStep.DISCLAIMER -> DisclaimerStep(
-                    disclaimerRead = state.disclaimerRead,
-                    error = state.errors["disclaimer"],
-                    onEvent = viewModel::onEvent,
-                )
-                OnboardingStep.TERMS -> TermsStep(
-                    termsAccepted = state.termsAccepted,
-                    termsUrl = state.termsUrl,
-                    error = state.errors["terms"],
-                    onEvent = viewModel::onEvent,
-                )
-                OnboardingStep.BIO_DATA -> BioDataStep(
-                    firstName = state.firstName,
-                    lastName = state.lastName,
-                    email = state.email,
-                    phone = state.phone,
-                    gender = state.gender,
-                    interest = state.interest,
-                    errors = state.errors,
-                    onEvent = viewModel::onEvent,
-                )
-                OnboardingStep.COUNTRY -> CountryStep(
-                    country = state.country,
-                    error = state.errors["country"],
-                    onEvent = viewModel::onEvent,
-                )
-                OnboardingStep.LOCATION -> LocationStep(
-                    latitude = state.latitude,
-                    longitude = state.longitude,
-                    altitude = state.altitude,
-                    zoomLevel = state.zoomLevel,
-                    onEvent = viewModel::onEvent,
-                    navController = navController,
-                )
-                OnboardingStep.AREA_UNIT -> AreaUnitStep(
+                .padding(paddingValues)
+                .verticalScroll(scrollState),
+        ) {
+            // Welcome Section
+            WelcomeStep(
+                languageCode = state.languageCode,
+                lockAppLanguage = state.lockAppLanguage,
+                onEvent = viewModel::onEvent,
+            )
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+            // Bio Data Section
+            BioDataStep(
+                firstName = state.firstName,
+                lastName = state.lastName,
+                email = state.email,
+                phone = state.phone,
+                gender = state.gender,
+                interest = state.interest,
+                errors = state.errors,
+                onEvent = viewModel::onEvent,
+            )
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+            // Country & Location
+            CountryStep(
+                country = state.country,
+                error = state.errors["country"],
+                onEvent = viewModel::onEvent,
+            )
+
+            LocationStep(
+                latitude = state.latitude,
+                longitude = state.longitude,
+                altitude = state.altitude,
+                zoomLevel = state.zoomLevel,
+                onEvent = viewModel::onEvent,
+                navController = navController,
+            )
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+            // Field details
+            AnimatedVisibility(visible = state.visibleSections.contains(OnboardingSection.AREA_UNIT)) {
+                AreaUnitStep(
                     areaUnit = state.areaUnit,
                     farmSize = state.farmSize,
                     customFarmSize = state.customFarmSize,
@@ -230,46 +238,57 @@ fun OnboardingScreen(
                     errors = state.errors,
                     onEvent = viewModel::onEvent,
                 )
-                OnboardingStep.PLANTING_DATE -> PlantingDateStep(
-                    plantingDate = state.plantingDate,
-                    harvestDate = state.harvestDate,
-                    plantingFlex = state.plantingFlex,
-                    harvestFlex = state.harvestFlex,
-                    showFlexOptions = state.showFlexOptions,
-                    errors = state.errors,
-                    onEvent = viewModel::onEvent,
-                )
-                OnboardingStep.TILLAGE -> TillageStep(
-                    tillageOperations = state.tillageOperations,
-                    weedControlEnabled = state.weedControlEnabled,
-                    weedControlMethod = state.weedControlMethod,
-                    errors = state.errors,
-                    onEvent = viewModel::onEvent,
-                )
-                OnboardingStep.INVESTMENT_PREF -> InvestmentPrefStep(
-                    investmentPref = state.investmentPref,
-                    error = state.errors["investmentPref"],
-                    onEvent = viewModel::onEvent,
-                )
-                OnboardingStep.SUMMARY -> SummaryStep(state = state)
             }
+
+            PlantingDateStep(
+                plantingDate = state.plantingDate,
+                harvestDate = state.harvestDate,
+                plantingFlex = state.plantingFlex,
+                harvestFlex = state.harvestFlex,
+                showFlexOptions = state.showFlexOptions,
+                errors = state.errors,
+                onEvent = viewModel::onEvent,
+            )
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+            // Tillage & Investment
+            TillageStep(
+                tillageOperations = state.tillageOperations,
+                weedControlEnabled = state.weedControlEnabled,
+                weedControlMethod = state.weedControlMethod,
+                errors = state.errors,
+                onEvent = viewModel::onEvent,
+            )
+
+            InvestmentPrefStep(
+                investmentPref = state.investmentPref,
+                error = state.errors["investmentPref"],
+                onEvent = viewModel::onEvent,
+            )
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+            SummaryStep(state = state)
+
+            Spacer(Modifier.height(32.dp))
         }
     }
 }
 
 @Composable
-private fun stepTitle(step: OnboardingStep): String = stringResource(
+private fun stepTitle(step: OnboardingSection): String = stringResource(
     when (step) {
-        OnboardingStep.WELCOME -> R.string.welcome_title
-        OnboardingStep.DISCLAIMER -> R.string.lbl_disclaimer
-        OnboardingStep.TERMS -> R.string.lbl_terms
-        OnboardingStep.BIO_DATA -> R.string.lbl_self_intro
-        OnboardingStep.COUNTRY -> R.string.lbl_country
-        OnboardingStep.LOCATION -> R.string.lbl_location
-        OnboardingStep.AREA_UNIT -> R.string.lbl_field
-        OnboardingStep.PLANTING_DATE -> R.string.lbl_planting_harvest_dates
-        OnboardingStep.TILLAGE -> R.string.lbl_tillage_operation
-        OnboardingStep.INVESTMENT_PREF -> R.string.lbl_investment_pref_prompt
-        OnboardingStep.SUMMARY -> R.string.lbl_summary_title
+        OnboardingSection.WELCOME -> R.string.welcome_title
+        OnboardingSection.DISCLAIMER -> R.string.lbl_disclaimer
+        OnboardingSection.TERMS -> R.string.lbl_terms
+        OnboardingSection.BIO_DATA -> R.string.lbl_self_intro
+        OnboardingSection.COUNTRY -> R.string.lbl_country
+        OnboardingSection.LOCATION -> R.string.lbl_location
+        OnboardingSection.AREA_UNIT -> R.string.lbl_field
+        OnboardingSection.PLANTING_DATE -> R.string.lbl_planting_harvest_dates
+        OnboardingSection.TILLAGE -> R.string.lbl_tillage_operation
+        OnboardingSection.INVESTMENT_PREF -> R.string.lbl_investment_pref_prompt
+        OnboardingSection.SUMMARY -> R.string.lbl_summary_title
     }
 )

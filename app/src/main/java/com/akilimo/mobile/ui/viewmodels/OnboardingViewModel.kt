@@ -21,7 +21,7 @@ import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.CurrentPracticeRepo
 import com.akilimo.mobile.repos.SelectedFertilizerRepo
 import com.akilimo.mobile.repos.UserPreferencesRepo
-import com.akilimo.mobile.wizard.OnboardingStep
+import com.akilimo.mobile.wizard.OnboardingSection
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -46,10 +46,10 @@ class OnboardingViewModel @Inject constructor(
 
     data class UiState(
         val isLoading: Boolean = true,
-        val visibleSteps: List<OnboardingStep> = emptyList(),
-        val currentStepIndex: Int = 0,
+        val visibleSections: List<OnboardingSection> = emptyList(),
         // Welcome
         val languageCode: String = Locales.english.toLanguageTag(),
+        val lockAppLanguage: Boolean = false,
         // Disclaimer
         val disclaimerRead: Boolean = false,
         // Terms
@@ -88,16 +88,12 @@ class OnboardingViewModel @Inject constructor(
         val investmentPref: EnumInvestmentPref = EnumInvestmentPref.Prompt,
         // Errors keyed by field name
         val errors: Map<String, String> = emptyMap(),
-    ) {
-        val currentStep: OnboardingStep
-            get() = visibleSteps.getOrElse(currentStepIndex) { OnboardingStep.WELCOME }
-        val isLastStep: Boolean get() = currentStepIndex == visibleSteps.lastIndex
-        val isFirstStep: Boolean get() = currentStepIndex == 0
-    }
+    )
 
     sealed interface Event {
         // Welcome
         data class LanguageSelected(val code: String) : Event
+        data class LockAppLanguageToggled(val locked: Boolean) : Event
         // Disclaimer
         data class DisclaimerChecked(val checked: Boolean) : Event
         // Terms
@@ -130,9 +126,11 @@ class OnboardingViewModel @Inject constructor(
         data class WeedControlMethodSelected(val method: EnumWeedControlMethod) : Event
         // Investment
         data class InvestmentPrefSelected(val pref: EnumInvestmentPref) : Event
-        // Navigation
-        data object NextClicked : Event
-        data object BackClicked : Event
+
+        data class ShowError(val field: String, val message: String) : Event
+
+        object SubmitClicked : Event
+        object BackClicked : Event
         // Field error clear
         data class ClearError(val field: String) : Event
     }
@@ -142,6 +140,7 @@ class OnboardingViewModel @Inject constructor(
         data object ExitApp : Effect
         data class ShowSnackbar(val message: String) : Effect
         data class LanguageChangeRequested(val languageTag: String) : Effect
+        data class LockAppLanguageChanged(val locked: Boolean, val languageTag: String) : Effect
     }
 
     private val _state = MutableStateFlow(UiState())
@@ -164,26 +163,26 @@ class OnboardingViewModel @Inject constructor(
             val rememberAreaUnit = appSettings.rememberAreaUnit
             val termsUrl = appSettings.termsLink
             val languageCode = appSettings.languageTag
+            val lockAppLanguage = appSettings.lockAppLanguage
 
             val visibleSteps = buildList {
-                add(OnboardingStep.WELCOME)
-                if (!disclaimerRead) add(OnboardingStep.DISCLAIMER)
-                if (!termsAccepted) add(OnboardingStep.TERMS)
-                add(OnboardingStep.BIO_DATA)
-                add(OnboardingStep.COUNTRY)
-                add(OnboardingStep.LOCATION)
-                if (!rememberAreaUnit) add(OnboardingStep.AREA_UNIT)
-                add(OnboardingStep.PLANTING_DATE)
-                add(OnboardingStep.TILLAGE)
-                add(OnboardingStep.INVESTMENT_PREF)
-                add(OnboardingStep.SUMMARY)
+                add(OnboardingSection.WELCOME)
+                add(OnboardingSection.BIO_DATA)
+                add(OnboardingSection.COUNTRY)
+                add(OnboardingSection.LOCATION)
+                if (!rememberAreaUnit) add(OnboardingSection.AREA_UNIT)
+                add(OnboardingSection.PLANTING_DATE)
+                add(OnboardingSection.TILLAGE)
+                add(OnboardingSection.INVESTMENT_PREF)
+                add(OnboardingSection.SUMMARY)
             }
 
             _state.update { s ->
                 s.copy(
                     isLoading = false,
-                    visibleSteps = visibleSteps,
+                    visibleSections = visibleSteps,
                     languageCode = languageCode,
+                    lockAppLanguage = lockAppLanguage,
                     disclaimerRead = disclaimerRead,
                     termsAccepted = termsAccepted,
                     rememberAreaUnit = rememberAreaUnit,
@@ -231,6 +230,13 @@ class OnboardingViewModel @Inject constructor(
                     prefsRepo.save(currentPrefs.copy(languageCode = event.code))
                     appSettings.setLanguageTag(event.code)
                     _effect.send(Effect.LanguageChangeRequested(event.code))
+                }
+            }
+            is Event.LockAppLanguageToggled -> {
+                _state.update { it.copy(lockAppLanguage = event.locked) }
+                viewModelScope.launch {
+                    appSettings.setLockAppLanguage(event.locked)
+                    _effect.send(Effect.LockAppLanguageChanged(event.locked, _state.value.languageCode))
                 }
             }
             is Event.DisclaimerChecked -> {
@@ -286,186 +292,136 @@ class OnboardingViewModel @Inject constructor(
             is Event.WeedControlToggled -> _state.update { it.copy(weedControlEnabled = event.enabled, weedControlMethod = if (!event.enabled) null else it.weedControlMethod) }
             is Event.WeedControlMethodSelected -> _state.update { it.copy(weedControlMethod = event.method, errors = it.errors - "weedControl") }
             is Event.InvestmentPrefSelected -> _state.update { it.copy(investmentPref = event.pref, errors = it.errors - "investmentPref") }
-            is Event.NextClicked -> handleNext()
+            is Event.ShowError -> _state.update { it.copy(errors = it.errors + (event.field to event.message)) }
+            is Event.SubmitClicked -> handleSubmit()
             is Event.BackClicked -> handleBack()
             is Event.ClearError -> _state.update { it.copy(errors = it.errors - event.field) }
         }
     }
 
     private fun handleBack() {
-        val s = _state.value
-        if (s.currentStepIndex > 0) {
-            _state.update { it.copy(currentStepIndex = it.currentStepIndex - 1, errors = emptyMap()) }
-        } else {
-            viewModelScope.launch { _effect.send(Effect.ExitApp) }
-        }
+        viewModelScope.launch { _effect.send(Effect.ExitApp) }
     }
 
-    private fun handleNext() {
-        val errors = validateCurrentStep()
+    private fun handleSubmit() {
+        val errors = validateAll()
         if (errors.isNotEmpty()) {
             _state.update { it.copy(errors = errors) }
             return
         }
         val s = _state.value
-        // Persist current step's data to DB
-        persistCurrentStep(s)
-        if (s.isLastStep) {
-            viewModelScope.launch { _effect.send(Effect.NavigateToRecommendations) }
-        } else {
-            _state.update { it.copy(currentStepIndex = it.currentStepIndex + 1, errors = emptyMap()) }
-        }
-    }
-
-    private fun validateCurrentStep(): Map<String, String> {
-        val s = _state.value
-        return when (s.currentStep) {
-            OnboardingStep.DISCLAIMER -> {
-                if (!s.disclaimerRead) mapOf("disclaimer" to "You must agree to the disclaimer to continue")
-                else emptyMap()
-            }
-            OnboardingStep.TERMS -> {
-                if (!s.termsAccepted) mapOf("terms" to "You must accept the terms and conditions to continue")
-                else emptyMap()
-            }
-            OnboardingStep.BIO_DATA -> {
-                val errs = mutableMapOf<String, String>()
-                if (s.firstName.isBlank()) errs["firstName"] = "First name is required"
-                if (s.lastName.isBlank()) errs["lastName"] = "Last name is required"
-                if (s.gender.isBlank()) errs["gender"] = "Please select a gender"
-                if (s.interest.isBlank()) errs["interest"] = "Please select your interest"
-                if (s.email.isNotBlank() && !android.util.Patterns.EMAIL_ADDRESS.matcher(s.email).matches())
-                    errs["email"] = "Please enter a valid email address"
-                errs
-            }
-            OnboardingStep.COUNTRY -> {
-                if (s.country == EnumCountry.Unsupported) mapOf("country" to "Please select your country")
-                else emptyMap()
-            }
-            OnboardingStep.AREA_UNIT -> {
-                val errs = mutableMapOf<String, String>()
-                if (s.farmSize <= 0.0) errs["farmSize"] = "Please enter a valid farm size"
-                errs
-            }
-            OnboardingStep.PLANTING_DATE -> {
-                val errs = mutableMapOf<String, String>()
-                if (s.plantingDate == null) errs["plantingDate"] = "Please select a planting date"
-                if (s.harvestDate == null) errs["harvestDate"] = "Please select a harvest date"
-                errs
-            }
-            OnboardingStep.TILLAGE -> {
-                if (s.weedControlEnabled && s.weedControlMethod == null)
-                    mapOf("weedControl" to "Please select a weed control method")
-                else emptyMap()
-            }
-            OnboardingStep.INVESTMENT_PREF -> {
-                if (s.investmentPref.riskLevel() < 0) mapOf("investmentPref" to "Please select an investment preference")
-                else emptyMap()
-            }
-            else -> emptyMap()
-        }
-    }
-
-    private fun persistCurrentStep(s: UiState) {
         viewModelScope.launch {
-            val userName = appSettings.akilimoUser
-            when (s.currentStep) {
-                OnboardingStep.BIO_DATA -> {
-                    val user = userRepo.getUser(userName) ?: AkilimoUser(userName = userName)
-                    userRepo.saveOrUpdateUser(
-                        user.copy(
-                            firstName = s.firstName,
-                            lastName = s.lastName,
-                            email = s.email.ifBlank { null },
-                            mobileNumber = s.phone.ifBlank { null },
-                            gender = s.gender,
-                            akilimoInterest = s.interest,
-                            deviceToken = appSettings.deviceToken,
-                        ),
-                        userName,
-                    )
-                }
-                OnboardingStep.COUNTRY -> {
-                    val user = userRepo.getUser(userName) ?: AkilimoUser(userName = userName)
-                    val countryChanged = user.enumCountry != s.country
-                    userRepo.saveOrUpdateUser(user.copy(enumCountry = s.country), userName)
-                    if (countryChanged) {
-                        user.id?.let { selectedFertilizerRepo.deleteByUserId(it) }
-                    }
-                }
-                OnboardingStep.LOCATION -> {
-                    val user = userRepo.getUser(userName) ?: AkilimoUser(userName = userName)
-                    userRepo.saveOrUpdateUser(
-                        user.copy(
-                            latitude = s.latitude,
-                            longitude = s.longitude,
-                            zoomLevel = s.zoomLevel,
-                            altitude = s.altitude,
-                        ),
-                        userName,
-                    )
-                }
-                OnboardingStep.AREA_UNIT -> {
-                    val user = userRepo.getUser(userName) ?: AkilimoUser(userName = userName)
-                    userRepo.saveOrUpdateUser(
-                        user.copy(enumAreaUnit = s.areaUnit, farmSize = s.farmSize, customFarmSize = s.customFarmSize),
-                        userName,
-                    )
-                }
-                OnboardingStep.PLANTING_DATE -> {
-                    val user = userRepo.getUser(userName) ?: AkilimoUser(userName = userName)
-                    userRepo.saveOrUpdateUser(
-                        user.copy(
-                            plantingDate = s.plantingDate,
-                            harvestDate = s.harvestDate,
-                            plantingFlex = s.plantingFlex,
-                            harvestFlex = s.harvestFlex,
-                        ),
-                        userName,
-                    )
-                }
-                OnboardingStep.TILLAGE -> {
-                    val user = userRepo.getUser(userName) ?: AkilimoUser(userName = userName)
-                    val ops = s.tillageOperations.entries.map { (type, method) ->
-                        OperationEntry(
-                            OperationTypeOption(type.name, type),
-                            OperationMethodOption(method.name, method),
-                        )
-                    }
-                    val weedMethod = if (s.weedControlEnabled) s.weedControlMethod else null
-                    userRepo.saveOrUpdateUser(user.copy(tillageOperations = ops, weedControlMethod = weedMethod), userName)
-                    user.id?.let { uid ->
-                        val existing = currentPracticeRepo.getPracticeForUser(uid)
-                        val ploughing = s.tillageOperations[EnumOperationType.PLOUGHING]
-                        val ridging = s.tillageOperations[EnumOperationType.RIDGING]
-                        val updated = existing?.copy(
-                            performPloughing = ploughing != null,
-                            ploughingMethod = ploughing?.name,
-                            performRidging = ridging != null,
-                            ridgingMethod = ridging?.name,
-                            weedControlMethod = weedMethod ?: existing.weedControlMethod,
-                        ) ?: CurrentPractice(
-                            userId = uid,
-                            performPloughing = ploughing != null,
-                            ploughingMethod = ploughing?.name,
-                            performRidging = ridging != null,
-                            ridgingMethod = ridging?.name,
-                            weedControlMethod = weedMethod,
-                        )
-                        currentPracticeRepo.savePractice(updated)
-                        val hasManual = s.tillageOperations.values.any { it == EnumOperationMethod.MANUAL }
-                        val hasTractor = s.tillageOperations.values.any { it == EnumOperationMethod.TRACTOR }
-                        if (hasManual) adviceCompletionRepo.markInProgressIfNotCompleted(EnumAdviceTask.MANUAL_TILLAGE_COST)
-                        if (hasTractor) adviceCompletionRepo.markInProgressIfNotCompleted(EnumAdviceTask.TRACTOR_ACCESS)
-                        if (weedMethod != null) adviceCompletionRepo.markInProgressIfNotCompleted(EnumAdviceTask.COST_OF_WEED_CONTROL)
-                    }
-                }
-                OnboardingStep.INVESTMENT_PREF -> {
-                    val user = userRepo.getUser(userName) ?: AkilimoUser(userName = userName)
-                    userRepo.saveOrUpdateUser(user.copy(investmentPref = s.investmentPref), userName)
-                }
-                else -> Unit
-            }
+            persistAll(s)
+            _effect.send(Effect.NavigateToRecommendations)
+        }
+    }
+
+    private fun validateAll(): Map<String, String> {
+        val s = _state.value
+        val errs = mutableMapOf<String, String>()
+
+        // BioData
+        if (s.firstName.isBlank()) errs["firstName"] = "First name is required"
+        if (s.lastName.isBlank()) errs["lastName"] = "Last name is required"
+        if (s.gender.isBlank()) errs["gender"] = "Please select a gender"
+        if (s.interest.isBlank()) errs["interest"] = "Please select your interest"
+        if (s.email.isNotBlank() && !android.util.Patterns.EMAIL_ADDRESS.matcher(s.email).matches())
+            errs["email"] = "Please enter a valid email address"
+
+        // Country
+        if (s.country == EnumCountry.Unsupported) errs["country"] = "Please select your country"
+
+        // Area Unit
+        if (s.visibleSections.contains(OnboardingSection.AREA_UNIT) && s.farmSize <= 0.0) {
+            errs["farmSize"] = "Please enter a valid farm size"
+        }
+
+        // Planting Date
+        if (s.plantingDate == null) errs["plantingDate"] = "Please select a planting date"
+        if (s.harvestDate == null) errs["harvestDate"] = "Please select a harvest date"
+
+        // Tillage
+        if (s.weedControlEnabled && s.weedControlMethod == null)
+            errs["weedControl"] = "Please select a weed control method"
+
+        // Investment
+        if (s.investmentPref.riskLevel() < 0) errs["investmentPref"] = "Please select an investment preference"
+
+        return errs
+    }
+
+    private suspend fun persistAll(s: UiState) {
+        val userName = appSettings.akilimoUser
+        val user = userRepo.getUser(userName) ?: AkilimoUser(userName = userName)
+
+        val tillageOps = s.tillageOperations.entries.map { (type, method) ->
+            OperationEntry(
+                OperationTypeOption(type.name, type),
+                OperationMethodOption(method.name, method),
+            )
+        }
+        val weedMethod = if (s.weedControlEnabled) s.weedControlMethod else null
+
+        val updatedUser = user.copy(
+            firstName = s.firstName,
+            lastName = s.lastName,
+            email = s.email.ifBlank { null },
+            mobileNumber = s.phone.ifBlank { null },
+            gender = s.gender,
+            akilimoInterest = s.interest,
+            deviceToken = appSettings.deviceToken,
+            enumCountry = s.country,
+            latitude = s.latitude,
+            longitude = s.longitude,
+            zoomLevel = s.zoomLevel,
+            altitude = s.altitude,
+            enumAreaUnit = s.areaUnit,
+            farmSize = s.farmSize,
+            customFarmSize = s.customFarmSize,
+            plantingDate = s.plantingDate,
+            harvestDate = s.harvestDate,
+            plantingFlex = s.plantingFlex,
+            harvestFlex = s.harvestFlex,
+            tillageOperations = tillageOps,
+            weedControlMethod = weedMethod,
+            investmentPref = s.investmentPref,
+        )
+
+        userRepo.saveOrUpdateUser(updatedUser, userName)
+//        appSettings.isFirstRun = false
+
+        // Update settings
+        if (s.disclaimerRead) appSettings.disclaimerRead = true
+        if (s.termsAccepted) appSettings.termsAccepted = true
+        if (s.rememberAreaUnit) appSettings.rememberAreaUnit = true
+
+        // Update current practice
+        val uid = updatedUser.id ?: userRepo.getUser(userName)?.id
+        uid?.let { id ->
+            val existing = currentPracticeRepo.getPracticeForUser(id)
+            val ploughing = s.tillageOperations[EnumOperationType.PLOUGHING]
+            val ridging = s.tillageOperations[EnumOperationType.RIDGING]
+            val practice = existing?.copy(
+                performPloughing = ploughing != null,
+                ploughingMethod = ploughing?.name,
+                performRidging = ridging != null,
+                ridgingMethod = ridging?.name,
+                weedControlMethod = weedMethod ?: existing.weedControlMethod,
+            ) ?: CurrentPractice(
+                userId = id,
+                performPloughing = ploughing != null,
+                ploughingMethod = ploughing?.name,
+                performRidging = ridging != null,
+                ridgingMethod = ridging?.name,
+                weedControlMethod = weedMethod,
+            )
+            currentPracticeRepo.savePractice(practice)
+
+            val hasManual = s.tillageOperations.values.any { it == EnumOperationMethod.MANUAL }
+            val hasTractor = s.tillageOperations.values.any { it == EnumOperationMethod.TRACTOR }
+            if (hasManual) adviceCompletionRepo.markInProgressIfNotCompleted(EnumAdviceTask.MANUAL_TILLAGE_COST)
+            if (hasTractor) adviceCompletionRepo.markInProgressIfNotCompleted(EnumAdviceTask.TRACTOR_ACCESS)
+            if (weedMethod != null) adviceCompletionRepo.markInProgressIfNotCompleted(EnumAdviceTask.COST_OF_WEED_CONTROL)
         }
     }
 }

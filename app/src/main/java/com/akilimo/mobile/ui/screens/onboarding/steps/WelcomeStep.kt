@@ -17,19 +17,21 @@ import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
 import com.akilimo.mobile.ui.components.compose.BrandHeader
 import com.akilimo.mobile.ui.components.compose.InfoCard
 import com.akilimo.mobile.ui.components.compose.InfoCardType
+import com.akilimo.mobile.ui.components.compose.SwitchRow
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
 
 @Composable
 fun WelcomeStep(
     languageCode: String,
+    lockAppLanguage: Boolean,
     onEvent: (OnboardingViewModel.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val locales = Locales.supportedLocales
     val selectedLocale = locales.find { it.toLanguageTag() == languageCode } ?: Locales.english
 
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(modifier = modifier) {
         BrandHeader(
             title = stringResource(R.string.welcome_title),
             subtitle = stringResource(R.string.welcome_subtitle),
@@ -37,8 +39,6 @@ fun WelcomeStep(
 
         Column(
             modifier = Modifier
-                .weight(1f)
-                .verticalScroll(rememberScrollState())
                 .padding(AkilimoSpacing.md),
             verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.md),
         ) {
@@ -59,6 +59,11 @@ fun WelcomeStep(
                 displayText = { locale ->
                     locale.getDisplayLanguage(locale).replaceFirstChar { it.uppercaseChar() }
                 },
+            )
+            SwitchRow(
+                label = stringResource(R.string.lbl_lock_app_language),
+                checked = lockAppLanguage,
+                onCheckedChange = { onEvent(OnboardingViewModel.Event.LockAppLanguageToggled(it)) },
             )
         }
     }

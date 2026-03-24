@@ -29,6 +29,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.FloatingActionButton
+import com.akilimo.mobile.navigation.OnboardingRoute
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -98,98 +102,112 @@ fun RecommendationsScreen(navController: NavHostController) {
         derivedStateOf { scrollOffsetPx * 0.35f }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-    ) {
-        LazyColumn(
-            state = listState,
-            modifier = Modifier
-                .fillMaxSize()
-                .navigationBarsPadding(),
-        ) {
-            item(key = "hero") {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(240.dp)
-                        .background(MaterialTheme.colorScheme.primary)
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(
-                                    Color.Black.copy(alpha = 0.3f),
-                                    Color.Transparent,
-                                    Color.Black.copy(alpha = 0.15f),
-                                )
-                            )
-                        ),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Column(
-                        modifier = Modifier.graphicsLayer {
-                            translationY = -parallaxOffsetPx
-                            alpha = heroContentAlpha
-                        },
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.sm),
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.ic_akilimo_logo_white),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                            modifier = Modifier.size(120.dp),
-                        )
-                        Text(
-                            text = stringResource(R.string.lbl_recommendations),
-                            style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                        )
-                    }
-                }
-            }
-            items(state.adviceOptions) { option ->
-                AdviceOptionCard(
-                    option = option,
-                    onClick = {
-                        viewModel.trackActiveAdvice(option.valueOption)
-                        val route: Any = when (option.valueOption) {
-                            EnumAdvice.FERTILIZER_RECOMMENDATIONS -> FrRoute
-                            EnumAdvice.BEST_PLANTING_PRACTICES -> BppRoute
-                            EnumAdvice.SCHEDULED_PLANTING_HIGH_STARCH -> SphRoute
-                            EnumAdvice.INTERCROPPING_MAIZE -> IcMaizeRoute
-                            EnumAdvice.INTERCROPPING_SWEET_POTATO -> IcSweetPotatoRoute
-                        }
-                        navController.navigate(route)
-                    }
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { navController.navigate(OnboardingRoute) },
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = stringResource(R.string.lbl_settings),
                 )
             }
         }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(MaterialTheme.colorScheme.background),
+        ) {
+            LazyColumn(
+                state = listState,
+                modifier = Modifier
+                    .fillMaxSize(),
+            ) {
+                item(key = "hero") {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(240.dp)
+                            .background(MaterialTheme.colorScheme.primary)
+                            .background(
+                                Brush.verticalGradient(
+                                    listOf(
+                                        Color.Black.copy(alpha = 0.3f),
+                                        Color.Transparent,
+                                        Color.Black.copy(alpha = 0.15f),
+                                    )
+                                )
+                            ),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Column(
+                            modifier = Modifier.graphicsLayer {
+                                translationY = -parallaxOffsetPx
+                                alpha = heroContentAlpha
+                            },
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.sm),
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.ic_akilimo_logo_white),
+                                contentDescription = null,
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
+                                modifier = Modifier.size(120.dp),
+                            )
+                            Text(
+                                text = stringResource(R.string.lbl_recommendations),
+                                style = MaterialTheme.typography.headlineMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                            )
+                        }
+                    }
+                }
+                items(state.adviceOptions) { option ->
+                    AdviceOptionCard(
+                        option = option,
+                        onClick = {
+                            viewModel.trackActiveAdvice(option.valueOption)
+                            val route: Any = when (option.valueOption) {
+                                EnumAdvice.FERTILIZER_RECOMMENDATIONS -> FrRoute
+                                EnumAdvice.BEST_PLANTING_PRACTICES -> BppRoute
+                                EnumAdvice.SCHEDULED_PLANTING_HIGH_STARCH -> SphRoute
+                                EnumAdvice.INTERCROPPING_MAIZE -> IcMaizeRoute
+                                EnumAdvice.INTERCROPPING_SWEET_POTATO -> IcSweetPotatoRoute
+                            }
+                            navController.navigate(route)
+                        }
+                    )
+                }
+            }
 
-        TopAppBar(
-            title = {
-                Text(
-                    text = stringResource(R.string.lbl_recommendations),
-                    modifier = Modifier.graphicsLayer { alpha = appBarAlpha },
-                )
-            },
-            navigationIcon = {
-                Image(
-                    painter = painterResource(R.drawable.ic_akilimo_logo_white),
-                    contentDescription = null,
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                    modifier = Modifier
-                        .padding(start = AkilimoSpacing.md)
-                        .size(AkilimoSpacing.xxl),
-                )
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primary.copy(alpha = appBarAlpha),
-                titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-            ),
-        )
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(R.string.lbl_recommendations),
+                        modifier = Modifier.graphicsLayer { alpha = appBarAlpha },
+                    )
+                },
+                navigationIcon = {
+                    Image(
+                        painter = painterResource(R.drawable.ic_akilimo_logo_white),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
+                        modifier = Modifier
+                            .padding(start = AkilimoSpacing.md)
+                            .size(AkilimoSpacing.xxl),
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary.copy(alpha = appBarAlpha),
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                ),
+            )
+        }
     }
 }
 

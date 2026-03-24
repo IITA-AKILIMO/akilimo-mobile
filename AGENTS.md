@@ -24,20 +24,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture Overview
 
-The app is a **modern Jetpack Compose-only codebase**. Legacy View-based screens have been entirely removed.
+The app is a **dual-layer in-migration codebase**: legacy View-based screens coexist with a partially complete Compose migration. All new screens must be Compose.
 
 **Package layout** (under `com.akilimo.mobile`):
-- `ui/activities/` — `MainActivity.kt` (single-Activity host with `AkilimoNavHost`)
-- `ui/screens/` — Compose screens grouped by feature (`usecases/`, `settings/`, `recommendations/`, etc.)
-- `ui/viewmodels/` — `@HiltViewModel` per screen, pattern: `StateFlow<UiState>` + `Flow<Effect>`
+- `ui/screens/` — Compose screens grouped by feature (`usecases/`, `settings/`, etc.)
+- `ui/viewmodels/` — one ViewModel per screen, pattern: `StateFlow<UiState>` + Hilt `@HiltViewModel`
 - `ui/components/compose/` — shared Compose primitives (`BackTopAppBar`, `SaveBottomBar`, `ScrollableFormColumn`, `NavExtensions.kt`)
-- `repos/` — Typed repositories; the only layer ViewModels call
-- `database/`, `entities/` — Room `AppDatabase`, `@Dao` interfaces, and `@Entity` data classes
+- `repos/` — Room DAO wrappers + Retrofit API wrappers; the only layer ViewModels call
+- `entities/` — Room `@Entity` data classes
 - `data/AppSettingsDataStore.kt` — DataStore-backed settings; single source of truth for `akilimoUser`, language, country
 
-**Startup:** `MainActivity` (Compose nav host) handles the entire user flow from onboarding to recommendations.
+**Startup:** `SplashActivity` → onboarding (View-based) → `HomeActivity` → `MainActivity` (Compose nav host).
 
-**Database:** Room v2+ with mandatory `Migration` objects for all schema changes. `fallbackToDestructiveMigration()` is discouraged.
+**Database:** Room v2 with `fallbackToDestructiveMigration()` still active. Always write a proper `Migration` object for schema changes and remove the fallback flag.
 
 ## Compose Screen Conventions
 
@@ -68,8 +67,7 @@ onClick = { selectedItem?.let { viewModel.save(it); navController.completeTask(t
 
 - Each screen has a nested `data class UiState(...)` with default values.
 - Expose state as `StateFlow<UiState>` via `_uiState.asStateFlow()`.
-- One-shot effects (navigation, snackbars) are handled via `Channel<Effect>` and exposed as `Flow<Effect>`.
-- No `LiveData` or `ViewBinding` in the codebase.
+- No `LiveData` in new code.
 - Load data in `init { viewModelScope.launch { ... } }`.
 - Use `_uiState.update { it.copy(...) }` for mutations.
 - `saved: Boolean` flag pattern: set `true` after save, reset via `onSaveHandled()` after the screen observes it.
