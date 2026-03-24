@@ -52,6 +52,7 @@ import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
 import androidx.compose.material.icons.filled.ArrowBack
 import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.wizard.OnboardingSection
+import dev.b3nedikt.app_locale.AppLocale
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.system.exitProcess
 
@@ -89,6 +90,17 @@ fun OnboardingScreen(
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
                         (context as? Activity)?.recreate()
                     }
+                }
+                is OnboardingViewModel.Effect.LockAppLanguageChanged -> {
+                    if (effect.locked) {
+                        AppLocale.supportedLocales = Locales.supportedLocales
+                        AppLocale.desiredLocale = Locales.supportedLocales
+                            .find { it.toLanguageTag() == effect.languageTag } ?: Locales.english
+                    } else {
+                        // Reset to system default so AppLocale.wrap becomes a pass-through
+                        AppLocale.desiredLocale = java.util.Locale.getDefault()
+                    }
+                    (context as? Activity)?.recreate()
                 }
                 else -> Unit
             }
@@ -177,6 +189,7 @@ fun OnboardingScreen(
             // Welcome Section
             WelcomeStep(
                 languageCode = state.languageCode,
+                lockAppLanguage = state.lockAppLanguage,
                 onEvent = viewModel::onEvent,
             )
 

@@ -49,6 +49,7 @@ class OnboardingViewModel @Inject constructor(
         val visibleSections: List<OnboardingSection> = emptyList(),
         // Welcome
         val languageCode: String = Locales.english.toLanguageTag(),
+        val lockAppLanguage: Boolean = false,
         // Disclaimer
         val disclaimerRead: Boolean = false,
         // Terms
@@ -92,6 +93,7 @@ class OnboardingViewModel @Inject constructor(
     sealed interface Event {
         // Welcome
         data class LanguageSelected(val code: String) : Event
+        data class LockAppLanguageToggled(val locked: Boolean) : Event
         // Disclaimer
         data class DisclaimerChecked(val checked: Boolean) : Event
         // Terms
@@ -138,6 +140,7 @@ class OnboardingViewModel @Inject constructor(
         data object ExitApp : Effect
         data class ShowSnackbar(val message: String) : Effect
         data class LanguageChangeRequested(val languageTag: String) : Effect
+        data class LockAppLanguageChanged(val locked: Boolean, val languageTag: String) : Effect
     }
 
     private val _state = MutableStateFlow(UiState())
@@ -160,6 +163,7 @@ class OnboardingViewModel @Inject constructor(
             val rememberAreaUnit = appSettings.rememberAreaUnit
             val termsUrl = appSettings.termsLink
             val languageCode = appSettings.languageTag
+            val lockAppLanguage = appSettings.lockAppLanguage
 
             val visibleSteps = buildList {
                 add(OnboardingSection.WELCOME)
@@ -178,6 +182,7 @@ class OnboardingViewModel @Inject constructor(
                     isLoading = false,
                     visibleSections = visibleSteps,
                     languageCode = languageCode,
+                    lockAppLanguage = lockAppLanguage,
                     disclaimerRead = disclaimerRead,
                     termsAccepted = termsAccepted,
                     rememberAreaUnit = rememberAreaUnit,
@@ -225,6 +230,13 @@ class OnboardingViewModel @Inject constructor(
                     prefsRepo.save(currentPrefs.copy(languageCode = event.code))
                     appSettings.setLanguageTag(event.code)
                     _effect.send(Effect.LanguageChangeRequested(event.code))
+                }
+            }
+            is Event.LockAppLanguageToggled -> {
+                _state.update { it.copy(lockAppLanguage = event.locked) }
+                viewModelScope.launch {
+                    appSettings.setLockAppLanguage(event.locked)
+                    _effect.send(Effect.LockAppLanguageChanged(event.locked, _state.value.languageCode))
                 }
             }
             is Event.DisclaimerChecked -> {

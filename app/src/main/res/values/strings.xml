@@ -10,6 +10,8 @@
     <string name="welcome_title">Are you growing cassava? And looking to become a pro? AKILIMO can help you!</string>
     <string name="welcome_subtitle">AKILIMO helps you increase yield and maximise profit in your cassava farm. Let’s get started!</string>
     <string name="msg_language_selection_impact">The selected language will be used throughout the app for all advice and recommendations.</string>
+    <string name="lbl_lock_app_language">Override system language</string>
+    <string name="msg_lock_app_language_hint">Always use the selected language, even if system language changes.</string>
     <string name="welcome_instructions">Whether you need fertilizer recommendations, planting schemes, or advice on tillage, weeding and intercropping,we’ve got you covered.\n\nAKILIMO will help you increase yield and maximise profit in your cassava farm. Let’s get started!</string>
     <string name="lbl_available_fertilizers_subtitle">Select the fertilizers that you can find at your local dealer.</string>
     <string name="lbl_select_fertilizers">Select Fertilizers</string>

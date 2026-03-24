@@ -17,12 +17,14 @@ import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
 import com.akilimo.mobile.ui.components.compose.BrandHeader
 import com.akilimo.mobile.ui.components.compose.InfoCard
 import com.akilimo.mobile.ui.components.compose.InfoCardType
+import com.akilimo.mobile.ui.components.compose.SwitchRow
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
 
 @Composable
 fun WelcomeStep(
     languageCode: String,
+    lockAppLanguage: Boolean,
     onEvent: (OnboardingViewModel.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -57,6 +59,11 @@ fun WelcomeStep(
                 displayText = { locale ->
                     locale.getDisplayLanguage(locale).replaceFirstChar { it.uppercaseChar() }
                 },
+            )
+            SwitchRow(
+                label = stringResource(R.string.lbl_lock_app_language),
+                checked = lockAppLanguage,
+                onCheckedChange = { onEvent(OnboardingViewModel.Event.LockAppLanguageToggled(it)) },
             )
         }
     }
