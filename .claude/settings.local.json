@@ -50,7 +50,13 @@
       "Bash(./gradlew testDebugUnitTest --tests \"com.akilimo.mobile.ui.viewmodels.CassavaMarketViewModelTest\")",
       "Bash(./gradlew assembleDebug)",
       "Bash(cd:*)",
-      "Bash(./gradlew :app:compileDebugKotlin --no-daemon)"
+      "Bash(./gradlew :app:compileDebugKotlin --no-daemon)",
+      "Bash(ls:*)",
+      "Bash(./gradlew :app:compileDebugKotlin --rerun-tasks)",
+      "Bash(find D:/Dev/android/akilimo-mobile -name *.kt -path */wizard/*)",
+      "Bash(rm -f ui/activities/RecommendationsActivity.kt ui/activities/GetRecommendationActivity.kt ui/activities/FrActivity.kt ui/activities/BppActivity.kt ui/activities/SphActivity.kt ui/activities/IcMaizeActivity.kt ui/activities/IcSweetPotatoActivity.kt ui/activities/WeedManagementActivity.kt)",
+      "Bash(rm -f ui/fragments/RecommendationsFragment.kt ui/fragments/FrFragment.kt ui/fragments/BppFragment.kt ui/fragments/SphFragment.kt ui/fragments/IcMaizeFragment.kt ui/fragments/IcSweetPotatoFragment.kt)",
+      "Bash(rm -f base/AbstractRecommendationActivity.kt base/AbstractRecommendationFragment.kt)"
     ]
   }
 }

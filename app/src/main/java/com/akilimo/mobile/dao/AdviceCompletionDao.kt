@@ -20,4 +20,7 @@ interface AdviceCompletionDao {
 
     @Query("DELETE FROM advice_completions WHERE task_name = :taskName")
     suspend fun delete(taskName: EnumAdviceTask)
+
+    @Query("DELETE FROM advice_completions")
+    suspend fun deleteAll()
 }

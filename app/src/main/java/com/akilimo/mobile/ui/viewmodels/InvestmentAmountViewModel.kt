@@ -2,6 +2,7 @@ package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.entities.InvestmentAmount
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -22,7 +23,8 @@ import kotlinx.coroutines.launch
 class InvestmentAmountViewModel @Inject constructor(
     private val userRepo: AkilimoUserRepo,
     private val investmentRepo: InvestmentRepo,
-    private val selectedInvestmentRepo: SelectedInvestmentRepo
+    private val selectedInvestmentRepo: SelectedInvestmentRepo,
+    private val appSettings: AppSettingsDataStore
 ) : ViewModel() {
 
     data class UiState(
@@ -34,6 +36,10 @@ class InvestmentAmountViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch { loadData(appSettings.akilimoUser) }
+    }
 
     fun loadData(userName: String) = viewModelScope.launch {
         val user = userRepo.getUser(userName) ?: return@launch
@@ -61,9 +67,9 @@ class InvestmentAmountViewModel @Inject constructor(
         }
     }
 
-    fun saveInvestment(userName: String, item: InvestmentAmount, selectedAmount: Double) =
+    fun saveInvestment(item: InvestmentAmount, selectedAmount: Double) =
         viewModelScope.launch {
-            val user = userRepo.getUser(userName) ?: return@launch
+            val user = userRepo.getUser(appSettings.akilimoUser) ?: return@launch
             val userId = user.id ?: return@launch
             val investment = selectedInvestmentRepo.getSelectedSync(userId)?.copy(
                 investmentId = item.id,

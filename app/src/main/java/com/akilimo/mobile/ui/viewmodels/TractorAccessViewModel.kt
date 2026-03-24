@@ -2,6 +2,7 @@ package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.enums.EnumOperationMethod
@@ -18,7 +19,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class TractorAccessViewModel @Inject constructor(
     private val userRepo: AkilimoUserRepo,
-    private val costsRepo: FieldOperationCostsRepo
+    private val costsRepo: FieldOperationCostsRepo,
+    private val appSettings: AppSettingsDataStore
 ) : ViewModel() {
 
     data class UiState(
@@ -34,6 +36,10 @@ class TractorAccessViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch { loadData(appSettings.akilimoUser) }
+    }
 
     fun loadData(userName: String) = viewModelScope.launch {
         val user = userRepo.getUser(userName) ?: return@launch
@@ -66,20 +72,13 @@ class TractorAccessViewModel @Inject constructor(
         harrowingCost: Double?
     ) = viewModelScope.launch {
         val userId = _uiState.value.userId.takeIf { it != 0 } ?: return@launch
-        val newCosts = FieldOperationCost(
-            userId = userId,
-            tractorAvailable = tractorAvailable,
-            tractorRidgeCost = if (tractorAvailable) (ridingCost ?: 0.0) else 0.0,
-            tractorPloughCost = if (tractorAvailable) (ploughingCost ?: 0.0) else 0.0,
-            tractorHarrowCost = if (tractorAvailable) (harrowingCost ?: 0.0) else 0.0
-        )
         val existing = costsRepo.getCostForUser(userId)
-        val merged = existing?.copy(
-            tractorAvailable = newCosts.tractorAvailable,
-            tractorRidgeCost = if (ridingCost != null) newCosts.tractorRidgeCost else existing.tractorRidgeCost,
-            tractorPloughCost = if (ploughingCost != null) newCosts.tractorPloughCost else existing.tractorPloughCost,
-            tractorHarrowCost = if (harrowingCost != null) newCosts.tractorHarrowCost else existing.tractorHarrowCost
-        ) ?: newCosts
+        val merged = (existing ?: FieldOperationCost(userId = userId)).copy(
+            tractorAvailable = tractorAvailable,
+            tractorRidgeCost = if (tractorAvailable) (ridingCost ?: existing?.tractorRidgeCost ?: 0.0) else 0.0,
+            tractorPloughCost = if (tractorAvailable) (ploughingCost ?: existing?.tractorPloughCost ?: 0.0) else 0.0,
+            tractorHarrowCost = if (tractorAvailable) (harrowingCost ?: existing?.tractorHarrowCost ?: 0.0) else 0.0
+        )
         costsRepo.saveCost(merged)
         _uiState.update { it.copy(saved = true) }
     }

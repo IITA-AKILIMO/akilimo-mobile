@@ -51,24 +51,25 @@ Main package: `com.akilimo.mobile`
 |---------|---------|
 | `ui/activities/` | All Activity subclasses (extend `BaseActivity<VB>`) |
 | `ui/fragments/` | All Fragment subclasses (extend `BaseFragment<VB>` or `BaseStepFragment<VB>`) |
+| `ui/screens/` | Compose screens grouped by feature (`usecases/`, `settings/`, `recommendations/`) |
+| `ui/components/compose/` | Shared Compose primitives: `BackTopAppBar`, `SaveBottomBar`, `ScrollableFormColumn`, `NavExtensions`, `AkilimoTextField`, `SelectionCard`, `WizardBottomBar` |
+| `ui/viewmodels/` | One `@HiltViewModel` per Compose screen; all new screens use this pattern |
 | `repos/` | Repository classes wrapping Room DAOs — all DB access goes through here |
 | `dao/` + `entities/` | Room `@Dao` interfaces and `@Entity` data classes |
 | `workers/` | WorkManager `CoroutineWorker` subclasses + `WorkerScheduler` |
 | `network/` + `rest/` | Retrofit service interfaces, `ApiClient`, request/response models |
 | `data/` | `AppSettingsDataStore.kt` — Preferences DataStore for all 17 settings keys (replaces deleted `SessionManager`) |
 | `helper/` | `LocaleHelper` (locale context wrapper); `SessionManager` has been deleted |
-| `ui/viewmodels/` | `WelcomeViewModel`, `UserSettingsViewModel` (key screens); expand as more screens are migrated |
 | `enums/` | Domain enums: `EnumCountry`, `EnumAreaUnit`, `EnumAdvice`, etc. |
 
-**When adding a new screen (current View system):**
-1. Create Activity extending `BaseActivity<VB>` — implement `inflateBinding()` and `onBindingReady()`.
-2. Create a typed Repo class in `repos/` backed by a DAO.
-3. Launch via explicit `Intent` (NavGraph not yet active).
+**When adding a new screen:**
+1. Create a `@Composable` screen function under `ui/screens/<feature>/`.
+2. Create a `@HiltViewModel` in `ui/viewmodels/` with a nested `UiState` data class and `StateFlow<UiState>`.
+3. Use shared components from `ui/components/compose/` (`BackTopAppBar`, `SaveBottomBar`, `ScrollableFormColumn`, `NavExtensions.completeTask`).
+4. Add the route to `navigation/Route.kt` and wire it in `AkilimoNavHost.kt`.
+5. Do not add new `Activity` or `Fragment` classes — Compose + NavHost is the active path.
 
-> **⚠️ Compose migration in progress.** Hilt is now active (ROADMAP #9 ✅ Done).
-> Once NavGraph is active (ROADMAP #12), all new screens must be written as `@Composable`
-> functions with a `@HiltViewModel`. Do not add new activities after Phase 1 of the migration begins.
-> See `docs/COMPOSE_MIGRATION.md` for conventions.
+See `docs/COMPOSE_MIGRATION.md` for full conventions.
 
 **When adding a new stepper step:**
 1. Create Fragment extending `BaseStepFragment<VB>`.
@@ -120,7 +121,7 @@ Room DB version: **2** — `fallbackToDestructiveMigration()` is active. When ch
 
 ## 9. Compose development conventions
 
-These apply once the Compose migration begins (ROADMAP items 13–17).
+These apply to all new screens. The Compose migration is active — `MainActivity` and `AkilimoNavHost` are live; Phase 3 (use-case screens) and Phase 4 (settings) are complete.
 
 ### File layout for a Compose screen
 
@@ -133,6 +134,10 @@ ui/
 │       └── UserSettingsUiState.kt       data class + sealed NavEvent
 ├── components/
 │   └── compose/
+│       ├── BackTopAppBar.kt      TopAppBar with back arrow (carries its own @OptIn)
+│       ├── SaveBottomBar.kt      Full-width save/confirm button bar
+│       ├── ScrollableFormColumn.kt  fillMaxSize + horizontalPadding + verticalScroll
+│       ├── NavExtensions.kt      completeTask(EnumAdviceTask) extension
 │       ├── AkilimoButton.kt
 │       ├── AkilimoCard.kt
 │       ├── AkilimoTextField.kt
@@ -142,6 +147,40 @@ ui/
     ├── AkilimoColors.kt
     ├── AkilimoTypography.kt
     └── AkilimoShapes.kt
+```
+
+### Required shared components
+
+Every screen with a back-navigation top bar uses `BackTopAppBar`:
+```kotlin
+BackTopAppBar(title = stringResource(R.string.lbl_foo), onBack = { navController.popBackStack() })
+```
+
+Every screen with a primary action uses `SaveBottomBar` in the Scaffold `bottomBar`:
+```kotlin
+SaveBottomBar(label = stringResource(R.string.lbl_save), enabled = canSave, onClick = { ... })
+```
+
+Scrollable form body:
+```kotlin
+ScrollableFormColumn(padding = paddingValues) { /* form fields */ }
+```
+
+Task completion (writes result to `savedStateHandle` and pops back):
+```kotlin
+navController.completeTask(EnumAdviceTask.SOME_TASK)
+```
+
+`@OptIn(ExperimentalMaterial3Api::class)` is only needed on screens that directly use `ModalBottomSheet` or `DatePicker`. `BackTopAppBar` carries its own `@OptIn` internally.
+
+When the confirm action depends on nullable state, use `?.let` — early return is not valid in a `() -> Unit` lambda:
+```kotlin
+onClick = {
+    selectedItem?.let { item ->
+        viewModel.save(item)
+        navController.completeTask(EnumAdviceTask.SOME_TASK)
+    }
+}
 ```
 
 ### State conventions

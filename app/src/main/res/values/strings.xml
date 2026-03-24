@@ -8,7 +8,13 @@
     <string name="ad_attribution" translatable="false">Ad</string>
 
     <string name="welcome_title">Are you growing cassava? And looking to become a pro? AKILIMO can help you!</string>
+    <string name="welcome_subtitle">AKILIMO helps you increase yield and maximise profit in your cassava farm. Let’s get started!</string>
+    <string name="msg_language_selection_impact">The selected language will be used throughout the app for all advice and recommendations.</string>
+    <string name="lbl_lock_app_language">Override system language</string>
+    <string name="msg_lock_app_language_hint">Always use the selected language, even if system language changes.</string>
     <string name="welcome_instructions">Whether you need fertilizer recommendations, planting schemes, or advice on tillage, weeding and intercropping,we’ve got you covered.\n\nAKILIMO will help you increase yield and maximise profit in your cassava farm. Let’s get started!</string>
+    <string name="lbl_available_fertilizers_subtitle">Select the fertilizers that you can find at your local dealer.</string>
+    <string name="lbl_select_fertilizers">Select Fertilizers</string>
     <string name="important_instructions_title">IMPORTANT INFORMATION</string>
     <string name="important_instructions">Please note that the advice provided by AKILIMO is intended to provide helpful guidance only, and does not offer any guarantees. Success in any endeavour depends on a range of factors outside of our control, including user behaviour, how the advice is implemented and external circumstances. Therefore, we encourage you to use our app as a tool to inform your decisions, but always to exercise your best judgment and seek additional advice as needed.</string>
     <string name="important_instructions_b">The AKILIMO app collects essential information such as your location, field size and planting date to provide customised recommendations. To ensure the best results, please enter accurate and complete information. Properly measuring your field size is crucial to avoid underestimating the resources required to achieve optimal yields and maximize profits. Inaccurate measurements may result in unnecessary expenses and will impact your returns.</string>
@@ -103,13 +109,25 @@
     <string name="lbl_manual_location">Select location manually</string>
 
     <string name="lbl_recommendations">Recommendations</string>
+    <string name="lbl_fertilizers">Fertilizers</string>
     <string name="lbl_fertilizer_recommendations">Fertilizer recommendations</string>
+    <string name="lbl_dates">Dates</string>
+    <string name="lbl_cassava">Cassava</string>
+    <string name="lbl_yield">Cassava Yield</string>
+    <string name="lbl_investment">Investment</string>
+    <string name="lbl_maize">Maize Heigh</string>
+    <string name="lbl_tillage">Tillage</string>
+    <string name="lbl_sweet_potato">Sweet Potato</string>
+    <string name="lbl_tractor_access_title">Tractor</string>
     <string name="lbl_intercropping">Intercropping</string>
 
     <string name="lbl_intercropping_maize">Cassava maize intercrop</string>
+    <string name="lbl_intercropping_maize_title">Maize Intercrop</string>
     <string name="lbl_intercropping_sweet_potato">Cassava sweet potato intercrop</string>
+    <string name="lbl_intercropping_sweet_potato_title">Sweet Potato Intercrop</string>
     <string name="lbl_scheduled_planting_and_high_starch">Scheduled planting and high starch</string>
     <string name="lbl_best_planting_practices">Best planting practices</string>
+    <string name="lbl_best_planting_practices_title">Planting Practices</string>
     <string name="lbl_weed_management">Weed management</string>
 
 
@@ -144,7 +162,7 @@
     <string name="lbl_maize_performance_poor">These are very poor soil conditions and not very common</string>
     <string name="lbl_maize_performance_rich">These are very rich soil conditions and not very common</string>
 
-    <string name="lbl_cassava_price">Cassava prices</string>
+    <string name="lbl_cassava_market_outlet">Cassava prices</string>
     <string name="lbl_market_outlet">What price do you expect for your cassava?</string>
     <string name="lbl_maize_market">Sell your Maize</string>
     <string name="lbl_sweet_potato_market">Sell your Sweet Potatoes</string>
@@ -449,6 +467,9 @@
     <string name="lbl_options">Options</string>
     <string name="lbl_search">Search</string>
     <string name="lbl_settings">Settings</string>
+    <string name="lbl_appearance">Appearance</string>
+    <string name="lbl_profile_settings">Profile &amp; Preferences</string>
+    <string name="lbl_edit_profile">Edit profile</string>
 
     <string name="lbl_lat">Field lat</string>
     <string name="lbl_lon">Field lon</string>
@@ -540,6 +561,8 @@
 
     <string name="lbl_already_planted_title">Already planted</string>
     <string name="lbl_already_planted_text">It appears you have already planted, so you cannot set the planting flexibility</string>
+    <string name="lbl_disclaimer">Disclaimer</string>
+    <string name="lbl_terms">Terms &amp; Conditions</string>
     <string name="lbl_agree_to_terms">I accept the terms and conditions of the application</string>
     <string name="lbl_agree_to_disclaimer">Please confirm you have read and understood this disclaimer.</string>
     <string name="lbl_accept_terms_prompt">Accept the terms and conditions before proceeding</string>
@@ -710,6 +733,20 @@
     <string name="lbl_preferences_section">App Preferences</string>
     <string name="lbl_notifications_section">Notifications</string>
     <string name="lbl_display_section">Display</string>
+    <string name="lbl_fertilizer_grid">Show fertilizers as grid</string>
+    <string name="lbl_remember_area_unit">Remember area unit</string>
+    <string name="lbl_app_version">Version</string>
+    <string name="lbl_privacy_policy">Privacy policy</string>
+    <string name="lbl_about_section">About</string>
+    <string name="lbl_data_storage">Data &amp; Storage</string>
+    <string name="lbl_clear_recommendations">Clear recommendation history</string>
+    <string name="lbl_clear_recommendations_desc">Reset all completed task badges</string>
+    <string name="lbl_reset_notification_badge">Reset notification badge</string>
+    <string name="lbl_reset_notification_badge_desc">Restore the default notification count</string>
+    <string name="msg_clear_recommendations_confirm">This will reset all completed recommendation tasks. This action cannot be undone.</string>
+    <string name="msg_reset_badge_confirm">Reset the notification badge count to its default value?</string>
+    <string name="msg_recommendations_cleared">Recommendation history cleared</string>
+    <string name="msg_badge_reset">Notification badge reset</string>
     <string name="lbl_bio">About me</string>
     <string name="lbl_bio_hint">Tell us a little about yourself</string>
     <string name="lbl_dark_mode">Dark mode</string>
@@ -720,4 +757,8 @@
     <string name="lbl_settings_saved">Settings saved successfully</string>
     <string name="lbl_select_language">Select language</string>
     <string name="lbl_select_area_unit">Select area unit</string>
+    <string name="lbl_initial_onboarding">Initial Onboarding</string>
+    <string name="lbl_complete_onboarding">Complete Onboarding</string>
+    <string name="lbl_disclaimer_agreement_required">Please read and agree to the disclaimer</string>
+    <string name="lbl_terms_agreement_required">Please read and accept the terms and conditions</string>
 </resources>

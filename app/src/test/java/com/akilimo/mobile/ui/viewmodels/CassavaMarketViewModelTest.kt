@@ -1,5 +1,6 @@
 package com.akilimo.mobile.ui.viewmodels
 
+import com.akilimo.mobile.data.AppSettingsDataStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.entities.StarchFactory
@@ -32,6 +33,7 @@ class CassavaMarketViewModelTest {
     private val selectedRepo: SelectedCassavaMarketRepo = mockk(relaxed = true)
     private val priceRepo: CassavaMarketPriceRepo = mockk(relaxed = true)
     private val cassavaUnitRepo: CassavaUnitRepo = mockk(relaxed = true)
+    private val appSettings: AppSettingsDataStore = mockk(relaxed = true)
 
     private lateinit var viewModel: CassavaMarketViewModel
 
@@ -46,7 +48,14 @@ class CassavaMarketViewModelTest {
         every { selectedRepo.observeSelected(1) } returns flowOf(null)
         every { cassavaUnitRepo.observeAll() } returns flowOf(emptyList())
 
-        viewModel = CassavaMarketViewModel(userRepo, factoryRepo, selectedRepo, priceRepo, cassavaUnitRepo)
+        viewModel = CassavaMarketViewModel(
+            userRepo = userRepo,
+            factoryRepo = factoryRepo,
+            selectedRepo = selectedRepo,
+            priceRepo = priceRepo,
+            cassavaUnitRepo = cassavaUnitRepo,
+            appSettings = appSettings
+        )
     }
 
     @Test
