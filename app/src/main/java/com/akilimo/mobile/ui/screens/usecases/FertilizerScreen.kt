@@ -25,7 +25,10 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -38,7 +41,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -86,6 +88,8 @@ fun FertilizerScreen(
         else -> R.string.lbl_available_fertilizers
     }
 
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+
     fun openSheet(fertilizer: Fertilizer) {
         selectedFertilizer = fertilizer
         prices = emptyList()
@@ -95,10 +99,13 @@ fun FertilizerScreen(
     }
 
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             BackTopAppBar(
                 title = stringResource(titleRes),
                 subtitle = stringResource(R.string.lbl_available_fertilizers_subtitle),
+                collapsedTitle = stringResource(R.string.lbl_fertilizers),
+                scrollBehavior = scrollBehavior,
                 onBack = { navController.popBackStack() },
                 actions = {
                     IconButton(onClick = { viewModel.toggleLayout() }) {
@@ -206,14 +213,14 @@ fun FertilizerScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = AkilimoSpacing.md)
                     .verticalScroll(rememberScrollState())
             ) {
                 Text(
                     text = fert.name.orEmpty(),
                     style = MaterialTheme.typography.titleMedium
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
 
                 prices.forEach { price ->
                     val label = when {
@@ -234,12 +241,12 @@ fun FertilizerScreen(
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 48.dp)
+                                .padding(start = AkilimoSpacing.xxxl)
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
 
                 Button(
                     onClick = {
@@ -266,13 +273,15 @@ fun FertilizerScreen(
                         }
                     },
                     enabled = isConfirmEnabled,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = AkilimoSpacing.xs),
+                    shape = MaterialTheme.shapes.medium,
                 ) {
                     Text(stringResource(R.string.lbl_confirm))
                 }
 
                 if (state.selectedIds.contains(fert.id)) {
-                    Spacer(modifier = Modifier.height(8.dp))
                     OutlinedButton(
                         onClick = {
                             fert.id?.let { viewModel.deselectFertilizer(it) }
@@ -280,13 +289,14 @@ fun FertilizerScreen(
                                 showPriceSheet = false
                             }
                         },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = MaterialTheme.shapes.medium,
                     ) {
                         Text(stringResource(R.string.lbl_remove))
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(AkilimoSpacing.md))
             }
         }
     }

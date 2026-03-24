@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.akilimo.mobile.R
@@ -93,11 +94,11 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
+                            .padding(AkilimoSpacing.md)
                             .verticalScroll(rememberScrollState())
                     ) {
                         Text(text = title, style = MaterialTheme.typography.headlineSmall)
-                        Spacer(Modifier.height(12.dp))
+                        Spacer(Modifier.height(AkilimoSpacing.sm))
                         Text(text = s.description, style = MaterialTheme.typography.bodyMedium)
                     }
                 }
@@ -108,7 +109,7 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Text(s.message, style = MaterialTheme.typography.bodyMedium)
-                        Spacer(Modifier.height(16.dp))
+                        Spacer(Modifier.height(AkilimoSpacing.md))
                         Button(
                             onClick = {
                                 viewModel.fetchRecommendation(useCase, noRecsLabel, errorLabel)

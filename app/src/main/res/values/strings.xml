@@ -107,13 +107,25 @@
     <string name="lbl_manual_location">Select location manually</string>
 
     <string name="lbl_recommendations">Recommendations</string>
+    <string name="lbl_fertilizers">Fertilizers</string>
     <string name="lbl_fertilizer_recommendations">Fertilizer recommendations</string>
+    <string name="lbl_dates">Dates</string>
+    <string name="lbl_cassava">Cassava</string>
+    <string name="lbl_yield">Cassava Yield</string>
+    <string name="lbl_investment">Investment</string>
+    <string name="lbl_maize">Maize Heigh</string>
+    <string name="lbl_tillage">Tillage</string>
+    <string name="lbl_sweet_potato">Sweet Potato</string>
+    <string name="lbl_tractor_access_title">Tractor</string>
     <string name="lbl_intercropping">Intercropping</string>
 
     <string name="lbl_intercropping_maize">Cassava maize intercrop</string>
+    <string name="lbl_intercropping_maize_title">Maize Intercrop</string>
     <string name="lbl_intercropping_sweet_potato">Cassava sweet potato intercrop</string>
+    <string name="lbl_intercropping_sweet_potato_title">Sweet Potato Intercrop</string>
     <string name="lbl_scheduled_planting_and_high_starch">Scheduled planting and high starch</string>
     <string name="lbl_best_planting_practices">Best planting practices</string>
+    <string name="lbl_best_planting_practices_title">Planting Practices</string>
     <string name="lbl_weed_management">Weed management</string>
 
 
@@ -148,7 +160,7 @@
     <string name="lbl_maize_performance_poor">These are very poor soil conditions and not very common</string>
     <string name="lbl_maize_performance_rich">These are very rich soil conditions and not very common</string>
 
-    <string name="lbl_cassava_price">Cassava prices</string>
+    <string name="lbl_cassava_market_outlet">Cassava prices</string>
     <string name="lbl_market_outlet">What price do you expect for your cassava?</string>
     <string name="lbl_maize_market">Sell your Maize</string>
     <string name="lbl_sweet_potato_market">Sell your Sweet Potatoes</string>
@@ -544,6 +556,8 @@
 
     <string name="lbl_already_planted_title">Already planted</string>
     <string name="lbl_already_planted_text">It appears you have already planted, so you cannot set the planting flexibility</string>
+    <string name="lbl_disclaimer">Disclaimer</string>
+    <string name="lbl_terms">Terms &amp; Conditions</string>
     <string name="lbl_agree_to_terms">I accept the terms and conditions of the application</string>
     <string name="lbl_agree_to_disclaimer">Please confirm you have read and understood this disclaimer.</string>
     <string name="lbl_accept_terms_prompt">Accept the terms and conditions before proceeding</string>

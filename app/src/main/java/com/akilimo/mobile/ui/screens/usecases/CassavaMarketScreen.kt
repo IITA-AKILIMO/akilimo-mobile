@@ -22,7 +22,10 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -90,11 +93,16 @@ fun CassavaMarketScreen(
         CassavaMarketViewModel.MarketChoice.NONE -> false
     }
 
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             BackTopAppBar(
-                title = stringResource(R.string.lbl_cassava_price),
-                onBack = { navController.popBackStack() }
+                title = stringResource(R.string.lbl_cassava_market_outlet),
+                collapsedTitle = stringResource(R.string.lbl_cassava),
+                scrollBehavior = scrollBehavior,
+                onBack = { navController.popBackStack() },
             )
         },
         bottomBar = {
