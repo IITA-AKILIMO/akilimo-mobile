@@ -1,313 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- ═══════════════════════════════════════════════
+         APP
+         ═══════════════════════════════════════════════ -->
     <string name="app_name" translatable="false">AKILIMO</string>
     <string name="under_score" translatable="false">___</string>
 
-    <string name="welcome_title">Are you growing cassava? And looking to become a pro? AKILIMO can help you!</string>
-    <string name="welcome_subtitle">AKILIMO helps you increase yield and maximise profit in your cassava farm. Let’s get started!</string>
-    <string name="lbl_lock_app_language">Override system language</string>
-    <string name="lbl_available_fertilizers_subtitle">Select the fertilizers that you can find at your local dealer.</string>
-    <string name="lbl_select_fertilizers">Select Fertilizers</string>
-    <string name="important_instructions_title">IMPORTANT INFORMATION</string>
-    <string name="important_instructions">Please note that the advice provided by AKILIMO is intended to provide helpful guidance only, and does not offer any guarantees. Success in any endeavour depends on a range of factors outside of our control, including user behaviour, how the advice is implemented and external circumstances. Therefore, we encourage you to use our app as a tool to inform your decisions, but always to exercise your best judgment and seek additional advice as needed.</string>
-
-    <string name="lbl_finish">Finish</string>
+    <!-- ═══════════════════════════════════════════════
+         COMMON ACTIONS / UI
+         ═══════════════════════════════════════════════ -->
     <string name="lbl_back">Back</string>
+    <string name="lbl_cancel">Cancel</string>
+    <string name="lbl_confirm">Confirm</string>
+    <string name="lbl_do_not_know">I don\'t know</string>
+    <string name="lbl_finish">Finish</string>
     <string name="lbl_next">Next</string>
+    <string name="lbl_no">No</string>
+    <string name="lbl_ok">OK</string>
+    <string name="lbl_remove">Remove</string>
+    <string name="lbl_save">Save</string>
+    <string name="lbl_yes">Yes</string>
 
+    <!-- ═══════════════════════════════════════════════
+         ONBOARDING &amp; LEGAL
+         ═══════════════════════════════════════════════ -->
+    <string name="lbl_accept_terms_prompt">Accept the terms and conditions before proceeding</string>
+    <string name="lbl_agree_to_disclaimer">Please confirm you have read and understood this disclaimer.</string>
+    <string name="lbl_agree_to_terms">I accept the terms and conditions of the application</string>
+    <string name="lbl_complete_onboarding">Complete Onboarding</string>
+    <string name="lbl_disclaimer">Disclaimer</string>
+    <string name="lbl_disclaimer_agreement_required">Please read and agree to the disclaimer</string>
+    <string name="lbl_initial_onboarding">Initial Onboarding</string>
+    <string name="lbl_terms">Terms &amp; Conditions</string>
+    <string name="lbl_terms_agreement_required">Please read and accept the terms and conditions</string>
+    <string name="important_instructions">Please note that the advice provided by AKILIMO is intended to provide helpful guidance only, and does not offer any guarantees. Success in any endeavour depends on a range of factors outside of our control, including user behaviour, how the advice is implemented and external circumstances. Therefore, we encourage you to use our app as a tool to inform your decisions, but always to exercise your best judgment and seek additional advice as needed.</string>
+    <string name="important_instructions_title">IMPORTANT INFORMATION</string>
+    <string name="welcome_subtitle">AKILIMO helps you increase yield and maximise profit in your cassava farm. Let\'s get started!</string>
+    <string name="welcome_title">Are you growing cassava? And looking to become a pro? AKILIMO can help you!</string>
+
+    <!-- ═══════════════════════════════════════════════
+         USER PROFILE
+         ═══════════════════════════════════════════════ -->
+    <string name="lbl_akilimo_interest">Main interest in AKILIMO</string>
+    <string name="lbl_email_address">Email address</string>
+    <string name="lbl_female">Female</string>
+    <string name="lbl_first_name">First name</string>
+    <string name="lbl_gender">Choose gender</string>
+    <string name="lbl_interest_agronomist">I\'m an agronomist</string>
+    <string name="lbl_interest_curious">I\'m  just curious</string>
+    <string name="lbl_interest_extension_agent">I\'m an extension agent</string>
+    <string name="lbl_interest_farmer">I\'m a farmer</string>
+    <string name="lbl_last_name">Last name</string>
+    <string name="lbl_male">Male</string>
+    <string name="lbl_phone_number">Phone number</string>
+    <string name="lbl_prefer_not_to_say">Prefer not to answer</string>
+    <string name="lbl_self_intro">We want to know you better!</string>
+
+    <!-- ═══════════════════════════════════════════════
+         SETTINGS
+         ═══════════════════════════════════════════════ -->
+    <string name="lbl_about_section">About</string>
+    <string name="lbl_appearance">Appearance</string>
+    <string name="lbl_app_version">Version</string>
+    <string name="lbl_clear_recommendations">Clear recommendation history</string>
+    <string name="lbl_clear_recommendations_desc">Reset all completed task badges</string>
+    <string name="lbl_data_storage">Data &amp; Storage</string>
+    <string name="lbl_dark_mode">Dark mode</string>
+    <string name="lbl_display_section">Display</string>
+    <string name="lbl_edit_profile">Edit profile</string>
+    <string name="lbl_fertilizer_grid">Show fertilizers as grid</string>
+    <string name="lbl_language">Language</string>
+    <string name="lbl_lock_app_language">Override system language</string>
+    <string name="lbl_privacy_policy">Privacy policy</string>
+    <string name="lbl_profile_settings">Profile &amp; Preferences</string>
+    <string name="lbl_remember_area_unit">Remember area unit</string>
+    <string name="lbl_reset_notification_badge">Reset notification badge</string>
+    <string name="lbl_reset_notification_badge_desc">Restore the default notification count</string>
+    <string name="lbl_select_area_unit">Select area unit</string>
+    <string name="lbl_select_language">Select language</string>
+    <string name="lbl_settings">Settings</string>
+    <string name="msg_badge_reset">Notification badge reset</string>
+    <string name="msg_clear_recommendations_confirm">This will reset all completed recommendation tasks. This action cannot be undone.</string>
+    <string name="msg_recommendations_cleared">Recommendation history cleared</string>
+    <string name="msg_reset_badge_confirm">Reset the notification badge count to its default value?</string>
+
+    <!-- ═══════════════════════════════════════════════
+         LOCATION
+         ═══════════════════════════════════════════════ -->
+    <string name="lbl_country">Country</string>
     <string name="lbl_country_location_sub">In which country is your farm located?</string>
+    <string name="lbl_current_location">Use current location</string>
+    <string name="lbl_farm_location">Where is your cassava field located?</string>
+    <string name="lbl_location">Location</string>
+    <string name="lbl_location_error">Unable to fetch your current location, please try again</string>
+    <string name="lbl_manual_location">Select location manually</string>
+    <string name="lbl_pick_your_country">Select country</string>
 
-    <string name="lbl_area_unit">What is your preferred field area unit?</string>
-
+    <!-- ═══════════════════════════════════════════════
+         FIELD SIZE / AREA
+         ═══════════════════════════════════════════════ -->
+    <string name="exact_field_area">Specify the exact area of your field.</string>
     <string name="lbl_acre">acre</string>
-    <string name="lbl_ha">ha</string>
+    <string name="lbl_area_unit">What is your preferred field area unit?</string>
     <string name="lbl_are">are</string>
+    <string name="lbl_cassava_field_size">What is the size of your field (in %1$s)?</string>
+    <string name="lbl_farm_size">Field size</string>
+    <string name="lbl_field">Field</string>
+    <string name="lbl_ha">ha</string>
     <string name="lbl_m2" translatable="false">m\u00B2</string>
 
-    <string name="lbl_cassava_field_size">What is the size of your field (in %1$s)?</string>
-    <!-- acres -->
-    <string name="exact_field_area">Specify the exact area of your field.</string>
-
-    <!-- ha -->
-
-    <!-- are -->
-
-    <!--  m2 -->
-
-    <string name="lbl_farm_location">Where is your cassava field located?</string>
-    <string name="lbl_current_location">Use current location</string>
-    <string name="lbl_manual_location">Select location manually</string>
-
-    <string name="lbl_recommendations">Recommendations</string>
-    <string name="lbl_fertilizers">Fertilizers</string>
-    <string name="lbl_fertilizer_recommendations">Fertilizer recommendations</string>
-    <string name="lbl_dates">Dates</string>
-    <string name="lbl_cassava">Cassava</string>
-    <string name="lbl_yield">Cassava Yield</string>
-    <string name="lbl_investment">Investment</string>
-    <string name="lbl_maize">Maize Heigh</string>
-    <string name="lbl_tillage">Tillage</string>
-    <string name="lbl_sweet_potato">Sweet Potato</string>
-    <string name="lbl_tractor_access_title">Tractor</string>
-
-    <string name="lbl_intercropping_maize">Cassava maize intercrop</string>
-    <string name="lbl_intercropping_maize_title">Maize Intercrop</string>
-    <string name="lbl_intercropping_sweet_potato">Cassava sweet potato intercrop</string>
-    <string name="lbl_intercropping_sweet_potato_title">Sweet Potato Intercrop</string>
-    <string name="lbl_scheduled_planting_and_high_starch">Scheduled planting and high starch</string>
-    <string name="lbl_best_planting_practices">Best planting practices</string>
-    <string name="lbl_best_planting_practices_title">Planting Practices</string>
-    <string name="lbl_weed_management">Weed management</string>
-
-    <string name="lbl_available_fertilizers">Which fertilizers are available for you?</string>
-
+    <!-- ═══════════════════════════════════════════════
+         PLANTING &amp; HARVEST DATES
+         ═══════════════════════════════════════════════ -->
     <string name="lbl_consider_alternative_planting">Do you want to consider alternative planting and harvest dates?</string>
-    <string name="lbl_investment_amount">How much are you willing to invest in fertilizers?</string>
-
-    <string name="lbl_typical_yield">What is the typical cassava yield of your field?</string>
-    <string name="lbl_maize_performance">The typical height of maize when grown without fertilizer</string>
-    <string name="lbl_market_outlet_sweet_potato">What price do you expect to sell your sweet potatoes at  harvest?</string>
-
-    <string name="lbl_maize_performance_poor">These are very poor soil conditions and not very common</string>
-    <string name="lbl_maize_performance_rich">These are very rich soil conditions and not very common</string>
-
-    <string name="lbl_cassava_market_outlet">Cassava prices</string>
-    <string name="lbl_market_outlet">What price do you expect for your cassava?</string>
-    <string name="lbl_market_outlet_maize">What price do you expect for your maize at harvest?</string>
-
-    <string name="lbl_tillage_operations">Tillage operations and related cost</string>
-    <string name="lbl_cost_of_manual_tillage">What is the cost of manual tillage?</string>
-    <string name="lbl_tractor_access">What operation can the tractor perform?</string>
-    <string name="lbl_cost_of_weed_control">How do you control weeds in your field?</string>
-
-    <string name="lbl_pick_planting_date">Select planting date</string>
-
-    <string name="lbl_pick_harvest_date">Select harvest date</string>
     <string name="lbl_flexible_dates">Are your dates flexible?</string>
-    <string name="lbl_planting_flex">Planting flexibility (months)</string>
     <string name="lbl_harvest_flex">Harvest flexibility (months)</string>
+    <string name="lbl_harvesting_date">Harvesting date</string>
     <string name="lbl_no_flexibility">None</string>
     <string name="lbl_one_month_window">1 month</string>
+    <string name="lbl_planting_date">Planting date</string>
+    <string name="lbl_planting_date_prompt">Provide a valid planting date</string>
+    <string name="lbl_planting_flex">Planting flexibility (months)</string>
+    <string name="lbl_planting_harvest_dates">Planting and harvest dates</string>
+    <string name="lbl_pick_harvest_date">Select harvest date</string>
+    <string name="lbl_pick_planting_date">Select planting date</string>
     <string name="lbl_two_month_window">2 months</string>
 
-    <string name="lbl_no">No</string>
-    <string name="lbl_yes">Yes</string>
-    <string name="lbl_planting_harvest_dates">Planting and harvest dates</string>
-
-    <string name="lbl_do_not_know">I don\'t know</string>
-
+    <!-- ═══════════════════════════════════════════════
+         CASSAVA YIELD
+         ═══════════════════════════════════════════════ -->
+    <string name="lbl_cassava">Cassava</string>
+    <string name="lbl_yield">Cassava Yield</string>
+    <string name="lbl_typical_yield">What is the typical cassava yield of your field?</string>
+    <!-- Per acre -->
     <string name="yield_less_than_3_tonnes_per_acre">Less than 3 tonnes per acre</string>
     <string name="yield_3_to_6_tonnes_per_acre">3 to 6 tonnes per acre</string>
     <string name="yield_6_to_9_tonnes_per_acre">6 to 9 tonnes per acre</string>
     <string name="yield_9_to_12_tonnes_per_acre">9 to 12 tonnes per acre</string>
     <string name="yield_more_than_12_tonnes_per_acre">More than 12 tonnes per acre</string>
-
+    <!-- Per hectare -->
     <string name="yield_less_than_3_tonnes_per_hectare">Less than 7.5 tonnes per hectare</string>
     <string name="yield_3_to_6_tonnes_per_hectare">7.5 to 15 tonnes per hectare</string>
     <string name="yield_6_to_9_tonnes_per_hectare">15 to 22.5 tonnes per hectare</string>
     <string name="yield_9_to_12_tonnes_per_hectare">22.5 to 30 tonnes per hectare</string>
     <string name="yield_more_than_12_tonnes_per_hectare">More than 30 tonnes per hectare</string>
-
+    <!-- Per are -->
     <string name="yield_less_than_3_tonnes_per_are">Less than 3 tonnes per are</string>
     <string name="yield_3_to_6_tonnes_per_are">3 to 6 tonnes per are</string>
     <string name="yield_6_to_9_tonnes_per_are">6 to 9 tonnes per are</string>
     <string name="yield_9_to_12_tonnes_per_are">9 to 12 tonnes per are</string>
     <string name="yield_more_than_12_tonnes_per_are">More than 12 tonnes per are</string>
-
+    <!-- Per m² -->
     <string name="yield_less_than_3_tonnes_per_meter">Less than 7.5 tonnes per  4,000 m\u00B2</string>
     <string name="yield_3_to_6_tonnes_per_meter">7.5 to 15 tonnes per  4,000 m\u00B2</string>
     <string name="yield_6_to_9_tonnes_per_meter">15 to 22.5 tonnes per  4,000 m\u00B2</string>
     <string name="yield_9_to_12_tonnes_per_meter">22.5 to 30 tonnes per  4,000 m\u00B2</string>
     <string name="yield_more_than_12_tonnes_per_meter">More than 30 tonnes per  4,000 m\u00B2</string>
-
-    <string name="per_tonne_sale_unit">Per tonne</string>
-    <string name="per_kg_sale_unit">Per kg</string>
-    <string name="per_50_kg_sale_unit">Per 50 kg bag</string>
-    <string name="per_100_kg_sale_unit">Per 100 kg bag</string>
-    <string name="per_pick_up_load_sale_unit">Per pick-up load (2 tonnes)</string>
-
-    <string name="lbl_cancel">Cancel</string>
-
-    <!--LocationPickerActivity activity-->
-    <string name="lbl_summary_title">Here is what we have so far</string>
-
-    <string name="lbl_get_recommendations">Get recommendations</string>
-
-    <!-- scroll behaviors -->
-
-    <string name="lbl_unit_price">Unit price</string>
-
-    <string name="lbl_manual_tillage_cost">How much does it cost you to manually plough {farm_size} {size_unit}?</string>
-    <string name="lbl_manual_tillage_cost_hint">Cost to manually plough {farm_size} {size_unit}</string>
-    <string name="lbl_manual_ridge_cost_hint">Cost to manually ridge {farm_size} {size_unit}</string>
-
-    <string name="lbl_tractor_plough_cost_hint">Cost to plough {farm_size} {size_unit} using a tractor</string>
-    <string name="lbl_tractor_ridge_cost_hint">Cost to ridge {farm_size} {size_unit} using a tractor</string>
-    <string name="lbl_tractor_harrow_cost_hint">Cost to harrow {farm_size} {size_unit} using a tractor</string>
-
-    <string name="lbl_gender">Choose gender</string>
-    <string name="lbl_akilimo_interest">Main interest in AKILIMO</string>
-    <string name="lbl_prefer_not_to_say">Prefer not to answer</string>
-    <string name="lbl_male">Male</string>
-    <string name="lbl_female">Female</string>
-    <string name="lbl_save">Save</string>
-    <string name="lbl_confirm">Confirm</string>
-    <string name="lbl_remove">Remove</string>
-
-    <!-- AKILIMO interest strings -->
-    <string name="lbl_interest_curious">I\'m  just curious</string>
-    <string name="lbl_interest_farmer">I\'m a farmer</string>
-    <string name="lbl_interest_agronomist">I\'m an agronomist</string>
-    <string name="lbl_interest_extension_agent">I\'m an extension agent</string>
-
-    <string name="lbl_ok">OK</string>
-
-    <string name="lbl_plough_op_type">How do you perform your ploughing operations?</string>
-
-    <!-- maize info section -->
-    <string name="lbl_knee_height">About knee height</string>
-    <string name="lbl_chest_height">Between knee and chest high with yellowish leaves</string>
-    <string name="lbl_yellowish_leaves">Taller than a person with yellow leaves</string>
-    <string name="lbl_green_leaves">Taller than a person with green leaves</string>
-    <string name="lbl_dark_green_leaves">Taller than a person with dark green leaves</string>
-
-    <string name="lbl_starch_factory">Starch factory</string>
-    <string name="lbl_regular_market">Regular cassava root markets</string>
-    <string name="lbl_fresh_cob">Fresh cob</string>
-    <string name="lbl_dry_grain">Dry grain</string>
-    <string name="lbl_plough">Plough</string>
-    <string name="lbl_ridger">Ridger</string>
-    <string name="lbl_harrow">Harrow</string>
-
-    <string name="lbl_manual_weed_control">Manual (by hand hoe and cutlass)</string>
-    <string name="lbl_herbicide_weed_control">Using herbicides</string>
-    <string name="lbl_both_weed_control">Both manual and using herbicides</string>
-    <string name="lbl_first_name">First name</string>
-    <string name="lbl_last_name">Last name</string>
-    <string name="lbl_email_address">Email address</string>
-    <string name="lbl_phone_number">Phone number</string>
-    <string name="lbl_self_intro">We want to know you better!</string>
-    <string name="lbl_exact_price">Exact price</string>
-    <string name="lbl_fertilizer_price">Fertilizer price</string>
-    <string name="lbl_tractor">By tractor</string>
-    <string name="lbl_manual">Manually</string>
-    <string name="lbl_tillage_operation">Tillage operations</string>
-    <string name="lbl_select_tillage_method">Please select a method</string>
-
-    <string name="lbl_settings">Settings</string>
-    <string name="lbl_appearance">Appearance</string>
-    <string name="lbl_profile_settings">Profile &amp; Preferences</string>
-    <string name="lbl_edit_profile">Edit profile</string>
-
-    <string name="lbl_ploughing">Ploughing</string>
-    <string name="lbl_ridging">Ridging</string>
-    <string name="lbl_harrowing">Ridging</string>
-    <string name="lbl_weeding">Weeding</string>
-
-    <string name="lbl_country">Country</string>
-    <string name="lbl_field">Field</string>
-    <string name="lbl_farm_size">Field size</string>
-    <string name="lbl_location">Location</string>
-    <string name="lbl_planting_date">Planting date</string>
-    <string name="lbl_harvesting_date">Harvesting date</string>
-    <string name="lbl_location_error">Unable to fetch your current location, please try again</string>
-
-    <string name="lbl_planting_date_prompt">Provide a valid planting date</string>
-    <string name="lbl_fertilizer_rec">Fertilizer Recommendation</string>
-    <string name="lbl_intercrop_rec">Inter-cropping Recommendation</string>
-    <string name="lbl_planting_practices_rec">Planting Practices</string>
-    <string name="lbl_scheduled_planting_rec">Scheduled Planting</string>
-    <string name="lbl_no_recommendations_prompt">No recommendations, provide more information to help us get better predictions</string>
-    <string name="lbl_first_weeding_costs_prompt">Specify cost for first weeding operation</string>
-    <string name="lbl_second_weeding_cost_prompt">Specify cost for second weeding operation</string>
-    <string name="lbl_investment_pref_prompt">Select an investment preference</string>
-
-    <string name="lbl_pick_your_country">Select country</string>
-
-    <string name="lbl_disclaimer">Disclaimer</string>
-    <string name="lbl_terms">Terms &amp; Conditions</string>
-    <string name="lbl_agree_to_terms">I accept the terms and conditions of the application</string>
-    <string name="lbl_agree_to_disclaimer">Please confirm you have read and understood this disclaimer.</string>
-    <string name="lbl_accept_terms_prompt">Accept the terms and conditions before proceeding</string>
-
-    <string name="fcy_lower">Lower</string>
-    <string name="fcy_about_the_same">About the same</string>
-    <string name="fcy_somewhat_higher">Somewhat higher</string>
-    <string name="fcy_2_3_times_higher">2–3 times higher</string>
-    <string name="fcy_more_than_3_times_higher">More than 3 times or higher</string>
-
+    <!-- Yield feedback -->
+    <string name="lbl_high_yield">This is a high yield</string>
     <string name="lbl_low_yield">This is a low yield</string>
     <string name="lbl_normal_yield">This is a normal yield</string>
-    <string name="lbl_high_yield">This is a high yield</string>
     <string name="lbl_very_high_yield">This is a very high yield</string>
+    <!-- Expected yield vs fertiliser -->
+    <string name="fcy_2_3_times_higher">2–3 times higher</string>
+    <string name="fcy_about_the_same">About the same</string>
+    <string name="fcy_lower">Lower</string>
+    <string name="fcy_more_than_3_times_higher">More than 3 times or higher</string>
+    <string name="fcy_somewhat_higher">Somewhat higher</string>
+
+    <!-- ═══════════════════════════════════════════════
+         INVESTMENT
+         ═══════════════════════════════════════════════ -->
+    <string name="lbl_investment">Investment</string>
+    <string name="lbl_investment_amount">How much are you willing to invest in fertilizers?</string>
     <string name="lbl_investment_pref">What is your investment preference?</string>
+    <string name="lbl_investment_pref_prompt">Select an investment preference</string>
     <string name="lbl_investment_pref_sub">To provide tailored advice that suits your investment preferences, we ask how often you invest in new farm products or technologies. If you invest often, we will provide higher-risk, higher-return recommendations. If you prefer safer options, please indicate that you invest only rarely.</string>
-
     <string name="lbl_often">Often</string>
-    <string name="lbl_sometimes">Sometimes</string>
     <string name="lbl_rarely">Rarely</string>
+    <string name="lbl_sometimes">Sometimes</string>
 
-    <!-- Bag units (conversational) -->
-
-    <!-- Unit labels (conversational but concise) -->
-    <string name="lbl_one_kg_unit">1 kilo</string>
-    <string name="lbl_50_kg_unit">50-kg bag</string>
-    <string name="lbl_100_kg_unit">100-kg bag</string>
+    <!-- ═══════════════════════════════════════════════
+         MARKET / PRICES
+         ═══════════════════════════════════════════════ -->
     <string name="lbl_1000_kg_unit">1 tonne</string>
+    <string name="lbl_100_kg_unit">100-kg bag</string>
+    <string name="lbl_50_kg_unit">50-kg bag</string>
+    <string name="lbl_cassava_market_outlet">Cassava prices</string>
+    <string name="lbl_dry_grain">Dry grain</string>
+    <string name="lbl_exact_price">Exact price</string>
+    <string name="lbl_fresh_cob">Fresh cob</string>
+    <string name="lbl_market_outlet">What price do you expect for your cassava?</string>
+    <string name="lbl_market_outlet_maize">What price do you expect for your maize at harvest?</string>
+    <string name="lbl_market_outlet_sweet_potato">What price do you expect to sell your sweet potatoes at  harvest</string>
+    <string name="lbl_one_kg_unit">1 kilo</string>
+    <string name="lbl_regular_market">Regular cassava root markets</string>
+    <string name="lbl_starch_factory">Starch factory</string>
+    <string name="lbl_unit_price">Unit price</string>
+    <string name="per_100_kg_sale_unit">Per 100 kg bag</string>
+    <string name="per_50_kg_sale_unit">Per 50 kg bag</string>
+    <string name="per_kg_sale_unit">Per kg</string>
+    <string name="per_pick_up_load_sale_unit">Per pick-up load (2 tonnes)</string>
+    <string name="per_tonne_sale_unit">Per tonne</string>
 
-    <string name="lbl_remember_pref">Remember my preference and skip next time</string>
+    <!-- ═══════════════════════════════════════════════
+         MAIZE PERFORMANCE
+         ═══════════════════════════════════════════════ -->
+    <string name="lbl_chest_height">Between knee and chest high with yellowish leaves</string>
+    <string name="lbl_dark_green_leaves">Taller than a person with dark green leaves</string>
+    <string name="lbl_green_leaves">Taller than a person with green leaves</string>
+    <string name="lbl_knee_height">About knee height</string>
+    <string name="lbl_maize">Maize Heigh</string>
+    <string name="lbl_maize_performance">The typical height of maize when grown without fertilizer</string>
+    <string name="lbl_maize_performance_poor">These are very poor soil conditions and not very common</string>
+    <string name="lbl_maize_performance_rich">These are very rich soil conditions and not very common</string>
+    <string name="lbl_yellowish_leaves">Taller than a person with yellow leaves</string>
 
-    <string name="lbl_exit_application">Exit Application</string>
-    <string name="lbl_confirm_app_exit">Are you sure you want to exit?</string>
+    <!-- ═══════════════════════════════════════════════
+         TILLAGE
+         ═══════════════════════════════════════════════ -->
+    <string name="lbl_cost_of_manual_tillage">What is the cost of manual tillage?</string>
+    <string name="lbl_harrow">Harrow</string>
+    <string name="lbl_harrowing">Ridging</string>
+    <string name="lbl_manual">Manually</string>
+    <string name="lbl_manual_ridge_cost_hint">Cost to manually ridge {farm_size} {size_unit}</string>
+    <string name="lbl_manual_tillage_cost">How much does it cost you to manually plough {farm_size} {size_unit}?</string>
+    <string name="lbl_manual_tillage_cost_hint">Cost to manually plough {farm_size} {size_unit}</string>
+    <string name="lbl_plough">Plough</string>
+    <string name="lbl_ploughing">Ploughing</string>
+    <string name="lbl_plough_op_type">How do you perform your ploughing operations?</string>
+    <string name="lbl_ridger">Ridger</string>
+    <string name="lbl_ridging">Ridging</string>
+    <string name="lbl_select_tillage_method">Please select a method</string>
+    <string name="lbl_tillage">Tillage</string>
+    <string name="lbl_tillage_operation">Tillage operations</string>
+    <string name="lbl_tillage_operations">Tillage operations and related cost</string>
+    <string name="lbl_tractor">By tractor</string>
+    <string name="lbl_tractor_access">What operation can the tractor perform?</string>
+    <string name="lbl_tractor_access_title">Tractor</string>
+    <string name="lbl_tractor_harrow_cost_hint">Cost to harrow {farm_size} {size_unit} using a tractor</string>
+    <string name="lbl_tractor_plough_cost_hint">Cost to plough {farm_size} {size_unit} using a tractor</string>
+    <string name="lbl_tractor_ridge_cost_hint">Cost to ridge {farm_size} {size_unit} using a tractor</string>
+    <string name="lbl_weeding">Weeding</string>
 
-    <!-- Main feedback section -->
+    <!-- ═══════════════════════════════════════════════
+         WEED CONTROL
+         ═══════════════════════════════════════════════ -->
+    <string name="lbl_both_weed_control">Both manual and using herbicides</string>
+    <string name="lbl_cost_of_weed_control">How do you control weeds in your field?</string>
+    <string name="lbl_first_weeding_costs_prompt">Specify cost for first weeding operation</string>
+    <string name="lbl_herbicide_weed_control">Using herbicides</string>
+    <string name="lbl_manual_weed_control">Manual (by hand hoe and cutlass)</string>
+    <string name="lbl_second_weeding_cost_prompt">Specify cost for second weeding operation</string>
 
-    <!-- Rating labels -->
+    <!-- ═══════════════════════════════════════════════
+         INTERCROPPING
+         ═══════════════════════════════════════════════ -->
+    <string name="lbl_intercropping_maize">Cassava maize intercrop</string>
+    <string name="lbl_intercropping_maize_title">Maize Intercrop</string>
+    <string name="lbl_intercropping_sweet_potato">Cassava sweet potato intercrop</string>
+    <string name="lbl_intercropping_sweet_potato_title">Sweet Potato Intercrop</string>
+    <string name="lbl_sweet_potato">Sweet Potato</string>
 
-    <!-- Recommendation section -->
+    <!-- ═══════════════════════════════════════════════
+         FERTILIZERS
+         ═══════════════════════════════════════════════ -->
+    <string name="lbl_available_fertilizers">Which fertilizers are available for you?</string>
+    <string name="lbl_available_fertilizers_subtitle">Select the fertilizers that you can find at your local dealer.</string>
+    <string name="lbl_fertilizer_price">Fertilizer price</string>
+    <string name="lbl_fertilizer_rec">Fertilizer Recommendation</string>
+    <string name="lbl_fertilizer_recommendations">Fertilizer recommendations</string>
+    <string name="lbl_fertilizers">Fertilizers</string>
+    <string name="lbl_select_fertilizers">Select Fertilizers</string>
 
-    <!-- NPS labels -->
-
-    <!-- Submit button -->
-
-    <!-- Error messages -->
+    <!-- ═══════════════════════════════════════════════
+         RECOMMENDATIONS
+         ═══════════════════════════════════════════════ -->
     <string name="error_fetch_recommendation">Failed to fetch recommendation</string>
+    <string name="lbl_best_planting_practices">Best planting practices</string>
+    <string name="lbl_best_planting_practices_title">Planting Practices</string>
+    <string name="lbl_dates">Dates</string>
+    <string name="lbl_get_recommendations">Get recommendations</string>
+    <string name="lbl_intercrop_rec">Inter-cropping Recommendation</string>
+    <string name="lbl_no_recommendations_prompt">No recommendations, provide more information to help us get better predictions</string>
+    <string name="lbl_planting_practices_rec">Planting Practices</string>
+    <string name="lbl_recommendations">Recommendations</string>
+    <string name="lbl_scheduled_planting_and_high_starch">Scheduled planting and high starch</string>
+    <string name="lbl_scheduled_planting_rec">Scheduled Planting</string>
+    <string name="lbl_summary_title">Here is what we have so far</string>
+    <string name="lbl_weed_management">Weed management</string>
 
-    <!-- Feedback labels -->
-    <string name="feedback_very_poor">Very poor</string>
-    <string name="feedback_poor">Poor</string>
-    <string name="feedback_okay">Okay</string>
-    <string name="feedback_good">Good</string>
+    <!-- ═══════════════════════════════════════════════
+         FEEDBACK
+         ═══════════════════════════════════════════════ -->
     <string name="feedback_excellent">Excellent</string>
-
-    <!-- NPS feedback labels -->
+    <string name="feedback_good">Good</string>
+    <string name="feedback_nps_high">Awesome! Thanks for the love</string>
     <string name="feedback_nps_low">Thanks for being honest with us</string>
     <string name="feedback_nps_medium">Thanks for your feedback</string>
-    <string name="feedback_nps_high">Awesome! Thanks for the love</string>
+    <string name="feedback_okay">Okay</string>
+    <string name="feedback_poor">Poor</string>
+    <string name="feedback_very_poor">Very poor</string>
 
-    <!-- Feedback submission -->
+    <!-- ═══════════════════════════════════════════════
+         NAVIGATION &amp; EXIT
+         ═══════════════════════════════════════════════ -->
+    <string name="lbl_confirm_app_exit">Are you sure you want to exit?</string>
+    <string name="lbl_exit_application">Exit Application</string>
+    <string name="lbl_remember_pref">Remember my preference and skip next time</string>
 
-    <!-- User Settings screen -->
-    <string name="lbl_display_section">Display</string>
-    <string name="lbl_fertilizer_grid">Show fertilizers as grid</string>
-    <string name="lbl_remember_area_unit">Remember area unit</string>
-    <string name="lbl_app_version">Version</string>
-    <string name="lbl_privacy_policy">Privacy policy</string>
-    <string name="lbl_about_section">About</string>
-    <string name="lbl_data_storage">Data &amp; Storage</string>
-    <string name="lbl_clear_recommendations">Clear recommendation history</string>
-    <string name="lbl_clear_recommendations_desc">Reset all completed task badges</string>
-    <string name="lbl_reset_notification_badge">Reset notification badge</string>
-    <string name="lbl_reset_notification_badge_desc">Restore the default notification count</string>
-    <string name="msg_clear_recommendations_confirm">This will reset all completed recommendation tasks. This action cannot be undone.</string>
-    <string name="msg_reset_badge_confirm">Reset the notification badge count to its default value?</string>
-    <string name="msg_recommendations_cleared">Recommendation history cleared</string>
-    <string name="msg_badge_reset">Notification badge reset</string>
-    <string name="lbl_dark_mode">Dark mode</string>
-    <string name="lbl_language">Language</string>
-    <string name="lbl_select_language">Select language</string>
-    <string name="lbl_select_area_unit">Select area unit</string>
-    <string name="lbl_initial_onboarding">Initial Onboarding</string>
-    <string name="lbl_complete_onboarding">Complete Onboarding</string>
-    <string name="lbl_disclaimer_agreement_required">Please read and agree to the disclaimer</string>
-    <string name="lbl_terms_agreement_required">Please read and accept the terms and conditions</string>
 </resources>
