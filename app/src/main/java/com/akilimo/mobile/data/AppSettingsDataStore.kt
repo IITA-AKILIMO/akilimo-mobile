@@ -69,7 +69,7 @@ class AppSettingsDataStore @Inject constructor(
 ) {
     companion object {
         private const val DEFAULT_USER = "akilimo_user"
-        private const val DEFAULT_TERMS_URL = "https://akilimo.org/index.php/akilimo-privacy-policy"
+        private const val DEFAULT_TERMS_URL = "file:///android_asset/privacy_policy.html"
 
         /** Language tag — synchronous read for use in [android.app.Activity.attachBaseContext]. */
         fun readLanguageTagSync(context: Context): String = runBlocking {
