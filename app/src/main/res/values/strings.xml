@@ -738,6 +738,15 @@
     <string name="lbl_app_version">Version</string>
     <string name="lbl_privacy_policy">Privacy policy</string>
     <string name="lbl_about_section">About</string>
+    <string name="lbl_data_storage">Data &amp; Storage</string>
+    <string name="lbl_clear_recommendations">Clear recommendation history</string>
+    <string name="lbl_clear_recommendations_desc">Reset all completed task badges</string>
+    <string name="lbl_reset_notification_badge">Reset notification badge</string>
+    <string name="lbl_reset_notification_badge_desc">Restore the default notification count</string>
+    <string name="msg_clear_recommendations_confirm">This will reset all completed recommendation tasks. This action cannot be undone.</string>
+    <string name="msg_reset_badge_confirm">Reset the notification badge count to its default value?</string>
+    <string name="msg_recommendations_cleared">Recommendation history cleared</string>
+    <string name="msg_badge_reset">Notification badge reset</string>
     <string name="lbl_bio">About me</string>
     <string name="lbl_bio_hint">Tell us a little about yourself</string>
     <string name="lbl_dark_mode">Dark mode</string>
