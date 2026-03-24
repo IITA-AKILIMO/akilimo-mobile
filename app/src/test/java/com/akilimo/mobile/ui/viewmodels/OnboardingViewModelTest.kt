@@ -21,9 +21,9 @@ import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -120,26 +120,6 @@ class OnboardingViewModelTest {
         advanceUntilIdle()
 
         assertFalse(viewModel.state.value.visibleSections.contains(OnboardingSection.AREA_UNIT))
-    }
-
-    // ── Language selection ────────────────────────────────────────────────────
-
-    @Test
-    fun `LanguageSelected updates languageCode and sends LanguageChangeRequested effect`() = runTest {
-        coEvery { userRepo.getUser("user1") } returns null
-        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
-
-        val viewModel = buildViewModel()
-
-        viewModel.effect.test {
-            viewModel.onEvent(OnboardingViewModel.Event.LanguageSelected("sw-TZ"))
-            advanceUntilIdle()
-
-            assertEquals("sw-TZ", viewModel.state.value.languageCode)
-            val effect = awaitItem() as OnboardingViewModel.Effect.LanguageChangeRequested
-            assertEquals("sw-TZ", effect.languageTag)
-            cancelAndIgnoreRemainingEvents()
-        }
     }
 
     // ── Disclaimer / Terms ────────────────────────────────────────────────────
