@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.Locales
 import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.entities.AkilimoUser
+import com.akilimo.mobile.repos.AdviceCompletionRepo
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.UserPreferencesRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,6 +25,7 @@ class SettingsViewModel @Inject constructor(
     private val appSettings: AppSettingsDataStore,
     private val userRepo: AkilimoUserRepo,
     private val prefsRepo: UserPreferencesRepo,
+    private val adviceRepo: AdviceCompletionRepo,
 ) : ViewModel() {
 
     data class UiState(
@@ -37,6 +39,7 @@ class SettingsViewModel @Inject constructor(
     sealed interface Effect {
         data class LanguageChanged(val languageTag: String) : Effect
         data class LockAppLanguageChanged(val locked: Boolean, val languageTag: String) : Effect
+        data class ShowSnackbar(val message: String) : Effect
     }
 
     private val _uiState = MutableStateFlow(UiState())
@@ -108,6 +111,20 @@ class SettingsViewModel @Inject constructor(
             appSettings.setLockAppLanguage(locked)
             val tag = appSettings.languageTag
             _effect.send(Effect.LockAppLanguageChanged(locked, tag))
+        }
+    }
+
+    fun clearRecommendations(clearedMessage: String) {
+        viewModelScope.launch {
+            adviceRepo.clearAll()
+            _effect.send(Effect.ShowSnackbar(clearedMessage))
+        }
+    }
+
+    fun resetNotificationCount(resetMessage: String) {
+        viewModelScope.launch {
+            appSettings.notificationCount = 3
+            _effect.send(Effect.ShowSnackbar(resetMessage))
         }
     }
 }
