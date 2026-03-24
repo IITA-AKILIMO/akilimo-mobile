@@ -6,9 +6,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.akilimo.mobile.data.AppSettingsDataStore
 import dev.b3nedikt.app_locale.AppLocale
 import javax.inject.Inject
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import com.akilimo.mobile.navigation.AkilimoNavHost
 import com.akilimo.mobile.navigation.LegalWizardRoute
@@ -51,7 +53,9 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            AkilimoTheme {
+            val darkMode by appSettings.darkModeFlow
+                .collectAsStateWithLifecycle(initialValue = appSettings.getDarkModeSync())
+            AkilimoTheme(darkTheme = darkMode) {
                 AkilimoNavHost(startDestination = startRoute)
             }
         }

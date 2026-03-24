@@ -31,7 +31,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.FloatingActionButton
-import com.akilimo.mobile.navigation.OnboardingRoute
+import com.akilimo.mobile.navigation.SettingsRoute
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -105,7 +105,7 @@ fun RecommendationsScreen(navController: NavHostController) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navController.navigate(OnboardingRoute) },
+                onClick = { navController.navigate(SettingsRoute) },
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
             ) {
