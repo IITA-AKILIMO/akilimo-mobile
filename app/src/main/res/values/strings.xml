@@ -270,7 +270,7 @@
     <string name="lbl_market_outlet_sweet_potato">What price do you expect to sell your sweet potatoes at  harvest</string>
     <string name="lbl_unit_price">Unit price</string>
     <string name="lbl_exact_price">Exact price</string>
-    <string name="lbl_weather_summary">%1$d° - %2$s</string>
+    <string name="lbl_weather_summary" translatable="false">%1$d° - %2$s</string>
     <string name="lbl_weather_feels_like">Feels like %1$d°C - %2$d%% humidity</string>
     <!-- Sale units -->
     <string name="per_tonne_sale_unit">Per tonne</string>
@@ -347,8 +347,8 @@
          MISC UI
          ═══════════════════════════════════════════════ -->
     <string name="lbl_selected">Selected</string>
-    <string name="lbl_maize_perf_50">50</string>
-    <string name="lbl_maize_perf_150">150</string>
+    <string name="lbl_maize_perf_50" translatable="false">50</string>
+    <string name="lbl_maize_perf_150" translatable="false">150</string>
     <string name="lbl_maize_perf_yellow">yellow</string>
     <string name="lbl_maize_perf_green">green</string>
     <string name="lbl_maize_perf_dark_green">dark green</string>
