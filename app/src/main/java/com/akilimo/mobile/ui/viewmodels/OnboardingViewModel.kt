@@ -388,7 +388,7 @@ class OnboardingViewModel @Inject constructor(
         )
 
         userRepo.saveOrUpdateUser(updatedUser, userName)
-//        appSettings.isFirstRun = false
+        appSettings.isFirstRun = false
 
         // Update settings
         if (s.disclaimerRead) appSettings.disclaimerRead = true
