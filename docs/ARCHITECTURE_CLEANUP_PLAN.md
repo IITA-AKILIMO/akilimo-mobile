@@ -18,6 +18,7 @@ It is not a rewrite proposal. The app already has a workable structure, but it i
 - [x] Added package guardrails to contributor guidance to stop new additions to `rest`, `helper`, `utils`, and `interfaces` by default.
 - [x] Split the root navigation host into feature graph registration functions.
 - [x] Added a concrete package audit checklist for `helper`, `utils`, `interfaces`, `extensions`, `wizard`, `network`, and `rest`.
+- [x] Moved `FertilizerViewModel` into `ui/viewmodels/usecases` as the first feature-specific ViewModel packaging slice.
 
 ## Current Assessment
 
@@ -152,22 +153,23 @@ Status: `[ ] Not started` `[ ] In progress` `[ ] Blocked` `[ ] Done`
 
 Problem:
 
-- UI is partially feature-grouped, but ViewModels remain centralized in `ui/viewmodels`.
-- This increases distance between screens, state, and behavior.
+- UI is partially feature-grouped, but ViewModels are still mostly flat under `ui/viewmodels`.
+- This makes it harder to see feature ownership while still keeping ViewModels separated from screens.
 
 Plan checklist:
 
-- [ ] For new work, colocate screens with their related state and ViewModel where practical.
+- [ ] For new work, place ViewModels in feature-specific ViewModel packages rather than a single flat `ui/viewmodels` package.
 - [ ] Introduce feature-local screen state types where needed.
 - [ ] Introduce feature-local event/effect types where needed.
-- [ ] Stop extending centralized `ui/viewmodels` for brand-new feature code by default.
+- [ ] Stop extending a single flat `ui/viewmodels` package for brand-new feature code by default.
 - [ ] Use the target shape below as the default for touched or new features.
 
 Example target shape:
 
 ```text
-ui/features/usecases/fertilizer/
+ui/screens/usecases/
   FertilizerScreen.kt
+ui/viewmodels/usecases/
   FertilizerViewModel.kt
   FertilizerUiState.kt
 ```
@@ -293,7 +295,7 @@ Owner: `[ ] Unassigned`
 Status: `[ ] Not started` `[x] In progress` `[ ] Blocked` `[ ] Done`
 
 - [x] Split `AkilimoNavHost` into feature graph functions
-- [ ] Start moving new or touched features toward feature-local UI packaging
+- [x] Start moving new or touched features toward feature-specific packaging
 - [ ] Consolidate remote infrastructure into one package path
 
 ### Phase 3: Migration residue reduction
@@ -324,7 +326,7 @@ This should only happen if the single-module structure becomes a real bottleneck
 Use these rules immediately:
 
 - New Compose screens go under feature-specific UI packages.
-- New ViewModels should be colocated with the feature when practical.
+- New ViewModels should live in feature-specific ViewModel packages, not in the same package as screens.
 - New remote code should go into the chosen remote-data package, not `rest`.
 - Do not add new files to `helper` or `utils` unless there is a strong, explicit reason.
 - Prefer specific names over generic names like `Manager`, `Helper`, or `Utils`.
@@ -347,7 +349,7 @@ Mitigation:
 - [x] Update team conventions to ban new additions to `rest`, `helper`, `utils`, and `interfaces` unless justified.
 - [x] Split `AkilimoNavHost.kt` into feature graph registration functions.
 - [x] Create a package audit checklist for `helper`, `utils`, `interfaces`, `extensions`, `wizard`, `network`, and `rest`.
-- [ ] Start colocating new feature UI code instead of extending centralized `ui/viewmodels`.
+- [x] Start moving new feature UI code toward feature-specific packaging instead of extending a flat centralized `ui/viewmodels`.
 - [ ] Add tests around the most central ViewModels before larger structural moves.
 
 ## Definition Of Success
