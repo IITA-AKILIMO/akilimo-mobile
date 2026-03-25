@@ -16,10 +16,10 @@ import com.akilimo.mobile.repos.InvestmentRepo
 import com.akilimo.mobile.repos.SelectedCassavaMarketRepo
 import com.akilimo.mobile.repos.SelectedFertilizerRepo
 import com.akilimo.mobile.repos.SelectedInvestmentRepo
-import com.akilimo.mobile.rest.request.ComputeRequest
-import com.akilimo.mobile.rest.request.FertilizerRequest
-import com.akilimo.mobile.rest.request.RecommendationRequest
-import com.akilimo.mobile.rest.request.UserInfo
+import com.akilimo.mobile.network.request.ComputeRequest
+import com.akilimo.mobile.network.request.FertilizerRequest
+import com.akilimo.mobile.network.request.RecommendationRequest
+import com.akilimo.mobile.network.request.UserInfo
 import com.akilimo.mobile.utils.orZero
 import com.akilimo.mobile.utils.isPositive
 import com.akilimo.mobile.utils.orUnavailable

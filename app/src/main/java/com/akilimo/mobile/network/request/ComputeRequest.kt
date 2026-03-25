@@ -1,4 +1,4 @@
-package com.akilimo.mobile.rest.request
+package com.akilimo.mobile.network.request
 
 import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.enums.EnumUseCase

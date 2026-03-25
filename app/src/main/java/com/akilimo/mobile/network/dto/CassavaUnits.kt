@@ -1,4 +1,4 @@
-package com.akilimo.mobile.dto
+package com.akilimo.mobile.network.dto
 
 import com.akilimo.mobile.entities.CassavaUnit
 import com.squareup.moshi.Json

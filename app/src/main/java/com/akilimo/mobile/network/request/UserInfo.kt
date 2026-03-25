@@ -1,4 +1,4 @@
-package com.akilimo.mobile.rest.request
+package com.akilimo.mobile.network.request
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

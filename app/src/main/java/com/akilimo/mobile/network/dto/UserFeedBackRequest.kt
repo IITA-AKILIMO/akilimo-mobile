@@ -1,4 +1,4 @@
-package com.akilimo.mobile.dto
+package com.akilimo.mobile.network.dto
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

@@ -1,4 +1,4 @@
-package com.akilimo.mobile.rest.response
+package com.akilimo.mobile.network.response
 
 import com.squareup.moshi.Json
 
