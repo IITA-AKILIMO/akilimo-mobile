@@ -1,6 +1,11 @@
 # AKILIMO Mobile
 
-[![Android CI](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/android.yml/badge.svg)](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/android.yml)
+### Badges
+[![Unit Tests](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/unit-test.yml/badge.svg)](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/unit-test.yml)
+
+[![Build APK](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/build-apk.yml/badge.svg)](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/build-apk.yml)
+
+[![Sonar Analysis](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/sonar-analysis.yml/badge.svg)](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/sonar-analysis.yml)
 
 AKILIMO Mobile is an Android application for delivering site-specific agronomic recommendations to farmers and extension agents. The app combines location-aware data collection, crop/use-case workflows, and remote recommendation APIs with offline-friendly local storage.
 
