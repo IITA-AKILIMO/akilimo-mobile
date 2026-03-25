@@ -2,7 +2,7 @@ package com.akilimo.mobile.enums
 
 import android.content.Context
 import com.akilimo.mobile.R
-import com.akilimo.mobile.interfaces.ILabelProvider
+import com.akilimo.mobile.enums.ILabelProvider
 
 enum class EnumAdvice(private val stringResId: Int, private val titleResId: Int) : ILabelProvider {
     FERTILIZER_RECOMMENDATIONS(R.string.lbl_fertilizer_recommendations, R.string.lbl_fertilizer_rec),

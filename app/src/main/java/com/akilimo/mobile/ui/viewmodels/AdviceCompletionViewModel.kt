@@ -2,7 +2,7 @@ package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.akilimo.mobile.entities.AdviceCompletionDto
+import com.akilimo.mobile.dto.AdviceCompletionDto
 import com.akilimo.mobile.repos.AdviceCompletionRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

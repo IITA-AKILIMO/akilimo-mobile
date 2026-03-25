@@ -2,7 +2,7 @@ package com.akilimo.mobile.enums
 
 import android.os.Parcelable
 import com.akilimo.mobile.R
-import com.akilimo.mobile.interfaces.ILabelProvider
+import com.akilimo.mobile.enums.ILabelProvider
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

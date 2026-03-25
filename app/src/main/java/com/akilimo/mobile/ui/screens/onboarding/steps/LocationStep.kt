@@ -26,7 +26,7 @@ import androidx.navigation.NavHostController
 import com.akilimo.mobile.R
 import com.akilimo.mobile.navigation.LocationPickerRoute
 import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
-import com.akilimo.mobile.utils.LocationHelper
+import com.akilimo.mobile.network.LocationHelper
 import com.akilimo.mobile.utils.PermissionHelper
 import kotlinx.coroutines.launch
 

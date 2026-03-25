@@ -11,6 +11,7 @@ import com.akilimo.mobile.repos.FertilizerPriceRepo
 import com.akilimo.mobile.repos.FertilizerRepo
 import com.akilimo.mobile.repos.SelectedFertilizerRepo
 import com.akilimo.mobile.rules.TestDispatcherRule
+import com.akilimo.mobile.ui.viewmodels.FertilizerViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -55,7 +56,7 @@ class FertilizerViewModelTest {
 
     @Before
     fun setUp() {
-        // intentionally empty — each test builds its own ViewModel to control mock state
+        // intentionally empty - each test builds its own ViewModel to control mock state
     }
 
     @Test

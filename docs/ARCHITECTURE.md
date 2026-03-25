@@ -31,8 +31,8 @@ The app follows a modern Android architecture using **Jetpack Compose**, **Hilt*
            │ Room DAO                 │ Retrofit service
 ┌──────────▼──────────────┐  ┌───────▼───────────────────────────┐
 │    LOCAL (Room)         │  │    REMOTE (Retrofit 3 / OkHttp 5) │
-│  DB: AKILIMO_V4         │  │  ApiClient → AkilimoApi            │
-│  Room Migrations        │  │  Moshi JSON (KSP codegen)          │
+│  DB: AKILIMO_V5         │  │  ApiClient → AkilimoApi            │
+│  Room Migrations v2→5   │  │  Moshi JSON (KSP codegen)          │
 └─────────────────────────┘  └───────────────────────────────────┘
            │
 ┌──────────▼─────────────────────────────────────────────────────┐
@@ -54,29 +54,51 @@ The app follows a modern Android architecture using **Jetpack Compose**, **Hilt*
 ```
 com.akilimo.mobile/
 ├── AkilimoApp.kt             Application: Hilt, WorkManager config, NetworkMonitor
-├── database/                 
-│   └── AppDatabase.kt        Room singleton (Migrations, TypeConverters)
-├── Locales.kt                Canonical BCP-47 tags (en-US, sw-TZ, rw-RW)
+├── Locales.kt                Canonical BCP-47 tags (en, sw-TZ, rw-RW)
 ├── data/
-│   └── AppSettingsDataStore.kt  Preferences DataStore (Reactive settings)
+│   └── AppSettingsDataStore.kt  Preferences DataStore — 17 keys, single source of truth
+├── database/
+│   ├── AppDatabase.kt        Room singleton (version 5, 17 entities, TypeConverters)
+│   └── DatabaseMigrations.kt Manual SQL migrations (v2→3, v3→4, v4→5)
 ├── navigation/
-│   ├── Route.kt              @Serializable route definitions
-│   └── AkilimoNavHost.kt     Navigation graph and transitions
+│   ├── Route.kt              @Serializable route definitions (20+ routes)
+│   └── AkilimoNavHost.kt     Navigation graph with modular feature graphs
 ├── ui/
-│   ├── activities/           MainActivity (launcher / single-host)
+│   ├── activities/           MainActivity (single-Activity host)
 │   ├── screens/              Compose screens grouped by feature
-│   ├── viewmodels/           @HiltViewModel per screen
-│   ├── components/compose/   Shared Compose primitives (Buttons, Cards, Forms)
+│   │   ├── onboarding/       Welcome, legal wizard, onboarding steps
+│   │   ├── usecases/         Fertilizer, Cassava, Maize, Investment screens
+│   │   ├── recommendations/  Recommendation screens
+│   │   └── settings/         Settings, location picker, WebView
+│   ├── viewmodels/           @HiltViewModel per screen (17 total)
+│   │   └── usecases/         FertilizerViewModel (assisted injection)
+│   ├── components/compose/   Shared Compose primitives (18 components)
 │   └── theme/                Material 3 (Colors, Typography, Shapes)
-├── repos/                    Typed repositories wrapping DAOs and APIs
-├── dao/                      Room @Dao interfaces
-├── entities/                 Room @Entity data classes
+├── repos/                    Typed repositories (15 total) — only layer ViewModels call
+├── dao/                      Room @Dao interfaces (16 total)
+├── entities/                 Room @Entity data classes (17 total)
+│   └── relations/            Room relation classes
 ├── dto/                      Data Transfer Objects (API / UI models)
+├── enums/                    Domain enums (32+): EnumCountry, EnumAreaUnit, EnumAdvice…
 ├── network/
-│   ├── ApiClient.kt          Retrofit builder, TLS, interceptors
-│   ├── AkilimoApi.kt         Main API interface
-│   └── NetworkMonitor.kt     Connectivity tracking
-└── workers/                  WorkManager workers + WorkerScheduler
+│   ├── ApiClient.kt          Retrofit + OkHttp builder, TLS, interceptors
+│   ├── AkilimoApi.kt         Main API service interface
+│   ├── LocationIqApi.kt      Reverse geocoding service
+│   ├── WeatherApi.kt         Weather data service
+│   └── NetworkMonitor.kt     StateFlow<Boolean> connectivity tracking
+├── rest/                     Request/response models (do not add new files here)
+├── workers/                  WorkManager CoroutineWorkers + WorkerScheduler
+│   ├── FertilizerWorker      → FertilizerPriceWorker (chained)
+│   ├── InvestmentAmountWorker, CassavaPriceWorker, CassavaUnitWorker, StarchFactoryWorker
+│   └── WorkerScheduler.kt
+├── di/
+│   └── AppModule.kt          15 @Singleton @Provides repository bindings
+├── config/
+│   └── AppConfig.kt          Runtime configuration (API endpoints)
+├── helper/                   Cross-cutting helpers (LocaleHelper, WorkStateMapper)
+├── utils/                    Utility functions (do not add new files here)
+├── extensions/               Extension functions (WorkerExtensions)
+└── base/workers/             Base CoroutineWorker subclass
 ```
 
 ---
@@ -86,8 +108,14 @@ com.akilimo.mobile/
 ### Startup Sequence
 `MainActivity.onCreate()` initializes the app:
 1. `enableEdgeToEdge()` — Configures edge-to-edge display.
-2. Evaluates `appSettings.isFirstRun` and `appSettings.disclaimerRead` to determine the `startRoute`.
+2. Evaluates `appSettings.isFirstRun`, `appSettings.disclaimerRead`, and `appSettings.termsAccepted` to determine the `startRoute`: `LegalWizardRoute` → `OnboardingRoute` → `RecommendationsRoute`.
 3. Sets the content to `AkilimoTheme` wrapping `AkilimoNavHost(startDestination)`.
+
+`AkilimoApp.onCreate()` runs before `MainActivity`:
+1. Initializes Hilt, WorkManager (custom `Configuration.Provider`), and `NetworkMonitor`.
+2. Applies locale from `AppSettingsDataStore` via `AppCompatDelegate.setApplicationLocales()`.
+3. Applies dark mode preference.
+4. Schedules 6 one-time WorkManager workers for reference data sync.
 
 ### Navigation Architecture
 Navigation is handled entirely within Compose using `navigation-compose` with type-safe routes:
@@ -147,6 +175,10 @@ Background synchronization is managed by `WorkManager` via the `WorkerScheduler`
 
 ## 8. Network Stack
 
-- **Retrofit 3.0** + **OkHttp 5.2** + **Moshi 1.15** (KSP).
+- **Retrofit 3.0** + **OkHttp 5.2** + **Moshi 1.15** (KSP codegen via KSP).
 - **Security**: Custom TLS handling for older Android versions (ISRG Root X1).
-- **Interceptors**: Logging, retries, and network availability checks.
+- **Interceptors**: Logging, `RetryInterceptor` (exponential backoff), network availability checks.
+- **API Services**:
+  - `AkilimoApi` — main service: recommendations, options, feedback
+  - `LocationIqApi` — reverse geocoding for location picker
+  - `WeatherApi` — weather data for recommendations

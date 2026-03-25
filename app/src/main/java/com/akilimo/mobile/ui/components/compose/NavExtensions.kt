@@ -1,7 +1,7 @@
 package com.akilimo.mobile.ui.components.compose
 
 import androidx.navigation.NavHostController
-import com.akilimo.mobile.entities.AdviceCompletionDto
+import com.akilimo.mobile.dto.AdviceCompletionDto
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumStepStatus
 

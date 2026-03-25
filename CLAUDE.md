@@ -35,6 +35,11 @@ The app is a **modern Jetpack Compose-only codebase**. Legacy View-based screens
 - `database/`, `entities/` — Room `AppDatabase`, `@Dao` interfaces, and `@Entity` data classes
 - `data/AppSettingsDataStore.kt` — DataStore-backed settings; single source of truth for `akilimoUser`, language, country
 
+**Package placement guardrails:**
+- Do not add new files to `rest/`, `helper/`, `utils/`, or `interfaces/` unless there is a clear cross-cutting reason and no better specific package exists.
+- Prefer specific destination packages over generic buckets: `data/`, `navigation/`, `workers/`, `ui/components/`, or feature-local UI packages.
+- New remote code should converge toward one remote-data package path rather than extending parallel structures.
+
 **Startup:** `MainActivity` (Compose nav host) handles the entire user flow from onboarding to recommendations.
 
 **Database:** Room v2+ with mandatory `Migration` objects for all schema changes. `fallbackToDestructiveMigration()` is discouraged.
@@ -102,7 +107,7 @@ Always include `every { appSettings.akilimoUser } returns "<username>"` before b
 
 ## Language / Locale
 
-Language tags must be BCP-47 (`"en"`, `"sw"`, `"ha"`, not display names). Always write to `AppSettingsDataStore` before calling `AppCompatDelegate.setApplicationLocales()`.
+Language tags must be BCP-47 (`"en"`, `"sw-TZ"`, `"rw-RW"`, not display names). Always write to `AppSettingsDataStore` before calling `AppCompatDelegate.setApplicationLocales()`. Canonical tags are defined in `Locales.kt`.
 
 ## Navigation
 

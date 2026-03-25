@@ -46,7 +46,7 @@ import com.akilimo.mobile.ui.screens.settings.LocationResult
 import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
 import androidx.compose.material.icons.filled.ArrowBack
 import com.akilimo.mobile.data.AppSettingsDataStore
-import com.akilimo.mobile.wizard.OnboardingSection
+import com.akilimo.mobile.ui.screens.onboarding.OnboardingSection
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.system.exitProcess
 

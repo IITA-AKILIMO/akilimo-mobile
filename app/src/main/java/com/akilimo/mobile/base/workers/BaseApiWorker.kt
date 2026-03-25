@@ -3,11 +3,12 @@ package com.akilimo.mobile.base.workers
 import android.content.Context
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import com.akilimo.mobile.R
 import com.akilimo.mobile.database.AppDatabase
 import com.akilimo.mobile.config.AppConfig
 import com.akilimo.mobile.enums.EnumServiceType
-import com.akilimo.mobile.interfaces.DefaultDispatcherProvider
-import com.akilimo.mobile.interfaces.IDispatcherProvider
+import com.akilimo.mobile.base.workers.DefaultDispatcherProvider
+import com.akilimo.mobile.base.workers.IDispatcherProvider
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
@@ -57,12 +58,12 @@ abstract class BaseApiWorker<TApi>(
     override suspend fun doWork(): Result = withContext(dispatcherProvider.io) {
 
         if (!isNetworkAvailable()) {
-            return@withContext resultRetry("Network unavailable")
+            return@withContext resultRetry(applicationContext.getString(R.string.error_network_unavailable))
         }
 
         if (isStopped) {
             Timber.w("Worker stopped before execution: ${javaClass.simpleName}")
-            return@withContext resultFailure("Worker was stopped")
+            return@withContext resultFailure(applicationContext.getString(R.string.error_worker_stopped))
         }
 
         try {
@@ -70,10 +71,10 @@ abstract class BaseApiWorker<TApi>(
             performSafeWork()
         } catch (e: CancellationException) {
             Timber.w("Worker cancelled: ${javaClass.simpleName}")
-            resultFailure("Worker cancelled")
+            resultFailure(applicationContext.getString(R.string.error_worker_cancelled))
         } catch (e: Exception) {
             Timber.e(e, "Unhandled error in ${javaClass.simpleName}")
-            resultFailure(e.message ?: "Unexpected error")
+            resultFailure(e.message ?: applicationContext.getString(R.string.error_unexpected))
         }
     }
 

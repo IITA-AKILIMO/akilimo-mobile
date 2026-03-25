@@ -1,16 +1,16 @@
 package com.akilimo.mobile.network
 
-import com.akilimo.mobile.dto.CassavaPriceResponse
-import com.akilimo.mobile.dto.CassavaUnitResponse
-import com.akilimo.mobile.dto.FeedbackResponse
-import com.akilimo.mobile.dto.FertilizerPriceResponse
-import com.akilimo.mobile.dto.FertilizerResponse
-import com.akilimo.mobile.dto.InvestmentAmountResponse
-import com.akilimo.mobile.dto.MaizePriceResponse
-import com.akilimo.mobile.dto.UserFeedBackRequest
-import com.akilimo.mobile.dto.RecommendationResponse
-import com.akilimo.mobile.dto.StarchFactoryResponse
-import com.akilimo.mobile.rest.request.RecommendationRequest
+import com.akilimo.mobile.network.dto.CassavaPriceResponse
+import com.akilimo.mobile.network.dto.CassavaUnitResponse
+import com.akilimo.mobile.network.dto.FeedbackResponse
+import com.akilimo.mobile.network.dto.FertilizerPriceResponse
+import com.akilimo.mobile.network.dto.FertilizerResponse
+import com.akilimo.mobile.network.dto.InvestmentAmountResponse
+import com.akilimo.mobile.network.dto.MaizePriceResponse
+import com.akilimo.mobile.network.dto.UserFeedBackRequest
+import com.akilimo.mobile.network.dto.RecommendationResponse
+import com.akilimo.mobile.network.dto.StarchFactoryResponse
+import com.akilimo.mobile.network.request.RecommendationRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

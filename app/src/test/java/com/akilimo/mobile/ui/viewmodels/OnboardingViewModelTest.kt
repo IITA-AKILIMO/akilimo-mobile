@@ -12,7 +12,7 @@ import com.akilimo.mobile.repos.CurrentPracticeRepo
 import com.akilimo.mobile.repos.SelectedFertilizerRepo
 import com.akilimo.mobile.repos.UserPreferencesRepo
 import com.akilimo.mobile.rules.TestDispatcherRule
-import com.akilimo.mobile.wizard.OnboardingSection
+import com.akilimo.mobile.ui.screens.onboarding.OnboardingSection
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -42,6 +42,7 @@ class OnboardingViewModelTest {
     private val selectedFertilizerRepo: SelectedFertilizerRepo = mockk(relaxed = true)
     private val currentPracticeRepo: CurrentPracticeRepo = mockk(relaxed = true)
     private val adviceCompletionRepo: AdviceCompletionRepo = mockk(relaxed = true)
+    private val context: android.content.Context = mockk(relaxed = true)
 
     @Before
     fun setUp() {
@@ -57,7 +58,7 @@ class OnboardingViewModelTest {
 
     private fun buildViewModel() = OnboardingViewModel(
         userRepo, prefsRepo, appSettings,
-        selectedFertilizerRepo, currentPracticeRepo, adviceCompletionRepo,
+        selectedFertilizerRepo, currentPracticeRepo, adviceCompletionRepo, context,
     )
 
     // ── init / loadInitialState ───────────────────────────────────────────────
