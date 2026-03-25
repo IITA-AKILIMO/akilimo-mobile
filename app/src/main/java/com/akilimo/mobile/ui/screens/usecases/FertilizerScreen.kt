@@ -59,7 +59,7 @@ import com.akilimo.mobile.ui.components.compose.InfoCardType
 import com.akilimo.mobile.ui.components.compose.SectionHeader
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
-import com.akilimo.mobile.ui.viewmodels.FertilizerViewModel
+import com.akilimo.mobile.ui.viewmodels.usecases.FertilizerViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
