@@ -1,4 +1,4 @@
-package com.akilimo.mobile.interfaces
+package com.akilimo.mobile.base.workers
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

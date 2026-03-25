@@ -1,4 +1,4 @@
-package com.akilimo.mobile.utils
+package com.akilimo.mobile.network
 
 import android.content.Context
 import com.akilimo.mobile.network.ApiClient

@@ -2,7 +2,7 @@ package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.akilimo.mobile.dao.ProduceMarketRepo
+import com.akilimo.mobile.repos.ProduceMarketRepo
 import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.entities.ProduceMarket
 import com.akilimo.mobile.enums.EnumMarketType

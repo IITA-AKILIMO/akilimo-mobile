@@ -39,19 +39,19 @@ import com.akilimo.mobile.entities.SelectedFertilizer
 import com.akilimo.mobile.entities.SelectedInvestment
 import com.akilimo.mobile.entities.StarchFactory
 import com.akilimo.mobile.entities.UserPreferences
-import com.akilimo.mobile.utils.Converters
-import com.akilimo.mobile.utils.EnumAdviseConverter
-import com.akilimo.mobile.utils.EnumAdviseTaskConverter
-import com.akilimo.mobile.utils.EnumAreaUnitConverter
-import com.akilimo.mobile.utils.EnumCountryConverter
-import com.akilimo.mobile.utils.EnumMaizePerfConverter
-import com.akilimo.mobile.utils.EnumMarketTypeConverter
-import com.akilimo.mobile.utils.EnumProduceTypeConverter
-import com.akilimo.mobile.utils.EnumStepStatusConverter
-import com.akilimo.mobile.utils.EnumTillageConverters
-import com.akilimo.mobile.utils.EnumUnitOfSaleConverter
-import com.akilimo.mobile.utils.EnumUseCaseConverter
-import com.akilimo.mobile.utils.EnumWeedControlConverter
+import com.akilimo.mobile.database.Converters
+import com.akilimo.mobile.database.EnumAdviseConverter
+import com.akilimo.mobile.database.EnumAdviseTaskConverter
+import com.akilimo.mobile.database.EnumAreaUnitConverter
+import com.akilimo.mobile.database.EnumCountryConverter
+import com.akilimo.mobile.database.EnumMaizePerfConverter
+import com.akilimo.mobile.database.EnumMarketTypeConverter
+import com.akilimo.mobile.database.EnumProduceTypeConverter
+import com.akilimo.mobile.database.EnumStepStatusConverter
+import com.akilimo.mobile.database.EnumTillageConverters
+import com.akilimo.mobile.database.EnumUnitOfSaleConverter
+import com.akilimo.mobile.database.EnumUseCaseConverter
+import com.akilimo.mobile.database.EnumWeedControlConverter
 
 @Database(
     entities = [

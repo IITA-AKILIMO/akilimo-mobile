@@ -40,7 +40,7 @@ import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.R
 import com.akilimo.mobile.navigation.LocationPickerRoute
 import com.akilimo.mobile.ui.viewmodels.LocationPickerViewModel
-import com.akilimo.mobile.utils.LocationHelper
+import com.akilimo.mobile.network.LocationHelper
 import com.akilimo.mobile.utils.PermissionHelper
 import com.mapbox.common.MapboxOptions
 import com.mapbox.geojson.Point

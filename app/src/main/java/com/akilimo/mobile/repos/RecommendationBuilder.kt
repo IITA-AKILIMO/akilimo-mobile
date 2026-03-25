@@ -1,7 +1,7 @@
-package com.akilimo.mobile.utils
+package com.akilimo.mobile.repos
 
 import com.akilimo.mobile.database.AppDatabase
-import com.akilimo.mobile.dao.MaizePerformanceRepo
+import com.akilimo.mobile.repos.MaizePerformanceRepo
 import com.akilimo.mobile.enums.EnumCassavaProduceType
 import com.akilimo.mobile.enums.EnumMarketType
 import com.akilimo.mobile.enums.EnumProduceType
@@ -20,6 +20,9 @@ import com.akilimo.mobile.rest.request.ComputeRequest
 import com.akilimo.mobile.rest.request.FertilizerRequest
 import com.akilimo.mobile.rest.request.RecommendationRequest
 import com.akilimo.mobile.rest.request.UserInfo
+import com.akilimo.mobile.utils.orZero
+import com.akilimo.mobile.utils.isPositive
+import com.akilimo.mobile.utils.orUnavailable
 import java.time.LocalDate
 
 class RecommendationBuilder(

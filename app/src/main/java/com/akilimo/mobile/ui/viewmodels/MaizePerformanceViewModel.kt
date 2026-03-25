@@ -2,7 +2,7 @@ package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.akilimo.mobile.dao.MaizePerformanceRepo
+import com.akilimo.mobile.repos.MaizePerformanceRepo
 import com.akilimo.mobile.data.AppSettingsDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

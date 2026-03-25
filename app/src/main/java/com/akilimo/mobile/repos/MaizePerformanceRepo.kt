@@ -1,5 +1,6 @@
-package com.akilimo.mobile.dao
+package com.akilimo.mobile.repos
 
+import com.akilimo.mobile.dao.MaizePerformanceDao
 import com.akilimo.mobile.entities.MaizePerformance
 import kotlinx.coroutines.flow.Flow
 

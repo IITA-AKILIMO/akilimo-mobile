@@ -1,4 +1,4 @@
-package com.akilimo.mobile.base
+package com.akilimo.mobile.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Ignore

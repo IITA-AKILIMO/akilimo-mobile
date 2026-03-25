@@ -1,4 +1,4 @@
-package com.akilimo.mobile.utils
+package com.akilimo.mobile.database
 
 import androidx.room.TypeConverter
 import com.akilimo.mobile.dto.OperationEntry

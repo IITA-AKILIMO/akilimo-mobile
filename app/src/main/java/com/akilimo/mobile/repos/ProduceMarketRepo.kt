@@ -1,5 +1,6 @@
-package com.akilimo.mobile.dao
+package com.akilimo.mobile.repos
 
+import com.akilimo.mobile.dao.ProduceMarketDao
 import com.akilimo.mobile.entities.ProduceMarket
 import com.akilimo.mobile.enums.EnumMarketType
 import com.akilimo.mobile.enums.EnumProduceType

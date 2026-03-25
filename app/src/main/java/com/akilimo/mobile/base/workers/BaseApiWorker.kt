@@ -7,8 +7,8 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.database.AppDatabase
 import com.akilimo.mobile.config.AppConfig
 import com.akilimo.mobile.enums.EnumServiceType
-import com.akilimo.mobile.interfaces.DefaultDispatcherProvider
-import com.akilimo.mobile.interfaces.IDispatcherProvider
+import com.akilimo.mobile.base.workers.DefaultDispatcherProvider
+import com.akilimo.mobile.base.workers.IDispatcherProvider
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext

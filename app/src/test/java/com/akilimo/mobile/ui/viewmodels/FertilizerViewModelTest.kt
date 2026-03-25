@@ -11,7 +11,7 @@ import com.akilimo.mobile.repos.FertilizerPriceRepo
 import com.akilimo.mobile.repos.FertilizerRepo
 import com.akilimo.mobile.repos.SelectedFertilizerRepo
 import com.akilimo.mobile.rules.TestDispatcherRule
-import com.akilimo.mobile.ui.viewmodels.usecases.FertilizerViewModel
+import com.akilimo.mobile.ui.viewmodels.FertilizerViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

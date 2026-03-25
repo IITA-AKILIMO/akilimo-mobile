@@ -1,4 +1,4 @@
-package com.akilimo.mobile.wizard
+package com.akilimo.mobile.ui.screens.onboarding
 
 enum class OnboardingSection {
     WELCOME, DISCLAIMER, TERMS, BIO_DATA, COUNTRY, LOCATION, AREA_UNIT,

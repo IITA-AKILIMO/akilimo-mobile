@@ -1,7 +1,6 @@
-package com.akilimo.mobile.extensions
+package com.akilimo.mobile.workers
 
 import android.content.Context
-import com.akilimo.mobile.helper.WorkStatus
 
 fun WorkStatus.Payload.toText(context: Context): String =
     when (this) {

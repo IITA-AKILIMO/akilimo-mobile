@@ -13,7 +13,7 @@ import com.akilimo.mobile.network.AkilimoApi
 import com.akilimo.mobile.network.ApiClient
 import com.akilimo.mobile.network.parseError
 import com.akilimo.mobile.repos.AkilimoUserRepo
-import com.akilimo.mobile.utils.RecommendationBuilder
+import com.akilimo.mobile.repos.RecommendationBuilder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.sentry.Sentry

@@ -1,4 +1,4 @@
-package com.akilimo.mobile.ui.viewmodels.usecases
+package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

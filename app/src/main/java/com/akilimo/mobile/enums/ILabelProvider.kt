@@ -1,4 +1,4 @@
-package com.akilimo.mobile.interfaces
+package com.akilimo.mobile.enums
 
 import android.content.Context
 
