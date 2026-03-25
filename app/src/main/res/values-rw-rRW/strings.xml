@@ -253,4 +253,9 @@
     <string name="error_harvest_date_required">Nyamuneka hitamo itariki yo gusarura</string>
     <string name="error_weed_control_required">Nyamuneka hitamo uburyo bwo kurwanya ibyatsi bibi</string>
     <string name="error_investment_preference_required">Nyamuneka hitamo uburyo bw\'ishoramari wifuza</string>
+    <string name="error_worker_stopped">Icyifuzo cya netiworoke cyahagaritswe</string>
+    <string name="error_worker_cancelled">Icyifuzo cya netiworoke cyahagaritswe</string>
+    <string name="error_unexpected">Habaye ikosa ritateganyijwe</string>
+    <string name="error_network_unavailable">Ntiwabashije kubona netiworoke</string>
+    <string name="error_fetch_page">Ntibyakunze kuzana paji %1$d: %2$s</string>
 </resources>
