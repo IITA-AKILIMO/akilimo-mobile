@@ -133,7 +133,7 @@
          CROPS
          ═══════════════════════════════════════════════ -->
     <string name="lbl_cassava">Cassava</string>
-    <string name="lbl_maize">Maize Heigh</string>
+    <string name="lbl_maize">Maize Height</string>
     <string name="lbl_sweet_potato">Sweet Potato</string>
 
     <!-- ═══════════════════════════════════════════════
@@ -300,6 +300,11 @@
     <string name="lbl_scheduled_planting_rec">Scheduled Planting</string>
     <string name="lbl_no_recommendations_prompt">No recommendations, provide more information to help us get better predictions</string>
     <string name="error_fetch_recommendation">Failed to fetch recommendation</string>
+    <string name="error_worker_stopped">Worker was stopped</string>
+    <string name="error_worker_cancelled">Worker cancelled</string>
+    <string name="error_unexpected">An unexpected error occurred</string>
+    <string name="error_network_unavailable">Network unavailable</string>
+    <string name="error_fetch_page">Failed to fetch page %1$d: %2$s</string>
     <string name="error_first_name_required">First name is required</string>
     <string name="error_last_name_required">Last name is required</string>
     <string name="error_gender_required">Please select a gender</string>
