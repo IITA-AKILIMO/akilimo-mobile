@@ -16,6 +16,7 @@ It is not a rewrite proposal. The app already has a workable structure, but it i
 - [x] Added the initial architecture cleanup plan document.
 - [x] Converted major action areas into checkbox-based checklists.
 - [x] Added package guardrails to contributor guidance to stop new additions to `rest`, `helper`, `utils`, and `interfaces` by default.
+- [x] Split the root navigation host into feature graph registration functions.
 
 ## Current Assessment
 
@@ -180,7 +181,7 @@ Exit checklist:
 ### 4. Split navigation by feature
 
 Owner: `[ ] Unassigned`
-Status: `[ ] Not started` `[ ] In progress` `[ ] Blocked` `[ ] Done`
+Status: `[ ] Not started` `[ ] In progress` `[ ] Blocked` `[x] Done`
 
 Problem:
 
@@ -189,17 +190,17 @@ Problem:
 
 Plan checklist:
 
-- [ ] Keep a single root `NavHost`.
-- [ ] Split onboarding route registration into `onboardingGraph(...)`.
-- [ ] Split recommendations route registration into `recommendationsGraph(...)`.
-- [ ] Split settings route registration into `settingsGraph(...)`.
-- [ ] Split use-case route registration into `usecaseGraph(...)`.
+- [x] Keep a single root `NavHost`.
+- [x] Split onboarding route registration into `onboardingGraph(...)`.
+- [x] Split recommendations route registration into `recommendationsGraph(...)`.
+- [x] Split settings route registration into `settingsGraph(...)`.
+- [x] Split use-case route registration into `usecaseGraph(...)`.
 - [ ] Centralize or group route definitions under `navigation/routes`.
 
 Exit checklist:
 
-- [ ] The root nav host only wires top-level graphs.
-- [ ] Feature route registration is no longer all in one file.
+- [x] The root nav host only wires top-level graphs.
+- [x] Feature route registration is no longer all in one file.
 
 ### 5. Resolve migration residue
 
@@ -288,9 +289,9 @@ Status: `[ ] Not started` `[x] In progress` `[ ] Blocked` `[ ] Done`
 ### Phase 2: Navigation and package convergence
 
 Owner: `[ ] Unassigned`
-Status: `[ ] Not started` `[ ] In progress` `[ ] Blocked` `[ ] Done`
+Status: `[ ] Not started` `[x] In progress` `[ ] Blocked` `[ ] Done`
 
-- [ ] Split `AkilimoNavHost` into feature graph functions
+- [x] Split `AkilimoNavHost` into feature graph functions
 - [ ] Start moving new or touched features toward feature-local UI packaging
 - [ ] Consolidate remote infrastructure into one package path
 
@@ -343,7 +344,7 @@ Mitigation:
 ## Immediate Next Actions
 
 - [x] Update team conventions to ban new additions to `rest`, `helper`, `utils`, and `interfaces` unless justified.
-- [ ] Split `AkilimoNavHost.kt` into feature graph registration functions.
+- [x] Split `AkilimoNavHost.kt` into feature graph registration functions.
 - [ ] Create a package audit checklist for `helper`, `utils`, `interfaces`, `extensions`, `wizard`, `network`, and `rest`.
 - [ ] Start colocating new feature UI code instead of extending centralized `ui/viewmodels`.
 - [ ] Add tests around the most central ViewModels before larger structural moves.
