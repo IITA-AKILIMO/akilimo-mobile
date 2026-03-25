@@ -62,6 +62,12 @@ Main package: `com.akilimo.mobile`
 | `helper/` | `LocaleHelper` (locale context wrapper); `SessionManager` has been deleted |
 | `enums/` | Domain enums: `EnumCountry`, `EnumAreaUnit`, `EnumAdvice`, etc. |
 
+Package guardrails:
+
+- Do not add new files to `rest/`, `helper/`, `utils/`, or `interfaces/` unless there is a strong cross-cutting reason and no better specific package exists.
+- Prefer moving code into a feature package, `data/`, `navigation/`, `workers/`, or `ui/components/` instead of extending generic buckets.
+- New remote code should converge toward one remote-data package path rather than growing parallel structures.
+
 **When adding a new screen:**
 1. Create a `@Composable` screen function under `ui/screens/<feature>/`.
 2. Create a `@HiltViewModel` in `ui/viewmodels/` with a nested `UiState` data class and `StateFlow<UiState>`.
