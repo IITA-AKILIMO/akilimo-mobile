@@ -17,6 +17,7 @@ It is not a rewrite proposal. The app already has a workable structure, but it i
 - [x] Converted major action areas into checkbox-based checklists.
 - [x] Added package guardrails to contributor guidance to stop new additions to `rest`, `helper`, `utils`, and `interfaces` by default.
 - [x] Split the root navigation host into feature graph registration functions.
+- [x] Added a concrete package audit checklist for `helper`, `utils`, `interfaces`, `extensions`, `wizard`, `network`, and `rest`.
 
 ## Current Assessment
 
@@ -345,7 +346,7 @@ Mitigation:
 
 - [x] Update team conventions to ban new additions to `rest`, `helper`, `utils`, and `interfaces` unless justified.
 - [x] Split `AkilimoNavHost.kt` into feature graph registration functions.
-- [ ] Create a package audit checklist for `helper`, `utils`, `interfaces`, `extensions`, `wizard`, `network`, and `rest`.
+- [x] Create a package audit checklist for `helper`, `utils`, `interfaces`, `extensions`, `wizard`, `network`, and `rest`.
 - [ ] Start colocating new feature UI code instead of extending centralized `ui/viewmodels`.
 - [ ] Add tests around the most central ViewModels before larger structural moves.
 
