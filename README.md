@@ -1,6 +1,11 @@
 # AKILIMO Mobile
 
-[![Android CI](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/android.yml/badge.svg)](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/android.yml)
+### Badges
+[![Unit Tests](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/unit-test.yml/badge.svg)](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/unit-test.yml)
+
+[![Build APK](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/build-apk.yml/badge.svg)](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/build-apk.yml)
+
+[![Sonar Analysis](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/sonar-analysis.yml/badge.svg)](https://github.com/IITA-AKILIMO/akilimo-mobile/actions/workflows/sonar-analysis.yml)
 
 AKILIMO Mobile is an Android application for delivering site-specific agronomic recommendations to farmers and extension agents. The app combines location-aware data collection, crop/use-case workflows, and remote recommendation APIs with offline-friendly local storage.
 
@@ -52,13 +57,16 @@ From current source configuration, the app includes country support for:
   - `minSdk = 21`
   - `targetSdk = 36`
   - `compileSdk = 36`
-- **UI**: XML views + ViewBinding (Compose currently disabled)
-- **Local persistence**: Room
+- **UI**: 100% Jetpack Compose (Material 3)
+- **Architecture**: Single-Activity, Hilt DI, MVVM with `UiState`/`Effect` flows
+- **Local persistence**: Room + Preferences DataStore
 - **Background jobs**: WorkManager
-- **Networking**: Retrofit + OkHttp + Moshi
+- **Networking**: Retrofit + OkHttp + Moshi (KSP)
 - **Observability/analytics**: Sentry + Firebase Analytics
-- **Mapping/geospatial integrations**: Mapbox + Location services
+- **Mapping/geospatial integrations**: Mapbox (via `AndroidView` wrapper)
 - **Quality tooling**: Android Lint, Detekt, SonarQube
+- **Language support**: Native `AppCompatDelegate` (BCP-47 tags)
+- **Targeting**: API 21+ (minSdk) to API 36 (targetSdk)
 
 ---
 
@@ -68,17 +76,22 @@ From current source configuration, the app includes country support for:
 .
 ├── app/                         # Android application module
 │   ├── src/main/java/com/akilimo/mobile/
-│   │   ├── ui/                  # Activities, fragments, dialogs, reusable UI components
-│   │   ├── workers/             # Domain sync/background workers and scheduling
-│   │   ├── base/                # Base classes and worker abstractions
-│   │   ├── repos/               # Repository layer over DAOs / local entities
-│   │   ├── dao/, entities/      # Room DAOs and entity models
-│   │   ├── network/, rest/      # API clients, DTOs, request/response models
-│   │   └── config/              # Runtime configuration helpers
-│   └── src/main/res/            # Android resources (layouts, strings, themes, drawables)
+│   │   ├── ui/                  # Compose screens, viewmodels, themes, components
+│   │   │   ├── activities/      # MainActivity (single host)
+│   │   │   ├── screens/         # Feature-grouped Compose screens
+│   │   │   ├── viewmodels/      # @HiltViewModel classes
+│   │   │   └── components/      # Shared Compose primitives
+│   │   ├── navigation/          # Route definitions and NavHost
+│   │   ├── repos/               # Repository layer (single source of data)
+│   │   ├── database/            # Room AppDatabase and TypeConverters
+│   │   ├── entities/            # Room @Entity data classes
+│   │   ├── dao/                 # Room @Dao interfaces
+│   │   ├── data/                # AppSettingsDataStore (Preferences)
+│   │   ├── network/             # Retrofit clients and Moshi DTOs
+│   │   └── workers/             # WorkManager workers and scheduling
+│   └── src/main/res/            # Standard Android resources (no XML layouts)
 ├── docs/                        # Project documentation
-├── scripts/                     # Utility scripts (release notes generation)
-├── release/distribution/        # WhatsNew assets for Play Store release notes
+├── scripts/                     # Utility scripts
 └── .github/workflows/           # CI/CD pipelines
 ```
 
@@ -254,7 +267,6 @@ For script details, see `scripts/README.md`.
 - [Implementation Roadmap](docs/ROADMAP.md)
 - [Compose Migration Guide](docs/COMPOSE_MIGRATION.md)
 - [User Guide](docs/USER_GUIDE.md)
-- [Technical Evaluation](docs/TECHNICAL_EVALUATION.md)
 - [Release Script Notes](scripts/README.md)
 - [Changelog](CHANGELOG.md)
 

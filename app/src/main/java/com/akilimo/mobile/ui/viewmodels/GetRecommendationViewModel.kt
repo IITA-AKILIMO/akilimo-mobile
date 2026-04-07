@@ -6,14 +6,14 @@ import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.database.AppDatabase
 import com.akilimo.mobile.config.AppConfig
 import com.akilimo.mobile.data.AppSettingsDataStore
-import com.akilimo.mobile.dto.UserFeedBackRequest
+import com.akilimo.mobile.network.dto.UserFeedBackRequest
 import com.akilimo.mobile.enums.EnumServiceType
 import com.akilimo.mobile.enums.EnumUseCase
 import com.akilimo.mobile.network.AkilimoApi
 import com.akilimo.mobile.network.ApiClient
 import com.akilimo.mobile.network.parseError
 import com.akilimo.mobile.repos.AkilimoUserRepo
-import com.akilimo.mobile.utils.RecommendationBuilder
+import com.akilimo.mobile.repos.RecommendationBuilder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.sentry.Sentry

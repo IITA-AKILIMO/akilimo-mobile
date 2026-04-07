@@ -1,9 +1,12 @@
+import org.gradle.kotlin.dsl.androidTestImplementation
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.time.LocalDateTime
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.ksp)
@@ -137,9 +140,9 @@ android {
     }
 
     buildFeatures {
-        viewBinding = true
+        viewBinding = false
         buildConfig = true
-        compose = false
+        compose = true
     }
     kotlin {
         compilerOptions {
@@ -192,6 +195,9 @@ fun computeVersionCode(): Int {
 dependencies {
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+
+    // Region: Compose
+    implementation(platform(libs.androidx.compose.bom))
     // Region: AndroidX Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -202,6 +208,20 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.work)
+
+    // Region: Compose
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.hilt.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
 
     //Region: Google services
     implementation(libs.play.services.location)
@@ -257,6 +277,12 @@ dependencies {
     testImplementation(libs.coroutines.test)
     testImplementation(libs.turbine)
     testImplementation(libs.mockk)
+
+
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+
+
+    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.hilt.testing)
@@ -264,9 +290,12 @@ dependencies {
     androidTestImplementation(libs.mockk.android)
     androidTestImplementation(libs.room.testing)
     androidTestImplementation(libs.coroutines.test)
+
     kaptAndroidTest(libs.hilt.compiler)
 
     // Region: Debug Tools
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.debug.db)
     debugImplementation(libs.stetho)
     debugImplementation(libs.stetho.okhttp)

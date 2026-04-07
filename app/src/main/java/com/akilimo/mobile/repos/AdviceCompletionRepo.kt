@@ -2,7 +2,7 @@ package com.akilimo.mobile.repos
 
 import com.akilimo.mobile.dao.AdviceCompletionDao
 import com.akilimo.mobile.entities.AdviceCompletion
-import com.akilimo.mobile.entities.AdviceCompletionDto
+import com.akilimo.mobile.dto.AdviceCompletionDto
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumStepStatus
 import kotlinx.coroutines.flow.Flow
@@ -26,6 +26,10 @@ class AdviceCompletionRepo(private val dao: AdviceCompletionDao) {
 
     suspend fun clearCompleted(task: EnumAdviceTask) {
         dao.delete(task)
+    }
+
+    suspend fun clearAll() {
+        dao.deleteAll()
     }
 
     suspend fun markInProgressIfNotCompleted(task: EnumAdviceTask) {

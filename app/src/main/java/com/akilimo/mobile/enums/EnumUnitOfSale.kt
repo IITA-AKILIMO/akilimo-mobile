@@ -1,18 +1,18 @@
 package com.akilimo.mobile.enums
 
-import android.content.Context
 import android.os.Parcelable
+import androidx.annotation.StringRes
 import com.akilimo.mobile.R
-import com.akilimo.mobile.interfaces.ILabelProvider
+import com.akilimo.mobile.enums.ILabelProvider
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 enum class EnumUnitOfSale(
     val weight: Double,
     val isUniversal: Boolean,
-    private val labelRes: Int,
-    private val textRes: Int
-) : Parcelable, ILabelProvider {
+    @param:StringRes val labelRes: Int,
+    @param:StringRes val textRes: Int
+) : Parcelable {
     // Crop-specific unit (only maize fresh cob)
     FRESH_COB(
         weight = 1.0,
@@ -54,10 +54,4 @@ enum class EnumUnitOfSale(
     );
 
     fun unitWeight(): Double = weight
-
-    fun unitOfSale(context: Context): String =
-        labelRes.let(context::getString)
-
-    override fun label(context: Context): String =
-        textRes.let(context::getString)
 }

@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.data.AppSettingsDataStore
-import com.akilimo.mobile.utils.GeocodingService
-import com.akilimo.mobile.utils.LocationHelper
-import com.akilimo.mobile.utils.WeatherService
+import com.akilimo.mobile.network.GeocodingService
+import com.akilimo.mobile.network.LocationHelper
+import com.akilimo.mobile.network.WeatherService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.sentry.Sentry

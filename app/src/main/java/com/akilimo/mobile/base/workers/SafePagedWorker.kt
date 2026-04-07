@@ -2,6 +2,7 @@ package com.akilimo.mobile.base.workers
 
 import android.content.Context
 import androidx.work.WorkerParameters
+import com.akilimo.mobile.R
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
@@ -34,7 +35,8 @@ abstract class SafePagedWorker<TApi, TItem>(
                     fetchPage(page)
                 } catch (e: Exception) {
                     Timber.e(e, "Failed to fetch page $page")
-                    return resultFailure("Failed to fetch page $page: ${e.message ?: "unknown"}")
+                    val errorMsg = applicationContext.getString(R.string.error_fetch_page, page, e.message ?: "unknown")
+                    return resultFailure(errorMsg)
                 }
 
                 // Persist and update shared counters inside a mutex so multiple coroutines won't race
@@ -67,10 +69,10 @@ abstract class SafePagedWorker<TApi, TItem>(
             )
         } catch (ce: kotlinx.coroutines.CancellationException) {
             Timber.w("Worker cancelled: ${javaClass.simpleName}")
-            return resultFailure("Worker cancelled")
+            return resultFailure(applicationContext.getString(R.string.error_worker_cancelled))
         } catch (t: Throwable) {
             Timber.e(t, "Unhandled error in paged worker ${javaClass.simpleName}")
-            return resultFailure(t.message ?: "Unexpected error")
+            return resultFailure(t.message ?: applicationContext.getString(R.string.error_unexpected))
         }
     }
 

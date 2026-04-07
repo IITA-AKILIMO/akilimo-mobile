@@ -60,6 +60,7 @@ private object Keys {
     val TERMS_LINK = stringPreferencesKey("termsLink")
     val FERTILIZER_GRID = booleanPreferencesKey("isFertilizerGrid")
     val REMEMBER_AREA_UNIT = booleanPreferencesKey("rememberAreaUnit")
+    val LOCK_APP_LANGUAGE = booleanPreferencesKey("lockAppLanguage")
 }
 
 @Singleton
@@ -68,7 +69,8 @@ class AppSettingsDataStore @Inject constructor(
 ) {
     companion object {
         private const val DEFAULT_USER = "akilimo_user"
-        private const val DEFAULT_TERMS_URL = "https://akilimo.org/index.php/akilimo-privacy-policy"
+        //"https://akilimo.org/index.php/akilimo-privacy-policy"
+        private const val DEFAULT_TERMS_URL = "file:///android_asset/privacy_policy.html"
 
         /** Language tag — synchronous read for use in [android.app.Activity.attachBaseContext]. */
         fun readLanguageTagSync(context: Context): String = runBlocking {
@@ -110,6 +112,15 @@ class AppSettingsDataStore @Inject constructor(
 
     val darkModeFlow: Flow<Boolean> =
         dataStore.data.map { prefs -> prefs[Keys.DARK_MODE] ?: false }
+
+    val rememberAreaUnitFlow: Flow<Boolean> =
+        dataStore.data.map { prefs -> prefs[Keys.REMEMBER_AREA_UNIT] ?: false }
+
+    val fertilizerGridFlow: Flow<Boolean> =
+        dataStore.data.map { prefs -> prefs[Keys.FERTILIZER_GRID] ?: false }
+
+    val lockAppLanguageFlow: Flow<Boolean> =
+        dataStore.data.map { prefs -> prefs[Keys.LOCK_APP_LANGUAGE] ?: false }
 
     // ── Synchronous property accessors ────────────────────────────────────────
     // After the first DataStore read (done in AkilimoApp.onCreate via getLanguageTagSync /
@@ -186,6 +197,10 @@ class AppSettingsDataStore @Inject constructor(
         get() = syncGet(Keys.FERTILIZER_GRID, false)
         set(value) = asyncSet(Keys.FERTILIZER_GRID, value)
 
+    var lockAppLanguage: Boolean
+        get() = syncGet(Keys.LOCK_APP_LANGUAGE, false)
+        set(value) = asyncSet(Keys.LOCK_APP_LANGUAGE, value)
+
     var notificationCount: Int
         get() = syncGet(Keys.NOTIFICATION_COUNT, 3)
         set(value) = asyncSet(Keys.NOTIFICATION_COUNT, value)
@@ -222,5 +237,17 @@ class AppSettingsDataStore @Inject constructor(
 
     suspend fun setDarkMode(enabled: Boolean) {
         dataStore.edit { it[Keys.DARK_MODE] = enabled }
+    }
+
+    suspend fun setLockAppLanguage(locked: Boolean) {
+        dataStore.edit { it[Keys.LOCK_APP_LANGUAGE] = locked }
+    }
+
+    suspend fun setRememberAreaUnit(value: Boolean) {
+        dataStore.edit { it[Keys.REMEMBER_AREA_UNIT] = value }
+    }
+
+    suspend fun setFertilizerGrid(value: Boolean) {
+        dataStore.edit { it[Keys.FERTILIZER_GRID] = value }
     }
 }
