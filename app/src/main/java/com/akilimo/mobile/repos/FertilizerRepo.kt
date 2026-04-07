@@ -31,10 +31,10 @@ class FertilizerRepo(private val dao: FertilizerDao) {
         dao.observeAllByCountry(countryCode)
 
     fun observeByCimAvailable(countryCode: EnumCountry): Flow<List<Fertilizer>> =
-        dao.observeAllByCimAvailable(countryCode)
+        dao.observeAllByCountry(countryCode)
 
     fun observeByCisAvailable(countryCode: EnumCountry): Flow<List<Fertilizer>> =
-        dao.observeAllByCisAvailable(countryCode)
+        dao.observeAllByCountry(countryCode)
 
 
 }
