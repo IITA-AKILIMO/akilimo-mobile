@@ -57,7 +57,7 @@ class OnboardingViewModel @Inject constructor(
         val termsUrl: String = "",
         // BioData
         val firstName: String = "",
-        val recommendationLanguage: String = "",
+        val recommendationLanguage: String = "en",
         val lastName: String = "",
         val email: String = "",
         val phone: String = "",
