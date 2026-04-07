@@ -32,6 +32,7 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
 import com.akilimo.mobile.utils.DateHelper
+import java.util.Locale
 
 @Composable
 fun SummaryStep(
@@ -79,6 +80,10 @@ fun SummaryStep(
                 SummaryRow(stringResource(R.string.lbl_email_address), state.email)
                 SummaryRow(stringResource(R.string.lbl_phone_number), state.phone)
                 SummaryRow(stringResource(R.string.lbl_gender), state.gender)
+                SummaryRow(
+                    stringResource(R.string.lbl_recommendation_language),
+                    Locale.forLanguageTag(state.recommendationLanguage).displayLanguage
+                )
             }
 
             SummarySection(title = stringResource(R.string.lbl_field)) {
@@ -121,6 +126,7 @@ fun SummaryStep(
                     state.investmentPref.label(context)
                 )
             }
+
         }
     }
 }

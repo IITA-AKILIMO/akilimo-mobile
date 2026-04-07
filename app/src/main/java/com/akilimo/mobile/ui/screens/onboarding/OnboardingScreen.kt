@@ -76,6 +76,7 @@ fun OnboardingScreen(
                             popUpTo(navController.graph.startDestinationId) { inclusive = true }
                         }
                     }
+
                 is OnboardingViewModel.Effect.ExitApp -> showExitDialog = true
                 else -> Unit
             }
@@ -90,7 +91,11 @@ fun OnboardingScreen(
             ?.collectLatest { result ->
                 if (result != null) {
                     viewModel.onEvent(
-                        OnboardingViewModel.Event.LocationUpdated(result.lat, result.lon, result.zoom)
+                        OnboardingViewModel.Event.LocationUpdated(
+                            result.lat,
+                            result.lon,
+                            result.zoom
+                        )
                     )
                     navController.currentBackStackEntry?.savedStateHandle?.remove<LocationResult>("location_result")
                 }
@@ -174,6 +179,7 @@ fun OnboardingScreen(
                 phone = state.phone,
                 gender = state.gender,
                 interest = state.interest,
+                recLanguage = state.recommendationLanguage,
                 errors = state.errors,
                 onEvent = viewModel::onEvent,
             )
