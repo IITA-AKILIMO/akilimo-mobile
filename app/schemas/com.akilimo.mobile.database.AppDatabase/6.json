@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 4,
-    "identityHash": "798708e6fa5a91e87b09f072e60cb84d",
+    "version": 6,
+    "identityHash": "777f24f2b19c9c1208f033647c9b6646",
     "entities": [
       {
         "tableName": "fertilizers",
@@ -355,7 +355,7 @@
       },
       {
         "tableName": "akilimo_users",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `device_token` TEXT, `user_name` TEXT NOT NULL, `first_name` TEXT, `last_name` TEXT, `email` TEXT, `mobile_number` TEXT, `mobile_country_code` TEXT, `farm_name` TEXT, `farm_country` TEXT NOT NULL, `farm_size_unit` TEXT NOT NULL, `farm_size` REAL NOT NULL, `custom_farm_size` INTEGER, `farm_description` TEXT, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `altitude` REAL NOT NULL, `zoom_level` REAL NOT NULL, `gender` TEXT, `akilimo_interest` TEXT, `send_email` INTEGER NOT NULL, `send_sms` INTEGER NOT NULL, `language_code` TEXT, `risk_att` INTEGER NOT NULL, `planting_date` TEXT, `harvest_date` TEXT, `planting_flex` INTEGER NOT NULL, `harvest_flex` INTEGER NOT NULL, `provided_alternative_date` INTEGER NOT NULL, `tillage_operations` TEXT NOT NULL, `investment_preferences` TEXT, `active_use_case` TEXT, `last_sync_at` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `device_token` TEXT, `user_name` TEXT NOT NULL, `first_name` TEXT, `last_name` TEXT, `email` TEXT, `mobile_number` TEXT, `mobile_country_code` TEXT, `farm_name` TEXT, `farm_country` TEXT NOT NULL, `farm_size_unit` TEXT NOT NULL, `farm_size` REAL NOT NULL, `custom_farm_size` INTEGER, `farm_description` TEXT, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `altitude` REAL NOT NULL, `zoom_level` REAL NOT NULL, `gender` TEXT, `akilimo_interest` TEXT, `send_email` INTEGER NOT NULL, `send_sms` INTEGER NOT NULL, `language_code` TEXT, `recommendation_language` TEXT, `risk_att` INTEGER NOT NULL, `planting_date` TEXT, `harvest_date` TEXT, `planting_flex` INTEGER NOT NULL, `harvest_flex` INTEGER NOT NULL, `provided_alternative_date` INTEGER NOT NULL, `tillage_operations` TEXT NOT NULL, `weed_control_method` TEXT, `investment_preferences` TEXT, `active_use_case` TEXT, `last_sync_at` INTEGER)",
         "fields": [
           {
             "fieldPath": "id",
@@ -483,6 +483,11 @@
             "affinity": "TEXT"
           },
           {
+            "fieldPath": "recommendationLanguage",
+            "columnName": "recommendation_language",
+            "affinity": "TEXT"
+          },
+          {
             "fieldPath": "riskAtt",
             "columnName": "risk_att",
             "affinity": "INTEGER",
@@ -521,6 +526,11 @@
             "columnName": "tillage_operations",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "weedControlMethod",
+            "columnName": "weed_control_method",
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "investmentPref",
@@ -1817,7 +1827,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '798708e6fa5a91e87b09f072e60cb84d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '777f24f2b19c9c1208f033647c9b6646')"
     ]
   }
 }
