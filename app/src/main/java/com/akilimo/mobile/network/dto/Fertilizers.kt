@@ -6,13 +6,6 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class FertilizerResponse(
-    @param:Json(name = "data") val data: List<FertilizerDto>,
-    @param:Json(name = "links") val links: PaginationLinks?,
-    @param:Json(name = "meta") val meta: PaginationMeta?
-)
-
-@JsonClass(generateAdapter = true)
 data class FertilizerDto(
     @param:Json(name = "id") val id: Int?,
     @param:Json(name = "name") val name: String?,

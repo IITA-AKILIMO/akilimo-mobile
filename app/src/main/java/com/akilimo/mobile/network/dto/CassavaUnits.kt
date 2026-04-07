@@ -6,13 +6,6 @@ import com.squareup.moshi.JsonClass
 
 
 @JsonClass(generateAdapter = true)
-data class CassavaUnitResponse(
-    @param:Json(name = "data") val data: List<CassavaUnitDto>,
-    @param:Json(name = "links") val links: PaginationLinks?,
-    @param:Json(name = "meta") val meta: PaginationMeta?
-)
-
-@JsonClass(generateAdapter = true)
 data class CassavaUnitDto(
     @param:Json(name = "id")
     val id: Int,
