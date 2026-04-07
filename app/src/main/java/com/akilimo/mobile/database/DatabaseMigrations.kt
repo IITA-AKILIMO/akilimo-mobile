@@ -44,7 +44,7 @@ object DatabaseMigrations {
      * Captures the weeding method selected during onboarding so it
      * pre-fills the BPP weed-control use-case screen.
      */
-    val MIGRATION_5_6 = object : Migration(4, 5) {
+    val MIGRATION_5_6 = object : Migration(5, 6) {
         override fun migrate(db: SupportSQLiteDatabase) {
             db.execSQL("ALTER TABLE akilimo_users ADD COLUMN recommendation_language TEXT DEFAULT 'en'")
         }
