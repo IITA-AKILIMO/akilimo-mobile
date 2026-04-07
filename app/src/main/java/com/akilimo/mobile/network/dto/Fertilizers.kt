@@ -17,6 +17,8 @@ data class FertilizerDto(
     @param:Json(name = "sort_order") val sortOrder: Int?,
     @param:Json(name = "use_case") val useCase: String?,
     @param:Json(name = "available") val available: Boolean?,
+    @param:Json(name = "cis") val cisAvailable: Boolean?,
+    @param:Json(name = "cim") val cimAvailable: Boolean?,
     @param:Json(name = "created_at") val createdAt: String?,
     @param:Json(name = "updated_at") val updatedAt: String?
 ) {
@@ -30,7 +32,9 @@ data class FertilizerDto(
             sortOrder = sortOrder ?: 0,
             countryCode = countryCode,
             useCase = EnumUseCase.fromCode(useCase),
-            available = available ?: false
+            available = available ?: false,
+            cimAvailable = cimAvailable ?: false,
+            cisAvailable = cisAvailable ?: false
         )
     }
 }
