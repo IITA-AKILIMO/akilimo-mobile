@@ -64,8 +64,8 @@ class GetRecommendationViewModel @Inject constructor(
                     val resp = result.body()
                     if (resp != null) {
                         _uiState.value = UiState.Success(
-                            title = resp.recType ?: "",
-                            description = resp.recommendation ?: noRecsLabel
+                            title = resp.data.recType,
+                            description = resp.data.recommendation
                         )
                     } else {
                         _uiState.value = UiState.Error(noRecsLabel)
