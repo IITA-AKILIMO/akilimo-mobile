@@ -89,6 +89,9 @@ data class AkilimoUser(
     @ColumnInfo(name = "language_code")
     val languageCode: String? = null,
 
+    @ColumnInfo(name = "recommendation_language")
+    val recommendationLanguage: String? = null,
+
     @ColumnInfo(name = "risk_att")
     val riskAtt: Int = 0,
 

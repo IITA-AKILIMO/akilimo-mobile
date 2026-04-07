@@ -5,6 +5,13 @@ import com.squareup.moshi.JsonClass
 
 
 @JsonClass(generateAdapter = true)
+data class PagedResponse<T>(
+    @param:Json(name = "data") val data: List<T>,
+    @param:Json(name = "links") val links: PaginationLinks?,
+    @param:Json(name = "meta") val meta: PaginationMeta?
+)
+
+@JsonClass(generateAdapter = true)
 data class PaginationLinks(
     @param:Json(name = "first") val first: String?,
     @param:Json(name = "last") val last: String?,

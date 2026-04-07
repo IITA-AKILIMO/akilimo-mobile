@@ -1,15 +1,16 @@
 package com.akilimo.mobile.network
 
-import com.akilimo.mobile.network.dto.CassavaPriceResponse
-import com.akilimo.mobile.network.dto.CassavaUnitResponse
+import com.akilimo.mobile.network.dto.CassavaPriceDto
+import com.akilimo.mobile.network.dto.CassavaUnitDto
 import com.akilimo.mobile.network.dto.FeedbackResponse
-import com.akilimo.mobile.network.dto.FertilizerPriceResponse
-import com.akilimo.mobile.network.dto.FertilizerResponse
-import com.akilimo.mobile.network.dto.InvestmentAmountResponse
-import com.akilimo.mobile.network.dto.MaizePriceResponse
+import com.akilimo.mobile.network.dto.FertilizerDto
+import com.akilimo.mobile.network.dto.FertilizerPriceDto
+import com.akilimo.mobile.network.dto.InvestmentAmounts
+import com.akilimo.mobile.network.dto.MaizePriceDto
+import com.akilimo.mobile.network.dto.PagedResponse
+import com.akilimo.mobile.network.dto.StarchFactoryDto
 import com.akilimo.mobile.network.dto.UserFeedBackRequest
 import com.akilimo.mobile.network.dto.RecommendationResponse
-import com.akilimo.mobile.network.dto.StarchFactoryResponse
 import com.akilimo.mobile.network.request.RecommendationRequest
 import retrofit2.Response
 import retrofit2.http.Body
@@ -32,14 +33,14 @@ interface AkilimoApi {
     suspend fun getFertilizers(
         @Query("page") page: Int = DEFAULT_PAGE,
         @Query("per_page") perPage: Int = DEFAULT_PER_PAGE
-    ): FertilizerResponse
+    ): PagedResponse<FertilizerDto>
 
     @Headers(CLIENT_ID_HEADER)
     @GET("v1/fertilizer-prices")
     suspend fun getFertilizerPrices(
         @Query("page") page: Int = DEFAULT_PAGE,
         @Query("per_page") perPage: Int = DEFAULT_PER_PAGE
-    ): FertilizerPriceResponse
+    ): PagedResponse<FertilizerPriceDto>
 
     @Headers(CLIENT_ID_HEADER)
     @GET("v1/fertilizer-prices/{key}")
@@ -47,28 +48,28 @@ interface AkilimoApi {
         @Path("key") key: String,
         @Query("page") page: Int = DEFAULT_PAGE,
         @Query("per_page") perPage: Int = DEFAULT_PER_PAGE
-    ): FertilizerPriceResponse
+    ): PagedResponse<FertilizerPriceDto>
 
     @Headers(CLIENT_ID_HEADER)
     @GET("v1/investment-amounts")
     suspend fun getInvestments(
         @Query("page") page: Int = DEFAULT_PAGE,
         @Query("per_page") perPage: Int = DEFAULT_PER_PAGE
-    ): InvestmentAmountResponse
+    ): PagedResponse<InvestmentAmounts>
 
     @Headers(CLIENT_ID_HEADER)
     @GET("v1/starch-factories")
     suspend fun getStarchFactories(
         @Query("page") page: Int = DEFAULT_PAGE,
         @Query("per_page") perPage: Int = DEFAULT_PER_PAGE
-    ): StarchFactoryResponse
+    ): PagedResponse<StarchFactoryDto>
 
     @Headers(CLIENT_ID_HEADER)
     @GET("v1/cassava-units")
     suspend fun getCassavaUnits(
         @Query("page") page: Int = DEFAULT_PAGE,
         @Query("per_page") perPage: Int = DEFAULT_PER_PAGE
-    ): CassavaUnitResponse
+    ): PagedResponse<CassavaUnitDto>
 
 
     @Headers(CLIENT_ID_HEADER)
@@ -76,14 +77,14 @@ interface AkilimoApi {
     suspend fun getCassavaMarketPrices(
         @Query("page") page: Int = DEFAULT_PAGE,
         @Query("per_page") perPage: Int = DEFAULT_PER_PAGE
-    ): CassavaPriceResponse
+    ): PagedResponse<CassavaPriceDto>
 
     @Headers(CLIENT_ID_HEADER)
     @GET("v1/maize-prices")
     suspend fun getMaizePrices(
         @Query("page") page: Int = DEFAULT_PAGE,
         @Query("per_page") perPage: Int = DEFAULT_PER_PAGE
-    ): MaizePriceResponse
+    ): PagedResponse<MaizePriceDto>
 
     @Headers(CLIENT_ID_HEADER)
     @POST("v1/recommendations/compute")

@@ -5,9 +5,28 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class RecommendationResponse(
-    @param:Json(name = "recommendation") var recommendation: String? = null,
-    @param:Json(name = "rec_type") var recType: String? = null,
+    @param:Json(name = "request_id")
+    val requestId: String,
+
+    @param:Json(name = "status")
+    val status: String,
+
+    @param:Json(name = "version")
+    val version: String,
+
+    @param:Json(name = "data")
+    val data: RecommendationData
 )
+
+@JsonClass(generateAdapter = true)
+data class RecommendationData(
+    @param:Json(name = "rec_type")
+    val recType: String,
+
+    @param:Json(name = "recommendation")
+    val recommendation: String,
+)
+
 
 @JsonClass(generateAdapter = true)
 data class ApiErrorResponse(

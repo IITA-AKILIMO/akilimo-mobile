@@ -73,7 +73,7 @@ import com.akilimo.mobile.database.EnumWeedControlConverter
         MaizePerformance::class,
         UserPreferences::class
     ],
-    version = 5,
+    version = 6,
     exportSchema = true
 )
 @TypeConverters(
@@ -143,7 +143,8 @@ abstract class AppDatabase : RoomDatabase() {
                 .addMigrations(
                     DatabaseMigrations.MIGRATION_2_3,
                     DatabaseMigrations.MIGRATION_3_4,
-                    DatabaseMigrations.MIGRATION_4_5
+                    DatabaseMigrations.MIGRATION_4_5,
+                    DatabaseMigrations.MIGRATION_5_6,
                 )
                 .fallbackToDestructiveMigrationOnDowngrade(dropAllTables = true)
                 .build()

@@ -44,7 +44,7 @@ class OnboardingViewModel @Inject constructor(
     private val selectedFertilizerRepo: SelectedFertilizerRepo,
     private val currentPracticeRepo: CurrentPracticeRepo,
     private val adviceCompletionRepo: AdviceCompletionRepo,
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
 ) : ViewModel() {
 
     data class UiState(
@@ -57,6 +57,7 @@ class OnboardingViewModel @Inject constructor(
         val termsUrl: String = "",
         // BioData
         val firstName: String = "",
+        val recommendationLanguage: String = "en",
         val lastName: String = "",
         val email: String = "",
         val phone: String = "",
@@ -82,7 +83,7 @@ class OnboardingViewModel @Inject constructor(
         val showFlexOptions: Boolean = false,
         // Tillage
         val tillageOperations: Map<EnumOperationType, EnumOperationMethod> = emptyMap(),
-        val weedControlEnabled: Boolean = true,
+        val weedControlEnabled: Boolean = false,
         val weedControlMethod: EnumWeedControlMethod? = null,
         // Investment
         val investmentPref: EnumInvestmentPref = EnumInvestmentPref.Prompt,
@@ -93,8 +94,10 @@ class OnboardingViewModel @Inject constructor(
     sealed interface Event {
         // Disclaimer
         data class DisclaimerChecked(val checked: Boolean) : Event
+
         // Terms
         data class TermsChecked(val checked: Boolean) : Event
+
         // BioData
         data class FirstNameChanged(val value: String) : Event
         data class LastNameChanged(val value: String) : Event
@@ -102,25 +105,38 @@ class OnboardingViewModel @Inject constructor(
         data class PhoneChanged(val value: String) : Event
         data class GenderSelected(val value: String) : Event
         data class InterestSelected(val value: String) : Event
+        data class RecLanguageSelected(val value: String) : Event
+
         // Country
         data class CountrySelected(val country: EnumCountry) : Event
+
         // Location
         data class LocationUpdated(val lat: Double, val lng: Double, val zoom: Double) : Event
+
         // Area Unit
         data class AreaUnitSelected(val unit: EnumAreaUnit) : Event
         data class FarmSizeSelected(val size: Double, val custom: Boolean) : Event
         data class RememberAreaUnitChanged(val checked: Boolean) : Event
+
         // Planting dates
         data class PlantingDateSelected(val date: LocalDate) : Event
         data class HarvestDateSelected(val date: LocalDate) : Event
         data class PlantingFlexSelected(val flex: Long) : Event
         data class HarvestFlexSelected(val flex: Long) : Event
         data class ShowFlexOptionsChanged(val show: Boolean) : Event
+
         // Tillage
-        data class TillageOperationToggled(val type: EnumOperationType, val enabled: Boolean) : Event
-        data class TillageMethodSelected(val type: EnumOperationType, val method: EnumOperationMethod) : Event
+        data class TillageOperationToggled(val type: EnumOperationType, val enabled: Boolean) :
+            Event
+
+        data class TillageMethodSelected(
+            val type: EnumOperationType,
+            val method: EnumOperationMethod
+        ) : Event
+
         data class WeedControlToggled(val enabled: Boolean) : Event
         data class WeedControlMethodSelected(val method: EnumWeedControlMethod) : Event
+
         // Investment
         data class InvestmentPrefSelected(val pref: EnumInvestmentPref) : Event
 
@@ -128,6 +144,7 @@ class OnboardingViewModel @Inject constructor(
 
         object SubmitClicked : Event
         object BackClicked : Event
+
         // Field error clear
         data class ClearError(val field: String) : Event
     }
@@ -184,6 +201,7 @@ class OnboardingViewModel @Inject constructor(
                     phone = user?.mobileNumber ?: prefs.phoneNumber.orEmpty(),
                     gender = user?.gender ?: prefs.gender.orEmpty(),
                     interest = user?.akilimoInterest.orEmpty(),
+                    recommendationLanguage = user?.recommendationLanguage ?: "en",
                     country = user?.enumCountry?.takeIf { it != EnumCountry.Unsupported }
                         ?: prefs.country.takeIf { it != EnumCountry.Unsupported }
                         ?: EnumCountry.Unsupported,
@@ -198,7 +216,8 @@ class OnboardingViewModel @Inject constructor(
                     harvestDate = user?.harvestDate,
                     plantingFlex = user?.plantingFlex ?: 0L,
                     harvestFlex = user?.harvestFlex ?: 0L,
-                    showFlexOptions = (user?.plantingFlex ?: 0L) > 0 || (user?.harvestFlex ?: 0L) > 0,
+                    showFlexOptions = (user?.plantingFlex ?: 0L) > 0 || (user?.harvestFlex
+                        ?: 0L) > 0,
                     tillageOperations = user?.tillageOperations
                         ?.associate { it.operation.valueOption to it.method.valueOption }
                         ?: emptyMap(),
@@ -215,16 +234,61 @@ class OnboardingViewModel @Inject constructor(
                 _state.update { it.copy(disclaimerRead = event.checked) }
                 appSettings.disclaimerRead = event.checked
             }
+
             is Event.TermsChecked -> {
                 _state.update { it.copy(termsAccepted = event.checked) }
                 appSettings.termsAccepted = event.checked
             }
-            is Event.FirstNameChanged -> _state.update { it.copy(firstName = event.value, errors = it.errors - "firstName") }
-            is Event.LastNameChanged -> _state.update { it.copy(lastName = event.value, errors = it.errors - "lastName") }
-            is Event.EmailChanged -> _state.update { it.copy(email = event.value, errors = it.errors - "email") }
-            is Event.PhoneChanged -> _state.update { it.copy(phone = event.value, errors = it.errors - "phone") }
-            is Event.GenderSelected -> _state.update { it.copy(gender = event.value, errors = it.errors - "gender") }
-            is Event.InterestSelected -> _state.update { it.copy(interest = event.value, errors = it.errors - "interest") }
+
+            is Event.FirstNameChanged -> _state.update {
+                it.copy(
+                    firstName = event.value,
+                    errors = it.errors - "firstName"
+                )
+            }
+
+            is Event.LastNameChanged -> _state.update {
+                it.copy(
+                    lastName = event.value,
+                    errors = it.errors - "lastName"
+                )
+            }
+
+            is Event.EmailChanged -> _state.update {
+                it.copy(
+                    email = event.value,
+                    errors = it.errors - "email"
+                )
+            }
+
+            is Event.PhoneChanged -> _state.update {
+                it.copy(
+                    phone = event.value,
+                    errors = it.errors - "phone"
+                )
+            }
+
+            is Event.GenderSelected -> _state.update {
+                it.copy(
+                    gender = event.value,
+                    errors = it.errors - "gender"
+                )
+            }
+
+            is Event.InterestSelected -> _state.update {
+                it.copy(
+                    interest = event.value,
+                    errors = it.errors - "interest"
+                )
+            }
+
+            is Event.RecLanguageSelected -> _state.update {
+                it.copy(
+                    recommendationLanguage = event.value,
+                    errors = it.errors - "rec_language"
+                )
+            }
+
             is Event.CountrySelected -> {
                 _state.update { it.copy(country = event.country, errors = it.errors - "country") }
                 viewModelScope.launch {
@@ -237,33 +301,83 @@ class OnboardingViewModel @Inject constructor(
                     }
                 }
             }
+
             is Event.LocationUpdated -> _state.update {
                 it.copy(latitude = event.lat, longitude = event.lng, zoomLevel = event.zoom)
             }
-            is Event.AreaUnitSelected -> _state.update { it.copy(areaUnit = event.unit, errors = it.errors - "areaUnit") }
-            is Event.FarmSizeSelected -> _state.update { it.copy(farmSize = event.size, customFarmSize = event.custom, errors = it.errors - "farmSize") }
+
+            is Event.AreaUnitSelected -> _state.update {
+                it.copy(
+                    areaUnit = event.unit,
+                    errors = it.errors - "areaUnit"
+                )
+            }
+
+            is Event.FarmSizeSelected -> _state.update {
+                it.copy(
+                    farmSize = event.size,
+                    customFarmSize = event.custom,
+                    errors = it.errors - "farmSize"
+                )
+            }
+
             is Event.RememberAreaUnitChanged -> {
                 _state.update { it.copy(rememberAreaUnit = event.checked) }
                 appSettings.rememberAreaUnit = event.checked
             }
-            is Event.PlantingDateSelected -> _state.update { it.copy(plantingDate = event.date, harvestDate = null, errors = it.errors - "plantingDate") }
-            is Event.HarvestDateSelected -> _state.update { it.copy(harvestDate = event.date, errors = it.errors - "harvestDate") }
+
+            is Event.PlantingDateSelected -> _state.update {
+                it.copy(
+                    plantingDate = event.date,
+                    harvestDate = null,
+                    errors = it.errors - "plantingDate"
+                )
+            }
+
+            is Event.HarvestDateSelected -> _state.update {
+                it.copy(
+                    harvestDate = event.date,
+                    errors = it.errors - "harvestDate"
+                )
+            }
+
             is Event.PlantingFlexSelected -> _state.update { it.copy(plantingFlex = event.flex) }
             is Event.HarvestFlexSelected -> _state.update { it.copy(harvestFlex = event.flex) }
             is Event.ShowFlexOptionsChanged -> _state.update { it.copy(showFlexOptions = event.show) }
             is Event.TillageOperationToggled -> {
                 _state.update { s ->
                     val ops = s.tillageOperations.toMutableMap()
-                    if (!event.enabled) ops.remove(event.type) else ops[event.type] = ops[event.type] ?: EnumOperationMethod.MANUAL
+                    if (!event.enabled) ops.remove(event.type) else ops[event.type] =
+                        ops[event.type] ?: EnumOperationMethod.MANUAL
                     s.copy(tillageOperations = ops)
                 }
             }
+
             is Event.TillageMethodSelected -> _state.update { s ->
                 s.copy(tillageOperations = s.tillageOperations + (event.type to event.method))
             }
-            is Event.WeedControlToggled -> _state.update { it.copy(weedControlEnabled = event.enabled, weedControlMethod = if (!event.enabled) null else it.weedControlMethod) }
-            is Event.WeedControlMethodSelected -> _state.update { it.copy(weedControlMethod = event.method, errors = it.errors - "weedControl") }
-            is Event.InvestmentPrefSelected -> _state.update { it.copy(investmentPref = event.pref, errors = it.errors - "investmentPref") }
+
+            is Event.WeedControlToggled -> _state.update {
+                it.copy(
+                    weedControlEnabled = event.enabled,
+                    weedControlMethod = if (!event.enabled) null else it.weedControlMethod
+                )
+            }
+
+            is Event.WeedControlMethodSelected -> _state.update {
+                it.copy(
+                    weedControlMethod = event.method,
+                    errors = it.errors - "weedControl"
+                )
+            }
+
+            is Event.InvestmentPrefSelected -> _state.update {
+                it.copy(
+                    investmentPref = event.pref,
+                    errors = it.errors - "investmentPref"
+                )
+            }
+
             is Event.ShowError -> _state.update { it.copy(errors = it.errors + (event.field to event.message)) }
             is Event.SubmitClicked -> handleSubmit()
             is Event.BackClicked -> handleBack()
@@ -293,15 +407,19 @@ class OnboardingViewModel @Inject constructor(
         val errs = mutableMapOf<String, String>()
 
         // BioData
-        if (s.firstName.isBlank()) errs["firstName"] = context.getString(R.string.error_first_name_required)
-        if (s.lastName.isBlank()) errs["lastName"] = context.getString(R.string.error_last_name_required)
+        if (s.firstName.isBlank()) errs["firstName"] =
+            context.getString(R.string.error_first_name_required)
+        if (s.lastName.isBlank()) errs["lastName"] =
+            context.getString(R.string.error_last_name_required)
         if (s.gender.isBlank()) errs["gender"] = context.getString(R.string.error_gender_required)
-        if (s.interest.isBlank()) errs["interest"] = context.getString(R.string.error_interest_required)
+        if (s.interest.isBlank()) errs["interest"] =
+            context.getString(R.string.error_interest_required)
         if (s.email.isNotBlank() && !android.util.Patterns.EMAIL_ADDRESS.matcher(s.email).matches())
             errs["email"] = context.getString(R.string.error_email_invalid)
 
         // Country
-        if (s.country == EnumCountry.Unsupported) errs["country"] = context.getString(R.string.error_country_required)
+        if (s.country == EnumCountry.Unsupported) errs["country"] =
+            context.getString(R.string.error_country_required)
 
         // Area Unit
         if (s.visibleSections.contains(OnboardingSection.AREA_UNIT) && s.farmSize <= 0.0) {
@@ -309,15 +427,18 @@ class OnboardingViewModel @Inject constructor(
         }
 
         // Planting Date
-        if (s.plantingDate == null) errs["plantingDate"] = context.getString(R.string.error_planting_date_required)
-        if (s.harvestDate == null) errs["harvestDate"] = context.getString(R.string.error_harvest_date_required)
+        if (s.plantingDate == null) errs["plantingDate"] =
+            context.getString(R.string.error_planting_date_required)
+        if (s.harvestDate == null) errs["harvestDate"] =
+            context.getString(R.string.error_harvest_date_required)
 
         // Tillage
         if (s.weedControlEnabled && s.weedControlMethod == null)
             errs["weedControl"] = context.getString(R.string.error_weed_control_required)
 
         // Investment
-        if (s.investmentPref.riskLevel() < 0) errs["investmentPref"] = context.getString(R.string.error_investment_preference_required)
+        if (s.investmentPref.riskLevel() < 0) errs["investmentPref"] =
+            context.getString(R.string.error_investment_preference_required)
 
         return errs
     }
@@ -341,6 +462,7 @@ class OnboardingViewModel @Inject constructor(
             mobileNumber = s.phone.ifBlank { null },
             gender = s.gender,
             akilimoInterest = s.interest,
+            recommendationLanguage = s.recommendationLanguage,
             deviceToken = appSettings.deviceToken,
             enumCountry = s.country,
             latitude = s.latitude,

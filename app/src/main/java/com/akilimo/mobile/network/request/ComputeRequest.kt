@@ -4,6 +4,7 @@ import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.enums.EnumUseCase
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import org.intellij.lang.annotations.Language
 import java.time.LocalDate
 
 @JsonClass(generateAdapter = true)
@@ -55,6 +56,8 @@ data class ComputeRequest(
 
     @JsonClass(generateAdapter = true)
     data class Recommendations(
+        @param:Json(name = "lang")
+        val recommendationLanguage: String,
         @param:Json(name = "fertilizer_rec")
         val fertilizerRec: Boolean,
         @param:Json(name = "planting_practices_rec")
