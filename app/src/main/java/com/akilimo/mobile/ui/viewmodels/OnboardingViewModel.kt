@@ -44,7 +44,7 @@ class OnboardingViewModel @Inject constructor(
     private val selectedFertilizerRepo: SelectedFertilizerRepo,
     private val currentPracticeRepo: CurrentPracticeRepo,
     private val adviceCompletionRepo: AdviceCompletionRepo,
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
 ) : ViewModel() {
 
     data class UiState(
