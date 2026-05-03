@@ -27,6 +27,7 @@ fun BioDataStep(
     phone: String,
     gender: String,
     interest: String,
+    recLanguage: String,
     errors: Map<String, String>,
     onEvent: (OnboardingViewModel.Event) -> Unit,
     modifier: Modifier = Modifier,
@@ -37,6 +38,13 @@ fun BioDataStep(
             "F" to context.getString(R.string.lbl_female),
             "M" to context.getString(R.string.lbl_male),
             "NA" to context.getString(R.string.lbl_prefer_not_to_say),
+        )
+    }
+
+    val recommendationLanguageOptions = remember {
+        listOf(
+            "en" to context.getString(R.string.lbl_english),
+            "sw" to context.getString(R.string.lbl_swahili),
         )
     }
     val interestOptions = remember {
@@ -53,7 +61,10 @@ fun BioDataStep(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Text(stringResource(R.string.lbl_self_intro), style = MaterialTheme.typography.headlineMedium)
+        Text(
+            stringResource(R.string.lbl_self_intro),
+            style = MaterialTheme.typography.headlineMedium
+        )
         AkilimoTextField(
             value = firstName,
             onValueChange = { onEvent(OnboardingViewModel.Event.FirstNameChanged(it)) },
@@ -93,6 +104,15 @@ fun BioDataStep(
             onOptionSelected = { onEvent(OnboardingViewModel.Event.InterestSelected(it.first)) },
             displayText = { it.second },
             error = errors["interest"],
+        )
+
+        AkilimoDropdown(
+            label = stringResource(R.string.lbl_recommendation_language),
+            options = recommendationLanguageOptions,
+            selectedOption = recommendationLanguageOptions.find { it.first == recLanguage },
+            onOptionSelected = { onEvent(OnboardingViewModel.Event.RecLanguageSelected(it.first)) },
+            displayText = { it.second },
+            error = errors["rec_language"],
         )
     }
 }

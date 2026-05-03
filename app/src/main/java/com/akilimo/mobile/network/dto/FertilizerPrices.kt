@@ -5,20 +5,13 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class FertilizerPriceResponse(
-    @param:Json(name = "data") val data: List<FertilizerPriceDto>,
-    @param:Json(name = "links") val links: PaginationLinks?,
-    @param:Json(name = "meta") val meta: PaginationMeta?
-)
-
-@JsonClass(generateAdapter = true)
 data class FertilizerPriceDto(
     val id: Int,
     @param:Json(name = "price_id") val priceId: Int,
     @param:Json(name = "fertilizer_key") val fertilizerKey: String,
     @param:Json(name = "fertilizer_country") val fertilizerCountry: String,
     @param:Json(name = "country_code") val countryCode: String,
-    @param:Json(name = "currency") val currency: CurrencyDto? = null,
+    @param:Json(name = "currency") val currency: Currencies? = null,
     @param:Json(name = "sort_order") val sortOrder: Int,
     @param:Json(name = "min_local_price") val minLocalPrice: Double,
     @param:Json(name = "max_local_price") val maxLocalPrice: Double,

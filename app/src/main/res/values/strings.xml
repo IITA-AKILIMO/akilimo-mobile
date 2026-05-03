@@ -52,6 +52,7 @@
     <string name="lbl_female">Female</string>
     <string name="lbl_prefer_not_to_say">Prefer not to answer</string>
     <string name="lbl_akilimo_interest">Main interest in AKILIMO</string>
+    <string name="lbl_recommendation_language">Preferred recommendation language</string>
     <string name="lbl_interest_farmer">I\'m a farmer</string>
     <string name="lbl_interest_agronomist">I\'m an agronomist</string>
     <string name="lbl_interest_extension_agent">I\'m an extension agent</string>
@@ -357,5 +358,7 @@
     <string name="lbl_maize_perf_yellow">yellow</string>
     <string name="lbl_maize_perf_green">green</string>
     <string name="lbl_maize_perf_dark_green">dark green</string>
+    <string name="lbl_english">English</string>
+    <string name="lbl_swahili">Swahili</string>
 
 </resources>

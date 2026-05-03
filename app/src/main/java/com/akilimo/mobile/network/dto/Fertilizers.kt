@@ -6,13 +6,6 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class FertilizerResponse(
-    @param:Json(name = "data") val data: List<FertilizerDto>,
-    @param:Json(name = "links") val links: PaginationLinks?,
-    @param:Json(name = "meta") val meta: PaginationMeta?
-)
-
-@JsonClass(generateAdapter = true)
 data class FertilizerDto(
     @param:Json(name = "id") val id: Int?,
     @param:Json(name = "name") val name: String?,
@@ -24,6 +17,8 @@ data class FertilizerDto(
     @param:Json(name = "sort_order") val sortOrder: Int?,
     @param:Json(name = "use_case") val useCase: String?,
     @param:Json(name = "available") val available: Boolean?,
+    @param:Json(name = "cis") val cisAvailable: Boolean?,
+    @param:Json(name = "cim") val cimAvailable: Boolean?,
     @param:Json(name = "created_at") val createdAt: String?,
     @param:Json(name = "updated_at") val updatedAt: String?
 ) {
@@ -37,7 +32,9 @@ data class FertilizerDto(
             sortOrder = sortOrder ?: 0,
             countryCode = countryCode,
             useCase = EnumUseCase.fromCode(useCase),
-            available = available ?: false
+            available = available ?: false,
+            cimAvailable = cimAvailable ?: false,
+            cisAvailable = cisAvailable ?: false
         )
     }
 }

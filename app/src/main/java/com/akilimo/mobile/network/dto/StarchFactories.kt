@@ -5,13 +5,6 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class StarchFactoryResponse(
-    @param:Json(name = "data") val data: List<StarchFactoryDto>,
-    @param:Json(name = "links") val links: PaginationLinks?,
-    @param:Json(name = "meta") val meta: PaginationMeta?
-)
-
-@JsonClass(generateAdapter = true)
 data class StarchFactoryDto(
     @param:Json(name = "id")
     val id: Int,

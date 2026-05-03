@@ -6,13 +6,6 @@ import com.squareup.moshi.JsonClass
 
 
 @JsonClass(generateAdapter = true)
-data class MaizePriceResponse(
-    @param:Json(name = "data") val data: List<MaizePriceDto>,
-    @param:Json(name = "links") val links: PaginationLinks?,
-    @param:Json(name = "meta") val meta: PaginationMeta?
-)
-
-@JsonClass(generateAdapter = true)
 data class MaizePriceDto(
     @param:Json(name = "id") val id: Int,
     @param:Json(name = "country_code") val countryCode: String,

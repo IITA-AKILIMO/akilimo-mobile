@@ -115,14 +115,15 @@ class RecommendationBuilder(
                 areaUnit = profile.enumAreaUnit,
             ),
             interCropping = ComputeRequest.InterCropping(
-                interCroppedCrop = "maize", //TODO evaluate according to country
+                interCroppedCrop = "maize", //TODO: evaluate according to country
                 interCroppingMaizeRec = useCase == EnumUseCase.CIM,
                 interCroppingPotatoRec = useCase == EnumUseCase.CIS
             ),
             recommendations = ComputeRequest.Recommendations(
-                fertilizerRec =  useCase == EnumUseCase.FR,
-                plantingPracticesRec =  useCase == EnumUseCase.PP,
-                scheduledPlantingRec =  useCase == EnumUseCase.SP,
+                recommendationLanguage = profile.recommendationLanguage ?: "en",
+                fertilizerRec = useCase == EnumUseCase.FR,
+                plantingPracticesRec = useCase == EnumUseCase.PP,
+                scheduledPlantingRec = useCase == EnumUseCase.SP,
                 scheduledHarvestRec = false
             ),
             planting = ComputeRequest.Planting(

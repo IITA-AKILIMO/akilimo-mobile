@@ -2,7 +2,6 @@ package com.akilimo.mobile.enums
 
 import android.content.Context
 import com.akilimo.mobile.R
-import com.akilimo.mobile.enums.ILabelProvider
 
 enum class EnumAreaUnit(private val stringRes: Int) : ILabelProvider {
     ACRE(R.string.lbl_acre),

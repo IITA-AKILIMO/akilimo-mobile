@@ -17,6 +17,7 @@ jobs:
       RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
       MAPBOX_RUNTIME_TOKEN: ${{ secrets.MAPBOX_RUNTIME_TOKEN }}
+      AKILIMO_API_KEY: ${{ secrets.AKILIMO_API_KEY }}
       LOCATION_IQ_TOKEN: ${{ secrets.LOCATION_IQ_TOKEN }}
       PACKAGE_NAME: ${{ secrets.APP_PACKAGE }}
 

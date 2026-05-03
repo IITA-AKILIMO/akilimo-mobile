@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -19,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Eco
 import androidx.compose.material.icons.outlined.Grass
@@ -27,11 +27,9 @@ import androidx.compose.material.icons.outlined.Spa
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.FloatingActionButton
-import com.akilimo.mobile.navigation.SettingsRoute
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -53,6 +51,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -64,8 +63,10 @@ import com.akilimo.mobile.navigation.BppRoute
 import com.akilimo.mobile.navigation.FrRoute
 import com.akilimo.mobile.navigation.IcMaizeRoute
 import com.akilimo.mobile.navigation.IcSweetPotatoRoute
+import com.akilimo.mobile.navigation.SettingsRoute
 import com.akilimo.mobile.navigation.SphRoute
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
+import com.akilimo.mobile.ui.theme.AkilimoTheme
 import com.akilimo.mobile.ui.viewmodels.RecommendationsViewModel
 
 private fun EnumAdvice.icon(): ImageVector = when (this) {
@@ -76,12 +77,35 @@ private fun EnumAdvice.icon(): ImageVector = when (this) {
     EnumAdvice.SCHEDULED_PLANTING_HIGH_STARCH -> Icons.Outlined.CalendarMonth
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecommendationsScreen(navController: NavHostController) {
     val viewModel = hiltViewModel<RecommendationsViewModel>()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+    RecommendationsContent(
+        uiState = state,
+        onAdviceClick = { option ->
+            viewModel.trackActiveAdvice(option.valueOption)
+            val route: Any = when (option.valueOption) {
+                EnumAdvice.FERTILIZER_RECOMMENDATIONS -> FrRoute
+                EnumAdvice.BEST_PLANTING_PRACTICES -> BppRoute
+                EnumAdvice.SCHEDULED_PLANTING_HIGH_STARCH -> SphRoute
+                EnumAdvice.INTERCROPPING_MAIZE -> IcMaizeRoute
+                EnumAdvice.INTERCROPPING_SWEET_POTATO -> IcSweetPotatoRoute
+            }
+            navController.navigate(route)
+        },
+        onSettingsClick = { navController.navigate(SettingsRoute) }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun RecommendationsContent(
+    uiState: RecommendationsViewModel.UiState,
+    onAdviceClick: (AdviceOption) -> Unit,
+    onSettingsClick: () -> Unit,
+) {
     val listState = rememberLazyListState()
     val heroPx = with(LocalDensity.current) { 240.dp.toPx() }
 
@@ -105,7 +129,7 @@ fun RecommendationsScreen(navController: NavHostController) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navController.navigate(SettingsRoute) },
+                onClick = onSettingsClick,
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
             ) {
@@ -167,20 +191,10 @@ fun RecommendationsScreen(navController: NavHostController) {
                         }
                     }
                 }
-                items(state.adviceOptions) { option ->
+                items(uiState.adviceOptions) { option ->
                     AdviceOptionCard(
                         option = option,
-                        onClick = {
-                            viewModel.trackActiveAdvice(option.valueOption)
-                            val route: Any = when (option.valueOption) {
-                                EnumAdvice.FERTILIZER_RECOMMENDATIONS -> FrRoute
-                                EnumAdvice.BEST_PLANTING_PRACTICES -> BppRoute
-                                EnumAdvice.SCHEDULED_PLANTING_HIGH_STARCH -> SphRoute
-                                EnumAdvice.INTERCROPPING_MAIZE -> IcMaizeRoute
-                                EnumAdvice.INTERCROPPING_SWEET_POTATO -> IcSweetPotatoRoute
-                            }
-                            navController.navigate(route)
-                        }
+                        onClick = { onAdviceClick(option) }
                     )
                 }
             }
@@ -261,5 +275,25 @@ private fun AdviceOptionCard(option: AdviceOption, onClick: () -> Unit) {
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun RecommendationsScreenPreview() {
+    val uiState = RecommendationsViewModel.UiState(
+        adviceOptions = listOf(
+            AdviceOption(EnumAdvice.FERTILIZER_RECOMMENDATIONS),
+            AdviceOption(EnumAdvice.BEST_PLANTING_PRACTICES),
+            AdviceOption(EnumAdvice.SCHEDULED_PLANTING_HIGH_STARCH),
+            AdviceOption(EnumAdvice.INTERCROPPING_MAIZE),
+        )
+    )
+    AkilimoTheme {
+        RecommendationsContent(
+            uiState = uiState,
+            onAdviceClick = {},
+            onSettingsClick = {}
+        )
     }
 }
