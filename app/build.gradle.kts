@@ -91,11 +91,15 @@ android {
         val akilimoBaseUrl = env.AKILIMO_BASE_URL.orElse("https://api.akilimo.org")
         val mapboxRuntimeToken = env.MAPBOX_RUNTIME_TOKEN.orElse("")
         val locationIqToken = env.LOCATION_IQ_TOKEN.orElse("")
+        val akilimoApiKey = env.AKILIMO_API_KEY.orElse(
+            providers.gradleProperty("akilimo.api.key").orElse("").get()
+        )
 
         buildConfigField("String", "AKILIMO_BASE_URL", q(akilimoBaseUrl))
         buildConfigField("String", "FUELROD_BASE_URL", q(fuelrodBaseUrl))
         buildConfigField("String", "MAPBOX_RUNTIME_TOKEN", q(mapboxRuntimeToken))
         buildConfigField("String", "LOCATION_IQ_TOKEN", q(locationIqToken))
+        buildConfigField("String", "AKILIMO_API_KEY", q(akilimoApiKey))
     }
 
     lint {
