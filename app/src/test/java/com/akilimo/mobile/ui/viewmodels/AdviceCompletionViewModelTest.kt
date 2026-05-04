@@ -2,7 +2,7 @@ package com.akilimo.mobile.ui.viewmodels
 
 import app.cash.turbine.test
 import com.akilimo.mobile.entities.AdviceCompletion
-import com.akilimo.mobile.entities.AdviceCompletionDto
+import com.akilimo.mobile.dto.AdviceCompletionDto
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumStepStatus
 import com.akilimo.mobile.repos.AdviceCompletionRepo

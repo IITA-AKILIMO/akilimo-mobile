@@ -2,6 +2,7 @@ package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.entities.CassavaYield
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -22,13 +23,14 @@ import kotlinx.coroutines.launch
 class CassavaYieldViewModel @Inject constructor(
     private val userRepo: AkilimoUserRepo,
     private val yieldRepo: CassavaYieldRepo,
-    private val selectedRepo: SelectedCassavaMarketRepo
+    private val selectedRepo: SelectedCassavaMarketRepo,
+    private val appSettings: AppSettingsDataStore
 ) : ViewModel() {
 
     data class UiState(
         val yields: List<CassavaYield> = emptyList(),
         val selectedYieldId: Int? = null,
-        /** Non-null when DB is empty and the Activity must supply a seed list. */
+        /** Non-null when DB is empty and the screen must supply a seed list. */
         val seedRequest: EnumAreaUnit? = null,
         val areaUnit: EnumAreaUnit = EnumAreaUnit.ACRE,
         val useCase: EnumAdvice = EnumAdvice.FERTILIZER_RECOMMENDATIONS
@@ -36,6 +38,10 @@ class CassavaYieldViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch { loadData(appSettings.akilimoUser) }
+    }
 
     fun loadData(userName: String) = viewModelScope.launch {
         val user = userRepo.getUser(userName) ?: return@launch
@@ -52,7 +58,7 @@ class CassavaYieldViewModel @Inject constructor(
             Pair(repoList, details?.selectedCassavaMarket?.yieldId)
         }.collectLatest { (repoList, selectedYieldId) ->
             if (repoList.isEmpty()) {
-                // Signal the Activity to produce the seed list (requires getString context)
+                // Signal the screen to produce the seed list (requires getString context)
                 _uiState.update { it.copy(seedRequest = areaUnit) }
             } else {
                 _uiState.update {
@@ -66,14 +72,14 @@ class CassavaYieldViewModel @Inject constructor(
         }
     }
 
-    /** Called by the Activity after it builds the seed list using string resources. */
+    /** Called by the screen after it builds the seed list using string resources. */
     fun seedYields(seeds: List<CassavaYield>) = viewModelScope.launch {
         yieldRepo.saveAll(seeds)
         // observeAll() will re-emit automatically once saved
     }
 
-    fun selectYield(userName: String, cassavaYield: CassavaYield) = viewModelScope.launch {
-        val user = userRepo.getUser(userName) ?: return@launch
+    fun selectYield(cassavaYield: CassavaYield) = viewModelScope.launch {
+        val user = userRepo.getUser(appSettings.akilimoUser) ?: return@launch
         val userId = user.id ?: 0
         val current = selectedRepo.getSelectedByUser(userId)?.selectedCassavaMarket
         val updated = current?.copy(yieldId = cassavaYield.id)

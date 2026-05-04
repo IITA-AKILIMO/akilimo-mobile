@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.akilimo.mobile.base.BaseEntity
+import com.akilimo.mobile.entities.BaseEntity
 
 /**
  * CassavaYield persisted entity.

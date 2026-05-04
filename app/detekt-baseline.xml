@@ -103,7 +103,7 @@
     <ID>NewLineAtEndOfFile:CollapsibleToolbarHelper.kt$com.akilimo.mobile.ui.components.CollapsibleToolbarHelper.kt</ID>
     <ID>NewLineAtEndOfFile:ComputeRequest.kt$com.akilimo.mobile.rest.request.ComputeRequest.kt</ID>
     <ID>NewLineAtEndOfFile:Converters.kt$com.akilimo.mobile.utils.Converters.kt</ID>
-    <ID>NewLineAtEndOfFile:CurrencyDto.kt$com.akilimo.mobile.dto.CurrencyDto.kt</ID>
+    <ID>NewLineAtEndOfFile:Currencies.kt$com.akilimo.mobile.dto.Currencies.kt</ID>
     <ID>NewLineAtEndOfFile:CustomDatePicker.kt$com.akilimo.mobile.ui.components.CustomDatePicker.kt</ID>
     <ID>NewLineAtEndOfFile:DisclaimerFragment.kt$com.akilimo.mobile.ui.fragments.DisclaimerFragment.kt</ID>
     <ID>NewLineAtEndOfFile:EnumServiceType.kt$com.akilimo.mobile.enums.EnumServiceType.kt</ID>

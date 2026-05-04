@@ -2,7 +2,7 @@ package com.akilimo.mobile.di
 
 import android.content.Context
 import com.akilimo.mobile.database.AppDatabase
-import com.akilimo.mobile.dao.MaizePerformanceRepo
+import com.akilimo.mobile.repos.MaizePerformanceRepo
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.CassavaMarketPriceRepo
 import com.akilimo.mobile.repos.CassavaUnitRepo
@@ -13,7 +13,7 @@ import com.akilimo.mobile.repos.InvestmentRepo
 import com.akilimo.mobile.repos.SelectedCassavaMarketRepo
 import com.akilimo.mobile.repos.SelectedInvestmentRepo
 import com.akilimo.mobile.repos.StarchFactoryRepo
-import com.akilimo.mobile.dao.ProduceMarketRepo
+import com.akilimo.mobile.repos.ProduceMarketRepo
 import com.akilimo.mobile.repos.AdviceCompletionRepo
 import com.akilimo.mobile.repos.FertilizerPriceRepo
 import com.akilimo.mobile.repos.FertilizerRepo

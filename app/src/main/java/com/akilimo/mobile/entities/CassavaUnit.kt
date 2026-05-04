@@ -3,7 +3,7 @@ package com.akilimo.mobile.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.akilimo.mobile.base.BaseEntity
+import com.akilimo.mobile.entities.BaseEntity
 
 @Entity(tableName = "cassava_units")
 data class CassavaUnit(

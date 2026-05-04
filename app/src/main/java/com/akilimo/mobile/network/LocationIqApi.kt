@@ -1,6 +1,6 @@
 package com.akilimo.mobile.network
 
-import com.akilimo.mobile.rest.response.ReverseGeocodeResponse
+import com.akilimo.mobile.network.response.ReverseGeocodeResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 

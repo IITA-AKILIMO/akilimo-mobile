@@ -1,6 +1,6 @@
 package com.akilimo.mobile.network
 
-import com.akilimo.mobile.rest.response.WeatherResponse
+import com.akilimo.mobile.network.response.WeatherResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 

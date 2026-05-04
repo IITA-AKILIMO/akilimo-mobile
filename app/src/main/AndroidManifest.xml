@@ -24,6 +24,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.NewAkilimo"
+        android:localeConfig="@xml/locales_config"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="s">
 
@@ -39,93 +40,22 @@
                 android:value="androidx.startup"
                 tools:node="remove" />
         </provider>
-        <activity
-            android:name=".ui.usecases.SweetPotatoMarketActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usecases.MaizePerformanceActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usecases.MaizeMarketActivity"
-            android:exported="false" /> <!-- Crash reporting (Sentry) -->
+        <!-- Crash reporting (Sentry) -->
         <meta-data
             android:name="io.sentry.dsn"
             android:value="https://f82045e88773833962622996b32b9c8a@o212209.ingest.us.sentry.io/4510186632314885" />
         <meta-data
             android:name="io.sentry.send-default-pii"
-            android:value="true" /> <!-- Launcher Activity -->
+            android:value="true" />
+        <!-- Compose single-Activity launcher (Phase 1+) -->
         <activity
-            android:name=".ui.activities.HomeStepperActivity"
+            android:name=".ui.activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Core Activities -->
-        <activity
-            android:name=".ui.activities.MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activities.RecommendationsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activities.GetRecommendationActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activities.LocationPickerActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activities.WeedManagementActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activities.IcSweetPotatoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activities.IcMaizeActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activities.SphActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activities.BppActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activities.FrActivity"
-            android:exported="false" /> <!-- Use Case Activities -->
-        <activity
-            android:name=".ui.usecases.FertilizersActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usecases.InterCropFertilizersActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usecases.SweetPotatoInterCropFertilizersActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usecases.DatesActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usecases.WeedControlCostsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usecases.TractorAccessActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usecases.ManualTillageCostActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usecases.CassavaMarketActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usecases.CassavaYieldActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usecases.InvestmentAmountActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activities.UserSettingsActivity"
-            android:exported="false" />
+        </activity>
     </application>
 
 </manifest>

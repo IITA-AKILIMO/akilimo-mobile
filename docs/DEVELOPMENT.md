@@ -49,32 +49,35 @@ Main package: `com.akilimo.mobile`
 
 | Package | Purpose |
 |---------|---------|
-| `ui/activities/` | All Activity subclasses (extend `BaseActivity<VB>`) |
-| `ui/fragments/` | All Fragment subclasses (extend `BaseFragment<VB>` or `BaseStepFragment<VB>`) |
+| `ui/activities/` | `MainActivity` — single-Activity host with `AkilimoNavHost` |
+| `ui/screens/` | Compose screens grouped by feature (`usecases/`, `settings/`, `recommendations/`, `onboarding/`) |
+| `ui/components/compose/` | Shared Compose primitives: `BackTopAppBar`, `SaveBottomBar`, `ScrollableFormColumn`, `NavExtensions`, `AkilimoTextField`, `SelectionCard`, `BinaryToggleChips`, `RadioButtonRow`, `SwitchRow` |
+| `ui/viewmodels/` | One `@HiltViewModel` per screen; `StateFlow<UiState>` + `Channel<Effect>` pattern |
 | `repos/` | Repository classes wrapping Room DAOs — all DB access goes through here |
-| `dao/` + `entities/` | Room `@Dao` interfaces and `@Entity` data classes |
+| `dao/` + `entities/` | Room `@Dao` interfaces (16) and `@Entity` data classes (17) |
 | `workers/` | WorkManager `CoroutineWorker` subclasses + `WorkerScheduler` |
-| `network/` + `rest/` | Retrofit service interfaces, `ApiClient`, request/response models |
-| `data/` | `AppSettingsDataStore.kt` — Preferences DataStore for all 17 settings keys (replaces deleted `SessionManager`) |
-| `helper/` | `LocaleHelper` (locale context wrapper); `SessionManager` has been deleted |
-| `ui/viewmodels/` | `WelcomeViewModel`, `UserSettingsViewModel` (key screens); expand as more screens are migrated |
-| `enums/` | Domain enums: `EnumCountry`, `EnumAreaUnit`, `EnumAdvice`, etc. |
+| `network/` + `rest/` | Retrofit service interfaces (`AkilimoApi`, `LocationIqApi`, `WeatherApi`), `ApiClient`, request/response models |
+| `data/` | `AppSettingsDataStore.kt` — Preferences DataStore for all 17 settings keys |
+| `enums/` | Domain enums: `EnumCountry`, `EnumAreaUnit`, `EnumAdvice`, `EnumAdviceTask`, `EnumStepStatus`, etc. |
+| `navigation/` | `Route.kt` (@Serializable routes) + `AkilimoNavHost.kt` (modular feature graphs) |
+| `di/` | `AppModule.kt` — 15 @Singleton repository providers |
+| `helper/` | Cross-cutting helpers (`LocaleHelper`, `WorkStateMapper`); do not add new files here |
 
-**When adding a new screen (current View system):**
-1. Create Activity extending `BaseActivity<VB>` — implement `inflateBinding()` and `onBindingReady()`.
-2. Create a typed Repo class in `repos/` backed by a DAO.
-3. Launch via explicit `Intent` (NavGraph not yet active).
+Package guardrails:
 
-> **⚠️ Compose migration in progress.** Hilt is now active (ROADMAP #9 ✅ Done).
-> Once NavGraph is active (ROADMAP #12), all new screens must be written as `@Composable`
-> functions with a `@HiltViewModel`. Do not add new activities after Phase 1 of the migration begins.
-> See `docs/COMPOSE_MIGRATION.md` for conventions.
+- Do not add new files to `rest/`, `helper/`, `utils/`, or `interfaces/` unless there is a strong cross-cutting reason and no better specific package exists.
+- Prefer moving code into a feature package, `data/`, `navigation/`, `workers/`, or `ui/components/` instead of extending generic buckets.
+- New remote code should converge toward one remote-data package path rather than growing parallel structures.
 
-**When adding a new stepper step:**
-1. Create Fragment extending `BaseStepFragment<VB>`.
-2. Override `prefillFromEntity()` to reload saved state when the step is re-selected.
-3. Override `verifyStep()` to return a `VerificationError` if inputs are incomplete.
-4. Register in `StepperAdapter`.
+**When adding a new screen:**
+1. Create a `@Composable` screen function under `ui/screens/<feature>/`.
+2. Create a `@HiltViewModel` in `ui/viewmodels/` with a nested `UiState` data class and `StateFlow<UiState>`.
+3. Use shared components from `ui/components/compose/` (`BackTopAppBar`, `SaveBottomBar`, `ScrollableFormColumn`, `NavExtensions.completeTask`).
+4. Add the route to `navigation/Route.kt` and wire it in `AkilimoNavHost.kt`.
+5. Do not add new `Activity` or `Fragment` classes — Compose + NavHost is the active path.
+
+See `docs/COMPOSE_MIGRATION.md` for full conventions.
+
 
 **Language/locale changes:**
 - Always save language as a full BCP-47 tag (e.g., `"sw-TZ"`, not `"sw"`).
@@ -94,14 +97,13 @@ Main package: `com.akilimo.mobile`
 
 All repository methods are `suspend` functions called from `safeScope.launch { }` or a background dispatcher. Do not add main-thread DB calls — `allowMainThreadQueries()` has been removed.
 
-Room DB version: **2** — `fallbackToDestructiveMigration()` is active. When changing entity schema, write a proper `Migration` object to avoid wiping user data.
+Room DB version: **5** — `fallbackToDestructiveMigration()` is disabled. When changing entity schema, write a proper `Migration` object in `database/DatabaseMigrations.kt` to avoid wiping user data.
 
 ## 6. Coroutines conventions
 
-- In Activities/Fragments, use `safeScope.launch { }` (= `lifecycleScope`).
-- Switch to `Dispatchers.Main` for UI updates inside a coroutine block.
+- In ViewModels, use `viewModelScope.launch { }`.
 - Repositories use `suspend` functions — do not `runBlocking` anywhere in production code.
-- `NetworkMonitor.isConnected` is a `StateFlow<Boolean>` — collect via `repeatOnLifecycle(STARTED)` in `BaseActivity`.
+- `NetworkMonitor.isConnected` is a `StateFlow<Boolean>` — collect via `collectAsStateWithLifecycle()` in Compose screens.
 
 ## 7. Recommended pre-PR checklist
 
@@ -120,7 +122,7 @@ Room DB version: **2** — `fallbackToDestructiveMigration()` is active. When ch
 
 ## 9. Compose development conventions
 
-These apply once the Compose migration begins (ROADMAP items 13–17).
+These apply to all new screens. The Compose migration is **100% complete** — all screens are Jetpack Compose. No Fragments, no ViewBinding, no XML layouts remain.
 
 ### File layout for a Compose screen
 
@@ -133,6 +135,10 @@ ui/
 │       └── UserSettingsUiState.kt       data class + sealed NavEvent
 ├── components/
 │   └── compose/
+│       ├── BackTopAppBar.kt      TopAppBar with back arrow (carries its own @OptIn)
+│       ├── SaveBottomBar.kt      Full-width save/confirm button bar
+│       ├── ScrollableFormColumn.kt  fillMaxSize + horizontalPadding + verticalScroll
+│       ├── NavExtensions.kt      completeTask(EnumAdviceTask) extension
 │       ├── AkilimoButton.kt
 │       ├── AkilimoCard.kt
 │       ├── AkilimoTextField.kt
@@ -144,12 +150,48 @@ ui/
     └── AkilimoShapes.kt
 ```
 
+### Required shared components
+
+Every screen with a back-navigation top bar uses `BackTopAppBar`:
+```kotlin
+BackTopAppBar(title = stringResource(R.string.lbl_foo), onBack = { navController.popBackStack() })
+```
+
+Every screen with a primary action uses `SaveBottomBar` in the Scaffold `bottomBar`:
+```kotlin
+SaveBottomBar(label = stringResource(R.string.lbl_save), enabled = canSave, onClick = { ... })
+```
+
+Scrollable form body:
+```kotlin
+ScrollableFormColumn(padding = paddingValues) { /* form fields */ }
+```
+
+Task completion (writes result to `savedStateHandle` and pops back):
+```kotlin
+navController.completeTask(EnumAdviceTask.SOME_TASK)
+```
+
+`@OptIn(ExperimentalMaterial3Api::class)` is only needed on screens that directly use `ModalBottomSheet` or `DatePicker`. `BackTopAppBar` carries its own `@OptIn` internally.
+
+When the confirm action depends on nullable state, use `?.let` — early return is not valid in a `() -> Unit` lambda:
+```kotlin
+onClick = {
+    selectedItem?.let { item ->
+        viewModel.save(item)
+        navController.completeTask(EnumAdviceTask.SOME_TASK)
+    }
+}
+```
+
 ### State conventions
 
-- Every screen has exactly one `UiState` data class.
-- ViewModels expose `StateFlow<UiState>` — never `LiveData`, never raw mutable state.
-- One-shot navigation events use `SharedFlow<NavEvent>` collected via `LaunchedEffect(Unit)`.
+- Every screen has exactly one `UiState` data class with default values.
+- ViewModels expose `StateFlow<UiState>` via `_uiState.asStateFlow()` — never `LiveData`, never raw mutable state.
+- One-shot effects (navigation, snackbars) use `Channel<Effect>` exposed as `Flow<Effect>` — prevents re-delivery on recomposition.
 - Screens are **stateless** — they receive state and callbacks only.
+- Use `_uiState.update { it.copy(...) }` for state mutations.
+- `saved: Boolean` flag: set `true` after save, reset via `onSaveHandled()` after the screen observes it.
 
 ### Theming
 
@@ -170,7 +212,7 @@ private fun UserSettingsScreenPreview() {
 }
 ```
 
-### No-go list during migration
+### No-go list
 
 - ❌ Do not use `LiveData` — use `StateFlow`.
 - ❌ Do not use `findViewById` in migrated screens.
@@ -178,16 +220,15 @@ private fun UserSettingsScreenPreview() {
 - ❌ Do not call `startActivity()` from a Compose screen — use `navController.navigate()`.
 - ❌ Do not access `AppSettingsDataStore` directly from a composable — inject via `@HiltViewModel`.
 
-## 10. Known active bugs
+## 10. Resolved bugs (historical reference)
 
-| Ticket | Status | Description | Files |
-|--------|--------|-------------|-------|
-| MUN-16 | ✅ Fixed | Language selection did not persist — short codes, missing AppLocale sync, race condition on activity recreation | `WelcomeFragment.kt`, `UserSettingsActivity.kt`, `AkilimoApp.kt`, `AppSettingsDataStore.kt` |
-| MUN-22 | ✅ Fixed | Hilt `@AndroidEntryPoint` missing on concrete Activities/Fragments — covered all 25+ entry points | All activity/fragment files |
-| feat/#475 | ✅ Fixed | DataStore migration — `SessionManager.kt` deleted; `AppSettingsDataStore` covers all 17 settings keys with `SharedPreferencesMigration` | `data/AppSettingsDataStore.kt`, `BaseActivity.kt`, `BaseFragment.kt` |
-| — | ✅ Fixed | Language race condition — DataStore write now happens inside `safeScope.launch` before `setApplicationLocales()` call | `WelcomeFragment.kt` |
-| — | ✅ Fixed | WorkManager `IllegalStateException` on app start — missing `Configuration.Provider` | `AkilimoApp.kt`, `AndroidManifest.xml` |
-| — | ✅ Fixed | Dark mode setting saved but never applied — `MODE_NIGHT_NO` override removed; now driven by `AppSettingsDataStore.darkMode` in `AkilimoApp` | `BaseActivity.kt`, `AkilimoApp.kt` |
-| — | ✅ Fixed | `allowMainThreadQueries()` removed — all DB calls confirmed in coroutines | `AppDatabase.kt` |
+| Ticket | Description |
+|--------|-------------|
+| MUN-16 | Language selection did not persist — fixed: BCP-47 tags, DataStore write before `setApplicationLocales()`, race condition eliminated |
+| MUN-22 | Hilt `@AndroidEntryPoint` missing on entry points — fixed during Compose migration |
+| feat/#475 | DataStore migration — `SessionManager.kt` deleted; `AppSettingsDataStore` covers all 17 settings keys |
+| — | WorkManager `IllegalStateException` on app start — fixed: `Configuration.Provider` in `AkilimoApp` |
+| — | Dark mode setting saved but never applied — fixed: `AppSettingsDataStore.darkMode` drives night mode in `AkilimoApp` |
+| — | `allowMainThreadQueries()` removed — all DB calls in coroutines |
 
-See `docs/ARCHITECTURE.md §10` for the full technical debt register and `docs/ROADMAP.md` for prioritised fix order.
+See `docs/ROADMAP.md` for open items (R8 minification, unit test coverage, deep links, offline cache).

@@ -21,54 +21,64 @@ These are fixes to active bugs and security issues. All are self-contained with 
 
 ---
 
-## Medium-Term (1–3 months) — Compose Prerequisites
+## Medium-Term — Compose Prerequisites
 
-Architectural foundations that **must** be in place before any screen migrates to Compose.
+Architectural foundations required before screen migration to Compose.
 See `docs/COMPOSE_MIGRATION.md §2` for why each one is required.
 
-| # | Task | Files | Effort | Impact | Compose dependency |
-|---|------|-------|--------|--------|-------------------|
-| 7 | 🔄 Partial | **Introduce ViewModels** — one per screen; expose `StateFlow<UiState>`; move all DB/DataStore calls out of Activity/Fragment. `WelcomeViewModel` and `UserSettingsViewModel` done; remaining screens still load directly from repos | `ui/activities/`, `ui/fragments/`, `ui/viewmodels/` | M | Architecture | Required — `collectAsStateWithLifecycle()` needs a ViewModel |
-| 8 | ⬜ | **Proper Room migrations** — replace `fallbackToDestructiveMigration()` with `Migration` objects | `AppDatabase.kt` | M | Data integrity | Required — schema changes during migration must not wipe data |
-| 9 | ✅ Done | **Introduce Hilt** — `@HiltAndroidApp` on `AkilimoApp`; `@AndroidEntryPoint` on all 25+ concrete Activities/Fragments; `@HiltViewModel` on ViewModels; inject repos via constructor. Version: `hilt = "2.57.1"`, uses `kapt` | All | L | Maintainability | Required — `hiltViewModel()` in composables |
-| 10 | ✅ Done | **Consolidate ALL settings to DataStore** — `AppSettingsDataStore` covers all 17 keys (language, darkMode, akilimoUser, termsAccepted, disclaimerRead, rememberAreaUnit, isFertilizerGrid, deviceToken, apiToken, apiRefreshToken, mapBoxApiKey, locationIqToken, isFirstRun, notificationCount, termsLink, akilimoEndpoint, fuelrodEndpoint); `SessionManager.kt` deleted; `SharedPreferencesMigration` from `"new-akilimo-config"` | `data/AppSettingsDataStore.kt`, `AkilimoApp.kt`, `BaseActivity.kt`, `BaseFragment.kt` | M | Reliability | Required — Compose observes `DataStore` via `collectAsState()` |
+| # | Status | Task | Files | Effort | Impact | Compose dependency |
+|---|--------|------|-------|--------|--------|-------------------|
+| 7 | ✅ Done | **Introduce ViewModels** — one per screen; `StateFlow<UiState>` exposed; all DB/DataStore calls moved out of Activity/Fragment; all screens including onboarding wizard done | `ui/activities/`, `ui/fragments/`, `ui/viewmodels/` | M | Architecture | Required — `collectAsStateWithLifecycle()` needs a ViewModel |
+| 8 | ✅ Done | **Proper Room migrations** — `fallbackToDestructiveMigration()` replaced with explicit `Migration` objects | `AppDatabase.kt` | M | Data integrity | Required — schema changes during migration must not wipe data |
+| 9 | ✅ Done | **Introduce Hilt** — `@HiltAndroidApp` on `AkilimoApp`; `@AndroidEntryPoint` on all concrete Activities/Fragments; `@HiltViewModel` on ViewModels; inject repos via constructor | All | L | Maintainability | Required — `hiltViewModel()` in composables |
+| 10 | ✅ Done | **Consolidate ALL settings to DataStore** — `AppSettingsDataStore` covers all 17 keys; `SessionManager.kt` deleted; `SharedPreferencesMigration` applied | `data/AppSettingsDataStore.kt`, `AkilimoApp.kt`, `BaseActivity.kt`, `BaseFragment.kt` | M | Reliability | Required — Compose observes `DataStore` via `collectAsState()` |
 | 11 | ⬜ | **Unit test coverage for repos and locale logic** — `UserPreferencesRepo`, `LocaleHelper`, `AppSettingsDataStore`, all ViewModels | `test/` | M | Quality | Required — ViewModel unit tests validate `UiState` transitions |
-| 12 | ⬜ | **Jetpack NavGraph (View-based first)** — replace all `startActivity()` / `Intent` navigation with typed `NavGraph` destinations; enables `navigation-compose` in Phase 5 | All activities | L | Architecture | Required — `NavHost` is the Compose navigation backbone |
 
 ---
 
-## Long-Term (3–12 months) — Compose Migration
+## Long-Term — Compose Migration
 
-Full migration to Jetpack Compose. Executed in five phases as detailed in
-`docs/COMPOSE_MIGRATION.md`. Items 13–17 are internal sub-phases of the migration.
+Full migration to Jetpack Compose. Executed in six phases as detailed in
+`docs/COMPOSE_MIGRATION.md §7`. Items 12–17 are the migration phases.
 
-| # | Task | Effort | Impact | Dependency |
-|---|------|--------|--------|------------|
-| 13 | **Phase 1 — Compose infrastructure** — enable Compose in build; create `AkilimoTheme`, `AkilimoColors`, `AkilimoTypography`, `AkilimoShapes`; create reusable atom composables (`AkilimoButton`, `AkilimoCard`, `AkilimoTextField`, `NetworkBanner`) | M | Foundation | #9 (Hilt), #12 (NavGraph) |
-| 14 | **Phase 2 — Leaf screens** — migrate `UserSettingsActivity`, `RecommendationsActivity`, `GetRecommendationActivity`, `MainActivity` to Compose via `ComposeView` bridge host; each gets a `*ViewModel` + `*Screen.kt` | L | UX modernisation | #13 |
-| 15 | **Phase 3 — Domain screens** — migrate all 15 domain activities to Compose; replace all RecyclerView adapters with `LazyColumn` / `LazyVerticalGrid`; replace `AutoCompleteTextView` with `ExposedDropdownMenuBox` | XL | Core UX | #14 |
-| 16 | **Phase 4 — Stepper replacement** — replace `StepperLayout` library with `HorizontalPager`-based `OnboardingFlow`; migrate all 11 step fragments to composables; introduce `OnboardingViewModel` with step validation | XL | Architecture | #15 |
-| 17 | **Phase 5 — NavGraph migration and final cleanup** — consolidate all Compose destinations into `AppNavGraph`; remove ViewBinding, all XML layouts, all legacy View libraries (`StepperLayout`, `ViewPump`, `Reword`, `AppLocale`, `ProcessPhoenix`) | L | Architecture | #16 |
-| 18 | **Deep link support** — `<intent-filter>` for recommendation sharing URLs | M | UX | #17 |
-| 19 | **Offline recommendation cache** — store last recommendation per crop; display stale data when offline | L | Offline UX | #8 |
-| 20 | **Push notification delivery** — FCM integration for email/SMS notification prefs | L | Product | None |
-| 21 | **Accessibility audit** — TalkBack, font scaling, content descriptions, Compose semantics | M | Compliance | #16 |
+**Note:** No View-based NavGraph prerequisite — the app goes directly to pure Compose
+`NavHost` with `@Serializable` routes from Phase 1. See `COMPOSE_MIGRATION.md §2` for rationale.
+
+| # | Status | Task | Effort | Impact | Branch | Dependency |
+|---|--------|------|--------|--------|--------|------------|
+| 12 | ✅ Done | **Phase 0 — Enable Compose** — Compose plugin + catalog entries; `AkilimoTheme`, `AkilimoColors`, `AkilimoTypography`, `AkilimoShapes`; shared component primitives (`BackTopAppBar`, `SaveBottomBar`, `ScrollableFormColumn`) | S | Foundation | — | #9, #10 |
+| 13 | ✅ Done | **Phase 1 — Navigation Shell** — `MainActivity` with `setContent { AkilimoTheme { AkilimoNavHost() } }`; all routes declared in `navigation/Route.kt`; `MainActivity` set as launcher | S | Architecture | — | #12 |
+| 14 | ✅ Done | **Phase 2 — Onboarding Wizard** — `OnboardingViewModel` + `OnboardingScreen` with `AnimatedContent` step transitions; all 11 wizard step composables; `HomeStepperActivity`, `WizardAdapter`, all wizard Fragment classes and XML layouts deleted | L | Core UX | — | #13 |
+| 15 | ✅ Done | **Phase 3 — Recommendations & Use-Case Screens** — all use-case and recommendations screens ported to Compose; shared component extractions complete (`RadioButtonRow`, `BinaryToggleChips`, `SwitchRow`, `LabeledTextField`, `SelectionCard`) | XL | Core UX | — | #13 |
+| 16 | ✅ Done | **Phase 4 — Settings & Misc** — `UserSettingsScreen` in Compose with `LabeledTextField` inputs, `AkilimoDropdown`, `SwitchRow`; dead nav graphs deleted (`nav_graph.xml`, `nav_recommendations.xml`); `NavRouterFragment` removed | M | UX | — | #15 |
+| 17 | ✅ Done | **Phase 5 — Final Cleanup** — `viewBinding = false`; all XML layouts deleted; `BaseFragment`, `BaseStepFragment` deleted; `BaseActivity` thinned; View-only libraries removed (`AppLocale`/`Reword`/`ViewPump`, `hbb20:ccp`, `StepperLayout`, `navigation-fragment`, `navigation-ui-ktx`) | M | Cleanup | — | #16 |
+| 18 | ⬜ | **Deep link support** — `<intent-filter>` for recommendation sharing URLs | M | UX | — | #17 |
+| 19 | ⬜ | **Offline recommendation cache** — store last recommendation per crop; display stale data when offline | L | Offline UX | — | #8 |
+| 20 | ⬜ | **Push notification delivery** — FCM integration for email/SMS notification prefs | L | Product | — | None |
+| 21 | ⬜ | **Accessibility audit** — TalkBack, font scaling, content descriptions, Compose semantics | M | Compliance | — | #16 |
 
 ---
 
 ## Milestone Summary
 
 ```
-Week 1-4:    Bug fixes + security hardening (items 1–5)         ← done ✅
-Month 2–3:   Hilt (#9) ✅ + DataStore (#10) ✅ — completed ahead of schedule
-             ViewModels (#7) 🔄 Partial — key screens done; all screens remaining
-             Room migrations (#8) + NavGraph (#12) + unit tests (#11) — still open
-Month 4:     Compose infrastructure + leaf screens (items 13–14)
-Month 5–6:   Domain screens migration (item 15)
-Month 7–8:   Stepper replacement + onboarding flow (item 16)
-             Note: HomeStepperActivity already migrated from StepperLayout → ViewPager2 + WizardAdapter
-Month 9–10:  NavGraph consolidation + library cleanup (item 17)
-Month 11–12: Deep links + offline cache + accessibility (items 18–21)
+Completed:
+  Short-term bug fixes + security hardening (items 1–4)          ✅
+  Hilt (#9) + DataStore (#10)                                     ✅
+  ViewModels for all screens (#7)                                 ✅
+  Room migrations (#8)                                            ✅
+  Phase 0: Compose foundation + theme system (#12)                ✅
+  Phase 1: MainActivity + NavHost shell (#13)                     ✅
+  Phase 2: Onboarding wizard in Compose (#14)                     ✅
+  Phase 3: All use-case + recommendation screens (#15)            ✅
+  Phase 4: Settings screens (#16)                                 ✅
+  Phase 5: Final cleanup — ViewBinding off, XML layouts and
+    legacy View libraries removed (#17)                           ✅
+
+Open:
+  R8 minification (#5)
+  Unit test coverage (#11)
+  Deep links + offline cache + push notifications + a11y (18–21)
 ```
 
 > Full Compose migration specification: `docs/COMPOSE_MIGRATION.md`

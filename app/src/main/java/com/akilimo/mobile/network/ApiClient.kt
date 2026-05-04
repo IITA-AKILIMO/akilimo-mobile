@@ -39,11 +39,18 @@ object ApiClient {
 
         val client = getCompatibleOkHttpClient(context, timeoutSeconds)
             .dns(Dns.SYSTEM)
+            .addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .addHeader("X-Api-Key", BuildConfig.AKILIMO_API_KEY)
+                    .build()
+                chain.proceed(request)
+            }
             .apply {
                 if (BuildConfig.DEBUG) {
                     val logging = HttpLoggingInterceptor().apply {
                         level = HttpLoggingInterceptor.Level.BODY
                         redactHeader("Authorization")
+                        redactHeader("X-Api-Key")
                     }
                     addInterceptor(logging)
                 }

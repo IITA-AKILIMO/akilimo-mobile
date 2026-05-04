@@ -2,6 +2,7 @@ package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.entities.CassavaMarketPrice
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -30,7 +31,8 @@ class CassavaMarketViewModel @Inject constructor(
     private val factoryRepo: StarchFactoryRepo,
     val selectedRepo: SelectedCassavaMarketRepo,
     val priceRepo: CassavaMarketPriceRepo,
-    private val cassavaUnitRepo: CassavaUnitRepo
+    private val cassavaUnitRepo: CassavaUnitRepo,
+    private val appSettings: AppSettingsDataStore
 ) : ViewModel() {
 
     data class UiState(
@@ -49,6 +51,10 @@ class CassavaMarketViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch { loadData(appSettings.akilimoUser) }
+    }
 
     fun loadData(userName: String) = viewModelScope.launch {
         val user = userRepo.getUser(userName) ?: return@launch
@@ -112,12 +118,11 @@ class CassavaMarketViewModel @Inject constructor(
     }
 
     fun saveSelectedPrice(
-        userName: String,
         unit: CassavaUnit,
         uos: EnumUnitOfSale,
         selectedPrice: CassavaMarketPrice?
     ) = viewModelScope.launch {
-        val userId = userRepo.getUser(userName)?.id ?: return@launch
+        val userId = userRepo.getUser(appSettings.akilimoUser)?.id ?: return@launch
 
         val exactPrice = selectedPrice?.exactPrice ?: false
         val unitPrice = if (exactPrice) {

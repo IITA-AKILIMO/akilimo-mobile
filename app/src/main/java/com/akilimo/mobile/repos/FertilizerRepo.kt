@@ -30,14 +30,6 @@ class FertilizerRepo(private val dao: FertilizerDao) {
     fun observeByCountry(countryCode: EnumCountry): Flow<List<Fertilizer>> =
         dao.observeAllByCountry(countryCode)
 
-
-    @Deprecated("Need further evaluation if this is really useful now")
-    fun observeByCountryAndUseCase(
-        countryCode: EnumCountry,
-        useCase: EnumUseCase
-    ): Flow<List<Fertilizer>> =
-        dao.observeAllByCountryAndUseCase(countryCode, useCase)
-
     fun observeByCimAvailable(countryCode: EnumCountry): Flow<List<Fertilizer>> =
         dao.observeAllByCimAvailable(countryCode)
 

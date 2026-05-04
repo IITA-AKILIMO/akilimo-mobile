@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.akilimo.mobile.base.BaseEntity
+import com.akilimo.mobile.entities.BaseEntity
 
 @Entity(
     tableName = "selected_fertilizers",

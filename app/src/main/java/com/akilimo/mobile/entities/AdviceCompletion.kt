@@ -1,13 +1,11 @@
 package com.akilimo.mobile.entities
 
-import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.akilimo.mobile.base.BaseEntity
+import com.akilimo.mobile.entities.BaseEntity
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumStepStatus
-import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "advice_completions")
 data class AdviceCompletion(
@@ -18,8 +16,3 @@ data class AdviceCompletion(
 ) : BaseEntity()
 
 
-@Parcelize
-data class AdviceCompletionDto(
-    val taskName: EnumAdviceTask,
-    val stepStatus: EnumStepStatus
-) : Parcelable

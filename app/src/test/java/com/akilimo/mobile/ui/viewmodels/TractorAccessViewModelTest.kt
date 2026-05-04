@@ -1,5 +1,6 @@
 package com.akilimo.mobile.ui.viewmodels
 
+import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.enums.EnumAreaUnit
@@ -10,6 +11,7 @@ import com.akilimo.mobile.rules.TestDispatcherRule
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -26,6 +28,7 @@ class TractorAccessViewModelTest {
 
     private val userRepo: AkilimoUserRepo = mockk(relaxed = true)
     private val costsRepo: FieldOperationCostsRepo = mockk(relaxed = true)
+    private val appSettings: AppSettingsDataStore = mockk(relaxed = true)
     private lateinit var viewModel: TractorAccessViewModel
 
     private val testUser = AkilimoUser(
@@ -37,9 +40,14 @@ class TractorAccessViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = TractorAccessViewModel(userRepo, costsRepo)
+        viewModel = TractorAccessViewModel(
+            userRepo = userRepo,
+            costsRepo = costsRepo,
+            appSettings = appSettings
+        )
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `loadData populates uiState from user and existing costs`() = runTest {
         val existingCost = FieldOperationCost(

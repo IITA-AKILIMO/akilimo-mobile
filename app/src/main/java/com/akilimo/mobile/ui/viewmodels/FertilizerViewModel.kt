@@ -2,6 +2,7 @@ package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.entities.Fertilizer
 import com.akilimo.mobile.entities.SelectedFertilizer
 import com.akilimo.mobile.enums.EnumFertilizerFlow
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -27,30 +29,33 @@ class FertilizerViewModel @AssistedInject constructor(
     val selectedRepo: SelectedFertilizerRepo,
     private val userRepo: AkilimoUserRepo,
     val priceRepo: FertilizerPriceRepo,
-    @Assisted private val userName: String,
+    private val appSettings: AppSettingsDataStore,
     @Assisted private val fertilizerFlow: EnumFertilizerFlow
 ) : ViewModel() {
 
     @AssistedFactory
     interface Factory {
-        fun create(userName: String, fertilizerFlow: EnumFertilizerFlow): FertilizerViewModel
+        fun create(fertilizerFlow: EnumFertilizerFlow): FertilizerViewModel
     }
 
     data class UiState(
         val fertilizers: List<Fertilizer> = emptyList(),
         val selectedIds: Set<Int> = emptySet(),
         val isEmpty: Boolean = false,
-        val userId: Int = 0
+        val userId: Int = 0,
+        val isGridLayout: Boolean = false
     )
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
     init {
-        loadData()
+        _uiState.update { it.copy(isGridLayout = appSettings.isFertilizerGrid) }
+        viewModelScope.launch { loadData() }
     }
 
     private fun loadData() = viewModelScope.launch {
+        val userName = appSettings.akilimoUser
         val user = userRepo.getUser(userName) ?: return@launch
         val userId = user.id ?: return@launch
         val country = user.enumCountry
@@ -58,34 +63,27 @@ class FertilizerViewModel @AssistedInject constructor(
         _uiState.update { it.copy(userId = userId) }
 
         launch {
-            val flow = when (fertilizerFlow) {
+            val listFlow = when (fertilizerFlow) {
                 EnumFertilizerFlow.DEFAULT -> fertilizerRepo.observeByCountry(country)
                 EnumFertilizerFlow.CIM -> fertilizerRepo.observeByCimAvailable(country)
                 EnumFertilizerFlow.CIS -> fertilizerRepo.observeByCisAvailable(country)
             }
-            flow.collectLatest { fertilizers ->
-                val selectedList = selectedRepo.getSelectedSync(userId)
+            combine(listFlow, selectedRepo.observeSelected(userId)) { fertilizers, selectedList ->
                 val selectedIds = selectedList.map { it.fertilizerId }.toSet()
                 val selectedMap = selectedList.associateBy { it.fertilizerId }
-
                 val mapped = fertilizers.map { f ->
-                    f.apply {
+                    f.copy().apply {
                         val sel = selectedMap[id]
                         isSelected = selectedIds.contains(id)
                         displayPrice = sel?.displayPrice.orEmpty()
                         selectedPrice = if (isSelected) sel?.fertilizerPrice ?: 0.0 else 0.0
                     }
                 }
+                Pair(mapped, selectedIds)
+            }.collectLatest { (mapped, selectedIds) ->
                 _uiState.update {
                     it.copy(fertilizers = mapped, selectedIds = selectedIds, isEmpty = mapped.isEmpty())
                 }
-            }
-        }
-
-        launch {
-            selectedRepo.observeSelected(userId).collectLatest { selectedList ->
-                val selectedIds = selectedList.map { it.fertilizerId }.toSet()
-                _uiState.update { it.copy(selectedIds = selectedIds) }
             }
         }
     }
@@ -108,6 +106,12 @@ class FertilizerViewModel @AssistedInject constructor(
                 isExactPrice = isExactPrice
             )
         )
+    }
+
+    fun toggleLayout() {
+        val newValue = !_uiState.value.isGridLayout
+        appSettings.isFertilizerGrid = newValue
+        _uiState.update { it.copy(isGridLayout = newValue) }
     }
 
     fun deselectFertilizer(fertilizerId: Int) = viewModelScope.launch {

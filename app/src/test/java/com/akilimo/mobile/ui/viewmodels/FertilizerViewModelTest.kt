@@ -1,5 +1,6 @@
 package com.akilimo.mobile.ui.viewmodels
 
+import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.entities.SelectedFertilizer
 import com.akilimo.mobile.enums.EnumCountry
@@ -10,6 +11,7 @@ import com.akilimo.mobile.repos.FertilizerPriceRepo
 import com.akilimo.mobile.repos.FertilizerRepo
 import com.akilimo.mobile.repos.SelectedFertilizerRepo
 import com.akilimo.mobile.rules.TestDispatcherRule
+import com.akilimo.mobile.ui.viewmodels.FertilizerViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -31,22 +33,30 @@ class FertilizerViewModelTest {
     private val selectedRepo: SelectedFertilizerRepo = mockk(relaxed = true)
     private val userRepo: AkilimoUserRepo = mockk(relaxed = true)
     private val priceRepo: FertilizerPriceRepo = mockk(relaxed = true)
-
+    private val appSettings: AppSettingsDataStore = mockk(relaxed = true)
     private val testUser = AkilimoUser(id = 42, userName = "user1", enumCountry = EnumCountry.NG)
 
     private fun buildViewModel(flow: EnumFertilizerFlow = EnumFertilizerFlow.DEFAULT): FertilizerViewModel {
+        every { appSettings.akilimoUser } returns "user1"
         coEvery { userRepo.getUser("user1") } returns testUser
         every { fertilizerRepo.observeByCountry(EnumCountry.NG) } returns flowOf(emptyList())
         every { fertilizerRepo.observeByCimAvailable(EnumCountry.NG) } returns flowOf(emptyList())
         every { fertilizerRepo.observeByCisAvailable(EnumCountry.NG) } returns flowOf(emptyList())
         coEvery { selectedRepo.getSelectedSync(42) } returns emptyList()
         every { selectedRepo.observeSelected(42) } returns flowOf(emptyList())
-        return FertilizerViewModel(fertilizerRepo, selectedRepo, userRepo, priceRepo, "user1", flow)
+        return FertilizerViewModel(
+            fertilizerRepo = fertilizerRepo,
+            selectedRepo = selectedRepo,
+            userRepo = userRepo,
+            priceRepo = priceRepo,
+            appSettings = appSettings,
+            fertilizerFlow = flow
+        )
     }
 
     @Before
     fun setUp() {
-        // intentionally empty — each test builds its own ViewModel to control mock state
+        // intentionally empty - each test builds its own ViewModel to control mock state
     }
 
     @Test
