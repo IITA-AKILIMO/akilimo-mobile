@@ -7,29 +7,368 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+### Bug Fixes
 
-- **Full Jetpack Compose Migration**: Eliminated all legacy XML layouts and View-based Fragments/Activities in favor of a 100% Compose-driven UI.
-- **Material 3 Redesign**: Complete application overhaul using Material 3 design system, featuring custom themes, typography, and Jetsnack-inspired UI patterns.
-- **Hilt Dependency Injection**: Introduced Hilt (Dagger 2.57.1) for modern dependency injection across all ViewModels, repositories, and activities.
-- **Single-Activity Architecture**: Migrated to a single-Activity host (`MainActivity`) using Jetpack Compose Navigation with type-safe `@Serializable` routes.
-- **Preferences DataStore**: Replaced all legacy `SharedPreferences` with `androidx.datastore:datastore-preferences`, providing a reactive, `Flow`-based single source of truth for app settings.
-- **Proper Room Migrations**: Replaced `fallbackToDestructiveMigration()` with manual, safe SQL migrations and bumped database versioning to preserve user data during schema changes.
-- **Native Locale APIs**: Replaced third-party libraries (`AppLocale`, `Reword`) with native `AppCompatDelegate.setApplicationLocales()` and Compose `stringResource`.
-- **Enhanced Edge-to-Edge**: Implemented modern `enableEdgeToEdge()` with proper `navigationBarsPadding` and `contentWindowInsets` handling across all screens.
+- Fix(html): update terms page copyright information
 
-### Changed
+- Fix(icon): invert launcher icon to Gmail-style green symbol on white
 
-- **Onboarding Redesign**: Replaced the legacy step-based wizard with a modern, single-scrollable form UX in the onboarding flow.
-- **ViewModel Standardization**: Every screen now uses an `@HiltViewModel` exposing a single `StateFlow<UiState>` and a `Flow<Effect>` for one-shot side effects.
-- **Repository Pattern**: Standardized all data access through the repository layer, removing direct DAO calls from UI components.
-- **Navigation Flow**: Standardized navigation to pass only primitive IDs in routes, with ViewModels loading full entities from repositories.
+Swap background/foreground colours: white background layer + AKILIMO
+green (#3D7600) cassava head foreground, giving a coloured-mark-on-
+neutral look (similar to Gmail) instead of the previous white-on-green.
+Monochrome layer unchanged.
 
-### Removed
+Co-Authored-By: munywele-sonar <noreply@sonar.com>
 
-- **Legacy Libraries**: Removed `material-stepper`, `reword`, `app-locale`, `viewpump`, `ProcessPhoenix`, and `country-code-picker`.
-- **Legacy Components**: Deleted all XML layouts, ViewBinding-generated classes, and legacy `BaseFragment`/`BaseStepFragment`.
-- **Redundant Navigation**: Removed XML-based NavGraphs (`nav_graph.xml`, `nav_recommendations.xml`).
+- Fix(drawable): update ic_grid.xml tint color
+
+- Fix/cleanup 
+
+- Fix(di): correct context annotation targeting
+
+- Fix(fertilizer): correct repository DAO method calls
+
+- Fix(repo): restore CIM/CIS DAO filtering and fix rec language default
+
+Restores observeByCimAvailable/observeByCisAvailable to use the correct
+SQL-filtered DAO queries instead of the unfiltered observeAllByCountry.
+Fixes recommendationLanguage UiState default from "" to "en" to prevent
+blank display in SummaryStep.
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+- Fix(db): correct migration version range
+
+
+### Code Refactoring
+
+- Refactor(theme): strip XML theme to minimal base; improve adaptive app icon
+
+Compose owns all theming via AkilimoTheme — the XML theme now only
+suppresses the ActionBar and sets windowBackground to prevent white flash.
+Removes all widget, typography, shape, and toolbar styles from XML (262 to 9
+lines in themes.xml) and deletes the now-redundant type.xml.
+
+App icon updated to branded adaptive icon:
+- Background: AKILIMO green (#3D7600) replacing plain white
+- Foreground: white cassava head (from ic_akilimo_head) scaled 3x into
+  the 72dp safe zone, replacing the poorly offset lime-coloured version
+- Monochrome layer added for Android 13+ dynamic-colour themed icons
+- mipmap-anydpi-v26 adaptive icon XML added (was missing entirely)
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+- Refactor(ui): extract recommendation feedback copy
+
+- Refactor(settings): extract weather summary strings
+
+- Refactor(viewmodels): extract validation and worker messages
+
+- Refactor(packages): consolidate package structure — phases 1–3
+
+Dissolve 5 misplaced or single-file packages and relocate all files to
+semantically correct destinations. No logic changes; all unit tests pass.
+
+Packages dissolved:
+- wizard/        → ui/screens/onboarding/ (OnboardingSection)
+- interfaces/    → enums/ (ILabelProvider, IProduceType) + base/workers/ (IDispatcherProvider)
+- helper/        → workers/ (WorkStateMapper, WorkerError) + data/ (LocaleHelper)
+- extensions/    → workers/ (WorkerExtensions)
+- ui/viewmodels/usecases/ → ui/viewmodels/ (FertilizerViewModel flattened)
+
+Files moved to correct packages:
+- dao/MaizePerformanceRepo, dao/ProduceMarketRepo → repos/
+- base/BaseEntity → entities/
+- utils/Converters → database/
+- utils/GeocodingService, utils/WeatherService, utils/LocationHelper → network/
+- utils/RecommendationBuilder → repos/
+- utils/AnimationHelper deleted (zero callers in Compose-only codebase)
+
+Import sites updated across ~40 files. docs/ and CLAUDE.md updated to
+reflect current package layout and correct DB version (v5).
+
+Co-Authored-By: munywele-sonar <noreply@sonar.com>
+
+- Refactor(packages): consolidate remote-data layer — phase 4
+
+Merge rest/ into network/ and split dto/ into API-layer vs UI-layer,
+fulfilling the CLAUDE.md guardrail: all remote-data code now lives under network/.
+
+rest/ dissolved:
+- rest/request/ → network/request/ (ComputeRequest, FertilizerRequest, RecommendationRequest, UserInfo)
+- rest/response/ → network/response/ (ReverseGeocodeResponse, WeatherResponse)
+- rest/ directory deleted
+
+dto/ split:
+- API-layer DTOs (Moshi-annotated, .toEntity() methods) → network/dto/
+  (Fertilizers, FertilizerPrices, CassavaPrices, CassavaUnits, InvestmentAmounts,
+   MaizePrices, StarchFactories, Pagination, RecommendationResponse, UserFeedBackRequest,
+   CurrencyDto)
+- UI/domain DTOs remain in dto/
+  (AdviceCompletionDto, Options, OptionEntries)
+
+Import sites updated: AkilimoApi, NetworkUtils, GeocodingService, LocationIqApi,
+WeatherApi, RecommendationBuilder, GetRecommendationViewModel.
+
+Build and all unit tests pass.
+
+Co-Authored-By: munywele-sonar <noreply@sonar.com>
+
+- Refactor(dto): consolidate recommendation response structure
+
+- extract shared recommendation data into dedicated class
+- update request model to include language field
+- improve type safety and validation
+
+- Refactor(ui): consolidate recommendations screen components
+
+- extract advice options and navigation logic into dedicated composable
+- remove duplicated navigation handlers and route mappings
+- improve component reusability and maintainability
+
+- Refactor(dto): consolidate paged response wrappers
+
+
+### Documentation
+
+- Docs: update changelog
+
+- Docs: remove obsolete settings.json configuration
+
+- Docs: remove unused integer resource
+
+- Docs: add architecture cleanup plan
+
+Introduce a comprehensive roadmap for refactoring the Android app
+structure to improve maintainability and reduce package sprawl.
+
+Closes #256
+
+- Docs: remove architecture cleanup and audit plans
+
+Delete `ARCHITECTURE_CLEANUP_PLAN.md`, `PACKAGE_AUDIT_CHECKLIST.md`, and
+`UI_REDESIGN_PLAN.md` to reflect the completion of the structural
+reorganization.
+
+These documents were used to track the migration to feature-oriented
+packaging and navigation splitting which are now finalized.
+
+- Docs: update architecture and development guides
+
+Update documentation to reflect the completed Jetpack Compose migration,
+Room v5 schema changes, and standardized ViewModel state patterns.
+
+Closes #475
+
+- Docs: create package structure improvement plan
+
+Add a detailed four-phase execution plan to resolve structural issues
+in the package layout and align with target architecture.
+
+- Docs: add Mapbox to MapLibre migration guide
+
+
+### Features
+
+- Feat: migrate from XML-based layouts to Jetpack Compose 
+
+## Summary
+
+- Replace all legacy XML-based Activities and Fragments with Jetpack
+Compose screens using Material3
+- Adopt single-Activity architecture (`MainActivity`) with a type-safe
+`NavHost` replacing Intent-based navigation
+- All ViewModels updated to inject `AppSettingsDataStore` directly (no
+`userName` params on public methods)
+- Result passing between screens done via `savedStateHandle` (consistent
+pattern throughout)
+
+## Screens migrated (32 Compose screens)
+
+**Onboarding wizard**
+- `OnboardingScreen` + 11 step composables (Welcome, Disclaimer, Terms,
+BioData, Country, Location, AreaUnit, PlantingDate, Tillage,
+InvestmentPref, Summary)
+
+**Recommendations**
+- `RecommendationsScreen`, `UseCaseScreen`, `GetRecommendationScreen`,
+`FeedbackBottomSheet`, `TaskItemCard`
+
+**Settings**
+- `UserSettingsScreen`, `LocationPickerScreen` (Mapbox map embedded via
+`AndroidView`)
+
+**Use-case forms**
+- `FertilizerScreen` (shared by FR / CIM / CIS flows via
+`@AssistedInject`)
+- `InvestmentAmountScreen`, `CassavaYieldScreen`,
+`MaizePerformanceScreen`
+- `CassavaMarketScreen`, `MaizeMarketScreen`, `SweetPotatoMarketScreen`
+- `DatesScreen` (Material3 `DatePickerDialog`, no FragmentManager)
+- `ManualTillageCostScreen`, `TractorAccessScreen`,
+`WeedControlCostsScreen`
+
+## Deleted (legacy)
+
+- 30+ Activities and Fragments: `HomeStepperActivity`, all onboarding
+Fragments, all recommendation Activities/Fragments, all use-case form
+Activities, `LocationPickerActivity`, `UserSettingsActivity`,
+`WeedManagementActivity`
+- Base classes no longer needed: `AbstractRecommendationActivity`,
+`AbstractRecommendationFragment`, `BaseStepFragment`, `WizardAdapter`
+
+## Shared Compose components added
+
+`AkilimoTextField`, `AkilimoDropdown`, `WizardBottomBar`,
+`ExitConfirmDialog`
+
+## Test plan
+
+- [x] Fresh install: onboarding wizard completes end-to-end and
+navigates to Recommendations
+- [x] Language change in Settings persists after app restart
+- [x] Dark mode toggle applies immediately
+- [x] Location picker (Mapbox) opens from onboarding LocationStep and
+returns coordinates
+- [x] Each use-case form (FR, PP, SP, CIM, CIS) opens all task screens
+and marks tasks complete
+- [x] Get Recommendation screen loads and displays results
+- [x] Feedback bottom sheet submits rating
+- [x] Back navigation works correctly throughout all screens
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+---------
+
+Co-authored-by: munywele-sonar <noreply@github.com>
+Co-authored-by: munywele-sonar <munywele-sonar@users.noreply.github.com>
+Co-authored-by: munywele-sonar <noreply@sonar.com>
+Co-authored-by: Claude Opus 4.6 <noreply@anthropic.com>
+Co-authored-by: munywele-sonar <noreply@munywele.co.ke>
+
+- Feat(assets): add MapBox terms link
+
+- Feat(drawable): update ic_akilimo_head.xml color value to use a hex code instead of a color resource
+
+- Feat(package-audit): implement concrete package audit checklist for helper, utils, interfaces, extensions, wizard, network, and rest packages.
+
+- Feat(build.gradle.kts): add AndroidX Compose UI test dependencies
+
+- Feat(build.gradle.kts): add AndroidX Compose UI test dependencies 
+
+- Feat(db): update database schema version 6 with new user fields
+
+- add recommendation_language and weed_control_method fields to akilimo_users table
+- update identity hash for database version 6
+- maintain backward compatibility with existing schema structure
+
+- Feat(db): add recommendation_language column to akilimo_users table
+
+The migration adds a new column to store the recommendation language preference for users, which will be used to pre-fill the BPP weed-control use-case screen during onboarding. This change updates the database schema from version 5 to 6 with the necessary migration logic.
+
+- Feat(recommendation): add language preference
+
+- Feat(db): add recommendation language preference to user entity
+
+- Feat(i18n): add recommendation language strings
+
+- Feat(onboarding): add recommendation language field
+
+- Feat(onboarding): add recommendation language preference
+
+- Feat(dto): add cis and cim availability flags
+
+- Feat!(network): add required X-Api-Key authentication header
+
+BREAKING CHANGE: All API requests now include X-Api-Key header.
+This is a behavioral change that will cause API requests to fail
+if the backend requires this header and AKILIMO_API_KEY is not
+configured.
+
+Migration:
+- Set AKILIMO_API_KEY in .env or gradle.properties
+- For CI: add AKILIMO_API_KEY to repository secrets
+- The header is automatically redacted in debug logging
+
+- Feat: update to new API structure with recommendation language support 
+
+
+### Miscellaneous Tasks
+
+- Chore(cleanup): remove legacy View-era resource files
+
+Delete 26 drawable/menu/animator resources that were never referenced
+after the full Jetpack Compose migration . Includes:
+- 18 unused drawables (bg_*, ic_* icons superseded by Material Icons)
+- 2 legacy menu XMLs (toolbar_menu, menu_fertilizers)
+- 1 unused animator (card_elevation_animator)
+- lbl_toggle_layout string removed from all 3 locale files
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+-  chore(res): strip colors.xml to only referenced entries
+
+  Remove 130+ unused color definitions — Compose owns all theming via
+  AkilimoTheme. Only 6 colors remain: color_background and
+  color_dark_background (themes.xml), color_primary/variant/light
+  (ic_fertilizer_bag.xml), and color_on_background (ic_list.xml).
+
+  Co-Authored-By: munywele-sonar <noreply@sonar.com>
+
+-   chore(res): delete dimens.xml — no references in Compose codebase
+
+  All spacing and font sizes are defined inline in Kotlin/Compose.
+  No @dimen/ or R.dimen. references exist anywhere in the project.
+
+  Co-Authored-By: munywele-sonar <noreply@sonar.com>
+
+- Chore(res): delete arrays.xml — no references in Compose codebase
+
+units_grain and units_cobs string-arrays have no @array/ or R.array.
+references anywhere; Compose screens define their own data inline.
+
+Co-Authored-By: munywele-sonar <noreply@sonar.com>
+
+- Chore(resources): add extracted UI string resources
+
+- 📝 docs: add package placement guardrails
+
+Update development guidelines to restrict the use of generic packages
+and encourage feature-specific code organization.
+
+- 📝 docs(viewmodel): update architecture cleanup plan
+
+Update documentation to reflect the new feature-specific packaging
+strategy for ViewModels and mark the initial migration as complete.
+
+- 📝 docs: update ci status badges in readme
+
+Add specific badges for unit tests, APK building, and Sonar analysis.
+This provides clearer visibility of the individual CI workflow states.
+
+- 📝 docs: update ci status badges in readme 
+
+- Chore(build): add AKILIMO_API_KEY configuration and CI secret
+
+
+### Styling
+
+- Style: reorganize strings.xml and add section headers
+
+Group related string resources into logical categories using XML comments. This improves maintainability and makes it easier to locate specific UI labels.
+
+- Style(ui): reorder and group strings.xml resources
+
+Reorganize string resources into logical sections and improve grouping
+to enhance maintainability and translation workflow.
+
+
+## [31.2.0] - 2026-03-21
+
+### Documentation
+
+- Docs: update changelog
+
 
 ### Features
 
