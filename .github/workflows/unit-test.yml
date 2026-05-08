@@ -151,7 +151,7 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     name: Notify
-    needs: [unit_tests, lint, detekt]
+    needs: [unit_tests, lint]
     if: success()
 
     steps:
