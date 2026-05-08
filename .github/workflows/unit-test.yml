@@ -5,6 +5,7 @@ on:
     branches: ['**']
     paths:
       - 'app/src/**'
+      - '.github/**'
       - '**/*.gradle*'
       - 'gradle.properties'
       - 'gradle/libs.versions.toml'
