@@ -51,6 +51,8 @@ jobs:
         with:
           cache-read-only: ${{ github.ref != 'refs/heads/develop' }}
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
 
       # --no-daemon: daemons have no benefit on ephemeral CI runners.
       - name: Run unit tests
@@ -96,6 +98,8 @@ jobs:
         with:
           cache-read-only: ${{ github.ref != 'refs/heads/develop' }}
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
 
       - name: Run lint
         run: ./gradlew lintDebug --no-daemon
@@ -130,6 +134,8 @@ jobs:
         with:
           cache-read-only: ${{ github.ref != 'refs/heads/develop' }}
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
 
       - name: Run detekt
         run: ./gradlew detekt --no-daemon
