@@ -109,7 +109,7 @@ android {
         abortOnError = false
         checkReleaseBuilds = false
         baseline = file("lint-baseline.xml")
-        xmlOutput = layout.buildDirectory.file("/reports/custom-lint-results.xml").get().asFile
+        xmlOutput = layout.buildDirectory.file("reports/custom-lint-results.xml").get().asFile
     }
 
     bundle {
