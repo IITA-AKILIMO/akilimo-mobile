@@ -1,8 +1,15 @@
-name: Unit Tests
+name: CI Checks
 
 on:
   push:
-    branches: [ '**' ]
+    branches: ['**']
+    paths:
+      - 'app/src/**'
+      - '.github/**'
+      - '**/*.gradle*'
+      - 'gradle.properties'
+      - 'gradle/libs.versions.toml'
+  pull_request:
     paths:
       - 'app/src/**'
       - '.github/**'
@@ -12,11 +19,17 @@ on:
   workflow_dispatch:
 
 jobs:
-  unit_test:
+  ci_checks:
     runs-on: ubuntu-latest
+    name: Unit tests, lint & detekt
     concurrency:
-      group: unit-tests-${{ github.head_ref || github.ref_name }}
+      group: ci-checks-${{ github.head_ref || github.ref_name }}
       cancel-in-progress: true
+    env:
+      MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+      MAPBOX_RUNTIME_TOKEN: ${{ secrets.MAPBOX_RUNTIME_TOKEN }}
+      AKILIMO_API_KEY: ${{ secrets.AKILIMO_API_KEY }}
+      LOCATION_IQ_TOKEN: ${{ secrets.LOCATION_IQ_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
@@ -29,9 +42,6 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      # Replaces manual cache steps. Caches: Gradle wrapper distribution,
-      # dependency jars, AAR transforms, kapt/ksp outputs, and local build
-      # cache — all with correct content-addressed keys.
       # cache-read-only: feature branches read from cache but never write,
       # so only the develop branch keeps the shared cache warm.
       - name: Setup Gradle
@@ -42,6 +52,9 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      - name: Compile debug sources
+        run: ./gradlew :app:compileDebugKotlin --no-daemon
+
       # --no-daemon: daemons have no benefit on ephemeral CI runners and
       # waste memory. All other flags (--build-cache, --configuration-cache,
       # --parallel) are already set in gradle.properties.
@@ -49,11 +62,22 @@ jobs:
         run: ./gradlew testDebugUnitTest --no-daemon
 
       - name: Check Room schema drift
+        uses: tj-actions/verify-changed-files@v20
+        id: schema_drift
+        with:
+          files: app/schemas/**
+
+      - name: Fail on Room schema drift
+        if: steps.schema_drift.outputs.files_changed == 'true'
         run: |
-          if ! git diff --exit-code app/schemas/; then
-            echo "::error::Room schema files changed without a version bump or uncommitted schema export."
-            exit 1
-          fi
+          echo "::error::Room schema files changed without a version bump or uncommitted schema export."
+          exit 1
+
+      - name: Run lint
+        run: ./gradlew lintDebug --no-daemon
+
+      - name: Run detekt
+        run: ./gradlew detekt --no-daemon
 
       - name: Upload test results
         if: always()
@@ -61,4 +85,37 @@ jobs:
         with:
           name: unit-test-results
           path: app/build/reports/tests/testDebugUnitTest/
-          retention-days: 1
+          retention-days: 7
+
+      - name: Upload lint report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-results
+          path: |
+            app/build/reports/lint-results-debug.html
+            app/build/reports/lint-results-debug.xml
+          retention-days: 7
+
+      - name: Upload detekt report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: detekt-results
+          path: build/reports/detekt/
+          retention-days: 7
+
+      - name: Send webhook
+        if: success()
+        uses: distributhor/workflow-webhook@v3
+        with:
+          webhook_url: ${{ vars.WEBHOOK_URL }}
+          data: >
+            {
+              "event": "ci_checks",
+              "status": "success",
+              "branch": "${{ github.ref_name }}",
+              "repo": "${{ github.repository }}",
+              "actor": "${{ github.actor }}",
+              "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
