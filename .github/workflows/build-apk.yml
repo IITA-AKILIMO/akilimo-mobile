@@ -241,6 +241,36 @@ jobs:
         run: |
           curl -s https://munywele.co.ke/app-releases/akilimo/update
 
+      - name: Send webhook (beta)
+        if: steps.upload_beta.outcome == 'success'
+        uses: distributhor/workflow-webhook@v3
+        with:
+          webhook_url: ${{ vars.WEBHOOK_URL }}
+          data: >
+            {
+              "event": "playstore_upload",
+              "track": "beta",
+              "tag": "${{ github.ref_name }}",
+              "repo": "${{ github.repository }}",
+              "package": "${{ secrets.APP_PACKAGE }}",
+              "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
+
+      - name: Send webhook (production)
+        if: steps.upload_prod.outcome == 'success'
+        uses: distributhor/workflow-webhook@v3
+        with:
+          webhook_url: ${{ vars.WEBHOOK_URL }}
+          data: >
+            {
+              "event": "playstore_upload",
+              "track": "production",
+              "tag": "${{ github.ref_name }}",
+              "repo": "${{ github.repository }}",
+              "package": "${{ secrets.APP_PACKAGE }}",
+              "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
+
   upload_beta_artifacts:
     if: success() && contains(github.ref, 'beta')
     needs: publish_to_playstore
