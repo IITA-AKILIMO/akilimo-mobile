@@ -216,18 +216,19 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           packageName: ${{ secrets.APP_PACKAGE }}
           releaseFiles: release/*.aab
-          track: beta
+          tracks: beta
           status: completed
           whatsNewDirectory: release/distribution/whatsnew
 
       - name: Upload Production Release
+        if: "!contains(github.ref, '-beta') && !contains(github.ref, '-alpha') && !contains(github.ref, '-rc')"
         id: upload_prod
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           packageName: ${{ secrets.APP_PACKAGE }}
           releaseFiles: release/*.aab
-          track: production
+          tracks: production
           status: completed
           whatsNewDirectory: release/distribution/whatsnew
 
@@ -237,6 +238,36 @@ jobs:
           steps.upload_prod.outcome == 'success'
         run: |
           curl -s https://munywele.co.ke/app-releases/akilimo/update
+
+      - name: Send webhook (beta)
+        if: steps.upload_beta.outcome == 'success'
+        uses: distributhor/workflow-webhook@v3
+        with:
+          webhook_url: ${{ vars.WEBHOOK_URL }}
+          data: >
+            {
+              "event": "playstore_upload",
+              "track": "beta",
+              "tag": "${{ github.ref_name }}",
+              "repo": "${{ github.repository }}",
+              "package": "${{ secrets.APP_PACKAGE }}",
+              "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
+
+      - name: Send webhook (production)
+        if: steps.upload_prod.outcome == 'success'
+        uses: distributhor/workflow-webhook@v3
+        with:
+          webhook_url: ${{ vars.WEBHOOK_URL }}
+          data: >
+            {
+              "event": "playstore_upload",
+              "track": "production",
+              "tag": "${{ github.ref_name }}",
+              "repo": "${{ github.repository }}",
+              "package": "${{ secrets.APP_PACKAGE }}",
+              "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
 
   upload_beta_artifacts:
     if: success() && contains(github.ref, 'beta')

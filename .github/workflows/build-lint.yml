@@ -1,0 +1,77 @@
+name: Build & Lint
+
+on:
+  push:
+    branches: ['**']
+    paths:
+      - 'app/src/**'
+      - '**/*.gradle*'
+      - 'gradle.properties'
+      - 'gradle/libs.versions.toml'
+  pull_request:
+    paths:
+      - 'app/src/**'
+      - '**/*.gradle*'
+      - 'gradle.properties'
+      - 'gradle/libs.versions.toml'
+  workflow_dispatch:
+
+jobs:
+  build_lint:
+    runs-on: ubuntu-latest
+    name: Build & Lint checks
+    concurrency:
+      group: build-lint-${{ github.head_ref || github.ref_name }}
+      cancel-in-progress: true
+    env:
+      MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+      MAPBOX_RUNTIME_TOKEN: ${{ secrets.MAPBOX_RUNTIME_TOKEN }}
+      AKILIMO_API_KEY: ${{ secrets.AKILIMO_API_KEY }}
+      LOCATION_IQ_TOKEN: ${{ secrets.LOCATION_IQ_TOKEN }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/develop' }}
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Compile debug sources
+        run: ./gradlew :app:compileDebugKotlin --no-daemon
+
+      - name: Run lint
+        run: ./gradlew lintDebug --no-daemon
+
+      - name: Run detekt
+        run: ./gradlew detekt --no-daemon
+
+      - name: Upload lint report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-results
+          path: |
+            app/build/reports/lint-results-debug.html
+            app/build/reports/lint-results-debug.xml
+          retention-days: 7
+
+      - name: Upload detekt report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: detekt-results
+          path: build/reports/detekt/
+          retention-days: 7

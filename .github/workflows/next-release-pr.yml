@@ -1,21 +1,35 @@
 name: Next Release PR
+
 on:
   push:
     branches:
       - develop
+
 jobs:
   next-release-pr:
     runs-on: ubuntu-24.04
+    concurrency:
+      group: next-release-pr-${{ github.ref_name }}
+      cancel-in-progress: true
+
     steps:
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Create pull request
-        uses: devops-infra/action-pull-request@v0.5.5
+        uses: devops-infra/action-pull-request@v0.6.0
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ steps.app-token.outputs.token }}
           title: 'Next release'
           reviewer: ${{ github.actor }}
           assignee: ${{ github.actor }}
