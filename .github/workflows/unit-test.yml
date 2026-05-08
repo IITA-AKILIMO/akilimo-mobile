@@ -18,18 +18,20 @@ on:
       - 'gradle/libs.versions.toml'
   workflow_dispatch:
 
+concurrency:
+  group: ci-checks-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+env:
+  MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+  MAPBOX_RUNTIME_TOKEN: ${{ secrets.MAPBOX_RUNTIME_TOKEN }}
+  AKILIMO_API_KEY: ${{ secrets.AKILIMO_API_KEY }}
+  LOCATION_IQ_TOKEN: ${{ secrets.LOCATION_IQ_TOKEN }}
+
 jobs:
-  ci_checks:
+  unit_tests:
     runs-on: ubuntu-latest
-    name: Unit tests, lint & detekt
-    concurrency:
-      group: ci-checks-${{ github.head_ref || github.ref_name }}
-      cancel-in-progress: true
-    env:
-      MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
-      MAPBOX_RUNTIME_TOKEN: ${{ secrets.MAPBOX_RUNTIME_TOKEN }}
-      AKILIMO_API_KEY: ${{ secrets.AKILIMO_API_KEY }}
-      LOCATION_IQ_TOKEN: ${{ secrets.LOCATION_IQ_TOKEN }}
+    name: Unit tests
 
     steps:
       - uses: actions/checkout@v4
@@ -49,15 +51,8 @@ jobs:
         with:
           cache-read-only: ${{ github.ref != 'refs/heads/develop' }}
 
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
 
-      - name: Compile debug sources
-        run: ./gradlew :app:compileDebugKotlin --no-daemon
-
-      # --no-daemon: daemons have no benefit on ephemeral CI runners and
-      # waste memory. All other flags (--build-cache, --configuration-cache,
-      # --parallel) are already set in gradle.properties.
+      # --no-daemon: daemons have no benefit on ephemeral CI runners.
       - name: Run unit tests
         run: ./gradlew testDebugUnitTest --no-daemon
 
@@ -73,12 +68,6 @@ jobs:
           echo "::error::Room schema files changed without a version bump or uncommitted schema export."
           exit 1
 
-      - name: Run lint
-        run: ./gradlew lintDebug --no-daemon
-
-      - name: Run detekt
-        run: ./gradlew detekt --no-daemon
-
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -86,6 +75,30 @@ jobs:
           name: unit-test-results
           path: app/build/reports/tests/testDebugUnitTest/
           retention-days: 7
+
+  lint:
+    runs-on: ubuntu-latest
+    name: Lint
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/develop' }}
+
+
+      - name: Run lint
+        run: ./gradlew lintDebug --no-daemon
 
       - name: Upload lint report
         if: always()
@@ -97,6 +110,30 @@ jobs:
             app/build/reports/lint-results-debug.xml
           retention-days: 7
 
+  detekt:
+    runs-on: ubuntu-latest
+    name: Detekt
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/develop' }}
+
+
+      - name: Run detekt
+        run: ./gradlew detekt --no-daemon
+
       - name: Upload detekt report
         if: always()
         uses: actions/upload-artifact@v4
@@ -105,8 +142,14 @@ jobs:
           path: build/reports/detekt/
           retention-days: 7
 
+  notify:
+    runs-on: ubuntu-latest
+    name: Notify
+    needs: [unit_tests, lint, detekt]
+    if: success()
+
+    steps:
       - name: Send webhook
-        if: success()
         uses: distributhor/workflow-webhook@v3
         with:
           webhook_url: ${{ vars.WEBHOOK_URL }}
