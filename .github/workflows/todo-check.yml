@@ -1,9 +1,11 @@
 name: TODO Check
+
 on:
   push:
     branches:
-      - develops
+      - develop
   workflow_dispatch:
+
 jobs:
   check-todo:
     runs-on: ubuntu-24.04
@@ -11,9 +13,10 @@ jobs:
       cancel-in-progress: true
       group: todo-${{ github.ref }}
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4
+
       - name: Run tdg-github-action
-        uses: ribtoks/tdg-github-action@master
+        uses: ribtoks/tdg-github-action@v0.3.6
         with:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
