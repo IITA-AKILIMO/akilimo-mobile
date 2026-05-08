@@ -2,7 +2,7 @@ name: CI Checks
 
 on:
   push:
-    branches: ['**']
+    branches: [ '**' ]
     paths:
       - 'app/src/**'
       - '.github/**'
@@ -151,7 +151,7 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     name: Notify
-    needs: [unit_tests, lint]
+    needs: [ unit_tests, lint, detekt ]
     if: success()
 
     steps:
