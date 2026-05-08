@@ -4,9 +4,6 @@ on:
   push:
     tags:
       - '*'
-      - '!*-beta*'
-      - '!*-alpha*'
-      - '!*-rc*'
   workflow_dispatch:
 
 jobs:
@@ -219,18 +216,19 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           packageName: ${{ secrets.APP_PACKAGE }}
           releaseFiles: release/*.aab
-          tracks: beta
+          track: beta
           status: completed
           whatsNewDirectory: release/distribution/whatsnew
 
       - name: Upload Production Release
+        if: "!contains(github.ref, '-beta') && !contains(github.ref, '-alpha') && !contains(github.ref, '-rc')"
         id: upload_prod
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           packageName: ${{ secrets.APP_PACKAGE }}
           releaseFiles: release/*.aab
-          tracks: production
+          track: production
           status: completed
           whatsNewDirectory: release/distribution/whatsnew
 
