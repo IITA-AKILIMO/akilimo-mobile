@@ -252,20 +252,3 @@ fun OnboardingScreen(
         }
     }
 }
-
-@Composable
-private fun stepTitle(step: OnboardingSection): String = stringResource(
-    when (step) {
-        OnboardingSection.WELCOME -> R.string.welcome_title
-        OnboardingSection.DISCLAIMER -> R.string.lbl_disclaimer
-        OnboardingSection.TERMS -> R.string.lbl_terms
-        OnboardingSection.BIO_DATA -> R.string.lbl_self_intro
-        OnboardingSection.COUNTRY -> R.string.lbl_country
-        OnboardingSection.LOCATION -> R.string.lbl_location
-        OnboardingSection.AREA_UNIT -> R.string.lbl_field
-        OnboardingSection.PLANTING_DATE -> R.string.lbl_planting_harvest_dates
-        OnboardingSection.TILLAGE -> R.string.lbl_tillage_operation
-        OnboardingSection.INVESTMENT_PREF -> R.string.lbl_investment_pref_prompt
-        OnboardingSection.SUMMARY -> R.string.lbl_summary_title
-    }
-)
