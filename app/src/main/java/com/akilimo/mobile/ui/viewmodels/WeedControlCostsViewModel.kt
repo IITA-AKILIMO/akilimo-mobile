@@ -69,8 +69,10 @@ class WeedControlCostsViewModel @Inject constructor(
         )
         val existing = costsRepo.getCostForUser(userId)
         val merged = existing?.copy(
-            firstWeedingOperationCost = if (firstCost != null) newCosts.firstWeedingOperationCost else existing.firstWeedingOperationCost,
-            secondWeedingOperationCost = if (secondCost != null) newCosts.secondWeedingOperationCost else existing.secondWeedingOperationCost,
+            firstWeedingOperationCost = if (firstCost != null)
+                newCosts.firstWeedingOperationCost else existing.firstWeedingOperationCost,
+            secondWeedingOperationCost = if (secondCost != null)
+                newCosts.secondWeedingOperationCost else existing.secondWeedingOperationCost,
         ) ?: newCosts
         costsRepo.saveCost(merged)
 

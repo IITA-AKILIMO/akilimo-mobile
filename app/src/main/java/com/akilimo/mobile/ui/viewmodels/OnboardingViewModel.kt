@@ -515,7 +515,9 @@ class OnboardingViewModel @Inject constructor(
             val hasTractor = s.tillageOperations.values.any { it == EnumOperationMethod.TRACTOR }
             if (hasManual) adviceCompletionRepo.markInProgressIfNotCompleted(EnumAdviceTask.MANUAL_TILLAGE_COST)
             if (hasTractor) adviceCompletionRepo.markInProgressIfNotCompleted(EnumAdviceTask.TRACTOR_ACCESS)
-            if (weedMethod != null) adviceCompletionRepo.markInProgressIfNotCompleted(EnumAdviceTask.COST_OF_WEED_CONTROL)
+            if (weedMethod != null) {
+                adviceCompletionRepo.markInProgressIfNotCompleted(EnumAdviceTask.COST_OF_WEED_CONTROL)
+            }
         }
     }
 }
