@@ -26,6 +26,19 @@ tasks.named("sonar") {
 
 detekt {
     baseline = file("detekt-baseline.xml")
+    config.setFrom(files("detekt.yml"))
+}
+
+tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+    reports {
+        xml {
+            required.set(true)
+            outputLocation.set(layout.buildDirectory.file("reports/detekt/detekt.xml").get().asFile)
+        }
+        html {
+            required.set(false)
+        }
+    }
 }
 
 
