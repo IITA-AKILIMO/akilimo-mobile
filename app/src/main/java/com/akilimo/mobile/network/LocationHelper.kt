@@ -11,10 +11,16 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import io.sentry.Sentry
 import kotlinx.coroutines.tasks.await
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 class LocationHelper {
+
+    companion object {
+        private const val LOCATION_MAX_AGE_MINUTES = 5L
+    }
 
     sealed class LocationResult {
         data class Success(val location: Location) : LocationResult()
@@ -23,16 +29,10 @@ class LocationHelper {
         object PermissionDenied : LocationResult()
     }
 
-    suspend fun getCurrentLocation(context: Context): LocationResult {
-        return try {
-            if (!isLocationEnabled(context)) {
-                return LocationResult.LocationDisabled
-            }
-
-            if (!hasLocationPermission(context)) {
-                return LocationResult.PermissionDenied
-            }
-
+    suspend fun getCurrentLocation(context: Context): LocationResult = when {
+        !isLocationEnabled(context) -> LocationResult.LocationDisabled
+        !hasLocationPermission(context) -> LocationResult.PermissionDenied
+        else -> try {
             val fusedLocationClient: FusedLocationProviderClient =
                 LocationServices.getFusedLocationProviderClient(context)
 
@@ -45,7 +45,10 @@ class LocationHelper {
                 getFreshLocation(context)
             }
         } catch (e: SecurityException) {
+            Sentry.captureException(e)
             LocationResult.Error("Location permission denied")
+        } catch (e: IOException) {
+            LocationResult.Error("Error getting location: ${e.message ?: "Unknown error"}")
         } catch (e: Exception) {
             LocationResult.Error("Error getting location: ${e.message ?: "Unknown error"}")
         }
@@ -54,13 +57,6 @@ class LocationHelper {
     private suspend fun getFreshLocation(context: Context): LocationResult {
         return try {
             val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-
-            val locationRequest = LocationRequest.create().apply {
-                priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-                interval = TimeUnit.SECONDS.toMillis(10)
-                fastestInterval = TimeUnit.SECONDS.toMillis(5)
-                maxWaitTime = TimeUnit.SECONDS.toMillis(15)
-            }
 
             // Use getCurrentLocation API which is more battery efficient
             val location = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -79,7 +75,10 @@ class LocationHelper {
                 LocationResult.Error("Unable to get current location")
             }
         } catch (e: SecurityException) {
+            Sentry.captureException(e)
             LocationResult.Error("Location permission denied")
+        } catch (e: IOException) {
+            LocationResult.Error("Error getting fresh location: ${e.message ?: "Unknown error"}")
         } catch (e: Exception) {
             LocationResult.Error("Error getting fresh location: ${e.message ?: "Unknown error"}")
         }
@@ -106,10 +105,10 @@ class LocationHelper {
 
     private fun isValidLocation(location: Location): Boolean {
         val locationAge = System.currentTimeMillis() - location.time
-        val MAX_LOCATION_AGE = TimeUnit.MINUTES.toMillis(5) // 5 minutes
+        val maxLocationAge = TimeUnit.MINUTES.toMillis(LOCATION_MAX_AGE_MINUTES)
 
         return (location.latitude != 0.0 || location.longitude != 0.0) &&
-                locationAge < MAX_LOCATION_AGE
+                locationAge < maxLocationAge
     }
 
     @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
@@ -125,6 +124,7 @@ class LocationHelper {
             val task = fusedLocationClient.lastLocation
             task.result // This will block, but in a coroutine context it's fine
         } catch (e: Exception) {
+            Sentry.captureException(e)
             null
         }
     }
