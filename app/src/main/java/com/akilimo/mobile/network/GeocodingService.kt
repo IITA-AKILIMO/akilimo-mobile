@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import java.util.Locale
 
 class GeocodingService(
     private val context: Context,
@@ -88,7 +89,7 @@ class GeocodingService(
                 append(it)
             }
         }.ifEmpty {
-            "Lat: ${String.format("%.6f", lat)}, Lon: ${String.format("%.6f", lon)}"
+            "Lat: ${String.format(Locale.ROOT, "%.6f", lat)}, Lon: ${String.format(Locale.ROOT, "%.6f", lon)}"
         }
     }
 }
