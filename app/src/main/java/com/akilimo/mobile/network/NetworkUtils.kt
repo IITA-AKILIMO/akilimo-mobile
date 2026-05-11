@@ -6,6 +6,7 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import com.akilimo.mobile.network.dto.ApiErrorResponse
 import com.squareup.moshi.Moshi
+import io.sentry.Sentry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
@@ -45,6 +46,7 @@ object NetworkUtils {
             conn.connect()
             conn.responseCode == 200
         } catch (e: Exception) {
+            Sentry.captureException(e)
             false
         }
     }
@@ -65,6 +67,7 @@ fun <T> Response<T>.parseError(): ApiErrorResponse? {
         val adapter = moshi.adapter(ApiErrorResponse::class.java)
         adapter.fromJson(errorBody)
     } catch (e: Exception) {
+        Sentry.captureException(e)
         null
     }
 }
