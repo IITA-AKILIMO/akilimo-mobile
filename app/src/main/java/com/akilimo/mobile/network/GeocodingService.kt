@@ -1,8 +1,6 @@
 package com.akilimo.mobile.network
 
 import android.content.Context
-import com.akilimo.mobile.network.ApiClient
-import com.akilimo.mobile.network.LocationIqApi
 import com.akilimo.mobile.network.response.Address
 import io.sentry.Sentry
 import kotlinx.coroutines.Dispatchers
