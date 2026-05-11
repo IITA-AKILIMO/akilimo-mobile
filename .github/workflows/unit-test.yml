@@ -154,9 +154,35 @@ jobs:
     runs-on: ubuntu-latest
     name: Notify
     needs: [ unit_tests ]
+    env:
+      LATEST_TAG_FILE: "latest_tag.txt"
     if: success()
 
     steps:
+      - name: Ensure latest tag file exists
+        run: |
+          if [ ! -f "$LATEST_TAG_FILE" ]; then
+            echo "⚠️  $LATEST_TAG_FILE not found, creating with default value"
+            echo "1.0.0" > $LATEST_TAG_FILE
+          else
+            echo "✅ $LATEST_TAG_FILE exists"
+            echo "Latest tag is:"
+            cat $LATEST_TAG_FILE
+          fi
+      - name: Set up Python 3.xx
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install tag fetcher
+        run: pip install latest_tag
+
+      - name: Fetch latest tag
+        run: fetch-tag > $LATEST_TAG_FILE
+
+      - name: Update release version
+        run: echo "RELEASE_VERSION=$(cat $LATEST_TAG_FILE)" >> $GITHUB_ENV
+
       - name: Send webhook
         uses: distributhor/workflow-webhook@v3
         with:
@@ -166,7 +192,7 @@ jobs:
             {
               "event": "ci_checks",
               "status": "success",
-              "tag": "${{ github.ref_name }}",
+              "tag": "${{ RELEASE_VERSION}}",
               "branch": "${{ github.ref_name }}",
               "repo": "${{ github.repository }}",
               "actor": "${{ github.actor }}",
