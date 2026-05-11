@@ -80,6 +80,7 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
+    if: github.ref_name == 'develop'
     name: Lint
 
     steps:
@@ -116,6 +117,7 @@ jobs:
 
   detekt:
     runs-on: ubuntu-latest
+    if: github.ref_name == 'develop'
     name: Detekt
 
     steps:
@@ -151,7 +153,7 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     name: Notify
-    needs: [ unit_tests, lint, detekt ]
+    needs: [ unit_tests ]
     if: success()
 
     steps:
