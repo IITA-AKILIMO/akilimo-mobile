@@ -59,6 +59,9 @@ jobs:
 
       - name: Fetch latest tag
         id: get_version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_NAME: ${{ secrets.REPO_NAME }}
         run: |
           fetch-tag > $LATEST_TAG_FILE
           echo "RELEASE_VERSION=$(cat $LATEST_TAG_FILE)" >> $GITHUB_ENV
