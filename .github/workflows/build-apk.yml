@@ -201,12 +201,17 @@ jobs:
     needs: build_artifacts
     name: Publish to Google PlayStore
     runs-on: ubuntu-latest
+    env:
+      LATEST_TAG_FILE: "latest_tag.txt"
     steps:
       - uses: actions/download-artifact@v5
         name: Retrieve artifacts
         with:
           name: app-release
           path: release
+
+      - name: Read latest tag
+        run: echo "RELEASE_VERSION=$(cat release/$LATEST_TAG_FILE)" >> $GITHUB_ENV
 
       - name: Upload Beta Release
         if: contains(github.ref, 'beta')
@@ -248,7 +253,7 @@ jobs:
             {
               "event": "playstore_upload",
               "track": "beta",
-              "tag": "${{ github.ref_name }}",
+              "tag": "${{ env.RELEASE_VERSION }}",
               "repo": "${{ github.repository }}",
               "package": "${{ secrets.APP_PACKAGE }}",
               "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
@@ -263,7 +268,7 @@ jobs:
             {
               "event": "playstore_upload",
               "track": "production",
-              "tag": "${{ github.ref_name }}",
+              "tag": "${{ env.RELEASE_VERSION }}",
               "repo": "${{ github.repository }}",
               "package": "${{ secrets.APP_PACKAGE }}",
               "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

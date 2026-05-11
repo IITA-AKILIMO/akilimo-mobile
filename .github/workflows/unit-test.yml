@@ -27,11 +27,14 @@ env:
   MAPBOX_RUNTIME_TOKEN: ${{ secrets.MAPBOX_RUNTIME_TOKEN }}
   AKILIMO_API_KEY: ${{ secrets.AKILIMO_API_KEY }}
   LOCATION_IQ_TOKEN: ${{ secrets.LOCATION_IQ_TOKEN }}
+  LATEST_TAG_FILE: "latest_tag.txt"
 
 jobs:
   unit_tests:
     runs-on: ubuntu-latest
     name: Unit tests
+    outputs:
+      release_version: ${{ steps.get_version.outputs.release_version }}
 
     steps:
       - uses: actions/checkout@v4
@@ -51,10 +54,21 @@ jobs:
         with:
           cache-read-only: ${{ github.ref != 'refs/heads/develop' }}
 
+      - name: Install tag fetcher
+        run: pip install latest_tag
+
+      - name: Fetch latest tag
+        id: get_version
+        run: |
+          fetch-tag > $LATEST_TAG_FILE
+          echo "RELEASE_VERSION=$(cat $LATEST_TAG_FILE)" >> $GITHUB_ENV
+          echo "release_version=$(cat $LATEST_TAG_FILE)" >> $GITHUB_OUTPUT
+
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
       # --no-daemon: daemons have no benefit on ephemeral CI runners.
+      # RELEASE_VERSION is set in env so tests can read a deterministic version during mocking.
       - name: Run unit tests
         run: ./gradlew testDebugUnitTest --no-daemon
 
@@ -154,35 +168,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Notify
     needs: [ unit_tests ]
-    env:
-      LATEST_TAG_FILE: "latest_tag.txt"
     if: success()
 
     steps:
-      - name: Ensure latest tag file exists
-        run: |
-          if [ ! -f "$LATEST_TAG_FILE" ]; then
-            echo "⚠️  $LATEST_TAG_FILE not found, creating with default value"
-            echo "1.0.0" > $LATEST_TAG_FILE
-          else
-            echo "✅ $LATEST_TAG_FILE exists"
-            echo "Latest tag is:"
-            cat $LATEST_TAG_FILE
-          fi
-      - name: Set up Python 3.xx
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
-
-      - name: Install tag fetcher
-        run: pip install latest_tag
-
-      - name: Fetch latest tag
-        run: fetch-tag > $LATEST_TAG_FILE
-
-      - name: Update release version
-        run: echo "RELEASE_VERSION=$(cat $LATEST_TAG_FILE)" >> $GITHUB_ENV
-
       - name: Send webhook
         uses: distributhor/workflow-webhook@v3
         with:
@@ -192,7 +180,7 @@ jobs:
             {
               "event": "ci_checks",
               "status": "success",
-              "tag": "${{ RELEASE_VERSION}}",
+              "tag": "${{ needs.unit_tests.outputs.release_version }}",
               "branch": "${{ github.ref_name }}",
               "repo": "${{ github.repository }}",
               "actor": "${{ github.actor }}",
