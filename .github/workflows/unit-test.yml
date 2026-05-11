@@ -166,6 +166,7 @@ jobs:
             {
               "event": "ci_checks",
               "status": "success",
+              "tag": "${{ github.ref_name }}",
               "branch": "${{ github.ref_name }}",
               "repo": "${{ github.repository }}",
               "actor": "${{ github.actor }}",
