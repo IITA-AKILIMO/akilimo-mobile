@@ -245,13 +245,14 @@ jobs:
           curl -s https://munywele.co.ke/app-releases/akilimo/update
 
       - name: Send webhook (beta)
-        if: steps.upload_beta.outcome == 'success'
         uses: distributhor/workflow-webhook@v3
         with:
           webhook_url: ${{ vars.WEBHOOK_URL }}
+          webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
           data: >
             {
               "event": "playstore_upload",
+              "status:"${{ steps.upload_beta.outcome }}",
               "track": "beta",
               "tag": "${{ env.RELEASE_VERSION }}",
               "repo": "${{ github.repository }}",
@@ -260,14 +261,15 @@ jobs:
             }
 
       - name: Send webhook (production)
-        if: steps.upload_prod.outcome == 'success'
         uses: distributhor/workflow-webhook@v3
         with:
           webhook_url: ${{ vars.WEBHOOK_URL }}
+          webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
           data: >
             {
               "event": "playstore_upload",
               "track": "production",
+              "status:"${{ steps.upload_prod.outcome }}"
               "tag": "${{ env.RELEASE_VERSION }}",
               "repo": "${{ github.repository }}",
               "package": "${{ secrets.APP_PACKAGE }}",
