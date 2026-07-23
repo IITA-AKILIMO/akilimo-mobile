@@ -44,7 +44,7 @@ jobs:
           MAPBOX_RUNTIME_TOKEN: ${{ secrets.MAPBOX_RUNTIME_TOKEN }}
           AKILIMO_API_KEY: ${{ secrets.AKILIMO_API_KEY }}
           LOCATION_IQ_TOKEN: ${{ secrets.LOCATION_IQ_TOKEN }}
-        run: ./gradlew sonar --no-configuration-cache --no-daemon
+        run: ./gradlew sonar --no-configuration-cache --no-daemon -PMAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
 
       - name: SonarQube Quality Gate check
         id: sonarqube-quality-gate-check

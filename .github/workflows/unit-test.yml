@@ -73,7 +73,7 @@ jobs:
       # --no-daemon: daemons have no benefit on ephemeral CI runners.
       # RELEASE_VERSION is set in env so tests can read a deterministic version during mocking.
       - name: Run unit tests
-        run: ./gradlew testDebugUnitTest --no-daemon
+        run: ./gradlew testDebugUnitTest --no-daemon -PMAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
 
       - name: Check Room schema drift
         uses: tj-actions/verify-changed-files@v20
@@ -120,7 +120,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Run lint
-        run: ./gradlew lintDebug --no-daemon
+        run: ./gradlew lintDebug --no-daemon -PMAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
 
       - name: Upload lint report
         if: always()
@@ -157,7 +157,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Run detekt
-        run: ./gradlew detekt --no-daemon
+        run: ./gradlew detekt --no-daemon -PMAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
 
       - name: Upload detekt report
         if: always()

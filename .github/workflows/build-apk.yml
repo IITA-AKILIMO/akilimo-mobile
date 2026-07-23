@@ -119,7 +119,7 @@ jobs:
           echo "🔨 Building APK and AAB from source..."
           echo "Using VERSION_CODE: $VERSION_CODE"
           echo "Using RELEASE_VERSION: $RELEASE_VERSION"
-          ./gradlew bundleRelease assembleRelease -x test
+          ./gradlew bundleRelease assembleRelease -x test -PMAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
 
       # Verify build outputs exist
       - name: Verify build outputs
