@@ -60,16 +60,16 @@ jobs:
           OUTPUT: CHANGELOG.md
           GITHUB_REPO: ${{ github.repository }}
 
-      - name: Commit and push changelog
-        if: >
-          github.event_name == 'workflow_dispatch' ||
-          fromJSON(steps.diff_check.outputs.all_changed_files_count) >= 2
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "docs: update changelog"
-          file_pattern: CHANGELOG.md
-          commit_user_name: "munywele-sonar[bot]"
-          commit_user_email: "munywele-sonar[bot]@users.noreply.github.com"
+#      - name: Commit and push changelog
+#        if: >
+#          github.event_name == 'workflow_dispatch' ||
+#          fromJSON(steps.diff_check.outputs.all_changed_files_count) >= 2
+#        uses: stefanzweifel/git-auto-commit-action@v5
+#        with:
+#          commit_message: "docs: update changelog"
+#          file_pattern: CHANGELOG.md
+#          commit_user_name: "munywele-sonar[bot]"
+#          commit_user_email: "munywele-sonar[bot]@users.noreply.github.com"
 
       - name: Generate Tag
         if: >
