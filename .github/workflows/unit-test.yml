@@ -167,25 +167,25 @@ jobs:
           path: build/reports/detekt/
           retention-days: 7
 
-  notify:
-    runs-on: ubuntu-latest
-    name: Notify
-    needs: [ unit_tests ]
-    if: success()
-
-    steps:
-      - name: Send webhook
-        uses: distributhor/workflow-webhook@v3
-        with:
-          webhook_url: ${{ vars.WEBHOOK_URL }}
-          webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
-          data: >
-            {
-              "event": "ci_checks",
-              "status": "success",
-              "tag": "${{ needs.unit_tests.outputs.release_version }}",
-              "branch": "${{ github.ref_name }}",
-              "repo": "${{ github.repository }}",
-              "actor": "${{ github.actor }}",
-              "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            }
+#  notify:
+#    runs-on: ubuntu-latest
+#    name: Notify
+#    needs: [ unit_tests ]
+#    if: success()
+#
+#    steps:
+#      - name: Send webhook
+#        uses: distributhor/workflow-webhook@v3
+#        with:
+#          webhook_url: ${{ vars.WEBHOOK_URL }}
+#          webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
+#          data: >
+#            {
+#              "event": "ci_checks",
+#              "status": "success",
+#              "tag": "${{ needs.unit_tests.outputs.release_version }}",
+#              "branch": "${{ github.ref_name }}",
+#              "repo": "${{ github.repository }}",
+#              "actor": "${{ github.actor }}",
+#              "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+#            }
