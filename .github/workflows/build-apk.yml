@@ -10,6 +10,9 @@ jobs:
   build_artifacts:
     runs-on: ubuntu-latest
     name: Build artifacts
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+      track: ${{ steps.track.outputs.track }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       REPO_NAME: ${{ secrets.REPO_NAME }}
@@ -37,13 +40,26 @@ jobs:
       - name: Display current branch name
         run: echo ${BRANCH_NAME}
 
-      # ⭐ FETCH VERSION_CODE BEFORE CACHING
+      # Determine release track from tag
+      - name: Determine release track
+        id: track
+        run: |
+          TAG="${{ github.ref_name }}"
+          if [[ "$TAG" == *"beta"* ]]; then
+            echo "track=beta" >> $GITHUB_OUTPUT
+          elif [[ "$TAG" == *"alpha"* ]] || [[ "$TAG" == *"rc"* ]]; then
+            echo "track=beta" >> $GITHUB_OUTPUT
+          else
+            echo "track=production" >> $GITHUB_OUTPUT
+          fi
+
+      # FETCH VERSION_CODE BEFORE CACHING
       - name: Get build version
         id: get_version
         run: |
           VERSION_CODE=$(curl -s https://munywele.co.ke/app-releases/akilimo || echo ${{ github.run_number }})
           echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
-          echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
+          echo "version=$VERSION_CODE" >> $GITHUB_OUTPUT
           echo "Using VERSION_CODE: $VERSION_CODE"
 
       # Generate timestamp for cache expiration (20 minutes = 1200 seconds)
@@ -62,11 +78,10 @@ jobs:
       - name: Ensure latest tag file exists
         run: |
           if [ ! -f "$LATEST_TAG_FILE" ]; then
-            echo "⚠️  $LATEST_TAG_FILE not found, creating with default value"
+            echo "$LATEST_TAG_FILE not found, creating with default value"
             echo "1.0.0" > $LATEST_TAG_FILE
           else
-            echo "✅ $LATEST_TAG_FILE exists"
-            echo "Latest tag is:"
+            echo "$LATEST_TAG_FILE exists"
             cat $LATEST_TAG_FILE
           fi
 
@@ -86,17 +101,17 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      # ⭐ UPDATED CACHE KEY WITH TIMESTAMP FOR 20-MINUTE EXPIRATION
+      # UPDATED CACHE KEY WITH TIMESTAMP FOR 20-MINUTE EXPIRATION
       - name: Cache APK & AAB outputs
         uses: actions/cache@v4
         with:
           path: |
             app/build/outputs/apk/release/app-release-unsigned.apk
             app/build/outputs/bundle/release/app-release.aab
-          key: akilimo-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ env.BRANCH_NAME }}-${{ steps.cache_timestamp.outputs.timestamp }}-${{ hashFiles('**/*.gradle*', '**/gradle.properties', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', 'app/src/main/res/**', 'app/src/main/AndroidManifest.xml', 'app/proguard-rules.pro') }}
+          key: akilimo-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version }}-${{ env.BRANCH_NAME }}-${{ steps.cache_timestamp.outputs.timestamp }}-${{ hashFiles('**/*.gradle*', '**/gradle.properties', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', 'app/src/main/res/**', 'app/src/main/AndroidManifest.xml', 'app/proguard-rules.pro') }}
           restore-keys: |
-            akilimo-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ env.BRANCH_NAME }}-${{ steps.cache_timestamp.outputs.timestamp }}-
-            akilimo-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version_code }}-${{ env.BRANCH_NAME }}-
+            akilimo-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version }}-${{ env.BRANCH_NAME }}-${{ steps.cache_timestamp.outputs.timestamp }}-
+            akilimo-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version }}-${{ env.BRANCH_NAME }}-
 
       # Check if cached artifacts exist and are valid
       - name: Check cached artifacts
@@ -104,19 +119,19 @@ jobs:
         run: |
           if [ -f "app/build/outputs/apk/release/app-release-unsigned.apk" ] && [ -f "app/build/outputs/bundle/release/app-release.aab" ]; then
             echo "cached_artifacts_exist=true" >> $GITHUB_OUTPUT
-            echo "✅ Found cached APK and AAB artifacts"
+            echo "Found cached APK and AAB artifacts"
             ls -la app/build/outputs/apk/release/app-release-unsigned.apk
             ls -la app/build/outputs/bundle/release/app-release.aab
           else
             echo "cached_artifacts_exist=false" >> $GITHUB_OUTPUT
-            echo "❌ Cached artifacts not found, will build from scratch"
+            echo "Cached artifacts not found, will build from scratch"
           fi
 
       # Only build if cached artifacts don't exist or are invalid
       - name: Generate android AAB and APK
         if: steps.check_cache.outputs.cached_artifacts_exist != 'true'
         run: |
-          echo "🔨 Building APK and AAB from source..."
+          echo "Building APK and AAB from source..."
           echo "Using VERSION_CODE: $VERSION_CODE"
           echo "Using RELEASE_VERSION: $RELEASE_VERSION"
           ./gradlew bundleRelease assembleRelease -x test -PMAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
@@ -125,14 +140,14 @@ jobs:
       - name: Verify build outputs
         run: |
           if [ ! -f "app/build/outputs/apk/release/app-release-unsigned.apk" ]; then
-            echo "❌ APK not found after build!"
+            echo "APK not found after build!"
             exit 1
           fi
           if [ ! -f "app/build/outputs/bundle/release/app-release.aab" ]; then
-            echo "❌ AAB not found after build!"
+            echo "AAB not found after build!"
             exit 1
           fi
-          echo "✅ Build artifacts verified"
+          echo "Build artifacts verified"
           echo "APK size: $(du -h app/build/outputs/apk/release/app-release-unsigned.apk | cut -f1)"
           echo "AAB size: $(du -h app/build/outputs/bundle/release/app-release.aab | cut -f1)"
 
@@ -183,9 +198,9 @@ jobs:
         run: |
           if [ -f "$LATEST_TAG_FILE" ]; then
             cp $LATEST_TAG_FILE release
-            echo "✅ Copied $LATEST_TAG_FILE to release folder"
+            echo "Copied $LATEST_TAG_FILE to release folder"
           else
-            echo "⚠️  $LATEST_TAG_FILE not found, creating default in release folder"
+            echo "$LATEST_TAG_FILE not found, creating default in release folder"
             echo "v1.0.0" > release/$LATEST_TAG_FILE
           fi
 
@@ -197,139 +212,37 @@ jobs:
           overwrite: true
           path: release
 
-  publish_to_playstore:
+  notify_approval:
     needs: build_artifacts
-    name: Publish to Google PlayStore
+    name: Notify for approval
     runs-on: ubuntu-latest
-    env:
-      LATEST_TAG_FILE: "latest_tag.txt"
+
     steps:
-      - uses: actions/download-artifact@v5
-        name: Retrieve artifacts
-        with:
-          name: app-release
-          path: release
-
-      - name: Read latest tag
-        run: echo "RELEASE_VERSION=$(cat release/$LATEST_TAG_FILE)" >> $GITHUB_ENV
-
-      - name: Upload Beta Release
-        if: contains(github.ref, 'beta')
-        id: upload_beta
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-          packageName: ${{ secrets.APP_PACKAGE }}
-          releaseFiles: release/*.aab
-          tracks: beta
-          status: completed
-          whatsNewDirectory: release/distribution/whatsnew
-
-      - name: Upload Production Release
-        if: "!contains(github.ref, '-beta') && !contains(github.ref, '-alpha') && !contains(github.ref, '-rc')"
-        id: upload_prod
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-          packageName: ${{ secrets.APP_PACKAGE }}
-          releaseFiles: release/*.aab
-          tracks: production
-          status: completed
-          whatsNewDirectory: release/distribution/whatsnew
-
-      - name: Update build number
-        if: >
-          steps.upload_beta.outcome == 'success' ||
-          steps.upload_prod.outcome == 'success'
+      - name: Send approval request to n8n
         run: |
-          curl -s https://munywele.co.ke/app-releases/akilimo/update
+          PAYLOAD=$(cat <<EOF
+          {
+            "event": "playstore_publish_approval",
+            "repo": "${{ github.repository }}",
+            "tag": "${{ github.ref_name }}",
+            "version": "${{ needs.build_artifacts.outputs.version }}",
+            "track": "${{ needs.build_artifacts.outputs.track }}",
+            "actor": "${{ github.actor }}",
+            "run_id": "${{ github.run_id }}",
+            "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+            "artifact_name": "app-release",
+            "chat_id": "${{ vars.TELEGRAM_CHAT_ID }}",
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          }
+          EOF
+          )
 
-      - name: Send webhook (beta)
-        uses: distributhor/workflow-webhook@v3
-        with:
-          webhook_url: ${{ vars.WEBHOOK_URL }}
-          webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
-          data: >
-            {
-              "event": "playstore_upload",
-              "status:"${{ steps.upload_beta.outcome }}",
-              "track": "beta",
-              "tag": "${{ env.RELEASE_VERSION }}",
-              "repo": "${{ github.repository }}",
-              "package": "${{ secrets.APP_PACKAGE }}",
-              "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            }
+          # Generate HMAC signature
+          SIGNATURE=$(echo -n "$PAYLOAD" | openssl dgst -sha256 -hmac "${{ secrets.N8N_WEBHOOK_SECRET }}" | awk '{print $2}')
 
-      - name: Send webhook (production)
-        uses: distributhor/workflow-webhook@v3
-        with:
-          webhook_url: ${{ vars.WEBHOOK_URL }}
-          webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
-          data: >
-            {
-              "event": "playstore_upload",
-              "track": "production",
-              "status:"${{ steps.upload_prod.outcome }}"
-              "tag": "${{ env.RELEASE_VERSION }}",
-              "repo": "${{ github.repository }}",
-              "package": "${{ secrets.APP_PACKAGE }}",
-              "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            }
+          curl -s -X POST "${{ vars.N8N_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -H "X-Hub-Signature-256: sha256=${SIGNATURE}" \
+            -d "$PAYLOAD"
 
-  upload_beta_artifacts:
-    if: success() && contains(github.ref, 'beta')
-    needs: publish_to_playstore
-    name: Upload to github beta
-    runs-on: ubuntu-latest
-    env:
-      LATEST_TAG_FILE: "latest_tag.txt"
-      GHR_TAG: "1.0.0"
-      GHR_REPLACE: "1"
-      GHR_PATH: release
-      GHR_PRERELEASE: "1"
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    steps:
-      - uses: actions/download-artifact@v5
-        name: Retrieve artifacts
-        with:
-          name: app-release
-          path: release
-      - run: |
-          cp release/distribution/whatsnew/* release
-          rm -rf release/distribution
-          ls release
-
-      - name: Read latest tag from tag file
-        run: echo "GHR_TAG=$(cat release/$LATEST_TAG_FILE)-beta" >> $GITHUB_ENV
-
-      - name: Upload release artifacts
-        uses: masgeek/github-action-ghr@v1.3.2
-
-  upload_production_artifacts:
-    needs: publish_to_playstore
-    name: Upload to github release
-    runs-on: ubuntu-latest
-    env:
-      LATEST_TAG_FILE: "latest_tag.txt"
-      GHR_TAG: "1.0.0"
-      GHR_REPLACE: "1"
-      GHR_PATH: release
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    steps:
-      - uses: actions/download-artifact@v5
-        name: Retrieve artifacts
-        with:
-          name: app-release
-          path: release
-      - run: |
-          cp release/distribution/whatsnew/* release
-          rm -rf release/distribution
-          ls release
-
-      - name: Read latest tag from tag file
-        run: echo "GHR_TAG=$(cat release/$LATEST_TAG_FILE)" >> $GITHUB_ENV
-
-      - name: Upload production artifacts
-        uses: masgeek/github-action-ghr@v1.3.2
+          echo "Approval request sent to n8n"
