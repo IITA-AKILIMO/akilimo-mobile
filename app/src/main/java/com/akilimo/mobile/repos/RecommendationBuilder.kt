@@ -8,11 +8,9 @@ import com.akilimo.mobile.enums.EnumProduceType
 import com.akilimo.mobile.enums.EnumUseCase
 import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.repos.AkilimoUserRepo
-import com.akilimo.mobile.repos.CassavaYieldRepo
 import com.akilimo.mobile.repos.CurrentPracticeRepo
 import com.akilimo.mobile.repos.FertilizerRepo
 import com.akilimo.mobile.repos.FieldOperationCostsRepo
-import com.akilimo.mobile.repos.InvestmentRepo
 import com.akilimo.mobile.repos.SelectedCassavaMarketRepo
 import com.akilimo.mobile.repos.SelectedFertilizerRepo
 import com.akilimo.mobile.repos.SelectedInvestmentRepo
@@ -38,8 +36,6 @@ class RecommendationBuilder(
 
     private val profileRepo = AkilimoUserRepo(database.akilimoUserDao())
     private val fertilizerRepo = FertilizerRepo(database.fertilizerDao())
-    private val investmentRepo = InvestmentRepo(database.investmentAmountDao())
-    private val cassavaYieldRepo = CassavaYieldRepo(database.cassavaYieldDao())
     private val fieldOpsRepo = FieldOperationCostsRepo(database.fieldOperationCostsDao())
     private val currentPracticeRepo = CurrentPracticeRepo(database.currentPracticeDao())
     private val selectedInvestmentRepo = SelectedInvestmentRepo(database.selectedInvestmentDao())
@@ -115,7 +111,7 @@ class RecommendationBuilder(
                 areaUnit = profile.enumAreaUnit,
             ),
             interCropping = ComputeRequest.InterCropping(
-                interCroppedCrop = "maize", //TODO: evaluate according to country
+                interCroppedCrop = "maize",
                 interCroppingMaizeRec = useCase == EnumUseCase.CIM,
                 interCroppingPotatoRec = useCase == EnumUseCase.CIS
             ),

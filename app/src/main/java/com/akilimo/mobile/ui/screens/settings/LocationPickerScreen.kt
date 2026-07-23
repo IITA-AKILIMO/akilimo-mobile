@@ -59,7 +59,15 @@ import io.sentry.Sentry
 import kotlinx.parcelize.Parcelize
 
 private const val DEFAULT_ZOOM = 15.0
+private const val DEFAULT_INITIAL_ZOOM = 12.0
+private const val NAIROBI_LON = 36.8219
+private const val NAIROBI_LAT = -1.2921
 private const val MARKER_ICON_ID = "custom-marker"
+private const val MARKER_ICON_SIZE = 1.5
+private const val BOUNCE_DURATION_MS = 600L
+private const val BOUNCE_SCALE_OFFSET = 0.5f
+private const val MAP_FLY_DURATION_MS = 1500L
+private const val MAP_CLICK_FLY_DURATION_MS = 1000L
 
 /** Holds the location result returned from this screen. */
 @Parcelize
@@ -106,7 +114,7 @@ fun LocationPickerScreen(
             val point = Point.fromLngLat(loc.longitude, loc.latitude)
             mv.mapboxMap.flyTo(
                 CameraOptions.Builder().center(point).zoom(DEFAULT_ZOOM).build(),
-                MapAnimationOptions.mapAnimationOptions { duration(1500) }
+                MapAnimationOptions.mapAnimationOptions { duration(MAP_FLY_DURATION_MS) }
             )
             selectedPoint = point
             annotationManager?.let { updateMarker(it, point) }
@@ -129,12 +137,12 @@ fun LocationPickerScreen(
                         val initial = if (route.lat != 0.0 || route.lon != 0.0) {
                             Point.fromLngLat(route.lon, route.lat)
                         } else {
-                            Point.fromLngLat(36.8219, -1.2921) // default: Nairobi
+                            Point.fromLngLat(NAIROBI_LON, NAIROBI_LAT) // default: Nairobi
                         }
                         mv.mapboxMap.setCamera(
                             CameraOptions.Builder()
                                 .center(initial)
-                                .zoom(if (route.zoom > 0) route.zoom else 12.0)
+                                .zoom(if (route.zoom > 0) route.zoom else DEFAULT_INITIAL_ZOOM)
                                 .build()
                         )
                         mv.mapboxMap.loadStyle(Style.STANDARD_SATELLITE) { style ->
@@ -165,7 +173,7 @@ fun LocationPickerScreen(
                                 updateMarker(am, point)
                                 mv.mapboxMap.flyTo(
                                     CameraOptions.Builder().center(point).build(),
-                                    MapAnimationOptions.mapAnimationOptions { duration(1000) }
+                                    MapAnimationOptions.mapAnimationOptions { duration(MAP_CLICK_FLY_DURATION_MS) }
                                 )
                                 viewModel.fetchAddress(point.latitude(), point.longitude())
                                 viewModel.fetchWeather(point.latitude(), point.longitude())
@@ -278,17 +286,17 @@ private fun updateMarker(manager: PointAnnotationManager, point: Point) {
     manager.create(
         PointAnnotationOptions()
             .withIconImage(MARKER_ICON_ID)
-            .withIconSize(1.5)
+            .withIconSize(MARKER_ICON_SIZE)
             .withPoint(point)
     )
     // Bounce animation
     val animator = ValueAnimator.ofFloat(0f, 1f).apply {
-        duration = 600
+        duration = BOUNCE_DURATION_MS
         interpolator = BounceInterpolator()
         addUpdateListener { anim ->
-            val scale = 0.5f + (anim.animatedValue as Float)
+            val scale = BOUNCE_SCALE_OFFSET + (anim.animatedValue as Float)
             manager.annotations.forEach { annotation ->
-                annotation.iconSize = scale * 1.5
+                annotation.iconSize = scale * MARKER_ICON_SIZE
                 manager.update(annotation)
             }
         }

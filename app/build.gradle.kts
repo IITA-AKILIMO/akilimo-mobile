@@ -26,6 +26,19 @@ tasks.named("sonar") {
 
 detekt {
     baseline = file("detekt-baseline.xml")
+    config.setFrom(files("detekt.yml"))
+}
+
+tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+    reports {
+        xml {
+            required.set(true)
+            outputLocation.set(layout.buildDirectory.file("reports/detekt/detekt.xml").get().asFile)
+        }
+        html {
+            required.set(false)
+        }
+    }
 }
 
 
@@ -90,6 +103,7 @@ android {
             env.FUELROD_BASE_URL.orElse("https://akilimo.fuelrod.com")
         val akilimoBaseUrl = env.AKILIMO_BASE_URL.orElse("https://api.akilimo.org")
         val mapboxRuntimeToken = env.MAPBOX_RUNTIME_TOKEN.orElse("")
+        val weatherApiKey = env.WEATHER_API_KEY.orElse("")
         val locationIqToken = env.LOCATION_IQ_TOKEN.orElse("")
         val akilimoApiKey = env.AKILIMO_API_KEY.orElse(
             providers.gradleProperty("akilimo.api.key").orElse("").get()
@@ -100,6 +114,7 @@ android {
         buildConfigField("String", "MAPBOX_RUNTIME_TOKEN", q(mapboxRuntimeToken))
         buildConfigField("String", "LOCATION_IQ_TOKEN", q(locationIqToken))
         buildConfigField("String", "AKILIMO_API_KEY", q(akilimoApiKey))
+        buildConfigField("String", "WEATHER_API_KEY", q(weatherApiKey))
     }
 
     lint {
@@ -109,7 +124,7 @@ android {
         abortOnError = false
         checkReleaseBuilds = false
         baseline = file("lint-baseline.xml")
-        xmlOutput = layout.buildDirectory.file("/reports/custom-lint-results.xml").get().asFile
+        xmlOutput = layout.buildDirectory.file("reports/custom-lint-results.xml").get().asFile
     }
 
     bundle {

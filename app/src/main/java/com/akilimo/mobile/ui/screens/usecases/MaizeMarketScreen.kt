@@ -44,9 +44,10 @@ import com.akilimo.mobile.ui.viewmodels.ProduceMarketViewModel
 @Composable
 fun MaizeMarketScreen(
     navController: NavHostController,
-    viewModel: ProduceMarketViewModel = hiltViewModel<ProduceMarketViewModel, ProduceMarketViewModel.Factory> { factory ->
-        factory.create(EnumMarketType.MAIZE_MARKET)
-    }
+    viewModel: ProduceMarketViewModel = hiltViewModel<
+        ProduceMarketViewModel,
+        ProduceMarketViewModel.Factory
+    > { factory -> factory.create(EnumMarketType.MAIZE_MARKET) }
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current

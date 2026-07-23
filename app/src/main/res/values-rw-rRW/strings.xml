@@ -255,4 +255,5 @@
     <string name="error_unexpected">Habaye ikosa ritateganyijwe</string>
     <string name="error_network_unavailable">Ntiwabashije kubona netiworoke</string>
     <string name="error_fetch_page">Ntibyakunze kuzana paji %1$d: %2$s</string>
+    <string name="lbl_recommendation_language">Ururimi rw\'inama rwitonderwa</string>
 </resources>
