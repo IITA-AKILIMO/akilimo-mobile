@@ -1,0 +1,456 @@
+{
+  "name": "Play Store Publish Approval",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "playstore-approval",
+        "options": {}
+      },
+      "id": "webhook-receive",
+      "name": "Receive Build Notification",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "playstore-approval"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\"status\": \"received\"}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "respond-ok",
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.body.chat_id }}",
+        "text": "=🚀 *Play Store Publish Request*\n\n*Tag:* {{ $json.body.tag }}\n*Version:* {{ $json.body.version }}\n*Track:* {{ $json.body.track }}\n*Triggered by:* @{{ $json.body.actor }}\n*Run:* [View Build]({{ $json.body.run_url }})\n\nReply with *approve* or *reject*",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "send-telegram-message",
+      "name": "Send Telegram Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [680, 300],
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const staticData = $getWorkflowStaticData('global');\nif (!staticData.builds) staticData.builds = {};\n\nconst body = $('Receive Build Notification').item.json.body;\nconst chatId = body.chat_id;\n\nstaticData.builds[chatId] = {\n  run_id: body.run_id,\n  tag: body.tag,\n  version: body.version,\n  track: body.track,\n  repo: body.repo,\n  actor: body.actor,\n  artifact_name: body.artifact_name,\n  bot_message_id: $json.message_id,\n  stored_at: new Date().toISOString()\n};\n\nreturn [{ json: { stored: true, chat_id: chatId } }];"
+      },
+      "id": "store-context",
+      "name": "Store Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "additionalFields": {
+          "updates": ["message"]
+        }
+      },
+      "id": "telegram-trigger",
+      "name": "Wait for Reply",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 520],
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const staticData = $getWorkflowStaticData('global');\nconst builds = staticData.builds || {};\n\nconst chatId = $json.message.chat.id;\nconst context = builds[chatId];\n\nif (!context) {\n  return [{ json: { ...$json, no_context: true, chat_id: chatId } }];\n}\n\n// consume it so a second reply in the same chat can't re-trigger this build\ndelete builds[chatId];\n\nreturn [{ json: { ...$json, ...context, no_context: false, chat_id: chatId } }];"
+      },
+      "id": "lookup-context",
+      "name": "Lookup & Consume Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 520]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "no-context-check",
+              "leftValue": "={{ $json.no_context }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-no-context",
+      "name": "No Pending Request?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [680, 520]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "=No pending publish request found for this chat.",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "notify-no-context",
+      "name": "Notify No Pending Request",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [900, 620],
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "route-approve",
+                    "leftValue": "={{ $json.message.text.trim().toLowerCase() }}",
+                    "rightValue": "approve",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "route-reject",
+                    "leftValue": "={{ $json.message.text.trim().toLowerCase() }}",
+                    "rightValue": "reject",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "none"
+        }
+      },
+      "id": "route-by-reply",
+      "name": "Route by Reply",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [900, 460]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "action",
+              "value": "approve"
+            },
+            {
+              "name": "approved_by",
+              "value": "={{ $json.message.from.username || $json.message.from.first_name }}"
+            }
+          ]
+        },
+        "options": {
+          "dotNotation": true
+        }
+      },
+      "id": "parse-approve",
+      "name": "Parse Approval",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1120, 400]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "action",
+              "value": "reject"
+            },
+            {
+              "name": "rejected_by",
+              "value": "={{ $json.message.from.username || $json.message.from.first_name }}"
+            }
+          ]
+        },
+        "options": {
+          "dotNotation": true
+        }
+      },
+      "id": "parse-reject",
+      "name": "Parse Rejection",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1120, 560]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.github.com/repos/{{ $json.repo }}/actions/workflows/publish.yml/dispatches",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github.v3+json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"ref\": \"{{ $json.tag }}\",\n  \"inputs\": {\n    \"version\": \"{{ $json.version }}\",\n    \"artifact_name\": \"{{ $json.artifact_name }}\",\n    \"track\": \"{{ $json.track }}\",\n    \"approved_by\": \"{{ $json.approved_by }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "trigger-publish",
+      "name": "Trigger Publish Workflow",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 400],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "GitHub Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "messageId": "={{ $json.bot_message_id }}",
+        "text": "=✅ *Approved*\n\nPublished to {{ $json.track }} by @{{ $json.approved_by }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "update-message-approved",
+      "name": "Update Message (Approved)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1560, 400],
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "messageId": "={{ $json.bot_message_id }}",
+        "text": "=❌ *Rejected*\n\nPublish rejected by @{{ $json.rejected_by }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "update-message-rejected",
+      "name": "Update Message (Rejected)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1340, 560],
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "Telegram Bot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Receive Build Notification": {
+      "main": [
+        [
+          {
+            "node": "Respond OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond OK": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Telegram Message": {
+      "main": [
+        [
+          {
+            "node": "Store Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Reply": {
+      "main": [
+        [
+          {
+            "node": "Lookup & Consume Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lookup & Consume Context": {
+      "main": [
+        [
+          {
+            "node": "No Pending Request?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Pending Request?": {
+      "main": [
+        [
+          {
+            "node": "Notify No Pending Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Route by Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Reply": {
+      "main": [
+        [
+          {
+            "node": "Parse Approval",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Parse Rejection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Approval": {
+      "main": [
+        [
+          {
+            "node": "Trigger Publish Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger Publish Workflow": {
+      "main": [
+        [
+          {
+            "node": "Update Message (Approved)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Rejection": {
+      "main": [
+        [
+          {
+            "node": "Update Message (Rejected)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "playstore",
+      "id": "1"
+    }
+  ],
+  "triggerCount": 0
+}
