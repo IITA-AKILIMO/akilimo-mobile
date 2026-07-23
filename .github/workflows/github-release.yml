@@ -1,33 +1,28 @@
 name: GitHub Release
 
 on:
-  push:
-    paths-ignore:
-      - '**.md'
-      - '**.txt'
-      - '**.sh'
-      - '**.xml'
-      - 'docs/**'
-      - '.github/ISSUE_TEMPLATE/**'
   pull_request:
     branches:
       - main
     types: [closed]
-  workflow_dispatch: # Keep this for manual testing
+  workflow_dispatch:
 
 jobs:
   release:
-    # This ensures the job ONLY runs if the PR was actually merged, not just closed
     concurrency:
       group: release-${{ github.head_ref || github.ref_name }}
       cancel-in-progress: true
-    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true)
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
     runs-on: ubuntu-24.04
     name: Create release tag
+    permissions:
+      contents: write
+      pull-requests: read
+
     steps:
       - name: Create GitHub App token
         id: app-token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v1
         with:
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
@@ -42,7 +37,22 @@ jobs:
       - name: Fetch tags
         run: git fetch --tags
 
+      - name: Detect relevant changes
+        id: diff_check
+        uses: tj-actions/changed-files@v46
+        with:
+          files: |
+            **/*.kt
+            **/*.kts
+            **/*.xml
+            **/*.gradle
+            gradlew
+            gradlew.bat
+
       - name: Generate changelog
+        if: >
+          github.event_name == 'workflow_dispatch' ||
+          fromJSON(steps.diff_check.outputs.all_changed_files_count) >= 2
         uses: orhun/git-cliff-action@v4
         with:
           config: cliff.toml
@@ -50,56 +60,21 @@ jobs:
           OUTPUT: CHANGELOG.md
           GITHUB_REPO: ${{ github.repository }}
 
-      - name: Commit and Push changelog
-        run: |
-          git config user.name "munywele-sonar[bot]"
-          git config user.email "munywele-sonar[bot]@users.noreply.github.com"
-          
-          # Check if CHANGELOG.md has changes
-          if ! git diff --quiet CHANGELOG.md; then
-            # Stash the changes
-            git stash push -m "changelog changes" CHANGELOG.md
-          
-            # Pull latest from remote
-            git pull --rebase origin main
-          
-            # Apply stashed changes
-            git stash pop
-          
-            # Stage and commit
-            git add CHANGELOG.md
-            git commit -m "docs: update changelog"
-          
-            # Push to remote
-            git push origin HEAD:main
-          else
-            echo "No changes to commit"
-          fi
-
-      - name: Detect relevant change count
-        id: diff_check
-        run: |
-          # Fetch latest to ensure we have updated refs
-          git fetch origin main
-          
-          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-          
-          if [ -z "$LAST_TAG" ]; then
-            FILES=$(git diff --name-only HEAD)
-          else
-            FILES=$(git diff --name-only "$LAST_TAG"..HEAD)
-          fi
-
-          RELEVANT_COUNT=$(echo "$FILES" | grep -E '\.(kt|kts|xml|gradle|gradle\.kts)$|^gradlew(\.bat)?$' | wc -l || echo 0)
-
-          if [ "$RELEVANT_COUNT" -lt 2 ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
-            echo "should_release=false" >> $GITHUB_OUTPUT
-          else
-            echo "should_release=true" >> $GITHUB_OUTPUT
-          fi
+      - name: Commit and push changelog
+        if: >
+          github.event_name == 'workflow_dispatch' ||
+          fromJSON(steps.diff_check.outputs.all_changed_files_count) >= 2
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs: update changelog"
+          file_pattern: CHANGELOG.md
+          commit_user_name: "munywele-sonar[bot]"
+          commit_user_email: "munywele-sonar[bot]@users.noreply.github.com"
 
       - name: Generate Tag
-        if: steps.diff_check.outputs.should_release == 'true'
+        if: >
+          github.event_name == 'workflow_dispatch' ||
+          fromJSON(steps.diff_check.outputs.all_changed_files_count) >= 2
         id: tag_version
         uses: masgeek/github-tag-action@release
         with:
@@ -108,8 +83,10 @@ jobs:
           create_annotated_tag: true
 
       - name: Create GitHub Release
-        if: steps.diff_check.outputs.should_release == 'true'
-        uses: ncipollo/release-action@v1.15.0
+        if: >
+          github.event_name == 'workflow_dispatch' ||
+          fromJSON(steps.diff_check.outputs.all_changed_files_count) >= 2
+        uses: ncipollo/release-action@v1
         with:
           token: ${{ steps.app-token.outputs.token }}
           tag: ${{ steps.tag_version.outputs.new_tag }}

@@ -28,6 +28,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.akilimo.mobile.R
 
+private const val RATING_OKAY = 3
+private const val RATING_GOOD = 4
+private const val RATING_EXCELLENT = 5
+private const val NPS_MAX_SCORE = 10
+private const val NPS_DETRACTOR_MAX = 6
+private const val NPS_PASSIVE_MAX = 8
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun FeedbackBottomSheet(
@@ -71,9 +78,9 @@ fun FeedbackBottomSheet(
                 val label = when (rating) {
                     1 -> stringResource(R.string.feedback_very_poor)
                     2 -> stringResource(R.string.feedback_poor)
-                    3 -> stringResource(R.string.feedback_okay)
-                    4 -> stringResource(R.string.feedback_good)
-                    5 -> stringResource(R.string.feedback_excellent)
+                    RATING_OKAY -> stringResource(R.string.feedback_okay)
+                    RATING_GOOD -> stringResource(R.string.feedback_good)
+                    RATING_EXCELLENT -> stringResource(R.string.feedback_excellent)
                     else -> ""
                 }
                 Text(
@@ -93,7 +100,7 @@ fun FeedbackBottomSheet(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
-                (0..10).forEach { score ->
+                for (score in 0..NPS_MAX_SCORE) {
                     TextButton(
                         onClick = { selectedNps = score },
                         colors = if (selectedNps == score) {
@@ -110,8 +117,8 @@ fun FeedbackBottomSheet(
             }
             selectedNps?.let { nps ->
                 val label = when {
-                    nps <= 6 -> stringResource(R.string.feedback_nps_low)
-                    nps <= 8 -> stringResource(R.string.feedback_nps_medium)
+                    nps <= NPS_DETRACTOR_MAX -> stringResource(R.string.feedback_nps_low)
+                    nps <= NPS_PASSIVE_MAX -> stringResource(R.string.feedback_nps_medium)
                     else -> stringResource(R.string.feedback_nps_high)
                 }
                 Text(

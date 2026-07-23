@@ -1,0 +1,46 @@
+complexity:
+  LongMethod:
+    threshold: 60
+    ignoreAnnotated:
+      - 'Composable'
+  LongParameterList:
+    functionThreshold: 6
+    constructorThreshold: 7
+    ignoreAnnotated:
+      - 'Composable'
+  CyclomaticComplexMethod:
+    threshold: 15
+    ignoreAnnotated:
+      - 'Composable'
+  TooManyFunctions:
+    thresholdInObjects: 15
+
+exceptions:
+  TooGenericExceptionCaught:
+    excludes:
+      - '**/network/GeocodingService.kt'
+      - '**/network/WeatherService.kt'
+      - '**/ui/viewmodels/GetRecommendationViewModel.kt'
+      - '**/ui/viewmodels/LocationPickerViewModel.kt'
+      - '**/ui/screens/settings/LocationPickerScreen.kt'
+
+naming:
+  FunctionNaming:
+    functionPattern: '[a-z][a-zA-Z0-9]*'
+    ignoreAnnotated:
+      - 'Composable'
+
+style:
+  MagicNumber:
+    ignoreNumbers:
+      - '-1'
+      - '0'
+      - '1'
+      - '2'
+    ignoreConstantDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+    ignoreNamedArgument: true
+    ignoreEnums: true
+    excludes:
+      - '**/ui/theme/AkilimoColors.kt'
+      - '**/database/DatabaseMigrations.kt'

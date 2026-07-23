@@ -1,3 +1,4 @@
+@file:Suppress("MagicNumber") // parallax math constants extracted below; float literals remain for formula legibility
 package com.akilimo.mobile.ui.screens.recommendations
 
 import androidx.compose.foundation.Image
@@ -280,6 +281,7 @@ private fun AdviceOptionCard(option: AdviceOption, onClick: () -> Unit) {
 
 @Preview(showBackground = true)
 @Composable
+@Suppress("UnusedPrivateMember") // invoked by Android Studio preview renderer, not production code
 private fun RecommendationsScreenPreview() {
     val uiState = RecommendationsViewModel.UiState(
         adviceOptions = listOf(

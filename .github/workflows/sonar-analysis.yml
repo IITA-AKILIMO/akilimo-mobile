@@ -13,7 +13,7 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # full history required for blame/new-code detection
+          fetch-depth: 0
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -21,16 +21,11 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      # Handles wrapper, dependency jars, AAR transforms, and local build
-      # cache with correct content-addressed keys.
-      # This job runs on develop, so cache-read-only is false — it writes
-      # the shared cache that PR builds will restore from.
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: false
 
-      # Sonar analysis artefacts (rule sets, plugins) — separate from Gradle.
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:
@@ -41,13 +36,15 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      # --no-configuration-cache: the Sonar Gradle plugin does not support it.
-      # --no-daemon: no warm-up benefit on ephemeral runners.
       - name: Run Sonar Analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: ./gradlew sonar --no-configuration-cache --no-daemon
+          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+          MAPBOX_RUNTIME_TOKEN: ${{ secrets.MAPBOX_RUNTIME_TOKEN }}
+          AKILIMO_API_KEY: ${{ secrets.AKILIMO_API_KEY }}
+          LOCATION_IQ_TOKEN: ${{ secrets.LOCATION_IQ_TOKEN }}
+        run: ./gradlew sonar --no-configuration-cache --no-daemon -PMAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
 
       - name: SonarQube Quality Gate check
         id: sonarqube-quality-gate-check

@@ -23,7 +23,10 @@ interface ProduceMarketDao {
     @Query("SELECT * FROM produce_markets WHERE user_id = :userId AND produce_type = :produceType LIMIT 1")
     suspend fun getUserMarket(userId: Int, produceType: EnumProduceType): ProduceMarket?
 
-    @Query("SELECT * FROM produce_markets WHERE user_id = :userId and market_type =:marketType ORDER BY id DESC LIMIT 1")
-    suspend fun getLastEntryForUser(userId: Int,marketType: EnumMarketType): ProduceMarket?
+    @Query(
+        "SELECT * FROM produce_markets WHERE user_id = :userId " +
+            "AND market_type = :marketType ORDER BY id DESC LIMIT 1"
+    )
+    suspend fun getLastEntryForUser(userId: Int, marketType: EnumMarketType): ProduceMarket?
 }
 

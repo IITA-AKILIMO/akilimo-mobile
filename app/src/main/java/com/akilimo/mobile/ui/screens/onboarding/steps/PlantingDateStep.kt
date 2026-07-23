@@ -36,6 +36,11 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
 
+private const val PLANTING_MONTHS_BEFORE = 4L
+private const val PLANTING_MONTHS_AHEAD = 12L
+private const val HARVEST_MONTHS_MIN = 8L
+private const val HARVEST_MONTHS_MAX = 16L
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlantingDateStep(
@@ -77,8 +82,8 @@ fun PlantingDateStep(
         )
 
         if (showPlantingPicker) {
-            val pMin = LocalDate.now().minusMonths(4 + plantingFlex)
-            val pMax = LocalDate.now().plusMonths(12 + plantingFlex)
+            val pMin = LocalDate.now().minusMonths(PLANTING_MONTHS_BEFORE + plantingFlex)
+            val pMax = LocalDate.now().plusMonths(PLANTING_MONTHS_AHEAD + plantingFlex)
             val plantingSelectableDates = remember(pMin, pMax) {
                 object : SelectableDates {
                     override fun isSelectableDate(utcTimeMillis: Long): Boolean {
@@ -128,8 +133,8 @@ fun PlantingDateStep(
 
         if (showHarvestPicker) {
             val pDate = plantingDate!! // only shown when plantingDate != null
-            val hMin = pDate.plusMonths(8L - harvestFlex)
-            val hMax = pDate.plusMonths(16L + harvestFlex)
+            val hMin = pDate.plusMonths(HARVEST_MONTHS_MIN - harvestFlex)
+            val hMax = pDate.plusMonths(HARVEST_MONTHS_MAX + harvestFlex)
             val harvestSelectableDates = remember(hMin, hMax) {
                 object : SelectableDates {
                     override fun isSelectableDate(utcTimeMillis: Long): Boolean {

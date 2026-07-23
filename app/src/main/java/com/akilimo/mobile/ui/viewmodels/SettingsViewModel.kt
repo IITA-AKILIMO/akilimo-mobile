@@ -20,6 +20,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val DEFAULT_NOTIFICATION_COUNT = 3
+
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val appSettings: AppSettingsDataStore,
@@ -123,7 +125,7 @@ class SettingsViewModel @Inject constructor(
 
     fun resetNotificationCount(resetMessage: String) {
         viewModelScope.launch {
-            appSettings.notificationCount = 3
+            appSettings.notificationCount = DEFAULT_NOTIFICATION_COUNT
             _effect.send(Effect.ShowSnackbar(resetMessage))
         }
     }

@@ -358,7 +358,7 @@
     <string name="lbl_maize_perf_yellow">yellow</string>
     <string name="lbl_maize_perf_green">green</string>
     <string name="lbl_maize_perf_dark_green">dark green</string>
-    <string name="lbl_english">English</string>
-    <string name="lbl_swahili">Swahili</string>
+    <string name="lbl_english" translatable="false">English</string>
+    <string name="lbl_swahili" translatable="false">Swahili</string>
 
 </resources>

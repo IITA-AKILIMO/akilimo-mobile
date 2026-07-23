@@ -39,6 +39,12 @@ import com.akilimo.mobile.ui.components.compose.SelectionCard
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.CassavaYieldViewModel
 
+private const val YIELD_LOW = 3.75
+private const val YIELD_NORMAL = 11.25
+private const val YIELD_HIGH = 18.75
+private const val YIELD_VERY_HIGH = 26.25
+private const val YIELD_EXCEPTIONAL = 33.75
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CassavaYieldScreen(
@@ -179,11 +185,14 @@ private fun buildCassavaYieldSeeds(
     }
 
     val defs = listOf(
-        YieldDef(R.drawable.yield_less_than_7point5, R.string.fcy_lower, 3.75, R.string.lbl_low_yield, 1),
-        YieldDef(R.drawable.yield_7point5_to_15, R.string.fcy_about_the_same, 11.25, R.string.lbl_normal_yield, 2),
-        YieldDef(R.drawable.yield_15_to_22point5, R.string.fcy_somewhat_higher, 18.75, R.string.lbl_high_yield, 3),
-        YieldDef(R.drawable.yield_22_to_30, R.string.fcy_2_3_times_higher, 26.25, R.string.lbl_very_high_yield, 4),
-        YieldDef(R.drawable.yield_more_than_30, R.string.fcy_more_than_3_times_higher, 33.75, R.string.lbl_very_high_yield, 5)
+        YieldDef(R.drawable.yield_less_than_7point5, R.string.fcy_lower, YIELD_LOW, R.string.lbl_low_yield, 1),
+        YieldDef(R.drawable.yield_7point5_to_15, R.string.fcy_about_the_same, YIELD_NORMAL, R.string.lbl_normal_yield, 2),
+        YieldDef(R.drawable.yield_15_to_22point5, R.string.fcy_somewhat_higher, YIELD_HIGH, R.string.lbl_high_yield, 3),
+        YieldDef(R.drawable.yield_22_to_30, R.string.fcy_2_3_times_higher, YIELD_VERY_HIGH, R.string.lbl_very_high_yield, 4),
+        YieldDef(
+            R.drawable.yield_more_than_30, R.string.fcy_more_than_3_times_higher,
+            YIELD_EXCEPTIONAL, R.string.lbl_very_high_yield, 5
+        )
     )
 
     return defs.mapIndexed { index, def ->

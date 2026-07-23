@@ -1,3 +1,4 @@
+@file:Suppress("MatchingDeclarationName") // filename predates Dto suffix convention; rename tracked as follow-up
 package com.akilimo.mobile.network.dto
 
 import com.akilimo.mobile.entities.Fertilizer

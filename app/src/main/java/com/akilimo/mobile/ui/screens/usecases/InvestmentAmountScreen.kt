@@ -37,6 +37,7 @@ import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.SaveBottomBar
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.InvestmentAmountViewModel
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -96,7 +97,7 @@ fun InvestmentAmountScreen(
                         )
                         Column(modifier = Modifier.padding(start = 8.dp)) {
                             Text(
-                                text = "${item.currencySymbol} ${String.format("%.0f", item.investmentAmount)}",
+                                text = "${item.currencySymbol} ${String.format(Locale.ROOT, "%.0f", item.investmentAmount)}",
                                 style = MaterialTheme.typography.titleMedium
                             )
                             Text(

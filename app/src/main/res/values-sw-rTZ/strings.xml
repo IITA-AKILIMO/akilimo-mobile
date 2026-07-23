@@ -81,7 +81,7 @@
     <string name="lbl_manual_tillage_cost">Je? Inagharimu kiasi gani kulima {size_unit} {farm_size} kutumia jembe la mkono?</string>
     <string name="lbl_manual_tillage_cost_hint">Gharama ya kulima {size_unit} {farm_size} kutumia jembe la mkono</string>
     <string name="lbl_manual_ridge_cost_hint">Gharama ya kuweka matuta katika {size_unit} {farm_size} kutumia jembe la mkono</string>
-    <string name="lbl_tractor_plough_cost_hint">Gharama ya kulima %s %s kwa trekta</string>
+    <string name="lbl_tractor_plough_cost_hint">Gharama ya kulima {size_unit} {farm_size} kwa trekta</string>
     <string name="lbl_tractor_ridge_cost_hint">Gharama ya kuweka matuta kwa {size_unit} {farm_size} kutumia trekta</string>
     <string name="lbl_tractor_harrow_cost_hint">Gharama ya kupurura {farm_size} {size_unit} kwa kutumia trekta</string>
     <string name="lbl_gender">Chagua jinsia</string>
@@ -255,4 +255,5 @@
     <string name="lbl_maize_perf_yellow">manjano</string>
     <string name="lbl_maize_perf_green">kijani</string>
     <string name="lbl_maize_perf_dark_green">kijani iliyokolea</string>
+    <string name="lbl_recommendation_language">Chagua lugha yako ya mapendekezo</string>
 </resources>

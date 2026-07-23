@@ -1,0 +1,279 @@
+{
+  "name": "Play Store Publish Approval",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "playstore-approval",
+        "options": {
+          "rawBody": true
+        }
+      },
+      "id": "webhook-receive",
+      "name": "Receive Build Notification",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "playstore-approval"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\"status\": \"received\"}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "respond-ok",
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.body.chat_id }}",
+        "text": "=🚀 *Play Store Publish Request*\n\n*Tag:* {{ $json.body.tag }}\n*Version:* {{ $json.body.version }}\n*Track:* {{ $json.body.track }}\n*Triggered by:* @{{ $json.body.actor }}\n*Run:* [View Build]({{ $json.body.run_url }})",
+        "additionalFields": {
+          "parse_mode": "Markdown",
+          "reply_markup": "={\"inline_keyboard\": [[{\"text\": \"✅ Approve\", \"callback_data\": \"approve:{{ $json.body.run_id }}:{{ $json.body.track }}:{{ $json.body.tag }}\"}, {\"text\": \"❌ Reject\", \"callback_data\": \"reject:{{ $json.body.run_id }}:{{ $json.body.track }}:{{ $json.body.tag }}\"}]]}"
+        }
+      },
+      "id": "send-telegram-message",
+      "name": "Send Telegram Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [680, 300],
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "additionalFields": {
+          "updates": ["callback_query"]
+        }
+      },
+      "id": "telegram-trigger",
+      "name": "Wait for Callback",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 520],
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse callback_data: \"approve:12345678:beta:v1.2.3-beta\"\nconst callbackData = $json.callback_query.data;\nconst parts = callbackData.split(':');\n\nconst action = parts[0];\nconst runId = parts[1];\nconst track = parts[2];\nconst tag = parts.slice(3).join(':');\n\nreturn [{ json: {\n  action: action,\n  run_id: runId,\n  track: track,\n  tag: tag,\n  chat_id: $json.callback_query.message.chat.id,\n  bot_message_id: $json.callback_query.message.message_id,\n  approved_by: $json.callback_query.from.username || $json.callback_query.from.first_name,\n  repo: 'IITA-AKILIMO/akilimo-mobile'\n}}];"
+      },
+      "id": "parse-callback",
+      "name": "Parse Callback",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 520]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "is-approve",
+              "leftValue": "={{ $json.action }}",
+              "rightValue": "approve",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-approved",
+      "name": "Is Approve?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [680, 520]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.github.com/repos/{{ $json.repo }}/actions/workflows/publish.yml/dispatches",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github.v3+json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"ref\": \"{{ $json.tag }}\",\n  \"inputs\": {\n    \"version\": \"{{ $json.tag }}\",\n    \"artifact_name\": \"app-release\",\n    \"track\": \"{{ $json.track }}\",\n    \"approved_by\": \"{{ $json.approved_by }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "trigger-publish",
+      "name": "Trigger Publish Workflow",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 460],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "GitHub Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "messageId": "={{ $json.bot_message_id }}",
+        "text": "=✅ *Approved*\n\nPublished to {{ $json.track }} by @{{ $json.approved_by }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "update-message-approved",
+      "name": "Update Message (Approved)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1120, 460],
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "messageId": "={{ $json.bot_message_id }}",
+        "text": "=❌ *Rejected*\n\nPublish rejected by @{{ $json.approved_by }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "update-message-rejected",
+      "name": "Update Message (Rejected)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [900, 600],
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "Telegram Bot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Receive Build Notification": {
+      "main": [
+        [
+          {
+            "node": "Respond OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond OK": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Callback": {
+      "main": [
+        [
+          {
+            "node": "Parse Callback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Callback": {
+      "main": [
+        [
+          {
+            "node": "Is Approve?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Approve?": {
+      "main": [
+        [
+          {
+            "node": "Trigger Publish Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Message (Rejected)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger Publish Workflow": {
+      "main": [
+        [
+          {
+            "node": "Update Message (Approved)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "playstore",
+      "id": "1"
+    }
+  ],
+  "triggerCount": 0
+}
