@@ -5,12 +5,23 @@ on:
     workflows: ["CI Checks"]
     types: [completed]
 
+concurrency:
+  group: auto-approve-${{ github.event.workflow_run.id }}
+  cancel-in-progress: true
+
 jobs:
   pr-auto-approve:
     runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    # Gate everything here, in one place, at the job level.
+    # - only react to PR-triggered runs that succeeded
+    # - only react to runs from the base repo (never a fork's copy of
+    #   the workflow — a fork PR could edit "CI Checks" to always pass,
+    #   and workflow_run inherits write perms against the base repo)
     if: >
       github.event.workflow_run.event == 'pull_request' &&
-      github.event.workflow_run.conclusion == 'success'
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
     permissions:
       pull-requests: write
       contents: read
@@ -19,38 +30,50 @@ jobs:
       - name: Get PR details
         id: pr
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          PR_NUMBER=$(gh api "/repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}/pull-requests" --jq '.[0].number')
-          PR_AUTHOR=$(gh pr view "$PR_NUMBER" --json author --jq '.author.login')
-          echo "number=$PR_NUMBER" >> $GITHUB_OUTPUT
-          echo "author=$PR_AUTHOR" >> $GITHUB_OUTPUT
+          set -euo pipefail
 
-      - name: Check author is allowed bot
-        if: >
-          steps.pr.outputs.author != 'github-actions[bot]' &&
-          steps.pr.outputs.author != 'dependabot[bot]' &&
-          steps.pr.outputs.author != 'munywele-bot[bot]'
-        run: exit 0
+          PR_NUMBER=$(gh pr list \
+            --repo "${{ github.repository }}" \
+            --search "${{ github.event.workflow_run.head_sha }}" \
+            --state all \
+            --json number \
+            --jq '.[0].number // empty')
+
+          if [ -z "$PR_NUMBER" ]; then
+            echo "No PR found for commit ${{ github.event.workflow_run.head_sha }} — skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+          echo "number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "author=$(gh pr view "$PR_NUMBER" --repo "${{ github.repository }}" --json author --jq '.author.login')" >> "$GITHUB_OUTPUT"
+
+      - name: Check author is an allowed bot
+        if: steps.pr.outputs.skip != 'true'
+        id: gate
+        run: |
+          case "${{ steps.pr.outputs.author }}" in
+            github-actions\[bot\]|dependabot\[bot\]|munywele-bot\[bot\])
+              echo "allowed=true" >> "$GITHUB_OUTPUT" ;;
+            *)
+              echo "Author '${{ steps.pr.outputs.author }}' is not an allowed bot — skipping."
+              echo "allowed=false" >> "$GITHUB_OUTPUT" ;;
+          esac
 
       - name: Generate GitHub App Token
-        if: >
-          steps.pr.outputs.author == 'github-actions[bot]' ||
-          steps.pr.outputs.author == 'dependabot[bot]' ||
-          steps.pr.outputs.author == 'munywele-bot[bot]'
+        if: steps.gate.outputs.allowed == 'true'
         id: generate-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@d72941d797fd3113feb6b93fd0dec494b13a2547 # v1.11.1
         with:
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
       - name: Auto approve PR
-        if: >
-          steps.pr.outputs.author == 'github-actions[bot]' ||
-          steps.pr.outputs.author == 'dependabot[bot]' ||
-          steps.pr.outputs.author == 'munywele-bot[bot]'
+        if: steps.gate.outputs.allowed == 'true'
         uses: hmarr/auto-approve-action@v4
         with:
           review-message: "Auto approved — CI checks passed"
           github-token: ${{ steps.generate-token.outputs.token }}
-          pr-number: ${{ steps.pr.outputs.number }}
