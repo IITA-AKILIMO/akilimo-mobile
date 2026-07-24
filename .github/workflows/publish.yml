@@ -7,11 +7,6 @@ on:
         description: 'Release version tag'
         required: true
         type: string
-      artifact_name:
-        description: 'GitHub Actions artifact name to download'
-        required: true
-        default: 'app-release'
-        type: string
       track:
         description: 'Play Store track'
         required: true
@@ -32,16 +27,29 @@ jobs:
       RELEASE_VERSION: ${{ inputs.version }}
 
     steps:
-      - name: Download release artifact
-        uses: actions/download-artifact@v5
-        with:
-          name: ${{ inputs.artifact_name }}
-          path: release
+      - name: Download release assets from GitHub Release
+        run: |
+          mkdir -p release
+          # Download the AAB from the draft release
+          gh release download "${{ inputs.version }}" \
+            --repo "${{ github.repository }}" \
+            --pattern "*.aab" \
+            --dir release \
+            --clobber
+          # Also download the APK
+          gh release download "${{ inputs.version }}" \
+            --repo "${{ github.repository }}" \
+            --pattern "*.apk" \
+            --dir release \
+            --clobber || true
+          ls -la release/
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Verify artifact contents
+      - name: Verify AAB exists
         run: |
           if [ ! -f "release/akilimo-release.aab" ]; then
-            echo "AAB not found in artifact!"
+            echo "AAB not found in release!"
             exit 1
           fi
           echo "AAB size: $(du -h release/akilimo-release.aab | cut -f1)"
@@ -112,52 +120,3 @@ jobs:
               "repo": "${{ github.repository }}",
               "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
-
-  upload_beta_artifacts:
-    if: inputs.track == 'beta'
-    needs: publish_to_playstore
-    name: Upload to GitHub beta
-    runs-on: ubuntu-latest
-    env:
-      GHR_TAG: "${{ inputs.version }}-beta"
-      GHR_REPLACE: "1"
-      GHR_PATH: release
-      GHR_PRERELEASE: "1"
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    steps:
-      - uses: actions/download-artifact@v5
-        with:
-          name: ${{ inputs.artifact_name }}
-          path: release
-
-      - run: |
-          cp release/distribution/whatsnew/* release
-          rm -rf release/distribution
-
-      - name: Upload release artifacts
-        uses: masgeek/github-action-ghr@v1.3.2
-
-  upload_production_artifacts:
-    if: inputs.track == 'production'
-    needs: publish_to_playstore
-    name: Upload to GitHub release
-    runs-on: ubuntu-latest
-    env:
-      GHR_TAG: "${{ inputs.version }}"
-      GHR_REPLACE: "1"
-      GHR_PATH: release
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    steps:
-      - uses: actions/download-artifact@v5
-        with:
-          name: ${{ inputs.artifact_name }}
-          path: release
-
-      - run: |
-          cp release/distribution/whatsnew/* release
-          rm -rf release/distribution
-
-      - name: Upload production artifacts
-        uses: masgeek/github-action-ghr@v1.3.2
