@@ -6,9 +6,13 @@ on:
       - '*'
   workflow_dispatch:
 
+concurrency:
+  group: build-${{ github.ref_name }}
+  cancel-in-progress: false
+
 jobs:
   build_artifacts:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: Build artifacts
     outputs:
       version: ${{ steps.get_version.outputs.version }}
@@ -16,8 +20,6 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       REPO_NAME: ${{ secrets.REPO_NAME }}
-      LATEST_TAG_FILE: "latest_tag.txt"
-      RELEASE_VERSION: ${{ secrets.GITHUB_RUN_ID }}
       MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
       MAPBOX_RUNTIME_TOKEN: ${{ secrets.MAPBOX_RUNTIME_TOKEN }}
       AKILIMO_API_KEY: ${{ secrets.AKILIMO_API_KEY }}
@@ -27,6 +29,8 @@ jobs:
     steps:
       - name: Checkout the code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -53,7 +57,7 @@ jobs:
             echo "track=production" >> $GITHUB_OUTPUT
           fi
 
-      # FETCH VERSION_CODE BEFORE CACHING
+      # FETCH VERSION_CODE
       - name: Get build version
         id: get_version
         run: |
@@ -62,78 +66,21 @@ jobs:
           echo "version=$VERSION_CODE" >> $GITHUB_OUTPUT
           echo "Using VERSION_CODE: $VERSION_CODE"
 
-      # Generate timestamp for cache expiration (20 minutes = 1200 seconds)
-      - name: Generate cache timestamp
-        id: cache_timestamp
-        run: |
-          TIMESTAMP=$(( $(date +%s) / 1200 ))
-          echo "timestamp=$TIMESTAMP" >> $GITHUB_OUTPUT
-          echo "Cache timestamp (20min bucket): $TIMESTAMP"
-
-      - name: Set up Python 3.xx
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
-
-      - name: Ensure latest tag file exists
-        run: |
-          if [ ! -f "$LATEST_TAG_FILE" ]; then
-            echo "$LATEST_TAG_FILE not found, creating with default value"
-            echo "1.0.0" > $LATEST_TAG_FILE
-          else
-            echo "$LATEST_TAG_FILE exists"
-            cat $LATEST_TAG_FILE
-          fi
-
-      - name: Install tag fetcher
-        run: pip install latest_tag
-
-      - name: Fetch latest tag
-        run: |
-          fetch-tag > $LATEST_TAG_FILE
-
-      - name: Update release version
-        run: echo "RELEASE_VERSION=$(cat $LATEST_TAG_FILE)" >> $GITHUB_ENV
-
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      # UPDATED CACHE KEY WITH TIMESTAMP FOR 20-MINUTE EXPIRATION
-      - name: Cache APK & AAB outputs
-        uses: actions/cache@v4
-        with:
-          path: |
-            app/build/outputs/apk/release/app-release-unsigned.apk
-            app/build/outputs/bundle/release/app-release.aab
-          key: akilimo-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version }}-${{ env.BRANCH_NAME }}-${{ steps.cache_timestamp.outputs.timestamp }}-${{ hashFiles('**/*.gradle*', '**/gradle.properties', 'app/src/main/**/*.kt', 'app/src/main/**/*.java', 'app/src/main/res/**', 'app/src/main/AndroidManifest.xml', 'app/proguard-rules.pro') }}
-          restore-keys: |
-            akilimo-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version }}-${{ env.BRANCH_NAME }}-${{ steps.cache_timestamp.outputs.timestamp }}-
-            akilimo-artifacts-${{ runner.os }}-${{ steps.get_version.outputs.version }}-${{ env.BRANCH_NAME }}-
-
-      # Check if cached artifacts exist and are valid
-      - name: Check cached artifacts
-        id: check_cache
-        run: |
-          if [ -f "app/build/outputs/apk/release/app-release-unsigned.apk" ] && [ -f "app/build/outputs/bundle/release/app-release.aab" ]; then
-            echo "cached_artifacts_exist=true" >> $GITHUB_OUTPUT
-            echo "Found cached APK and AAB artifacts"
-            ls -la app/build/outputs/apk/release/app-release-unsigned.apk
-            ls -la app/build/outputs/bundle/release/app-release.aab
-          else
-            echo "cached_artifacts_exist=false" >> $GITHUB_OUTPUT
-            echo "Cached artifacts not found, will build from scratch"
-          fi
-
-      # Only build if cached artifacts don't exist or are invalid
       - name: Generate android AAB and APK
-        if: steps.check_cache.outputs.cached_artifacts_exist != 'true'
         run: |
           echo "Building APK and AAB from source..."
           echo "Using VERSION_CODE: $VERSION_CODE"
-          echo "Using RELEASE_VERSION: $RELEASE_VERSION"
           ./gradlew bundleRelease assembleRelease -x test -PMAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
 
       # Verify build outputs exist
@@ -152,10 +99,7 @@ jobs:
           echo "AAB size: $(du -h app/build/outputs/bundle/release/app-release.aab | cut -f1)"
 
       - name: Create release folder
-        run: mkdir -p $GITHUB_WORKSPACE/release
-
-      - name: Reverse JKS file
-        run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > $GITHUB_WORKSPACE/akilimo.jks
+        run: mkdir -p release
 
       - name: Sign AAB
         uses: ilharp/sign-android-release@v2
@@ -179,9 +123,6 @@ jobs:
           keyPassword: ${{ secrets.KEY_PASSWORD }}
           buildToolsVersion: 36.0.0
 
-      - name: Ensure release folder exists
-        run: mkdir -p release
-
       - name: Copy and rename signed APK and AAB
         run: |
           # Rename APK
@@ -193,16 +134,6 @@ jobs:
           for file in ${{ steps.sign_aab.outputs.signedFiles }}; do
             cp "$file" "release/akilimo-release.aab"
           done
-
-      - name: Copy release tag file
-        run: |
-          if [ -f "$LATEST_TAG_FILE" ]; then
-            cp $LATEST_TAG_FILE release
-            echo "Copied $LATEST_TAG_FILE to release folder"
-          else
-            echo "$LATEST_TAG_FILE not found, creating default in release folder"
-            echo "v1.0.0" > release/$LATEST_TAG_FILE
-          fi
 
       # Upload signed binaries to GitHub Release (draft) so publish.yml can download them
       - name: Upload release assets
@@ -220,7 +151,7 @@ jobs:
   notify_approval:
     needs: build_artifacts
     name: Notify for approval
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Send approval request to n8n
@@ -235,7 +166,6 @@ jobs:
             "actor": "${{ github.actor }}",
             "run_id": "${{ github.run_id }}",
             "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-            "artifact_name": "app-release",
             "chat_id": "${{ vars.TELEGRAM_CHAT_ID }}",
             "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           }

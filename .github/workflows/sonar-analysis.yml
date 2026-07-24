@@ -4,11 +4,18 @@ on:
   push:
     branches:
       - develop
+  pull_request:
+    branches:
+      - develop
+    types: [closed]
   workflow_dispatch:
 
 jobs:
-  sonar-checks:
-    runs-on: ubuntu-latest
+  sonar:
+    runs-on: ubuntu-24.04
+    name: SonarQube
+    if: github.event_name != 'pull_request' || github.event.pull_request.merged == true
+
     steps:
       - name: Checkout the code
         uses: actions/checkout@v4
@@ -40,10 +47,6 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
-          MAPBOX_RUNTIME_TOKEN: ${{ secrets.MAPBOX_RUNTIME_TOKEN }}
-          AKILIMO_API_KEY: ${{ secrets.AKILIMO_API_KEY }}
-          LOCATION_IQ_TOKEN: ${{ secrets.LOCATION_IQ_TOKEN }}
         run: ./gradlew sonar --no-configuration-cache --no-daemon -PMAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
 
       - name: SonarQube Quality Gate check

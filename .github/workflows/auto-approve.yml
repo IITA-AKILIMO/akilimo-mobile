@@ -6,6 +6,10 @@ on:
 jobs:
   pr-auto-approve:
     runs-on: ubuntu-24.04
+    if: >
+      github.event.pull_request.user.login == 'github-actions[bot]' ||
+      github.event.pull_request.user.login == 'dependabot[bot]' ||
+      github.event.pull_request.user.login == 'munywele-bot[bot]'
     permissions:
       pull-requests: write
       contents: read

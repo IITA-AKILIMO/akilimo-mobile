@@ -4,13 +4,12 @@ on:
   push:
     branches:
       - develop
+  workflow_dispatch:
 
 jobs:
-  next-release-pr:
+  next_release_pr:
     runs-on: ubuntu-24.04
-    concurrency:
-      group: next-release-pr-${{ github.ref_name }}
-      cancel-in-progress: true
+    name: Next Release PR
 
     steps:
       - name: Generate GitHub App token

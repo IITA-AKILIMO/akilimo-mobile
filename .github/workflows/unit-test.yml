@@ -2,7 +2,7 @@ name: CI Checks
 
 on:
   push:
-    branches: [ '**' ]
+    branches: [develop]
     paths:
       - 'app/src/**'
       - '.github/**'
@@ -27,12 +27,11 @@ env:
   MAPBOX_RUNTIME_TOKEN: ${{ secrets.MAPBOX_RUNTIME_TOKEN }}
   AKILIMO_API_KEY: ${{ secrets.AKILIMO_API_KEY }}
   LOCATION_IQ_TOKEN: ${{ secrets.LOCATION_IQ_TOKEN }}
-  LATEST_TAG_FILE: "latest_tag.txt"
 
 jobs:
-  unit_tests:
-    runs-on: ubuntu-latest
-    name: Unit tests
+  checks:
+    runs-on: ubuntu-24.04
+    name: Unit tests, Lint & Detekt
     outputs:
       release_version: ${{ steps.get_version.outputs.release_version }}
 
@@ -47,8 +46,6 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      # cache-read-only: feature branches read from cache but never write,
-      # so only the develop branch keeps the shared cache warm.
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
@@ -63,17 +60,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO_NAME: ${{ secrets.REPO_NAME }}
         run: |
-          fetch-tag > $LATEST_TAG_FILE
-          echo "RELEASE_VERSION=$(cat $LATEST_TAG_FILE)" >> $GITHUB_ENV
-          echo "release_version=$(cat $LATEST_TAG_FILE)" >> $GITHUB_OUTPUT
+          fetch-tag > latest_tag.txt
+          echo "RELEASE_VERSION=$(cat latest_tag.txt)" >> $GITHUB_ENV
+          echo "release_version=$(cat latest_tag.txt)" >> $GITHUB_OUTPUT
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      # --no-daemon: daemons have no benefit on ephemeral CI runners.
-      # RELEASE_VERSION is set in env so tests can read a deterministic version during mocking.
-      - name: Run unit tests
-        run: ./gradlew testDebugUnitTest --no-daemon -PMAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+      - name: Run unit tests, lint & detekt
+        run: ./gradlew testDebugUnitTest lintDebug detekt --no-daemon -PMAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
 
       - name: Check Room schema drift
         uses: tj-actions/verify-changed-files@v20
@@ -95,33 +90,6 @@ jobs:
           path: app/build/reports/tests/testDebugUnitTest/
           retention-days: 7
 
-  lint:
-    runs-on: ubuntu-latest
-    if: github.ref_name == 'develop'
-    name: Lint
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 21
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          cache-read-only: ${{ github.ref != 'refs/heads/develop' }}
-
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
-
-      - name: Run lint
-        run: ./gradlew lintDebug --no-daemon -PMAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
-
       - name: Upload lint report
         if: always()
         uses: actions/upload-artifact@v4
@@ -132,33 +100,6 @@ jobs:
             app/build/reports/lint-results-debug.xml
           retention-days: 7
 
-  detekt:
-    runs-on: ubuntu-latest
-    if: github.ref_name == 'develop'
-    name: Detekt
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 21
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          cache-read-only: ${{ github.ref != 'refs/heads/develop' }}
-
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
-
-      - name: Run detekt
-        run: ./gradlew detekt --no-daemon -PMAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
-
       - name: Upload detekt report
         if: always()
         uses: actions/upload-artifact@v4
@@ -166,26 +107,3 @@ jobs:
           name: detekt-results
           path: build/reports/detekt/
           retention-days: 7
-
-#  notify:
-#    runs-on: ubuntu-latest
-#    name: Notify
-#    needs: [ unit_tests ]
-#    if: success()
-#
-#    steps:
-#      - name: Send webhook
-#        uses: distributhor/workflow-webhook@v3
-#        with:
-#          webhook_url: ${{ vars.WEBHOOK_URL }}
-#          webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
-#          data: >
-#            {
-#              "event": "ci_checks",
-#              "status": "success",
-#              "tag": "${{ needs.unit_tests.outputs.release_version }}",
-#              "branch": "${{ github.ref_name }}",
-#              "repo": "${{ github.repository }}",
-#              "actor": "${{ github.actor }}",
-#              "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-#            }
