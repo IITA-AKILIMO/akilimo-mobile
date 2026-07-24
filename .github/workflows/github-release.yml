@@ -42,6 +42,7 @@ jobs:
         uses: tj-actions/changed-files@v46
         with:
           files: |
+            **/*.yml
             **/*.kt
             **/*.kts
             **/*.xml
