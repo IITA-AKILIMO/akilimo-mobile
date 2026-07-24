@@ -1,15 +1,18 @@
 name: Next Release PR
 
 on:
-  push:
-    branches:
-      - develop
+  workflow_run:
+    workflows: ["CI Checks"]
+    types: [completed]
   workflow_dispatch:
 
 jobs:
   next_release_pr:
     runs-on: ubuntu-24.04
     name: Next Release PR
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion == 'success')
 
     steps:
       - name: Generate GitHub App token
