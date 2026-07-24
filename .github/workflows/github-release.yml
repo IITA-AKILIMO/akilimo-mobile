@@ -7,12 +7,22 @@ on:
     types: [closed]
   workflow_dispatch:
 
+concurrency:
+  # Scope by the TARGET branch (main), not the PR's head branch.
+  # Two PRs merging close together must queue and tag sequentially,
+  # not race — cancel-in-progress: false so a release never gets
+  # killed mid-tag-push, leaving a dangling tag/changelog mismatch.
+  group: release-main
+  cancel-in-progress: false
+
 jobs:
   release:
-    concurrency:
-      group: release-${{ github.head_ref || github.ref_name }}
-      cancel-in-progress: true
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
+    # Only release on: (a) an actual merge to main, or (b) a manual
+    # dispatch that is explicitly run against main — dispatch from
+    # any other ref would tag/release the wrong code.
+    if: >
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true) ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-24.04
     name: Create release tag
     permissions:
@@ -27,33 +37,22 @@ jobs:
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
-      - name: Checkout commit
+      - name: Checkout main
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          fetch-tags: true
           token: ${{ steps.app-token.outputs.token }}
-          ref: ${{ github.sha }}
-
-      - name: Fetch tags
-        run: git fetch --tags
-
-      - name: Detect relevant changes
-        id: diff_check
-        uses: tj-actions/changed-files@v47
-        with:
-          files: |
-            **.yml
-            **.kt
-            **.kts
-            **.xml
-            **.gradle
-            gradlew
-            gradlew.bat
+          # github.sha on a `pull_request: closed` event is the PR's
+          # ephemeral test-merge commit, NOT the commit that landed
+          # on main. merge_commit_sha (or the branch itself for
+          # dispatch) is the actual commit to release.
+          ref: >-
+            ${{ github.event_name == 'pull_request'
+                && github.event.pull_request.merge_commit_sha
+                || 'main' }}
 
       - name: Generate changelog
-        if: >
-          github.event_name == 'workflow_dispatch' ||
-          fromJSON(steps.diff_check.outputs.all_changed_files_count) >= 2
         uses: orhun/git-cliff-action@v4
         with:
           config: cliff.toml
@@ -62,9 +61,6 @@ jobs:
           GITHUB_REPO: ${{ github.repository }}
 
 #      - name: Commit and push changelog
-#        if: >
-#          github.event_name == 'workflow_dispatch' ||
-#          fromJSON(steps.diff_check.outputs.all_changed_files_count) >= 2
 #        uses: stefanzweifel/git-auto-commit-action@v5
 #        with:
 #          commit_message: "docs: update changelog"
@@ -73,9 +69,6 @@ jobs:
 #          commit_user_email: "munywele-sonar[bot]@users.noreply.github.com"
 
       - name: Generate Tag
-        if: >
-          github.event_name == 'workflow_dispatch' ||
-          fromJSON(steps.diff_check.outputs.all_changed_files_count) >= 2
         id: tag_version
         uses: masgeek/github-tag-action@release
         with:
@@ -83,10 +76,15 @@ jobs:
           tag_prefix: ""
           create_annotated_tag: true
 
+      - name: Verify tag was produced
+        run: |
+          if [ -z "${{ steps.tag_version.outputs.new_tag }}" ]; then
+            echo "::error::tag_version produced no new_tag — refusing to create a release."
+            exit 1
+          fi
+          echo "New tag: ${{ steps.tag_version.outputs.new_tag }}"
+
       - name: Create GitHub Release
-        if: >
-          github.event_name == 'workflow_dispatch' ||
-          fromJSON(steps.diff_check.outputs.all_changed_files_count) >= 2
         uses: ncipollo/release-action@v1
         with:
           token: ${{ steps.app-token.outputs.token }}
