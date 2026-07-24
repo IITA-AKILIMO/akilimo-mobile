@@ -39,14 +39,14 @@ jobs:
 
       - name: Detect relevant changes
         id: diff_check
-        uses: tj-actions/changed-files@v46
+        uses: tj-actions/changed-files@v47
         with:
           files: |
-            **/*.yml
-            **/*.kt
-            **/*.kts
-            **/*.xml
-            **/*.gradle
+            **.yml
+            **.kt
+            **.kts
+            **.xml
+            **.gradle
             gradlew
             gradlew.bat
 
