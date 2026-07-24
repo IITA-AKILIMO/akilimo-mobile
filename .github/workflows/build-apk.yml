@@ -204,13 +204,18 @@ jobs:
             echo "v1.0.0" > release/$LATEST_TAG_FILE
           fi
 
-      - uses: actions/upload-artifact@v4
-        name: Upload artifact
+      # Upload signed binaries to GitHub Release (draft) so publish.yml can download them
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v2
         with:
-          name: app-release
-          if-no-files-found: error
-          overwrite: true
-          path: release
+          tag_name: ${{ github.ref_name }}
+          name: "Build ${{ github.ref_name }}"
+          draft: true
+          files: |
+            release/akilimo-release.apk
+            release/akilimo-release.aab
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   notify_approval:
     needs: build_artifacts
