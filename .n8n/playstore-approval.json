@@ -132,7 +132,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"ref\": \"{{ $json.tag }}\",\n  \"inputs\": {\n    \"version\": \"{{ $json.tag }}\",\n    \"artifact_name\": \"app-release\",\n    \"track\": \"{{ $json.track }}\",\n    \"approved_by\": \"{{ $json.approved_by }}\"\n  }\n}",
+        "jsonBody": "={\n  \"ref\": \"{{ $json.tag }}\",\n  \"inputs\": {\n    \"version\": \"{{ $json.tag }}\",\n    \"track\": \"{{ $json.track }}\",\n    \"approved_by\": \"{{ $json.approved_by }}\"\n  }\n}",
         "options": {}
       },
       "id": "trigger-publish",

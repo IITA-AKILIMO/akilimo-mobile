@@ -1,16 +1,43 @@
 name: Auto Approve PR
+
 on:
-  pull_request_target:
-    types: [opened, synchronize, reopened]
+  workflow_run:
+    workflows: ["CI Checks"]
+    types: [completed]
 
 jobs:
   pr-auto-approve:
     runs-on: ubuntu-24.04
+    if: >
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success'
     permissions:
       pull-requests: write
       contents: read
+
     steps:
+      - name: Get PR details
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=$(gh api "/repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}/pull-requests" --jq '.[0].number')
+          PR_AUTHOR=$(gh pr view "$PR_NUMBER" --json author --jq '.author.login')
+          echo "number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          echo "author=$PR_AUTHOR" >> $GITHUB_OUTPUT
+
+      - name: Check author is allowed bot
+        if: >
+          steps.pr.outputs.author != 'github-actions[bot]' &&
+          steps.pr.outputs.author != 'dependabot[bot]' &&
+          steps.pr.outputs.author != 'munywele-bot[bot]'
+        run: exit 0
+
       - name: Generate GitHub App Token
+        if: >
+          steps.pr.outputs.author == 'github-actions[bot]' ||
+          steps.pr.outputs.author == 'dependabot[bot]' ||
+          steps.pr.outputs.author == 'munywele-bot[bot]'
         id: generate-token
         uses: actions/create-github-app-token@v1
         with:
@@ -18,7 +45,12 @@ jobs:
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
       - name: Auto approve PR
+        if: >
+          steps.pr.outputs.author == 'github-actions[bot]' ||
+          steps.pr.outputs.author == 'dependabot[bot]' ||
+          steps.pr.outputs.author == 'munywele-bot[bot]'
         uses: hmarr/auto-approve-action@v4
         with:
-          review-message: "Auto approved automated PR"
-          github-token: "${{ steps.generate-token.outputs.token }}"
+          review-message: "Auto approved — CI checks passed"
+          github-token: ${{ steps.generate-token.outputs.token }}
+          pr-number: ${{ steps.pr.outputs.number }}
