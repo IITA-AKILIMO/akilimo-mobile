@@ -13,7 +13,7 @@ This workflow adds a Telegram approval gate before publishing to Google Play Sto
 │  Tag Push ──► build-apk.yml                                         │
 │                  │                                                   │
 │                  ├── Build & Sign APK/AAB                            │
-│                  ├── Upload artifact                                 │
+│                  ├── Upload to GitHub Release (draft)                │
 │                  └── POST to n8n webhook ──────────────────────┐     │
 │                                                                │     │
 └────────────────────────────────────────────────────────────────│─────┘
@@ -26,17 +26,12 @@ This workflow adds a Telegram approval gate before publishing to Google Play Sto
 │  ┌──────────────────┐    ┌──────────────┐    ┌──────────────────┐   │
 │  │ Receive Build    │───►│ Respond OK   │───►│ Send Telegram    │   │
 │  │ Notification     │    │ (200)        │    │ Message          │   │
-│  └──────────────────┘    └──────────────┘    └────────┬─────────┘   │
-│                                                       │             │
-│                                                       ▼             │
-│                                               ┌──────────────────┐   │
-│                                               │ Store Context    │   │
-│                                               └──────────────────┘   │
+│  └──────────────────┘    └──────────────┘    └──────────────────┘   │
 │                                                                     │
 │  Flow 2: Callback Handler                                           │
 │  ┌──────────────────┐    ┌──────────────┐    ┌──────────────────┐   │
-│  │ Wait for Callback│───►│ Lookup       │───►│ Has Context?     │   │
-│  │ (Telegram Trigger│    │ Context      │    │ (IF node)        │   │
+│  │ Wait for Callback│───►│ Parse        │───►│ Is Approve?      │   │
+│  │ (Telegram Trigger│    │ Callback     │    │ (IF node)        │   │
 │  └──────────────────┘    └──────────────┘    └────────┬─────────┘   │
 │                                                       │             │
 │                              ┌─────────────────────────┤             │
@@ -58,9 +53,8 @@ This workflow adds a Telegram approval gate before publishing to Google Play Sto
 │                                                                     │
 │  publish.yml (workflow_dispatch)                                    │
 │                  │                                                   │
-│                  ├── Download artifact                               │
+│                  ├── Download AAB from GitHub Release                │
 │                  ├── Upload to Play Store                            │
-│                  ├── Upload to GitHub Release                        │
 │                  └── Send webhook notification                       │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
@@ -168,7 +162,6 @@ The IF node checks `$json.action` equals `approve` or `reject`.
   "ref": "v1.2.3-beta",
   "inputs": {
     "version": "v1.2.3-beta",
-    "artifact_name": "app-release",
     "track": "beta",
     "approved_by": "masgeek"
   }
