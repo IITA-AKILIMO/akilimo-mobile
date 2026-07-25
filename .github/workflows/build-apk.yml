@@ -63,8 +63,11 @@ jobs:
         run: |
           VERSION_CODE=$(curl -s https://munywele.co.ke/app-releases/akilimo || echo ${{ github.run_number }})
           echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
-          echo "version=$VERSION_CODE" >> $GITHUB_OUTPUT
+          echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
+          echo "RELEASE_VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+          echo "version=${{ github.ref_name }}" >> $GITHUB_OUTPUT
           echo "Using VERSION_CODE: $VERSION_CODE"
+          echo "Using RELEASE_VERSION: ${{ github.ref_name }}"
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -81,7 +84,11 @@ jobs:
         run: |
           echo "Building APK and AAB from source..."
           echo "Using VERSION_CODE: $VERSION_CODE"
-          ./gradlew bundleRelease assembleRelease -x test -PMAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+          echo "Using RELEASE_VERSION: $RELEASE_VERSION"
+          ./gradlew bundleRelease assembleRelease -x test \
+            -PMAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_DOWNLOADS_TOKEN }} \
+            -PRELEASE_VERSION=${{ github.ref_name }} \
+            -PVERSION_CODE=${{ steps.get_version.outputs.version_code }}
 
       # Verify build outputs exist
       - name: Verify build outputs
