@@ -56,7 +56,7 @@ jobs:
         id: gate
         run: |
           case "${{ steps.pr.outputs.author }}" in
-            github-actions\[bot\]|dependabot\[bot\]|munywele-bot\[bot\]|masgeek)
+            github-actions\[bot\]|dependabot\[bot\]|munywele-bot\[bot\])
               echo "allowed=true" >> "$GITHUB_OUTPUT" ;;
             *)
               echo "Author '${{ steps.pr.outputs.author }}' is not an allowed bot — skipping."
