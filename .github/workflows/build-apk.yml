@@ -24,7 +24,7 @@ jobs:
       MAPBOX_RUNTIME_TOKEN: ${{ secrets.MAPBOX_RUNTIME_TOKEN }}
       AKILIMO_API_KEY: ${{ secrets.AKILIMO_API_KEY }}
       LOCATION_IQ_TOKEN: ${{ secrets.LOCATION_IQ_TOKEN }}
-      PACKAGE_NAME: ${{ secrets.APP_PACKAGE }}
+      PACKAGE_NAME: ${{ vars.APP_PACKAGE }}
 
     steps:
       - name: Checkout the code

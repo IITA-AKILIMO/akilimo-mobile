@@ -71,7 +71,7 @@ jobs:
       #   uses: r0adkll/upload-google-play@v1
       #   with:
       #     serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-      #     packageName: ${{ secrets.APP_PACKAGE }}
+      #     packageName: ${{ vars.APP_PACKAGE }}
       #     releaseFiles: release/akilimo-release.aab
       #     tracks: beta
       #     status: completed
@@ -83,7 +83,7 @@ jobs:
       #   uses: r0adkll/upload-google-play@v1
       #   with:
       #     serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-      #     packageName: ${{ secrets.APP_PACKAGE }}
+      #     packageName: ${{ vars.APP_PACKAGE }}
       #     releaseFiles: release/akilimo-release.aab
       #     tracks: production
       #     status: completed
@@ -114,7 +114,7 @@ jobs:
               "telegram_message_id": "${{ inputs.telegram_message_id }}",
               "approved_by": "${{ inputs.approved_by }}",
               "repo": "${{ github.repository }}",
-              "package": "${{ secrets.APP_PACKAGE }}",
+              "package": "${{ vars.APP_PACKAGE }}",
               "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
 
