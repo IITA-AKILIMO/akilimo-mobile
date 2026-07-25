@@ -138,9 +138,7 @@ jobs:
       - name: Prepare whatsnew files for Play Store
         run: |
           mkdir -p release/distribution/whatsnew
-          for f in release/distribution/whatsnew/whatsnew-*; do
-            [ -f "$f" ] && [ "${f##*.}" != "txt" ] && cp "$f" "${f}.txt"
-          done
+          cp release/distribution/whatsnew/whatsnew-* release/distribution/whatsnew/ 2>/dev/null || true
 
       # Upload signed binaries to GitHub Release (draft) so publish.yml can download them
       - name: Upload release assets
