@@ -56,7 +56,7 @@ jobs:
         id: gate
         run: |
           case "${{ steps.pr.outputs.author }}" in
-            github-actions\[bot\]|dependabot\[bot\]|munywele-bot\[bot\])
+            github-actions\[bot\]|dependabot\[bot\]|munywele-bot\[bot\]|masgeek)
               echo "allowed=true" >> "$GITHUB_OUTPUT" ;;
             *)
               echo "Author '${{ steps.pr.outputs.author }}' is not an allowed bot — skipping."
@@ -66,7 +66,7 @@ jobs:
       - name: Generate GitHub App Token
         if: steps.gate.outputs.allowed == 'true'
         id: generate-token
-        uses: actions/create-github-app-token@d72941d797fd3113feb6b93fd0dec494b13a2547 # v1.11.1
+        uses: actions/create-github-app-token@v1
         with:
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}

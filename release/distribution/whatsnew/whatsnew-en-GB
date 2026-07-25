@@ -1,3 +1,6 @@
-Enhanced Release Notes Experience with Improved Changelog Parsing
+Bug fixes and performance improvements.
 
-Our new release notes generator now leverages the Ollama API, significantly improving performance and conversion impact. This means you'll see cleaner, more concise notes that are easier to scan. Additionally, we've enhanced language support for Swahili (Kiswahili) and English (UK), making our content more accessible. A new advertising ID permission has also been added to ensure seamless updates.
+- Improved app stability and reliability
+- Enhanced user interface experience
+- Optimized background processes
+- Fixed minor issues reported by users
