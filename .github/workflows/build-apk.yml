@@ -135,6 +135,11 @@ jobs:
             cp "$file" "release/akilimo-release.aab"
           done
 
+      - name: Create whatsnew file for Play Store
+        run: |
+          mkdir -p release/distribution/whatsnew
+          echo "Bug fixes and improvements." > release/distribution/whatsnew/whatsnew-en-US.txt
+
       # Upload signed binaries to GitHub Release (draft) so publish.yml can download them
       - name: Upload release assets
         uses: softprops/action-gh-release@v2
@@ -145,6 +150,7 @@ jobs:
           files: |
             release/akilimo-release.apk
             release/akilimo-release.aab
+            release/distribution/whatsnew/whatsnew-en-US.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

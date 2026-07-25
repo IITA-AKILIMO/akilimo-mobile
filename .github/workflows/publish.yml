@@ -29,7 +29,7 @@ jobs:
     steps:
       - name: Download release assets from GitHub Release
         run: |
-          mkdir -p release
+          mkdir -p release/distribution/whatsnew
           # Download the AAB from the draft release
           gh release download "${{ inputs.version }}" \
             --repo "${{ github.repository }}" \
@@ -42,7 +42,14 @@ jobs:
             --pattern "*.apk" \
             --dir release \
             --clobber || true
+          # Download whatsnew file
+          gh release download "${{ inputs.version }}" \
+            --repo "${{ github.repository }}" \
+            --pattern "whatsnew-*.txt" \
+            --dir release/distribution/whatsnew \
+            --clobber || true
           ls -la release/
+          ls -la release/distribution/whatsnew/ || true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
