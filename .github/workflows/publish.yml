@@ -127,3 +127,13 @@ jobs:
               "repo": "${{ github.repository }}",
               "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
+
+      - name: Cleanup draft release on failure
+        if: failure()
+        run: |
+          gh release delete "${{ inputs.version }}" \
+            --repo "${{ github.repository }}" \
+            --yes \
+            --cleanup-tag || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
