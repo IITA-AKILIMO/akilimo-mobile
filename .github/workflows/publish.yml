@@ -42,10 +42,10 @@ jobs:
             --pattern "*.apk" \
             --dir release \
             --clobber || true
-          # Download whatsnew file
+          # Download whatsnew files
           gh release download "${{ inputs.version }}" \
             --repo "${{ github.repository }}" \
-            --pattern "whatsnew-*.txt" \
+            --pattern "whatsnew-*" \
             --dir release/distribution/whatsnew \
             --clobber || true
           ls -la release/
