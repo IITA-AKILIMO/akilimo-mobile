@@ -135,13 +135,6 @@ jobs:
             cp "$file" "release/akilimo-release.aab"
           done
 
-      - name: Prepare whatsnew files for Play Store
-        run: |
-          mkdir -p release/distribution/whatsnew
-          for f in release/distribution/whatsnew/whatsnew-*; do
-            [ -f "$f" ] && [ "${f##*.}" != "txt" ] && cp "$f" "${f}.txt"
-          done
-
       # Upload signed binaries to GitHub Release (draft) so publish.yml can download them
       - name: Upload release assets
         uses: softprops/action-gh-release@v2
