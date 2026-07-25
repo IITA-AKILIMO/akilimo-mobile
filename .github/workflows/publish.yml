@@ -65,41 +65,41 @@ jobs:
           fi
           echo "AAB size: $(du -h release/akilimo-release.aab | cut -f1)"
 
-      - name: Upload Beta Release
-        if: inputs.track == 'beta'
-        id: upload_beta
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-          packageName: ${{ secrets.APP_PACKAGE }}
-          releaseFiles: release/akilimo-release.aab
-          tracks: beta
-          status: completed
-          whatsNewDirectory: release/distribution/whatsnew
+      # - name: Upload Beta Release
+      #   if: inputs.track == 'beta'
+      #   id: upload_beta
+      #   uses: r0adkll/upload-google-play@v1
+      #   with:
+      #     serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+      #     packageName: ${{ secrets.APP_PACKAGE }}
+      #     releaseFiles: release/akilimo-release.aab
+      #     tracks: beta
+      #     status: completed
+      #     whatsNewDirectory: release/distribution/whatsnew
 
-      - name: Upload Production Release
-        if: inputs.track == 'production'
-        id: upload_prod
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-          packageName: ${{ secrets.APP_PACKAGE }}
-          releaseFiles: release/akilimo-release.aab
-          tracks: production
-          status: completed
-          whatsNewDirectory: release/distribution/whatsnew
+      # - name: Upload Production Release
+      #   if: inputs.track == 'production'
+      #   id: upload_prod
+      #   uses: r0adkll/upload-google-play@v1
+      #   with:
+      #     serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+      #     packageName: ${{ secrets.APP_PACKAGE }}
+      #     releaseFiles: release/akilimo-release.aab
+      #     tracks: production
+      #     status: completed
+      #     whatsNewDirectory: release/distribution/whatsnew
 
-      - name: Update build number
-        if: >
-          steps.upload_beta.outcome == 'success' ||
-          steps.upload_prod.outcome == 'success'
-        run: |
-          curl -s https://munywele.co.ke/app-releases/akilimo/update
+      # - name: Update build number
+      #   if: >
+      #     steps.upload_beta.outcome == 'success' ||
+      #     steps.upload_prod.outcome == 'success'
+      #   run: |
+      #     curl -s https://munywele.co.ke/app-releases/akilimo/update
 
       - name: Send success webhook
-        if: >
-          steps.upload_beta.outcome == 'success' ||
-          steps.upload_prod.outcome == 'success'
+        # if: >
+        #   steps.upload_beta.outcome == 'success' ||
+        #   steps.upload_prod.outcome == 'success'
         uses: distributhor/workflow-webhook@v3
         with:
           webhook_url: ${{ vars.WEBHOOK_URL }}
