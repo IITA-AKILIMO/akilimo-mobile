@@ -8,8 +8,8 @@ class CassavaUnitRepo(
     private val dao: CassavaUnitDao
 ) {
 
-    suspend fun saveAll(fertilizers: List<CassavaUnit>) {
-        fertilizers.forEach { f ->
+    suspend fun saveAll(cassavaUnits: List<CassavaUnit>) {
+        cassavaUnits.forEach { f ->
             val rowId = dao.insert(f)
             if (rowId == -1L) {
                 dao.update(f) // record exists, update in place

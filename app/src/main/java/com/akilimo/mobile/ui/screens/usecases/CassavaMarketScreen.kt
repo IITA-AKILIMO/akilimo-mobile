@@ -93,7 +93,8 @@ fun CassavaMarketScreen(
         CassavaMarketViewModel.MarketChoice.NONE -> false
     }
 
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -137,10 +138,11 @@ fun CassavaMarketScreen(
                     LazyColumn(modifier = Modifier.weight(1f)) {
                         items(state.factories, key = { it.id ?: 0 }) { factory ->
                             Card(
+                                onClick = { viewModel.selectFactory(factory) },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 4.dp)
-                                    .clickable { viewModel.selectFactory(factory) },
+                                    .padding(horizontal = 16.dp, vertical = 4.dp),
+//                                    .clickable { viewModel.selectFactory(factory) },
                                 colors = CardDefaults.cardColors(
                                     containerColor = if (state.selectedFactoryId == factory.id)
                                         MaterialTheme.colorScheme.primaryContainer
@@ -162,10 +164,14 @@ fun CassavaMarketScreen(
                     LazyColumn(modifier = Modifier.weight(1f)) {
                         items(state.cassavaUnits, key = { it.id }) { unit ->
                             Card(
+                                onClick = {
+                                    println("UNIT CLICKED: id=${unit.id}, label=${unit.label}")
+                                    openUnitSheet(unit)
+                                },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 4.dp)
-                                    .clickable { openUnitSheet(unit) },
+                                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                                // .clickable { openUnitSheet(unit) },
                                 colors = CardDefaults.cardColors(
                                     containerColor = if (state.selectedUnitId == unit.id)
                                         MaterialTheme.colorScheme.primaryContainer

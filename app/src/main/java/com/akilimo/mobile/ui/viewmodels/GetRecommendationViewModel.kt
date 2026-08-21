@@ -72,7 +72,6 @@ class GetRecommendationViewModel @Inject constructor(
                     }
                 } else {
                     val error = result.parseError()
-                    Sentry.captureMessage(error?.error ?: "Recommendation fetch failed")
                     _uiState.value = UiState.Error(error?.message ?: errorLabel)
                 }
             } catch (e: Exception) {
