@@ -23,6 +23,10 @@ on:
         required: false
         type: string
 
+concurrency:
+  group: publish-playstore-${{ inputs.track }}
+  cancel-in-progress: false
+
 jobs:
   publish_to_playstore:
     name: Publish to Google PlayStore
