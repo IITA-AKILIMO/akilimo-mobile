@@ -32,6 +32,7 @@ import com.akilimo.mobile.ui.theme.AkilimoSpacing
  *
  * @param nextEnabled disables the Next/Finish button (e.g. until the step is valid).
  * @param isLoading shows a spinner in the Next/Finish button and ignores taps on it.
+ * @param finishLabel replaces "Finish" on the last step (e.g. "Save" when editing).
  */
 @Composable
 fun WizardBottomBar(
@@ -44,6 +45,7 @@ fun WizardBottomBar(
     modifier: Modifier = Modifier,
     nextEnabled: Boolean = true,
     isLoading: Boolean = false,
+    finishLabel: String? = null,
 ) {
     val loadingDescription = stringResource(R.string.cmp_loading)
     Surface(
@@ -100,7 +102,7 @@ fun WizardBottomBar(
                         Spacer(Modifier.width(AkilimoSpacing.xs))
                     }
                     Text(
-                        text = if (isLastStep) stringResource(R.string.lbl_finish)
+                        text = if (isLastStep) finishLabel ?: stringResource(R.string.lbl_finish)
                         else stringResource(R.string.lbl_next),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,

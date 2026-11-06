@@ -17,7 +17,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -44,7 +45,6 @@ import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.navigation.RecommendationsRoute
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.ExitConfirmDialog
-import com.akilimo.mobile.ui.components.compose.SaveBottomBar
 import com.akilimo.mobile.ui.components.compose.WizardBottomBar
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.components.compose.popBackStackSafely
@@ -83,7 +83,6 @@ fun OnboardingScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     var showExitDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val scrollState = rememberScrollState()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val sectionRequesters = remember {
@@ -106,6 +105,8 @@ fun OnboardingScreen(
                     }
 
                 is OnboardingViewModel.Effect.ExitApp -> showExitDialog = true
+
+                is OnboardingViewModel.Effect.Close -> navController.popBackStackSafely()
 
                 is OnboardingViewModel.Effect.ShowSnackbar ->
                     scope.launch { snackbarHostState.showSnackbar(effect.message) }
@@ -148,13 +149,8 @@ fun OnboardingScreen(
             }
     }
 
-    BackHandler {
-        if (isEditMode) {
-            navController.popBackStackSafely()
-        } else {
-            viewModel.onEvent(OnboardingViewModel.Event.BackClicked)
-        }
-    }
+    // Previous page; on page 1 the VM closes (editing) or asks to exit (first run)
+    BackHandler { viewModel.onEvent(OnboardingViewModel.Event.BackClicked) }
 
     if (showExitDialog) {
         ExitConfirmDialog(
@@ -204,85 +200,63 @@ fun OnboardingScreen(
     Scaffold(
         topBar = {
             BackTopAppBar(
-                title = when {
-                    isEditMode -> stringResource(R.string.lbl_edit_profile)
-                    else -> stringResource(step.titleRes)
-                },
-                onBack = {
-                    if (isEditMode) {
-                        navController.popBackStackSafely()
-                    } else {
-                        // Previous page, or the exit prompt on the first page
-                        viewModel.onEvent(OnboardingViewModel.Event.BackClicked)
+                title = stringResource(step.titleRes),
+                subtitle = if (isEditMode) stringResource(R.string.lbl_edit_profile) else null,
+                // Previous page; on page 1 the VM closes (editing) or asks to exit (first run)
+                onBack = { viewModel.onEvent(OnboardingViewModel.Event.BackClicked) },
+                actions = {
+                    // A returning user changing one answer shouldn't have to page to the end
+                    if (isEditMode && step != OnboardingStep.REVIEW) {
+                        TextButton(
+                            onClick = { viewModel.onEvent(OnboardingViewModel.Event.SubmitClicked) },
+                            colors = ButtonDefaults.textButtonColors(
+                                contentColor = MaterialTheme.colorScheme.onPrimary,
+                            ),
+                        ) {
+                            Text(stringResource(R.string.lbl_save))
+                        }
                     }
-                }
+                },
             )
         },
         bottomBar = {
-            if (state.wizardMode) {
-                WizardBottomBar(
-                    currentStep = state.stepIndex,
-                    totalSteps = OnboardingStep.entries.size,
-                    isFirstStep = state.stepIndex == 0,
-                    isLastStep = step == OnboardingStep.REVIEW,
-                    onBack = { viewModel.onEvent(OnboardingViewModel.Event.BackClicked) },
-                    onNext = { viewModel.onEvent(OnboardingViewModel.Event.NextClicked) },
-                )
-            } else {
-                SaveBottomBar(
-                    label = stringResource(R.string.lbl_save),
-                    onClick = { viewModel.onEvent(OnboardingViewModel.Event.SubmitClicked) },
-                )
-            }
+            WizardBottomBar(
+                currentStep = state.stepIndex,
+                totalSteps = OnboardingStep.entries.size,
+                isFirstStep = state.stepIndex == 0,
+                isLastStep = step == OnboardingStep.REVIEW,
+                onBack = { viewModel.onEvent(OnboardingViewModel.Event.BackClicked) },
+                onNext = { viewModel.onEvent(OnboardingViewModel.Event.NextClicked) },
+                finishLabel = if (isEditMode) stringResource(R.string.lbl_save) else null,
+            )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { paddingValues ->
-        if (state.wizardMode) {
-            // Each page starts at the top; a fresh scroll state per page does that
-            val pageScroll = key(step) { rememberScrollState() }
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .consumeWindowInsets(paddingValues)
-                    .imePadding()
-                    .verticalScroll(pageScroll),
-            ) {
-                when (step) {
-                    OnboardingStep.ABOUT_YOU -> {
-                        WelcomeStep()
-                        BioDataSection(state, viewModel::onEvent, sectionModifier)
-                    }
-
-                    OnboardingStep.FARM_LOCATION ->
-                        FarmLocationSection(state, viewModel::onEvent, navController, sectionModifier)
-
-                    OnboardingStep.FIELD -> FieldSection(state, viewModel::onEvent, sectionModifier)
-                    OnboardingStep.PRACTICES -> PracticesSection(state, viewModel::onEvent, sectionModifier)
-                    OnboardingStep.REVIEW -> SummaryStep(state = state)
+        // Each page starts at the top; a fresh scroll state per page does that
+        val pageScroll = key(step) { rememberScrollState() }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .consumeWindowInsets(paddingValues)
+                .imePadding()
+                .verticalScroll(pageScroll),
+        ) {
+            when (step) {
+                OnboardingStep.ABOUT_YOU -> {
+                    // The welcome banner is for new users only
+                    if (!isEditMode) WelcomeStep()
+                    BioDataSection(state, viewModel::onEvent, sectionModifier)
                 }
-                Spacer(Modifier.height(AkilimoSpacing.xxl))
+
+                OnboardingStep.FARM_LOCATION ->
+                    FarmLocationSection(state, viewModel::onEvent, navController, sectionModifier)
+
+                OnboardingStep.FIELD -> FieldSection(state, viewModel::onEvent, sectionModifier)
+                OnboardingStep.PRACTICES -> PracticesSection(state, viewModel::onEvent, sectionModifier)
+                OnboardingStep.REVIEW -> SummaryStep(state = state)
             }
-        } else {
-            // Editing: a returning user knows the fields, so one page without the welcome
-            // banner and the summary (which would only repeat the form)
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .consumeWindowInsets(paddingValues)
-                    .imePadding()
-                    .verticalScroll(scrollState),
-            ) {
-                BioDataSection(state, viewModel::onEvent, sectionModifier)
-                HorizontalDivider(modifier = Modifier.padding(vertical = AkilimoSpacing.xs))
-                FarmLocationSection(state, viewModel::onEvent, navController, sectionModifier)
-                HorizontalDivider(modifier = Modifier.padding(vertical = AkilimoSpacing.xs))
-                FieldSection(state, viewModel::onEvent, sectionModifier)
-                HorizontalDivider(modifier = Modifier.padding(vertical = AkilimoSpacing.xs))
-                PracticesSection(state, viewModel::onEvent, sectionModifier)
-                Spacer(Modifier.height(AkilimoSpacing.xxl))
-            }
+            Spacer(Modifier.height(AkilimoSpacing.xxl))
         }
     }
 }

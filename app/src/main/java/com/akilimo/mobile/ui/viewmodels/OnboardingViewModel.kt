@@ -55,9 +55,9 @@ class OnboardingViewModel @Inject constructor(
     data class UiState(
         val isLoading: Boolean = true,
         val visibleSections: List<OnboardingSection> = emptyList(),
-        /** First run shows one [OnboardingStep] at a time; editing a profile shows one page */
-        val wizardMode: Boolean = false,
-        /** Index into [OnboardingStep.entries] of the page shown in [wizardMode] */
+        /** Editing an existing profile (not first run): Back on page 1 closes, Save works on any page */
+        val isEditMode: Boolean = false,
+        /** Index into [OnboardingStep.entries] of the page being shown */
         val stepIndex: Int = 0,
         // Disclaimer
         val disclaimerRead: Boolean = false,
@@ -173,6 +173,9 @@ class OnboardingViewModel @Inject constructor(
     sealed interface Effect {
         data object NavigateToRecommendations : Effect
         data object ExitApp : Effect
+
+        /** Back on the first page while editing a profile: leave without saving */
+        data object Close : Effect
         data class ShowSnackbar(val message: String) : Effect
 
         /** Submit failed: scroll [firstField] (an error key) into view and report [count] errors */
@@ -238,7 +241,7 @@ class OnboardingViewModel @Inject constructor(
                 s.copy(
                     isLoading = false,
                     visibleSections = visibleSteps,
-                    wizardMode = appSettings.isFirstRun,
+                    isEditMode = !appSettings.isFirstRun,
                     disclaimerRead = disclaimerRead,
                     termsAccepted = termsAccepted,
                     rememberAreaUnit = rememberAreaUnit,
@@ -502,17 +505,17 @@ class OnboardingViewModel @Inject constructor(
 
     private fun handleBack() {
         val s = _state.value
-        if (s.wizardMode && s.stepIndex > 0) {
-            _state.update { it.copy(stepIndex = it.stepIndex - 1) }
-        } else {
-            viewModelScope.launch { _effect.send(Effect.ExitApp) }
+        when {
+            s.stepIndex > 0 -> _state.update { it.copy(stepIndex = it.stepIndex - 1) }
+            s.isEditMode -> viewModelScope.launch { _effect.send(Effect.Close) }
+            else -> viewModelScope.launch { _effect.send(Effect.ExitApp) }
         }
     }
 
     private fun handleNext() {
         val s = _state.value
         val steps = OnboardingStep.entries
-        if (!s.wizardMode || s.stepIndex >= steps.lastIndex) {
+        if (s.stepIndex >= steps.lastIndex) {
             handleSubmit()
             return
         }
@@ -531,13 +534,10 @@ class OnboardingViewModel @Inject constructor(
         val errors = validateAll()
         if (errors.isNotEmpty()) {
             val first = FIELD_ORDER.firstOrNull { it in errors } ?: errors.keys.first()
-            // In the wizard, go back to the page with the first problem (e.g. the farm turned
-            // out to be outside the supported area after the user moved on)
+            // Go to the page with the first problem (e.g. the farm turned out to be outside the
+            // supported area after the user moved on, or Save was tapped on another page)
             _state.update {
-                it.copy(
-                    errors = errors,
-                    stepIndex = if (it.wizardMode) OnboardingStep.forField(first).ordinal else it.stepIndex,
-                )
+                it.copy(errors = errors, stepIndex = OnboardingStep.forField(first).ordinal)
             }
             viewModelScope.launch { _effect.send(Effect.ShowValidationErrors(first, errors.size)) }
             return

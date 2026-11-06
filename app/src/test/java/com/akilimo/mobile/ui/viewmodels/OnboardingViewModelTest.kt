@@ -528,7 +528,26 @@ class OnboardingViewModelTest {
     // ── BackClicked ───────────────────────────────────────────────────────────
 
     @Test
-    fun `BackClicked sends ExitApp effect`() = runTest {
+    fun `BackClicked on the first page while editing closes without saving`() = runTest {
+        every { appSettings.isFirstRun } returns false
+        coEvery { userRepo.getUser("user1") } returns null
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+
+        val viewModel = buildViewModel()
+
+        viewModel.effect.test {
+            viewModel.onEvent(OnboardingViewModel.Event.BackClicked)
+            advanceUntilIdle()
+
+            assertTrue(awaitItem() is OnboardingViewModel.Effect.Close)
+            cancelAndIgnoreRemainingEvents()
+        }
+        coVerify(exactly = 0) { userRepo.saveOrUpdateUser(any(), any()) }
+    }
+
+    @Test
+    fun `BackClicked on the first page of first run sends ExitApp effect`() = runTest {
+        every { appSettings.isFirstRun } returns true
         coEvery { userRepo.getUser("user1") } returns null
         coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
 
@@ -553,16 +572,55 @@ class OnboardingViewModelTest {
     }
 
     @Test
-    fun `editing a profile is a single page, first run is a wizard`() = runTest {
+    fun `edit mode follows first run and both start on the first page`() = runTest {
         every { appSettings.isFirstRun } returns false
         coEvery { userRepo.getUser("user1") } returns null
         coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
-        assertFalse(buildViewModel().state.value.wizardMode)
+        val editing = buildViewModel()
+        advanceUntilIdle()
+        assertTrue(editing.state.value.isEditMode)
+        assertEquals(0, editing.state.value.stepIndex)
 
         val wizard = buildWizard()
         advanceUntilIdle()
-        assertTrue(wizard.state.value.wizardMode)
+        assertFalse(wizard.state.value.isEditMode)
         assertEquals(0, wizard.state.value.stepIndex)
+    }
+
+    @Test
+    fun `Save from any page while editing saves a valid profile`() = runTest {
+        every { appSettings.isFirstRun } returns false
+        coEvery { userRepo.getUser("user1") } returns null
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+        fillValidForm(viewModel)
+
+        viewModel.effect.test {
+            // Still on page 1: the top-bar Save submits the whole form
+            viewModel.onEvent(OnboardingViewModel.Event.SubmitClicked)
+            advanceUntilIdle()
+            assertTrue(awaitItem() is OnboardingViewModel.Effect.NavigateToRecommendations)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `Save while editing jumps to the page with the first problem`() = runTest {
+        every { appSettings.isFirstRun } returns false
+        coEvery { userRepo.getUser("user1") } returns null
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+        fillValidForm(viewModel)
+        viewModel.onEvent(OnboardingViewModel.Event.NextClicked) // to page 2
+        viewModel.onEvent(OnboardingViewModel.Event.NextClicked) // to page 3
+        viewModel.onEvent(OnboardingViewModel.Event.FirstNameChanged(""))
+
+        viewModel.onEvent(OnboardingViewModel.Event.SubmitClicked)
+
+        assertEquals(OnboardingStep.ABOUT_YOU.ordinal, viewModel.state.value.stepIndex)
+        assertTrue("firstName" in viewModel.state.value.errors)
     }
 
     @Test
