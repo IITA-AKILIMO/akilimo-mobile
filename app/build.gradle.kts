@@ -90,6 +90,11 @@ android {
     namespace = "com.akilimo.mobile"
     compileSdk = 36
 
+    // Exported Room schemas are packaged into instrumented tests for MigrationTestHelper
+    sourceSets {
+        getByName("androidTest").assets.srcDir("$projectDir/schemas")
+    }
+
     defaultConfig {
         applicationId = "com.akilimo.mobile"
         minSdk = 21
@@ -120,8 +125,10 @@ android {
     lint {
         xmlReport = true
         htmlReport = false
-        ignoreWarnings = true
-        abortOnError = false
+        // Errors fail the build; issues that already existed are recorded in
+        // lint-baseline.xml so only NEW errors break CI. Warnings are reported, not fatal.
+        ignoreWarnings = false
+        abortOnError = true
         checkReleaseBuilds = false
         baseline = file("lint-baseline.xml")
         xmlOutput = layout.buildDirectory.file("reports/custom-lint-results.xml").get().asFile
@@ -138,8 +145,15 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
-            // isShrinkResources = true
+            // R8: shrink/obfuscate release builds. Keep rules for reflection-based
+            // Moshi models etc. live in proguard-rules.pro.
+            isMinifyEnabled = true
+            // Local testing only: `./gradlew installRelease -PsignReleaseWithDebugKey` installs an
+            // R8 build on a device. CI never passes this; real releases are signed in build-apk.yml.
+            if (project.hasProperty("signReleaseWithDebugKey")) {
+                signingConfig = signingConfigs.getByName("debug")
+            }
+            isShrinkResources = false // country_data loads flag drawables by name; enable only with keep rules
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -209,6 +223,14 @@ fun computeVersionCode(): Int {
     val code = System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1
     println("Version code is $code")
     return code
+}
+
+// With R8 on, Sentry needs the mapping file to de-obfuscate stack traces. Upload only when
+// credentials exist (SENTRY_AUTH_TOKEN, plus SENTRY_ORG / SENTRY_PROJECT read by sentry-cli),
+// so local and CI builds without them still succeed.
+sentry {
+    includeProguardMapping.set(true)
+    autoUploadProguardMapping.set(providers.environmentVariable("SENTRY_AUTH_TOKEN").isPresent)
 }
 
 dependencies {
