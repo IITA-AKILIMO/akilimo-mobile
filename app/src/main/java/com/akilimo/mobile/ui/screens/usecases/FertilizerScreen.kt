@@ -60,6 +60,7 @@ import com.akilimo.mobile.ui.components.compose.SectionHeader
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.viewmodels.FertilizerViewModel
+import com.akilimo.mobile.utils.AmountInput
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -202,9 +203,13 @@ fun FertilizerScreen(
 
         val selectedPriceItem = prices.find { it.id == selectedPriceId }
         val isExactSelected = selectedPriceItem?.pricePerBag?.let { it < 0.0 } == true
+        // pricePerBag == 0.0 is the "I don't know" option: a valid choice, sent as price 0
+        val isDoNotKnowSelected = selectedPriceItem?.pricePerBag == 0.0
+        val exactPriceValue = AmountInput.parse(exactPriceInput)?.takeIf { it > 0.0 }
         val isConfirmEnabled = selectedPriceItem != null &&
-                (selectedPriceItem.pricePerBag > 0.0 ||
-                        (isExactSelected && exactPriceInput.toDoubleOrNull()?.let { it > 0.0 } == true))
+                (selectedPriceItem.pricePerBag > 0.0 || isDoNotKnowSelected ||
+                        (isExactSelected && exactPriceValue != null))
+        val doNotKnowLabel = stringResource(R.string.lbl_do_not_know)
 
         ModalBottomSheet(
             onDismissRequest = { showPriceSheet = false },
@@ -238,6 +243,8 @@ fun FertilizerScreen(
                             value = exactPriceInput,
                             onValueChange = { exactPriceInput = it },
                             label = stringResource(R.string.lbl_fertilizer_price),
+                            error = stringResource(R.string.error_amount_invalid)
+                                .takeIf { AmountInput.isInvalid(exactPriceInput, requirePositive = true) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -251,13 +258,15 @@ fun FertilizerScreen(
                 Button(
                     onClick = {
                         val finalPrice: Double? = when {
-                            isExactSelected -> exactPriceInput.toDoubleOrNull()
-                            else -> selectedPriceItem?.pricePerBag
+                            isExactSelected -> exactPriceValue
+                            isDoNotKnowSelected -> 0.0
+                            else -> selectedPriceItem?.pricePerBag?.takeIf { it > 0.0 }
                         }
-                        if (finalPrice != null && finalPrice > 0.0) {
+                        if (finalPrice != null) {
                             val currencySymbol = selectedPriceItem?.currencySymbol.orEmpty()
                             val displayPrice: String = when {
-                                isExactSelected -> "$exactPriceInput $currencySymbol"
+                                isExactSelected -> "${AmountInput.format(finalPrice)} $currencySymbol"
+                                isDoNotKnowSelected -> doNotKnowLabel
                                 else -> selectedPriceItem?.priceRange.orEmpty()
                             }
                             viewModel.selectFertilizer(

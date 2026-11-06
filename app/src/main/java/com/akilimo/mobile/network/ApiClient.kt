@@ -30,7 +30,8 @@ object ApiClient {
     fun buildRetrofit(
         context: Context,
         baseUrl: String,
-        timeoutSeconds: Long
+        timeoutSeconds: Long,
+        sendAkilimoApiKey: Boolean = true
     ): Retrofit {
         val moshi = Moshi.Builder()
             .add(LocalDateAdapter())
@@ -39,11 +40,17 @@ object ApiClient {
 
         val client = getCompatibleOkHttpClient(context, timeoutSeconds)
             .dns(Dns.SYSTEM)
-            .addInterceptor { chain ->
-                val request = chain.request().newBuilder()
-                    .addHeader("X-Api-Key", BuildConfig.AKILIMO_API_KEY)
-                    .build()
-                chain.proceed(request)
+            .apply {
+                // Only AKILIMO's own backends may receive the AKILIMO API key;
+                // third-party services (weather, geocoding) must opt out.
+                if (sendAkilimoApiKey) {
+                    addInterceptor { chain ->
+                        val request = chain.request().newBuilder()
+                            .addHeader("X-Api-Key", BuildConfig.AKILIMO_API_KEY)
+                            .build()
+                        chain.proceed(request)
+                    }
+                }
             }
             .apply {
                 if (BuildConfig.DEBUG) {
@@ -69,9 +76,10 @@ object ApiClient {
     inline fun <reified T> createService(
         context: Context,
         baseUrl: String,
-        timeoutSeconds: Long = 60
+        timeoutSeconds: Long = 60,
+        sendAkilimoApiKey: Boolean = true
     ): T {
-        return buildRetrofit(context, baseUrl, timeoutSeconds).create(T::class.java)
+        return buildRetrofit(context, baseUrl, timeoutSeconds, sendAkilimoApiKey).create(T::class.java)
     }
 
     private fun getCompatibleOkHttpClient(

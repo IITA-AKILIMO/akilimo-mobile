@@ -38,6 +38,7 @@ import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.ProduceMarketViewModel
+import com.akilimo.mobile.utils.AmountInput
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,7 +59,7 @@ fun SweetPotatoMarketScreen(
     LaunchedEffect(state.lastEntry) {
         state.lastEntry?.let { entry ->
             selectedUnit = entry.unitOfSale
-            price = entry.unitPrice.takeIf { it > 0 }?.toString() ?: ""
+            price = entry.unitPrice.takeIf { it > 0 }?.let(AmountInput::format) ?: ""
         }
     }
 
@@ -104,6 +105,8 @@ fun SweetPotatoMarketScreen(
                     stringResource(R.string.lbl_unit_price) + " (${state.currencyCode})"
                 else
                     stringResource(R.string.lbl_unit_price),
+                error = stringResource(R.string.error_amount_invalid)
+                    .takeIf { AmountInput.isInvalid(price, requirePositive = true) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
             )
 
@@ -112,7 +115,7 @@ fun SweetPotatoMarketScreen(
             Button(
                 onClick = {
                     val unit = selectedUnit ?: return@Button
-                    val priceValue = price.toDoubleOrNull() ?: return@Button
+                    val priceValue = AmountInput.parse(price)?.takeIf { it > 0.0 } ?: return@Button
                     viewModel.saveMarketEntry(
                         ProduceMarket(
                             userId = state.userId,
@@ -123,7 +126,7 @@ fun SweetPotatoMarketScreen(
                         )
                     )
                 },
-                enabled = selectedUnit != null && price.toDoubleOrNull() != null,
+                enabled = selectedUnit != null && (AmountInput.parse(price) ?: 0.0) > 0.0,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(stringResource(R.string.lbl_save))

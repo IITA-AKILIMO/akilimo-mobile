@@ -6,24 +6,47 @@ import okhttp3.Response
 import timber.log.Timber
 import java.io.IOException
 
-class RetryInterceptor(private val maxRetries: Int = 3) : Interceptor {
+/**
+ * Retries a request on [IOException], but only for idempotent methods: re-sending a POST
+ * after a read timeout could duplicate data the server already stored (e.g. feedback).
+ * Stops early if the call was cancelled.
+ */
+class RetryInterceptor(
+    private val maxAttempts: Int = 3,
+    private val backoffMillis: Long = 1000L,
+) : Interceptor {
+
     override fun intercept(chain: Interceptor.Chain): Response {
+        val request = chain.request()
+        if (request.method.uppercase() !in IDEMPOTENT_METHODS) {
+            return chain.proceed(request)
+        }
+
         var attempt = 0
         var lastException: IOException? = null
 
-        while (attempt < maxRetries) {
+        while (attempt < maxAttempts) {
+            if (chain.call().isCanceled()) {
+                throw IOException("Canceled", lastException)
+            }
             try {
-                return chain.proceed(chain.request())
+                return chain.proceed(request)
             } catch (e: IOException) {
                 lastException = e
                 attempt++
-                Thread.sleep(1000L * attempt) // exponential backoff
+                if (attempt < maxAttempts) {
+                    Thread.sleep(backoffMillis * attempt) // linear backoff between attempts
+                }
             }
         }
         throw IOException(
-            "Failed after $maxRetries retries ${lastException?.message}",
+            "Failed after $maxAttempts attempts: ${lastException?.message}",
             lastException
         )
+    }
+
+    private companion object {
+        val IDEMPOTENT_METHODS = setOf("GET", "HEAD", "OPTIONS")
     }
 }
 

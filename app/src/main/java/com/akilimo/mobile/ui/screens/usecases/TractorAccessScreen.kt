@@ -37,6 +37,7 @@ import com.akilimo.mobile.ui.components.compose.BinaryToggleChips
 import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.TractorAccessViewModel
+import com.akilimo.mobile.utils.AmountInput
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,11 +62,20 @@ fun TractorAccessScreen(
             usePlough = state.tractorPloughCost > 0.0
             useRidge = state.tractorRidgeCost > 0.0
             useHarrow = state.tractorHarrowCost > 0.0
-            ploughCost = state.tractorPloughCost.takeIf { it > 0 }?.toString() ?: ""
-            ridgeCost = state.tractorRidgeCost.takeIf { it > 0 }?.toString() ?: ""
-            harrowCost = state.tractorHarrowCost.takeIf { it > 0 }?.toString() ?: ""
+            ploughCost = state.tractorPloughCost.takeIf { it > 0 }?.let(AmountInput::format) ?: ""
+            ridgeCost = state.tractorRidgeCost.takeIf { it > 0 }?.let(AmountInput::format) ?: ""
+            harrowCost = state.tractorHarrowCost.takeIf { it > 0 }?.let(AmountInput::format) ?: ""
         }
     }
+
+    // A selected implement needs a positive cost (0 would read back as "not used")
+    fun costOk(enabled: Boolean, text: String) =
+        !enabled || (AmountInput.parse(text) ?: 0.0) > 0.0
+    val canSave = !tractorAvailable ||
+            (costOk(usePlough, ploughCost) && costOk(useRidge, ridgeCost) && costOk(useHarrow, harrowCost))
+    val invalidAmount = stringResource(R.string.error_amount_invalid)
+    fun errorFor(text: String) =
+        invalidAmount.takeIf { AmountInput.isInvalid(text, requirePositive = true) }
 
     LaunchedEffect(state.saved) {
         if (state.saved) {
@@ -157,6 +167,7 @@ fun TractorAccessScreen(
                         label = stringResource(R.string.lbl_tractor_plough_cost_hint)
                             .replace("{farm_size}", farmSize.toString())
                             .replace("{size_unit}", areaUnitLabel),
+                        error = errorFor(ploughCost),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                     )
                 }
@@ -168,6 +179,7 @@ fun TractorAccessScreen(
                         label = stringResource(R.string.lbl_tractor_ridge_cost_hint)
                             .replace("{farm_size}", farmSize.toString())
                             .replace("{size_unit}", areaUnitLabel),
+                        error = errorFor(ridgeCost),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                     )
                 }
@@ -179,6 +191,7 @@ fun TractorAccessScreen(
                         label = stringResource(R.string.lbl_tractor_harrow_cost_hint)
                             .replace("{farm_size}", farmSize.toString())
                             .replace("{size_unit}", areaUnitLabel),
+                        error = errorFor(harrowCost),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                     )
                 }
@@ -190,11 +203,12 @@ fun TractorAccessScreen(
                 onClick = {
                     viewModel.saveCosts(
                         tractorAvailable = tractorAvailable,
-                        ploughingCost = if (usePlough) ploughCost.toDoubleOrNull() else 0.0,
-                        ridingCost = if (useRidge) ridgeCost.toDoubleOrNull() else 0.0,
-                        harrowingCost = if (useHarrow) harrowCost.toDoubleOrNull() else 0.0
+                        ploughingCost = if (usePlough) AmountInput.parse(ploughCost) else 0.0,
+                        ridingCost = if (useRidge) AmountInput.parse(ridgeCost) else 0.0,
+                        harrowingCost = if (useHarrow) AmountInput.parse(harrowCost) else 0.0
                     )
                 },
+                enabled = canSave,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(stringResource(R.string.lbl_save))

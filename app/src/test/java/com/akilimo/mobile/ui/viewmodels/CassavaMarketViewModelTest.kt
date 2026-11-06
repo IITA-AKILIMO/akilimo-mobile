@@ -3,7 +3,12 @@ package com.akilimo.mobile.ui.viewmodels
 import com.akilimo.mobile.data.AppSettingsDataStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import com.akilimo.mobile.entities.AkilimoUser
+import com.akilimo.mobile.entities.CassavaUnit
+import com.akilimo.mobile.entities.SelectedCassavaMarket
 import com.akilimo.mobile.entities.StarchFactory
+import com.akilimo.mobile.entities.relations.SelectedCassavaMarketWithDetails
+import com.akilimo.mobile.enums.EnumCassavaProduceType
+import com.akilimo.mobile.enums.EnumUnitOfSale
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.CassavaMarketPriceRepo
 import com.akilimo.mobile.repos.CassavaUnitRepo
@@ -121,5 +126,46 @@ class CassavaMarketViewModelTest {
         advanceUntilIdle()
 
         assertTrue(viewModel.uiState.value.selectedFactoryId == 2)
+    }
+
+    private fun existingSelectionWithYield(yieldId: Int): SelectedCassavaMarketWithDetails {
+        val saved = SelectedCassavaMarket(
+            id = 9,
+            userId = 1,
+            yieldId = yieldId,
+            produceType = EnumCassavaProduceType.entries.last()
+        )
+        return mockk(relaxed = true) { every { selectedCassavaMarket } returns saved }
+    }
+
+    @Test
+    fun `selectFactory keeps the previously selected yield`() = runTest {
+        viewModel.loadData("test")
+        advanceUntilIdle()
+        coEvery { selectedRepo.getSelectedByUser(1) } returns existingSelectionWithYield(yieldId = 5)
+
+        viewModel.selectFactory(factory1)
+        advanceUntilIdle()
+
+        coVerify {
+            selectedRepo.select(match {
+                it.starchFactoryId == 1 && it.yieldId == 5 &&
+                    it.produceType == EnumCassavaProduceType.entries.last()
+            })
+        }
+    }
+
+    @Test
+    fun `saveSelectedPrice keeps the previously selected yield`() = runTest {
+        every { appSettings.akilimoUser } returns "test"
+        coEvery { selectedRepo.getSelectedByUser(1) } returns existingSelectionWithYield(yieldId = 5)
+        val unit: CassavaUnit = mockk(relaxed = true) { every { id } returns 3 }
+
+        viewModel.saveSelectedPrice(unit, EnumUnitOfSale.THOUSAND_KG, selectedPrice = null)
+        advanceUntilIdle()
+
+        coVerify {
+            selectedRepo.select(match { it.cassavaUnitId == 3 && it.yieldId == 5 })
+        }
     }
 }

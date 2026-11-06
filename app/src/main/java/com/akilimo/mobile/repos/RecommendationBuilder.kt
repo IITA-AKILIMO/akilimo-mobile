@@ -90,7 +90,7 @@ class RecommendationBuilder(
         val userInfo = UserInfo(
             deviceToken = session.deviceToken,
             firstName = profile.firstName.orEmpty(),
-            lastName = profile.userName.orUnavailable("akilimo"),
+            lastName = profile.lastName.orUnavailable("akilimo"),
             userName = profile.getNames(),
             gender = profile.gender.orUnavailable(DEFAULT_UNAVAILABLE),
             farmName = profile.farmName.orUnavailable("my_farm"),

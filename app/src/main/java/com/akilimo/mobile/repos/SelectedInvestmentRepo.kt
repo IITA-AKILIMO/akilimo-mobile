@@ -7,18 +7,19 @@ import kotlinx.coroutines.flow.Flow
 class SelectedInvestmentRepo(private val dao: SelectedInvestmentDao) {
 
     /**
-     * Insert a selection and return true when insert succeeded.
-     * This method does not read or update existing rows; it only inserts.
+     * Save the user's investment selection: updates the user's existing row
+     * (looked up by userId) or inserts a new one.
      */
     suspend fun saveOrUpdate(selectedInvestment: SelectedInvestment) {
-        val existing = dao.getSelectedByUser(selectedInvestment.id)
-        selectedInvestment.createdAt = existing?.createdAt ?: System.currentTimeMillis()
-        selectedInvestment.updatedAt = System.currentTimeMillis()
+        val existing = dao.getSelectedByUser(selectedInvestment.userId)
+        val toSave = if (existing != null) selectedInvestment.copy(id = existing.id) else selectedInvestment
+        toSave.createdAt = existing?.createdAt ?: System.currentTimeMillis()
+        toSave.updatedAt = System.currentTimeMillis()
 
         if (existing != null) {
-            dao.update(selectedInvestment)
+            dao.update(toSave)
         } else {
-            dao.insert(selectedInvestment)
+            dao.insert(toSave)
         }
     }
 
