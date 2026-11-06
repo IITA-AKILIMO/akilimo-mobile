@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -45,6 +46,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 
 private const val PLANTING_MONTHS_BEFORE = 4L
 private const val PLANTING_MONTHS_AHEAD = 12L
@@ -61,15 +63,15 @@ fun DatesScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    var plantingDate by remember { mutableStateOf<LocalDate?>(null) }
-    var harvestDate by remember { mutableStateOf<LocalDate?>(null) }
-    var plantingFlex by remember { mutableStateOf(0L) }
-    var harvestFlex by remember { mutableStateOf(0L) }
-    var alternativeDate by remember { mutableStateOf(false) }
-    var useFlexDates by remember { mutableStateOf(false) }
+    var plantingDate by rememberSaveable { mutableStateOf<LocalDate?>(null) }
+    var harvestDate by rememberSaveable { mutableStateOf<LocalDate?>(null) }
+    var plantingFlex by rememberSaveable { mutableStateOf(0L) }
+    var harvestFlex by rememberSaveable { mutableStateOf(0L) }
+    var alternativeDate by rememberSaveable { mutableStateOf(false) }
+    var useFlexDates by rememberSaveable { mutableStateOf(false) }
 
-    var showPlantingDatePicker by remember { mutableStateOf(false) }
-    var showHarvestDatePicker by remember { mutableStateOf(false) }
+    var showPlantingDatePicker by rememberSaveable { mutableStateOf(false) }
+    var showHarvestDatePicker by rememberSaveable { mutableStateOf(false) }
 
     // True when the user's planting date is already in the past
     val alreadyPlanted by remember(plantingDate) {
@@ -78,10 +80,22 @@ fun DatesScreen(
 
     val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
     val flexOptions = listOf(0L, 1L, 2L)
+    val noFlexLabel = stringResource(R.string.lbl_no_flexibility)
+    val oneMonthLabel = stringResource(R.string.lbl_one_month_window)
+    val twoMonthLabel = stringResource(R.string.lbl_two_month_window)
+    fun flexLabel(months: Long) = when (months) {
+        0L -> noFlexLabel
+        1L -> oneMonthLabel
+        else -> twoMonthLabel
+    }
 
     // Initialize local state from loaded state
+    // Prefill once from the DB; after rotation keep the user's unsaved edits
+    var prefilled by rememberSaveable { mutableStateOf(false) }
+
     LaunchedEffect(state.user) {
-        if (state.user != null) {
+        if (state.user != null && !prefilled) {
+            prefilled = true
             plantingDate = state.plantingDate
             harvestDate = state.harvestDate
             plantingFlex = state.plantingFlex
@@ -188,7 +202,7 @@ fun DatesScreen(
                 title = stringResource(R.string.lbl_consider_alternative_planting),
                 collapsedTitle = stringResource(R.string.lbl_dates),
                 scrollBehavior = scrollBehavior,
-                onBack = { navController.popBackStack() },
+                onBack = { navController.popBackStackSafely() },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -244,7 +258,7 @@ fun DatesScreen(
                     options = flexOptions,
                     selectedOption = plantingFlex,
                     onOptionSelected = { plantingFlex = it; harvestDate = null },
-                    displayText = { months -> if (months == 1L) "$months month" else "$months months" },
+                    displayText = { months -> flexLabel(months) },
                     enabled = !alreadyPlanted,
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -253,7 +267,7 @@ fun DatesScreen(
                     options = flexOptions,
                     selectedOption = harvestFlex,
                     onOptionSelected = { harvestFlex = it; harvestDate = null },
-                    displayText = { months -> if (months == 1L) "$months month" else "$months months" },
+                    displayText = { months -> flexLabel(months) },
                 )
             }
 

@@ -17,6 +17,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -36,6 +37,7 @@ import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.WeedControlCostsViewModel
 import com.akilimo.mobile.utils.AmountInput
+import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,12 +48,16 @@ fun WeedControlCostsScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    var selectedMethod by remember { mutableStateOf<EnumWeedControlMethod?>(null) }
-    var firstCost by remember { mutableStateOf("") }
-    var secondCost by remember { mutableStateOf("") }
+    var selectedMethod by rememberSaveable { mutableStateOf<EnumWeedControlMethod?>(null) }
+    var firstCost by rememberSaveable { mutableStateOf("") }
+    var secondCost by rememberSaveable { mutableStateOf("") }
+
+    // Prefill once from the DB; after rotation keep the user's unsaved edits
+    var prefilled by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(state.userId) {
-        if (state.userId != 0) {
+        if (state.userId != 0 && !prefilled) {
+            prefilled = true
             selectedMethod = state.weedControlMethod
             firstCost = state.firstWeedingCost.takeIf { it > 0 }?.let(AmountInput::format) ?: ""
             secondCost = state.secondWeedingCost.takeIf { it > 0 }?.let(AmountInput::format) ?: ""
@@ -82,7 +88,7 @@ fun WeedControlCostsScreen(
                 title = stringResource(R.string.lbl_cost_of_weed_control),
                 collapsedTitle = stringResource(R.string.lbl_weeding),
                 scrollBehavior = scrollBehavior,
-                onBack = { navController.popBackStack() },
+                onBack = { navController.popBackStackSafely() },
             )
         }
     ) { padding ->

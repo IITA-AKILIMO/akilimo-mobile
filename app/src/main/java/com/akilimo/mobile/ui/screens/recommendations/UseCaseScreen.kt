@@ -35,6 +35,7 @@ import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.SaveBottomBar
 import com.akilimo.mobile.ui.viewmodels.AdviceCompletionViewModel
 import kotlinx.coroutines.flow.collectLatest
+import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -91,7 +92,7 @@ fun UseCaseScreen(
         topBar = {
             BackTopAppBar(
                 title = stringResource(R.string.lbl_recommendations),
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStackSafely() }
             )
         },
         bottomBar = {

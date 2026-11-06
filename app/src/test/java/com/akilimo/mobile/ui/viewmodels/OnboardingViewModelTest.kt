@@ -264,6 +264,36 @@ class OnboardingViewModelTest {
         }
     }
 
+    // ── Flex windows ──────────────────────────────────────────────────────────
+
+    @Test
+    fun `changing harvest flex clears the selected harvest date`() = runTest {
+        coEvery { userRepo.getUser("user1") } returns null
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+        viewModel.onEvent(OnboardingViewModel.Event.HarvestDateSelected(LocalDate.of(2026, 1, 1)))
+        viewModel.onEvent(OnboardingViewModel.Event.HarvestFlexSelected(2L))
+
+        assertNull(viewModel.state.value.harvestDate)
+        assertEquals(2L, viewModel.state.value.harvestFlex)
+    }
+
+    @Test
+    fun `re-selecting the same flex keeps the harvest date`() = runTest {
+        coEvery { userRepo.getUser("user1") } returns null
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+        val date = LocalDate.of(2026, 1, 1)
+        viewModel.onEvent(OnboardingViewModel.Event.HarvestDateSelected(date))
+        viewModel.onEvent(OnboardingViewModel.Event.PlantingFlexSelected(0L))
+
+        assertEquals(date, viewModel.state.value.harvestDate)
+    }
+
     // ── BackClicked ───────────────────────────────────────────────────────────
 
     @Test

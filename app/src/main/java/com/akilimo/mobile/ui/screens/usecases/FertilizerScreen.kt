@@ -62,6 +62,7 @@ import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.viewmodels.FertilizerViewModel
 import com.akilimo.mobile.utils.AmountInput
 import kotlinx.coroutines.launch
+import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -107,7 +108,7 @@ fun FertilizerScreen(
                 subtitle = stringResource(R.string.lbl_available_fertilizers_subtitle),
                 collapsedTitle = stringResource(R.string.lbl_fertilizers),
                 scrollBehavior = scrollBehavior,
-                onBack = { navController.popBackStack() },
+                onBack = { navController.popBackStackSafely() },
                 actions = {
                     IconButton(onClick = { viewModel.toggleLayout() }) {
                         Icon(

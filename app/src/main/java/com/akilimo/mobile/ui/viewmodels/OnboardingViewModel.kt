@@ -342,8 +342,15 @@ class OnboardingViewModel @Inject constructor(
                 )
             }
 
-            is Event.PlantingFlexSelected -> _state.update { it.copy(plantingFlex = event.flex) }
-            is Event.HarvestFlexSelected -> _state.update { it.copy(harvestFlex = event.flex) }
+            // Changing a window changes the valid harvest range; force a re-pick (as DatesScreen does)
+            is Event.PlantingFlexSelected -> _state.update {
+                if (it.plantingFlex == event.flex) it
+                else it.copy(plantingFlex = event.flex, harvestDate = null)
+            }
+            is Event.HarvestFlexSelected -> _state.update {
+                if (it.harvestFlex == event.flex) it
+                else it.copy(harvestFlex = event.flex, harvestDate = null)
+            }
             is Event.ShowFlexOptionsChanged -> _state.update { it.copy(showFlexOptions = event.show) }
             is Event.TillageOperationToggled -> {
                 _state.update { s ->

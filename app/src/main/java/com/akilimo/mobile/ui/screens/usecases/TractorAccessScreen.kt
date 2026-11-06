@@ -20,6 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -38,6 +39,7 @@ import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.TractorAccessViewModel
 import com.akilimo.mobile.utils.AmountInput
+import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,16 +50,20 @@ fun TractorAccessScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    var tractorAvailable by remember { mutableStateOf(false) }
-    var usePlough by remember { mutableStateOf(false) }
-    var useRidge by remember { mutableStateOf(false) }
-    var useHarrow by remember { mutableStateOf(false) }
-    var ploughCost by remember { mutableStateOf("") }
-    var ridgeCost by remember { mutableStateOf("") }
-    var harrowCost by remember { mutableStateOf("") }
+    var tractorAvailable by rememberSaveable { mutableStateOf(false) }
+    var usePlough by rememberSaveable { mutableStateOf(false) }
+    var useRidge by rememberSaveable { mutableStateOf(false) }
+    var useHarrow by rememberSaveable { mutableStateOf(false) }
+    var ploughCost by rememberSaveable { mutableStateOf("") }
+    var ridgeCost by rememberSaveable { mutableStateOf("") }
+    var harrowCost by rememberSaveable { mutableStateOf("") }
+
+    // Prefill once from the DB; after rotation keep the user's unsaved edits
+    var prefilled by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(state.userId) {
-        if (state.userId != 0) {
+        if (state.userId != 0 && !prefilled) {
+            prefilled = true
             tractorAvailable = state.tractorAvailable
             usePlough = state.tractorPloughCost > 0.0
             useRidge = state.tractorRidgeCost > 0.0
@@ -96,7 +102,7 @@ fun TractorAccessScreen(
                 title = stringResource(R.string.lbl_tractor_access),
                 collapsedTitle = stringResource(R.string.lbl_tractor_access_title),
                 scrollBehavior = scrollBehavior,
-                onBack = { navController.popBackStack() },
+                onBack = { navController.popBackStackSafely() },
             )
         }
     ) { padding ->
