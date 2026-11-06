@@ -36,6 +36,7 @@ import com.akilimo.mobile.ui.components.compose.SaveBottomBar
 import com.akilimo.mobile.ui.components.compose.SelectionCard
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.MaizePerformanceViewModel
+import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,7 +58,7 @@ fun MaizePerformanceScreen(
                 title = stringResource(R.string.lbl_maize_performance),
                 collapsedTitle = stringResource(R.string.lbl_maize),
                 scrollBehavior = scrollBehavior,
-                onBack = { navController.popBackStack() },
+                onBack = { navController.popBackStackSafely() },
                 actions = {
                     IconButton(onClick = { isGridLayout = !isGridLayout }) {
                         Icon(

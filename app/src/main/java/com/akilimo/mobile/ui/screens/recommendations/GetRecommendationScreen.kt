@@ -38,6 +38,7 @@ import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.viewmodels.GetRecommendationViewModel
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.ExperimentalMaterial3Api
+import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,7 +68,7 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
         topBar = {
             BackTopAppBar(
                 title = stringResource(R.string.lbl_recommendations),
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStackSafely() }
             )
         },
         floatingActionButton = {

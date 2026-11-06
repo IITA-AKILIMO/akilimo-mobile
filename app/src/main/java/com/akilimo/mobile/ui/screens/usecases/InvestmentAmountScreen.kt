@@ -38,6 +38,7 @@ import com.akilimo.mobile.ui.components.compose.SaveBottomBar
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.InvestmentAmountViewModel
 import java.util.Locale
+import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,7 +59,7 @@ fun InvestmentAmountScreen(
                 title = stringResource(R.string.lbl_investment_amount),
                 collapsedTitle = stringResource(R.string.lbl_investment),
                 scrollBehavior = scrollBehavior,
-                onBack = { navController.popBackStack() },
+                onBack = { navController.popBackStackSafely() },
             )
         },
         bottomBar = {

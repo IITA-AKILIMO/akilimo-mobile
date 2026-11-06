@@ -48,7 +48,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.ui.screens.onboarding.OnboardingSection
 import kotlinx.coroutines.flow.collectLatest
-import kotlin.system.exitProcess
+import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,7 +70,7 @@ fun OnboardingScreen(
             when (effect) {
                 is OnboardingViewModel.Effect.NavigateToRecommendations ->
                     if (isEditMode) {
-                        navController.popBackStack()
+                        navController.popBackStackSafely()
                     } else {
                         navController.navigate(RecommendationsRoute) {
                             popUpTo(navController.graph.startDestinationId) { inclusive = true }
@@ -104,7 +104,7 @@ fun OnboardingScreen(
 
     BackHandler {
         if (isEditMode) {
-            navController.popBackStack()
+            navController.popBackStackSafely()
         } else {
             viewModel.onEvent(OnboardingViewModel.Event.BackClicked)
         }
@@ -114,9 +114,9 @@ fun OnboardingScreen(
         ExitConfirmDialog(
             onConfirm = {
                 showExitDialog = false
+                // Finish normally; killing the process (exitProcess) would also kill
+                // in-flight WorkManager syncs and skip lifecycle callbacks.
                 (context as? android.app.Activity)?.finish()
-                System.gc()
-                exitProcess(0)
             },
             onDismiss = { showExitDialog = false },
         )
@@ -142,7 +142,7 @@ fun OnboardingScreen(
                 },
                 onBack = {
                     if (isEditMode) {
-                        navController.popBackStack()
+                        navController.popBackStackSafely()
                     } else {
                         viewModel.onEvent(OnboardingViewModel.Event.BackClicked)
                     }
