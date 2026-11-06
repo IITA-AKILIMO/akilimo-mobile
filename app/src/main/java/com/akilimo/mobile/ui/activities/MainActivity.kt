@@ -12,6 +12,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.akilimo.mobile.data.AppSettingsDataStore
+import com.akilimo.mobile.data.AppLanguage
 import com.akilimo.mobile.data.ThemeMode
 import com.akilimo.mobile.navigation.AkilimoNavHost
 import com.akilimo.mobile.navigation.LegalWizardRoute
@@ -19,7 +20,6 @@ import com.akilimo.mobile.navigation.OnboardingRoute
 import com.akilimo.mobile.navigation.RecommendationsRoute
 import com.akilimo.mobile.ui.theme.AkilimoTheme
 import dagger.hilt.android.AndroidEntryPoint
-import dev.b3nedikt.app_locale.AppLocale
 import javax.inject.Inject
 
 // Same scrims androidx.activity uses for 3-button navigation on older Android versions
@@ -40,7 +40,9 @@ class MainActivity : ComponentActivity() {
     lateinit var appSettings: AppSettingsDataStore
 
     override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(AppLocale.wrap(newBase))
+        // Runs before Hilt injection, so read settings directly
+        val tag = AppSettingsDataStore.readAppliedLanguageTagSync(newBase)
+        super.attachBaseContext(AppLanguage.wrap(newBase, tag))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
