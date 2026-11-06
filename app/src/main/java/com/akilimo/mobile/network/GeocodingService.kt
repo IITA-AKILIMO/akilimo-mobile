@@ -21,7 +21,8 @@ class GeocodingService(
     private val api: LocationIqApi =
         ApiClient.createService(
             context = context.applicationContext,
-            baseUrl = BASE_URL
+            baseUrl = BASE_URL,
+            sendAkilimoApiKey = false
         )
 
     data class AddressData(
