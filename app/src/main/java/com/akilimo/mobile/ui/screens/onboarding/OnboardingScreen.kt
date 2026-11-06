@@ -24,6 +24,8 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -197,12 +200,20 @@ fun OnboardingScreen(
         Modifier.bringIntoViewRequester(sectionRequesters.getValue(section))
     }
     val step = OnboardingStep.entries[state.stepIndex.coerceIn(0, OnboardingStep.entries.lastIndex)]
+    // Collapsing bar: the page title sits large in the expanded area, and only moves into the
+    // toolbar row once the page is scrolled up. A fresh state per page starts each page expanded.
+    val appBarState = key(step) { rememberTopAppBarState() }
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(appBarState)
+    val pageTitle = stringResource(step.titleRes)
 
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             BackTopAppBar(
-                title = stringResource(step.titleRes),
+                title = pageTitle,
                 subtitle = if (isEditMode) stringResource(R.string.lbl_edit_profile) else null,
+                collapsedTitle = pageTitle,
+                scrollBehavior = scrollBehavior,
                 // The bottom bar's Back moves between pages, so the top bar doesn't repeat it:
                 // editing gets a ✕ that leaves without saving; first run has nowhere to go up to
                 // (the phone's back button still steps back, and asks to exit on page 1)
