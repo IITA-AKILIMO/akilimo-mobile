@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,6 +25,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.akilimo.mobile.R
+
+/** What the leading icon of [BackTopAppBar] shows. */
+enum class TopBarNavigation {
+    /** Arrow: go back / up (the default) */
+    BACK,
+
+    /** ✕: leave the screen without saving (e.g. a multi-page edit with its own Back button) */
+    CLOSE,
+
+    /** No icon: nowhere to go up to (e.g. a start destination with its own Back button) */
+    NONE,
+}
 
 /**
  * Enhanced TopAppBar with back navigation and subtitle support.
@@ -44,17 +57,21 @@ fun BackTopAppBar(
     actions: @Composable RowScope.() -> Unit = {},
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
+    navigation: TopBarNavigation = TopBarNavigation.BACK,
 ) {
     val navIcon: @Composable () -> Unit = {
-        IconButton(
-            onClick = onBack,
-            modifier = Modifier.size(48.dp),
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(R.string.lbl_back),
-                tint = MaterialTheme.colorScheme.onPrimary,
-            )
+        if (navigation != TopBarNavigation.NONE) {
+            val isClose = navigation == TopBarNavigation.CLOSE
+            IconButton(
+                onClick = onBack,
+                modifier = Modifier.size(48.dp),
+            ) {
+                Icon(
+                    imageVector = if (isClose) Icons.Filled.Close else Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(if (isClose) R.string.cmp_close else R.string.lbl_back),
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                )
+            }
         }
     }
 

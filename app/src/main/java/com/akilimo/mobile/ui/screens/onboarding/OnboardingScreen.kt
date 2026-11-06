@@ -45,6 +45,7 @@ import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.navigation.RecommendationsRoute
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.ExitConfirmDialog
+import com.akilimo.mobile.ui.components.compose.TopBarNavigation
 import com.akilimo.mobile.ui.components.compose.WizardBottomBar
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.components.compose.popBackStackSafely
@@ -202,8 +203,11 @@ fun OnboardingScreen(
             BackTopAppBar(
                 title = stringResource(step.titleRes),
                 subtitle = if (isEditMode) stringResource(R.string.lbl_edit_profile) else null,
-                // Previous page; on page 1 the VM closes (editing) or asks to exit (first run)
-                onBack = { viewModel.onEvent(OnboardingViewModel.Event.BackClicked) },
+                // The bottom bar's Back moves between pages, so the top bar doesn't repeat it:
+                // editing gets a ✕ that leaves without saving; first run has nowhere to go up to
+                // (the phone's back button still steps back, and asks to exit on page 1)
+                navigation = if (isEditMode) TopBarNavigation.CLOSE else TopBarNavigation.NONE,
+                onBack = { navController.popBackStackSafely() },
                 actions = {
                     // A returning user changing one answer shouldn't have to page to the end
                     if (isEditMode && step != OnboardingStep.REVIEW) {

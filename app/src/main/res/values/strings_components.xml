@@ -7,4 +7,6 @@
     <string name="cmp_choose_date">choose date</string>
     <!-- SaveBottomBar: state announced while the action is in progress -->
     <string name="cmp_loading">Loading</string>
+    <!-- BackTopAppBar: TalkBack label of the close (✕) icon -->
+    <string name="cmp_close">Close</string>
 </resources>
