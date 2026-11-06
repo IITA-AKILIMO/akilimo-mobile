@@ -1,6 +1,5 @@
 package com.akilimo.mobile.ui.components.compose
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,12 +18,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.akilimo.mobile.R
 
@@ -49,8 +48,8 @@ enum class TopBarNavigation {
  * state. The caller must apply `Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)`
  * to the enclosing Scaffold so the bar actually collapses on scroll.
  *
- * [titleVisible] (standard bar only) fades the title out, e.g. while a hero block below the bar
- * already shows the screen's name; set it back to true once the hero scrolls away.
+ * [expandedHeight] and [expandedMaxLines] (large bar only) make room for a longer expanded
+ * title/subtitle, e.g. a welcome message used as the screen's hero.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,7 +62,8 @@ fun BackTopAppBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     navigation: TopBarNavigation = TopBarNavigation.BACK,
-    titleVisible: Boolean = true,
+    expandedHeight: Dp = TopAppBarDefaults.LargeAppBarExpandedHeight,
+    expandedMaxLines: Int = 2,
 ) {
     val navIcon: @Composable () -> Unit = {
         if (navigation != TopBarNavigation.NONE) {
@@ -110,7 +110,7 @@ fun BackTopAppBar(
                             text = title,
                             style = MaterialTheme.typography.titleLarge,
                             color = MaterialTheme.colorScheme.onPrimary,
-                            maxLines = 2,
+                            maxLines = expandedMaxLines,
                             overflow = TextOverflow.Ellipsis,
                         )
                         if (subtitle != null) {
@@ -118,7 +118,7 @@ fun BackTopAppBar(
                                 text = subtitle,
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
-                                maxLines = 2,
+                                maxLines = expandedMaxLines,
                                 overflow = TextOverflow.Ellipsis,
                             )
                         }
@@ -137,6 +137,7 @@ fun BackTopAppBar(
             navigationIcon = navIcon,
             actions = actions,
             modifier = modifier,
+            expandedHeight = expandedHeight,
             scrollBehavior = scrollBehavior,
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.primary,
@@ -149,13 +150,7 @@ fun BackTopAppBar(
     } else {
         TopAppBar(
             title = {
-                // Fades rather than pops when a hero below the bar scrolls in or out of view;
-                // the title stays in the semantics tree so TalkBack still announces the screen
-                val titleAlpha by animateFloatAsState(
-                    targetValue = if (titleVisible) 1f else 0f,
-                    label = "titleAlpha",
-                )
-                Column(modifier = Modifier.graphicsLayer { alpha = titleAlpha }) {
+                Column {
                     Text(
                         text = title,
                         style = MaterialTheme.typography.titleLarge,

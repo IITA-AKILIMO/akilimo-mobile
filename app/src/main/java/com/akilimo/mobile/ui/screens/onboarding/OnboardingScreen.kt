@@ -28,9 +28,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,8 +38,9 @@ import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -63,7 +62,6 @@ import com.akilimo.mobile.ui.screens.onboarding.steps.LocationStep
 import com.akilimo.mobile.ui.screens.onboarding.steps.PlantingDateStep
 import com.akilimo.mobile.ui.screens.onboarding.steps.SummaryStep
 import com.akilimo.mobile.ui.screens.onboarding.steps.TillageStep
-import com.akilimo.mobile.ui.screens.onboarding.steps.WelcomeStep
 import com.akilimo.mobile.ui.screens.settings.LocationResult
 import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -211,24 +209,30 @@ fun OnboardingScreen(
     // Each page starts at the top; a fresh scroll state per page does that
     val pageScroll = key(step) { rememberScrollState() }
 
-    // First-run page 1 opens on the welcome banner, which already acts as the hero. A large
-    // title above it would stack two green headers, so this page uses the slim bar instead and
-    // keeps its title hidden until most of the banner has scrolled away.
+    // First-run page 1: the welcome message is the expanded header (one green hero, no separate
+    // banner below it); "About you" only appears in the toolbar once the header collapses.
+    // The taller header grows with the font size so the longer text isn't cut off.
     val isWelcomePage = !isEditMode && step == OnboardingStep.ABOUT_YOU
-    var bannerHeightPx by remember { mutableIntStateOf(0) }
-    val bannerScrolledAway by remember(pageScroll) {
-        derivedStateOf { bannerHeightPx > 0 && pageScroll.value >= bannerHeightPx * BANNER_GONE_FRACTION }
-    }
+    val fontScale = LocalDensity.current.fontScale.coerceIn(1f, MAX_HEADER_FONT_SCALE)
 
     Scaffold(
-        modifier = if (isWelcomePage) Modifier else Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             BackTopAppBar(
-                title = pageTitle,
-                subtitle = if (isEditMode) stringResource(R.string.lbl_edit_profile) else null,
-                collapsedTitle = if (isWelcomePage) null else pageTitle,
-                scrollBehavior = if (isWelcomePage) null else scrollBehavior,
-                titleVisible = !isWelcomePage || bannerScrolledAway,
+                title = if (isWelcomePage) stringResource(R.string.welcome_title) else pageTitle,
+                subtitle = when {
+                    isWelcomePage -> stringResource(R.string.welcome_subtitle)
+                    isEditMode -> stringResource(R.string.lbl_edit_profile)
+                    else -> null
+                },
+                collapsedTitle = pageTitle,
+                scrollBehavior = scrollBehavior,
+                expandedHeight = if (isWelcomePage) {
+                    WELCOME_HEADER_HEIGHT * fontScale
+                } else {
+                    TopAppBarDefaults.LargeAppBarExpandedHeight
+                },
+                expandedMaxLines = if (isWelcomePage) WELCOME_HEADER_MAX_LINES else 2,
                 // The bottom bar's Back moves between pages, so the top bar doesn't repeat it:
                 // editing gets a ✕ that leaves without saving; first run has nowhere to go up to
                 // (the phone's back button still steps back, and asks to exit on page 1)
@@ -271,13 +275,7 @@ fun OnboardingScreen(
                 .verticalScroll(pageScroll),
         ) {
             when (step) {
-                OnboardingStep.ABOUT_YOU -> {
-                    // The welcome banner is for new users only
-                    if (!isEditMode) {
-                        WelcomeStep(modifier = Modifier.onSizeChanged { bannerHeightPx = it.height })
-                    }
-                    BioDataSection(state, viewModel::onEvent, sectionModifier)
-                }
+                OnboardingStep.ABOUT_YOU -> BioDataSection(state, viewModel::onEvent, sectionModifier)
 
                 OnboardingStep.FARM_LOCATION ->
                     FarmLocationSection(state, viewModel::onEvent, navController, sectionModifier)
@@ -293,8 +291,14 @@ fun OnboardingScreen(
 
 private typealias OnEvent = (OnboardingViewModel.Event) -> Unit
 
-/** Show the page-1 title once this much of the welcome banner has scrolled under the bar */
-private const val BANNER_GONE_FRACTION = 0.75f
+/** Expanded header height on first-run page 1, which holds the welcome title and subtitle */
+private val WELCOME_HEADER_HEIGHT = 240.dp
+
+/** Lines allowed for each of the welcome title and subtitle in the expanded header */
+private const val WELCOME_HEADER_MAX_LINES = 3
+
+/** The welcome header grows with the font size up to this scale (beyond it, text ellipsizes) */
+private const val MAX_HEADER_FONT_SCALE = 1.6f
 
 @Composable
 private fun BioDataSection(
