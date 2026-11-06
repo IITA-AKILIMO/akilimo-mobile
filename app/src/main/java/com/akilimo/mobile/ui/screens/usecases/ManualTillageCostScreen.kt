@@ -36,6 +36,7 @@ import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.ManualTillageCostViewModel
+import com.akilimo.mobile.utils.AmountInput
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,10 +56,20 @@ fun ManualTillageCostScreen(
         if (state.userId != 0) {
             usePlough = state.performPloughing
             useRidge = state.performRidging
-            ploughingCost = state.manualPloughCost?.takeIf { it > 0 }?.toString() ?: ""
-            ridgingCost = state.manualRidgeCost?.takeIf { it > 0 }?.toString() ?: ""
+            ploughingCost = state.manualPloughCost?.takeIf { it > 0 }?.let(AmountInput::format) ?: ""
+            ridgingCost = state.manualRidgeCost?.takeIf { it > 0 }?.let(AmountInput::format) ?: ""
         }
     }
+
+    // Each selected operation needs a positive cost; previously a non-blank but
+    // unparseable value (e.g. "12,000") was saved as 0.
+    fun costOk(enabled: Boolean, text: String) =
+        !enabled || (AmountInput.parse(text) ?: 0.0) > 0.0
+    val canSave = (usePlough || useRidge) &&
+            costOk(usePlough, ploughingCost) && costOk(useRidge, ridgingCost)
+    val invalidAmount = stringResource(R.string.error_amount_invalid)
+    fun errorFor(text: String) =
+        invalidAmount.takeIf { AmountInput.isInvalid(text, requirePositive = true) }
 
     LaunchedEffect(state.saved) {
         if (state.saved) {
@@ -129,6 +140,7 @@ fun ManualTillageCostScreen(
                     label = stringResource(R.string.lbl_manual_tillage_cost_hint)
                         .replace("{farm_size}", farmSize.toString())
                         .replace("{size_unit}", areaUnitLabel),
+                    error = errorFor(ploughingCost),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -141,6 +153,7 @@ fun ManualTillageCostScreen(
                     label = stringResource(R.string.lbl_manual_ridge_cost_hint)
                         .replace("{farm_size}", farmSize.toString())
                         .replace("{size_unit}", areaUnitLabel),
+                    error = errorFor(ridgingCost),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -151,14 +164,13 @@ fun ManualTillageCostScreen(
             Button(
                 onClick = {
                     viewModel.saveCosts(
-                        ridingCost = if (useRidge) ridgingCost.toDoubleOrNull() else 0.0,
-                        ploughingCost = if (usePlough) ploughingCost.toDoubleOrNull() else 0.0,
+                        ridingCost = if (useRidge) AmountInput.parse(ridgingCost) else 0.0,
+                        ploughingCost = if (usePlough) AmountInput.parse(ploughingCost) else 0.0,
                         performPloughing = usePlough,
                         performRidging = useRidge
                     )
                 },
-                enabled = (usePlough && ploughingCost.isNotBlank()) ||
-                        (useRidge && ridgingCost.isNotBlank()),
+                enabled = canSave,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(stringResource(R.string.lbl_save))

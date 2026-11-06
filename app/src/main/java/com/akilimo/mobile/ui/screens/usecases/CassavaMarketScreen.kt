@@ -50,6 +50,7 @@ import com.akilimo.mobile.ui.components.compose.RadioButtonRow
 import com.akilimo.mobile.ui.components.compose.SaveBottomBar
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.CassavaMarketViewModel
+import com.akilimo.mobile.utils.AmountInput
 import com.akilimo.mobile.utils.MathHelper
 import kotlinx.coroutines.launch
 
@@ -164,10 +165,7 @@ fun CassavaMarketScreen(
                     LazyColumn(modifier = Modifier.weight(1f)) {
                         items(state.cassavaUnits, key = { it.id }) { unit ->
                             Card(
-                                onClick = {
-                                    println("UNIT CLICKED: id=${unit.id}, label=${unit.label}")
-                                    openUnitSheet(unit)
-                                },
+                                onClick = { openUnitSheet(unit) },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(horizontal = 16.dp, vertical = 4.dp),
@@ -214,17 +212,21 @@ fun CassavaMarketScreen(
             if (saved?.marketPriceId != null && saved.marketPriceId == selectedPriceId) {
                 val savedPrice = prices.find { it.id == selectedPriceId }
                 if (savedPrice?.exactPrice == true) {
-                    exactPriceInput = saved.unitPrice.takeIf { it > 0 }?.toString() ?: ""
+                    exactPriceInput = saved.unitPrice.takeIf { it > 0 }?.let(AmountInput::format) ?: ""
                 }
             }
         }
 
         val selectedPriceItem = prices.find { it.id == selectedPriceId }
         val isExactSelected = selectedPriceItem?.exactPrice == true
+        // averagePrice == 0.0 (and not exact) is the "I don't know" option: valid, saved as price 0
+        val isDoNotKnowSelected = selectedPriceItem != null && !isExactSelected &&
+                selectedPriceItem.averagePrice == 0.0
+        val exactPriceValue = AmountInput.parse(exactPriceInput)?.takeIf { it > 0.0 }
         val isConfirmEnabled = selectedPriceItem != null &&
-                (selectedPriceItem.averagePrice > 0.0 && !isExactSelected ||
-                        (isExactSelected && exactPriceInput.toDoubleOrNull()
-                            ?.let { it > 0.0 } == true))
+                ((selectedPriceItem.averagePrice > 0.0 && !isExactSelected) ||
+                        isDoNotKnowSelected ||
+                        (isExactSelected && exactPriceValue != null))
 
         ModalBottomSheet(
             onDismissRequest = { showPriceSheet = false },
@@ -260,6 +262,8 @@ fun CassavaMarketScreen(
                             onValueChange = { exactPriceInput = it },
                             label = stringResource(R.string.lbl_unit_price) +
                                     if (price.currencySymbol.isNotEmpty()) " (${price.currencySymbol})" else "",
+                            error = stringResource(R.string.error_amount_invalid)
+                                .takeIf { AmountInput.isInvalid(exactPriceInput, requirePositive = true) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -274,11 +278,12 @@ fun CassavaMarketScreen(
                     onClick = {
                         val priceToSave: CassavaMarketPrice? = when {
                             isExactSelected -> {
-                                val amount = exactPriceInput.toDoubleOrNull() ?: return@Button
+                                val amount = exactPriceValue ?: return@Button
                                 selectedPriceItem.copy(averagePrice = amount)
                             }
 
-                            selectedPriceItem != null && selectedPriceItem.averagePrice > 0.0 ->
+                            selectedPriceItem != null &&
+                                    (selectedPriceItem.averagePrice > 0.0 || isDoNotKnowSelected) ->
                                 selectedPriceItem
 
                             else -> return@Button

@@ -35,6 +35,7 @@ import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.WeedControlCostsViewModel
+import com.akilimo.mobile.utils.AmountInput
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,10 +53,16 @@ fun WeedControlCostsScreen(
     LaunchedEffect(state.userId) {
         if (state.userId != 0) {
             selectedMethod = state.weedControlMethod
-            firstCost = state.firstWeedingCost.takeIf { it > 0 }?.toString() ?: ""
-            secondCost = state.secondWeedingCost.takeIf { it > 0 }?.toString() ?: ""
+            firstCost = state.firstWeedingCost.takeIf { it > 0 }?.let(AmountInput::format) ?: ""
+            secondCost = state.secondWeedingCost.takeIf { it > 0 }?.let(AmountInput::format) ?: ""
         }
     }
+
+    // Both costs are optional; a blank field clears the cost, anything typed must parse
+    val invalidAmount = stringResource(R.string.error_amount_invalid)
+    val firstError = invalidAmount.takeIf { AmountInput.isInvalid(firstCost, requirePositive = false) }
+    val secondError = invalidAmount.takeIf { AmountInput.isInvalid(secondCost, requirePositive = false) }
+    val canSave = firstError == null && secondError == null
 
     LaunchedEffect(state.saved) {
         if (state.saved) {
@@ -96,6 +103,7 @@ fun WeedControlCostsScreen(
                 value = firstCost,
                 onValueChange = { firstCost = it },
                 label = stringResource(R.string.lbl_first_weeding_costs_prompt),
+                error = firstError,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
             )
 
@@ -105,6 +113,7 @@ fun WeedControlCostsScreen(
                 value = secondCost,
                 onValueChange = { secondCost = it },
                 label = stringResource(R.string.lbl_second_weeding_cost_prompt),
+                error = secondError,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
             )
 
@@ -113,11 +122,13 @@ fun WeedControlCostsScreen(
             Button(
                 onClick = {
                     viewModel.saveCosts(
-                        firstCost = firstCost.toDoubleOrNull(),
-                        secondCost = secondCost.toDoubleOrNull(),
+                        // Blank -> 0.0 so clearing a field actually clears the saved cost
+                        firstCost = AmountInput.parse(firstCost) ?: 0.0,
+                        secondCost = AmountInput.parse(secondCost) ?: 0.0,
                         method = selectedMethod
                     )
                 },
+                enabled = canSave,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(stringResource(R.string.lbl_save))

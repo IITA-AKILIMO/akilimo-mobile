@@ -239,6 +239,7 @@
     <string name="error_email_invalid">Tafadhali weka barua pepe sahihi</string>
     <string name="error_country_required">Tafadhali chagua nchi yako</string>
     <string name="error_farm_size_invalid">Tafadhali weka ukubwa sahihi wa shamba</string>
+    <string name="error_amount_invalid">Tafadhali weka kiasi sahihi</string>
     <string name="error_planting_date_required">Tafadhali chagua tarehe ya kupanda</string>
     <string name="error_harvest_date_required">Tafadhali chagua tarehe ya kuvuna</string>
     <string name="error_weed_control_required">Tafadhali chagua njia ya kudhibiti magugu</string>
