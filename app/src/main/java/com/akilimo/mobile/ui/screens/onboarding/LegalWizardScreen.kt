@@ -10,7 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
+import androidx.activity.compose.BackHandler
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +28,7 @@ import com.akilimo.mobile.ui.screens.onboarding.steps.TermsStep
 import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
 
 import androidx.compose.material3.ExperimentalMaterial3Api
+import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,7 +37,11 @@ fun LegalWizardScreen(
     viewModel: OnboardingViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    var currentStepIndex by remember { mutableIntStateOf(0) }
+    // rememberSaveable: rotating on the Terms step must not jump back to the Disclaimer
+    var currentStepIndex by rememberSaveable { mutableIntStateOf(0) }
+
+    // System back on the Terms step returns to the Disclaimer instead of leaving the wizard
+    BackHandler(enabled = currentStepIndex > 0) { currentStepIndex-- }
 
     val steps = listOf("DISCLAIMER", "TERMS")
 
@@ -60,8 +66,8 @@ fun LegalWizardScreen(
                     if (currentStepIndex > 0) {
                         currentStepIndex--
                     } else {
-                        // Maybe exit app or go back?
-                        navController.popBackStack()
+                        // Start destination: finishes the activity rather than emptying the back stack
+                        navController.popBackStackSafely()
                     }
                 }
             )

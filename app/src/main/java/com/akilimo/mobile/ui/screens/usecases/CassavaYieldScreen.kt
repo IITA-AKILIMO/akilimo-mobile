@@ -38,6 +38,7 @@ import com.akilimo.mobile.ui.components.compose.SaveBottomBar
 import com.akilimo.mobile.ui.components.compose.SelectionCard
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.CassavaYieldViewModel
+import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 
 private const val YIELD_LOW = 3.75
 private const val YIELD_NORMAL = 11.25
@@ -69,7 +70,7 @@ fun CassavaYieldScreen(
                 title = stringResource(R.string.lbl_typical_yield),
                 collapsedTitle = stringResource(R.string.lbl_yield),
                 scrollBehavior = scrollBehavior,
-                onBack = { navController.popBackStack() },
+                onBack = { navController.popBackStackSafely() },
                 actions = {
                     IconButton(onClick = { isGridLayout = !isGridLayout }) {
                         Icon(

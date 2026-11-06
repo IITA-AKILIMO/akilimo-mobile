@@ -53,6 +53,7 @@ import com.akilimo.mobile.ui.viewmodels.CassavaMarketViewModel
 import com.akilimo.mobile.utils.AmountInput
 import com.akilimo.mobile.utils.MathHelper
 import kotlinx.coroutines.launch
+import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -104,7 +105,7 @@ fun CassavaMarketScreen(
                 title = stringResource(R.string.lbl_cassava_market_outlet),
                 collapsedTitle = stringResource(R.string.lbl_cassava),
                 scrollBehavior = scrollBehavior,
-                onBack = { navController.popBackStack() },
+                onBack = { navController.popBackStackSafely() },
             )
         },
         bottomBar = {

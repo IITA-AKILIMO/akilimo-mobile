@@ -56,6 +56,7 @@ import com.akilimo.mobile.ui.viewmodels.SettingsViewModel
 import dev.b3nedikt.app_locale.AppLocale
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -148,7 +149,7 @@ fun SettingsScreen(
         topBar = {
             BackTopAppBar(
                 title = stringResource(R.string.lbl_settings),
-                onBack = { navController.popBackStack() },
+                onBack = { navController.popBackStackSafely() },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },

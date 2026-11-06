@@ -17,12 +17,14 @@ import com.akilimo.mobile.repos.RecommendationBuilder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.sentry.Sentry
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,7 +48,18 @@ class GetRecommendationViewModel @Inject constructor(
     private val _feedbackResult = MutableSharedFlow<Boolean>()
     val feedbackResult = _feedbackResult.asSharedFlow()
 
-    fun fetchRecommendation(useCase: EnumUseCase, noRecsLabel: String, errorLabel: String) =
+    /**
+     * Fetch once per screen instance. The screen calls this from a LaunchedEffect, which
+     * re-runs after rotation; skipping when a request is in flight or already succeeded
+     * avoids discarding the result and repeating the network call. Errors can be retried.
+     */
+    fun fetchRecommendation(useCase: EnumUseCase, noRecsLabel: String, errorLabel: String) {
+        val current = _uiState.value
+        if (current is UiState.Loading || current is UiState.Success) return
+        loadRecommendation(useCase, noRecsLabel, errorLabel)
+    }
+
+    private fun loadRecommendation(useCase: EnumUseCase, noRecsLabel: String, errorLabel: String) =
         viewModelScope.launch {
             _uiState.value = UiState.Loading
             try {
@@ -74,9 +87,13 @@ class GetRecommendationViewModel @Inject constructor(
                     val error = result.parseError()
                     _uiState.value = UiState.Error(error?.message ?: errorLabel)
                 }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
-                Sentry.captureException(e)
-                _uiState.value = UiState.Error(e.message ?: errorLabel)
+                // Offline/timeouts are expected in the field; only report real bugs
+                if (e !is IOException) Sentry.captureException(e)
+                // Show the localized message, not raw text like "Unable to resolve host"
+                _uiState.value = UiState.Error(errorLabel)
             }
         }
 
@@ -97,8 +114,10 @@ class GetRecommendationViewModel @Inject constructor(
                 )
                 val result = client.submitUserFeedback(request)
                 _feedbackResult.emit(result.isSuccessful)
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
-                Sentry.captureException(e)
+                if (e !is IOException) Sentry.captureException(e)
                 _feedbackResult.emit(false)
             }
         }

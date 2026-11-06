@@ -57,6 +57,7 @@ import com.mapbox.maps.plugin.gestures.addOnMapClickListener
 import com.mapbox.maps.plugin.locationcomponent.location
 import io.sentry.Sentry
 import kotlinx.parcelize.Parcelize
+import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 
 private const val DEFAULT_ZOOM = 15.0
 private const val DEFAULT_INITIAL_ZOOM = 12.0
@@ -265,7 +266,7 @@ fun LocationPickerScreen(
                         navController.previousBackStackEntry
                             ?.savedStateHandle
                             ?.set("location_result", result)
-                        navController.popBackStack()
+                        navController.popBackStackSafely()
                     }
                 },
                 modifier = Modifier
