@@ -312,6 +312,11 @@
     <string name="error_interest_required">Please select your interest</string>
     <string name="error_email_invalid">Please enter a valid email address</string>
     <string name="error_country_required">Please select your country</string>
+    <string name="error_location_outside_coverage">Your field is outside the area where AKILIMO can give advice in %1$s. Pick a location inside the shaded area on the map.</string>
+    <string name="error_recommendation_outside_coverage">Your field is outside the area where AKILIMO can give advice. Change your field location in your profile and try again.</string>
+    <string name="lbl_coverage_legend">The shaded area is where AKILIMO can give advice</string>
+    <string name="lbl_coverage_inside">AKILIMO can give advice for this location</string>
+    <string name="lbl_coverage_outside">AKILIMO cannot give advice here. Move the pin into the shaded area.</string>
     <string name="error_farm_size_invalid">Please enter a valid farm size</string>
     <string name="error_amount_invalid">Please enter a valid amount</string>
     <string name="error_planting_date_required">Please select a planting date</string>

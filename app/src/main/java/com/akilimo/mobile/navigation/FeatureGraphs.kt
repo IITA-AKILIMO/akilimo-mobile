@@ -1,6 +1,5 @@
 package com.akilimo.mobile.navigation
 
-import OnboardingScreen
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -10,6 +9,7 @@ import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumFertilizerFlow
 import com.akilimo.mobile.enums.EnumUseCase
 import com.akilimo.mobile.ui.screens.onboarding.LegalWizardScreen
+import com.akilimo.mobile.ui.screens.onboarding.OnboardingScreen
 import com.akilimo.mobile.ui.screens.recommendations.GetRecommendationScreen
 import com.akilimo.mobile.ui.screens.recommendations.RecommendationsScreen
 import com.akilimo.mobile.ui.screens.recommendations.UseCaseScreen

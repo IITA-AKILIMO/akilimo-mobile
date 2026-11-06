@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Onboarding, location picker and settings strings. English only for now: sw-TZ and rw-RW need translations. -->
+<resources>
+    <!-- Coordinates -->
+    <string name="lbl_lat_lng_format">Lat: %1$.5f, Lng: %2$.5f</string>
+
+    <!-- Location picker / location step -->
+    <string name="cd_location_map">Map. Tap to mark your farm location.</string>
+    <string name="lbl_locating">Finding your location…</string>
+    <string name="lbl_location_disabled">Location is turned off on this phone.</string>
+    <string name="lbl_location_permission_denied">AKILIMO is not allowed to use your location.</string>
+    <string name="lbl_turn_on_location">Turn on location</string>
+    <string name="lbl_allow_location">Allow location</string>
+    <string name="lbl_tap_map_instead">Tap the map instead</string>
+    <string name="lbl_map_load_failed">The map could not load. Check your internet connection. You can still use your current location.</string>
+    <string name="lbl_coverage_loading">Loading the area AKILIMO supports…</string>
+    <string name="lbl_coverage_unavailable">The supported area could not be loaded. You can still choose your farm.</string>
+
+    <!-- Onboarding form -->
+    <string name="lbl_optional_field">%1$s (optional)</string>
+    <string name="error_farm_size_number">Enter a number, for example 1.5</string>
+
+    <!-- Phone number country code picker -->
+    <string name="error_phone_invalid">This doesn\'t look like a phone number from %1$s. Check the number or the country code.</string>
+    <string name="lbl_choose_country_code">Choose country code</string>
+    <string name="lbl_search_country_code">Search country or code</string>
+    <string name="lbl_suggested_countries">Suggested</string>
+    <string name="lbl_all_countries">All countries</string>
+    <string name="lbl_no_country_found">No country found</string>
+    <!-- TalkBack label of the country code button, e.g. "Country code: Tanzania, +255" -->
+    <string name="cd_phone_country_code">Country code: %1$s, +%2$d</string>
+    <plurals name="msg_onboarding_errors">
+        <item quantity="one">Please fix %d field</item>
+        <item quantity="other">Please fix %d fields</item>
+    </plurals>
+    <string name="msg_harvest_date_cleared">The harvest date was cleared because the planting date or window changed. Please pick it again.</string>
+    <string name="lbl_change_country_title">Change country?</string>
+    <string name="msg_change_country_clears_fertilizers">Changing the country will remove the fertilizers you selected when you save. You will need to choose them again.</string>
+    <string name="lbl_change_country">Change country</string>
+
+    <!-- Onboarding steps (first run) -->
+    <string name="lbl_step_about_you">About you</string>
+    <string name="lbl_step_farm_location">Where is your farm?</string>
+    <string name="lbl_step_your_field">Your field</string>
+    <string name="lbl_step_practices">How you farm</string>
+    <string name="lbl_step_review">Check your answers</string>
+
+    <!-- Web pages (terms, privacy policy) -->
+    <string name="lbl_page_load_failed">This page could not load.</string>
+
+    <!-- Theme -->
+    <string name="lbl_theme">Theme</string>
+    <string name="lbl_theme_system">System default</string>
+    <string name="lbl_theme_light">Light</string>
+    <string name="lbl_theme_dark">Dark</string>
+</resources>

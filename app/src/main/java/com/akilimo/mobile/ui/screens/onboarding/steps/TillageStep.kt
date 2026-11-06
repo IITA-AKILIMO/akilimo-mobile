@@ -4,12 +4,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
@@ -20,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.akilimo.mobile.R
 import com.akilimo.mobile.enums.EnumOperationMethod
@@ -54,11 +54,18 @@ fun TillageStep(
             val selectedMethod = tillageOperations[type]
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Checkbox(
-                            checked = checked,
-                            onCheckedChange = { onEvent(OnboardingViewModel.Event.TillageOperationToggled(type, it)) },
-                        )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 48.dp)
+                            .toggleable(
+                                value = checked,
+                                role = Role.Checkbox,
+                                onValueChange = { onEvent(OnboardingViewModel.Event.TillageOperationToggled(type, it)) },
+                            ),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Checkbox(checked = checked, onCheckedChange = null)
                         Spacer(Modifier.width(8.dp))
                         Text(type.label(context))
                     }
@@ -77,11 +84,18 @@ fun TillageStep(
 
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(
-                        checked = weedControlEnabled,
-                        onCheckedChange = { onEvent(OnboardingViewModel.Event.WeedControlToggled(it)) },
-                    )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 48.dp)
+                        .toggleable(
+                            value = weedControlEnabled,
+                            role = Role.Checkbox,
+                            onValueChange = { onEvent(OnboardingViewModel.Event.WeedControlToggled(it)) },
+                        ),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Checkbox(checked = weedControlEnabled, onCheckedChange = null)
                     Spacer(Modifier.width(8.dp))
                     Text(EnumOperationType.WEEDING.label(context))
                 }

@@ -3,7 +3,6 @@ package com.akilimo.mobile.ui.screens.usecases
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,7 +27,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -78,7 +77,8 @@ fun DatesScreen(
         derivedStateOf { plantingDate?.isBefore(LocalDate.now()) == true }
     }
 
-    val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
+    val locale = currentLocale()
+    val dateFormatter = remember(locale) { DateTimeFormatter.ofPattern("dd MMM yyyy", locale) }
     val flexOptions = listOf(0L, 1L, 2L)
     val noFlexLabel = stringResource(R.string.lbl_no_flexibility)
     val oneMonthLabel = stringResource(R.string.lbl_one_month_window)
@@ -111,6 +111,7 @@ fun DatesScreen(
             viewModel.onSaveHandled()
         }
     }
+    SaveErrorEffect(state.saveFailed, snackbarHostState, viewModel::onSaveErrorShown)
 
     // Planting date: [now − (4+flex), now + (12+flex)]
     if (showPlantingDatePicker) {
@@ -205,18 +206,39 @@ fun DatesScreen(
                 onBack = { navController.popBackStackSafely() },
             )
         },
+        bottomBar = {
+            FormSaveBar(
+                enabled = plantingDate != null && harvestDate != null,
+                isSaving = state.isSaving,
+                disabledReason = stringResource(
+                    if (plantingDate == null) R.string.error_planting_date_required
+                    else R.string.error_harvest_date_required
+                ),
+                onSave = {
+                    val pDate = plantingDate ?: return@FormSaveBar
+                    val hDate = harvestDate ?: return@FormSaveBar
+                    viewModel.saveSchedule(
+                        plantingDate = pDate,
+                        harvestDate = hDate,
+                        plantingFlex = if (useFlexDates) plantingFlex else 0L,
+                        harvestFlex = if (useFlexDates) harvestFlex else 0L,
+                        alternativeDate = alternativeDate
+                    )
+                },
+            )
+        },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
         ScrollableFormColumn(padding = padding) {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
 
             SwitchRow(
-                label = stringResource(R.string.lbl_consider_alternative_planting),
+                label = stringResource(R.string.lbl_open_to_alternative_dates),
                 checked = alternativeDate,
                 onCheckedChange = { alternativeDate = it }
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
 
             DateInputField(
                 value = plantingDate?.format(dateFormatter) ?: "",
@@ -226,7 +248,7 @@ fun DatesScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
 
             val noPlantingMsg = stringResource(R.string.lbl_planting_date_prompt)
             DateInputField(
@@ -243,7 +265,7 @@ fun DatesScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
 
             SwitchRow(
                 label = stringResource(R.string.lbl_flexible_dates),
@@ -252,7 +274,7 @@ fun DatesScreen(
             )
 
             if (useFlexDates) {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
                 AkilimoDropdown(
                     label = stringResource(R.string.lbl_planting_flex),
                     options = flexOptions,
@@ -261,7 +283,7 @@ fun DatesScreen(
                     displayText = { months -> flexLabel(months) },
                     enabled = !alreadyPlanted,
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
                 AkilimoDropdown(
                     label = stringResource(R.string.lbl_harvest_flex),
                     options = flexOptions,
@@ -271,27 +293,7 @@ fun DatesScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = {
-                    val pDate = plantingDate ?: return@Button
-                    val hDate = harvestDate ?: return@Button
-                    viewModel.saveSchedule(
-                        plantingDate = pDate,
-                        harvestDate = hDate,
-                        plantingFlex = if (useFlexDates) plantingFlex else 0L,
-                        harvestFlex = if (useFlexDates) harvestFlex else 0L,
-                        alternativeDate = alternativeDate
-                    )
-                },
-                enabled = plantingDate != null && harvestDate != null,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(R.string.lbl_save))
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(AkilimoSpacing.md))
         }
     }
 }

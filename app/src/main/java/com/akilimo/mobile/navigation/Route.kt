@@ -80,7 +80,13 @@ data class GetRecommendationRoute(val useCaseCode: String)
 object SettingsRoute
 
 @Serializable
-data class LocationPickerRoute(val lat: Double = 0.0, val lon: Double = 0.0, val zoom: Double = 12.0)
+data class LocationPickerRoute(
+    val lat: Double = 0.0,
+    val lon: Double = 0.0,
+    val zoom: Double = 12.0,
+    /** ISO alpha-2 code whose supported area is drawn on the map; blank draws none */
+    val countryCode: String = "",
+)
 
 @Serializable
 data class WebViewRoute(val url: String, val title: String)

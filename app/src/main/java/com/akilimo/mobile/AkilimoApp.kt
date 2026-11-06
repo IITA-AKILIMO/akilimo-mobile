@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
+import com.akilimo.mobile.data.toNightMode
 import androidx.core.os.LocaleListCompat
 import dev.b3nedikt.app_locale.AppLocale
 import androidx.multidex.MultiDex
@@ -21,7 +22,6 @@ import com.akilimo.mobile.workers.StarchFactoryWorker
 import com.akilimo.mobile.workers.WorkConstants
 import com.akilimo.mobile.workers.WorkerScheduler
 import com.akilimo.mobile.data.AppSettingsDataStore
-import com.blongho.country_data.World
 import dagger.hilt.android.HiltAndroidApp
 import com.google.firebase.analytics.FirebaseAnalytics
 import javax.inject.Inject
@@ -65,7 +65,6 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
         initLocale()
         initDarkMode()
         initVectorSupport()
-        initTimeAndCountry()
         runStartupTasks()
 
         WorkerScheduler.scheduleOneTimeWorker<InvestmentAmountWorker>(
@@ -141,20 +140,11 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
     }
 
     private fun initDarkMode() {
-        val darkMode = appSettings.getDarkModeSync()
-        AppCompatDelegate.setDefaultNightMode(
-            if (darkMode) AppCompatDelegate.MODE_NIGHT_YES
-            else AppCompatDelegate.MODE_NIGHT_NO
-        )
+        AppCompatDelegate.setDefaultNightMode(appSettings.getThemeModeSync().toNightMode())
     }
 
     private fun initVectorSupport() {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-    }
-
-    private fun initTimeAndCountry() {
-//        AndroidThreeTen.init(this)
-        World.init(this)
     }
 
     private fun runStartupTasks() {
