@@ -33,10 +33,13 @@ abstract class SafePagedWorker<TApi, TItem>(
             while (!lastPageReached && !isStopped) {
                 val pageResult = try {
                     fetchPage(page)
+                } catch (ce: kotlinx.coroutines.CancellationException) {
+                    throw ce
                 } catch (e: Exception) {
                     Timber.e(e, "Failed to fetch page $page")
                     val errorMsg = applicationContext.getString(R.string.error_fetch_page, page, e.message ?: "unknown")
-                    return resultFailure(errorMsg)
+                    // Pages are upserted, so a retry restarting from page 1 is safe
+                    return retryOrFail(e, errorMsg)
                 }
 
                 // Persist and update shared counters inside a mutex so multiple coroutines won't race
@@ -69,10 +72,10 @@ abstract class SafePagedWorker<TApi, TItem>(
             )
         } catch (ce: kotlinx.coroutines.CancellationException) {
             Timber.w("Worker cancelled: ${javaClass.simpleName}")
-            return resultFailure(applicationContext.getString(R.string.error_worker_cancelled))
+            throw ce
         } catch (t: Throwable) {
             Timber.e(t, "Unhandled error in paged worker ${javaClass.simpleName}")
-            return resultFailure(t.message ?: applicationContext.getString(R.string.error_unexpected))
+            return retryOrFail(t, t.message ?: applicationContext.getString(R.string.error_unexpected))
         }
     }
 

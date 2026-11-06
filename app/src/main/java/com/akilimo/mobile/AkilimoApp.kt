@@ -93,9 +93,18 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
         )
 
 
+        // Older versions enqueued a new, non-unique chain tagged with these names on every
+        // start; clear any that piled up before scheduling the unique chain.
+        WorkerScheduler.cancelLegacyTaggedWork(
+            this,
+            WorkConstants.FERTILIZER_WORK_NAME,
+            WorkConstants.FERTILIZER_PRICE_WORK_NAME
+        )
+
         WorkerScheduler.scheduleChainedWorkers<FertilizerWorker>(
             context = this,
             secondWorker = FertilizerPriceWorker::class.java,
+            chainName = WorkConstants.FERTILIZER_CHAIN_WORK_NAME,
             firstName = WorkConstants.FERTILIZER_WORK_NAME,
             secondName = WorkConstants.FERTILIZER_PRICE_WORK_NAME
         )

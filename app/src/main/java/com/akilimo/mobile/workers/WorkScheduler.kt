@@ -47,7 +47,9 @@ object WorkerScheduler {
         context: Context,
         workName: String,
         constraints: Constraints = defaultConstraints(),
-        policy: ExistingWorkPolicy = ExistingWorkPolicy.REPLACE,
+        // KEEP: called on every app start; REPLACE would cancel a sync that is already
+        // running or pending (including the one WorkManager just woke the process for).
+        policy: ExistingWorkPolicy = ExistingWorkPolicy.KEEP,
         inputData: Data = Data.EMPTY
     ) {
         val oneTimeRequest = OneTimeWorkRequestBuilder<T>()
@@ -67,32 +69,56 @@ object WorkerScheduler {
         )
     }
 
+    /**
+     * Enqueue [T] followed by [secondWorker] as a single unique chain named [chainName].
+     * With [ExistingWorkPolicy.KEEP], calling this on every app start does not stack up
+     * duplicate chains while one is still pending or running.
+     */
     inline fun <reified T : ListenableWorker> scheduleChainedWorkers(
         context: Context,
         secondWorker: Class<out ListenableWorker>,
+        chainName: String,
         firstName: String,
         secondName: String,
-        constraints: Constraints = defaultConstraints()
+        constraints: Constraints = defaultConstraints(),
+        policy: ExistingWorkPolicy = ExistingWorkPolicy.KEEP
     ) {
         val firstRequest = OneTimeWorkRequestBuilder<T>()
             .setConstraints(constraints)
-            .addTag(firstName)
+            .setBackoffCriteria(
+                BackoffPolicy.EXPONENTIAL,
+                WorkRequest.MIN_BACKOFF_MILLIS,
+                TimeUnit.MILLISECONDS
+            )
+            .addTag("$chainName/$firstName")
             .build()
 
         val secondRequest = OneTimeWorkRequest.Builder(secondWorker)
             .setConstraints(constraints)
-            .addTag(secondName)
+            .setBackoffCriteria(
+                BackoffPolicy.EXPONENTIAL,
+                WorkRequest.MIN_BACKOFF_MILLIS,
+                TimeUnit.MILLISECONDS
+            )
+            .addTag("$chainName/$secondName")
             .build()
 
-
         WorkManager.getInstance(context)
-            .beginWith(firstRequest)
+            .beginUniqueWork(chainName, policy, firstRequest)
             .then(secondRequest)
             .enqueue()
     }
 
+    /**
+     * Cancel work enqueued by older app versions under plain tags (non-unique chains).
+     * Safe to call every start: current requests use different tags.
+     */
+    fun cancelLegacyTaggedWork(context: Context, vararg tags: String) {
+        val workManager = WorkManager.getInstance(context)
+        tags.forEach { workManager.cancelAllWorkByTag(it) }
+    }
+
     fun cancelWorker(context: Context, workName: String) {
-        WorkManager.getInstance(context).cancelUniqueWork(workName)
         WorkManager.getInstance(context).cancelUniqueWork(workName)
     }
 

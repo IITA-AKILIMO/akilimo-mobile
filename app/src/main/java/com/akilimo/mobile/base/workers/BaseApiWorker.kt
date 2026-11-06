@@ -70,13 +70,25 @@ abstract class BaseApiWorker<TApi>(
             ensureActive()
             performSafeWork()
         } catch (e: CancellationException) {
+            // WorkManager stopped us (constraints lost, cancelled); let it handle rescheduling
             Timber.w("Worker cancelled: ${javaClass.simpleName}")
-            resultFailure(applicationContext.getString(R.string.error_worker_cancelled))
+            throw e
         } catch (e: Exception) {
             Timber.e(e, "Unhandled error in ${javaClass.simpleName}")
-            resultFailure(e.message ?: applicationContext.getString(R.string.error_unexpected))
+            retryOrFail(e, e.message ?: applicationContext.getString(R.string.error_unexpected))
         }
     }
+
+    /**
+     * Retry transient failures (network, 5xx) via WorkManager backoff; fail on permanent
+     * ones or once [WorkerRetryPolicy.MAX_ATTEMPTS] is reached.
+     */
+    protected fun retryOrFail(error: Throwable, reason: String): Result =
+        if (WorkerRetryPolicy.shouldRetry(error, runAttemptCount)) {
+            resultRetry("$reason (attempt ${runAttemptCount + 1}/${WorkerRetryPolicy.MAX_ATTEMPTS})")
+        } else {
+            resultFailure(reason)
+        }
 
     protected abstract suspend fun performSafeWork(): Result
 
