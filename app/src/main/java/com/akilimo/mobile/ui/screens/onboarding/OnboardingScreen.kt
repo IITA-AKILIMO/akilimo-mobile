@@ -1,24 +1,32 @@
+package com.akilimo.mobile.ui.screens.onboarding
+
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,10 +37,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.akilimo.mobile.R
+import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.navigation.RecommendationsRoute
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.ExitConfirmDialog
 import com.akilimo.mobile.ui.components.compose.SaveBottomBar
+import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 import com.akilimo.mobile.ui.screens.onboarding.steps.AreaUnitStep
 import com.akilimo.mobile.ui.screens.onboarding.steps.BioDataStep
 import com.akilimo.mobile.ui.screens.onboarding.steps.CountryStep
@@ -44,13 +54,21 @@ import com.akilimo.mobile.ui.screens.onboarding.steps.TillageStep
 import com.akilimo.mobile.ui.screens.onboarding.steps.WelcomeStep
 import com.akilimo.mobile.ui.screens.settings.LocationResult
 import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
-import androidx.compose.material.icons.filled.ArrowBack
-import com.akilimo.mobile.data.AppSettingsDataStore
-import com.akilimo.mobile.ui.screens.onboarding.OnboardingSection
 import kotlinx.coroutines.flow.collectLatest
-import com.akilimo.mobile.ui.components.compose.popBackStackSafely
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+/** The section of the form that shows the field behind an error key. */
+private fun sectionForField(field: String): OnboardingSection = when (field) {
+    "country" -> OnboardingSection.COUNTRY
+    "location" -> OnboardingSection.LOCATION
+    "areaUnit", "farmSize" -> OnboardingSection.AREA_UNIT
+    "plantingDate", "harvestDate" -> OnboardingSection.PLANTING_DATE
+    "weedControl" -> OnboardingSection.TILLAGE
+    "investmentPref" -> OnboardingSection.INVESTMENT_PREF
+    else -> OnboardingSection.BIO_DATA
+}
+
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun OnboardingScreen(
     navController: NavHostController,
@@ -61,6 +79,11 @@ fun OnboardingScreen(
     var showExitDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val scrollState = rememberScrollState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val sectionRequesters = remember {
+        OnboardingSection.entries.associateWith { BringIntoViewRequester() }
+    }
 
     val isEditMode = remember { !appSettings.isFirstRun }
 
@@ -78,7 +101,23 @@ fun OnboardingScreen(
                     }
 
                 is OnboardingViewModel.Effect.ExitApp -> showExitDialog = true
-                else -> Unit
+
+                is OnboardingViewModel.Effect.ShowSnackbar ->
+                    scope.launch { snackbarHostState.showSnackbar(effect.message) }
+
+                is OnboardingViewModel.Effect.ShowValidationErrors -> {
+                    // The first failing field may be far off-screen: bring its section into view
+                    scope.launch {
+                        sectionRequesters[sectionForField(effect.firstField)]?.bringIntoView()
+                    }
+                    scope.launch {
+                        snackbarHostState.showSnackbar(
+                            context.resources.getQuantityString(
+                                R.plurals.msg_onboarding_errors, effect.count, effect.count,
+                            )
+                        )
+                    }
+                }
             }
         }
     }
@@ -122,6 +161,24 @@ fun OnboardingScreen(
         )
     }
 
+    state.pendingCountry?.let { pending ->
+        AlertDialog(
+            onDismissRequest = { viewModel.onEvent(OnboardingViewModel.Event.CountryChangeCancelled) },
+            title = { Text(stringResource(R.string.lbl_change_country_title)) },
+            text = { Text(stringResource(R.string.msg_change_country_clears_fertilizers)) },
+            confirmButton = {
+                TextButton(onClick = { viewModel.onEvent(OnboardingViewModel.Event.CountryChangeConfirmed) }) {
+                    Text(stringResource(R.string.lbl_change_country))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.onEvent(OnboardingViewModel.Event.CountryChangeCancelled) }) {
+                    Text(stringResource(R.string.lbl_cancel))
+                }
+            },
+        )
+    }
+
     if (state.isLoading) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -132,11 +189,14 @@ fun OnboardingScreen(
         return
     }
 
+    fun Modifier.section(section: OnboardingSection): Modifier =
+        this.bringIntoViewRequester(sectionRequesters.getValue(section))
+
     Scaffold(
         topBar = {
             BackTopAppBar(
                 title = if (isEditMode) {
-                    stringResource(R.string.lbl_settings)
+                    stringResource(R.string.lbl_edit_profile)
                 } else {
                     stringResource(R.string.lbl_initial_onboarding)
                 },
@@ -159,6 +219,7 @@ fun OnboardingScreen(
                 onClick = { viewModel.onEvent(OnboardingViewModel.Event.SubmitClicked) },
             )
         },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -182,6 +243,7 @@ fun OnboardingScreen(
                 recLanguage = state.recommendationLanguage,
                 errors = state.errors,
                 onEvent = viewModel::onEvent,
+                modifier = Modifier.section(OnboardingSection.BIO_DATA),
             )
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
@@ -191,6 +253,7 @@ fun OnboardingScreen(
                 country = state.country,
                 error = state.errors["country"],
                 onEvent = viewModel::onEvent,
+                modifier = Modifier.section(OnboardingSection.COUNTRY),
             )
 
             LocationStep(
@@ -203,22 +266,23 @@ fun OnboardingScreen(
                 error = state.errors["location"],
                 onEvent = viewModel::onEvent,
                 navController = navController,
+                modifier = Modifier.section(OnboardingSection.LOCATION),
             )
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-            // Field details
-            AnimatedVisibility(visible = state.visibleSections.contains(OnboardingSection.AREA_UNIT)) {
-                AreaUnitStep(
-                    areaUnit = state.areaUnit,
-                    farmSize = state.farmSize,
-                    customFarmSize = state.customFarmSize,
-                    rememberAreaUnit = state.rememberAreaUnit,
-                    country = state.country,
-                    errors = state.errors,
-                    onEvent = viewModel::onEvent,
-                )
-            }
+            // Field details: always shown; a remembered unit only hides the unit picker
+            AreaUnitStep(
+                areaUnit = state.areaUnit,
+                farmSize = state.farmSize,
+                customFarmSize = state.customFarmSize,
+                rememberAreaUnit = state.rememberAreaUnit,
+                showUnitPicker = !state.areaUnitRemembered,
+                country = state.country,
+                errors = state.errors,
+                onEvent = viewModel::onEvent,
+                modifier = Modifier.section(OnboardingSection.AREA_UNIT),
+            )
 
             PlantingDateStep(
                 plantingDate = state.plantingDate,
@@ -228,6 +292,7 @@ fun OnboardingScreen(
                 showFlexOptions = state.showFlexOptions,
                 errors = state.errors,
                 onEvent = viewModel::onEvent,
+                modifier = Modifier.section(OnboardingSection.PLANTING_DATE),
             )
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
@@ -239,12 +304,14 @@ fun OnboardingScreen(
                 weedControlMethod = state.weedControlMethod,
                 errors = state.errors,
                 onEvent = viewModel::onEvent,
+                modifier = Modifier.section(OnboardingSection.TILLAGE),
             )
 
             InvestmentPrefStep(
                 investmentPref = state.investmentPref,
                 error = state.errors["investmentPref"],
                 onEvent = viewModel::onEvent,
+                modifier = Modifier.section(OnboardingSection.INVESTMENT_PREF),
             )
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))

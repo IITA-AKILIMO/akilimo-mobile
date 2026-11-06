@@ -2,10 +2,8 @@ package com.akilimo.mobile.ui.screens.onboarding.steps
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -13,6 +11,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.akilimo.mobile.R
 import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
@@ -56,6 +57,11 @@ fun BioDataStep(
         )
     }
 
+    val nameKeyboard = KeyboardOptions(
+        capitalization = KeyboardCapitalization.Words,
+        imeAction = ImeAction.Next,
+    )
+
     Column(
         modifier = modifier
             .padding(16.dp),
@@ -70,24 +76,28 @@ fun BioDataStep(
             onValueChange = { onEvent(OnboardingViewModel.Event.FirstNameChanged(it)) },
             label = stringResource(R.string.lbl_first_name),
             error = errors["firstName"],
+            keyboardOptions = nameKeyboard,
         )
         AkilimoTextField(
             value = lastName,
             onValueChange = { onEvent(OnboardingViewModel.Event.LastNameChanged(it)) },
             label = stringResource(R.string.lbl_last_name),
             error = errors["lastName"],
+            keyboardOptions = nameKeyboard,
         )
         AkilimoTextField(
             value = email,
             onValueChange = { onEvent(OnboardingViewModel.Event.EmailChanged(it)) },
-            label = stringResource(R.string.lbl_email_address),
+            label = stringResource(R.string.lbl_optional_field, stringResource(R.string.lbl_email_address)),
             error = errors["email"],
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
         )
         AkilimoTextField(
             value = phone,
             onValueChange = { onEvent(OnboardingViewModel.Event.PhoneChanged(it)) },
-            label = stringResource(R.string.lbl_phone_number),
+            label = stringResource(R.string.lbl_optional_field, stringResource(R.string.lbl_phone_number)),
             error = errors["phone"],
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Done),
         )
         AkilimoDropdown(
             label = stringResource(R.string.lbl_gender),

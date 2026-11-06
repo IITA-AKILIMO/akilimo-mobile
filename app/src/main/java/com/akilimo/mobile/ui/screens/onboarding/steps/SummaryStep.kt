@@ -79,7 +79,7 @@ fun SummaryStep(
                 SummaryRow(stringResource(R.string.lbl_last_name), state.lastName)
                 SummaryRow(stringResource(R.string.lbl_email_address), state.email)
                 SummaryRow(stringResource(R.string.lbl_phone_number), state.phone)
-                SummaryRow(stringResource(R.string.lbl_gender), state.gender)
+                SummaryRow(stringResource(R.string.lbl_gender), genderLabel(state.gender))
                 SummaryRow(
                     stringResource(R.string.lbl_recommendation_language),
                     Locale.forLanguageTag(state.recommendationLanguage).displayLanguage
@@ -92,10 +92,10 @@ fun SummaryStep(
                     stringResource(R.string.lbl_farm_size),
                     "%.2f %s".format(state.farmSize, state.areaUnit.label(context))
                 )
-                if (state.latitude != 0.0) {
+                if (state.latitude != 0.0 || state.longitude != 0.0) {
                     SummaryRow(
                         stringResource(R.string.lbl_location),
-                        "Lat: %.5f, Lng: %.5f".format(state.latitude, state.longitude)
+                        stringResource(R.string.lbl_lat_lng_format, state.latitude, state.longitude)
                     )
                 }
             }
@@ -179,4 +179,13 @@ private fun SummaryRow(label: String, value: String?) {
             )
         }
     }
+}
+
+/** Shows the stored gender code (F / M / NA) as the same localised label the form uses. */
+@Composable
+private fun genderLabel(code: String): String? = when (code) {
+    "F" -> stringResource(R.string.lbl_female)
+    "M" -> stringResource(R.string.lbl_male)
+    "NA" -> stringResource(R.string.lbl_prefer_not_to_say)
+    else -> code.ifBlank { null }
 }
