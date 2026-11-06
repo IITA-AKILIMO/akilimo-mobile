@@ -46,7 +46,7 @@
             android:value="https://f82045e88773833962622996b32b9c8a@o212209.ingest.us.sentry.io/4510186632314885" />
         <meta-data
             android:name="io.sentry.send-default-pii"
-            android:value="true" />
+            android:value="false" />
         <!-- Compose single-Activity launcher (Phase 1+) -->
         <activity
             android:name=".ui.activities.MainActivity"
