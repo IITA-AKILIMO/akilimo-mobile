@@ -46,7 +46,8 @@ object NetworkUtils {
             conn.connect()
             conn.responseCode == 200
         } catch (e: Exception) {
-            Sentry.captureException(e)
+            // Being offline is the expected answer here, not a bug
+            reportUnlessNetworkError(e)
             false
         }
     }

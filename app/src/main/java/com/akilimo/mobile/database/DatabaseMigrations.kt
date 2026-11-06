@@ -40,9 +40,9 @@ object DatabaseMigrations {
     }
 
     /**
-     * v5 → v6: Add weed_control_method column to akilimo_users.
-     * Captures the weeding method selected during onboarding so it
-     * pre-fills the BPP weed-control use-case screen.
+     * v5 → v6: Add recommendation_language column to akilimo_users (default 'en').
+     * Stores the language the user wants recommendations returned in,
+     * independently of the app UI language.
      */
     val MIGRATION_5_6 = object : Migration(5, 6) {
         override fun migrate(db: SupportSQLiteDatabase) {

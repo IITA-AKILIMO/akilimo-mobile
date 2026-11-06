@@ -314,6 +314,8 @@
     <string name="error_country_required">Please select your country</string>
     <string name="error_farm_size_invalid">Please enter a valid farm size</string>
     <string name="error_amount_invalid">Please enter a valid amount</string>
+    <string name="cd_show_as_list">Show as list</string>
+    <string name="cd_show_as_grid">Show as grid</string>
     <string name="error_planting_date_required">Please select a planting date</string>
     <string name="error_harvest_date_required">Please select a harvest date</string>
     <string name="error_weed_control_required">Please select a weed control method</string>

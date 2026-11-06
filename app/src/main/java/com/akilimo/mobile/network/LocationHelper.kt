@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
-import android.os.Build
 import androidx.core.content.ContextCompat
+import kotlinx.coroutines.CancellationException
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
@@ -43,6 +43,8 @@ class LocationHelper {
                     getFreshLocation(context)
                 } ?: LocationResult.Error("Timeout getting fresh location")
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: SecurityException) {
             Sentry.captureException(e)
             LocationResult.Error("Location permission denied")
@@ -52,31 +54,32 @@ class LocationHelper {
     }
 
     private suspend fun getFreshLocation(context: Context): LocationResult {
+        val cancellationTokenSource = CancellationTokenSource()
         return try {
             val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-            val cancellationTokenSource = CancellationTokenSource()
-            // Use getCurrentLocation API which is more battery efficient
-            val location = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                fusedLocationClient.getCurrentLocation(
-                    Priority.PRIORITY_HIGH_ACCURACY,
-                    cancellationTokenSource.token
-                ).await()
-            } else {
-                // Fallback for older versions
-                fusedLocationClient.lastLocation.await()
-            }
+            // Fused getCurrentLocation works on all API levels. The old pre-Android 11
+            // fallback re-read lastLocation, which had just failed the freshness check,
+            // so location always failed on Android 5–10 once the cached fix was stale.
+            val location = fusedLocationClient.getCurrentLocation(
+                Priority.PRIORITY_HIGH_ACCURACY,
+                cancellationTokenSource.token
+            ).await()
 
-            cancellationTokenSource.cancel()
-            if (location != null && isValidLocation(location)) {
+            if (location != null && (location.latitude != 0.0 || location.longitude != 0.0)) {
                 LocationResult.Success(location)
             } else {
                 LocationResult.Error("Unable to get current location")
             }
+        } catch (e: CancellationException) {
+            throw e // timeout from the caller's withTimeoutOrNull
         } catch (e: SecurityException) {
             Sentry.captureException(e)
             LocationResult.Error("Location permission denied")
         } catch (e: Exception) {
             LocationResult.Error("Error getting fresh location: ${e.message ?: "Unknown error"}")
+        } finally {
+            // Stop the GPS request also on timeout/cancellation, not only on success
+            cancellationTokenSource.cancel()
         }
     }
 

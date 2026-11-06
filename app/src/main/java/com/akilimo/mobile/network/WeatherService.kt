@@ -4,7 +4,7 @@ import android.content.Context
 import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.network.ApiClient
 import com.akilimo.mobile.network.WeatherApi
-import io.sentry.Sentry
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -39,27 +39,27 @@ class WeatherService(
     }
 
     fun fetchWeatherFlow(lat: Double, lon: Double): Flow<WeatherResult> = flow {
-        try {
-            val coordinates = "$lat,$lon"
+        // emit() stays outside try/catch to preserve Flow exception transparency
+        val result = try {
             val response = api.getCurrentWeather(
                 apiKey = BuildConfig.WEATHER_API_KEY,
-                coordinates = coordinates
+                coordinates = "$lat,$lon"
             )
-
-            emit(
-                WeatherResult.Success(
-                    WeatherData(
-                        temperature = response.current.tempCelsius,
-                        feelsLike = response.current.feelslikeCelsius,
-                        condition = response.current.condition.text,
-                        humidity = response.current.humidity,
-                        windSpeed = response.current.windKph / 3.6 // kph → m/s
-                    )
+            WeatherResult.Success(
+                WeatherData(
+                    temperature = response.current.tempCelsius,
+                    feelsLike = response.current.feelslikeCelsius,
+                    condition = response.current.condition.text,
+                    humidity = response.current.humidity,
+                    windSpeed = response.current.windKph / 3.6 // kph → m/s
                 )
             )
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
-            Sentry.captureException(e)
-            emit(WeatherResult.Error(e))
+            reportUnlessNetworkError(e)
+            WeatherResult.Error(e)
         }
+        emit(result)
     }.flowOn(Dispatchers.IO) // network call runs on IO, collector can be Main
 }

@@ -12,6 +12,7 @@ import com.akilimo.mobile.enums.EnumUseCase
 import com.akilimo.mobile.network.AkilimoApi
 import com.akilimo.mobile.network.ApiClient
 import com.akilimo.mobile.network.parseError
+import com.akilimo.mobile.network.reportUnlessNetworkError
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.RecommendationBuilder
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -91,7 +92,7 @@ class GetRecommendationViewModel @Inject constructor(
                 throw e
             } catch (e: Exception) {
                 // Offline/timeouts are expected in the field; only report real bugs
-                if (e !is IOException) Sentry.captureException(e)
+                reportUnlessNetworkError(e)
                 // Show the localized message, not raw text like "Unable to resolve host"
                 _uiState.value = UiState.Error(errorLabel)
             }
@@ -117,7 +118,7 @@ class GetRecommendationViewModel @Inject constructor(
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                if (e !is IOException) Sentry.captureException(e)
+                reportUnlessNetworkError(e)
                 _feedbackResult.emit(false)
             }
         }

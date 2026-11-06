@@ -57,7 +57,8 @@ fun LocationStep(
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),
     ) { permissions ->
-        if (permissions.all { it.value }) {
+        // Android 12+ lets users grant only approximate location; coarse is enough here
+        if (permissions.values.any { it }) {
             scope.launch {
                 when (val r = locationHelper.getCurrentLocation(context)) {
                     is LocationHelper.LocationResult.Success -> {
