@@ -10,4 +10,19 @@ enum class EnumAreaUnit(private val stringRes: Int) : ILabelProvider {
     ARE(R.string.lbl_are);
 
     override fun label(context: Context): String = stringRes.let { context.getString(it) }
+
+    companion object {
+        /**
+         * Parse a unit string from the API (e.g. investment amounts' `area_unit`).
+         * Returns null when the value isn't recognised.
+         */
+        fun fromApiValue(raw: String?): EnumAreaUnit? =
+            when (raw?.trim()?.lowercase()) {
+                "acre", "acres", "ac" -> ACRE
+                "ha", "hectare", "hectares" -> HA
+                "m2", "m²", "sqm", "square meter", "square meters", "square metre", "square metres" -> M2
+                "are", "ares", "a" -> ARE
+                else -> entries.firstOrNull { it.name.equals(raw?.trim(), ignoreCase = true) }
+            }
+    }
 }
