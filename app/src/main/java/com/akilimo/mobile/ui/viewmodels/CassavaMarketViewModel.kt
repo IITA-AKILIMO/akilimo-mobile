@@ -9,6 +9,7 @@ import javax.inject.Inject
 import com.akilimo.mobile.entities.CassavaUnit
 import com.akilimo.mobile.entities.SelectedCassavaMarket
 import com.akilimo.mobile.entities.StarchFactory
+import com.akilimo.mobile.enums.EnumCassavaProduceType
 import com.akilimo.mobile.enums.EnumCountry
 import com.akilimo.mobile.enums.EnumUnitOfSale
 import com.akilimo.mobile.repos.AkilimoUserRepo
@@ -113,7 +114,16 @@ class CassavaMarketViewModel @Inject constructor(
 
     fun selectFactory(factory: StarchFactory) = viewModelScope.launch {
         val userId = _uiState.value.userId
-        selectedRepo.select(SelectedCassavaMarket(userId = userId, starchFactoryId = factory.id))
+        val current = selectedRepo.getSelectedByUser(userId)?.selectedCassavaMarket
+        selectedRepo.select(
+            SelectedCassavaMarket(
+                userId = userId,
+                starchFactoryId = factory.id,
+                // Keep choices made on other screens (yield) when switching market type
+                yieldId = current?.yieldId,
+                produceType = current?.produceType ?: EnumCassavaProduceType.ROOTS
+            )
+        )
         _uiState.update { it.copy(selectedFactoryId = factory.id) }
     }
 
@@ -131,13 +141,16 @@ class CassavaMarketViewModel @Inject constructor(
             MathHelper.computeUnitPrice(selectedPrice?.averagePrice ?: 0.0, uos)
         }
 
+        val current = selectedRepo.getSelectedByUser(userId)?.selectedCassavaMarket
         selectedRepo.select(
             SelectedCassavaMarket(
                 userId = userId,
                 cassavaUnitId = unit.id,
                 unitOfSale = uos,
                 unitPrice = unitPrice,
-                marketPriceId = selectedPrice?.id
+                marketPriceId = selectedPrice?.id,
+                yieldId = current?.yieldId,
+                produceType = current?.produceType ?: EnumCassavaProduceType.ROOTS
             )
         )
     }

@@ -221,6 +221,7 @@ class OnboardingViewModel @Inject constructor(
                     tillageOperations = user?.tillageOperations
                         ?.associate { it.operation.valueOption to it.method.valueOption }
                         ?: emptyMap(),
+                    weedControlEnabled = user?.weedControlMethod != null,
                     weedControlMethod = user?.weedControlMethod,
                     investmentPref = user?.investmentPref ?: EnumInvestmentPref.Prompt,
                 )
