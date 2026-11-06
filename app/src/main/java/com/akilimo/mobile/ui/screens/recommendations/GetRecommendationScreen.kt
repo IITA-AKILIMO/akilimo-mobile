@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,36 +25,37 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.akilimo.mobile.R
 import com.akilimo.mobile.enums.EnumUseCase
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
-import com.akilimo.mobile.ui.viewmodels.GetRecommendationViewModel
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.ExperimentalMaterial3Api
 import com.akilimo.mobile.ui.components.compose.popBackStackSafely
+import com.akilimo.mobile.ui.theme.AkilimoSpacing
+import com.akilimo.mobile.ui.viewmodels.GetRecommendationViewModel
+
+/** FAB height (56dp) + its margin (16dp) + breathing room, so the FAB never covers text. */
+private val FAB_CLEARANCE = 88.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostController) {
     val viewModel = hiltViewModel<GetRecommendationViewModel>()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val noRecsLabel = stringResource(R.string.lbl_no_recommendations_prompt)
-    val errorLabel = stringResource(R.string.error_fetch_recommendation)
     val feedbackSuccessMessage = stringResource(R.string.msg_feedback_submit_success)
     val feedbackFailureMessage = stringResource(R.string.msg_feedback_submit_failure)
-    var showFeedback by remember { mutableStateOf(false) }
+    var showFeedback by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(useCase) {
-        viewModel.fetchRecommendation(useCase, noRecsLabel, errorLabel)
+        viewModel.fetchRecommendation(useCase)
     }
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -97,8 +100,13 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(AkilimoSpacing.md)
                             .verticalScroll(rememberScrollState())
+                            .padding(
+                                start = AkilimoSpacing.md,
+                                end = AkilimoSpacing.md,
+                                top = AkilimoSpacing.md,
+                                bottom = FAB_CLEARANCE,
+                            )
                     ) {
                         Text(text = title, style = MaterialTheme.typography.headlineSmall)
                         Spacer(Modifier.height(AkilimoSpacing.sm))
@@ -108,16 +116,18 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
 
                 is GetRecommendationViewModel.UiState.Error -> {
                     Column(
-                        modifier = Modifier.align(Alignment.Center),
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(horizontal = AkilimoSpacing.xl),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Text(s.message, style = MaterialTheme.typography.bodyMedium)
+                        Text(
+                            text = stringResource(s.messageRes),
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Center,
+                        )
                         Spacer(Modifier.height(AkilimoSpacing.md))
-                        Button(
-                            onClick = {
-                                viewModel.fetchRecommendation(useCase, noRecsLabel, errorLabel)
-                            }
-                        ) {
+                        Button(onClick = { viewModel.fetchRecommendation(useCase) }) {
                             Text(stringResource(R.string.lbl_retry))
                         }
                     }

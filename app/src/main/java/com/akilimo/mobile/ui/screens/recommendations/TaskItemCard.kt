@@ -22,7 +22,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
+import androidx.annotation.StringRes
+import com.akilimo.mobile.R
 import com.akilimo.mobile.enums.EnumStepStatus
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
 
@@ -34,10 +39,13 @@ fun TaskItemCard(
     stepNumber: Int = -1,
 ) {
     val isCompleted = status == EnumStepStatus.COMPLETED
+    val statusText = stringResource(status.labelRes())
     Card(
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
+            // Status is otherwise conveyed only by colour and an icon; TalkBack reads it here
+            .semantics { stateDescription = statusText }
             .padding(horizontal = AkilimoSpacing.md, vertical = AkilimoSpacing.xs),
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(
@@ -70,6 +78,13 @@ fun TaskItemCard(
             )
         }
     }
+}
+
+@StringRes
+internal fun EnumStepStatus.labelRes(): Int = when (this) {
+    EnumStepStatus.COMPLETED -> R.string.lbl_status_completed
+    EnumStepStatus.IN_PROGRESS -> R.string.lbl_status_in_progress
+    EnumStepStatus.NOT_STARTED -> R.string.lbl_status_not_started
 }
 
 @Composable

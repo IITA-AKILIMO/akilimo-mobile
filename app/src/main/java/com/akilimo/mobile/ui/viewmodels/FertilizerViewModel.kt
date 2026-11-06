@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.entities.Fertilizer
+import com.akilimo.mobile.entities.FertilizerPrice
 import com.akilimo.mobile.entities.SelectedFertilizer
 import com.akilimo.mobile.enums.EnumFertilizerFlow
 import com.akilimo.mobile.enums.EnumStepStatus
@@ -15,6 +16,8 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.sentry.Sentry
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,9 +29,9 @@ import kotlinx.coroutines.launch
 @HiltViewModel(assistedFactory = FertilizerViewModel.Factory::class)
 class FertilizerViewModel @AssistedInject constructor(
     private val fertilizerRepo: FertilizerRepo,
-    val selectedRepo: SelectedFertilizerRepo,
+    private val selectedRepo: SelectedFertilizerRepo,
     private val userRepo: AkilimoUserRepo,
-    val priceRepo: FertilizerPriceRepo,
+    private val priceRepo: FertilizerPriceRepo,
     private val appSettings: AppSettingsDataStore,
     @Assisted private val fertilizerFlow: EnumFertilizerFlow
 ) : ViewModel() {
@@ -43,7 +46,18 @@ class FertilizerViewModel @AssistedInject constructor(
         val selectedIds: Set<Int> = emptySet(),
         val isEmpty: Boolean = false,
         val userId: Int = 0,
-        val isGridLayout: Boolean = false
+        val isGridLayout: Boolean = false,
+        val isLoading: Boolean = true,
+        val isSaving: Boolean = false,
+        val saveFailed: Boolean = false
+    )
+
+    /** What the price sheet needs: the price options and the saved answer, if any. */
+    data class PriceOptions(
+        val prices: List<FertilizerPrice>,
+        val savedPriceId: Int?,
+        /** Pre-fill for the exact-price field when the saved answer was an exact price. */
+        val savedExactPrice: Double?
     )
 
     private val _uiState = MutableStateFlow(UiState())
@@ -56,8 +70,12 @@ class FertilizerViewModel @AssistedInject constructor(
 
     private fun loadData() = viewModelScope.launch {
         val userName = appSettings.akilimoUser
-        val user = userRepo.getUser(userName) ?: return@launch
-        val userId = user.id ?: return@launch
+        val user = userRepo.getUser(userName)
+        val userId = user?.id
+        if (user == null || userId == null) {
+            _uiState.update { it.copy(isLoading = false) }
+            return@launch
+        }
         val country = user.enumCountry
 
         _uiState.update { it.copy(userId = userId) }
@@ -82,7 +100,12 @@ class FertilizerViewModel @AssistedInject constructor(
                 Pair(mapped, selectedIds)
             }.collectLatest { (mapped, selectedIds) ->
                 _uiState.update {
-                    it.copy(fertilizers = mapped, selectedIds = selectedIds, isEmpty = mapped.isEmpty())
+                    it.copy(
+                        fertilizers = mapped,
+                        selectedIds = selectedIds,
+                        isEmpty = mapped.isEmpty(),
+                        isLoading = false
+                    )
                 }
             }
         }
@@ -94,7 +117,7 @@ class FertilizerViewModel @AssistedInject constructor(
         price: Double?,
         displayPrice: String?,
         isExactPrice: Boolean
-    ) = viewModelScope.launch {
+    ) = runSave {
         val userId = _uiState.value.userId
         selectedRepo.select(
             SelectedFertilizer(
@@ -114,9 +137,36 @@ class FertilizerViewModel @AssistedInject constructor(
         _uiState.update { it.copy(isGridLayout = newValue) }
     }
 
-    fun deselectFertilizer(fertilizerId: Int) = viewModelScope.launch {
+    fun deselectFertilizer(fertilizerId: Int) = runSave {
         val userId = _uiState.value.userId
         selectedRepo.deselect(userId, fertilizerId)
+    }
+
+    /** Loads the price options for [fertilizer] together with the farmer's saved answer. */
+    suspend fun loadPriceOptions(fertilizer: Fertilizer): PriceOptions {
+        val prices = priceRepo.getByFertilizerKey(fertilizer.key.orEmpty())
+        val saved = selectedRepo.getSelectedByFertilizer(fertilizer.id ?: 0)
+        return PriceOptions(
+            prices = prices,
+            savedPriceId = saved?.fertilizerPriceId,
+            savedExactPrice = saved?.takeIf { it.isExactPrice }?.fertilizerPrice?.takeIf { it > 0.0 }
+        )
+    }
+
+    fun onSaveErrorShown() = _uiState.update { it.copy(saveFailed = false) }
+
+    /** Runs a DB write with [UiState.isSaving] set, reporting failure via [UiState.saveFailed]. */
+    private fun runSave(block: suspend () -> Unit) = viewModelScope.launch {
+        _uiState.update { it.copy(isSaving = true, saveFailed = false) }
+        try {
+            block()
+            _uiState.update { it.copy(isSaving = false) }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Sentry.captureException(e)
+            _uiState.update { it.copy(isSaving = false, saveFailed = true) }
+        }
     }
 
     suspend fun getStepStatus(): EnumStepStatus {
