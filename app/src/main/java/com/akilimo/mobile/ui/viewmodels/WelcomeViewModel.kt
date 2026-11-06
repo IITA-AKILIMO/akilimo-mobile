@@ -42,7 +42,7 @@ class WelcomeViewModel @Inject constructor(
         val currentPrefs = prefsRepo.getOrDefault()
         prefsRepo.save(currentPrefs.copy(languageCode = selected.valueOption))
 
-        appSettings.setLanguageTag(selected.valueOption)
+        appSettings.setLanguageTagAndOverride(selected.valueOption)
 
         _uiState.update { it.copy(currentLanguageCode = selected.valueOption) }
     }

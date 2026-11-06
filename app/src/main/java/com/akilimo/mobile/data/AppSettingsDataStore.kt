@@ -79,6 +79,24 @@ class AppSettingsDataStore @Inject constructor(
                 .first()
         }
 
+        /**
+         * The language the app must use, or null to follow the phone's language.
+         * Synchronous for [android.app.Activity.attachBaseContext] (runs before Hilt injection).
+         */
+        fun readAppliedLanguageTagSync(context: Context): String? = runBlocking {
+            context.appSettingsDataStore.data.map { prefs ->
+                if (isLanguageLocked(prefs)) Locales.normalize(prefs[Keys.LANGUAGE_CODE] ?: "") else null
+            }.first()
+        }
+
+        /**
+         * "Override system language". When never set explicitly it defaults to ON if the user
+         * has picked a language, so people who chose a language before this setting existed
+         * keep it instead of silently switching to the phone's language.
+         */
+        private fun isLanguageLocked(prefs: Preferences): Boolean =
+            prefs[Keys.LOCK_APP_LANGUAGE] ?: (prefs[Keys.LANGUAGE_CODE] != null)
+
         /** Endpoint — synchronous read for [com.akilimo.mobile.config.AppConfig] / Workers. */
         fun readEndpointSync(context: Context, service: EnumServiceType): String = runBlocking {
             context.appSettingsDataStore.data.map { prefs ->
@@ -120,7 +138,7 @@ class AppSettingsDataStore @Inject constructor(
         dataStore.data.map { prefs -> prefs[Keys.FERTILIZER_GRID] ?: false }
 
     val lockAppLanguageFlow: Flow<Boolean> =
-        dataStore.data.map { prefs -> prefs[Keys.LOCK_APP_LANGUAGE] ?: false }
+        dataStore.data.map { prefs -> isLanguageLocked(prefs) }
 
     // ── Synchronous property accessors ────────────────────────────────────────
     // After the first DataStore read (done in AkilimoApp.onCreate via getLanguageTagSync /
@@ -198,8 +216,12 @@ class AppSettingsDataStore @Inject constructor(
         set(value) = asyncSet(Keys.FERTILIZER_GRID, value)
 
     var lockAppLanguage: Boolean
-        get() = syncGet(Keys.LOCK_APP_LANGUAGE, false)
+        get() = runBlocking { dataStore.data.map { isLanguageLocked(it) }.first() }
         set(value) = asyncSet(Keys.LOCK_APP_LANGUAGE, value)
+
+    /** Language tag to apply, or null to follow the phone's language. */
+    val appliedLanguageTag: String?
+        get() = if (lockAppLanguage) languageTag else null
 
     var notificationCount: Int
         get() = syncGet(Keys.NOTIFICATION_COUNT, 3)
@@ -233,6 +255,14 @@ class AppSettingsDataStore @Inject constructor(
     // Suspend versions for coroutine-friendly callers
     suspend fun setLanguageTag(tag: String) {
         dataStore.edit { it[Keys.LANGUAGE_CODE] = tag }
+    }
+
+    /** Picking a language explicitly means "use this language": also turns the override on. */
+    suspend fun setLanguageTagAndOverride(tag: String) {
+        dataStore.edit {
+            it[Keys.LANGUAGE_CODE] = tag
+            it[Keys.LOCK_APP_LANGUAGE] = true
+        }
     }
 
     suspend fun setDarkMode(enabled: Boolean) {

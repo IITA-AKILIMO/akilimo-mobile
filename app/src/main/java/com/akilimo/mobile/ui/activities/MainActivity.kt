@@ -8,7 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.akilimo.mobile.data.AppSettingsDataStore
-import dev.b3nedikt.app_locale.AppLocale
+import com.akilimo.mobile.data.AppLanguage
 import javax.inject.Inject
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
@@ -35,7 +35,9 @@ class MainActivity : ComponentActivity() {
     lateinit var appSettings: AppSettingsDataStore
 
     override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(AppLocale.wrap(newBase))
+        // Runs before Hilt injection, so read settings directly
+        val tag = AppSettingsDataStore.readAppliedLanguageTagSync(newBase)
+        super.attachBaseContext(AppLanguage.wrap(newBase, tag))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

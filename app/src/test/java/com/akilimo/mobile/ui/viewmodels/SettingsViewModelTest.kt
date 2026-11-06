@@ -139,7 +139,7 @@ class SettingsViewModelTest {
             viewModel.setLanguage("sw-TZ")
             advanceUntilIdle()
 
-            coVerify { appSettings.setLanguageTag("sw-TZ") }
+            coVerify { appSettings.setLanguageTagAndOverride("sw-TZ") }
             coVerify { userRepo.saveOrUpdateUser(any(), "user1") }
             coVerify { prefsRepo.save(any()) }
 

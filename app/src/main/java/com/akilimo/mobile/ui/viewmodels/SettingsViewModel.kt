@@ -95,7 +95,7 @@ class SettingsViewModel @Inject constructor(
             userRepo.saveOrUpdateUser(user.copy(languageCode = tag), userName)
             val currentPrefs = prefsRepo.getOrDefault()
             prefsRepo.save(currentPrefs.copy(languageCode = tag))
-            appSettings.setLanguageTag(tag)
+            appSettings.setLanguageTagAndOverride(tag)
             _effect.send(Effect.LanguageChanged(tag))
         }
     }
