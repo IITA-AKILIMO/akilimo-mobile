@@ -38,8 +38,12 @@ import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -211,34 +215,32 @@ fun OnboardingScreen(
 
     // First-run page 1: the welcome message is the expanded header (one green hero, no separate
     // banner below it); "About you" only appears in the toolbar once the header collapses.
-    // The taller header grows with the font size so the longer text isn't cut off.
     val isWelcomePage = !isEditMode && step == OnboardingStep.ABOUT_YOU
-    val fontScale = LocalDensity.current.fontScale.coerceIn(1f, MAX_HEADER_FONT_SCALE)
+    // Each sentence of the welcome title on its own line ("Are you growing cassava?" /
+    // "And looking to become a pro?" / "AKILIMO can help you!"). Splitting at runtime
+    // works for every translation without touching the string resources.
+    val welcomeTitle = stringResource(R.string.welcome_title).replace(SENTENCE_BREAK, "\n")
+    val welcomeSubtitle = stringResource(R.string.welcome_subtitle)
+    val welcomeHeaderHeight = rememberWelcomeHeaderHeight(welcomeTitle, welcomeSubtitle)
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             BackTopAppBar(
-                // Each sentence of the welcome title on its own line ("Are you growing cassava?" /
-                // "And looking to become a pro?" / "AKILIMO can help you!"). Splitting at runtime
-                // works for every translation without touching the string resources.
-                title = if (isWelcomePage) {
-                    stringResource(R.string.welcome_title).replace(SENTENCE_BREAK, "\n")
-                } else {
-                    pageTitle
-                },
+                title = if (isWelcomePage) welcomeTitle else pageTitle,
                 subtitle = when {
-                    isWelcomePage -> stringResource(R.string.welcome_subtitle)
+                    isWelcomePage -> welcomeSubtitle
                     isEditMode -> stringResource(R.string.lbl_edit_profile)
                     else -> null
                 },
                 collapsedTitle = pageTitle,
                 scrollBehavior = scrollBehavior,
                 expandedHeight = if (isWelcomePage) {
-                    WELCOME_HEADER_HEIGHT * fontScale
+                    welcomeHeaderHeight
                 } else {
                     TopAppBarDefaults.LargeAppBarExpandedHeight
                 },
+                expandedCentered = isWelcomePage,
                 expandedTitleMaxLines = if (isWelcomePage) WELCOME_TITLE_MAX_LINES else 2,
                 expandedSubtitleMaxLines = if (isWelcomePage) WELCOME_SUBTITLE_MAX_LINES else 2,
                 // A clear gap so the smaller subtitle reads as its own line, not the same paragraph
@@ -301,9 +303,44 @@ fun OnboardingScreen(
 
 private typealias OnEvent = (OnboardingViewModel.Event) -> Unit
 
-/** Expanded header height on first-run page 1, which holds the welcome title and subtitle */
-// Toolbar row 64 + title 4 x 28 + gap 12 + subtitle 3 x 20 + bottom inset ~28 ≈ 276
-private val WELCOME_HEADER_HEIGHT = 280.dp
+/**
+ * Height of the expanded welcome header, measured from the actual text so there is no empty band
+ * above it: works for any language, screen width and font size. The large top bar always keeps
+ * its toolbar row on top and a fixed inset below the title, so those are added around the text.
+ */
+@Composable
+private fun rememberWelcomeHeaderHeight(title: String, subtitle: String): Dp {
+    val measurer = rememberTextMeasurer()
+    val density = LocalDensity.current
+    val typography = MaterialTheme.typography
+    val widthDp = LocalConfiguration.current.screenWidthDp.dp
+    return remember(title, subtitle, widthDp, density, typography) {
+        with(density) {
+            // The large bar's title row is inset 16dp on each side
+            val constraints = Constraints(maxWidth = (widthDp - HEADER_SIDE_INSETS).roundToPx().coerceAtLeast(1))
+            val titleHeight = measurer.measure(
+                text = title,
+                style = typography.titleLarge,
+                maxLines = WELCOME_TITLE_MAX_LINES,
+                constraints = constraints,
+            ).size.height.toDp()
+            val subtitleHeight = measurer.measure(
+                text = subtitle,
+                style = typography.bodyMedium,
+                maxLines = WELCOME_SUBTITLE_MAX_LINES,
+                constraints = constraints,
+            ).size.height.toDp()
+            TopAppBarDefaults.TopAppBarExpandedHeight + titleHeight + AkilimoSpacing.sm +
+                subtitleHeight + LARGE_TITLE_BOTTOM_INSET
+        }
+    }
+}
+
+/** Left + right padding of the large top bar's title row */
+private val HEADER_SIDE_INSETS = 32.dp
+
+/** Space the large top bar keeps under its expanded title (M3's LargeTitleBottomPadding) */
+private val LARGE_TITLE_BOTTOM_INSET = 28.dp
 
 /** Lines for the welcome title: one per sentence (3), plus one if a sentence wraps */
 private const val WELCOME_TITLE_MAX_LINES = 4
@@ -313,9 +350,6 @@ private const val WELCOME_SUBTITLE_MAX_LINES = 3
 
 /** Whitespace right after a sentence-ending mark: where the welcome title breaks lines */
 private val SENTENCE_BREAK = Regex("(?<=[?!.])\\s+")
-
-/** The welcome header grows with the font size up to this scale (beyond it, text ellipsizes) */
-private const val MAX_HEADER_FONT_SCALE = 1.6f
 
 @Composable
 private fun BioDataSection(
