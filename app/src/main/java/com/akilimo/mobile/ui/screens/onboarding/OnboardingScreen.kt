@@ -1,15 +1,26 @@
 package com.akilimo.mobile.ui.screens.onboarding
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.rememberScrollState
@@ -20,6 +31,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -28,8 +40,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -38,14 +52,13 @@ import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.rememberTextMeasurer
-import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -213,38 +226,25 @@ fun OnboardingScreen(
     // Each page starts at the top; a fresh scroll state per page does that
     val pageScroll = key(step) { rememberScrollState() }
 
-    // First-run page 1: the welcome message is the expanded header (one green hero, no separate
-    // banner below it); "About you" only appears in the toolbar once the header collapses.
+    // First-run page 1 has no top bar at all: the welcome message is a green header at the top of
+    // the page itself (no empty toolbar row above it), and a slim "About you" bar fades in over the
+    // page once that header has scrolled away.
     val isWelcomePage = !isEditMode && step == OnboardingStep.ABOUT_YOU
-    // Each sentence of the welcome title on its own line ("Are you growing cassava?" /
-    // "And looking to become a pro?" / "AKILIMO can help you!"). Splitting at runtime
-    // works for every translation without touching the string resources.
-    val welcomeTitle = stringResource(R.string.welcome_title).replace(SENTENCE_BREAK, "\n")
-    val welcomeSubtitle = stringResource(R.string.welcome_subtitle)
-    val welcomeHeaderHeight = rememberWelcomeHeaderHeight(welcomeTitle, welcomeSubtitle)
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = if (isWelcomePage) Modifier else Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        // The welcome header draws under the status bar itself, so don't pad for it
+        contentWindowInsets = if (isWelcomePage) {
+            ScaffoldDefaults.contentWindowInsets.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
+        } else {
+            ScaffoldDefaults.contentWindowInsets
+        },
         topBar = {
-            BackTopAppBar(
-                title = if (isWelcomePage) welcomeTitle else pageTitle,
-                subtitle = when {
-                    isWelcomePage -> welcomeSubtitle
-                    isEditMode -> stringResource(R.string.lbl_edit_profile)
-                    else -> null
-                },
+            if (!isWelcomePage) BackTopAppBar(
+                title = pageTitle,
+                subtitle = if (isEditMode) stringResource(R.string.lbl_edit_profile) else null,
                 collapsedTitle = pageTitle,
                 scrollBehavior = scrollBehavior,
-                expandedHeight = if (isWelcomePage) {
-                    welcomeHeaderHeight
-                } else {
-                    TopAppBarDefaults.LargeAppBarExpandedHeight
-                },
-                expandedCentered = isWelcomePage,
-                expandedTitleMaxLines = if (isWelcomePage) WELCOME_TITLE_MAX_LINES else 2,
-                expandedSubtitleMaxLines = if (isWelcomePage) WELCOME_SUBTITLE_MAX_LINES else 2,
-                // A clear gap so the smaller subtitle reads as its own line, not the same paragraph
-                expandedSubtitleGap = if (isWelcomePage) AkilimoSpacing.sm else 2.dp,
                 // The bottom bar's Back moves between pages, so the top bar doesn't repeat it:
                 // editing gets a ✕ that leaves without saving; first run has nowhere to go up to
                 // (the phone's back button still steps back, and asks to exit on page 1)
@@ -278,75 +278,102 @@ fun OnboardingScreen(
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .consumeWindowInsets(paddingValues)
-                .imePadding()
-                .verticalScroll(pageScroll),
-        ) {
-            when (step) {
-                OnboardingStep.ABOUT_YOU -> BioDataSection(state, viewModel::onEvent, sectionModifier)
-
-                OnboardingStep.FARM_LOCATION ->
-                    FarmLocationSection(state, viewModel::onEvent, navController, sectionModifier)
-
-                OnboardingStep.FIELD -> FieldSection(state, viewModel::onEvent, sectionModifier)
-                OnboardingStep.PRACTICES -> PracticesSection(state, viewModel::onEvent, sectionModifier)
-                OnboardingStep.REVIEW -> SummaryStep(state = state)
+        var welcomeHeaderHeightPx by remember { mutableIntStateOf(0) }
+        val pinnedBarHeightPx = with(LocalDensity.current) {
+            TopAppBarDefaults.TopAppBarExpandedHeight.roundToPx()
+        } + WindowInsets.statusBars.getTop(LocalDensity.current)
+        // Show the pinned bar once the header's text is about to slide under it
+        val showPinnedBar by remember(pageScroll) {
+            derivedStateOf {
+                welcomeHeaderHeightPx > 0 && pageScroll.value >= welcomeHeaderHeightPx - pinnedBarHeightPx
             }
-            Spacer(Modifier.height(AkilimoSpacing.xxl))
         }
+
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .consumeWindowInsets(paddingValues)
+                    .imePadding()
+                    .verticalScroll(pageScroll),
+            ) {
+                when (step) {
+                    OnboardingStep.ABOUT_YOU -> {
+                        if (isWelcomePage) {
+                            WelcomeHeader(
+                                modifier = Modifier.onSizeChanged { welcomeHeaderHeightPx = it.height },
+                            )
+                        }
+                        BioDataSection(state, viewModel::onEvent, sectionModifier)
+                    }
+
+                    OnboardingStep.FARM_LOCATION ->
+                        FarmLocationSection(state, viewModel::onEvent, navController, sectionModifier)
+
+                    OnboardingStep.FIELD -> FieldSection(state, viewModel::onEvent, sectionModifier)
+                    OnboardingStep.PRACTICES -> PracticesSection(state, viewModel::onEvent, sectionModifier)
+                    OnboardingStep.REVIEW -> SummaryStep(state = state)
+                }
+                Spacer(Modifier.height(AkilimoSpacing.xxl))
+            }
+
+            if (isWelcomePage) {
+                // Overlays the page instead of being the Scaffold's top bar, so showing it
+                // doesn't push the content down mid-scroll
+                AnimatedVisibility(
+                    visible = showPinnedBar,
+                    enter = fadeIn(),
+                    exit = fadeOut(),
+                    modifier = Modifier.align(Alignment.TopCenter),
+                ) {
+                    BackTopAppBar(
+                        title = pageTitle,
+                        navigation = TopBarNavigation.NONE,
+                        onBack = {},
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * First-run page 1 header: the welcome message, centred, on the brand green that runs up under the
+ * status bar. Each sentence of the title gets its own line ("Are you growing cassava?" /
+ * "And looking to become a pro?" / "AKILIMO can help you!"); splitting at runtime works for every
+ * translation without touching the strings. The smaller subtitle sits below a clear gap.
+ */
+@Composable
+private fun WelcomeHeader(modifier: Modifier = Modifier) {
+    val title = stringResource(R.string.welcome_title).replace(SENTENCE_BREAK, "\n")
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.sm),
+        modifier = modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.primary)
+            .statusBarsPadding()
+            .padding(horizontal = AkilimoSpacing.md, vertical = AkilimoSpacing.xl),
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onPrimary,
+            textAlign = TextAlign.Center,
+            // Announced as the page heading by TalkBack
+            modifier = Modifier.semantics { heading() },
+        )
+        Text(
+            text = stringResource(R.string.welcome_subtitle),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f),
+            textAlign = TextAlign.Center,
+        )
     }
 }
 
 private typealias OnEvent = (OnboardingViewModel.Event) -> Unit
-
-/**
- * Height of the expanded welcome header, measured from the actual text so there is no empty band
- * above it: works for any language, screen width and font size. The large top bar always keeps
- * its toolbar row on top and a fixed inset below the title, so those are added around the text.
- */
-@Composable
-private fun rememberWelcomeHeaderHeight(title: String, subtitle: String): Dp {
-    val measurer = rememberTextMeasurer()
-    val density = LocalDensity.current
-    val typography = MaterialTheme.typography
-    val widthDp = LocalConfiguration.current.screenWidthDp.dp
-    return remember(title, subtitle, widthDp, density, typography) {
-        with(density) {
-            // The large bar's title row is inset 16dp on each side
-            val constraints = Constraints(maxWidth = (widthDp - HEADER_SIDE_INSETS).roundToPx().coerceAtLeast(1))
-            val titleHeight = measurer.measure(
-                text = title,
-                style = typography.titleLarge,
-                maxLines = WELCOME_TITLE_MAX_LINES,
-                constraints = constraints,
-            ).size.height.toDp()
-            val subtitleHeight = measurer.measure(
-                text = subtitle,
-                style = typography.bodyMedium,
-                maxLines = WELCOME_SUBTITLE_MAX_LINES,
-                constraints = constraints,
-            ).size.height.toDp()
-            TopAppBarDefaults.TopAppBarExpandedHeight + titleHeight + AkilimoSpacing.sm +
-                subtitleHeight + LARGE_TITLE_BOTTOM_INSET
-        }
-    }
-}
-
-/** Left + right padding of the large top bar's title row */
-private val HEADER_SIDE_INSETS = 32.dp
-
-/** Space the large top bar keeps under its expanded title (M3's LargeTitleBottomPadding) */
-private val LARGE_TITLE_BOTTOM_INSET = 28.dp
-
-/** Lines for the welcome title: one per sentence (3), plus one if a sentence wraps */
-private const val WELCOME_TITLE_MAX_LINES = 4
-
-/** Lines for the smaller welcome subtitle */
-private const val WELCOME_SUBTITLE_MAX_LINES = 3
 
 /** Whitespace right after a sentence-ending mark: where the welcome title breaks lines */
 private val SENTENCE_BREAK = Regex("(?<=[?!.])\\s+")

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -19,14 +18,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.akilimo.mobile.R
 
@@ -50,10 +46,6 @@ enum class TopBarNavigation {
  * expanded state and [collapsedTitle] (a single short word) in the collapsed
  * state. The caller must apply `Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)`
  * to the enclosing Scaffold so the bar actually collapses on scroll.
- *
- * [expandedHeight], [expandedTitleMaxLines], [expandedSubtitleMaxLines] and
- * [expandedSubtitleGap] (large bar only) make room for a longer expanded title/subtitle,
- * e.g. a welcome message used as the screen's hero; [expandedCentered] centres that text.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,11 +58,6 @@ fun BackTopAppBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     navigation: TopBarNavigation = TopBarNavigation.BACK,
-    expandedHeight: Dp = TopAppBarDefaults.LargeAppBarExpandedHeight,
-    expandedTitleMaxLines: Int = 2,
-    expandedSubtitleMaxLines: Int = 2,
-    expandedSubtitleGap: Dp = 2.dp,
-    expandedCentered: Boolean = false,
 ) {
     val navIcon: @Composable () -> Unit = {
         if (navigation != TopBarNavigation.NONE) {
@@ -93,9 +80,6 @@ fun BackTopAppBar(
         // graphicsLayer / layout lambdas so scrolling triggers redraw/relayout,
         // never recomposition.
         val state = scrollBehavior.state
-        // Centred text needs the full row width to centre within
-        val expandedTextAlign = if (expandedCentered) TextAlign.Center else TextAlign.Start
-        val expandedTextModifier = if (expandedCentered) Modifier.fillMaxWidth() else Modifier
 
         LargeTopAppBar(
             title = {
@@ -114,27 +98,22 @@ fun BackTopAppBar(
                                     placeable.place(0, 0)
                                 }
                             },
-                        verticalArrangement = Arrangement.spacedBy(expandedSubtitleGap),
-                        horizontalAlignment = if (expandedCentered) Alignment.CenterHorizontally else Alignment.Start,
+                        verticalArrangement = Arrangement.spacedBy(2.dp),
                     ) {
                         Text(
                             text = title,
                             style = MaterialTheme.typography.titleLarge,
                             color = MaterialTheme.colorScheme.onPrimary,
-                            maxLines = expandedTitleMaxLines,
+                            maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
-                            textAlign = expandedTextAlign,
-                            modifier = expandedTextModifier,
                         )
                         if (subtitle != null) {
                             Text(
                                 text = subtitle,
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
-                                maxLines = expandedSubtitleMaxLines,
+                                maxLines = 2,
                                 overflow = TextOverflow.Ellipsis,
-                                textAlign = expandedTextAlign,
-                                modifier = expandedTextModifier,
                             )
                         }
                     }
@@ -152,7 +131,6 @@ fun BackTopAppBar(
             navigationIcon = navIcon,
             actions = actions,
             modifier = modifier,
-            expandedHeight = expandedHeight,
             scrollBehavior = scrollBehavior,
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.primary,
