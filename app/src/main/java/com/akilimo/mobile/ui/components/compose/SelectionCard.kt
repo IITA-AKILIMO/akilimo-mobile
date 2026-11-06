@@ -1,8 +1,7 @@
 package com.akilimo.mobile.ui.components.compose
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,8 +26,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import com.akilimo.mobile.R
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -50,20 +51,30 @@ fun SelectionCard(
     isGridLayout: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    imageColorFilter: ColorFilter? = null
+    imageColorFilter: ColorFilter? = null,
+    role: Role = Role.RadioButton,
 ) {
+    val shape = MaterialTheme.shapes.medium
+    // Card(onClick) clips its ripple to [shape] without clipping the elevation shadow.
+    // The extra semantics merge into the card's clickable node, so TalkBack reads
+    // the title/subtitle once plus the role and "selected"/"not selected".
     Card(
+        onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .border(
-                width = if (isSelected) 2.dp else 1.dp,
-                color = if (isSelected)
-                    MaterialTheme.colorScheme.primary
-                else
-                    MaterialTheme.colorScheme.outlineVariant,
-                shape = MaterialTheme.shapes.medium
-            ),
+            .semantics {
+                this.role = role
+                selected = isSelected
+            },
+        shape = shape,
+        border = BorderStroke(
+            width = if (isSelected) 2.dp else 1.dp,
+            // outline (not outlineVariant) keeps unselected cards ≥ 3:1 against the surface
+            color = if (isSelected)
+                MaterialTheme.colorScheme.primary
+            else
+                MaterialTheme.colorScheme.outline,
+        ),
         colors = CardDefaults.cardColors(
             containerColor = if (isSelected)
                 MaterialTheme.colorScheme.primaryContainer
@@ -90,7 +101,8 @@ fun SelectionCard(
                 ) {
                     Icon(
                         Icons.Filled.Check,
-                        contentDescription = stringResource(R.string.lbl_selected),
+                        // Selected state is announced via selectable semantics.
+                        contentDescription = null,
                         tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(16.dp)
                     )
@@ -114,7 +126,8 @@ private fun GridContent(
     ) {
         Image(
             painter = painterResource(imageRes),
-            contentDescription = title,
+            // Decorative: the title text is already read by TalkBack.
+            contentDescription = null,
             contentScale = ContentScale.Fit,
             colorFilter = imageColorFilter,
             modifier = Modifier
@@ -144,7 +157,7 @@ private fun GridContent(
         if (description != null) {
             Text(
                 text = description,
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -168,7 +181,8 @@ private fun ListContent(
     ) {
         Image(
             painter = painterResource(imageRes),
-            contentDescription = title,
+            // Decorative: the title text is already read by TalkBack.
+            contentDescription = null,
             contentScale = ContentScale.Fit,
             colorFilter = imageColorFilter,
             modifier = Modifier.size(88.dp)

@@ -4,6 +4,7 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 
 // ── Light palette ────────────────────────────────────────────────────────────
 private val Primary = Color(0xFF2E5900)
@@ -69,6 +70,10 @@ private val DarkOutline = Color(0xFF8E9285) // Adjusted
 private val DarkOutlineVariant = Color(0xFF44483D) // Adjusted
 
 // ── Semantic extras (not part of Material ColorScheme but used in the app) ───
+// Contrast (WCAG): every on-X/X pair and every X-as-text-on-XContainer pair is
+// ≥ 4.5:1 in both themes; X as text on the theme background is ≥ 6:1.
+//
+// Light variants (kept under their original public names for compatibility).
 val AkilimoSuccess = Color(0xFF2D6A13)
 val AkilimoSuccessContainer = Color(0xFFC3EFAB)
 val AkilimoOnSuccess = Color(0xFFFFFFFF)
@@ -79,18 +84,45 @@ val AkilimoInfo = Color(0xFF0062A1)
 val AkilimoInfoContainer = Color(0xFFCFE5FF)
 val AkilimoOnInfo = Color(0xFFFFFFFF)
 
+// Dark variants.
+val AkilimoDarkSuccess = Color(0xFF9CD67D)
+val AkilimoDarkSuccessContainer = Color(0xFF1E4D0A)
+val AkilimoDarkOnSuccess = Color(0xFF0C3900)
+val AkilimoDarkWarning = Color(0xFFF5BD48)
+val AkilimoDarkWarningContainer = Color(0xFF5C4200)
+val AkilimoDarkOnWarning = Color(0xFF412D00)
+val AkilimoDarkInfo = Color(0xFF9ECAFF)
+val AkilimoDarkInfoContainer = Color(0xFF0A4A7A)
+val AkilimoDarkOnInfo = Color(0xFF003258)
+
+/**
+ * A scheme is treated as dark when its background is dark. Deriving this from the
+ * scheme itself (rather than a CompositionLocal) keeps the accessors below usable
+ * outside composition (e.g. in draw lambdas) and correct for any Akilimo scheme.
+ */
+private val ColorScheme.isDarkScheme: Boolean get() = background.luminance() < 0.5f
+
 // Extensions to expose semantic colors via MaterialTheme.colorScheme
-val ColorScheme.success: Color get() = AkilimoSuccess
-val ColorScheme.onSuccess: Color get() = AkilimoOnSuccess
-val ColorScheme.successContainer: Color get() = AkilimoSuccessContainer
+val ColorScheme.success: Color
+    get() = if (isDarkScheme) AkilimoDarkSuccess else AkilimoSuccess
+val ColorScheme.onSuccess: Color
+    get() = if (isDarkScheme) AkilimoDarkOnSuccess else AkilimoOnSuccess
+val ColorScheme.successContainer: Color
+    get() = if (isDarkScheme) AkilimoDarkSuccessContainer else AkilimoSuccessContainer
 
-val ColorScheme.warning: Color get() = AkilimoWarning
-val ColorScheme.onWarning: Color get() = AkilimoOnWarning
-val ColorScheme.warningContainer: Color get() = AkilimoWarningContainer
+val ColorScheme.warning: Color
+    get() = if (isDarkScheme) AkilimoDarkWarning else AkilimoWarning
+val ColorScheme.onWarning: Color
+    get() = if (isDarkScheme) AkilimoDarkOnWarning else AkilimoOnWarning
+val ColorScheme.warningContainer: Color
+    get() = if (isDarkScheme) AkilimoDarkWarningContainer else AkilimoWarningContainer
 
-val ColorScheme.info: Color get() = AkilimoInfo
-val ColorScheme.onInfo: Color get() = AkilimoOnInfo
-val ColorScheme.infoContainer: Color get() = AkilimoInfoContainer
+val ColorScheme.info: Color
+    get() = if (isDarkScheme) AkilimoDarkInfo else AkilimoInfo
+val ColorScheme.onInfo: Color
+    get() = if (isDarkScheme) AkilimoDarkOnInfo else AkilimoOnInfo
+val ColorScheme.infoContainer: Color
+    get() = if (isDarkScheme) AkilimoDarkInfoContainer else AkilimoInfoContainer
 
 val AkilimoLightColorScheme = lightColorScheme(
     primary = Primary,

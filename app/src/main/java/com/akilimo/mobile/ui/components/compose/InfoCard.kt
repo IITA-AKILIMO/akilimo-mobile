@@ -58,7 +58,7 @@ fun InfoCard(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = containerColor,
-            contentColor = contentColor // 👈 ensures text/icons match
+            contentColor = contentColor
         ),
         border = BorderStroke(1.dp, contentColor),
         shape = MaterialTheme.shapes.medium
@@ -78,13 +78,13 @@ fun InfoCard(
                     text = title,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Medium,
-                    color = contentColor // 👈 use contentColor
+                    color = contentColor
                 )
                 Spacer(Modifier.height(AkilimoSpacing.xxs))
                 Text(
                     text = message,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = contentColor // 👈 use contentColor
+                    color = contentColor
                 )
             }
         }
