@@ -39,7 +39,11 @@ dependencyResolutionManagement {
             }
             credentials {
                 username = "mapbox"
-                password = providers.gradleProperty("MAPBOX_DOWNLOADS_TOKEN").getOrElse("")
+                // Never commit this token. Supply it via ~/.gradle/gradle.properties,
+                // -PMAPBOX_DOWNLOADS_TOKEN=..., or the MAPBOX_DOWNLOADS_TOKEN env var.
+                password = providers.gradleProperty("MAPBOX_DOWNLOADS_TOKEN")
+                    .orElse(providers.environmentVariable("MAPBOX_DOWNLOADS_TOKEN"))
+                    .getOrElse("")
             }
         }
     }

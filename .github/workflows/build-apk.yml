@@ -10,10 +10,15 @@ concurrency:
   group: build-${{ github.ref_name }}
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   build_artifacts:
     runs-on: ubuntu-24.04
     name: Build artifacts
+    permissions:
+      contents: write # upload assets to the draft GitHub Release
     outputs:
       version: ${{ steps.get_version.outputs.version }}
       track: ${{ steps.track.outputs.track }}
@@ -24,16 +29,17 @@ jobs:
       MAPBOX_RUNTIME_TOKEN: ${{ secrets.MAPBOX_RUNTIME_TOKEN }}
       AKILIMO_API_KEY: ${{ secrets.AKILIMO_API_KEY }}
       LOCATION_IQ_TOKEN: ${{ secrets.LOCATION_IQ_TOKEN }}
+      WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
       PACKAGE_NAME: ${{ vars.APP_PACKAGE }}
 
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.4.0
         with:
           fetch-depth: 0
 
       - name: Set up JDK
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v4.9.1
         with:
           distribution: 'temurin'
           java-version: 21
@@ -61,7 +67,12 @@ jobs:
       - name: Get build version
         id: get_version
         run: |
-          VERSION_CODE=$(curl -s https://munywele.co.ke/app-releases/akilimo || echo ${{ github.run_number }})
+          # -f makes HTTP errors fail so the fallback fires; reject non-numeric bodies too
+          VERSION_CODE=$(curl -fsS https://munywele.co.ke/app-releases/akilimo || true)
+          if ! [[ "$VERSION_CODE" =~ ^[0-9]+$ ]]; then
+            echo "::warning::Version endpoint returned no numeric code; falling back to run_number"
+            VERSION_CODE=${{ github.run_number }}
+          fi
           echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
           echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
           echo "RELEASE_VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
@@ -70,10 +81,10 @@ jobs:
           echo "Using RELEASE_VERSION: ${{ github.ref_name }}"
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v3.2.2
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v4.4.3
         with:
           cache-read-only: false
 
@@ -109,7 +120,7 @@ jobs:
         run: mkdir -p release
 
       - name: Sign AAB
-        uses: ilharp/sign-android-release@v2
+        uses: ilharp/sign-android-release@v2.0.0
         id: sign_aab
         with:
           releaseDir: app/build/outputs/bundle/release
@@ -120,7 +131,7 @@ jobs:
           buildToolsVersion: 36.0.0
 
       - name: Sign APK
-        uses: ilharp/sign-android-release@v2
+        uses: ilharp/sign-android-release@v2.0.0
         id: sign_apk
         with:
           releaseDir: app/build/outputs/apk/release
@@ -144,7 +155,7 @@ jobs:
 
       # Upload signed binaries to GitHub Release (draft) so publish.yml can download them
       - name: Upload release assets
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v2.6.2
         with:
           tag_name: ${{ github.ref_name }}
           name: "Build ${{ github.ref_name }}"
