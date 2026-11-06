@@ -17,6 +17,7 @@ import com.akilimo.mobile.repos.SelectedFertilizerRepo
 import com.akilimo.mobile.repos.UserPreferencesRepo
 import com.akilimo.mobile.rules.TestDispatcherRule
 import com.akilimo.mobile.ui.screens.onboarding.OnboardingSection
+import com.akilimo.mobile.ui.screens.onboarding.OnboardingStep
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -540,5 +541,117 @@ class OnboardingViewModelTest {
             assertTrue(awaitItem() is OnboardingViewModel.Effect.ExitApp)
             cancelAndIgnoreRemainingEvents()
         }
+    }
+
+    // ── first-run wizard ──────────────────────────────────────────────────────
+
+    private fun buildWizard(): OnboardingViewModel {
+        every { appSettings.isFirstRun } returns true
+        coEvery { userRepo.getUser("user1") } returns null
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+        return buildViewModel()
+    }
+
+    @Test
+    fun `editing a profile is a single page, first run is a wizard`() = runTest {
+        every { appSettings.isFirstRun } returns false
+        coEvery { userRepo.getUser("user1") } returns null
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+        assertFalse(buildViewModel().state.value.wizardMode)
+
+        val wizard = buildWizard()
+        advanceUntilIdle()
+        assertTrue(wizard.state.value.wizardMode)
+        assertEquals(0, wizard.state.value.stepIndex)
+    }
+
+    @Test
+    fun `Next on an incomplete page stays there and flags only that page`() = runTest {
+        val viewModel = buildWizard()
+        advanceUntilIdle()
+
+        viewModel.effect.test {
+            viewModel.onEvent(OnboardingViewModel.Event.NextClicked)
+            advanceUntilIdle()
+
+            val effect = awaitItem() as OnboardingViewModel.Effect.ShowValidationErrors
+            assertEquals("firstName", effect.firstField)
+            cancelAndIgnoreRemainingEvents()
+        }
+        val s = viewModel.state.value
+        assertEquals(0, s.stepIndex)
+        assertTrue("firstName" in s.errors)
+        // Later pages are not judged before the user reaches them
+        assertFalse("country" in s.errors)
+        assertFalse("plantingDate" in s.errors)
+    }
+
+    @Test
+    fun `Next moves through pages and Back returns to the previous one`() = runTest {
+        val viewModel = buildWizard()
+        advanceUntilIdle()
+        fillValidForm(viewModel)
+
+        viewModel.onEvent(OnboardingViewModel.Event.NextClicked)
+        assertEquals(1, viewModel.state.value.stepIndex)
+        viewModel.onEvent(OnboardingViewModel.Event.NextClicked)
+        assertEquals(2, viewModel.state.value.stepIndex)
+
+        viewModel.onEvent(OnboardingViewModel.Event.BackClicked)
+        assertEquals(1, viewModel.state.value.stepIndex)
+    }
+
+    @Test
+    fun `Back on the first page asks to exit`() = runTest {
+        val viewModel = buildWizard()
+        advanceUntilIdle()
+
+        viewModel.effect.test {
+            viewModel.onEvent(OnboardingViewModel.Event.BackClicked)
+            advanceUntilIdle()
+            assertTrue(awaitItem() is OnboardingViewModel.Effect.ExitApp)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `Next on the last page submits the whole form`() = runTest {
+        val viewModel = buildWizard()
+        advanceUntilIdle()
+        fillValidForm(viewModel)
+        repeat(OnboardingStep.entries.size - 1) {
+            viewModel.onEvent(OnboardingViewModel.Event.NextClicked)
+        }
+        assertEquals(OnboardingStep.REVIEW.ordinal, viewModel.state.value.stepIndex)
+
+        viewModel.effect.test {
+            viewModel.onEvent(OnboardingViewModel.Event.NextClicked)
+            advanceUntilIdle()
+            assertTrue(awaitItem() is OnboardingViewModel.Effect.NavigateToRecommendations)
+            cancelAndIgnoreRemainingEvents()
+        }
+        coVerify { userRepo.saveOrUpdateUser(any(), "user1") }
+    }
+
+    @Test
+    fun `a submit error found later sends the user back to that page`() = runTest {
+        coEvery { coverageRepo.check("TZ", 6.5, 3.4) } returns EnumCoverageStatus.INSIDE
+        val viewModel = buildWizard()
+        advanceUntilIdle()
+        fillValidForm(viewModel)
+        viewModel.onEvent(OnboardingViewModel.Event.LocationUpdated(6.5, 3.4, 12.0))
+        advanceUntilIdle()
+        repeat(OnboardingStep.entries.size - 1) {
+            viewModel.onEvent(OnboardingViewModel.Event.NextClicked)
+        }
+
+        // The supported-area check changes its answer after the user moved on
+        coEvery { coverageRepo.check("TZ", 6.5, 3.4) } returns EnumCoverageStatus.OUTSIDE
+        viewModel.onEvent(OnboardingViewModel.Event.LocationUpdated(6.5, 3.4, 12.0))
+        advanceUntilIdle()
+        viewModel.onEvent(OnboardingViewModel.Event.NextClicked)
+
+        assertEquals(OnboardingStep.FARM_LOCATION.ordinal, viewModel.state.value.stepIndex)
+        assertTrue("location" in viewModel.state.value.errors)
     }
 }

@@ -28,6 +28,13 @@
     <string name="msg_change_country_clears_fertilizers">Changing the country will remove the fertilizers you selected when you save. You will need to choose them again.</string>
     <string name="lbl_change_country">Change country</string>
 
+    <!-- Onboarding steps (first run) -->
+    <string name="lbl_step_about_you">About you</string>
+    <string name="lbl_step_farm_location">Where is your farm?</string>
+    <string name="lbl_step_your_field">Your field</string>
+    <string name="lbl_step_practices">How you farm</string>
+    <string name="lbl_step_review">Check your answers</string>
+
     <!-- Web pages (terms, privacy policy) -->
     <string name="lbl_page_load_failed">This page could not load.</string>
 

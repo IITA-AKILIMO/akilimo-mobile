@@ -5,8 +5,10 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
@@ -24,15 +26,16 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -42,6 +45,8 @@ import com.akilimo.mobile.navigation.RecommendationsRoute
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.ExitConfirmDialog
 import com.akilimo.mobile.ui.components.compose.SaveBottomBar
+import com.akilimo.mobile.ui.components.compose.WizardBottomBar
+import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 import com.akilimo.mobile.ui.screens.onboarding.steps.AreaUnitStep
 import com.akilimo.mobile.ui.screens.onboarding.steps.BioDataStep
@@ -108,6 +113,8 @@ fun OnboardingScreen(
                 is OnboardingViewModel.Effect.ShowValidationErrors -> {
                     // The first failing field may be far off-screen: bring its section into view
                     scope.launch {
+                        // Submit may have just switched wizard pages: let the page compose first
+                        withFrameNanos { }
                         sectionRequesters[sectionForField(effect.firstField)]?.bringIntoView()
                     }
                     scope.launch {
@@ -189,136 +196,194 @@ fun OnboardingScreen(
         return
     }
 
-    fun Modifier.section(section: OnboardingSection): Modifier =
-        this.bringIntoViewRequester(sectionRequesters.getValue(section))
+    val sectionModifier: (OnboardingSection) -> Modifier = { section ->
+        Modifier.bringIntoViewRequester(sectionRequesters.getValue(section))
+    }
+    val step = OnboardingStep.entries[state.stepIndex.coerceIn(0, OnboardingStep.entries.lastIndex)]
 
     Scaffold(
         topBar = {
             BackTopAppBar(
-                title = if (isEditMode) {
-                    stringResource(R.string.lbl_edit_profile)
-                } else {
-                    stringResource(R.string.lbl_initial_onboarding)
+                title = when {
+                    isEditMode -> stringResource(R.string.lbl_edit_profile)
+                    else -> stringResource(step.titleRes)
                 },
                 onBack = {
                     if (isEditMode) {
                         navController.popBackStackSafely()
                     } else {
+                        // Previous page, or the exit prompt on the first page
                         viewModel.onEvent(OnboardingViewModel.Event.BackClicked)
                     }
                 }
             )
         },
         bottomBar = {
-            SaveBottomBar(
-                label = if (isEditMode) {
-                    stringResource(R.string.lbl_save)
-                } else {
-                    stringResource(R.string.lbl_complete_onboarding)
-                },
-                onClick = { viewModel.onEvent(OnboardingViewModel.Event.SubmitClicked) },
-            )
+            if (state.wizardMode) {
+                WizardBottomBar(
+                    currentStep = state.stepIndex,
+                    totalSteps = OnboardingStep.entries.size,
+                    isFirstStep = state.stepIndex == 0,
+                    isLastStep = step == OnboardingStep.REVIEW,
+                    onBack = { viewModel.onEvent(OnboardingViewModel.Event.BackClicked) },
+                    onNext = { viewModel.onEvent(OnboardingViewModel.Event.NextClicked) },
+                )
+            } else {
+                SaveBottomBar(
+                    label = stringResource(R.string.lbl_save),
+                    onClick = { viewModel.onEvent(OnboardingViewModel.Event.SubmitClicked) },
+                )
+            }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .verticalScroll(scrollState),
-        ) {
-            // Welcome Section
-            WelcomeStep()
+        if (state.wizardMode) {
+            // Each page starts at the top; a fresh scroll state per page does that
+            val pageScroll = key(step) { rememberScrollState() }
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .consumeWindowInsets(paddingValues)
+                    .imePadding()
+                    .verticalScroll(pageScroll),
+            ) {
+                when (step) {
+                    OnboardingStep.ABOUT_YOU -> {
+                        WelcomeStep()
+                        BioDataSection(state, viewModel::onEvent, sectionModifier)
+                    }
 
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                    OnboardingStep.FARM_LOCATION ->
+                        FarmLocationSection(state, viewModel::onEvent, navController, sectionModifier)
 
-            // Bio Data Section
-            BioDataStep(
-                firstName = state.firstName,
-                lastName = state.lastName,
-                email = state.email,
-                phone = state.phone,
-                gender = state.gender,
-                interest = state.interest,
-                recLanguage = state.recommendationLanguage,
-                errors = state.errors,
-                onEvent = viewModel::onEvent,
-                modifier = Modifier.section(OnboardingSection.BIO_DATA),
-            )
-
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-
-            // Country & Location
-            CountryStep(
-                country = state.country,
-                error = state.errors["country"],
-                onEvent = viewModel::onEvent,
-                modifier = Modifier.section(OnboardingSection.COUNTRY),
-            )
-
-            LocationStep(
-                latitude = state.latitude,
-                longitude = state.longitude,
-                altitude = state.altitude,
-                zoomLevel = state.zoomLevel,
-                country = state.country,
-                coverage = state.locationCoverage,
-                error = state.errors["location"],
-                onEvent = viewModel::onEvent,
-                navController = navController,
-                modifier = Modifier.section(OnboardingSection.LOCATION),
-            )
-
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-
-            // Field details: always shown; a remembered unit only hides the unit picker
-            AreaUnitStep(
-                areaUnit = state.areaUnit,
-                farmSize = state.farmSize,
-                customFarmSize = state.customFarmSize,
-                rememberAreaUnit = state.rememberAreaUnit,
-                showUnitPicker = !state.areaUnitRemembered,
-                country = state.country,
-                errors = state.errors,
-                onEvent = viewModel::onEvent,
-                modifier = Modifier.section(OnboardingSection.AREA_UNIT),
-            )
-
-            PlantingDateStep(
-                plantingDate = state.plantingDate,
-                harvestDate = state.harvestDate,
-                plantingFlex = state.plantingFlex,
-                harvestFlex = state.harvestFlex,
-                showFlexOptions = state.showFlexOptions,
-                errors = state.errors,
-                onEvent = viewModel::onEvent,
-                modifier = Modifier.section(OnboardingSection.PLANTING_DATE),
-            )
-
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-
-            // Tillage & Investment
-            TillageStep(
-                tillageOperations = state.tillageOperations,
-                weedControlEnabled = state.weedControlEnabled,
-                weedControlMethod = state.weedControlMethod,
-                errors = state.errors,
-                onEvent = viewModel::onEvent,
-                modifier = Modifier.section(OnboardingSection.TILLAGE),
-            )
-
-            InvestmentPrefStep(
-                investmentPref = state.investmentPref,
-                error = state.errors["investmentPref"],
-                onEvent = viewModel::onEvent,
-                modifier = Modifier.section(OnboardingSection.INVESTMENT_PREF),
-            )
-
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-
-            SummaryStep(state = state)
-
-            Spacer(Modifier.height(32.dp))
+                    OnboardingStep.FIELD -> FieldSection(state, viewModel::onEvent, sectionModifier)
+                    OnboardingStep.PRACTICES -> PracticesSection(state, viewModel::onEvent, sectionModifier)
+                    OnboardingStep.REVIEW -> SummaryStep(state = state)
+                }
+                Spacer(Modifier.height(AkilimoSpacing.xxl))
+            }
+        } else {
+            // Editing: a returning user knows the fields, so one page without the welcome
+            // banner and the summary (which would only repeat the form)
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .consumeWindowInsets(paddingValues)
+                    .imePadding()
+                    .verticalScroll(scrollState),
+            ) {
+                BioDataSection(state, viewModel::onEvent, sectionModifier)
+                HorizontalDivider(modifier = Modifier.padding(vertical = AkilimoSpacing.xs))
+                FarmLocationSection(state, viewModel::onEvent, navController, sectionModifier)
+                HorizontalDivider(modifier = Modifier.padding(vertical = AkilimoSpacing.xs))
+                FieldSection(state, viewModel::onEvent, sectionModifier)
+                HorizontalDivider(modifier = Modifier.padding(vertical = AkilimoSpacing.xs))
+                PracticesSection(state, viewModel::onEvent, sectionModifier)
+                Spacer(Modifier.height(AkilimoSpacing.xxl))
+            }
         }
     }
+}
+
+private typealias OnEvent = (OnboardingViewModel.Event) -> Unit
+
+@Composable
+private fun BioDataSection(
+    state: OnboardingViewModel.UiState,
+    onEvent: OnEvent,
+    section: (OnboardingSection) -> Modifier,
+) {
+    BioDataStep(
+        firstName = state.firstName,
+        lastName = state.lastName,
+        email = state.email,
+        phone = state.phone,
+        gender = state.gender,
+        interest = state.interest,
+        recLanguage = state.recommendationLanguage,
+        errors = state.errors,
+        onEvent = onEvent,
+        modifier = section(OnboardingSection.BIO_DATA),
+    )
+}
+
+@Composable
+private fun FarmLocationSection(
+    state: OnboardingViewModel.UiState,
+    onEvent: OnEvent,
+    navController: NavHostController,
+    section: (OnboardingSection) -> Modifier,
+) {
+    CountryStep(
+        country = state.country,
+        error = state.errors["country"],
+        onEvent = onEvent,
+        modifier = section(OnboardingSection.COUNTRY),
+    )
+    LocationStep(
+        latitude = state.latitude,
+        longitude = state.longitude,
+        altitude = state.altitude,
+        zoomLevel = state.zoomLevel,
+        country = state.country,
+        coverage = state.locationCoverage,
+        error = state.errors["location"],
+        onEvent = onEvent,
+        navController = navController,
+        modifier = section(OnboardingSection.LOCATION),
+    )
+}
+
+@Composable
+private fun FieldSection(
+    state: OnboardingViewModel.UiState,
+    onEvent: OnEvent,
+    section: (OnboardingSection) -> Modifier,
+) {
+    // A remembered unit only hides the unit picker, never the farm size
+    AreaUnitStep(
+        areaUnit = state.areaUnit,
+        farmSize = state.farmSize,
+        customFarmSize = state.customFarmSize,
+        rememberAreaUnit = state.rememberAreaUnit,
+        showUnitPicker = !state.areaUnitRemembered,
+        country = state.country,
+        errors = state.errors,
+        onEvent = onEvent,
+        modifier = section(OnboardingSection.AREA_UNIT),
+    )
+    PlantingDateStep(
+        plantingDate = state.plantingDate,
+        harvestDate = state.harvestDate,
+        plantingFlex = state.plantingFlex,
+        harvestFlex = state.harvestFlex,
+        showFlexOptions = state.showFlexOptions,
+        errors = state.errors,
+        onEvent = onEvent,
+        modifier = section(OnboardingSection.PLANTING_DATE),
+    )
+}
+
+@Composable
+private fun PracticesSection(
+    state: OnboardingViewModel.UiState,
+    onEvent: OnEvent,
+    section: (OnboardingSection) -> Modifier,
+) {
+    TillageStep(
+        tillageOperations = state.tillageOperations,
+        weedControlEnabled = state.weedControlEnabled,
+        weedControlMethod = state.weedControlMethod,
+        errors = state.errors,
+        onEvent = onEvent,
+        modifier = section(OnboardingSection.TILLAGE),
+    )
+    InvestmentPrefStep(
+        investmentPref = state.investmentPref,
+        error = state.errors["investmentPref"],
+        onEvent = onEvent,
+        modifier = section(OnboardingSection.INVESTMENT_PREF),
+    )
 }

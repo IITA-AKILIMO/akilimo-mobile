@@ -25,6 +25,7 @@ import com.akilimo.mobile.repos.CurrentPracticeRepo
 import com.akilimo.mobile.repos.SelectedFertilizerRepo
 import com.akilimo.mobile.repos.UserPreferencesRepo
 import com.akilimo.mobile.ui.screens.onboarding.OnboardingSection
+import com.akilimo.mobile.ui.screens.onboarding.OnboardingStep
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
@@ -54,6 +55,10 @@ class OnboardingViewModel @Inject constructor(
     data class UiState(
         val isLoading: Boolean = true,
         val visibleSections: List<OnboardingSection> = emptyList(),
+        /** First run shows one [OnboardingStep] at a time; editing a profile shows one page */
+        val wizardMode: Boolean = false,
+        /** Index into [OnboardingStep.entries] of the page shown in [wizardMode] */
+        val stepIndex: Int = 0,
         // Disclaimer
         val disclaimerRead: Boolean = false,
         // Terms
@@ -158,6 +163,9 @@ class OnboardingViewModel @Inject constructor(
         object SubmitClicked : Event
         object BackClicked : Event
 
+        /** Wizard Next: checks only the current page; on the last page it submits */
+        object NextClicked : Event
+
         // Field error clear
         data class ClearError(val field: String) : Event
     }
@@ -230,6 +238,7 @@ class OnboardingViewModel @Inject constructor(
                 s.copy(
                     isLoading = false,
                     visibleSections = visibleSteps,
+                    wizardMode = appSettings.isFirstRun,
                     disclaimerRead = disclaimerRead,
                     termsAccepted = termsAccepted,
                     rememberAreaUnit = rememberAreaUnit,
@@ -474,6 +483,7 @@ class OnboardingViewModel @Inject constructor(
             is Event.ShowError -> _state.update { it.copy(errors = it.errors + (event.field to event.message)) }
             is Event.SubmitClicked -> handleSubmit()
             is Event.BackClicked -> handleBack()
+            is Event.NextClicked -> handleNext()
             is Event.ClearError -> _state.update { it.copy(errors = it.errors - event.field) }
         }
     }
@@ -491,14 +501,44 @@ class OnboardingViewModel @Inject constructor(
     }
 
     private fun handleBack() {
-        viewModelScope.launch { _effect.send(Effect.ExitApp) }
+        val s = _state.value
+        if (s.wizardMode && s.stepIndex > 0) {
+            _state.update { it.copy(stepIndex = it.stepIndex - 1) }
+        } else {
+            viewModelScope.launch { _effect.send(Effect.ExitApp) }
+        }
+    }
+
+    private fun handleNext() {
+        val s = _state.value
+        val steps = OnboardingStep.entries
+        if (!s.wizardMode || s.stepIndex >= steps.lastIndex) {
+            handleSubmit()
+            return
+        }
+        // Only this page's fields: later pages haven't been seen yet, so no errors there
+        val stepErrors = validateAll().filterKeys { it in steps[s.stepIndex].fields }
+        if (stepErrors.isNotEmpty()) {
+            _state.update { it.copy(errors = it.errors + stepErrors) }
+            val first = FIELD_ORDER.firstOrNull { it in stepErrors } ?: stepErrors.keys.first()
+            viewModelScope.launch { _effect.send(Effect.ShowValidationErrors(first, stepErrors.size)) }
+            return
+        }
+        _state.update { it.copy(stepIndex = it.stepIndex + 1) }
     }
 
     private fun handleSubmit() {
         val errors = validateAll()
         if (errors.isNotEmpty()) {
-            _state.update { it.copy(errors = errors) }
             val first = FIELD_ORDER.firstOrNull { it in errors } ?: errors.keys.first()
+            // In the wizard, go back to the page with the first problem (e.g. the farm turned
+            // out to be outside the supported area after the user moved on)
+            _state.update {
+                it.copy(
+                    errors = errors,
+                    stepIndex = if (it.wizardMode) OnboardingStep.forField(first).ordinal else it.stepIndex,
+                )
+            }
             viewModelScope.launch { _effect.send(Effect.ShowValidationErrors(first, errors.size)) }
             return
         }
