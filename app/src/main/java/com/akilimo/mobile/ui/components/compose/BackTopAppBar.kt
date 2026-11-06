@@ -1,5 +1,6 @@
 package com.akilimo.mobile.ui.components.compose
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
@@ -46,6 +48,9 @@ enum class TopBarNavigation {
  * expanded state and [collapsedTitle] (a single short word) in the collapsed
  * state. The caller must apply `Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)`
  * to the enclosing Scaffold so the bar actually collapses on scroll.
+ *
+ * [titleVisible] (standard bar only) fades the title out, e.g. while a hero block below the bar
+ * already shows the screen's name; set it back to true once the hero scrolls away.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,6 +63,7 @@ fun BackTopAppBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     navigation: TopBarNavigation = TopBarNavigation.BACK,
+    titleVisible: Boolean = true,
 ) {
     val navIcon: @Composable () -> Unit = {
         if (navigation != TopBarNavigation.NONE) {
@@ -143,7 +149,13 @@ fun BackTopAppBar(
     } else {
         TopAppBar(
             title = {
-                Column {
+                // Fades rather than pops when a hero below the bar scrolls in or out of view;
+                // the title stays in the semantics tree so TalkBack still announces the screen
+                val titleAlpha by animateFloatAsState(
+                    targetValue = if (titleVisible) 1f else 0f,
+                    label = "titleAlpha",
+                )
+                Column(modifier = Modifier.graphicsLayer { alpha = titleAlpha }) {
                     Text(
                         text = title,
                         style = MaterialTheme.typography.titleLarge,
