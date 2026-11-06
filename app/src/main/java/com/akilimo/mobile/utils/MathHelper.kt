@@ -14,6 +14,13 @@ object MathHelper {
         }
     }
 
+    /** Convert an area between any two units (via acres). */
+    fun convertArea(value: Double, from: EnumAreaUnit, to: EnumAreaUnit): Double {
+        if (from == to) return value
+        val acres = value / convertFromAcres(1.0, from)
+        return convertFromAcres(acres, to)
+    }
+
     fun computeUnitPrice(avgPrice: Double, unitOfSaleEnum: EnumUnitOfSale): Double {
         return when (unitOfSaleEnum) {
             EnumUnitOfSale.FRESH_COB -> avgPrice

@@ -43,7 +43,7 @@ class InvestmentAmountViewModel @Inject constructor(
 
     fun loadData(userName: String) = viewModelScope.launch {
         val user = userRepo.getUser(userName) ?: return@launch
-        val userId = user.id ?: 0
+        val userId = user.id ?: return@launch // never key rows to a fake user 0
         val country = user.enumCountry
         val areaUnit = EnumAreaUnit.entries.firstOrNull { it == user.enumAreaUnit } ?: EnumAreaUnit.ACRE
         val farmSize = user.farmSize
@@ -53,8 +53,12 @@ class InvestmentAmountViewModel @Inject constructor(
         launch {
             investmentRepo.observeAllByCountry(country).collectLatest { list ->
                 val computed = list.map { item ->
-                    val base = MathHelper.convertFromAcres(farmSize, areaUnit)
-                    item.copy(investmentAmount = base * item.investmentAmount)
+                    // farmSize is already in the user's unit; each amount is quoted per
+                    // item.areaUnit. Convert the farm into that unit before multiplying.
+                    // (Previously farmSize was treated as acres and converted again.)
+                    val itemUnit = EnumAreaUnit.fromApiValue(item.areaUnit) ?: areaUnit
+                    val sizeInItemUnit = MathHelper.convertArea(farmSize, areaUnit, itemUnit)
+                    item.copy(investmentAmount = sizeInItemUnit * item.investmentAmount)
                 }
                 _uiState.update { it.copy(investments = computed) }
             }

@@ -35,7 +35,8 @@ class MaizePerformanceViewModel @Inject constructor(
     fun loadOptions(userName: String) = viewModelScope.launch {
         val user = userRepo.getUser(userName) ?: return@launch
         val allOptions = EnumMaizePerformance.entries.map { MaizePerfOption(valueOption = it) }
-        maizeRepo.observeByUserId(user.id ?: 0).collect { savedPerf ->
+        val userId = user.id ?: return@launch // never key rows to a fake user 0
+        maizeRepo.observeByUserId(userId).collect { savedPerf ->
             val options = allOptions.map { option ->
                 option.copy(isSelected = option.valueOption == savedPerf?.maizePerformance)
             }
@@ -49,7 +50,7 @@ class MaizePerformanceViewModel @Inject constructor(
         }
         val user = userRepo.getUser(appSettings.akilimoUser) ?: return@launch
         maizeRepo.saveOrUpdatePerformance(
-            MaizePerformance(userId = user.id ?: 0, maizePerformance = selected)
+            MaizePerformance(userId = user.id ?: return@launch, maizePerformance = selected)
         )
     }
 

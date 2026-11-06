@@ -45,7 +45,7 @@ class CassavaYieldViewModel @Inject constructor(
 
     fun loadData(userName: String) = viewModelScope.launch {
         val user = userRepo.getUser(userName) ?: return@launch
-        val userId = user.id ?: 0
+        val userId = user.id ?: return@launch // never key rows to a fake user 0
         val areaUnit = EnumAreaUnit.entries.firstOrNull { it == user.enumAreaUnit } ?: EnumAreaUnit.ACRE
         val useCase = user.activeAdvise ?: EnumAdvice.FERTILIZER_RECOMMENDATIONS
 
@@ -80,7 +80,7 @@ class CassavaYieldViewModel @Inject constructor(
 
     fun selectYield(cassavaYield: CassavaYield) = viewModelScope.launch {
         val user = userRepo.getUser(appSettings.akilimoUser) ?: return@launch
-        val userId = user.id ?: 0
+        val userId = user.id ?: return@launch // never key rows to a fake user 0
         val current = selectedRepo.getSelectedByUser(userId)?.selectedCassavaMarket
         val updated = current?.copy(yieldId = cassavaYield.id)
             ?: com.akilimo.mobile.entities.SelectedCassavaMarket(
