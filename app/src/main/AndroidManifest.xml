@@ -40,10 +40,13 @@
                 android:value="androidx.startup"
                 tools:node="remove" />
         </provider>
-        <!-- Crash reporting (Sentry) -->
+        <!-- Crash reporting: self-hosted GlitchTip (Sentry-compatible, uses the Sentry SDK) -->
         <meta-data
             android:name="io.sentry.dsn"
-            android:value="https://f82045e88773833962622996b32b9c8a@o212209.ingest.us.sentry.io/4510186632314885" />
+            android:value="https://89c2d4c293ca485cbfdd5940568939b2@sentry.munywele.co.ke/1" />
+        <meta-data
+            android:name="io.sentry.traces.sample-rate"
+            android:value="0.01" />
         <meta-data
             android:name="io.sentry.send-default-pii"
             android:value="false" />
