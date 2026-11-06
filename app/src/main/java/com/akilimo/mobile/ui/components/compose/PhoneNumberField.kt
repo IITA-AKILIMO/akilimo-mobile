@@ -1,15 +1,15 @@
 package com.akilimo.mobile.ui.components.compose
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
@@ -34,7 +34,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -44,10 +43,10 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.akilimo.mobile.R
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.utils.PhoneCountry
-import com.blongho.country_data.World
 import java.util.Locale
 
 /**
@@ -247,17 +246,39 @@ private fun CountryRow(country: PhoneCountry, name: String, selected: Boolean, o
     }
 }
 
-/** Flag image for an ISO region (World falls back to a globe for unknown codes); decorative. */
+/**
+ * Emoji flag for an ISO region (no images or library: "TZ" → 🇹🇿). Compose draws it with the
+ * up-to-date emoji font that androidx.emoji2 (via AppCompat) downloads; on old phones without it
+ * the flag may show as two letters, which is fine because the country name and code are always
+ * next to it. Decorative, so TalkBack skips it.
+ */
 @Composable
 private fun CountryFlag(region: String) {
-    Image(
-        painter = painterResource(World.getFlagOf(region)),
-        contentDescription = null,
+    Box(
+        contentAlignment = Alignment.Center,
         modifier = Modifier
-            .size(width = 28.dp, height = 20.dp)
-            .clip(MaterialTheme.shapes.extraSmall),
-    )
+            .width(FLAG_WIDTH)
+            .clearAndSetSemantics { },
+    ) {
+        Text(text = flagEmoji(region), fontSize = FLAG_SIZE)
+    }
 }
+
+/** Two regional-indicator letters make a flag; anything that isn't a 2-letter code gets a globe. */
+private fun flagEmoji(region: String): String {
+    val code = region.uppercase(Locale.ROOT)
+    if (code.length != 2 || !code.all { it in 'A'..'Z' }) return GLOBE_EMOJI
+    return code.map { Character.toChars(REGIONAL_INDICATOR_A + (it - 'A')) }
+        .joinToString("") { String(it) }
+}
+
+/** Code point of 🇦 (REGIONAL INDICATOR SYMBOL LETTER A) */
+private const val REGIONAL_INDICATOR_A = 0x1F1E6
+private const val GLOBE_EMOJI = "🌐"
+
+/** Fixed width so country names line up whatever the flag's drawn width */
+private val FLAG_WIDTH = 28.dp
+private val FLAG_SIZE = 20.sp
 
 /** Country name in the app language, e.g. "TZ" → "Tanzania" */
 private fun regionName(region: String): String = Locale("", region).displayCountry

@@ -22,7 +22,6 @@ import com.akilimo.mobile.workers.StarchFactoryWorker
 import com.akilimo.mobile.workers.WorkConstants
 import com.akilimo.mobile.workers.WorkerScheduler
 import com.akilimo.mobile.data.AppSettingsDataStore
-import com.blongho.country_data.World
 import dagger.hilt.android.HiltAndroidApp
 import com.google.firebase.analytics.FirebaseAnalytics
 import javax.inject.Inject
@@ -66,7 +65,6 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
         initLocale()
         initDarkMode()
         initVectorSupport()
-        initTimeAndCountry()
         runStartupTasks()
 
         WorkerScheduler.scheduleOneTimeWorker<InvestmentAmountWorker>(
@@ -147,11 +145,6 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
 
     private fun initVectorSupport() {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-    }
-
-    private fun initTimeAndCountry() {
-//        AndroidThreeTen.init(this)
-        World.init(this)
     }
 
     private fun runStartupTasks() {

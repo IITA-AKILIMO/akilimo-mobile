@@ -47,7 +47,6 @@ mapbox-places = "0.12.0"
 applocale = "3.1.0"
 reword = "4.0.4"
 viewpump = "2.1.1"
-worldcountrydata = "1.5.3"
 phoenix = "3.0.0"
 
 joda = "2.13.1"
@@ -149,7 +148,6 @@ mapbox-places = { group = "com.mapbox.mapboxsdk", name = "mapbox-android-plugin-
 applocale = { group = "dev.b3nedikt.applocale", name = "applocale", version.ref = "applocale" }
 reword = { group = "dev.b3nedikt.reword", name = "reword", version.ref = "reword" }
 viewpump = { group = "io.github.inflationx", name = "viewpump", version.ref = "viewpump" }
-worldcountrydata = { group = "com.github.blongho", name = "worldCountryData", version.ref = "worldcountrydata" }
 
 android-joda = { group = "net.danlew", name = "android.joda", version.ref = "joda" }
 
