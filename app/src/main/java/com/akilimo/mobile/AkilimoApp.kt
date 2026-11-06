@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
+import com.akilimo.mobile.data.toNightMode
 import androidx.core.os.LocaleListCompat
 import dev.b3nedikt.app_locale.AppLocale
 import androidx.multidex.MultiDex
@@ -141,11 +142,7 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
     }
 
     private fun initDarkMode() {
-        val darkMode = appSettings.getDarkModeSync()
-        AppCompatDelegate.setDefaultNightMode(
-            if (darkMode) AppCompatDelegate.MODE_NIGHT_YES
-            else AppCompatDelegate.MODE_NIGHT_NO
-        )
+        AppCompatDelegate.setDefaultNightMode(appSettings.getThemeModeSync().toNightMode())
     }
 
     private fun initVectorSupport() {
