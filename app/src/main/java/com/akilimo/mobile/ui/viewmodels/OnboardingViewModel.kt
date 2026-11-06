@@ -69,6 +69,8 @@ class OnboardingViewModel @Inject constructor(
         val interest: String = "",
         // Country
         val country: EnumCountry = EnumCountry.Unsupported,
+        /** Country picked while fertilizers are selected, waiting for the user to confirm the change */
+        val pendingCountry: EnumCountry? = null,
         // Location
         val latitude: Double = 0.0,
         val longitude: Double = 0.0,
@@ -80,7 +82,10 @@ class OnboardingViewModel @Inject constructor(
         val areaUnit: EnumAreaUnit = EnumAreaUnit.ACRE,
         val farmSize: Double = 1.0,
         val customFarmSize: Boolean = false,
+        /** Saved with the form; the setting is only written on submit */
         val rememberAreaUnit: Boolean = false,
+        /** The unit was remembered earlier: hide the unit picker (farm size stays visible) */
+        val areaUnitRemembered: Boolean = false,
         // Planting Dates
         val plantingDate: LocalDate? = null,
         val harvestDate: LocalDate? = null,
@@ -115,6 +120,8 @@ class OnboardingViewModel @Inject constructor(
 
         // Country
         data class CountrySelected(val country: EnumCountry) : Event
+        object CountryChangeConfirmed : Event
+        object CountryChangeCancelled : Event
 
         // Location
         data class LocationUpdated(val lat: Double, val lng: Double, val zoom: Double) : Event
@@ -159,7 +166,27 @@ class OnboardingViewModel @Inject constructor(
         data object NavigateToRecommendations : Effect
         data object ExitApp : Effect
         data class ShowSnackbar(val message: String) : Effect
+
+        /** Submit failed: scroll [firstField] (an error key) into view and report [count] errors */
+        data class ShowValidationErrors(val firstField: String, val count: Int) : Effect
     }
+
+    companion object {
+        /** Error keys in the order their fields appear on screen, used to find the first one */
+        val FIELD_ORDER = listOf(
+            "firstName", "lastName", "email", "phone", "gender", "interest", "rec_language",
+            "country", "location",
+            "areaUnit", "farmSize",
+            "plantingDate", "harvestDate",
+            "weedControl", "investmentPref",
+        )
+    }
+
+    /** Was a fertilizer selected for the saved country? Changing country clears them on save. */
+    private var hasSelectedFertilizers = false
+
+    /** Country stored for the user when the screen opened */
+    private var savedCountry: EnumCountry = EnumCountry.Unsupported
 
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state.asStateFlow()
@@ -186,12 +213,18 @@ class OnboardingViewModel @Inject constructor(
                 add(OnboardingSection.BIO_DATA)
                 add(OnboardingSection.COUNTRY)
                 add(OnboardingSection.LOCATION)
-                if (!rememberAreaUnit) add(OnboardingSection.AREA_UNIT)
+                // Always shown: a remembered unit hides only the unit picker, never the farm size
+                add(OnboardingSection.AREA_UNIT)
                 add(OnboardingSection.PLANTING_DATE)
                 add(OnboardingSection.TILLAGE)
                 add(OnboardingSection.INVESTMENT_PREF)
                 add(OnboardingSection.SUMMARY)
             }
+
+            savedCountry = user?.enumCountry ?: EnumCountry.Unsupported
+            hasSelectedFertilizers = user?.id
+                ?.let { selectedFertilizerRepo.getSelectedByUser(it).isNotEmpty() }
+                ?: false
 
             _state.update { s ->
                 s.copy(
@@ -200,6 +233,7 @@ class OnboardingViewModel @Inject constructor(
                     disclaimerRead = disclaimerRead,
                     termsAccepted = termsAccepted,
                     rememberAreaUnit = rememberAreaUnit,
+                    areaUnitRemembered = rememberAreaUnit,
                     termsUrl = termsUrl,
                     firstName = user?.firstName ?: prefs.firstName.orEmpty(),
                     lastName = user?.lastName ?: prefs.lastName.orEmpty(),
@@ -264,12 +298,12 @@ class OnboardingViewModel @Inject constructor(
     fun onEvent(event: Event) {
         when (event) {
             is Event.DisclaimerChecked -> {
-                _state.update { it.copy(disclaimerRead = event.checked) }
+                _state.update { it.copy(disclaimerRead = event.checked, errors = it.errors - "disclaimer") }
                 appSettings.disclaimerRead = event.checked
             }
 
             is Event.TermsChecked -> {
-                _state.update { it.copy(termsAccepted = event.checked) }
+                _state.update { it.copy(termsAccepted = event.checked, errors = it.errors - "terms") }
                 appSettings.termsAccepted = event.checked
             }
 
@@ -322,19 +356,25 @@ class OnboardingViewModel @Inject constructor(
                 )
             }
 
+            // Nothing is saved (or deleted) until Submit; persistAll clears the fertilizers then
             is Event.CountrySelected -> {
-                _state.update { it.copy(country = event.country, errors = it.errors - "country") }
-                viewModelScope.launch {
-                    val userName = appSettings.akilimoUser
-                    val user = userRepo.getUser(userName) ?: AkilimoUser(userName = userName)
-                    val countryChanged = user.enumCountry != event.country
-                    userRepo.saveOrUpdateUser(user.copy(enumCountry = event.country), userName)
-                    if (countryChanged) {
-                        user.id?.let { selectedFertilizerRepo.deleteByUserId(it) }
-                    }
+                val current = _state.value.country
+                val clearsFertilizers = hasSelectedFertilizers &&
+                    event.country != savedCountry && event.country != current
+                if (clearsFertilizers) {
+                    _state.update { it.copy(pendingCountry = event.country) }
+                } else {
+                    applyCountry(event.country)
                 }
-                refreshLocationCoverage()
             }
+
+            is Event.CountryChangeConfirmed -> {
+                val pending = _state.value.pendingCountry
+                _state.update { it.copy(pendingCountry = null) }
+                pending?.let { applyCountry(it) }
+            }
+
+            is Event.CountryChangeCancelled -> _state.update { it.copy(pendingCountry = null) }
 
             is Event.LocationUpdated -> {
                 _state.update {
@@ -358,17 +398,20 @@ class OnboardingViewModel @Inject constructor(
                 )
             }
 
-            is Event.RememberAreaUnitChanged -> {
-                _state.update { it.copy(rememberAreaUnit = event.checked) }
-                appSettings.rememberAreaUnit = event.checked
-            }
+            // Persisted with the rest of the form in persistAll, not on tick
+            is Event.RememberAreaUnitChanged -> _state.update { it.copy(rememberAreaUnit = event.checked) }
 
-            is Event.PlantingDateSelected -> _state.update {
-                it.copy(
-                    plantingDate = event.date,
-                    harvestDate = null,
-                    errors = it.errors - "plantingDate"
-                )
+            is Event.PlantingDateSelected -> {
+                val hadHarvest = _state.value.harvestDate != null &&
+                    _state.value.plantingDate != event.date
+                _state.update {
+                    it.copy(
+                        plantingDate = event.date,
+                        harvestDate = if (it.plantingDate == event.date) it.harvestDate else null,
+                        errors = it.errors - "plantingDate"
+                    )
+                }
+                if (hadHarvest) notifyHarvestCleared()
             }
 
             is Event.HarvestDateSelected -> _state.update {
@@ -379,13 +422,19 @@ class OnboardingViewModel @Inject constructor(
             }
 
             // Changing a window changes the valid harvest range; force a re-pick (as DatesScreen does)
-            is Event.PlantingFlexSelected -> _state.update {
-                if (it.plantingFlex == event.flex) it
-                else it.copy(plantingFlex = event.flex, harvestDate = null)
+            is Event.PlantingFlexSelected -> {
+                val s = _state.value
+                if (s.plantingFlex != event.flex) {
+                    _state.update { it.copy(plantingFlex = event.flex, harvestDate = null) }
+                    if (s.harvestDate != null) notifyHarvestCleared()
+                }
             }
-            is Event.HarvestFlexSelected -> _state.update {
-                if (it.harvestFlex == event.flex) it
-                else it.copy(harvestFlex = event.flex, harvestDate = null)
+            is Event.HarvestFlexSelected -> {
+                val s = _state.value
+                if (s.harvestFlex != event.flex) {
+                    _state.update { it.copy(harvestFlex = event.flex, harvestDate = null) }
+                    if (s.harvestDate != null) notifyHarvestCleared()
+                }
             }
             is Event.ShowFlexOptionsChanged -> _state.update { it.copy(showFlexOptions = event.show) }
             is Event.TillageOperationToggled -> {
@@ -429,6 +478,18 @@ class OnboardingViewModel @Inject constructor(
         }
     }
 
+    private fun applyCountry(country: EnumCountry) {
+        _state.update { it.copy(country = country, errors = it.errors - "country") }
+        refreshLocationCoverage()
+    }
+
+    /** The harvest date no longer fits the planting date / windows: tell the user to pick it again. */
+    private fun notifyHarvestCleared() {
+        viewModelScope.launch {
+            _effect.send(Effect.ShowSnackbar(context.getString(R.string.msg_harvest_date_cleared)))
+        }
+    }
+
     private fun handleBack() {
         viewModelScope.launch { _effect.send(Effect.ExitApp) }
     }
@@ -437,6 +498,8 @@ class OnboardingViewModel @Inject constructor(
         val errors = validateAll()
         if (errors.isNotEmpty()) {
             _state.update { it.copy(errors = errors) }
+            val first = FIELD_ORDER.firstOrNull { it in errors } ?: errors.keys.first()
+            viewModelScope.launch { _effect.send(Effect.ShowValidationErrors(first, errors.size)) }
             return
         }
         val s = _state.value
@@ -470,7 +533,7 @@ class OnboardingViewModel @Inject constructor(
             context.getString(R.string.error_location_outside_coverage, s.country.countryName)
 
         // Area Unit
-        if (s.visibleSections.contains(OnboardingSection.AREA_UNIT) && s.farmSize <= 0.0) {
+        if (s.farmSize <= 0.0) {
             errs["farmSize"] = context.getString(R.string.error_farm_size_invalid)
         }
 
@@ -535,10 +598,16 @@ class OnboardingViewModel @Inject constructor(
         // Update settings
         if (s.disclaimerRead) appSettings.disclaimerRead = true
         if (s.termsAccepted) appSettings.termsAccepted = true
-        if (s.rememberAreaUnit) appSettings.rememberAreaUnit = true
+        appSettings.rememberAreaUnit = s.rememberAreaUnit
+
+        val uid = updatedUser.id ?: userRepo.getUser(userName)?.id
+
+        // Fertilizers are country-specific: a saved country change drops the old selection
+        if (user.enumCountry != s.country) {
+            uid?.let { selectedFertilizerRepo.deleteByUserId(it) }
+        }
 
         // Update current practice
-        val uid = updatedUser.id ?: userRepo.getUser(userName)?.id
         uid?.let { id ->
             val existing = currentPracticeRepo.getPracticeForUser(id)
             val ploughing = s.tillageOperations[EnumOperationType.PLOUGHING]

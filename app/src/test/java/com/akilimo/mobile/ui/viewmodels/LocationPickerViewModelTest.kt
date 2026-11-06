@@ -13,8 +13,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -50,6 +52,8 @@ class LocationPickerViewModelTest {
 
         assertEquals(geoJson, viewModel.uiState.value.coverageGeoJson)
         assertNotNull(viewModel.uiState.value.coverageArea)
+        assertFalse(viewModel.uiState.value.isLoadingCoverage)
+        assertFalse(viewModel.uiState.value.coverageUnavailable)
     }
 
     @Test
@@ -92,11 +96,36 @@ class LocationPickerViewModelTest {
     }
 
     @Test
+    fun `a missing area is reported as unavailable instead of failing silently`() = runTest {
+        coEvery { coverageRepo.get("BI") } returns null
+        val viewModel = buildViewModel()
+        viewModel.loadCoverage("BI")
+        advanceUntilIdle()
+
+        assertTrue(viewModel.uiState.value.coverageUnavailable)
+        assertFalse(viewModel.uiState.value.isLoadingCoverage)
+    }
+
+    @Test
     fun `a blank country code loads nothing`() = runTest {
         val viewModel = buildViewModel()
         viewModel.loadCoverage("")
         advanceUntilIdle()
 
         coVerify(exactly = 0) { coverageRepo.get(any()) }
+        assertFalse(viewModel.uiState.value.coverageUnavailable)
+    }
+
+    @Test
+    fun `permission refusal is surfaced and can be dismissed`() = runTest {
+        val viewModel = buildViewModel()
+        viewModel.onPermissionDenied()
+
+        assertEquals(
+            LocationPickerViewModel.LocationProblem.PERMISSION_DENIED,
+            viewModel.uiState.value.locationProblem,
+        )
+        viewModel.dismissLocationProblem()
+        assertNull(viewModel.uiState.value.locationProblem)
     }
 }

@@ -22,6 +22,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -58,6 +59,7 @@ class OnboardingViewModelTest {
         every { appSettings.rememberAreaUnit } returns false
         every { appSettings.termsLink } returns "https://example.com"
         every { appSettings.languageTag } returns "en"
+        coEvery { selectedFertilizerRepo.getSelectedByUser(any()) } returns emptyList()
         // DO NOT create the ViewModel here — init coroutine runs on build
     }
 
@@ -65,6 +67,17 @@ class OnboardingViewModelTest {
         userRepo, prefsRepo, appSettings,
         selectedFertilizerRepo, currentPracticeRepo, adviceCompletionRepo, coverageRepo, context,
     )
+
+    private fun fillValidForm(viewModel: OnboardingViewModel, country: EnumCountry = EnumCountry.TZ) {
+        viewModel.onEvent(OnboardingViewModel.Event.FirstNameChanged("Alice"))
+        viewModel.onEvent(OnboardingViewModel.Event.LastNameChanged("Smith"))
+        viewModel.onEvent(OnboardingViewModel.Event.GenderSelected("F"))
+        viewModel.onEvent(OnboardingViewModel.Event.InterestSelected("farmer"))
+        viewModel.onEvent(OnboardingViewModel.Event.CountrySelected(country))
+        viewModel.onEvent(OnboardingViewModel.Event.PlantingDateSelected(LocalDate.of(2025, 3, 1)))
+        viewModel.onEvent(OnboardingViewModel.Event.HarvestDateSelected(LocalDate.of(2026, 1, 1)))
+        viewModel.onEvent(OnboardingViewModel.Event.InvestmentPrefSelected(EnumInvestmentPref.Sometimes))
+    }
 
     // ── supported area (coverage) ─────────────────────────────────────────────
 
@@ -200,7 +213,7 @@ class OnboardingViewModelTest {
     }
 
     @Test
-    fun `loadInitialState excludes AREA_UNIT section when rememberAreaUnit is true`() = runTest {
+    fun `remembered area unit keeps the farm size section and only hides the unit picker`() = runTest {
         every { appSettings.rememberAreaUnit } returns true
         coEvery { userRepo.getUser("user1") } returns null
         coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
@@ -208,7 +221,28 @@ class OnboardingViewModelTest {
         val viewModel = buildViewModel()
         advanceUntilIdle()
 
-        assertFalse(viewModel.state.value.visibleSections.contains(OnboardingSection.AREA_UNIT))
+        assertTrue(viewModel.state.value.visibleSections.contains(OnboardingSection.AREA_UNIT))
+        assertTrue(viewModel.state.value.areaUnitRemembered)
+    }
+
+    @Test
+    fun `ticking remember area unit is saved only on submit`() = runTest {
+        coEvery { userRepo.getUser("user1") } returns null
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+        viewModel.onEvent(OnboardingViewModel.Event.RememberAreaUnitChanged(true))
+
+        assertTrue(viewModel.state.value.rememberAreaUnit)
+        assertFalse(viewModel.state.value.areaUnitRemembered)
+        verify(exactly = 0) { appSettings.rememberAreaUnit = any() }
+
+        fillValidForm(viewModel)
+        viewModel.onEvent(OnboardingViewModel.Event.SubmitClicked)
+        advanceUntilIdle()
+
+        verify { appSettings.rememberAreaUnit = true }
     }
 
     // ── Disclaimer / Terms ────────────────────────────────────────────────────
@@ -235,6 +269,22 @@ class OnboardingViewModelTest {
         assertTrue(viewModel.state.value.termsAccepted)
     }
 
+    @Test
+    fun `checking terms or disclaimer clears its required error`() = runTest {
+        coEvery { userRepo.getUser("user1") } returns null
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+        viewModel.onEvent(OnboardingViewModel.Event.ShowError("terms", "required"))
+        viewModel.onEvent(OnboardingViewModel.Event.ShowError("disclaimer", "required"))
+        viewModel.onEvent(OnboardingViewModel.Event.TermsChecked(true))
+        viewModel.onEvent(OnboardingViewModel.Event.DisclaimerChecked(true))
+
+        assertNull(viewModel.state.value.errors["terms"])
+        assertNull(viewModel.state.value.errors["disclaimer"])
+    }
+
     // ── Field events ──────────────────────────────────────────────────────────
 
     @Test
@@ -256,7 +306,7 @@ class OnboardingViewModelTest {
     // ── CountrySelected ───────────────────────────────────────────────────────
 
     @Test
-    fun `CountrySelected deletes fertilizers when country changes`() = runTest {
+    fun `CountrySelected saves and deletes nothing until submit`() = runTest {
         coEvery { userRepo.getUser("user1") } returns AkilimoUser(
             id = 42,
             userName = "user1",
@@ -270,7 +320,108 @@ class OnboardingViewModelTest {
         viewModel.onEvent(OnboardingViewModel.Event.CountrySelected(EnumCountry.NG))
         advanceUntilIdle()
 
+        assertEquals(EnumCountry.NG, viewModel.state.value.country)
+        coVerify(exactly = 0) { selectedFertilizerRepo.deleteByUserId(any()) }
+        coVerify(exactly = 0) { userRepo.saveOrUpdateUser(any(), any()) }
+    }
+
+    @Test
+    fun `a changed country deletes the selected fertilizers on submit`() = runTest {
+        coEvery { userRepo.getUser("user1") } returns AkilimoUser(
+            id = 42,
+            userName = "user1",
+            enumCountry = EnumCountry.TZ,
+        )
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+        fillValidForm(viewModel, country = EnumCountry.NG)
+        viewModel.onEvent(OnboardingViewModel.Event.SubmitClicked)
+        advanceUntilIdle()
+
         coVerify { selectedFertilizerRepo.deleteByUserId(42) }
+    }
+
+    @Test
+    fun `an unchanged country keeps the selected fertilizers on submit`() = runTest {
+        coEvery { userRepo.getUser("user1") } returns AkilimoUser(
+            id = 42,
+            userName = "user1",
+            enumCountry = EnumCountry.TZ,
+        )
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+        fillValidForm(viewModel, country = EnumCountry.TZ)
+        viewModel.onEvent(OnboardingViewModel.Event.SubmitClicked)
+        advanceUntilIdle()
+
+        coVerify(exactly = 0) { selectedFertilizerRepo.deleteByUserId(any()) }
+    }
+
+    @Test
+    fun `changing country with selected fertilizers asks for confirmation first`() = runTest {
+        coEvery { userRepo.getUser("user1") } returns AkilimoUser(
+            id = 42,
+            userName = "user1",
+            enumCountry = EnumCountry.TZ,
+        )
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+        coEvery { selectedFertilizerRepo.getSelectedByUser(42) } returns listOf(mockk(relaxed = true))
+
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+
+        viewModel.onEvent(OnboardingViewModel.Event.CountrySelected(EnumCountry.NG))
+        assertEquals(EnumCountry.NG, viewModel.state.value.pendingCountry)
+        assertEquals(EnumCountry.TZ, viewModel.state.value.country)
+
+        viewModel.onEvent(OnboardingViewModel.Event.CountryChangeCancelled)
+        assertNull(viewModel.state.value.pendingCountry)
+        assertEquals(EnumCountry.TZ, viewModel.state.value.country)
+
+        viewModel.onEvent(OnboardingViewModel.Event.CountrySelected(EnumCountry.NG))
+        viewModel.onEvent(OnboardingViewModel.Event.CountryChangeConfirmed)
+        assertNull(viewModel.state.value.pendingCountry)
+        assertEquals(EnumCountry.NG, viewModel.state.value.country)
+    }
+
+    @Test
+    fun `failed submit reports the first failing field and the error count`() = runTest {
+        coEvery { userRepo.getUser("user1") } returns null
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+        fillValidForm(viewModel)
+        viewModel.onEvent(OnboardingViewModel.Event.InvestmentPrefSelected(EnumInvestmentPref.Prompt))
+        viewModel.onEvent(OnboardingViewModel.Event.FirstNameChanged(""))
+
+        viewModel.effect.test {
+            viewModel.onEvent(OnboardingViewModel.Event.SubmitClicked)
+            advanceUntilIdle()
+
+            val effect = awaitItem() as OnboardingViewModel.Effect.ShowValidationErrors
+            assertEquals("firstName", effect.firstField)
+            assertEquals(viewModel.state.value.errors.size, effect.count)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `a custom farm size of zero fails validation`() = runTest {
+        coEvery { userRepo.getUser("user1") } returns null
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+        fillValidForm(viewModel)
+        viewModel.onEvent(OnboardingViewModel.Event.FarmSizeSelected(0.0, true))
+        viewModel.onEvent(OnboardingViewModel.Event.SubmitClicked)
+
+        assertTrue(viewModel.state.value.errors.containsKey("farmSize"))
     }
 
     // ── Validation ────────────────────────────────────────────────────────────
@@ -337,6 +488,26 @@ class OnboardingViewModelTest {
 
         assertNull(viewModel.state.value.harvestDate)
         assertEquals(2L, viewModel.state.value.harvestFlex)
+    }
+
+    @Test
+    fun `clearing the harvest date tells the user`() = runTest {
+        coEvery { userRepo.getUser("user1") } returns null
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+        every { context.getString(R.string.msg_harvest_date_cleared) } returns "cleared"
+
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+        viewModel.onEvent(OnboardingViewModel.Event.HarvestDateSelected(LocalDate.of(2026, 1, 1)))
+
+        viewModel.effect.test {
+            viewModel.onEvent(OnboardingViewModel.Event.PlantingFlexSelected(1L))
+            advanceUntilIdle()
+
+            val effect = awaitItem() as OnboardingViewModel.Effect.ShowSnackbar
+            assertEquals("cleared", effect.message)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test

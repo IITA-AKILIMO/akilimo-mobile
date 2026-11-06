@@ -5,12 +5,12 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForwardIos
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.AspectRatio
 import androidx.compose.material.icons.outlined.CleaningServices
-import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.Info
@@ -39,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -46,6 +47,7 @@ import androidx.navigation.NavHostController
 import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.Locales
 import com.akilimo.mobile.R
+import com.akilimo.mobile.data.ThemeMode
 import com.akilimo.mobile.navigation.OnboardingRoute
 import com.akilimo.mobile.navigation.WebViewRoute
 import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
@@ -166,17 +168,19 @@ fun SettingsScreen(
                     vertical = AkilimoSpacing.sm,
                 ),
             )
-            ListItem(
-                headlineContent = { Text(stringResource(R.string.lbl_dark_mode)) },
-                leadingContent = {
-                    Icon(imageVector = Icons.Outlined.DarkMode, contentDescription = null)
+            AkilimoDropdown(
+                label = stringResource(R.string.lbl_theme),
+                options = ThemeMode.entries,
+                selectedOption = state.themeMode,
+                onOptionSelected = { viewModel.setThemeMode(it) },
+                displayText = { mode ->
+                    when (mode) {
+                        ThemeMode.SYSTEM -> context.getString(R.string.lbl_theme_system)
+                        ThemeMode.LIGHT -> context.getString(R.string.lbl_theme_light)
+                        ThemeMode.DARK -> context.getString(R.string.lbl_theme_dark)
+                    }
                 },
-                trailingContent = {
-                    Switch(
-                        checked = state.darkMode,
-                        onCheckedChange = { viewModel.setDarkMode(it) },
-                    )
-                },
+                modifier = Modifier.padding(horizontal = AkilimoSpacing.md),
             )
 
             HorizontalDivider(modifier = Modifier.padding(vertical = AkilimoSpacing.sm))
@@ -197,11 +201,13 @@ fun SettingsScreen(
                     Icon(imageVector = Icons.Outlined.GridView, contentDescription = null)
                 },
                 trailingContent = {
-                    Switch(
-                        checked = state.fertilizerGrid,
-                        onCheckedChange = { viewModel.setFertilizerGrid(it) },
-                    )
+                    Switch(checked = state.fertilizerGrid, onCheckedChange = null)
                 },
+                modifier = Modifier.toggleable(
+                    value = state.fertilizerGrid,
+                    role = Role.Switch,
+                    onValueChange = { viewModel.setFertilizerGrid(it) },
+                ),
             )
             ListItem(
                 headlineContent = { Text(stringResource(R.string.lbl_remember_area_unit)) },
@@ -209,11 +215,13 @@ fun SettingsScreen(
                     Icon(imageVector = Icons.Outlined.AspectRatio, contentDescription = null)
                 },
                 trailingContent = {
-                    Switch(
-                        checked = state.rememberAreaUnit,
-                        onCheckedChange = { viewModel.setRememberAreaUnit(it) },
-                    )
+                    Switch(checked = state.rememberAreaUnit, onCheckedChange = null)
                 },
+                modifier = Modifier.toggleable(
+                    value = state.rememberAreaUnit,
+                    role = Role.Switch,
+                    onValueChange = { viewModel.setRememberAreaUnit(it) },
+                ),
             )
 
             HorizontalDivider(modifier = Modifier.padding(vertical = AkilimoSpacing.sm))
@@ -245,11 +253,13 @@ fun SettingsScreen(
                     Icon(imageVector = Icons.Outlined.Language, contentDescription = null)
                 },
                 trailingContent = {
-                    Switch(
-                        checked = state.lockAppLanguage,
-                        onCheckedChange = { viewModel.setLockAppLanguage(it) },
-                    )
+                    Switch(checked = state.lockAppLanguage, onCheckedChange = null)
                 },
+                modifier = Modifier.toggleable(
+                    value = state.lockAppLanguage,
+                    role = Role.Switch,
+                    onValueChange = { viewModel.setLockAppLanguage(it) },
+                ),
             )
 
             HorizontalDivider(modifier = Modifier.padding(vertical = AkilimoSpacing.sm))
@@ -275,7 +285,7 @@ fun SettingsScreen(
                         contentDescription = null,
                     )
                 },
-                modifier = Modifier.clickable { navController.navigate(OnboardingRoute) },
+                modifier = Modifier.clickable(role = Role.Button) { navController.navigate(OnboardingRoute) },
             )
 
             HorizontalDivider(modifier = Modifier.padding(vertical = AkilimoSpacing.sm))
@@ -308,7 +318,7 @@ fun SettingsScreen(
                         contentDescription = null,
                     )
                 },
-                modifier = Modifier.clickable {
+                modifier = Modifier.clickable(role = Role.Button) {
                     navController.navigate(
                         WebViewRoute(
                             url = "file:///android_asset/privacy_policy.html",
@@ -328,7 +338,7 @@ fun SettingsScreen(
                         contentDescription = null,
                     )
                 },
-                modifier = Modifier.clickable {
+                modifier = Modifier.clickable(role = Role.Button) {
                     navController.navigate(
                         WebViewRoute(
                             url = "file:///android_asset/terms.html",
@@ -362,7 +372,7 @@ fun SettingsScreen(
                         contentDescription = null,
                     )
                 },
-                modifier = Modifier.clickable { showClearRecsDialog = true },
+                modifier = Modifier.clickable(role = Role.Button) { showClearRecsDialog = true },
             )
             ListItem(
                 headlineContent = { Text(stringResource(R.string.lbl_reset_notification_badge)) },
@@ -376,7 +386,7 @@ fun SettingsScreen(
                         contentDescription = null,
                     )
                 },
-                modifier = Modifier.clickable { showResetBadgeDialog = true },
+                modifier = Modifier.clickable(role = Role.Button) { showResetBadgeDialog = true },
             )
         }
     }
