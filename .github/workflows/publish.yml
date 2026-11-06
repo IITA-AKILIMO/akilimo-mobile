@@ -27,6 +27,9 @@ concurrency:
   group: publish-playstore-${{ inputs.track }}
   cancel-in-progress: false
 
+permissions:
+  contents: write # read/delete the draft GitHub Release
+
 jobs:
   publish_to_playstore:
     name: Publish to Google PlayStore
@@ -72,7 +75,7 @@ jobs:
       - name: Upload Beta Release
         if: inputs.track == 'beta'
         id: upload_beta
-        uses: r0adkll/upload-google-play@v1
+        uses: r0adkll/upload-google-play@v1.1.5
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           packageName: ${{ vars.APP_PACKAGE }}
@@ -84,7 +87,7 @@ jobs:
       - name: Upload Production Release
         if: inputs.track == 'production'
         id: upload_prod
-        uses: r0adkll/upload-google-play@v1
+        uses: r0adkll/upload-google-play@v1.1.5
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           packageName: ${{ vars.APP_PACKAGE }}
@@ -104,7 +107,7 @@ jobs:
         if: >
           steps.upload_beta.outcome == 'success' ||
           steps.upload_prod.outcome == 'success'
-        uses: distributhor/workflow-webhook@v3
+        uses: distributhor/workflow-webhook@v3.0.8
         with:
           webhook_url: ${{ vars.WEBHOOK_URL }}
           webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
@@ -124,7 +127,7 @@ jobs:
 
       - name: Send failure notification
         if: failure()
-        uses: distributhor/workflow-webhook@v3
+        uses: distributhor/workflow-webhook@v3.0.8
         with:
           webhook_url: ${{ vars.WEBHOOK_URL }}
           webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
