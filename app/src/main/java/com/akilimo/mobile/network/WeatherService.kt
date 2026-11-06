@@ -1,6 +1,7 @@
 package com.akilimo.mobile.network
 
 import android.content.Context
+import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.network.ApiClient
 import com.akilimo.mobile.network.WeatherApi
 import io.sentry.Sentry
@@ -14,14 +15,14 @@ class WeatherService(
 ) {
 
     companion object {
-        private const val WEATHER_API_KEY = "4538add05d16412f80a222914252912"
         private const val BASE_URL = "https://api.weatherapi.com/v1/"
     }
 
     private val api: WeatherApi =
         ApiClient.createService(
             context = context.applicationContext,
-            baseUrl = BASE_URL
+            baseUrl = BASE_URL,
+            sendAkilimoApiKey = false
         )
 
     data class WeatherData(
@@ -41,7 +42,7 @@ class WeatherService(
         try {
             val coordinates = "$lat,$lon"
             val response = api.getCurrentWeather(
-                apiKey = WEATHER_API_KEY,
+                apiKey = BuildConfig.WEATHER_API_KEY,
                 coordinates = coordinates
             )
 
