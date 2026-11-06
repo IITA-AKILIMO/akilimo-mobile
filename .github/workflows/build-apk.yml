@@ -205,3 +205,33 @@ jobs:
             -d "$PAYLOAD"
 
           echo "Approval request sent to n8n"
+
+  # If the build fails, remove the release and tag created for it (by github-release.yml or
+  # the upload step) so no orphaned release without artifacts is left behind, and the next
+  # merge to main can tag the version again. Failures in later jobs (approval/publish) keep
+  # the release: the signed artifacts exist and the publish can simply be re-run.
+  cleanup_failed_release:
+    needs: build_artifacts
+    if: failure() && github.ref_type == 'tag'
+    name: Remove release for failed build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write # delete the release and tag
+
+    steps:
+      - name: Delete release and tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          if gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
+            gh release delete "$TAG" --repo "$REPO" --yes --cleanup-tag
+            echo "Deleted release and tag $TAG"
+          else
+            # No release yet (failure happened before one was created): remove the tag only
+            gh api -X DELETE "repos/$REPO/git/refs/tags/$TAG" \
+              && echo "Deleted tag $TAG" \
+              || echo "Tag $TAG already gone"
+          fi
+          echo "::warning::Build for $TAG failed; its release and tag were removed. Fix the build and re-release."
