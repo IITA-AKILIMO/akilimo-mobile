@@ -6,6 +6,7 @@ import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.entities.UserPreferences
 import com.akilimo.mobile.enums.EnumCountry
 import com.akilimo.mobile.enums.EnumInvestmentPref
+import com.akilimo.mobile.enums.EnumWeedControlMethod
 import com.akilimo.mobile.repos.AdviceCompletionRepo
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.CurrentPracticeRepo
@@ -82,6 +83,34 @@ class OnboardingViewModelTest {
             assertEquals("Smith", lastName)
             assertEquals(EnumCountry.TZ, country)
         }
+    }
+
+    @Test
+    fun `loadInitialState enables weed control when user has a saved method`() = runTest {
+        coEvery { userRepo.getUser("user1") } returns AkilimoUser(
+            userName = "user1",
+            weedControlMethod = EnumWeedControlMethod.HERBICIDE,
+        )
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+
+        with(viewModel.state.value) {
+            assertTrue(weedControlEnabled)
+            assertEquals(EnumWeedControlMethod.HERBICIDE, weedControlMethod)
+        }
+    }
+
+    @Test
+    fun `loadInitialState leaves weed control disabled when no method is saved`() = runTest {
+        coEvery { userRepo.getUser("user1") } returns AkilimoUser(userName = "user1")
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+
+        assertFalse(viewModel.state.value.weedControlEnabled)
     }
 
     @Test

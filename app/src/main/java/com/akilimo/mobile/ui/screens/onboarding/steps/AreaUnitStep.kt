@@ -66,7 +66,9 @@ fun AreaUnitStep(
 
     val fieldSizeOptions = remember(areaUnit) { fieldSizesForUnit(areaUnit) }
     val selectedSizeOption = if (customFarmSize) null else fieldSizeOptions.find { it.second == farmSize }
-    var customSizeText by remember(farmSize, customFarmSize) {
+    // Keyed only on customFarmSize: keying on farmSize would reset the text on every
+    // keystroke (each edit updates farmSize), turning "2" into "2.0" mid-typing.
+    var customSizeText by remember(customFarmSize) {
         mutableStateOf(if (customFarmSize) (if (farmSize > 0) farmSize.toString() else "") else "")
     }
 
