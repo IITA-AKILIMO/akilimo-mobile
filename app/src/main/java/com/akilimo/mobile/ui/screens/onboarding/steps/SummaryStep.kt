@@ -78,7 +78,11 @@ fun SummaryStep(
                 SummaryRow(stringResource(R.string.lbl_first_name), state.firstName)
                 SummaryRow(stringResource(R.string.lbl_last_name), state.lastName)
                 SummaryRow(stringResource(R.string.lbl_email_address), state.email)
-                SummaryRow(stringResource(R.string.lbl_phone_number), state.phone)
+                SummaryRow(
+                    stringResource(R.string.lbl_phone_number),
+                    // Show the number with its country code, as it will be saved
+                    if (state.phone.isBlank()) state.phone else "+${state.phoneDialCode} ${state.phone}",
+                )
                 SummaryRow(stringResource(R.string.lbl_gender), genderLabel(state.gender))
                 SummaryRow(
                     stringResource(R.string.lbl_recommendation_language),

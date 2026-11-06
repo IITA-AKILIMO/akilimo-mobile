@@ -30,6 +30,7 @@ fun AkilimoTextField(
     maxLines: Int = 1,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     trailingIcon: (@Composable () -> Unit)? = null,
+    leadingIcon: (@Composable () -> Unit)? = null,
     readOnly: Boolean = false,
     enabled: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -67,6 +68,7 @@ fun AkilimoTextField(
             maxLines = maxLines,
             visualTransformation = visualTransformation,
             trailingIcon = trailingIcon,
+            leadingIcon = leadingIcon,
             readOnly = readOnly,
             shape = MaterialTheme.shapes.small,
             // Error/helper go in supportingText so TalkBack links them to the field

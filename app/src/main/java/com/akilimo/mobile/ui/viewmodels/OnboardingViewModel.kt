@@ -37,7 +37,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.akilimo.mobile.utils.PhoneCountry
+import com.akilimo.mobile.utils.PhoneNumberHelper
 import java.time.LocalDate
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -49,6 +52,7 @@ class OnboardingViewModel @Inject constructor(
     private val currentPracticeRepo: CurrentPracticeRepo,
     private val adviceCompletionRepo: AdviceCompletionRepo,
     private val coverageRepo: CoverageRepo,
+    private val phoneNumbers: PhoneNumberHelper,
     @param:ApplicationContext private val context: Context,
 ) : ViewModel() {
 
@@ -69,7 +73,12 @@ class OnboardingViewModel @Inject constructor(
         val recommendationLanguage: String = "en",
         val lastName: String = "",
         val email: String = "",
+        /** Phone number as typed, without the country code */
         val phone: String = "",
+        /** ISO region of the phone number's country code ("TZ" → +255); any country in the world */
+        val phoneRegion: String = "",
+        /** Dialling code of [phoneRegion] (255 for TZ) */
+        val phoneDialCode: Int = 0,
         val gender: String = "",
         val interest: String = "",
         // Country
@@ -119,6 +128,7 @@ class OnboardingViewModel @Inject constructor(
         data class LastNameChanged(val value: String) : Event
         data class EmailChanged(val value: String) : Event
         data class PhoneChanged(val value: String) : Event
+        data class PhoneRegionSelected(val region: String) : Event
         data class GenderSelected(val value: String) : Event
         data class InterestSelected(val value: String) : Event
         data class RecLanguageSelected(val value: String) : Event
@@ -193,6 +203,18 @@ class OnboardingViewModel @Inject constructor(
         )
     }
 
+    /** Every country the phone number can be from (fixed list, so built once) */
+    val phoneCountries: List<PhoneCountry> by lazy { phoneNumbers.allCountries() }
+
+    /**
+     * Shown first in the country code picker: the phone's own country, then the countries AKILIMO
+     * works in. Everything else follows A–Z.
+     */
+    val suggestedPhoneRegions: List<String> by lazy {
+        (listOf(phoneNumbers.defaultRegion()) +
+            EnumCountry.entries.filter { it != EnumCountry.Unsupported }.map { it.name }).distinct()
+    }
+
     /** Was a fertilizer selected for the saved country? Changing country clears them on save. */
     private var hasSelectedFertilizers = false
 
@@ -232,6 +254,12 @@ class OnboardingViewModel @Inject constructor(
                 add(OnboardingSection.SUMMARY)
             }
 
+            // Saved numbers are +<code><number>; older ones without + are kept as typed under
+            // the phone's own country so the user can fix them
+            val storedPhone = user?.mobileNumber ?: prefs.phoneNumber.orEmpty()
+            val (phoneRegion, phone) = phoneNumbers.split(storedPhone)
+                ?: (phoneNumbers.defaultRegion() to storedPhone)
+
             savedCountry = user?.enumCountry ?: EnumCountry.Unsupported
             hasSelectedFertilizers = user?.id
                 ?.let { selectedFertilizerRepo.getSelectedByUser(it).isNotEmpty() }
@@ -250,7 +278,9 @@ class OnboardingViewModel @Inject constructor(
                     firstName = user?.firstName ?: prefs.firstName.orEmpty(),
                     lastName = user?.lastName ?: prefs.lastName.orEmpty(),
                     email = user?.email ?: prefs.email.orEmpty(),
-                    phone = user?.mobileNumber ?: prefs.phoneNumber.orEmpty(),
+                    phone = phone,
+                    phoneRegion = phoneRegion,
+                    phoneDialCode = phoneNumbers.dialCode(phoneRegion),
                     gender = user?.gender ?: prefs.gender.orEmpty(),
                     interest = user?.akilimoInterest.orEmpty(),
                     recommendationLanguage = user?.recommendationLanguage ?: "en",
@@ -343,6 +373,14 @@ class OnboardingViewModel @Inject constructor(
             is Event.PhoneChanged -> _state.update {
                 it.copy(
                     phone = event.value,
+                    errors = it.errors - "phone"
+                )
+            }
+
+            is Event.PhoneRegionSelected -> _state.update {
+                it.copy(
+                    phoneRegion = event.region,
+                    phoneDialCode = phoneNumbers.dialCode(event.region),
                     errors = it.errors - "phone"
                 )
             }
@@ -563,6 +601,11 @@ class OnboardingViewModel @Inject constructor(
             context.getString(R.string.error_interest_required)
         if (s.email.isNotBlank() && !android.util.Patterns.EMAIL_ADDRESS.matcher(s.email).matches())
             errs["email"] = context.getString(R.string.error_email_invalid)
+        // Optional, but a number that is typed must be real for the chosen country
+        if (s.phone.isNotBlank() && !phoneNumbers.isValid(s.phone, s.phoneRegion)) {
+            val countryName = Locale("", s.phoneRegion).displayCountry
+            errs["phone"] = context.getString(R.string.error_phone_invalid, countryName)
+        }
 
         // Country
         if (s.country == EnumCountry.Unsupported) errs["country"] =
@@ -610,7 +653,8 @@ class OnboardingViewModel @Inject constructor(
             firstName = s.firstName,
             lastName = s.lastName,
             email = s.email.ifBlank { null },
-            mobileNumber = s.phone.ifBlank { null },
+            // One format for every country: +<code><number>
+            mobileNumber = s.phone.ifBlank { null }?.let { phoneNumbers.toE164(it, s.phoneRegion) ?: it },
             gender = s.gender,
             akilimoInterest = s.interest,
             recommendationLanguage = s.recommendationLanguage,

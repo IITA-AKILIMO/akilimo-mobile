@@ -20,6 +20,8 @@ import com.akilimo.mobile.repos.FertilizerPriceRepo
 import com.akilimo.mobile.repos.FertilizerRepo
 import com.akilimo.mobile.repos.SelectedFertilizerRepo
 import com.akilimo.mobile.repos.UserPreferencesRepo
+import com.akilimo.mobile.utils.LibPhoneNumberHelper
+import com.akilimo.mobile.utils.PhoneNumberHelper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -125,4 +127,9 @@ object AppModule {
     @Singleton
     fun provideProduceMarketRepo(db: AppDatabase): ProduceMarketRepo =
         ProduceMarketRepo(db.produceMarketDao())
+
+    @Provides
+    @Singleton
+    fun providePhoneNumberHelper(@ApplicationContext context: Context): PhoneNumberHelper =
+        LibPhoneNumberHelper(context)
 }

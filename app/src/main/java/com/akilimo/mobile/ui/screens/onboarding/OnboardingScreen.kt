@@ -83,6 +83,7 @@ import com.akilimo.mobile.ui.screens.onboarding.steps.SummaryStep
 import com.akilimo.mobile.ui.screens.onboarding.steps.TillageStep
 import com.akilimo.mobile.ui.screens.settings.LocationResult
 import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
+import com.akilimo.mobile.utils.PhoneCountry
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -316,7 +317,13 @@ fun OnboardingScreen(
                     )
                 }
                 when (step) {
-                    OnboardingStep.ABOUT_YOU -> BioDataSection(state, viewModel::onEvent, sectionModifier)
+                    OnboardingStep.ABOUT_YOU -> BioDataSection(
+                        state = state,
+                        phoneCountries = viewModel.phoneCountries,
+                        suggestedPhoneRegions = viewModel.suggestedPhoneRegions,
+                        onEvent = viewModel::onEvent,
+                        section = sectionModifier,
+                    )
 
                     OnboardingStep.FARM_LOCATION ->
                         FarmLocationSection(state, viewModel::onEvent, navController, sectionModifier)
@@ -413,6 +420,8 @@ private val SENTENCE_BREAK = Regex("(?<=[?!.])\\s+")
 @Composable
 private fun BioDataSection(
     state: OnboardingViewModel.UiState,
+    phoneCountries: List<PhoneCountry>,
+    suggestedPhoneRegions: List<String>,
     onEvent: OnEvent,
     section: (OnboardingSection) -> Modifier,
 ) {
@@ -421,6 +430,10 @@ private fun BioDataSection(
         lastName = state.lastName,
         email = state.email,
         phone = state.phone,
+        phoneRegion = state.phoneRegion,
+        phoneDialCode = state.phoneDialCode,
+        phoneCountries = phoneCountries,
+        suggestedPhoneRegions = suggestedPhoneRegions,
         gender = state.gender,
         interest = state.interest,
         recLanguage = state.recommendationLanguage,

@@ -18,7 +18,9 @@ import androidx.compose.ui.unit.dp
 import com.akilimo.mobile.R
 import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
 import com.akilimo.mobile.ui.components.compose.AkilimoTextField
+import com.akilimo.mobile.ui.components.compose.PhoneNumberField
 import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
+import com.akilimo.mobile.utils.PhoneCountry
 
 @Composable
 fun BioDataStep(
@@ -26,6 +28,10 @@ fun BioDataStep(
     lastName: String,
     email: String,
     phone: String,
+    phoneRegion: String,
+    phoneDialCode: Int,
+    phoneCountries: List<PhoneCountry>,
+    suggestedPhoneRegions: List<String>,
     gender: String,
     interest: String,
     recLanguage: String,
@@ -92,12 +98,17 @@ fun BioDataStep(
             error = errors["email"],
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
         )
-        AkilimoTextField(
-            value = phone,
-            onValueChange = { onEvent(OnboardingViewModel.Event.PhoneChanged(it)) },
+        // Any country in the world: the code button opens a searchable country list
+        PhoneNumberField(
+            number = phone,
+            onNumberChange = { onEvent(OnboardingViewModel.Event.PhoneChanged(it)) },
+            region = phoneRegion,
+            dialCode = phoneDialCode,
+            onRegionChange = { onEvent(OnboardingViewModel.Event.PhoneRegionSelected(it)) },
+            countries = phoneCountries,
+            suggestedRegions = suggestedPhoneRegions,
             label = stringResource(R.string.lbl_optional_field, stringResource(R.string.lbl_phone_number)),
             error = errors["phone"],
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Done),
         )
         AkilimoDropdown(
             label = stringResource(R.string.lbl_gender),

@@ -18,6 +18,8 @@ import com.akilimo.mobile.repos.UserPreferencesRepo
 import com.akilimo.mobile.rules.TestDispatcherRule
 import com.akilimo.mobile.ui.screens.onboarding.OnboardingSection
 import com.akilimo.mobile.ui.screens.onboarding.OnboardingStep
+import com.akilimo.mobile.utils.PhoneCountry
+import com.akilimo.mobile.utils.PhoneNumberHelper
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -64,10 +66,32 @@ class OnboardingViewModelTest {
         // DO NOT create the ViewModel here — init coroutine runs on build
     }
 
+    private val phoneNumbers = FakePhoneNumbers()
+
     private fun buildViewModel() = OnboardingViewModel(
         userRepo, prefsRepo, appSettings,
-        selectedFertilizerRepo, currentPracticeRepo, adviceCompletionRepo, coverageRepo, context,
+        selectedFertilizerRepo, currentPracticeRepo, adviceCompletionRepo, coverageRepo,
+        phoneNumbers, context,
     )
+
+    /**
+     * Stands in for libphonenumber (which needs the app's assets): TZ (+255) and KE (+254)
+     * numbers are valid when they have 9 digits after dropping a leading 0.
+     */
+    private class FakePhoneNumbers : PhoneNumberHelper {
+        private val codes = mapOf("TZ" to 255, "KE" to 254)
+        override fun allCountries() = codes.map { (region, code) -> PhoneCountry(region, code) }
+        override fun dialCode(region: String) = codes[region] ?: 0
+        override fun defaultRegion() = "TZ"
+        private fun digits(number: String) = number.filter(Char::isDigit).removePrefix("0")
+        override fun isValid(number: String, region: String) = region in codes && digits(number).length == 9
+        override fun toE164(number: String, region: String) = codes[region]?.let { "+$it${digits(number)}" }
+        override fun split(stored: String): Pair<String, String>? {
+            if (!stored.startsWith("+")) return null
+            return codes.entries.firstOrNull { stored.startsWith("+${it.value}") }
+                ?.let { it.key to stored.removePrefix("+${it.value}") }
+        }
+    }
 
     private fun fillValidForm(viewModel: OnboardingViewModel, country: EnumCountry = EnumCountry.TZ) {
         viewModel.onEvent(OnboardingViewModel.Event.FirstNameChanged("Alice"))
@@ -560,6 +584,73 @@ class OnboardingViewModelTest {
             assertTrue(awaitItem() is OnboardingViewModel.Effect.ExitApp)
             cancelAndIgnoreRemainingEvents()
         }
+    }
+
+    // ── phone number with country code ────────────────────────────────────────
+
+    @Test
+    fun `a new profile starts on the phone's own country code`() = runTest {
+        coEvery { userRepo.getUser("user1") } returns null
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+
+        assertEquals("TZ", viewModel.state.value.phoneRegion)
+        assertEquals(255, viewModel.state.value.phoneDialCode)
+        assertEquals("TZ", viewModel.suggestedPhoneRegions.first())
+    }
+
+    @Test
+    fun `a saved international number is split into country code and number`() = runTest {
+        coEvery { userRepo.getUser("user1") } returns
+            AkilimoUser(userName = "user1", mobileNumber = "+254712345678")
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+
+        assertEquals("KE", viewModel.state.value.phoneRegion)
+        assertEquals(254, viewModel.state.value.phoneDialCode)
+        assertEquals("712345678", viewModel.state.value.phone)
+    }
+
+    @Test
+    fun `an invalid number for the chosen country blocks submit, blank does not`() = runTest {
+        coEvery { userRepo.getUser("user1") } returns null
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+        fillValidForm(viewModel)
+
+        viewModel.onEvent(OnboardingViewModel.Event.PhoneChanged("1234"))
+        viewModel.onEvent(OnboardingViewModel.Event.SubmitClicked)
+        assertTrue("phone" in viewModel.state.value.errors)
+
+        // Picking another country clears the error until the next check
+        viewModel.onEvent(OnboardingViewModel.Event.PhoneRegionSelected("KE"))
+        assertFalse("phone" in viewModel.state.value.errors)
+        assertEquals(254, viewModel.state.value.phoneDialCode)
+
+        viewModel.onEvent(OnboardingViewModel.Event.PhoneChanged(""))
+        viewModel.onEvent(OnboardingViewModel.Event.SubmitClicked)
+        assertFalse("phone" in viewModel.state.value.errors)
+    }
+
+    @Test
+    fun `the phone number is saved with its country code`() = runTest {
+        coEvery { userRepo.getUser("user1") } returns null
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+        fillValidForm(viewModel)
+        viewModel.onEvent(OnboardingViewModel.Event.PhoneRegionSelected("KE"))
+        viewModel.onEvent(OnboardingViewModel.Event.PhoneChanged("0712345678"))
+
+        viewModel.onEvent(OnboardingViewModel.Event.SubmitClicked)
+        advanceUntilIdle()
+
+        coVerify { userRepo.saveOrUpdateUser(match { it.mobileNumber == "+254712345678" }, "user1") }
     }
 
     // ── first-run wizard ──────────────────────────────────────────────────────
