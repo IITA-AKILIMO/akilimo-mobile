@@ -9,6 +9,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
 
@@ -30,7 +32,8 @@ fun SectionHeader(
             text = title,
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurface,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.semantics { heading() }
         )
         subtitle?.let {
             Spacer(Modifier.height(AkilimoSpacing.xxs))

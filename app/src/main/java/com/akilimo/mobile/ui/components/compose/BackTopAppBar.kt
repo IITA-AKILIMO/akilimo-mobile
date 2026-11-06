@@ -59,7 +59,10 @@ fun BackTopAppBar(
     }
 
     if (collapsedTitle != null && scrollBehavior != null) {
-        val fraction = scrollBehavior.state.collapsedFraction
+        // collapsedFraction changes every scroll frame: read it only inside the
+        // graphicsLayer / layout lambdas so scrolling triggers redraw/relayout,
+        // never recomposition.
+        val state = scrollBehavior.state
 
         LargeTopAppBar(
             title = {
@@ -68,10 +71,10 @@ fun BackTopAppBar(
                     // so the Box never reserves invisible space in the collapsed state.
                     Column(
                         modifier = Modifier
-                            .graphicsLayer { alpha = 1f - fraction }
+                            .graphicsLayer { alpha = 1f - state.collapsedFraction }
                             .layout { measurable, constraints ->
                                 val placeable = measurable.measure(constraints)
-                                val height = (placeable.height * (1f - fraction))
+                                val height = (placeable.height * (1f - state.collapsedFraction))
                                     .toInt()
                                     .coerceAtLeast(0)
                                 layout(placeable.width, height) {
@@ -104,7 +107,7 @@ fun BackTopAppBar(
                         color = MaterialTheme.colorScheme.onPrimary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.graphicsLayer { alpha = fraction },
+                        modifier = Modifier.graphicsLayer { alpha = state.collapsedFraction },
                     )
                 }
             },
@@ -128,7 +131,8 @@ fun BackTopAppBar(
                         text = title,
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onPrimary,
-                        maxLines = 1,
+                        // Two 28sp lines fit the 64dp bar; with a subtitle only one does.
+                        maxLines = if (subtitle == null) 2 else 1,
                         overflow = TextOverflow.Ellipsis,
                     )
                     if (subtitle != null) {
@@ -148,7 +152,12 @@ fun BackTopAppBar(
             scrollBehavior = scrollBehavior,
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.primary,
-                scrolledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                // Title/icons are onPrimary, so the scrolled colour must stay primary
+                // (primaryContainer would make them unreadable).
+                scrolledContainerColor = MaterialTheme.colorScheme.primary,
+                titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
             ),
         )
     }

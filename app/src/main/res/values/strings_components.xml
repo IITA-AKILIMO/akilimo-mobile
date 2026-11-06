@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Strings used by shared Compose components (ui/components/compose). -->
+<resources>
+    <!-- WizardBottomBar progress indicator, e.g. "Step 2 of 5" -->
+    <string name="cmp_wizard_step_progress">Step %1$d of %2$d</string>
+    <!-- DateInputField: TalkBack action label ("Double-tap to choose date") -->
+    <string name="cmp_choose_date">choose date</string>
+    <!-- SaveBottomBar: state announced while the action is in progress -->
+    <string name="cmp_loading">Loading</string>
+</resources>
