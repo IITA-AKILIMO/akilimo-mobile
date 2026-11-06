@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -26,6 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.akilimo.mobile.R
+import com.akilimo.mobile.ui.theme.AkilimoSpacing
 
 /** What the leading icon of [BackTopAppBar] shows. */
 enum class TopBarNavigation {
@@ -49,7 +52,8 @@ enum class TopBarNavigation {
  * to the enclosing Scaffold so the bar actually collapses on scroll.
  *
  * [expandedHeight] and [expandedMaxLines] (large bar only) make room for a longer expanded
- * title/subtitle, e.g. a welcome message used as the screen's hero.
+ * title/subtitle, e.g. a welcome message used as the screen's hero. [expandedLeading] (large
+ * bar only) is drawn above the expanded title, e.g. a logo, and collapses away with it.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,6 +68,7 @@ fun BackTopAppBar(
     navigation: TopBarNavigation = TopBarNavigation.BACK,
     expandedHeight: Dp = TopAppBarDefaults.LargeAppBarExpandedHeight,
     expandedMaxLines: Int = 2,
+    expandedLeading: (@Composable () -> Unit)? = null,
 ) {
     val navIcon: @Composable () -> Unit = {
         if (navigation != TopBarNavigation.NONE) {
@@ -106,6 +111,10 @@ fun BackTopAppBar(
                             },
                         verticalArrangement = Arrangement.spacedBy(2.dp),
                     ) {
+                        if (expandedLeading != null) {
+                            expandedLeading()
+                            Spacer(Modifier.height(AkilimoSpacing.xs))
+                        }
                         Text(
                             text = title,
                             style = MaterialTheme.typography.titleLarge,

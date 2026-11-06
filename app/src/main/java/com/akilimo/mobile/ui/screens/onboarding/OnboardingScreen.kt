@@ -2,6 +2,7 @@ package com.akilimo.mobile.ui.screens.onboarding
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.rememberScrollState
@@ -38,7 +40,9 @@ import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
@@ -228,11 +232,25 @@ fun OnboardingScreen(
                 collapsedTitle = pageTitle,
                 scrollBehavior = scrollBehavior,
                 expandedHeight = if (isWelcomePage) {
-                    WELCOME_HEADER_HEIGHT * fontScale
+                    // The logo doesn't grow with the font size; the text does
+                    WELCOME_LOGO_SPACE + WELCOME_HEADER_HEIGHT * fontScale
                 } else {
                     TopAppBarDefaults.LargeAppBarExpandedHeight
                 },
                 expandedMaxLines = if (isWelcomePage) WELCOME_HEADER_MAX_LINES else 2,
+                expandedLeading = if (isWelcomePage) {
+                    {
+                        Image(
+                            painter = painterResource(R.drawable.ic_akilimo_logo_white),
+                            // Decorative: the welcome title right below names AKILIMO
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
+                            modifier = Modifier.size(WELCOME_LOGO_SIZE),
+                        )
+                    }
+                } else {
+                    null
+                },
                 // The bottom bar's Back moves between pages, so the top bar doesn't repeat it:
                 // editing gets a ✕ that leaves without saving; first run has nowhere to go up to
                 // (the phone's back button still steps back, and asks to exit on page 1)
@@ -293,6 +311,10 @@ private typealias OnEvent = (OnboardingViewModel.Event) -> Unit
 
 /** Expanded header height on first-run page 1, which holds the welcome title and subtitle */
 private val WELCOME_HEADER_HEIGHT = 240.dp
+
+/** AKILIMO logo above the welcome title, and the header space it adds (logo + gap) */
+private val WELCOME_LOGO_SIZE = 48.dp
+private val WELCOME_LOGO_SPACE = 56.dp
 
 /** Lines allowed for each of the welcome title and subtitle in the expanded header */
 private const val WELCOME_HEADER_MAX_LINES = 3
