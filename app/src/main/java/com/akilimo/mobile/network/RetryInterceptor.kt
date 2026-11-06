@@ -54,8 +54,14 @@ class SafeNetworkInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         return try {
             chain.proceed(chain.request())
+        } catch (e: IOException) {
+            // Offline, DNS, timeouts: expected in the field, don't flood Sentry
+            Timber.w(e, "SafeNetworkInterceptor: network error")
+            throw e
         } catch (e: Exception) {
-            Timber.e(e, "SafeNetworkInterceptor: Network error")
+            // Anything else here is a real bug: report it, then surface as IOException
+            // so OkHttp/Retrofit callers handle it like other call failures
+            Timber.e(e, "SafeNetworkInterceptor: unexpected error")
             Sentry.captureException(e)
             throw IOException("Network error", e)
         }

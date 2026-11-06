@@ -143,12 +143,6 @@ jobs:
               "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
 
-      - name: Cleanup draft release on failure
-        if: failure()
-        run: |
-          gh release delete "${{ inputs.version }}" \
-            --repo "${{ github.repository }}" \
-            --yes \
-            --cleanup-tag || true
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # No cleanup on failure: the draft release holds the signed AAB/APK from build-apk.yml.
+      # Deleting it (and the tag) on a transient Play API error forced a full rebuild;
+      # keeping it means a failed publish can simply be re-run. Delete stale drafts manually.

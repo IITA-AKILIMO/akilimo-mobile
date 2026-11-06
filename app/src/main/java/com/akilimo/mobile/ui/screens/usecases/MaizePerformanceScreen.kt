@@ -65,7 +65,7 @@ fun MaizePerformanceScreen(
                             painter = painterResource(
                                 if (isGridLayout) R.drawable.ic_list else R.drawable.ic_grid
                             ),
-                            contentDescription = null
+                            contentDescription = stringResource(if (isGridLayout) R.string.cd_show_as_list else R.string.cd_show_as_grid)
                         )
                     }
                 }

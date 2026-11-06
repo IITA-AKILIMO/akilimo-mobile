@@ -2,7 +2,7 @@ package com.akilimo.mobile.network
 
 import android.content.Context
 import com.akilimo.mobile.network.response.Address
-import io.sentry.Sentry
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -39,29 +39,26 @@ class GeocodingService(
      * Network calls are performed on Dispatchers.IO automatically.
      */
     fun fetchAddressFlow(lat: Double, lon: Double): Flow<GeocodingResult> = flow {
-        try {
+        // emit() stays outside try/catch: catching exceptions thrown by the collector (or
+        // cancellation) and emitting again would break Flow exception transparency.
+        val result = try {
             val response = api.reverseGeocode(
                 apiKey = apiKey,
                 latitude = lat,
                 longitude = lon
             )
-
             val addressText = buildFormattedAddress(response.address, lat, lon)
-
-            emit(
-                GeocodingResult.Success(
-                    AddressData(formattedAddress = addressText)
-                )
-            )
+            GeocodingResult.Success(AddressData(formattedAddress = addressText))
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
-            Sentry.captureException(e)
-            emit(
-                GeocodingResult.Error(
-                    exception = e,
-                    fallbackMessage = "Unable to fetch address"
-                )
+            reportUnlessNetworkError(e)
+            GeocodingResult.Error(
+                exception = e,
+                fallbackMessage = "Unable to fetch address"
             )
         }
+        emit(result)
     }.flowOn(Dispatchers.IO)
 
     /**

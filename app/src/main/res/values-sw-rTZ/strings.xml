@@ -11,7 +11,7 @@
     <string name="lbl_acre">ekari</string>
     <string name="lbl_ha">hekta</string>
     <string name="lbl_are">are</string>
-    <string name="lbl_cassava_field_size">Je? Shamba lako la muhogo lina ukubwa gani (katika `%1$s`)?</string>
+    <string name="lbl_cassava_field_size">Je? Shamba lako la muhogo lina ukubwa gani (katika %1$s)?</string>
     <string name="exact_field_area">Taja eneo halisi la shamba lako</string>
     <string name="lbl_farm_location">Shamba lako la muhogo lipo eneo gani?</string>
     <string name="lbl_current_location">Tumia eneo la sasa</string>
@@ -240,6 +240,8 @@
     <string name="error_country_required">Tafadhali chagua nchi yako</string>
     <string name="error_farm_size_invalid">Tafadhali weka ukubwa sahihi wa shamba</string>
     <string name="error_amount_invalid">Tafadhali weka kiasi sahihi</string>
+    <string name="cd_show_as_list">Onyesha kama orodha</string>
+    <string name="cd_show_as_grid">Onyesha kama gridi</string>
     <string name="error_planting_date_required">Tafadhali chagua tarehe ya kupanda</string>
     <string name="error_harvest_date_required">Tafadhali chagua tarehe ya kuvuna</string>
     <string name="error_weed_control_required">Tafadhali chagua njia ya kudhibiti magugu</string>

@@ -42,6 +42,7 @@ jobs:
           target_branch: main
           label: release
           old_string: "**Write you description here**"
-          body: "${{ github.event.head_commit.message }}"
-          new_string: "${{ github.event.head_commit.message }}"
+          # Triggered by workflow_run, where the commit lives under workflow_run (head_commit is empty)
+          body: "${{ github.event.workflow_run.head_commit.message }}"
+          new_string: "${{ github.event.workflow_run.head_commit.message }}"
           get_diff: false

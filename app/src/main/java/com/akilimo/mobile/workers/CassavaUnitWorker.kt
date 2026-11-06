@@ -30,12 +30,11 @@ class CassavaUnitWorker(
         val items = response.data.map { it.toEntity() }
         val current = response.meta?.currentPage ?: page
         val last = response.meta?.lastPage ?: current
-        val total = response.meta?.total ?: 0
 
         return PageResult(
             items = items,
             isLastPage = current >= last,
-            totalPages = total
+            totalPages = last // page count, not item count (used for progress)
         )
     }
 
