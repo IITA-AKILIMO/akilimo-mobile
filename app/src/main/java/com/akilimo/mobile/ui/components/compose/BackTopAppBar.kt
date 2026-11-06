@@ -48,8 +48,9 @@ enum class TopBarNavigation {
  * state. The caller must apply `Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)`
  * to the enclosing Scaffold so the bar actually collapses on scroll.
  *
- * [expandedHeight] and [expandedMaxLines] (large bar only) make room for a longer expanded
- * title/subtitle, e.g. a welcome message used as the screen's hero.
+ * [expandedHeight], [expandedTitleMaxLines], [expandedSubtitleMaxLines] and
+ * [expandedSubtitleGap] (large bar only) make room for a longer expanded title/subtitle,
+ * e.g. a welcome message used as the screen's hero.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,7 +64,9 @@ fun BackTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior? = null,
     navigation: TopBarNavigation = TopBarNavigation.BACK,
     expandedHeight: Dp = TopAppBarDefaults.LargeAppBarExpandedHeight,
-    expandedMaxLines: Int = 2,
+    expandedTitleMaxLines: Int = 2,
+    expandedSubtitleMaxLines: Int = 2,
+    expandedSubtitleGap: Dp = 2.dp,
 ) {
     val navIcon: @Composable () -> Unit = {
         if (navigation != TopBarNavigation.NONE) {
@@ -104,13 +107,13 @@ fun BackTopAppBar(
                                     placeable.place(0, 0)
                                 }
                             },
-                        verticalArrangement = Arrangement.spacedBy(2.dp),
+                        verticalArrangement = Arrangement.spacedBy(expandedSubtitleGap),
                     ) {
                         Text(
                             text = title,
                             style = MaterialTheme.typography.titleLarge,
                             color = MaterialTheme.colorScheme.onPrimary,
-                            maxLines = expandedMaxLines,
+                            maxLines = expandedTitleMaxLines,
                             overflow = TextOverflow.Ellipsis,
                         )
                         if (subtitle != null) {
@@ -118,7 +121,7 @@ fun BackTopAppBar(
                                 text = subtitle,
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
-                                maxLines = expandedMaxLines,
+                                maxLines = expandedSubtitleMaxLines,
                                 overflow = TextOverflow.Ellipsis,
                             )
                         }

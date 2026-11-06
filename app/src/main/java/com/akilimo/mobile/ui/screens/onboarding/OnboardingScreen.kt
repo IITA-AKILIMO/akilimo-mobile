@@ -219,7 +219,14 @@ fun OnboardingScreen(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             BackTopAppBar(
-                title = if (isWelcomePage) stringResource(R.string.welcome_title) else pageTitle,
+                // Each sentence of the welcome title on its own line ("Are you growing cassava?" /
+                // "And looking to become a pro?" / "AKILIMO can help you!"). Splitting at runtime
+                // works for every translation without touching the string resources.
+                title = if (isWelcomePage) {
+                    stringResource(R.string.welcome_title).replace(SENTENCE_BREAK, "\n")
+                } else {
+                    pageTitle
+                },
                 subtitle = when {
                     isWelcomePage -> stringResource(R.string.welcome_subtitle)
                     isEditMode -> stringResource(R.string.lbl_edit_profile)
@@ -232,7 +239,10 @@ fun OnboardingScreen(
                 } else {
                     TopAppBarDefaults.LargeAppBarExpandedHeight
                 },
-                expandedMaxLines = if (isWelcomePage) WELCOME_HEADER_MAX_LINES else 2,
+                expandedTitleMaxLines = if (isWelcomePage) WELCOME_TITLE_MAX_LINES else 2,
+                expandedSubtitleMaxLines = if (isWelcomePage) WELCOME_SUBTITLE_MAX_LINES else 2,
+                // A clear gap so the smaller subtitle reads as its own line, not the same paragraph
+                expandedSubtitleGap = if (isWelcomePage) AkilimoSpacing.sm else 2.dp,
                 // The bottom bar's Back moves between pages, so the top bar doesn't repeat it:
                 // editing gets a ✕ that leaves without saving; first run has nowhere to go up to
                 // (the phone's back button still steps back, and asks to exit on page 1)
@@ -292,10 +302,17 @@ fun OnboardingScreen(
 private typealias OnEvent = (OnboardingViewModel.Event) -> Unit
 
 /** Expanded header height on first-run page 1, which holds the welcome title and subtitle */
-private val WELCOME_HEADER_HEIGHT = 240.dp
+// Toolbar row 64 + title 4 x 28 + gap 12 + subtitle 3 x 20 + bottom inset ~28 ≈ 276
+private val WELCOME_HEADER_HEIGHT = 280.dp
 
-/** Lines allowed for each of the welcome title and subtitle in the expanded header */
-private const val WELCOME_HEADER_MAX_LINES = 3
+/** Lines for the welcome title: one per sentence (3), plus one if a sentence wraps */
+private const val WELCOME_TITLE_MAX_LINES = 4
+
+/** Lines for the smaller welcome subtitle */
+private const val WELCOME_SUBTITLE_MAX_LINES = 3
+
+/** Whitespace right after a sentence-ending mark: where the welcome title breaks lines */
+private val SENTENCE_BREAK = Regex("(?<=[?!.])\\s+")
 
 /** The welcome header grows with the font size up to this scale (beyond it, text ellipsizes) */
 private const val MAX_HEADER_FONT_SCALE = 1.6f
