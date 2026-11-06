@@ -1,14 +1,17 @@
 package com.akilimo.mobile.ui.viewmodels
 
 import app.cash.turbine.test
+import com.akilimo.mobile.R
 import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.entities.UserPreferences
 import com.akilimo.mobile.enums.EnumCountry
+import com.akilimo.mobile.enums.EnumCoverageStatus
 import com.akilimo.mobile.enums.EnumInvestmentPref
 import com.akilimo.mobile.enums.EnumWeedControlMethod
 import com.akilimo.mobile.repos.AdviceCompletionRepo
 import com.akilimo.mobile.repos.AkilimoUserRepo
+import com.akilimo.mobile.repos.CoverageRepo
 import com.akilimo.mobile.repos.CurrentPracticeRepo
 import com.akilimo.mobile.repos.SelectedFertilizerRepo
 import com.akilimo.mobile.repos.UserPreferencesRepo
@@ -43,6 +46,7 @@ class OnboardingViewModelTest {
     private val selectedFertilizerRepo: SelectedFertilizerRepo = mockk(relaxed = true)
     private val currentPracticeRepo: CurrentPracticeRepo = mockk(relaxed = true)
     private val adviceCompletionRepo: AdviceCompletionRepo = mockk(relaxed = true)
+    private val coverageRepo: CoverageRepo = mockk(relaxed = true)
     private val context: android.content.Context = mockk(relaxed = true)
 
     @Before
@@ -59,8 +63,63 @@ class OnboardingViewModelTest {
 
     private fun buildViewModel() = OnboardingViewModel(
         userRepo, prefsRepo, appSettings,
-        selectedFertilizerRepo, currentPracticeRepo, adviceCompletionRepo, context,
+        selectedFertilizerRepo, currentPracticeRepo, adviceCompletionRepo, coverageRepo, context,
     )
+
+    // ── supported area (coverage) ─────────────────────────────────────────────
+
+    @Test
+    fun `location outside the supported area is flagged and blocks submit`() = runTest {
+        coEvery { userRepo.getUser("user1") } returns AkilimoUser(userName = "user1", enumCountry = EnumCountry.NG)
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+        coEvery { coverageRepo.check("NG", 6.5, 3.4) } returns EnumCoverageStatus.OUTSIDE
+        every { context.getString(R.string.error_location_outside_coverage, *anyVararg()) } returns "outside"
+
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+        viewModel.onEvent(OnboardingViewModel.Event.LocationUpdated(6.5, 3.4, 12.0))
+        advanceUntilIdle()
+
+        assertEquals(EnumCoverageStatus.OUTSIDE, viewModel.state.value.locationCoverage)
+        viewModel.onEvent(OnboardingViewModel.Event.SubmitClicked)
+        assertEquals("outside", viewModel.state.value.errors["location"])
+    }
+
+    @Test
+    fun `moving the location inside the supported area clears the location error`() = runTest {
+        coEvery { userRepo.getUser("user1") } returns AkilimoUser(userName = "user1", enumCountry = EnumCountry.NG)
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+        coEvery { coverageRepo.check("NG", 6.5, 3.4) } returns EnumCoverageStatus.OUTSIDE
+        coEvery { coverageRepo.check("NG", 7.4, 3.9) } returns EnumCoverageStatus.INSIDE
+
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+        viewModel.onEvent(OnboardingViewModel.Event.LocationUpdated(6.5, 3.4, 12.0))
+        viewModel.onEvent(OnboardingViewModel.Event.SubmitClicked)
+        viewModel.onEvent(OnboardingViewModel.Event.LocationUpdated(7.4, 3.9, 12.0))
+        advanceUntilIdle()
+
+        assertEquals(EnumCoverageStatus.INSIDE, viewModel.state.value.locationCoverage)
+        assertNull(viewModel.state.value.errors["location"])
+    }
+
+    @Test
+    fun `unknown coverage never blocks and an unset location is not checked`() = runTest {
+        coEvery { userRepo.getUser("user1") } returns AkilimoUser(userName = "user1", enumCountry = EnumCountry.TZ)
+        coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
+        coEvery { coverageRepo.check(any(), any(), any()) } returns EnumCoverageStatus.UNKNOWN
+
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+        coVerify(exactly = 0) { coverageRepo.check(any(), any(), any()) } // still at 0, 0
+
+        viewModel.onEvent(OnboardingViewModel.Event.LocationUpdated(-6.8, 39.2, 12.0))
+        advanceUntilIdle()
+        viewModel.onEvent(OnboardingViewModel.Event.SubmitClicked)
+
+        assertEquals(EnumCoverageStatus.UNKNOWN, viewModel.state.value.locationCoverage)
+        assertNull(viewModel.state.value.errors["location"])
+    }
 
     // ── init / loadInitialState ───────────────────────────────────────────────
 

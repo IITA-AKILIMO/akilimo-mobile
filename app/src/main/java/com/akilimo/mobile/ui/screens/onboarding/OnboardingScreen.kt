@@ -198,6 +198,9 @@ fun OnboardingScreen(
                 longitude = state.longitude,
                 altitude = state.altitude,
                 zoomLevel = state.zoomLevel,
+                country = state.country,
+                coverage = state.locationCoverage,
+                error = state.errors["location"],
                 onEvent = viewModel::onEvent,
                 navController = navController,
             )

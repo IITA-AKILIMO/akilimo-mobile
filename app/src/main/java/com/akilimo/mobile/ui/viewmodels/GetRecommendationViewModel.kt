@@ -3,6 +3,7 @@ package com.akilimo.mobile.ui.viewmodels
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.akilimo.mobile.R
 import com.akilimo.mobile.database.AppDatabase
 import com.akilimo.mobile.config.AppConfig
 import com.akilimo.mobile.data.AppSettingsDataStore
@@ -85,7 +86,13 @@ class GetRecommendationViewModel @Inject constructor(
                     }
                 } else {
                     val error = result.parseError()
-                    _uiState.value = UiState.Error(error?.message ?: errorLabel)
+                    _uiState.value = UiState.Error(
+                        when {
+                            error?.isOutsideCoverage == true ->
+                                context.getString(R.string.error_recommendation_outside_coverage)
+                            else -> error?.message ?: errorLabel
+                        }
+                    )
                 }
             } catch (e: CancellationException) {
                 throw e

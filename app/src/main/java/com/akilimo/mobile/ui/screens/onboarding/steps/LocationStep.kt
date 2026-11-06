@@ -24,6 +24,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.akilimo.mobile.R
+import com.akilimo.mobile.enums.EnumCountry
+import com.akilimo.mobile.enums.EnumCoverageStatus
 import com.akilimo.mobile.navigation.LocationPickerRoute
 import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
 import com.akilimo.mobile.network.LocationHelper
@@ -36,6 +38,9 @@ fun LocationStep(
     longitude: Double,
     altitude: Double,
     zoomLevel: Double,
+    country: EnumCountry,
+    coverage: EnumCoverageStatus,
+    error: String?,
     onEvent: (OnboardingViewModel.Event) -> Unit,
     navController: NavHostController,
     modifier: Modifier = Modifier,
@@ -84,6 +89,23 @@ fun LocationStep(
         if (locationText.isNotBlank()) {
             Text(locationText, style = MaterialTheme.typography.bodyMedium)
         }
+        when {
+            error != null -> Text(
+                error,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+            )
+            coverage == EnumCoverageStatus.OUTSIDE -> Text(
+                stringResource(R.string.lbl_coverage_outside),
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+            )
+            coverage == EnumCoverageStatus.INSIDE -> Text(
+                stringResource(R.string.lbl_coverage_inside),
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.bodySmall,
+            )
+        }
         if (errorMsg != null) {
             Text(errorMsg!!, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
         }
@@ -119,7 +141,14 @@ fun LocationStep(
 
         OutlinedButton(
             onClick = {
-                navController.navigate(LocationPickerRoute(latitude, longitude, zoomLevel))
+                navController.navigate(
+                    LocationPickerRoute(
+                        lat = latitude,
+                        lon = longitude,
+                        zoom = zoomLevel,
+                        countryCode = country.takeIf { it != EnumCountry.Unsupported }?.name.orEmpty(),
+                    )
+                )
             },
             modifier = Modifier.fillMaxWidth(),
         ) {

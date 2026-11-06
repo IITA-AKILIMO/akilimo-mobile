@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -38,6 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.R
+import com.akilimo.mobile.enums.EnumCoverageStatus
 import com.akilimo.mobile.navigation.LocationPickerRoute
 import com.akilimo.mobile.ui.viewmodels.LocationPickerViewModel
 import com.akilimo.mobile.network.LocationHelper
@@ -47,6 +49,13 @@ import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
+import com.mapbox.maps.extension.style.layers.addLayer
+import com.mapbox.maps.extension.style.layers.generated.fillLayer
+import com.mapbox.maps.extension.style.layers.generated.lineLayer
+import com.mapbox.maps.extension.style.sources.addSource
+import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
+import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
+import com.mapbox.maps.extension.style.sources.getSourceAs
 import com.mapbox.maps.plugin.animation.MapAnimationOptions
 import com.mapbox.maps.plugin.animation.flyTo
 import com.mapbox.maps.plugin.annotation.annotations
@@ -69,6 +78,14 @@ private const val BOUNCE_DURATION_MS = 600L
 private const val BOUNCE_SCALE_OFFSET = 0.5f
 private const val MAP_FLY_DURATION_MS = 1500L
 private const val MAP_CLICK_FLY_DURATION_MS = 1000L
+private const val COVERAGE_OVERVIEW_ZOOM = 5.5
+private const val COVERAGE_SOURCE_ID = "akilimo-coverage"
+private const val COVERAGE_FILL_LAYER_ID = "akilimo-coverage-fill"
+private const val COVERAGE_LINE_LAYER_ID = "akilimo-coverage-line"
+private const val COVERAGE_SLOT = "middle"
+private const val COVERAGE_COLOR = "#43A047"
+private const val COVERAGE_FILL_OPACITY = 0.25
+private const val COVERAGE_LINE_WIDTH = 1.5
 
 /** Holds the location result returned from this screen. */
 @Parcelize
@@ -103,6 +120,34 @@ fun LocationPickerScreen(
     ) { perms ->
         if (perms.any { it.value }) {
             viewModel.fetchCurrentLocation()
+        }
+    }
+
+    LaunchedEffect(route.countryCode) {
+        viewModel.loadCoverage(route.countryCode)
+    }
+
+    // Shade the supported area once both the style and the GeoJSON are ready
+    LaunchedEffect(styleLoaded, state.coverageGeoJson) {
+        val geoJson = state.coverageGeoJson ?: return@LaunchedEffect
+        val mv = mapView ?: return@LaunchedEffect
+        if (!styleLoaded) return@LaunchedEffect
+        mv.mapboxMap.style?.let { style ->
+            try {
+                drawCoverage(style, geoJson)
+            } catch (e: Exception) {
+                Sentry.captureException(e)
+            }
+        }
+        // No saved farm and no pick yet: show the country's supported area instead of a default city
+        val area = state.coverageArea
+        if (area != null && selectedPoint == null && route.lat == 0.0 && route.lon == 0.0) {
+            mv.mapboxMap.setCamera(
+                CameraOptions.Builder()
+                    .center(Point.fromLngLat(area.centerLon, area.centerLat))
+                    .zoom(COVERAGE_OVERVIEW_ZOOM)
+                    .build()
+            )
         }
     }
 
@@ -176,6 +221,7 @@ fun LocationPickerScreen(
                                     CameraOptions.Builder().center(point).build(),
                                     MapAnimationOptions.mapAnimationOptions { duration(MAP_CLICK_FLY_DURATION_MS) }
                                 )
+                                viewModel.checkCoverage(point.latitude(), point.longitude())
                                 viewModel.fetchAddress(point.latitude(), point.longitude())
                                 viewModel.fetchWeather(point.latitude(), point.longitude())
                                 true
@@ -249,6 +295,36 @@ fun LocationPickerScreen(
                 }
             }
 
+            // Supported-area status, just above the Confirm button
+            val coverageText = when {
+                state.coverageStatus == EnumCoverageStatus.OUTSIDE -> stringResource(R.string.lbl_coverage_outside)
+                state.coverageStatus == EnumCoverageStatus.INSIDE -> stringResource(R.string.lbl_coverage_inside)
+                state.coverageGeoJson != null -> stringResource(R.string.lbl_coverage_legend)
+                else -> null
+            }
+            if (coverageText != null) {
+                val outside = state.coverageStatus == EnumCoverageStatus.OUTSIDE
+                Card(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .navigationBarsPadding()
+                        .padding(start = 16.dp, end = 16.dp, bottom = 80.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = if (outside) MaterialTheme.colorScheme.errorContainer
+                        else MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = if (outside) MaterialTheme.colorScheme.onErrorContainer
+                        else MaterialTheme.colorScheme.onSecondaryContainer,
+                    ),
+                ) {
+                    Text(
+                        text = coverageText,
+                        modifier = Modifier.padding(12.dp),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+            }
+
             // Confirm button
             Button(
                 onClick = {
@@ -274,12 +350,40 @@ fun LocationPickerScreen(
                     .fillMaxWidth()
                     .navigationBarsPadding()
                     .padding(16.dp),
-                enabled = selectedPoint != null,
+                // The API refuses to compute outside the supported area; UNKNOWN is still allowed
+                enabled = selectedPoint != null && state.coverageStatus != EnumCoverageStatus.OUTSIDE,
             ) {
                 Text(stringResource(R.string.lbl_confirm))
             }
         }
     }
+}
+
+/**
+ * Adds (or refreshes) the supported area as a translucent green fill with an outline. The layers go
+ * in the Standard style's "middle" slot: under labels and under the pin, over the satellite image.
+ */
+private fun drawCoverage(style: Style, geoJson: String) {
+    val existing = style.getSourceAs<GeoJsonSource>(COVERAGE_SOURCE_ID)
+    if (existing != null) {
+        existing.data(geoJson)
+        return
+    }
+    style.addSource(geoJsonSource(COVERAGE_SOURCE_ID) { data(geoJson) })
+    style.addLayer(
+        fillLayer(COVERAGE_FILL_LAYER_ID, COVERAGE_SOURCE_ID) {
+            slot(COVERAGE_SLOT)
+            fillColor(COVERAGE_COLOR)
+            fillOpacity(COVERAGE_FILL_OPACITY)
+        }
+    )
+    style.addLayer(
+        lineLayer(COVERAGE_LINE_LAYER_ID, COVERAGE_SOURCE_ID) {
+            slot(COVERAGE_SLOT)
+            lineColor(COVERAGE_COLOR)
+            lineWidth(COVERAGE_LINE_WIDTH)
+        }
+    )
 }
 
 private fun updateMarker(manager: PointAnnotationManager, point: Point) {

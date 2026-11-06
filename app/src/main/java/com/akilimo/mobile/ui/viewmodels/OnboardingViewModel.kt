@@ -13,18 +13,21 @@ import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.enums.EnumCountry
+import com.akilimo.mobile.enums.EnumCoverageStatus
 import com.akilimo.mobile.enums.EnumInvestmentPref
 import com.akilimo.mobile.enums.EnumOperationMethod
 import com.akilimo.mobile.enums.EnumOperationType
 import com.akilimo.mobile.enums.EnumWeedControlMethod
 import com.akilimo.mobile.repos.AdviceCompletionRepo
 import com.akilimo.mobile.repos.AkilimoUserRepo
+import com.akilimo.mobile.repos.CoverageRepo
 import com.akilimo.mobile.repos.CurrentPracticeRepo
 import com.akilimo.mobile.repos.SelectedFertilizerRepo
 import com.akilimo.mobile.repos.UserPreferencesRepo
 import com.akilimo.mobile.ui.screens.onboarding.OnboardingSection
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,6 +47,7 @@ class OnboardingViewModel @Inject constructor(
     private val selectedFertilizerRepo: SelectedFertilizerRepo,
     private val currentPracticeRepo: CurrentPracticeRepo,
     private val adviceCompletionRepo: AdviceCompletionRepo,
+    private val coverageRepo: CoverageRepo,
     @param:ApplicationContext private val context: Context,
 ) : ViewModel() {
 
@@ -70,6 +74,8 @@ class OnboardingViewModel @Inject constructor(
         val longitude: Double = 0.0,
         val altitude: Double = 0.0,
         val zoomLevel: Double = 12.0,
+        /** Is the farm inside the area AKILIMO supports for [country]? UNKNOWN never blocks. */
+        val locationCoverage: EnumCoverageStatus = EnumCoverageStatus.UNKNOWN,
         // Area Unit
         val areaUnit: EnumAreaUnit = EnumAreaUnit.ACRE,
         val farmSize: Double = 1.0,
@@ -226,6 +232,32 @@ class OnboardingViewModel @Inject constructor(
                     investmentPref = user?.investmentPref ?: EnumInvestmentPref.Prompt,
                 )
             }
+            refreshLocationCoverage()
+        }
+    }
+
+    private var coverageJob: Job? = null
+
+    /**
+     * Re-checks the saved farm location against the supported area of the selected country. A
+     * location that was never set (0, 0) or a country without a known area stays UNKNOWN.
+     */
+    private fun refreshLocationCoverage() {
+        coverageJob?.cancel()
+        val s = _state.value
+        val hasLocation = s.latitude != 0.0 || s.longitude != 0.0
+        if (!hasLocation || s.country == EnumCountry.Unsupported) {
+            _state.update { it.copy(locationCoverage = EnumCoverageStatus.UNKNOWN) }
+            return
+        }
+        coverageJob = viewModelScope.launch {
+            val status = coverageRepo.check(s.country.name, s.latitude, s.longitude)
+            _state.update {
+                it.copy(
+                    locationCoverage = status,
+                    errors = if (status == EnumCoverageStatus.OUTSIDE) it.errors else it.errors - "location",
+                )
+            }
         }
     }
 
@@ -301,10 +333,14 @@ class OnboardingViewModel @Inject constructor(
                         user.id?.let { selectedFertilizerRepo.deleteByUserId(it) }
                     }
                 }
+                refreshLocationCoverage()
             }
 
-            is Event.LocationUpdated -> _state.update {
-                it.copy(latitude = event.lat, longitude = event.lng, zoomLevel = event.zoom)
+            is Event.LocationUpdated -> {
+                _state.update {
+                    it.copy(latitude = event.lat, longitude = event.lng, zoomLevel = event.zoom)
+                }
+                refreshLocationCoverage()
             }
 
             is Event.AreaUnitSelected -> _state.update {
@@ -428,6 +464,10 @@ class OnboardingViewModel @Inject constructor(
         // Country
         if (s.country == EnumCountry.Unsupported) errs["country"] =
             context.getString(R.string.error_country_required)
+
+        // Location: the API refuses to compute outside the supported area, so stop here instead
+        if (s.locationCoverage == EnumCoverageStatus.OUTSIDE) errs["location"] =
+            context.getString(R.string.error_location_outside_coverage, s.country.countryName)
 
         // Area Unit
         if (s.visibleSections.contains(OnboardingSection.AREA_UNIT) && s.farmSize <= 0.0) {

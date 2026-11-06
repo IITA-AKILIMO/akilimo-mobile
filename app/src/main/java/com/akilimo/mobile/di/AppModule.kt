@@ -7,6 +7,7 @@ import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.CassavaMarketPriceRepo
 import com.akilimo.mobile.repos.CassavaUnitRepo
 import com.akilimo.mobile.repos.CassavaYieldRepo
+import com.akilimo.mobile.repos.CoverageRepo
 import com.akilimo.mobile.repos.CurrentPracticeRepo
 import com.akilimo.mobile.repos.FieldOperationCostsRepo
 import com.akilimo.mobile.repos.InvestmentRepo
@@ -39,6 +40,11 @@ object AppModule {
     @Singleton
     fun provideAkilimoUserRepo(db: AppDatabase): AkilimoUserRepo =
         AkilimoUserRepo(db.akilimoUserDao())
+
+    @Provides
+    @Singleton
+    fun provideCoverageRepo(@ApplicationContext context: Context): CoverageRepo =
+        CoverageRepo(context)
 
     @Provides
     @Singleton
