@@ -29,6 +29,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
@@ -56,6 +57,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -226,21 +228,22 @@ fun OnboardingScreen(
     // Each page starts at the top; a fresh scroll state per page does that
     val pageScroll = key(step) { rememberScrollState() }
 
-    // First-run page 1 has no top bar at all: the welcome message is a green header at the top of
-    // the page itself (no empty toolbar row above it), and a slim "About you" bar fades in over the
-    // page once that header has scrolled away.
-    val isWelcomePage = !isEditMode && step == OnboardingStep.ABOUT_YOU
+    // First run has no toolbar on any page: it had no back arrow or actions, and the bottom bar
+    // already has Back and the step count. Each page opens with a green page header instead (the
+    // welcome message on page 1), and a slim bar with the page name fades in over the page once
+    // that header has scrolled away. Edit profile keeps its toolbar for ✕ and Save.
+    val useToolbar = isEditMode
 
     Scaffold(
-        modifier = if (isWelcomePage) Modifier else Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        // The welcome header draws under the status bar itself, so don't pad for it
-        contentWindowInsets = if (isWelcomePage) {
-            ScaffoldDefaults.contentWindowInsets.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
-        } else {
+        modifier = if (useToolbar) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection) else Modifier,
+        // The page header draws under the status bar itself, so don't pad for it
+        contentWindowInsets = if (useToolbar) {
             ScaffoldDefaults.contentWindowInsets
+        } else {
+            ScaffoldDefaults.contentWindowInsets.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
         },
         topBar = {
-            if (!isWelcomePage) BackTopAppBar(
+            if (useToolbar) BackTopAppBar(
                 title = pageTitle,
                 subtitle = if (isEditMode) stringResource(R.string.lbl_edit_profile) else null,
                 collapsedTitle = pageTitle,
@@ -278,16 +281,17 @@ fun OnboardingScreen(
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { paddingValues ->
-        var welcomeHeaderHeightPx by remember { mutableIntStateOf(0) }
+        var pageHeaderHeightPx by remember(step) { mutableIntStateOf(0) }
         val pinnedBarHeightPx = with(LocalDensity.current) {
             TopAppBarDefaults.TopAppBarExpandedHeight.roundToPx()
         } + WindowInsets.statusBars.getTop(LocalDensity.current)
         // Show the pinned bar once the header's text is about to slide under it
         val showPinnedBar by remember(pageScroll) {
             derivedStateOf {
-                welcomeHeaderHeightPx > 0 && pageScroll.value >= welcomeHeaderHeightPx - pinnedBarHeightPx
+                pageHeaderHeightPx > 0 && pageScroll.value >= pageHeaderHeightPx - pinnedBarHeightPx
             }
         }
+        val isWelcomePage = step == OnboardingStep.ABOUT_YOU
 
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -298,15 +302,21 @@ fun OnboardingScreen(
                     .imePadding()
                     .verticalScroll(pageScroll),
             ) {
+                if (!useToolbar) {
+                    OnboardingPageHeader(
+                        // Page 1 greets the user; the other pages name their topic
+                        title = if (isWelcomePage) {
+                            stringResource(R.string.welcome_title).replace(SENTENCE_BREAK, "\n")
+                        } else {
+                            pageTitle
+                        },
+                        subtitle = if (isWelcomePage) stringResource(R.string.welcome_subtitle) else null,
+                        progress = (state.stepIndex + 1f) / OnboardingStep.entries.size,
+                        modifier = Modifier.onSizeChanged { pageHeaderHeightPx = it.height },
+                    )
+                }
                 when (step) {
-                    OnboardingStep.ABOUT_YOU -> {
-                        if (isWelcomePage) {
-                            WelcomeHeader(
-                                modifier = Modifier.onSizeChanged { welcomeHeaderHeightPx = it.height },
-                            )
-                        }
-                        BioDataSection(state, viewModel::onEvent, sectionModifier)
-                    }
+                    OnboardingStep.ABOUT_YOU -> BioDataSection(state, viewModel::onEvent, sectionModifier)
 
                     OnboardingStep.FARM_LOCATION ->
                         FarmLocationSection(state, viewModel::onEvent, navController, sectionModifier)
@@ -318,7 +328,7 @@ fun OnboardingScreen(
                 Spacer(Modifier.height(AkilimoSpacing.xxl))
             }
 
-            if (isWelcomePage) {
+            if (!useToolbar) {
                 // Overlays the page instead of being the Scaffold's top bar, so showing it
                 // doesn't push the content down mid-scroll
                 AnimatedVisibility(
@@ -339,14 +349,20 @@ fun OnboardingScreen(
 }
 
 /**
- * First-run page 1 header: the welcome message, centred, on the brand green that runs up under the
- * status bar. Each sentence of the title gets its own line ("Are you growing cassava?" /
- * "And looking to become a pro?" / "AKILIMO can help you!"); splitting at runtime works for every
- * translation without touching the strings. The smaller subtitle sits below a clear gap.
+ * Header that opens each first-run onboarding page in place of a toolbar: brand green running up
+ * under the status bar, the centred page [title] (marked as a heading for TalkBack), an optional
+ * smaller [subtitle] below a clear gap, and a thin bar showing how far through onboarding the user
+ * is. On page 1 the title is the welcome message, one sentence per line ("Are you growing
+ * cassava?" / "And looking to become a pro?" / "AKILIMO can help you!").
  */
 @Composable
-private fun WelcomeHeader(modifier: Modifier = Modifier) {
-    val title = stringResource(R.string.welcome_title).replace(SENTENCE_BREAK, "\n")
+private fun OnboardingPageHeader(
+    title: String,
+    subtitle: String?,
+    progress: Float,
+    modifier: Modifier = Modifier,
+) {
+    val onPrimary = MaterialTheme.colorScheme.onPrimary
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.sm),
@@ -354,24 +370,40 @@ private fun WelcomeHeader(modifier: Modifier = Modifier) {
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.primary)
             .statusBarsPadding()
-            .padding(horizontal = AkilimoSpacing.md, vertical = AkilimoSpacing.xl),
+            .padding(horizontal = AkilimoSpacing.md)
+            .padding(top = AkilimoSpacing.xl, bottom = AkilimoSpacing.md),
     ) {
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = onPrimary,
             textAlign = TextAlign.Center,
-            // Announced as the page heading by TalkBack
             modifier = Modifier.semantics { heading() },
         )
-        Text(
-            text = stringResource(R.string.welcome_subtitle),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f),
-            textAlign = TextAlign.Center,
+        if (subtitle != null) {
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodyMedium,
+                color = onPrimary.copy(alpha = 0.85f),
+                textAlign = TextAlign.Center,
+            )
+        }
+        // The bottom bar already reads "Step X of 5" to TalkBack; this line is visual only
+        LinearProgressIndicator(
+            progress = { progress },
+            color = onPrimary,
+            trackColor = onPrimary.copy(alpha = PROGRESS_TRACK_ALPHA),
+            drawStopIndicator = {},
+            modifier = Modifier
+                .padding(top = AkilimoSpacing.xs)
+                .fillMaxWidth()
+                .clearAndSetSemantics { },
         )
     }
 }
+
+/** Unfilled part of the header's progress line, against the green */
+private const val PROGRESS_TRACK_ALPHA = 0.3f
 
 private typealias OnEvent = (OnboardingViewModel.Event) -> Unit
 
