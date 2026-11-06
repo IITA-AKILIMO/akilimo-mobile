@@ -18,6 +18,8 @@ import com.akilimo.mobile.repos.CassavaUnitRepo
 import com.akilimo.mobile.repos.SelectedCassavaMarketRepo
 import com.akilimo.mobile.repos.StarchFactoryRepo
 import com.akilimo.mobile.utils.MathHelper
+import io.sentry.Sentry
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,12 +28,17 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Cassava market outlet. Unlike the other forms, a choice here is written as soon as it is
+ * made (tapping a factory, or confirming a price in the unit sheet); the screen's Save only
+ * marks the task complete. The price sheet is effectively its own small form with a confirm.
+ */
 @HiltViewModel
 class CassavaMarketViewModel @Inject constructor(
     private val userRepo: AkilimoUserRepo,
     private val factoryRepo: StarchFactoryRepo,
-    val selectedRepo: SelectedCassavaMarketRepo,
-    val priceRepo: CassavaMarketPriceRepo,
+    private val selectedRepo: SelectedCassavaMarketRepo,
+    private val priceRepo: CassavaMarketPriceRepo,
     private val cassavaUnitRepo: CassavaUnitRepo,
     private val appSettings: AppSettingsDataStore
 ) : ViewModel() {
@@ -41,14 +48,24 @@ class CassavaMarketViewModel @Inject constructor(
         val selectedFactoryId: Int? = null,
         val cassavaUnits: List<CassavaUnit> = emptyList(),
         val selectedUnitId: Int? = null,
-        val factoriesRefreshing: Boolean = false,
-        val unitsRefreshing: Boolean = false,
+        val factoriesLoading: Boolean = true,
+        val unitsLoading: Boolean = true,
         val userId: Int = 0,
         val userCountry: EnumCountry = EnumCountry.Unsupported,
-        val initialMarketChoice: MarketChoice = MarketChoice.NONE
+        val initialMarketChoice: MarketChoice = MarketChoice.NONE,
+        val isSaving: Boolean = false,
+        val saveFailed: Boolean = false
     )
 
     enum class MarketChoice { NONE, FACTORY, MARKET }
+
+    /** What the unit price sheet needs: the options and the farmer's previous answer. */
+    data class PriceOptions(
+        val prices: List<CassavaMarketPrice>,
+        val savedPriceId: Int?,
+        /** Pre-fill for the exact-price field when the saved answer was an exact price. */
+        val savedExactPrice: Double?
+    )
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -58,8 +75,12 @@ class CassavaMarketViewModel @Inject constructor(
     }
 
     fun loadData(userName: String) = viewModelScope.launch {
-        val user = userRepo.getUser(userName) ?: return@launch
-        val userId = user.id ?: return@launch
+        val user = userRepo.getUser(userName)
+        val userId = user?.id
+        if (user == null || userId == null) {
+            _uiState.update { it.copy(factoriesLoading = false, unitsLoading = false) }
+            return@launch
+        }
 
         val marketDetails = selectedRepo.getSelectedByUser(userId)
         val selectedMarket = marketDetails?.selectedCassavaMarket
@@ -88,7 +109,7 @@ class CassavaMarketViewModel @Inject constructor(
                     it.copy(
                         factories = factories,
                         selectedFactoryId = selectedId,
-                        factoriesRefreshing = false
+                        factoriesLoading = false
                     )
                 }
             }
@@ -105,14 +126,29 @@ class CassavaMarketViewModel @Inject constructor(
                     it.copy(
                         cassavaUnits = units,
                         selectedUnitId = selectedId,
-                        unitsRefreshing = false
+                        unitsLoading = false
                     )
                 }
             }
         }
     }
 
-    fun selectFactory(factory: StarchFactory) = viewModelScope.launch {
+    /** Loads the price options for the unit sheet together with the saved answer. */
+    suspend fun loadPriceOptions(): PriceOptions {
+        val state = _uiState.value
+        val prices = priceRepo.getPricesByCountry(state.userCountry)
+        val saved = selectedRepo.getSelectedByUser(state.userId)
+        val savedPriceId = saved?.marketPrice?.id
+        val savedMarket = saved?.selectedCassavaMarket
+        val savedExact = savedMarket
+            ?.takeIf { it.marketPriceId != null && it.marketPriceId == savedPriceId }
+            ?.takeIf { prices.find { p -> p.id == savedPriceId }?.exactPrice == true }
+            ?.unitPrice
+            ?.takeIf { it > 0 }
+        return PriceOptions(prices, savedPriceId, savedExact)
+    }
+
+    fun selectFactory(factory: StarchFactory) = runSave {
         val userId = _uiState.value.userId
         val current = selectedRepo.getSelectedByUser(userId)?.selectedCassavaMarket
         selectedRepo.select(
@@ -131,8 +167,8 @@ class CassavaMarketViewModel @Inject constructor(
         unit: CassavaUnit,
         uos: EnumUnitOfSale,
         selectedPrice: CassavaMarketPrice?
-    ) = viewModelScope.launch {
-        val userId = userRepo.getUser(appSettings.akilimoUser)?.id ?: return@launch
+    ) = runSave {
+        val userId = userRepo.getUser(appSettings.akilimoUser)?.id ?: error("No profile for current user")
 
         val exactPrice = selectedPrice?.exactPrice ?: false
         val unitPrice = if (exactPrice) {
@@ -155,4 +191,19 @@ class CassavaMarketViewModel @Inject constructor(
         )
     }
 
+    fun onSaveErrorShown() = _uiState.update { it.copy(saveFailed = false) }
+
+    /** Runs a DB write with [UiState.isSaving] set, reporting failure via [UiState.saveFailed]. */
+    private fun runSave(block: suspend () -> Unit) = viewModelScope.launch {
+        _uiState.update { it.copy(isSaving = true, saveFailed = false) }
+        try {
+            block()
+            _uiState.update { it.copy(isSaving = false) }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Sentry.captureException(e)
+            _uiState.update { it.copy(isSaving = false, saveFailed = true) }
+        }
+    }
 }

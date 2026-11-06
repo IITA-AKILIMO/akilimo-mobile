@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.entities.AkilimoUser
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.sentry.Sentry
+import kotlinx.coroutines.CancellationException
 import javax.inject.Inject
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,6 +29,8 @@ class DatesViewModel @Inject constructor(
         val plantingFlex: Long = 0L,
         val harvestFlex: Long = 0L,
         val alternativeDate: Boolean = false,
+        val isSaving: Boolean = false,
+        val saveFailed: Boolean = false,
         val saved: Boolean = false
     )
 
@@ -57,21 +61,34 @@ class DatesViewModel @Inject constructor(
         plantingFlex: Long,
         harvestFlex: Long,
         alternativeDate: Boolean
-    ) = viewModelScope.launch {
-        val userName = appSettings.akilimoUser
-        val user = userRepo.getUser(userName) ?: return@launch
-        userRepo.saveOrUpdateUser(
-            user.copy(
-                plantingDate = plantingDate,
-                harvestDate = harvestDate,
-                plantingFlex = plantingFlex,
-                harvestFlex = harvestFlex,
-                providedAlterNativeDate = alternativeDate
-            ), userName
-        )
-        _uiState.update { it.copy(saved = true) }
+    ) {
+        if (_uiState.value.isSaving) return
+        _uiState.update { it.copy(isSaving = true, saveFailed = false) }
+        viewModelScope.launch {
+            try {
+                val userName = appSettings.akilimoUser
+                val user = userRepo.getUser(userName) ?: error("No profile for current user")
+                userRepo.saveOrUpdateUser(
+                    user.copy(
+                        plantingDate = plantingDate,
+                        harvestDate = harvestDate,
+                        plantingFlex = plantingFlex,
+                        harvestFlex = harvestFlex,
+                        providedAlterNativeDate = alternativeDate
+                    ), userName
+                )
+                _uiState.update { it.copy(saved = true) }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Sentry.captureException(e)
+                _uiState.update { it.copy(isSaving = false, saveFailed = true) }
+            }
+        }
     }
 
-    fun onSaveHandled() = _uiState.update { it.copy(saved = false) }
+    fun onSaveHandled() = _uiState.update { it.copy(saved = false, isSaving = false) }
+
+    fun onSaveErrorShown() = _uiState.update { it.copy(saveFailed = false) }
 
 }

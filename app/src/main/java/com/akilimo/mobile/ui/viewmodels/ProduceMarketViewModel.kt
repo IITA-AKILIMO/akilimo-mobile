@@ -11,6 +11,8 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.sentry.Sentry
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,6 +36,8 @@ class ProduceMarketViewModel @AssistedInject constructor(
         val userId: Int = 0,
         val currencyCode: String = "",
         val lastEntry: ProduceMarket? = null,
+        val isSaving: Boolean = false,
+        val saveFailed: Boolean = false,
         val saved: Boolean = false
     )
 
@@ -57,10 +61,23 @@ class ProduceMarketViewModel @AssistedInject constructor(
         }
     }
 
-    fun saveMarketEntry(entry: ProduceMarket) = viewModelScope.launch {
-        marketRepo.saveMarketEntry(entry)
-        _uiState.update { it.copy(saved = true) }
+    fun saveMarketEntry(entry: ProduceMarket) {
+        if (_uiState.value.isSaving) return
+        _uiState.update { it.copy(isSaving = true, saveFailed = false) }
+        viewModelScope.launch {
+            try {
+                marketRepo.saveMarketEntry(entry)
+                _uiState.update { it.copy(saved = true) }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Sentry.captureException(e)
+                _uiState.update { it.copy(isSaving = false, saveFailed = true) }
+            }
+        }
     }
 
-    fun onSaveHandled() = _uiState.update { it.copy(saved = false) }
+    fun onSaveHandled() = _uiState.update { it.copy(saved = false, isSaving = false) }
+
+    fun onSaveErrorShown() = _uiState.update { it.copy(saveFailed = false) }
 }

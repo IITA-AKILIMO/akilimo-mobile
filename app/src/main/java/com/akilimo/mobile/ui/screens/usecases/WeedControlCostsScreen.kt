@@ -1,18 +1,14 @@
 package com.akilimo.mobile.ui.screens.usecases
 
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,10 +16,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -35,9 +30,10 @@ import com.akilimo.mobile.ui.components.compose.AkilimoTextField
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.components.compose.completeTask
+import com.akilimo.mobile.ui.components.compose.popBackStackSafely
+import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.viewmodels.WeedControlCostsViewModel
 import com.akilimo.mobile.utils.AmountInput
-import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,6 +43,7 @@ fun WeedControlCostsScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
 
     var selectedMethod by rememberSaveable { mutableStateOf<EnumWeedControlMethod?>(null) }
     var firstCost by rememberSaveable { mutableStateOf("") }
@@ -64,11 +61,15 @@ fun WeedControlCostsScreen(
         }
     }
 
-    // Both costs are optional; a blank field clears the cost, anything typed must parse
+    // Method is required; both costs are optional (blank clears), anything typed must parse
     val invalidAmount = stringResource(R.string.error_amount_invalid)
     val firstError = invalidAmount.takeIf { AmountInput.isInvalid(firstCost, requirePositive = false) }
     val secondError = invalidAmount.takeIf { AmountInput.isInvalid(secondCost, requirePositive = false) }
-    val canSave = firstError == null && secondError == null
+    val canSave = WeedControlCostsViewModel.canSave(selectedMethod, firstCost, secondCost)
+    val disabledReason = when {
+        selectedMethod == null -> stringResource(R.string.error_weed_control_required)
+        else -> stringResource(R.string.msg_fix_amounts_to_save)
+    }
 
     LaunchedEffect(state.saved) {
         if (state.saved) {
@@ -76,6 +77,7 @@ fun WeedControlCostsScreen(
             viewModel.onSaveHandled()
         }
     }
+    SaveErrorEffect(state.saveFailed, snackbarHostState, viewModel::onSaveErrorShown)
 
     val weedMethods = EnumWeedControlMethod.entries
 
@@ -90,43 +92,13 @@ fun WeedControlCostsScreen(
                 scrollBehavior = scrollBehavior,
                 onBack = { navController.popBackStackSafely() },
             )
-        }
-    ) { padding ->
-        ScrollableFormColumn(padding = padding) {
-            Spacer(modifier = Modifier.height(8.dp))
-
-            AkilimoDropdown(
-                label = stringResource(R.string.lbl_cost_of_weed_control),
-                options = weedMethods,
-                selectedOption = selectedMethod,
-                onOptionSelected = { selectedMethod = it },
-                displayText = { it.label(context) }
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            AkilimoTextField(
-                value = firstCost,
-                onValueChange = { firstCost = it },
-                label = stringResource(R.string.lbl_first_weeding_costs_prompt),
-                error = firstError,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            AkilimoTextField(
-                value = secondCost,
-                onValueChange = { secondCost = it },
-                label = stringResource(R.string.lbl_second_weeding_cost_prompt),
-                error = secondError,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = {
+        },
+        bottomBar = {
+            FormSaveBar(
+                enabled = canSave,
+                isSaving = state.isSaving,
+                disabledReason = disabledReason,
+                onSave = {
                     viewModel.saveCosts(
                         // Blank -> 0.0 so clearing a field actually clears the saved cost
                         firstCost = AmountInput.parse(firstCost) ?: 0.0,
@@ -134,13 +106,46 @@ fun WeedControlCostsScreen(
                         method = selectedMethod
                     )
                 },
-                enabled = canSave,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(R.string.lbl_save))
-            }
+            )
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+    ) { padding ->
+        ScrollableFormColumn(padding = padding) {
+            Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
 
-            Spacer(modifier = Modifier.height(16.dp))
+            AkilimoDropdown(
+                label = stringResource(R.string.lbl_weed_control_method),
+                options = weedMethods,
+                selectedOption = selectedMethod,
+                onOptionSelected = { selectedMethod = it },
+                displayText = { it.label(context) }
+            )
+
+            Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
+
+            AkilimoTextField(
+                value = firstCost,
+                onValueChange = { firstCost = it },
+                label = stringResource(R.string.lbl_first_weeding_costs_prompt),
+                helperText = stringResource(R.string.lbl_optional),
+                error = firstError,
+                trailingIcon = currencySuffix(state.currencyCode),
+                keyboardOptions = amountKeyboard()
+            )
+
+            Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
+
+            AkilimoTextField(
+                value = secondCost,
+                onValueChange = { secondCost = it },
+                label = stringResource(R.string.lbl_second_weeding_cost_prompt),
+                helperText = stringResource(R.string.lbl_optional),
+                error = secondError,
+                trailingIcon = currencySuffix(state.currencyCode),
+                keyboardOptions = amountKeyboard(isLast = true)
+            )
+
+            Spacer(modifier = Modifier.height(AkilimoSpacing.md))
         }
     }
 }

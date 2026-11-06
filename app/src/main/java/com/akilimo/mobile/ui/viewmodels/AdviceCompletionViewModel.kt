@@ -3,6 +3,8 @@ package com.akilimo.mobile.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.dto.AdviceCompletionDto
+import com.akilimo.mobile.enums.EnumAdviceTask
+import com.akilimo.mobile.enums.EnumStepStatus
 import com.akilimo.mobile.repos.AdviceCompletionRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -17,5 +19,11 @@ class AdviceCompletionViewModel @Inject constructor(
 
     fun updateStatus(dto: AdviceCompletionDto) = viewModelScope.launch {
         repo.updateStatus(dto)
+    }
+
+    companion object {
+        /** Tasks, in display order, whose status is anything other than COMPLETED. */
+        fun incompleteTasks(taskItems: List<Pair<EnumAdviceTask, EnumStepStatus>>): List<EnumAdviceTask> =
+            taskItems.filter { (_, status) -> status != EnumStepStatus.COMPLETED }.map { it.first }
     }
 }

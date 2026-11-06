@@ -1,6 +1,7 @@
 package com.akilimo.mobile.ui.viewmodels
 
 import android.content.Context
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.R
@@ -40,7 +41,9 @@ class GetRecommendationViewModel @Inject constructor(
         data object Idle : UiState
         data object Loading : UiState
         data class Success(val title: String, val description: String) : UiState
-        data class Error(val message: String) : UiState
+
+        /** [messageRes] is resolved by the screen so it follows the in-app locale. */
+        data class Error(@StringRes val messageRes: Int) : UiState
     }
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
@@ -54,19 +57,20 @@ class GetRecommendationViewModel @Inject constructor(
      * re-runs after rotation; skipping when a request is in flight or already succeeded
      * avoids discarding the result and repeating the network call. Errors can be retried.
      */
-    fun fetchRecommendation(useCase: EnumUseCase, noRecsLabel: String, errorLabel: String) {
+    fun fetchRecommendation(useCase: EnumUseCase) {
         val current = _uiState.value
         if (current is UiState.Loading || current is UiState.Success) return
-        loadRecommendation(useCase, noRecsLabel, errorLabel)
+        loadRecommendation(useCase)
     }
 
-    private fun loadRecommendation(useCase: EnumUseCase, noRecsLabel: String, errorLabel: String) =
+    private fun loadRecommendation(useCase: EnumUseCase) =
         viewModelScope.launch {
             _uiState.value = UiState.Loading
             try {
                 val builder = RecommendationBuilder(database, appSettings, useCase)
                 val payload = builder.build() ?: run {
-                    _uiState.value = UiState.Error(errorLabel)
+                    // The only reason build() returns null is a missing farmer profile
+                    _uiState.value = UiState.Error(R.string.error_rec_profile_missing)
                     return@launch
                 }
 
@@ -76,22 +80,20 @@ class GetRecommendationViewModel @Inject constructor(
 
                 if (result.isSuccessful) {
                     val resp = result.body()
-                    if (resp != null) {
-                        _uiState.value = UiState.Success(
+                    _uiState.value = if (resp != null) {
+                        UiState.Success(
                             title = resp.data.recType,
                             description = resp.data.recommendation
                         )
                     } else {
-                        _uiState.value = UiState.Error(noRecsLabel)
+                        UiState.Error(R.string.lbl_no_recommendations_prompt)
                     }
                 } else {
-                    val error = result.parseError()
+                    // Never show the raw server message: it is English-only and technical
+                    val outsideCoverage = result.parseError()?.isOutsideCoverage == true
                     _uiState.value = UiState.Error(
-                        when {
-                            error?.isOutsideCoverage == true ->
-                                context.getString(R.string.error_recommendation_outside_coverage)
-                            else -> error?.message ?: errorLabel
-                        }
+                        if (outsideCoverage) R.string.error_recommendation_outside_coverage
+                        else errorMessageForHttpCode(result.code())
                     )
                 }
             } catch (e: CancellationException) {
@@ -99,15 +101,21 @@ class GetRecommendationViewModel @Inject constructor(
             } catch (e: Exception) {
                 // Offline/timeouts are expected in the field; only report real bugs
                 if (e !is IOException) Sentry.captureException(e)
-                // Show the localized message, not raw text like "Unable to resolve host"
-                _uiState.value = UiState.Error(errorLabel)
+                _uiState.value = UiState.Error(
+                    if (e is IOException) R.string.error_rec_network else R.string.error_fetch_recommendation
+                )
             }
         }
 
     fun submitFeedback(useCase: EnumUseCase, rating: Int, npsScore: Int) =
         viewModelScope.launch {
             try {
-                val user = userRepo.getUser(appSettings.akilimoUser) ?: return@launch
+                val user = userRepo.getUser(appSettings.akilimoUser)
+                if (user == null) {
+                    // Without a profile there is nothing to send; tell the user it failed
+                    _feedbackResult.emit(false)
+                    return@launch
+                }
                 val base = AppConfig.resolveBaseUrlFor(context, EnumServiceType.AKILIMO)
                 val client = ApiClient.createService<AkilimoApi>(context, base)
                 val request = UserFeedBackRequest(
@@ -128,4 +136,21 @@ class GetRecommendationViewModel @Inject constructor(
                 _feedbackResult.emit(false)
             }
         }
+
+    companion object {
+        private const val HTTP_BAD_REQUEST = 400
+        private const val HTTP_UNPROCESSABLE = 422
+        private const val HTTP_TIMEOUT = 408
+        private const val HTTP_TOO_MANY = 429
+        private const val HTTP_SERVER_MIN = 500
+
+        /** Maps an unsuccessful HTTP status to a farmer-friendly, translatable message. */
+        @StringRes
+        fun errorMessageForHttpCode(code: Int): Int = when {
+            code == HTTP_BAD_REQUEST || code == HTTP_UNPROCESSABLE -> R.string.error_rec_invalid_input
+            code == HTTP_TIMEOUT || code == HTTP_TOO_MANY || code >= HTTP_SERVER_MIN ->
+                R.string.error_rec_server_busy
+            else -> R.string.error_fetch_recommendation
+        }
+    }
 }

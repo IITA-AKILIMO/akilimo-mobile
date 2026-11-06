@@ -94,9 +94,9 @@ fun RecommendationsScreen(navController: NavHostController) {
                 EnumAdvice.INTERCROPPING_MAIZE -> IcMaizeRoute
                 EnumAdvice.INTERCROPPING_SWEET_POTATO -> IcSweetPotatoRoute
             }
-            navController.navigate(route)
+            navController.navigateIfResumed(route)
         },
-        onSettingsClick = { navController.navigate(SettingsRoute) }
+        onSettingsClick = { navController.navigateIfResumed(SettingsRoute) }
     )
 }
 
