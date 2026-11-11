@@ -6,6 +6,7 @@ import com.akilimo.mobile.repos.MaizePerformanceRepo
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.CassavaMarketPriceRepo
 import com.akilimo.mobile.repos.CassavaUnitRepo
+import com.akilimo.mobile.repos.MaizeUnitRepo
 import com.akilimo.mobile.repos.CassavaYieldRepo
 import com.akilimo.mobile.repos.CoverageRepo
 import com.akilimo.mobile.repos.CurrentPracticeRepo
@@ -92,6 +93,11 @@ object AppModule {
     @Singleton
     fun provideCassavaUnitRepo(db: AppDatabase): CassavaUnitRepo =
         CassavaUnitRepo(db.cassavaUnitDao())
+
+    @Provides
+    @Singleton
+    fun provideMaizeUnitRepo(db: AppDatabase): MaizeUnitRepo =
+        MaizeUnitRepo(db.maizeUnitDao())
 
     @Provides
     @Singleton

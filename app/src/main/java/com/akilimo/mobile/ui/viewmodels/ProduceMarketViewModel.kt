@@ -6,7 +6,9 @@ import com.akilimo.mobile.repos.ProduceMarketRepo
 import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.entities.ProduceMarket
 import com.akilimo.mobile.enums.EnumMarketType
+import com.akilimo.mobile.entities.MaizeUnit
 import com.akilimo.mobile.repos.AkilimoUserRepo
+import com.akilimo.mobile.repos.MaizeUnitRepo
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -23,6 +25,7 @@ import kotlinx.coroutines.launch
 class ProduceMarketViewModel @AssistedInject constructor(
     private val userRepo: AkilimoUserRepo,
     private val marketRepo: ProduceMarketRepo,
+    private val maizeUnitRepo: MaizeUnitRepo,
     private val appSettings: AppSettingsDataStore,
     @Assisted private val marketType: EnumMarketType
 ) : ViewModel() {
@@ -36,6 +39,7 @@ class ProduceMarketViewModel @AssistedInject constructor(
         val userId: Int = 0,
         val currencyCode: String = "",
         val lastEntry: ProduceMarket? = null,
+        val maizeUnits: List<MaizeUnit> = emptyList(),
         val isSaving: Boolean = false,
         val saveFailed: Boolean = false,
         val saved: Boolean = false
@@ -46,6 +50,11 @@ class ProduceMarketViewModel @AssistedInject constructor(
 
     init {
         viewModelScope.launch { loadData(appSettings.akilimoUser) }
+        if (marketType == EnumMarketType.MAIZE_MARKET) {
+            viewModelScope.launch {
+                maizeUnitRepo.observeActive().collect { units -> _uiState.update { it.copy(maizeUnits = units) } }
+            }
+        }
     }
 
     fun loadData(userName: String) = viewModelScope.launch {

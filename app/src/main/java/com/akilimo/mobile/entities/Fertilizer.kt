@@ -26,6 +26,10 @@ data class Fertilizer(
     @ColumnInfo(name = "type")
     val type: String? = null,
 
+    /** STRAIGHT (one nutrient), COMPOUND (several) or OTHER. */
+    @ColumnInfo(name = "category")
+    val category: String? = null,
+
     @ColumnInfo(name = "weight")
     val weight: Double = 0.0,
 

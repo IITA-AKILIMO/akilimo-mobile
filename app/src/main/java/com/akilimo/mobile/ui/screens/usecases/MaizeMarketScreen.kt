@@ -76,11 +76,11 @@ fun MaizeMarketScreen(
     }
     SaveErrorEffect(state.saveFailed, snackbarHostState, viewModel::onSaveErrorShown)
 
-    val unitOptions = if (isFreshCob) {
-        EnumUnitOfSale.entries.filter { it == EnumUnitOfSale.FRESH_COB }
-    } else {
-        EnumUnitOfSale.entries.filter { it.isUniversal }
-    }
+    // Grain units come from the price service; the built-in list covers the time before the first sync
+    val grainUnits = state.maizeUnits.mapNotNull { it.toUnitOfSale() }
+        .ifEmpty { EnumUnitOfSale.entries.filter { it.isUniversal } }
+    val defaultGrainUnit = state.maizeUnits.firstOrNull { it.isDefault }?.toUnitOfSale()
+    val unitOptions = if (isFreshCob) listOf(EnumUnitOfSale.FRESH_COB) else grainUnits
 
     // Reset unit when produce type changes
     LaunchedEffect(isFreshCob) {
@@ -88,7 +88,7 @@ fun MaizeMarketScreen(
             if (isFreshCob && selectedUnit != EnumUnitOfSale.FRESH_COB) {
                 selectedUnit = EnumUnitOfSale.FRESH_COB
             } else if (!isFreshCob && selectedUnit == EnumUnitOfSale.FRESH_COB) {
-                selectedUnit = null
+                selectedUnit = defaultGrainUnit
             }
         }
     }

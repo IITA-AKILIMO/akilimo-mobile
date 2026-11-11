@@ -6,6 +6,7 @@ import com.akilimo.mobile.network.dto.FeedbackResponse
 import com.akilimo.mobile.network.dto.FertilizerDto
 import com.akilimo.mobile.network.dto.FertilizerPriceDto
 import com.akilimo.mobile.network.dto.InvestmentAmounts
+import com.akilimo.mobile.network.dto.MaizeUnitDto
 import com.akilimo.mobile.network.dto.PagedResponse
 import com.akilimo.mobile.network.dto.StarchFactoryDto
 import com.akilimo.mobile.network.dto.UserFeedBackRequest
@@ -72,6 +73,10 @@ interface AkilimoApi {
         @Query("per_page") perPage: Int = DEFAULT_PER_PAGE
     ): PagedResponse<CassavaUnitDto>
 
+
+    @Headers(CLIENT_ID_HEADER)
+    @GET("v1/maize-units")
+    suspend fun getMaizeUnits(): PagedResponse<MaizeUnitDto>
 
     @Headers(CLIENT_ID_HEADER)
     @GET("v1/cassava-prices")

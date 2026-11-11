@@ -90,4 +90,19 @@ object DatabaseMigrations {
             db.execSQL("ALTER TABLE cassava_market_prices_new RENAME TO cassava_market_prices")
         }
     }
+
+    /**
+     * v7 → v8: Add the fertilizer category (STRAIGHT, COMPOUND, OTHER) and the maize_units table
+     * (the units maize grain is sold in, from the price service).
+     */
+    val MIGRATION_7_8 = object : Migration(7, 8) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE fertilizers ADD COLUMN category TEXT DEFAULT NULL")
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS `maize_units` (`id` INTEGER NOT NULL, `label` TEXT NOT NULL, " +
+                    "`unit_weight` REAL NOT NULL, `sort_order` INTEGER NOT NULL, `is_default` INTEGER NOT NULL, " +
+                    "`is_active` INTEGER NOT NULL, `created_at` INTEGER, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`id`))"
+            )
+        }
+    }
 }
