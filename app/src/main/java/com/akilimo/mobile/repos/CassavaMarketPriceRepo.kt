@@ -18,6 +18,11 @@ class CassavaMarketPriceRepo(
         }
     }
 
+    /** Drops cached bands missing from [current], the full list just fetched. */
+    suspend fun pruneStale(current: List<CassavaMarketPrice>) {
+        if (current.isNotEmpty()) dao.deleteStale(current.map { it.id })
+    }
+
     suspend fun getPricesByCountry(countryCode: EnumCountry): List<CassavaMarketPrice> {
         return dao.getPricesByCountry(countryCode)
     }

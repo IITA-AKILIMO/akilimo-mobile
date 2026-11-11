@@ -15,6 +15,11 @@ class InvestmentRepo(private val dao: InvestmentAmountDao) {
     }
 
 
+    /** Drops cached amounts missing from [current], the full list just fetched. */
+    suspend fun pruneStale(current: List<InvestmentAmount>) {
+        if (current.isNotEmpty()) dao.deleteStale(current.map { it.id })
+    }
+
     suspend fun saveAll(investmentAmounts: List<InvestmentAmount>) {
         investmentAmounts.forEach { f ->
             val rowId = dao.insert(f)

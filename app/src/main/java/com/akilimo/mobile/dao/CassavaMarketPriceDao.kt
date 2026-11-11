@@ -23,6 +23,10 @@ interface CassavaMarketPriceDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(price: CassavaMarketPrice): Long
 
+    /** Removes bands the API no longer serves. */
+    @Query("DELETE FROM cassava_market_prices WHERE id NOT IN (:keepIds)")
+    suspend fun deleteStale(keepIds: List<Int>): Int
+
     @Update
     suspend fun update(price: CassavaMarketPrice)
 }

@@ -33,6 +33,10 @@ interface InvestmentAmountDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(item: InvestmentAmount): Long
 
+    /** Removes amounts the API no longer serves. */
+    @Query("DELETE FROM investment_amounts WHERE id NOT IN (:keepIds)")
+    suspend fun deleteStale(keepIds: List<Int>): Int
+
     @Upsert
     suspend fun upsert(item: InvestmentAmount)
 

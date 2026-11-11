@@ -47,4 +47,6 @@ class CassavaPriceWorker(
         Timber.d("Saving ${items.size} cassava market prices")
         repo.saveAll(items)
     }
+
+    override suspend fun afterAllPagesSaved(allItems: List<CassavaMarketPrice>) = repo.pruneStale(allItems)
 }
