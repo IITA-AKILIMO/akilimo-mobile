@@ -247,6 +247,8 @@
     <string name="error_country_required">Nyamuneka hitamo igihugu cyawe</string>
     <string name="error_farm_size_invalid">Nyamuneka andika ubuso bw\'umurima bwemewe</string>
     <string name="error_amount_invalid">Nyamuneka andika umubare wemewe</string>
+    <string name="cd_show_as_list">Erekana nk\'urutonde</string>
+    <string name="cd_show_as_grid">Erekana nk\'imbonerahamwe</string>
     <string name="error_planting_date_required">Nyamuneka hitamo itariki yo gutera</string>
     <string name="error_harvest_date_required">Nyamuneka hitamo itariki yo gusarura</string>
     <string name="error_weed_control_required">Nyamuneka hitamo uburyo bwo kurwanya ibyatsi bibi</string>
