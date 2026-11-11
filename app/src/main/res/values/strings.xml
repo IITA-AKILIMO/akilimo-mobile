@@ -347,6 +347,12 @@
          FEEDBACK &amp; RATINGS
          ═══════════════════════════════════════════════ -->
     <string name="lbl_feedback">Feedback</string>
+    <string name="lbl_text_size">Text size</string>
+    <string name="lbl_landscape_view">Landscape view</string>
+    <string name="lbl_portrait_view">Portrait view</string>
+    <string name="lbl_text_size_normal">Normal text size</string>
+    <string name="lbl_text_size_large">Large text size</string>
+    <string name="lbl_text_size_largest">Largest text size</string>
     <string name="lbl_how_satisfied">How satisfied are you?</string>
     <string name="lbl_nps_prompt">How likely are you to recommend us? (0-10)</string>
     <string name="lbl_submit_feedback">Submit Feedback</string>

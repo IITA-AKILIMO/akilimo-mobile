@@ -6,6 +6,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -64,6 +65,19 @@ private object Keys {
     val FERTILIZER_GRID = booleanPreferencesKey("isFertilizerGrid")
     val REMEMBER_AREA_UNIT = booleanPreferencesKey("rememberAreaUnit")
     val LOCK_APP_LANGUAGE = booleanPreferencesKey("lockAppLanguage")
+    val READING_TEXT_SCALE = floatPreferencesKey("readingTextScale")
+    val READING_LANDSCAPE = booleanPreferencesKey("readingLandscape")
+}
+
+/** Reader-chosen text size for long-form advice, on top of the phone's own font scale. */
+object ReadingTextScale {
+    const val DEFAULT = 1f
+    val options = listOf(DEFAULT, 1.25f, 1.5f)
+
+    /** Snaps any stored value to the nearest supported step so a bad value can't break layout. */
+    fun normalize(value: Float?): Float =
+        if (value == null || value.isNaN()) DEFAULT
+        else options.minByOrNull { kotlin.math.abs(it - value) } ?: DEFAULT
 }
 
 /** App theme choice. SYSTEM follows the phone's dark-theme setting. */
@@ -162,6 +176,12 @@ class AppSettingsDataStore @Inject constructor(
 
     val lockAppLanguageFlow: Flow<Boolean> =
         dataStore.data.map { prefs -> isLanguageLocked(prefs) }
+
+    val readingLandscapeFlow: Flow<Boolean> =
+        dataStore.data.map { prefs -> prefs[Keys.READING_LANDSCAPE] ?: false }
+
+    val readingTextScaleFlow: Flow<Float> =
+        dataStore.data.map { prefs -> ReadingTextScale.normalize(prefs[Keys.READING_TEXT_SCALE]) }
 
     // ── Synchronous property accessors ────────────────────────────────────────
     // After the first DataStore read (done in AkilimoApp.onCreate via getLanguageTagSync /
@@ -302,6 +322,14 @@ class AppSettingsDataStore @Inject constructor(
 
     suspend fun setRememberAreaUnit(value: Boolean) {
         dataStore.edit { it[Keys.REMEMBER_AREA_UNIT] = value }
+    }
+
+    suspend fun setReadingLandscape(value: Boolean) {
+        dataStore.edit { it[Keys.READING_LANDSCAPE] = value }
+    }
+
+    suspend fun setReadingTextScale(value: Float) {
+        dataStore.edit { it[Keys.READING_TEXT_SCALE] = ReadingTextScale.normalize(value) }
     }
 
     suspend fun setFertilizerGrid(value: Boolean) {
