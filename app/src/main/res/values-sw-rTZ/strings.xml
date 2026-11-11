@@ -246,6 +246,7 @@
     <string name="error_investment_preference_required">Tafadhali chagua upendeleo wa uwekezaji</string>
     <string name="lbl_feedback">Maoni</string>
     <string name="lbl_text_size">Ukubwa wa maandishi</string>
+    <string name="lbl_landscape_view">Mwonekano mlalo</string>
     <string name="lbl_text_size_normal">Ukubwa wa kawaida</string>
     <string name="lbl_text_size_large">Ukubwa mkubwa</string>
     <string name="lbl_text_size_largest">Ukubwa mkubwa zaidi</string>

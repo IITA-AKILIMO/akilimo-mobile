@@ -11,6 +11,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
+import android.content.pm.ActivityInfo
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.filled.ScreenRotation
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilterChip
@@ -69,6 +78,12 @@ private const val BODY_LINE_HEIGHT_SP = 28f
 private const val TITLE_FONT_SP = 24f
 private const val TITLE_LINE_HEIGHT_SP = 32f
 
+private tailrec fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
+}
+
 private fun textScaleLabelRes(scale: Float): Int = when {
     scale >= 1.5f -> R.string.lbl_text_size_largest
     scale >= 1.25f -> R.string.lbl_text_size_large
@@ -81,6 +96,8 @@ private fun RecommendationBody(
     paragraphs: List<String>,
     textScale: Float,
     onTextScaleChange: (Float) -> Unit,
+    landscapeLocked: Boolean,
+    onLandscapeToggle: () -> Unit,
 ) {
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val twoPane = maxWidth >= TWO_PANE_MIN_WIDTH
@@ -94,6 +111,19 @@ private fun RecommendationBody(
             )
             Spacer(Modifier.height(AkilimoSpacing.md))
             TextSizeSelector(selected = textScale, onSelect = onTextScaleChange)
+            Spacer(Modifier.height(AkilimoSpacing.sm))
+            FilterChip(
+                selected = landscapeLocked,
+                onClick = onLandscapeToggle,
+                label = { Text(stringResource(R.string.lbl_landscape_view)) },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.ScreenRotation,
+                        contentDescription = null,
+                        modifier = Modifier.size(FilterChipDefaults.IconSize),
+                    )
+                },
+            )
         }
         val content: @Composable () -> Unit = {
             RecommendationCard(paragraphs = paragraphs, textScale = textScale)
@@ -202,6 +232,25 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
     val feedbackSuccessMessage = stringResource(R.string.msg_feedback_submit_success)
     val feedbackFailureMessage = stringResource(R.string.msg_feedback_submit_failure)
     var showFeedback by rememberSaveable { mutableStateOf(false) }
+    var landscapeLocked by rememberSaveable { mutableStateOf(false) }
+
+    // The reader can force landscape for this screen only; always hand control back on leaving.
+    val activity = LocalContext.current.findActivity()
+    DisposableEffect(landscapeLocked) {
+        activity?.requestedOrientation = if (landscapeLocked) {
+            ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE
+        } else {
+            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+        onDispose {}
+    }
+    DisposableEffect(Unit) {
+        onDispose {
+            if (activity?.isChangingConfigurations == false) {
+                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            }
+        }
+    }
 
     LaunchedEffect(useCase) {
         viewModel.fetchRecommendation(useCase)
@@ -251,6 +300,8 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
                         paragraphs = remember(s.description) { splitRecommendationParagraphs(s.description) },
                         textScale = textScale,
                         onTextScaleChange = viewModel::setTextScale,
+                        landscapeLocked = landscapeLocked,
+                        onLandscapeToggle = { landscapeLocked = !landscapeLocked },
                     )
                 }
 

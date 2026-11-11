@@ -348,6 +348,7 @@
          ═══════════════════════════════════════════════ -->
     <string name="lbl_feedback">Feedback</string>
     <string name="lbl_text_size">Text size</string>
+    <string name="lbl_landscape_view">Landscape view</string>
     <string name="lbl_text_size_normal">Normal text size</string>
     <string name="lbl_text_size_large">Large text size</string>
     <string name="lbl_text_size_largest">Largest text size</string>
