@@ -51,12 +51,12 @@ object DatabaseMigrations {
     }
 
     /**
-     * v6 → v7: Drop the min/max allowed and local price columns from fertilizer_prices and
-     * cassava_market_prices (never read). Rows are copied across with their ids, so saved
-     * fertilizer and cassava picks that point at them stay valid. Room keeps foreign keys off
+     * v6 → v8: Drop the min/max allowed and local price columns from fertilizer_prices and
+     * cassava_market_prices (never read), add the fertilizer category and the maize_units table.
+     * Price rows are copied across with their ids, so saved fertilizer and cassava picks that point at them stay valid. Room keeps foreign keys off
      * while migrating, so the swap does not cascade into the selected_* tables.
      */
-    val MIGRATION_6_7 = object : Migration(6, 7) {
+    val MIGRATION_6_8 = object : Migration(6, 8) {
         override fun migrate(db: SupportSQLiteDatabase) {
             db.execSQL(
                 "CREATE TABLE `fertilizer_prices_new` (`id` INTEGER NOT NULL, `fertilizer_key` TEXT NOT NULL, " +
@@ -88,15 +88,6 @@ object DatabaseMigrations {
             )
             db.execSQL("DROP TABLE cassava_market_prices")
             db.execSQL("ALTER TABLE cassava_market_prices_new RENAME TO cassava_market_prices")
-        }
-    }
-
-    /**
-     * v7 → v8: Add the fertilizer category (STRAIGHT, COMPOUND, OTHER) and the maize_units table
-     * (the units maize grain is sold in, from the price service).
-     */
-    val MIGRATION_7_8 = object : Migration(7, 8) {
-        override fun migrate(db: SupportSQLiteDatabase) {
             db.execSQL("ALTER TABLE fertilizers ADD COLUMN category TEXT DEFAULT NULL")
             db.execSQL(
                 "CREATE TABLE IF NOT EXISTS `maize_units` (`id` INTEGER NOT NULL, `label` TEXT NOT NULL, " +

@@ -7,7 +7,6 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.akilimo.mobile.entities.FertilizerPrice
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FertilizerPriceDao {
@@ -17,9 +16,6 @@ interface FertilizerPriceDao {
 
     @Update
     suspend fun update(price: FertilizerPrice)
-
-    @Query("SELECT * FROM fertilizer_prices WHERE fertilizer_key = :key AND country_code = :country ORDER BY sort_order ASC")
-    suspend fun getByKeyAndCountry(key: String, country: String): FertilizerPrice?
 
     @Query("SELECT * FROM fertilizer_prices WHERE fertilizer_key = :key ORDER BY sort_order ASC")
     suspend fun getByKey(key: String): List<FertilizerPrice>
@@ -36,7 +32,4 @@ interface FertilizerPriceDao {
         detachStale(keepIds)
         deleteStale(keepIds)
     }
-
-    @Query("SELECT * FROM fertilizer_prices ORDER BY sort_order ASC")
-    fun observeAll(): Flow<List<FertilizerPrice>>
 }
