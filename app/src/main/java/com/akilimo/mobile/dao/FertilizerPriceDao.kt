@@ -23,11 +23,8 @@ interface FertilizerPriceDao {
     @Query("SELECT * FROM fertilizer_prices WHERE fertilizer_key = :key ORDER BY sort_order ASC")
     suspend fun getByKey(key: String): List<FertilizerPrice>
 
-    /** Removes options the API no longer serves, keeping any a farmer's saved answer still points at. */
-    @Query(
-        "DELETE FROM fertilizer_prices WHERE id NOT IN (:keepIds) AND id NOT IN " +
-            "(SELECT fertilizer_price_id FROM selected_fertilizers WHERE fertilizer_price_id IS NOT NULL)"
-    )
+    /** Removes options the API no longer serves. */
+    @Query("DELETE FROM fertilizer_prices WHERE id NOT IN (:keepIds)")
     suspend fun deleteStale(keepIds: List<Int>): Int
 
     @Query("SELECT * FROM fertilizer_prices ORDER BY sort_order ASC")
