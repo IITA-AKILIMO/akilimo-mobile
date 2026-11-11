@@ -3,6 +3,7 @@ package com.akilimo.mobile.ui.screens.recommendations
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -76,6 +77,9 @@ import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.theme.AkilimoTheme
 import com.akilimo.mobile.ui.viewmodels.RecommendationsViewModel
 
+/** Short hero so the first advice cards are visible without scrolling. */
+private val HERO_HEIGHT = 200.dp
+
 private fun EnumAdvice.icon(): ImageVector = when (this) {
     EnumAdvice.FERTILIZER_RECOMMENDATIONS -> Icons.Outlined.Science
     EnumAdvice.BEST_PLANTING_PRACTICES -> Icons.Outlined.Eco
@@ -134,7 +138,7 @@ private fun RecommendationsContent(
     onSettingsClick: () -> Unit,
 ) {
     val listState = rememberLazyListState()
-    val heroPx = with(LocalDensity.current) { 240.dp.toPx() }
+    val heroPx = with(LocalDensity.current) { HERO_HEIGHT.toPx() }
 
     val scrollOffsetPx by remember {
         derivedStateOf {
@@ -182,7 +186,7 @@ private fun RecommendationsContent(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(240.dp)
+                            .height(HERO_HEIGHT)
                             .background(MaterialTheme.colorScheme.primary)
                             .background(
                                 Brush.verticalGradient(
@@ -207,7 +211,7 @@ private fun RecommendationsContent(
                                 painter = painterResource(R.drawable.ic_akilimo_logo_white),
                                 contentDescription = null,
                                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                                modifier = Modifier.size(120.dp),
+                                modifier = Modifier.size(96.dp),
                             )
                             Text(
                                 text = stringResource(R.string.lbl_recommendations),
@@ -264,7 +268,8 @@ private fun AdviceOptionCard(option: AdviceOption, onClick: () -> Unit) {
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
         Row(
             modifier = Modifier.padding(AkilimoSpacing.md),
@@ -291,7 +296,7 @@ private fun AdviceOptionCard(option: AdviceOption, onClick: () -> Unit) {
                 )
                 Text(
                     text = option.valueOption.label(context),
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
