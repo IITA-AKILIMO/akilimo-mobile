@@ -28,6 +28,7 @@ abstract class SafePagedWorker<TApi, TItem>(
         var page = 1
         var totalSaved = 0
         var lastPageReached = false
+        val allItems = mutableListOf<TItem>()
 
         try {
             while (!lastPageReached && !isStopped) {
@@ -47,6 +48,7 @@ abstract class SafePagedWorker<TApi, TItem>(
                     if (pageResult.items.isNotEmpty()) {
                         updateLocalDatabase(pageResult.items)
                         totalSaved += pageResult.items.size
+                        allItems += pageResult.items
                     }
                     lastPageReached = pageResult.isLastPage
                 }
@@ -61,6 +63,11 @@ abstract class SafePagedWorker<TApi, TItem>(
                 setProgressPercent(progressPercent)
 
                 page++
+            }
+
+            // Only a complete pass can say which cached rows the server no longer offers
+            if (lastPageReached && !isStopped) {
+                afterAllPagesSaved(allItems)
             }
 
             return resultSuccess(
@@ -91,6 +98,12 @@ abstract class SafePagedWorker<TApi, TItem>(
      * Persist page items into local storage. This is called under [mutex] to protect shared counters.
      */
     protected abstract suspend fun updateLocalDatabase(items: List<TItem>)
+
+    /**
+     * Called once after the last page has been saved, with every item fetched. Override to drop
+     * cached rows that are no longer served (option ids change when the API regenerates a list).
+     */
+    protected open suspend fun afterAllPagesSaved(allItems: List<TItem>) = Unit
 
     /**
      * Simple page result wrapper. Keep item type generic.
