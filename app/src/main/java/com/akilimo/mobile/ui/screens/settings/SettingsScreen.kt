@@ -5,6 +5,21 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForwardIos
@@ -19,7 +34,6 @@ import androidx.compose.material.icons.outlined.NotificationsNone
 import androidx.compose.material.icons.outlined.PrivacyTip
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
@@ -147,15 +161,7 @@ fun SettingsScreen(
         ScrollableFormColumn(padding = paddingValues) {
 
             // ── Appearance ────────────────────────────────────────────────
-            Text(
-                text = stringResource(R.string.lbl_appearance),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(
-                    horizontal = AkilimoSpacing.md,
-                    vertical = AkilimoSpacing.sm,
-                ),
-            )
+            SettingsSection(stringResource(R.string.lbl_appearance)) {
             AkilimoDropdown(
                 label = stringResource(R.string.lbl_theme),
                 options = ThemeMode.entries,
@@ -171,23 +177,13 @@ fun SettingsScreen(
                 modifier = Modifier.padding(horizontal = AkilimoSpacing.md),
             )
 
-            HorizontalDivider(modifier = Modifier.padding(vertical = AkilimoSpacing.sm))
+            }
 
             // ── Display ───────────────────────────────────────────────────
-            Text(
-                text = stringResource(R.string.lbl_display_section),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(
-                    horizontal = AkilimoSpacing.md,
-                    vertical = AkilimoSpacing.sm,
-                ),
-            )
+            SettingsSection(stringResource(R.string.lbl_display_section)) {
             ListItem(
                 headlineContent = { Text(stringResource(R.string.lbl_fertilizer_grid)) },
-                leadingContent = {
-                    Icon(imageVector = Icons.Outlined.GridView, contentDescription = null)
-                },
+                leadingContent = { SettingsIcon(Icons.Outlined.GridView) },
                 trailingContent = {
                     Switch(checked = state.fertilizerGrid, onCheckedChange = null)
                 },
@@ -199,9 +195,7 @@ fun SettingsScreen(
             )
             ListItem(
                 headlineContent = { Text(stringResource(R.string.lbl_remember_area_unit)) },
-                leadingContent = {
-                    Icon(imageVector = Icons.Outlined.AspectRatio, contentDescription = null)
-                },
+                leadingContent = { SettingsIcon(Icons.Outlined.AspectRatio) },
                 trailingContent = {
                     Switch(checked = state.rememberAreaUnit, onCheckedChange = null)
                 },
@@ -212,18 +206,10 @@ fun SettingsScreen(
                 ),
             )
 
-            HorizontalDivider(modifier = Modifier.padding(vertical = AkilimoSpacing.sm))
+            }
 
             // ── Language ──────────────────────────────────────────────────
-            Text(
-                text = stringResource(R.string.lbl_language),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(
-                    horizontal = AkilimoSpacing.md,
-                    vertical = AkilimoSpacing.sm,
-                ),
-            )
+            SettingsSection(stringResource(R.string.lbl_language)) {
             AkilimoDropdown(
                 label = stringResource(R.string.lbl_select_language),
                 options = Locales.supportedLocales,
@@ -237,9 +223,7 @@ fun SettingsScreen(
             )
             ListItem(
                 headlineContent = { Text(stringResource(R.string.lbl_lock_app_language)) },
-                leadingContent = {
-                    Icon(imageVector = Icons.Outlined.Language, contentDescription = null)
-                },
+                leadingContent = { SettingsIcon(Icons.Outlined.Language) },
                 trailingContent = {
                     Switch(checked = state.lockAppLanguage, onCheckedChange = null)
                 },
@@ -250,23 +234,13 @@ fun SettingsScreen(
                 ),
             )
 
-            HorizontalDivider(modifier = Modifier.padding(vertical = AkilimoSpacing.sm))
+            }
 
             // ── Profile ───────────────────────────────────────────────────
-            Text(
-                text = stringResource(R.string.lbl_profile_settings),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(
-                    horizontal = AkilimoSpacing.md,
-                    vertical = AkilimoSpacing.sm,
-                ),
-            )
+            SettingsSection(stringResource(R.string.lbl_profile_settings)) {
             ListItem(
                 headlineContent = { Text(stringResource(R.string.lbl_edit_profile)) },
-                leadingContent = {
-                    Icon(imageVector = Icons.Outlined.AccountCircle, contentDescription = null)
-                },
+                leadingContent = { SettingsIcon(Icons.Outlined.AccountCircle) },
                 trailingContent = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
@@ -276,30 +250,18 @@ fun SettingsScreen(
                 modifier = Modifier.clickable(role = Role.Button) { navController.navigate(OnboardingRoute) },
             )
 
-            HorizontalDivider(modifier = Modifier.padding(vertical = AkilimoSpacing.sm))
+            }
 
             // ── About ─────────────────────────────────────────────────────
-            Text(
-                text = stringResource(R.string.lbl_about_section),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(
-                    horizontal = AkilimoSpacing.md,
-                    vertical = AkilimoSpacing.sm,
-                ),
-            )
+            SettingsSection(stringResource(R.string.lbl_about_section)) {
             ListItem(
                 headlineContent = { Text(stringResource(R.string.lbl_app_version)) },
                 supportingContent = { Text(BuildConfig.VERSION_NAME) },
-                leadingContent = {
-                    Icon(imageVector = Icons.Outlined.Info, contentDescription = null)
-                },
+                leadingContent = { SettingsIcon(Icons.Outlined.Info) },
             )
             ListItem(
                 headlineContent = { Text(stringResource(R.string.lbl_privacy_policy)) },
-                leadingContent = {
-                    Icon(imageVector = Icons.Outlined.PrivacyTip, contentDescription = null)
-                },
+                leadingContent = { SettingsIcon(Icons.Outlined.PrivacyTip) },
                 trailingContent = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
@@ -317,9 +279,7 @@ fun SettingsScreen(
             )
             ListItem(
                 headlineContent = { Text(stringResource(R.string.lbl_terms)) },
-                leadingContent = {
-                    Icon(imageVector = Icons.Outlined.Gavel, contentDescription = null)
-                },
+                leadingContent = { SettingsIcon(Icons.Outlined.Gavel) },
                 trailingContent = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
@@ -336,24 +296,14 @@ fun SettingsScreen(
                 },
             )
 
-            HorizontalDivider(modifier = Modifier.padding(vertical = AkilimoSpacing.sm))
+            }
 
             // ── Data & Storage ────────────────────────────────────────────
-            Text(
-                text = stringResource(R.string.lbl_data_storage),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(
-                    horizontal = AkilimoSpacing.md,
-                    vertical = AkilimoSpacing.sm,
-                ),
-            )
+            SettingsSection(stringResource(R.string.lbl_data_storage)) {
             ListItem(
                 headlineContent = { Text(stringResource(R.string.lbl_clear_recommendations)) },
                 supportingContent = { Text(stringResource(R.string.lbl_clear_recommendations_desc)) },
-                leadingContent = {
-                    Icon(imageVector = Icons.Outlined.CleaningServices, contentDescription = null)
-                },
+                leadingContent = { SettingsIcon(Icons.Outlined.CleaningServices) },
                 trailingContent = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
@@ -365,9 +315,7 @@ fun SettingsScreen(
             ListItem(
                 headlineContent = { Text(stringResource(R.string.lbl_reset_notification_badge)) },
                 supportingContent = { Text(stringResource(R.string.lbl_reset_notification_badge_desc)) },
-                leadingContent = {
-                    Icon(imageVector = Icons.Outlined.NotificationsNone, contentDescription = null)
-                },
+                leadingContent = { SettingsIcon(Icons.Outlined.NotificationsNone) },
                 trailingContent = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
@@ -375,6 +323,49 @@ fun SettingsScreen(
                     )
                 },
                 modifier = Modifier.clickable(role = Role.Button) { showResetBadgeDialog = true },
+            )
+            }
+        }
+    }
+}
+
+/** A titled group of settings rows on one raised card. */
+@Composable
+private fun SettingsSection(title: String, content: @Composable ColumnScope.() -> Unit) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.labelLarge,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.padding(horizontal = AkilimoSpacing.md, vertical = AkilimoSpacing.sm),
+    )
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = AkilimoSpacing.md),
+        shape = MaterialTheme.shapes.medium,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+    ) {
+        Column(modifier = Modifier.padding(vertical = AkilimoSpacing.xs), content = content)
+    }
+    Spacer(Modifier.height(AkilimoSpacing.xs))
+}
+
+/** Row icon on a soft tile, the way the rest of the app marks list rows. */
+@Composable
+private fun SettingsIcon(imageVector: ImageVector) {
+    Surface(
+        shape = MaterialTheme.shapes.small,
+        color = MaterialTheme.colorScheme.primaryContainer,
+        modifier = Modifier.size(40.dp),
+    ) {
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+            Icon(
+                imageVector = imageVector,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.size(22.dp),
             )
         }
     }
