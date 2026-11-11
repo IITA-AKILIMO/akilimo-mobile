@@ -6,7 +6,6 @@ import com.akilimo.mobile.network.dto.FeedbackResponse
 import com.akilimo.mobile.network.dto.FertilizerDto
 import com.akilimo.mobile.network.dto.FertilizerPriceDto
 import com.akilimo.mobile.network.dto.InvestmentAmounts
-import com.akilimo.mobile.network.dto.MaizePriceDto
 import com.akilimo.mobile.network.dto.PagedResponse
 import com.akilimo.mobile.network.dto.StarchFactoryDto
 import com.akilimo.mobile.network.dto.UserFeedBackRequest
@@ -80,13 +79,6 @@ interface AkilimoApi {
         @Query("page") page: Int = DEFAULT_PAGE,
         @Query("per_page") perPage: Int = DEFAULT_PER_PAGE
     ): PagedResponse<CassavaPriceDto>
-
-    @Headers(CLIENT_ID_HEADER)
-    @GET("v1/maize-prices")
-    suspend fun getMaizePrices(
-        @Query("page") page: Int = DEFAULT_PAGE,
-        @Query("per_page") perPage: Int = DEFAULT_PER_PAGE
-    ): PagedResponse<MaizePriceDto>
 
     /**
      * GeoJSON of the area where AKILIMO can compute a recommendation for [country] (ISO alpha-2).
