@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Runs the same syncs as app start-up on demand (pull to refresh) and waits for them to finish.
@@ -60,7 +61,7 @@ class DataRefresher @Inject constructor(
 
     private suspend fun await(uniqueName: String, enqueue: () -> androidx.work.Operation) {
         enqueue().await() // the work is registered, so the status below is for this run
-        withTimeoutOrNull(TIMEOUT_MS) {
+        withTimeoutOrNull(TIMEOUT_MS.milliseconds) {
             WorkManager.getInstance(context).getWorkInfosForUniqueWorkFlow(uniqueName)
                 .first { infos -> infos.isNotEmpty() && infos.all { it.state.isFinished } }
         }
